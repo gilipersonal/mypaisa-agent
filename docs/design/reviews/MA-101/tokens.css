@@ -1,0 +1,290 @@
+/* MyPaisa DS v1 — "Warm ledger" (MA-101).
+   Monzo's warmth (a navy hero card, a coral accent, plain words, rounded figures)
+   on Apple HIG bones (system type scale, grouped inset lists, 44pt targets, tab bar,
+   sheets, semantic light and dark colours). Every text pair is WCAG 2.2 AA in both themes.
+   Theme: the root follows prefers-color-scheme; .t-light / .t-dark force one
+   (the Mini App sets it from Telegram's colorScheme). */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400..600,0..1,0&display=swap");
+
+:root, .t-light {
+  /* ground and surfaces */
+  --mp-bg: #F6F4F1;          /* warm grouped background */
+  --mp-surface: #FFFFFF;     /* cards, grouped rows */
+  --mp-surface-2: #F0EDE8;   /* fills: segmented track, neutral chips, pressed */
+  --mp-line: #E4E0DA;        /* hairlines, never text */
+  --mp-material: rgba(255, 255, 255, 0.78); /* tab bar, sticky headers (with blur) */
+  /* text */
+  --mp-ink: #14171F;         /* 17.9:1 on surface */
+  --mp-ink-2: #4E5462;       /* 7.6:1 */
+  --mp-ink-3: #646A78;       /* 5.4:1 on surface, 4.6:1 on surface-2 */
+  /* the hero card (Monzo's account card, made ours) */
+  --mp-hero: #13213A;
+  --mp-hero-2: #1C2E4D;      /* hero inner fills */
+  --mp-hero-ink: #FFFFFF;
+  --mp-hero-ink-2: #B7C2D6;  /* 9.0:1 on hero */
+  /* accent */
+  --mp-coral: #FF6B4F;       /* fills, lines and marks on the hero; never small text on light */
+  --mp-accent: #C2381F;      /* text, links and filled buttons on light: 5.4:1 */
+  --mp-on-accent: #FFFFFF;
+  /* meaning */
+  --mp-up: #1D7A3E;          /* gains: green with ▲ */
+  --mp-down-quiet: #4E5462;  /* everyday falls: quiet ink with ▼, never alarm red */
+  --mp-alert: #B42318;       /* red tier alerts only */
+  --mp-alert-bg: #FCE4E1;
+  /* stances: text on tint, all ≥4.6:1 */
+  --mp-add: #1D7A3E;   --mp-add-bg: #E2F2E7;
+  --mp-hold: #2453C9;  --mp-hold-bg: #E5ECFB;
+  --mp-pause: #8A5300; --mp-pause-bg: #FCEED6;
+  --mp-trim: #B13A22;  --mp-trim-bg: #FBE5DF;
+  --mp-reb: #6B3FB8;   --mp-reb-bg: #EEE7FA;
+  --mp-watch: #4E5462; --mp-watch-bg: #EDEBE7;
+  /* data */
+  --mp-chart-line: #C2381F;
+  --mp-chart-area: rgba(255, 107, 79, 0.14);
+  --mp-chart-grid: #ECE8E2;
+  --mp-chart-2: #2453C9;
+  --mp-chart-3: #1D7A3E;
+  --mp-chart-4: #8A5300;
+  --mp-chart-5: #6B3FB8;
+  --mp-focus: #2453C9;
+  --mp-shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
+  color-scheme: light;
+}
+
+.t-dark {
+  --mp-bg: #0A0F18;
+  --mp-surface: #151C27;
+  --mp-surface-2: #1E2633;
+  --mp-line: #283141;
+  --mp-material: rgba(21, 28, 39, 0.78);
+  --mp-ink: #F3F5F8;
+  --mp-ink-2: #AEB6C4;
+  --mp-ink-3: #8D96A6;
+  --mp-hero: #1A2944;
+  --mp-hero-2: #233558;
+  --mp-hero-ink: #FFFFFF;
+  --mp-hero-ink-2: #B7C2D6;
+  --mp-coral: #FF7A5E;
+  --mp-accent: #FF7A5E;
+  --mp-on-accent: #1A0B06;   /* 7.5:1 */
+  --mp-up: #44D17A;
+  --mp-down-quiet: #AEB6C4;
+  --mp-alert: #FF7B6B;
+  --mp-alert-bg: #3A1915;
+  --mp-add: #5BDB8B;   --mp-add-bg: #16301F;
+  --mp-hold: #8FB2FF;  --mp-hold-bg: #1A2747;
+  --mp-pause: #F6BC4F; --mp-pause-bg: #33270E;
+  --mp-trim: #FF9A80;  --mp-trim-bg: #3A1D16;
+  --mp-reb: #B79CFF;   --mp-reb-bg: #2A2142;
+  --mp-watch: #AEB6C4; --mp-watch-bg: #232B38;
+  --mp-chart-line: #FF7A5E;
+  --mp-chart-area: rgba(255, 122, 94, 0.16);
+  --mp-chart-grid: #222B39;
+  --mp-chart-2: #8FB2FF;
+  --mp-chart-3: #5BDB8B;
+  --mp-chart-4: #F6BC4F;
+  --mp-chart-5: #B79CFF;
+  --mp-focus: #8FB2FF;
+  --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  color-scheme: dark;
+}
+
+/* ---------- type: Apple's Dynamic Type "Large" sizes, system font ---------- */
+.mp {
+  --mp-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+  --mp-font-round: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+  /* spacing: 4pt grid */
+  --mp-s1: 4px; --mp-s2: 8px; --mp-s3: 12px; --mp-s4: 16px; --mp-s5: 20px; --mp-s6: 24px; --mp-s8: 32px; --mp-s10: 40px;
+  /* radius */
+  --mp-r-chip: 999px; --mp-r-ctl: 10px; --mp-r-row: 14px; --mp-r-card: 20px; --mp-r-hero: 24px; --mp-r-sheet: 16px;
+  /* motion */
+  --mp-ease: cubic-bezier(0.22, 1, 0.36, 1);          /* everything that settles */
+  --mp-ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);    /* iOS sheet and push */
+  --mp-t-tap: 120ms; --mp-t-fast: 200ms; --mp-t-push: 350ms; --mp-t-sheet: 420ms; --mp-t-count: 600ms; --mp-t-draw: 700ms;
+  font-family: var(--mp-font);
+  color: var(--mp-ink);
+  background: var(--mp-bg);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+.mp-large  { font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: -0.02em; }
+.mp-t1     { font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em; }
+.mp-t2     { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.015em; }
+.mp-t3     { font-size: 20px; line-height: 25px; font-weight: 600; }
+.mp-hl     { font-size: 17px; line-height: 22px; font-weight: 600; }
+.mp-body   { font-size: 17px; line-height: 22px; font-weight: 400; }
+.mp-callout{ font-size: 16px; line-height: 21px; font-weight: 400; }
+.mp-sub    { font-size: 15px; line-height: 20px; font-weight: 400; }
+.mp-foot   { font-size: 13px; line-height: 18px; font-weight: 400; letter-spacing: 0; }
+.mp-cap    { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0; }
+.mp-over   { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.mp-num-hero { font-family: var(--mp-font-round); font-size: 44px; line-height: 48px; font-weight: 800; letter-spacing: -0.03em; }
+.mp-num-l    { font-family: var(--mp-font-round); font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.02em; }
+.mp-num      { font-variant-numeric: tabular-nums; }
+.mp-ink2 { color: var(--mp-ink-2); }
+.mp-ink3 { color: var(--mp-ink-3); }
+.mp-up   { color: var(--mp-up); }
+.mp-dq   { color: var(--mp-down-quiet); }
+.mp-acc  { color: var(--mp-accent); }
+.mp-w6 { font-weight: 600; } .mp-w7 { font-weight: 700; }
+
+/* ---------- icons: Material Symbols Rounded (an SF Symbols stand-in on the web) ---------- */
+.ms { font-family: "Material Symbols Rounded"; font-weight: 500; font-style: normal; font-size: 22px; line-height: 1; display: inline-block; font-variation-settings: "FILL" 0, "wght" 500, "opsz" 24; -webkit-font-feature-settings: "liga"; user-select: none; }
+.ms-fill { font-variation-settings: "FILL" 1, "wght" 500, "opsz" 24; }
+.ms-s { font-size: 18px; } .ms-l { font-size: 26px; }
+
+/* ---------- surfaces ---------- */
+.mp-card  { background: var(--mp-surface); border-radius: var(--mp-r-card); padding: 16px; box-shadow: var(--mp-shadow); }
+.mp-group { background: var(--mp-surface); border-radius: var(--mp-r-row); overflow: hidden; }
+.mp-row   { min-height: 44px; padding: 11px 16px; display: flex; align-items: center; gap: 12px; box-sizing: border-box; position: relative; }
+.mp-group .mp-row + .mp-row::before { content: ""; position: absolute; left: 16px; right: 0; top: 0; height: 1px; background: var(--mp-line); transform: scaleY(0.5); transform-origin: top; }
+.mp-row-lead { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex: none; font-weight: 700; font-size: 13px; }
+.mp-section { padding: 0 4px 6px 16px; }
+.mp-hero  { background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: var(--mp-r-hero); padding: 20px; position: relative; overflow: hidden; }
+.mp-hero-2 { color: var(--mp-hero-ink-2); }
+.mp-hr { height: 1px; background: var(--mp-line); border: 0; margin: 0; }
+
+/* ---------- chips ---------- */
+.mp-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 10px; font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
+.mp-add   { color: var(--mp-add);   background: var(--mp-add-bg); }
+.mp-hold  { color: var(--mp-hold);  background: var(--mp-hold-bg); }
+.mp-pause { color: var(--mp-pause); background: var(--mp-pause-bg); }
+.mp-trim  { color: var(--mp-trim);  background: var(--mp-trim-bg); }
+.mp-reb   { color: var(--mp-reb);   background: var(--mp-reb-bg); }
+.mp-watch { color: var(--mp-watch); background: var(--mp-watch-bg); }
+.mp-neutral { color: var(--mp-ink-2); background: var(--mp-surface-2); }
+.mp-alertchip { color: var(--mp-alert); background: var(--mp-alert-bg); }
+.mp-ring { width: 18px; height: 18px; border-radius: 50%; flex: none; }
+
+/* ---------- controls (all ≥44px tall where tappable) ---------- */
+.mp-btn { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; font: 600 17px/22px var(--mp-font); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; transition: transform var(--mp-t-tap) var(--mp-ease), opacity var(--mp-t-tap); }
+.mp-btn:active { transform: scale(0.97); }
+.mp-btn:focus-visible, .mp-seg-i:focus-visible, .mp-tab:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+.mp-btn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
+.mp-btn-tinted  { background: var(--mp-surface-2); color: var(--mp-ink); }
+.mp-btn-plain   { background: transparent; color: var(--mp-accent); padding: 0 8px; min-height: 44px; }
+.mp-btn-small   { min-height: 44px; padding: 0 14px; font-size: 15px; border-radius: 12px; }
+.mp-seg   { display: flex; background: var(--mp-surface-2); border-radius: 10px; padding: 2px; gap: 2px; }
+.mp-seg-i { flex: 1; min-height: 40px; border: 0; background: transparent; border-radius: 8px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); cursor: pointer; }
+.mp-seg-i.on { background: var(--mp-surface); color: var(--mp-ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.mp-hero .mp-seg { background: var(--mp-hero-2); }
+.mp-hero .mp-seg-i { color: var(--mp-hero-ink-2); }
+.mp-hero .mp-seg-i.on { background: var(--mp-hero-ink); color: #13213A; }
+.mp-switch { width: 51px; height: 31px; border-radius: 999px; background: var(--mp-surface-2); position: relative; flex: none; box-shadow: inset 0 0 0 1.5px var(--mp-ink-3); }  /* the ring keeps the off track at 3:1+ */
+.mp-switch.on { background: var(--mp-up); box-shadow: none; }
+.mp-switch-k { position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); transition: transform var(--mp-t-fast) var(--mp-ease); }
+.mp-switch.on .mp-switch-k { transform: translateX(20px); }
+
+/* ---------- navigation ---------- */
+.mp-tabbar { display: flex; justify-content: space-around; padding: 6px 4px 22px; background: var(--mp-material); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 0.5px solid var(--mp-line); }
+.mp-tab { min-width: 64px; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--mp-ink-3); font: 500 10px/12px var(--mp-font); text-decoration: none; background: none; border: 0; cursor: pointer; }
+.mp-tab.on { color: var(--mp-accent); }
+.mp-side { width: 248px; flex: none; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
+.mp-side-i { min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 10px; color: var(--mp-ink-2); font: 500 15px/20px var(--mp-font); text-decoration: none; }
+.mp-side-i.on { background: var(--mp-surface); color: var(--mp-ink); font-weight: 600; box-shadow: var(--mp-shadow); }
+.mp-side-i.on .ms { color: var(--mp-accent); }
+
+/* Telegram's own Mini App header (drawn by Telegram, shown for context) */
+.tgh { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; font: 500 16px/20px var(--mp-font); background: var(--tg-head); color: var(--tg-text); border-bottom: 0.5px solid var(--tg-line); }
+.tgh-a { color: var(--tg-link); min-height: 44px; display: flex; align-items: center; gap: 2px; }
+
+/* ---------- privacy, states ---------- */
+.mp-mask { display: inline-block; border-radius: 8px; background: var(--mp-surface-2); color: transparent; min-width: 64px; letter-spacing: 0; }
+.mp-hero .mp-mask { background: var(--mp-hero-2); }
+.mp-skel { background: var(--mp-surface-2); border-radius: 8px; }
+.mp-sheet { background: var(--mp-surface); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18); padding: 8px 16px 24px; }
+.mp-grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--mp-line); margin: 0 auto 10px; }
+.mp-toast { background: var(--mp-ink); color: var(--mp-bg); border-radius: 14px; padding: 12px 16px; font: 500 15px/20px var(--mp-font); box-shadow: var(--mp-shadow); }
+
+/* ---------- motion: transform and opacity only; nothing loops; reduced motion lands at once ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .mp-rise  { animation: mp-rise var(--mp-t-push) var(--mp-ease) both; animation-delay: var(--d, 0ms); }
+  .mp-push  { animation: mp-push var(--mp-t-push) var(--mp-ease-sheet) both; }
+  .mp-pop   { animation: mp-pop var(--mp-t-push) var(--mp-ease-sheet) both; }
+  .mp-sheet-in { animation: mp-sheet var(--mp-t-sheet) var(--mp-ease-sheet) both; }
+  .mp-fade  { animation: mp-fade var(--mp-t-fast) linear both; }
+  .mp-draw  { stroke-dasharray: 1; stroke-dashoffset: 1; animation: mp-draw var(--mp-t-draw) var(--mp-ease) 120ms forwards; }
+  .mp-grow  { transform-origin: left center; animation: mp-grow var(--mp-t-draw) var(--mp-ease) both; animation-delay: var(--d, 0ms); }
+  .mp-skel  { animation: mp-pulse 1.2s ease-in-out 4 alternate; }
+}
+@keyframes mp-rise  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes mp-push  { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes mp-pop   { from { transform: translateX(-30%); opacity: .6; } to { transform: none; opacity: 1; } }
+@keyframes mp-sheet { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes mp-fade  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mp-draw  { to { stroke-dashoffset: 0; } }
+@keyframes mp-grow  { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes mp-pulse { from { opacity: 1; } to { opacity: .55; } }
+
+/* ---------- Telegram chat (Telegram draws bubbles and buttons; we own the words, the order and the PNGs) ---------- */
+.tg-light { --tg-bg: #E4EAEF; --tg-head: #F7F7F8; --tg-bubble: #FFFFFF; --tg-out: #E1FEC6; --tg-text: #0F1419; --tg-sub: #5B6773; --tg-link: #1F6FB5; --tg-btn: rgba(255, 255, 255, 0.92); --tg-btn-text: #1F6FB5; --tg-line: #D5DDE4; --tg-kb: #F2F4F6; --tg-quote: #E8F1FA; }
+.tg-dark  { --tg-bg: #0E1621; --tg-head: #17212B; --tg-bubble: #182533; --tg-out: #2B5278; --tg-text: #F2F6FA; --tg-sub: #93A8BB; --tg-link: #6AB2F2; --tg-btn: #1E2C3A; --tg-btn-text: #E8F0F8; --tg-line: #0B1218; --tg-kb: #17212B; --tg-quote: #1B2E42; }
+.tg { background: var(--tg-bg); color: var(--tg-text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+.tg-bub { background: var(--tg-bubble); border-radius: 16px 16px 16px 6px; padding: 8px 12px 6px; max-width: 320px; font-size: 15px; line-height: 20px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); }
+.tg-out { background: var(--tg-out); border-radius: 16px 16px 6px 16px; align-self: flex-end; }
+.tg-time { font-size: 11px; line-height: 13px; color: var(--tg-sub); text-align: right; margin-top: 2px; }
+.tg-btns { display: grid; gap: 4px; max-width: 344px; margin-top: 4px; }
+.tg-btn { min-height: 44px; border-radius: 10px; background: var(--tg-btn); color: var(--tg-btn-text); font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 8px; border: 0; }
+.tg-pre { font: 13px/18px ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; }
+.tg-quote { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; font-size: 14px; line-height: 19px; }
+.tg-kb { background: var(--tg-kb); padding: 6px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.tg-kb-k { min-height: 44px; border-radius: 8px; background: var(--tg-bubble); display: grid; place-items: center; font: 500 15px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: var(--tg-text); }
+.tg-sub { color: var(--tg-sub); }
+.tg-link { color: var(--tg-link); }
+
+/* ---------- small gaps (Claude Design's atomic gaps start at 8) and text-only meaning colours ---------- */
+.gap2 { gap: 2px; } .gap3 { gap: 3px; } .gap4 { gap: 4px; } .gap6 { gap: 6px; }
+.c-add { color: var(--mp-add); } .c-hold { color: var(--mp-hold); } .c-pause { color: var(--mp-pause); } .c-trim { color: var(--mp-trim); } .c-alert { color: var(--mp-alert); }
+.mp-icontile { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none; }
+
+/* ---------- shared small parts (were repeated per page) ---------- */
+.chip-s { padding: 2px 8px; font-size: 12px; line-height: 16px; }
+.mp-seg .seg-s { min-height: 40px; font-size: 12px; }   /* 40 in a 2 px track = 44 pt */
+.iconbtn { width: 44px; height: 44px; border-radius: 12px; border: 0; display: grid; place-items: center; background: var(--mp-surface-2); color: var(--mp-ink); cursor: pointer; flex: none; }
+.coin { width: 32px; height: 32px; border-radius: 50%; background: var(--mp-hero); color: var(--mp-coral); display: grid; place-items: center; font: 800 16px/1 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; flex: none; }
+.upchip { color: #8BE8AC; background: rgba(68, 209, 122, 0.16); }   /* a rising month on the hero: 7.9:1 / 7.1:1 */
+.dnchip { color: var(--mp-hero-ink-2); background: var(--mp-hero-2); } /* a falling month on the hero, never red: 7.6:1 / 6.8:1 */
+.mp-scrim { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.42); }
+.mp-disabled, [aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
+
+/* ---------- adaptive layout: one markup, three size classes ----------
+   The app's root is a size container, so the frame decides (a phone, Telegram Desktop's Mini App
+   window, an iPad, a laptop), not the device. Apple's size classes, in web widths:
+   compact  < 600   phone and the Mini App: one column, bottom tab bar, large title on its own row
+   regular  600-1023 tablet, Telegram Desktop: two equal columns, tab bar stays, gutters 24
+   wide     >= 1024 laptop: sidebar 248, two columns 1.3 : 1 (the list never under 360), no tab bar,
+                    content capped at 1180 and centred */
+.mp-app { container: app / inline-size; min-height: 100%; }
+.mp-shell { display: flex; min-height: 100%; }
+.mp-shell-side { display: none; }
+.mp-shell-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mp-shell-tabs { display: flex; }
+.mp-pagepad { padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 16px; }
+.mp-pagehead { display: flex; flex-direction: column; gap: 12px; }
+.mp-cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.mp-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.mp-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.mp-only-wide { display: none; }
+@container app (min-width: 600px) {
+  .mp-pagepad { padding: 20px 24px 112px; gap: 20px; }
+  .mp-pagehead { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .mp-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .mp-only-compact { display: none; }
+}
+@container app (min-width: 1024px) {
+  .mp-shell-side { display: flex; }
+  .mp-shell-tabs { display: none; }
+  .mp-pagepad { padding: 28px 32px 40px; max-width: 1180px; box-sizing: border-box; width: 100%; }
+  .mp-cols { grid-template-columns: minmax(0, 1.3fr) minmax(360px, 1fr); gap: 24px; }
+  .mp-only-wide { display: revert; }
+}
+@container app (min-width: 1360px) {
+  .mp-pagepad { margin: 0 auto; }
+}
+
+/* ---------- screen mock-ups: a scrolling phone screen never squashes its cards, and hides its scrollbar ---------- */
+.scr > * { flex-shrink: 0; }
+.scr { scrollbar-width: none; }
+.scr::-webkit-scrollbar { display: none; }

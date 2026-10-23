@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks for a change to how MyPaisa looks or flows, on the web app (web/, one spec in docs/design/dashboard/ with Mini App boards for Telegram and browser boards for the laptop), the Telegram cards, buttons and guided flows, the chat's PNG charts, the design pages (architecture, journeys) or the mark; such as a new page or card, a redesign, or a change to layout, flow, visuals, copy hierarchy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps); save them in docs/design/reviews/MA-<n>/; publish a review board as a claude.ai artifact; and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks for a change to how MyPaisa looks or flows, on the web app (web/, one spec in docs/design/dashboard/ with Mini App boards for Telegram and browser boards for the laptop), the Telegram cards, buttons and guided flows, the chat's PNG charts, the design pages (architecture, journeys) or the mark; such as a new page or card, a redesign, or a change to layout, flow, visuals, copy hierarchy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps) in Claude Design (the MyPaisa DS and MyPaisa app projects), keeping the record in docs/design/reviews/MA-<n>/; review every page for glitches in light and dark at every size class; and build only the option Arun picks.
 ---
 
 # Design first
@@ -8,10 +8,13 @@ description: Design before code for any MyPaisa UI or UX change. Use whenever Ar
 Every new UI or UX change to MyPaisa is designed before it is built, in four steps. No code under `web/` or
 `src/mypaisa_agent/` that changes what a member sees is written until step 4.
 
-1. **Design 2 or 3 options** with the design tools.
-2. **Save them in `docs/design/reviews/MA-<n>/`** and commit them on the issue's branch. `docs/design/` is the source
-   of truth for designs.
-3. **Publish** one review board as a claude.ai artifact and give Arun the link.
+1. **Design 2 or 3 options** with the design tools, **in Claude Design** (Arun, 23 Oct 2026: "The designs needs to
+   be all done on claude design, including the design system and the screens"). The design system lives in the
+   MyPaisa DS project, the screens in the MyPaisa app project; the record stays in `docs/design/reviews/MA-<n>/`.
+2. **Review every page for glitches** before Arun sees it (Arun, MA-101: "Make sure the designs are reviewed properly
+   for any kind of glitches, this app will be adaptive and responsive"): render it, look at it in light and dark and
+   at every size class, fix, look again.
+3. **Give Arun the Claude Design links** and ask for the pick.
 4. **Arun picks one option.** Build only that option, and only after the pick, made in the current request.
 
 Changes that touch no design skip this: a typo, a broken link, data, a backend change a member never sees, or a bug
@@ -61,13 +64,13 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 - **Precedence.**
   1. Arun's words.
   2. `ARCHITECTURE.md` and `PLAN.md`, then the boards in `docs/design/dashboard/`, the web app's one spec.
-  3. The Nocturne look, the wealth tracker's design system (its `frontend/src/app/globals.css`), as the artboards
-     already use it: the ink `#161826`, surfaces `#232532` on `#3f424d` borders, the violet accent `#b5abfc`, Inter
-     with tabular figures.
+  3. The design system in force: **MyPaisa DS v1** ("Warm ledger", `tokens.css` in the MyPaisa DS v1 Claude Design
+     project, a copy in `docs/design/reviews/MA-101/`) once Arun picks it on MA-101; until then the Nocturne look the
+     artboards use (ink `#161826`, surfaces `#232532`, violet `#b5abfc`, Inter).
   4. impeccable.
   5. The other skills.
 
-  A skill's defaults (its fonts, palettes, card styles) never override the artboards or Nocturne.
+  A skill's defaults (its fonts, palettes, card styles) never override the artboards or the design system.
 - **The product's rules hold in every design** (`ARCHITECTURE.md`):
   - **read-only web:** no form, button or link in the web app writes anything; a change is always a card and a
     Confirm tap in the chat;
@@ -93,9 +96,9 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 - **Visible.** Every option is something Arun can look at:
   - **a comp:** a Qwen-Image render, from a screenshot of the current screen as reference or from scratch, with its
     prompt sidecar;
-  - **an HTML mockup:** for the web app, static HTML and CSS in the Nocturne tokens, the way `web/` will be built (no
-    framework), with lightweight-charts for any chart; for the chat, a phone frame in Telegram's look, as
-    `journeys.html` draws it; clickable where the flow is the point;
+  - **a mockup in Claude Design:** a `.dc.html` page that links the design system's `tokens.css` and uses its
+    classes, the way `web/` will be built (no framework); for the chat, a phone frame in Telegram's look; clickable
+    where the flow is the point;
   - **a chart:** the matplotlib PNG or the lightweight-charts page itself, not a drawing of one.
 - **Motion.** Prototype it in the mockup with what the build will ship: CSS transitions and the Web Animations API.
   - Animate transform and opacity first.
@@ -107,48 +110,39 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
   focus, and colour never the only signal (keep the ▲ ▼ beside the green and red).
 - **Illustrative data.** Every figure, member and holding on a design is illustrative and labelled so. Never the
   household's real balances, names or accounts.
+- **Adaptive.** Every web page is built on the design system's adaptive shell (`.mp-app` container, `.mp-shell`,
+  `.mp-cols`): compact under 600 (one column, tab bar), regular 600 to 1023 (two columns, tab bar), wide 1024 and up
+  (sidebar, two columns, capped at 1180). No fixed pixel column widths; charts fluid. Show at least one page at all
+  three size classes (the app project's Responsive page).
 
-## 2. Save in docs/design
+## 2. Where designs live, and the record
 
-`docs/design/` is the source of truth for designs. Every design created or edited is saved under
-`docs/design/reviews/MA-<n>/` and committed on the issue's branch: the options, the comps, the mockups, the review
-board and the record of the pick. impeccable's `.impeccable/` folder is tool state only; copy its mock-ups here. Claude
-artifacts hold published copies, never the only copy.
+- **Claude Design** holds the designs (load the `mcp__claude-design__*` tools, call `get_claude_design_prompt` and
+  `read_design_skill` `hifi-design` first). The design system is the **MyPaisa DS vN** project (`tokens.css`, the
+  directions page, Foundations, Components, the Telegram kit); the screens are the **MyPaisa app vN** project (Mini
+  App, Browser, Responsive, Prototype, Telegram chats). A significant revision is a new file or a new vN, never an
+  overwrite of what Arun picked from.
+- **`tokens.css` is copied** from the DS project into the app project after every change (`copy_files`), and into
+  `docs/design/reviews/MA-<n>/` in the repo, so the repo always has the system's source.
+- **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in
+  Arun's words, the Claude Design links, the options with rationale and trade-offs, what the build would touch, the
+  glitches found and fixed, the pick and its date) and `tokens.css`.
 
-```
-docs/design/reviews/MA-<n>/
-  board.html        the review board; opens as a normal page
-  decision.md       the request in Arun's words, the options, the pick and its date
-  current/          screenshots of the screens as they are now (WebP)
-  option-a/         that option's comps (WebP with a .prompt.json sidecar), mockup.html, chart PNGs
-  option-b/
-  option-c/
-```
+## 3. Review for glitches, then get the pick
 
-The board holds:
-- the request;
-- the current screens;
-- each option with its rationale, trade-offs and what the code change would touch (`web/`, `telegram.py`, `cards/`,
-  the chart style);
-- the recommended option;
-- any open question.
-
-Keep the board and mockups self-contained, as the existing design pages are: inline CSS, Google Fonts (Inter,
-JetBrains Mono) and nothing else from the network, images by relative path. Commit and push before publishing.
-
-## 3. Publish for review and get the pick
-
-- **Publish** `board.html` as a private claude.ai artifact (the `Artifact` tool), titled `MA-<n> design review`, with
-  the option images as its supporting files. Dashboard options that are artboards can go on a design canvas like the
-  dashboard's own; never overwrite the live dashboard artifact for a review.
+- **Glitch review, every time.** Render each page (`render_preview`), screenshot it section by section in light and
+  dark and at every size class it claims, click through anything interactive, and read every image: clipped or
+  touching text, icons showing as words, misalignment, overflow, empty halves, light/dark differences, contrast,
+  targets under 44 px, charts out of line, numbers that disagree between pages. Fix and look again. When Arun asks for
+  it (as on MA-101), a fresh reviewer that did not make the pages does this pass too, and its blockers are fixed
+  before Arun sees the work.
 - **Asking.**
-  1. Give Arun the artifact link, and comment it on the MA issue.
+  1. Give Arun the claude.ai/design links (never a serve URL), and comment them on the MA issue.
   2. Ask for the pick with `AskUserQuestion`: one choice per option, the recommended one first, plus "None of these:
      rework".
-  3. Read comments left on the artifact with `ArtifactComments`, and answer them once they are handled.
+  3. Read comments left in Claude Design (`list_comments`), and acknowledge them once handled.
 - **The pick.** Record it in `decision.md` and on the MA issue.
-  - "None of these", or feedback, means another round: back to step 1, saved over the same folder and republished to
-    the same artifact.
+  - "None of these", or feedback, means another round: back to step 1, in the same projects as new files or a new vN.
 
 ## 4. Build the picked option
 
@@ -164,5 +158,4 @@ JetBrains Mono) and nothing else from the network, images by relative path. Comm
      both themes (`PLAN.md` phase 5's test), or the card as the bot sends it.
 - **Then ship with `/autoship`.** In this repo the PR, In Review and the checks go without asking; only the merge into
   `main` asks (`.claude/rules/ship-autopilot.md`).
-- **Afterwards.** The designs stay in `docs/design/reviews/`. Whether the published review artifact stays is Arun's
-  call.
+- **Afterwards.** The designs stay in their Claude Design projects and the record in `docs/design/reviews/`.
