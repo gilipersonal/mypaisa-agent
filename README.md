@@ -74,7 +74,7 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 | `tests/` | pytest: golden files for every signal, property tests for the FX split, moto for AWS, respx for HTTP, recorded Bedrock responses for rendering. |
 | `infra/terraform/` | Every AWS resource: the Lambdas and their image, the Scheduler rules, the DynamoDB table, the S3 bucket, SSM parameters, the IAM roles, the budget and the alarms; `envs/dev.tfvars`. |
 | `.github/workflows/` | `deploy.yml`: lint, typecheck, tests and `terraform plan` on every pull request; build, apply and deploy from `main` through OIDC. |
-| `docs/` | The mark, and later the charts the README shows. |
+| `docs/` | The mark: `mark.svg` for this page, `mark-1024.png` for the bot's Telegram picture (`/setuserpic` in BotFather), `mark-256.png` and `mark-64.png` for anywhere smaller. Later, the charts the README shows. |
 | `Dockerfile` | One container image for every Lambda, arm64, on the AWS Python 3.14 base, since pandas and matplotlib exceed the zip limit. |
 
 ## Models
