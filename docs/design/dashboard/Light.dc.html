@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MyPaisa dashboard · Overview, light theme</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#2b2822}
+a{color:#5d6b4a}a:hover{color:#49543c}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #f7f3ea; color: #2b2822; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; line-height: 1.4">
+
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 16px 10px; box-sizing: border-box">
+    <div style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #5d6b4a; box-shadow: 0 0 10px rgba(93,107,74,0.28); display: flex; align-items: center; justify-content: center; font-weight: 500; color: #2b3122; font-size: 14px">£</div>
+    <div style="display: flex; flex-direction: column">
+      <span style="font-size: 15px; font-weight: 500">MyPaisa dashboard</span>
+      <span style="font-size: 11px; color: #6b655a">Sat 31 Oct · prices to Fri close</span>
+    </div>
+    <span style="margin-left: auto; font-size: 11px; color: #5d6b4a; border: 1px solid #93a37c; border-radius: 999px; padding: 3px 9px">read-only</span>
+  </div>
+
+  <div style="flex: 1 1 auto; min-height: 0; overflow: auto; padding: 0 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+
+    <div style="background: #fffdf7; border: 1px solid #ded8c8; border-radius: 14px; padding: 14px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b655a">Portfolio</span>
+      <span style="font-size: 30px; font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: tabular-nums">£31,080</span>
+      <div style="display: flex; gap: 12px; font-size: 13px; font-variant-numeric: tabular-nums">
+        <span style="color: #3f8f5f">▲ £742 · +2.4% this month</span>
+        <span style="color: #5d574b">▼0.6% this week</span>
+      </div>
+      <span style="font-size: 12px; color: #5d574b">FX: the pound explains −0.3% of this week.</span>
+    </div>
+
+    <div style="background: #fffdf7; border: 1px solid #ded8c8; border-radius: 14px; padding: 14px 16px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: baseline; gap: 8px">
+        <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b655a">Six months</span>
+        <span style="margin-left: auto; font-size: 11px; color: #6b655a">markers = past stances</span>
+      </div>
+      <svg viewBox="0 0 342 130" width="342" height="130" role="img" aria-label="Portfolio value over six months, rising from about 28,000 to 31,080 pounds with a dip in October, with the bot's stance markers">
+        <line x1="6" y1="30" x2="336" y2="30" stroke="#ded8c8" stroke-width="1"/>
+        <line x1="6" y1="63" x2="336" y2="63" stroke="#ded8c8" stroke-width="1"/>
+        <line x1="6" y1="96" x2="336" y2="96" stroke="#ded8c8" stroke-width="1"/>
+        <path d="M6,96 L31,90 L57,92 L82,80 L107,72 L132,76 L158,60 L183,52 L208,58 L234,44 L259,38 L285,46 L310,30 L336,38 L336,112 L6,112 Z" fill="#5d6b4a" opacity="0.12"/>
+        <path d="M6,96 L31,90 L57,92 L82,80 L107,72 L132,76 L158,60 L183,52 L208,58 L234,44 L259,38 L285,46 L310,30 L336,38" fill="none" stroke="#5d6b4a" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="158" cy="60" r="5" fill="#3f8f5f" stroke="#fffdf7" stroke-width="2"/>
+        <circle cx="234" cy="44" r="5" fill="#5d6b4a" stroke="#fffdf7" stroke-width="2"/>
+        <circle cx="310" cy="30" r="5" fill="#b06f3a" stroke="#fffdf7" stroke-width="2"/>
+        <circle cx="336" cy="38" r="3.5" fill="#2b2822"/>
+        <text x="158" y="78" text-anchor="middle" font-size="10" fill="#3f8f5f" font-family="Inter, system-ui, sans-serif">ADD</text>
+        <text x="234" y="36" text-anchor="middle" font-size="10" fill="#5d6b4a" font-family="Inter, system-ui, sans-serif">HOLD</text>
+        <text x="310" y="22" text-anchor="middle" font-size="10" fill="#b06f3a" font-family="Inter, system-ui, sans-serif">PAUSE</text>
+        <text x="6" y="126" font-size="10" fill="#6b655a" font-family="Inter, system-ui, sans-serif">May</text>
+        <text x="72" y="126" font-size="10" fill="#6b655a" font-family="Inter, system-ui, sans-serif">Jun</text>
+        <text x="138" y="126" font-size="10" fill="#6b655a" font-family="Inter, system-ui, sans-serif">Jul</text>
+        <text x="204" y="126" font-size="10" fill="#6b655a" font-family="Inter, system-ui, sans-serif">Aug</text>
+        <text x="270" y="126" font-size="10" fill="#6b655a" font-family="Inter, system-ui, sans-serif">Sep</text>
+        <text x="318" y="126" font-size="10" fill="#6b655a" font-family="Inter, system-ui, sans-serif">Oct</text>
+      </svg>
+    </div>
+
+    <div style="background: #fffdf7; border: 1px solid #ded8c8; border-radius: 14px; padding: 6px 0; box-sizing: border-box; display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px 6px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b655a">
+        <span>Holdings</span><span style="margin-left: auto">value · week · stance</span>
+      </div>
+
+      <a href="Holding.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; text-decoration: none; color: #2b2822; border-top: 1px solid #ded8c8">
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; min-width: 0">
+          <span style="font-size: 14px">Balanced (BlackRock, Monzo)</span>
+          <div style="height: 4px; border-radius: 2px; background: #ded8c8; overflow: hidden"><div style="width: 73%; height: 4px; background: #5d6b4a"></div></div>
+        </div>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums; width: 60px; text-align: right">£22,925</span>
+        <span style="font-size: 12px; color: #3f8f5f; font-variant-numeric: tabular-nums; width: 42px; text-align: right">+0.4%</span>
+        <span style="font-size: 10px; letter-spacing: 0.04em; color: #49543c; border: 1px solid #93a37c; border-radius: 999px; padding: 2px 7px; width: 48px; text-align: center">HOLD</span>
+      </a>
+
+      <a href="Holding.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; text-decoration: none; color: #2b2822; border-top: 1px solid #ded8c8">
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; min-width: 0">
+          <span style="font-size: 14px">iShares NASDAQ 100</span>
+          <div style="height: 4px; border-radius: 2px; background: #ded8c8; overflow: hidden"><div style="width: 16%; height: 4px; background: #5d6b4a"></div></div>
+        </div>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums; width: 60px; text-align: right">£5,050</span>
+        <span style="font-size: 12px; color: #c0504d; font-variant-numeric: tabular-nums; width: 42px; text-align: right">−3.1%</span>
+        <span style="font-size: 10px; letter-spacing: 0.04em; color: #8a5629; border: 1px solid #c99a6f; border-radius: 999px; padding: 2px 7px; width: 48px; text-align: center">PAUSE</span>
+      </a>
+
+      <a href="Holding.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; text-decoration: none; color: #2b2822; border-top: 1px solid #ded8c8">
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; min-width: 0">
+          <span style="font-size: 14px">Automation &amp; Robotics</span>
+          <div style="height: 4px; border-radius: 2px; background: #ded8c8; overflow: hidden"><div style="width: 6%; height: 4px; background: #5d6b4a"></div></div>
+        </div>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums; width: 60px; text-align: right">£1,960</span>
+        <span style="font-size: 12px; color: #3f8f5f; font-variant-numeric: tabular-nums; width: 42px; text-align: right">+0.2%</span>
+        <span style="font-size: 10px; letter-spacing: 0.04em; color: #2f6e49; border: 1px solid #7fb996; border-radius: 999px; padding: 2px 7px; width: 48px; text-align: center">ADD</span>
+      </a>
+
+      <a href="Holding.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; text-decoration: none; color: #2b2822; border-top: 1px solid #ded8c8">
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; min-width: 0">
+          <span style="font-size: 14px">Physical Silver</span>
+          <div style="height: 4px; border-radius: 2px; background: #ded8c8; overflow: hidden"><div style="width: 3%; height: 4px; background: #5d6b4a"></div></div>
+        </div>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums; width: 60px; text-align: right">£900</span>
+        <span style="font-size: 12px; color: #c0504d; font-variant-numeric: tabular-nums; width: 42px; text-align: right">−6.2%</span>
+        <span style="font-size: 10px; letter-spacing: 0.04em; color: #8a5629; border: 1px solid #c99a6f; border-radius: 999px; padding: 2px 7px; width: 48px; text-align: center">PAUSE</span>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-top: 1px solid #ded8c8; color: #5d574b">
+        <span style="font-size: 14px; flex: 1 1 auto">Cash (Monzo pot)</span>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums; width: 60px; text-align: right">£245</span>
+        <span style="width: 42px"></span>
+        <span style="width: 48px"></span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; padding-bottom: 12px">
+      <a href="Overlap.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 13px; color: #5d6b4a; border: 1px solid #93a37c; border-radius: 8px; padding: 10px 8px">Overlap</a>
+      <a href="Scorecard.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 13px; color: #5d6b4a; border: 1px solid #93a37c; border-radius: 8px; padding: 10px 8px">Scorecard</a>
+    </div>
+  </div>
+
+  <div style="display: flex; border-top: 1px solid #ded8c8; background: #f7f3ea; padding: 8px 8px 14px; box-sizing: border-box">
+    <a href="Light.dc.html" aria-current="page" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #2b3122; padding: 6px 0; border-top: 2px solid #5d6b4a">Overview</a>
+    <a href="Holding.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #6b655a; padding: 6px 0; border-top: 2px solid transparent">Holdings</a>
+    <a href="Overlap.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #6b655a; padding: 6px 0; border-top: 2px solid transparent">Overlap</a>
+    <a href="Scorecard.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #6b655a; padding: 6px 0; border-top: 2px solid transparent">Scorecard</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>MyPaisa Agent Journeys</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a scenario rail on the left, a phone in the middle that plays the
+   chat, a narration column on the right. The phone is a device: it keeps one
+   dark Telegram look in both page themes. Page chrome follows Nocturne. */
+:root {
+  --bg: #f7f3ea; --fg: #2b2822; --muted: #5d574b; --faint: #8a8271;
+  --card: #fffdf7; --line: #ded8c8; --line-strong: #c6bfae;
+  --accent: #5d6b4a; --accent-soft: #d5dcc7; --accent-ink: #2b3122;
+  --accent2: #b06f3a; --gain: #3f8f5f; --loss: #c0504d; --warn: #c9924a;
+  --glow: rgba(93,107,74,.28);
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* the phone's own palette, fixed */
+  --tg-bg: #0e1621; --tg-chat: #17212b; --tg-bot: #182533; --tg-user: #2b5278;
+  --tg-ink: #e9eef4; --tg-dim: #8fa1b3; --tg-btn: #3a6a9a; --tg-line: #243442;
+  --tg-accent: #9184d9; --tg-gain: #5faf7d; --tg-loss: #e06c6c; --tg-warn: #d9a35a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161826; --fg: #e9e9ed; --muted: #b2b6ca; --faint: #75798c;
+    --card: #232532; --line: #3f424d; --line-strong: #595d6c;
+    --accent: #9184d9; --accent-soft: #2b2741; --accent-ink: #e7e5fe;
+    --accent2: #c98a54; --gain: #5faf7d; --loss: #e06c6c; --warn: #d9a35a;
+    --glow: rgba(145,132,217,.45); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161826; --fg: #e9e9ed; --muted: #b2b6ca; --faint: #75798c;
+  --card: #232532; --line: #3f424d; --line-strong: #595d6c;
+  --accent: #9184d9; --accent-soft: #2b2741; --accent-ink: #e7e5fe;
+  --accent2: #c98a54; --gain: #5faf7d; --loss: #e06c6c; --warn: #d9a35a;
+  --glow: rgba(145,132,217,.45); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.frame { max-width: 1220px; margin: 0 auto; }
+h1, h2, h3 { font-weight: 500; letter-spacing: -0.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.1; }
+h2 { font-size: 20px; margin-top: 48px; }
+p { margin: 10px 0; }
+.lede { color: var(--muted); font-size: 16px; max-width: 64ch; }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.coin { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--accent); display: grid; place-items: center; font-weight: 500; color: var(--accent-ink); font-size: 14px; box-shadow: 0 0 10px var(--glow); }
+
+/* ── the stage ── */
+.stage { display: grid; grid-template-columns: 250px minmax(0, 400px) minmax(0, 1fr); gap: 20px; margin-top: 22px; align-items: start; }
+@media (max-width: 1000px) { .stage { grid-template-columns: 1fr; } }
+
+.rail { display: grid; gap: 6px; }
+.rail button { font: inherit; text-align: left; padding: 10px 12px 10px 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; position: relative; line-height: 1.3; }
+.rail button b { display: block; font-weight: 500; font-size: 14px; }
+.rail button small { color: var(--muted); font-size: 12px; }
+.rail button::before { content: attr(data-n); position: absolute; left: 11px; top: 11px; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--line-strong); color: var(--faint); font-family: var(--font-mono); font-size: 11px; display: grid; place-items: center; }
+.rail button:hover { border-color: var(--accent); }
+.rail button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.rail button[aria-pressed="true"]::before { border-color: var(--accent); color: var(--accent); }
+.rail button:focus-visible, .ctl button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* phone */
+.phone { width: 100%; max-width: 400px; margin: 0 auto; background: #000; border-radius: 38px; padding: 10px; box-shadow: 0 20px 50px rgba(0,0,0,.35), 0 0 0 1px var(--line-strong); }
+.screen { background: var(--tg-chat); border-radius: 30px; overflow: hidden; height: 720px; display: flex; flex-direction: column; position: relative; color: var(--tg-ink); font-size: 13.5px; }
+.tg-head { background: var(--tg-bg); padding: 14px 14px 10px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--tg-line); }
+.tg-head .av { width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #d2cefd, #5d5294); display: grid; place-items: center; font-weight: 600; color: #161826; font-size: 15px; }
+.tg-head b { display: block; font-weight: 500; font-size: 14px; }
+.tg-head small { color: var(--tg-dim); font-size: 11.5px; }
+.tg-head .clock { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--tg-dim); }
+.chat { flex: 1; overflow-y: auto; padding: 12px 10px; display: flex; flex-direction: column; gap: 6px; scroll-behavior: smooth; }
+.msg { max-width: 88%; padding: 8px 11px; border-radius: 14px; line-height: 1.4; animation: pop .28s ease-out; position: relative; white-space: pre-wrap; word-break: break-word; }
+.msg.bot { background: var(--tg-bot); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg.user { background: var(--tg-user); align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg.sys { align-self: center; background: rgba(0,0,0,.35); color: var(--tg-dim); font-size: 11.5px; padding: 4px 10px; border-radius: 999px; max-width: 96%; }
+.msg .ts { display: block; text-align: right; font-size: 10px; color: var(--tg-dim); margin-top: 3px; }
+.msg .silent { font-size: 10px; color: var(--tg-dim); }
+@keyframes pop { from { transform: translateY(8px) scale(.98); opacity: 0 } to { transform: none; opacity: 1 } }
+.typing { align-self: flex-start; background: var(--tg-bot); border-radius: 14px; padding: 9px 12px; display: flex; gap: 4px; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--tg-dim); animation: blink 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .2s } .typing i:nth-child(3) { animation-delay: .4s }
+@keyframes blink { 0%, 80%, 100% { opacity: .3 } 40% { opacity: 1 } }
+
+/* cards inside bot bubbles */
+.card { max-width: 92%; }
+.card .ch { font-weight: 500; margin-bottom: 4px; }
+.card .cl { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; color: var(--tg-ink); }
+.card .cl .g { color: var(--tg-gain); } .card .cl .l { color: var(--tg-loss); } .card .cl .w { color: var(--tg-warn); } .card .cl .d { color: var(--tg-dim); }
+.card .amber { background: rgba(217,163,90,.18); border-bottom: 1px dashed var(--tg-warn); }
+.card .chart { margin: 6px 0 2px; }
+.card .chart svg { display: block; width: 100%; height: auto; }
+.card .tech { display: none; margin-top: 6px; border-top: 1px solid var(--tg-line); padding-top: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--tg-dim); line-height: 1.45; }
+.card .tech.show { display: block; animation: pop .3s ease-out; }
+.ibs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 7px; }
+.ib { border: 1px solid var(--tg-btn); color: #bcd3ea; border-radius: 7px; padding: 5px 6px; text-align: center; font-size: 11.5px; position: relative; overflow: hidden; transition: background .2s, color .2s; }
+.ib.wide { grid-column: 1 / -1; }
+.ib.tapped::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.5); transform: translate(-50%,-50%); animation: ripple .5s ease-out forwards; }
+@keyframes ripple { to { width: 220px; height: 220px; opacity: 0 } }
+.ib.pressed { background: var(--tg-btn); color: #fff; }
+.file { display: flex; align-items: center; gap: 9px; }
+.file .ico { width: 34px; height: 40px; border-radius: 6px; background: #c0504d; display: grid; place-items: center; font-family: var(--font-mono); font-size: 9px; font-weight: 600; color: #fff; }
+.file b { display: block; font-weight: 500; font-size: 12.5px; }
+.file small { color: #bcd3ea; font-size: 11px; }
+.photo { width: 230px; height: 150px; border-radius: 10px; background: #1b1f2c; border: 1px solid #2f3647; padding: 10px; font-family: var(--font-mono); font-size: 10px; color: #c9d4e2; position: relative; overflow: hidden; }
+.photo .ph { font-weight: 600; color: #fff; font-size: 11px; margin-bottom: 6px; }
+.photo .pr { display: flex; justify-content: space-between; padding: 3px 0; border-top: 1px solid #2f3647; }
+.photo .pr b { font-weight: 500; }
+.photo::after { content: "screenshot"; position: absolute; right: 8px; bottom: 6px; color: #5e6a7c; font-size: 9px; }
+
+/* reply keyboard + input */
+.kb { display: none; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 6px 8px; background: var(--tg-bg); border-top: 1px solid var(--tg-line); }
+.kb.show { display: grid; }
+.kb span { background: #1f2d3a; border-radius: 8px; padding: 7px 4px; text-align: center; font-size: 11.5px; color: #cfe0f2; }
+.kb span.hot { background: var(--tg-btn); color: #fff; }
+.inp { background: var(--tg-bg); padding: 8px 10px 12px; display: flex; gap: 8px; align-items: center; }
+.inp .field { flex: 1; background: #1f2d3a; border-radius: 18px; padding: 8px 12px; color: var(--tg-dim); font-size: 12.5px; min-height: 32px; }
+.inp .field.live { color: var(--tg-ink); }
+.inp .send { width: 32px; height: 32px; border-radius: 50%; background: var(--tg-btn); display: grid; place-items: center; color: #fff; font-size: 14px; }
+
+/* mini app sheet */
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 92%; background: #161826; border-radius: 22px 22px 0 0; transform: translateY(105%); transition: transform .45s cubic-bezier(.2,.8,.2,1); padding: 12px 14px; color: #e9e9ed; font-size: 12px; box-shadow: 0 -10px 30px rgba(0,0,0,.5); overflow: hidden; }
+.sheet.open { transform: none; }
+.sheet .sh { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.sheet .sh b { font-weight: 500; font-size: 13px; }
+.sheet .sh span { margin-left: auto; color: #b2b6ca; font-size: 11px; }
+.sheet .tile { background: #232532; border: 1px solid #3f424d; border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; }
+.sheet .tile .k { font-family: var(--font-mono); font-size: 10px; color: #75798c; letter-spacing: .08em; text-transform: uppercase; }
+.sheet .tile .v { font-size: 18px; font-weight: 500; }
+.sheet .tile .v small { font-size: 11px; color: #5faf7d; font-weight: 400; }
+.sheet svg { display: block; width: 100%; height: auto; }
+.sheet .row { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; padding: 4px 0; border-top: 1px solid #3f424d; }
+.sheet .bar { height: 6px; border-radius: 3px; background: #3f424d; margin-top: 3px; overflow: hidden; }
+.sheet .bar i { display: block; height: 100%; background: #9184d9; }
+.sheet .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* narration column */
+.narr { display: grid; gap: 14px; }
+.ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ctl button { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--fg); cursor: pointer; }
+.ctl button:hover { border-color: var(--accent); }
+.ctl button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.note { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 12px 14px; min-height: 96px; }
+.note .st { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-bottom: 4px; }
+.note b { font-weight: 500; }
+.behind { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 12px 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip { font-family: var(--font-mono); font-size: 11px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--faint); transition: all .25s; }
+.chip.on { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 8px var(--glow); }
+.steps { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 10px 14px; }
+.steps ol { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+.steps li { font-size: 12.5px; color: var(--faint); padding: 4px 6px 4px 26px; border-radius: 6px; position: relative; }
+.steps li::before { content: attr(data-n); position: absolute; left: 6px; top: 5px; font-family: var(--font-mono); font-size: 10.5px; }
+.steps li.done { color: var(--muted); } .steps li.now { color: var(--fg); background: var(--accent-soft); } .steps li.now::before { color: var(--accent); }
+
+/* week and month strips */
+.strip { display: grid; grid-template-columns: repeat(7, minmax(80px, 1fr)); gap: 6px; margin-top: 14px; min-width: 620px; }
+.strip .d { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: var(--card); font-size: 12.5px; }
+.strip .d b { display: block; font-weight: 500; font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-bottom: 4px; }
+.strip .d span { display: block; }
+.strip .d .q { color: var(--muted); } .strip .d .r { color: var(--loss); } .strip .d .y { color: var(--warn); }
+.scroll { overflow-x: auto; }
+.timeline { display: grid; gap: 8px; margin-top: 14px; }
+.tl { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); font-size: 13.5px; }
+.tl b { font-weight: 500; font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-top: 14px; }
+.rule { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--card); font-size: 13.5px; }
+.rule b { font-weight: 500; display: block; margin-bottom: 2px; }
+@media (prefers-reduced-motion: reduce) { .msg, .typing i, .ib.tapped::after, .card .tech.show { animation: none; } .sheet { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="brand"><div class="coin">£</div><b>MyPaisa Agent</b><span class="eyebrow">· user journeys, 23 Oct 2026</span></div>
+  <h1>How a layman uses the bot, scene by scene</h1>
+  <p class="lede">Eight journeys through the Telegram bot, played on a phone. Each one shows what you tap, what comes back, and what happens behind it. Nothing technical appears unless you ask; when you do, it is one tap away. These are mock-ups of the design; nothing is built yet.</p>
+
+  <div class="stage">
+    <div class="rail" id="rail" role="tablist" aria-label="Journeys"></div>
+
+    <div class="phone" aria-label="A phone showing the MyPaisa Agent chat">
+      <div class="screen">
+        <div class="tg-head"><div class="av">£</div><div><b>MyPaisa Agent</b><small id="status">bot · private chat</small></div><div class="clock" id="clock">07:15</div></div>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="sheet" id="sheet" aria-hidden="true"></div>
+        <div class="kb" id="kb"><span>Portfolio</span><span>Today</span><span>Ask</span><span>Settings</span></div>
+        <div class="inp"><div class="field" id="field">Message</div><div class="send">➤</div></div>
+      </div>
+    </div>
+
+    <div class="narr">
+      <div class="ctl">
+        <button id="play" aria-pressed="true">⏸ Pause</button>
+        <button id="next">Step ▸</button>
+        <button id="replay">↻ Replay</button>
+        <button id="speed" aria-pressed="false">2× speed</button>
+      </div>
+      <div class="note" id="note"><div class="st">Journey</div>Pick a journey on the left.</div>
+      <div class="behind"><span class="eyebrow">Behind the scenes</span>
+        <div class="chips" id="behind">
+          <span class="chip" data-k="you">You</span><span class="chip" data-k="tg">Telegram</span><span class="chip" data-k="hook">webhook λ</span><span class="chip" data-k="agent">agent λ</span><span class="chip" data-k="bedrock">Claude on Bedrock</span><span class="chip" data-k="engine">engine λ</span><span class="chip" data-k="reg">registry</span><span class="chip" data-k="data">market data</span><span class="chip" data-k="sched">scheduler</span><span class="chip" data-k="mini">Mini App</span>
+        </div>
+      </div>
+      <div class="steps"><span class="eyebrow" id="steps-title">Steps</span><ol id="steps"></ol></div>
+    </div>
+  </div>
+
+  <h2>A week in the life</h2>
+  <p class="lede">About ten messages a week, at most two with sound. Quiet 22:00–07:00. Everything else waits for the next brief.</p>
+  <div class="scroll"><div class="strip">
+    <div class="d"><b>MON</b><span class="q">07:15 brief, silent</span><span class="q">21:15 wrap only if something moved</span></div>
+    <div class="d"><b>TUE</b><span class="q">07:15 brief</span><span class="y">🟡 amber: vol doubled, silent</span></div>
+    <div class="d"><b>WED</b><span class="q">07:15 brief: "Fed tonight"</span><span class="r">🔴 21:40 red alert, sound</span></div>
+    <div class="d"><b>THU</b><span class="q">07:15 brief</span><span>You ask "why?" at lunch</span></div>
+    <div class="d"><b>FRI</b><span class="q">07:15 brief</span><span class="q">21:15 wrap</span></div>
+    <div class="d"><b>SAT</b><span class="q">08:00 review + scorecard</span><span>You open the dashboard</span></div>
+    <div class="d"><b>SUN</b><span class="q">nothing</span><span>You send a screenshot after topping up</span></div>
+  </div></div>
+
+  <h2>The first months</h2>
+  <div class="timeline">
+    <div class="tl"><b>Day 1</b><div>Open the chat, pick GBP, send four factsheets and one screenshot. Five holdings in the registry after five Confirm taps. The Portfolio card shows your own figures.</div></div>
+    <div class="tl"><b>Day 2</b><div>The first morning brief, from yesterday's closes and the fund's NAV. Stances are computed but shown nowhere yet.</div></div>
+    <div class="tl"><b>Week 2</b><div>You ask your first "why?". The technical section is there if you want it; most days you don't.</div></div>
+    <div class="tl"><b>Week 4</b><div>The first Saturday review with a scorecard: did the 80% ranges cover 80% of outcomes?</div></div>
+    <div class="tl"><b>Week 8</b><div>Stances have been paper-traded for eight weeks. If they beat doing nothing, ADD / HOLD / PAUSE chips appear on weekday cards. If not, the review says so and they stay in the Saturday review.</div></div>
+    <div class="tl"><b>Any day</b><div>Send a factsheet for a new ETF, a share or a commodity; it is priced from the next close. Say "stop pinging me under 2%" and confirm. <code>/pause</code> stops everything; <code>/privacy on</code> hides pounds.</div></div>
+  </div>
+
+  <h2>Rules every journey keeps</h2>
+  <div class="rules">
+    <div class="rule"><b>Plain on top, detail on tap</b>Every card reads in two lines. "Technical ▾" opens the numbers; a glossary sits behind each term.</div>
+    <div class="rule"><b>Nothing saved without Confirm</b>A misread factsheet or a mistyped amount cannot quietly change your records.</div>
+    <div class="rule"><b>Numbers from code, words from Claude</b>Every figure in a message came out of a tool; Claude only chooses what to say.</div>
+    <div class="rule"><b>A view, not advice; never "sell everything"</b>Stances are ADD, HOLD, PAUSE, TRIM or REBALANCE, with a confidence that is checked every Saturday.</div>
+    <div class="rule"><b>It cannot trade</b>No broker login exists. You act in the Monzo app and tell the bot "I acted".</div>
+    <div class="rule"><b>Silence is a feature</b>Cooldowns, a weekly budget of two loud alerts, quiet hours, and a filter that drops repeats.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var chat = document.getElementById('chat'), kb = document.getElementById('kb'), field = document.getElementById('field'),
+      sheet = document.getElementById('sheet'), note = document.getElementById('note'), clock = document.getElementById('clock'),
+      status = document.getElementById('status'), stepsEl = document.getElementById('steps'), stepsTitle = document.getElementById('steps-title'),
+      rail = document.getElementById('rail');
+
+  function spark(pts, color, w, h, marker) {
+    w = w || 240; h = h || 60;
+    var min = Math.min.apply(null, pts), max = Math.max.apply(null, pts), rng = (max - min) || 1;
+    var xs = pts.map(function (p, i) { return [ (i / (pts.length - 1)) * (w - 8) + 4, h - 6 - ((p - min) / rng) * (h - 12) ]; });
+    var d = xs.map(function (q, i) { return (i ? 'L' : 'M') + q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ');
+    var area = d + ' L' + xs[xs.length - 1][0].toFixed(1) + ',' + (h - 2) + ' L4,' + (h - 2) + ' Z';
+    var last = xs[xs.length - 1];
+    var mk = marker ? '<line x1="4" x2="' + (w - 4) + '" y1="' + marker + '" y2="' + marker + '" stroke="#e06c6c" stroke-dasharray="3 3" stroke-width="1"/>' : '';
+    return '<svg viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true"><path d="' + area + '" fill="' + color + '" opacity=".18"/>' + mk + '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linejoin="round"/><circle cx="' + last[0] + '" cy="' + last[1] + '" r="3" fill="' + color + '"/></svg>';
+  }
+  var up = [100,101,100.4,102,103,102.2,104,105,104.3,106,107.5,107,108.2,109,108.6,110];
+  var dip = [100,100.5,101,100.2,99,99.6,98.4,97.1,96.5,95.8,94,93.2,94.1,92.5,91.4,91];
+  var wave = [100,100.8,101.5,101.1,102,103,102.4,103.8,104.2,103.7,105,105.6,106.1,105.4,106.8,107.3];
+
+  function cardHTML(c) {
+    var lines = c.lines ? '<div class="cl">' + c.lines.join('\n') + '</div>' : '';
+    var chart = c.chart ? '<div class="chart">' + c.chart + '</div>' : '';
+    var tech = c.tech ? '<div class="tech">' + c.tech.join('\n') + '</div>' : '';
+    var btns = c.btns ? '<div class="ibs">' + c.btns.map(function (b) { return '<span class="ib' + (b.indexOf('|') === 0 ? ' wide' : '') + '">' + b.replace(/^\|/, '') + '</span>'; }).join('') + '</div>' : '';
+    return '<div class="ch">' + c.title + '</div>' + lines + chart + tech + btns + '<span class="ts">' + (c.ts || '') + (c.silent ? ' <span class="silent">silent</span>' : '') + '</span>';
+  }
+
+  /* journeys */
+  var J = [
+    { id: 'start', title: 'First open', sub: 'Three questions, then you are set up', clock: '19:02', steps: [
+      { u: 'text', t: '/start', behind: ['you','tg','hook','agent'], note: '<b>You open the chat</b> and press Start. Telegram sends the update to the webhook, which checks it is you and hands it to the agent.' },
+      { b: 'card', title: 'Hello Arun. I keep an eye on what you hold and tell you what matters.', lines: ['Three questions and you are set up.', '', '1 of 3 · Which currency should I report in?'], btns: ['£ GBP', '$ USD', '€ EUR'], behind: ['agent','reg'], note: 'The setup is three cards. No forms, no app to install. The agent writes a preferences record as you go.' },
+      { tap: '£ GBP', behind: ['you','tg','hook','agent','reg'], note: 'A tap is a callback query; it travels the same path as a message. GBP is saved.' },
+      { b: 'card', title: '2 of 3 · What do you hold?', lines: ['Send me a factsheet (PDF) or a screenshot', 'of your Monzo investments screen, or just', 'type a name like "iShares NASDAQ".', '', 'You can add more any time with /add.'], btns: ['|I\'ll type it', '|Skip for now'], behind: ['agent'], note: 'Any of the three ways works. The next journey shows the factsheet path.' },
+      { tap: 'Skip for now', behind: ['you','agent'], note: 'Skipping is fine; the bot works with whatever you give it.' },
+      { b: 'card', title: '3 of 3 · How often should I speak?', lines: ['Default: a short brief at 07:15 on weekdays,', 'an evening note only if something moved,', 'and at most two loud alerts a week.'], btns: ['|Sounds right', 'Less', 'More'], behind: ['agent','reg'], note: 'The ping budget, quiet hours and alert thresholds are set here and changeable later by just saying so.' },
+      { tap: 'Sounds right', behind: ['you','agent','reg'], note: 'Preferences saved.' },
+      { kb: true, b: 'text', t: 'Done. The four buttons below are all you need: Portfolio, Today, Ask, Settings. Your first brief arrives tomorrow at 07:15.', behind: ['agent','tg'], note: '<b>The reply keyboard appears.</b> It stays at the bottom of the chat from now on. Commands exist (/add, /why, /pause) but you never have to remember them.' }
+    ]},
+    { id: 'add', title: 'Add a holding', sub: 'A factsheet, a screenshot, two taps', clock: '19:06', steps: [
+      { u: 'file', name: 'iShares Automation & Robotics UCITS ETF factsheet.pdf', size: '412 KB', behind: ['you','tg','hook','agent'], note: '<b>You share the factsheet</b> from the Monzo app. Telegram stores it; the agent downloads it into a private bucket.' },
+      { b: 'text', t: 'Reading the factsheet…', behind: ['agent','bedrock'], note: 'Claude on Bedrock reads the PDF with a fixed schema: name, ISIN, charge, allocation, top holdings, benchmark, currency. Each figure comes back with the line it was read from and a confidence.' },
+      { b: 'card', title: 'Here is what I read. Tap Confirm if it looks right.', lines: ['Name     iShares Automation &amp; Robotics UCITS ETF', 'ISIN     IE00BYZK4552', 'Kind     ETF · accumulating', 'Charge   0.40% a year', 'Holds    ~150 companies, equal-ish weights', 'Regions  US 45% · Japan 22% · Europe 18% · other', 'Line     <span class="amber">RBTX · London · GBP (USD line is RBOT)</span>'], btns: ['Confirm', 'Edit', '|Cancel'], behind: ['agent','data','tg'], note: 'The agent resolved the ISIN to two London lines and guessed GBP. <b>Amber means "I am not sure"</b>; a tap on Edit lets you change it. Nothing is saved yet.' },
+      { tap: 'Confirm', behind: ['you','tg','hook','agent','reg'], note: 'Only now is the Instrument written to the registry, with the document and its extracted facts.' },
+      { b: 'text', t: 'Added. How much do you hold? Send a screenshot of your Monzo holdings screen, or type an amount.', behind: ['agent'], note: 'The position is separate from the instrument: the same ETF could sit in an ISA and a general account.' },
+      { u: 'photo', behind: ['you','tg','agent','bedrock'], note: '<b>You send a screenshot.</b> Claude reads the values on it as an image. The agent matches "Automation & Robotics" to the holding it just created.' },
+      { b: 'card', title: 'From the screenshot, 23 Oct:', lines: ['Automation &amp; Robotics   <b>£1,960.40</b>', 'at yesterday\'s close £12.84 → <span class="amber">152.7 units</span>', 'Account: Stocks &amp; Shares ISA?'], btns: ['Confirm', '|It\'s a general account'], behind: ['agent','data'], note: 'Units are derived from the value and the last close. The account question is asked because the factsheet cannot know it.' },
+      { tap: 'Confirm', behind: ['you','agent','reg'], note: 'Position, Valuation (source: your screenshot) and a Transaction are written. The screenshot is deleted unless you say keep.' },
+      { b: 'card', title: '📊 Portfolio · 23 Oct · £31,280', lines: ['Balanced (Monzo)         £22,925   <span class="d">—</span>', 'iShares NASDAQ 100        £5,210   <span class="d">—</span>', 'Automation &amp; Robotics    £1,960   <span class="g">new</span>', 'Physical Silver             £940   <span class="d">—</span>', 'Cash (pot)                  £245', '<span class="d">Priced from tomorrow\'s close. Stances after a few days of data.</span>'], btns: ['Today', 'Open dashboard', '|Technical ▾'], ts: '19:08', behind: ['agent','tg'], note: '<b>Done in about a minute and two taps.</b> The same path adds a US share, a gold ETC or another fund; a known kind needs no code.' }
+    ]},
+    { id: 'brief', title: 'Morning brief', sub: 'Silent, six lines, detail on tap', clock: '07:15', steps: [
+      { sys: 'Mon 26 Oct · 07:15', behind: ['sched','data','engine'], note: '<b>07:15, Europe/London.</b> Overnight the ingest fetched the closes, the fund NAV and the ECB rates; the engine ran its self-tests and computed the pillars, flags and ranges.' },
+      { b: 'card', silent: true, ts: '07:15', title: '🌅 Monday brief · £31,410  ▲0.4% · month ▲2.1%', lines: ['Balanced          ▲0.6%   HOLD  71%', 'NASDAQ 100        ▲1.1%   HOLD  66%', 'Robotics          ▲0.2%   ADD   61%', 'Silver            <span class="l">▼1.8%</span>   PAUSE 58%', '', 'The pound explains −0.3% of today.', 'US opens 13:30 UK this week (clock gap).', '<span class="d">Nothing to do. Next review Saturday.</span>'], btns: ['Why?', 'Technical ▾', '|Open dashboard'], behind: ['agent','bedrock','tg'], note: 'Sonnet 5.5 wrote the words from the engine\'s JSON. Every number came from a tool; the validator checks that before sending. <b>Silent push</b>: no sound.' },
+      { tap: 'Technical ▾', behind: ['you','tg','agent'], note: '<b>You want the numbers.</b> The card edits in place; a rich message opens its collapsed section without a round trip.' },
+      { expand: true, tech: ['TREND  Balanced +2 · NASDAQ +2 · Robotics +1 · Silver −1', 'MOMENTUM  +1 · +1 · +1 · −2 (RSI 38, MACD hist&lt;0)', 'MACRO  US +1 Broadening · UK 0 Transitional · USD index ↑', 'RISK  vol pct 48 · 72 · 55 · 91 (silver elevated)', 'RANGES 1m  Bal −4.8…+4.1 · NDX −6.1…+5.0 · Silver −14…+11', 'DATA  EODHD ✓ · yfinance 0P…L ✓ (NAV 23 Oct) · ECB ✓ · self-test ✓'], behind: ['engine'], note: 'The technical section is the engine\'s scorecard: pillars from −2 to +2, flags, volatility percentiles, the 1-month ranges, and which data source answered. Tap any term for a one-line glossary.' }
+    ]},
+    { id: 'why', title: 'Ask why', sub: 'A question in plain words, an answer with sources', clock: '13:12', steps: [
+      { u: 'text', t: 'why did my silver drop so much this week?', behind: ['you','tg','hook','agent'], note: '<b>You ask in your own words.</b> The webhook acks in 100 ms; the agent shows "typing…" while it works.' },
+      { b: 'text', t: 'Looking at it…', behind: ['agent','bedrock','reg','engine'], note: 'Claude calls get_holding("silver"), get_signals("silver") and get_macro. It cannot invent a number; it can only ask the tools.' },
+      { b: 'card', title: 'Silver is down 6.2% this week, 9% from its high.', lines: ['Most of it is the metal: silver in dollars fell 5.1%', 'after the dollar strengthened on the Fed\'s comments.', 'The pound added −1.1% on top.', '', 'Silver moves about twice as much as shares; a 9%', 'dip is inside its normal range, not a red alert.', '<span class="d">Stance stays PAUSE (58%): hold what you have,', 'no new money this month.</span>'], chart: spark(dip, '#d9a35a', 240, 60, 14), btns: ['Why the dollar?', 'What if it falls 20%?', '|Technical ▾'], ts: '13:12', behind: ['agent','bedrock','tg'], note: 'The chart is a PNG rendered by code in the house style. The local-versus-FX split is the engine\'s; the sentence is Claude\'s.' },
+      { tap: 'Why the dollar?', behind: ['you','agent'], note: '<b>Follow-up.</b> Chat memory holds the last turns and their tool results.' },
+      { b: 'card', title: 'Two things, from the news (3 sources):', lines: ['• Fed minutes read as less likely to cut in Dec', '• US jobs data came in stronger than expected', '', '<span class="d">Sources: Reuters 21 Oct · FT 22 Oct · Fed minutes</span>', '<span class="d">Read as context; it did not change the numbers.</span>'], btns: ['|Open a source'], behind: ['agent','bedrock'], note: 'Brave Search results arrive marked untrusted; they can explain, never alter a score. Links open in the browser.' }
+    ]},
+    { id: 'stance', title: 'Should I add?', sub: 'A stance with a confidence you can check', clock: '20:31', steps: [
+      { u: 'text', t: 'should I put £200 into the Nasdaq one this month?', behind: ['you','tg','hook','agent'], note: '<b>The question the whole system exists for.</b>' },
+      { b: 'text', t: 'Checking the signals and your track record…', behind: ['agent','engine','reg'], note: 'get_signals, get_macro, get_events, get_stances. For a stance above 70% the agent also runs a short bull-versus-bear debate with a judge.' },
+      { b: 'card', title: 'iShares NASDAQ 100 · stance ADD · confidence 64%', lines: ['Horizon: this month\'s contribution', '', 'Why', '• uptrend intact; momentum positive', '• volatility a bit above normal after last week', '• Nvidia and Apple report next week (wider range)', '', 'Would change my mind', '• a 6% fall from here, or the Fed surprising Wed', '', 'What I\'d do (ISA-safe)', '• put the £200 in after Wednesday, not before', '', '<span class="d">ADD calls so far: 12 made, 8 right, +0.9% vs waiting.', 'A view, not advice.</span>'], chart: spark(up, '#5faf7d', 240, 56), btns: ['I acted', 'Remind me Thu', 'Technical ▾', 'Why 64%?'], ts: '20:31', behind: ['agent','bedrock','tg'], note: 'The stance and its confidence are computed: pillar agreement, how long the state has held, data quality, and how calls in this state did before. Below 55% the card would say "no clear view".' },
+      { tap: 'Why 64%?', behind: ['you','agent'], note: 'Confidence is explainable, because it is arithmetic.' },
+      { b: 'card', title: 'How 64% is made', lines: ['start                 50%', 'pillars agree  3 of 4  +10%', 'state held 7 bars      +7%', 'data quality  ok        0%', 'history, this state    −3%  (11 of 15 right)', '<span class="d">———————————————', 'calibration last 8 wks: 60–70% bucket hit 63%</span>'], btns: ['|OK'], behind: ['engine','reg'], note: 'Every Saturday the reliability table checks that 64% means 64%. The mapping only changes after eight weeks of evidence, and the change is logged.' },
+      { tap: 'I acted', behind: ['you','agent','reg'], note: '<b>You act in the Monzo app</b>, then tell the bot. It cannot trade; it records the decision so the review can compare what you did with what the signals said.' },
+      { b: 'text', t: 'Logged: £200 into NASDAQ 100 on Thu 29 Oct. I\'ll pick it up from your next screenshot or you can type the units.', behind: ['agent','reg'], note: 'The decision log is part of the scorecard. Honest grading needs both what the bot said and what you did.' }
+    ]},
+    { id: 'alert', title: 'Red alert', sub: 'The one message a week that makes a sound', clock: '21:40', steps: [
+      { sys: 'Wed 28 Oct · 21:40 · after the US close', behind: ['sched','data','engine'], note: 'The 21:15 wrap ran. The engine found the NASDAQ ETF 8.4% below its high, past your 8% line, with volatility doubled. Cooldown clear, red budget unspent, not quiet hours.' },
+      { b: 'card', ts: '21:40', title: '🔴 NASDAQ 100 is 8.4% below its high', lines: ['Today <span class="l">▼3.1%</span> after the Fed; the dollar\'s share is −0.6%.', 'Your position: £5,050 (was £5,210).', '', 'Stance now PAUSE (61%): keep what you have,', 'hold this month\'s top-up until the trend settles.', 'Not a reason to sell; this is inside the 1-month range', 'the brief gave you (−6.1 … +5.0, now exceeded by 2%).', '<span class="d">Next loud alert on this holding: not before Sat.</span>'], chart: spark(dip, '#e06c6c', 240, 60, 12), btns: ['Explain', 'Snooze 7d', 'I acted', 'Technical ▾'], behind: ['agent','bedrock','tg'], note: 'Haiku checked this was not a repeat of something you were told this week; Sonnet wrote it. <b>Sound on</b>, for the first time this week.' },
+      { tap: 'Snooze 7d', behind: ['you','tg','agent','reg'], note: 'Snooze sets the cooldown for this holding; amber signals still reach the digest.' },
+      { b: 'text', t: 'Snoozed loud alerts on NASDAQ 100 until Wed 4 Nov. Briefs will still mention it.', behind: ['agent'], note: 'The alert state machine lives in code: fire → cooldown → re-arm. Claude never decides whether a rule fired, only whether it is worth saying.' }
+    ]},
+    { id: 'review', title: 'Saturday review', sub: 'Scorecard, then the dashboard', clock: '08:00', steps: [
+      { sys: 'Sat 31 Oct · 08:00', behind: ['sched','engine','reg'], note: 'Every forecast and stance whose horizon ended this week has been graded. Opus 5.5 reads four weeks of stances and their grades before writing.' },
+      { b: 'card', ts: '08:00', title: '📒 Week 44 · £31,090  ▼0.6% this week · +2.4% this month', lines: ['What happened', '• Fed held; the dollar rose; US tech fell then steadied', '• silver had its worst week since July, inside its range', '', 'What I said and how it went', '• PAUSE on silver (58%) · right so far', '• ADD on NASDAQ (64%) · you acted Thu; down 1.2% since', '• HOLD on Balanced (71%) · +0.4%', '', 'Scorecard, 8 weeks', '• 80% ranges covered 79% of outcomes', '• stances: 31 made, 21 right, +0.7% vs doing nothing', '• 60–70% bucket hit 63%; 70%+ bucket hit 74%', '', 'Next week: UK CPI Wed, Apple and Nvidia report.', '<span class="d">Stances go live on weekday cards from week 48 if this holds.</span>'], btns: ['Open dashboard', 'Overlap review', '|Bull vs bear on silver'], behind: ['agent','bedrock','tg'], note: 'The review is the only place the bot grades itself in public. The go-live gate for weekday stances is checked in code, not by the model.' },
+      { tap: 'Open dashboard', behind: ['you','mini'], note: '<b>The Mini App opens inside Telegram.</b> A static page on CloudFront; it shows data only after validating Telegram\'s signed proof that it is you.' },
+      { sheet: true, behind: ['mini','reg'], note: 'Interactive charts (pinch, scroll), the overlap map, the scorecard. <b>Read-only</b>: every change still happens in the chat with a Confirm tap, so there is one place where state changes.' },
+      { sheetClose: true, behind: ['you'], note: 'Close it and you are back in the chat.' }
+    ]},
+    { id: 'settings', title: 'Settings by chatting', sub: 'Preferences, privacy, pause', clock: '22:10', steps: [
+      { u: 'text', t: 'stop pinging me for moves under 2%', behind: ['you','tg','hook','agent','bedrock'], note: '<b>Plain English.</b> Claude turns it into a structured change through propose_change; nothing is saved yet.' },
+      { b: 'card', title: 'Change your alert threshold?', lines: ['amber alerts: daily move  <span class="d">1.5% →</span> <b>2.0%</b>', 'red alerts: unchanged (8% from high)', 'quiet hours: unchanged (22:00–07:00)'], btns: ['Confirm', '|Cancel'], behind: ['agent','tg'], note: 'The card shows exactly what will change and what will not.' },
+      { tap: 'Confirm', behind: ['you','agent','reg'], note: 'Saved to preferences. The next engine run uses it.' },
+      { u: 'text', t: '/privacy on', behind: ['you','tg','hook','agent'], note: 'Bot chats are not end-to-end encrypted. Privacy mode hides pounds everywhere, including the dashboard.' },
+      { b: 'card', title: '📊 Portfolio · privacy on', lines: ['Balanced          73%   ▲0.6%   HOLD', 'NASDAQ 100        16%   ▼1.2%   PAUSE', 'Robotics           6%   ▲0.2%   ADD', 'Silver             3%   <span class="l">▼2.4%</span>   PAUSE', 'Cash               1%', '<span class="d">Weights and changes only. /privacy off to show £.</span>'], btns: ['|Technical ▾'], behind: ['agent','tg'], note: 'Same card, no amounts.' },
+      { u: 'text', t: '/pause', behind: ['you','tg','hook','agent','reg'], note: '<b>The kill switch.</b> A flag every scheduled run checks first.' },
+      { sys: 'Paused. No briefs, alerts or stances until /resume. Your records are kept.', behind: ['agent','sched'], note: 'Pause stops everything that speaks or scores. Prices keep being collected, so there is no gap when you come back.' }
+    ]}
+  ];
+
+  /* ── player ── */
+  var runId = 0, paused = false, fast = false, cur = 0, pending = null, pendingResolve = null;
+  function wait(ms) {
+    return new Promise(function (res) {
+      var d = fast ? ms / 2 : ms;
+      var timer = setTimeout(function () { pending = null; res(); }, d);
+      pending = { timer: timer, res: res };
+    });
+  }
+  function skip() { if (pending) { clearTimeout(pending.timer); var r = pending.res; pending = null; r(); } }
+  function waitIfPaused() {
+    return new Promise(function (res) {
+      if (!paused) return res();
+      pendingResolve = res;
+    });
+  }
+  function scroll() { chat.scrollTop = chat.scrollHeight; }
+  function add(cls, html) { var d = document.createElement('div'); d.className = cls; d.innerHTML = html; chat.appendChild(d); scroll(); return d; }
+  function lightChips(keys) {
+    document.querySelectorAll('#behind .chip').forEach(function (c) { c.classList.toggle('on', keys.indexOf(c.dataset.k) >= 0); });
+  }
+  function setNote(j, i, st) {
+    note.innerHTML = '<div class="st">' + j.title + ' · step ' + (i + 1) + ' of ' + j.steps.length + '</div>' + (st.note || '');
+    var lis = stepsEl.children;
+    for (var k = 0; k < lis.length; k++) lis[k].className = k < i ? 'done' : k === i ? 'now' : '';
+  }
+  function renderSteps(j) {
+    stepsTitle.textContent = j.title;
+    stepsEl.innerHTML = '';
+    j.steps.forEach(function (st, i) {
+      var li = document.createElement('li'); li.setAttribute('data-n', String(i + 1).padStart(2, '0'));
+      li.textContent = (st.note || '').replace(/<[^>]+>/g, '').split('. ')[0].replace(/\.$/, '') + '.';
+      stepsEl.appendChild(li);
+    });
+  }
+  function resetPhone(j) {
+    chat.innerHTML = ''; sheet.classList.remove('open'); sheet.innerHTML = ''; field.textContent = 'Message'; field.classList.remove('live');
+    kb.classList.toggle('show', j.id !== 'start'); clock.textContent = j.clock; status.textContent = 'bot · private chat';
+    lightChips([]);
+  }
+  function findButton(label) {
+    var cards = chat.querySelectorAll('.msg.bot');
+    for (var i = cards.length - 1; i >= 0; i--) {
+      var ibs = cards[i].querySelectorAll('.ib');
+      for (var k = 0; k < ibs.length; k++) if (ibs[k].textContent.trim() === label) return ibs[k];
+    }
+    return null;
+  }
+  function sheetHTML() {
+    return '<div class="sh"><b>MyPaisa dashboard</b><span>read-only · Sat 31 Oct</span></div>' +
+      '<div class="grid2"><div class="tile"><div class="k">Portfolio</div><div class="v">£31,090 <small>+2.4% m</small></div></div><div class="tile"><div class="k">Stances right</div><div class="v">21 / 31 <small>+0.7% vs wait</small></div></div></div>' +
+      '<div class="tile"><div class="k">Portfolio, 6 months · stances marked</div>' + spark(wave, '#9184d9', 300, 80) + '</div>' +
+      '<div class="tile"><div class="k">Holdings · weight · month</div>' +
+      '<div class="row"><span>Balanced</span><span>73% · +1.9%</span></div><div class="bar"><i style="width:73%"></i></div>' +
+      '<div class="row"><span>NASDAQ 100</span><span>16% · +3.8%</span></div><div class="bar"><i style="width:16%"></i></div>' +
+      '<div class="row"><span>Robotics</span><span>6% · +2.2%</span></div><div class="bar"><i style="width:6%"></i></div>' +
+      '<div class="row"><span>Silver</span><span>3% · −8.1%</span></div><div class="bar"><i style="width:3%;background:#d9a35a"></i></div></div>' +
+      '<div class="tile"><div class="k">Overlap · look-through</div><div class="row"><span>Balanced ∩ NASDAQ</span><span>Apple, Microsoft, Nvidia · 9% of Balanced</span></div><div class="row"><span>Robotics ∩ NASDAQ</span><span>Nvidia, Intuitive · 3%</span></div><div class="row"><span>USD exposure, all</span><span>84%</span></div></div>' +
+      '<div class="tile"><div class="k">Calibration, 8 weeks</div><div class="row"><span>55–60%</span><span>7 of 12 · 58%</span></div><div class="row"><span>60–70%</span><span>10 of 16 · 63%</span></div><div class="row"><span>70%+</span><span>4 of 3 · 74%</span></div></div>';
+  }
+
+  function doStep(st, instant) {
+    if (st.kb) kb.classList.add('show');
+    if (st.sys) { add('msg sys', st.sys); }
+    if (st.u === 'text') { add('msg user', st.t + '<span class="ts">' + clock.textContent + '</span>'); }
+    if (st.u === 'file') { add('msg user', '<div class="file"><div class="ico">PDF</div><div><b>' + st.name + '</b><small>' + st.size + '</small></div></div><span class="ts">' + clock.textContent + '</span>'); }
+    if (st.u === 'photo') { add('msg user', '<div class="photo"><div class="ph">Investments · Stocks &amp; Shares ISA</div><div class="pr"><span>Balanced</span><b>£22,925.10</b></div><div class="pr"><span>iShares NASDAQ 100</span><b>£5,210.55</b></div><div class="pr"><span>Automation &amp; Robotics</span><b>£1,960.40</b></div><div class="pr"><span>Physical Silver</span><b>£940.22</b></div></div><span class="ts">' + clock.textContent + '</span>'); }
+    if (st.b === 'text') { add('msg bot', st.t + '<span class="ts">' + clock.textContent + '</span>'); }
+    if (st.b === 'card') { add('msg bot card', cardHTML(st)); }
+    if (st.tap) { var btn = findButton(st.tap); if (btn) { if (!instant) btn.classList.add('tapped'); btn.classList.add('pressed'); } }
+    if (st.expand) { var last = chat.querySelector('.msg.bot.card:last-of-type'); var cards = chat.querySelectorAll('.msg.bot.card'); last = cards[cards.length - 1]; if (last) { var t = last.querySelector('.tech'); if (!t) { t = document.createElement('div'); t.className = 'tech'; var ibs = last.querySelector('.ibs'); last.insertBefore(t, ibs); } t.innerHTML = st.tech.join('\n'); t.classList.add('show'); scroll(); } }
+    if (st.sheet) { sheet.innerHTML = sheetHTML(); sheet.setAttribute('aria-hidden', 'false'); requestAnimationFrame(function () { sheet.classList.add('open'); }); }
+    if (st.sheetClose) { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); }
+    if (st.behind) lightChips(st.behind);
+  }
+
+  async function play(idx) {
+    var my = ++runId; cur = idx; var j = J[idx];
+    document.querySelectorAll('#rail button').forEach(function (b, i) { b.setAttribute('aria-pressed', i === idx ? 'true' : 'false'); });
+    resetPhone(j); renderSteps(j);
+    if (reduce) { j.steps.forEach(function (st, i) { doStep(st, true); setNote(j, i, st); }); note.innerHTML += '<p style="margin:8px 0 0;color:var(--muted)">Motion is off in your system settings, so every step is shown at once.</p>'; return; }
+    for (var i = 0; i < j.steps.length; i++) {
+      if (my !== runId) return;
+      await waitIfPaused(); if (my !== runId) return;
+      var st = j.steps[i];
+      setNote(j, i, st);
+      var isBot = st.b || st.sheet;
+      if (st.u === 'text') { field.textContent = st.t; field.classList.add('live'); await wait(900); if (my !== runId) return; field.textContent = 'Message'; field.classList.remove('live'); }
+      if (isBot && !st.sheet) { var ty = add('typing', '<i></i><i></i><i></i>'); await wait(st.b === 'card' ? 1100 : 700); if (my !== runId) return; ty.remove(); }
+      doStep(st, false);
+      await wait(st.tap ? 1200 : st.b === 'card' ? 3600 : st.sheet ? 3200 : st.expand ? 3000 : st.sys ? 1500 : 2200);
+    }
+    if (my === runId) { setNote(j, j.steps.length - 1, j.steps[j.steps.length - 1]); note.innerHTML += '<p style="margin:8px 0 0;color:var(--muted)"><b>End of this journey.</b> Pick another on the left, or ↻ Replay.</p>'; lightChips([]); }
+  }
+
+  /* rail */
+  J.forEach(function (j, i) {
+    var b = document.createElement('button'); b.setAttribute('role', 'tab'); b.setAttribute('data-n', i + 1); b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<b>' + j.title + '</b><small>' + j.sub + '</small>';
+    b.addEventListener('click', function () { paused = false; document.getElementById('play').textContent = '⏸ Pause'; document.getElementById('play').setAttribute('aria-pressed', 'true'); play(i); });
+    rail.appendChild(b);
+  });
+  document.getElementById('play').addEventListener('click', function () {
+    paused = !paused; this.textContent = paused ? '▶ Play' : '⏸ Pause'; this.setAttribute('aria-pressed', paused ? 'false' : 'true');
+    if (!paused && pendingResolve) { var r = pendingResolve; pendingResolve = null; r(); }
+  });
+  document.getElementById('next').addEventListener('click', function () { if (paused && pendingResolve) { var r = pendingResolve; pendingResolve = null; r(); paused = true; } else skip(); });
+  document.getElementById('replay').addEventListener('click', function () { paused = false; document.getElementById('play').textContent = '⏸ Pause'; play(cur); });
+  document.getElementById('speed').addEventListener('click', function () { fast = !fast; this.setAttribute('aria-pressed', fast ? 'true' : 'false'); });
+
+  /* first frame: the add-a-holding journey fully drawn, then it replays */
+  (function () {
+    var j = J[1]; cur = 1; resetPhone(j); renderSteps(j);
+    document.querySelectorAll('#rail button')[1].setAttribute('aria-pressed', 'true');
+    j.steps.forEach(function (st, i) { doStep(st, true); setNote(j, i, st); });
+    if (!reduce) setTimeout(function () { play(1); }, 1600);
+  })();
+})();
+</script>
+</body>
+</html>

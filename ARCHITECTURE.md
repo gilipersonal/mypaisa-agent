@@ -14,7 +14,11 @@ Telegram front end both of them lack. v1 (prices, briefs, alerts, chat, news,
 calls on Lambda) stands underneath; sections that have not changed are kept
 short.
 
-Animated version of v1: <https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx>
+Animated version (v3 of the page, matching this document):
+<https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx>. The user journeys:
+<https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam>. The dashboard screens:
+<https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp>. Sources for all three are
+in `docs/design/`.
 
 Status: design only.
 
