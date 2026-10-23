@@ -32,7 +32,7 @@ Status: planning. Nothing is built.
 | Task | Owner |
 | --- | --- |
 | Create the bot with BotFather; token into SSM; picture with `/setuserpic` from `docs/mark-1024.png` | You |
-| Create an Anthropic API key in the Console with a monthly spend limit (£35); put it into SSM at `/mypaisa-agent/dev/anthropic/api_key` | You |
+| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of £35 and £10, and one API key in each; put the dev key into SSM at `/mypaisa-agent/dev/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
 | Decide: EODHD now or free sources first | You |
 | Twelve Data API key (free tier) into SSM; check whether its Basic plan serves LSE and Xetra closes | You |

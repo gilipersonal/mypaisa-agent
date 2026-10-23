@@ -829,7 +829,11 @@ account is now the key to both the chat and the web app.
 | **Total, one member** | **£9.50** | **£32** | **£42** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
-Two members on the standard setup: about £35. Stock fundamentals (EODHD
+Two members on the standard setup: about £35. The Claude lines are paid by
+the monthly API credit that comes with the Max or Team plan ($100 a month on
+Max 5x, about £77), spent through a Console organisation linked to the plan;
+at these figures dev and prod together stay inside it, so the model's cash
+cost is £0 and the cap is the credit itself. Stock fundamentals (EODHD
 Fundamentals) would add about £46 a month and are not planned unless a single
 share is added. A second *household* would add roughly a full set (£10–34),
 since data feeds are shared but model calls are not.
@@ -849,7 +853,7 @@ since data feeds are shared but model calls are not.
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 | Identity | Telegram user id in the chat, signed `initData` in the Mini App, the Telegram Login Widget or Sign in with Google in a laptop browser, invites by one-time link; Cognito only when the wealth tracker is stitched on | No passwords to build, phish or forget; one person, two proofs of who they are, the same member either way |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
-| Claude access | The Anthropic API with the key in SSM and a Console spend limit | Same per-token prices as Bedrock, no model-access form, and the server tools and Batches come with it |
+| Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
 | Batch scoring | Message Batches for the nightly sentiment scoring | Half price; overnight latency is fine |
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
