@@ -356,19 +356,74 @@ never deleted; at a few hundred a year they cost nothing to keep.
 
 ## 5. Data layer
 
-### 5.1 Price source chain per instrument
+### 5.1 Price sources: one plugin per feed, a chain per kind, chosen by configuration
 
-Each instrument carries an ordered list; the first source that answers with
-fresh data wins, and the brief says which one did.
+Every feed is a plugin behind one small contract, and which plugins run, in
+which order, is configuration per environment. Yahoo Finance (`yfinance`,
+free, no key) is the default everywhere and the only feed local development
+needs. Switching to EODHD is a configuration change plus a key in SSM, not a
+code change.
 
-| Kind | Chain | Freshness |
-| --- | --- | --- |
-| OEIC (Monzo's BlackRock funds) | 1. yfinance on the fund's `0P…L` id · 2. BlackRock UK product page · 3. FT tearsheet · 4. proxy basket · 5. last user screenshot | NAV once a day, published next morning; proxy intraday, labelled provisional |
-| ETF or ETC on LSE / Xetra | 1. EODHD · 2. yfinance · 3. issuer NAV (iShares publishes daily) · 4. last close, labelled stale | Each exchange close; GBX normalised to GBP |
-| ETF or stock on NYSE / Nasdaq | 1. Twelve Data (free tier) · 2. EODHD · 3. yfinance · 4. last close, labelled stale | 21:00 UK close |
-| Stock on LSE / Xetra | as ETF on LSE / Xetra | same |
-| Commodity ETC | as its listing, plus the metal's spot price × FX as a sanity check | same |
-| Cash | FX only (ECB, Twelve Data as fallback) | |
+**The contract.** A plugin implements:
+
+```python
+class PriceSource(Protocol):
+    name: str                                   # "yfinance" · "eodhd" · "twelvedata" · "issuer_page" · "ft" · "proxy" · "screenshot"
+    def supports(self, instrument: Instrument) -> bool: ...
+    def daily_bars(self, instrument: Instrument, since: date) -> Bars: ...   # native currency, with source, fetched_at, provisional
+    def latest(self, instrument: Instrument) -> Quote | None: ...
+    def fx(self, pair: str, since: date) -> Rates | None: ...                 # optional
+```
+
+Each plugin owns its own identifiers on the instrument (`identifiers`
+holds the Yahoo symbol, the EODHD code, the Twelve Data symbol and the ISIN
+side by side), its key in SSM (`/mypaisa-agent/<env>/<plugin>/api_key`),
+its rate limit, its GBX-to-GBP normalisation, its freshness rule, and its
+recorded fixtures. The ingest job sees only `Bars`, never a vendor shape.
+A plugin that is not in any chain is never imported, so a missing key is
+not an error.
+
+**Chains by configuration.** The chain per kind lives in
+`infra/terraform/envs/<env>.tfvars` and reaches the Lambdas as one
+environment variable, with a per-instrument override in
+`Instrument.price_sources[]` for the odd case:
+
+```hcl
+# envs/dev.tfvars (local uses the same shape from a .env file)
+price_chains = {
+  oeic      = ["yfinance", "issuer_page", "ft", "proxy", "screenshot"]
+  lse_etf   = ["yfinance", "issuer_page", "stale"]
+  us_etf    = ["twelvedata", "yfinance", "stale"]
+  cash      = ["ecb", "twelvedata"]
+}
+# envs/prod.tfvars, once EODHD is chosen: put it first and add its key
+#   lse_etf = ["eodhd", "yfinance", "issuer_page", "stale"]
+#   us_etf  = ["twelvedata", "eodhd", "yfinance", "stale"]
+```
+
+The first plugin that answers with fresh data wins, and the brief says
+which one did. `stale` is the last entry everywhere: the previous close,
+labelled, never silently reused.
+
+| Kind | Default chain (local, dev, and prod until switched) | With EODHD | Freshness |
+| --- | --- | --- | --- |
+| OEIC (Monzo's BlackRock funds) | yfinance on the fund's `0P…L` id · BlackRock UK product page · FT tearsheet · proxy basket · last user screenshot | unchanged; EODHD has no UK OEICs | NAV once a day, published next morning; proxy intraday, labelled provisional |
+| ETF or ETC on LSE / Xetra | yfinance · issuer NAV (iShares publishes daily) · stale | eodhd · yfinance · issuer NAV · stale | Each exchange close; GBX normalised to GBP |
+| ETF or stock on NYSE / Nasdaq | Twelve Data (free tier) · yfinance · stale | twelvedata · eodhd · yfinance · stale | 21:00 UK close |
+| Stock on LSE / Xetra | as ETF on LSE / Xetra | as ETF on LSE / Xetra | same |
+| Commodity ETC | as its listing, plus the metal's spot price × FX as a sanity check | same | same |
+| Cash | ECB, Twelve Data as fallback | same | |
+
+**Proving a plugin.** Every plugin passes the same contract test suite on
+recorded responses: the same instrument and date range give the same `Bars`
+shape, pounds not pence, the stale rule, idempotence per date, and a clean
+failure when the vendor is down. Tests never touch the network; a deliberate
+command refreshes the recordings. When two plugins are configured for the
+same instrument the ingest job records both, and the Activity page (§9.3)
+shows where they disagree (a close more than 0.2% apart, a missing day, a
+late correction). That report is how the "free first, EODHD if London
+closes prove unreliable" decision of phase 2 is made with numbers rather
+than impressions.
 
 Twelve Data's free tier (800 calls a day, US listings) also serves the US
 macro basket and the earnings calendar; whether its free tier includes LSE
@@ -856,6 +911,7 @@ since data feeds are shared but model calls are not.
 | Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
 | Batch scoring | Message Batches for the nightly sentiment scoring | Half price; overnight latency is fine |
+| Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind set per environment in configuration; yfinance by default, EODHD by putting it first in the chain and adding its key | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
