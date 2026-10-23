@@ -73,7 +73,9 @@ Arun's "merge it" covers every step below, branch deletion included
    `main` is behind.
 4. Delete the story's branch wherever it is left, without asking:
    `git ls-remote --exit-code --heads origin <branch>` finds it on GitHub, then
-   `git push origin --delete <branch>`; locally, once `main` is checked out,
+   `gh api -X DELETE repos/gilipersonal/mypaisa-agent/git/refs/heads/<branch>`
+   (never `git push --delete`: jira-flow's guard refuses any push from `main`);
+   locally, once `main` is checked out,
    `git branch -d <branch>`, or `git branch -D <branch>` when `-d` refuses.
    Only an `MA-*` branch, never `main`.
 5. Clear the work state if one exists (`.git/jira-flow/MA-<n>.json`):

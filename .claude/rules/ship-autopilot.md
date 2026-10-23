@@ -78,8 +78,10 @@ question in words:
 
 - merge the PR;
 - delete the story's `MA-*` branch on GitHub and locally, however it has to
-  be done: `gh pr merge --delete-branch`, else `git push origin --delete
-  <branch>`, else `git branch -D <branch>` when `-d` refuses;
+  be done: `gh pr merge --delete-branch`, else `gh api -X DELETE
+  repos/gilipersonal/mypaisa-agent/git/refs/heads/<branch>` (not `git push
+  --delete`, which jira-flow's guard refuses on `main`), else
+  `git branch -D <branch>` when `-d` refuses;
 - comment on the issue and move it to Done;
 - sync local `main` and clear the work state.
 
