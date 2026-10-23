@@ -213,9 +213,17 @@ browser, as `ARCHITECTURE.md` §9.3.
 - `web_app` button on the Portfolio card; a `/web` command that sends the
   laptop address.
 - You: `/setdomain` in BotFather with the app's hostname, once per
-  environment; a Google OAuth client id per environment in the Google Cloud
-  Console with the app's hostname as an authorised origin, the id into SSM;
-  two-step verification on each member's Telegram and Google accounts.
+  environment; a Google OAuth client id in the Google Cloud Console, the id
+  into SSM; two-step verification on each member's Telegram and Google
+  accounts. Any Gmail account can own the Google Cloud project, no billing
+  account is needed, and the project has no link to AWS. The consent screen
+  is "External" (a personal Gmail cannot choose "Internal"), with only the
+  basic email and profile scopes, so it can be published without Google's
+  review; in "Testing" only listed test users can sign in, which also works
+  for one person. The client is a "Web application" whose authorised
+  JavaScript origins are the dev and prod hostnames and `http://localhost:8000`;
+  one client with all three origins is enough. The id is public, not a secret;
+  the flow used has no client secret at all.
 
 **Tests:** `initData`, Login Widget and Google ID token verification
 (valid, expired, tampered, wrong audience, unverified address, a Google
