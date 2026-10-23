@@ -18,14 +18,14 @@ Status: design. Nothing is built.
 | Packaging | `uv`, `pyproject.toml`, `uv.lock` | Fast, reproducible installs in CI and in the image |
 | Models and validation | pydantic v2 | Tool inputs, Telegram updates, every registry item, with `schema_version` |
 | Data maths | pandas, numpy, pyarrow | The engine ported from the Agentic Trading Desk; parquet history in S3 |
-| Calendars | `exchange_calendars` | XLON, XETR, XNYS sessions and holidays; the clock-change weeks |
+| Calendars and FX | `exchange_calendars`; ECB reference rates for USD, EUR and INR | XLON, XETR, XNYS sessions and holidays; the clock-change weeks; GBP or INR per member |
 | HTTP | httpx | Telegram, ECB, EODHD, Twelve Data, RSS, product pages |
 | News | feedparser, trafilatura | RSS parsing and article text extraction |
 | Charts | matplotlib (Agg backend) | PNG charts for `sendPhoto`, one house style |
 | Claude | The `anthropic` Python SDK against the Anthropic API; key in SSM, read once per cold start; a monthly spend limit set in the Console | Structured outputs, strict tools, prompt caching, PDF and image input, citations, server-side web search and fetch, Message Batches for the nightly scoring |
 | Lambda helpers and observability | aws-lambda-powertools (Logger, Tracer, Metrics, idempotency, parameters), boto3; AWS X-Ray | Structured JSON logs with a run id on every line, one trace per run, ten custom metrics; a `RunRecord` per run and an `AuditEvent` per change in DynamoDB, which the web app's Activity and Audit pages read |
 | Telegram | A thin client on httpx, no framework | Webhook-only; rich messages with HTML fallback, inline and reply keyboards, files, callback queries, `editMessageText`, deep links for invites |
-| Identity | Telegram user id in the chat; signed `initData` in the Mini App; the Telegram Login Widget or Sign in with Google in a laptop browser, each member linked to one Google account by a code typed into the chat; a signed session cookie checked at the CloudFront edge; one-time invite links; roles owner / member / viewer; Amazon Cognito only when the wealth tracker's web login is built | No passwords to build or phish; one person, two proofs of identity, the same member either way |
+| Identity | Telegram user id in the chat; signed `initData` in the Mini App; the Telegram Login Widget or Sign in with Google in a laptop browser, each member linked to one Google account by a code typed into the chat; a signed session cookie checked at the CloudFront edge; one-time invite links; roles owner / member / viewer; Amazon Cognito only if a separate login is ever wanted | No passwords to build or phish; one person, two proofs of identity, the same member either way |
 | Web app (laptop and Mini App) | One static app in HTML, CSS and JS; lightweight-charts (TradingView's open-source charting library); the dashboard pages plus Audit and Activity; read-only JSON from the `api` Lambda | Interactive charts without a framework; the artboards in `docs/design/dashboard/` are the spec; the same files serve a phone inside Telegram and a laptop browser |
 
 ## 2. Quality

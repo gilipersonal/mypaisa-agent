@@ -31,9 +31,19 @@ and the import JSON it was built from are in `docs/design/lucid/`.
 
 Status: design only.
 
+**Destination.** The web app is the future MyPaisa, the household wealth
+tracker: assets of every kind (property, deposits, policies, pensions,
+equities), debts, budget, a thirty-year forecast with XIRR, reports, in GBP
+or INR. All of it read-only; every update comes through the bot. The current
+[wealth-tracker](https://github.com/gilipersonal/wealth-tracker) repository
+is the reference for those screens until they are rebuilt here with a new
+design, and §12 is the road. None of that is a priority before phase 8. The
+data model is shaped for it now, so that the ISA built in phase 1 and the
+whole household's wealth later are the same records, not a migration.
+
 ---
 
-## 1. The two rules, and a third
+## 1. The two rules, and two more
 
 1. **Claude never produces a number.** Every figure comes from code with
    tests. Claude chooses what to say and how to say it.
@@ -42,6 +52,9 @@ Status: design only.
 3. **The layman sees the summary; the detail is one tap away.** Every message
    has a plain top and a technical underside. Nothing technical is shown
    unasked.
+4. **One write path.** Every change to the records, whatever the screen, goes
+   through the bot: a card, a Confirm tap, an audit row. The web app, today
+   and when it becomes the full MyPaisa, is read-only by construction.
 
 ---
 
@@ -144,12 +157,15 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Portfolio** (household) | `id`, `name`, `base_ccy`, `created_by`, `budget_tokens_per_day` | The tenant. Every other item's partition key starts with the portfolio id. |
 | **Member** | `portfolio_id`, `tg_user_id`, `display_name`, `role` (`owner` · `member` · `viewer`), `share_detail` (let other members see my accounts), `prefs` (thresholds, quiet hours, ping budget, privacy mode, simple/technical), `joined_at`, `invited_by`, `google_sub?`, `google_email?`, `google_linked_at?` | A person, identified by their Telegram account, with a Google account linked to it for the laptop. One chat with the bot per member. |
 | **Invite** | `portfolio_id`, `token`, `role`, `created_by`, `expires_at`, `used_by?` | Single use, 24-hour expiry, bound to one portfolio and role. |
-| **Account** | `portfolio_id`, `id`, `name`, `type` (`ISA` · `GIA` · `SIPP` · `cash`), `platform` (`Monzo`, …), `owners[]` (member ids; two for a joint account) | A tax wrapper belonging to one or two members. Finances are managed here, per member. |
-| **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither. |
+| **Account** | `portfolio_id`, `id`, `name`, `category` (`investment` · `cash` · `deposit` · `policy` · `pension` · `property` · `debt`), `type` (`ISA` · `GIA` · `SIPP` · `cash` · `fixed_deposit` · `policy` · `pension` · `property` · `mortgage` · `loan` · `card`), `ccy`, `institution` (`Monzo`, `LIC`, a bank, …), `country`, `owners[]` (member ids; two for a joint account) | A tax wrapper, a pot, a property or a loan belonging to one or two members. Finances are managed here, per member. Phase 1 uses `investment` and `cash`; the other categories wait for §12 but the field exists from day one. |
+| **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash` · later `property` · `deposit` · `policy` · `pension` · `debt`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `country?`, `institution?`, `maturity_date?`, `rate?`, `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither, a property has an address and a deposit has a maturity date. |
 | **Position** | `account_id`, `instrument_id`, `units`, `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. |
-| **Valuation** | `instrument_id`, `date`, `price`, `price_ccy`, `fx_to_gbp`, `units`, `value_gbp`, `source` (`nav` · `close` · `proxy` · `user_screenshot` · `user_typed`), `provisional` | The time series the wealth tracker reads. User-supplied values are kept alongside computed ones; a gap between them is a signal (wrong units, a fee, a late NAV). |
+| **Valuation** | `instrument_id`, `date`, `price`, `price_ccy`, `fx_to_gbp`, `units`, `value_gbp`, `source` (`nav` · `close` · `proxy` · `user_screenshot` · `user_typed` · `formula`), `provisional` | The time series the wealth tracker reads. User-supplied values are kept alongside computed ones; a gap between them is a signal (wrong units, a fee, a late NAV). |
 | **Document** | `instrument_id`, `type` (`factsheet` · `kiid` · `annual_report` · `screenshot`), `s3_key`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | The factsheet is the source of look-through until a better feed exists. |
-| **Transaction** | `position_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee`), `units`, `amount_gbp` | From "I put £200 in", or extracted from a screenshot. |
+| **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy`, `amount_gbp` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. XIRR, payoff curves and the forecast are computed from it, so every money movement is recorded with its date from day one. |
+| **Liability** | `account_id`, `kind` (`mortgage` · `loan` · `card`), `principal`, `rate`, `term_months`, `started_at`, `emi`, `schedule[]` (computed), `ccy` | A debt: the balance against the original plan, the interest and principal split, the payoff date; its events are Transactions. Later, §12. |
+| **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | Computed daily by the engine from Valuation and Liability; the series the overview and the forecast chart read. Later, §12. |
+| **Budget**, **ForecastAssumptions** | per member; per portfolio | Monthly income and planned spend with EMIs and surplus; the growth, contribution and surplus-allocation assumptions the thirty-year projection runs on. Later, §12. |
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
@@ -211,6 +227,8 @@ code. The profiles live in configuration, versioned with the registry.
 | `bond_etf` | exchange close | duration, credit quality, currency from the holdings file | trend and momentum downweighted; risk pillar reads duration × rate moves | slow |
 | `commodity_etc` (a metal, oil, or a basket) | exchange close; spot price as check | the metal and its pricing currency (usually USD) | no valuation; risk pillar weighted ×2; macro from dollar strength and real yields, not the equity basket | slowest to ADD, quickest to PAUSE; drawdown alerts at a wider band (12%) because 8% is a normal week for silver |
 | `cash` | FX only | the currency | none | n/a; it is the thing contributions come from |
+| `property`, `deposit`, `policy`, `pension` (later, §12) | none; the last user figure, or a formula (a deposit accrues at its rate to maturity, a policy follows its schedule) | the asset itself: country, currency, institution | no pillars; XIRR from the ledger; maturity and growth-rate panels | n/a; the bot asks for a valuation when one is overdue and announces a maturity before it lands |
+| `debt` (`mortgage` · `loan` · `card`; later, §12) | none; the balance from the schedule and the logged events | the lender; currency | no pillars; interest split, payoff date, prepayment what-ifs | n/a; the bot asks when an EMI, a rate change or a preclosure is due |
 
 Adding a kind that is not here (a bond, a gilt held directly, crypto) means
 writing a profile and, if needed, a price plugin. Nothing else changes.
@@ -371,8 +389,10 @@ uploaded or monthly from the page.
 
 ### 5.3 FX, calendars, time
 
-GBP base. ECB reference rates. Exchange calendars XLON, XETR, XNYS. All
-schedules in `Europe/London`.
+GBP base; USD, EUR and INR, all published daily by the ECB. Each member can
+read figures in GBP or INR; the stored value is always both the native
+amount and its GBP equivalent on the day. Exchange calendars XLON, XETR,
+XNYS. All schedules in `Europe/London`.
 
 ---
 
@@ -439,6 +459,30 @@ after 8 weeks of evidence and the change is logged.
 
 1-month return distribution by volatility-scaled block bootstrap on the
 instrument's own history: 10/50/90th percentiles and `P(fall > 5%)`.
+
+### 6.6 Wealth maths (later, §12)
+
+The same rule applies: code computes, Claude explains. For the full MyPaisa
+the engine gains a `wealth/` module, deterministic and tested against known
+answers:
+
+- **XIRR** on the dated cashflow ledger of a position, an account, a member
+  or the household, with the current value as the closing flow: Newton's
+  method with a bisection fallback, matched to a spreadsheet's XIRR on
+  fixture ledgers to the penny, and the same ledger the tracker's asset page
+  shows.
+- **Deposits and policies**: accrual at the stated rate to maturity, the
+  maturity timeline (next twelve months, open-ended), what a maturing sum
+  could do next.
+- **Debts**: the EMI, the schedule, the interest and principal split per
+  year, the balance curve against the original plan, prepayment and
+  preclosure what-ifs.
+- **Net worth**: the daily series by member, category, currency and country;
+  the crossover of assets over debts.
+- **The forecast**: a thirty-year projection from stated assumptions
+  (growth per category, contributions, surplus allocation, maturities,
+  EMIs ending), month by month, with the assumptions shown beside the curve
+  and every change to them an audit row.
 
 ---
 
@@ -689,16 +733,39 @@ record beats the baseline for 8 weeks, then in weekday cards.
 
 ---
 
-## 12. Backend records for the wealth tracker (later, not a priority)
+## 12. The road to MyPaisa, the wealth tracker (later, not a priority)
 
-The Valuation and Position tables are the record of what the holdings are
-worth. When the wealth tracker is stitched on, its backend reads them through
-a read-only role, its users are linked to members through the Google account already linked to each member (§4.5), with Cognito federating to Google if the tracker needs its own login, and
-maps them to its `Holding` shape (`id`, `name`, `type: Investment`, `entity`,
-`owners`, `ccy`, `val`, `invVal`): `val` is the latest `value_gbp` (or
-`price_ccy` value when the tracker shows GBP/INR), `invVal` the sum of
-contributions. Updates flow one way, from the bot to the tracker; the tracker
-never writes here.
+The web app of §9.3 grows into the household's whole wealth tracker. The
+current wealth-tracker repository, a Next.js static export that resolves
+everything from fixtures and has no backend, is the reference for what that
+means; its screens are rebuilt here, on this backend, with a new design, and
+the old repository is retired when the new app covers it. What stays fixed:
+
+| | |
+| --- | --- |
+| **Read-only, everywhere** | No screen writes. Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row. The web app's api Lambda keeps GET routes only. |
+| **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The ISA of phase 1 and the household's property, deposits, policies, pensions and loans are rows of the same shapes. |
+| **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Telegram or Google to log in; no Cognito unless a separate login is ever wanted. |
+| **Two currencies** | GBP and INR side by side, from the ECB's daily rates, chosen per member; USD and EUR for the holdings that trade in them. |
+| **Numbers from code** | XIRR, schedules, net worth and the forecast from §6.6; Claude writes the words around them and answers "why is my net worth down this month?" from the same tools. |
+
+The screens, from the tracker's own list, and what each reads:
+
+| Screen | Reads | New in the bot |
+| --- | --- | --- |
+| Overview | `NetWorth` by member, category, country; maturing next; largest assets | nothing new; the Portfolio card grows into it |
+| Assets, one asset | `Account`, `Position`, `Valuation`, the XIRR ledger from `Transaction`, documents | "add a property", "FD matured", "update the house valuation", "log the rent" |
+| Debts, one loan | `Liability`, its `Transaction` events, the schedule, the audit rows | "add a loan", "prepaid £2,000", "rate changed to 6.1%", "preclose" |
+| Budget | `Budget` per member, EMIs from `Liability` | "my salary is now …", "plan £400 a month for …" |
+| Forecast | `ForecastAssumptions`, the projection from §6.6 | "assume 5% on property", "retire at 60" |
+| Reports | composition by type and institution; exports | nothing; exports are GET |
+| Access, Settings | `Member`, `Invite`, preferences | `/invite`, `/members`, `/settings`, already there |
+
+Order of work in `PLAN.md` phase 9: the kinds and their bot flows first
+(assets and debts), then the wealth maths and the forecast, then the
+redesigned screens, then budget and reports, then retiring the old
+repository. Each step ships read-only pages over data that the bot already
+maintains, so nothing is shown that cannot be changed from the chat.
 
 ---
 
@@ -790,6 +857,7 @@ since data feeds are shared but model calls are not.
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
 | Web app auth | A signed session cookie checked by a CloudFront Function at the edge, issued after `initData`, the Login Widget or a Google ID token is verified; membership re-checked by the api Lambda on every call | Nothing is served to a stranger, not even the page shell; nothing new to administer |
 | Google sign-in | Google Identity Services directly, the ID token verified in the api Lambda, one Google account linked per member by a code typed into the chat; not Cognito | One script tag and one JWT check, no user pool, no hosted UI, no client secret; Google already enforces its own two-step verification; Cognito can federate to the same accounts later if the tracker needs it |
+| Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
 ## 17. Open questions
 
@@ -801,3 +869,4 @@ since data feeds are shared but model calls are not.
 - A Google OAuth client id per environment, created in the Google Cloud Console with the app's hostname as an authorised JavaScript origin; the consent screen needs only the basic profile and email scopes, so no Google verification review applies.
 - The Telegram Login Widget needs the app's domain set with `/setdomain` in BotFather; confirm the CloudFront default hostname is accepted (it is a plain hostname, so it should be), or whether a custom domain is wanted.
 - Whether the CloudFront free flat-rate plan covers a second distribution in the account; if not, the web app goes under a path on the tracker's distribution with its own cache behaviours.
+- For §12: which members report in INR; whether the redesigned screens are a new Claude Design project in Nocturne or evolve the tracker's design; and whether the old tracker's domain and distribution pass to the new app or are retired. Decisions for phase 9, not now.
