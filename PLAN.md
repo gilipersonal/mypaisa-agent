@@ -35,6 +35,7 @@ Status: planning. Nothing is built.
 | Request Bedrock model access for Opus 5.5, Sonnet 5.5, Haiku 5.5 in `us-east-1` | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
 | Decide: EODHD now or free sources first | You |
+| Twelve Data API key (free tier) into SSM; check whether its Basic plan serves LSE and Xetra closes | You |
 | Brave Search API key (free tier) into SSM | You |
 | Terraform bootstrap: state key, OIDC role pinned to this repository's numeric id, `dev` GitHub environment, AWS Budgets at £40 and £50 | Claude |
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
@@ -158,6 +159,8 @@ your two funds shows the shared holdings and currency exposure.
 
 ## Phase 5 — Mini App dashboard
 
+- Built from the five artboards in `docs/design/dashboard/` (Overview, a
+  holding, Overlap, Scorecard, the light theme).
 - Static page on the wealth tracker's S3 + CloudFront under a new path, in
   the Nocturne look, with lightweight-charts: portfolio curve, per-holding
   history with stance markers, overlap map, scorecard.
