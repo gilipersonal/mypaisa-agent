@@ -196,9 +196,15 @@ browser, as `ARCHITECTURE.md` §9.3.
   with their model calls, tokens, cost, tools and outcome; the schedule
   board with last and next run and price freshness; this month's spend
   against the cap; the last seven days of alarms).
-- The `api` Lambda: GET routes only; `initData` validation and Telegram
-  Login Widget verification; the signed session cookie; membership and role
-  checked on every call; JSON limited to what that member may see.
+- The `api` Lambda: GET routes only, plus the login endpoints; `initData`
+  validation, Telegram Login Widget verification and Google ID token
+  verification (signature against Google's keys, audience, expiry, verified
+  address, member found by `sub`); the signed session cookie; membership
+  and role checked on every call; JSON limited to what that member may see.
+- Linking a Google account: the six-digit code shown on the web, `/link
+  <code>` in the chat from the member's own phone, `google_sub` and
+  `google_email` on the Member; link and unlink from `/members` for the
+  owner; every link, unlink and web login an audit row.
 - Hosting in Terraform: the app's S3 bucket and CloudFront distribution per
   environment; the api Lambda's Function URL (IAM auth) as the `/api/*`
   origin through CloudFront; the CloudFront Function that checks the cookie
@@ -207,17 +213,22 @@ browser, as `ARCHITECTURE.md` §9.3.
 - `web_app` button on the Portfolio card; a `/web` command that sends the
   laptop address.
 - You: `/setdomain` in BotFather with the app's hostname, once per
-  environment, and two-step verification on each member's Telegram account.
+  environment; a Google OAuth client id per environment in the Google Cloud
+  Console with the app's hostname as an authorised origin, the id into SSM;
+  two-step verification on each member's Telegram and Google accounts.
 
-**Tests:** `initData` and Login Widget verification (valid, expired,
-tampered, a member of another household, a removed member); the cookie check
+**Tests:** `initData`, Login Widget and Google ID token verification
+(valid, expired, tampered, wrong audience, unverified address, a Google
+account linked to nobody, a member of another household, a removed member);
+the link code (right code, wrong code, expired, used twice, sent from the
+wrong chat); the cookie check
 in the CloudFront Function through `aws cloudfront test-function`; every
 route against each role; JSON shape; the Audit page showing a change made in
 the chat within a minute; Playwright screenshots at phone and laptop widths
 in both themes.
 
-**Exit:** you open it on your laptop, log in with Telegram, and see the same
-numbers as the chat; the Audit page shows the change you just made from the
+**Exit:** you open it on your laptop, log in with Telegram and then with
+Google, and see the same numbers as the chat either way; the Audit page shows the change you just made from the
 chat, with who and when; the Activity page shows the run that made it, with
 what it cost; your wife sees her own view from her phone; a removed member
 cannot get in.

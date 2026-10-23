@@ -25,7 +25,7 @@ Status: design. Nothing is built.
 | Claude | The `anthropic` Python SDK against the Anthropic API; key in SSM, read once per cold start; a monthly spend limit set in the Console | Structured outputs, strict tools, prompt caching, PDF and image input, citations, server-side web search and fetch, Message Batches for the nightly scoring |
 | Lambda helpers and observability | aws-lambda-powertools (Logger, Tracer, Metrics, idempotency, parameters), boto3; AWS X-Ray | Structured JSON logs with a run id on every line, one trace per run, ten custom metrics; a `RunRecord` per run and an `AuditEvent` per change in DynamoDB, which the web app's Activity and Audit pages read |
 | Telegram | A thin client on httpx, no framework | Webhook-only; rich messages with HTML fallback, inline and reply keyboards, files, callback queries, `editMessageText`, deep links for invites |
-| Identity | Telegram user id in the chat; signed `initData` in the Mini App; the Telegram Login Widget in a laptop browser; a signed session cookie checked at the CloudFront edge; one-time invite links; roles owner / member / viewer; Amazon Cognito only when the wealth tracker's web login is built | No passwords to build or phish; one identity for the family on every screen |
+| Identity | Telegram user id in the chat; signed `initData` in the Mini App; the Telegram Login Widget or Sign in with Google in a laptop browser, each member linked to one Google account by a code typed into the chat; a signed session cookie checked at the CloudFront edge; one-time invite links; roles owner / member / viewer; Amazon Cognito only when the wealth tracker's web login is built | No passwords to build or phish; one person, two proofs of identity, the same member either way |
 | Web app (laptop and Mini App) | One static app in HTML, CSS and JS; lightweight-charts (TradingView's open-source charting library); the dashboard pages plus Audit and Activity; read-only JSON from the `api` Lambda | Interactive charts without a framework; the artboards in `docs/design/dashboard/` are the spec; the same files serve a phone inside Telegram and a laptop browser |
 
 ## 2. Quality
@@ -49,7 +49,7 @@ Status: design. Nothing is built.
 | DynamoDB | One on-demand table per environment; TTL on chat turns, webhook dedupe, article scores |
 | S3 | Prices and FX as parquet; documents (private, lifecycle rule); articles (90-day rule); charts (30-day rule) |
 | ECR | The container image, one repository, lifecycle rule keeping the last ten |
-| SSM Parameter Store | SecureString, standard tier: bot token, webhook secret, the Anthropic API key, Twelve Data and EODHD keys |
+| SSM Parameter Store | SecureString, standard tier: bot token, webhook secret, the Anthropic API key, Twelve Data and EODHD keys, the session signing secret; the Google OAuth client id as a plain parameter |
 | CloudFront + S3 | The web app on its own bucket and distribution per environment, on the free flat-rate plan; the `api` Lambda's Function URL (IAM auth) as a second origin under `/api/*` |
 | CloudFront Functions + KeyValueStore | The session cookie check at the edge on every request; the signing secret in KeyValueStore, put there by a command, not by Terraform |
 | X-Ray | One trace per run from the webhook through the agent to the Anthropic API, DynamoDB, S3 and Telegram; inside the free tier at this volume |
@@ -73,6 +73,7 @@ Status: design. Nothing is built.
 | --- | --- | --- |
 | Anthropic API | Pay as you go: Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; a Console spend limit of £35 | Every model call, document extraction, web search and fetch, the nightly scoring |
 | Telegram Bot API | Free | The chat, files, rich messages, the Mini App, the Login Widget for the laptop |
+| Google Identity Services | Free | Sign in with Google on the laptop; one OAuth client id per environment, no client secret; the ID token is verified in the `api` Lambda against Google's published keys |
 | Twelve Data | Free Basic tier (8 credits a minute, 800 a day) | US closes, the US macro basket, the earnings calendar, FX fallback, ISIN lookup |
 | EODHD | All World EOD, $19.99/month or $199/year, when chosen | Dependable London and Frankfurt closes by ISIN |
 | yfinance | Free, unofficial | Closes and the fund's `0P…L` NAV when running lean |

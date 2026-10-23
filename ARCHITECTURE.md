@@ -23,7 +23,7 @@ Animated version (v3 of the page, matching this document):
 in `docs/design/`.
 
 The component diagram, every service, the one agent and the DynamoDB entities
-in detail, is a Lucidchart document: <https://lucid.app/lucidchart/c35c6ddd-69ca-4423-aeb1-2491b75a4678/edit>
+in detail, is a Lucidchart document: <https://lucid.app/lucidchart/d03dd3bc-9525-43b2-a16e-8696cbfdab86/edit>
 (private to the account; share from the document's menu). Its rendered image
 and the import JSON it was built from are in `docs/design/lucid/`.
 
@@ -56,7 +56,7 @@ Status: design only.
 | Send a screenshot of your Monzo valuations | Reads the values, matches them to holdings, updates the records, shows a before/after card; you tap Confirm |
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
 | Type "I want to log a transaction" | Asks one thing at a time, with buttons: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
-| Open the web app on your laptop | Log in with Telegram (a tap in the Telegram app, no password); the same dashboard, plus the audit log of every change and what the agent did and spent; read-only |
+| Open the web app on your laptop | Log in with Telegram (a tap in the Telegram app) or with Google (the Gmail account linked to you), no password either way; the same dashboard, plus the audit log of every change and what the agent did and spent; read-only |
 | Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
 | Tap **Today** | The morning brief: what moved, why, anything to do |
 | Tap a holding | Its card: value and history chart, stance with confidence and horizon, "Why?", "Technical", "What if?" |
@@ -111,7 +111,7 @@ flowchart LR
   tg --> url --> hook -- async --> agent
   agent --> tg
   mini -- initData --> cf
-  web -- Telegram Login --> cf
+  web -- Telegram Login · Google --> cf
   cf --> api --> ddb
   sched --> ingest & news & score & agent
   ingest --> mkt & ecb
@@ -142,7 +142,7 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | Entity | Key fields | Notes |
 | --- | --- | --- |
 | **Portfolio** (household) | `id`, `name`, `base_ccy`, `created_by`, `budget_tokens_per_day` | The tenant. Every other item's partition key starts with the portfolio id. |
-| **Member** | `portfolio_id`, `tg_user_id`, `display_name`, `role` (`owner` · `member` · `viewer`), `share_detail` (let other members see my accounts), `prefs` (thresholds, quiet hours, ping budget, privacy mode, simple/technical), `joined_at`, `invited_by` | A person, identified by their Telegram account. One chat with the bot per member. |
+| **Member** | `portfolio_id`, `tg_user_id`, `display_name`, `role` (`owner` · `member` · `viewer`), `share_detail` (let other members see my accounts), `prefs` (thresholds, quiet hours, ping budget, privacy mode, simple/technical), `joined_at`, `invited_by`, `google_sub?`, `google_email?`, `google_linked_at?` | A person, identified by their Telegram account, with a Google account linked to it for the laptop. One chat with the bot per member. |
 | **Invite** | `portfolio_id`, `token`, `role`, `created_by`, `expires_at`, `used_by?` | Single use, 24-hour expiry, bound to one portfolio and role. |
 | **Account** | `portfolio_id`, `id`, `name`, `type` (`ISA` · `GIA` · `SIPP` · `cash`), `platform` (`Monzo`, …), `owners[]` (member ids; two for a joint account) | A tax wrapper belonging to one or two members. Finances are managed here, per member. |
 | **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither. |
@@ -249,13 +249,16 @@ year), set once per account.
 ### 4.5 Identity, members and views
 
 **There are no passwords.** Telegram authenticates every person who talks to
-the bot, and it signs the identity it hands to the Mini App. "Login" is: which
-Telegram account is this, and which household is it a member of.
+the bot, and it signs the identity it hands to the Mini App. On a laptop,
+Google can vouch for the person instead, through a Google account linked to
+the member once, from the chat. "Login" is: which Telegram or Google account
+is this, which member is it linked to, and which household is that member in.
 
 | Where | How the member is identified |
 | --- | --- |
 | The chat | Every update carries `from.id`, a stable numeric Telegram user id. The webhook already accepts only updates signed by Telegram (secret token); the old single-chat allowlist becomes a `Member` lookup. A known id acts as that member; an unknown id gets silence. |
 | The Mini App | Telegram signs `initData` (an HMAC over the user and a timestamp, keyed by the bot token). The Function URL checks the signature and the age, looks up the member, and serves only what that member may see. |
+| The web app in a browser | Either the Telegram Login Widget (one tap, confirmed in the Telegram app on the phone) or Sign in with Google (the Gmail account linked to the member). Both hand the api Lambda a signed proof of identity, which it verifies and maps to the member before setting the session cookie (§9.3). A Google account that is not linked to any member is refused, whatever its address. |
 | The wealth tracker, later | Amazon Cognito (email, passkey, Google, MFA; free at this scale). A one-time code shown on the web and sent to the bot ties the Cognito user to the member. Not a priority now; nothing in the bot depends on it. |
 
 **Joining.** The owner sends `/invite` (optionally `/invite viewer`). The bot
@@ -264,6 +267,18 @@ replies with a one-time deep link, `t.me/<bot>?start=<token>`, single use,
 on their own phone, becomes a member, and gets the three setup questions. The
 owner removes a member with `/members`; a member who changes Telegram account
 is simply re-invited. Private chats only: the bot ignores groups.
+
+**Linking a Google account.** Each member links one Google account, from
+their own phone, so that both identities are proven by the person who owns
+them: on the web, Sign in with Google for an account not yet linked shows a
+six-digit code that lasts ten minutes; the member sends `/link <code>` to the
+bot from their own Telegram chat; the bot stores Google's stable account id
+(`sub`) and the address on that member and confirms in both places. The
+owner can also link on a member's behalf by address from `/members`, and
+unlink from the same place; unlinking logs that account out everywhere.
+`sub` is the key, the address is for display, so a renamed Gmail still works
+and an address handed to someone else does not. Every link, unlink and web
+login is an audit row.
 
 **Roles.**
 
@@ -578,9 +593,10 @@ phone and a laptop screen. It has two front doors to the same pages:
 | Door | Who opens it | How the member is identified |
 | --- | --- | --- |
 | **Mini App**, from the `web_app` button on the Portfolio card | a member on their phone, inside Telegram | Telegram's signed `initData`, checked for signature and age by the api Lambda |
-| **Browser**, at the app's own address | a member on a laptop | the Telegram Login Widget: one tap, confirmed in the Telegram app on their phone, no password; the signed payload is checked by the api Lambda (HMAC keyed by the bot token, five-minute freshness) |
+| **Browser**, at the app's own address, with Telegram | a member on a laptop | the Telegram Login Widget: one tap, confirmed in the Telegram app on their phone, no password; the signed payload is checked by the api Lambda (HMAC keyed by the bot token, five-minute freshness) |
+| **Browser**, the same address, with Google | a member on a laptop, or anywhere Telegram is not to hand | Sign in with Google (Google Identity Services): the browser gets an ID token from Google, posts it to the api Lambda, which verifies the signature against Google's published keys, the audience (our client id), the expiry and that the address is verified, then finds the member linked to that Google account (§4.5). Nothing else from Google is used or stored. |
 
-Either door ends the same way: the api Lambda looks up the member and sets a
+Every door ends the same way: the api Lambda looks up the member and sets a
 signed session cookie (member, household, role, expiry; thirty days on a
 laptop, a day inside Telegram; `HttpOnly`, `Secure`, `SameSite=Lax`). From
 then on a CloudFront Function checks the cookie's signature and expiry at the
@@ -677,7 +693,7 @@ record beats the baseline for 8 weeks, then in weekday cards.
 
 The Valuation and Position tables are the record of what the holdings are
 worth. When the wealth tracker is stitched on, its backend reads them through
-a read-only role, its users are linked to members through Cognito (§4.5), and
+a read-only role, its users are linked to members through the Google account already linked to each member (§4.5), with Cognito federating to Google if the tracker needs its own login, and
 maps them to its `Holding` shape (`id`, `name`, `type: Investment`, `entity`,
 `owners`, `ccy`, `val`, `invVal`): `val` is the latest `value_gbp` (or
 `price_ccy` value when the tracker shows GBP/INR), `invVal` the sum of
@@ -714,8 +730,13 @@ say keep; privacy mode hides pounds in every card and in the Mini App; the
 Mini App serves nothing without a valid, recent `initData` signature.
 
 The web app adds: the Telegram Login payload is verified (HMAC keyed by the
-SHA-256 of the bot token, `auth_date` within five minutes) before any cookie
-is set; the session cookie is signed, `HttpOnly`, `Secure`, `SameSite=Lax`,
+SHA-256 of the bot token, `auth_date` within five minutes) and a Google ID
+token is verified (RS256 signature against Google's JWKS, cached a day;
+issuer; audience equal to our OAuth client id; expiry; `email_verified`;
+the double-submit CSRF cookie Google's button sets) and mapped to a member
+by `sub`, never by address, before any cookie is set; Google's OAuth client
+id is configuration, not a secret, and no Google client secret exists
+because the ID-token flow needs none; the session cookie is signed, `HttpOnly`, `Secure`, `SameSite=Lax`,
 and checked at the CloudFront edge on every request; the signing secret
 lives in SSM and the CloudFront KeyValueStore, put there by a command, never
 by Terraform (the same reason the tracker's auth function is unmanaged), and
@@ -759,7 +780,7 @@ since data feeds are shared but model calls are not.
 | Front end | Telegram rich messages + PNG charts + one read-only web app, as a Mini App in Telegram and in a laptop browser | Simple by default, technical on tap, interactive when wanted; the laptop gets the audit log and the agent's activity |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
-| Identity | Telegram user id in the chat, signed `initData` in the Mini App, the Telegram Login Widget in a laptop browser, invites by one-time link; Cognito only when the wealth tracker is stitched on | No passwords to build, phish or forget; one identity for the family on every screen |
+| Identity | Telegram user id in the chat, signed `initData` in the Mini App, the Telegram Login Widget or Sign in with Google in a laptop browser, invites by one-time link; Cognito only when the wealth tracker is stitched on | No passwords to build, phish or forget; one person, two proofs of who they are, the same member either way |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 | Claude access | The Anthropic API with the key in SSM and a Console spend limit | Same per-token prices as Bedrock, no model-access form, and the server tools and Batches come with it |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
@@ -767,7 +788,8 @@ since data feeds are shared but model calls are not.
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
-| Web app auth | A signed session cookie checked by a CloudFront Function at the edge, issued after `initData` or the Login Widget is verified; membership re-checked by the api Lambda on every call | Nothing is served to a stranger, not even the page shell; nothing new to administer |
+| Web app auth | A signed session cookie checked by a CloudFront Function at the edge, issued after `initData`, the Login Widget or a Google ID token is verified; membership re-checked by the api Lambda on every call | Nothing is served to a stranger, not even the page shell; nothing new to administer |
+| Google sign-in | Google Identity Services directly, the ID token verified in the api Lambda, one Google account linked per member by a code typed into the chat; not Cognito | One script tag and one JWT check, no user pool, no hosted UI, no client secret; Google already enforces its own two-step verification; Cognito can federate to the same accounts later if the tracker needs it |
 
 ## 17. Open questions
 
@@ -776,5 +798,6 @@ since data feeds are shared but model calls are not.
 - Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed).
 - Rich messages: confirm block types and limits against the official Bot API changelog before relying on tables.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
+- A Google OAuth client id per environment, created in the Google Cloud Console with the app's hostname as an authorised JavaScript origin; the consent screen needs only the basic profile and email scopes, so no Google verification review applies.
 - The Telegram Login Widget needs the app's domain set with `/setdomain` in BotFather; confirm the CloudFront default hostname is accepted (it is a plain hostname, so it should be), or whether a custom domain is wanted.
 - Whether the CloudFront free flat-rate plan covers a second distribution in the account; if not, the web app goes under a path on the tracker's distribution with its own cache behaviours.
