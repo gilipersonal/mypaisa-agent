@@ -71,6 +71,16 @@ What you hold, recorded through the chat, with no analysis yet.
   / Edit / Cancel card; nothing saved without Confirm.
 - Plain-English transactions ("I put £200 into Balanced") via a strict
   `propose_change` tool and Confirm.
+- Guided flows with buttons for logging a transaction, adding a holding,
+  updating a valuation and changing a setting: one question per message,
+  the same message edited in place, fields already given skipped; the
+  `ask_user` tool and the `PendingAction` row with a day's expiry.
+- The audit log from day one: an `AuditEvent` row in the same transaction
+  as every record change, hash-chained; `get_audit` and "what changed this
+  week?" in the chat.
+- Observability from the first Lambda: a `RunRecord` per run with model
+  calls, tokens, cost and tool calls; Powertools Logger, Tracer and Metrics
+  wired in the handler base; the error alarm per function to the chat.
 - Portfolio card as a table (rich message or HTML), valued from the last
   user-supplied figures, with the Household / Me switch and, for the owner, a
   tab per member.
@@ -78,12 +88,16 @@ What you hold, recorded through the chat, with no analysis yet.
 **Tests:** extraction against three real factsheets and three screenshots
 (fixtures with expected JSON); webhook security; the invite flow (single
 use, expiry, wrong household); the isolation rules; the Confirm state
-machine; schema migration on a v0 item.
+machine; the guided flows (resume after a day, expiry, skipping fields
+already given, two members mid-flow at once); a property test that every
+write produces exactly one audit row and the chain verifies; a `RunRecord`
+on success and on failure; schema migration on a v0 item.
 
 **Exit:** you and your wife are members from your own phones; each of you
 has added holdings from the chat alone; each sees their own detail and the
 household overview, and you see hers; a screenshot updates a member's
-valuations and both views change.
+valuations and both views change; "what changed this week?" lists every
+change either of you made, with who and when.
 
 **Cost:** about £0.50 (a few Claude calls).
 
@@ -169,24 +183,44 @@ your two funds shows the shared holdings and currency exposure.
 
 ---
 
-## Phase 5 — Mini App dashboard
+## Phase 5 — The web app: dashboard, audit log, activity (read-only, behind login)
+
+One static app in `web/`, opened as a Mini App from the chat and in a laptop
+browser, as `ARCHITECTURE.md` §9.3.
 
 - Built from the five artboards in `docs/design/dashboard/` (Overview, a
-  holding, Overlap, Scorecard, the light theme).
-- Static page on the wealth tracker's S3 + CloudFront under a new path, in
-  the Nocturne look, with lightweight-charts: portfolio curve, per-holding
-  history with stance markers, overlap map, scorecard.
-- Function URL route that validates Telegram's `initData` (HMAC, max age),
-  resolves the member, and serves read-only JSON limited to what that member
-  may see; the Household / Me / member switch in the page.
-- `web_app` button on the Portfolio card.
+  holding, Overlap, Scorecard, the light theme), with a two-column layout at
+  laptop width; the Nocturne look, lightweight-charts.
+- Two new pages: **Audit** (the §4.6 log, filtered by member, record and
+  date, before and after, a link to the run) and **Activity** (the §10 runs
+  with their model calls, tokens, cost, tools and outcome; the schedule
+  board with last and next run and price freshness; this month's spend
+  against the cap; the last seven days of alarms).
+- The `api` Lambda: GET routes only; `initData` validation and Telegram
+  Login Widget verification; the signed session cookie; membership and role
+  checked on every call; JSON limited to what that member may see.
+- Hosting in Terraform: the app's S3 bucket and CloudFront distribution per
+  environment; the api Lambda's Function URL (IAM auth) as the `/api/*`
+  origin through CloudFront; the CloudFront Function that checks the cookie
+  at the edge, with the signing secret in KeyValueStore put there by a
+  command; security headers.
+- `web_app` button on the Portfolio card; a `/web` command that sends the
+  laptop address.
+- You: `/setdomain` in BotFather with the app's hostname, once per
+  environment, and two-step verification on each member's Telegram account.
 
-**Tests:** `initData` validation (valid, expired, tampered, a member of
-another household); JSON shape; the view a plain member gets versus the
-owner; Playwright screenshot of the page in both themes.
+**Tests:** `initData` and Login Widget verification (valid, expired,
+tampered, a member of another household, a removed member); the cookie check
+in the CloudFront Function through `aws cloudfront test-function`; every
+route against each role; JSON shape; the Audit page showing a change made in
+the chat within a minute; Playwright screenshots at phone and laptop widths
+in both themes.
 
-**Exit:** the dashboard opens from the chat on each of your phones and shows
-the same numbers as that member's cards.
+**Exit:** you open it on your laptop, log in with Telegram, and see the same
+numbers as the chat; the Audit page shows the change you just made from the
+chat, with who and when; the Activity page shows the run that made it, with
+what it cost; your wife sees her own view from her phone; a removed member
+cannot get in.
 
 **Cost:** £0.
 
@@ -292,10 +326,10 @@ What is ported from where, so the work can be checked against the original.
 | 2 Prices and engine | 5 days | Weeks 2–3 |
 | 3 Briefs, alerts, charts, technical mode | 3 days | Week 4 |
 | 4 Chat, cards, scenarios | 4 days | Weeks 5–6 |
-| 5 Mini App | 3 days | Week 7 |
-| 6 Track record | 2 days, then runs on its own | Week 7 |
-| 7 News and sentiment | 3 days | Week 8 |
-| 8 Stances live | after 8 weeks of shadow | Week 16+ |
+| 5 Web app: dashboard, audit, activity | 5 days | Weeks 7–8 |
+| 6 Track record | 2 days, then runs on its own | Week 8 |
+| 7 News and sentiment | 3 days | Week 9 |
+| 8 Stances live | after 8 weeks of shadow | Week 17+ |
 | 9 Tracker integration | 1–2 days | When wanted |
 
 ---
@@ -311,7 +345,8 @@ cd infra/terraform && terraform fmt -check && terraform validate
 
 Plus: golden tests for any engine change; a card change ships with both its
 simple and technical rendering; no secret anywhere; cost stated when a paid
-API is touched.
+API is touched; every new write path produces its audit row and every new
+handler writes its `RunRecord`, both covered by tests.
 
 ---
 
@@ -328,4 +363,6 @@ API is touched.
 | Alert fatigue | Weekly red budget, cooldowns, repeat filter |
 | Cost overrun | Budgets alert and stop; daily token ceiling; `/pause` |
 | Prompt injection via news or a PDF | Untrusted text marked; no dangerous tools exist; Confirm on every write |
+| A session cookie stolen from a laptop | Signed, `HttpOnly`, `Secure`, thirty-day expiry; the API is read-only; membership re-checked on every call; the owner removes a member or rotates the secret |
+| Observability that costs more than the app | Ten metrics, one dashboard, sampled traces, fourteen-day logs, `RunRecord` rows that expire after ninety days |
 | OIDC trust mismatch on first deploy | Pin this repository's ids; read CloudTrail |

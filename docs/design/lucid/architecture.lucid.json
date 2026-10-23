@@ -12,7 +12,7 @@
                         "x": 40,
                         "y": 440,
                         "w": 520,
-                        "h": 900
+                        "h": 1180
                     },
                     "containerTitle": {
                         "text": "Household \u00b7 Telegram, each member on their own phone"
@@ -87,10 +87,10 @@
                         "x": 1260,
                         "y": 480,
                         "w": 840,
-                        "h": 640
+                        "h": 680
                     },
                     "containerTitle": {
-                        "text": "agent \u03bb \u00b7 the one agent \u00b7 Claude tool loop \u00b7 on every message and on schedule"
+                        "text": "agent \u03bb \u00b7 the one agent \u00b7 Claude tool loop \u00b7 asks before it acts"
                     },
                     "assistedLayout": false,
                     "style": {
@@ -111,11 +111,11 @@
                     "boundingBox": {
                         "x": 960,
                         "y": 1220,
-                        "w": 1260,
+                        "w": 1400,
                         "h": 400
                     },
                     "containerTitle": {
-                        "text": "DynamoDB \u00b7 one on-demand table per environment \u00b7 partition key = household \u00b7 TTL on chat, dedupe, scores"
+                        "text": "DynamoDB \u00b7 one on-demand table per environment \u00b7 partition key = household \u00b7 audit rows hash-chained \u00b7 TTL on chat, dedupe, runs"
                     },
                     "assistedLayout": false,
                     "style": {
@@ -280,6 +280,28 @@
                     }
                 },
                 {
+                    "id": "h_web",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 140,
+                        "y": 1380,
+                        "w": 320,
+                        "h": 120
+                    },
+                    "text": "Laptop browser\nread-only web app \u00b7 audit \u00b7 activity\nTelegram Login, no password",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#5D5294",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
                     "id": "a_ecr",
                     "type": "namedShape",
                     "className": "ArchAmazonElasticContainerRegistryAWS2024",
@@ -289,7 +311,7 @@
                         "w": 140,
                         "h": 140
                     },
-                    "text": "ECR\none arm64 image\n7 handlers"
+                    "text": "ECR\none arm64 image\n8 handlers"
                 },
                 {
                     "id": "a_ssm",
@@ -313,7 +335,7 @@
                         "w": 140,
                         "h": 140
                     },
-                    "text": "CloudWatch\nlogs \u00b7 alarms\ndead man's switch"
+                    "text": "CloudWatch + X-Ray\nlogs \u00b7 traces \u00b7 alarms\ndashboard"
                 },
                 {
                     "id": "a_budget",
@@ -343,7 +365,7 @@
                     "id": "a_url",
                     "type": "rectangle",
                     "boundingBox": {
-                        "x": 740,
+                        "x": 720,
                         "y": 900,
                         "w": 220,
                         "h": 120
@@ -414,9 +436,9 @@
                         "x": 1560,
                         "y": 800,
                         "w": 460,
-                        "h": 240
+                        "h": 280
                     },
-                    "text": "16 strict tools\nget_portfolio \u00b7 get_holding \u00b7 get_signals \u00b7 get_history \u00b7 get_macro \u00b7 run_scenario \u00b7 get_events \u00b7 get_sentiment \u00b7 get_stances \u00b7 get_scorecard\nweb_search \u00b7 web_fetch \u00b7 extract_document\npropose_change \u00b7 log_decision \u00b7 render_chart",
+                    "text": "18 strict tools\nget_portfolio \u00b7 get_holding \u00b7 get_signals \u00b7 get_history \u00b7 get_macro \u00b7 run_scenario \u00b7 get_events \u00b7 get_sentiment \u00b7 get_stances \u00b7 get_scorecard \u00b7 get_audit\nweb_search \u00b7 web_fetch \u00b7 extract_document \u00b7 ask_user\npropose_change \u00b7 log_decision \u00b7 render_chart",
                     "style": {
                         "fill": {
                             "type": "color",
@@ -446,12 +468,24 @@
                     "type": "namedShape",
                     "className": "ArchAmazonCloudFrontAWS2024",
                     "boundingBox": {
-                        "x": 740,
+                        "x": 720,
                         "y": 1220,
                         "w": 140,
                         "h": 140
                     },
-                    "text": "CloudFront + S3\nMini App static"
+                    "text": "CloudFront + S3"
+                },
+                {
+                    "id": "a_api",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 720,
+                        "y": 1480,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "api \u03bb\nread-only JSON\naudit \u00b7 activity"
                 },
                 {
                     "id": "d1",
@@ -459,10 +493,10 @@
                     "boundingBox": {
                         "x": 1040,
                         "y": 1300,
-                        "w": 230,
+                        "w": 200,
                         "h": 240
                     },
-                    "text": "Household\n\nHousehold \u00b7 Portfolio\nMember (owner / member / viewer)\nInvite \u00b7 Account",
+                    "text": "Household\n\nHousehold \u00b7 Portfolio\nMember \u00b7 Invite\nAccount",
                     "style": {
                         "fill": {
                             "type": "color",
@@ -479,12 +513,12 @@
                     "id": "d2",
                     "type": "rectangle",
                     "boundingBox": {
-                        "x": 1330,
+                        "x": 1300,
                         "y": 1300,
-                        "w": 230,
+                        "w": 200,
                         "h": 240
                     },
-                    "text": "Holdings\n\nInstrument (kind profile)\nPosition \u00b7 Valuation\nDocument \u00b7 Transaction",
+                    "text": "Holdings\n\nInstrument\nPosition \u00b7 Valuation\nDocument \u00b7 Transaction",
                     "style": {
                         "fill": {
                             "type": "color",
@@ -501,12 +535,12 @@
                     "id": "d3",
                     "type": "rectangle",
                     "boundingBox": {
-                        "x": 1620,
+                        "x": 1560,
                         "y": 1300,
-                        "w": 230,
+                        "w": 200,
                         "h": 240
                     },
-                    "text": "Analysis\n\nSignal (per instrument)\nStance (per position)\nMacroRegime \u00b7 Scorecard",
+                    "text": "Analysis\n\nSignal \u00b7 Stance\nMacroRegime\nScorecard",
                     "style": {
                         "fill": {
                             "type": "color",
@@ -523,12 +557,34 @@
                     "id": "d4",
                     "type": "rectangle",
                     "boundingBox": {
-                        "x": 1910,
+                        "x": 1820,
                         "y": 1300,
-                        "w": 230,
+                        "w": 200,
                         "h": 240
                     },
-                    "text": "Per member and ops\n\nChatTurn \u00b7 Decision\nAlertState \u00b7 Preferences\nSentimentIndex \u00b7 ArticleScore\nWebhookSeen",
+                    "text": "Member and chat\n\nChatTurn \u00b7 Decision\nAlertState \u00b7 Preferences\nPendingAction",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C925D1",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "d5",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 2080,
+                        "y": 1300,
+                        "w": 200,
+                        "h": 240
+                    },
+                    "text": "Audit and ops\n\nAuditEvent (hash chain)\nRunRecord\nSentimentIndex \u00b7 ArticleScore\nWebhookSeen",
                     "style": {
                         "fill": {
                             "type": "color",
@@ -546,7 +602,7 @@
                     "type": "namedShape",
                     "className": "ResAmazonEventBridgeSchedulerAWS2024",
                     "boundingBox": {
-                        "x": 740,
+                        "x": 720,
                         "y": 1760,
                         "w": 140,
                         "h": 140
@@ -706,7 +762,7 @@
                     "type": "rectangle",
                     "boundingBox": {
                         "x": 40,
-                        "y": 1420,
+                        "y": 1700,
                         "w": 520,
                         "h": 620
                     },
@@ -991,6 +1047,108 @@
                     ]
                 },
                 {
+                    "id": "l26",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "h_web",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_cf",
+                        "position": {
+                            "x": 0,
+                            "y": 0.85
+                        }
+                    },
+                    "stroke": {
+                        "color": "#5D5294",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "Telegram Login",
+                            "position": 0.35,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l27",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_cf",
+                        "position": {
+                            "x": 1,
+                            "y": 0.7
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_api",
+                        "position": {
+                            "x": 1,
+                            "y": 0.3
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "/api/* \u00b7 edge auth",
+                            "position": 0.5,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l28",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_api",
+                        "position": {
+                            "x": 1,
+                            "y": 0.7
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "c_ddb",
+                        "position": {
+                            "x": 0,
+                            "y": 0.895
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C925D1",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "reads",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
                     "id": "l9",
                     "lineType": "straight",
                     "endpoint1": {
@@ -1143,7 +1301,7 @@
                         "style": "arrow",
                         "shapeId": "c_ddb",
                         "position": {
-                            "x": 0.595,
+                            "x": 0.536,
                             "y": 1
                         }
                     },
@@ -1177,7 +1335,7 @@
                         "style": "arrow",
                         "shapeId": "c_ddb",
                         "position": {
-                            "x": 0.3,
+                            "x": 0.28,
                             "y": 0
                         }
                     },
@@ -1211,7 +1369,7 @@
                         "style": "arrow",
                         "shapeId": "c_ddb",
                         "position": {
-                            "x": 0.97,
+                            "x": 0.95,
                             "y": 1
                         }
                     },

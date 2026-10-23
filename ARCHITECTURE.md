@@ -3,9 +3,11 @@
 A private analyst for one household's investments, run entirely from a
 Telegram chat by someone who is not a finance person. It keeps the record of
 what is held and what it is worth, computes what moved and why, takes a stance
-with a confidence score, explains it plainly, goes technical on request, and
-grades itself. It runs on AWS in account `545595341442`, `us-east-1`, with
-Claude through the Anthropic API. It never trades.
+with a confidence score, explains it plainly, goes technical on request, asks
+before it acts, and grades itself. A read-only web app behind a login shows
+the same figures on a laptop, with the audit log of every change and a record
+of what the agent did and spent. It runs on AWS in account `545595341442`,
+`us-east-1`, with Claude through the Anthropic API. It never trades.
 
 v2 folds in what `docs/RESEARCH.md` found in the Agentic Trading Desk and
 Agent Toolbelt: the desk's deterministic indicator and pillar engine and its
@@ -21,7 +23,7 @@ Animated version (v3 of the page, matching this document):
 in `docs/design/`.
 
 The component diagram, every service, the one agent and the DynamoDB entities
-in detail, is a Lucidchart document: <https://lucid.app/lucidchart/abff9766-f522-4134-b559-0028eecb78fc/edit>
+in detail, is a Lucidchart document: <https://lucid.app/lucidchart/c35c6ddd-69ca-4423-aeb1-2491b75a4678/edit>
 (private to the account; share from the document's menu). Its rendered image
 and the import JSON it was built from are in `docs/design/lucid/`.
 
@@ -53,6 +55,8 @@ Status: design only.
 | Send a factsheet PDF | Reads it, shows a card: name, ISIN, cost, what it holds, where it invests; you tap Confirm |
 | Send a screenshot of your Monzo valuations | Reads the values, matches them to holdings, updates the records, shows a before/after card; you tap Confirm |
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
+| Type "I want to log a transaction" | Asks one thing at a time, with buttons: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
+| Open the web app on your laptop | Log in with Telegram (a tap in the Telegram app, no password); the same dashboard, plus the audit log of every change and what the agent did and spent; read-only |
 | Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
 | Tap **Today** | The morning brief: what moved, why, anything to do |
 | Tap a holding | Its card: value and history chart, stance with confidence and horizon, "Why?", "Technical", "What if?" |
@@ -77,7 +81,8 @@ document linked above.
 flowchart LR
   you([You · Telegram app])
   tg[Telegram Bot API<br/>rich messages · buttons · files]
-  mini[Mini App dashboard<br/>static, S3 + CloudFront]
+  mini[Mini App dashboard<br/>inside Telegram]
+  web[Web app<br/>laptop browser, behind login]
   subgraph aws[AWS us-east-1 · Terraform]
     url[Function URL]
     hook[webhook λ]
@@ -87,9 +92,12 @@ flowchart LR
     news[news λ · RSS, events]
     score[score λ · sentiment]
     docs[docs λ · factsheets, screenshots]
+    api[api λ · read-only JSON<br/>dashboard · audit · activity]
+    cf[CloudFront + edge function<br/>static app · /api/* · cookie check]
     sched[EventBridge Scheduler<br/>Europe/London]
     ddb[(DynamoDB · registry, state)]
-    s3[(S3 · prices, docs, charts, Mini App)]
+    s3[(S3 · prices, docs, charts, web app)]
+    cw[CloudWatch + X-Ray<br/>logs · traces · metrics · alarms]
     ssm[(SSM · keys)]
   end
   br[Anthropic API<br/>Haiku / Sonnet / Opus 5.5<br/>web search · batches]
@@ -99,9 +107,12 @@ flowchart LR
 
   you <--> tg
   you <--> mini
+  you <--> web
   tg --> url --> hook -- async --> agent
   agent --> tg
-  mini -- initData --> url
+  mini -- initData --> cf
+  web -- Telegram Login --> cf
+  cf --> api --> ddb
   sched --> ingest & news & score & agent
   ingest --> mkt & ecb
   ingest --> s3 --> engine --> ddb
@@ -114,8 +125,10 @@ flowchart LR
   score --> br
 ```
 
-One container image, seven handlers. The agent Lambda is the only one that
-talks to you; every other Lambda produces data it reads.
+One container image, eight handlers. The agent Lambda is the only one that
+talks to you in the chat. The api Lambda is the only one the web app talks
+to, and it can only read. Every other Lambda produces data they read, and
+every one of them writes a `RunRecord` saying what it did (§10).
 
 ---
 
@@ -142,6 +155,9 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. |
 | **SentimentIndex**, **ArticleScore**, **WebhookSeen** | per portfolio or global | |
+| **PendingAction** | `member_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `settings` · `confirm`), `step`, `collected` (the answers so far), `message_id`, `expires_at` (24 h) | The state of a guided flow: what the bot is waiting for from this member. The next message or tap resumes it; expiry clears it. |
+| **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `agent_proposal` · `schedule` · `migration`), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
+| **RunRecord** | `run_id`, `function`, `trigger` (`message` · `callback` · `schedule:<name>` · `alarm`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output and cached tokens, cost, ms), `tool_calls[]` (name, ms, ok, error), `messages_sent`, `outcome`, `error?` | What one run of any Lambda did and cost. 90-day TTL. The web app's Activity page and the cost guard rails read these. See §10. |
 
 Signals and macro regimes are per instrument and shared by everyone who holds
 it; stances are per position, because the horizon, the drift from target and
@@ -278,6 +294,30 @@ unrelated households using a bot that says "ADD, 64% confidence" starts to
 look like investment advice to the public, which is regulated in the UK. The
 model supports more households; using it that way is a separate decision
 about wording and scope, not a technical one.
+
+### 4.6 The audit log
+
+Every change to the records leaves a row. Not a log line that may or may not
+be there, a row in the same DynamoDB transaction as the change, so a change
+without its audit row cannot happen. Each row says who (the member, or the
+system job), when, through what (a typed sentence, a button, a screenshot, a
+factsheet, a proposal from the agent, a schedule), which record, what it was
+before and what it is after, and which run made it. Rows are chained by hash,
+the same way the stance ledger is, so a deleted or edited row breaks the chain
+and the weekly check says so.
+
+What counts as a change: holdings, positions, transactions, accounts,
+members and invites, preferences, and every valuation a person supplied. The
+nightly computed valuations and signals are a time series, not audit rows;
+they are already dated and sourced, and logging each one would bury the rows
+that matter.
+
+Who sees what follows the roles in §4.5: a member sees the rows for their own
+accounts and for the household-level records; the owner sees every row. The
+rows are readable in two places: the Audit page of the web app, with filters
+by member, record and date, and from the chat with a question such as "what
+changed this week?", which the agent answers through `get_audit`. Rows are
+never deleted; at a few hundred a year they cost nothing to keep.
 
 ---
 
@@ -416,6 +456,23 @@ Anthropic's server-side web search and web fetch (with citations) serve the
 through the Message Batches API at half price. Refusal or error falls back to
 the plain template.
 
+**It asks before it acts, and asks when it is unsure.** The agent behaves like
+a careful assistant rather than a form. When a request is missing something
+it needs, it asks for that one thing, with buttons when the answer is from a
+short list (which holding, bought or sold, today or yesterday) and a typed
+reply otherwise. It never asks for what it can look up, and it skips every
+question the sentence already answered: "I put £200 into Balanced today" goes
+straight to the Confirm card. Every write is shown before it is saved. A
+change that touches several records, such as a rebalance, is first proposed
+as a plan with one Confirm, then carried out step by step, each step audited.
+It also asks on its own account: on the first of the month whether the usual
+contribution went in, after 35 days without a valuation whether a screenshot
+is due, and when two members hold the same instrument whether a joint account
+is meant. The mechanics are the `ask_user` tool, which ends the turn with a
+question and its buttons, and a `PendingAction` row that records what the
+bot is waiting for; the next message or tap from that member resumes the
+flow, and a day of silence clears it.
+
 **Borrowed patterns:** the bull/bear debate as two calls plus a judge for any
 stance above 70% confidence and for the weekly review; a reflection step that
 reads the last four weeks of stances and their grades before writing the
@@ -426,7 +483,9 @@ does not repeat itself.
 `get_history(id, days)`, `get_macro`, `run_scenario`, `get_events`,
 `get_sentiment`, `get_stances`, `get_scorecard`, `web_search` and `web_fetch`
 (Anthropic's server tools), `extract_document(s3_key, schema)`, `propose_change(entity,
-patch)` (saved only after Confirm), `log_decision`, `render_chart(spec)`.
+patch)` (saved only after Confirm), `log_decision`, `render_chart(spec)`, `ask_user(question, options[])` (ends
+the turn with a question; the answer resumes it through `PendingAction`) and
+`get_audit(filter)` (what changed, for "what did I change last week?").
 
 **Guardrails in code, not prompt:** no tool can trade, spend beyond a search
 query, delete data, or message anyone but your chat. Protected positions are
@@ -457,6 +516,12 @@ every scheduled run checks first.
   has a one-line explanation behind a button.
 - **Two modes**: `simple` (default) and `technical` (every card expanded).
   Switch per message with the button or globally with `/technical`.
+- **Guided flows**: logging a transaction, adding a holding, updating a
+  valuation and changing a setting each run as a short series of questions
+  with buttons, one per message, editing the same message in place so the
+  chat stays tidy. Anything already said is skipped. Long lists (many
+  holdings) become a short list plus "More" and "Type the name". A flow that
+  gets no answer for a day is dropped quietly.
 
 ### 9.2 Example cards
 
@@ -487,21 +552,115 @@ Your track record on HOLD calls: 14 made, 11 held up.
    Data: yfinance 0P…L ✓ · ECB ✓ · BlackRock page ✓ (22 Oct)
 ```
 
-### 9.3 Mini App dashboard
+A guided flow, each reply editing the same message:
 
-A static page (the wealth tracker's Nocturne look, lightweight-charts) hosted
-on the existing S3 + CloudFront, opened by a `web_app` button. It shows the
-portfolio curve, each holding's history with the stance history drawn on it,
-the overlap map, and the scorecard, with the same Household / Me / member
-switch as the card. It reads JSON from the Function URL after the Lambda
-validates Telegram's signed `initData` and resolves the member; it serves
-nothing the member may not see. No write path; every change still goes
-through a card and a Confirm tap in the chat. Each member opens it from their
-own phone and sees their own view.
+```
+You:  I want to log a transaction
+Bot:  What kind?                      [Bought] [Sold] [Dividend] [Fee]
+You:  (Bought)
+Bot:  Into which holding?             [Balanced] [NASDAQ 100] [Robotics]
+                                      [Silver] [Something new]
+You:  (Balanced)
+Bot:  How much, in pounds?            [£100] [£200] [£500] [Type an amount]
+You:  (£200)
+Bot:  When?                           [Today] [Yesterday] [Pick a date]
+You:  (Today)
+Bot:  Bought £200 of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.57
+      [Confirm] [Edit] [Cancel]
+```
+
+### 9.3 The web app: on a laptop and inside Telegram
+
+One static app (the wealth tracker's Nocturne look, lightweight-charts),
+built from the artboards in `docs/design/dashboard/` and laid out for both a
+phone and a laptop screen. It has two front doors to the same pages:
+
+| Door | Who opens it | How the member is identified |
+| --- | --- | --- |
+| **Mini App**, from the `web_app` button on the Portfolio card | a member on their phone, inside Telegram | Telegram's signed `initData`, checked for signature and age by the api Lambda |
+| **Browser**, at the app's own address | a member on a laptop | the Telegram Login Widget: one tap, confirmed in the Telegram app on their phone, no password; the signed payload is checked by the api Lambda (HMAC keyed by the bot token, five-minute freshness) |
+
+Either door ends the same way: the api Lambda looks up the member and sets a
+signed session cookie (member, household, role, expiry; thirty days on a
+laptop, a day inside Telegram; `HttpOnly`, `Secure`, `SameSite=Lax`). From
+then on a CloudFront Function checks the cookie's signature and expiry at the
+edge on every request, before anything reaches S3 or the Lambda, and sends a
+browser without one to the login page. The login page, the Mini App entry and
+the static assets are the only public paths, and they contain no data. The
+api Lambda checks membership and role again on every call, so removing a
+member with `/members` locks them out at once, cookie or no cookie.
+
+The pages, all read-only:
+
+- **Overview, a holding, Overlap, Scorecard**: as the artboards, with the
+  Household / Me / member switch from §4.5. Two columns at laptop width.
+- **Audit**: the audit log of §4.6, newest first, filtered by member, record
+  and date; each row shows before and after and links to the run that made
+  it.
+- **Activity**: what the agent and the jobs did (§10). Each run with its
+  trigger, the model calls and their tokens and cost, the tools it called
+  and how long they took, what it sent, and any error; a board of the
+  scheduled jobs with their last and next run and the freshness of each
+  holding's price; this month's Claude spend against the cap; alarms from
+  the last seven days.
+
+There is no write path. The api Lambda has only GET routes, the app has no
+form that posts, and every change still goes through a card and a Confirm tap
+in the chat, where it is audited. Privacy mode hides pounds here too. The app
+lives on its own S3 bucket and CloudFront distribution per environment (the
+same free flat-rate plan as the tracker), with the api Lambda's Function URL
+as a second origin under `/api/*`, reachable only through CloudFront.
 
 ---
 
-## 10. Notifications, news, calls
+## 10. Observability: what the agent did, and what it cost
+
+Three readers, three surfaces, one source of truth.
+
+| Reader | Surface | What it answers |
+| --- | --- | --- |
+| You, in the web app | the Activity page (§9.3) and the Audit page (§4.6) | What did the bot do today, what did it call, what did it cost, what changed and who changed it |
+| Whoever operates it, in AWS | one CloudWatch dashboard per environment, Logs Insights, X-Ray | Where did a run fail, which tool is slow, is a schedule late |
+| The chat | alarms delivered as messages to the owner | Something needs a person: a job did not run, spend is near the cap, a feed is stale |
+
+**The source of truth is the `RunRecord`.** Every Lambda, not only the
+agent, writes one row per run when it finishes, success or failure: the
+trigger, start and end, every model call with its model, input, output and
+cached tokens and the cost computed from the price table, every tool call
+with its duration and outcome, what was sent to whom, the outcome, and the
+error if there was one. The agent also keeps the inputs and outputs of each
+tool call, truncated, so "why did it say that" has an answer. Token counts
+come from the API's own `usage` fields, so the cost shown is what will be
+billed, reconciled weekly against the Anthropic Console. Rows expire after
+ninety days.
+
+**Logs, traces, metrics** come from Lambda Powertools, already in the stack:
+
+- Structured JSON logs with the `run_id`, the member and the Telegram update
+  id on every line, kept fourteen days, with saved Logs Insights queries for
+  errors by function, slowest tool, tokens by day.
+- One X-Ray trace per run, from the webhook through the agent to the
+  Anthropic API, DynamoDB, S3 and Telegram, so a slow brief shows which hop
+  was slow. Within the free tier at this volume.
+- Ten custom metrics, the free allowance: runs, errors, model cost per day,
+  tokens per day, tool latency, Telegram send failures, price freshness in
+  days, schedule lateness, audit chain check, pending flows. One dashboard
+  per environment shows them; the first three dashboards are free.
+
+**Alarms**, each delivered to the owner's chat: an error in any function; the
+07:45 dead man's switch when the brief has not gone out; daily model cost
+over the ceiling; any holding's price older than two days; a burst of
+rejected webhook calls; the audit chain failing its weekly check. Alarms are
+also `RunRecord` rows of trigger `alarm`, so the Activity page lists them.
+
+**Cost of watching** is inside the free tiers: fourteen-day logs, sampled
+traces, ten metrics, one dashboard, and `RunRecord` rows that are a few
+kilobytes each. Observability that costs more than the thing it watches has
+failed; the budget line for it in §15 is pennies.
+
+---
+
+## 11. Notifications, news, calls
 
 As v1, now per member: the 07:15 brief is written once for the household and
 once for each member who wants one, each in their own preferences; the 21:15
@@ -514,7 +673,7 @@ record beats the baseline for 8 weeks, then in weekday cards.
 
 ---
 
-## 11. Backend records for the wealth tracker (later, not a priority)
+## 12. Backend records for the wealth tracker (later, not a priority)
 
 The Valuation and Position tables are the record of what the holdings are
 worth. When the wealth tracker is stitched on, its backend reads them through
@@ -527,7 +686,7 @@ never writes here.
 
 ---
 
-## 12. Tech stack (changes from v1 in bold)
+## 13. Tech stack (changes from v1 in bold)
 
 | Layer | Choice |
 | --- | --- |
@@ -536,15 +695,16 @@ never writes here.
 | **Engine** | **The desk's indicator and pillar logic ported to pandas with golden tests; macro baskets per region** |
 | Claude | **the `anthropic` SDK against the Anthropic API, key in SSM**; structured outputs; server-side web search and fetch; Message Batches; **PDF and image input for documents** |
 | **Documents** | **S3 + Claude extraction with citations; no OCR library** |
-| Charts | matplotlib (Agg) for PNG; **lightweight-charts in the Mini App** |
-| Telegram | Thin client on httpx; **rich messages with HTML fallback; Mini App `initData` validation (HMAC)** |
+| Charts | matplotlib (Agg) for PNG; **lightweight-charts in the web app** |
+| Telegram | Thin client on httpx; **rich messages with HTML fallback; Mini App `initData` validation (HMAC); Login Widget verification for the laptop** |
 | Runtime | Lambda container image, arm64 |
 | Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform, GitHub Actions with OIDC |
-| **Mini App hosting** | **S3 + CloudFront already in the wealth tracker's account; a new origin path** |
+| **Web app hosting** | **Its own S3 bucket and CloudFront distribution per environment; a CloudFront Function with KeyValueStore checks the session cookie at the edge; the `api` Lambda is a second origin under `/api/*`, reachable only through CloudFront** |
+| **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind the app's Activity and Audit pages** |
 
 ---
 
-## 13. Security and privacy
+## 14. Security and privacy
 
 As v1 (no keys, IAM in Terraform, OIDC pinned to this repository's ids,
 webhook secret, chat allowlist, dedupe, untrusted text), plus: uploaded
@@ -553,29 +713,42 @@ carry their source line; screenshots are deleted after extraction unless you
 say keep; privacy mode hides pounds in every card and in the Mini App; the
 Mini App serves nothing without a valid, recent `initData` signature.
 
+The web app adds: the Telegram Login payload is verified (HMAC keyed by the
+SHA-256 of the bot token, `auth_date` within five minutes) before any cookie
+is set; the session cookie is signed, `HttpOnly`, `Secure`, `SameSite=Lax`,
+and checked at the CloudFront edge on every request; the signing secret
+lives in SSM and the CloudFront KeyValueStore, put there by a command, never
+by Terraform (the same reason the tracker's auth function is unmanaged), and
+rotating it logs everyone out; the api Lambda re-checks membership and role
+on every call and has no route that writes; its Function URL requires IAM
+auth and is reachable only through CloudFront; responses carry a strict
+Content-Security-Policy; the audit log is append-only and hash-chained. The
+family should turn on Telegram's two-step verification, since a Telegram
+account is now the key to both the chat and the web app.
+
 ---
 
-## 14. Cost (monthly, at $1.30 to £1)
+## 15. Cost (monthly, at $1.30 to £1)
 
 | Line | Lean | Standard | Full |
 | --- | ---: | ---: | ---: |
-| AWS | £0.10 | £0.10 | £0.20 |
+| AWS, including the web app, X-Ray and the dashboard | £0.30 | £0.40 | £0.50 |
 | Claude: briefs, alerts, chat, cards, Saturday review | £7 | £12 | £21 |
 | Claude: sentiment scoring, via Batches | £1.50 | £2.50 | £2.50 |
 | Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Claude: web search (~60 a month at $10 per 1,000) | £0.50 | £0.50 | £1 |
 | Market data (EODHD All World EOD) | £0 | £16 | £16 |
-| **Total, one member** | **£9** | **£31** | **£41** |
+| **Total, one member** | **£9.50** | **£32** | **£42** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
-Two members on the standard setup: about £34. Stock fundamentals (EODHD
+Two members on the standard setup: about £35. Stock fundamentals (EODHD
 Fundamentals) would add about £46 a month and are not planned unless a single
 share is added. A second *household* would add roughly a full set (£10–34),
 since data feeds are shared but model calls are not.
 
 ---
 
-## 15. Decisions (v2)
+## 16. Decisions (v2)
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
@@ -583,19 +756,25 @@ since data feeds are shared but model calls are not.
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
-| Front end | Telegram rich messages + PNG charts + a read-only Mini App | Simple by default, technical on tap, interactive when wanted |
+| Front end | Telegram rich messages + PNG charts + one read-only web app, as a Mini App in Telegram and in a laptop browser | Simple by default, technical on tap, interactive when wanted; the laptop gets the audit log and the agent's activity |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
-| Identity | Telegram user id in the chat, signed `initData` in the Mini App, invites by one-time link; Cognito only for the web app later | No passwords to build, phish or forget; each member logs in from their own phone by being themselves |
+| Identity | Telegram user id in the chat, signed `initData` in the Mini App, the Telegram Login Widget in a laptop browser, invites by one-time link; Cognito only when the wealth tracker is stitched on | No passwords to build, phish or forget; one identity for the family on every screen |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 | Claude access | The Anthropic API with the key in SSM and a Console spend limit | Same per-token prices as Bedrock, no model-access form, and the server tools and Batches come with it |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
 | Batch scoring | Message Batches for the nightly sentiment scoring | Half price; overnight latency is fine |
+| Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
+| Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
+| Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
+| Web app auth | A signed session cookie checked by a CloudFront Function at the edge, issued after `initData` or the Login Widget is verified; membership re-checked by the api Lambda on every call | Nothing is served to a stranger, not even the page shell; nothing new to administer |
 
-## 16. Open questions
+## 17. Open questions
 
 - The Monzo fund's exact name and ISIN (factsheet in the app); whether the holdings sit in the Stocks & Shares ISA or a general account; the Monzo platform fee on your plan.
 - Whether yfinance returns history for the fund's `0P…L` id; otherwise which page becomes the daily source.
 - Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed).
 - Rich messages: confirm block types and limits against the official Bot API changelog before relying on tables.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
+- The Telegram Login Widget needs the app's domain set with `/setdomain` in BotFather; confirm the CloudFront default hostname is accepted (it is a plain hostname, so it should be), or whether a custom domain is wanted.
+- Whether the CloudFront free flat-rate plan covers a second distribution in the account; if not, the web app goes under a path on the tracker's distribution with its own cache behaviours.
