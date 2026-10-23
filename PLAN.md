@@ -51,8 +51,16 @@ exists; model access is granted; the bot token is in SSM.
 
 What you hold, recorded through the chat, with no analysis yet.
 
-- Registry entities (Instrument, Position, Valuation, Document, Transaction,
-  Preferences) with `schema_version`; a seed command for the first holding.
+- Registry entities (Portfolio, Member, Invite, Account, Instrument,
+  Position, Valuation, Document, Transaction) with `schema_version`; every
+  item keyed by the household; a seed command for the first holding.
+- Identity: the first person to open the chat becomes the household's
+  owner; `/invite` makes a one-time deep link; `/members` lists and removes;
+  the webhook resolves `from.id` to a member and ignores everyone else.
+  Isolation tests: a member cannot read another household, nor another
+  member's detail unless shared.
+- Accounts per member (ISA, GIA, SIPP, cash; joint accounts with two
+  owners); every holding added lands in the adding member's account.
 - Telegram client: `sendMessage` (HTML), rich messages with fallback,
   `sendPhoto`, `editMessageText`, `getFile`, `setMyCommands`, reply keyboard,
   menu button, callback queries.
@@ -65,15 +73,18 @@ What you hold, recorded through the chat, with no analysis yet.
 - Plain-English transactions ("I put £200 into Balanced") via a strict
   `propose_change` tool and Confirm.
 - Portfolio card as a table (rich message or HTML), valued from the last
-  user-supplied figures.
+  user-supplied figures, with the Household / Me switch and, for the owner, a
+  tab per member.
 
 **Tests:** extraction against three real factsheets and three screenshots
-(fixtures with expected JSON); webhook security; the Confirm state machine;
-schema migration on a v0 item.
+(fixtures with expected JSON); webhook security; the invite flow (single
+use, expiry, wrong household); the isolation rules; the Confirm state
+machine; schema migration on a v0 item.
 
-**Exit:** both Monzo funds and your cash pot are in the registry from the
-chat alone; a screenshot updates the valuations and the card shows the
-change.
+**Exit:** you and your wife are members from your own phones; each of you
+has added holdings from the chat alone; each sees their own detail and the
+household overview, and you see hers; a screenshot updates a member's
+valuations and both views change.
 
 **Cost:** about £0.50 (a few Bedrock calls).
 
@@ -164,15 +175,17 @@ your two funds shows the shared holdings and currency exposure.
 - Static page on the wealth tracker's S3 + CloudFront under a new path, in
   the Nocturne look, with lightweight-charts: portfolio curve, per-holding
   history with stance markers, overlap map, scorecard.
-- Function URL route that validates Telegram's `initData` (HMAC, max age)
-  and serves read-only JSON.
+- Function URL route that validates Telegram's `initData` (HMAC, max age),
+  resolves the member, and serves read-only JSON limited to what that member
+  may see; the Household / Me / member switch in the page.
 - `web_app` button on the Portfolio card.
 
-**Tests:** `initData` validation (valid, expired, tampered); JSON shape;
-Playwright screenshot of the page in both themes.
+**Tests:** `initData` validation (valid, expired, tampered, a member of
+another household); JSON shape; the view a plain member gets versus the
+owner; Playwright screenshot of the page in both themes.
 
-**Exit:** the dashboard opens from the chat on your phone and shows the same
-numbers as the cards.
+**Exit:** the dashboard opens from the chat on each of your phones and shows
+the same numbers as that member's cards.
 
 **Cost:** £0.
 
@@ -225,13 +238,15 @@ in the Saturday review.
 
 ---
 
-## Phase 9 — Wealth tracker integration
+## Phase 9 — Wealth tracker integration (later, not a priority)
 
 - Read-only role for the tracker's backend over Position and Valuation.
-- Mapping to the tracker's `Holding` shape; the tracker shows the bot's
-  values.
+- Cognito for the tracker's own login (email, passkey, Google, MFA); a
+  one-time code sent to the bot links a Cognito user to a member.
+- Mapping to the tracker's `Holding` shape, with `owners` from the account's
+  members; the tracker shows the bot's values.
 
-**Exit:** one set of numbers in both places.
+**Exit:** one set of numbers in both places, and the same people.
 
 ---
 
