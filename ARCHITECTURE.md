@@ -1,461 +1,451 @@
-# MyPaisa Agent — Architecture
+# MyPaisa Agent — Architecture (v2, the hybrid)
 
-A private Telegram bot that watches one household's investments, explains what
-moved and why, and makes small, scored calls from prices, news and scheduled
-events. It runs on AWS in account `545595341442`, `us-east-1`, and uses Claude
-through Amazon Bedrock.
+A private analyst for one household's investments, run entirely from a
+Telegram chat by someone who is not a finance person. It keeps the record of
+what is held and what it is worth, computes what moved and why, takes a stance
+with a confidence score, explains it plainly, goes technical on request, and
+grades itself. It runs on AWS in account `545595341442`, `us-east-1`, with
+Claude through Amazon Bedrock. It never trades.
 
-Animated version of this document:
-<https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx>
+v2 folds in what `docs/RESEARCH.md` found in the Agentic Trading Desk and
+Agent Toolbelt: the desk's deterministic indicator and pillar engine and its
+discipline, the toolbelt's card shapes and portfolio review, and the layman's
+Telegram front end both of them lack. v1 (prices, briefs, alerts, chat, news,
+calls on Lambda) stands underneath; sections that have not changed are kept
+short.
 
-Status: design only. Nothing here is built yet. `PLAN.md` says in what order it
-will be.
+Animated version of v1: <https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx>
 
----
-
-## 1. What it does
-
-| Job | When | Who does the work |
-| --- | --- | --- |
-| Fetch prices, fund NAVs, FX, calendars | 07:00 and 21:00 UK, weekdays | Python |
-| Compute signals: trend, volatility, drawdown, drift, FX split, ranges | After each fetch | Python (pandas) |
-| Morning brief | 07:15 UK, weekdays, silent push | Python facts, Claude words |
-| Evening wrap | 21:15 UK, only when something moved | Python facts, Claude words |
-| Alerts | After each close, tiered, with cooldowns | Python rules, Claude filter and words |
-| Answer questions | When you message the bot | Claude, calling Python tools |
-| Score news sentiment | Nightly, 23:30 UK | Claude Haiku |
-| Make a call (stance, horizon, confidence) | Before the UK open | Python rules + Claude |
-| Grade forecasts and calls | When each horizon ends | Python |
-| Saturday review with scorecard | 08:00 UK, Saturday | Claude Opus |
-
-Two rules hold everywhere:
-
-1. **Claude never produces a number.** Every figure in a message comes from a
-   tool result. Claude chooses what to say and how to say it.
-2. **The bot cannot trade.** It holds no broker credentials. The only actions it
-   suggests are ones that are safe inside an ISA: hold, pause or move a
-   contribution, rebalance.
+Status: design only.
 
 ---
 
-## 2. System context
+## 1. The two rules, and a third
+
+1. **Claude never produces a number.** Every figure comes from code with
+   tests. Claude chooses what to say and how to say it.
+2. **The bot cannot trade.** No broker login, no orders. It suggests only
+   ISA-safe actions.
+3. **The layman sees the summary; the detail is one tap away.** Every message
+   has a plain top and a technical underside. Nothing technical is shown
+   unasked.
+
+---
+
+## 2. What it does, as the user sees it
+
+| You | The bot |
+| --- | --- |
+| Open the chat for the first time | A three-step setup: base currency, what you hold (send a factsheet or a screenshot, or type it), how often to be told things |
+| Send a factsheet PDF | Reads it, shows a card: name, ISIN, cost, what it holds, where it invests; you tap Confirm |
+| Send a screenshot of your Monzo valuations | Reads the values, matches them to holdings, updates the records, shows a before/after card; you tap Confirm |
+| Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
+| Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
+| Tap **Today** | The morning brief: what moved, why, anything to do |
+| Tap a holding | Its card: value and history chart, stance with confidence and horizon, "Why?", "Technical", "What if?" |
+| Tap **Technical** | A collapsed section opens: pillars, indicators, flags, macro regime, data quality, as numbers |
+| Ask "should I add to Balanced this month?" | A stance card: ADD / HOLD / PAUSE with confidence, two reasons, what would change it, and the track record of that kind of call |
+| Ask "what if the pound falls 10%?" | A scenario card from the look-through currency exposure |
+| Tap **I acted** on a card | A decision record; the Saturday review compares it with what the signals said |
+| Say "stop pinging me under 2%" | A preference card to confirm; saved |
+| `/pause` | Everything stops until `/resume`; the kill switch |
+
+Silence is a feature: about ten messages a week, two with sound at most.
+
+---
+
+## 3. System context
 
 ```mermaid
 flowchart LR
   you([You · Telegram app])
-  tg[Telegram Bot API]
-  subgraph aws[AWS · us-east-1 · Terraform-managed]
-    url[Lambda Function URL]
+  tg[Telegram Bot API<br/>rich messages · buttons · files]
+  mini[Mini App dashboard<br/>static, S3 + CloudFront]
+  subgraph aws[AWS us-east-1 · Terraform]
+    url[Function URL]
     hook[webhook λ]
-    agent[agent λ]
-    ingest[ingest λ]
-    sig[signals λ]
-    news[news λ]
-    score[score λ]
-    sched[EventBridge Scheduler<br/>tz Europe/London]
-    ddb[(DynamoDB<br/>single table)]
-    s3[(S3<br/>prices · articles · charts)]
-    ssm[(SSM Parameter Store)]
-    br[Amazon Bedrock<br/>Claude Opus · Sonnet · Haiku 5.5]
+    agent[agent λ · Claude tool loop]
+    ingest[ingest λ · prices, NAV, FX]
+    engine[engine λ · indicators, pillars, macro, stance]
+    news[news λ · RSS, events]
+    score[score λ · sentiment]
+    docs[docs λ · factsheets, screenshots]
+    sched[EventBridge Scheduler<br/>Europe/London]
+    ddb[(DynamoDB · registry, state)]
+    s3[(S3 · prices, docs, charts, Mini App)]
+    br[Bedrock · Haiku / Sonnet / Opus 5.5]
+    ssm[(SSM)]
   end
-  mkt[Market data<br/>EODHD / yfinance · BlackRock NAV]
-  ecb[ECB reference rates]
-  rss[News RSS feeds]
-  brave[Brave Search API]
+  mkt[EODHD / yfinance<br/>BlackRock pages · FT]
+  ecb[ECB FX]
+  rss[RSS · Brave Search]
 
   you <--> tg
-  tg -- POST update --> url --> hook
-  hook -- async invoke --> agent
-  agent -- sendMessage / sendPhoto --> tg
+  you <--> mini
+  tg --> url --> hook -- async --> agent
+  agent --> tg
+  mini -- initData --> url
   sched --> ingest & news & score & agent
   ingest --> mkt & ecb
-  ingest --> s3
-  ingest --> sig --> ddb
-  sig -- alert candidates --> agent
-  news --> rss
-  news --> s3
-  score --> br
-  score --> ddb
+  ingest --> s3 --> engine --> ddb
+  engine -- alert candidates --> agent
   agent <--> br
   agent <--> ddb
-  agent --> brave
-  hook & agent & ingest & news --> ssm
+  agent --> docs --> br
+  docs --> s3
+  news --> rss
+  score --> br
 ```
+
+One container image, seven handlers. The agent Lambda is the only one that
+talks to you; every other Lambda produces data it reads.
 
 ---
 
-## 3. Components
+## 4. State: the holdings registry
 
-All functions ship as **one container image** with several handlers, so the
-pandas/numpy/matplotlib stack is built once.
+The user said holdings will change and the system must save all state. The
+registry is designed so that adding a new kind of thing adds data, not code.
 
-| Component | Trigger | Memory / timeout | Responsibility |
-| --- | --- | --- | --- |
-| `webhook` | Function URL (auth `NONE`) | 256 MB / 10 s | Check `X-Telegram-Bot-Api-Secret-Token`, check `chat_id` allowlist, conditional-put `update_id` for dedupe, async-invoke `agent`, return 200 |
-| `agent` | Async from `webhook`; Scheduler; `signals` | 1024 MB / 120 s | Claude tool loop, model routing, message rendering, charts |
-| `ingest` | Scheduler 07:00 / 21:00 UK | 1024 MB / 300 s | Fetch closes, NAVs, FX; write parquet to S3; invoke `signals` |
-| `signals` | Invoked by `ingest` | 1024 MB / 300 s | Indicators, forecast ranges, drift, alert candidates; write DynamoDB; invoke `agent` with candidates |
-| `news` | Scheduler every 3 h | 512 MB / 300 s | Pull RSS, extract text, dedupe, tag instruments, store in S3 |
-| `score` | Scheduler 23:30 UK | 512 MB / 900 s | Score the day's articles with Haiku (bounded concurrency), roll up the sentiment index |
+### 4.1 Entities (DynamoDB, single table)
 
-### 3.1 Telegram integration
+| Entity | Key fields | Notes |
+| --- | --- | --- |
+| **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither. |
+| **Position** | `instrument_id`, `account` (`ISA` · `GIA` · `SIPP` · `cash`), `platform` (`Monzo`, …), `units`, `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held. One instrument may sit in two accounts. |
+| **Valuation** | `instrument_id`, `date`, `price`, `price_ccy`, `fx_to_gbp`, `units`, `value_gbp`, `source` (`nav` · `close` · `proxy` · `user_screenshot` · `user_typed`), `provisional` | The time series the wealth tracker reads. User-supplied values are kept alongside computed ones; a gap between them is a signal (wrong units, a fee, a late NAV). |
+| **Document** | `instrument_id`, `type` (`factsheet` · `kiid` · `annual_report` · `screenshot`), `s3_key`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | The factsheet is the source of look-through until a better feed exists. |
+| **Transaction** | `position_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee`), `units`, `amount_gbp` | From "I put £200 in", or extracted from a screenshot. |
+| **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
+| **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
+| **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
+| **Preferences** | thresholds, quiet hours, ping budget, privacy mode, mode (`simple` · `technical`), language level | Changed by plain English + Confirm. |
+| **AlertState**, **Decision**, **ChatTurn**, **SentimentIndex**, **ArticleScore**, **WebhookSeen** | as v1 | |
 
-- **Webhook mode**, set once with `setWebhook(url, secret_token, allowed_updates=["message","callback_query"])`.
-- **Single user.** Any `chat_id` other than the configured one gets a 200 and
-  no reply.
-- **Idempotent.** Telegram re-sends an update when the webhook is slow. The
-  `update_id` is written with a conditional put and a 48-hour TTL; a repeat is
-  dropped.
-- **Fast ack.** The webhook never calls Claude. It hands off and returns in
-  about 100 ms; `agent` sends `sendChatAction(typing)` while it works.
-- **Messages:** HTML parse mode, inline keyboards (`Explain`, `Snooze 7d`,
-  `Mute`, `I acted`, `Why?`), charts as PNG via `sendPhoto`.
-- **Silent by default.** `disable_notification=true` on everything except a red
-  alert.
-- **Commands:** `/brief`, `/holdings`, `/why <id>`, `/whatif`, `/calls`,
-  `/scorecard`, `/prefs`, `/mute <id>`, `/privacy`.
-- **Privacy mode.** Bot chats are not end-to-end encrypted. With `/privacy on`,
-  messages show weights and percentages, never pounds.
+Every item carries `schema_version`; a migration is a Lambda that rewrites
+items of an older version, run once from a script, never by hand.
 
-### 3.2 The agent loop
+### 4.2 Adding a holding, from Telegram
 
 ```mermaid
 sequenceDiagram
   participant U as You
-  participant W as webhook λ
   participant A as agent λ
-  participant B as Bedrock (Claude)
-  participant T as Tools (Python)
-  participant D as DynamoDB
-  U->>W: "why did Balanced drop today?"
-  W->>D: put update_id (if not exists)
-  W-->>A: async invoke
-  W->>U: 200 (to Telegram)
-  A->>D: prefs, last 20 turns
-  A->>B: system (cached) + memory + question + tools
-  B-->>A: tool_use get_positions
-  A->>T: get_positions()
-  T-->>A: JSON
-  A->>B: tool_result
-  B-->>A: tool_use get_signals("monzo-balanced")
-  A->>T: get_signals(...)
-  T-->>A: JSON
-  A->>B: tool_result
-  B-->>A: text answer
-  A->>D: append turn
-  A->>U: sendMessage (reply, buttons)
+  participant D as docs λ
+  participant B as Bedrock
+  participant R as Registry
+  U->>A: /add (or just sends a PDF)
+  A->>U: "Send the factsheet, a screenshot, or tell me what it is"
+  U->>A: factsheet.pdf
+  A->>D: extract(factsheet)
+  D->>B: PDF + schema (name, ISIN, OCF, allocation, top holdings, benchmark, currency)
+  B-->>D: structured JSON with citations
+  D-->>A: extracted + confidence per field
+  A->>U: Card: what I read, with the low-confidence fields marked · [Confirm] [Edit] [Cancel]
+  U->>A: Confirm
+  A->>R: Instrument + Document; resolve price sources (ISIN → yahoo id, BlackRock page)
+  A->>U: "Added. How much do you hold? Send a screenshot or type it."
+  U->>A: screenshot
+  A->>D: extract(screenshot)
+  D->>B: image + schema (holding name, value, units?, date)
+  A->>U: Card: Balanced £22,925 on 23 Oct · units 1,234.5 at NAV 18.57 · [Confirm]
+  U->>A: Confirm
+  A->>R: Position + Valuation(source=user_screenshot) + Transaction
 ```
 
-- **Client:** Anthropic Python SDK, `AnthropicBedrockMantle(aws_region="us-east-1")`.
-  Auth is the Lambda's IAM role; there is no API key anywhere.
-- **Tool definitions** use `strict: true`. `tool_choice` stays `auto`; forced
-  tool choice is rejected by the 5.5 models.
-- **Thinking:** adaptive (the default); depth set with `output_config.effort`
-  per route.
-- **Prompt caching** on the system prompt, tool list and rubric.
-- **Validation:** before sending, every number in Claude's text is checked
-  against the tool results of that turn. A number with no source fails the
-  message and it is regenerated once, then sent as the plain facts.
-- **Refusals:** `stop_reason == "refusal"` falls back to the plain-facts
-  rendering, never to silence.
-
-### 3.3 Tools
-
-| Tool | Returns | Side effects |
-| --- | --- | --- |
-| `get_positions` | Instruments, units, value in GBP, target weights | None |
-| `get_signals(id)` | Trend, momentum, vol percentile, drawdown, drift, local vs FX split, 1-month range | None |
-| `get_history(id, days)` | Daily closes for charts and context | None |
-| `run_scenario(shocks)` | Portfolio impact of index and FX shocks | None |
-| `get_events(days)` | Upcoming MPC, FOMC, ECB, CPI, earnings for top holdings | None |
-| `get_sentiment(id, days)` | Sentiment index and the articles behind it | None |
-| `get_calls(status)` | Open and graded calls | None |
-| `get_scorecard()` | Hit rate, calibration, return vs baseline | None |
-| `search_news(query)` | Brave Search results, treated as untrusted text | Paid query |
-| `fetch_article(url)` | Extracted text of one page | None |
-| `update_pref(change)` | Proposed change; saved only after you tap Confirm | Writes after confirmation |
-| `log_decision(text)` | Records what you did | Writes |
-
-Web search and web fetch are client-side tools here because Bedrock does not
-offer Anthropic's server-side web tools.
-
-### 3.4 Model routing
-
-| Route | Model (Bedrock ID) | Effort |
-| --- | --- | --- |
-| Alert filter (is this worth a ping?) | `anthropic.claude-haiku-5-5` | low |
-| Article sentiment scoring | `anthropic.claude-haiku-5-5` | low |
-| Morning brief, evening wrap, alert text | `anthropic.claude-sonnet-5-5` | low |
-| Chat | `anthropic.claude-sonnet-5-5` | medium |
-| Call writing | `anthropic.claude-sonnet-5-5` | medium |
-| Saturday review | `anthropic.claude-opus-5-5` | high |
-
-Global inference profiles keep base pricing. A geographic profile adds about
-10%; not needed for this data.
+Any field Claude is unsure of is shown in amber and asked about. A holding is
+never saved without the Confirm tap. The same path handles an ETF (ISIN and
+ticker from the factsheet), a share (ticker and exchange), or cash.
 
 ---
 
-## 4. Instruments, prices and currencies
+## 5. Data layer
 
-### 4.1 Instrument model
+### 5.1 Price source chain per instrument
 
-Every holding is an `Instrument`, whatever it is:
+Each instrument carries an ordered list; the first source that answers with
+fresh data wins, and the brief says which one did.
 
-| Field | Example |
+| Kind | Chain | Freshness |
+| --- | --- | --- |
+| OEIC (Monzo's BlackRock funds) | 1. yfinance on the fund's `0P…L` id · 2. BlackRock UK product page · 3. FT tearsheet · 4. proxy basket · 5. last user screenshot | NAV once a day, published next morning; proxy intraday, labelled provisional |
+| ETF on LSE / Xetra / NYSE | 1. EODHD · 2. yfinance · 3. last close, labelled stale | Each exchange close |
+| Stock | same as ETF | same |
+| Cash | FX only | |
+
+Input hygiene, from the desk: drop interpolated bars, append today's close only
+when the session has traded, mark a series STALE when its last bar is older
+than the previous session and exclude it from scoring (the circuit breaker).
+Every job is idempotent per date.
+
+### 5.2 Look-through
+
+From the factsheet (and later the product page): asset allocation, top
+holdings, regional and currency split. It drives three things: the **proxy
+basket** for a fund's intraday read, the **currency split** of each move, and
+the **overlap review** across holdings. Refreshed when a new factsheet is
+uploaded or monthly from the page.
+
+### 5.3 FX, calendars, time
+
+GBP base. ECB reference rates. Exchange calendars XLON, XETR, XNYS. All
+schedules in `Europe/London`.
+
+---
+
+## 6. The analysis engine (deterministic, ported from the desk)
+
+### 6.1 Indicators
+
+EMA 20/50/200 (SMA seed), Wilder RSI-14, MACD 12/26/9 with histogram slope,
+TRIX-15 with EMA-9 signal, Bollinger 20/2 with %B, slopes vs 5 bars,
+`bars_since_below_ema20`; plus ATR-14, realised volatility (20-day and EWMA)
+and its 3-year percentile, drawdown from the 1-year high, 12-1 momentum,
+proxy-vs-NAV gap. The desk's known-answer self-tests become golden-file tests
+and also run at the start of every engine run; a failing self-test blocks
+scoring that day and tells you.
+
+### 6.2 Pillars (−2..+2 each)
+
+| Pillar | Inputs | Source |
+| --- | --- | --- |
+| Trend | price vs EMA20, EMA20>EMA50, EMA50>EMA200, EMA200 slope; partial components labelled | desk |
+| Momentum | RSI zones (45/55), MACD histogram sign, TRIX vs signal | desk |
+| Macro | the cross-asset regime of the basket(s) the instrument is exposed to, weighted by look-through; US basket as the desk (RSP/SPY, HYG/LQD, IWM/SPY, SPY/TLT, XLY/XLP, SPY-TLT correlation, 10Y−2Y when available); UK and EU baskets from UCITS equivalents | desk + ours |
+| Risk | volatility percentile, drawdown depth, proxy gap, bars present, NAV age | ours |
+| Valuation (stocks only, later) | P/E, P/S, FCF yield, EV/EBITDA vs sector; cheap…expensive | toolbelt |
+
+Flags, from the desk: exhaustion, relentless-bearish, rebound, death-cross.
+
+### 6.3 The holder's cascade
+
+The desk's cascade rotates capital; ours accumulates with care. `holding` is
+always true for a position and false for a watchlist item.
+
+| Action | When | Framing |
+| --- | --- | --- |
+| **ADD** | Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated | Make this month's contribution here, or bring it forward |
+| **HOLD** | Default for a holding with no triggers | Nothing to do |
+| **PAUSE** | Holding; exhaustion ≥ 2 or risk elevated or adverse macro | Keep what you have; delay new money until the next review |
+| **TRIM** | Holding; drift above target by more than the band, or relentless-bearish ≥ 3 with a death-cross, and the position is not protected | Rebalance toward target; never "sell everything" |
+| **REBALANCE** | Portfolio-level drift beyond the band | Move the next contributions, not the holdings, unless drift is large |
+| **WAIT / WATCH** | Not holding; a candidate | No entry trigger yet; the trigger that would change it |
+
+Adverse macro and elevated risk tighten the framing and lower confidence; they
+never change the pillar numbers. Sentiment may tilt the action one notch only
+when the price pillars do not contradict it. News alone never triggers a red
+alert.
+
+### 6.4 Confidence score
+
+`confidence = clamp(0.5 + agreement + persistence + quality + history, 0, 0.95)`
+
+- **agreement**: pillars pointing the same way (+0.05 each, −0.05 each
+  against)
+- **persistence**: bars the state has held (0 for 1 bar, up to +0.10 for 10+)
+- **quality**: −0.10 if partial components, stale or provisional data, or a
+  proxy gap over 1%
+- **history**: the empirical hit-rate of past stances in the same state
+  bucket, once 20 or more exist, pulling the score toward it
+
+Shown as a percentage; below 55% the card says "no clear view". Calibrated
+weekly (Brier score, reliability table by bucket); the mapping changes only
+after 8 weeks of evidence and the change is logged.
+
+### 6.5 Forecast ranges
+
+1-month return distribution by volatility-scaled block bootstrap on the
+instrument's own history: 10/50/90th percentiles and `P(fall > 5%)`.
+
+---
+
+## 7. Research cards (from the toolbelt, rebuilt for funds)
+
+Every card: a verdict from a fixed enum, a one-liner, evidence, a raw-data
+block, `dataSources` with per-source success and `fetchedAt`, `generatedAt`.
+Numbers computed, words synthesised, output via structured outputs.
+
+| Card | For | Verdict enum |
+| --- | --- | --- |
+| `stance` | any holding | ADD · HOLD · PAUSE · TRIM · REBALANCE · WATCH, with confidence and horizon |
+| `holding-profile` | fund, ETF | what it is, cost, where it invests, role in the portfolio |
+| `overlap-review` | the portfolio | HHI, effective positions, look-through overlap, currency exposure, duration; weakest link; gaps |
+| `fund-vs-benchmark` | fund, ETF | on_track · lagging · ahead, with tracking difference and cost drag |
+| `bear-vs-bull` | any | bull_wins · slight_bull · too_close · slight_bear · bear_wins, three arguments each with evidence |
+| `scenario` | the portfolio | impact of index and FX shocks from look-through |
+| `valuation-snapshot`, `earnings-analysis` | stocks only, later | as the toolbelt |
+
+---
+
+## 8. The agent
+
+One Claude tool loop (Sonnet 5.5 for chat and cards, Haiku 5.5 for filters
+and scoring, Opus 5.5 for the Saturday review), with strict tools over the
+registry, the engine and the cards. Prompt caching on the system prompt, the
+tool list and the card rubrics. Refusal or error falls back to the plain
+template.
+
+**Borrowed patterns:** the bull/bear debate as two calls plus a judge for any
+stance above 70% confidence and for the weekly review; a reflection step that
+reads the last four weeks of stances and their grades before writing the
+review; a per-run self-audit that lists what the bot told you this week so it
+does not repeat itself.
+
+**Tools:** `get_portfolio`, `get_holding(id)`, `get_signals(id)`,
+`get_history(id, days)`, `get_macro`, `run_scenario`, `get_events`,
+`get_sentiment`, `get_stances`, `get_scorecard`, `search_news` (Brave),
+`fetch_page`, `extract_document(s3_key, schema)`, `propose_change(entity,
+patch)` (saved only after Confirm), `log_decision`, `render_chart(spec)`.
+
+**Guardrails in code, not prompt:** no tool can trade, spend beyond a search
+query, delete data, or message anyone but your chat. Protected positions are
+filtered before the cascade runs. The daily token ceiling, the weekly red
+budget and quiet hours are enforced by the agent Lambda. `/pause` sets a flag
+every scheduled run checks first.
+
+---
+
+## 9. Telegram front end
+
+### 9.1 Navigation for a layman
+
+- **Reply keyboard**, always visible: `Portfolio` · `Today` · `Ask` · `Settings`.
+- **Menu button** with the commands: `/add`, `/update`, `/why`, `/whatif`,
+  `/calls`, `/scorecard`, `/technical`, `/privacy`, `/pause`, `/help`.
+- **Cards** are rich messages where supported (Bot API 10.1+): a heading, a
+  short table, buttons, and a collapsed **Technical details** section. Where
+  rich messages are unavailable, the same card is HTML with a `Technical`
+  button that edits the message in place.
+- **Charts** as PNG (matplotlib, one house style, GBP axis, the stance
+  horizon shaded), sent with the card; albums for the portfolio.
+- **Glossary on tap**: any term in a technical section (RSI, drawdown, EMA)
+  has a one-line explanation behind a button.
+- **Two modes**: `simple` (default) and `technical` (every card expanded).
+  Switch per message with the button or globally with `/technical`.
+
+### 9.2 Example cards
+
+```
+📊 Portfolio · Thu 23 Oct · £24,110  ▲0.4% today  ▲2.1% month
+───────────────────────────────────────────
+Balanced (Monzo)    £22,925  ▲0.6%   HOLD   71%
+Cash (Monzo pot)     £1,185   —       —
+───────────────────────────────────────────
+Nothing to do this week. Next review Saturday.
+[Today] [Balanced ▸] [Technical ▾] [Ask]
+```
+
+```
+Balanced (BlackRock MyMap 5) · £22,925
+Stance: HOLD · 2 weeks · confidence 71%
+Why: steady uptrend; volatility normal; pound moves explain most of
+this week's wobble.
+Would change if: a 5% fall from here, or UK inflation surprises on Wed.
+Your track record on HOLD calls: 14 made, 11 held up.
+[Why?] [What if?] [Technical ▾] [I acted]
+   ▾ Technical details
+   Trend +2 (price>EMA20, EMA20>50>200, EMA200↑)
+   Momentum +1 (RSI 58, MACD hist>0, TRIX mixed)
+   Macro US +1 Broadening · UK 0 Transitional
+   Risk 0 (vol 48th pct, drawdown −1.9%, NAV 1 day old, proxy gap 0.3%)
+   Range 1m: −4.8% … +4.1% · P(fall>5%) 8%
+   Data: yfinance 0P…L ✓ · ECB ✓ · BlackRock page ✓ (22 Oct)
+```
+
+### 9.3 Mini App dashboard
+
+A static page (the wealth tracker's Nocturne look, lightweight-charts) hosted
+on the existing S3 + CloudFront, opened by a `web_app` button. It shows the
+portfolio curve, each holding's history with the stance history drawn on it,
+the overlap map, and the scorecard. It reads JSON from the Function URL after
+the Lambda validates Telegram's signed `initData`. No write path; every change
+still goes through a card and a Confirm tap in the chat.
+
+---
+
+## 10. Notifications, news, calls
+
+As v1: 07:15 brief, 21:15 wrap when something moved, tiered alerts (red with
+sound, max two a week; amber silent; digest), cooldowns, quiet hours, Haiku
+repeat filter. News from RSS, scored nightly by Haiku into a sentiment index;
+event calendar (MPC, FOMC, ECB, CPI, earnings of top holdings). Stances are
+paper-traded and graded; they appear only in the Saturday review until the
+record beats the baseline for 8 weeks, then in weekday cards.
+
+---
+
+## 11. Backend records for the wealth tracker
+
+The Valuation and Position tables are the record of what the holdings are
+worth. The wealth tracker's backend reads them through a read-only role and
+maps them to its `Holding` shape (`id`, `name`, `type: Investment`, `entity`,
+`owners`, `ccy`, `val`, `invVal`): `val` is the latest `value_gbp` (or
+`price_ccy` value when the tracker shows GBP/INR), `invVal` the sum of
+contributions. Updates flow one way, from the bot to the tracker; the tracker
+never writes here.
+
+---
+
+## 12. Tech stack (changes from v1 in bold)
+
+| Layer | Choice |
 | --- | --- |
-| `id` | `monzo-balanced` |
-| `kind` | `fund` · `etf` · `stock` · `bond_etf` · `commodity_etc` |
-| `name` | BlackRock MyMap 5 (Monzo Balanced) |
-| `isin` | from the factsheet |
-| `listing` | exchange MIC + trading currency, e.g. `XLON/GBP`, `XETR/EUR`, `XNYS/USD`; funds have none |
-| `exposure_ccy` | dominant underlying currency, e.g. `USD` |
-| `units`, `cost_gbp`, `target_weight` | position data |
-| `account` | `ISA` · `GIA` · `SIPP` |
-| `price_source` | plugin name: `fund_nav`, `etf_eod`, `yfinance` |
-| `proxy` | for funds: weighted basket of ETFs from the published holdings |
-
-Adding a new kind means adding a price-source plugin. Nothing else changes.
-
-### 4.2 Monzo's BlackRock funds
-
-Monzo's investments are BlackRock MyMap multi-asset funds: OEICs priced once a
-day in GBP, published after the fact. So each fund carries a **proxy basket**
-of its top iShares ETF holdings, priced from exchange closes. The proxy gives a
-same-day read; the NAV corrects it the next morning. The gap between them is
-tracked as a signal of its own.
-
-### 4.3 Currency
-
-- Base currency is **GBP**. Everything is reported in GBP.
-- Trading currencies supported: **GBP, USD, EUR**.
-- FX from the **ECB daily reference rates** (free, about 16:00 CET).
-- Every daily move is split into **local return + FX effect**, using
-  `exposure_ccy`. A GBP-quoted line holding US shares still carries USD risk.
-
-### 4.4 Calendars and time
-
-- Exchange calendars via `exchange_calendars`: `XLON`, `XETR`, `XNYS`.
-- All schedules run in `Europe/London`. UK and US clocks change on different
-  Sundays; for those weeks the US opens at 13:30 UK, and the calendars handle it.
+| Language, packaging, checks, tests | Python 3.14, uv, ruff, pyright strict, pytest, hypothesis, moto, respx |
+| Data | pandas, numpy, pyarrow; **exchange_calendars**; **feedparser, trafilatura** |
+| **Engine** | **The desk's indicator and pillar logic ported to pandas with golden tests; macro baskets per region** |
+| Claude | `anthropic[bedrock]`, `AnthropicBedrockMantle`; structured outputs; **PDF and image input for documents** |
+| **Documents** | **S3 + Claude extraction with citations; no OCR library** |
+| Charts | matplotlib (Agg) for PNG; **lightweight-charts in the Mini App** |
+| Telegram | Thin client on httpx; **rich messages with HTML fallback; Mini App `initData` validation (HMAC)** |
+| Runtime | Lambda container image, arm64 |
+| Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform, GitHub Actions with OIDC |
+| **Mini App hosting** | **S3 + CloudFront already in the wealth tracker's account; a new origin path** |
 
 ---
 
-## 5. Signals, forecasts and calls
+## 13. Security and privacy
 
-### 5.1 Signals (deterministic, unit-tested)
-
-- Trend: price vs 50- and 200-day averages.
-- Momentum: 12-1 month return.
-- Volatility: 20-day realised, EWMA, and its percentile over 3 years.
-- Drawdown from the 1-year high.
-- Allocation drift vs target weights.
-- Local vs FX split of each move.
-- Proxy-vs-NAV gap for funds.
-
-### 5.2 Forecast ranges
-
-1-month return distribution from a volatility-scaled block bootstrap of the
-instrument's own history. Output: 10th/50th/90th percentiles and
-`P(fall > 5%)`. Volatility is forecast; direction is not.
-
-### 5.3 News, events and sentiment
-
-```mermaid
-flowchart LR
-  rss[RSS feeds] --> news[news λ<br/>fetch · extract · dedupe · tag]
-  cal[Event calendar] --> news
-  news --> s3[(S3 articles)]
-  s3 --> score[score λ · 23:30]
-  score -->|Haiku 5.5, strict JSON| ddb[(Sentiment index)]
-  ddb --> call[Call engine]
-  sig[Price signals] --> call
-  cal --> call
-  call --> log[(Paper-trade log)]
-  log --> card[Scorecard] --> you([Telegram])
-```
-
-- **Sources:** RSS from BoE, Fed, ECB, FT markets, Reuters, BlackRock notices.
-  About 200 articles a day.
-- **Tagging:** an article is linked to an instrument when it mentions the fund,
-  its index, its top holdings, or its currency.
-- **Scoring:** each article is scored once by Haiku with structured output:
-  `instruments`, `direction` (−1, 0, +1), `magnitude` (0–1), `horizon_days`,
-  `novelty` (0–1, against the last 7 days), `event`, `confidence`, `quote`.
-- **Index:** novelty-weighted sum per instrument per day, decayed over the
-  horizon.
-- **No Bedrock batch:** Anthropic's Message Batches API is not on Bedrock, and
-  Bedrock's own batch inference does not support the 5.5 models. Real-time
-  Haiku 5.5 costs less than batched Haiku 4.5, so scoring runs in real time
-  with 5–10 concurrent requests.
-
-### 5.4 Calls
-
-A call is a stored object:
-
-```json
-{
-  "id": "call_2026-10-29_monzo-balanced",
-  "instrument": "monzo-balanced",
-  "stance": "cautious",
-  "horizon_days": 14,
-  "confidence": 0.58,
-  "reasons": ["hawkish BoE minutes, 3 sources", "CPI Thu", "vol rising"],
-  "invalidated_if": ["CPI < 3.0%", "GBPUSD < 1.25"],
-  "action": "hold; move this month's top-up to Friday",
-  "entry_px": 1.2345,
-  "graded": null
-}
-```
-
-- Price signals set the base stance. Sentiment may tilt it only when price
-  signals do not contradict it. News alone never triggers a red alert.
-- Every call is logged as a paper trade with its entry price and graded at the
-  horizon: right or wrong, return vs doing nothing, calibration.
-- Calls stay in **shadow mode** (logged, not sent) until the paper record beats
-  the baseline for 8 consecutive weeks. The Saturday review reports the
-  shadow record either way.
+As v1 (no keys, IAM in Terraform, OIDC pinned to this repository's ids,
+webhook secret, chat allowlist, dedupe, untrusted text), plus: uploaded
+documents stay in a private bucket with a lifecycle rule; extracted figures
+carry their source line; screenshots are deleted after extraction unless you
+say keep; privacy mode hides pounds in every card and in the Mini App; the
+Mini App serves nothing without a valid, recent `initData` signature.
 
 ---
 
-## 6. Notifications
-
-About ten messages a week. Quiet hours 22:00–07:00.
-
-| Tier | Triggers (defaults, all configurable) | Delivery | Cooldown |
-| --- | --- | --- | --- |
-| Red | Drawdown > 8% from high; trend break on a holding > 20% of portfolio; fund NAV move > 3% in a day | Sound, max 2 a week | 3 days per instrument |
-| Amber | Vol doubles in 2 weeks; drift > 5% from target; GBP moves > 1.5% vs USD or EUR in a day | Silent | 7 days |
-| Digest | Everything else | In the next brief | n/a |
-
-Haiku reads the candidates against what was sent this week and demotes
-repeats.
-
----
-
-## 7. Data
-
-### 7.1 DynamoDB (single table, on-demand)
-
-| PK | SK | Item | TTL |
-| --- | --- | --- | --- |
-| `INSTR#<id>` | `META` | Instrument and position | |
-| `USER` | `PREFS` | Preferences, thresholds, quiet hours, privacy mode | |
-| `SIG#<id>` | `D#<date>` | Daily signals | 2 years |
-| `FCST#<id>` | `<made_at>` | Forecast + outcome when graded | |
-| `CALL#<id>` | `<made_at>` | Call + grade | |
-| `ALERT#<rule>#<id>` | `STATE` | Last fired, cooldown, weekly red budget | |
-| `SENT#<id>` | `D#<date>` | Sentiment index | 1 year |
-| `ART#<date>` | `<hash>` | Article score | 90 days |
-| `CHAT` | `T#<ts>` | Chat turn incl. tool results | 30 days |
-| `UPD#<update_id>` | `SEEN` | Webhook dedupe | 48 hours |
-| `DECISION` | `<ts>` | "I acted" records | |
-
-### 7.2 S3
-
-```
-s3://mypaisa-agent-<env>/
-  prices/instrument=<id>/year=<yyyy>/part.parquet
-  fx/year=<yyyy>/part.parquet
-  news/date=<yyyy-mm-dd>/<hash>.json      # 90-day lifecycle rule
-  charts/<yyyy-mm-dd>/<name>.png          # 30-day lifecycle rule
-```
-
-### 7.3 SSM Parameter Store (SecureString, standard tier)
-
-`/mypaisa-agent/<env>/telegram/bot_token`, `.../telegram/webhook_secret`,
-`.../telegram/chat_id`, `.../brave/api_key`, `.../eodhd/api_key`. Read once per
-cold start.
-
----
-
-## 8. Tech stack
-
-| Layer | Choice | Why |
-| --- | --- | --- |
-| Language | Python 3.14 | pandas ecosystem; the tracker's backend is Python too |
-| Packaging | uv, `pyproject.toml` | Fast, reproducible lockfile |
-| Lint / format / types | ruff, pyright (strict) | One fast linter; strict types on tool schemas |
-| Tests | pytest, hypothesis, moto, respx | Unit, property, AWS and HTTP fakes |
-| Data | pandas, numpy, pyarrow | Signals and parquet |
-| Calendars | exchange_calendars | XLON, XETR, XNYS sessions and holidays |
-| Models / validation | pydantic v2 | Tool inputs, Telegram updates, stored items |
-| HTTP | httpx | Telegram, ECB, EODHD, Brave, RSS |
-| News | feedparser, trafilatura | RSS parsing, article text extraction |
-| Charts | matplotlib (Agg) | PNG for `sendPhoto` |
-| Claude | `anthropic[bedrock]`, `AnthropicBedrockMantle` | Messages API on Bedrock with IAM auth |
-| Lambda helpers | aws-lambda-powertools | Logging, tracing, parameters, idempotency |
-| Telegram | Thin client on httpx, no framework | Webhook-only, single user; frameworks assume polling |
-| Runtime | Lambda container image, arm64, AWS Python 3.14 base | One image, cheaper Graviton |
-| Scheduling | EventBridge Scheduler, `Europe/London` | Timezone-aware cron, free at this volume |
-| Storage | DynamoDB on-demand, S3 | Free tier covers it |
-| Secrets | SSM Parameter Store | Free; Secrets Manager is $0.40 per secret |
-| Infra as code | Terraform, state in `s3://wealth-tracker-tfstate/mypaisa-agent/<env>/infra.tfstate` | Same tooling as the tracker, separate state |
-| CI/CD | GitHub Actions, OIDC to an IAM role | No stored AWS keys |
-| Observability | CloudWatch Logs (14 days), alarms, AWS Budgets | Failures reach Telegram |
-
----
-
-## 9. Security
-
-- **No long-lived keys.** CI assumes a role through GitHub OIDC; Lambdas use
-  execution roles; Bedrock uses IAM. Third-party API keys live in SSM only.
-- **OIDC trust pinned to this repository's own ids.** The subject claim embeds
-  the owner and repository numeric ids, for example
-  `repo:gilipersonal@325700199/mypaisa-agent@<repo_id>:environment:dev`. Do not
-  copy the wealth tracker's trust policy; its repository id is different.
-- **IAM only through Terraform.** Each function gets a role scoped to the one
-  table, one bucket, its SSM path, and the Bedrock model ARNs it uses.
-- **Webhook:** secret-token header, chat_id allowlist, dedupe, payload size cap.
-- **Untrusted text:** RSS, fetched pages and search results go to Claude inside
-  clearly marked tool results and are never followed as instructions. The
-  agent has no tool that can spend money beyond a search query, delete data,
-  or message anyone but you.
-- **Privacy mode** for message contents, as above.
-
----
-
-## 10. Reliability and observability
-
-- Structured JSON logs with a correlation id per update or schedule run.
-- **Dead man's switch:** if the morning brief has not been sent by 07:45 on a
-  trading day, an alarm Lambda sends a short "brief failed: <reason>" message.
-- CloudWatch alarm on any function error rate > 0 over 15 minutes, same route.
-- Price-source fallbacks: EODHD → yfinance → last known close, labelled stale.
-- Every job is idempotent for its date, so a re-run overwrites, never
-  duplicates.
-
----
-
-## 11. Cost (Bedrock, monthly, at $1.30 to £1)
+## 14. Cost (monthly, at $1.30 to £1)
 
 | Line | Lean | Standard | Full |
 | --- | ---: | ---: | ---: |
-| AWS compute, storage, logs, ECR | £0.10 | £0.10 | £0.20 |
-| Bedrock: briefs, alerts, chat, Saturday review | £7 | £12 | £21 |
-| Bedrock: sentiment scoring (Haiku, real-time) | £3 | £5 | £5 |
+| AWS | £0.10 | £0.10 | £0.20 |
+| Bedrock: briefs, alerts, chat, cards, Saturday review | £7 | £12 | £21 |
+| Bedrock: sentiment scoring | £3 | £5 | £5 |
+| Bedrock: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Brave Search | £0 | £1 | £2 |
 | Market data (EODHD All World EOD) | £0 | £16 | £16 |
 | **Total** | **£10** | **£34** | **£44** |
 
-Guard rails: AWS Budgets alert at £40 and a hard stop at £50 that disables the
-Scheduler rules; a per-day Bedrock token ceiling enforced in the agent.
+Stock fundamentals (EODHD Fundamentals) would add about £46 a month and are
+not planned unless a single share is added.
 
 ---
 
-## 12. Decisions
+## 15. Decisions (v2)
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
-| Claude access | Amazon Bedrock | One AWS bill, IAM auth, no API key |
-| Web search | Brave Search API as a client tool | Bedrock has no server-side web search |
-| Batch scoring | Real-time Haiku 5.5 | No Bedrock batch for 5.5 models; still cheaper |
-| Telegram mode | Webhook via Lambda Function URL | No always-on process; Function URL is free |
-| Compute | Lambda container image, arm64 | pandas + matplotlib exceed zip limits |
-| Repository | Separate (`gilipersonal/mypaisa-agent`) | Independent deploys and IAM |
-| Calls | Shadow mode until 8 weeks above baseline | Prove value before it reaches you |
+| Engine | Port the desk's maths, rewrite its cascade | The maths is sound and self-tested; the cascade is for traders |
+| Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
+| Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
+| Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
+| Front end | Telegram rich messages + PNG charts + a read-only Mini App | Simple by default, technical on tap, interactive when wanted |
+| Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
+| Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 
-## 13. Open questions
+## 16. Open questions
 
-- Exact Monzo fund and ISIN (from the factsheet in the app).
-- EODHD from day one, or start on free sources.
-- Whether the wealth tracker should read positions from this table (phase 8).
+- The Monzo funds' exact names and ISINs (factsheet in the app).
+- Whether yfinance returns history for the funds' `0P…L` ids; otherwise which page becomes the daily source.
+- Rich messages: confirm block types and limits against the official Bot API changelog before relying on tables.
+- UK and EU macro basket constituents (UCITS tickers) and their weights.

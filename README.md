@@ -12,22 +12,24 @@
 
 <a href="ARCHITECTURE.md"><img alt="Claude on Amazon Bedrock" src="https://img.shields.io/badge/Claude-Amazon%20Bedrock-9184d9?logo=anthropic&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="AWS Lambda: us-east-1" src="https://img.shields.io/badge/AWS%20Lambda-us--east--1-FF9900?logo=awslambda&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="DynamoDB + S3" src="https://img.shields.io/badge/DynamoDB-%2B%20S3-4053D6?logo=amazondynamodb&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Telegram Bot API" src="https://img.shields.io/badge/Telegram-Bot%20API-26A5E4?logo=telegram&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Python: 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="pandas" src="https://img.shields.io/badge/pandas-signals-150458?logo=pandas&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Terraform: infra" src="https://img.shields.io/badge/Terraform-infra-844FBA?logo=terraform&logoColor=white"></a>
 
-**[Animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) · [Architecture](ARCHITECTURE.md) · [Build plan](PLAN.md)**
+**[Animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) · [Architecture](ARCHITECTURE.md) · [Build plan](PLAN.md) · [Research](docs/RESEARCH.md)**
 
 </div>
 
 ---
 
 > [!NOTE]
-> **Status: design.** `ARCHITECTURE.md` and `PLAN.md` are written; no code, infrastructure or workflow exists yet.
+> **Status: design.** `ARCHITECTURE.md` (v2), `PLAN.md` (v2) and `docs/RESEARCH.md` are written; no code, infrastructure or workflow exists yet.
 > The commands below describe the repository as it will be once phase 1 of the plan lands, so that the plan and
 > the README agree from the start. The CI badge reports "no status" until the workflow exists.
 
-A private market agent for the MyPaisa household. Every weekday it fetches the closes, fund prices and exchange
-rates for what the household holds, works out what moved and why, and sends a short brief to one Telegram chat.
-It alerts on the few things worth a push, answers questions by calling its own code as tools, reads the news
-overnight, and takes a stance with a horizon and a confidence that it grades later. Python does the maths; Claude
-on Amazon Bedrock does the words. It holds no broker login and cannot trade.
+A private market agent for the MyPaisa household, run from one Telegram chat by someone who is not a finance
+person. It keeps the record of what is held (fed by sending it a factsheet and a screenshot), fetches the closes,
+fund prices and exchange rates every weekday, works out what moved and why, and sends a short brief. It alerts on
+the few things worth a push, answers questions by calling its own code as tools, shows charts, reads the news
+overnight, and takes a stance (add, hold, pause, trim) with a confidence score that it grades later. Every message
+is plain on top with the technical detail one tap away. Python does the maths; Claude on Amazon Bedrock does the
+words. It holds no broker login and cannot trade.
 
 | Surface | Where | Runs on |
 | --- | --- | --- |
@@ -57,8 +59,9 @@ bond ETFs and commodity ETCs in GBP, USD or EUR slot in as price-source plugins.
 
 | Document | What it covers |
 | --- | --- |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | How it is built: what the agent does and the two rules it keeps (Claude never produces a number; the bot cannot trade), the system on AWS, every Lambda and what triggers it, the Telegram integration, the agent loop and its tools, model routing on Bedrock, the instrument model and the Monzo fund's proxy basket, currencies and calendars, signals, forecast ranges, the news and sentiment pipeline, calls and their shadow mode, notification tiers, the data in DynamoDB and S3, the tech stack with the reason for each choice, security, reliability, cost, decisions and open questions. |
-| [PLAN.md](PLAN.md) | How it gets built: the principles, then eight phases from prerequisites to the wealth-tracker integration. Each phase lists what is built, what is tested, an exit criterion you can see in Telegram, and its monthly cost. Then an indicative timeline, the definition of done for every change, and the risks with their mitigations. |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | How it is built (v2, the hybrid): the three rules (Claude never produces a number; the bot cannot trade; the layman sees the summary, the detail is one tap away), what you see in the chat, the system on AWS, the holdings registry and how a holding is added from a factsheet and a screenshot, the price source chain and look-through, the analysis engine ported from the Agentic Trading Desk (indicators, pillars, flags, macro regimes) with a holder's cascade and a computed confidence score, the research cards rebuilt from Agent Toolbelt for funds, the agent and its guardrails, the Telegram front end (rich messages, charts, a Mini App dashboard), notifications, the records the wealth tracker reads, the tech stack, security, cost, decisions and open questions. |
+| [PLAN.md](PLAN.md) | How it gets built (v2): the principles, then ten phases from prerequisites through registry and ingestion, the engine port, briefs and charts, chat and cards, the Mini App, calibration, news, stances going live, the tracker integration and new kinds of holding. Each phase lists what is built, what is tested, an exit criterion you can see in Telegram, and its cost. A reverse-engineering workbook maps every ported source file to its target module. Then the timeline, the definition of done, and the risks. |
+| [docs/RESEARCH.md](docs/RESEARCH.md) | What was learned from the two references and the landscape around them: the Agentic Trading Desk file by file (what is ported, what is left), Agent Toolbelt's tools and card shapes, the open-source agent frameworks worth borrowing from, market data for UK OEICs and UCITS ETFs, what Claude on Bedrock can read (PDFs, screenshots), what a Telegram bot can show in 2026, how a confidence score is made honest, and the sources. |
 | [The animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) | The same design as a page: three animated scenarios (the morning brief, a question, an alert after the US close) with a packet travelling hop by hop, the agent's tool loop replayed on a worked example, the news-to-call pipeline, the weekly message grid, the alert tiers, the cost against the £50 cap, and the repository layout. Private to the account; share from the page. |
 | `CLAUDE.md` | Planned, phase 1: the working rules for people and coding agents (the OIDC trust trap, Terraform-only IAM, no keys, the budget, the definition of done). |
 | `infra/README.md` | Planned, phase 1: every AWS resource, its cost and what protects it; CI's keyless deploy. |
