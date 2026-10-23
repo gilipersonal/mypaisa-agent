@@ -1,0 +1,24 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-23T11:40:00Z"},
+  "title": "MyPaisa Dashboard",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "Overview", "is_interactive": true, "radius": 28},
+    "Holding.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "Holding · NASDAQ 100", "is_interactive": true, "radius": 28},
+    "Overlap.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "Overlap", "is_interactive": true, "radius": 28},
+    "Scorecard.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 844, "title": "Scorecard", "is_interactive": true, "radius": 28},
+    "Light.dc.html": {"x": 1880, "y": 0, "w": 390, "h": 844, "title": "Overview · light theme", "is_interactive": true, "radius": 28}
+  },
+  "order": ["Main.dc.html", "Holding.dc.html", "Overlap.dc.html", "Scorecard.dc.html", "Light.dc.html"],
+  "notes": {
+    "t1": {"x": 0, "y": -320, "text": "MyPaisa dashboard · a read-only Telegram Mini App", "kind": "title1", "maxW": 2270},
+    "s1": {"x": 0, "y": 900, "w": 390, "text": "Opens from the Portfolio card in the chat. It serves data only after validating Telegram's signed initData. Nothing here writes: every change happens in the chat with a Confirm tap.", "fill": "purple"},
+    "s2": {"x": 470, "y": 900, "w": 390, "text": "Tap a holding on Overview to get here. The markers on the chart are the bot's past stances; the pillars are the engine's −2..+2 scores; Technical is already open on this screen because you came here for it.", "fill": "gray"},
+    "s3": {"x": 940, "y": 900, "w": 390, "text": "Look-through from the issuers' holdings files: the same companies held through two wrappers, and the currency the whole portfolio really sits in.", "fill": "gray"},
+    "s4": {"x": 1410, "y": 900, "w": 390, "text": "The bot grading itself. If 64% does not mean 64%, it shows here first, and the Saturday review says so.", "fill": "gray"},
+    "s5": {"x": 1880, "y": 900, "w": 390, "text": "The Mini App follows Telegram's theme. In light mode it uses the wealth tracker's Organic palette: paper ground, olive accent, clay second accent.", "fill": "gray"}
+  },
+  "designSystems": []
+}

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MyPaisa dashboard · iShares NASDAQ 100</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#e9e9ed}
+a{color:#b5abfc}a:hover{color:#d2cefd}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #161826; color: #e9e9ed; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; line-height: 1.4">
+
+  <div style="display: flex; align-items: center; gap: 10px; padding: 16px 16px 10px; box-sizing: border-box">
+    <a href="Main.dc.html" style="text-decoration: none; font-size: 13px; color: #b5abfc; padding: 6px 8px 6px 0">‹ Overview</a>
+    <div style="display: flex; flex-direction: column; min-width: 0">
+      <span style="font-size: 15px; font-weight: 500">iShares NASDAQ 100</span>
+      <span style="font-size: 11px; color: #8b8fa3">IE00B53SZB19 · London CNX1 · GBP · Stocks &amp; Shares ISA</span>
+    </div>
+  </div>
+
+  <div style="flex: 1 1 auto; min-height: 0; overflow: auto; padding: 0 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <div style="background: #232532; border: 1px solid #3f424d; border-radius: 14px; padding: 12px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8b8fa3">Value</span>
+        <span style="font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums">£5,050</span>
+        <span style="font-size: 12px; color: #e06c6c; font-variant-numeric: tabular-nums">▼3.1% today · ▼8.4% from high</span>
+      </div>
+      <div style="background: #232532; border: 1px solid #3f424d; border-radius: 14px; padding: 12px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8b8fa3">Stance</span>
+        <span style="font-size: 24px; font-weight: 500; color: #c98a54">PAUSE</span>
+        <span style="font-size: 12px; color: #b2b6ca">confidence 61% · 2 weeks</span>
+      </div>
+    </div>
+
+    <div style="background: #232532; border: 1px solid #3f424d; border-radius: 14px; padding: 12px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; font-size: 13px">
+      <span style="color: #e9e9ed">Keep what you have; hold this month's top-up until the trend settles. Not a reason to sell.</span>
+      <span style="color: #b2b6ca">Would change if: a close back above the 20-day average, or two calm sessions after the Fed.</span>
+      <span style="font-size: 12px; color: #8b8fa3">PAUSE calls on this holding: 3 made, 2 right. A view, not advice.</span>
+    </div>
+
+    <div style="background: #232532; border: 1px solid #3f424d; border-radius: 14px; padding: 14px 16px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: baseline; gap: 8px">
+        <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8b8fa3">90 days · GBP</span>
+        <span style="margin-left: auto; font-size: 11px; color: #e06c6c">dashed = your 8% alert line</span>
+      </div>
+      <svg viewBox="0 0 342 120" width="342" height="120" role="img" aria-label="Price of the NASDAQ 100 ETF over 90 days, rising to a high in early October then falling 8.4 percent, with an ADD marker in August and a PAUSE marker this week">
+        <line x1="6" y1="28" x2="336" y2="28" stroke="#3f424d" stroke-width="1"/>
+        <line x1="6" y1="58" x2="336" y2="58" stroke="#3f424d" stroke-width="1"/>
+        <line x1="6" y1="88" x2="336" y2="88" stroke="#3f424d" stroke-width="1"/>
+        <path d="M6,70 L31,66 L57,60 L82,62 L107,50 L132,44 L158,40 L183,34 L208,30 L234,36 L259,26 L285,42 L310,56 L336,64 L336,104 L6,104 Z" fill="#9184d9" opacity="0.14"/>
+        <path d="M6,70 L31,66 L57,60 L82,62 L107,50 L132,44 L158,40 L183,34 L208,30 L234,36 L259,26 L285,42 L310,56 L336,64" fill="none" stroke="#9184d9" stroke-width="2" stroke-linejoin="round"/>
+        <line x1="6" y1="61" x2="336" y2="61" stroke="#e06c6c" stroke-width="1" stroke-dasharray="4 3"/>
+        <circle cx="107" cy="50" r="5" fill="#5faf7d" stroke="#161826" stroke-width="2"/>
+        <circle cx="310" cy="56" r="5" fill="#c98a54" stroke="#161826" stroke-width="2"/>
+        <circle cx="336" cy="64" r="3.5" fill="#e9e9ed"/>
+        <text x="107" y="42" text-anchor="middle" font-size="10" fill="#5faf7d" font-family="Inter, system-ui, sans-serif">ADD</text>
+        <text x="300" y="76" text-anchor="middle" font-size="10" fill="#c98a54" font-family="Inter, system-ui, sans-serif">PAUSE</text>
+        <text x="6" y="116" font-size="10" fill="#8b8fa3" font-family="Inter, system-ui, sans-serif">Aug</text>
+        <text x="150" y="116" font-size="10" fill="#8b8fa3" font-family="Inter, system-ui, sans-serif">Sep</text>
+        <text x="300" y="116" font-size="10" fill="#8b8fa3" font-family="Inter, system-ui, sans-serif">Oct</text>
+      </svg>
+    </div>
+
+    <div style="background: #232532; border: 1px solid #3f424d; border-radius: 14px; padding: 12px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: baseline">
+        <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8b8fa3">Pillars, −2 to +2</span>
+        <span style="margin-left: auto; font-size: 11px; color: #8b8fa3">from the engine, Fri close</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 12px">
+        <span style="width: 74px; color: #b2b6ca">Trend</span>
+        <div style="position: relative; width: 190px; height: 10px; background: #2b2d3a; border-radius: 5px"><div style="position: absolute; left: 95px; top: 0; width: 95px; height: 10px; background: #5faf7d; border-radius: 0 5px 5px 0"></div><div style="position: absolute; left: 94px; top: -3px; width: 2px; height: 16px; background: #8b8fa3"></div></div>
+        <span style="width: 24px; text-align: right; color: #5faf7d; font-variant-numeric: tabular-nums">+2</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 12px">
+        <span style="width: 74px; color: #b2b6ca">Momentum</span>
+        <div style="position: relative; width: 190px; height: 10px; background: #2b2d3a; border-radius: 5px"><div style="position: absolute; left: 48px; top: 0; width: 47px; height: 10px; background: #e06c6c; border-radius: 5px 0 0 5px"></div><div style="position: absolute; left: 94px; top: -3px; width: 2px; height: 16px; background: #8b8fa3"></div></div>
+        <span style="width: 24px; text-align: right; color: #e06c6c; font-variant-numeric: tabular-nums">−1</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 12px">
+        <span style="width: 74px; color: #b2b6ca">Macro (US)</span>
+        <div style="position: relative; width: 190px; height: 10px; background: #2b2d3a; border-radius: 5px"><div style="position: absolute; left: 95px; top: 0; width: 47px; height: 10px; background: #5faf7d; border-radius: 0 5px 5px 0"></div><div style="position: absolute; left: 94px; top: -3px; width: 2px; height: 16px; background: #8b8fa3"></div></div>
+        <span style="width: 24px; text-align: right; color: #5faf7d; font-variant-numeric: tabular-nums">+1</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 12px">
+        <span style="width: 74px; color: #b2b6ca">Risk</span>
+        <div style="position: relative; width: 190px; height: 10px; background: #2b2d3a; border-radius: 5px"><div style="position: absolute; left: 0; top: 0; width: 95px; height: 10px; background: #e06c6c; border-radius: 5px 0 0 5px"></div><div style="position: absolute; left: 94px; top: -3px; width: 2px; height: 16px; background: #8b8fa3"></div></div>
+        <span style="width: 24px; text-align: right; color: #e06c6c; font-variant-numeric: tabular-nums">−2</span>
+      </div>
+
+      <div style="font-size: 12px; color: #b2b6ca; display: flex; flex-direction: column; gap: 3px; padding-top: 4px; border-top: 1px solid #3f424d">
+        <span>Flags: exhaustion ×2 (RSI turned from 71, MACD histogram shrinking) · no death-cross</span>
+        <span>Volatility 72nd percentile · drawdown −8.4% · 1-month range −6.1% … +5.0% · P(fall &gt; 5%) 14%</span>
+        <span>Cascade: holding, exhaustion ≥ 2 and risk elevated → PAUSE</span>
+      </div>
+    </div>
+
+    <div style="background: #232532; border: 1px solid #3f424d; border-radius: 14px; padding: 12px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #b2b6ca">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8b8fa3">Data</span>
+      <span>Close: EODHD CNX1 ✓ Fri 30 Oct · check: iShares NAV ✓ · FX: ECB ✓ · pence normalised to pounds</span>
+      <span>Look-through: iShares holdings file, 29 Oct · engine self-test ✓</span>
+    </div>
+
+    <div style="display: flex; gap: 8px; padding-bottom: 12px">
+      <a href="Overlap.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 13px; color: #b5abfc; border: 1px solid #5d5294; border-radius: 8px; padding: 10px 8px">Where it overlaps</a>
+      <a href="Main.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 13px; color: #b5abfc; border: 1px solid #5d5294; border-radius: 8px; padding: 10px 8px">Ask in the chat</a>
+    </div>
+  </div>
+
+  <div style="display: flex; border-top: 1px solid #3f424d; background: #161826; padding: 8px 8px 14px; box-sizing: border-box">
+    <a href="Main.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #8b8fa3; padding: 6px 0; border-top: 2px solid transparent">Overview</a>
+    <a href="Holding.dc.html" aria-current="page" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #e7e5fe; padding: 6px 0; border-top: 2px solid #9184d9">Holdings</a>
+    <a href="Overlap.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #8b8fa3; padding: 6px 0; border-top: 2px solid transparent">Overlap</a>
+    <a href="Scorecard.dc.html" style="flex: 1 1 0; text-align: center; text-decoration: none; font-size: 11px; color: #8b8fa3; padding: 6px 0; border-top: 2px solid transparent">Scorecard</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
