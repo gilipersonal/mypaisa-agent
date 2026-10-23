@@ -24,7 +24,8 @@ Status: design. Nothing is built.
 | Charts | matplotlib (Agg backend) | PNG charts for `sendPhoto`, one house style |
 | Claude | `anthropic[bedrock]`, the `AnthropicBedrockMantle` client | Messages API on Amazon Bedrock with IAM auth; structured outputs, strict tools, prompt caching, PDF and image input, citations |
 | Lambda helpers | aws-lambda-powertools, boto3 | Structured logging, idempotency, parameters |
-| Telegram | A thin client on httpx, no framework | Webhook-only, one user; rich messages with HTML fallback, inline and reply keyboards, files, callback queries, `editMessageText` |
+| Telegram | A thin client on httpx, no framework | Webhook-only; rich messages with HTML fallback, inline and reply keyboards, files, callback queries, `editMessageText`, deep links for invites |
+| Identity | Telegram user id in the chat; signed `initData` in the Mini App; one-time invite links; roles owner / member / viewer; Amazon Cognito only when the wealth tracker's web login is built | No passwords to build or phish; each member is themselves on their own phone |
 | Mini App | Static HTML, CSS and JS; lightweight-charts (TradingView's open-source charting library); Telegram `initData` validated by HMAC in the Function URL | Interactive charts without a framework; the artboards in `docs/design/dashboard/` are the spec |
 
 ## 2. Quality
@@ -108,6 +109,7 @@ stopping an environment is `terraform destroy` on it.
 
 | Change | Effect per month |
 | --- | ---: |
+| Another household member (their briefs and chat) | £2–5 |
 | Another ETF or fund | about £0.10 |
 | A single share with the valuation and earnings cards (EODHD Fundamentals) | about £46; decide only if a share is added |
 | Doubling chat use | £4–8 |

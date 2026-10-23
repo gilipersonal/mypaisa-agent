@@ -23,8 +23,11 @@
 > The commands below describe the repository as it will be once phase 1 of the plan lands, so that the plan and
 > the README agree from the start. The CI badge reports "no status" until the workflow exists.
 
-A private market agent for the MyPaisa household, run from one Telegram chat by someone who is not a finance
-person. It keeps the record of what is held (fed by sending it a factsheet and a screenshot), fetches the closes,
+A private market agent for the MyPaisa household, run from Telegram by people who are not finance people. Each
+member of the household talks to the bot from their own phone, manages their own accounts and holdings, and sees
+their own detail plus the household overview; the owner sees everyone's. There are no passwords: Telegram is the
+identity, and a member joins by tapping a one-time invite link. It keeps the record of what is held (fed by
+sending it a factsheet and a screenshot), fetches the closes,
 fund prices and exchange rates every weekday, works out what moved and why, and sends a short brief. It alerts on
 the few things worth a push, answers questions by calling its own code as tools, shows charts, reads the news
 overnight, and takes a stance (add, hold, pause, trim) with a confidence score that it grades later. Every message
@@ -33,13 +36,13 @@ words. It holds no broker login and cannot trade.
 
 | Surface | Where | Runs on |
 | --- | --- | --- |
-| The bot | one private Telegram chat | `webhook` and `agent` Lambdas, Amazon Bedrock |
+| The bot | one private Telegram chat per household member, joined by invite link | `webhook` and `agent` Lambdas, Amazon Bedrock |
 | The schedule | 07:15 and 21:15 UK on weekdays, 08:00 on Saturday | EventBridge Scheduler in `Europe/London` |
 | The numbers | DynamoDB (one table) and S3 (parquet) | `ingest` and `engine` Lambdas |
 | The records | factsheets and screenshots read into the registry | `docs` Lambda, Claude on Bedrock |
 | The news | RSS from central banks and the financial press | `news` and `score` Lambdas |
 | The dashboard | a read-only Mini App opened from the chat | static files on the wealth tracker's S3 + CloudFront |
-| The wealth tracker | [gilipersonal/wealth-tracker](https://github.com/gilipersonal/wealth-tracker) | reads the same positions table, later |
+| The wealth tracker | [gilipersonal/wealth-tracker](https://github.com/gilipersonal/wealth-tracker) | later, not a priority: reads the same tables, its users linked to members through Cognito |
 
 The first holding is the household's Monzo ISA, a BlackRock MyMap fund. Holdings are a generic model: ETFs, shares,
 bond ETFs and commodity ETCs in GBP, USD or EUR slot in as price-source plugins.

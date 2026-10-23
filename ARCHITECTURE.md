@@ -40,7 +40,9 @@ Status: design only.
 
 | You | The bot |
 | --- | --- |
-| Open the chat for the first time | A three-step setup: base currency, what you hold (send a factsheet or a screenshot, or type it), how often to be told things |
+| Open the chat for the first time | A three-step setup: base currency, what you hold (send a factsheet or a screenshot, or type it), how often to be told things. You become the household's owner. |
+| Send `/invite` | A one-time link. Your wife taps it on her phone; she is a member of the same household, with her own chat, her own accounts and her own preferences |
+| Tap **Household** or **Me** on the Portfolio card | The household overview across every member and account, or your own accounts in detail. As owner you can open any member's detail; a member sees their own and the household totals |
 | Send a factsheet PDF | Reads it, shows a card: name, ISIN, cost, what it holds, where it invests; you tap Confirm |
 | Send a screenshot of your Monzo valuations | Reads the values, matches them to holdings, updates the records, shows a before/after card; you tap Confirm |
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
@@ -115,16 +117,24 @@ registry is designed so that adding a new kind of thing adds data, not code.
 
 | Entity | Key fields | Notes |
 | --- | --- | --- |
+| **Portfolio** (household) | `id`, `name`, `base_ccy`, `created_by`, `budget_tokens_per_day` | The tenant. Every other item's partition key starts with the portfolio id. |
+| **Member** | `portfolio_id`, `tg_user_id`, `display_name`, `role` (`owner` · `member` · `viewer`), `share_detail` (let other members see my accounts), `prefs` (thresholds, quiet hours, ping budget, privacy mode, simple/technical), `joined_at`, `invited_by` | A person, identified by their Telegram account. One chat with the bot per member. |
+| **Invite** | `portfolio_id`, `token`, `role`, `created_by`, `expires_at`, `used_by?` | Single use, 24-hour expiry, bound to one portfolio and role. |
+| **Account** | `portfolio_id`, `id`, `name`, `type` (`ISA` · `GIA` · `SIPP` · `cash`), `platform` (`Monzo`, …), `owners[]` (member ids; two for a joint account) | A tax wrapper belonging to one or two members. Finances are managed here, per member. |
 | **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither. |
-| **Position** | `instrument_id`, `account` (`ISA` · `GIA` · `SIPP` · `cash`), `platform` (`Monzo`, …), `units`, `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held. One instrument may sit in two accounts. |
+| **Position** | `account_id`, `instrument_id`, `units`, `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. |
 | **Valuation** | `instrument_id`, `date`, `price`, `price_ccy`, `fx_to_gbp`, `units`, `value_gbp`, `source` (`nav` · `close` · `proxy` · `user_screenshot` · `user_typed`), `provisional` | The time series the wealth tracker reads. User-supplied values are kept alongside computed ones; a gap between them is a signal (wrong units, a fee, a late NAV). |
 | **Document** | `instrument_id`, `type` (`factsheet` · `kiid` · `annual_report` · `screenshot`), `s3_key`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | The factsheet is the source of look-through until a better feed exists. |
 | **Transaction** | `position_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee`), `units`, `amount_gbp` | From "I put £200 in", or extracted from a screenshot. |
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
-| **Preferences** | thresholds, quiet hours, ping budget, privacy mode, mode (`simple` · `technical`), language level | Changed by plain English + Confirm. |
-| **AlertState**, **Decision**, **ChatTurn**, **SentimentIndex**, **ArticleScore**, **WebhookSeen** | as v1 | |
+| **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. |
+| **SentimentIndex**, **ArticleScore**, **WebhookSeen** | per portfolio or global | |
+
+Signals and macro regimes are per instrument and shared by everyone who holds
+it; stances are per position, because the horizon, the drift from target and
+the "holding" flag belong to one member's account.
 
 Every item carries `schema_version`; a migration is a Lambda that rewrites
 items of an older version, run once from a script, never by hand.
@@ -207,7 +217,56 @@ Three things this example teaches the design:
 
 The platform fee Monzo charges on top of each product's own charge is part
 of the cost drag in `fund-vs-benchmark`; it is a preference (percentage per
-year), set once.
+year), set once per account.
+
+### 4.5 Identity, members and views
+
+**There are no passwords.** Telegram authenticates every person who talks to
+the bot, and it signs the identity it hands to the Mini App. "Login" is: which
+Telegram account is this, and which household is it a member of.
+
+| Where | How the member is identified |
+| --- | --- |
+| The chat | Every update carries `from.id`, a stable numeric Telegram user id. The webhook already accepts only updates signed by Telegram (secret token); the old single-chat allowlist becomes a `Member` lookup. A known id acts as that member; an unknown id gets silence. |
+| The Mini App | Telegram signs `initData` (an HMAC over the user and a timestamp, keyed by the bot token). The Function URL checks the signature and the age, looks up the member, and serves only what that member may see. |
+| The wealth tracker, later | Amazon Cognito (email, passkey, Google, MFA; free at this scale). A one-time code shown on the web and sent to the bot ties the Cognito user to the member. Not a priority now; nothing in the bot depends on it. |
+
+**Joining.** The owner sends `/invite` (optionally `/invite viewer`). The bot
+replies with a one-time deep link, `t.me/<bot>?start=<token>`, single use,
+24-hour expiry, bound to this household and that role. The invitee opens it
+on their own phone, becomes a member, and gets the three setup questions. The
+owner removes a member with `/members`; a member who changes Telegram account
+is simply re-invited. Private chats only: the bot ignores groups.
+
+**Roles.**
+
+| Role | Can |
+| --- | --- |
+| owner | Invite and remove members, change any account or holding, set the household budget and settings, see every member's detail |
+| member | Add, change and remove holdings in their own accounts; see the household overview; see their own detail; opt in to sharing their detail with the household |
+| viewer | Read the household overview and whatever members share; nothing else |
+
+**Views.** The Portfolio card and the dashboard have a switch: **Household**
+(every account, every member, one total) and **Me** (my accounts). The owner,
+and any member whose detail is shared, appear as further tabs. A member's
+brief covers their own accounts plus one household line; the owner's brief
+covers the household with a line per member. Alerts go to whoever owns the
+account, and to the owner as well if the owner asks.
+
+**Isolation.** Every item is keyed by the household, every tool call carries
+the calling member as a principal, and the registry layer refuses a read or
+write outside that member's rights. One DynamoDB table cannot enforce that
+with IAM alone, so it is enforced in code and covered by tests ("member A can
+never read household B; a member cannot read another member's detail unless
+shared"). Each member's chat memory, decisions, preferences and cooldowns are
+their own. A per-household Bedrock token ceiling sits under the account-level
+budget, so one chatty member cannot spend the household's allowance.
+
+**Scope.** Two members in one household is personal software. Several
+unrelated households using a bot that says "ADD, 64% confidence" starts to
+look like investment advice to the public, which is regulated in the UK. The
+model supports more households; using it that way is a separate decision
+about wording and scope, not a technical one.
 
 ---
 
@@ -369,7 +428,11 @@ every scheduled run checks first.
 
 - **Reply keyboard**, always visible: `Portfolio` · `Today` · `Ask` · `Settings`.
 - **Menu button** with the commands: `/add`, `/update`, `/why`, `/whatif`,
-  `/calls`, `/scorecard`, `/technical`, `/privacy`, `/pause`, `/help`.
+  `/calls`, `/scorecard`, `/technical`, `/privacy`, `/pause`, `/help`; for
+  the owner also `/invite` and `/members`.
+- **Household and Me** on the Portfolio card: one tap switches between the
+  household overview and your own accounts; the owner also gets a tab per
+  member.
 - **Cards** are rich messages where supported (Bot API 10.1+): a heading, a
   short table, buttons, and a collapsed **Technical details** section. Where
   rich messages are unavailable, the same card is HTML with a `Technical`
@@ -415,27 +478,33 @@ Your track record on HOLD calls: 14 made, 11 held up.
 A static page (the wealth tracker's Nocturne look, lightweight-charts) hosted
 on the existing S3 + CloudFront, opened by a `web_app` button. It shows the
 portfolio curve, each holding's history with the stance history drawn on it,
-the overlap map, and the scorecard. It reads JSON from the Function URL after
-the Lambda validates Telegram's signed `initData`. No write path; every change
-still goes through a card and a Confirm tap in the chat.
+the overlap map, and the scorecard, with the same Household / Me / member
+switch as the card. It reads JSON from the Function URL after the Lambda
+validates Telegram's signed `initData` and resolves the member; it serves
+nothing the member may not see. No write path; every change still goes
+through a card and a Confirm tap in the chat. Each member opens it from their
+own phone and sees their own view.
 
 ---
 
 ## 10. Notifications, news, calls
 
-As v1: 07:15 brief, 21:15 wrap when something moved, tiered alerts (red with
-sound, max two a week; amber silent; digest), cooldowns, quiet hours, Haiku
-repeat filter. News from RSS, scored nightly by Haiku into a sentiment index;
+As v1, now per member: the 07:15 brief is written once for the household and
+once for each member who wants one, each in their own preferences; the 21:15
+wrap goes to whoever's accounts moved; tiered alerts (red with sound, max two
+a week per member; amber silent; digest), cooldowns, quiet hours, Haiku
+repeat filter, all per member. News from RSS, scored nightly by Haiku into a sentiment index;
 event calendar (MPC, FOMC, ECB, CPI, earnings of top holdings). Stances are
 paper-traded and graded; they appear only in the Saturday review until the
 record beats the baseline for 8 weeks, then in weekday cards.
 
 ---
 
-## 11. Backend records for the wealth tracker
+## 11. Backend records for the wealth tracker (later, not a priority)
 
 The Valuation and Position tables are the record of what the holdings are
-worth. The wealth tracker's backend reads them through a read-only role and
+worth. When the wealth tracker is stitched on, its backend reads them through
+a read-only role, its users are linked to members through Cognito (§4.5), and
 maps them to its `Holding` shape (`id`, `name`, `type: Investment`, `entity`,
 `owners`, `ccy`, `val`, `invVal`): `val` is the latest `value_gbp` (or
 `price_ccy` value when the tracker shows GBP/INR), `invVal` the sum of
@@ -482,10 +551,13 @@ Mini App serves nothing without a valid, recent `initData` signature.
 | Bedrock: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Brave Search | £0 | £1 | £2 |
 | Market data (EODHD All World EOD) | £0 | £16 | £16 |
-| **Total** | **£10** | **£34** | **£44** |
+| **Total, one member** | **£10** | **£34** | **£44** |
+| Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
-Stock fundamentals (EODHD Fundamentals) would add about £46 a month and are
-not planned unless a single share is added.
+Two members on the standard setup: about £37. Stock fundamentals (EODHD
+Fundamentals) would add about £46 a month and are not planned unless a single
+share is added. A second *household* would add roughly a full set (£10–34),
+since data feeds are shared but model calls are not.
 
 ---
 
@@ -500,6 +572,8 @@ not planned unless a single share is added.
 | Front end | Telegram rich messages + PNG charts + a read-only Mini App | Simple by default, technical on tap, interactive when wanted |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
+| Identity | Telegram user id in the chat, signed `initData` in the Mini App, invites by one-time link; Cognito only for the web app later | No passwords to build, phish or forget; each member logs in from their own phone by being themselves |
+| Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 
 ## 16. Open questions
 
