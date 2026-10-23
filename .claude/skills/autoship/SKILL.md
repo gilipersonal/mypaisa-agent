@@ -32,9 +32,9 @@ Uncommitted files that belong to another story are left alone and named.
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured".
-2. **Review.** The independent review from `~/.claude/CLAUDE.md` must have
-   passed on this HEAD. If it has not run, run it now (a fresh sub-agent
-   given the diff, not the conclusion) and fix blocking findings first.
+2. **No review.** The independent review from `~/.claude/CLAUDE.md` is
+   switched off in this repo (`ship-autopilot.md`); go straight on unless
+   Arun asked for a reviewer.
 3. **Commit** this story's files, subject `MA-<n>: <what>`, no attribution.
 4. **Push**: `git push -u origin <branch>`.
 5. **Raise the PR** (skip if one is open): title `[MA-<n>] <summary>`, body

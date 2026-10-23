@@ -1,9 +1,17 @@
 # Ship on autopilot: the merge is the only question
 
 **This repo only.** It overrides the ship gate in `.claude/rules/jira-flow.md`
-and the "raise, merge and close only when asked" rule in the user's global
-`~/.claude/CLAUDE.md`, for work in `gilipersonal/mypaisa-agent`. Everywhere
-else those rules stand unchanged. Arun set this on 2026-10-23 (MA-3).
+and two rules in the user's global `~/.claude/CLAUDE.md`, "raise, merge and
+close only when asked" and "independent review before anything is shown",
+for work in `gilipersonal/mypaisa-agent`. Everywhere else those rules stand
+unchanged. Arun set this on 2026-10-23 (MA-3, MA-4).
+
+## No independent review here
+
+The separate-reviewer pass from `~/.claude/CLAUDE.md` is switched off in this
+repo: no review sub-agent before work is shown, reported done or shipped, and
+no re-review round. Check your own work the ordinary way (run the gates, look
+at the result) and go straight on. A reviewer runs only when Arun asks for one.
 
 ## What changes
 
@@ -62,8 +70,6 @@ the PR open and the issue In Review; say so in one line.
 
 ## What does not change
 
-- The independent review in `~/.claude/CLAUDE.md` still runs before work is
-  shown or reported done, and before the PR is raised.
 - Every branch, commit and PR still carries its `MA-<n>` key.
 - A red gate or a failed check stops the run: no PR is raised on a red gate
   (a draft at most), and nothing is merged on a failed check.
