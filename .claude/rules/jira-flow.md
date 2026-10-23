@@ -35,9 +35,14 @@ table, the labels and the issue templates. The skills are `/jira-flow:status`,
    body from `.github/pull_request_template.md` with the issue link. `/jira-flow:pr` does this;
    the plugin's guard hook refuses a commit or push without a key; the
    `jira-key` workflow fails a PR without one. Raising the PR moves the issue to
-   `In Review`; it moves to `Done` on merge, only when asked.
+   `In Review`; it moves to `Done` on merge, only when asked (here: straight after the merge, see ship-autopilot.md).
 
 ## The ship gate: nothing is raised, merged or closed unasked
+
+> **Overridden in this repo by `.claude/rules/ship-autopilot.md`:** the PR is
+> raised and the issue closed after the merge without asking; only the merge
+> into `main` asks. The table below, habit 5's "only when asked" and the
+> Done line under "What not to do" are the plugin's defaults.
 
 | Act | Needs asking |
 | --- | --- |
@@ -75,7 +80,7 @@ the asking belongs in the report, in words, before a prompt ever appears.
 
 - Do not create an issue for a typo-sized change inside a story already in
   progress; comment on that story instead.
-- Do not transition to `Done` yourself unless asked; `Done` means merged.
+- Do not transition to `Done` yourself unless asked (here: after the merge, see ship-autopilot.md); `Done` means merged.
 - Do not delete issues. Ever. Say what should be deleted and let the reader
   do it.
 - Do not paste secrets, tokens or device identifiers into Jira.
