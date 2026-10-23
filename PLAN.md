@@ -52,7 +52,11 @@ What you hold, recorded through the chat, with no analysis yet.
 
 - Registry entities (Portfolio, Member, Invite, Account, Instrument,
   Position, Valuation, Document, Transaction) with `schema_version`; every
-  item keyed by the household; a seed command for the first holding.
+  item keyed by the household; a seed command for the first holding. The
+  fields phase 9 needs (`Account.category`, `ccy`, `institution`,
+  `country`; `Instrument.maturity_date`, `rate`; the cashflow types on
+  `Transaction`) exist from day one, so no migration stands between the ISA
+  and the rest of the household's wealth.
 - Identity: the first person to open the chat becomes the household's
   owner; `/invite` makes a one-time deep link; `/members` lists and removes;
   the webhook resolves `from.id` to a member and ignores everyone else.
@@ -292,15 +296,43 @@ in the Saturday review.
 
 ---
 
-## Phase 9 — Wealth tracker integration (later, not a priority)
+## Phase 9 — MyPaisa: the whole wealth tracker on this backend (later, not a priority)
 
-- Read-only role for the tracker's backend over Position and Valuation.
-- Cognito for the tracker's own login (email, passkey, Google, MFA); a
-  one-time code sent to the bot links a Cognito user to a member.
-- Mapping to the tracker's `Holding` shape, with `owners` from the account's
-  members; the tracker shows the bot's values.
+The web app becomes the household's wealth tracker, as `ARCHITECTURE.md`
+§12: assets of every kind, debts, budget, forecast with XIRR, reports, in
+GBP or INR; read-only; every update through the bot. The current
+wealth-tracker repository is the screen reference. In order, each step
+shipping read-only pages over data the bot already maintains:
 
-**Exit:** one set of numbers in both places, and the same people.
+1. **Kinds and flows.** The `property`, `deposit`, `policy`, `pension` and
+   `debt` kinds with their profiles; `Liability`; INR in the FX chain; the
+   guided flows for adding a property, a deposit, a policy, a pension and a
+   loan, logging rent, interest, a maturity, an EMI, a prepayment, a rate
+   change and a preclosure; valuation reminders when a figure is overdue;
+   maturity announcements.
+2. **Wealth maths.** The `wealth/` module of §6.6: XIRR against spreadsheet
+   fixtures to the penny, deposit accrual, the loan schedule and interest
+   split, the daily `NetWorth` series, the maturity timeline.
+3. **Screens, redesigned.** Overview, Assets and one asset, Debts and one
+   loan, on the web app and in the Mini App, from a new design in the
+   Nocturne system; the Portfolio card grows into the overview.
+4. **Forecast and budget.** `ForecastAssumptions` and `Budget` with their
+   flows ("assume 5% on property", "my salary is now …"); the thirty-year
+   projection; the Budget and Forecast screens.
+5. **Reports, exports, retirement.** Composition by type and institution,
+   exports as GET routes; the old repository's domain or distribution
+   handed over or retired.
+
+**Tests:** XIRR, schedule and projection fixtures with known answers; every
+new flow's Confirm path and audit row; the viewer's masked figures; the
+INR and GBP views of the same household agreeing to the penny at the day's
+rate.
+
+**Exit:** the household's whole wealth is on the new app, every figure was
+entered through the bot, and the old tracker can be switched off.
+
+**Cost:** about £1 a month more in Claude for the extra flows; nothing in
+AWS.
 
 ---
 
@@ -349,7 +381,7 @@ What is ported from where, so the work can be checked against the original.
 | 6 Track record | 2 days, then runs on its own | Week 8 |
 | 7 News and sentiment | 3 days | Week 9 |
 | 8 Stances live | after 8 weeks of shadow | Week 17+ |
-| 9 Tracker integration | 1–2 days | When wanted |
+| 9 MyPaisa: assets, debts, budget, forecast | 4–6 weeks | After phase 8, when wanted |
 
 ---
 
