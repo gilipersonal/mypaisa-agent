@@ -24,7 +24,8 @@ at the result) and go straight on. A reviewer runs only when Arun asks for one.
 | Wait for the PR's checks | do it, no asking |
 | Merge the PR into `main` (`gh pr merge`, `git merge`, the merge API) | **ask once**, in words, and wait for a yes in the turn that is running |
 | Move the issue to Done | **do it, no asking**, straight after the merge lands (the order is the rule, not a question) |
-| Sync local `main`, delete the merged branch | do it, no asking |
+| Delete the merged `MA-*` branch, on GitHub and locally, however it has to be done | do it, no asking (covered by the merge's yes, see below) |
+| Sync local `main` | do it, no asking |
 
 `ship.askBefore` in `.claude/jira-flow.json` is `["merge"]`, so the plugin's
 `ask-before-ship` hook prompts only on the merge. `.claude/settings.json`
@@ -67,6 +68,22 @@ naming the PR and its checks:
 
 A yes merges, closes the issue and syncs `main`. A no, or no answer, leaves
 the PR open and the issue In Review; say so in one line.
+
+### "Merge it" is the whole yes
+
+Arun's rule, 2026-10-23 (MA-7): "I'll just say merge it. If you need to delete
+the branch, delete the branch. Don't ask me." His "merge it" (or any plain yes
+to the merge question) covers every step after the merge, with no further
+question in words:
+
+- merge the PR;
+- delete the story's `MA-*` branch on GitHub and locally, however it has to
+  be done: `gh pr merge --delete-branch`, else `git push origin --delete
+  <branch>`, else `git branch -D <branch>` when `-d` refuses;
+- comment on the issue and move it to Done;
+- sync local `main` and clear the work state.
+
+Only the story's own `MA-*` branch is deleted this way; `main` never is.
 
 ## What does not change
 

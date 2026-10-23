@@ -61,15 +61,22 @@ yes given in the turn that is running.
 
 ## 4. After a yes, without asking again
 
+Arun's "merge it" covers every step below, branch deletion included
+(`ship-autopilot.md`, "Merge it" is the whole yes). Ask nothing more.
+
 1. `gh pr merge <n> --merge --delete-branch`. The permission prompt that
    follows is the backstop; it is expected.
 2. Comment "Merged as <PR url> (<short sha>)." on the issue, then
    `transitionJiraIssue` id 41 (Done).
 3. Clean tree only: `git fetch origin --prune`, `git checkout main`,
-   `git pull --ff-only`, then `git branch -d <branch>` if it still exists
-   (`gh pr merge --delete-branch` usually removes it). A dirty tree is left as
-   it is and the report says `main` is behind.
-4. Clear the work state if one exists (`.git/jira-flow/MA-<n>.json`):
+   `git pull --ff-only`. A dirty tree is left as it is and the report says
+   `main` is behind.
+4. Delete the story's branch wherever it is left, without asking:
+   `git ls-remote --exit-code --heads origin <branch>` finds it on GitHub, then
+   `git push origin --delete <branch>`; locally, once `main` is checked out,
+   `git branch -d <branch>`, or `git branch -D <branch>` when `-d` refuses.
+   Only an `MA-*` branch, never `main`.
+5. Clear the work state if one exists (`.git/jira-flow/MA-<n>.json`):
    `bash "$(ls -d ~/.claude/plugins/cache/jira-flow/jira-flow/*/ | sort -V | tail -1)lib/state.sh" clear MA-<n>`.
 
 After a no: leave the PR open and the issue In Review, and say so in one line.
