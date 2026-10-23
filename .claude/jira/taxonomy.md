@@ -18,23 +18,49 @@ feature is filed as an Epic.
 
 ## Epics
 
-No epics yet: the project was empty when this file was written. Add a row per
-epic as it is created.
+One epic per phase of `PLAN.md`, created on 2026-10-23 (MA-100). Each epic's
+stories are numbered in build order, and each names what it depends on. MA-1 to
+MA-8 came before the epics and have none.
 
 | Key | Summary | Labels |
 | --- | --- | --- |
+| MA-9 | Phase 0: accounts, keys, CI and the repo skeleton | |
+| MA-10 | Phase 1: the household records what it holds through the chat | |
+| MA-11 | Phase 2: daily prices and the ported engine | |
+| MA-12 | Phase 3: brief, wrap, alerts and charts in Telegram | |
+| MA-13 | Phase 4: chat and research cards | |
+| MA-14 | Phase 5: the web app, Mini App and browser | |
+| MA-15 | Phase 6: track record and calibration | |
+| MA-16 | Phase 7: news, events and sentiment in shadow | |
+| MA-17 | Phase 8: stances go live | |
+| MA-18 | Phase 9: MyPaisa, the whole wealth tracker (later) | |
+| MA-19 | Phase 10: new kinds of holding (when one is added) | |
 
-Where a change goes, by path (fill this in as the repo's shape settles):
+Where a change goes, by path. A path that serves several phases goes to the
+epic of the story at hand; the table is the default.
 
 | Path | Epic |
 | --- | --- |
-| `src/**` | |
-| `.github/**`, `.claude/**`, repo docs | |
+| `pyproject.toml`, `.github/**`, `infra/terraform/` bootstrap, `CLAUDE.md` | MA-9 |
+| `src/mypaisa_agent/registry/`, `audit.py`, `runs.py`, `telegram.py`, `docs/`, `handlers/{webhook,agent,docs}` | MA-10 |
+| `src/mypaisa_agent/data/`, `engine/`, `handlers/{ingest,engine}` | MA-11 |
+| `agent.py` client and validator, `cards/{brief,wrap}`, `alerts/`, charts | MA-12 |
+| `tools/`, research `cards/` | MA-13 |
+| `web/`, `docs/design/dashboard/`, `handlers/api`, web hosting in `infra/terraform/` | MA-14 |
+| `calls/` | MA-15 |
+| `news/`, `events/`, `handlers/{news,score}` | MA-16 |
+| `wealth/` | MA-18 |
+| `.claude/**`, repo docs outside a phase | no epic (a standalone Task) |
 
 ## Labels
 
-No labels in use yet. `bug` marks bugs; add platform and theme labels here
-(and in `jira.labels` in `.claude/jira-flow.json`) as they are chosen.
+`bug` marks bugs. Two theme labels (also in `jira.labels.themes` in
+`.claude/jira-flow.json`):
+
+| Label | Means |
+| --- | --- |
+| `manual` | Arun does it by hand (an account, a key, an export); no PR |
+| `design` | A design-first story: options, a review board and a pick, before the build story |
 
 Bugs are type `Bug` and also carry the `bug` label so one JQL
 covers them.
