@@ -22,7 +22,7 @@ Status: design. Nothing is built.
 | HTTP | httpx | Telegram, ECB, EODHD, Twelve Data, RSS, product pages |
 | News | feedparser, trafilatura | RSS parsing and article text extraction |
 | Charts | matplotlib (Agg backend) | PNG charts for `sendPhoto`, one house style |
-| Claude | The `anthropic` Python SDK against the Anthropic API; key in SSM, read once per cold start; a monthly spend limit set in the Console | Structured outputs, strict tools, prompt caching, PDF and image input, citations, server-side web search and fetch, Message Batches for the nightly scoring |
+| Claude | The `anthropic` Python SDK against the Anthropic API; key in SSM, read once per cold start; the key belongs to a workspace, one per environment, in the Console organisation linked to the Max or Team plan, so the plan's monthly API credit pays for the calls; a spend limit per workspace | Structured outputs, strict tools, prompt caching, PDF and image input, citations, server-side web search and fetch, Message Batches for the nightly scoring |
 | Lambda helpers and observability | aws-lambda-powertools (Logger, Tracer, Metrics, idempotency, parameters), boto3; AWS X-Ray | Structured JSON logs with a run id on every line, one trace per run, ten custom metrics; a `RunRecord` per run and an `AuditEvent` per change in DynamoDB, which the web app's Activity and Audit pages read |
 | Telegram | A thin client on httpx, no framework | Webhook-only; rich messages with HTML fallback, inline and reply keyboards, files, callback queries, `editMessageText`, deep links for invites |
 | Identity | Telegram user id in the chat; signed `initData` in the Mini App; the Telegram Login Widget or Sign in with Google in a laptop browser, each member linked to one Google account by a code typed into the chat; a signed session cookie checked at the CloudFront edge; one-time invite links; roles owner / member / viewer; Amazon Cognito only if a separate login is ever wanted | No passwords to build or phish; one person, two proofs of identity, the same member either way |
@@ -71,7 +71,7 @@ Status: design. Nothing is built.
 
 | Service | Plan | Used for |
 | --- | --- | --- |
-| Anthropic API | Pay as you go: Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; a Console spend limit of £35 | Every model call, document extraction, web search and fetch, the nightly scoring |
+| Anthropic API | Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; paid from the Max or Team plan's monthly API credit ($100 on Max 5x) through the linked Console organisation, with a spend limit per workspace (£35 prod, £10 dev) | Every model call, document extraction, web search and fetch, the nightly scoring |
 | Telegram Bot API | Free | The chat, files, rich messages, the Mini App, the Login Widget for the laptop |
 | Google Identity Services | Free | Sign in with Google on the laptop; one OAuth client id per environment, no client secret; the ID token is verified in the `api` Lambda against Google's published keys |
 | Twelve Data | Free Basic tier (8 credits a minute, 800 a day) | US closes, the US macro basket, the earnings calendar, FX fallback, ISIN lookup |
@@ -123,7 +123,7 @@ stopping an environment is `terraform destroy` on it.
 
 ### Guard rails
 
-- Anthropic Console: a monthly spend limit per key (£35 prod, £10 dev) that hard-stops the key.
+- Anthropic Console: one workspace per environment in the organisation linked to the plan, each with a spend limit (£35 prod, £10 dev) that hard-stops its key; the plan's credit ($100 a month on Max 5x) is the whole model budget, auto-reload stays off, and when the credit is exhausted the API stops until the next cycle, which the dead man's switch reports.
 - AWS Budgets: prod alerts at £40 and disables the schedules at £50; dev is capped at £10.
 - A per-day Claude token ceiling in the agent, and one per household.
 - `/pause` stops everything that speaks or scores.

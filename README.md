@@ -95,8 +95,9 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 ## Models
 
 Every model call goes to the Anthropic API through the official Python SDK. The API key lives in SSM Parameter
-Store, is read once per cold start, and never appears in code, logs or chat; a monthly spend limit in the Anthropic
-Console hard-stops it. Model ids are set per environment in `infra/terraform/envs/*.tfvars`, since
+Store, is read once per cold start, and never appears in code, logs or chat. The key belongs to a workspace in the
+Claude Console organisation linked to the Max or Team plan, so the plan's monthly API credit pays for every call,
+and the workspace's spend limit hard-stops it. Model ids are set per environment in `infra/terraform/envs/*.tfvars`, since
 they move with Anthropic's releases; the first set is below.
 
 | Route | Model | Effort | What the model is asked for |
@@ -158,7 +159,8 @@ macOS or Linux. Nothing is installed globally except these tools.
 
 You also need, in the AWS account `545595341442`: a profile that can assume the operator role (`agent-toolkit`)
 and the parameters in SSM listed under [Secrets](#secrets). The Anthropic API key comes from
-[console.anthropic.com](https://console.anthropic.com) with a monthly spend limit set. The Telegram bot is made once
+a workspace in the [Claude Console](https://platform.claude.com) organisation linked to your Max or Team plan, with
+a spend limit set on the workspace. The Telegram bot is made once
 with BotFather.
 
 ## Set up from scratch
@@ -197,8 +199,11 @@ no one.
 
 ### 4. The Anthropic API key
 
-In the Anthropic Console: add a payment method, set a monthly spend limit under Settings → Limits (£35 is the
-design figure), and create a key named `mypaisa-agent-dev`. Put it straight into SSM, as with the bot token:
+On claude.ai, go to Settings → Billing → API credits and link a Claude Console organisation to your Max or Team
+plan (you need 7 days on the plan; the link cannot be moved later without support, so pick the organisation you
+will build in). No payment method is needed: the plan's monthly API credit ($100 on Max 5x) pays for the calls. In
+that organisation create two workspaces, `mypaisa-prod` with a £35 spend limit and `mypaisa-dev` with £10, and a
+key named `mypaisa-agent-dev` in the dev workspace. Put it straight into SSM, as with the bot token:
 
 ```bash
 read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/dev/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
@@ -303,7 +308,7 @@ Terraform creates the parameter names and never holds a value. The values are pu
 | `/mypaisa-agent/dev/telegram/webhook_secret` | random, sent by Telegram as `X-Telegram-Bot-Api-Secret-Token` |
 | `/mypaisa-agent/dev/telegram/chat_id` | the one chat the bot answers |
 | `/mypaisa-agent/dev/twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
-| `/mypaisa-agent/dev/anthropic/api_key` | the Anthropic API key, with a spend limit set in the Console |
+| `/mypaisa-agent/dev/anthropic/api_key` | the Anthropic API key from the `mypaisa-dev` workspace, which has its own spend limit |
 | `/mypaisa-agent/dev/eodhd/api_key` | EODHD, if chosen over the free sources |
 
 A secret-scanning step runs on every pull request.
