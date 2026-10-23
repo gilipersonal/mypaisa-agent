@@ -1,0 +1,1472 @@
+{
+    "version": 1,
+    "pages": [
+        {
+            "id": "p1",
+            "title": "MyPaisa Agent \u00b7 architecture",
+            "shapes": [
+                {
+                    "id": "c_home",
+                    "type": "rectangleContainer",
+                    "boundingBox": {
+                        "x": 40,
+                        "y": 440,
+                        "w": 520,
+                        "h": 900
+                    },
+                    "containerTitle": {
+                        "text": "Household \u00b7 Telegram, each member on their own phone"
+                    },
+                    "assistedLayout": false,
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#EEF2FF"
+                        },
+                        "stroke": {
+                            "color": "#5D5294",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "c_aws",
+                    "type": "rectangleContainer",
+                    "boundingBox": {
+                        "x": 640,
+                        "y": 40,
+                        "w": 1840,
+                        "h": 2260
+                    },
+                    "containerTitle": {
+                        "text": "AWS \u00b7 account 545595341442 \u00b7 us-east-1 \u00b7 dev and prod, same shape \u00b7 all Terraform, no keys"
+                    },
+                    "assistedLayout": false,
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#F7F7F7"
+                        },
+                        "stroke": {
+                            "color": "#242F3E",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "c_plat",
+                    "type": "rectangleContainer",
+                    "boundingBox": {
+                        "x": 720,
+                        "y": 120,
+                        "w": 1500,
+                        "h": 300
+                    },
+                    "containerTitle": {
+                        "text": "Platform \u00b7 build, secrets, observability, guard rails"
+                    },
+                    "assistedLayout": false,
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#EEEEEE"
+                        },
+                        "stroke": {
+                            "color": "#6B7280",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "c_agent",
+                    "type": "rectangleContainer",
+                    "boundingBox": {
+                        "x": 1260,
+                        "y": 480,
+                        "w": 840,
+                        "h": 640
+                    },
+                    "containerTitle": {
+                        "text": "agent \u03bb \u00b7 the one agent \u00b7 Claude tool loop \u00b7 on every message and on schedule"
+                    },
+                    "assistedLayout": false,
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#F3F0FF"
+                        },
+                        "stroke": {
+                            "color": "#9184D9",
+                            "width": 2,
+                            "style": "dashed"
+                        }
+                    }
+                },
+                {
+                    "id": "c_ddb",
+                    "type": "rectangleContainer",
+                    "boundingBox": {
+                        "x": 960,
+                        "y": 1220,
+                        "w": 1260,
+                        "h": 400
+                    },
+                    "containerTitle": {
+                        "text": "DynamoDB \u00b7 one on-demand table per environment \u00b7 partition key = household \u00b7 TTL on chat, dedupe, scores"
+                    },
+                    "assistedLayout": false,
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FBEFFC"
+                        },
+                        "stroke": {
+                            "color": "#C925D1",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "c_ext",
+                    "type": "rectangleContainer",
+                    "boundingBox": {
+                        "x": 2580,
+                        "y": 440,
+                        "w": 560,
+                        "h": 360
+                    },
+                    "containerTitle": {
+                        "text": "Outside AWS \u00b7 model"
+                    },
+                    "assistedLayout": false,
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFF4E5"
+                        },
+                        "stroke": {
+                            "color": "#C98A54",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "c_src",
+                    "type": "rectangleContainer",
+                    "boundingBox": {
+                        "x": 640,
+                        "y": 2400,
+                        "w": 1840,
+                        "h": 300
+                    },
+                    "containerTitle": {
+                        "text": "Outside AWS \u00b7 data feeds and CI"
+                    },
+                    "assistedLayout": false,
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFF4E5"
+                        },
+                        "stroke": {
+                            "color": "#C98A54",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "title",
+                    "type": "text",
+                    "boundingBox": {
+                        "x": 40,
+                        "y": 60,
+                        "w": 520,
+                        "h": 100
+                    },
+                    "text": "<p style=\"text-align:left\"><span style=\"font-size:26px\"><b>MyPaisa Agent \u00b7 architecture</b></span><br><span style=\"font-size:14px\">Design only \u00b7 nothing built yet \u00b7 23 Oct 2026</span></p>"
+                },
+                {
+                    "id": "legend",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 40,
+                        "y": 240,
+                        "w": 520,
+                        "h": 160
+                    },
+                    "text": "Legend\nsolid arrow = data or call \u00b7 dashed = Mini App read-only \u00b7 arrows both ends = request and reply\n\u03bb = AWS Lambda \u00b7 \u00a3 figures are monthly caps",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FAFAFA"
+                        },
+                        "stroke": {
+                            "color": "#9CA3AF",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "h_bot",
+                    "type": "cloud",
+                    "boundingBox": {
+                        "x": 140,
+                        "y": 560,
+                        "w": 320,
+                        "h": 140
+                    },
+                    "text": "Telegram Bot API\nwebhook \u00b7 rich messages \u00b7 files \u00b7 buttons",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#5D5294",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "h_members",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 140,
+                        "y": 820,
+                        "w": 320,
+                        "h": 120
+                    },
+                    "text": "Household members\nowner \u00b7 member \u00b7 viewer\nidentity = Telegram account, joined by invite link",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#5D5294",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "h_mini",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 140,
+                        "y": 1100,
+                        "w": 320,
+                        "h": 120
+                    },
+                    "text": "Mini App dashboard (WebView)\nread-only \u00b7 Household / Me views\nsigned initData",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#5D5294",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "a_ecr",
+                    "type": "namedShape",
+                    "className": "ArchAmazonElasticContainerRegistryAWS2024",
+                    "boundingBox": {
+                        "x": 800,
+                        "y": 200,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "ECR\none arm64 image\n7 handlers"
+                },
+                {
+                    "id": "a_ssm",
+                    "type": "namedShape",
+                    "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+                    "boundingBox": {
+                        "x": 1100,
+                        "y": 200,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "SSM Parameter Store\nbot token \u00b7 API keys"
+                },
+                {
+                    "id": "a_cw",
+                    "type": "namedShape",
+                    "className": "ArchAmazonCloudWatchAWS2024",
+                    "boundingBox": {
+                        "x": 1400,
+                        "y": 200,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "CloudWatch\nlogs \u00b7 alarms\ndead man's switch"
+                },
+                {
+                    "id": "a_budget",
+                    "type": "namedShape",
+                    "className": "ArchAWSBudgetsAWS2024",
+                    "boundingBox": {
+                        "x": 1700,
+                        "y": 200,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "Budgets\nalert \u00a340 \u00b7 stop \u00a350"
+                },
+                {
+                    "id": "a_iam",
+                    "type": "namedShape",
+                    "className": "ArchAWSIdentityandAccessManagementAWS2024",
+                    "boundingBox": {
+                        "x": 2000,
+                        "y": 200,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "IAM\nrole per function\nOIDC for CI"
+                },
+                {
+                    "id": "a_url",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 740,
+                        "y": 900,
+                        "w": 220,
+                        "h": 120
+                    },
+                    "text": "Function URL\nsecret token\ninitData check",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#3B3F4A",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "a_webhook",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 1040,
+                        "y": 890,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "webhook \u03bb\nverify \u00b7 dedupe \u00b7 ack"
+                },
+                {
+                    "id": "a_agent",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 1340,
+                        "y": 700,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "agent \u03bb"
+                },
+                {
+                    "id": "a_route",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 1560,
+                        "y": 560,
+                        "w": 460,
+                        "h": 180
+                    },
+                    "text": "Model routing\nHaiku 5.5: filters and cheap checks\nSonnet 5.5: briefs, cards, chat, stances, extraction\nOpus 5.5: Saturday review \u00b7 bull vs bear debate above 70%",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#9184D9",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "a_tools",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 1560,
+                        "y": 800,
+                        "w": 460,
+                        "h": 240
+                    },
+                    "text": "16 strict tools\nget_portfolio \u00b7 get_holding \u00b7 get_signals \u00b7 get_history \u00b7 get_macro \u00b7 run_scenario \u00b7 get_events \u00b7 get_sentiment \u00b7 get_stances \u00b7 get_scorecard\nweb_search \u00b7 web_fetch \u00b7 extract_document\npropose_change \u00b7 log_decision \u00b7 render_chart",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#9184D9",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "a_docs",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 2240,
+                        "y": 860,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "docs \u03bb\nPDF \u00b7 screenshot"
+                },
+                {
+                    "id": "a_cf",
+                    "type": "namedShape",
+                    "className": "ArchAmazonCloudFrontAWS2024",
+                    "boundingBox": {
+                        "x": 740,
+                        "y": 1220,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "CloudFront + S3\nMini App static"
+                },
+                {
+                    "id": "d1",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 1040,
+                        "y": 1300,
+                        "w": 230,
+                        "h": 240
+                    },
+                    "text": "Household\n\nHousehold \u00b7 Portfolio\nMember (owner / member / viewer)\nInvite \u00b7 Account",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C925D1",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "d2",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 1330,
+                        "y": 1300,
+                        "w": 230,
+                        "h": 240
+                    },
+                    "text": "Holdings\n\nInstrument (kind profile)\nPosition \u00b7 Valuation\nDocument \u00b7 Transaction",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C925D1",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "d3",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 1620,
+                        "y": 1300,
+                        "w": 230,
+                        "h": 240
+                    },
+                    "text": "Analysis\n\nSignal (per instrument)\nStance (per position)\nMacroRegime \u00b7 Scorecard",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C925D1",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "d4",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 1910,
+                        "y": 1300,
+                        "w": 230,
+                        "h": 240
+                    },
+                    "text": "Per member and ops\n\nChatTurn \u00b7 Decision\nAlertState \u00b7 Preferences\nSentimentIndex \u00b7 ArticleScore\nWebhookSeen",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C925D1",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "a_sched",
+                    "type": "namedShape",
+                    "className": "ResAmazonEventBridgeSchedulerAWS2024",
+                    "boundingBox": {
+                        "x": 740,
+                        "y": 1760,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "EventBridge Scheduler\nEurope/London"
+                },
+                {
+                    "id": "a_ingest",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 1040,
+                        "y": 1760,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "ingest \u03bb"
+                },
+                {
+                    "id": "a_engine",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 1640,
+                        "y": 1760,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "engine \u03bb\npillars \u00b7 flags"
+                },
+                {
+                    "id": "a_s3",
+                    "type": "namedShape",
+                    "className": "ArchAmazonSimpleStorageServiceAWS2024",
+                    "boundingBox": {
+                        "x": 1340,
+                        "y": 2060,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "S3\nprices \u00b7 docs\narticles \u00b7 charts"
+                },
+                {
+                    "id": "a_news",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 1940,
+                        "y": 2060,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "news \u03bb\nevents"
+                },
+                {
+                    "id": "a_score",
+                    "type": "namedShape",
+                    "className": "ArchAWSLambdaAWS2024",
+                    "boundingBox": {
+                        "x": 2240,
+                        "y": 2060,
+                        "w": 140,
+                        "h": 140
+                    },
+                    "text": "score \u03bb\n23:30 sentiment"
+                },
+                {
+                    "id": "e_anthropic",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 2660,
+                        "y": 520,
+                        "w": 400,
+                        "h": 200
+                    },
+                    "text": "Anthropic API\nClaude Haiku \u00b7 Sonnet \u00b7 Opus 5.5\nserver-side web search and fetch\nMessage Batches at half price\nkey in SSM \u00b7 Console spend limit \u00a335",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C98A54",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "e_market",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 960,
+                        "y": 2480,
+                        "w": 300,
+                        "h": 140
+                    },
+                    "text": "Market data and FX\nEODHD \u00b7 Twelve Data \u00b7 yfinance\niShares pages \u00b7 ECB rates",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C98A54",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "e_rss",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 1860,
+                        "y": 2480,
+                        "w": 300,
+                        "h": 140
+                    },
+                    "text": "RSS feeds\nBoE \u00b7 Fed \u00b7 ECB \u00b7 FT\nReuters \u00b7 BlackRock",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C98A54",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "e_gh",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 2220,
+                        "y": 2480,
+                        "w": 180,
+                        "h": 140
+                    },
+                    "text": "GitHub Actions\nOIDC, no AWS keys\nimage \u00b7 terraform",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FFFFFF"
+                        },
+                        "stroke": {
+                            "color": "#C98A54",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                },
+                {
+                    "id": "notes",
+                    "type": "rectangle",
+                    "boundingBox": {
+                        "x": 40,
+                        "y": 1420,
+                        "w": 520,
+                        "h": 620
+                    },
+                    "text": "How to read this\n\nOne agent: agent \u03bb runs the Claude tool loop; every other Lambda is plain Python or a single structured Claude call.\n\nSchedules (Europe/London): ingest 07:00 and 21:00 \u00b7 briefs 07:15 and 21:15 on weekdays \u00b7 news every 3 h \u00b7 score 23:30 \u00b7 Saturday review 08:00.\n\nNumbers come from code; Claude writes the words. Nothing is saved without a Confirm tap. The bot cannot trade.\n\nEach member has their own chat, accounts and preferences; the household view is a sum.\n\nTwo environments, dev and prod, same shape, separate bots and budgets.",
+                    "style": {
+                        "fill": {
+                            "type": "color",
+                            "color": "#FAFAFA"
+                        },
+                        "stroke": {
+                            "color": "#9CA3AF",
+                            "width": 2,
+                            "style": "solid"
+                        }
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "id": "l1",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "h_members",
+                        "position": {
+                            "x": 0.5,
+                            "y": 0
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "h_bot",
+                        "position": {
+                            "x": 0.5,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#5D5294",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "chat",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l2",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "h_bot",
+                        "position": {
+                            "x": 1,
+                            "y": 0.6
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_url",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "stroke": {
+                        "color": "#5D5294",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "POST /webhook",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l3",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_url",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_webhook",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    }
+                },
+                {
+                    "id": "l4",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_webhook",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_agent",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "async",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l5",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_agent",
+                        "position": {
+                            "x": 0,
+                            "y": 0.2
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "h_bot",
+                        "position": {
+                            "x": 1,
+                            "y": 0.3
+                        }
+                    },
+                    "stroke": {
+                        "color": "#5D5294",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "sendMessage \u00b7 sendPhoto",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l6",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "h_mini",
+                        "position": {
+                            "x": 1,
+                            "y": 0.4
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_url",
+                        "position": {
+                            "x": 0.3,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#5D5294",
+                        "width": 2,
+                        "style": "dashed"
+                    },
+                    "text": [
+                        {
+                            "text": "initData \u00b7 JSON",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l7",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_cf",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "h_mini",
+                        "position": {
+                            "x": 1,
+                            "y": 0.8
+                        }
+                    },
+                    "stroke": {
+                        "color": "#5D5294",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "static page",
+                            "position": 0.3,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l8",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "h_members",
+                        "position": {
+                            "x": 0.5,
+                            "y": 1
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "h_mini",
+                        "position": {
+                            "x": 0.5,
+                            "y": 0
+                        }
+                    },
+                    "stroke": {
+                        "color": "#5D5294",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "opens",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l9",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_sched",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_ingest",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "07:00 \u00b7 21:00",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l10",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_ingest",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_engine",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "bars",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l11",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_ingest",
+                        "position": {
+                            "x": 1,
+                            "y": 0.8
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_s3",
+                        "position": {
+                            "x": 0,
+                            "y": 0.3
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "parquet",
+                            "position": 0.5,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l12",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_s3",
+                        "position": {
+                            "x": 1,
+                            "y": 0.3
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_engine",
+                        "position": {
+                            "x": 0,
+                            "y": 0.85
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "history",
+                            "position": 0.5,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l14",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_engine",
+                        "position": {
+                            "x": 0.5,
+                            "y": 0
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "c_ddb",
+                        "position": {
+                            "x": 0.595,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C925D1",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "signals \u00b7 stances",
+                            "position": 0.5,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l15",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_agent",
+                        "position": {
+                            "x": 0.1,
+                            "y": 1
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "c_ddb",
+                        "position": {
+                            "x": 0.3,
+                            "y": 0
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C925D1",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "registry \u00b7 memory",
+                            "position": 0.8,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l24",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_score",
+                        "position": {
+                            "x": 0.3,
+                            "y": 0
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "c_ddb",
+                        "position": {
+                            "x": 0.97,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C925D1",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "sentiment",
+                            "position": 0.5,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l17",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_tools",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_docs",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "extract",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l18",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_tools",
+                        "position": {
+                            "x": 1,
+                            "y": 0.3
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "e_anthropic",
+                        "position": {
+                            "x": 0,
+                            "y": 0.7
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C98A54",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "messages",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l19",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_docs",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "e_anthropic",
+                        "position": {
+                            "x": 0.4,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C98A54",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "PDF \u00b7 image",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l20",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_score",
+                        "position": {
+                            "x": 1,
+                            "y": 0.3
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "e_anthropic",
+                        "position": {
+                            "x": 0.8,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C98A54",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "Batches",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l21",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "e_market",
+                        "position": {
+                            "x": 0.3,
+                            "y": 0
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_ingest",
+                        "position": {
+                            "x": 0.1,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C98A54",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "closes \u00b7 NAV \u00b7 FX",
+                            "position": 0.5,
+                            "side": "bottom"
+                        }
+                    ]
+                },
+                {
+                    "id": "l22",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "a_news",
+                        "position": {
+                            "x": 1,
+                            "y": 0.5
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_score",
+                        "position": {
+                            "x": 0,
+                            "y": 0.5
+                        }
+                    },
+                    "stroke": {
+                        "color": "#3B3F4A",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "articles",
+                            "position": 0.5,
+                            "side": "top"
+                        }
+                    ]
+                },
+                {
+                    "id": "l25",
+                    "lineType": "straight",
+                    "endpoint1": {
+                        "type": "shapeEndpoint",
+                        "style": "none",
+                        "shapeId": "e_rss",
+                        "position": {
+                            "x": 0.3,
+                            "y": 0
+                        }
+                    },
+                    "endpoint2": {
+                        "type": "shapeEndpoint",
+                        "style": "arrow",
+                        "shapeId": "a_news",
+                        "position": {
+                            "x": 0.1,
+                            "y": 1
+                        }
+                    },
+                    "stroke": {
+                        "color": "#C98A54",
+                        "width": 2,
+                        "style": "solid"
+                    },
+                    "text": [
+                        {
+                            "text": "RSS every 3 h",
+                            "position": 0.5,
+                            "side": "bottom"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
