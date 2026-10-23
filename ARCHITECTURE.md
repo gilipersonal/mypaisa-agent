@@ -157,6 +157,54 @@ Any field Claude is unsure of is shown in amber and asked about. A holding is
 never saved without the Confirm tap. The same path handles an ETF (ISIN and
 ticker from the factsheet), a share (ticker and exchange), or cash.
 
+### 4.3 Kind profiles
+
+A `kind` is a bundle of defaults, so a new holding of a known kind needs no
+code. The profiles live in configuration, versioned with the registry.
+
+| Kind | Price chain | Look-through | Engine | Cascade temperament |
+| --- | --- | --- | --- | --- |
+| `oeic` (a UK fund such as the Monzo BlackRock ones) | fund NAV chain (§5.1), proxy basket intraday | factsheet, then the product page | all pillars; macro from exposure weights | patient: ADD on steady trend, PAUSE on exhaustion |
+| `etf` (UCITS or US-listed) | exchange close (EODHD, Twelve Data, yfinance), issuer NAV as check | issuer's holdings download (daily for iShares) | all pillars; macro from exposure weights | patient |
+| `stock` | exchange close | the company itself; sector, country, currency | adds the Valuation pillar and the stock cards | cautious: single-name risk raises the bar for ADD; earnings dates block changes for two sessions |
+| `bond_etf` | exchange close | duration, credit quality, currency from the holdings file | trend and momentum downweighted; risk pillar reads duration × rate moves | slow |
+| `commodity_etc` (a metal, oil, or a basket) | exchange close; spot price as check | the metal and its pricing currency (usually USD) | no valuation; risk pillar weighted ×2; macro from dollar strength and real yields, not the equity basket | slowest to ADD, quickest to PAUSE; drawdown alerts at a wider band (12%) because 8% is a normal week for silver |
+| `cash` | FX only | the currency | none | n/a; it is the thing contributions come from |
+
+Adding a kind that is not here (a bond, a gilt held directly, crypto) means
+writing a profile and, if needed, a price plugin. Nothing else changes.
+
+### 4.4 Worked example: today's holdings
+
+Everything held through Monzo, in GBP, as it would sit in the registry. Rows
+are what the bot would record after the factsheet and screenshot path; figures
+marked ~ are examples.
+
+| Instrument | Kind | ISIN | Listing recorded | Price chain | Exposure | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| BlackRock MyMap (Monzo "Balanced") | `oeic` | from the factsheet | none (daily NAV) | yfinance `0P…L` → BlackRock page → FT → proxy → screenshot | ~66% shares, ~34% bonds; mostly USD under the hood | the proxy basket comes from its top holdings |
+| iShares NASDAQ 100 UCITS ETF (Acc) | `etf` | IE00B53SZB19 | XLON `CNX1` GBP (the USD line is `CNDX`) | EODHD → Twelve Data (US line `QQQ` as a check) → yfinance `CNX1.L` | 100% USD, US large-cap tech, ~50% in the top ten | charge 0.30% |
+| iShares Automation & Robotics UCITS ETF (Acc) | `etf` | IE00BYZK4552 | XLON `RBTX` GBP (USD line `RBOT`) | EODHD → yfinance `RBTX.L` | global, roughly equal-weighted small and mid caps; USD, JPY, EUR, TWD | charge 0.40%; overlaps the NASDAQ ETF in a few names (computed, not assumed) |
+| iShares Physical Silver ETC | `commodity_etc` | IE00B4NCWG09 | XLON `ISLN` GBP (USD line `SSLN`) | EODHD → yfinance `ISLN.L`; silver spot × GBP/USD as the check | silver, USD-priced | not a fund: a debt security backed by bars in a vault; charge ~0.20% |
+| Monzo pot | `cash` | — | — | — | GBP | where contributions come from |
+
+Three things this example teaches the design:
+
+- **The ISIN is shared by the USD and GBP lines**; only the ticker differs.
+  The registry stores the listing separately, and the bot asks which line
+  when the factsheet does not say (Monzo most likely holds the GBP line).
+- **London GBP lines are often quoted in pence (GBX)** by Yahoo and some
+  feeds. The price plugin normalises to pounds or every valuation is off by
+  100×; a test asserts it.
+- **Every holding here is a dollar asset in a sterling wrapper.** One move
+  in GBP/USD moves all of them, so the FX line in the brief is a
+  portfolio-level item, and the US macro basket matters far more than the
+  UK one for this portfolio.
+
+The platform fee Monzo charges on top of each product's own charge is part
+of the cost drag in `fund-vs-benchmark`; it is a preference (percentage per
+year), set once.
+
 ---
 
 ## 5. Data layer
@@ -169,9 +217,15 @@ fresh data wins, and the brief says which one did.
 | Kind | Chain | Freshness |
 | --- | --- | --- |
 | OEIC (Monzo's BlackRock funds) | 1. yfinance on the fund's `0P…L` id · 2. BlackRock UK product page · 3. FT tearsheet · 4. proxy basket · 5. last user screenshot | NAV once a day, published next morning; proxy intraday, labelled provisional |
-| ETF on LSE / Xetra / NYSE | 1. EODHD · 2. yfinance · 3. last close, labelled stale | Each exchange close |
-| Stock | same as ETF | same |
-| Cash | FX only | |
+| ETF or ETC on LSE / Xetra | 1. EODHD · 2. yfinance · 3. issuer NAV (iShares publishes daily) · 4. last close, labelled stale | Each exchange close; GBX normalised to GBP |
+| ETF or stock on NYSE / Nasdaq | 1. Twelve Data (free tier) · 2. EODHD · 3. yfinance · 4. last close, labelled stale | 21:00 UK close |
+| Stock on LSE / Xetra | as ETF on LSE / Xetra | same |
+| Commodity ETC | as its listing, plus the metal's spot price × FX as a sanity check | same |
+| Cash | FX only (ECB, Twelve Data as fallback) | |
+
+Twelve Data's free tier (800 calls a day, US listings) also serves the US
+macro basket and the earnings calendar; whether its free tier includes LSE
+and Xetra is a phase 2 check that could make EODHD unnecessary.
 
 Input hygiene, from the desk: drop interpolated bars, append today's close only
 when the session has traded, mark a series STALE when its last bar is older
@@ -211,7 +265,7 @@ scoring that day and tells you.
 | --- | --- | --- |
 | Trend | price vs EMA20, EMA20>EMA50, EMA50>EMA200, EMA200 slope; partial components labelled | desk |
 | Momentum | RSI zones (45/55), MACD histogram sign, TRIX vs signal | desk |
-| Macro | the cross-asset regime of the basket(s) the instrument is exposed to, weighted by look-through; US basket as the desk (RSP/SPY, HYG/LQD, IWM/SPY, SPY/TLT, XLY/XLP, SPY-TLT correlation, 10Y−2Y when available); UK and EU baskets from UCITS equivalents | desk + ours |
+| Macro | the cross-asset regime of the basket(s) the instrument is exposed to, weighted by look-through; US basket as the desk (RSP/SPY, HYG/LQD, IWM/SPY, SPY/TLT, XLY/XLP, SPY-TLT correlation, 10Y−2Y when available); UK and EU baskets from UCITS equivalents; for a commodity ETC, dollar strength and real yields instead of the equity basket | desk + ours |
 | Risk | volatility percentile, drawdown depth, proxy gap, bars present, NAV age | ours |
 | Valuation (stocks only, later) | P/E, P/S, FCF yield, EV/EBITDA vs sector; cheap…expensive | toolbelt |
 
@@ -445,7 +499,8 @@ not planned unless a single share is added.
 
 ## 16. Open questions
 
-- The Monzo funds' exact names and ISINs (factsheet in the app).
-- Whether yfinance returns history for the funds' `0P…L` ids; otherwise which page becomes the daily source.
+- The Monzo fund's exact name and ISIN (factsheet in the app); whether the holdings sit in the Stocks & Shares ISA or a general account; the Monzo platform fee on your plan.
+- Whether yfinance returns history for the fund's `0P…L` id; otherwise which page becomes the daily source.
+- Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed).
 - Rich messages: confirm block types and limits against the official Bot API changelog before relying on tables.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
