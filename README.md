@@ -10,7 +10,7 @@
 
 <a href="https://github.com/gilipersonal/mypaisa-agent/actions/workflows/deploy.yml?query=branch%3Amain"><img alt="CI/CD on main" src="https://img.shields.io/github/actions/workflow/status/gilipersonal/mypaisa-agent/deploy.yml?branch=main&label=CI%2FCD&logo=githubactions&logoColor=white"></a> <a href="#mypaisa-agent"><img alt="Status: design" src="https://img.shields.io/badge/status-design-c98a54"></a> <a href="#mypaisa-agent"><img alt="Budget: GBP 50 a month" src="https://img.shields.io/badge/budget-%C2%A350%20a%20month-5faf7d"></a>
 
-<a href="ARCHITECTURE.md"><img alt="Claude on Amazon Bedrock" src="https://img.shields.io/badge/Claude-Amazon%20Bedrock-9184d9?logo=anthropic&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="AWS Lambda: us-east-1" src="https://img.shields.io/badge/AWS%20Lambda-us--east--1-FF9900?logo=awslambda&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="DynamoDB + S3" src="https://img.shields.io/badge/DynamoDB-%2B%20S3-4053D6?logo=amazondynamodb&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Telegram Bot API" src="https://img.shields.io/badge/Telegram-Bot%20API-26A5E4?logo=telegram&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Python: 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="pandas" src="https://img.shields.io/badge/pandas-signals-150458?logo=pandas&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Terraform: infra" src="https://img.shields.io/badge/Terraform-infra-844FBA?logo=terraform&logoColor=white"></a>
+<a href="ARCHITECTURE.md"><img alt="Claude on Amazon Bedrock" src="https://img.shields.io/badge/Claude-Amazon%20Bedrock-9184d9?logo=anthropic&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="AWS Lambda: us-east-1" src="https://img.shields.io/badge/AWS%20Lambda-us--east--1-FF9900?logo=awslambda&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="DynamoDB + S3" src="https://img.shields.io/badge/DynamoDB-%2B%20S3-4053D6?logo=amazondynamodb&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Telegram Bot API" src="https://img.shields.io/badge/Telegram-Bot%20API-26A5E4?logo=telegram&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Python: 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="pandas" src="https://img.shields.io/badge/pandas-engine-150458?logo=pandas&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Terraform: infra" src="https://img.shields.io/badge/Terraform-infra-844FBA?logo=terraform&logoColor=white"></a>
 
 **[Animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) · [User journeys](https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam) · [Dashboard design](https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp) · [Architecture](ARCHITECTURE.md) · [Build plan](PLAN.md) · [Research](docs/RESEARCH.md)**
 
@@ -35,8 +35,10 @@ words. It holds no broker login and cannot trade.
 | --- | --- | --- |
 | The bot | one private Telegram chat | `webhook` and `agent` Lambdas, Amazon Bedrock |
 | The schedule | 07:15 and 21:15 UK on weekdays, 08:00 on Saturday | EventBridge Scheduler in `Europe/London` |
-| The numbers | DynamoDB (one table) and S3 (parquet) | `ingest` and `signals` Lambdas |
+| The numbers | DynamoDB (one table) and S3 (parquet) | `ingest` and `engine` Lambdas |
+| The records | factsheets and screenshots read into the registry | `docs` Lambda, Claude on Bedrock |
 | The news | RSS from central banks and the financial press | `news` and `score` Lambdas |
+| The dashboard | a read-only Mini App opened from the chat | static files on the wealth tracker's S3 + CloudFront |
 | The wealth tracker | [gilipersonal/wealth-tracker](https://github.com/gilipersonal/wealth-tracker) | reads the same positions table, later |
 
 The first holding is the household's Monzo ISA, a BlackRock MyMap fund. Holdings are a generic model: ETFs, shares,
@@ -74,8 +76,9 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 
 | Path | What it is |
 | --- | --- |
-| `src/mypaisa_agent/` | The Python package. `instruments/` (the model and the price-source plugins: fund NAV, ETF closes, ECB FX, exchange calendars), `signals/` (pure pandas, fully unit-tested), `news/` (RSS, extraction, dedupe, scoring), `events/` (the calendar), `calls/` (the engine, paper trades, the scorecard), `tools/` (one file per Claude tool), `agent.py` (the tool loop, model routing, caching), `telegram.py` (the Bot API client), `handlers/` (one entry point per Lambda). |
-| `skills/` | Agent Skills, one folder each with a `SKILL.md` and any scripts: `read-central-bank-statement`, `map-headline-to-holdings`, `write-call`, `grade-call`. Loaded into prompts by the agent only when a task matches. |
+| `src/mypaisa_agent/` | The Python package. `registry/` (instruments, positions, valuations, documents; the kind profiles), `data/` (the price chain: EODHD, Twelve Data, yfinance, fund NAV, ECB FX, calendars; input hygiene), `engine/` (indicators, pillars, flags, macro, the holder's cascade, confidence; ported from the Agentic Trading Desk with its self-tests as golden files), `cards/` (stance, holding profile, overlap review, bear vs bull, scenario), `docs/` (factsheet and screenshot extraction through Bedrock), `news/` and `events/` (RSS, dedupe, scoring; the calendar), `calls/` (the hash-chained ledger, grader, scorecard, calibration), `tools/` (one file per Claude tool), `agent.py` (the tool loop, model routing, caching, the debate), `telegram.py` (rich messages with HTML fallback, buttons, files, Mini App auth), `handlers/` (one entry point per Lambda: webhook, agent, ingest, engine, news, score, docs). |
+| `playbooks/` | Prompt files loaded into the agent's context only when a task matches: `read-central-bank-statement`, `map-headline-to-holdings`, `write-stance`, `grade-stance`. Versioned with the code. |
+| `miniapp/` | The read-only dashboard: static HTML with lightweight-charts in the Nocturne look, built from the artboards in `docs/design/dashboard/`, served from the wealth tracker's CloudFront under a new path. |
 | `tests/` | pytest: golden files for every signal, property tests for the FX split, moto for AWS, respx for HTTP, recorded Bedrock responses for rendering. |
 | `infra/terraform/` | Every AWS resource: the Lambdas and their image, the Scheduler rules, the DynamoDB table, the S3 bucket, SSM parameters, the IAM roles, the budget and the alarms; `envs/dev.tfvars`. |
 | `.github/workflows/` | `deploy.yml`: lint, typecheck, tests and `terraform plan` on every pull request; build, apply and deploy from `main` through OIDC. |
@@ -93,8 +96,9 @@ they move with Anthropic's releases; the first set is below.
 | Alert filter | Haiku 5.5, `anthropic.claude-haiku-5-5` | low | Which of today's alert candidates say something new against what was sent this week. The thresholds and cooldowns are code. |
 | Article scoring | Haiku 5.5 | low | For one article: the instruments it touches, direction, magnitude, horizon, novelty, event, confidence, and the sentence that says so, as strict JSON. The index is summed in code. |
 | Morning brief, evening wrap, alert text | Sonnet 5.5, `anthropic.claude-sonnet-5-5` | low | Six lines in the household's context from the day's signals. Every figure comes from the tool results. |
-| Chat | Sonnet 5.5 | medium | An answer to a question, built by calling the tools (`get_positions`, `get_signals`, `run_scenario`, `search_news`, `update_pref`, and the rest in `ARCHITECTURE.md`). |
-| Calls | Sonnet 5.5 | medium | The reasons and the invalidation rule for a stance the rules have set. The stance, horizon and entry price are code. |
+| Document extraction | Sonnet 5.5 | medium | The facts on a factsheet PDF or a valuation screenshot, as strict JSON with the source line and a confidence per field; shown on a Confirm card before anything is saved. |
+| Chat and cards | Sonnet 5.5 | medium | An answer to a question, built by calling the tools (`get_portfolio`, `get_signals`, `run_scenario`, `search_news`, `propose_change`, and the rest in `ARCHITECTURE.md`); the research cards. |
+| Stances | Sonnet 5.5 | medium | The reasons and the invalidation rule for a stance the cascade has set. The stance, horizon, confidence and entry price are code. Above 70% confidence, a two-call bull-versus-bear debate with a judge. |
 | Saturday review | Opus 5.5, `anthropic.claude-opus-5-5` | high | The week in context, with the scorecard, the decisions logged and the events ahead. |
 
 **Guardrails on every call:** tools with `strict` schemas and `tool_choice: auto`; adaptive thinking with the effort
@@ -117,8 +121,8 @@ The bot grades itself, and the tests hold the code to it. Planned in phases 5 an
 1. **Forecasts are logged and graded.** Every 1-month range the signals produce is stored with the price at the
    time. When the month ends the outcome is recorded: did the 80% range cover it, and was `P(fall > 5%)` calibrated.
    The Saturday review reports coverage and calibration, or by how much they miss.
-2. **Calls are paper-traded.** A call is stored with its entry price and graded at its horizon: right or wrong, the
-   return against doing nothing, and calibration by confidence bucket. Calls stay in shadow (logged, reported on
+2. **Stances are paper-traded.** A stance is stored with its entry price and graded at its horizon: right or wrong,
+   the return against doing nothing, and calibration by confidence bucket. Stances stay in shadow (logged, reported on
    Saturday, never pushed) until they beat the baseline for 8 consecutive weeks. The gate is checked in code and
    reported every week either way.
 3. **Decisions are logged.** "I acted" on a message writes a decision record. The review compares what was done with
@@ -216,8 +220,8 @@ The brief arrives in the chat as a silent push. From then on the Scheduler runs 
 
 | Task | Command |
 | --- | --- |
-| Add or change a holding | edit `seed/positions.yaml`, then `scripts/seed.sh dev` |
-| Run one job now | `scripts/run.sh dev ingest` (also `signals`, `brief`, `wrap`, `news`, `score`, `review`) |
+| Add or change a holding | In the chat: send a factsheet or a screenshot, or type it, then tap Confirm. `seed/positions.yaml` + `scripts/seed.sh dev` only for the first run |
+| Run one job now | `scripts/run.sh dev ingest` (also `engine`, `brief`, `wrap`, `news`, `score`, `review`, `grade`) |
 | Build the image as CI does | `docker build --platform linux/arm64 -t mypaisa-agent .` |
 | Tail a function's logs | `aws logs tail /aws/lambda/mypaisa-agent-dev-agent --follow` |
 | Set the webhook again after a URL change | `scripts/set-webhook.sh dev` |
@@ -253,7 +257,7 @@ price.
 | Account | `545595341442`, profile `agent-toolkit` |
 | Region | `us-east-1` |
 | Terraform state | `s3://wealth-tracker-tfstate`, key `mypaisa-agent/dev/infra.tfstate` |
-| Lambda | `webhook`, `agent`, `ingest`, `signals`, `news`, `score`, one arm64 container image in ECR |
+| Lambda | `webhook`, `agent`, `ingest`, `engine`, `news`, `score`, `docs`, one arm64 container image in ECR |
 | Function URL | on `webhook` only, auth `NONE`, protected by the Telegram secret token and the chat allowlist |
 | EventBridge Scheduler | `07:00`, `07:15`, `21:00`, `21:15` weekdays; `23:30` daily; `08:00` Saturday; every 3 h for news; all `Europe/London` |
 | DynamoDB | one on-demand table, `mypaisa-agent-dev`, with TTL |
@@ -284,6 +288,7 @@ Terraform creates the parameter names and never holds a value. The values are pu
 | `/mypaisa-agent/dev/telegram/bot_token` | from BotFather |
 | `/mypaisa-agent/dev/telegram/webhook_secret` | random, sent by Telegram as `X-Telegram-Bot-Api-Secret-Token` |
 | `/mypaisa-agent/dev/telegram/chat_id` | the one chat the bot answers |
+| `/mypaisa-agent/dev/twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
 | `/mypaisa-agent/dev/brave/api_key` | Brave Search, from phase 4 |
 | `/mypaisa-agent/dev/eodhd/api_key` | EODHD, if chosen over the free sources |
 
