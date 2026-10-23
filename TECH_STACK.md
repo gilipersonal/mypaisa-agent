@@ -20,6 +20,7 @@ Status: design. Nothing is built.
 | Data maths | pandas, numpy, pyarrow | The engine ported from the Agentic Trading Desk; parquet history in S3 |
 | Calendars and FX | `exchange_calendars`; ECB reference rates for USD, EUR and INR | XLON, XETR, XNYS sessions and holidays; the clock-change weeks; GBP or INR per member |
 | HTTP | httpx | Telegram, ECB, EODHD, Twelve Data, RSS, product pages |
+| Price feeds | One `PriceSource` contract; a plugin per feed (yfinance, Twelve Data, EODHD, issuer pages, FT, proxy, screenshot); the chain per kind in `envs/<env>.tfvars`, a `.env` for local | yfinance by default and for local development, no key; EODHD by configuration and a key in SSM; every plugin passes the same contract tests on recorded responses |
 | News | feedparser, trafilatura | RSS parsing and article text extraction |
 | Charts | matplotlib (Agg backend) | PNG charts for `sendPhoto`, one house style |
 | Claude | The `anthropic` Python SDK against the Anthropic API; key in SSM, read once per cold start; the key belongs to a workspace, one per environment, in the Console organisation linked to the Max or Team plan, so the plan's monthly API credit pays for the calls; a spend limit per workspace | Structured outputs, strict tools, prompt caching, PDF and image input, citations, server-side web search and fetch, Message Batches for the nightly scoring |

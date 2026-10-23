@@ -111,11 +111,21 @@ change either of you made, with who and when.
 
 The maths, ported from the desk and extended.
 
+- The `PriceSource` contract of `ARCHITECTURE.md` §5.1: one plugin per
+  feed (`yfinance`, `twelvedata`, `eodhd`, `issuer_page`, `ft`, `proxy`,
+  `screenshot`, `stale`), a registry that imports only the plugins in use,
+  per-plugin identifiers on the instrument, and chains per kind set in
+  `envs/<env>.tfvars` (and a `.env` for local). yfinance is the default
+  chain head in every environment; the EODHD plugin ships with the others,
+  switched on by putting it first in the chain and adding its key.
 - Price source chain: yfinance (`0P…L` ids for the funds, tickers for ETFs),
   BlackRock product page, FT tearsheet; Twelve Data for the US lines; ECB FX;
   calendars. EODHD is not in the chain unless phase 2 shows the free sources
-  missing or misreporting London closes; its plugin slot exists, its key does
-  not. Verify which source actually serves the Monzo funds' NAV, and record
+  missing or misreporting London closes.
+- The source-comparison report: when two plugins are configured for an
+  instrument, both are recorded and the Activity page lists disagreements;
+  run yfinance against EODHD's free trial for the first month and decide
+  from the numbers. Verify which source actually serves the Monzo funds' NAV, and record
   the answer in `docs/RESEARCH.md`. yfinance is unofficial and can break
   without notice, so the ingest job treats a failed or stale source as a
   normal day: it falls through the chain, marks the valuation provisional,
@@ -134,7 +144,10 @@ The maths, ported from the desk and extended.
 - `ingest` and `engine` Lambdas on the 07:00 / 21:00 schedule; Signals and
   Stances written daily (stances in shadow).
 
-**Tests:** golden files for every indicator and pillar; property test that
+**Tests:** the plugin contract suite, run against every plugin on recorded
+responses (same `Bars` shape, pounds not pence, the stale rule, idempotence
+per date, a clean failure when the vendor is down), with the recordings
+refreshed only by a deliberate command; golden files for every indicator and pillar; property test that
 local + FX = total; cascade cases for each action; macro regime cases from
 the desk's synthetic generator; self-test gate.
 
