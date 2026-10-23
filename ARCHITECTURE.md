@@ -692,8 +692,9 @@ Bot:  Bought £200 of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.5
 ### 9.3 The web app: on a laptop and inside Telegram
 
 One static app (the wealth tracker's Nocturne look, lightweight-charts),
-built from the artboards in `docs/design/dashboard/` and laid out for both a
-phone and a laptop screen. It has two front doors to the same pages:
+built from the one design spec in `docs/design/dashboard/`, which has a set
+of boards for each door (Mini App boards for the phone, browser boards for the
+laptop; `docs/design/README.md`). It has two front doors to the same pages:
 
 | Door | Who opens it | How the member is identified |
 | --- | --- | --- |
@@ -713,7 +714,7 @@ member with `/members` locks them out at once, cookie or no cookie.
 
 The pages, all read-only:
 
-- **Overview, a holding, Overlap, Scorecard**: as the artboards, with the
+- **Overview, a holding, Overlap, Scorecard**: as the boards, with the
   Household / Me / member switch from §4.5. Two columns at laptop width.
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
   and date; each row shows before and after and links to the run that made

@@ -210,9 +210,11 @@ your two funds shows the shared holdings and currency exposure.
 One static app in `web/`, opened as a Mini App from the chat and in a laptop
 browser, as `ARCHITECTURE.md` §9.3.
 
-- Built from the five artboards in `docs/design/dashboard/` (Overview, a
-  holding, Overlap, Scorecard, the light theme), with a two-column layout at
-  laptop width; the Nocturne look, lightweight-charts.
+- Built from the one design spec in `docs/design/dashboard/`: the Mini App
+  boards (the five phone artboards: Overview, a holding, Overlap, Scorecard,
+  the light theme) and the browser boards (the same pages in two columns at
+  laptop width, and the login page), as `docs/design/README.md` describes;
+  the Nocturne look, lightweight-charts.
 - Two new pages: **Audit** (the §4.6 log, filtered by member, record and
   date, before and after, a link to the run) and **Activity** (the §10 runs
   with their model calls, tokens, cost, tools and outcome; the schedule
