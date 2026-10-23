@@ -32,11 +32,10 @@ Status: planning. Nothing is built.
 | Task | Owner |
 | --- | --- |
 | Create the bot with BotFather; token into SSM; picture with `/setuserpic` from `docs/mark-1024.png` | You |
-| Request Bedrock model access for Opus 5.5, Sonnet 5.5, Haiku 5.5 in `us-east-1` | You |
+| Create an Anthropic API key in the Console with a monthly spend limit (£35); put it into SSM at `/mypaisa-agent/dev/anthropic/api_key` | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
 | Decide: EODHD now or free sources first | You |
 | Twelve Data API key (free tier) into SSM; check whether its Basic plan serves LSE and Xetra closes | You |
-| Brave Search API key (free tier) into SSM | You |
 | Terraform bootstrap: state key, OIDC role pinned to this repository's numeric id, `dev` GitHub environment, AWS Budgets at £40 and £50 | Claude |
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
 
@@ -68,7 +67,7 @@ What you hold, recorded through the chat, with no analysis yet.
   the first `agent` Lambda: onboarding, `/add`, `/update`, `Portfolio`,
   `/privacy`, `/pause`, `/resume`, `/help`.
 - `docs` Lambda: factsheet PDF and screenshot extraction with Claude on
-  Bedrock (structured outputs, citations, per-field confidence); the Confirm
+  the Anthropic API (structured outputs, citations, per-field confidence); the Confirm
   / Edit / Cancel card; nothing saved without Confirm.
 - Plain-English transactions ("I put £200 into Balanced") via a strict
   `propose_change` tool and Confirm.
@@ -86,7 +85,7 @@ has added holdings from the chat alone; each sees their own detail and the
 household overview, and you see hers; a screenshot updates a member's
 valuations and both views change.
 
-**Cost:** about £0.50 (a few Bedrock calls).
+**Cost:** about £0.50 (a few Claude calls).
 
 ---
 
@@ -127,7 +126,8 @@ spot check; the desk's own test cases pass on the port.
 
 Claude starts writing on top of numbers that already work.
 
-- Bedrock client, model routing, caching, refusal fallback, number validator.
+- Anthropic client with the key from SSM, model routing, caching, refusal
+  fallback, number validator.
 - Morning brief and evening wrap as cards; the Technical section on every
   card; `/technical` mode; glossary buttons.
 - Charts: one house style; holding history with stance horizon shaded;
@@ -137,7 +137,7 @@ Claude starts writing on top of numbers that already work.
   to the chat.
 
 **Tests:** validator catches an invented number; alert state machine with
-frozen time; card rendering from recorded Bedrock responses; chart snapshot
+frozen time; card rendering from recorded Claude responses; chart snapshot
 tests.
 
 **Exit:** two weeks of briefs; no alert fires twice in its cooldown; a
@@ -154,7 +154,8 @@ You can ask anything about what you hold.
 - The tool loop with strict tools; chat memory; `Ask` keyboard button.
 - Cards: `stance`, `holding-profile`, `overlap-review`, `fund-vs-benchmark`,
   `bear-vs-bull` (two calls and a judge), `scenario`.
-- `search_news` (Brave) and `fetch_page` as untrusted-text tools; `/why`.
+- Anthropic's server-side `web_search` and `web_fetch`, results treated as
+  untrusted text; `/why`.
 - Natural-language preferences with Confirm.
 
 **Tests:** each card against fixtures; scripted conversations on recorded

@@ -156,7 +156,12 @@ different cards, built the same way:
 | Macro baskets | US: SPY, RSP, IWM, HYG, LQD, TLT, XLY, XLP (as the desk). UK and EU: UCITS equivalents on the LSE/Xetra, chosen in phase 2 | Same price feed as everything else. |
 | News | RSS from BoE, Fed, ECB, FT, Reuters, BlackRock; Brave Search API as the on-demand search tool | Free, plus Brave's free tier. |
 
-### 3.3 Claude on Amazon Bedrock: what the agent can use
+### 3.3 Claude: what the agent can use
+
+*Decision, 23 Oct 2026: the design uses the Anthropic API directly (key in
+SSM, Console spend limit), not Bedrock. Bedrock's model-access form needs a
+company name, and the direct API adds server-side web search and Message
+Batches. The notes below record what was checked for Bedrock at the time.*
 
 All of these are available on Bedrock for Opus 5.5, Sonnet 5.5 and Haiku 5.5
 (checked against the platform table): **PDF input** (the factsheet), **image

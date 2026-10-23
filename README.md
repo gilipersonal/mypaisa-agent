@@ -10,7 +10,7 @@
 
 <a href="https://github.com/gilipersonal/mypaisa-agent/actions/workflows/deploy.yml?query=branch%3Amain"><img alt="CI/CD on main" src="https://img.shields.io/github/actions/workflow/status/gilipersonal/mypaisa-agent/deploy.yml?branch=main&label=CI%2FCD&logo=githubactions&logoColor=white"></a> <a href="#mypaisa-agent"><img alt="Status: design" src="https://img.shields.io/badge/status-design-c98a54"></a> <a href="#mypaisa-agent"><img alt="Budget: GBP 50 a month" src="https://img.shields.io/badge/budget-%C2%A350%20a%20month-5faf7d"></a>
 
-<a href="ARCHITECTURE.md"><img alt="Claude on Amazon Bedrock" src="https://img.shields.io/badge/Claude-Amazon%20Bedrock-9184d9?logo=anthropic&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="AWS Lambda: us-east-1" src="https://img.shields.io/badge/AWS%20Lambda-us--east--1-FF9900?logo=awslambda&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="DynamoDB + S3" src="https://img.shields.io/badge/DynamoDB-%2B%20S3-4053D6?logo=amazondynamodb&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Telegram Bot API" src="https://img.shields.io/badge/Telegram-Bot%20API-26A5E4?logo=telegram&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Python: 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="pandas" src="https://img.shields.io/badge/pandas-engine-150458?logo=pandas&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Terraform: infra" src="https://img.shields.io/badge/Terraform-infra-844FBA?logo=terraform&logoColor=white"></a>
+<a href="ARCHITECTURE.md"><img alt="Claude API" src="https://img.shields.io/badge/Claude-API-9184d9?logo=anthropic&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="AWS Lambda: us-east-1" src="https://img.shields.io/badge/AWS%20Lambda-us--east--1-FF9900?logo=awslambda&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="DynamoDB + S3" src="https://img.shields.io/badge/DynamoDB-%2B%20S3-4053D6?logo=amazondynamodb&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Telegram Bot API" src="https://img.shields.io/badge/Telegram-Bot%20API-26A5E4?logo=telegram&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Python: 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="pandas" src="https://img.shields.io/badge/pandas-engine-150458?logo=pandas&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Terraform: infra" src="https://img.shields.io/badge/Terraform-infra-844FBA?logo=terraform&logoColor=white"></a>
 
 **[Animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) · [User journeys](https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam) · [Dashboard design](https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp) · [Architecture](ARCHITECTURE.md) · [Build plan](PLAN.md) · [Tech stack](TECH_STACK.md) · [Research](docs/RESEARCH.md)**
 
@@ -31,15 +31,15 @@ sending it a factsheet and a screenshot), fetches the closes,
 fund prices and exchange rates every weekday, works out what moved and why, and sends a short brief. It alerts on
 the few things worth a push, answers questions by calling its own code as tools, shows charts, reads the news
 overnight, and takes a stance (add, hold, pause, trim) with a confidence score that it grades later. Every message
-is plain on top with the technical detail one tap away. Python does the maths; Claude on Amazon Bedrock does the
+is plain on top with the technical detail one tap away. Python does the maths; Claude, through the Anthropic API, does the
 words. It holds no broker login and cannot trade.
 
 | Surface | Where | Runs on |
 | --- | --- | --- |
-| The bot | one private Telegram chat per household member, joined by invite link | `webhook` and `agent` Lambdas, Amazon Bedrock |
+| The bot | one private Telegram chat per household member, joined by invite link | `webhook` and `agent` Lambdas, the Anthropic API |
 | The schedule | 07:15 and 21:15 UK on weekdays, 08:00 on Saturday | EventBridge Scheduler in `Europe/London` |
 | The numbers | DynamoDB (one table) and S3 (parquet) | `ingest` and `engine` Lambdas |
-| The records | factsheets and screenshots read into the registry | `docs` Lambda, Claude on Bedrock |
+| The records | factsheets and screenshots read into the registry | `docs` Lambda, Claude reading PDFs and images |
 | The news | RSS from central banks and the financial press | `news` and `score` Lambdas |
 | The dashboard | a read-only Mini App opened from the chat | static files on the wealth tracker's S3 + CloudFront |
 | The wealth tracker | [gilipersonal/wealth-tracker](https://github.com/gilipersonal/wealth-tracker) | later, not a priority: reads the same tables, its users linked to members through Cognito |
@@ -67,7 +67,7 @@ bond ETFs and commodity ETCs in GBP, USD or EUR slot in as price-source plugins.
 | [ARCHITECTURE.md](ARCHITECTURE.md) | How it is built (v2, the hybrid): the three rules (Claude never produces a number; the bot cannot trade; the layman sees the summary, the detail is one tap away), what you see in the chat, the system on AWS, the holdings registry and how a holding is added from a factsheet and a screenshot, the price source chain and look-through, the analysis engine ported from the Agentic Trading Desk (indicators, pillars, flags, macro regimes) with a holder's cascade and a computed confidence score, the research cards rebuilt from Agent Toolbelt for funds, the agent and its guardrails, the Telegram front end (rich messages, charts, a Mini App dashboard), notifications, the records the wealth tracker reads, the tech stack, security, cost, decisions and open questions. |
 | [PLAN.md](PLAN.md) | How it gets built (v2): the principles, then ten phases from prerequisites through registry and ingestion, the engine port, briefs and charts, chat and cards, the Mini App, calibration, news, stances going live, the tracker integration and new kinds of holding. Each phase lists what is built, what is tested, an exit criterion you can see in Telegram, and its cost. A reverse-engineering workbook maps every ported source file to its target module. Then the timeline, the definition of done, and the risks. |
 | [TECH_STACK.md](TECH_STACK.md) | The stack by layer (application, quality, AWS services, infrastructure and tooling, services outside AWS) with the reason for each choice, and the monthly cost of running `dev` and `prod` side by side: lean, standard and full, what moves the number, and the guard rails. |
-| [docs/RESEARCH.md](docs/RESEARCH.md) | What was learned from the two references and the landscape around them: the Agentic Trading Desk file by file (what is ported, what is left), Agent Toolbelt's tools and card shapes, the open-source agent frameworks worth borrowing from, market data for UK OEICs and UCITS ETFs, what Claude on Bedrock can read (PDFs, screenshots), what a Telegram bot can show in 2026, how a confidence score is made honest, and the sources. |
+| [docs/RESEARCH.md](docs/RESEARCH.md) | What was learned from the two references and the landscape around them: the Agentic Trading Desk file by file (what is ported, what is left), Agent Toolbelt's tools and card shapes, the open-source agent frameworks worth borrowing from, market data for UK OEICs and UCITS ETFs, what Claude can read (PDFs, screenshots), what a Telegram bot can show in 2026, how a confidence score is made honest, and the sources. |
 | [The animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) · [source](docs/design/architecture.html) | The design as an animated page (v3): four scenarios (the morning brief, a question, an alert after the US close, adding a holding) with a packet travelling hop by hop, the agent's tool loop replayed on a worked example, the news-to-stance pipeline, the registry and kind profiles, the engine's pillars, cascade and confidence, the cards, the weekly grid, the cost against the £50 cap, and the repository layout. Private to the account; share from the page. |
 | [The user journeys](https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam) · [source](docs/design/journeys.html) | Eight journeys played on a phone frame as Telegram would show them: first open, adding a holding by factsheet and screenshot, the morning brief with its technical section, asking why, a stance with a confidence you can check, a red alert, the Saturday review with the dashboard, and settings by chat. Narrated, with the parts of the system involved lit up at each step. |
 | [The Mini App dashboard](https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp) · [source](docs/design/dashboard/) | The read-only dashboard as five phone-size screens on a design canvas: Overview, a holding, Overlap, Scorecard, and the light theme. The spec for `miniapp/` in phase 5. [docs/design/README.md](docs/design/README.md) says how the files relate. |
@@ -80,10 +80,10 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 
 | Path | What it is |
 | --- | --- |
-| `src/mypaisa_agent/` | The Python package. `registry/` (instruments, positions, valuations, documents; the kind profiles), `data/` (the price chain: EODHD, Twelve Data, yfinance, fund NAV, ECB FX, calendars; input hygiene), `engine/` (indicators, pillars, flags, macro, the holder's cascade, confidence; ported from the Agentic Trading Desk with its self-tests as golden files), `cards/` (stance, holding profile, overlap review, bear vs bull, scenario), `docs/` (factsheet and screenshot extraction through Bedrock), `news/` and `events/` (RSS, dedupe, scoring; the calendar), `calls/` (the hash-chained ledger, grader, scorecard, calibration), `tools/` (one file per Claude tool), `agent.py` (the tool loop, model routing, caching, the debate), `telegram.py` (rich messages with HTML fallback, buttons, files, Mini App auth), `handlers/` (one entry point per Lambda: webhook, agent, ingest, engine, news, score, docs). |
+| `src/mypaisa_agent/` | The Python package. `registry/` (instruments, positions, valuations, documents; the kind profiles), `data/` (the price chain: EODHD, Twelve Data, yfinance, fund NAV, ECB FX, calendars; input hygiene), `engine/` (indicators, pillars, flags, macro, the holder's cascade, confidence; ported from the Agentic Trading Desk with its self-tests as golden files), `cards/` (stance, holding profile, overlap review, bear vs bull, scenario), `docs/` (factsheet and screenshot extraction through Claude), `news/` and `events/` (RSS, dedupe, scoring; the calendar), `calls/` (the hash-chained ledger, grader, scorecard, calibration), `tools/` (one file per Claude tool), `agent.py` (the tool loop, model routing, caching, the debate), `telegram.py` (rich messages with HTML fallback, buttons, files, Mini App auth), `handlers/` (one entry point per Lambda: webhook, agent, ingest, engine, news, score, docs). |
 | `playbooks/` | Prompt files loaded into the agent's context only when a task matches: `read-central-bank-statement`, `map-headline-to-holdings`, `write-stance`, `grade-stance`. Versioned with the code. |
 | `miniapp/` | The read-only dashboard: static HTML with lightweight-charts in the Nocturne look, built from the artboards in `docs/design/dashboard/`, served from the wealth tracker's CloudFront under a new path. |
-| `tests/` | pytest: golden files for every signal, property tests for the FX split, moto for AWS, respx for HTTP, recorded Bedrock responses for rendering. |
+| `tests/` | pytest: golden files for every signal, property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
 | `infra/terraform/` | Every AWS resource: the Lambdas and their image, the Scheduler rules, the DynamoDB table, the S3 bucket, SSM parameters, the IAM roles, the budget and the alarms; `envs/dev.tfvars`. |
 | `.github/workflows/` | `deploy.yml`: lint, typecheck, tests and `terraform plan` on every pull request; build, apply and deploy from `main` through OIDC. |
 | `docs/` | The mark: `mark.svg` for this page, `mark-1024.png` for the bot's Telegram picture (`/setuserpic` in BotFather), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the three design pages as source: the animated architecture, the user journeys, and the dashboard artboards. |
@@ -91,8 +91,9 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 
 ## Models
 
-Every model call goes to Claude on Amazon Bedrock through the Anthropic SDK's Bedrock client, signed with the
-Lambda's IAM role. No API key exists. Model ids are set per environment in `infra/terraform/envs/*.tfvars`, since
+Every model call goes to the Anthropic API through the official Python SDK. The API key lives in SSM Parameter
+Store, is read once per cold start, and never appears in code, logs or chat; a monthly spend limit in the Anthropic
+Console hard-stops it. Model ids are set per environment in `infra/terraform/envs/*.tfvars`, since
 they move with Anthropic's releases; the first set is below.
 
 | Route | Model | Effort | What the model is asked for |
@@ -113,10 +114,9 @@ regenerated once and then sent as the plain facts. Search results and fetched pa
 untrusted text and are never followed as instructions; there is no tool that can spend money beyond a search query,
 delete data, or message anyone but the household's chat.
 
-Web search and web fetch are client-side tools (Brave Search, `httpx` and `trafilatura`), because Bedrock does not
-offer Anthropic's server-side web tools. Scoring runs in real time rather than in batch, because neither Anthropic's
-Message Batches API nor Bedrock's batch inference covers the 5.5 models, and real-time Haiku 5.5 is cheaper than
-batched Haiku 4.5 anyway.
+Web search and web fetch are Anthropic's server-side tools, with citations, at $10 per 1,000 searches; no separate
+search provider is needed. The nightly sentiment scoring goes through the Message Batches API at half price, since
+latency does not matter overnight.
 
 ### How the agent is evaluated
 
@@ -131,7 +131,7 @@ The bot grades itself, and the tests hold the code to it. Planned in phases 5 an
    reported every week either way.
 3. **Decisions are logged.** "I acted" on a message writes a decision record. The review compares what was done with
    what the signals said, which is the only honest way to learn whether the bot helps.
-4. **The words are tested on recordings.** Unit tests replay recorded Bedrock responses, so rendering is
+4. **The words are tested on recordings.** Unit tests replay recorded Claude responses, so rendering is
    deterministic and never reaches a model. The number validator has its own tests, with an invented figure it must
    catch.
 5. **Sentiment is spot-checked.** Phase 6 ends with 30 scored articles read by a person against their scores before
@@ -153,9 +153,10 @@ macOS or Linux. Nothing is installed globally except these tools.
 | GitHub CLI (`gh`) | recent | pull requests, reading the repository id for the OIDC trust | `brew install gh` |
 | jq | any | the scripts | `brew install jq` |
 
-You also need, in the AWS account `545595341442`: a profile that can assume the operator role (`agent-toolkit`),
-Bedrock model access granted for the three models in `us-east-1`, and the parameters in SSM listed under
-[Secrets](#secrets). The Telegram bot is made once with BotFather.
+You also need, in the AWS account `545595341442`: a profile that can assume the operator role (`agent-toolkit`)
+and the parameters in SSM listed under [Secrets](#secrets). The Anthropic API key comes from
+[console.anthropic.com](https://console.anthropic.com) with a monthly spend limit set. The Telegram bot is made once
+with BotFather.
 
 ## Set up from scratch
 
@@ -191,10 +192,16 @@ Your `chat_id` arrives with the first message you send the bot after the webhook
 it from the logs, and you store it the same way under `.../telegram/chat_id`. Until it is stored, the bot answers
 no one.
 
-### 4. Bedrock
+### 4. The Anthropic API key
 
-In the Bedrock console for `us-east-1`, under Model access, request Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5. A
-call fails until access shows as granted.
+In the Anthropic Console: add a payment method, set a monthly spend limit under Settings → Limits (£35 is the
+design figure), and create a key named `mypaisa-agent-dev`. Put it straight into SSM, as with the bot token:
+
+```bash
+read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/dev/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
+```
+
+No model access request is needed; the key works immediately.
 
 ### 5. Terraform
 
@@ -229,7 +236,7 @@ The brief arrives in the chat as a silent push. From then on the Scheduler runs 
 | Build the image as CI does | `docker build --platform linux/arm64 -t mypaisa-agent .` |
 | Tail a function's logs | `aws logs tail /aws/lambda/mypaisa-agent-dev-agent --follow` |
 | Set the webhook again after a URL change | `scripts/set-webhook.sh dev` |
-| See this month's spend | `scripts/cost.sh` (AWS Cost Explorer, Bedrock by model, against the £50 cap) |
+| See this month's spend | `scripts/cost.sh` (AWS Cost Explorer plus the Anthropic usage report by model, against the £50 cap) |
 | Grade every forecast and call whose horizon has passed | `scripts/run.sh dev grade` |
 
 ## Tests
@@ -243,7 +250,7 @@ uv run pytest --cov --cov-fail-under=90
 cd infra/terraform && terraform fmt -check && terraform validate
 ```
 
-Live checks run on request only and say what they cost first: a brief against live Bedrock
+Live checks run on request only and say what they cost first: a brief against the live API
 (`scripts/run.sh dev brief --live`) and the sentiment spot-check set (`scripts/eval.sh sentiment`).
 
 ## Working on AWS
@@ -267,8 +274,8 @@ price.
 | DynamoDB | one on-demand table, `mypaisa-agent-dev`, with TTL |
 | S3 | `mypaisa-agent-dev`: prices and FX as parquet, articles (90-day rule), charts (30-day rule) |
 | SSM Parameter Store | `/mypaisa-agent/dev/...`, SecureString, standard tier |
-| Bedrock | Opus 5.5, Sonnet 5.5, Haiku 5.5 on global inference profiles |
-| IAM | one execution role per function, scoped to its table, bucket, parameters and model ARNs; one OIDC role for CI |
+| Claude | the Anthropic API from the `agent`, `docs` and `score` Lambdas; Opus 5.5, Sonnet 5.5, Haiku 5.5; key in SSM |
+| IAM | one execution role per function, scoped to its table, bucket and parameters; one OIDC role for CI |
 | Monitoring | CloudWatch Logs (14 days), an error alarm per function, the 07:45 dead man's switch, all delivered to the chat |
 | Budget | AWS Budgets at £40 (alert) and £50 (disable the Scheduler rules) |
 
@@ -293,7 +300,7 @@ Terraform creates the parameter names and never holds a value. The values are pu
 | `/mypaisa-agent/dev/telegram/webhook_secret` | random, sent by Telegram as `X-Telegram-Bot-Api-Secret-Token` |
 | `/mypaisa-agent/dev/telegram/chat_id` | the one chat the bot answers |
 | `/mypaisa-agent/dev/twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
-| `/mypaisa-agent/dev/brave/api_key` | Brave Search, from phase 4 |
+| `/mypaisa-agent/dev/anthropic/api_key` | the Anthropic API key, with a spend limit set in the Console |
 | `/mypaisa-agent/dev/eodhd/api_key` | EODHD, if chosen over the free sources |
 
 A secret-scanning step runs on every pull request.
@@ -321,9 +328,9 @@ A failed brief, an error burst or a missed schedule reaches the Telegram chat as
 ### Costs
 
 Under £1 a month on AWS at this traffic: Lambda, DynamoDB, Scheduler, the Function URL and SSM sit inside the
-always-free tiers; S3, logs and ECR are pence. Bedrock is £7 to £21 a month depending on the routing and how much
-you chat, sentiment scoring £3 to £5, Brave Search £0 to £2, and EODHD £16 if chosen. Totals: about £10 lean, £34
-standard, £44 full, against the £50 cap. `ARCHITECTURE.md` has the table.
+always-free tiers; S3, logs and ECR are pence. Claude is £7 to £21 a month depending on the routing and how much
+you chat, sentiment scoring £1.50 to £2.50 through Batches, web search under £1, and EODHD £16 if chosen. Totals:
+about £9 lean, £31 standard, £41 full, against the £50 cap. `TECH_STACK.md` has the table for dev and prod.
 
 ## How work is done here
 
