@@ -1,0 +1,324 @@
+<div align="center">
+
+<img src="docs/mark.svg" width="96" height="96" alt="The MyPaisa Agent mark">
+
+# MyPaisa Agent
+
+### A private Telegram analyst for one household's investments.
+
+**It watches the holdings, explains every move, scores its own calls, and never trades.**
+
+<a href="https://github.com/gilipersonal/mypaisa-agent/actions/workflows/deploy.yml?query=branch%3Amain"><img alt="CI/CD on main" src="https://img.shields.io/github/actions/workflow/status/gilipersonal/mypaisa-agent/deploy.yml?branch=main&label=CI%2FCD&logo=githubactions&logoColor=white"></a> <a href="#mypaisa-agent"><img alt="Status: design" src="https://img.shields.io/badge/status-design-c98a54"></a> <a href="#mypaisa-agent"><img alt="Budget: GBP 50 a month" src="https://img.shields.io/badge/budget-%C2%A350%20a%20month-5faf7d"></a>
+
+<a href="ARCHITECTURE.md"><img alt="Claude on Amazon Bedrock" src="https://img.shields.io/badge/Claude-Amazon%20Bedrock-9184d9?logo=anthropic&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="AWS Lambda: us-east-1" src="https://img.shields.io/badge/AWS%20Lambda-us--east--1-FF9900?logo=awslambda&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="DynamoDB + S3" src="https://img.shields.io/badge/DynamoDB-%2B%20S3-4053D6?logo=amazondynamodb&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Telegram Bot API" src="https://img.shields.io/badge/Telegram-Bot%20API-26A5E4?logo=telegram&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Python: 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="pandas" src="https://img.shields.io/badge/pandas-signals-150458?logo=pandas&logoColor=white"></a> <a href="ARCHITECTURE.md"><img alt="Terraform: infra" src="https://img.shields.io/badge/Terraform-infra-844FBA?logo=terraform&logoColor=white"></a>
+
+**[Animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) · [Architecture](ARCHITECTURE.md) · [Build plan](PLAN.md)**
+
+</div>
+
+---
+
+> [!NOTE]
+> **Status: design.** `ARCHITECTURE.md` and `PLAN.md` are written; no code, infrastructure or workflow exists yet.
+> The commands below describe the repository as it will be once phase 1 of the plan lands, so that the plan and
+> the README agree from the start. The CI badge reports "no status" until the workflow exists.
+
+A private market agent for the MyPaisa household. Every weekday it fetches the closes, fund prices and exchange
+rates for what the household holds, works out what moved and why, and sends a short brief to one Telegram chat.
+It alerts on the few things worth a push, answers questions by calling its own code as tools, reads the news
+overnight, and takes a stance with a horizon and a confidence that it grades later. Python does the maths; Claude
+on Amazon Bedrock does the words. It holds no broker login and cannot trade.
+
+| Surface | Where | Runs on |
+| --- | --- | --- |
+| The bot | one private Telegram chat | `webhook` and `agent` Lambdas, Amazon Bedrock |
+| The schedule | 07:15 and 21:15 UK on weekdays, 08:00 on Saturday | EventBridge Scheduler in `Europe/London` |
+| The numbers | DynamoDB (one table) and S3 (parquet) | `ingest` and `signals` Lambdas |
+| The news | RSS from central banks and the financial press | `news` and `score` Lambdas |
+| The wealth tracker | [gilipersonal/wealth-tracker](https://github.com/gilipersonal/wealth-tracker) | reads the same positions table, later |
+
+The first holding is the household's Monzo ISA, a BlackRock MyMap fund. Holdings are a generic model: ETFs, shares,
+bond ETFs and commodity ETCs in GBP, USD or EUR slot in as price-source plugins.
+
+## Contents
+
+- [Documentation](#documentation)
+- [What is in the repository](#what-is-in-the-repository)
+- [Models](#models)
+  - [How the agent is evaluated](#how-the-agent-is-evaluated)
+- [Prerequisites](#prerequisites)
+- [Set up from scratch](#set-up-from-scratch)
+- [Everyday commands](#everyday-commands)
+- [Tests](#tests)
+- [Working on AWS](#working-on-aws)
+- [How work is done here](#how-work-is-done-here)
+
+## Documentation
+
+| Document | What it covers |
+| --- | --- |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | How it is built: what the agent does and the two rules it keeps (Claude never produces a number; the bot cannot trade), the system on AWS, every Lambda and what triggers it, the Telegram integration, the agent loop and its tools, model routing on Bedrock, the instrument model and the Monzo fund's proxy basket, currencies and calendars, signals, forecast ranges, the news and sentiment pipeline, calls and their shadow mode, notification tiers, the data in DynamoDB and S3, the tech stack with the reason for each choice, security, reliability, cost, decisions and open questions. |
+| [PLAN.md](PLAN.md) | How it gets built: the principles, then eight phases from prerequisites to the wealth-tracker integration. Each phase lists what is built, what is tested, an exit criterion you can see in Telegram, and its monthly cost. Then an indicative timeline, the definition of done for every change, and the risks with their mitigations. |
+| [The animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx) | The same design as a page: three animated scenarios (the morning brief, a question, an alert after the US close) with a packet travelling hop by hop, the agent's tool loop replayed on a worked example, the news-to-call pipeline, the weekly message grid, the alert tiers, the cost against the £50 cap, and the repository layout. Private to the account; share from the page. |
+| `CLAUDE.md` | Planned, phase 1: the working rules for people and coding agents (the OIDC trust trap, Terraform-only IAM, no keys, the budget, the definition of done). |
+| `infra/README.md` | Planned, phase 1: every AWS resource, its cost and what protects it; CI's keyless deploy. |
+
+## What is in the repository
+
+Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md`:
+
+| Path | What it is |
+| --- | --- |
+| `src/mypaisa_agent/` | The Python package. `instruments/` (the model and the price-source plugins: fund NAV, ETF closes, ECB FX, exchange calendars), `signals/` (pure pandas, fully unit-tested), `news/` (RSS, extraction, dedupe, scoring), `events/` (the calendar), `calls/` (the engine, paper trades, the scorecard), `tools/` (one file per Claude tool), `agent.py` (the tool loop, model routing, caching), `telegram.py` (the Bot API client), `handlers/` (one entry point per Lambda). |
+| `skills/` | Agent Skills, one folder each with a `SKILL.md` and any scripts: `read-central-bank-statement`, `map-headline-to-holdings`, `write-call`, `grade-call`. Loaded into prompts by the agent only when a task matches. |
+| `tests/` | pytest: golden files for every signal, property tests for the FX split, moto for AWS, respx for HTTP, recorded Bedrock responses for rendering. |
+| `infra/terraform/` | Every AWS resource: the Lambdas and their image, the Scheduler rules, the DynamoDB table, the S3 bucket, SSM parameters, the IAM roles, the budget and the alarms; `envs/dev.tfvars`. |
+| `.github/workflows/` | `deploy.yml`: lint, typecheck, tests and `terraform plan` on every pull request; build, apply and deploy from `main` through OIDC. |
+| `docs/` | The mark, and later the charts the README shows. |
+| `Dockerfile` | One container image for every Lambda, arm64, on the AWS Python 3.14 base, since pandas and matplotlib exceed the zip limit. |
+
+## Models
+
+Every model call goes to Claude on Amazon Bedrock through the Anthropic SDK's Bedrock client, signed with the
+Lambda's IAM role. No API key exists. Model ids are set per environment in `infra/terraform/envs/*.tfvars`, since
+they move with Anthropic's releases; the first set is below.
+
+| Route | Model | Effort | What the model is asked for |
+| --- | --- | --- | --- |
+| Alert filter | Haiku 5.5, `anthropic.claude-haiku-5-5` | low | Which of today's alert candidates say something new against what was sent this week. The thresholds and cooldowns are code. |
+| Article scoring | Haiku 5.5 | low | For one article: the instruments it touches, direction, magnitude, horizon, novelty, event, confidence, and the sentence that says so, as strict JSON. The index is summed in code. |
+| Morning brief, evening wrap, alert text | Sonnet 5.5, `anthropic.claude-sonnet-5-5` | low | Six lines in the household's context from the day's signals. Every figure comes from the tool results. |
+| Chat | Sonnet 5.5 | medium | An answer to a question, built by calling the tools (`get_positions`, `get_signals`, `run_scenario`, `search_news`, `update_pref`, and the rest in `ARCHITECTURE.md`). |
+| Calls | Sonnet 5.5 | medium | The reasons and the invalidation rule for a stance the rules have set. The stance, horizon and entry price are code. |
+| Saturday review | Opus 5.5, `anthropic.claude-opus-5-5` | high | The week in context, with the scorecard, the decisions logged and the events ahead. |
+
+**Guardrails on every call:** tools with `strict` schemas and `tool_choice: auto`; adaptive thinking with the effort
+above; the system prompt, tool list and rubric cached; a per-day token ceiling; a refusal or an error falls back to
+the plain-template brief, so a message is never missed because of a model. Before anything is sent, every number in
+the text is checked against that turn's tool results; a number with no source fails the message, which is
+regenerated once and then sent as the plain facts. Search results and fetched pages reach the model marked as
+untrusted text and are never followed as instructions; there is no tool that can spend money beyond a search query,
+delete data, or message anyone but the household's chat.
+
+Web search and web fetch are client-side tools (Brave Search, `httpx` and `trafilatura`), because Bedrock does not
+offer Anthropic's server-side web tools. Scoring runs in real time rather than in batch, because neither Anthropic's
+Message Batches API nor Bedrock's batch inference covers the 5.5 models, and real-time Haiku 5.5 is cheaper than
+batched Haiku 4.5 anyway.
+
+### How the agent is evaluated
+
+The bot grades itself, and the tests hold the code to it. Planned in phases 5 and 7 of `PLAN.md`:
+
+1. **Forecasts are logged and graded.** Every 1-month range the signals produce is stored with the price at the
+   time. When the month ends the outcome is recorded: did the 80% range cover it, and was `P(fall > 5%)` calibrated.
+   The Saturday review reports coverage and calibration, or by how much they miss.
+2. **Calls are paper-traded.** A call is stored with its entry price and graded at its horizon: right or wrong, the
+   return against doing nothing, and calibration by confidence bucket. Calls stay in shadow (logged, reported on
+   Saturday, never pushed) until they beat the baseline for 8 consecutive weeks. The gate is checked in code and
+   reported every week either way.
+3. **Decisions are logged.** "I acted" on a message writes a decision record. The review compares what was done with
+   what the signals said, which is the only honest way to learn whether the bot helps.
+4. **The words are tested on recordings.** Unit tests replay recorded Bedrock responses, so rendering is
+   deterministic and never reaches a model. The number validator has its own tests, with an invented figure it must
+   catch.
+5. **Sentiment is spot-checked.** Phase 6 ends with 30 scored articles read by a person against their scores before
+   the index is allowed to tilt a call.
+
+Live-model runs are on request only and print their estimate first.
+
+## Prerequisites
+
+macOS or Linux. Nothing is installed globally except these tools.
+
+| Tool | Version | Needed for | Install |
+| --- | --- | --- | --- |
+| Git | recent | everything | |
+| uv | 0.12 or later | the package, its tests and tools (uv fetches Python 3.14 itself) | `brew install uv` |
+| Docker | recent, running | building the Lambda image locally | Docker Desktop, OrbStack or Colima |
+| AWS CLI | v2 | every cloud operation, with the `agent-toolkit` profile | `brew install awscli` |
+| Terraform | 1.9 or later | `infra/terraform/` only | `brew install terraform` |
+| GitHub CLI (`gh`) | recent | pull requests, reading the repository id for the OIDC trust | `brew install gh` |
+| jq | any | the scripts | `brew install jq` |
+
+You also need, in the AWS account `545595341442`: a profile that can assume the operator role (`agent-toolkit`),
+Bedrock model access granted for the three models in `us-east-1`, and the parameters in SSM listed under
+[Secrets](#secrets). The Telegram bot is made once with BotFather.
+
+## Set up from scratch
+
+This is phase 0 of `PLAN.md`. Steps 1 and 2 need nothing but the tools; the rest need the AWS profile.
+
+### 1. Clone
+
+```bash
+git clone https://github.com/gilipersonal/mypaisa-agent.git && cd mypaisa-agent
+```
+
+### 2. The package and its checks
+
+```bash
+uv sync                                       # Python 3.14 and every dependency, from the lockfile
+uv run ruff check . && uv run pyright && uv run pytest
+```
+
+The tests run on fixtures and recordings and never reach AWS or a model.
+
+### 3. The Telegram bot
+
+Make the bot with [@BotFather](https://t.me/BotFather) (`/newbot`), turn off group joins (`/setjoingroups`), and put
+the token straight into SSM. It is never pasted into a file, a chat or a shell history:
+
+```bash
+export AWS_PROFILE=agent-toolkit
+read -rs TOKEN && aws ssm put-parameter --name /mypaisa-agent/dev/telegram/bot_token --type SecureString --value "$TOKEN" && unset TOKEN
+openssl rand -hex 32 | aws ssm put-parameter --name /mypaisa-agent/dev/telegram/webhook_secret --type SecureString --value "$(cat)"
+```
+
+Your `chat_id` arrives with the first message you send the bot after the webhook is set (step 6): the deploy prints
+it from the logs, and you store it the same way under `.../telegram/chat_id`. Until it is stored, the bot answers
+no one.
+
+### 4. Bedrock
+
+In the Bedrock console for `us-east-1`, under Model access, request Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5. A
+call fails until access shows as granted.
+
+### 5. Terraform
+
+The state lives beside the wealth tracker's, under its own key. The OIDC role's trust policy is pinned to this
+repository's own numeric id, which the first apply reads from GitHub:
+
+```bash
+cd infra/terraform
+export AWS_PROFILE=agent-toolkit
+terraform init
+terraform plan  -var-file=envs/dev.tfvars -var="github_repo_id=$(gh api repos/gilipersonal/mypaisa-agent --jq .id)" -out=dev.tfplan
+terraform apply dev.tfplan
+```
+
+Read the whole plan before applying it. The first apply creates the budget before anything that can spend.
+
+### 6. The webhook and the first brief
+
+```bash
+scripts/set-webhook.sh dev                    # setWebhook with the Function URL and the secret from SSM
+scripts/run.sh dev ingest && scripts/run.sh dev signals && scripts/run.sh dev brief
+```
+
+The brief arrives in the chat as a silent push. From then on the Scheduler runs it.
+
+## Everyday commands
+
+| Task | Command |
+| --- | --- |
+| Add or change a holding | edit `seed/positions.yaml`, then `scripts/seed.sh dev` |
+| Run one job now | `scripts/run.sh dev ingest` (also `signals`, `brief`, `wrap`, `news`, `score`, `review`) |
+| Build the image as CI does | `docker build --platform linux/arm64 -t mypaisa-agent .` |
+| Tail a function's logs | `aws logs tail /aws/lambda/mypaisa-agent-dev-agent --follow` |
+| Set the webhook again after a URL change | `scripts/set-webhook.sh dev` |
+| See this month's spend | `scripts/cost.sh` (AWS Cost Explorer, Bedrock by model, against the £50 cap) |
+| Grade every forecast and call whose horizon has passed | `scripts/run.sh dev grade` |
+
+## Tests
+
+The gates run in CI on every pull request; run them before pushing:
+
+```bash
+uv run ruff check . && uv run ruff format --check .
+uv run pyright
+uv run pytest --cov --cov-fail-under=90
+cd infra/terraform && terraform fmt -check && terraform validate
+```
+
+Live checks run on request only and say what they cost first: a brief against live Bedrock
+(`scripts/run.sh dev brief --live`) and the sentiment spot-check set (`scripts/eval.sh sentiment`).
+
+## Working on AWS
+
+Everything in the cloud is one set of resources in the wealth tracker's AWS account, made by Terraform in
+`infra/terraform/`, and operated with the AWS CLI and the scripts. The rules: every resource is Terraform, never
+made by hand; IAM is never edited in the console; plans are read in full before they are applied; no AWS key exists
+anywhere; every secret lives in SSM Parameter Store only; anything that adds cost is asked about first, with its
+price.
+
+### The account
+
+| | |
+| --- | --- |
+| Account | `545595341442`, profile `agent-toolkit` |
+| Region | `us-east-1` |
+| Terraform state | `s3://wealth-tracker-tfstate`, key `mypaisa-agent/dev/infra.tfstate` |
+| Lambda | `webhook`, `agent`, `ingest`, `signals`, `news`, `score`, one arm64 container image in ECR |
+| Function URL | on `webhook` only, auth `NONE`, protected by the Telegram secret token and the chat allowlist |
+| EventBridge Scheduler | `07:00`, `07:15`, `21:00`, `21:15` weekdays; `23:30` daily; `08:00` Saturday; every 3 h for news; all `Europe/London` |
+| DynamoDB | one on-demand table, `mypaisa-agent-dev`, with TTL |
+| S3 | `mypaisa-agent-dev`: prices and FX as parquet, articles (90-day rule), charts (30-day rule) |
+| SSM Parameter Store | `/mypaisa-agent/dev/...`, SecureString, standard tier |
+| Bedrock | Opus 5.5, Sonnet 5.5, Haiku 5.5 on global inference profiles |
+| IAM | one execution role per function, scoped to its table, bucket, parameters and model ARNs; one OIDC role for CI |
+| Monitoring | CloudWatch Logs (14 days), an error alarm per function, the 07:45 dead man's switch, all delivered to the chat |
+| Budget | AWS Budgets at £40 (alert) and £50 (disable the Scheduler rules) |
+
+### Access
+
+- **Operators** use the `agent-toolkit` profile. Terraform needs it; nothing else does once deployed.
+- **CI** assumes the OIDC role from the `dev` GitHub environment only. The trust policy's subject is
+  `repo:gilipersonal@325700199/mypaisa-agent@<repo_id>:environment:dev`; GitHub's immutable subject claims embed
+  both numeric ids, so the wealth tracker's policy cannot be copied. On `AccessDenied` from
+  `AssumeRoleWithWebIdentity`, read CloudTrail first: it records the exact subject presented.
+- The `dev` environment's deployment branch policy is what keeps deploys on `main`; the subject carries no branch.
+- Never create an IAM user or an access key for this project.
+
+### Secrets
+
+Terraform creates the parameter names and never holds a value. The values are put with the AWS CLI as in
+[Set up](#3-the-telegram-bot), read by each function once per cold start, and never logged.
+
+| Parameter | What it is |
+| --- | --- |
+| `/mypaisa-agent/dev/telegram/bot_token` | from BotFather |
+| `/mypaisa-agent/dev/telegram/webhook_secret` | random, sent by Telegram as `X-Telegram-Bot-Api-Secret-Token` |
+| `/mypaisa-agent/dev/telegram/chat_id` | the one chat the bot answers |
+| `/mypaisa-agent/dev/brave/api_key` | Brave Search, from phase 4 |
+| `/mypaisa-agent/dev/eodhd/api_key` | EODHD, if chosen over the free sources |
+
+A secret-scanning step runs on every pull request.
+
+### Releasing
+
+A merge to `main` builds the image, pushes it to ECR, applies Terraform and points every function at the new image.
+Roll back by re-applying with the previous image tag (every tag is a commit):
+
+```bash
+cd infra/terraform && terraform apply -var-file=envs/dev.tfvars -var="image_tag=<commit>"
+```
+
+### Logs and alarms
+
+Each function logs one JSON object a line with a correlation id per update or schedule run.
+
+```bash
+aws logs tail /aws/lambda/mypaisa-agent-dev-agent --since 1h
+aws logs filter-log-events --log-group-name /aws/lambda/mypaisa-agent-dev-ingest --filter-pattern '{ $.level = "ERROR" }'
+```
+
+A failed brief, an error burst or a missed schedule reaches the Telegram chat as a short message with the reason.
+
+### Costs
+
+Under £1 a month on AWS at this traffic: Lambda, DynamoDB, Scheduler, the Function URL and SSM sit inside the
+always-free tiers; S3, logs and ECR are pence. Bedrock is £7 to £21 a month depending on the routing and how much
+you chat, sentiment scoring £3 to £5, Brave Search £0 to £2, and EODHD £16 if chosen. Totals: about £10 lean, £34
+standard, £44 full, against the £50 cap. `ARCHITECTURE.md` has the table.
+
+## How work is done here
+
+The rules will live in `CLAUDE.md` from phase 1. In short:
+
+- Every change is a branch from `main` (`feat/<slug>`, `fix/<slug>`) and a pull request; never commit on `main`.
+  Pull requests merge with a merge commit and the branch is deleted.
+- The phases of `PLAN.md` are built in order; a phase starts when the one before meets its exit criterion.
+- Numbers come from code with tests; Claude writes words. A change that lets a model produce a figure is wrong.
+- Anything that predicts runs in shadow first and earns its place with a scored record.
+- Nothing in the cloud is made by hand; plans are read before they are applied; no key, no secret in a file.
+- Every change that calls a paid API states its monthly cost in the pull request.
