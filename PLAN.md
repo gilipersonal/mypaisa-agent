@@ -34,7 +34,7 @@ Status: planning. Nothing is built.
 | Create the bot with BotFather; token into SSM; picture with `/setuserpic` from `docs/mark-1024.png` | You |
 | Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of £35 and £10, and one API key in each; put the dev key into SSM at `/mypaisa-agent/dev/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
-| Decide: EODHD now or free sources first | You |
+| Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD waits for phase 2 and is taken only if the London closes prove unreliable in the first weeks | Decided |
 | Twelve Data API key (free tier) into SSM; check whether its Basic plan serves LSE and Xetra closes | You |
 | Terraform bootstrap: state key, OIDC role pinned to this repository's numeric id, `dev` GitHub environment, AWS Budgets at £40 and £50 | Claude |
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
@@ -112,9 +112,14 @@ change either of you made, with who and when.
 The maths, ported from the desk and extended.
 
 - Price source chain: yfinance (`0P…L` ids for the funds, tickers for ETFs),
-  BlackRock product page, FT tearsheet, EODHD if chosen; ECB FX; calendars.
-  Verify which source actually serves the Monzo funds' NAV, and record the
-  answer in `docs/RESEARCH.md`.
+  BlackRock product page, FT tearsheet; Twelve Data for the US lines; ECB FX;
+  calendars. EODHD is not in the chain unless phase 2 shows the free sources
+  missing or misreporting London closes; its plugin slot exists, its key does
+  not. Verify which source actually serves the Monzo funds' NAV, and record
+  the answer in `docs/RESEARCH.md`. yfinance is unofficial and can break
+  without notice, so the ingest job treats a failed or stale source as a
+  normal day: it falls through the chain, marks the valuation provisional,
+  and the 07:45 alarm fires only when every source has failed for two days.
 - Proxy basket from the factsheet's top holdings; proxy-vs-NAV gap.
 - Input hygiene: interpolated bars, provisional closes, STALE exclusion.
 - `indicators`: the desk's stack ported to pandas, plus ATR, realised vol and
