@@ -20,6 +20,13 @@ Animated version (v3 of the page, matching this document):
 <https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp>. Sources for all three are
 in `docs/design/`.
 
+The component diagram, every service, the one agent and the DynamoDB entities
+in detail, is a Lucidchart document: <https://lucid.app/lucidchart/abff9766-f522-4134-b559-0028eecb78fc/edit>
+(private to the account; share from the document's menu). Its rendered image
+and the import JSON it was built from are in `docs/design/lucid/`.
+
+![MyPaisa Agent component diagram](docs/design/lucid/architecture.png)
+
 Status: design only.
 
 ---
@@ -61,6 +68,10 @@ Silence is a feature: about ten messages a week, two with sound at most.
 ---
 
 ## 3. System context
+
+The compact view. The full component diagram, with the platform services, the
+agent's tools and routing, and the DynamoDB entities, is the Lucidchart
+document linked above.
 
 ```mermaid
 flowchart LR
