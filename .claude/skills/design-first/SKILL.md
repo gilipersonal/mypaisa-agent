@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks for a change to how MyPaisa looks or flows, on the web app and Mini App dashboard (web/, the artboards in docs/design/dashboard/), the Telegram cards, buttons and guided flows, the chat's PNG charts, the design pages (architecture, journeys) or the mark; such as a new page or card, a redesign, or a change to layout, flow, visuals, copy hierarchy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps); save them in docs/design/reviews/MA-<n>/; publish a review board as a claude.ai artifact; and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks for a change to how MyPaisa looks or flows, on the web app (web/, one spec in docs/design/dashboard/ with Mini App boards for Telegram and browser boards for the laptop), the Telegram cards, buttons and guided flows, the chat's PNG charts, the design pages (architecture, journeys) or the mark; such as a new page or card, a redesign, or a change to layout, flow, visuals, copy hierarchy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps); save them in docs/design/reviews/MA-<n>/; publish a review board as a claude.ai artifact; and build only the option Arun picks.
 ---
 
 # Design first
@@ -27,15 +27,17 @@ with one obvious fix. When unsure whether something is a design change, treat it
   - `ARCHITECTURE.md`: the four rules (§1), the Telegram front end (§9: navigation, the example cards, guided
     flows) and the web app (§9.3);
   - `PLAN.md`, the phase the surface belongs to (phase 5 for the web app);
-  - `docs/design/README.md` and the surface's existing design: the dashboard artboards in `docs/design/dashboard/`
-    (`Main`, `Holding`, `Overlap`, `Scorecard`, `Light` `.dc.html`, laid out by `canvas.json`), `journeys.html` for the
-    chat, `architecture.html` for the explainer;
+  - `docs/design/README.md` and the surface's existing design: for the web app, the one spec in
+    `docs/design/dashboard/` with its Mini App boards (`Main`, `Holding`, `Overlap`, `Scorecard`, `Light` `.dc.html`,
+    laid out by `canvas.json`) and its browser boards once drawn; `journeys.html` for the chat; `architecture.html` for
+    the explainer;
   - earlier reviews for the same surface in `docs/design/reviews/`.
 - Capture how the screens involved look now into `docs/design/reviews/MA-<n>/current/`:
   - once `web/` exists, serve it (`python3 -m http.server 8000 --directory web`, the origin Google sign-in allows)
     and screenshot with Playwright at 390 and 1440 wide, in dark and light;
-  - before that, the dashboard artboards are the current screens: screenshot them from the live dashboard artifact
-    (`docs/design/README.md` has the link), since the `.dc.html` files only render on the design canvas;
+  - before that, the spec's boards are the current screens: screenshot them from the live dashboard artifact
+    (`docs/design/README.md` has the link), since the `.dc.html` files only render on the design canvas; a page with
+    no browser board yet has no current laptop screen, so say so on the board;
   - for the chat, screenshot the matching journey in `journeys.html`, or the card as the bot sends it.
 
 ## 1. Design 2 or 3 options
@@ -44,7 +46,7 @@ with one obvious fix. When unsure whether something is a design change, treat it
 
 | Surface | Lead | Also |
 | --- | --- | --- |
-| Web app and Mini App (`web/`; Overview, a holding, Overlap, Scorecard, Audit, Activity, the login page) | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max` for UX rules (`python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "<outcome>" --domain ux`); `redesign-existing-projects` to audit a page that exists; `qwengen-bf16` for a comp from a screenshot of the current screen |
+| The web app, `web/`: one app, one spec, two sets of boards. **Mini App** boards (inside Telegram, phone) and **browser** boards (laptop, two columns, the login page), for Overview, a holding, Overlap, Scorecard, Audit and Activity | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max` for UX rules (`python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "<outcome>" --domain ux`); `redesign-existing-projects` to audit a page that exists; `qwengen-bf16` for a comp from a screenshot of the current screen |
 | Telegram cards, buttons and guided flows (`src/mypaisa_agent/telegram.py`, `cards/`) | `impeccable` (`clarify`, `distill`) on the card's text and hierarchy | `ui-ux-pro-max --domain ux` for the flow; `design-skills:ux-writing` for button labels and one-line copy |
 | Charts in the chat (matplotlib PNG, one house style, `render_chart`) | `dataviz` | Validate palettes with its script; render each option with matplotlib from illustrative data |
 | Charts in the web app (lightweight-charts) | `dataviz` | The same palette as the chat's charts, so a holding looks the same in both |
@@ -58,7 +60,7 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 
 - **Precedence.**
   1. Arun's words.
-  2. `ARCHITECTURE.md` and `PLAN.md`, then the artboards in `docs/design/dashboard/`, which are the web app's spec.
+  2. `ARCHITECTURE.md` and `PLAN.md`, then the boards in `docs/design/dashboard/`, the web app's one spec.
   3. The Nocturne look, the wealth tracker's design system (its `frontend/src/app/globals.css`), as the artboards
      already use it: the ink `#161826`, surfaces `#232532` on `#3f424d` borders, the violet accent `#b5abfc`, Inter
      with tabular figures.
@@ -79,8 +81,11 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
   - Each option is a complete answer to the request, different in a way that matters: structure, flow, emphasis or
     treatment. Never the same idea in two colours.
   - Mark one as recommended, and say why.
-  - Web app options show the main page in dark and light, at phone width (390, as the Mini App) and laptop width
-    (two columns).
+  - Web app options show the main page on both sets of boards, in dark and light: the Mini App board (390 wide,
+    inside Telegram's header, no app header, Telegram's `BackButton`, safe-area insets) and the browser board (laptop,
+    two columns, the app's own navigation). A page changed for one door is changed for the other in the same round,
+    so the two never drift; a change that only fits one door says why on the board. One spec, never a design doc per
+    door (`docs/design/README.md`, MA-6).
   - Chat options show the card in Telegram's dark and light themes, in `simple` and `technical` mode, and the HTML
     fallback when the change touches the card's layout.
   - The picked option gets its remaining states (empty, loading, stale prices, error, a long holding name, many
@@ -96,7 +101,8 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
   - Animate transform and opacity first.
   - Nothing loops forever.
   - Under `prefers-reduced-motion` every step lands in its final state at once.
-  - Inside Telegram, follow the Mini App's `colorScheme` and `themeParams` for light and dark.
+  - Light and dark follow Telegram's `colorScheme` and `themeParams` on the Mini App boards, and the system's
+    `prefers-color-scheme` on the browser boards.
 - **Accessibility.** WCAG 2.2 AA: contrast measured on the real background, 44 px targets in the web app, visible
   focus, and colour never the only signal (keep the ▲ ▼ beside the green and red).
 - **Illustrative data.** Every figure, member and holding on a design is illustrative and labelled so. Never the
@@ -148,7 +154,7 @@ JetBrains Mono) and nothing else from the network, images by relative path. Comm
 
 - **When.** Only after Arun picks an option in the current request. Build that option only.
 - **How.** On the same branch:
-  1. Update the spec first when the pick changes it: the artboards in `docs/design/dashboard/`, or the example cards
+  1. Update the spec first when the pick changes it: both sets of boards in `docs/design/dashboard/`, or the example cards
      in `ARCHITECTURE.md` §9.2. Republishing the live dashboard artifact is Arun's call; ask.
   2. Build with impeccable, comp-led when the pick includes an approved comp: `web/` for the web app,
      `telegram.py` and `cards/` for the chat, the house chart style for charts.
