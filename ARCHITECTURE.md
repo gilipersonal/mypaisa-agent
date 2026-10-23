@@ -392,12 +392,12 @@ environment variable, with a per-instrument override in
 # envs/dev.tfvars (local uses the same shape from a .env file)
 price_chains = {
   oeic      = ["yfinance", "issuer_page", "ft", "proxy", "screenshot"]
-  lse_etf   = ["yfinance", "issuer_page", "stale"]
+  lse_etf   = ["yfinance", "twelvedata", "issuer_page", "stale"]
   us_etf    = ["twelvedata", "yfinance", "stale"]
   cash      = ["ecb", "twelvedata"]
 }
 # envs/prod.tfvars, once EODHD is chosen: put it first and add its key
-#   lse_etf = ["eodhd", "yfinance", "issuer_page", "stale"]
+#   lse_etf = ["eodhd", "yfinance", "twelvedata", "issuer_page", "stale"]
 #   us_etf  = ["twelvedata", "eodhd", "yfinance", "stale"]
 ```
 
@@ -408,7 +408,7 @@ labelled, never silently reused.
 | Kind | Default chain (local, dev, and prod until switched) | With EODHD | Freshness |
 | --- | --- | --- | --- |
 | OEIC (Monzo's BlackRock funds) | yfinance on the fund's `0P…L` id · BlackRock UK product page · FT tearsheet · proxy basket · last user screenshot | unchanged; EODHD has no UK OEICs | NAV once a day, published next morning; proxy intraday, labelled provisional |
-| ETF or ETC on LSE / Xetra | yfinance · issuer NAV (iShares publishes daily) · stale | eodhd · yfinance · issuer NAV · stale | Each exchange close; GBX normalised to GBP |
+| ETF or ETC on LSE / Xetra | yfinance · Twelve Data (free tier, if it serves the exchange) · issuer NAV (iShares publishes daily) · stale | eodhd · yfinance · Twelve Data · issuer NAV · stale | Each exchange close; GBX normalised to GBP |
 | ETF or stock on NYSE / Nasdaq | Twelve Data (free tier) · yfinance · stale | twelvedata · eodhd · yfinance · stale | 21:00 UK close |
 | Stock on LSE / Xetra | as ETF on LSE / Xetra | as ETF on LSE / Xetra | same |
 | Commodity ETC | as its listing, plus the metal's spot price × FX as a sanity check | same | same |
@@ -425,9 +425,15 @@ late correction). That report is how the "free first, EODHD if London
 closes prove unreliable" decision of phase 2 is made with numbers rather
 than impressions.
 
-Twelve Data's free tier (800 calls a day, US listings) also serves the US
-macro basket and the earnings calendar; whether its free tier includes LSE
-and Xetra is a phase 2 check that could make EODHD unnecessary.
+Twelve Data's free tier (8 credits a minute, 800 a day) is used for
+everything it serves: first in the chain for the US lines, the US macro
+basket, the earnings calendar and the FX fallback, and second for London and
+Frankfurt closes from day one. Whether the free tier actually returns LSE
+and Xetra bars is not known; the chain simply skips a plugin that answers
+nothing, and the source-comparison report shows what it served. If it does
+serve them, EODHD is unnecessary. The daily credit budget is enforced in the
+plugin: the ingest job spends at most 200 a day, so the agent's own calls
+(symbol search, the earnings calendar on demand) never run the tier dry.
 
 Input hygiene, from the desk: drop interpolated bars, append today's close only
 when the session has traded, mark a series STALE when its last bar is older
@@ -923,7 +929,7 @@ since data feeds are shared but model calls are not.
 
 - The Monzo fund's exact name and ISIN (factsheet in the app); whether the holdings sit in the Stocks & Shares ISA or a general account; the Monzo platform fee on your plan.
 - Whether yfinance returns history for the fund's `0P…L` id; otherwise which page becomes the daily source.
-- Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed).
+- Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed); answered by the source-comparison report in the first weeks of phase 2, since it sits second in the London chain from day one.
 - Rich messages: confirm block types and limits against the official Bot API changelog before relying on tables.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
 - A Google OAuth client id per environment, created in the Google Cloud Console with the app's hostname as an authorised JavaScript origin; the consent screen needs only the basic profile and email scopes, so no Google verification review applies.
