@@ -41,7 +41,7 @@
   },
   "gates": [],
   "work": {
-    "checkpoint": "step",
+    "checkpoint": "phase",
     "commitEach": "never",
     "stateDir": ""
   },
@@ -50,7 +50,7 @@
     "comments": false
   },
   "ship": {
-    "askBefore": ["pr", "merge", "close"],
+    "askBefore": ["merge"],
     "mergeMethod": "merge",
     "deleteBranchOnMerge": true,
     "waitForChecks": true

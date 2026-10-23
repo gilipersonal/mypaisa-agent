@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout main)",
+      "Bash(git checkout -q main)",
+      "Bash(git checkout -b MA-*)",
+      "Bash(git checkout -q -b MA-*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull --ff-only)",
+      "Bash(git pull -q --ff-only)",
+      "Bash(git branch -d MA-*)",
+      "Bash(git push -u origin MA-*)",
+      "Bash(git push origin MA-*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run watch:*)",
+      "mcp__github__create_pull_request",
+      "mcp__atlassian__createJiraIssue",
+      "mcp__atlassian__editJiraIssue",
+      "mcp__atlassian__transitionJiraIssue",
+      "mcp__atlassian__addOrEditJiraIssueComment",
+      "mcp__atlassian__getJiraIssue",
+      "mcp__atlassian__searchJiraIssuesUsingJql",
+      "mcp__atlassian__executeRead"
+    ],
+    "ask": [
+      "Bash(gh pr merge:*)",
+      "Bash(git merge:*)",
+      "Bash(gh api *pulls/*/merge*)",
+      "mcp__github__merge_pull_request"
+    ],
+    "deny": [
+      "Bash(git push *:main)",
+      "Bash(git push *:main *)",
+      "Bash(git push *:refs/heads/main*)",
+      "Bash(git push * main)",
+      "Bash(git push * main *)",
+      "Bash(git push *--force*)",
+      "Bash(git push * -f*)",
+      "Bash(git push * +*)",
+      "Bash(git push -f*)"
+    ]
+  }
+}
