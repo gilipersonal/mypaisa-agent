@@ -10,12 +10,12 @@ else those rules stand unchanged. Arun set this on 2026-10-23 (MA-3).
 | Act | Here |
 | --- | --- |
 | Create, edit, comment on a Jira issue | do it, no asking |
-| Move an issue To Do, In Progress, In Review | do it, no asking |
+| Any Jira transition (To Do, In Progress, In Review, Done, back again) | do it, no asking (Done only after the merge, see below) |
 | Branch, commit, push an `MA-<n>-<slug>` branch | do it, no asking |
 | Raise the pull request (`gh pr create`) | **do it, no asking**, as soon as the story's work is committed and its gates are green |
 | Wait for the PR's checks | do it, no asking |
 | Merge the PR into `main` (`gh pr merge`, `git merge`, the merge API) | **ask once**, in words, and wait for a yes in the turn that is running |
-| Move the issue to Done | **do it, no asking**, straight after the merge lands; never before |
+| Move the issue to Done | **do it, no asking**, straight after the merge lands (the order is the rule, not a question) |
 | Sync local `main`, delete the merged branch | do it, no asking |
 
 `ship.askBefore` in `.claude/jira-flow.json` is `["merge"]`, so the plugin's
