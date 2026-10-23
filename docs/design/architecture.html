@@ -204,7 +204,7 @@ pre.tree .c { color: var(--faint); }
   <div class="brand"><div class="coin" aria-hidden="true"><span>£</span><span>$</span><span>€</span></div><b>MyPaisa</b><span class="eyebrow">· design v2, 23 Oct 2026</span></div>
   <div class="prose">
     <h1>MyPaisa Market Agent</h1>
-    <p class="lede">One Python agent on AWS Lambda that keeps the record of what you hold, watches it, takes a stance with a confidence score, and talks to you through a private Telegram bot built for a layman. Python does the maths (an engine ported from the Agentic Trading Desk); Claude on Amazon Bedrock explains it, reads your factsheets and screenshots, and answers questions by calling the same code as tools.</p>
+    <p class="lede">One Python agent on AWS Lambda that keeps the record of what you hold, watches it, takes a stance with a confidence score, and talks to you through a private Telegram bot built for a layman. Python does the maths (an engine ported from the Agentic Trading Desk); Claude, through the Anthropic API, explains it, reads your factsheets and screenshots, and answers questions by calling the same code as tools.</p>
     <ul class="chips">
       <li>Base currency <b>GBP</b></li>
       <li>Markets <b>UK · US · EU</b></li>
@@ -212,7 +212,7 @@ pre.tree .c { color: var(--faint); }
       <li>Add more by <b>factsheet + screenshot</b> in the chat</li>
       <li>Budget cap <b>£50 / month</b></li>
       <li>Its own repo <b>mypaisa-agent</b></li>
-      <li>Claude via <b>Amazon Bedrock</b>, IAM only, no keys</li>
+      <li>Claude via the <b>Anthropic API</b>, key in SSM, spend limit set</li>
       <li>Stances <b>ADD · HOLD · PAUSE · TRIM</b> with confidence</li>
     </ul>
   </div>
@@ -231,7 +231,7 @@ pre.tree .c { color: var(--faint); }
     </div>
     <div class="stage-body">
       <div class="stage-svg">
-<svg viewBox="0 0 1240 640" role="img" aria-label="Architecture: Telegram app and Bot API on the left, webhook Lambda and EventBridge Scheduler in the middle, one agent Lambda plus ingest and engine Lambdas, and DynamoDB, S3, market data and Amazon Bedrock on the right. Scenarios animate a packet along the path each request takes." id="arch-svg">
+<svg viewBox="0 0 1240 640" role="img" aria-label="Architecture: Telegram app and Bot API on the left, webhook Lambda and EventBridge Scheduler in the middle, one agent Lambda plus ingest and engine Lambdas, and DynamoDB, S3, market data and the Anthropic API on the right. Scenarios animate a packet along the path each request takes." id="arch-svg">
   <defs>
     <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
   </defs>
@@ -286,7 +286,7 @@ pre.tree .c { color: var(--faint); }
     <text class="t" x="732" y="124">agent λ</text><text class="s" x="732" y="143">Claude tool loop · Python 3.14</text>
     <text class="m" x="732" y="165">tools: registry · engine · cards</text><text class="m" x="732" y="181">docs: factsheet + screenshot</text><text class="m" x="732" y="197">search_news · 1024 MB · 120 s</text></g>
   <g class="node ext" id="n-claude"><rect x="1018" y="112" width="192" height="76" rx="10"/>
-    <text class="t" x="1032" y="138">Amazon Bedrock</text><text class="s" x="1032" y="157">Claude Haiku · Sonnet · Opus 5.5</text><text class="m" x="1032" y="176">IAM role · no API key</text></g>
+    <text class="t" x="1032" y="138">Anthropic API</text><text class="s" x="1032" y="157">Claude Haiku · Sonnet · Opus 5.5</text><text class="m" x="1032" y="176">key in SSM · web search · batches</text></g>
   <g class="node" id="n-dyn"><rect x="1018" y="246" width="192" height="118" rx="10"/>
     <text class="t" x="1032" y="272">DynamoDB</text><text class="s" x="1032" y="291">on-demand, one table</text>
     <text class="m" x="1032" y="312">registry · valuations · prefs</text><text class="m" x="1032" y="328">signals · stances · alert state</text><text class="m" x="1032" y="344">chat memory · decisions</text></g>
@@ -334,7 +334,7 @@ pre.tree .c { color: var(--faint); }
   <g class="tool" id="t-run_scenario"><rect x="300" y="148" width="150" height="40" rx="8"/><text class="m" x="312" y="172">run_scenario(...)</text></g>
   <g class="tool" id="t-get_scorecard"><rect x="300" y="200" width="150" height="40" rx="8"/><text class="m" x="312" y="224">get_scorecard()</text></g>
   <g class="tool" id="t-update_pref"><rect x="300" y="252" width="150" height="40" rx="8"/><text class="m" x="312" y="276">propose_change(...)</text></g>
-  <g class="tool" id="t-web_search"><rect x="300" y="304" width="150" height="40" rx="8"/><text class="m" x="312" y="328">search_news (Brave)</text></g>
+  <g class="tool" id="t-web_search"><rect x="300" y="304" width="150" height="40" rx="8"/><text class="m" x="312" y="328">web_search (server tool)</text></g>
 
   <path id="l-call" class="edge" d="M194,185 C250,185 250,64 300,64" marker-end="url(#ah2)"/>
   <path id="l-ret" class="edge" d="M300,74 C250,74 250,215 194,215" marker-end="url(#ah2)"/>
@@ -356,7 +356,7 @@ pre.tree .c { color: var(--faint); }
         <li data-tool="get_positions"><span class="k">result</span> [{"id":"monzo-balanced","name":"BlackRock MyMap (Monzo Balanced)","kind":"oeic","ccy":"GBP","value_gbp":22925,"weight":0.71},{"id":"cndx","name":"iShares NASDAQ 100","kind":"etf","listing":"XLON/GBP","value_gbp":5210,"weight":0.16},…]</li>
         <li class="call" data-tool="get_signals"><span class="k">tool_use</span> <span class="n">get_signals</span>(id="monzo-balanced")</li>
         <li data-tool="get_signals"><span class="k">result</span> {"nav_d1":-0.92,"proxy_intraday":-0.4,"fx_part":-0.55,"local_part":-0.37,"trend_50_200":"up","vol_20d_pct":68,"drawdown_from_high":-2.1,"driver":"GBPUSD +0.7%"}</li>
-        <li class="call" data-tool="web_search"><span class="k">tool_use</span> <span class="n">search_news</span>("sterling dollar 22 October 2026")</li>
+        <li class="call" data-tool="web_search"><span class="k">tool_use</span> <span class="n">web_search</span>("sterling dollar 22 October 2026")</li>
         <li data-tool="web_search"><span class="k">result</span> 3 results · BoE comments lifted GBP; US equities flat</li>
         <li class="final" data-tool=""><span class="k">claude ›</span> Balanced fell 0.9%. Most of that was the pound: GBP/USD rose 0.7% after BoE comments, which shrinks the sterling value of the fund's US holdings. The underlying markets were about flat. Nothing has changed in the trend, and volatility is normal. No action suggested.</li>
       </ol>
@@ -374,7 +374,7 @@ pre.tree .c { color: var(--faint); }
       <tr><td><code>get_events</code> · <code>get_sentiment</code></td><td>Upcoming MPC, FOMC, ECB, CPI, earnings of top holdings; the news tone per holding</td><td>Brief, stance card</td></tr>
       <tr><td><code>extract_document</code></td><td>Structured facts from a factsheet PDF or a screenshot, with the source line and a confidence per field</td><td>Adding or updating a holding</td></tr>
       <tr><td><code>propose_change</code> · <code>log_decision</code></td><td>A structured change to the registry or your preferences, saved only after you tap Confirm; a record of what you did</td><td>Chat only</td></tr>
-      <tr><td><code>search_news</code> · <code>fetch_page</code></td><td>Brave Search results and page text, treated as untrusted</td><td>Saturday review, "Why?"</td></tr>
+      <tr><td><code>web_search</code> · <code>web_fetch</code></td><td>Anthropic's server-side tools: results with citations and page text, treated as untrusted</td><td>Saturday review, "Why?"</td></tr>
       <tr><td><code>render_chart</code></td><td>A PNG in the house style for the card</td><td>Every card with a chart</td></tr>
     </table></div>
     <p>Model routing keeps the cost down without changing the answer quality where it matters: Haiku 5.5 decides whether an alert is worth a ping and scores news, Sonnet 5.5 writes briefs, cards and chat, Opus 5.5 does the Saturday review. A stance above 70% confidence also gets a two-call bull-versus-bear debate with a judge, a pattern borrowed from TradingAgents.</p>
@@ -382,7 +382,7 @@ pre.tree .c { color: var(--faint); }
 
   <h2 id="registry">The holdings registry: fed from the chat, generic by design</h2>
   <div class="prose">
-    <p>You add a holding by sending the bot its factsheet and a screenshot of your Monzo valuation, or by typing what it is. Claude on Bedrock reads the PDF and the image, fills a structured card with the source line for each figure and marks anything it is unsure of in amber, and nothing is saved until you tap <b>Confirm</b>. From then on the bot prices it every day. Every holding is an <code>Instrument</code> with a <code>kind</code>, and a kind is a bundle of defaults (price chain, look-through source, how the engine weighs the pillars, how eager the stance is), so a new ETF, a US or UK share, or a commodity adds a row of data, not code.</p>
+    <p>You add a holding by sending the bot its factsheet and a screenshot of your Monzo valuation, or by typing what it is. Claude reads the PDF and the image, fills a structured card with the source line for each figure and marks anything it is unsure of in amber, and nothing is saved until you tap <b>Confirm</b>. From then on the bot prices it every day. Every holding is an <code>Instrument</code> with a <code>kind</code>, and a kind is a bundle of defaults (price chain, look-through source, how the engine weighs the pillars, how eager the stance is), so a new ETF, a US or UK share, or a commodity adds a row of data, not code.</p>
   </div>
   <div class="scroll"><table class="tbl">
     <tr><th>Kind</th><th>Price chain</th><th>Look-through</th><th>Engine</th><th>Stance temperament</th></tr>
@@ -556,7 +556,7 @@ US opens 13:30 UK this week (clock gap)
   <g class="node ext" id="q-cal"><rect x="26" y="166" width="170" height="60" rx="10"/><text class="t" x="40" y="190">Event calendar</text><text class="s" x="40" y="210">known dates, pulled weekly</text></g>
   <g class="node" id="q-ing"><rect x="244" y="66" width="172" height="80" rx="10"/><text class="t" x="258" y="90">news ingest λ</text><text class="s" x="258" y="109">fetch, dedupe, map to</text><text class="s" x="258" y="125">instruments by holdings</text></g>
   <g class="node" id="q-s3"><rect x="464" y="66" width="172" height="80" rx="10"/><text class="t" x="478" y="90">S3 · articles</text><text class="s" x="478" y="109">≈200 a day, text only</text><text class="m" x="478" y="130">90-day lifecycle rule</text></g>
-  <g class="node ext" id="q-batch"><rect x="684" y="66" width="172" height="80" rx="10"/><text class="t" x="698" y="90">Haiku 5.5 · 23:30</text><text class="s" x="698" y="109">structured outputs, strict</text><text class="m" x="698" y="130">real-time · ~1p per 10 articles</text></g>
+  <g class="node ext" id="q-batch"><rect x="684" y="66" width="172" height="80" rx="10"/><text class="t" x="698" y="90">Batches · Haiku 5.5</text><text class="s" x="698" y="109">structured outputs, strict</text><text class="m" x="698" y="130">half price · back by 06:00</text></g>
   <g class="node" id="q-idx"><rect x="904" y="66" width="172" height="80" rx="10"/><text class="t" x="918" y="90">Sentiment index</text><text class="s" x="918" y="109">per instrument, per day</text><text class="m" x="918" y="130">DynamoDB · novelty-weighted</text></g>
   <g class="node" id="q-sig"><rect x="464" y="206" width="172" height="80" rx="10"/><text class="t" x="478" y="230">Price signals</text><text class="s" x="478" y="249">from signals λ</text><text class="m" x="478" y="270">same table</text></g>
   <g class="node" id="q-call"><rect x="904" y="206" width="172" height="80" rx="10"/><text class="t" x="918" y="230">Call engine</text><text class="s" x="918" y="249">rules + Sonnet 5.5</text><text class="m" x="918" y="270">stance · horizon · confidence</text></g>
@@ -606,7 +606,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     </div>
   </div>
 
-  <h3>Claude on Bedrock: what the agent uses</h3>
+  <h3>Claude features the agent uses</h3>
   <div class="scroll"><table class="tbl">
     <tr><th>Feature</th><th>Used for</th><th>Why it fits</th></tr>
     <tr><td>Structured outputs and strict tools</td><td>Every card, article score and stance; every tool input</td><td>Guaranteed-valid JSON; no parsing failures at 3 am</td></tr>
@@ -614,13 +614,14 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     <tr><td>Citations</td><td>Extracted figures</td><td>Each number carries the line it came from, shown on the Confirm card</td></tr>
     <tr><td>Prompt caching</td><td>System prompt, tool list, rubrics, your preferences</td><td>Paid once per hour, not per message</td></tr>
     <tr><td>Adaptive thinking with effort</td><td>Low for filters and scoring, medium for chat and cards, high on Saturday</td><td>Spend where judgment matters</td></tr>
-    <tr><td>Client-side web tools (Brave Search, <code>httpx</code> + <code>trafilatura</code>)</td><td>"Why?", the Saturday review</td><td>Bedrock has no server-side web search; results arrive marked untrusted</td></tr>
+    <tr><td>Server-side web search and web fetch</td><td>"Why?", the Saturday review</td><td>Live sources with citations, $10 per 1,000 searches; results arrive marked untrusted; no separate search key</td></tr>
     <tr><td>Playbooks as prompt files in the repo</td><td><code>read-central-bank-statement</code> · <code>map-headline-to-holdings</code> · <code>write-stance</code> · <code>grade-stance</code></td><td>Loaded into the prompt only when the task matches; versioned with the code</td></tr>
-    <tr><td>Real-time Haiku instead of batch</td><td>Nightly sentiment scoring</td><td>Neither Anthropic's Batches nor Bedrock batch inference covers the 5.5 models; Haiku 5.5 live is cheaper than batched Haiku 4.5 anyway</td></tr>
+    <tr><td>Message Batches</td><td>Nightly sentiment scoring</td><td>Half price; latency does not matter overnight</td></tr>
+    <tr><td>A Console spend limit on the key</td><td>The hard stop</td><td>The key stops working at the limit, whatever the code does; AWS Budgets covers the rest</td></tr>
   </table></div>
 
   <h2 id="cost">Cost against the £50 cap</h2>
-  <p class="prose">Claude runs through Amazon Bedrock: the same per-token prices as the Anthropic API on global inference profiles (Opus 5.5 $4/$20, Sonnet 5.5 $2/$10, Haiku 5.5 $0.10/$0.50 per million tokens), one AWS bill, and IAM authentication, so there is no API key anywhere. What Bedrock lacks (server-side web search, batches) is replaced by Brave Search and real-time Haiku. Figures at $1.30 to the pound.</p>
+  <p class="prose">Claude runs through the Anthropic API: Opus 5.5 $4/$20, Sonnet 5.5 $2/$10, Haiku 5.5 $0.10/$0.50 per million tokens, Batches at half price, web search at $10 per 1,000. The key lives in SSM Parameter Store, read once per cold start, with a monthly spend limit set in the Anthropic Console as the hard stop. Figures at $1.30 to the pound.</p>
   <div class="budget">
     <div class="stage-bar" style="padding:0 0 10px;border:0">
       <span class="eyebrow">Setup</span>
@@ -643,15 +644,15 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     <tr><th>Line</th><th>Lean</th><th>Standard</th><th>Full</th><th>Basis</th></tr>
     <tr><td>Lambda, Scheduler, DynamoDB, Function URL, SSM</td><td>£0</td><td>£0</td><td>£0</td><td>Always-free tiers: 1M Lambda requests and 400k GB-s a month; this runs about 5k</td></tr>
     <tr><td>S3, CloudWatch Logs (14-day), ECR image</td><td>£0.10</td><td>£0.10</td><td>£0.20</td><td>A few hundred MB</td></tr>
-    <tr><td>Bedrock: briefs and alerts</td><td>£3</td><td>£5</td><td>£9</td><td>22 days × 2 runs; Haiku/Sonnet vs Opus; prompt caching on the system prompt</td></tr>
-    <tr><td>Bedrock: chat and cards</td><td>£2</td><td>£4</td><td>£8</td><td>3–5 questions a day, 2–3 tool calls each</td></tr>
-    <tr><td>Bedrock: Saturday review</td><td>£2</td><td>£3</td><td>£4</td><td>Opus 5.5 with the reflection step and the bull/bear debate</td></tr>
-    <tr><td>Bedrock: nightly sentiment scoring</td><td>£3</td><td>£5</td><td>£5</td><td>≈200 articles a day on Haiku 5.5, real time, cached rubric</td></tr>
-    <tr><td>Bedrock: factsheet and screenshot extraction</td><td>£0.20</td><td>£0.20</td><td>£0.20</td><td>A few documents a month</td></tr>
+    <tr><td>Claude: briefs and alerts</td><td>£3</td><td>£5</td><td>£9</td><td>22 days × 2 runs; Haiku/Sonnet vs Opus; prompt caching on the system prompt</td></tr>
+    <tr><td>Claude: chat and cards</td><td>£2</td><td>£4</td><td>£8</td><td>3–5 questions a day, 2–3 tool calls each</td></tr>
+    <tr><td>Claude: Saturday review</td><td>£2</td><td>£3</td><td>£4</td><td>Opus 5.5 with the reflection step and the bull/bear debate</td></tr>
+    <tr><td>Claude: nightly sentiment scoring</td><td>£1.50</td><td>£2.50</td><td>£2.50</td><td>≈200 articles a day on Haiku 5.5 via Batches, cached rubric</td></tr>
+    <tr><td>Claude: factsheet and screenshot extraction</td><td>£0.20</td><td>£0.20</td><td>£0.20</td><td>A few documents a month</td></tr>
+    <tr><td>Claude: web search</td><td>£0.50</td><td>£0.50</td><td>£1</td><td>About 60 searches a month at $10 per 1,000</td></tr>
     <tr><td>Twelve Data</td><td>£0</td><td>£0</td><td>£0</td><td>Free tier: US closes, the macro basket, the earnings calendar; ~25 of 800 calls a day</td></tr>
-    <tr><td>Brave Search</td><td>£0</td><td>£1</td><td>£2</td><td>Free tier covers light use</td></tr>
     <tr><td>Market data for London and Frankfurt</td><td>£0</td><td>£16</td><td>£16</td><td>yfinance when lean; EODHD All World EOD at $19.99 for dependable LSE and Xetra closes; news feeds are free RSS</td></tr>
-    <tr><td><b>Total</b></td><td><b>£10</b></td><td><b>£34</b></td><td><b>£44</b></td><td>All under the cap; start lean, pay for data when yfinance breaks. A single share would add about £46 for a fundamentals feed, decided only then.</td></tr>
+    <tr><td><b>Total</b></td><td><b>£9</b></td><td><b>£31</b></td><td><b>£41</b></td><td>All under the cap; start lean, pay for data when yfinance breaks. Each further household member adds £2–5; a single share would add about £46 for a fundamentals feed, decided only then.</td></tr>
   </table></div>
 
   <h2 id="repo">Its own codebase: mypaisa-agent</h2>
@@ -666,7 +667,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
 │   ├── data/                <span class="c">price chain: eodhd · twelvedata · yfinance · fund_nav · ecb_fx; hygiene</span>
 │   ├── engine/              <span class="c">indicators · pillars · flags · macro · cascade · confidence; ported from the desk</span>
 │   ├── cards/               <span class="c">stance · holding_profile · overlap_review · bear_vs_bull · scenario</span>
-│   ├── docs/                <span class="c">factsheet and screenshot extraction via Bedrock</span>
+│   ├── docs/                <span class="c">factsheet and screenshot extraction via Claude</span>
 │   ├── news/  events/       <span class="c">rss · dedupe · score; calendar · earnings</span>
 │   ├── calls/               <span class="c">ledger (hash-chained) · grader · scorecard · calibration</span>
 │   ├── tools/               <span class="c">one file per Claude tool</span>
@@ -682,18 +683,18 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     </div>
     <div>
       <ol class="phases">
-        <li><b>Prerequisites.</b> Bot token into SSM, Bedrock model access, factsheets exported, Terraform bootstrap with the budget and the OIDC role.</li>
+        <li><b>Prerequisites.</b> Bot token and the Anthropic API key into SSM with a Console spend limit, factsheets exported, Terraform bootstrap with the budgets and the OIDC role.</li>
         <li><b>Registry and ingestion.</b> Holdings added from the chat by factsheet and screenshot with Confirm; the Portfolio card from your own figures. No analysis yet.</li>
         <li><b>Prices and the engine.</b> The source chain, the desk's maths ported with golden tests, pillars, the holder's cascade, confidence v0, stances in shadow.</li>
         <li><b>Briefs, alerts, charts, technical mode.</b> Claude writes on top of numbers that work; every card with its technical section.</li>
-        <li><b>Chat, cards, scenarios.</b> The tool loop, the research cards, Brave search, natural-language preferences.</li>
+        <li><b>Chat, cards, scenarios.</b> The tool loop, the research cards, web search with citations, natural-language preferences.</li>
         <li><b>Mini App dashboard.</b> Read-only, interactive charts, opened from the Portfolio card.</li>
         <li><b>Track record and calibration.</b> Graders, the reliability table, confidence v1, the Saturday review with reflection.</li>
         <li><b>News and sentiment.</b> RSS, nightly scoring, the event calendar, a one-notch tilt when price agrees.</li>
         <li><b>Stances go live</b> after 8 weeks above baseline; <b>wealth tracker integration</b>; <b>new kinds of holding</b> as you add them.</li>
       </ol>
       <h3>Rules it inherits</h3>
-      <p style="font-size:14px;color:var(--muted)">IAM only in Terraform, deploy by OIDC with a role pinned to this repository's own numeric id, no AWS keys anywhere, Claude through Bedrock with the Lambda's role. Each function gets a small IAM role: one table, one bucket, its SSM path, its model ARNs. The bot holds no broker login and cannot trade. Nothing is saved without Confirm. Privacy mode hides £ amounts, since bot chats are not end-to-end encrypted.</p>
+      <p style="font-size:14px;color:var(--muted)">IAM only in Terraform, deploy by OIDC with a role pinned to this repository's own numeric id, no AWS keys anywhere, the Anthropic API key in SSM with a spend limit. Each function gets a small IAM role: one table, one bucket, its SSM path, its model ARNs. The bot holds no broker login and cannot trade. Nothing is saved without Confirm. Privacy mode hides £ amounts, since bot chats are not end-to-end encrypted.</p>
     </div>
   </div>
 </div>
@@ -725,8 +726,8 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
       { edge: 'e-hook-agent', nodes: ['n-agent'], text: 'Async invoke of <b>agent λ</b>, then return 200 within 100 ms. The agent sends a "typing…" action so the wait looks alive.' },
       { edge: 'e-agent-dyn', nodes: ['n-dyn'], text: 'Loads your preferences and the last 20 turns of chat memory.' },
       { edge: 'e-dyn-agent', nodes: ['n-agent'], text: 'Builds the request: cached system prompt, memory, your question, and the tool definitions with <code>strict: true</code>.' },
-      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 on Bedrock replies with <code>tool_use: get_portfolio</code>, then <code>get_signals("monzo-balanced")</code>. The agent runs them locally and sends the results back. Two loops, about 3 seconds.' },
-      { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'Claude asks for one <code>search_news</code> (Brave) on the FX driver, then writes the answer: most of the fall was the pound, trend unchanged, no action. The technical section is attached, collapsed.' },
+      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 replies with <code>tool_use: get_portfolio</code>, then <code>get_signals("monzo-balanced")</code>. The agent runs them locally and sends the results back. Two loops, about 3 seconds.' },
+      { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'Claude runs one <code>web_search</code> (its server-side tool, with citations) on the FX driver, then writes the answer: most of the fall was the pound, trend unchanged, no action. The technical section is attached, collapsed.' },
       { edge: 'e-agent-dyn', nodes: ['n-dyn'], text: 'The turn is appended to chat memory, with the tool results, so a follow-up ("and last week?") has context.' },
       { edge: 'e-agent-bot', nodes: ['n-bot'], text: '<code>sendMessage</code> as a reply to your message, with "Show chart" and "Set alert for this" buttons.' },
       { edge: 'e-bot-you', nodes: ['n-you'], text: 'Answer arrives, about 6 seconds after you sent the question. Cost: roughly 2p.' }
@@ -747,7 +748,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
       { edge: 'e-you-bot', nodes: ['n-you', 'n-bot'], text: 'You send the factsheet PDF from the Monzo app. Telegram stores the file and delivers an update with its file id.' },
       { edge: 'e-bot-hook', nodes: ['n-hook'], text: '<b>webhook λ</b> verifies the secret token and your chat_id, dedupes the update, hands off, returns 200.' },
       { edge: 'e-hook-agent', nodes: ['n-agent'], text: '<b>agent λ</b> downloads the PDF with <code>getFile</code> into the private bucket and calls <code>extract_document</code> with the factsheet schema.' },
-      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 on Bedrock reads the PDF: name, ISIN, charge, asset allocation, top holdings, benchmark, currency, each with the line it came from and a confidence.' },
+      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 reads the PDF: name, ISIN, charge, asset allocation, top holdings, benchmark, currency, each with the line it came from and a confidence.' },
       { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'The agent resolves the ISIN to a listing (Twelve Data or EODHD lookup) and finds two lines, USD and GBP. It picks GBP as likely and marks it amber.' },
       { edge: 'e-agent-bot', nodes: ['n-bot'], text: 'A card: "iShares Automation & Robotics UCITS ETF · IE00BYZK4552 · charge 0.40% · line: RBTX (GBP)?" with Confirm, Edit, Cancel.' },
       { edge: 'e-bot-you', nodes: ['n-you'], text: 'You read it, tap <b>Confirm</b>. Nothing was saved before this tap.' },
@@ -904,9 +905,9 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
 
   /* ── Budget ── */
   var BUD = {
-    lean: { aws: 0.1, ai: 10, data: 0, note: 'Free data: yfinance and Twelve Data\'s free tier. yfinance is unofficial and breaks a few times a year; the bot tells you when it does.' },
-    std:  { aws: 0.1, ai: 17, data: 17, note: 'EODHD All World EOD for dependable London and Frankfurt closes, plus Brave Search. If Twelve Data\'s free tier turns out to cover the LSE, this drops to about £18.' },
-    full: { aws: 0.2, ai: 26, data: 18, note: 'Opus 5.5 for every message and heavy daily chat. Still £6 under the cap.' }
+    lean: { aws: 0.1, ai: 9, data: 0, note: 'Free data: yfinance and Twelve Data\'s free tier. yfinance is unofficial and breaks a few times a year; the bot tells you when it does.' },
+    std:  { aws: 0.1, ai: 15, data: 16, note: 'EODHD All World EOD for dependable London and Frankfurt closes. If Twelve Data\'s free tier turns out to cover the LSE, this drops to about £15.' },
+    full: { aws: 0.2, ai: 25, data: 16, note: 'Opus 5.5 for every message and heavy daily chat. Still £9 under the cap.' }
   };
   function fmt(n) { return '£' + (n < 1 ? n.toFixed(2) : Math.round(n)); }
   function budget(key) {
@@ -931,7 +932,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     { edge: 'p-rss-ing', nodes: ['q-rss', 'q-ing'], text: 'Every 3 hours the ingest pulls the feeds, drops duplicates, and tags each article with the instruments it touches by looking through the fund\'s holdings.' },
     { edge: 'p-cal-ing', nodes: ['q-cal', 'q-ing'], text: 'The event calendar adds what is coming: MPC, FOMC, ECB, CPI, and earnings for the fund\'s top ten holdings.' },
     { edge: 'p-ing-s3', nodes: ['q-s3'], text: 'Text only goes to S3, about 200 articles a day, deleted after 90 days.' },
-    { edge: 'p-s3-batch', nodes: ['q-batch'], text: 'At 23:30 the score Lambda runs the day\'s articles through Haiku 5.5 on Bedrock with a strict JSON schema and a cached rubric, ten at a time. About a penny per ten articles, done in minutes.' },
+    { edge: 'p-s3-batch', nodes: ['q-batch'], text: 'At 23:30 the score Lambda sends the day\'s articles to Haiku 5.5 as one Message Batch with a strict JSON schema and a cached rubric. Half price; the results are back by 06:00, before the brief.' },
     { edge: 'p-batch-idx', nodes: ['q-idx'], text: 'Scores roll up into a per-instrument sentiment index, weighted by novelty so the same story in five outlets counts once.' },
     { edge: 'p-sig-call', nodes: ['q-sig', 'q-call'], text: 'The call engine starts from the price signals: trend, volatility, drawdown, the model range.' },
     { edge: 'p-idx-call', nodes: ['q-idx', 'q-call'], text: 'Sentiment may tilt the stance only when the price signals do not contradict it.' },

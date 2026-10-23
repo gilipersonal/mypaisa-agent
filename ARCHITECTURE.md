@@ -5,7 +5,7 @@ Telegram chat by someone who is not a finance person. It keeps the record of
 what is held and what it is worth, computes what moved and why, takes a stance
 with a confidence score, explains it plainly, goes technical on request, and
 grades itself. It runs on AWS in account `545595341442`, `us-east-1`, with
-Claude through Amazon Bedrock. It never trades.
+Claude through the Anthropic API. It never trades.
 
 v2 folds in what `docs/RESEARCH.md` found in the Agentic Trading Desk and
 Agent Toolbelt: the desk's deterministic indicator and pillar engine and its
@@ -79,12 +79,12 @@ flowchart LR
     sched[EventBridge Scheduler<br/>Europe/London]
     ddb[(DynamoDB · registry, state)]
     s3[(S3 · prices, docs, charts, Mini App)]
-    br[Bedrock · Haiku / Sonnet / Opus 5.5]
-    ssm[(SSM)]
+    ssm[(SSM · keys)]
   end
+  br[Anthropic API<br/>Haiku / Sonnet / Opus 5.5<br/>web search · batches]
   mkt[EODHD / yfinance<br/>BlackRock pages · FT]
   ecb[ECB FX]
-  rss[RSS · Brave Search]
+  rss[RSS feeds]
 
   you <--> tg
   you <--> mini
@@ -146,7 +146,7 @@ sequenceDiagram
   participant U as You
   participant A as agent λ
   participant D as docs λ
-  participant B as Bedrock
+  participant B as Claude (Anthropic API)
   participant R as Registry
   U->>A: /add (or just sends a PDF)
   A->>U: "Send the factsheet, a screenshot, or tell me what it is"
@@ -259,7 +259,7 @@ write outside that member's rights. One DynamoDB table cannot enforce that
 with IAM alone, so it is enforced in code and covered by tests ("member A can
 never read household B; a member cannot read another member's detail unless
 shared"). Each member's chat memory, decisions, preferences and cooldowns are
-their own. A per-household Bedrock token ceiling sits under the account-level
+their own. A per-household Claude token ceiling sits under the account-level
 budget, so one chatty member cannot spend the household's allowance.
 
 **Scope.** Two members in one household is personal software. Several
@@ -398,9 +398,12 @@ Numbers computed, words synthesised, output via structured outputs.
 
 One Claude tool loop (Sonnet 5.5 for chat and cards, Haiku 5.5 for filters
 and scoring, Opus 5.5 for the Saturday review), with strict tools over the
-registry, the engine and the cards. Prompt caching on the system prompt, the
-tool list and the card rubrics. Refusal or error falls back to the plain
-template.
+registry, the engine and the cards, through the Anthropic API with the key in
+SSM. Prompt caching on the system prompt, the tool list and the card rubrics.
+Anthropic's server-side web search and web fetch (with citations) serve the
+"Why?" button and the Saturday review; the nightly sentiment scoring goes
+through the Message Batches API at half price. Refusal or error falls back to
+the plain template.
 
 **Borrowed patterns:** the bull/bear debate as two calls plus a judge for any
 stance above 70% confidence and for the weekly review; a reflection step that
@@ -410,8 +413,8 @@ does not repeat itself.
 
 **Tools:** `get_portfolio`, `get_holding(id)`, `get_signals(id)`,
 `get_history(id, days)`, `get_macro`, `run_scenario`, `get_events`,
-`get_sentiment`, `get_stances`, `get_scorecard`, `search_news` (Brave),
-`fetch_page`, `extract_document(s3_key, schema)`, `propose_change(entity,
+`get_sentiment`, `get_stances`, `get_scorecard`, `web_search` and `web_fetch`
+(Anthropic's server tools), `extract_document(s3_key, schema)`, `propose_change(entity,
 patch)` (saved only after Confirm), `log_decision`, `render_chart(spec)`.
 
 **Guardrails in code, not prompt:** no tool can trade, spend beyond a search
@@ -520,7 +523,7 @@ never writes here.
 | Language, packaging, checks, tests | Python 3.14, uv, ruff, pyright strict, pytest, hypothesis, moto, respx |
 | Data | pandas, numpy, pyarrow; **exchange_calendars**; **feedparser, trafilatura** |
 | **Engine** | **The desk's indicator and pillar logic ported to pandas with golden tests; macro baskets per region** |
-| Claude | `anthropic[bedrock]`, `AnthropicBedrockMantle`; structured outputs; **PDF and image input for documents** |
+| Claude | **the `anthropic` SDK against the Anthropic API, key in SSM**; structured outputs; server-side web search and fetch; Message Batches; **PDF and image input for documents** |
 | **Documents** | **S3 + Claude extraction with citations; no OCR library** |
 | Charts | matplotlib (Agg) for PNG; **lightweight-charts in the Mini App** |
 | Telegram | Thin client on httpx; **rich messages with HTML fallback; Mini App `initData` validation (HMAC)** |
@@ -546,15 +549,15 @@ Mini App serves nothing without a valid, recent `initData` signature.
 | Line | Lean | Standard | Full |
 | --- | ---: | ---: | ---: |
 | AWS | £0.10 | £0.10 | £0.20 |
-| Bedrock: briefs, alerts, chat, cards, Saturday review | £7 | £12 | £21 |
-| Bedrock: sentiment scoring | £3 | £5 | £5 |
-| Bedrock: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
-| Brave Search | £0 | £1 | £2 |
+| Claude: briefs, alerts, chat, cards, Saturday review | £7 | £12 | £21 |
+| Claude: sentiment scoring, via Batches | £1.50 | £2.50 | £2.50 |
+| Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
+| Claude: web search (~60 a month at $10 per 1,000) | £0.50 | £0.50 | £1 |
 | Market data (EODHD All World EOD) | £0 | £16 | £16 |
-| **Total, one member** | **£10** | **£34** | **£44** |
+| **Total, one member** | **£9** | **£31** | **£41** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
-Two members on the standard setup: about £37. Stock fundamentals (EODHD
+Two members on the standard setup: about £34. Stock fundamentals (EODHD
 Fundamentals) would add about £46 a month and are not planned unless a single
 share is added. A second *household* would add roughly a full set (£10–34),
 since data feeds are shared but model calls are not.
@@ -574,6 +577,9 @@ since data feeds are shared but model calls are not.
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 | Identity | Telegram user id in the chat, signed `initData` in the Mini App, invites by one-time link; Cognito only for the web app later | No passwords to build, phish or forget; each member logs in from their own phone by being themselves |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
+| Claude access | The Anthropic API with the key in SSM and a Console spend limit | Same per-token prices as Bedrock, no model-access form, and the server tools and Batches come with it |
+| Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
+| Batch scoring | Message Batches for the nightly sentiment scoring | Half price; overnight latency is fine |
 
 ## 16. Open questions
 

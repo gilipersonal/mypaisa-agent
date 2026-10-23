@@ -19,10 +19,10 @@ Status: design. Nothing is built.
 | Models and validation | pydantic v2 | Tool inputs, Telegram updates, every registry item, with `schema_version` |
 | Data maths | pandas, numpy, pyarrow | The engine ported from the Agentic Trading Desk; parquet history in S3 |
 | Calendars | `exchange_calendars` | XLON, XETR, XNYS sessions and holidays; the clock-change weeks |
-| HTTP | httpx | Telegram, ECB, EODHD, Twelve Data, Brave, RSS, product pages |
+| HTTP | httpx | Telegram, ECB, EODHD, Twelve Data, RSS, product pages |
 | News | feedparser, trafilatura | RSS parsing and article text extraction |
 | Charts | matplotlib (Agg backend) | PNG charts for `sendPhoto`, one house style |
-| Claude | `anthropic[bedrock]`, the `AnthropicBedrockMantle` client | Messages API on Amazon Bedrock with IAM auth; structured outputs, strict tools, prompt caching, PDF and image input, citations |
+| Claude | The `anthropic` Python SDK against the Anthropic API; key in SSM, read once per cold start; a monthly spend limit set in the Console | Structured outputs, strict tools, prompt caching, PDF and image input, citations, server-side web search and fetch, Message Batches for the nightly scoring |
 | Lambda helpers | aws-lambda-powertools, boto3 | Structured logging, idempotency, parameters |
 | Telegram | A thin client on httpx, no framework | Webhook-only; rich messages with HTML fallback, inline and reply keyboards, files, callback queries, `editMessageText`, deep links for invites |
 | Identity | Telegram user id in the chat; signed `initData` in the Mini App; one-time invite links; roles owner / member / viewer; Amazon Cognito only when the wealth tracker's web login is built | No passwords to build or phish; each member is themselves on their own phone |
@@ -34,7 +34,7 @@ Status: design. Nothing is built.
 | --- | --- |
 | Lint and format | ruff |
 | Types | pyright, strict |
-| Tests | pytest; hypothesis for property tests (local + FX = total); moto for AWS; respx for HTTP; recorded Bedrock responses for rendering; golden files from the desk's self-tests for the engine; coverage threshold 90% |
+| Tests | pytest; hypothesis for property tests (local + FX = total); moto for AWS; respx for HTTP; recorded Claude responses for rendering; golden files from the desk's self-tests for the engine; coverage threshold 90% |
 | Hooks | pre-commit running lint, format check, typecheck and tests |
 | CI | GitHub Actions: lint, typecheck, tests and `terraform plan` on every pull request; build the image, apply and deploy on merge to `main`, authenticated by OIDC |
 | Definition of done | `PLAN.md` → Definition of done |
@@ -49,8 +49,7 @@ Status: design. Nothing is built.
 | DynamoDB | One on-demand table per environment; TTL on chat turns, webhook dedupe, article scores |
 | S3 | Prices and FX as parquet; documents (private, lifecycle rule); articles (90-day rule); charts (30-day rule) |
 | ECR | The container image, one repository, lifecycle rule keeping the last ten |
-| Bedrock | Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5 on global inference profiles; model access requested per model in `us-east-1` |
-| SSM Parameter Store | SecureString, standard tier: bot token, webhook secret, chat id, Twelve Data, Brave and EODHD keys |
+| SSM Parameter Store | SecureString, standard tier: bot token, webhook secret, the Anthropic API key, Twelve Data and EODHD keys |
 | CloudFront + S3 | The Mini App under a new path on the wealth tracker's existing distribution (free flat-rate plan) |
 | CloudWatch | Logs with 14-day retention; an error alarm per function; the 07:45 dead man's switch; alarms delivered to the chat |
 | AWS Budgets | prod: alert at £40, disable the Scheduler rules at £50; dev: cap at £10 |
@@ -63,13 +62,14 @@ Status: design. Nothing is built.
 | Infrastructure as code | Terraform ≥ 1.9; state in `s3://wealth-tracker-tfstate` under `mypaisa-agent/<env>/infra.tfstate`; one `envs/<env>.tfvars` per environment |
 | Environments | `dev` and `prod` as separate resource sets in account `545595341442`, `us-east-1`; separate Telegram bots; separate budgets; dev's schedules off unless a variable turns them on |
 | Developer machine | uv, Docker (image builds), AWS CLI with the `agent-toolkit` profile, Terraform, GitHub CLI, pre-commit |
-| Local run | Handlers invoked directly with sample Telegram updates and recorded responses; tests never reach AWS or Bedrock |
+| Local run | Handlers invoked directly with sample Telegram updates and recorded responses; tests never reach AWS or the Anthropic API |
 | Secrets | Never in files, chat or logs; put with the AWS CLI into SSM; CI holds no AWS keys |
 
 ## 5. Services outside AWS
 
 | Service | Plan | Used for |
 | --- | --- | --- |
+| Anthropic API | Pay as you go: Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; a Console spend limit of £35 | Every model call, document extraction, web search and fetch, the nightly scoring |
 | Telegram Bot API | Free | The chat, files, rich messages, the Mini App |
 | Twelve Data | Free Basic tier (8 credits a minute, 800 a day) | US closes, the US macro basket, the earnings calendar, FX fallback, ISIN lookup |
 | EODHD | All World EOD, $19.99/month or $199/year, when chosen | Dependable London and Frankfurt closes by ISIN |
@@ -77,7 +77,6 @@ Status: design. Nothing is built.
 | ECB reference rates | Free | GBP, USD, EUR daily fixes |
 | BlackRock and iShares product pages | Free | Fund NAV check, holdings files for look-through |
 | RSS feeds (BoE, Fed, ECB, FT, Reuters, BlackRock) | Free | News |
-| Brave Search API | Free tier | "Why?" questions and the Saturday review |
 
 ---
 
@@ -86,22 +85,23 @@ Status: design. Nothing is built.
 At $1.30 to £1. The AWS free tiers are per account, so `dev` and `prod` share
 them; at this traffic (about 6,000 Lambda invocations a month in prod, a few
 hundred in dev) the infrastructure is pennies either way. What costs money is
-Bedrock and the data feed, and both scale with how much each environment
+Claude and the data feed, and both scale with how much each environment
 actually runs.
 
 | Line | dev | prod, lean | prod, standard | prod, full | Notes |
 | --- | ---: | ---: | ---: | ---: | --- |
 | Lambda, Scheduler, DynamoDB, Function URL, SSM, Budgets | £0 | £0 | £0 | £0 | Inside the always-free tiers |
 | S3, CloudWatch Logs, ECR | £0.10 | £0.10 | £0.20 | £0.20 | A few hundred MB; ECR $0.10 per GB |
-| Bedrock: briefs, alerts, chat, cards, Saturday review | £1–3 | £7 | £12 | £21 | dev runs the schedule only while testing; tests use recordings |
-| Bedrock: nightly sentiment scoring | £0–1 | £3 | £5 | £5 | Off in dev by default |
-| Bedrock: factsheet and screenshot extraction | £0.20 | £0.20 | £0.20 | £0.20 | A few documents a month |
-| Twelve Data, Brave Search | £0 | £0 | £1 | £2 | One key shared by both environments |
+| Claude: briefs, alerts, chat, cards, Saturday review | £1–3 | £7 | £12 | £21 | dev runs the schedule only while testing; tests use recordings |
+| Claude: nightly sentiment scoring, via Batches | £0–0.50 | £1.50 | £2.50 | £2.50 | Off in dev by default |
+| Claude: factsheet and screenshot extraction | £0.20 | £0.20 | £0.20 | £0.20 | A few documents a month |
+| Claude: web search (~60 a month) | £0 | £0.50 | £0.50 | £1 | $10 per 1,000 searches |
+| Twelve Data | £0 | £0 | £0 | £0 | Free tier; one key shared by both environments |
 | EODHD | £0 | £0 | £16 | £16 | One subscription, shared; dev reads the same feed |
 | Mini App hosting | £0 | £0 | £0 | £0 | The tracker's CloudFront, flat-rate free plan |
-| **Total** | **£2–5** | **£10** | **£34** | **£44** | |
+| **Total** | **£2–4** | **£9** | **£31** | **£41** | |
 
-Both environments together: about **£12–15 a month lean, £36–39 standard**,
+Both environments together: about **£11–13 a month lean, £33–35 standard**,
 under the £50 cap. There is no one-off cost and no reserved commitment;
 stopping an environment is `terraform destroy` on it.
 
@@ -115,12 +115,13 @@ stopping an environment is `terraform destroy` on it.
 | Doubling chat use | £4–8 |
 | EODHD on the annual plan | saves about £3 |
 | Twelve Data's free tier turning out to cover LSE and Xetra | saves the £16 EODHD line; standard becomes about £18 |
-| Regional Bedrock inference profiles instead of global | about +10% on the Bedrock lines |
+| Heavier use of "Why?" (web search) | about £1 per 100 extra searches |
 
 ### Guard rails
 
+- Anthropic Console: a monthly spend limit per key (£35 prod, £10 dev) that hard-stops the key.
 - AWS Budgets: prod alerts at £40 and disables the schedules at £50; dev is capped at £10.
-- A per-day Bedrock token ceiling in the agent.
+- A per-day Claude token ceiling in the agent, and one per household.
 - `/pause` stops everything that speaks or scores.
 - The figures are from published free tiers and list prices, not a bill; the
   first month of prod gives the real number.
