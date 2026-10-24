@@ -301,7 +301,7 @@ browser, as `ARCHITECTURE.md` §9.3.
   AWS Budgets backstop at £75 in Terraform; one alert router to the web app's
   Alerts page, the admin's Telegram chat and email through SNS (1,000 a month
   free), with quiet hours, cooldowns and a digest; "failed work" alerts from
-  the dead-letter queues carry a [Replay] button (§21).
+  the dead-letter queues carry a [Replay] button (§21, MA-145).
 - The `api` Lambda behind `api(-dev).mypaisapp.com`: GET routes only for
   the household's data, plus the Admin center's owner-only security actions
   behind a fresh check (MA-102); sign-in through the Cognito pool built in
@@ -550,7 +550,7 @@ one household and its admins.
   machine with retries; safe repairs on its own; an incident for the rest;
   heartbeats from every agent; dead-lettered work
   replayed on its own once its cause is healthy, at most three times, then an
-  incident.
+  incident (MA-146).
 - **E8, budgets for the team (MA-136).** Each agent's share of the plan's
   $200 Claude credit, metered by agent; paid feeds recorded as subscriptions
   against the AWS and others cap of MA-137.

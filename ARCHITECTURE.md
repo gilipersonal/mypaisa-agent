@@ -1725,8 +1725,8 @@ Replay moves dead-lettered messages back to their queue:
 | From | How |
 | --- | --- |
 | Phase 1 (MA-139, MA-140) | `scripts/redrive.sh <queue>` |
-| Phase 5 (MA-137) | A [Replay] button on the alert, in the Admin center and the admin's Telegram chat |
-| Phase 12 (MA-135) | The ops warden replays on its own once the cause is healthy again, at most three times per message with growing gaps; a message that fails the same way again becomes an incident |
+| Phase 5 (MA-137, MA-145) | A [Replay] button on the alert, in the Admin center and the admin's Telegram chat |
+| Phase 12 (MA-135, MA-146) | The ops warden replays on its own once the cause is healthy again, at most three times per message with growing gaps; a message that fails the same way again becomes an incident |
 
 Replays are safe: handlers are idempotent; an update more than an hour old is
 answered "still want this?" rather than acted on; and a Confirm tap whose
