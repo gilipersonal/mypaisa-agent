@@ -171,11 +171,16 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **Forecast** | `instrument_id`, `date`, `horizon_days` (20), `p_up`, `p_fall_5`, `range` {p10, p50, p90}, `mood`, `analogs` {count, recovered}, `events[]`, `drivers[]`, `model_version`, `graded` | One per holding per day from the Forecaster (§19), later; graded like a stance. |
+| **Setting**, **ConfigVersion** | `key`, `value`, `schema` (type, range), `auto_band`, `approval` (`auto` · `admin`), `version`, `updated_by` (an admin or an agent), `reason`; one `ConfigVersion` row per change, never edited | Every behaviour the admin controls (§20.2). |
+| **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`telegram` · `web`), `expires_at` | An agent's request for an admin's approval (§20.3). |
+| **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from an admin, and what they could not fix themselves (§20.3, §20.5). |
+| **ScoreDaily** | `model`, `instrument_id`, `mood`, `date`, the day's graded count, hit rate, Brier score, log loss, range coverage, rolling 30, 90 and 365-day values | The learning loop's daily scoreboard (§20.4); the full outcomes live in S3. |
+| **CalibrationMap** | `model`, `version`, `buckets[]` (said vs seen), `fitted_on`, `window`, `status` (`probation` · `live` · `rolled_back`) | The map from raw confidence to calibrated confidence (§20.4). |
 | **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.6). |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
-| **BudgetSettings** | `portfolio_id`, `monthly_ceiling_usd` (prod $100, dev $10), `hard_limit_usd` (the Console workspace limit, typed in to match it), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
-| **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
+| **BudgetSettings** | `portfolio_id`, `monthly_ceiling_gbp` (prod £160, dev £40: the agents' £200), `hard_limit_usd` (the Console workspace limit, typed in to match it), `agent_shares{}` (§20.7), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
+| **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_gbp`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
 | **SentimentIndex**, **ArticleScore**, **WebhookSeen** | per portfolio or global | |
 | **PendingAction** | `member_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `settings` · `confirm`), `step`, `collected` (the answers so far), `message_id`, `expires_at` (24 h) | The state of a guided flow: what the bot is waiting for from this member. The next message or tap resumes it; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `agent_proposal` · `schedule` · `migration`), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
@@ -377,8 +382,11 @@ never deleted; at a few hundred a year they cost nothing to keep.
 Every feed is a plugin behind one small contract, and which plugins run, in
 which order, is configuration per environment. Yahoo Finance (`yfinance`,
 free, no key) is the default everywhere and the only feed local development
-needs. Switching to EODHD is a configuration change plus a key in SSM, not a
-code change.
+needs. Switching to EODHD is a setting plus a key in SSM, not a code
+change, and it is a last resort: free sources first (yfinance, Twelve Data's
+free tier, free websites where their terms allow), EODHD only when the data
+steward shows a free source cannot serve a holding and an admin approves
+(§20.3).
 
 **The contract.** A plugin implements:
 
@@ -424,7 +432,7 @@ labelled, never silently reused.
 
 | Kind | Default chain (local, dev, and prod until switched) | With EODHD | Freshness |
 | --- | --- | --- | --- |
-| OEIC (Monzo's BlackRock funds) | yfinance on the fund's `0P…L` id · BlackRock UK product page · FT tearsheet · proxy basket · last user screenshot | EODHD by ISIN under `.EUFUND` (many UK funds are listed; how far back each fund's history goes is checked with the free key first), then the default chain | NAV once a day, published next morning; proxy intraday, labelled provisional |
+| OEIC (Monzo's BlackRock funds) | yfinance on the fund's `0P…L` id · BlackRock UK product page · FT tearsheet · proxy basket · last user screenshot | only if approved: EODHD by ISIN under `.EUFUND` (many UK funds are listed; how far back each fund's history goes is checked with the free key first), then the default chain | NAV once a day, published next morning; proxy intraday, labelled provisional |
 | ETF or ETC on LSE / Xetra | yfinance · Twelve Data (free tier, if it serves the exchange) · issuer NAV (iShares publishes daily) · stale | eodhd · yfinance · Twelve Data · issuer NAV · stale | Each exchange close; GBX normalised to GBP |
 | ETF or stock on NYSE / Nasdaq | Twelve Data (free tier) · yfinance · stale | twelvedata · eodhd · yfinance · stale | 21:00 UK close |
 | Stock on LSE / Xetra | as ETF on LSE / Xetra | as ETF on LSE / Xetra | same |
@@ -531,7 +539,10 @@ alert.
 
 Shown as a percentage; below 55% the card says "no clear view". Calibrated
 weekly (Brier score, reliability table by bucket); the mapping changes only
-after 8 weeks of evidence and the change is logged.
+after 8 weeks of evidence and the change is logged. From phase 12 the
+learning loop grades every day and moves the map daily within small bounds,
+with an automatic rollback; changes to the rules themselves still need
+evidence and an admin's approval (§20.4).
 
 ### 6.5 Forecast ranges
 
@@ -949,8 +960,9 @@ Two members on the standard setup: about £39. The Claude lines are paid by
 the monthly API credit that comes with the Max or Team plan ($100 a month on
 Max 5x, about £77), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
-cost is £0. Prod's Claude spend is held under a ceiling of $100 a month that
-the owner moves in the Admin center (§15.1). Stock fundamentals (EODHD
+cost is £0. The agents' allowance is £200 a month across prod and dev, £160
+and £40 by default, each a ceiling the admin moves (§15.1); AWS and other
+services have their own £50 (§20.7). Stock fundamentals (EODHD
 Fundamentals) would add £59.99 a month (£49.99 paid yearly), or the
 All-in-One plan at £99.99 would replace both, and are not planned unless a
 single share is added; EODHD's prices as shown on its pricing page on 24 Oct
@@ -961,11 +973,23 @@ since data feeds are shared but model calls are not.
 
 Arun, 24 Oct 2026 (MA-112): "I have on prod a budget of $100 per month ... It
 should be configurable for me to move the ceiling up/down from Admin portal."
+Raised the same day (MA-127): "in production+dev you will have combined API
+key allowance of £200 just for Agent usage (AWS pricing and others will be
+separate £50)."
 
-**What $100 buys.** Two members are expected to spend about $24 a month on
+**The allowance.** £200 a month for the agents across both environments: a
+prod ceiling of £160 and a dev ceiling of £40 by default, each a setting the
+admin moves, their sum kept within £200 by the two Console workspace limits
+(about $210 and $55). Ceilings are set in pounds; the meter costs each call
+in dollars from the price table and converts at the day's ECB rate. The
+plan's $100 credit pays first; the rest needs a payment method on the
+Console organisation (§17).
+
+**What £160 buys.** Two members are expected to spend about $24 a month on
 the standard setup and $39 on the full one (the Claude lines above, in
-dollars). The ceiling leaves room for two and a half to four times that; it
-is a guard against a bad month or a runaway loop, not a ration.
+dollars, about £18 to £30), plus a few pounds once the Forecaster and the
+agents of §20 run. The ceiling is a guard against a bad month or a runaway
+loop, not a ration.
 
 | Line, two members | Standard | Full |
 | --- | ---: | ---: |
@@ -974,14 +998,15 @@ is a guard against a bad month or a runaway loop, not a ration.
 | Document extraction | $0.25 | $0.25 |
 | Web search | $0.65 | $1.30 |
 | **Expected** | **$24** | **$39** |
-| **Ceiling** | **$100** | **$100** |
+| **Prod ceiling** | **£160 (about $208)** | **£160** |
 
-**The ceiling, set in the Admin center.** `BudgetSettings` holds the monthly
-ceiling ($100 in prod, $10 in dev), each member's share (60%), and the day the
-plan's credit renews, which starts each cycle. The owner moves the ceiling up
-or down in the Admin center (MA-116): owner only, in a browser, behind the
-fresh check (MA-102), with an audit row and a Telegram message to the owner;
-it takes effect on the next model call. Lowering it below what is already
+**The ceiling, set by the admin.** `BudgetSettings` holds the monthly
+ceiling (£160 in prod, £40 in dev), each member's share (60%), each agent's
+share (§20.7), and the day the plan's credit renews, which starts each
+cycle. The admin moves the ceiling up or down in the Admin center (MA-116),
+or from phase 12 in the admin's Telegram chat (§20.3): admins only, behind
+the fresh check (MA-102), with an audit row and a Telegram message to the
+admin; it takes effect on the next model call. Lowering it below what is already
 spent puts the bot straight onto the step that implies, and the Admin center
 says which before Confirm. The chat can report spend (`get_spend`) but not
 change it.
@@ -989,8 +1014,8 @@ change it.
 **The meter** (MA-113). Every model call's cost is worked out from the API's
 own `usage` counts and the price table: input, output and thinking, cache
 writes and reads, web searches, Batches at half price. It is added to the
-cycle's `SpendMonth` row with an atomic add, by member, feature, model and
-day, and written on the `RunRecord` as before. Before every call the agent
+cycle's `SpendMonth` row with an atomic add, by member, feature, agent,
+model and day, and written on the `RunRecord` as before. Before every call the agent
 reads that row, one item, and the step decides whether and how the call is
 made. The meter is reconciled weekly against the Console (§10).
 
@@ -1012,24 +1037,23 @@ ceiling moves the bot back up the ladder at the next call.
 - **Per member:** no member spends more than their share of the ceiling; past
   it, that member's chat runs at the 95% step for the rest of the cycle.
 - **Per day:** no day spends more than three times the cycle's daily average
-  ($10 a day at a $100 ceiling); past it, the rest of the day runs at the 95%
+  (about £16 a day at a £160 ceiling); past it, the rest of the day runs at the 95%
   step.
 - **Per run:** at most eight model calls in one run; a loop that reaches it
   stops and says so.
 
-**The backstop is the Console.** The prod workspace's spend limit in the
-Claude Console is set by hand to the hard limit, $100 to start, and stops the
-key outright if the meter is ever wrong. The Admin center moves the ceiling
-anywhere from $10 to that hard limit; to go higher, raise the Console limit
+**The backstop is the Console.** Each workspace's spend limit in the Claude
+Console is set by hand to its hard limit (about $210 for prod and $55 for
+dev to start) and stops the key outright if the meter is ever wrong. The
+Admin center moves the ceiling anywhere from £10 to that hard limit; to go higher, raise the Console limit
 first and then type the new hard limit into the Admin center. The app holds
 no Console admin key, so it cannot change the Console itself.
 
-**One credit, two environments.** The plan's $100 credit pays for both
-workspaces, and auto-reload stays off. Dev's spend comes out of the same
-credit, so with the prod ceiling at $100 the credit could run out first, at
-about $90 of prod spend in a month when dev is busy; the ladder steps down
-long before that. A ceiling above what the credit covers needs credits bought
-in the Console; nothing is charged without that.
+**One credit, then the card.** The plan's $100 credit pays for both
+workspaces first. Spend above it, up to the £200 allowance, needs a payment
+method on the Console organisation, with either credits bought each month or
+auto-reload switched on; the two workspace limits cap the total either way
+(§17).
 
 ---
 
@@ -1049,17 +1073,18 @@ in the Console; nothing is charged without that.
 | Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
 | Batch scoring | Message Batches for the nightly sentiment scoring | Half price; overnight latency is fine |
-| Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind set per environment in configuration; yfinance by default, EODHD by putting it first in the chain and adding its key | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
+| Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind a setting; yfinance and Twelve Data's free tier first, free websites where their terms allow, EODHD only as a last resort on an admin's approval | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
 | Web app auth | An `HttpOnly`, `SameSite=Strict` session cookie on the api's host with five-minute Cognito access tokens behind it; the static shell is public and holds no data; the api's authorizer checks session, status and epoch on every call | No token in page scripts; sign-out and pause take effect on the next request |
 | Google sign-in | Cognito's Google provider, one OAuth client per environment; a Google account linked to a member by a code typed into the chat | One identity per member across Telegram, Google and passkeys; the link is proven from the member's own phone |
 | Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate bots, Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
-| Claude budget | Prod's Claude spend is held under a monthly ceiling, $100 by default and moved by the owner in the Admin center; a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); the bot degrades to templates rather than going silent, and a runaway loop cannot spend a month |
+| Claude budget | The agents' allowance is £200 a month across prod and dev (£160 and £40 by default, each a ceiling the admin moves in the Admin center or the admin's chat); AWS and others have their own £50; a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); the bot degrades to templates rather than going silent, and a runaway loop cannot spend a month |
 | Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Forecaster | A second engine, phase 11, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
+| Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on an admin's approval, in Telegram or the web; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
 | Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
 ## 17. Open questions
@@ -1072,6 +1097,7 @@ in the Console; nothing is charged without that.
 - A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
 - For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
+- How Claude spend above the plan's $100 credit is paid: credits bought each month, or auto-reload with the workspace limits as the cap; and whether a second person is made an admin (§20.3).
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $100 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
@@ -1098,7 +1124,7 @@ shared between the two except the account, the DNS zone and the certificate.
 | Cognito user pool | `mypaisa-dev-users` | `mypaisa-prod-users` |
 | Secrets, SSM | `/mypaisa-agent/dev/...` | `/mypaisa-agent/prod/...` |
 | Telegram bot | its own dev bot | the household's bot |
-| Claude API key and ceiling | its own workspace key; a $10 ceiling | its own workspace key; a $100 ceiling the owner moves in the Admin center, with the Console limit as the hard backstop (§15.1) |
+| Claude API key and ceiling | its own workspace key; a £40 ceiling | its own workspace key; a £160 ceiling the admin moves, with the Console limit as the hard backstop (§15.1) |
 | Google OAuth client | its own | its own |
 
 **Kept apart by IAM, not by trust.** Each Lambda's role names only its own
@@ -1230,21 +1256,23 @@ bucket and queried with DuckDB (the same copy as MA-104):
 
 | Kind | What | Chosen source | Cost |
 | --- | --- | --- | --- |
-| Shares, ETFs, commodity ETCs | Daily open, high, low, close and volume; the top constituents of each fund and the index it tracks | yfinance first; EODHD Historian for London and the ten-year back-fill (30+ years of daily prices, 100,000 calls a day, its news feed included) | Free; EODHD £19.99 a month (£199.90 a year) |
-| UK funds (OEICs) | The daily price (one a day, no candles) | EODHD by ISIN under `.EUFUND`; Yahoo's `0P…` id; the fund manager's page (BlackRock, Vanguard) | Inside the EODHD line |
+| Shares, ETFs, commodity ETCs | Daily open, high, low, close and volume; the top constituents of each fund and the index it tracks | yfinance first, Twelve Data's free tier second; EODHD Historian (30+ years, 100,000 calls a day, its news feed included) only if approved | Free; EODHD £19.99 a month (£199.90 a year) only if approved |
+| UK funds (OEICs) | The daily price (one a day, no candles) | Yahoo's `0P…` id; the fund manager's page (BlackRock, Vanguard); EODHD by ISIN under `.EUFUND` only if approved | Free; inside the EODHD line if approved |
 | Commodity drivers | Gold, silver, Brent and WTI futures; daily Brent and WTI | yfinance; the US Energy Information Administration (EIA) | Free |
 | Economy | Policy rates, 2-year and 10-year yields, real yields, inflation, unemployment, each as first published | FRED with its ALFRED archive; Bank of England; ECB; ONS | Free |
 | Market stress | VIX, high-yield and investment-grade credit spreads, the dollar index | yfinance, FRED | Free |
 | World events | Daily event counts and tone by country and theme; the geopolitical risk index | GDELT; the Caldara and Iacoviello GPR index | Free |
-| News | Stories on the household's holdings, their countries and sectors | GDELT; the RSS feeds of §11; EODHD's news feed | Free, or inside the EODHD line |
+| News | Stories on the household's holdings, their countries and sectors | GDELT; the RSS feeds of §11; EODHD's news feed only if EODHD is approved | Free |
 | Calendars | Central bank decisions, inflation releases, earnings of top holdings, elections | The banks' and the ONS's published calendars; earnings dates from EODHD or yfinance | Free |
 
-**When EODHD is taken.** The rules engine starts on the free sources, and
-phase 2's comparison decides whether its London closes need EODHD (§5.1).
-The Forecaster needs it at the latest when F1 starts, for the ten-year
-back-fill and UK funds by ISIN. Before paying, its free key is tried on each
-fund the household holds and the history it returns is recorded; if a fund
-is missing, Yahoo's `0P…` id and the fund manager's page stand in. Share-level
+**When EODHD is taken: only when it has to be** (Arun, 24 Oct 2026). Both
+engines run on yfinance, Twelve Data's free tier and free websites where
+their terms allow. EODHD is switched on only when the data steward (§20.1)
+shows that no free source can serve a named holding (or its ten-year
+history) and an admin approves the request, which shows the evidence, the
+£19.99 a month and the headroom in the £50 line for AWS and others. Before
+it asks, it tries EODHD's free key on that holding and records what comes
+back. A paid feed not needed for 60 days is proposed for cancellation. Share-level
 fundamentals (£59.99 a month, or £99.99 for the All-in-One plan) only if
 shares are added and their cards are wanted.
 
@@ -1253,7 +1281,7 @@ UK fund data, sold on business licences); Twelve Data Grow ($79 a month; UK
 funds only on Pro at $229) while EODHD covers both; Alpha Vantage premium
 (from $49.99) and Marketaux (about $29) for news sentiment, while Claude Haiku
 tags the news (§19.3), with Marketaux the fallback if that tagging falls
-short.
+short; EODHD itself, until a free source fails (above).
 
 **Shares come from another platform.** Monzo offers only BlackRock funds and
 ETFs, gold and silver among them, and no individual shares; a share would be
@@ -1368,9 +1396,9 @@ The data is small (a few thousand days for a few dozen series), so daily
 forecasts run in a Lambda from the same image, and the monthly retrain runs
 in a Lambda too (up to 15 minutes and 10 GB), moving to a Fargate task only
 if it outgrows that; the one-off GDELT backfill runs as such a task. Models
-are files in S3 behind their `ModelVersion` rows. The data is free apart from
-EODHD Historian, £19.99 a month (§19.2; share-level fundamentals £59.99 more,
-only if shares are added); compute is a few dollars a month; Haiku filing the news is
+are files in S3 behind their `ModelVersion` rows. The data is free; EODHD Historian (£19.99 a month)
+only if a free source fails and an admin approves (§19.2), inside the £50
+line for AWS and others; compute is a few dollars a month; Haiku filing the news is
 well under a dollar a month, inside the Claude ceiling of §15.1.
 
 ### 19.9 Order
@@ -1381,3 +1409,199 @@ web app and the track record exist (phases 5 and 6), F7 after F2 and F3. F2,
 F3 and F7 do most of the work for the goal; F5 is the least reliable piece.
 The bounds of §4.5 hold: this is software for one household; sharing its
 calls with other households would start to look like regulated advice.
+
+---
+
+## 20. The agent team: configured, approved, self-healing, self-learning (phase 12, later)
+
+Arun, 24 Oct 2026 (MA-127): "Keep everything configurable which I can
+control by Admin Web portal or telegram bots (only for admin) talking to
+Agents. The Agents should be able to ask me what is needed and ask for my
+approval for any kind of changes ... recalibrate and tuning you algorithms
+on daily basis ... This should be self healing and self learning system ...
+For any kind of issues, connect with the admin for approval ... This app is
+just for my household."
+
+Three rules hold for every agent. **Code decides, Claude explains**: models
+and rules produce every number and decision; Claude tags, writes, asks and
+answers. **Nothing changes without a trace**: every behaviour is a setting,
+and every change is a version and an audit row. **Outside its band, it
+asks**: an agent may act on its own only inside the automatic band its
+settings allow; anything else is a request to an admin.
+
+### 20.1 The agents
+
+| Agent | Its job | Brain | On its own | Asks an admin |
+| --- | --- | --- | --- | --- |
+| **Concierge** (the `agent` Lambda) | Talks to members in the chat; routes an admin's instructions to the admin desk | Sonnet, Haiku for small turns | Answers, reads, proposes changes to records with a Confirm card (§8) | n/a: members confirm their own records |
+| **Data steward** | Keeps prices and data flowing from free sources; watches freshness, gaps, disagreement and free quotas | Code; Haiku writes its requests | Fails over within the chain, retries, fills gaps, labels stale data | A new or reordered source, any paid feed, a source's terms |
+| **News scout** | Collects news and events, tags them, matches them to holdings (§19.3) | Haiku through Batches; code scores | Tags and matches | A new feed or event type |
+| **Analyst** | The rules engine (§6) | Code only | Runs daily | Any rule threshold change (through the tuner) |
+| **Forecaster** | The models of §19 | Code; Sonnet writes the explanations | Runs daily; switches itself off when its record slips | Promotions (through the tuner) |
+| **Grader and tuner** | The learning loop (§20.4) | Code; Sonnet writes the weekly and monthly reviews | Grades daily, moves calibration within bounds, rolls back a worse map | Promoting a challenger, any change to rules or models |
+| **Ops warden** | Runs the daily pipeline and repairs it (§20.5) | Code; Haiku summarises incidents | Retries, catches up, rolls back to the last good version | Anything it cannot fix: an incident |
+| **Budget keeper** | The meter, the ladder and the guards (§15.1) | Code | Steps down and back up | Ceilings and shares are the admin's |
+| **Admin desk** | The one channel between agents and admins (§20.3) | Code; Haiku turns an admin's words into a request | Queues, batches, reminds, expires | It is the asking |
+
+Each agent is a Lambda with its own role, tools, model routing and budget
+share. They do not call each other directly: they publish events on the
+`mypaisa-<env>-events` EventBridge bus and leave work in DynamoDB, and the
+daily pipeline is a Step Functions state machine (§20.5). No agent can
+trade, read a secret, delete data or apply infrastructure: secrets are put
+in SSM by hand, and infrastructure changes only through Terraform and CI
+(`.claude/rules/aws-changes.md`); an agent can at most open a Jira issue
+proposing one.
+
+### 20.2 Settings: one store for every behaviour (E1, MA-129)
+
+Every behaviour the household might want to change is a `Setting`: the data
+source chains, rule thresholds and model parameters, horizons, schedules,
+alert budgets, ceilings and agent shares, and the learning loop's own
+bounds. Each has a schema with an allowed range, an **automatic band**
+(how far an agent may move it without asking; often zero), and an approval
+rule. Defaults live in `config/defaults.yaml`, validated in CI; the live
+values in DynamoDB, one `ConfigVersion` row per change, never edited, with
+a daily snapshot to S3. One settings service makes every change and enforces
+the schema, the range and the approval rule, so no agent can write a
+setting directly. Lambdas read settings through a cache of a minute at
+most. Secrets stay in SSM and infrastructure in Terraform: a setting may
+name a secret, never hold one.
+
+### 20.3 The admin desk: Telegram and the web, admins only (E2, MA-130)
+
+Admins are the owner and anyone the owner makes an admin; members and
+viewers never see the desk. Both doors show the same queue:
+
+- **In Telegram**, in the admin's own chat with the bot. A request arrives as
+  a card, for example:
+
+  ```
+  Data steward asks
+  yfinance has not returned Balanced for 3 days; Twelve Data does not list it.
+  EODHD's free key returns its history back to 2019.
+  Switch on EODHD Historian at £19.99 a month?
+  AWS and others: £3 of £50 used this month.
+  Undo: switch it off; nothing else changes.
+  [Approve] [Reject] [Why?] [Later]
+  ```
+
+- **In the web**, the Admin center's Approvals, Settings, Agents and
+  Incidents pages (designed first).
+
+Approving needs the second check: Face ID or the PIN in Telegram, the fresh
+check in the browser (MA-102). Deciding in one door updates the other. Each
+request says what changes, from and to, why with its evidence, the cost and
+the budget left, the risk and the undo, and when it expires. Agents also ask
+plain questions ("Which fund is the Monzo Balanced fund's ISIN?") with
+buttons or a typed answer that resumes their work. Admins give instructions
+in their own words ("put Twelve Data first for London", "raise dev to £50",
+"why did the Forecaster go quiet on silver?"); the concierge turns an
+instruction into the same request with a Confirm card, and a question into an
+answer from the agent concerned. Non-urgent requests wait for one daily
+digest; incidents come at once; a rejected request is not proposed again
+for the period its setting names. Every decision is audited.
+
+### 20.4 The learning loop: grade daily, calibrate daily, change rules on evidence (E4 to E6, MA-132 to MA-134)
+
+Every prediction is kept exactly as it was made, with the versions of its
+model and settings and the date its inputs were known, and graded against
+what prices actually did:
+
+1. **Grade, every day.** After the close, each prediction whose horizon has
+   passed gets its outcome: the realised return, hit or miss, Brier score,
+   log loss, whether it fell inside its range. A late price correction adds
+   a regraded outcome; nothing is overwritten. `ScoreDaily` keeps the
+   scoreboard per model, holding and market mood, rolling over 30, 90 and
+   365 days.
+2. **Calibrate, every day, within bounds.** The calibration map of the rules
+   engine and of each Forecaster model is refitted on a rolling window. A new
+   map is used only if it beats the current one on the held-back part of the
+   window, only where a bucket has enough graded cases, and no bucket moves
+   more than two points in a day. It then serves a probation of 10 trading
+   days and is rolled back on its own if it does worse.
+3. **Change rules and models on evidence, with approval.** Challengers (the
+   monthly retrain, other parameters, rule thresholds within their ranges)
+   are tested over ten years and run live in shadow. One that beats the
+   current version in the held-out years and over 8 live weeks, by more than
+   a margin, is proposed on the admin desk with the scores side by side.
+   After a promotion the old version stays ready and is restored on its own
+   if the new one slips.
+4. **Report.** A line in the admin's daily digest, the scoreboard in the
+   Saturday review, and a monthly note on what changed and why.
+
+Why not retune the rules themselves every day: a day's outcomes are mostly
+noise, and a system that chases yesterday learns noise. Calibration moves a
+little every day; structure moves only on weeks of evidence. That is how
+accuracy and, above all, honest confidence grow over the years.
+
+### 20.5 Self-healing (E7, MA-135)
+
+The daily run (ingest, engine, Forecaster, grade, calibrate, brief) is one
+Step Functions state machine with retries and backoff on every step and
+idempotent writes. What the system fixes on its own, and tells the admin in
+the digest: a failed step retried; a source failed over within its chain; a
+gap filled on the next run; a missed schedule caught up; a model or a
+calibration map rolled back to its last good version; a step that still
+fails skipped, its output labelled stale. Everything else is an `Incident`
+on the admin desk with what happened, what was tried and the choices. Every
+agent reports a heartbeat, and a silent one is an incident. The 07:45 dead
+man's switch, the nightly drift check (MA-108) and the Lambda rollback
+(MA-107) stay as they are.
+
+### 20.6 Where the data lives
+
+**S3**, the record, in the `mypaisa-<env>-lake` bucket, versioned, in
+Parquet, queried with DuckDB:
+
+| Prefix | What | Kept |
+| --- | --- | --- |
+| `raw/<source>/dt=` | Each source's answer as fetched, for replay | 90 days in Standard, then Infrequent Access; GDELT's raw files 30 days, its daily aggregates for good |
+| `curated/` | Prices, the economy, events and news matches, with the date each was known | For good |
+| `features/dt=` | Each day's feature snapshot | For good |
+| `predictions/model=/dt=` | Every stance and forecast as made | For good |
+| `outcomes/model=/dt=` | Every grade | For good |
+| `models/<name>/<version>/`, `calibration/` | Model files, training notes, test reports, calibration maps | For good |
+| `reports/`, `config/snapshots/` | Backtests, reviews, the daily settings snapshot | For good |
+
+**DynamoDB**, the state, small and fast: `Setting` and `ConfigVersion`,
+`ChangeRequest`, `AdminQuestion` and `Incident`, `ScoreDaily`,
+`CalibrationMap`, `ModelVersion`, the latest `Forecast` and `Stance` rows,
+`BudgetSettings` and `SpendMonth`, beside the registry of §4. A household's
+whole history stays in the low gigabytes, so storage costs pennies.
+
+### 20.7 Budgets for the team (E8, MA-136)
+
+**Claude: £200 a month for the agents** across both environments (£160 prod,
+£40 dev by default; §15.1). Each agent has a share of its environment's
+ceiling, metered by agent; the defaults, each a setting:
+
+| Agent | Share |
+| --- | ---: |
+| Concierge (the chat, cards, briefs) | 55% |
+| Forecaster explanations | 10% |
+| News scout | 10% |
+| Grader and tuner reviews | 10% |
+| Admin desk | 5% |
+| Data steward and ops warden | 5% |
+| Reserve, the chat first | 5% |
+
+An agent past its share drops to its 95% step (§15.1); the reserve covers
+the chat before anything else.
+
+**AWS and other services: £50 a month** across both environments. One AWS
+Budgets cost budget for the account alerts the admin at 50%, 80% and 100%,
+and at 100% stops dev's schedules first. Paid data feeds (none by default)
+are recorded as subscriptions against the same £50, so a request to switch
+one on shows the headroom left. Expected use is a few pounds: Lambda,
+DynamoDB, Step Functions and EventBridge sit inside their free tiers at this
+volume.
+
+### 20.8 Order
+
+The settings store (E1) and the admin desk (E2) are useful long before the
+rest and can come forward once the web app and the second check exist
+(phases 5 and MA-102). The data steward (E3) follows phase 2's sources;
+grading and calibration (E4, E5) can start as soon as there are graded
+stances (phase 6); challengers (E6) need the Forecaster (phase 11); the ops
+warden (E7) and the agent budgets (E8) come with them. One household, its
+admins, and nothing shared: the bounds of §4.5 stand.

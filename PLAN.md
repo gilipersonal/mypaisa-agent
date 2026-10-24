@@ -32,7 +32,7 @@ Status: planning. Nothing is built.
 | Task | Owner |
 | --- | --- |
 | Create two bots with BotFather, one for dev and the household's for prod; each token into its own SSM path (`/mypaisa-agent/dev/telegram/bot_token`, `/mypaisa-agent/prod/telegram/bot_token`); the picture with `/setuserpic` from `docs/mark-1024.png` on both | You |
-| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of $100 and $10 (prod's is the hard limit behind the Claude ceiling, `ARCHITECTURE.md` §15.1), and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
+| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of about $210 and $55 (the agents' allowance is £200 a month across both, £160 and £40 by default; each limit is the hard cap behind that environment's Claude ceiling, `ARCHITECTURE.md` §15.1); a payment method on the organisation for spend above the plan's credit; and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
 | Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD waits for phase 2 and is taken only if the London closes prove unreliable in the first weeks | Decided |
 | Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key` and `/mypaisa-agent/prod/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
@@ -107,7 +107,8 @@ What you hold, recorded through the chat, with no analysis yet.
   command wipes and reseeds dev, and it refuses to run against prod.
 - The Claude meter and ceiling (MA-113, `ARCHITECTURE.md` §15.1): every
   model call costed from the API's usage counts into the cycle's
-  `SpendMonth` row; `BudgetSettings` seeded at $100 in prod and $10 in dev;
+  `SpendMonth` row, in pounds at the day's rate; `BudgetSettings` seeded at
+  £160 in prod and £40 in dev (the agents' £200);
   no call past 100% of the ceiling, the card going out as its template; the
   guards per member (60%), per day (three times the daily average) and per
   run (eight model calls); a message to the owner at 70% and 100%. Needed
@@ -271,7 +272,7 @@ browser, as `ARCHITECTURE.md` §9.3.
   against the ceiling and the step it is on; the last seven days of alarms).
 - The Admin center's **Spend** section (MA-116), designed first like every
   screen: this cycle's spend by member, feature and model against the
-  ceiling, the step and the days left; the owner sets the ceiling (from $10
+  ceiling, the step and the days left; the owner sets the ceiling (from £10
   to the hard limit), the member share, the renewal day and the hard limit,
   each behind the fresh check (MA-102), each an audit row and a message to
   the owner; a ceiling above the hard limit is refused with the steps to
@@ -493,6 +494,61 @@ Claude ceiling.
 
 ---
 
+## Phase 12 — The agent team: configured, approved, self-healing, self-learning (later)
+
+The bot becomes a small team of agents with narrow jobs, every behaviour a
+setting the admin controls, every change outside a setting's band an
+admin's approval in Telegram or the web, every prediction graded daily, and
+repairs made where they are safe, as `ARCHITECTURE.md` §20. Epic MA-127. For
+one household and its admins.
+
+- **E1, settings (MA-129).** Every behaviour a versioned `Setting` with a
+  schema, a range, an automatic band and an approval rule; defaults in
+  `config/defaults.yaml`; one settings service; a minute's cache; a daily
+  snapshot to S3.
+- **E2, the admin desk (MA-130).** Agents' requests and questions, and
+  admins' instructions, in the admin's Telegram chat and the Admin center
+  (Approvals, Settings, Agents, Incidents); approval with the second check;
+  a daily digest, incidents at once; designed first.
+- **E3, the data steward (MA-131).** yfinance, Twelve Data's free tier and
+  free websites first, with failover, gap repair and disagreement checks;
+  EODHD only on an approved request showing the evidence and the price.
+- **E4, the prediction store and daily grading (MA-132).** Every prediction
+  kept as made in S3 and graded after each close; `ScoreDaily` in DynamoDB.
+- **E5, daily calibration (MA-133).** Maps refitted daily on a rolling
+  window, at most two points a day per bucket, used only when better, on 10
+  days' probation with automatic rollback.
+- **E6, challengers (MA-134).** Retrains, parameters and rule thresholds
+  tried over ten years and in shadow; promoted only on evidence and an
+  admin's approval; the old version restored if the new one slips.
+- **E7, the ops warden (MA-135).** The daily run as one Step Functions state
+  machine with retries; safe repairs on its own; an incident for the rest;
+  heartbeats from every agent.
+- **E8, budgets for the team (MA-136).** Each agent's share of the £200
+  Claude allowance, metered by agent; the £50 for AWS and others as one AWS
+  Budgets budget plus paid feeds recorded as subscriptions.
+
+**Order.** E1 and E2 can come forward once the web app and the second check
+exist (phase 5, MA-102); E3 after phase 2; E4 and E5 once stances are graded
+(phase 6); E6 with the Forecaster (phase 11); E7 and E8 alongside.
+
+**Tests:** a member cannot reach the desk; approval without the second check
+is refused; an agent cannot move a setting outside its band; grading never
+runs before a horizon; calibration's daily step limit and rollback;
+a challenger that does not beat the current version is never proposed;
+injected failures at each pipeline step recover idempotently or open an
+incident; metering by agent.
+
+**Exit:** a month in which every change was either inside its band or
+approved by an admin, every prediction was graded, calibration stayed
+within tolerance, every failure was repaired or raised, and spend stayed
+inside £200 for the agents and £50 for AWS and others.
+
+**Cost:** inside the two budgets; Step Functions, EventBridge and the extra
+DynamoDB items sit in their free tiers at this volume.
+
+---
+
 ## Reverse-engineering workbook
 
 What is ported from where, so the work can be checked against the original.
@@ -528,6 +584,7 @@ What is ported from where, so the work can be checked against the original.
 | 8 Stances live | after 8 weeks of shadow | Week 17+ |
 | 9 MyPaisa: assets, debts, budget, forecast | 4–6 weeks | After phase 8, when wanted |
 | 11 The Forecaster | 8–12 weeks | F1 and F2 any time after phase 2; the rest after phase 7, when wanted |
+| 12 The agent team | 6–8 weeks | E1 and E2 after phase 5; the rest with phases 6 and 11, when wanted |
 
 ---
 
@@ -560,6 +617,9 @@ handler writes its `RunRecord`, both covered by tests.
 | Confidence numbers that are not calibrated | Weekly reliability table; recalibration rule; "no clear view" below 55% |
 | Rich messages behave differently than the write-ups say | HTML fallback on day one |
 | Alert fatigue | Weekly red budget, cooldowns, repeat filter |
+| An agent changes something it should not | One settings service enforcing schema, range and band; approval with the second check for anything outside the band; every change a version and an audit row; secrets and infrastructure out of agents' reach |
+| Self-tuning chases noise | Calibration moves at most two points a day with a probation and rollback; rules and models change only on weeks of evidence and an admin's approval |
+| Too many requests for the admin | Automatic bands for safe changes, a daily digest, incidents only when urgent, rejected requests not repeated within their period |
 | A Forecaster model that learned the past by heart | Walk-forward tests with a gap, the last two years held out, calibration checks, 8 live weeks before it is shown, and a switch-off when its record slips |
 | Look-ahead: a backtest that saw the future | Every row stamped with the date it was known; the lab refuses a strategy that peeks at tomorrow |
 | Two engines disagreeing confuses the household | Both shown side by side with their track records; the disagreement is said out loud; the rules engine stays the default |
