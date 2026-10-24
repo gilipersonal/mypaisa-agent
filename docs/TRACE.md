@@ -30,7 +30,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-142 | The household's prod bot and prod's Twelve Data key exist, each in prod's SSM path beside dev's | To Do | §18.1 | picked | Logo.dc.html: 1c Telegram avatar |
 | MA-143 | Each environment has its own Google sign-in client, with its id and secret in SSM, before Cognito is built | To Do | §17, §18.1, §18.3 | none |  |
 | MA-150 | The architecture and plan record Indian markets as phase 13 and keep every file a member sends, viewable from the audit log | Done | §4.1, §4.6, §9.3, §14, §16, §22 | none |  |
-| MA-155 | Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts | In Progress |  | none |  |
+| MA-155 | Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts | In Review |  | none |  |
+| MA-157 | The independent review is offered before every merge in this repo, and runs only when Arun says yes | In Review |  | none |  |
 | MA-158 | The 17 stories with UI that have no board yet are drawn in Claude Design before any of them starts | To Do |  | none |  |
 
 ## Phase 1: Registry and Telegram ingestion (MA-10)
@@ -196,7 +197,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | --- | --- | --- | --- | --- | --- |
 | MA-128 | The architecture records the agent team, the settings and approvals, the learning loop, self-healing and the new budgets | Done | §5.1, §6.4, §15, §15.1, §16, §17, §18.1, §19.2, §20 | none |  |
 | MA-129 | E1: every behaviour is a versioned setting with bounds, and nothing changes it except through the settings service | To Do | §20.2 | none |  |
-| MA-130 | E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and admins give instructions | To Do | §20.3 | planned | Admin center 2.dc.html: Browser · Admin · Approvals; Admin center 2.dc.html: Browser · Admin · Approvals · Approve, the fresh check; Admin center 2.dc.html: Browser · Admin · Approvals · Approved; Telegram admin.dc.html: Telegram · Approval request |
+| MA-130 | E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and admins give instructions | To Do | §20.3 | planned | Admin center 2.dc.html: Browser · Admin · Approvals; Admin center 2.dc.html: Browser · Admin · Approvals · Approve, the fresh check; Admin center 2.dc.html: Browser · Admin · Approvals · Approved; Telegram admin.dc.html: Telegram · Approval request; Admin center 2.dc.html: Browser · Admin · Settings |
 | MA-131 | E3: a data steward keeps prices flowing from free sources, repairs gaps, and asks before adding a paid one | To Do | §5.1, §19.2, §20 | none |  |
 | MA-132 | E4: every prediction is stored as made and graded every day against what prices actually did | To Do | §20.4, §20.6 | none |  |
 | MA-133 | E5: confidence is recalibrated every day within safe bounds, and rolled back on its own if it gets worse | To Do | §20.4 | none |  |

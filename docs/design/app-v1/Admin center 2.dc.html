@@ -401,7 +401,7 @@
                               </div>
                             </sc-if>
 
-                            <!-- ================= SETTINGS (MA-129) ================= -->
+                            <!-- ================= SETTINGS (MA-130, MA-129) ================= -->
                             <sc-if value="{{ v.isSet }}" hint-placeholder-val="{{ false }}">
                               <div class="mp-cols">
                                 <div class="mp-col">
@@ -682,7 +682,7 @@
             { k: 'Undo', v: 'v7 stays ready and comes back on its own if v8 slips.', ev: false, cls: '' },
             { k: 'Expires', v: 'Sat 7 Nov, 06:40. Unanswered by then, nothing changes.', ev: false, cls: '' } ] };
 
-          /* SETTINGS (MA-129, §20.2) */
+          /* SETTINGS (MA-130, MA-129, §20.3, §20.2) */
           const M = { auto: ['smart_toy', 'Automatic in band'], ask: ['how_to_reg', 'Agent asks you'], tuner: ['grading', 'Through the tuner'], admin: ['admin_panel_settings', 'Admin only'] };
           const S = (nm, key, val, range, band, mode, sel) => ({ n: nm, key: key, v: val, range: range, band: band, mIcon: M[mode][0], mode: M[mode][1], sel: sel ? 'sel' : '', cur: sel ? 'true' : null });
           const se = {
@@ -761,7 +761,7 @@
             { id: 'ap2', tag: 'AP.2', name: 'Browser · Admin · Approvals · Approved', keys: 'MA-130', arch: 'ARCHITECTURE §20.3', desc: 'The request moves to Decided, the detail records who approved it, how and when, and the toast says the Telegram card is updated.',
               views: both('appr', { cap: 'Approvals · Approve 2, decided', ok: true, done: true, toast: 'Approved. v8 serves from the next Forecaster run; your Telegram card now says Approved.', counts: { al: C0.al, ap: ['1', 'mp-neutral', 'waiting'], ag: C0.ag } }),
               notes: [n('The decision is the record:', 'who, how they were checked, when, and what happens next; the buttons go. The audit row carries cr-26.')] },
-            { id: 'se', tag: 'SE', name: 'Browser · Admin · Settings', keys: 'MA-129', arch: 'ARCHITECTURE §20.2', desc: 'Every behaviour as a setting, grouped, each with its value, range, automatic band and approval rule; the chosen setting with its version history and Roll back.',
+            { id: 'se', tag: 'SE', name: 'Browser · Admin · Settings', keys: 'MA-130 · MA-129', arch: 'ARCHITECTURE §20.3, §20.2', desc: 'Every behaviour as a setting, grouped, each with its value, range, automatic band and approval rule; the chosen setting with its version history and Roll back.',
               views: both('set', { cap: 'Browser · Admin · Settings' }),
               notes: [n('Plain names first, the key under them', 'in monospace for the builder; the approval rule is a chip with an icon and a word.'), n('The history says who moved it and how:', 'you, an agent inside its band, or an approved request; each older version has Roll back, which needs a fresh check and states the consequence first.'), n('Defaults come from config/defaults.yaml;', 'live values are versions in DynamoDB, never edited, snapshotted to S3 daily.')] },
             { id: 'ag', tag: 'AG', name: 'Browser · Admin · Agents and incidents', keys: 'MA-131 · MA-135 · MA-146 · MA-136', arch: 'ARCHITECTURE §20.1, §20.5', desc: 'The nine agents in one table: heartbeat, last run, this cycle\'s share of spend and status. Under it the open incident in full (what happened, what was tried, the choices) and what the system fixed on its own.',

@@ -48,8 +48,8 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 
 | When | Run | What must be true |
 | --- | --- | --- |
-| Starting a story (`/jira-flow:work`, or by hand) | `python3 scripts/plan_sync.py start MA-<n>`, then `/plan-sync MA-<n>` | The story is traced, its sections exist, its boards exist and are current; a UI story's design is `planned` (run `/design-first`) or `picked` |
-| Before every PR | the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py check`) | No drift; `docs/TRACE.md` is rendered |
+| Starting a story (`/jira-flow:work`, or by hand) | `/plan-sync MA-<n>` (refreshes the row and the story's boards), then `python3 scripts/plan_sync.py start MA-<n>` | The story is traced, its sections exist, its boards exist and are current; a UI story's design is `planned` (run `/design-first`) or `picked`; no `open` question |
+| Before every PR (`/autoship` step 1) | `/plan-sync --design`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py check`) | Every Claude Design etag matches `claude-design.json` (a file edited there is copied here first); no drift; `docs/TRACE.md` is rendered |
 | On every PR, in CI | `.github/workflows/plan-sync.yml` | The same check |
 | After planning (a new phase, a new story, a design round) | `/plan-sync` | Jira, Claude Design and the trace agree; drift is fixed or filed |
 | Weekly, or when unsure | `/plan-sync --all` | The whole backlog and both Claude Design projects agree with the trace |
@@ -60,10 +60,18 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 - A story whose epic is not a phase epic, or whose phase disagrees with its epic.
 - An ARCHITECTURE section the trace cites that does not exist.
 - A key cited in ARCHITECTURE, PLAN, TECH_STACK or the READMEs that is not in the trace.
-- A UI story with no board and no note; a `planned` or `picked` story with no board.
-- A board file missing from the repo mirror or from `claude-design.json`; a mirrored file whose size no longer matches.
+- A UI story with no board and no note; a UI story with no board that has started (In Progress, In Review, Done); a `planned` or `picked` story with no board; a story with no UI and a design state.
+- `ui` and the `design` label disagreeing: the label marks exactly the stories with UI (`.claude/jira/taxonomy.md`).
+- A board file missing from the repo mirror or from `claude-design.json`; a board name not on its canvas; a mirrored file whose size no longer matches; a file in the mirror that `claude-design.json` does not record.
+
+A UI story with no board may sit in the backlog with a note (rule 2); the
+check lists it as a note and `start` refuses it. That keeps the check green
+while the boards are still to draw (MA-158), and keeps the story from starting.
 - `docs/TRACE.md` not rendered from the current trace.
 
 Jira-side drift (a key, parent, label or status that differs from the trace)
 and Claude Design drift (an etag that moved) need their MCP tools, so
-`/plan-sync` checks those.
+`/plan-sync` checks those; `/autoship` runs `/plan-sync --design` before
+every PR, so a board edited in Claude Design is copied in before it ships.
+A status the trace records lags Jira by one step at most: Done is set after
+the merge, so the next `/plan-sync` brings it in.

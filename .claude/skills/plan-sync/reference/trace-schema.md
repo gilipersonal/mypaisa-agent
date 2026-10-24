@@ -46,7 +46,7 @@ hand.
 | `items[].key` | The Jira key. Every story, task and bug under a phase epic is listed; epics are listed only in `phases` |
 | `type` | `Story`, `Task` or `Bug`, as in Jira |
 | `epic`, `phase` | The parent epic and its phase number; they must agree with `phases` |
-| `summary`, `status`, `labels` | As in Jira when the trace was last synced (`/plan-sync` refreshes them) |
+| `summary`, `status`, `labels` | As in Jira when the trace was last synced (`/plan-sync` refreshes them). `labels` holds `design` exactly when `ui` is true |
 | `arch` | The ARCHITECTURE.md sections the work follows, as numbers (`"4.6"`, `"19.7"`, `"22"`); each must be a heading |
 | `ui` | `true` when the work changes what a member sees: a web page, a Mini App screen, a Telegram card, button, flow or chart |
 | `design` | `none` (no UI), `planned` (a board exists, not yet put through design-first's options round), `picked` (Arun picked an option; the board is the spec), `todo` (UI with no board yet; a failure unless `notes` says why) |

@@ -17,8 +17,8 @@ table, the labels and the issue templates. The skills are `/jira-flow:status`,
    ambiguous.
 
 2. **Work starts: the issue moves, and the plan is checked.** Before editing
-   a story, run `python3 scripts/plan_sync.py start MA-<n>` (and `/plan-sync
-   MA-<n>`): the story must be in `docs/trace.json`, its ARCHITECTURE sections
+   a story, run `/plan-sync MA-<n>`, then `python3 scripts/plan_sync.py start
+   MA-<n>`: the story must be in `docs/trace.json`, its ARCHITECTURE sections
    must exist, and a story with UI must have its boards (`.claude/rules/plan-sync.md`).
    When editing begins for a story that is `To Do`, transition it to
    `In Progress`. One story in progress per branch.

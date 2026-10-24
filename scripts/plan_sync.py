@@ -12,6 +12,7 @@ Jira and Claude Design halves need their MCP tools and live in /plan-sync.
 """
 from __future__ import annotations
 
+import html
 import json
 import re
 import sys
@@ -26,6 +27,7 @@ PLAN = ROOT / "PLAN.md"
 CITING = [ARCH, PLAN, ROOT / "TECH_STACK.md", ROOT / "README.md", ROOT / "docs" / "design" / "README.md"]
 KEY = re.compile(r"\bMA-(\d+)\b")
 DESIGN_STATES = {"none", "planned", "picked", "todo"}
+STARTED = {"In Progress", "In Review", "Done"}
 
 
 def load(path: Path) -> dict:
@@ -48,10 +50,29 @@ def arch_sections() -> dict[str, str]:
 
 
 def known_keys(trace: dict) -> set[str]:
-    keys = {i["key"] for i in trace.get("items", [])}
-    keys |= {p["epic"] for p in trace.get("phases", [])}
-    keys |= {o["key"] for o in trace.get("others", [])}
-    return keys
+    keys = {i.get("key") for i in trace.get("items", [])}
+    keys |= {p.get("epic") for p in trace.get("phases", [])}
+    keys |= {o.get("key") for o in trace.get("others", [])}
+    return keys - {None}
+
+
+_texts: dict[Path, str] = {}
+
+
+def board_in(board: str, path: Path) -> bool:
+    """A board's name is on its canvas, with or without its number ('1 · Portfolio card', '1c Telegram avatar')
+    or its door ('Mini App · Track record' is captioned 'Track record'); case is ignored."""
+    if path not in _texts:
+        _texts[path] = html.unescape(path.read_text(errors="replace"))
+    text = _texts[path].casefold()
+    bare = re.sub(r"^[A-Z]?\d*[a-z]?\s*(·\s*)?(?=\S)", "", board, count=1) if re.match(r"^[A-Z]?\d+[a-z]?\b|^[A-Z] ·", board) else board
+    doorless = re.sub(r"^(Mini App|Browser|Telegram) · ", "", board)
+    return any(n.casefold() in text for n in (board, bare, doorless))
+
+
+def key_order(key: str) -> tuple[int, str]:
+    m = KEY.fullmatch(key or "")
+    return (int(m.group(1)), "") if m else (10**9, key or "")
 
 
 def check(trace: dict) -> tuple[list[str], list[str]]:
@@ -92,10 +113,14 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             errors.append(f"{k}: design must be one of {sorted(DESIGN_STATES)}, not {d!r}")
         if it.get("ui") and d == "none":
             errors.append(f"{k}: has UI but design is 'none'")
-        if not it.get("ui") and d not in ("none", None) and not it.get("boards"):
-            warnings.append(f"{k}: no UI, yet design is {d!r}")
+        if not it.get("ui") and d not in ("none", None):
+            errors.append(f"{k}: no UI, yet design is {d!r}")
+        if bool(it.get("ui")) != ("design" in it.get("labels", [])):
+            errors.append(f"{k}: ui is {bool(it.get('ui'))} but the 'design' label is {'missing' if it.get('ui') else 'set'}; the label marks every story with UI (.claude/jira/taxonomy.md)")
         if d == "todo":
-            if it.get("notes"):
+            if it.get("status") in STARTED:
+                errors.append(f"{k}: {it['status']} with UI and no board; draw it first (/design-first)")
+            elif it.get("notes"):
                 warnings.append(f"{k}: UI not drawn yet ({it['notes']})")
             else:
                 errors.append(f"{k}: UI with no board and no note saying why")
@@ -115,8 +140,11 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             path = ROOT / proj["dir"] / b.get("file", "")
             if not path.is_file():
                 errors.append(f"{k}: board file {proj['dir']}/{b.get('file')} is not in the repo mirror")
-            elif b.get("file") not in mirror.get(b["project"], {}).get("files", {}):
+                continue
+            if b.get("file") not in mirror.get(b["project"], {}).get("files", {}):
                 errors.append(f"{k}: {b.get('file')} is not recorded in docs/design/claude-design.json")
+            if b.get("board") and not board_in(b["board"], path):
+                errors.append(f"{k}: no board named {b['board']!r} in {proj['dir']}/{b.get('file')}")
 
     # Every key the docs cite is traced.
     keys = known_keys(trace)
@@ -127,9 +155,16 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             if f"MA-{n}" not in keys:
                 errors.append(f"{doc.relative_to(ROOT)} cites MA-{n}, which is not in the trace")
 
-    # The mirror matches what is on disk.
+    # The mirror matches what is on disk, and nothing on disk is unrecorded.
     for proj_key, proj in projects.items():
-        for name, meta in mirror.get(proj_key, {}).get("files", {}).items():
+        recorded = mirror.get(proj_key, {}).get("files", {})
+        base = ROOT / proj["dir"]
+        if base.is_dir():
+            for f in sorted(base.rglob("*")):
+                rel = f.relative_to(base).as_posix()
+                if f.is_file() and rel not in recorded:
+                    errors.append(f"mirror: {proj['dir']}/{rel} is not recorded in docs/design/claude-design.json")
+        for name, meta in recorded.items():
             path = ROOT / proj["dir"] / name
             if not path.is_file():
                 errors.append(f"mirror: {proj['dir']}/{name} is recorded but missing")
@@ -160,7 +195,7 @@ def render(trace: dict) -> str:
         "",
     ]
     for p in sorted(trace.get("phases", []), key=lambda p: p["phase"]):
-        rows = sorted((i for i in items if i.get("epic") == p["epic"]), key=lambda i: int(i["key"].split("-")[1]))
+        rows = sorted((i for i in items if i.get("epic") == p["epic"]), key=lambda i: key_order(i.get("key", "")))
         out += [f"## Phase {p['phase']}: {p['title']} ({p['epic']})", ""]
         if not rows:
             out += ["No stories yet.", ""]
@@ -176,8 +211,13 @@ def render(trace: dict) -> str:
 
 
 def start(trace: dict, key: str) -> int:
-    it = next((i for i in trace.get("items", []) if i["key"] == key), None)
+    it = next((i for i in trace.get("items", []) if i.get("key") == key), None)
     if not it:
+        other = next((o for o in trace.get("others", []) if o.get("key") == key), None)
+        if other:
+            print(f"{key}: {other.get('summary', '')}")
+            print(f"  outside the phases ({other.get('notes', '')}); no sections or boards to check.")
+            return 0
         print(f"{key} is not in docs/trace.json. Run /plan-sync before starting it.")
         return 1
     sections = arch_sections()
@@ -215,7 +255,10 @@ def main(argv: list[str]) -> int:
         print(f"wrote {TRACE_MD.relative_to(ROOT)}")
         return 0
     if argv[1] == "start":
-        return start(trace, argv[2]) if len(argv) > 2 else 2
+        if len(argv) < 3:
+            print("usage: python3 scripts/plan_sync.py start MA-<n>")
+            return 2
+        return start(trace, argv[2])
     errors, warnings = check(trace)
     for w in warnings:
         print(f"note: {w}")

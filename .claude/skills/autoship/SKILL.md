@@ -32,9 +32,11 @@ Uncommitted files that belong to another story are left alone and named.
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured". The `plan-sync` gate
-   (`python3 scripts/plan_sync.py check`) always applies: if the story changed
-   a board, a phase or a story, run `/plan-sync MA-<n>` first so the trace,
-   the design mirror and Jira agree before the PR.
+   (`python3 scripts/plan_sync.py check`) always applies. Before it, run
+   `/plan-sync --design` every time, so any board edited in Claude Design is
+   copied in with its etag; and if the story changed a board, a phase or a
+   story, run `/plan-sync MA-<n>` too, so the trace, the design mirror and
+   Jira agree before the PR.
 2. **No review yet.** The independent review from `~/.claude/CLAUDE.md` is
    opt-in in this repo and offered at the merge question (step 3,
    `ship-autopilot.md`); go straight on unless Arun asked for a reviewer.

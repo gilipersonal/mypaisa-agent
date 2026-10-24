@@ -82,7 +82,7 @@ done, take it to the merge question without stopping: commit, push, raise the
 PR, move the issue to In Review, wait for the checks. Then ask exactly once,
 naming the PR and its checks:
 
-> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key). Review it
+> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key, plan-sync). Review it
 > first, then merge, or merge it into main now? (MA-7 goes to Done after the
 > merge.)
 
@@ -95,7 +95,9 @@ the PR open and the issue In Review; say so in one line.
 Arun's rule, 2026-10-23 (MA-7): "I'll just say merge it. If you need to delete
 the branch, delete the branch. Don't ask me." His "merge it" (or any plain yes
 to the merge question) covers every step after the merge, with no further
-question in words:
+question in words. A bare "yes" or "merge it" means merge now; any answer
+that asks for the review means review first, then merge on a clean review
+(MA-157):
 
 - merge the PR;
 - delete the story's `MA-*` branch on GitHub and locally, however it has to

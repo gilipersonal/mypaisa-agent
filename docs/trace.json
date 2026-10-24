@@ -108,6 +108,7 @@
       "summary": "The dev Telegram bot exists, with its token in SSM and the MyPaisa picture",
       "status": "To Do",
       "labels": [
+        "design",
         "manual"
       ],
       "arch": [
@@ -320,7 +321,9 @@
       "phase": 1,
       "summary": "The first person in the chat owns the household and can invite and remove members",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.5"
       ],
@@ -392,7 +395,9 @@
       "phase": 1,
       "summary": "The bot answers onboarding, /add, /update, /privacy, /pause, /resume and /help",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "2",
         "8",
@@ -421,7 +426,9 @@
       "phase": 1,
       "summary": "The Portfolio card shows the household and each member's holdings",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "9.2"
       ],
@@ -453,7 +460,9 @@
       "phase": 1,
       "summary": "Sending a factsheet or a valuation screenshot adds or updates a holding after Confirm",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.2",
         "4.6"
@@ -481,7 +490,9 @@
       "phase": 1,
       "summary": "\"I put £200 into Balanced\" becomes a transaction after Confirm",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.1",
         "4.2"
@@ -504,7 +515,9 @@
       "phase": 1,
       "summary": "Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "9.1"
       ],
@@ -536,7 +549,9 @@
       "phase": 1,
       "summary": "\"What changed this week?\" lists every change with who and when",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.6"
       ],
@@ -859,7 +874,9 @@
       "phase": 3,
       "summary": "The morning brief and evening wrap arrive as cards, with a Technical section and glossary",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "9.2",
         "11"
@@ -897,7 +914,9 @@
       "phase": 3,
       "summary": "Charts in the house style are sent with each card",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "9.2"
       ],
@@ -929,7 +948,9 @@
       "phase": 3,
       "summary": "Alerts come in tiers, respect quiet hours and never repeat within their cooldown",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "11"
       ],
@@ -956,7 +977,9 @@
       "phase": 3,
       "summary": "Tapping \"I acted\" records a decision the Saturday review can check",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "9.2",
         "11"
@@ -979,7 +1002,9 @@
       "phase": 3,
       "summary": "A dead man's switch and the error alarms tell the chat when a job did not run",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "10"
       ],
@@ -995,7 +1020,9 @@
       "phase": 4,
       "summary": "You can ask the bot anything about your holdings and it answers from its tools",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "8"
       ],
@@ -1047,7 +1074,9 @@
       "phase": 4,
       "summary": "The stance and holding-profile cards explain each holding and what would change the view",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "7",
         "9.2"
@@ -1075,7 +1104,9 @@
       "phase": 4,
       "summary": "The overlap review and fund-vs-benchmark cards show what your funds share and how they compare",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "7",
         "5.2"
@@ -1092,7 +1123,9 @@
       "phase": 4,
       "summary": "Bear vs bull argues both sides in two calls and a judge, bounded to one round",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "7",
         "8"
@@ -1109,7 +1142,9 @@
       "phase": 4,
       "summary": "\"What if the pound falls 10%?\" gets a scenario card from the look-through exposure",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "2",
         "9.2",
@@ -1144,7 +1179,9 @@
       "phase": 4,
       "summary": "\"Stop pinging me under 2%\" sets a preference after Confirm",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "2",
         "4.6"
@@ -1241,7 +1278,7 @@
           "board": "Mini App · Audit (pushed from More)"
         }
       ],
-      "notes": "Drawn under MA-101. Audit and files.dc.html (being drawn) adds files to Audit, a Files view and Activity; re-check these boards against it when it lands."
+      "notes": "Drawn under MA-101. Audit and files.dc.html (MA-149) adds files to Audit and a Files view; Browser 2's B5 Activity was redrawn with the Claude ceiling on 24 Oct 2026 (MA-155)."
     },
     {
       "key": "MA-72",
@@ -1320,7 +1357,9 @@
       "phase": 5,
       "summary": "In a browser a member signs in with Telegram, Google or a passkey through Cognito, with no password",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.5",
         "9.3"
@@ -1343,7 +1382,9 @@
       "phase": 5,
       "summary": "A member links their Google account to their Cognito identity with a six-digit code sent from their own phone",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.5"
       ],
@@ -1359,7 +1400,9 @@
       "phase": 5,
       "summary": "Overview, a holding, Overlap and Scorecard work in the Mini App and in the browser",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "9.3"
       ],
@@ -1456,7 +1499,9 @@
       "phase": 5,
       "summary": "The Audit and Activity pages show every change and every run, with what it cost",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.6",
         "9.3",
@@ -1486,7 +1531,7 @@
           "board": "Mini App · Audit (pushed from More)"
         }
       ],
-      "notes": "Audit and files.dc.html (being drawn) extends Audit with files and redraws Activity; re-check after it lands. Also shown on boards drawn for other stories: Audit and files · Browser · Audit with files. B5 Activity now shows the Claude spend against the $160 prod ceiling and its step, with AWS and others against their own £50 cap (§15.1, §15.2); redrawn 24 Oct 2026 in MA-155."
+      "notes": "Also shown on boards drawn for other stories: Audit and files · Browser · Audit with files. B5 Activity now shows the Claude spend against the $160 prod ceiling and its step, with AWS and others against their own £50 cap (§15.1, §15.2); redrawn 24 Oct 2026 in MA-155."
     },
     {
       "key": "MA-80",
@@ -1495,7 +1540,9 @@
       "phase": 5,
       "summary": "The Portfolio card opens the Mini App, and /web sends the laptop address",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "9.1",
         "9.3",
@@ -1572,7 +1619,9 @@
       "phase": 6,
       "summary": "/scorecard shows the track record in the chat and on the dashboard",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "6.4",
         "9.3"
@@ -1600,7 +1649,9 @@
       "phase": 6,
       "summary": "The Saturday review on Opus reflects on the last four weeks",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "8",
         "11"
@@ -1649,7 +1700,9 @@
       "phase": 7,
       "summary": "The event calendar and a sentiment line reach the brief and the chat",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "11"
       ],
@@ -1699,7 +1752,9 @@
       "phase": 8,
       "summary": "Stance chips appear on the Portfolio card and in the brief, and /calls lists them",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "6.3",
         "9.2"
@@ -1744,7 +1799,9 @@
       "phase": 9,
       "summary": "Property, deposits, policies, pensions and loans can be added and updated through the bot",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "12"
       ],
@@ -1795,7 +1852,9 @@
       "phase": 9,
       "summary": "Forecast and budget: a thirty-year projection and a monthly budget set by chat",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "6.6",
         "12"
@@ -1812,7 +1871,9 @@
       "phase": 9,
       "summary": "Reports and exports replace the old wealth tracker, which is then retired",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "17",
         "18.2"
@@ -1846,7 +1907,9 @@
       "phase": 10,
       "summary": "A share gets valuation and earnings cards, with a fundamentals source chosen then",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.3",
         "7",
@@ -2050,7 +2113,9 @@
       "phase": 5,
       "summary": "The owner can sign out any member's Telegram or browser session from the Admin center, and Telegram sessions need a second check",
       "status": "In Progress",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "1",
         "4.5"
@@ -2188,7 +2253,9 @@
       "phase": 9,
       "summary": "The old wealth tracker's holdings and debts come into MyPaisa once, checked by the owner",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "18.5"
       ],
@@ -2294,7 +2361,9 @@
       "phase": 9,
       "summary": "The owner fills prod's history from an Excel workbook sent to the bot",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "12",
         "18.5",
@@ -2354,7 +2423,9 @@
       "phase": 3,
       "summary": "As spend nears the ceiling, the bot steps down to cheaper ways of working before it stops",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "15.1"
       ],
@@ -2402,7 +2473,9 @@
       "phase": 5,
       "summary": "The owner moves the Claude ceiling up or down in the Admin center",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "15.1",
         "15.2"
@@ -2539,7 +2612,9 @@
       "phase": 11,
       "summary": "F6: the Forecaster's view appears beside the rules engine in Telegram and the web app",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "19.7"
       ],
@@ -2576,7 +2651,9 @@
       "phase": 11,
       "summary": "F7: monthly money and rebalancing are steered by risk to cut deep falls while growing steadily",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "19.5"
       ],
@@ -2649,7 +2726,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Its output is shown on Admin center 2 · Browser · Admin · Settings (drawn for the stories with UI)."
+      "notes": "Its settings are shown on Admin center 2 · Browser · Admin · Settings, the Admin center page that belongs to MA-130 (E2, PLAN.md); the board names both."
     },
     {
       "key": "MA-130",
@@ -2658,7 +2735,9 @@
       "phase": 12,
       "summary": "E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and admins give instructions",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "20.3"
       ],
@@ -2684,6 +2763,11 @@
           "project": "app",
           "file": "Telegram admin.dc.html",
           "board": "Telegram · Approval request"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Settings"
         }
       ],
       "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The request ids (cr-26, cr-27) and the setting keys on the boards are illustrative."
@@ -2762,7 +2846,9 @@
       "phase": 12,
       "summary": "E7: an ops warden runs the daily pipeline, repairs what it safely can and opens an incident for the admin when it cannot",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "20.5"
       ],
@@ -2789,7 +2875,9 @@
       "phase": 12,
       "summary": "E8: each agent has its share of the $200 Claude credit, and AWS and other services stay inside their cap",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "15.2",
         "20.7"
@@ -2817,7 +2905,9 @@
       "phase": 5,
       "summary": "The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the web app, Telegram and email",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "15.2"
       ],
@@ -2922,7 +3012,9 @@
       "phase": 0,
       "summary": "The household's prod bot and prod's Twelve Data key exist, each in prod's SSM path beside dev's",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "18.1"
       ],
@@ -2979,7 +3071,9 @@
       "phase": 5,
       "summary": "A failed-work alert carries a Replay button that puts the dead-lettered work back on its queue",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "15.2",
         "21.3"
@@ -3052,7 +3146,9 @@
       "phase": 5,
       "summary": "The Audit page opens the original file behind each change, through a short-lived link only the right member can use",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.6",
         "9.3"
@@ -3133,7 +3229,9 @@
       "phase": 13,
       "summary": "IN2: The existing Indian portfolio is imported from a CAS statement or a broker export, with every past transaction, after one Confirm",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "18.5",
         "22"
@@ -3156,7 +3254,9 @@
       "phase": 13,
       "summary": "IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ",
       "status": "To Do",
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "arch": [
         "4.1",
         "9",
@@ -3223,7 +3323,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts",
-      "status": "In Progress",
+      "status": "In Review",
       "labels": [],
       "arch": [],
       "ui": false,
@@ -3281,7 +3381,7 @@
           "board": "Telegram · Currency check, privacy on"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Open for the options round: with privacy on, board 6b still shows the rate, and the member's own message (drawn by Telegram) still shows the amount typed, so the hidden figure can be worked out; decide whether the card hides the rate too."
     },
     {
       "key": "MA-158",
@@ -3290,14 +3390,26 @@
       "phase": 0,
       "summary": "The 17 stories with UI that have no board yet are drawn in Claude Design before any of them starts",
       "status": "To Do",
-      "labels": [
-        "design"
-      ],
+      "labels": [],
       "arch": [],
       "ui": false,
       "design": "none",
       "boards": [],
       "notes": "Design work, tracked here; each story it draws for has its own UI row (MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-105, MA-111)."
+    },
+    {
+      "key": "MA-157",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The independent review is offered before every merge in this repo, and runs only when Arun says yes",
+      "status": "In Review",
+      "labels": [],
+      "arch": [],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Repo rule: .claude/rules/ship-autopilot.md and /autoship; changes MA-4."
     }
   ],
   "others": [
@@ -3363,13 +3475,6 @@
       "summary": "The taxonomy lists the phase epics, which path belongs to which, and the manual and design labels",
       "status": "In Review",
       "notes": "Superseded by MA-155, which brings .claude/jira/taxonomy.md up to phase 13; its PR #21 can be closed unmerged"
-    },
-    {
-      "key": "MA-157",
-      "type": "Task",
-      "summary": "The independent review is offered before every merge in this repo, and runs only when Arun says yes",
-      "status": "To Do",
-      "notes": "Repo rule: .claude/rules/ship-autopilot.md; ships with MA-155's PR"
     }
   ]
 }
