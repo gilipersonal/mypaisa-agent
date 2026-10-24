@@ -60,14 +60,18 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 - A story whose epic is not a phase epic, or whose phase disagrees with its epic.
 - An ARCHITECTURE section the trace cites that does not exist.
 - A key cited in ARCHITECTURE, PLAN, TECH_STACK or the READMEs that is not in the trace.
-- A UI story with no board and no note; a UI story with no board that has started (In Progress, In Review, Done); a `planned` or `picked` story with no board; a story with no UI and a design state.
+- A UI story with no board and no note; a UI story with no board that has started (In Progress, In Review, Done); a `planned` or `picked` story with no board; a story with no UI and a design state or undrawn screens.
+- A `planned` story that is In Review or Done: code came before Arun's pick (rule 3).
 - `ui` and the `design` label disagreeing: the label marks exactly the stories with UI (`.claude/jira/taxonomy.md`).
-- A board file missing from the repo mirror or from `claude-design.json`; a board name not on its canvas; a mirrored file whose size no longer matches; a file in the mirror that `claude-design.json` does not record.
-
-A UI story with no board may sit in the backlog with a note (rule 2); the
-check lists it as a note and `start` refuses it. That keeps the check green
-while the boards are still to draw (MA-158), and keeps the story from starting.
+- A board file missing from the repo mirror or from `claude-design.json`; a board name that is not one of its canvas's captions (optionally after the board's own number, or the door the file draws); a mirrored file whose size or hash no longer matches; a file in the mirror that `claude-design.json` does not record.
+- A key in both `items` and `others`, a row with no key, a phase with no epic.
 - `docs/TRACE.md` not rendered from the current trace.
+
+A UI story with no board, or with screens still to draw (`undrawn`), may sit
+in the backlog with a note (rule 2); the check lists it as a note and `start`
+refuses it. That keeps the check green while the boards are still to draw
+(MA-158), and keeps the story from starting. `start` also runs every check
+above on the story's own row, so a missing section or board stops it too.
 
 Jira-side drift (a key, parent, label or status that differs from the trace)
 and Claude Design drift (an etag that moved) need their MCP tools, so

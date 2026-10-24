@@ -12,6 +12,7 @@ Jira and Claude Design halves need their MCP tools and live in /plan-sync.
 """
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import re
@@ -56,18 +57,125 @@ def known_keys(trace: dict) -> set[str]:
     return keys - {None}
 
 
-_texts: dict[Path, str] = {}
+_captions: dict[Path, tuple[set[str], set[str]]] = {}
+CAPTION_KEYS = r"name|board|cap|title|label|tname|h|lab"
+ID_KEYS = r"id|oid|tag|num|n"
 
 
-def board_in(board: str, path: Path) -> bool:
-    """A board's name is on its canvas, with or without its number ('1 · Portfolio card', '1c Telegram avatar')
-    or its door ('Mini App · Track record' is captioned 'Track record'); case is ignored."""
-    if path not in _texts:
-        _texts[path] = html.unescape(path.read_text(errors="replace"))
-    text = _texts[path].casefold()
-    bare = re.sub(r"^[A-Z]?\d*[a-z]?\s*(·\s*)?(?=\S)", "", board, count=1) if re.match(r"^[A-Z]?\d+[a-z]?\b|^[A-Z] ·", board) else board
-    doorless = re.sub(r"^(Mini App|Browser|Telegram) · ", "", board)
-    return any(n.casefold() in text for n in (board, bare, doorless))
+def _plain(s: str) -> str:
+    """Caption text with its markup and template parts removed: 'Holdings · {{ t.label }}' -> 'Holdings'."""
+    s = re.sub(r"<[^>]+>", "", s)
+    s = re.sub(r"\{\{[^}]*\}\}", " ", s)
+    return re.sub(r"\s+", " ", s).strip(" ·")
+
+
+def captions(path: Path) -> tuple[set[str], set[str]]:
+    """The board captions a canvas defines, and the board ids it numbers them with."""
+    if path not in _captions:
+        t = html.unescape(path.read_text(errors="replace"))
+        caps, ids = set(), set()
+        for q in ("'", '"'):
+            for m in re.finditer(rf"\b(?:{CAPTION_KEYS})\s*:\s*{q}((?:[^{q}\\]|\\.)*){q}", t):
+                caps.add(m.group(1).replace("\\" + q, q))
+            for m in re.finditer(rf"\b(?:{ID_KEYS})\s*:\s*{q}([^{q}]{{1,6}}){q}", t):
+                ids.add(m.group(1))
+        for cls in ("dv-cap", "dv-sname", "dv-oname", "dv-tname"):
+            for m in re.finditer(rf'class="{cls}"[^>]*>(.*?)</(?:p|span|div|a)>', t, re.S):
+                caps.add(_plain(m.group(1)))
+        for m in re.finditer(r'class="dv-(?:oid|tid)"[^>]*>(.*?)</(?:a|span)>', t, re.S):
+            ids.add(_plain(m.group(1)))
+        for m in re.finditer(r'<a href="#[^"]*">(.*?)</a>', t, re.S):
+            caps.add(_plain(m.group(1)))
+        for m in re.finditer(r"\b\w+\s*=\s*'([^'\\\n]{3,120})'", t):
+            caps.add(m.group(1))
+        for m in re.finditer(r'data-screen-label="([^"]*)"', t):
+            caps.add(_plain(m.group(1)))
+        _captions[path] = (caps - {""}, ids - {""})
+    return _captions[path]
+
+
+def door(file: str) -> str | None:
+    """The door a whole file draws for ('Mini App.dc.html' -> 'Mini App'), when its name says so."""
+    m = re.match(r"^(Mini App|Browser|Telegram)\b", file)
+    return m.group(1) if m else None
+
+
+def board_ok(board: str, file: str, path: Path) -> bool:
+    """A board name is one of its canvas's captions, optionally after the board's own number
+    ('1 · Portfolio card', '1c Telegram avatar') or the door the file draws ('Mini App · Holdings')."""
+    caps, ids = captions(path)
+    if board in caps:
+        return True
+    m = re.match(r"^(Mini App|Browser|Telegram) · (.+)$", board)
+    if m and door(file) == m.group(1) and m.group(2) in caps:
+        return True
+    m = re.match(r"^(\S{1,6}?)(?: ·)? (.+)$", board)
+    return bool(m and m.group(1) in ids and (m.group(2) in caps or any(c.startswith(m.group(2)) for c in caps)))
+
+
+def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
+    """What is wrong with one trace row (errors), and what it still waits on (warnings)."""
+    errors, warnings = [], []
+    k = it.get("key") or "?"
+    ph = ctx["phases"].get(it.get("epic"))
+    if not ph:
+        errors.append(f"{k}: epic {it.get('epic')} is not a phase epic")
+    elif ph.get("phase") != it.get("phase"):
+        errors.append(f"{k}: phase {it.get('phase')} but its epic {it.get('epic')} is phase {ph.get('phase')}")
+    for s in it.get("arch", []):
+        if s not in ctx["sections"]:
+            errors.append(f"{k}: ARCHITECTURE.md has no section {s}")
+    d, ui, status = it.get("design"), bool(it.get("ui")), it.get("status")
+    if d not in DESIGN_STATES:
+        errors.append(f"{k}: design must be one of {sorted(DESIGN_STATES)}, not {d!r}")
+    if ui and d == "none":
+        errors.append(f"{k}: has UI but design is 'none'")
+    if not ui and d not in ("none", None):
+        errors.append(f"{k}: no UI, yet design is {d!r}")
+    if ui != ("design" in it.get("labels", [])):
+        errors.append(f"{k}: ui is {ui} but the 'design' label is {'missing' if ui else 'set'}; the label marks every story with UI (.claude/jira/taxonomy.md)")
+    if d == "todo":
+        if status in STARTED:
+            errors.append(f"{k}: {status} with UI and no board; draw it first (/design-first)")
+        elif it.get("notes"):
+            warnings.append(f"{k}: UI not drawn yet ({it['notes']})")
+        else:
+            errors.append(f"{k}: UI with no board and no note saying why")
+    if d == "planned" and status in ("In Review", "Done"):
+        errors.append(f"{k}: {status} with boards still 'planned'; Arun picks before code is written (rule 3)")
+    if d in ("planned", "picked") and not it.get("boards"):
+        errors.append(f"{k}: design is {d!r} but no board is listed")
+    for field, what in (("open", "open, must be settled before it starts"), ("undrawn", "screens still to draw before it starts")):
+        val = it.get(field, [])
+        if not isinstance(val, list) or not all(isinstance(q, str) and q for q in val):
+            errors.append(f"{k}: {field} must be a list of strings")
+        elif val:
+            warnings.append(f"{k}: {what}: {'; '.join(val)}")
+    if it.get("undrawn") and not ui:
+        errors.append(f"{k}: lists undrawn screens but has no UI")
+    for b in it.get("boards", []):
+        proj = ctx["projects"].get(b.get("project"))
+        if not proj or not b.get("file"):
+            errors.append(f"{k}: board {b!r} needs a project from claude_design and a file")
+            continue
+        path = ROOT / proj["dir"] / b["file"]
+        if not path.is_file():
+            errors.append(f"{k}: board file {proj['dir']}/{b['file']} is not in the repo mirror")
+            continue
+        if b["file"] not in ctx["mirror"].get(b["project"], {}).get("files", {}):
+            errors.append(f"{k}: {b['file']} is not recorded in docs/design/claude-design.json")
+        if not b.get("board") or not board_ok(b["board"], b["file"], path):
+            errors.append(f"{k}: no board captioned {b.get('board')!r} in {proj['dir']}/{b['file']}")
+    return errors, warnings
+
+
+def context(trace: dict) -> dict:
+    return {
+        "sections": arch_sections(),
+        "phases": {p.get("epic"): p for p in trace.get("phases", [])},
+        "projects": trace.get("claude_design", {}),
+        "mirror": load(MIRROR) if MIRROR.exists() else {},
+    }
 
 
 def key_order(key: str) -> tuple[int, str]:
@@ -75,14 +183,15 @@ def key_order(key: str) -> tuple[int, str]:
     return (int(m.group(1)), "") if m else (10**9, key or "")
 
 
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def check(trace: dict) -> tuple[list[str], list[str]]:
     errors, warnings = [], []
-    sections = arch_sections()
+    ctx = context(trace)
     plan_lines = set(PLAN.read_text().splitlines())
-    phases = {p["epic"]: p for p in trace.get("phases", [])}
-    by_phase = {p["phase"]: p for p in trace.get("phases", [])}
-    projects = trace.get("claude_design", {})
-    mirror = load(MIRROR) if MIRROR.exists() else {}
+    by_phase = {p.get("phase"): p for p in trace.get("phases", [])}
 
     # Phases: every PLAN.md phase heading has an entry, and every entry's heading exists.
     for line in plan_lines:
@@ -90,61 +199,29 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
         if m and int(m.group(1)) not in by_phase:
             errors.append(f"PLAN.md has '{line}' but the trace has no phase {m.group(1)}")
     for p in trace.get("phases", []):
+        if not p.get("epic"):
+            errors.append(f"phase {p.get('phase')}: no epic")
         if p.get("plan_heading") not in plan_lines:
-            errors.append(f"phase {p['phase']} ({p['epic']}): heading not in PLAN.md: {p.get('plan_heading')!r}")
+            errors.append(f"phase {p.get('phase')} ({p.get('epic')}): heading not in PLAN.md: {p.get('plan_heading')!r}")
 
-    # Items.
+    # Items, and the rows outside the phases.
     seen = set()
     for it in trace.get("items", []):
-        k = it.get("key", "?")
+        k = it.get("key")
+        if not k:
+            errors.append(f"an item has no key: {str(it)[:80]}")
+            continue
         if k in seen:
             errors.append(f"{k}: listed twice")
         seen.add(k)
-        ph = phases.get(it.get("epic"))
-        if not ph:
-            errors.append(f"{k}: epic {it.get('epic')} is not a phase epic")
-        elif ph["phase"] != it.get("phase"):
-            errors.append(f"{k}: phase {it.get('phase')} but its epic {it['epic']} is phase {ph['phase']}")
-        for s in it.get("arch", []):
-            if s not in sections:
-                errors.append(f"{k}: ARCHITECTURE.md has no section {s}")
-        d = it.get("design")
-        if d not in DESIGN_STATES:
-            errors.append(f"{k}: design must be one of {sorted(DESIGN_STATES)}, not {d!r}")
-        if it.get("ui") and d == "none":
-            errors.append(f"{k}: has UI but design is 'none'")
-        if not it.get("ui") and d not in ("none", None):
-            errors.append(f"{k}: no UI, yet design is {d!r}")
-        if bool(it.get("ui")) != ("design" in it.get("labels", [])):
-            errors.append(f"{k}: ui is {bool(it.get('ui'))} but the 'design' label is {'missing' if it.get('ui') else 'set'}; the label marks every story with UI (.claude/jira/taxonomy.md)")
-        if d == "todo":
-            if it.get("status") in STARTED:
-                errors.append(f"{k}: {it['status']} with UI and no board; draw it first (/design-first)")
-            elif it.get("notes"):
-                warnings.append(f"{k}: UI not drawn yet ({it['notes']})")
-            else:
-                errors.append(f"{k}: UI with no board and no note saying why")
-        if d in ("planned", "picked") and not it.get("boards"):
-            errors.append(f"{k}: design is {d!r} but no board is listed")
-        opened = it.get("open", [])
-        if not isinstance(opened, list) or not all(isinstance(q, str) and q for q in opened):
-            errors.append(f"{k}: open must be a list of questions")
-        else:
-            for q in opened:
-                warnings.append(f"{k}: open, must be settled before it starts: {q}")
-        for b in it.get("boards", []):
-            proj = projects.get(b.get("project"))
-            if not proj:
-                errors.append(f"{k}: board project {b.get('project')!r} is not in claude_design")
-                continue
-            path = ROOT / proj["dir"] / b.get("file", "")
-            if not path.is_file():
-                errors.append(f"{k}: board file {proj['dir']}/{b.get('file')} is not in the repo mirror")
-                continue
-            if b.get("file") not in mirror.get(b["project"], {}).get("files", {}):
-                errors.append(f"{k}: {b.get('file')} is not recorded in docs/design/claude-design.json")
-            if b.get("board") and not board_in(b["board"], path):
-                errors.append(f"{k}: no board named {b['board']!r} in {proj['dir']}/{b.get('file')}")
+        e, w = item_findings(it, ctx)
+        errors += e
+        warnings += w
+    for o in trace.get("others", []):
+        if not o.get("key"):
+            errors.append(f"an entry in others has no key: {str(o)[:80]}")
+        elif o["key"] in seen:
+            errors.append(f"{o['key']}: in both items and others")
 
     # Every key the docs cite is traced.
     keys = known_keys(trace)
@@ -156,8 +233,8 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
                 errors.append(f"{doc.relative_to(ROOT)} cites MA-{n}, which is not in the trace")
 
     # The mirror matches what is on disk, and nothing on disk is unrecorded.
-    for proj_key, proj in projects.items():
-        recorded = mirror.get(proj_key, {}).get("files", {})
+    for proj_key, proj in ctx["projects"].items():
+        recorded = ctx["mirror"].get(proj_key, {}).get("files", {})
         base = ROOT / proj["dir"]
         if base.is_dir():
             for f in sorted(base.rglob("*")):
@@ -165,11 +242,13 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
                 if f.is_file() and rel not in recorded:
                     errors.append(f"mirror: {proj['dir']}/{rel} is not recorded in docs/design/claude-design.json")
         for name, meta in recorded.items():
-            path = ROOT / proj["dir"] / name
+            path = base / name
             if not path.is_file():
                 errors.append(f"mirror: {proj['dir']}/{name} is recorded but missing")
             elif meta.get("bytes") is not None and path.stat().st_size != meta["bytes"]:
                 errors.append(f"mirror: {proj['dir']}/{name} is {path.stat().st_size} bytes, recorded {meta['bytes']}; copy it again")
+            elif meta.get("sha256") and sha256(path) != meta["sha256"]:
+                errors.append(f"mirror: {proj['dir']}/{name} differs from the copy recorded in claude-design.json; copy it again")
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -203,9 +282,9 @@ def render(trace: dict) -> str:
         out += ["| Key | Summary | Status | Architecture | Design | Boards |", "| --- | --- | --- | --- | --- | --- |"]
         for i in rows:
             arch = ", ".join(f"§{s}" for s in i.get("arch", []) if s in sections) or ""
-            boards = "; ".join(f"{b['file']}: {b['board']}" for b in i.get("boards", []))
+            boards = "; ".join(f"{b.get('file', '?')}: {b.get('board', '?')}" for b in i.get("boards", []))
             summary = i.get("summary", "").replace("|", "/")
-            out.append(f"| {i['key']} | {summary} | {i.get('status', '')} | {arch} | {i.get('design', '')} | {boards} |")
+            out.append(f"| {i.get('key', '?')} | {summary} | {i.get('status', '')} | {arch} | {i.get('design', '')} | {boards} |")
         out.append("")
     return "\n".join(out)
 
@@ -220,19 +299,30 @@ def start(trace: dict, key: str) -> int:
             return 0
         print(f"{key} is not in docs/trace.json. Run /plan-sync before starting it.")
         return 1
-    sections = arch_sections()
+    ctx = context(trace)
     print(f"{key}: {it.get('summary', '')}")
     print(f"  phase {it.get('phase')} ({it.get('epic')}), {it.get('type')}, {it.get('status')}")
     for s in it.get("arch", []):
-        print(f"  ARCHITECTURE.md §{s} {sections.get(s, '(missing)')}")
+        print(f"  ARCHITECTURE.md §{s} {ctx['sections'].get(s, '(missing)')}")
     for b in it.get("boards", []):
-        print(f"  board: {b['file']} · {b['board']}")
+        print(f"  board: {b.get('file')} · {b.get('board')}")
     if it.get("notes"):
         print(f"  notes: {it['notes']}")
+    errors, _ = item_findings(it, ctx)
+    for e in errors:
+        print(f"  DRIFT: {e}")
+    if errors:
+        print("  STOP: fix the row (or the doc, the board or Jira it disagrees with) before the story starts.")
+        return 1
     if it.get("open"):
         for q in it["open"]:
             print(f"  open: {q}")
         print("  STOP: settle the open questions with Arun, change the boards, docs and Jira to match, then clear them from the trace.")
+        return 1
+    if it.get("undrawn"):
+        for q in it["undrawn"]:
+            print(f"  undrawn: {q}")
+        print("  STOP: draw these screens first (/design-first), add their boards to the row, then clear undrawn.")
         return 1
     d = it.get("design")
     if it.get("ui") and d == "todo":

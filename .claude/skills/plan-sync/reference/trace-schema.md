@@ -53,15 +53,16 @@ hand.
 | `boards[]` | Where the screens are drawn: `project` is a key of `claude_design`, `file` a file in that project (mirrored under its `dir`), `board` the board's name on the canvas (`Mini App · Overview`, `Browser · Audit`, `Telegram · Brief card`) |
 | `notes` | Anything a reader needs: why a UI item has no board yet, which option was picked, what supersedes what |
 | `open` | Optional list of questions that must be settled before the work starts, such as a board that disagrees with the docs. `start` refuses while it is not empty; settle it with Arun, change the boards, docs and Jira together, then clear it |
+| `undrawn` | Optional list of screens the story needs that have no board yet, when some of its screens are drawn. `start` refuses while it is not empty; draw them (MA-158, `/design-first`), add their boards, then clear it |
 | `others[]` | Issues with no phase epic (repo tooling such as MA-1 to MA-8, a superseded task): `key`, `type`, `summary`, `status`, `notes`. Listed so the docs may cite them; they carry no sections or boards |
 
 ## The mirror: `docs/design/claude-design.json`
 
-Every file in both Claude Design projects is copied, decoded, into its `dir`
+Every file in both Claude Design projects, except the project's `.thumbnail` preview image, is copied, decoded, into its `dir`
 with the etag Claude Design reported when it was copied:
 
 ```json
-{"app": {"files": {"Admin center.dc.html": {"etag": "1792843410448735", "bytes": 77812}}},
+{"app": {"files": {"Admin center.dc.html": {"etag": "1792843410448735", "bytes": 77812, "sha256": "…"}}},
  "ds":  {"files": {"tokens.css": {"etag": "1792837988879998", "bytes": 23784}}}}
 ```
 

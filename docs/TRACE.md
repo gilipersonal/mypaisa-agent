@@ -32,7 +32,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-150 | The architecture and plan record Indian markets as phase 13 and keep every file a member sends, viewable from the audit log | Done | §4.1, §4.6, §9.3, §14, §16, §22 | none |  |
 | MA-155 | Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts | In Review |  | none |  |
 | MA-157 | The independent review is offered before every merge in this repo, and runs only when Arun says yes | In Review |  | none |  |
-| MA-158 | The 17 stories with UI that have no board yet are drawn in Claude Design before any of them starts | To Do |  | none |  |
+| MA-158 | The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts | To Do |  | none |  |
 
 ## Phase 1: Registry and Telegram ingestion (MA-10)
 

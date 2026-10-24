@@ -53,7 +53,7 @@ List both projects with depth -1 and compare with
 
 | Found | Do |
 | --- | --- |
-| A file whose etag moved | Read it in full (page past 256 KiB with offset/limit), decode `&amp;` `&lt;` `&gt;`, write the repo copy, record the new etag and bytes. Then read its boards' notes (each board names its Jira keys) and update those rows' `boards` |
+| A file whose etag moved | Read it in full (page past 256 KiB with offset/limit), decode `&amp;` `&lt;` `&gt;`, write the repo copy, record the new etag, bytes and sha256. Then read its boards' notes (each board names its Jira keys) and update those rows' `boards` |
 | A new file | Copy it the same way, add it to the json, map its boards to rows |
 | A file gone from Claude Design | Keep the repo copy, report it, and ask Arun whether it was meant |
 | A board whose note names a key not in the trace | Report it; fix the note or the trace |
@@ -76,6 +76,8 @@ key, and say what it printed:
 
 - `open` questions: stop. Ask Arun to settle each one, then change the
   boards, the docs and the story to match and clear `open`.
+- `undrawn` screens: stop. Draw them first (`/design-first`, MA-158), add
+  their boards to the row, then clear `undrawn`.
 - `todo` with UI: stop. The story needs `/design-first` before any code.
 - `planned`: run `/design-first` on its boards (2 or 3 options, Arun picks),
   then set `picked` and copy the board again.

@@ -417,7 +417,11 @@
           "board": "b · Adding a holding from a factsheet"
         }
       ],
-      "notes": "Arun kept /pause and /resume as the kill switch (24 Oct 2026), though PAUSE is also a stance: the stance only appears on a holding's card with its confidence, never as a command. The command menu board (ds-v1 Telegram kit controls · 8) is redrawn from /mute to /pause. The onboarding message and the /help reply are not drawn."
+      "notes": "Arun kept /pause and /resume as the kill switch (24 Oct 2026), though PAUSE is also a stance: the stance only appears on a holding's card with its confidence, never as a command. The command menu board (ds-v1 Telegram kit controls · 8) is redrawn from /mute to /pause. The onboarding message and the /help reply are not drawn. The screens in undrawn are drawn under MA-158 before the story starts.",
+      "undrawn": [
+        "the onboarding message",
+        "the /help reply"
+      ]
     },
     {
       "key": "MA-36",
@@ -481,7 +485,10 @@
           "board": "b · Adding a holding from a factsheet"
         }
       ],
-      "notes": "Adding from a factsheet is drawn end to end; updating a valuation from a screenshot is not drawn."
+      "notes": "Adding from a factsheet is drawn end to end; updating a valuation from a screenshot is not drawn. The screens in undrawn are drawn under MA-158 before the story starts.",
+      "undrawn": [
+        "updating a valuation from a screenshot"
+      ]
     },
     {
       "key": "MA-38",
@@ -1040,7 +1047,10 @@
           "board": "8 · Reply keyboard and command menu"
         }
       ],
-      "notes": "Journey a's Why? answer with numbered sources and the Ask key are drawn; a free question and its answer have no board of their own."
+      "notes": "Journey a's Why? answer with numbered sources and the Ask key are drawn; a free question and its answer have no board of their own. The screens in undrawn are drawn under MA-158 before the story starts.",
+      "undrawn": [
+        "a free question and its answer"
+      ]
     },
     {
       "key": "MA-63",
@@ -1065,7 +1075,14 @@
           "board": "2 · Stance card"
         }
       ],
-      "notes": "Only the stance card is drawn. Holding profile, overlap, fund vs benchmark, bear vs bull and scenario cards have no board. None of the files being drawn now (Admin center 2, Telegram admin, Forecast, Audit and files, India) covers it."
+      "notes": "Only the stance card is drawn. Holding profile, overlap, fund vs benchmark, bear vs bull and scenario cards have no board. None of the files drawn in MA-155 covers it; MA-158 draws it.",
+      "undrawn": [
+        "the holding profile card",
+        "the overlap card",
+        "the fund vs benchmark card",
+        "the bear vs bull card",
+        "the scenario card"
+      ]
     },
     {
       "key": "MA-64",
@@ -1095,7 +1112,10 @@
           "board": "a · Friday’s wrap, then Monday morning: brief, stance, why"
         }
       ],
-      "notes": "The holding-profile card is not drawn. None of the files being drawn now (Admin center 2, Telegram admin, Forecast, Audit and files, India) covers it."
+      "notes": "The holding-profile card is not drawn. None of the files drawn in MA-155 covers it; MA-158 draws it.",
+      "undrawn": [
+        "the holding-profile card"
+      ]
     },
     {
       "key": "MA-65",
@@ -1640,7 +1660,10 @@
           "board": "Mini App · Track record"
         }
       ],
-      "notes": "The Scorecard page is drawn as Track record; the /scorecard card in the chat has no board. None of the files being drawn now (Admin center 2, Telegram admin, Forecast, Audit and files, India) covers it."
+      "notes": "The Scorecard page is drawn as Track record; the /scorecard card in the chat has no board. None of the files drawn in MA-155 covers it; MA-158 draws it.",
+      "undrawn": [
+        "the /scorecard card in the chat"
+      ]
     },
     {
       "key": "MA-85",
@@ -1773,7 +1796,10 @@
           "board": "3 · Morning brief and evening wrap"
         }
       ],
-      "notes": "Stances are drawn in the Portfolio card's Stance column and the brief; the story still asks design-first for the live chip, and /calls has no board."
+      "notes": "Stances are drawn in the Portfolio card's Stance column and the brief; the story still asks design-first for the live chip, and /calls has no board. The screens in undrawn are drawn under MA-158 before the story starts.",
+      "undrawn": [
+        "the /calls list in the chat"
+      ]
     },
     {
       "key": "MA-92",
@@ -2199,7 +2225,12 @@
           "board": "5 · Signed out everywhere, and paused"
         }
       ],
-      "notes": "Picked A · People first and the Telegram second check (Arun, 24 Oct 2026). B · Sessions first stays on the Admin center canvas as the record, not the spec. Still to draw before the build: the owner's Restore and its log row, a failed fresh check, a household with only the owner. Also shown on boards drawn for other stories: Admin center 2 · Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2 · Browser · Admin · Alerts · Replay, the fresh check; Admin center 2 · Browser · Admin · Approvals · Approve, the fresh check."
+      "notes": "Picked A · People first and the Telegram second check (Arun, 24 Oct 2026). B · Sessions first stays on the Admin center canvas as the record, not the spec. Still to draw before the build: the owner's Restore and its log row, a failed fresh check, a household with only the owner. Also shown on boards drawn for other stories: Admin center 2 · Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2 · Browser · Admin · Alerts · Replay, the fresh check; Admin center 2 · Browser · Admin · Approvals · Approve, the fresh check. The screens in undrawn are drawn under MA-158 before the story starts.",
+      "undrawn": [
+        "the owner's Restore and its log row",
+        "a failed fresh check",
+        "a household with only the owner"
+      ]
     },
     {
       "key": "MA-103",
@@ -3388,14 +3419,14 @@
       "type": "Task",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "The 17 stories with UI that have no board yet are drawn in Claude Design before any of them starts",
+      "summary": "The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts",
       "status": "To Do",
       "labels": [],
       "arch": [],
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Design work, tracked here; each story it draws for has its own UI row (MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-105, MA-111)."
+      "notes": "Design work, tracked here. No board yet: MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-105, MA-111. Screens still to draw (each row's undrawn list): MA-35, MA-37, MA-62, MA-63, MA-64, MA-84, MA-91, MA-102."
     },
     {
       "key": "MA-157",
