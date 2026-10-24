@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa app v1: audit and files</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: var(--mp-accent); } a:hover { opacity: 0.85; }
+          /* canvas chrome, as Browser 2, the Admin center and Telegram chats */
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1000px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 16px; text-wrap: pretty; }
+          .dv-skip { max-width: 1000px; display: flex; gap: 10px; align-items: flex-start; padding: 12px 16px; margin: 0 0 44px; border-radius: 14px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .dv-skip b { color: #14171F; }
+          .dv-opts { display: flex; flex-direction: column; gap: 72px; align-items: flex-start; }
+          .dv-opt { display: flex; flex-direction: column; gap: 14px; }
+          .dv-oid { font: 600 10.5px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+          .dv-olabel { display: flex; align-items: baseline; gap: 10px; font: 400 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-oname { font-weight: 700; color: #14171F; font-size: 17px; white-space: nowrap; }
+          .dv-odesc { max-width: 980px; text-wrap: pretty; }
+          .dv-plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; max-width: 1100px; padding: 9px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-plan b { color: #14171F; }
+          .dv-keys { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; border-radius: 5px; background: #14171F; color: #FFFFFF; white-space: nowrap; }
+          .dv-rows { display: flex; flex-direction: column; gap: 40px; }
+          .dv-row { display: flex; gap: 40px; align-items: flex-start; }
+          .dv-fr { flex: none; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; white-space: nowrap; }
+          .dv-notes { display: grid; grid-template-columns: repeat(4, 300px); gap: 16px; }
+          .dv-n { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 14px 16px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .dv-n b { color: #14171F; display: block; font-size: 15px; margin-bottom: 4px; }
+          .dv-screen { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+          .dv-note { flex: none; width: 300px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; display: flex; flex-direction: column; gap: 10px; padding-top: 22px; text-wrap: pretty; }
+          .dv-note b { color: #14171F; }
+          .dv-sname { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+
+          /* browser boards on the adaptive shell, as Browser 2 and the Admin center */
+          .board { width: 1280px; position: relative; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
+          .side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+          .brand { padding: 4px 8px 18px; }
+          .side-sep { height: 1px; background: var(--mp-line); margin: 8px 12px; flex: none; }
+          .acct { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px; padding: 8px 10px; box-sizing: border-box; border: 0; border-radius: 12px; background: transparent; color: var(--mp-ink); font: inherit; text-align: left; cursor: pointer; }
+          .main-rel { position: relative; background: var(--mp-bg); }
+          .whose { flex: 0 1 280px; min-width: 216px; }
+          .grow { flex: 1; min-width: 0; }
+          .blk { display: block; }
+          .pad { padding: 20px; }
+          .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .nowrap { white-space: nowrap; }
+          .mono { font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+          .ttl { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+          .okchip { color: var(--mp-up); background: var(--mp-add-bg); }
+          .out { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+          .av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 700 12px/1 var(--mp-font); flex: none; }
+          .av-you { background: var(--mp-hold-bg); color: var(--mp-hold); }
+          .av-asha { background: var(--mp-reb-bg); color: var(--mp-reb); }
+          .av-view { background: var(--mp-surface-2); color: var(--mp-ink-2); box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .av-s { width: 20px; height: 20px; font-size: 10px; }
+          .cq { container: card / inline-size; }
+          /* the view switch and the filters: they only narrow the view */
+          .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+          .vseg { flex: 0 0 240px; }
+          .filt { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 10px 0 14px; border-radius: 12px; border: 1px solid var(--mp-line); background: var(--mp-surface); color: var(--mp-ink); font: 500 15px/20px var(--mp-font); cursor: pointer; white-space: nowrap; }
+          .filt .k { color: var(--mp-ink-3); }
+          /* the log, as B6, with a file line under a row made from a file */
+          .day { padding: 18px 0 2px; border-top: 1px solid var(--mp-line); }
+          .day.first { border-top: 0; padding-top: 4px; }
+          .ent { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "time who run" "what what what" "ba ba ba" "via via via" "file file file"; gap: 6px 12px; align-items: center; padding: 8px 0 12px; }
+          .a-time { grid-area: time; } .a-who { grid-area: who; } .a-what { grid-area: what; min-width: 0; } .a-ba { grid-area: ba; } .a-via { grid-area: via; } .a-run { grid-area: run; }
+          .a-file { grid-area: file; justify-self: start; max-width: 100%; min-width: 0; }
+          .loghd { display: none; }
+          .who { display: inline-flex; align-items: center; gap: 8px; }
+          .ba { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+          .ba .old { color: var(--mp-ink-3); }
+          .runlink { display: inline-flex; align-items: center; min-height: 44px; font-family: ui-monospace, Menlo, monospace; }
+          .chip-ic { font-size: 15px; }
+          @container card (min-width: 860px) {
+            .loghd { display: grid; grid-template-columns: 52px 104px minmax(0, 2fr) minmax(0, 1.1fr) 170px 72px; column-gap: 16px; padding: 0 0 8px; }
+            .ent { grid-template-columns: 52px 104px minmax(0, 2fr) minmax(0, 1.1fr) 170px 72px; grid-template-areas: "time who what ba via run" ". . file file file file"; column-gap: 16px; row-gap: 0; padding: 4px 0; min-height: 52px; }
+            .a-file { margin: 2px 0 10px; }
+          }
+          /* a file line: thumbnail for an image, a tile for anything else, the name, kind and size, and Open */
+          .fs { display: flex; align-items: center; gap: 12px; padding: 6px; border-radius: 14px; background: var(--mp-surface-2); min-width: 0; }
+          .fs-meta { display: flex; flex-direction: column; min-width: 0; padding-right: 8px; }
+          .thumb { width: 44px; height: 44px; border-radius: 9px; flex: none; display: grid; place-items: center; background: repeating-linear-gradient(135deg, var(--mp-surface) 0 5px, var(--mp-line) 5px 6px); box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .thumb > span { font: 600 10px/12px ui-monospace, Menlo, monospace; color: var(--mp-ink-2); background: var(--mp-surface); padding: 1px 3px; border-radius: 4px; }
+          .thumb-s { width: 40px; height: 40px; }
+          .ftile { width: 44px; height: 44px; border-radius: 10px; flex: none; display: grid; place-items: center; background: var(--mp-surface); color: var(--mp-ink-2); box-shadow: inset 0 0 0 1px var(--mp-line); }
+
+          /* the file viewer: a dialog over the Audit page */
+          .tall { min-height: 900px; }
+          .ovl { position: absolute; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 40px; background: rgba(5, 8, 14, 0.5); }
+          .t-dark .ovl { background: rgba(0, 0, 0, 0.66); }
+          .viewer { width: 100%; max-width: 1080px; height: 780px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; border-radius: 20px; overflow: hidden; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line), 0 30px 80px rgba(0, 0, 0, 0.35); }
+          .vprev { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--mp-surface-2); }
+          .vbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--mp-line); }
+          .vgrp { display: flex; align-items: center; gap: 4px; }
+          .vbtn { width: 44px; height: 44px; border-radius: 12px; border: 0; background: transparent; color: var(--mp-ink); display: grid; place-items: center; cursor: pointer; }
+          .vstage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 24px; }
+          .ph { display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; background: repeating-linear-gradient(135deg, var(--mp-surface) 0 8px, var(--mp-surface-2) 8px 16px); box-shadow: inset 0 0 0 1px var(--mp-line), var(--mp-shadow); }
+          .ph > span { font: 500 12px/18px ui-monospace, Menlo, monospace; color: var(--mp-ink-2); background: var(--mp-surface); padding: 4px 8px; border-radius: 6px; text-wrap: pretty; }
+          .ph-shot { height: 600px; width: 277px; border-radius: 26px; }
+          .ph-page { height: 620px; width: 438px; border-radius: 4px; }
+          .ph-m { height: 250px; width: 116px; border-radius: 16px; padding: 8px; }
+          .ph-m > span { font-size: 11px; line-height: 15px; padding: 3px 5px; }
+          .vside { display: flex; flex-direction: column; gap: 16px; padding: 16px 20px 20px; min-height: 0; overflow: hidden; border-left: 1px solid var(--mp-line); }
+          .vhead { display: flex; align-items: center; gap: 12px; }
+          .focusring { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+          .vkv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; padding: 12px 0; border-top: 1px solid var(--mp-line); border-bottom: 1px solid var(--mp-line); }
+          .fed { display: flex; flex-direction: column; gap: 8px; }
+          .fedr { background: var(--mp-surface-2); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+          .vnote { display: flex; gap: 10px; align-items: flex-start; }
+          .vnote > .ms { margin-top: 1px; flex: none; }
+          .vfoot { margin-top: auto; display: flex; gap: 8px; }
+
+          /* Files: the Audit page's second view */
+          .kinds { display: flex; flex-wrap: wrap; gap: 8px; }
+          .kchip { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--mp-line); background: var(--mp-surface); color: var(--mp-ink-2); font: 600 14px/18px var(--mp-font); cursor: pointer; white-space: nowrap; }
+          .kchip .n { color: var(--mp-ink-3); font-weight: 500; }
+          .kchip.on { background: var(--mp-ink); color: var(--mp-bg); border-color: var(--mp-ink); }
+          .kchip.on .n { color: var(--mp-bg); }
+          .frow { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 4px 14px; align-items: start; padding: 14px 0; border-top: 1px solid var(--mp-line); }
+          .frow.first { border-top: 0; padding-top: 4px; }
+          .f-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+          .f-by { display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; }
+          .f-fed { grid-column: 2 / -1; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+          .fedl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+          .wrow { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--mp-line); }
+          .wrow.first { border-top: 0; padding-top: 4px; }
+          .empty { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 28px 24px; }
+          .eic { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; }
+
+          /* Mini App phones, as Mini App.dc.html */
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); position: relative; flex: none; }
+          .scr { flex: 1; overflow: hidden; padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 14px; }
+          .tgh { position: relative; }
+          .tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
+          .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+          .avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 700 13px/1 var(--mp-font); flex: none; }
+          .fch { min-height: 44px; display: inline-flex; align-items: center; gap: 4px; padding: 0 12px; border-radius: 999px; border: 0; background: var(--mp-surface); color: var(--mp-ink); font: 600 13px/18px var(--mp-font); box-shadow: var(--mp-shadow); white-space: nowrap; }
+          .subrow { padding-top: 0; padding-left: 60px; }
+          .subrow::before { content: none !important; }
+          .mprev { display: flex; justify-content: center; padding: 14px; border-radius: 20px; background: var(--mp-surface); }
+          .mnote { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+          /* Telegram phones, as Telegram chats.dc.html (Telegram draws the chat; we own the words and buttons) */
+          .kcard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 36px; display: flex; flex-direction: column; gap: 44px; width: fit-content; max-width: 100%; box-sizing: border-box; }
+          .krow { display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start; }
+          .kcol { display: flex; flex-direction: column; width: 390px; }
+          .kcol .dv-cap { margin-bottom: 18px; overflow: hidden; text-overflow: ellipsis; }
+          .kcol .dv-note { padding-top: 22px; width: 390px; display: block; margin: 0; }
+          .tphone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; background: var(--tg-bg); box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+          .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 2; }
+          .sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .sbar .ms { font-size: 17px; }
+          .sicons { display: flex; align-items: center; gap: 4px; }
+          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
+          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
+          .back .ms { font-size: 22px; }
+          .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
+          .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
+          .tcoin { width: 36px; height: 36px; flex: none; margin-left: 36px; }
+          .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
+          .ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
+          .mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
+          .ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
+          .ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
+          .home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
+          .home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
+          .tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-pill: #1F6FB5; }
+          .tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-pill: #3A6EA5; }
+          .msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
+          .msg.w { width: 316px; }
+          .msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
+          .msg.o { align-self: flex-end; align-items: flex-end; margin-left: 0; margin-right: 6px; }
+          .tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
+          .tl { border-bottom-left-radius: 4px; }
+          .tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
+          .tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
+          .tg-out.tl { border-radius: 16px 16px 4px 16px; }
+          .tg-out.tl::before { left: auto; right: -7px; background: var(--tg-out); border-bottom-right-radius: 0; border-bottom-left-radius: 16px 14px; }
+          .tg-out.tl::after { left: auto; right: -10px; border-bottom-right-radius: 0; border-bottom-left-radius: 10px; }
+          .tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
+          .tg-out .tg-time { color: var(--tg-otime); }
+          .tick { font-size: 15px; }
+          .dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
+          .tday { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
+          .msg .tg-btns { width: 100%; max-width: none; }
+          .c1 { grid-template-columns: minmax(0, 1fr); }
+          .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .tg-btn { position: relative; cursor: pointer; gap: 2px; }
+          .tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
+          .gl { font-size: 18px; line-height: 1; margin-right: -4px; }
+          .bsp { height: 8px; }
+          .ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
+          .b { font-weight: 600; } .i { font-style: italic; } .u { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+          .tdoc { display: flex; align-items: center; gap: 10px; padding: 2px 0 4px; }
+          .tthumb { width: 48px; height: 48px; border-radius: 8px; flex: none; background: repeating-linear-gradient(135deg, var(--tg-bubble) 0 5px, var(--tg-line) 5px 6px); box-shadow: inset 0 0 0 1px var(--tg-line); }
+          .tg-out .tthumb { background: repeating-linear-gradient(135deg, var(--tg-out) 0 5px, var(--tg-line) 5px 6px); }
+          .fmeta { display: flex; flex-direction: column; min-width: 0; }
+          .fname { font-weight: 600; font-size: 15px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+          .fsize { font-size: 13px; line-height: 18px; color: var(--tg-sub); }
+          .tg-out .fsize { color: var(--tg-otime); }
+          /* MyPaisa mark, 1c Watcher (MA-103) */
+          .mpm { display: block; flex: none; }
+          .mpm-coin { fill: var(--mp-hero); }
+          .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+          .mpm-dot { fill: var(--mp-coral); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="files" data-screen-label="Audit and files">
+        <div class="dv-thd"><a class="dv-tid" href="#files">F</a><span class="dv-tname">Audit and files: every file kept, and opened from the log</span></div>
+        <p class="dv-intro">Arun, 24 Oct 2026: “all the files and images I send should be stored on S3 and I should be able to view that in audit logs.” Every file a member sends is kept for good and opens from the log through a link that works for five minutes, after a role check: a member opens their own files, the owner any, a viewer none, and every opening is itself an audit row (ARCHITECTURE.md §4.6, §14). These boards extend what exists rather than redraw it: Browser 2's Audit (B6) and the Mini App's Audit keep their shell, grid and filters, and gain a Changes | Files switch and a file line under any row made from a file. Drawn at 1280 (wide: sidebar, no tab bar) and at 390 inside Telegram, light and dark from one markup. Read-only: Open only reads, and nothing here deletes, renames or uploads. Illustrative data: the members are You (the owner) and Asha (a member), and every file name, size and figure is made up.</p>
+        <div class="dv-skip"><span class="ms ms-s">info</span><span><b>Browser · Activity is not redrawn here.</b> It already exists as B5 in Browser 2: today's runs with model, calls, tokens, cost, tools and outcome; the schedule with price freshness; the month's spend; alarms from the last seven days (MA-79, MA-71). One gap for whoever next opens B5: it shows spend against a £50 cap, where §9.3 and §15.1 now say the ceiling and the step it is on.</span></div>
+        <div class="dv-opts">
+
+          <!-- ================= F1 AUDIT WITH FILES, F2 FILE VIEWER: one markup ================= -->
+          <sc-for list="{{ auditGroups }}" as="g" hint-placeholder-count="2">
+            <div class="dv-opt" id="{{ g.id }}">
+              <div class="dv-olabel"><a class="dv-oid" href="#{{ g.id }}">{{ g.tag }}</a><span class="dv-oname">{{ g.name }}</span><span class="dv-odesc">{{ g.desc }}</span></div>
+              <div class="dv-plan"><span class="dv-keys">{{ g.keys }}</span><span>{{ g.arch }}</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span><span>Illustrative data.</span></div>
+              <div class="dv-rows">
+                <sc-for list="{{ g.rows }}" as="row" hint-placeholder-count="1">
+                  <div class="dv-row">
+                    <sc-for list="{{ row.fr }}" as="v" hint-placeholder-count="2">
+                      <div class="dv-fr">
+                        <p class="dv-cap">{{ v.cap }}</p>
+                        <div class="board mp mp-app {{ v.cls }} {{ v.tallCls }}" data-screen-label="{{ v.cap }}">
+                          <div class="mp-shell">
+                            <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
+                              <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+                              <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#f1" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
+                              <div class="side-sep" role="separator"></div>
+                              <a class="mp-side-i" href="#f1"><span class="ms">shield_person</span>Admin</a>
+                              <div style="flex: 1"></div>
+                              <button class="acct" aria-haspopup="menu" aria-label="Account menu: You, owner, signed in with Google"><span class="av av-you" aria-hidden="true">Y</span><span class="grow"><span class="mp-sub mp-w6 blk">You · owner</span><span class="mp-foot mp-ink3 blk">Signed in with Google</span></span><span class="ms ms-s mp-ink3">unfold_more</span></button>
+                            </aside>
+                            <main class="mp-shell-main main-rel">
+                              <div class="mp-pagepad">
+                                <header class="mp-pagehead">
+                                  <div><div class="mp-large">Audit</div><div class="mp-foot mp-ink3">Every change to a record, and every file sent, newest first · Illustrative figures</div></div>
+                                  <div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i" aria-pressed="false">Me</button><button class="mp-seg-i" aria-pressed="false">Asha</button></div><button class="iconbtn" aria-label="Privacy mode: hide pounds" aria-pressed="false"><span class="ms">visibility</span></button></div>
+                                </header>
+                                <div class="bar">
+                                  <div class="mp-seg vseg" role="group" aria-label="Audit view"><button class="mp-seg-i on" aria-pressed="true">Changes</button><button class="mp-seg-i" aria-pressed="false">Files</button></div>
+                                  <button class="filt" aria-haspopup="listbox" aria-label="Member: Everyone"><span class="k">Member</span>Everyone<span class="ms ms-s mp-ink3">expand_more</span></button>
+                                  <button class="filt" aria-haspopup="listbox" aria-label="Record: All records"><span class="k">Record</span>All records<span class="ms ms-s mp-ink3">expand_more</span></button>
+                                  <button class="filt" aria-haspopup="listbox" aria-label="Date: Last 7 days"><span class="k">Date</span>Last 7 days<span class="ms ms-s mp-ink3">expand_more</span></button>
+                                </div>
+                                <div class="mp-card pad cq">
+                                  <div class="ttl"><span class="mp-foot mp-ink2">8 rows in the last 7 days · 6 made from a file · 2 file openings</span><span class="mp-chip okchip"><span class="ms chip-ic ms-fill">verified</span>Hash chain verified</span></div>
+                                  <div class="loghd mp-over mp-ink3" role="row"><span>Time</span><span>Who</span><span>What</span><span>Before → after</span><span>Via</span><span>Run</span></div>
+                                  <sc-for list="{{ days }}" as="d" hint-placeholder-count="4">
+                                    <div class="day {{ d.cls }} mp-over mp-ink3">{{ d.day }}</div>
+                                    <sc-for list="{{ d.ents }}" as="e" hint-placeholder-count="2">
+                                      <div class="ent">
+                                        <span class="a-time mp-sub mp-w6">{{ e.time }}</span>
+                                        <span class="a-who who mp-sub"><span class="av {{ e.avCls }}" aria-hidden="true">{{ e.init }}</span>{{ e.who }}</span>
+                                        <div class="a-what fx ac gap8" style="flex-wrap: wrap"><span class="mp-chip chip-s mp-neutral"><sc-if value="{{ e.hasRecIcon }}" hint-placeholder-val="{{ false }}"><span class="ms chip-ic">{{ e.recIcon }}</span></sc-if>{{ e.rec }}</span><span class="mp-sub">{{ e.what }}</span></div>
+                                        <sc-if value="{{ e.hasBA }}" hint-placeholder-val="{{ true }}"><span class="a-ba ba mp-foot"><span class="old">{{ e.before }}</span><span class="mp-ink3" aria-label="to">→</span><span class="mp-w6">{{ e.after }}</span></span></sc-if>
+                                        <sc-if value="{{ e.noBA }}" hint-placeholder-val="{{ false }}"><span class="a-ba mp-foot mp-ink2">{{ e.note }}</span></sc-if>
+                                        <span class="a-via mp-foot mp-ink2">via {{ e.via }}</span>
+                                        <a class="a-run runlink mp-foot mp-w6 mp-link" href="#f1">{{ e.run }}</a>
+                                        <sc-if value="{{ e.hasFile }}" hint-placeholder-val="{{ true }}">
+                                          <div class="a-file fs">
+                                            <sc-if value="{{ e.file.thumb }}" hint-placeholder-val="{{ true }}"><span class="thumb" role="img" aria-label="Thumbnail of {{ e.file.name }}"><span>{{ e.file.ext }}</span></span></sc-if>
+                                            <sc-if value="{{ e.file.tileOnly }}" hint-placeholder-val="{{ false }}"><span class="ftile" aria-hidden="true"><span class="ms">{{ e.file.icon }}</span></span></sc-if>
+                                            <span class="fs-meta"><span class="mp-sub mp-w6 clip">{{ e.file.name }}</span><span class="mp-foot mp-ink2">{{ e.file.meta }}</span></span>
+                                            <a class="mp-btn mp-btn-small mp-btn-tinted" href="#f2" aria-label="{{ e.file.openLabel }}">Open</a>
+                                          </div>
+                                        </sc-if>
+                                      </div>
+                                    </sc-for>
+                                  </sc-for>
+                                  <div class="mp-foot mp-ink3 fx ac gap8" style="margin-top: 12px; padding-top: 14px; border-top: 1px solid var(--mp-line)"><span class="ms ms-s">lock</span><span>Nothing on this page can change a record or a file. Every change is a card and a Confirm tap in the chat, and lands here; every file opened here lands here too.</span></div>
+                                </div>
+                              </div>
+                            </main>
+                          </div>
+                          <sc-if value="{{ v.hasOvl }}" hint-placeholder-val="{{ false }}">
+                            <div class="ovl">
+                              <div class="viewer" role="dialog" aria-modal="true" aria-label="{{ v.o.dlgLabel }}">
+                                <div class="vprev">
+                                  <div class="vbar">
+                                    <div class="vgrp"><button class="vbtn" aria-label="Previous page" aria-disabled="{{ v.o.prevDis }}"><span class="ms">chevron_left</span></button><span class="mp-foot mp-ink2 nowrap">{{ v.o.pos }}</span><button class="vbtn" aria-label="Next page" aria-disabled="{{ v.o.nextDis }}"><span class="ms">chevron_right</span></button></div>
+                                    <div class="vgrp"><button class="vbtn" aria-label="Zoom out"><span class="ms">zoom_out</span></button><span class="mp-foot mp-ink2">Fit</span><button class="vbtn" aria-label="Zoom in"><span class="ms">zoom_in</span></button></div>
+                                  </div>
+                                  <div class="vstage">
+                                    <sc-if value="{{ v.o.isImg }}" hint-placeholder-val="{{ true }}"><div class="ph ph-shot" role="img" aria-label="{{ v.o.alt }}"><span>{{ v.o.phText }}</span></div></sc-if>
+                                    <sc-if value="{{ v.o.isPdf }}" hint-placeholder-val="{{ false }}"><div class="ph ph-page" role="img" aria-label="{{ v.o.alt }}"><span>{{ v.o.phText }}</span></div></sc-if>
+                                  </div>
+                                </div>
+                                <div class="vside">
+                                  <div class="vhead">
+                                    <span class="ftile" aria-hidden="true"><span class="ms">{{ v.o.icon }}</span></span>
+                                    <div class="grow"><div class="mp-hl clip">{{ v.o.name }}</div><div class="mp-foot mp-ink3">{{ v.o.sub }}</div></div>
+                                    <button class="iconbtn focusring" aria-label="Close the file"><span class="ms">close</span></button>
+                                  </div>
+                                  <div class="vkv"><sc-for list="{{ v.o.kv }}" as="k" hint-placeholder-count="4"><div><div class="mp-foot mp-ink3">{{ k.k }}</div><div class="mp-sub">{{ k.v }}</div></div></sc-for></div>
+                                  <div class="fed">
+                                    <div class="mp-over mp-ink3">{{ v.o.fedTitle }}</div>
+                                    <sc-for list="{{ v.o.fed }}" as="c" hint-placeholder-count="1">
+                                      <div class="fedr">
+                                        <div class="fx ac gap8" style="flex-wrap: wrap"><span class="mp-chip chip-s mp-neutral">{{ c.rec }}</span><span class="mp-sub mp-w6">{{ c.what }}</span></div>
+                                        <div class="ba mp-sub"><span class="old">{{ c.before }}</span><span class="mp-ink3" aria-label="to">→</span><span class="mp-w6">{{ c.after }}</span></div>
+                                        <div class="mp-foot mp-ink3">{{ c.meta }} · <a class="mp-link mp-w6" href="#f1">{{ c.run }}</a></div>
+                                      </div>
+                                    </sc-for>
+                                  </div>
+                                  <div class="vnote"><span class="ms ms-s mp-ink3">timer</span><span class="mp-foot mp-ink2">Opened with a link that works for 5 minutes, until {{ v.o.until }}. After that, Open asks for a new one, after the same role check.</span></div>
+                                  <div class="vnote"><span class="ms ms-s mp-ink3">fact_check</span><span class="mp-foot mp-ink2">This opening is a row in the log: You, {{ v.o.openedAt }}, via the web app.</span></div>
+                                  <div class="vnote"><span class="ms ms-s mp-ink3">lock</span><span class="mp-foot mp-ink2">Read-only. A file cannot be deleted, renamed or replaced here. To correct a figure, send a new file in the chat.</span></div>
+                                  <div class="vfoot"><a class="mp-btn mp-btn-tinted mp-btn-small" href="#f2"><span class="ms ms-s">download</span>Download original</a></div>
+                                </div>
+                              </div>
+                            </div>
+                          </sc-if>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="dv-notes"><sc-for list="{{ g.notes }}" as="n" hint-placeholder-count="4"><div class="dv-n"><b>{{ n.b }}</b>{{ n.t }}</div></sc-for></div>
+            </div>
+          </sc-for>
+
+          <!-- ================= F3 FILES ================= -->
+          <div class="dv-opt" id="f3">
+            <div class="dv-olabel"><a class="dv-oid" href="#f3">F3</a><span class="dv-oname">Browser · Files</span><span class="dv-odesc">The Audit page's Files view: every file sent, newest first, filtered by member, kind and date, each with the changes it fed. The owner sees all, a member their own, a viewer none: the second row is a viewer's empty state.</span></div>
+            <div class="dv-plan"><span class="dv-keys">MA-149 · MA-148</span><span>ARCHITECTURE §4.5, §4.6, §9.3, §14</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span><span>Illustrative data.</span></div>
+            <div class="dv-rows">
+              <sc-for list="{{ filesRows }}" as="row" hint-placeholder-count="2">
+                <div class="dv-row">
+                  <sc-for list="{{ row.fr }}" as="v" hint-placeholder-count="2">
+                    <div class="dv-fr">
+                      <p class="dv-cap">{{ v.cap }}</p>
+                      <div class="board mp mp-app {{ v.cls }}" data-screen-label="{{ v.cap }}">
+                        <div class="mp-shell">
+                          <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
+                            <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+                            <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#f3" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
+                            <sc-if value="{{ v.isOwner }}" hint-placeholder-val="{{ true }}"><div class="side-sep" role="separator"></div><a class="mp-side-i" href="#f3"><span class="ms">shield_person</span>Admin</a></sc-if>
+                            <div style="flex: 1"></div>
+                            <button class="acct" aria-haspopup="menu" aria-label="{{ v.acctLabel }}"><span class="av {{ v.acctAv }}" aria-hidden="true">{{ v.acctInit }}</span><span class="grow"><span class="mp-sub mp-w6 blk">{{ v.acctName }}</span><span class="mp-foot mp-ink3 blk">{{ v.acctHow }}</span></span><span class="ms ms-s mp-ink3">unfold_more</span></button>
+                          </aside>
+                          <main class="mp-shell-main main-rel">
+                            <div class="mp-pagepad">
+                              <header class="mp-pagehead">
+                                <div><div class="mp-large">Audit</div><div class="mp-foot mp-ink3">{{ v.headSub }}</div></div>
+                                <div class="fx ac gap8"><sc-if value="{{ v.isOwner }}" hint-placeholder-val="{{ true }}"><div class="mp-seg whose" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i" aria-pressed="false">Me</button><button class="mp-seg-i" aria-pressed="false">Asha</button></div></sc-if><button class="iconbtn" aria-label="Privacy mode: hide pounds" aria-pressed="false"><span class="ms">visibility</span></button></div>
+                              </header>
+                              <div class="bar">
+                                <div class="mp-seg vseg" role="group" aria-label="Audit view"><button class="mp-seg-i" aria-pressed="false">Changes</button><button class="mp-seg-i on" aria-pressed="true">Files</button></div>
+                                <sc-if value="{{ v.hasList }}" hint-placeholder-val="{{ true }}">
+                                  <button class="filt" aria-haspopup="listbox" aria-label="Member: Everyone"><span class="k">Member</span>Everyone<span class="ms ms-s mp-ink3">expand_more</span></button>
+                                  <button class="filt" aria-haspopup="listbox" aria-label="Date: Last 30 days"><span class="k">Date</span>Last 30 days<span class="ms ms-s mp-ink3">expand_more</span></button>
+                                </sc-if>
+                              </div>
+                              <sc-if value="{{ v.hasList }}" hint-placeholder-val="{{ true }}">
+                                <div class="kinds" role="group" aria-label="Kind"><sc-for list="{{ kinds }}" as="k" hint-placeholder-count="6"><button class="kchip {{ k.cls }}" aria-pressed="{{ k.pressed }}"><sc-if value="{{ k.on }}" hint-placeholder-val="{{ false }}"><span class="ms ms-s">check</span></sc-if>{{ k.t }}<span class="n">{{ k.n }}</span></button></sc-for></div>
+                              </sc-if>
+                              <div class="mp-cols">
+                                <div class="mp-col">
+                                  <sc-if value="{{ v.hasList }}" hint-placeholder-val="{{ true }}">
+                                    <div class="mp-card pad">
+                                      <div class="ttl"><span class="mp-hl">Every file sent</span><span class="mp-foot mp-ink3">6 in the last 30 days · newest first</span></div>
+                                      <sc-for list="{{ flist }}" as="f" hint-placeholder-count="6">
+                                        <div class="frow {{ f.first }}">
+                                          <sc-if value="{{ f.thumb }}" hint-placeholder-val="{{ true }}"><span class="thumb" role="img" aria-label="Thumbnail of {{ f.name }}"><span>{{ f.ext }}</span></span></sc-if>
+                                          <sc-if value="{{ f.tileOnly }}" hint-placeholder-val="{{ false }}"><span class="ftile" aria-hidden="true"><span class="ms">{{ f.icon }}</span></span></sc-if>
+                                          <div class="f-main"><span class="mp-sub mp-w6 clip">{{ f.name }}</span><span class="mp-foot mp-ink2">{{ f.meta }}</span><span class="f-by mp-foot mp-ink3"><span class="av av-s {{ f.avCls }}" aria-hidden="true">{{ f.init }}</span>{{ f.by }}</span></div>
+                                          <a class="mp-btn mp-btn-small mp-btn-tinted" href="#f2" aria-label="{{ f.openLabel }}">Open</a>
+                                          <div class="f-fed">
+                                            <span class="mp-over mp-ink3">{{ f.fedTitle }}</span>
+                                            <sc-for list="{{ f.fed }}" as="c" hint-placeholder-count="1"><div class="fedl mp-foot"><span class="mp-chip chip-s mp-neutral">{{ c.rec }}</span><span class="mp-w6">{{ c.what }}</span><span class="ba"><span class="old">{{ c.before }}</span><span class="mp-ink3" aria-label="to">→</span><span class="mp-w6">{{ c.after }}</span></span><a class="mp-link mono" href="#f1">{{ c.run }}</a></div></sc-for>
+                                            <sc-if value="{{ f.noFed }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink2">{{ f.noFedTxt }}</div></sc-if>
+                                          </div>
+                                        </div>
+                                      </sc-for>
+                                    </div>
+                                  </sc-if>
+                                  <sc-if value="{{ v.isEmpty }}" hint-placeholder-val="{{ false }}">
+                                    <div class="mp-card empty">
+                                      <span class="eic mp-neutral"><span class="ms ms-l">folder_off</span></span>
+                                      <div class="mp-t3">No files to show</div>
+                                      <div class="mp-sub mp-ink2">A file opens only for the member who sent it and for the owner. As a viewer you read the household overview and whatever members share; the files stay with the people who sent them.</div>
+                                      <div class="mp-foot mp-ink3">This is not a filter left on: there is nothing here to narrow, so no filters are shown.</div>
+                                    </div>
+                                  </sc-if>
+                                </div>
+                                <div class="mp-col">
+                                  <sc-if value="{{ v.hasList }}" hint-placeholder-val="{{ true }}">
+                                    <div class="mp-card pad">
+                                      <div class="ttl"><span class="mp-hl">Kept</span><span class="mp-foot mp-ink3">since the first file</span></div>
+                                      <div class="fx gap8" style="align-items: baseline"><span class="mp-num-l">6 files</span><span class="mp-sub mp-ink2">2.2 MB</span></div>
+                                      <div class="mp-foot mp-ink2" style="margin-top: 8px">Each file was copied to a private, encrypted store before anything read it, and kept whatever happened next. Nothing is deleted after reading.</div>
+                                    </div>
+                                  </sc-if>
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Who can open a file</span></div>
+                                    <sc-for list="{{ v.who }}" as="w" hint-placeholder-count="3"><div class="wrow {{ w.first }}"><span class="av {{ w.av }}" aria-hidden="true">{{ w.init }}</span><div class="grow"><div class="mp-sub mp-w6">{{ w.t }}</div><div class="mp-foot mp-ink3">{{ w.s }}</div></div><span class="out mp-foot mp-w6 mp-ink2"><span class="ms ms-s">{{ w.icon }}</span>{{ w.can }}</span></div></sc-for>
+                                    <div class="mp-foot mp-ink3" style="margin-top: 8px">Open checks the role first, then makes a link that works for 5 minutes. Each opening is a row in the log.</div>
+                                  </div>
+                                  <sc-if value="{{ v.hasList }}" hint-placeholder-val="{{ true }}">
+                                    <div class="mp-card pad">
+                                      <div class="ttl"><span class="mp-hl">Recent openings</span><span class="mp-foot mp-ink3">rows from the log</span></div>
+                                      <sc-for list="{{ openings }}" as="o" hint-placeholder-count="2"><div class="wrow {{ o.first }}"><span class="av {{ o.av }}" aria-hidden="true">{{ o.init }}</span><div class="grow"><div class="mp-sub">{{ o.t }}</div><div class="mp-foot mp-ink3">{{ o.s }}</div></div></div></sc-for>
+                                    </div>
+                                  </sc-if>
+                                </div>
+                              </div>
+                            </div>
+                          </main>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <div class="dv-notes"><sc-for list="{{ notesFiles }}" as="n" hint-placeholder-count="4"><div class="dv-n"><b>{{ n.b }}</b>{{ n.t }}</div></sc-for></div>
+          </div>
+
+          <!-- ================= F4 MINI APP: AUDIT AND FILE ================= -->
+          <div class="dv-opt" id="f4">
+            <div class="dv-olabel"><a class="dv-oid" href="#f4">F4</a><span class="dv-oname">Mini App · Audit and file</span><span class="dv-odesc">The phone version, inside Telegram: an Audit row with its file line, then the file opened as a pushed page with the changes it fed.</span></div>
+            <div class="dv-plan"><span class="dv-keys">MA-149</span><span>ARCHITECTURE §4.6, §9.3</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span><span>Illustrative data.</span></div>
+            <div class="dv-screen">
+              <sc-for list="{{ miniThemes }}" as="t" hint-placeholder-count="2">
+                <div>
+                  <p class="dv-cap">Mini App · Audit and file · the row · {{ t.label }}</p>
+                  <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="Mini App · Audit and file · the row · {{ t.label }}">
+                    <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>More</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                    <div class="scr">
+                      <div class="fx jb gap8" style="align-items: flex-start"><div><div class="mp-large">Audit</div><div class="mp-foot mp-ink3">Every change and every file</div></div><span class="mp-chip chip-s okchip" style="margin-top: 12px"><span class="ms ms-s">verified</span>Chain verified</span></div>
+                      <div class="mp-seg" role="group" aria-label="Audit view"><button class="mp-seg-i on" aria-pressed="true">Changes</button><button class="mp-seg-i" aria-pressed="false">Files</button></div>
+                      <div class="fx gap8"><button class="fch">Everyone<span class="ms ms-s">expand_more</span></button><button class="fch">All records<span class="ms ms-s">expand_more</span></button><button class="fch">This week<span class="ms ms-s">expand_more</span></button></div>
+                      <sc-for list="{{ miniAudit }}" as="g" hint-placeholder-count="2">
+                        <div>
+                          <div class="mp-section mp-over mp-ink3">{{ g.day }}</div>
+                          <div class="mp-group">
+                            <sc-for list="{{ g.items }}" as="a" hint-placeholder-count="2">
+                              <div class="mp-row" style="align-items: flex-start"><div class="avatar {{ a.av }}">{{ a.init }}</div><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">{{ a.what }}</div><div class="mp-foot mp-ink2">{{ a.change }}</div><div class="mp-foot mp-ink3">{{ a.meta }}</div></div><span class="ms mp-ink3 ms-s" style="margin-top: 2px">chevron_right</span></div>
+                              <sc-if value="{{ a.hasFile }}" hint-placeholder-val="{{ true }}"><div class="mp-row subrow"><span class="thumb thumb-s" role="img" aria-label="Thumbnail of {{ a.file.name }}"><span>{{ a.file.ext }}</span></span><div style="flex: 1; min-width: 0"><div class="mp-foot mp-w6 clip">{{ a.file.name }}</div><div class="mp-foot mp-ink3">{{ a.file.kind }} · {{ a.file.size }}</div></div><button class="mp-btn mp-btn-tinted mp-btn-small" aria-label="{{ a.file.openLabel }}">Open</button></div></sc-if>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </sc-for>
+                      <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                    </div>
+                    <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabsMore }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#f4" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+                  </div>
+                </div>
+              </sc-for>
+              <div class="dv-note"><span class="dv-sname">The row</span><span><b>Pushed from More, as the Mini App's Audit is now:</b> Back reads ‹ More and More stays selected. Changes | Files sits under the title, as on the laptop.</span><span><b>A row made from a file gets a line under it:</b> the thumbnail (images only), the name, kind and size, and Open. Open is its own 44 px button, apart from the row, which still opens its run.</span><span><b>Openings are rows too:</b> the top row is You opening monzo-valuation.png on the laptop at 09:52. This frame leaves out Asha's 19:05 opening (from Source in the chat) and the 09:40 file row for room; in the real list they sit in time order, as on the laptop board.</span></div>
+            </div>
+            <div class="dv-screen">
+              <sc-for list="{{ miniThemes }}" as="t" hint-placeholder-count="2">
+                <div>
+                  <p class="dv-cap">Mini App · Audit and file · the file · {{ t.label }}</p>
+                  <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="Mini App · Audit and file · the file · {{ t.label }}">
+                    <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>Audit</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                    <div class="scr">
+                      <div><div class="mp-t2 clip">monzo-valuation.png</div><div class="mp-foot mp-ink3">Screenshot · PNG · 184 KB · sent by You, today 09:40</div></div>
+                      <div class="mprev"><div class="ph ph-m" role="img" aria-label="The screenshot as sent: the Balanced pot in the Monzo app"><span>screenshot: the Balanced pot in the Monzo app</span></div></div>
+                      <div>
+                        <div class="mp-section mp-over mp-ink3">Changes it fed</div>
+                        <div class="mp-group"><div class="mp-row" style="align-items: flex-start"><span class="mp-icontile mp-neutral"><span class="ms ms-s">account_balance_wallet</span></span><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">Balanced valuation</div><div class="mp-foot mp-ink2">£22,710 → £22,925</div><div class="mp-foot mp-ink3">Confirmed by You · 09:41 · r‑1201</div></div><span class="ms ms-s mp-ink3" style="margin-top: 2px">chevron_right</span></div></div>
+                      </div>
+                      <div class="mp-card mnote">
+                        <div class="vnote"><span class="ms ms-s mp-ink3">timer</span><span class="mp-foot mp-ink2">This link works for 5 minutes, until 09:57. Opening the file again makes a new link and a new row in the log.</span></div>
+                        <div class="vnote"><span class="ms ms-s mp-ink3">lock</span><span class="mp-foot mp-ink2">Read-only: no delete, rename or upload. To correct a figure, send a new file in the chat.</span></div>
+                      </div>
+                      <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                    </div>
+                    <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabsMore }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#f4" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+                  </div>
+                </div>
+              </sc-for>
+              <div class="dv-note"><span class="dv-sname">The file</span><span><b>A pushed page, not a sheet:</b> Back reads ‹ Audit and More stays selected. The image fits the width and pinches to zoom; a PDF opens the same way, a page at a time.</span><span><b>Under the file, the changes it fed,</b> each opening its run; then the five-minute link in words, and the read-only line.</span><span><b>Nothing here deletes, renames or uploads.</b> To correct a figure the member sends a new file in the chat, which makes a new card and a new row.</span></div>
+            </div>
+          </div>
+
+          <!-- ================= F5 TELEGRAM: SOURCE BUTTON ================= -->
+          <div class="dv-opt" id="f5">
+            <div class="dv-olabel"><a class="dv-oid" href="#f5">F5</a><span class="dv-oname">Telegram · Source button</span><span class="dv-odesc">Asha's chat, Friday 30 October. Her saved change card carries Source; tapping it sends the original file back to her, the member who may see it. A tapped button is ringed.</span></div>
+            <div class="dv-plan"><span class="dv-keys">MA-149</span><span>ARCHITECTURE §4.6, §14</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span><span>Illustrative data.</span></div>
+            <div class="kcard">
+              <sc-for list="{{ tgThemes }}" as="t" hint-placeholder-count="2">
+                <div class="krow">
+                  <sc-for list="{{ tgSteps }}" as="st" hint-placeholder-count="2">
+                    <div class="kcol">
+                      <p class="dv-cap">Telegram · Source button · {{ st.id }} · {{ t.label }}</p>
+                      <div class="tphone tg {{ t.tg }}" data-screen-label="Telegram · Source button · {{ st.id }} · {{ t.label }}">
+                        <div class="island" aria-hidden="true"></div>
+                        <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
+                        <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="tcoin" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
+                        <div class="msgs">
+                          <sc-for list="{{ st.msgs }}" as="m" hint-placeholder-count="3">
+                            <div class="{{ m.mc }}">
+                              <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="tday">{{ m.day }}</span></sc-if>
+                              <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
+                                <div class="tg-bub {{ m.bc }}">
+                                  <sc-if value="{{ m.hasFile }}" hint-placeholder-val="{{ false }}"><div class="tdoc"><span class="tthumb" role="img" aria-label="Thumbnail of {{ m.file.n }}"></span><span class="fmeta"><span class="fname">{{ m.file.n }}</span><span class="fsize">{{ m.file.s }}</span></span></div></sc-if>
+                                  <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="2"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
+                                  <div class="tg-time"><span>{{ m.time }}</span><sc-if value="{{ m.out }}" hint-placeholder-val="{{ false }}"><span class="ms tick" aria-label="Read">done_all</span></sc-if></div>
+                                </div>
+                                <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="1"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}<sc-if value="{{ k.hasG }}" hint-placeholder-val="{{ false }}"><span class="ms gl" aria-hidden="true">{{ k.g }}</span></sc-if></button></sc-for></div></sc-for>
+                              </sc-if>
+                            </div>
+                          </sc-for>
+                        </div>
+                        <div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
+                        <div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
+                        <div class="home" aria-hidden="true"><span></span></div>
+                      </div>
+                      <p class="dv-note"><b>{{ st.title }}</b> {{ st.note }}</p>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const A = (o, x) => Object.assign({}, o, x || {});
+          const L = 't-light', D = 't-dark';
+          const first = (list) => list.map((x, i) => A(x, { first: i === 0 ? 'first' : '' }));
+          const nav = [['home', 'Overview'], ['donut_small', 'Holdings'], ['join_inner', 'Overlap'], ['insights', 'Track record'], ['history', 'Activity'], ['fact_check', 'Audit']].map((i) => { const on = i[1] === 'Audit'; return { icon: i[0], label: i[1], cls: on ? 'on' : '', fill: on ? 'ms-fill' : '', cur: on ? 'page' : null }; });
+          const tabsMore = [['home', 'Overview'], ['donut_small', 'Holdings'], ['join_inner', 'Overlap'], ['insights', 'Record'], ['menu', 'More']].map((d) => { const on = d[1] === 'More'; return { icon: d[0], label: d[1], on: on ? 'on' : '', fill: on ? 'ms-fill' : '', cur: on ? 'page' : null }; });
+          const owner = { isOwner: true, acctAv: 'av-you', acctInit: 'Y', acctName: 'You · owner', acctHow: 'Signed in with Google', acctLabel: 'Account menu: You, owner, signed in with Google' };
+          const viewer = { isOwner: false, acctAv: 'av-view', acctInit: 'V', acctName: 'Viewer', acctHow: 'Telegram sign-in', acctLabel: 'Account menu: a viewer, signed in with Telegram' };
+
+          /* the files: illustrative names and sizes only */
+          const F = {
+            mv: { name: 'monzo-valuation.png', kind: 'Screenshot', ext: 'PNG', size: '184 KB', thumb: true, icon: 'image' },
+            mp: { name: 'monzo-pot.png', kind: 'Screenshot', ext: 'PNG', size: '142 KB', thumb: true, icon: 'image' },
+            be: { name: 'asha-broker-export.csv', kind: 'Broker export', ext: 'CSV', size: '18 KB', thumb: false, icon: 'receipt_long' },
+            bf: { name: 'balanced-factsheet.pdf', kind: 'Factsheet', ext: 'PDF', size: '1.2 MB', thumb: false, icon: 'description' },
+            xs: { name: 'household-holdings.xlsx', kind: 'Spreadsheet', ext: 'XLSX', size: '36 KB', thumb: false, icon: 'table_chart' },
+            cas: { name: 'cas-statement-sep.pdf', kind: 'CAS statement', ext: 'PDF', size: '640 KB', thumb: false, icon: 'account_balance' }
+          };
+          Object.keys(F).forEach((k) => { const f = F[k]; f.tileOnly = !f.thumb; f.meta = f.kind + ' · ' + f.ext + ' · ' + f.size; f.openLabel = 'Open ' + f.name; });
+
+          /* the log, newest first: now is Saturday 31 October, 09:52 */
+          const you = { who: 'You', init: 'Y', avCls: 'av-you' };
+          const asha = { who: 'Asha', init: 'A', avCls: 'av-asha' };
+          const E = (p, o) => A(p, A({ hasFile: !!o.file, file: F.mv, hasRecIcon: !!o.recIcon, recIcon: '', hasBA: !o.note, noBA: !!o.note, note: '', before: '', after: '' }, o));
+          const days = [
+            { day: 'Today', cls: 'first', ents: [
+              E(you, { time: '09:52', rec: 'File opened', recIcon: 'visibility', what: 'Opened monzo-valuation.png', note: '5-minute link, until 09:57', via: 'web app, Open', run: 'r-1204' }),
+              E(you, { time: '09:41', rec: 'Valuation', what: 'Screenshot update, Balanced', before: '£22,710', after: '£22,925', via: 'screenshot Confirm', run: 'r-1201', file: F.mv }),
+              E(you, { time: '09:40', rec: 'File', recIcon: 'attach_file', what: 'Screenshot received and kept', before: 'none', after: 'kept', via: 'chat', run: 'r-1201', file: F.mv }) ] },
+            { day: 'Yesterday', cls: '', ents: [
+              E(asha, { time: '19:05', rec: 'File opened', recIcon: 'visibility', what: 'Opened monzo-pot.png', note: 'sent back to Asha', via: 'chat, Source', run: 'r-1171' }),
+              E(asha, { time: '19:02', rec: 'Valuation', what: 'Screenshot update, Cash pot', before: '£1,040', after: '£1,185', via: 'screenshot Confirm', run: 'r-1170', file: F.mp }) ] },
+            { day: '28 October', cls: '', ents: [
+              E(asha, { time: '20:30', rec: 'Transaction', what: 'Bought NASDAQ 100 ETF, from a broker export', before: '41.0 units', after: '43.5', via: 'broker export Confirm', run: 'r-1158', file: F.be }) ] },
+            { day: '26 October', cls: '', ents: [
+              E(you, { time: '21:15', rec: 'Fund details', what: 'Balanced fee, from its factsheet', before: '0.31% a year', after: '0.29%', via: 'factsheet Confirm', run: 'r-1137', file: F.bf }),
+              E(you, { time: '21:15', rec: 'Look-through', what: 'Balanced top 10, from its factsheet', before: 'at 31 Aug', after: 'at 30 Sep', via: 'factsheet Confirm', run: 'r-1137', file: F.bf }) ] }
+          ];
+
+          /* the file viewer, over the Audit page */
+          const ovImg = { isImg: true, isPdf: false, dlgLabel: 'File: monzo-valuation.png', name: F.mv.name, sub: 'Screenshot · PNG · 184 KB', icon: 'image', pos: 'Image 1 of 1', prevDis: 'true', nextDis: 'true',
+            alt: 'The screenshot as sent: the Balanced pot in the Monzo app showing £22,925', phText: 'screenshot as sent: the Balanced pot in the Monzo app, £22,925 on 31 Oct',
+            kv: [{ k: 'Sent by', v: 'You, in the chat' }, { k: 'Sent', v: 'Today, 09:40' }, { k: 'Kind', v: 'Screenshot' }, { k: 'Size', v: '184 KB · 1179 × 2556' }],
+            fedTitle: 'Changes it fed · 1',
+            fed: [{ rec: 'Valuation', what: 'Balanced', before: '£22,710', after: '£22,925', meta: 'Confirmed by You at 09:41 · read from the top line', run: 'r-1201' }],
+            until: '09:57', openedAt: '09:52' };
+          const ovPdf = { isImg: false, isPdf: true, dlgLabel: 'File: balanced-factsheet.pdf', name: F.bf.name, sub: 'Factsheet · PDF · 1.2 MB · 4 pages', icon: 'description', pos: 'Page 2 of 4', prevDis: null, nextDis: null,
+            alt: 'Page 2 of the factsheet as sent: charges and asset mix', phText: 'factsheet page 2 of 4: Balanced, charges and asset mix',
+            kv: [{ k: 'Sent by', v: 'You, in the chat' }, { k: 'Sent', v: '26 Oct, 21:12' }, { k: 'Kind', v: 'Factsheet' }, { k: 'Size', v: '1.2 MB · 4 pages' }],
+            fedTitle: 'Changes it fed · 2',
+            fed: [{ rec: 'Fund details', what: 'Balanced fee', before: '0.31% a year', after: '0.29%', meta: 'Confirmed by You at 21:15 · read from page 2, Charges', run: 'r-1137' },
+              { rec: 'Look-through', what: 'Balanced top 10', before: 'at 31 Aug', after: 'at 30 Sep', meta: 'Confirmed by You at 21:15 · read from page 3, Top holdings', run: 'r-1137' }],
+            until: '09:59', openedAt: '09:54' };
+          const bv = (cls, cap, o) => ({ cls: cls, cap: cap, hasOvl: !!o, o: o || ovImg, tallCls: o ? 'tall' : '' });
+          const n = (b, t) => ({ b: b, t: t });
+          const auditGroups = [
+            { id: 'f1', tag: 'F1', name: 'Browser · Audit with files', keys: 'MA-149 · MA-79', arch: 'ARCHITECTURE §4.6, §9.3, §10',
+              desc: 'Browser 2’s Audit (B6) with files: the log newest first, one group per day, filtered by member, record and date; each row’s before and after, how it came in and its run. A row made from a file shows its kind, name and size, a thumbnail for an image, and Open. The top row is an opening.',
+              rows: [{ fr: [bv(L, 'Browser · Audit with files · Light'), bv(D, 'Browser · Audit with files · Dark')] }],
+              notes: [
+                n('Extends B6, not a redraw.', 'The same shell, log grid, columns and filters. Two additions: a Changes | Files switch before the filters, and a file line under any row made from a file. Hash chain verified moves to the card’s top line to make room.'),
+                n('The file line', 'shows the kind, name and size, a thumbnail for an image (a striped placeholder here) or a kind tile for anything else, and Open: a 44 px button of its own, which opens the file over this page.'),
+                n('Openings are rows.', '09:52 is You opening monzo-valuation.png on this page; 19:05 is Asha getting monzo-pot.png back from Source in the chat. Each says the door it came through and has its own run.'),
+                n('Read-only.', 'The filters only narrow the view. Open only reads, after the role check. Nothing here can delete, rename or upload a file, or change a record.')
+              ] },
+            { id: 'f2', tag: 'F2', name: 'Browser · File viewer', keys: 'MA-149', arch: 'ARCHITECTURE §4.6, §9.3, §14',
+              desc: 'Open on a file row: the file opens inside the app, over the Audit page, beside the changes it fed. First a valuation screenshot (opened at 09:52, the log’s top row), then a factsheet PDF (opened at 09:54; its row lands at the top when the viewer closes).',
+              rows: [{ fr: [bv(L, 'Browser · File viewer · image · Light', ovImg), bv(D, 'Browser · File viewer · image · Dark', ovImg)] }, { fr: [bv(L, 'Browser · File viewer · PDF · Light', ovPdf), bv(D, 'Browser · File viewer · PDF · Dark', ovPdf)] }],
+              notes: [
+                n('Over the Audit page, not a new page.', 'A dialog, so Close or Esc puts you back on the row you came from. Focus lands on Close when it opens (ringed here) and goes back to the row’s Open after.'),
+                n('The changes it fed', 'sit beside the file: each with before and after, who confirmed it, where in the file it was read and its run. The figures are the registry’s, as confirmed in the chat.'),
+                n('The five-minute link', 'is said in words with its end time. After that, Open asks for a new link after the same role check, and that opening is a new row.'),
+                n('No delete, rename or upload', 'anywhere in the viewer. Download original uses the same five-minute link. A PDF pages with ‹ ›; an image fits the window and zooms.')
+              ] }
+          ];
+
+          /* Files: every file sent, newest first */
+          const fl = [
+            A(F.mv, A(you, { by: 'You · today 09:40', fedTitle: 'Fed 1 change', fed: [{ rec: 'Valuation', what: 'Balanced', before: '£22,710', after: '£22,925', run: 'r-1201' }] })),
+            A(F.mp, A(asha, { by: 'Asha · yesterday 19:01', fedTitle: 'Fed 1 change', fed: [{ rec: 'Valuation', what: 'Cash pot', before: '£1,040', after: '£1,185', run: 'r-1170' }] })),
+            A(F.be, A(asha, { by: 'Asha · 28 Oct 20:28', fedTitle: 'Fed 1 change', fed: [{ rec: 'Transaction', what: 'NASDAQ 100 ETF', before: '41.0 units', after: '43.5', run: 'r-1158' }] })),
+            A(F.bf, A(you, { by: 'You · 26 Oct 21:12', fedTitle: 'Fed 2 changes', fed: [{ rec: 'Fund details', what: 'Balanced fee', before: '0.31% a year', after: '0.29%', run: 'r-1137' }, { rec: 'Look-through', what: 'Balanced top 10', before: 'at 31 Aug', after: 'at 30 Sep', run: 'r-1137' }] })),
+            A(F.xs, A(you, { by: 'You · 20 Oct 18:05', fedTitle: 'Fed 6 changes', fed: [{ rec: 'Import', what: '4 holdings and 2 accounts', before: 'none', after: '6 records', run: 'r-1102' }] })),
+            A(F.cas, A(you, { by: 'You · 12 Oct 10:15', fedTitle: 'Fed nothing yet', fed: [], noFedTxt: 'Kept for Indian markets (phase 13); nothing from it is in the records yet. It was password-protected, and the password was not kept.' }))
+          ].map((f, i) => A(f, { first: i === 0 ? 'first' : '', noFed: f.fed.length === 0, noFedTxt: f.noFedTxt || '' }));
+          const kinds = [{ t: 'All', n: '6', on: true }, { t: 'Factsheet', n: '1' }, { t: 'Screenshot', n: '2' }, { t: 'CAS statement', n: '1' }, { t: 'Broker export', n: '1' }, { t: 'Spreadsheet', n: '1' }].map((k) => A({ on: false }, A(k, { cls: k.on ? 'on' : '', pressed: k.on ? 'true' : 'false' })));
+          const whoOwner = first([
+            { av: 'av-you', init: 'Y', t: 'You · owner', s: 'Every file in the household', can: 'All 6', icon: 'check' },
+            { av: 'av-asha', init: 'A', t: 'Asha · member', s: 'Her own files only', can: '2 of 6', icon: 'check' },
+            { av: 'av-view', init: 'V', t: 'A viewer', s: 'The household overview only', can: 'None', icon: 'block' }
+          ]);
+          const whoViewer = first([
+            { av: 'av-you', init: 'Y', t: 'The owner', s: 'Every file in the household', can: 'All', icon: 'check' },
+            { av: 'av-asha', init: 'A', t: 'Asha · member', s: 'Her own files only', can: 'Her own', icon: 'check' },
+            { av: 'av-view', init: 'V', t: 'You · viewer', s: 'The household overview, and what members share', can: 'None', icon: 'block' }
+          ]);
+          const fv = (cls, cap, isViewer) => A(isViewer ? viewer : owner, { cls: cls, cap: cap, hasList: !isViewer, isEmpty: !!isViewer, who: isViewer ? whoViewer : whoOwner,
+            headSub: isViewer ? 'What you can see as a viewer · Illustrative' : 'Every change to a record, and every file sent, newest first · Illustrative figures' });
+
+          /* the Mini App's Audit, with files (run ids keep a non-breaking hyphen) */
+          const miniAudit = [
+            { day: 'Today', items: [
+              { av: 'av-you', init: 'Y', what: 'Opened monzo-valuation.png', change: '5-minute link, until 09:57', meta: 'You · web app · 09:52 · r‑1204', hasFile: false, file: F.mv },
+              { av: 'av-you', init: 'Y', what: 'Balanced valuation updated', change: '£22,710 → £22,925', meta: 'You · screenshot · 09:41 · r‑1201', hasFile: true, file: F.mv } ] },
+            { day: 'Yesterday', items: [
+              { av: 'av-asha', init: 'A', what: 'Cash pot updated', change: '£1,040 → £1,185', meta: 'Asha · screenshot · 19:02 · r‑1170', hasFile: true, file: F.mp } ] }
+          ];
+
+          /* Telegram: *bold* _italic_ ~underline~; line kinds: '' gap, '^' small grey line */
+          const seg = (str) => {
+            const out = []; const re = /(\*[^*]+\*|_[^_]+_|~[^~]+~)/g; let last = 0, x;
+            while ((x = re.exec(str))) {
+              if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' });
+              out.push({ t: x[0].slice(1, -1), c: { '*': 'b', '_': 'i', '~': 'u' }[x[0][0]] });
+              last = x.index + x[0].length;
+            }
+            if (last < str.length) out.push({ t: str.slice(last), c: '' });
+            return out;
+          };
+          const kind = (s) => s === '' ? 'sp' : s[0] === '^' ? 'ov' : 'p';
+          const parse = (lines) => {
+            const bl = [];
+            lines.forEach((s) => {
+              const k = kind(s), body = k === 'ov' ? s.slice(1) : s; let b = bl[bl.length - 1];
+              if (!b || b.k !== k || k === 'sp') { b = { k: k, c: k === 'ov' ? 'ov' : 'b' + k, ls: [] }; bl.push(b); }
+              b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: '', c: '' }] : seg(body) });
+            });
+            return bl;
+          };
+          const GL = { '▸': 'chevron_right' };
+          const M = (o) => {
+            if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, blocks: [], rows: [], hasFile: false, file: { n: '', s: '' }, time: '', out: false, bc: '' };
+            const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((nm) => { const g = GL[nm.slice(-1)] && nm.slice(-2, -1) === ' ' ? GL[nm.slice(-1)] : ''; return { t: g ? nm.slice(0, -2) : nm, g: g, hasG: !!g, c: nm === o.tap ? 'tap' : '' }; }) }));
+            return { isDay: false, isMsg: true, day: '', mc: 'msg' + (o.out ? ' o' : '') + (rows.length || o.wide ? ' w' : ''), bc: (o.out ? 'tg-out ' : '') + 'tl', hasFile: !!o.file, file: o.file || { n: '', s: '' }, blocks: parse(o.text || []), time: o.time || '', out: !!o.out, rows: rows };
+          };
+          const today = M({ day: 'Today' });
+          const sent = M({ out: true, time: '19:01', file: { n: 'monzo-pot.png', s: '142 KB' } });
+          const read = M({ time: 'edited 19:02', wide: true, text: ['*Here is what I read.*', '*Cash pot* · Monzo pot', '*Value:* £1,185 _(was £1,040)_', '*As of:* Fri 30 Oct, from the top of the screen', '', '_Confirmed by Asha with Face ID at 19:02._'] });
+          const saved = (tap) => M({ time: '19:02', tap: tap, btns: [['Source', 'Portfolio ▸']], text: ['*Saved.* Cash pot: £1,040 → £1,185.', '_Audit: Valuation · Asha · 30 Oct 19:02 · from monzo-pot.png · run r-1170._'] });
+          const back = M({ time: '19:05', wide: true, file: { n: 'monzo-pot.png', s: '142 KB' }, text: ['*Source* · Cash pot, 30 Oct 19:02', 'The file you sent, unchanged. Only you and the owner can open it.', '_Logged: File opened · Asha · 19:05 · in the chat._'] });
+
+          return {
+            nav: nav, tabsMore: tabsMore,
+            days: days, auditGroups: auditGroups,
+            flist: fl, kinds: kinds,
+            openings: first([
+              { av: 'av-you', init: 'Y', t: 'You opened monzo-valuation.png', s: 'web app, Open · today 09:52' },
+              { av: 'av-asha', init: 'A', t: 'Asha opened monzo-pot.png', s: 'chat, Source · yesterday 19:05' }
+            ]),
+            filesRows: [
+              { fr: [fv(L, 'Browser · Files · owner · Light', false), fv(D, 'Browser · Files · owner · Dark', false)] },
+              { fr: [fv(L, 'Browser · Files · viewer, empty · Light', true), fv(D, 'Browser · Files · viewer, empty · Dark', true)] }
+            ],
+            notesFiles: [
+              n('Files is the Audit page’s second view', '(§9.3): every file sent, newest first, filtered by member, kind and date, each with the changes it fed. A file that fed nothing says why.'),
+              n('Who sees what follows the roles', '(§4.5): the owner sees every file; a member only their own, so Asha would see her 2; a viewer none. The authorizer checks the role before any link is made.'),
+              n('The viewer’s empty state', 'says why there is nothing, so it never reads as a broken page or a filter left on. The filters and kinds are not shown, since there is nothing to narrow.'),
+              n('Kept for good.', 'The count and size are the registry’s. A protected PDF’s password is never kept (§14), and the CAS statement says so. Open on a row opens the viewer of F2.')
+            ],
+            miniThemes: [{ label: 'Light', cls: 'mp t-light', tg: 'tg-light' }, { label: 'Dark', cls: 'mp t-dark', tg: 'tg-dark' }],
+            miniAudit: miniAudit,
+            tgThemes: [{ label: 'Telegram light', tg: 'tg-light' }, { label: 'Telegram dark', tg: 'tg-dark' }],
+            tgSteps: [
+              { id: 's1', title: 's1 · 19:02 · the saved card.', clock: '19:02', msgs: [today, sent, read, saved('Source')],
+                note: 'The card has Source because the change came from a file and Asha may open it: she sent it. A change typed in the chat has no Source, and no card offers a file its reader may not open. Tap Source.' },
+              { id: 's2', title: 's2 · 19:05 · the original, sent back.', clock: '19:05', msgs: [today, read, saved(''), back],
+                note: 'A new message, not an edit: the bot sends the original back as a document, unchanged, with the change it fed. That is an opening, so it is logged like Open on the Audit page (the 19:05 row there).' }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

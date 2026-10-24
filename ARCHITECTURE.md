@@ -93,6 +93,7 @@ whole household's wealth later are the same records, not a migration.
 | Send a factsheet PDF | Reads it, shows a card: name, ISIN, cost, what it holds, where it invests; you tap Confirm |
 | Send a screenshot of your Monzo valuations | Reads the values, matches them to holdings, updates the records, shows a before/after card; you tap Confirm |
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
+| Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so the bot says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with buttons: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
 | Open the web app on your laptop | Log in with Telegram (a tap in the Telegram app) or with Google (the Gmail account linked to you), no password either way; the same dashboard, plus the audit log of every change and what the agent did and spent; read-only |
 | Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
@@ -146,10 +147,10 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Invite** | `portfolio_id`, `token`, `role`, `created_by`, `expires_at`, `used_by?` | Single use, 24-hour expiry, bound to one portfolio and role. |
 | **Account** | `portfolio_id`, `id`, `name`, `category` (`investment` · `cash` · `deposit` · `policy` · `pension` · `property` · `debt`), `type` (`ISA` · `GIA` · `SIPP` · `cash` · `fixed_deposit` · `policy` · `pension` · `property` · `mortgage` · `loan` · `card`), `ccy`, `institution` (`Monzo`, `LIC`, a bank, …), `country`, `owners[]` (member ids; two for a joint account) | A tax wrapper, a pot, a property or a loan belonging to one or two members. Finances are managed here, per member. Phase 1 uses `investment` and `cash`; the other categories wait for §12 but the field exists from day one. |
 | **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash` · later `property` · `deposit` · `policy` · `pension` · `debt`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `country?`, `institution?`, `maturity_date?`, `rate?`, `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither, a property has an address and a deposit has a maturity date. |
-| **Position** | `account_id`, `instrument_id`, `units`, `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. |
+| **Position** | `account_id`, `instrument_id`, `units`, `ccy` (the currency it is bought and valued in, as the platform shows it), `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. Money logged against it is checked against `ccy` (§4.7). |
 | **Valuation** | `instrument_id`, `date`, `price`, `price_ccy`, `fx_to_gbp`, `units`, `value_gbp`, `source` (`nav` · `close` · `proxy` · `user_screenshot` · `user_typed` · `formula`), `provisional` | The time series the wealth tracker reads. User-supplied values are kept alongside computed ones; a gap between them is a signal (wrong units, a fee, a late NAV). |
 | **Document** | `document_id`, `kind` (`factsheet` · `kiid` · `annual_report` · `screenshot` · `cas` · `broker_export` · `spreadsheet` · `other`), `s3_key`, `sha256`, `mime`, `bytes`, `original_name`, `sent_by`, `sent_at`, `message_id`, `instrument_id?`, `import_id?`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | **One row for every file a member sends, kept in S3 for good** (§4.6, MA-148). The factsheet is the source of look-through until a better feed exists. |
-| **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy`, `amount_gbp` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. XIRR, payoff curves and the forecast are computed from it, so every money movement is recorded with its date from day one. |
+| **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy` (always the position's), `amount_gbp`, `orig_amount?`, `orig_ccy?`, `fx_rate?`, `fx_source?` (`as_credited` · `ecb` · `statement`), `fx_date?` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. XIRR, payoff curves and the forecast are computed from it, so every money movement is recorded with its date from day one. |
 | **Liability** | `account_id`, `kind` (`mortgage` · `loan` · `card`), `principal`, `rate`, `term_months`, `started_at`, `emi`, `schedule[]` (computed), `ccy` | A debt: the balance against the original plan, the interest and principal split, the payoff date; its events are Transactions. Later, §12. |
 | **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | Computed daily by the engine from Valuation and Liability; the series the overview and the forecast chart read. Later, §12. |
 | **Budget**, **ForecastAssumptions** | per member; per portfolio | Monthly income and planned spend with EMIs and surplus; the growth, contribution and surplus-allocation assumptions the thirty-year projection runs on. Later, §12. |
@@ -360,6 +361,54 @@ authorizer checks the role: a member opens their own files, the owner any,
 a viewer none; each opening is itself an audit row. In the chat a change
 card's Source button sends the original back.
 
+### 4.7 Money in any currency, checked against the holding (MA-156)
+
+Arun, 24 Oct 2026: "On the telegram App, I should be able to add
+transactions using Any currency for any fund and chatbot to figure what the
+base currency of the holdings, If the holdings are in GBP and I try to invest
+INR to GBP holding, chat should be able to correct me."
+
+Every holding has one currency: the one it is bought and valued in, as the
+platform shows it (`Position.ccy`). It is read from the factsheet or the
+screenshot when the holding is added and shown on that Confirm card, so it is
+confirmed once and never guessed again. A fund's own base currency
+(`Instrument.base_ccy`, often USD) can differ from the share class a member
+holds (GBP); the position's currency is the one that counts here.
+
+| The member types | The bot |
+| --- | --- |
+| "I put 200 into Balanced" | No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is" |
+| "I put £200 into Balanced" | Same currency: the card as in §4.2, then Confirm |
+| "I put ₹20,000 into Balanced" | Saves nothing yet. "Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way." Buttons: **Pounds that arrived** (type it, or send the platform's confirmation), **Use the ECB rate** (an estimate, marked so), **A rupee holding** (listed when there is one), **Cancel** |
+| "1.5 lakh into my Nifty 50 index fund" (phase 13) | An INR holding, so ₹1,50,000 with no question; pounds typed against it get the same correction the other way |
+| "Which currency is Balanced in?" | "Pounds (GBP), from the factsheet you sent on 3 March" |
+
+- **Reading amounts is code.** A parser reads symbols (£ $ € ₹), codes
+  (GBP, USD, EUR, INR and every currency the ECB publishes), words (pounds,
+  dollars, euros, rupees, Rs) and Indian number words (lakh, crore). Claude
+  only fills the fields when the wording is free; the figure is always the
+  member's own, echoed back for Confirm. "$" means US dollars unless the
+  member holds another dollar, when the bot asks which.
+- **A converted figure is never Claude's.** "Pounds that arrived" records
+  the member's figure and keeps the rupee amount and the implied rate beside
+  it. "Use the ECB rate" is the engine's conversion at the ECB reference rate
+  for that day, or the last one published before it at a weekend or an ECB
+  holiday (§5.3), with the rate and its date on the card; it is marked an
+  estimate until a statement, a screenshot or the next valuation confirms it.
+  The button appears once the daily rates are loaded (MA-44, phase 2);
+  before then the bot asks for the amount that arrived.
+- **Stored in the holding's currency, with the original kept.** The
+  Transaction's `amount` and `ccy` are the position's; `orig_amount`,
+  `orig_ccy`, `fx_rate`, `fx_source` and `fx_date` keep what was typed and
+  how it became the recorded figure. The audit row (§4.6) shows both, and a
+  screenshot or statement it came from is its `document_id`.
+- **Every pair, both ways, every door.** The same check runs on a typed
+  message, the guided flow, a screenshot, and a CAS or broker line (§22.2)
+  whose currency differs from the holding's. Privacy mode hides both amounts.
+- **Designed first.** The correction card, its buttons and the Confirm card
+  with two currencies are drawn as `Currency check.dc.html` in Claude Design
+  and put through design-first when MA-156 starts.
+
 ---
 
 ## 5. Data layer
@@ -464,7 +513,8 @@ uploaded or monthly from the page.
 
 GBP base; USD, EUR and INR, all published daily by the ECB. Each member can
 read figures in GBP or INR; the stored value is always both the native
-amount and its GBP equivalent on the day. Exchange calendars XLON, XETR,
+amount and its GBP equivalent on the day. Money typed in one currency for a
+holding in another is checked and converted as in §4.7. Exchange calendars XLON, XETR,
 XNYS. All schedules in `Europe/London`.
 
 ---
@@ -1127,6 +1177,8 @@ a daily digest instead.
 | Front end | Telegram rich messages + PNG charts + one read-only web app, as a Mini App in Telegram and in a laptop browser | Simple by default, technical on tap, interactive when wanted; the laptop gets the audit log and the agent's activity |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
+| The kill switch's name | `/pause` and `/resume`, kept though PAUSE is also a stance; the stance only appears on a holding's card with its confidence, never as a command (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping; the Admin center's Pause of a member (MA-102) means the same |
+| Money in any currency | Each position has one currency; an amount typed in another is never saved as it is: the bot names the holding's currency and asks for the amount that arrived, or offers the ECB rate as a marked estimate; the original amount, rate and source are kept on the transaction (MA-156, 24 Oct 2026) | Rupees are never recorded as pounds; the number stays the member's or the engine's, never Claude's |
 | Identity | Amazon Cognito from day one, one user pool per environment: Telegram (custom auth over `initData` and the Login Widget), Google and passkeys linked to one user per member; invites by one-time link; replaces the earlier "Cognito only later" (MA-106, 24 Oct 2026) | No passwords; one identity however you arrive; sign-out, pause and MFA come built in; free at this scale |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 | Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
@@ -1821,6 +1873,8 @@ New account types `demat`, `mf_folio`, `nre` and `nro` (and `ppf`, `nps`,
 `elss` if one is held), each with country `IN` and currency INR. Every
 Indian figure shows in INR with its GBP value beside it; the household
 total is in the base currency with the INR view one tap away (MA-94).
+Rupees typed against a pound holding, or pounds against an Indian one, get
+the correction of §4.7 (MA-156).
 Privacy mode hides rupees as it hides pounds. "ISA-safe" becomes
 "wrapper-aware": a suggestion names only actions that suit the account it is
 about, and the bot still never trades. For a UK resident many Indian funds

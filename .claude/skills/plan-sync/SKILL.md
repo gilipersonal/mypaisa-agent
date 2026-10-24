@@ -74,6 +74,8 @@ through `/design-first`.
 Run `python3 scripts/plan_sync.py start MA-<n>` after steps 1 to 3 for that
 key, and say what it printed:
 
+- `open` questions: stop. Ask Arun to settle each one, then change the
+  boards, the docs and the story to match and clear `open`.
 - `todo` with UI: stop. The story needs `/design-first` before any code.
 - `planned`: run `/design-first` on its boards (2 or 3 options, Arun picks),
   then set `picked` and copy the board again.

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa logo: three animated marks</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1040px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 24px; text-wrap: pretty; }
+          .dv-picked { display: flex; align-items: flex-start; gap: 12px; max-width: 1040px; margin: 0 0 28px; padding: 14px 18px; border-radius: 14px; background: #E2F2E7; color: #14171F; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; text-wrap: pretty; }
+          .dv-picked .ms { color: #1D7A3E; margin-top: 1px; }
+          .dv-opts { display: flex; flex-direction: column; gap: 64px; align-items: stretch; }
+          .dv-opt { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px; }
+          .dv-oid { font: 600 10.5px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+          .dv-opt:target .dv-oid { background: #2a78d6; color: #fff; }
+          .dv-olabel { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font: 400 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-oname { font-weight: 700; color: #14171F; font-size: 17px; }
+          .dv-rec { font: 700 11px/14px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: #1D7A3E; border-radius: 999px; padding: 4px 9px; white-space: nowrap; }
+          .dv-not { font: 600 11px/14px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #4E5462; background: rgba(0,0,0,.07); border-radius: 999px; padding: 4px 9px; white-space: nowrap; }
+          .dv-card { width: 100%; min-width: 0; box-sizing: border-box; background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 32px; display: flex; flex-direction: column; gap: 44px; }
+          .dv-row { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 10px; }
+          .dv-next { margin: 32px 0 0; font: 13px/1.5 -apple-system, system-ui, sans-serif; color: #5A606C; }
+          .sh { display: flex; align-items: baseline; gap: 12px; margin: 0 0 14px; }
+          .sh b { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; white-space: nowrap; }
+          .sh > span { min-width: 0; font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #4E5462; max-width: 1180px; text-wrap: pretty; }
+          .notes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+          .note { font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .note b { display: block; color: #14171F; margin-bottom: 4px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+          .btn-r { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px 0 12px; border: 0; border-radius: 12px; background: #14171F; color: #FFFFFF; font: 600 15px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; cursor: pointer; white-space: nowrap; }
+          .btn-r:hover { background: #2B3040; }
+          .btn-r:focus-visible { outline: 3px solid #2453C9; outline-offset: 2px; }
+          .btn-r .ms { font-size: 20px; }
+
+          /* the marks: one drawing, coloured by the ground it sits on */
+          .lg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+          .m-coin { fill: var(--m-coin); } .m-line { stroke: var(--m-line); } .m-dot { fill: var(--m-dot); stroke: var(--m-line); }
+          .m-dots { fill: var(--m-line); stroke: var(--m-ground); } .m-dotf { fill: var(--m-line); } .m-ink { stroke: var(--m-ink); } .m-rule { stroke: var(--m-line); }
+          .m-tile { fill: var(--m-tile); } .m-tileink { stroke: var(--m-tileink); } .m-ring { stroke: var(--m-ring); } .m-pound { stroke: var(--m-pound); }
+          .ic-bg { fill: #13213A; }
+          /* the mark inside the app icon and the circle crop: scale and optical offset per option */
+          .x1a-ic { transform: translate(24px, 24px) scale(0.74) translate(-24px, -24px); } .x1a-av { transform: translate(24px, 24px) scale(0.76) translate(-24px, -24px); } .x1a-avs { transform: translate(24px, 24px) scale(0.8) translate(-24px, -24px); }
+          .x1b-ic { transform: translate(24px, 23.2px) scale(0.74) translate(-24px, -24px); } .x1b-av { transform: translate(24px, 23.2px) scale(0.7) translate(-24px, -24px); } .x1b-avs { transform: translate(24px, 23.2px) scale(0.76) translate(-24px, -24px); }
+          .x1c-ic { transform: translate(24px, 24px) scale(0.74) translate(-24px, -24px); } .x1c-av { transform: translate(24px, 24px) scale(0.72) translate(-24px, -24px); } .x1c-avs { transform: translate(24px, 24px) scale(0.78) translate(-24px, -24px); }
+          .mk-l { --m-coin: #13213A; --m-line: #FF6B4F; --m-dot: #FFFFFF; --m-ground: #F6F4F1; --m-ink: #13213A; --m-ring: #13213A; --m-pound: #FFFFFF; --m-tile: #13213A; --m-tileink: #FFFFFF; }
+          .mk-d { --m-coin: #1A2944; --m-line: #FF7A5E; --m-dot: #FFFFFF; --m-ground: #0A0F18; --m-ink: #FFFFFF; --m-ring: #B7C2D6; --m-pound: #FFFFFF; --m-tile: #1A2944; --m-tileink: #FFFFFF; }
+          .mk-n { --m-coin: #233558; --m-line: #FF6B4F; --m-dot: #FFFFFF; --m-ground: #13213A; --m-ink: #FFFFFF; --m-ring: #B7C2D6; --m-pound: #FFFFFF; --m-tile: #233558; --m-tileink: #FFFFFF; }
+          .mk-nd { --m-coin: #2C4068; --m-line: #FF7A5E; --m-dot: #FFFFFF; --m-ground: #1A2944; --m-ink: #FFFFFF; --m-ring: #B7C2D6; --m-pound: #FFFFFF; --m-tile: #2C4068; --m-tileink: #FFFFFF; }
+          .mk { display: block; width: 100%; height: 100%; }
+
+          /* motion: transform, opacity and stroke drawing only; every part plays once on --mp-ease */
+          .k { animation-fill-mode: both; animation-timing-function: var(--mp-ease, cubic-bezier(0.22, 1, 0.36, 1)); }
+          @media (prefers-reduced-motion: no-preference) {
+            .play .k { animation-name: var(--kn); animation-duration: var(--kd); animation-delay: var(--kw); }
+          }
+          /* storyboard: the same animation, frozen at --t (a paused animation is not motion) */
+          .sb .k { animation-name: var(--kn); animation-duration: var(--kd); animation-delay: calc(var(--kw) - var(--t)); animation-play-state: paused; }
+          .t0 { --t: 0ms; } .t150 { --t: 150ms; } .t300 { --t: 300ms; } .t600 { --t: 600ms; } .t900 { --t: 900ms; } .t1200 { --t: 1200ms; } .t1350 { --t: 1350ms; } .t1700 { --t: 1700ms; }
+          .a1-coin, .a1-dot, .c1-coin, .c1-ring { transform-box: fill-box; transform-origin: center; }
+          .a1-coin { --kn: lg-pop; --kd: 460ms; --kw: 0ms; }
+          .a1-line { stroke-dasharray: 1 2; --kn: lg-draw; --kd: 680ms; --kw: 160ms; }
+          .a1-dot { --kn: lg-land; --kd: 380ms; --kw: 800ms; }
+          .b1-stem { stroke-dasharray: 1 2; --kn: lg-draw; --kd: 640ms; --kw: 0ms; }
+          .b1-bar { --kn: lg-rise; --kd: 460ms; --kw: 300ms; }
+          .b1-foot { --kn: lg-rise; --kd: 460ms; --kw: 440ms; }
+          .b1-rule { stroke-dasharray: 1 2; --kn: lg-draw; --kd: 520ms; --kw: 640ms; }
+          .c1-coin { --kn: lg-pop; --kd: 440ms; --kw: 0ms; }
+          .c1-pound { --kn: lg-fade; --kd: 360ms; --kw: 180ms; }
+          .c1-ring { --kn: lg-ring; --kd: 520ms; --kw: 80ms; }
+          .c1-orbit { transform-box: view-box; transform-origin: 24px 24px; --kn: lg-orbit; --kd: 1000ms; --kw: 180ms; }
+          .c1-dot { --kn: lg-fade; --kd: 220ms; --kw: 180ms; }
+          .sp-out { --kn: lg-out; --kd: 320ms; --kw: 1220ms; }
+          .sk-in { --kn: lg-in; --kd: 420ms; --kw: 1300ms; }
+          @keyframes lg-pop { from { opacity: 0; transform: scale(0.86); } to { opacity: 1; transform: none; } }
+          @keyframes lg-draw { from { stroke-dashoffset: 1.1; } to { stroke-dashoffset: 0; } }
+          @keyframes lg-land { 0% { opacity: 0; transform: scale(0.3); } 65% { opacity: 1; transform: scale(1.1); } 100% { opacity: 1; transform: none; } }
+          @keyframes lg-rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+          @keyframes lg-fade { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes lg-ring { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: none; } }
+          @keyframes lg-orbit { from { transform: rotate(-250deg); } to { transform: none; } }
+          @keyframes lg-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(0.97); } }
+          @keyframes lg-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+          /* panels */
+          .pnl { border-radius: 16px; padding: 26px 28px 18px; box-shadow: 0 0 0 1px rgba(0,0,0,.07); }
+          .lbl { font: 500 11px/14px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-3); letter-spacing: 0; white-space: nowrap; }
+          .strip { display: flex; align-items: flex-end; gap: 40px; }
+          .sz { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+          .sz svg { display: block; }
+          .tgpnl { background: var(--tg-head); border-radius: 16px; padding: 26px 28px 18px; box-shadow: 0 0 0 1px rgba(0,0,0,.07); }
+          .tgpnl .lbl { color: var(--tg-sub); }
+          .avs { display: flex; align-items: flex-end; gap: 28px; }
+
+          /* lockups */
+          .lk-h { display: flex; align-items: center; gap: 14px; }
+          .lk-v { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+          .lk-h svg, .lk-v svg { display: block; flex: none; }
+          .wm { font-family: var(--mp-font-round); font-weight: 800; font-size: 40px; line-height: 1; letter-spacing: -0.025em; color: var(--mp-ink); white-space: nowrap; text-box: trim-both cap alphabetic; }
+          .wm-s { font-size: 34px; }
+          .lkp { min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; gap: 22px; }
+          .cs { position: relative; outline: 1.5px dashed #C2381F; outline-offset: 0; }
+          .xbar { position: absolute; left: 0; top: 0; height: 28px; width: 28px; box-sizing: border-box; border-right: 1.5px solid #C2381F; border-bottom: 1.5px solid #C2381F; display: grid; place-items: center; font: 600 11px/1 ui-monospace, Menlo, monospace; color: #C2381F; background: rgba(255, 107, 79, 0.10); }
+
+          /* motion stages */
+          .mrow { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+          .mcell { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+          .stg { display: grid; place-items: center; border-radius: 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.07); }
+          .s-big { width: 260px; height: 260px; } .s-big .mbox { width: 176px; height: 176px; }
+          .s-sb { width: 124px; height: 124px; } .s-sb .mbox { width: 84px; height: 84px; }
+          .s-ov { width: 176px; height: 176px; } .s-ov .mbox { width: 116px; height: 116px; }
+
+          /* overview */
+          .ov { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 0 0 8px; }
+          .ovc { min-width: 0; box-sizing: border-box; background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
+          .ovh { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+          .ovh b { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+          .ovs { display: flex; gap: 12px; }
+          .ovl { margin: 0; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+
+          /* Mini App phone */
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+          .phw { display: flex; flex-direction: column; }
+          .ph-thumb .phbox { width: 164px; height: 355px; }
+          .ph-thumb .phone { transform: scale(0.42); transform-origin: 0 0; }
+          .mbody { position: relative; flex: 1; min-height: 0; }
+          .sk { position: absolute; inset: 0; padding: 14px 16px 0; display: flex; flex-direction: column; gap: 16px; }
+          .sp { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 84px; background: var(--mp-bg); opacity: 0; pointer-events: none; }
+          .spm { width: 120px; height: 120px; }
+          .skb { background: var(--mp-surface-2); border-radius: 6px; }
+          .skh { background: var(--mp-hero-2); border-radius: 6px; }
+          .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+
+          /* browser */
+          .bw { width: 820px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 20px 50px rgba(0,0,0,.16); }
+          .bw-tabs { display: flex; align-items: flex-end; gap: 2px; height: 42px; padding: 0 10px; background: var(--mp-surface-2); --m-ground: var(--mp-surface-2); }
+          .t-dark .bw-tabs { --m-coin: #2C4068; }
+          .dots { display: flex; gap: 7px; align-self: center; margin: 0 14px 0 4px; }
+          .dots i { display: block; width: 11px; height: 11px; border-radius: 50%; background: var(--mp-line); }
+          .tab { display: flex; align-items: center; gap: 8px; height: 34px; width: 196px; box-sizing: border-box; padding: 0 10px 0 12px; border-radius: 9px 9px 0 0; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); letter-spacing: 0; }
+          .tab.on { background: var(--mp-surface); color: var(--mp-ink); --m-ground: var(--mp-surface); }
+          .tab.pin { width: 44px; padding: 0; justify-content: center; }
+          .tab .x { margin-left: auto; font-size: 15px; color: var(--mp-ink-3); }
+          .tab .g0 { font-size: 16px; color: var(--mp-ink-3); }
+          .fav { display: block; width: 16px; height: 16px; flex: none; }
+          .bw-bar { display: flex; align-items: center; gap: 12px; height: 42px; padding: 0 14px; background: var(--mp-surface); border-bottom: 1px solid var(--mp-line); color: var(--mp-ink-3); }
+          .bw-bar .ms { font-size: 18px; }
+          .url { flex: 1; min-width: 0; height: 30px; border-radius: 15px; background: var(--mp-surface-2); display: flex; align-items: center; gap: 6px; padding: 0 12px; font: 13px/16px var(--mp-font); color: var(--mp-ink-2); letter-spacing: 0; }
+          .url .ms { font-size: 15px; }
+          .bw-page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); height: 470px; }
+          .lhero { background: var(--mp-hero); color: var(--mp-hero-ink); padding: 34px 38px; display: flex; flex-direction: column; justify-content: space-between; }
+          .lhero .wm { color: var(--mp-hero-ink); font-size: 30px; }
+          .tagline { font: 800 32px/38px var(--mp-font-round); letter-spacing: -0.03em; margin: 0; text-wrap: balance; }
+          .lform { display: flex; align-items: center; justify-content: center; padding: 28px; background: var(--mp-bg); }
+          .lbox { width: 100%; max-width: 316px; display: flex; flex-direction: column; gap: 10px; }
+          .gbadge { width: 24px; height: 24px; border-radius: 50%; background: var(--mp-surface); color: var(--mp-ink); display: grid; place-items: center; font: 700 14px/1 var(--mp-font); }
+          .lnote { display: flex; gap: 10px; align-items: flex-start; }
+          .t1x { width: 440px; border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 12px 30px rgba(0,0,0,.12); }
+
+          /* Telegram */
+          .tgp { width: 390px; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; background: var(--tg-bg); color: var(--tg-text); box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 20px 40px rgba(0,0,0,.14); }
+          .tgl { background: var(--tg-head); padding-bottom: 4px; }
+          .tgl-head { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+          .tgl-head b { font: 600 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .tgl-a { color: var(--tg-link); font-size: 17px; min-width: 44px; }
+          .tgl-search { margin: 0 12px 8px; height: 36px; border-radius: 10px; background: var(--tg-bg); color: var(--tg-sub); display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 16px; }
+          .tgl-row { display: flex; gap: 12px; align-items: center; padding: 6px 12px 0 12px; }
+          .tgl-av { width: 58px; height: 58px; flex: none; display: block; border-radius: 50%; }
+          .tgl-ini { display: grid; place-items: center; color: #FFFFFF; font: 600 22px/1 -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .av-a { background: #2453C9; } .av-f { background: #6B3FB8; }
+          .tgl-txt { flex: 1; min-width: 0; padding: 4px 0 10px; border-bottom: 0.5px solid var(--tg-line); }
+          .tgl-name { font: 600 16px/21px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .tgl-time { font-size: 14px; line-height: 18px; color: var(--tg-sub); }
+          .tgl-prev { font-size: 15px; line-height: 20px; color: var(--tg-sub); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-top: 8px solid var(--tg-bg); border-bottom: 0.5px solid var(--tg-line); }
+          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
+          .back .ms { font-size: 22px; }
+          .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
+          .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
+          .cav { width: 36px; height: 36px; flex: none; display: block; margin-left: 36px; }
+          .tgmsgs { padding: 10px 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+        </style>
+      </helmet>
+
+      <svg class="lg-defs" width="0" height="0" aria-hidden="true">
+        <defs>
+          <g id="lg-pound"><path d="M31.6 15.2 C31.1 11.1 28.4 8.6 24.8 8.6 C20.7 8.6 18 11.5 18 15.6 L18 28.4 C18 31.5 16.9 33.5 14.4 35.2"></path><path d="M14.4 35.2 H33.6"></path><path d="M13.6 23.4 H26.6"></path></g>
+          <symbol id="m1a" viewBox="0 0 48 48" overflow="visible"><circle class="m-coin" cx="23.3" cy="24.4" r="19"></circle><path class="m-line" d="M5.27 30.18 C9.56 28.8 14.6 24.6 21.2 26.4 S31.46 21.1 38.86 13.5" fill="none" stroke-width="3"></path><circle class="m-dot" cx="38.86" cy="13.5" r="3.4" stroke-width="2.4"></circle></symbol>
+          <symbol id="m1a-s" viewBox="0 0 48 48" overflow="visible"><circle class="m-coin" cx="23.2" cy="24.6" r="20"></circle><path class="m-line" d="M4.28 30.55 C10.01 28.75 15 25 22.4 26.6 S32.96 17.89 38.96 12.29" fill="none" stroke-width="5"></path><circle class="m-dots" cx="38.96" cy="12.29" r="5.6" stroke-width="2.6"></circle></symbol>
+          <symbol id="m1b" viewBox="0 0 48 48" overflow="visible"><use href="#lg-pound" class="m-ink" transform="translate(0 -1.2)" fill="none" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"></use><path class="m-rule" d="M10.8 41.2 H37.2" stroke-width="3.8" stroke-linecap="round"></path></symbol>
+          <symbol id="m1b-s" viewBox="0 0 48 48" overflow="visible"><use href="#lg-pound" class="m-ink" transform="translate(24 21.4) scale(1.08) translate(-23.6 -21.9)" fill="none" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"></use><path class="m-rule" d="M9.6 43 H38.4" stroke-width="5.2" stroke-linecap="round"></path></symbol>
+          <symbol id="m1b-t" viewBox="0 0 48 48" overflow="visible"><rect class="m-tile" width="48" height="48" rx="10.75"></rect><use href="#lg-pound" class="m-tileink" transform="translate(24 21.4) scale(.66) translate(-23.6 -21.9)" fill="none" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></use><path class="m-rule" d="M15.2 37.4 H32.8" stroke-width="3" stroke-linecap="round"></path></symbol>
+          <symbol id="m1c" viewBox="0 0 48 48" overflow="visible"><path class="m-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke-width="1.6"></path><circle class="m-coin" cx="24" cy="24" r="14.6"></circle><use href="#lg-pound" class="m-pound" transform="translate(24.1 24) scale(.56) translate(-23.6 -21.9)" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"></use><circle class="m-dotf" cx="38.14" cy="9.86" r="3.8"></circle></symbol>
+          <symbol id="m1c-s" viewBox="0 0 48 48" overflow="visible"><path class="m-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><use href="#lg-pound" class="m-pound" transform="translate(23 24.8) scale(.62) translate(-23.6 -21.9)" fill="none" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"></use><circle class="m-dotf" cx="37.07" cy="10.93" r="5.4"></circle></symbol>
+        </defs>
+      </svg>
+
+      <section class="dv-turn" id="t1" data-screen-label="Turn 1: three animated marks">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">MyPaisa logo: three animated marks</span><button class="btn-r" style="margin-left: 16px; align-self: center" onClick="{{ replayAll }}"><span class="ms">replay</span>Replay all</button></div>
+        <p class="dv-intro">MA-103. Arun asked for a motion-animated brand. Three different ideas, each drawn by hand on a 48 grid in DS v1 Warm ledger: the hero navy (#13213A, #1A2944 on dark), coral (#FF6B4F, #FF7A5E on dark), ink, white and the warm ground #F6F4F1, with the hero card's own inner tones where a coin sits on navy. Each option shows the mark from 512 to 16 px in light and dark, the app icon and Telegram's circle crop, the lockups with a clear-space rule, its intro (one play, at most 1.2 s, with Replay and a six-frame storyboard), and the mark at work: the Mini App opening inside Telegram, the sign-in page, Telegram's chat list and chat header, and a browser tab. Under Reduce Motion every intro shows its last frame at once. Figures are illustrative.</p>
+        <div class="dv-picked"><span class="ms ms-fill">check_circle</span><span><b>Picked: <a class="dv-oid" href="#1c">1c</a> Watcher (Arun, 24 Oct 2026).</b> It is now the MyPaisa mark: the repo's docs/mark.svg family and every Claude Design screen use it (the sidebar, the sign-in pages, the bot's avatar and the bot's PNG footers). <a class="dv-oid" href="#1a">1a</a> and <a class="dv-oid" href="#1b">1b</a> stay below as the record. <i>The record, as written before the pick:</i> this page recommended <a class="dv-oid" href="#1a">1a</a> Stance line, because it is the one mark here that could not belong to another app. It is made of things MyPaisa already shows: the navy hero card, the coral line on every chart and every PNG the bot sends, and the ringed stance dot. So the brand and the product say the same thing, and the intro is the product in one second: a line drawn calmly, then one view placed. It holds at 16 px with its own small cut, and it needs no £, so it stays right if the household ever holds more than sterling. <a class="dv-oid" href="#1c">1c</a> is the safe evolution of today's coin; <a class="dv-oid" href="#1b">1b</a> is the plainest and the sharpest at 16 px, but the hardest to own.</span></div>
+
+        <div class="ov">
+          <sc-for list="{{ opts }}" as="o" hint-placeholder-count="3">
+            <div class="ovc">
+              <div class="ovh"><a class="dv-oid" href="#{{ o.id }}">{{ o.id }}</a><b>{{ o.name }}</b><sc-if value="{{ o.pick }}" hint-placeholder-val="{{ false }}"><span class="dv-rec">Picked · 24 Oct</span></sc-if><sc-if value="{{ o.notPick }}" hint-placeholder-val="{{ true }}"><span class="dv-not">Not picked · kept as the record</span></sc-if><button class="btn-r" style="margin-left: auto" onClick="{{ o.replay }}"><span class="ms">replay</span>Replay</button></div>
+              <div class="ovs">
+                <sc-for list="{{ o.ovStages }}" as="c" hint-placeholder-count="2">
+                  <div class="stg s-ov {{ c.cls }}" data-play="{{ c.play }}" data-screen-label="{{ o.id }} intro {{ c.label }}">
+                    <div class="mbox">
+                      <sc-if value="{{ o.is1a }}" hint-placeholder-val="{{ true }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><circle class="m-coin k a1-coin" cx="23.3" cy="24.4" r="19"></circle><path class="m-line k a1-line" pathLength="1" d="M5.27 30.18 C9.56 28.8 14.6 24.6 21.2 26.4 S31.46 21.1 38.86 13.5" fill="none" stroke-width="3"></path><circle class="m-dot k a1-dot" cx="38.86" cy="13.5" r="3.4" stroke-width="2.4"></circle></svg></sc-if>
+                      <sc-if value="{{ o.is1b }}" hint-placeholder-val="{{ false }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><g transform="translate(0 -1.2)" class="m-ink" fill="none" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path class="k b1-stem" pathLength="1" d="M31.6 15.2 C31.1 11.1 28.4 8.6 24.8 8.6 C20.7 8.6 18 11.5 18 15.6 L18 28.4 C18 31.5 16.9 33.5 14.4 35.2"></path><path class="k b1-bar" d="M13.6 23.4 H26.6"></path><path class="k b1-foot" d="M14.4 35.2 H33.6"></path></g><path class="m-rule k b1-rule" pathLength="1" d="M10.8 41.2 H37.2" stroke-width="3.8" stroke-linecap="round"></path></svg></sc-if>
+                      <sc-if value="{{ o.is1c }}" hint-placeholder-val="{{ false }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><circle class="m-ring k c1-ring" cx="24" cy="24" r="20" fill="none" stroke-width="1.6"></circle><circle class="m-coin k c1-coin" cx="24" cy="24" r="14.6"></circle><g class="k c1-pound"><use href="#lg-pound" class="m-pound" transform="translate(24.1 24) scale(.56) translate(-23.6 -21.9)" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"></use></g><g class="k c1-orbit"><circle class="m-dots k c1-dot" cx="38.14" cy="9.86" r="3.8" stroke-width="2.6"></circle></g></svg></sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <p class="ovl">{{ o.line }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="dv-opts" style="margin-top: 48px">
+          <sc-for list="{{ opts }}" as="o" hint-placeholder-count="3">
+            <div class="dv-opt" id="{{ o.id }}">
+              <div class="dv-olabel"><a class="dv-oid" href="#{{ o.id }}">{{ o.id }}</a><span class="dv-oname">{{ o.name }}</span><sc-if value="{{ o.pick }}" hint-placeholder-val="{{ false }}"><span class="dv-rec">Picked · 24 Oct</span></sc-if><sc-if value="{{ o.notPick }}" hint-placeholder-val="{{ true }}"><span class="dv-not">Not picked · kept as the record</span></sc-if><span>{{ o.line }}</span></div>
+              <div class="dv-card">
+                <div class="notes">
+                  <div class="note"><b>The idea</b>{{ o.idea }}</div>
+                  <div class="note"><b>What the motion says</b>{{ o.motion }}</div>
+                  <div class="note"><b>At 16 px</b>{{ o.small }}</div>
+                  <div class="note"><b>The trade-off</b>{{ o.trade }}</div>
+                </div>
+
+                <div>
+                  <div class="sh"><b>1 · The mark</b><span>512, 160 and 64 use the full drawing; 32 and 16 use a small cut with heavier strokes and fewer parts. Light on the warm ground, dark on the dark ground.</span></div>
+                  <div class="dv-row">
+                    <sc-for list="{{ o.strips }}" as="st" hint-placeholder-count="2">
+                      <div class="pnl {{ st.cls }}" data-screen-label="{{ o.id }} mark sizes {{ st.label }}">
+                        <div class="strip">
+                          <sc-for list="{{ st.sizes }}" as="z" hint-placeholder-count="5">
+                            <div class="sz"><svg style="width: {{ z.w }}; height: {{ z.w }}" viewBox="0 0 48 48" overflow="visible" role="img" aria-label="{{ o.aria }}"><use href="#{{ z.sym }}"></use></svg><span class="lbl">{{ z.label }}</span></div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="sh"><b>2 · App icon and Telegram avatar</b><span>The navy tile for a home screen (512, corner radius 22%) and Telegram's circle crop, which a bot gets as its avatar (160, 64, 32). One image serves light and dark; 32 uses the small cut.</span></div>
+                  <div class="dv-row">
+                    <div class="pnl mp t-light mk-n" data-screen-label="{{ o.id }} app icon 512">
+                      <div class="sz"><svg width="512" height="512" viewBox="0 0 48 48" role="img" aria-label="{{ o.aria }}, app icon"><rect class="ic-bg" width="48" height="48" rx="10.75"></rect><g class="x{{ o.id }}-ic"><use href="#m{{ o.id }}"></use></g></svg><span class="lbl">512 · app icon</span></div>
+                    </div>
+                    <sc-for list="{{ tgThemes }}" as="t" hint-placeholder-count="2">
+                      <div class="tgpnl {{ t.tg }} mk-n" data-screen-label="{{ o.id }} Telegram avatar {{ t.label }}">
+                        <div class="avs">
+                          <sc-for list="{{ o.avs }}" as="a" hint-placeholder-count="3">
+                            <div class="sz"><svg style="width: {{ a.w }}; height: {{ a.w }}" viewBox="0 0 48 48" role="img" aria-label="{{ o.aria }}, Telegram avatar"><circle class="ic-bg" cx="24" cy="24" r="24"></circle><g class="{{ a.tc }}"><use href="#{{ a.sym }}"></use></g></svg><span class="lbl">{{ a.label }}</span></div>
+                          </sc-for>
+                        </div>
+                        <div class="lbl" style="margin-top: 14px">Telegram {{ t.label }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="sh"><b>3 · Lockups</b><span>MyPaisa in the rounded face (SF Pro Rounded; Nunito on the web) at 800, the mark centred on the capital height. {{ o.lockNote }}</span></div>
+                  <div class="dv-row">
+                    <sc-for list="{{ lockThemes }}" as="t" hint-placeholder-count="2">
+                      <div class="pnl lkp {{ t.cls }}" data-screen-label="{{ o.id }} lockup horizontal {{ t.label }}">
+                        <div class="lk-h"><svg style="width: {{ o.lockPx }}; height: {{ o.lockPx }}" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#{{ o.lockSym }}"></use></svg><span class="wm">MyPaisa</span></div>
+                        <span class="lbl">Horizontal · {{ t.label }}</span>
+                      </div>
+                    </sc-for>
+                    <sc-for list="{{ lockThemes }}" as="t" hint-placeholder-count="2">
+                      <div class="pnl lkp {{ t.cls }}" data-screen-label="{{ o.id }} lockup stacked {{ t.label }}">
+                        <div class="lk-v"><svg style="width: {{ o.stackPx }}; height: {{ o.stackPx }}" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#{{ o.lockSym }}"></use></svg><span class="wm wm-s">MyPaisa</span></div>
+                        <span class="lbl">Stacked · {{ t.label }}</span>
+                      </div>
+                    </sc-for>
+                    <div class="pnl lkp mp t-light mk-l" data-screen-label="{{ o.id }} clear space">
+                      <div class="cs" style="padding: 28px">
+                        <span class="xbar">x</span>
+                        <div class="lk-h"><svg style="width: {{ o.lockPx }}; height: {{ o.lockPx }}" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#{{ o.lockSym }}"></use></svg><span class="wm">MyPaisa</span></div>
+                      </div>
+                      <span class="lbl" style="white-space: normal; max-width: 330px">Clear space x on every side, x = the height of the capital M. Smallest: mark 16 px, lockup 96 px wide.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="sh"><b>4 · Motion</b><button class="btn-r" onClick="{{ o.replay }}"><span class="ms">replay</span>Replay</button><span>{{ o.timing }} Transform, opacity and stroke drawing only, on --mp-ease, played once. The strips are the real animation frozen at each time.</span></div>
+                  <div class="fx col gap16">
+                    <sc-for list="{{ o.mrows }}" as="mr" hint-placeholder-count="3">
+                      <div class="mrow">
+                        <sc-for list="{{ mr.cells }}" as="c" hint-placeholder-count="6">
+                          <div class="mcell">
+                            <div class="stg {{ c.cls }}" data-play="{{ c.play }}" data-screen-label="{{ o.id }} motion {{ c.label }}">
+                              <div class="mbox">
+                                <sc-if value="{{ o.is1a }}" hint-placeholder-val="{{ true }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><circle class="m-coin k a1-coin" cx="23.3" cy="24.4" r="19"></circle><path class="m-line k a1-line" pathLength="1" d="M5.27 30.18 C9.56 28.8 14.6 24.6 21.2 26.4 S31.46 21.1 38.86 13.5" fill="none" stroke-width="3"></path><circle class="m-dot k a1-dot" cx="38.86" cy="13.5" r="3.4" stroke-width="2.4"></circle></svg></sc-if>
+                                <sc-if value="{{ o.is1b }}" hint-placeholder-val="{{ false }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><g transform="translate(0 -1.2)" class="m-ink" fill="none" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path class="k b1-stem" pathLength="1" d="M31.6 15.2 C31.1 11.1 28.4 8.6 24.8 8.6 C20.7 8.6 18 11.5 18 15.6 L18 28.4 C18 31.5 16.9 33.5 14.4 35.2"></path><path class="k b1-bar" d="M13.6 23.4 H26.6"></path><path class="k b1-foot" d="M14.4 35.2 H33.6"></path></g><path class="m-rule k b1-rule" pathLength="1" d="M10.8 41.2 H37.2" stroke-width="3.8" stroke-linecap="round"></path></svg></sc-if>
+                                <sc-if value="{{ o.is1c }}" hint-placeholder-val="{{ false }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><circle class="m-ring k c1-ring" cx="24" cy="24" r="20" fill="none" stroke-width="1.6"></circle><circle class="m-coin k c1-coin" cx="24" cy="24" r="14.6"></circle><g class="k c1-pound"><use href="#lg-pound" class="m-pound" transform="translate(24.1 24) scale(.56) translate(-23.6 -21.9)" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"></use></g><g class="k c1-orbit"><circle class="m-dots k c1-dot" cx="38.14" cy="9.86" r="3.8" stroke-width="2.6"></circle></g></svg></sc-if>
+                              </div>
+                            </div>
+                            <span class="lbl" style="color: #5A606C">{{ c.label }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="sh"><b>5 · In context</b><span>The Mini App opening inside Telegram's header: the mark plays, then cross-fades into the Overview skeleton (live, and frozen at four moments). Then the sign-in page, Telegram's chat list and chat header, and the favicon in a browser tab at actual size.</span></div>
+                  <div class="dv-row">
+                    <sc-for list="{{ o.phones }}" as="p" hint-placeholder-count="6">
+                      <div class="phw {{ p.wrap }}">
+                        <p class="dv-cap">{{ p.cap }}</p>
+                        <div class="phbox">
+                          <div class="phone {{ p.cls }}" data-play="{{ p.play }}" data-screen-label="{{ o.id }} Mini App opening {{ p.cap }}">
+                            <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                            <div class="mbody">
+                              <div class="sk k sk-in" aria-hidden="true">
+                                <div class="fx ac gap8"><div class="skb" style="flex: 1; height: 44px; border-radius: 10px"></div><div class="skb" style="width: 44px; height: 44px; border-radius: 12px"></div></div>
+                                <div class="mp-hero">
+                                  <div class="skh" style="width: 44%; height: 12px"></div>
+                                  <div class="skh" style="width: 58%; height: 38px; margin-top: 14px; border-radius: 10px"></div>
+                                  <div class="skh" style="width: 50%; height: 14px; margin-top: 10px"></div>
+                                  <div class="skh" style="height: 72px; margin-top: 16px; border-radius: 12px"></div>
+                                  <div class="skh" style="height: 40px; margin-top: 14px; border-radius: 10px"></div>
+                                </div>
+                                <div class="mp-card fx ac gap12" style="padding: 14px 16px"><div class="skb" style="width: 28px; height: 28px; border-radius: 50%"></div><div style="flex: 1"><div class="skb" style="width: 62%; height: 14px"></div><div class="skb" style="width: 40%; height: 11px; margin-top: 8px"></div></div></div>
+                                <div class="mp-group">
+                                  <sc-for list="{{ skRows }}" as="r" hint-placeholder-count="5">
+                                    <div class="mp-row"><div class="skb" style="width: 36px; height: 36px; border-radius: 10px"></div><div style="flex: 1"><div class="skb" style="width: {{ r.w1 }}; height: 13px"></div><div class="skb" style="width: {{ r.w2 }}; height: 10px; margin-top: 7px"></div></div><div class="skb" style="width: 56px; height: 13px"></div></div>
+                                  </sc-for>
+                                </div>
+                                <nav class="mp-tabbar tabs-abs" aria-label="Sections">
+                                  <span class="mp-tab on"><span class="ms ms-fill">home</span>Overview</span>
+                                  <span class="mp-tab"><span class="ms">donut_small</span>Holdings</span>
+                                  <span class="mp-tab"><span class="ms">join_inner</span>Overlap</span>
+                                  <span class="mp-tab"><span class="ms">insights</span>Record</span>
+                                  <span class="mp-tab"><span class="ms">menu</span>More</span>
+                                </nav>
+                              </div>
+                              <div class="sp k sp-out">
+                                <div class="spm">
+                                  <sc-if value="{{ o.is1a }}" hint-placeholder-val="{{ true }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" role="img" aria-label="MyPaisa"><circle class="m-coin k a1-coin" cx="23.3" cy="24.4" r="19"></circle><path class="m-line k a1-line" pathLength="1" d="M5.27 30.18 C9.56 28.8 14.6 24.6 21.2 26.4 S31.46 21.1 38.86 13.5" fill="none" stroke-width="3"></path><circle class="m-dot k a1-dot" cx="38.86" cy="13.5" r="3.4" stroke-width="2.4"></circle></svg></sc-if>
+                                  <sc-if value="{{ o.is1b }}" hint-placeholder-val="{{ false }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" role="img" aria-label="MyPaisa"><g transform="translate(0 -1.2)" class="m-ink" fill="none" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path class="k b1-stem" pathLength="1" d="M31.6 15.2 C31.1 11.1 28.4 8.6 24.8 8.6 C20.7 8.6 18 11.5 18 15.6 L18 28.4 C18 31.5 16.9 33.5 14.4 35.2"></path><path class="k b1-bar" d="M13.6 23.4 H26.6"></path><path class="k b1-foot" d="M14.4 35.2 H33.6"></path></g><path class="m-rule k b1-rule" pathLength="1" d="M10.8 41.2 H37.2" stroke-width="3.8" stroke-linecap="round"></path></svg></sc-if>
+                                  <sc-if value="{{ o.is1c }}" hint-placeholder-val="{{ false }}"><svg class="mk" viewBox="0 0 48 48" overflow="visible" role="img" aria-label="MyPaisa"><circle class="m-ring k c1-ring" cx="24" cy="24" r="20" fill="none" stroke-width="1.6"></circle><circle class="m-coin k c1-coin" cx="24" cy="24" r="14.6"></circle><g class="k c1-pound"><use href="#lg-pound" class="m-pound" transform="translate(24.1 24) scale(.56) translate(-23.6 -21.9)" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"></use></g><g class="k c1-orbit"><circle class="m-dots k c1-dot" cx="38.14" cy="9.86" r="3.8" stroke-width="2.6"></circle></g></svg></sc-if>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+
+                  <div class="dv-row" style="margin-top: 40px">
+                    <sc-for list="{{ webThemes }}" as="t" hint-placeholder-count="2">
+                      <div>
+                        <p class="dv-cap">Browser · sign-in · {{ t.label }}</p>
+                        <div class="bw mp {{ t.cls }}" data-screen-label="{{ o.id }} sign-in {{ t.label }}">
+                          <div class="bw-tabs">
+                            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                            <div class="tab on"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg><span>MyPaisa · Sign in</span><span class="ms x">close</span></div>
+                            <div class="tab"><span class="ms g0">public</span><span>New tab</span></div>
+                          </div>
+                          <div class="bw-bar"><span class="ms">arrow_back</span><span class="ms">arrow_forward</span><span class="ms">refresh</span><div class="url"><span class="ms">lock</span>mypaisa.example/sign-in</div></div>
+                          <div class="bw-page">
+                            <div class="lhero {{ t.hero }}">
+                              <div class="lk-h"><svg style="width: {{ o.heroPx }}; height: {{ o.heroPx }}" viewBox="0 0 48 48" overflow="visible" role="img" aria-label="{{ o.aria }}"><use href="#{{ o.lockSym }}"></use></svg><span class="wm">MyPaisa</span></div>
+                              <div class="fx col gap12">
+                                <h1 class="tagline">Your household's money, in one calm place.</h1>
+                                <p class="mp-sub mp-hero-2" style="margin: 0">Holdings, stances and the track record for your household, to read in the browser. Every change still happens in the chat.</p>
+                              </div>
+                              <div class="mp-foot mp-hero-2">Illustrative</div>
+                            </div>
+                            <div class="lform">
+                              <div class="lbox">
+                                <div class="mp-t1">Sign in</div>
+                                <div class="mp-sub mp-ink2" style="margin-bottom: 10px">For your household, with the account you already use with the MyPaisa bot.</div>
+                                <a class="mp-btn mp-btn-primary" href="#{{ o.id }}"><span class="ms">send</span>Sign in with Telegram</a>
+                                <a class="mp-btn mp-btn-tinted" href="#{{ o.id }}"><span class="gbadge" aria-hidden="true">G</span>Sign in with Google</a>
+                                <div class="lnote mp-foot mp-ink2" style="margin-top: 6px"><span class="ms ms-s mp-ink3">smartphone</span><span>No password. You confirm in Telegram on your phone.</span></div>
+                                <div class="lnote mp-foot mp-ink2"><span class="ms ms-s mp-ink3">lock</span><span>Read-only: every change happens in the chat.</span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+
+                  <div class="dv-row" style="margin-top: 40px">
+                    <sc-for list="{{ tgThemes }}" as="t" hint-placeholder-count="2">
+                      <div>
+                        <p class="dv-cap">Telegram · chat list and chat header · {{ t.label }}</p>
+                        <div class="tgp tg {{ t.tg }}" data-screen-label="{{ o.id }} Telegram {{ t.label }}">
+                          <div class="tgl">
+                            <div class="tgl-head"><span class="tgl-a">Edit</span><b>Chats</b><span class="tgl-a" style="text-align: right" aria-label="New message"><span class="ms">edit_square</span></span></div>
+                            <div class="tgl-search"><span class="ms ms-s">search</span>Search</div>
+                            <sc-for list="{{ chats }}" as="c" hint-placeholder-count="3">
+                              <div class="tgl-row">
+                                <sc-if value="{{ c.isBot }}" hint-placeholder-val="{{ true }}"><svg class="tgl-av mk-n" viewBox="0 0 48 48" role="img" aria-label="MyPaisa avatar"><circle class="ic-bg" cx="24" cy="24" r="24"></circle><g class="x{{ o.id }}-av"><use href="#m{{ o.id }}"></use></g></svg></sc-if>
+                                <sc-if value="{{ c.isPerson }}" hint-placeholder-val="{{ false }}"><span class="tgl-av tgl-ini {{ c.av }}" aria-hidden="true">{{ c.ini }}</span></sc-if>
+                                <div class="tgl-txt"><div class="fx jb ac"><span class="tgl-name">{{ c.name }}</span><span class="tgl-time">{{ c.time }}</span></div><div class="tgl-prev">{{ c.prev }}</div></div>
+                              </div>
+                            </sc-for>
+                          </div>
+                          <div class="chead"><span class="back"><span class="ms">arrow_back_ios_new</span>Chats</span><div class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></div><svg class="cav mk-n" viewBox="0 0 48 48" role="img" aria-label="MyPaisa avatar"><circle class="ic-bg" cx="24" cy="24" r="24"></circle><g class="x{{ o.id }}-avs"><use href="#m{{ o.id }}-s"></use></g></svg></div>
+                          <div class="tgmsgs">
+                            <div class="tg-bub"><b>Morning brief · Fri 30 Oct</b><div style="margin-top: 2px">Nothing to do this week. Your household is at £25,800, ▲ 2.4% this month. Next review Saturday.</div><div class="tg-time">07:31</div></div>
+                          </div>
+                        </div>
+                      </div>
+                    </sc-for>
+                    <div class="fx col gap24">
+                      <sc-for list="{{ webThemes }}" as="t" hint-placeholder-count="2">
+                        <div>
+                          <p class="dv-cap">Browser tab · favicon at actual size · {{ t.label }}</p>
+                          <div class="t1x mp {{ t.cls }}" data-screen-label="{{ o.id }} browser tab {{ t.label }}">
+                            <div class="bw-tabs">
+                              <div class="tab pin" aria-label="MyPaisa, pinned"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg></div>
+                              <div class="tab on"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg><span>MyPaisa · Overview</span><span class="ms x">close</span></div>
+                              <div class="tab"><span class="ms g0">public</span><span>New tab</span></div>
+                            </div>
+                            <div class="bw-bar"><span class="ms">arrow_back</span><div class="url"><span class="ms">lock</span>mypaisa.example/overview</div></div>
+                          </div>
+                        </div>
+                      </sc-for>
+                      <p class="dv-cap" style="max-width: 440px; white-space: normal; line-height: 18px">The favicon ships as one SVG: the small cut, with a dark-scheme rule that lifts the coin to the hero's lighter inner tone (#2C4068) and turns the pound white. Pinned tab first, then the open tab.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <p class="dv-next">Try next: "a <a class="dv-oid" href="#1c">1c</a> sticker set for the bot" · "<a class="dv-oid" href="#1c">1c</a> on the Telegram PNG cards at full size" · "slow the intro of <a class="dv-oid" href="#1c">1c</a> by 20% and compare". MyPaisa DS v1 · Logo · MA-103 · illustrative figures; Asha is fictional.</p>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        replay(id) {
+          const sel = id ? '[data-play="' + id + '"]' : '[data-play^="1"]';
+          document.querySelectorAll(sel).forEach((root) => {
+            if (!root.getAnimations) return;
+            root.getAnimations({ subtree: true }).forEach((a) => { a.currentTime = 0; a.play(); });
+          });
+        }
+        renderVals() {
+          const T = [0, 150, 300, 600, 900, 1200];
+          const light = { cls: 'mp t-light mk-l', label: 'light' };
+          const dark = { cls: 'mp t-dark mk-d', label: 'dark' };
+          const sizes = (id) => [512, 160, 64, 32, 16].map((px) => ({ w: px + 'px', sym: 'm' + id + (px < 64 ? '-s' : ''), label: px + (px < 64 ? ' · small cut' : '') }));
+          const make = (id, d) => Object.assign({
+            id: id, is1a: id === '1a', is1b: id === '1b', is1c: id === '1c', pick: id === '1c', notPick: id !== '1c',
+            replay: () => this.replay(id),
+            strips: [Object.assign({ sizes: sizes(id) }, light, { label: 'light, on #F6F4F1' }), Object.assign({ sizes: sizes(id) }, dark, { label: 'dark, on #0A0F18' })],
+            ovStages: [{ cls: 'play ' + light.cls, play: id, label: 'light' }, { cls: 'play ' + dark.cls, play: id, label: 'dark' }],
+            avs: [{ w: '160px', sym: 'm' + id, tc: 'x' + id + '-av', label: '160' }, { w: '64px', sym: 'm' + id, tc: 'x' + id + '-av', label: '64' }, { w: '32px', sym: 'm' + id + '-s', tc: 'x' + id + '-avs', label: '32 · small cut' }],
+            mrows: [
+              { cells: [{ cls: 's-big play ' + light.cls, play: id, label: 'Live · light' }, { cls: 's-big play ' + dark.cls, play: id, label: 'Live · dark' }] },
+              { cells: T.map((t) => ({ cls: 's-sb sb t' + t + ' ' + light.cls, play: '', label: t + ' ms' })) },
+              { cells: T.map((t) => ({ cls: 's-sb sb t' + t + ' ' + dark.cls, play: '', label: t + ' ms' })) }
+            ],
+            phones: [
+              { wrap: 'ph-full', cls: 'play mp t-light tg-light mk-l', play: id, cap: 'Mini App · light · live' },
+              { wrap: 'ph-full', cls: 'play mp t-dark tg-dark mk-d', play: id, cap: 'Mini App · dark · live' }
+            ].concat([300, 900, 1350, 1700].map((t) => ({ wrap: 'ph-thumb', cls: 'sb t' + t + ' mp t-light tg-light mk-l', play: '', cap: 'at ' + t + ' ms' })))
+          }, d);
+          return {
+            replayAll: () => this.replay(''),
+            opts: [
+              make('1a', {
+                name: 'Stance line', aria: 'MyPaisa mark: a navy coin crossed by a coral line that ends in a stance dot on its edge',
+                line: 'The hero card in a coin: your line, drawn calmly, ending in a stance placed on the edge.',
+                idea: 'The navy coin is the hero card. The coral line is the line every MyPaisa chart draws, and the ringed dot is the stance mark the hero chart already uses. The line crosses the coin and the stance sits on its rim, half in and half out: one view, made at the edge of what you hold.',
+                motion: 'The coin settles in, the line draws itself from left to right, and the stance lands on the rim with one small overshoot. It says: we look at your line first, then make one calm call. Nothing spins and nothing loops.',
+                small: 'Its own cut for 32 and 16 px: the line thickens to 5 of 48 and the dot turns solid coral with a gap around it. It reads as a navy coin with a coral stroke and a dot at two o’clock. On a dark tab the favicon lifts the coin a tone so it does not sink.',
+                trade: 'There is no £ in it, so “money” comes from the coin and the name rather than a symbol. A rising line is a common finance sign; the dip, the calm curve and the stance dot are what keep it ours, so they must never be simplified away.',
+                timing: 'Coin 0 to 460 ms · line 160 to 840 ms · stance 800 to 1180 ms.',
+                lockSym: 'm1a', lockPx: '56px', stackPx: '88px', heroPx: '52px', lockNote: 'The coin sits just left of centre in its box, so the dot can break the edge without pushing the wordmark away.'
+              }),
+              make('1b', {
+                name: 'Ruled pound', aria: 'MyPaisa mark: a hand-drawn pound sign over a coral rule',
+                line: 'A bookkeeper’s gesture: the pound is written, then ruled off in coral.',
+                idea: 'Three rounded bars, the crossbar, the foot and a coral rule, rise and settle under a hand-drawn pound. A rule under a sum is a bookkeeper’s way of saying “this is the total, and it is checked”, which is what the ledger and the audit trail do. Typographic and sober: the plainest of the three.',
+                motion: 'The hook and stem are written top to bottom, the crossbar and the foot rise into place, and the coral rule is drawn last, left to right. It says: written down, added up, done.',
+                small: 'The sharpest of the three at 16 px. The cut is a heavier pound (5.2 of 48) over a full-width rule, and it stays a pound on light and dark tabs alike.',
+                trade: 'A currency sign is hard to own, and it ties the brand to sterling. Next to the wordmark a bare £ reads as a price (“£MyPaisa”), so every lockup uses the navy tile instead of the bare mark.',
+                timing: 'Stem 0 to 640 ms · crossbar 300 to 760 ms · foot 440 to 900 ms · rule 640 to 1160 ms.',
+                lockSym: 'm1b-t', lockPx: '48px', stackPx: '80px', heroPx: '48px', lockNote: 'Lockups use the tile, never the bare pound, so the name is not read as a price.'
+              }),
+              make('1c', {
+                name: 'Watcher', aria: 'MyPaisa mark: a navy coin with a pound, a thin orbit and a coral dot resting at the top right',
+                line: 'Today’s coin with a thin orbit; one coral dot goes part of the way round and comes to rest.',
+                idea: 'Keeps the coin people already know from the sidebar and the sign-in page (navy, a pound) and adds the agent: a thin orbit and one coral dot, resting at the top right like someone keeping an eye on things for the household.',
+                motion: 'The coin and its orbit settle while the dot travels about two thirds of the way round, quick and then slowing, and stops at half past one. One pass, no spin: it says someone is watching, calmly.',
+                small: 'The orbit is too fine below 32 px, so the cut drops it and sets the dot on the coin’s rim with a gap around it. It reads, but at 16 px a dot on a circle looks like an unread badge.',
+                trade: 'The most continuity with today, and the most parts. The orbit echoes the old violet mark and many “planet” logos, and in Telegram’s chat list a dot on an avatar can be mistaken for a status light.',
+                timing: 'Coin 0 to 440 ms · orbit 80 to 600 ms · dot travels 180 to 1180 ms.',
+                lockSym: 'm1c', lockPx: '56px', stackPx: '88px', heroPx: '52px', lockNote: 'The orbit counts as part of the mark: clear space is measured from the ring, not the coin.'
+              })
+            ],
+            tgThemes: [{ tg: 'tg-light', label: 'light' }, { tg: 'tg-dark', label: 'dark' }],
+            lockThemes: [light, dark],
+            webThemes: [{ cls: 't-light mk-l', hero: 'mk-n', label: 'light' }, { cls: 't-dark mk-d', hero: 'mk-nd', label: 'dark' }],
+            skRows: [{ w1: '46%', w2: '30%' }, { w1: '58%', w2: '34%' }, { w1: '70%', w2: '30%' }, { w1: '52%', w2: '36%' }, { w1: '38%', w2: '28%' }],
+            chats: [
+              { isBot: true, isPerson: false, name: 'MyPaisa', time: '07:31', prev: 'Morning brief · Fri 30 Oct. Nothing to do this week. Next review Saturday.' },
+              { isBot: false, isPerson: true, av: 'av-a', ini: 'A', name: 'Asha', time: '07:12', prev: 'Saw the brief. All calm, then?' },
+              { isBot: false, isPerson: true, av: 'av-f', ini: 'H', name: 'Household', time: 'Tue', prev: 'Asha: Sunday lunch at ours?' }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

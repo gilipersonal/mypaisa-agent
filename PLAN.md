@@ -101,6 +101,12 @@ What you hold, recorded through the chat, with no analysis yet.
   / Edit / Cancel card; nothing saved without Confirm.
 - Plain-English transactions ("I put £200 into Balanced") via a strict
   `propose_change` tool and Confirm.
+- Money in any currency (MA-156, `ARCHITECTURE.md` §4.7): every position
+  keeps its currency from the Confirm card that added it; a parser in code
+  reads £ $ € ₹, the codes, the words and lakh and crore; an amount in
+  another currency than the holding's is never saved as it is, and the bot
+  asks for the amount that arrived (the ECB-rate estimate joins in phase 2,
+  with MA-44); the original amount, rate and source stay on the transaction.
 - Guided flows with buttons for logging a transaction, adding a holding,
   updating a valuation and changing a setting: one question per message,
   the same message edited in place, fields already given skipped; the
@@ -142,7 +148,9 @@ failure retried and then dead-lettered with an alarm; a replayed old update
 asking first; an expired Confirm refused; the invite flow (single
 use, expiry, wrong household); the isolation rules; the Confirm state
 machine; the guided flows (resume after a day, expiry, skipping fields
-already given, two members mid-flow at once); the custom-auth triggers
+already given, two members mid-flow at once); the currency parser on every
+form (£ $ € ₹, codes, words, lakh and crore) and a rupee amount against a
+pound holding never saved as pounds; the custom-auth triggers
 (valid, expired, tampered, replayed, a removed member) and a dev token
 refused by prod; the meter costing recorded `usage` blocks to the cent, a
 concurrent add, the 100% stop and each guard, and a cycle rolling over on the
@@ -597,7 +605,8 @@ existing Indian portfolio loaded once with its whole history.
   (MA-148); no PAN, address or account number in any record.
 - **IN3, accounts and views (MA-153).** `demat`, `mf_folio`, `nre`, `nro`;
   INR with GBP beside it; wrapper-aware suggestions; the reporting-fund tax
-  flag; designed first.
+  flag; rupees and pounds checked against each holding's currency both ways
+  (MA-156); designed first.
 - **IN4, the engine and the Forecaster (MA-154).** The India basket, Indian
   news and disclosures, the RBI's calendar; the Forecaster's gates as in
   phase 11.

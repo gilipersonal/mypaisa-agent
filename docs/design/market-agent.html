@@ -1,4 +1,4 @@
-<title>MyPaisa Market Agent</title>
+<title>MyPaisa Market Agents</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap");
@@ -169,6 +169,7 @@ strong { font-weight: 600; }
 .sh > div { min-width: 0; }
 .sh h2 { font-size: clamp(24px, 4vw, 30px); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
 .keys { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.keys > span { max-width: 100%; white-space: normal; }
 .intro { font-size: 17px; line-height: 26px; color: var(--mp-ink-2); max-width: 70ch; }
 .card { background: var(--mp-surface); border-radius: 20px; padding: 20px; box-shadow: var(--mp-shadow); min-width: 0; }
 .card > h3 + p, .card > .over + h3 { margin-top: 6px; }
@@ -459,7 +460,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; line-height
 .states .arr { color: var(--mp-ink-3); }
 .st { border-radius: 12px; padding: 8px 12px; background: var(--mp-surface-2); min-width: 0; }
 .st b { display: block; font-size: 14px; }
-.st small { color: var(--mp-ink-2); }
+.st small { color: var(--mp-ink-2); font-size: 12px; line-height: 16px; }
 
 /* budgets */
 .bar { display: flex; height: 30px; border-radius: 10px; overflow: hidden; gap: 2px; margin-top: 12px; }
@@ -482,6 +483,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; line-height
 .story { border-radius: 14px; padding: 10px 12px; min-width: 0; }
 .story.f { background: var(--mp-surface-2); box-shadow: inset 3px 0 0 var(--mp-coral); }
 .story.e { background: var(--mp-surface-2); box-shadow: inset 3px 0 0 var(--mp-chart-2); }
+.story.i { background: var(--mp-surface-2); box-shadow: inset 3px 0 0 var(--mp-chart-4); }
 .story b { display: block; font-size: 14px; line-height: 19px; }
 .story small { display: block; color: var(--mp-ink-2); font-size: 12.5px; line-height: 17px; margin-top: 2px; }
 .story .key { margin-top: 6px; }
@@ -520,7 +522,7 @@ footer p { max-width: 90ch; }
 <header class="hero">
   <p class="over">MyPaisa · design explainer · the market side</p>
   <h1>MyPaisa <i>Market</i> Agent</h1>
-  <p class="lede">How MyPaisa reads the market for one household, end to end: a rules engine anyone can check by hand, a Forecaster that learns from ten years of history and sits beside it, and a small team of agents that grade, calibrate and repair both every day.</p>
+  <p class="lede">How MyPaisa reads the market for one household, end to end: a rules engine anyone can check by hand, a Forecaster that learns from ten years of history and sits beside it, and a small team of agents that grade, calibrate and repair both every day. The UK holdings come first; from phase 13 the household's Indian mutual funds, shares and ETFs are read the same way, in rupees with pounds beside them.</p>
   <div class="goal">
     <div><q>My target is to minimize loss and grow money over time steadily.</q><small>Arun, 24 Oct 2026, on MA-117. Every part below is judged against this goal: fewer deep falls first, steady growth second.</small></div>
   </div>
@@ -528,8 +530,9 @@ footer p { max-width: 90ch; }
     <div class="tile"><h3>The rules engine</h3><span class="hk">Phase 2, live from phase 8</span><p>Fixed, transparent rules: indicators, four pillars, the holder's cascade and a confidence score. It calls ADD, HOLD, PAUSE, TRIM, REBALANCE or WAIT.</p></div>
     <div class="tile"><h3>The Forecaster</h3><span class="hk">Phase 11 · epic MA-117</span><p>Five models, risk first and direction last, beside the rules engine and graded on the same record. It never replaces it.</p></div>
     <div class="tile"><h3>The agent team</h3><span class="hk">Phase 12 · epic MA-127</span><p>Grades every prediction daily, calibrates within small bounds, repairs the pipeline, and asks an admin for anything outside its band.</p></div>
+    <div class="tile"><h3>India in the picture</h3><span class="hk">Phase 13 · epic MA-147</span><p>Indian funds, NSE and BSE shares and ETFs on free sources first, an India basket, Indian news, and the same gates for both engines.</p></div>
   </div>
-  <p class="disclaim">Software for one household, not regulated advice. It never trades, and every decision stays with the household. Every figure on this page is illustrative: none is a real balance, a real price or a result.</p>
+  <p class="disclaim">Software for one household, not regulated advice, and never tax advice. It never trades, and every decision stays with the household. Every figure, rate and fund name on this page is illustrative: none is a real balance, a real price or a result.</p>
 </header>
 
 <nav class="toc" aria-label="Contents">
@@ -545,7 +548,8 @@ footer p { max-width: 90ch; }
     <li><a href="#s9"><b>9</b> Proof</a></li>
     <li><a href="#s10"><b>10</b> Self-healing</a></li>
     <li><a href="#s11"><b>11</b> Budgets</a></li>
-    <li><a href="#s12"><b>12</b> The road</a></li>
+    <li><a href="#s12"><b>12</b> India</a></li>
+    <li><a href="#s13"><b>13</b> The road</a></li>
   </ol>
 </nav>
 
@@ -558,36 +562,42 @@ footer p { max-width: 90ch; }
 
 <section class="sec" id="map" aria-labelledby="map-h">
   <header class="sh"><span class="num">0</span><div><p class="over">The whole market side in one drawing</p><h2 id="map-h">From free sources to a card the household reads</h2></div></header>
-  <p class="intro">After each close a schedule queues the day's jobs. One worker Lambda runs each job by its type: ingest, news, the rules engine, the Forecaster, grading and calibration, the brief. The record lives in an S3 lake, the state in DynamoDB, and the result reaches Telegram and the web app. Claude only tags news and explains; code makes every number.</p>
-  <div class="scrollx" role="img" aria-label="Architecture of the market side: free sources feed the worker Lambda; EventBridge Scheduler, and from phase 12 Step Functions, put jobs on the SQS work queue, which has a dead-letter queue; the worker runs ingest, news, engine, Forecaster, grade and calibrate, challengers and brief jobs, reading and writing the S3 lake and DynamoDB items; DynamoDB feeds the Telegram card, the web Forecast page and the admin desk; Claude Haiku tags news and Claude Sonnet explains; agents publish on the EventBridge bus.">
+  <p class="intro">After each close (London, New York and, from phase 13, India's NSE and BSE, with AMFI's fund prices in the UK evening) a schedule in <code>Europe/London</code> queues the day's jobs. One worker Lambda runs each job by its type: ingest, news, the rules engine, the Forecaster, grading and calibration, the brief. The record lives in an S3 lake, the state in DynamoDB, and the result reaches Telegram and the web app. Claude only tags news and explains; code makes every number.</p>
+  <div class="scrollx" role="img" aria-label="Architecture of the market side: free sources, Indian ones from phase 13, feed the worker Lambda; EventBridge Scheduler, and from phase 12 Step Functions, put jobs on the SQS work queue, which has a dead-letter queue; the worker runs ingest, news, engine, Forecaster, grade and calibrate, challengers and brief jobs, reading and writing the S3 lake and DynamoDB items; DynamoDB feeds the Telegram card, the web Forecast page and the admin desk; Claude Haiku tags news and Claude Sonnet explains; agents publish on the EventBridge bus.">
     <svg class="dg" viewBox="0 0 1180 650" style="min-width:940px" aria-hidden="true" focusable="false">
       <!-- A: sources -->
-      <rect class="box" x="16" y="40" width="196" height="470" rx="16"/>
+      <rect class="box" x="16" y="40" width="196" height="520" rx="16"/>
       <text class="t" x="32" y="68">Free sources first</text>
       <text class="s" x="32" y="86">each row stamped with the</text>
       <text class="s" x="32" y="102">day it became known</text>
       <g class="i">
-        <circle class="dot" cx="37" cy="133" r="3.5"/><text x="48" y="138">yfinance</text>
-        <circle class="dot" cx="37" cy="161" r="3.5"/><text x="48" y="166">Twelve Data, free tier</text>
-        <circle class="dot" cx="37" cy="189" r="3.5"/><text x="48" y="194">FRED and ALFRED</text>
-        <circle class="dot" cx="37" cy="217" r="3.5"/><text x="48" y="222">Bank of England</text>
-        <circle class="dot" cx="37" cy="245" r="3.5"/><text x="48" y="250">ECB</text>
-        <circle class="dot" cx="37" cy="273" r="3.5"/><text x="48" y="278">ONS</text>
-        <circle class="dot" cx="37" cy="301" r="3.5"/><text x="48" y="306">EIA (Brent, WTI)</text>
-        <circle class="dot" cx="37" cy="329" r="3.5"/><text x="48" y="334">GDELT</text>
-        <circle class="dot" cx="37" cy="357" r="3.5"/><text x="48" y="362">GPR index</text>
-        <circle class="dot" cx="37" cy="385" r="3.5"/><text x="48" y="390">RSS feeds, issuer pages</text>
+        <circle class="dot" cx="37" cy="128" r="3.5"/><text x="48" y="133">yfinance</text>
+        <circle class="dot" cx="37" cy="152" r="3.5"/><text x="48" y="157">Twelve Data, free tier</text>
+        <circle class="dot" cx="37" cy="176" r="3.5"/><text x="48" y="181">FRED and ALFRED</text>
+        <circle class="dot" cx="37" cy="200" r="3.5"/><text x="48" y="205">Bank of England</text>
+        <circle class="dot" cx="37" cy="224" r="3.5"/><text x="48" y="229">ECB</text>
+        <circle class="dot" cx="37" cy="248" r="3.5"/><text x="48" y="253">ONS</text>
+        <circle class="dot" cx="37" cy="272" r="3.5"/><text x="48" y="277">EIA (Brent, WTI)</text>
+        <circle class="dot" cx="37" cy="296" r="3.5"/><text x="48" y="301">GDELT, GPR index</text>
+        <circle class="dot" cx="37" cy="320" r="3.5"/><text x="48" y="325">RSS feeds, issuer pages</text>
       </g>
-      <line class="sep" x1="32" x2="196" y1="412" y2="412"/>
-      <text class="t" x="32" y="438">EODHD, last resort</text>
-      <text class="s" x="32" y="456">only on an admin's approval</text>
-      <text class="s" x="32" y="472">Historian £19.99 a month</text>
-      <text class="k" x="32" y="494">F1 MA-119 · E3 MA-131</text>
+      <text class="k" x="32" y="350">India, phase 13 · MA-147</text>
+      <g class="i">
+        <circle class="dot" cx="37" cy="368" r="3.5"/><text x="48" y="373">AMFI NAVs, mfapi.in</text>
+        <circle class="dot" cx="37" cy="392" r="3.5"/><text x="48" y="397">yfinance .NS and .BO</text>
+        <circle class="dot" cx="37" cy="416" r="3.5"/><text x="48" y="421">NSE and BSE bhavcopy</text>
+        <circle class="dot" cx="37" cy="440" r="3.5"/><text x="48" y="445">RBI, MOSPI, NSDL</text>
+      </g>
+      <line class="sep" x1="32" x2="196" y1="462" y2="462"/>
+      <text class="t" x="32" y="486">EODHD, last resort</text>
+      <text class="s" x="32" y="504">only on an admin's approval</text>
+      <text class="s" x="32" y="520">Historian £19.99 a month</text>
+      <text class="k" x="32" y="542">F1 MA-119 · E3 MA-131</text>
 
       <!-- B: schedule and queues -->
       <rect class="boxa" x="248" y="40" width="196" height="64" rx="12"/>
       <text class="t" x="264" y="66">EventBridge Scheduler</text>
-      <text class="s" x="264" y="86">Europe/London, after the close</text>
+      <text class="s" x="264" y="86">Europe/London, each close</text>
       <rect class="boxa" x="248" y="136" width="196" height="72" rx="12"/>
       <text class="t" x="264" y="162">Step Functions</text>
       <text class="s" x="264" y="181">the daily run, from phase 12</text>
@@ -727,12 +737,12 @@ footer p { max-width: 90ch; }
   <div class="g2">
     <div class="card">
       <h3>An ETF or a share: candles</h3>
-      <p class="small ink2">It trades through the day, so each day has an open, high, low and close. The Forecast page draws candles for ETFs and shares.</p>
+      <p class="small ink2">It trades through the day, so each day has an open, high, low and close. The Forecast page draws candles for ETFs and shares, an NSE or BSE share or ETF (<code>in_listed</code>, phase 13) among them.</p>
       <div class="mp-chartbox " style="height:150px;" role="img" aria-label="Illustrative ETF chart: twenty daily candles, each with an open, high, low and close."><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true" focusable="false"><line class="k-wick" x1="10" x2="10" y1="19.3" y2="34.4"/><rect class="k-cdn" x="4" y="19.9" width="12" height="8.3"/><line class="k-wick" x1="30" x2="30" y1="21.7" y2="48.8"/><rect class="k-cdn" x="24" y="27.2" width="12" height="17.6"/><line class="k-wick" x1="50" x2="50" y1="25.9" y2="60.9"/><rect class="k-cdn" x="44" y="47.2" width="12" height="13.5"/><line class="k-wick" x1="70" x2="70" y1="39.9" y2="80.6"/><rect class="k-cup" x="64" y="46.9" width="12" height="12.5"/><line class="k-wick" x1="90" x2="90" y1="42" y2="107.6"/><rect class="k-cdn" x="84" y="48.5" width="12" height="33.1"/><line class="k-wick" x1="110" x2="110" y1="77.3" y2="98.8"/><rect class="k-cup" x="104" y="81.1" width="12" height="10.7"/><line class="k-wick" x1="130" x2="130" y1="55.2" y2="140.7"/><rect class="k-cdn" x="124" y="65.2" width="12" height="50"/><line class="k-wick" x1="150" x2="150" y1="88.9" y2="114.6"/><rect class="k-cup" x="144" y="94.4" width="12" height="16.1"/><line class="k-wick" x1="170" x2="170" y1="85.9" y2="94.2"/><rect class="k-cup" x="164" y="88.3" width="12" height="2.9"/><line class="k-wick" x1="190" x2="190" y1="49.8" y2="107.1"/><rect class="k-cup" x="184" y="63.3" width="12" height="28"/><line class="k-wick" x1="210" x2="210" y1="58.4" y2="76.5"/><rect class="k-cdn" x="204" y="63.1" width="12" height="5.7"/><line class="k-wick" x1="230" x2="230" y1="48.6" y2="70.3"/><rect class="k-cup" x="224" y="59.5" width="12" height="6"/><line class="k-wick" x1="250" x2="250" y1="51.1" y2="64.8"/><rect class="k-cdn" x="244" y="52.1" width="12" height="9.2"/><line class="k-wick" x1="270" x2="270" y1="59.5" y2="70.6"/><rect class="k-cdn" x="264" y="59.9" width="12" height="10.7"/><line class="k-wick" x1="290" x2="290" y1="47.1" y2="86.2"/><rect class="k-cup" x="284" y="65.4" width="12" height="18.7"/><line class="k-wick" x1="310" x2="310" y1="61.3" y2="86.4"/><rect class="k-cdn" x="304" y="71.6" width="12" height="11.6"/><line class="k-wick" x1="330" x2="330" y1="72" y2="109.9"/><rect class="k-cdn" x="324" y="83" width="12" height="3.1"/><line class="k-wick" x1="350" x2="350" y1="55.3" y2="104.9"/><rect class="k-cup" x="344" y="72" width="12" height="10.3"/><line class="k-wick" x1="370" x2="370" y1="62.7" y2="87.3"/><rect class="k-cup" x="364" y="68.2" width="12" height="10.9"/><line class="k-wick" x1="390" x2="390" y1="69.3" y2="93.8"/><rect class="k-cup" x="384" y="72.1" width="12" height="8.1"/></svg></div><div class="mp-chartaxis " aria-hidden="true"><span class="a0" style="left:0.00%">20 trading days</span><span class="a1" style="left:100.00%">illustrative</span></div>
     </div>
     <div class="card">
       <h3>A UK fund (OEIC): one price a day</h3>
-      <p class="small ink2">Its NAV is struck once a day and published the next morning, and a deal goes through at the next day's price. No candles, no opening price: one dot a day.</p>
+      <p class="small ink2">Its NAV is struck once a day and published the next morning, and a deal goes through at the next day's price. No candles, no opening price: one dot a day. An Indian mutual fund (<code>in_mutual_fund</code>, phase 13) is the same: one NAV a day, from AMFI by the UK evening.</p>
       <div class="mp-chartbox " style="height:150px;" role="img" aria-label="Illustrative UK fund chart: one price a day for twenty days, drawn as dots on a line, with no candles."><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="k-line" d="M10,30.7 L30,50.8 L50,78.1 L70,46.3 L90,91.8 L110,90.5 L130,129.3 L150,114.8 L170,106.9 L190,78.4 L210,72.3 L230,72.6 L250,72.4 L270,82.7 L290,73.8 L310,93.7 L330,98 L350,88.2 L370,91.3 L390,82.8"/></svg><i class="cd cd-line" style="left:2.50%;top:19.19%"></i><i class="cd cd-line" style="left:7.50%;top:31.73%"></i><i class="cd cd-line" style="left:12.50%;top:48.80%"></i><i class="cd cd-line" style="left:17.50%;top:28.97%"></i><i class="cd cd-line" style="left:22.50%;top:57.38%"></i><i class="cd cd-line" style="left:27.50%;top:56.53%"></i><i class="cd cd-line" style="left:32.50%;top:80.81%"></i><i class="cd cd-line" style="left:37.50%;top:71.76%"></i><i class="cd cd-line" style="left:42.50%;top:66.84%"></i><i class="cd cd-line" style="left:47.50%;top:49.01%"></i><i class="cd cd-line" style="left:52.50%;top:45.17%"></i><i class="cd cd-line" style="left:57.50%;top:45.39%"></i><i class="cd cd-line" style="left:62.50%;top:45.25%"></i><i class="cd cd-line" style="left:67.50%;top:51.71%"></i><i class="cd cd-line" style="left:72.50%;top:46.11%"></i><i class="cd cd-line" style="left:77.50%;top:58.58%"></i><i class="cd cd-line" style="left:82.50%;top:61.22%"></i><i class="cd cd-line" style="left:87.50%;top:55.10%"></i><i class="cd cd-line" style="left:92.50%;top:57.07%"></i><i class="cd cd-line" style="left:97.50%;top:51.75%"></i></div><div class="mp-chartaxis " aria-hidden="true"><span class="a0" style="left:0.00%">20 trading days</span><span class="a1" style="left:100.00%">illustrative</span></div>
     </div>
   </div>
@@ -750,12 +760,15 @@ footer p { max-width: 90ch; }
         <tr><td>Shares, ETFs, commodity ETCs</td><td>Daily open, high, low, close and volume; each fund's top constituents and the index it tracks</td><td>yfinance first, Twelve Data's free tier second</td><td class="n">Free</td></tr>
         <tr><td>UK funds (OEICs)</td><td>The daily price: one a day, no candles</td><td>Yahoo's <code>0P…</code> id; the fund manager's page (BlackRock, Vanguard)</td><td class="n">Free</td></tr>
         <tr><td>Commodity drivers</td><td>Gold, silver, Brent and WTI futures; daily Brent and WTI</td><td>yfinance; the US Energy Information Administration (EIA)</td><td class="n">Free</td></tr>
-        <tr><td>Economy</td><td>Policy rates, 2-year and 10-year yields, real yields, inflation, unemployment, each as first published</td><td>FRED with its ALFRED archive; Bank of England; ECB; ONS</td><td class="n">Free</td></tr>
-        <tr><td>Market stress</td><td>VIX, high-yield and investment-grade credit spreads, the dollar index</td><td>yfinance, FRED</td><td class="n">Free</td></tr>
-        <tr><td>World events</td><td>Daily event counts and tone by country and theme; the geopolitical risk index</td><td>GDELT; the Caldara and Iacoviello GPR index</td><td class="n">Free</td></tr>
-        <tr><td>News</td><td>Stories on the holdings, their countries and sectors</td><td>GDELT; the RSS feeds of the brief</td><td class="n">Free</td></tr>
-        <tr><td>Calendars</td><td>Central bank decisions, inflation releases, earnings of top holdings, elections</td><td>The banks' and the ONS's published calendars; earnings dates from yfinance</td><td class="n">Free</td></tr>
-        <tr><td>Indian funds and shares (phase 13, MA-147)</td><td>Mutual fund NAVs; NSE and BSE daily candles; INR; India's rates, inflation and foreign flows</td><td>AMFI's daily NAV file, then mfapi.in for history; yfinance <code>.NS</code> and <code>.BO</code>, then the exchanges' bhavcopy; ECB INR; RBI, MOSPI, NSDL</td><td class="n">Free</td></tr>
+        <tr><td>Economy</td><td>Policy rates, 2-year and 10-year yields, real yields, inflation, unemployment, each as first published</td><td>FRED with its ALFRED archive; Bank of England; ECB; ONS. India (phase 13): the RBI's database for the policy rate and yields, MOSPI's inflation; FRED's India series behind them</td><td class="n">Free</td></tr>
+        <tr><td>Market stress</td><td>VIX, high-yield and investment-grade credit spreads, the dollar index; for India, India VIX and the daily foreign portfolio investor flows</td><td>yfinance, FRED; NSDL for the flows</td><td class="n">Free</td></tr>
+        <tr><td>World events</td><td>Daily event counts and tone by country and theme; the geopolitical risk index</td><td>GDELT, with its India coverage; the Caldara and Iacoviello GPR index</td><td class="n">Free</td></tr>
+        <tr><td>News</td><td>Stories on the holdings, their countries and sectors</td><td>GDELT; the RSS feeds of the brief. India: Economic Times, Mint and Business Standard by RSS, and NSE's company announcements</td><td class="n">Free</td></tr>
+        <tr><td>Calendars</td><td>Central bank decisions, inflation releases, earnings of top holdings, elections; for India, the RBI's policy dates, India's inflation releases, NSE holidays and results season</td><td>The banks' and the ONS's published calendars; earnings dates from yfinance; NSE's own trading calendar</td><td class="n">Free</td></tr>
+        <tr><td>Indian mutual funds (phase 13, MA-151)</td><td>One NAV a day for every scheme, by AMFI scheme code and ISIN; each scheme's full history</td><td>AMFI's daily NAV file, the official industry source; mfapi.in for the history and as the fallback; a screenshot</td><td class="n">Free</td></tr>
+        <tr><td>NSE and BSE shares and ETFs (phase 13, MA-151)</td><td>Daily candles and ten years of history</td><td>yfinance <code>.NS</code>, then <code>.BO</code>; the exchanges' bhavcopy end-of-day files, free for personal use</td><td class="n">Free</td></tr>
+        <tr><td>Indian fund look-through (phase 13)</td><td>Each fund's holdings</td><td>The fund houses' monthly portfolio disclosures, which SEBI requires; the factsheet</td><td class="n">Free</td></tr>
+        <tr><td>INR exchange rate</td><td>Rupees to pounds each day</td><td>The ECB's daily reference rate, which includes INR; the RBI/FBIL reference rate behind it</td><td class="n">Free</td></tr>
       </tbody>
     </table>
   </div>
@@ -770,6 +783,7 @@ footer p { max-width: 90ch; }
         <li>Before asking, the steward tries EODHD's free key on that holding and records what comes back.</li>
         <li>The request shows the evidence, the £19.99 and the headroom left in the £50 line for AWS and others.</li>
         <li>A paid feed not needed for 60 days is proposed for cancellation.</li>
+        <li>India's paid options follow the same rule: Twelve Data's Grow plan ($79 a month; its free tier has no NSE or BSE), or Zerodha Kite Connect (₹500 a month, with history) if the member has a Zerodha account.</li>
       </ul>
     </div>
     <div class="tgchat" aria-label="Illustrative admin request in Telegram from the data steward">
@@ -781,7 +795,7 @@ footer p { max-width: 90ch; }
 
   <div class="card" style="margin-top:16px">
     <h3>Price chains: the first source with fresh data wins</h3>
-    <p class="small ink2">Each feed is a plugin behind one contract; which plugins run, and in which order, is configuration per environment in Terraform. The brief says which source answered. <code>stale</code> is last everywhere: the previous close, labelled, never silently reused.</p>
+    <p class="small ink2">Each feed is a plugin behind one contract; which plugins run, and in which order, is configuration per environment in Terraform. India adds the <code>amfi</code>, <code>mfapi</code> and <code>bhavcopy</code> plugins and two chains, with no change to the contract. The brief says which source answered. <code>stale</code> is last everywhere: the previous close, labelled, never silently reused.</p>
     <div class="tscroll">
       <table class="tbl wide">
         <thead><tr><th>Kind</th><th>Default chain, in order</th><th>Freshness</th></tr></thead>
@@ -790,7 +804,10 @@ footer p { max-width: 90ch; }
           <tr><td>ETF or ETC on LSE or Xetra</td><td><span class="chips" style="margin:0"><span class="chip mp-neutral">yfinance</span><span class="chip mp-neutral">Twelve Data</span><span class="chip mp-neutral">issuer NAV</span><span class="chip mp-watch">stale</span></span></td><td>Each exchange close; GBX normalised to GBP</td></tr>
           <tr><td>ETF or stock on NYSE or Nasdaq</td><td><span class="chips" style="margin:0"><span class="chip mp-neutral">Twelve Data</span><span class="chip mp-neutral">yfinance</span><span class="chip mp-watch">stale</span></span></td><td>21:00 UK close</td></tr>
           <tr><td>Commodity ETC</td><td>As its listing, plus the metal's spot price times FX as a sanity check</td><td>Each close</td></tr>
+          <tr><td>Indian mutual fund, <code>in_mutual_fund</code> (phase 13)</td><td><span class="chips" style="margin:0"><span class="chip mp-neutral">AMFI NAV file</span><span class="chip mp-neutral">mfapi.in</span><span class="chip mp-neutral">screenshot</span><span class="chip mp-watch">stale</span></span></td><td>One NAV a day, out by the UK evening; no candles</td></tr>
+          <tr><td>NSE or BSE share or ETF, <code>in_listed</code> (phase 13)</td><td><span class="chips" style="margin:0"><span class="chip mp-neutral">yfinance .NS</span><span class="chip mp-neutral">yfinance .BO</span><span class="chip mp-neutral">bhavcopy</span><span class="chip mp-watch">stale</span></span></td><td>15:30 IST close, 10:00 or 11:00 UK; in rupees</td></tr>
           <tr><td>Cash</td><td><span class="chips" style="margin:0"><span class="chip mp-neutral">ECB</span><span class="chip mp-neutral">Twelve Data</span></span></td><td>Daily</td></tr>
+          <tr><td>INR rate (phase 13)</td><td><span class="chips" style="margin:0"><span class="chip mp-neutral">ECB</span><span class="chip mp-neutral">RBI/FBIL</span></span></td><td>Daily</td></tr>
         </tbody>
       </table>
     </div>
@@ -828,7 +845,7 @@ footer p { max-width: 90ch; }
 <!-- 3 -->
 <section class="sec" id="s3" aria-labelledby="s3-h">
   <header class="sh"><span class="num">3</span><div><p class="over">The rules engine today</p><h2 id="s3-h">Fixed rules a person can check by hand</h2><div class="keys"><span class="ph">Phase 2: indicators, pillars, cascade, confidence v0</span><span class="ph">Phase 6: history term</span><span class="ph">Phase 7: sentiment tilt</span><span class="ph">Phase 8: go-live gate</span></div></div></header>
-  <p class="intro">Ported from the desk and extended for a holder who accumulates with care. The <span class="aws">worker λ</span> runs the ingest and engine jobs at 07:00 and 21:00 Europe/London, and writes a Signal and a Stance for each holding to <span class="aws">DynamoDB</span>.</p>
+  <p class="intro">Ported from the desk and extended for a holder who accumulates with care. The <span class="aws">worker λ</span> runs the ingest and engine jobs at 07:00 and 21:00 Europe/London, and writes a Signal and a Stance for each holding to <span class="aws">DynamoDB</span>. From phase 13 the Indian holdings are scored by the same rules, from India's previous day, whose prices are in by the UK evening.</p>
   <ol class="flow" style="--n:6">
     <li><h4>Clean bars</h4><p>Drop interpolated bars; append today only when the session traded; a series older than the previous session is STALE and left out.</p></li>
     <li><h4>Indicators</h4><p>The desk's stack plus volatility, drawdown and momentum. Known-answer self-tests run first; a failing one blocks scoring that day.</p></li>
@@ -868,7 +885,7 @@ footer p { max-width: 90ch; }
       <tbody>
         <tr><td><strong>Trend</strong></td><td>Price vs EMA20, EMA20 above EMA50, EMA50 above EMA200, the EMA200's slope; partial components labelled</td></tr>
         <tr><td><strong>Momentum</strong></td><td>RSI zones (45 / 55), the MACD histogram's sign, TRIX vs its signal</td></tr>
-        <tr><td><strong>Macro</strong></td><td>The cross-asset regime of the baskets the holding is exposed to, weighted by look-through: the US basket (RSP/SPY, HYG/LQD, IWM/SPY, SPY/TLT, XLY/XLP, SPY-TLT correlation, 10Y−2Y), UK and EU baskets from UCITS equivalents; for a commodity ETC, dollar strength and real yields instead</td></tr>
+        <tr><td><strong>Macro</strong></td><td>The cross-asset regime of the baskets the holding is exposed to, weighted by look-through: the US basket (RSP/SPY, HYG/LQD, IWM/SPY, SPY/TLT, XLY/XLP, SPY-TLT correlation, 10Y−2Y), UK and EU baskets from UCITS equivalents, and from phase 13 an India basket (the Nifty 50 against Indian government bonds, India VIX, the rupee against the dollar, foreign portfolio investor flows, the RBI's policy rate); for a commodity ETC, dollar strength and real yields instead</td></tr>
         <tr><td><strong>Risk</strong></td><td>Volatility percentile, drawdown depth, proxy gap, bars present, NAV age</td></tr>
       </tbody>
     </table>
@@ -941,13 +958,13 @@ footer p { max-width: 90ch; }
   <header class="sh"><span class="num">4</span><div><p class="over">Matching news and world events to holdings</p><h2 id="s4-h">A story counts by how much of a holding it touches</h2><div class="keys"><span class="key">F1 MA-119</span><span class="key">F4 MA-122</span><span class="ph">Phase 7: news and events</span></div></div></header>
   <p class="intro">Every holding has an exposure map, kept on the instrument's <code>exposure</code> and refreshed on its own clock. Claude Haiku tags each day's stories; code works out how much each story touches each holding. Code produces every number, and news alone never raises a red alert.</p>
   <div class="g4">
-    <div class="card"><p class="over">OEIC or ETF · monthly, iShares files daily</p><h3>Look-through</h3><p class="small">Its top holdings, countries, sectors and currencies, from the factsheet and the holdings file.</p></div>
+    <div class="card"><p class="over">OEIC or ETF · monthly, iShares files daily</p><h3>Look-through</h3><p class="small">Its top holdings, countries, sectors and currencies, from the factsheet and the holdings file. An Indian fund's comes from its fund house's monthly portfolio disclosure, which SEBI requires (phase 13).</p></div>
     <div class="card"><p class="over">Share · each quarter's results</p><h3>The company and its web</h3><p class="small">The company, its sector, its main markets, its main suppliers and rivals.</p></div>
     <div class="card"><p class="over">Commodity ETC · a fixed list, reviewed yearly</p><h3>Its drivers</h3><p class="small"><strong>Gold</strong>: real yields, the dollar, central-bank buying, geopolitical stress. <strong>Silver</strong>: gold's drivers and industrial demand. <strong>Oil</strong>: OPEC+ decisions, stockpiles, supply from the Middle East and Russia, world growth.</p></div>
     <div class="card"><p class="over">Cash · with the rate</p><h3>Its rate and currency</h3><p class="small">A pound pot is touched by the Bank of England's rate, a dollar balance by the Fed's and by the dollar.</p></div>
   </div>
   <ol class="flow" style="--n:5">
-    <li><h4>Stories in</h4><p>GDELT and the RSS feeds; EODHD's news feed only if EODHD is approved.</p><div class="chips"><span class="aws">SQS work queue</span></div></li>
+    <li><h4>Stories in</h4><p>GDELT and the RSS feeds; from phase 13 the Indian feeds and NSE's announcements; EODHD's news feed only if EODHD is approved.</p><div class="chips"><span class="aws">SQS work queue</span></div></li>
     <li><h4>Haiku tags each story</h4><p>Companies, countries, sectors, commodities and central banks named; its event type; the direction it points. Checked weekly on a labelled sample.</p><div class="chips"><span class="aws">Claude Haiku, Batches</span></div></li>
     <li><h4>Code scores relevance</h4><p>A story's weight on a holding is the holding's exposure to the entities the story names.</p></li>
     <li><h4>A floor drops the faint</h4><p>The rest are stored on <code>ArticleScore</code>: <code>entities[]</code>, <code>event_type</code>, <code>matches[]</code>.</p><div class="chips"><span class="aws">DynamoDB</span></div></li>
@@ -1005,7 +1022,7 @@ footer p { max-width: 90ch; }
 <!-- 5 -->
 <section class="sec" id="s5" aria-labelledby="s5-h">
   <header class="sh"><span class="num">5</span><div><p class="over">The Forecaster's five models</p><h2 id="s5-h">Risk first, direction last</h2><div class="keys"><span class="key">F3 MA-121</span><span class="key">F4 MA-122</span><span class="key">F5 MA-123</span><span class="key">epic MA-117</span></div></div></header>
-  <p class="intro">A second engine beside the rules engine that learns from ten years of history. Each model answers one question over the next four weeks. Code makes every number, the event impacts included; Claude files each day's news under the event types and explains the result.</p>
+  <p class="intro">A second engine beside the rules engine that learns from ten years of history. Each model answers one question over the next four weeks. Code makes every number, the event impacts included; Claude files each day's news under the event types and explains the result. From phase 13 it takes the Indian holdings on the same terms, with ten years of their history from yfinance and mfapi.in, and shows nothing for them until its gates are passed.</p>
 
   <div class="gm">
     <div class="card model">
@@ -1104,7 +1121,7 @@ footer p { max-width: 90ch; }
 <!-- 6 -->
 <section class="sec" id="s6" aria-labelledby="s6-h">
   <header class="sh"><span class="num">6</span><div><p class="over">Side by side</p><h2 id="s6-h">Both engines in one card, and one page per holding</h2><div class="keys"><span class="key">F6 MA-124</span><span class="ph">needs phases 5 and 6</span></div></div></header>
-  <p class="intro">The rules engine's call and the Forecaster's view sit together, each with its own track record. When the two disagree, the card says so; below the confidence floor it says "no clear view". The Forecaster appears in weekday cards for a holding only after 8 live weeks beating both the base rate and the rules engine; until then, only in the Saturday review, labelled "in practice". Both views are designed first, with privacy mode and both themes.</p>
+  <p class="intro">The rules engine's call and the Forecaster's view sit together, each with its own track record. When the two disagree, the card says so; below the confidence floor it says "no clear view". The Forecaster appears in weekday cards for a holding only after 8 live weeks beating both the base rate and the rules engine; until then, only in the Saturday review, labelled "in practice". Both views are designed first, with privacy mode and both themes. From phase 13 an Indian holding gets the same card, its figures in rupees with pounds beside them.</p>
   <div class="tgwrap">
     <div class="tgchat" aria-label="Telegram card, illustrative figures from ARCHITECTURE section 19.7">
       <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>bot · illustrative figures, §19.7</small></div></div>
@@ -1282,7 +1299,7 @@ footer p { max-width: 90ch; }
         <li><span><strong>A trend filter</strong>: a holding below its long-run trend gets less of the new money until the trend turns. The exact rule is F7's to design and the lab's to test.</span></li>
         <li><span><strong>Rebalancing within bands</strong>, done with the next contributions rather than by selling.</span></li>
         <li><span><strong>A drawdown budget the admin sets</strong>: the deepest fall the household is willing to sit through.</span></li>
-        <li><span><strong>Never "sell everything"</strong>, stays ISA-safe, and only suggests.</span></li>
+        <li><span><strong>Never "sell everything"</strong>, stays ISA-safe, and only suggests. For Indian accounts (phase 13) "ISA-safe" becomes "wrapper-aware": a suggestion names only actions that suit its account.</span></li>
       </ul>
     </div>
     <div class="card">
@@ -1327,7 +1344,7 @@ footer p { max-width: 90ch; }
 <!-- 9 -->
 <section class="sec" id="s9" aria-labelledby="s9-h">
   <header class="sh"><span class="num">9</span><div><p class="over">How it proves itself</p><h2 id="s9-h">A lab first, practice next, and an off switch</h2><div class="keys"><span class="key">F2 MA-120</span><span class="key">F5 MA-123</span><span class="key">F6 MA-124</span></div></div></header>
-  <p class="intro">Nothing is shown because it sounds clever. A model earns its place in the lab over ten years, then in eight live weeks, and loses it again when its record slips.</p>
+  <p class="intro">Nothing is shown because it sounds clever. A model earns its place in the lab over ten years, then in eight live weeks, and loses it again when its record slips. Each holding passes the gate on its own record, so an Indian holding from phase 13 starts in practice like any other.</p>
   <div class="g2">
     <div class="card">
       <h3>The backtest lab</h3>
@@ -1480,7 +1497,7 @@ footer p { max-width: 90ch; }
     </div>
     <div class="card">
       <h3>Free-tier limits, honoured by the queue</h3>
-      <p class="small">The work queue's maximum concurrency keeps yfinance, Twelve Data's free tier and the other free sources inside their limits.</p>
+      <p class="small">The work queue's maximum concurrency keeps yfinance, Twelve Data's free tier and the other free sources, AMFI and mfapi.in among them from phase 13, inside their limits.</p>
       <div class="meter" role="img" aria-label="Twelve Data free tier: 800 credits a day, of which the ingest job may spend at most 200."><span class="fill" style="width:25%"></span><span class="lim" style="left:25%"></span></div>
       <div class="band-l" aria-hidden="true"><span style="left:0;transform:none">0</span><span style="left:25%">ingest ≤ 200</span><span style="left:100%;transform:translateX(-100%)">800 a day</span></div>
       <p class="small ink2" style="margin-top:0">Twelve Data: 8 credits a minute. A job that cannot succeed (a malformed message, a holding with no source) goes straight to the dead-letter queue with its reason. Tries, backoff, concurrency and replay limits are settings.</p>
@@ -1521,7 +1538,7 @@ footer p { max-width: 90ch; }
         <li><strong>80%</strong>: dev's schedules pause.</li>
         <li><strong>100%</strong>: dev pauses; prod's back-fills, retraining and challengers pause. The brief, alerts and the chat never stop.</li>
         <li>Behind it: one <span class="aws">AWS Budgets</span> hard limit at £75, made by Terraform; alerts by Telegram, the web app and <span class="aws">SNS</span> email.</li>
-        <li>A paid feed is a subscription against this cap: EODHD's £19.99, only if approved.</li>
+        <li>A paid feed is a subscription against this cap: EODHD's £19.99, or for India Twelve Data's Grow plan ($79) or Kite Connect (₹500), each only if approved.</li>
       </ul>
       <p class="cap"><span class="illus">Illustrative</span>The £3 used is the figure from the data steward's example request.</p>
     </div>
@@ -1537,6 +1554,7 @@ footer p { max-width: 90ch; }
         <tr><td>SQS queues and dead-letter alarms</td><td>nothing to about $1, plus a few pence an alarm</td><td>£50</td></tr>
         <tr><td>Step Functions, EventBridge, the extra DynamoDB items</td><td>inside their free tiers at this volume</td><td>£50</td></tr>
         <tr><td>Market data</td><td>£0 by default; £19.99 only if EODHD is approved</td><td>£50</td></tr>
+        <tr><td>India, phase 13: a few more jobs a day; a paid Indian feed only if a free source fails and the admin approves</td><td>£0 on the free path</td><td>£50</td></tr>
       </tbody>
     </table>
   </div>
@@ -1545,9 +1563,201 @@ footer p { max-width: 90ch; }
 
 <!-- 12 -->
 <section class="sec" id="s12" aria-labelledby="s12-h">
-  <header class="sh"><span class="num">12</span><div><p class="over">The road</p><h2 id="s12-h">What each story needs before it can start</h2><div class="keys"><span class="key">epic MA-117: F1 to F7</span><span class="key">epic MA-127: E1 to E8</span></div></div></header>
-  <p class="intro">Both epics are later work, after the rules engine and its track record. Indicatively, the Forecaster takes 8 to 12 weeks and the agent team 6 to 8. F1 and F2 can start any time after phase 2, and F2's first report tests the rules engine early.</p>
-  <div class="lanekey"><span><i style="background:var(--mp-coral)"></i>Forecaster, F1 to F7 (MA-119 to MA-125)</span><span><i style="background:var(--mp-chart-2)"></i>Agent team, E1 to E8 (MA-129 to MA-136)</span></div>
+  <header class="sh"><span class="num">12</span><div><p class="over">A second market, the same engines</p><h2 id="s12-h">India: Indian funds, shares and ETFs beside the UK ones</h2><div class="keys"><span class="key">epic MA-147</span><span class="key">IN1 MA-151</span><span class="key">IN2 MA-152</span><span class="key">IN3 MA-153</span><span class="key">IN4 MA-154</span><span class="key">MA-156</span><span class="ph">Phase 13 · ARCHITECTURE §22</span></div></div></header>
+  <p class="intro">It works without changing the core: currency, country and the kind of holding are data, every feed is a plugin in a chain, and the INR view was already planned. India adds plugins, two kinds of holding, account types, a macro basket and an importer. Free sources first; a paid feed only on the admin's approval.</p>
+  <div class="callout"><div><p>“If later I want to add Indian market in the mix will it work? … I also have some existing portfolio of MF and stock in India market which I will feed later.”</p><p class="sub">Arun, 24 Oct 2026, on MA-147. Yes: the sections above already carry India where it fits; this one gathers it in one place.</p></div></div>
+
+  <div class="g2">
+    <div class="card">
+      <p class="over">Like a UK OEIC</p>
+      <h3>An Indian mutual fund: one NAV a day</h3>
+      <p class="small">The kind <code>in_mutual_fund</code>: no candles, one NAV a day for every scheme, matched by AMFI scheme code and ISIN. AMFI's daily file is the official industry source; mfapi.in, free and community-run, is the fallback and the history source, not the record.</p>
+      <div class="chips"><span class="chip mp-neutral">AMFI NAV file</span><span class="chip mp-neutral">mfapi.in</span><span class="chip mp-neutral">screenshot</span><span class="chip mp-watch">stale</span></div>
+      <p class="cap">Out by the UK evening, so the 07:15 brief carries the previous day's NAVs.</p>
+    </div>
+    <div class="card">
+      <p class="over">Daily candles</p>
+      <h3>An NSE or BSE share or ETF</h3>
+      <p class="small">The kind <code>in_listed</code>: yfinance with <code>.NS</code> first, then <code>.BO</code>: daily candles and ten years of history. Behind them, the exchanges' own bhavcopy end-of-day files, free for personal use; <code>stale</code> last, labelled and left out of scoring.</p>
+      <div class="chips"><span class="chip mp-neutral">yfinance .NS</span><span class="chip mp-neutral">yfinance .BO</span><span class="chip mp-neutral">bhavcopy</span><span class="chip mp-watch">stale</span></div>
+      <p class="cap">NSE and BSE close at 15:30 IST: 10:00 UK time in winter, 11:00 in British Summer Time. NSE's trading holidays come from the exchange's calendar.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Sources, free first</h3>
+    <p class="small ink2">Each row is a plugin or a feed in a chain; a paid one is a request to the admin with its price, never switched on by itself.</p>
+    <div class="tscroll">
+      <table class="tbl wide">
+        <thead><tr><th>Holding or input</th><th>First, free</th><th>Fallback, free</th><th>Paid, only on the admin's approval</th></tr></thead>
+        <tbody>
+          <tr><td>Indian mutual funds</td><td>AMFI's daily NAV file for every scheme, by scheme code and ISIN</td><td>mfapi.in, each scheme's full NAV history; a screenshot</td><td>none needed</td></tr>
+          <tr><td>NSE and BSE shares and ETFs</td><td>yfinance <code>.NS</code>, then <code>.BO</code>: daily candles, ten years of history</td><td>The exchanges' bhavcopy end-of-day files; <code>stale</code> last</td><td>Twelve Data's Grow plan, $79 a month (its free tier has no NSE or BSE); Zerodha Kite Connect, ₹500 a month with history, if the member has a Zerodha account</td></tr>
+          <tr><td>Look-through of funds</td><td>The fund houses' monthly portfolio disclosures, which SEBI requires</td><td>The factsheet</td><td>none</td></tr>
+          <tr><td>INR exchange rate</td><td>The ECB's daily reference rate, which includes INR</td><td>The RBI/FBIL reference rate</td><td>none</td></tr>
+          <tr><td>Economy and stress</td><td>RBI's database (policy rate, yields), MOSPI's inflation, India VIX, NSDL's daily foreign portfolio investor flows</td><td>FRED's India series</td><td>none</td></tr>
+          <tr><td>News and events</td><td>Economic Times, Mint and Business Standard by RSS; NSE company announcements; GDELT's India coverage</td><td>none</td><td>none</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 style="margin-top:28px">The Indian day, on the UK clock</h3>
+  <p class="small ink2">All schedules stay in <code>Europe/London</code>. <span class="aws">EventBridge Scheduler</span> puts the Indian jobs on the <span class="aws">SQS work queue</span> after the Indian close and after AMFI's NAVs; the <span class="aws">worker λ</span> runs them like any other.</p>
+  <ol class="flow" style="--n:5">
+    <li><h4>NSE and BSE close</h4><p>15:30 IST, which is 10:00 or 11:00 UK time. No close is expected on an NSE holiday.</p></li>
+    <li><h4>Shares and ETFs priced</h4><p>The <code>in_listed</code> chain after the close; candles in rupees, raw answers in S3.</p><div class="chips"><span class="aws">SQS work queue</span></div></li>
+    <li><h4>Fund NAVs priced</h4><p>AMFI's NAVs are out by the UK evening; the <code>in_mutual_fund</code> chain runs then.</p><div class="chips"><span class="aws">worker λ</span></div></li>
+    <li><h4>07:10 the engine</h4><p>Every holding scored; the Indian ones read the India basket in their macro pillar.</p><div class="chips"><span class="aws">DynamoDB</span></div></li>
+    <li class="hl"><h4>07:15 the brief</h4><p>India's previous day, in rupees with pounds beside them, and which sources answered.</p></li>
+  </ol>
+
+  <h3 style="margin-top:28px">The engine and the Forecaster on Indian holdings</h3>
+  <div class="g2">
+    <div class="card">
+      <p class="over">IN4 · MA-154 · the macro pillar</p>
+      <h3>The India basket</h3>
+      <p class="small">It joins the UK, EU and US baskets. A holding's macro pillar reads the baskets it is exposed to, weighted by its look-through, as for every holding.</p>
+      <ul class="list small">
+        <li>The Nifty 50 against Indian government bonds</li>
+        <li>India VIX</li>
+        <li>The rupee against the dollar</li>
+        <li>Foreign portfolio investor flows, from NSDL each day</li>
+        <li>The RBI's policy rate</li>
+      </ul>
+      <p class="small ink2">The calendars add the RBI's policy dates, India's inflation releases, NSE holidays and results season. Golden tests cover the basket.</p>
+    </div>
+    <div class="card ex">
+      <p class="over">Worked example · illustrative</p>
+      <h3>An RBI surprise reaches the Indian holdings</h3>
+      <div class="ex-path"><span class="chip mp-neutral">RBI raises more than expected</span><span class="arr">→</span><span class="chip mp-neutral">central bank: RBI</span><span class="chip mp-neutral">India</span><span class="chip mp-neutral">rate surprise</span></div>
+      <div role="img" aria-label="Illustrative exposure to India: Nifty 50 index fund 100%, Nifty 50 ETF 100%, Flexi-cap fund 95%, Balanced 1%, below the 3% floor and dropped, NASDAQ 100 ETF none." style="display:grid;gap:8px">
+        <div class="xr"><span>Nifty 50 index fund</span><div class="xt"><i class="xb" style="width:100%"></i><i class="xfloor" style="left:3%"></i></div><span class="xv">100%</span></div>
+        <div class="xr"><span>Nifty 50 ETF (NSE)</span><div class="xt"><i class="xb" style="width:100%"></i><i class="xfloor" style="left:3%"></i></div><span class="xv">100%</span></div>
+        <div class="xr"><span>Flexi-cap fund</span><div class="xt"><i class="xb" style="width:95%"></i><i class="xfloor" style="left:3%"></i></div><span class="xv">95%</span></div>
+        <div class="xr drop"><span>Balanced, dropped</span><div class="xt"><i class="xb" style="width:1%"></i><i class="xfloor" style="left:3%"></i></div><span class="xv">1%</span></div>
+        <div class="xr drop"><span>NASDAQ 100 ETF</span><div class="xt"><i class="xfloor" style="left:3%"></i></div><span class="xv">0</span></div>
+      </div>
+      <p class="cap"><span class="illus">Illustrative</span>Each holding's exposure to India, from the fund houses' monthly disclosures and the UK factsheets; the coral tick is the 3% floor. Haiku tags the story; code makes every weight.</p>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <h3>Indian news, matched by code</h3>
+      <p class="small">Economic Times, Mint and Business Standard by RSS, NSE's company announcements and GDELT's India coverage go through the same steps as every story (section 4): Claude Haiku tags each one through Batches; code weighs it against each holding's exposure map; a floor drops the faint. News alone never raises a red alert.</p>
+    </div>
+    <div class="card">
+      <h3>The Forecaster's gates, for India too</h3>
+      <p class="small">The Forecaster takes the Indian holdings on the same terms: nothing is shown until its gates are passed. Its Indian forecasts need phase 11 (IN4).</p>
+      <div class="states" role="img" aria-label="An Indian holding's forecast: tested in the lab over ten years, then in practice in the Saturday review, then live in weekday cards after 8 weeks beating both the base rate and the rules engine, then off after four weeks worse than the base rate.">
+        <span class="st"><b>lab</b><small>ten years, walk-forward</small></span><span class="arr">→</span>
+        <span class="st"><b>in practice</b><small>Saturday review only</small></span><span class="arr">→</span>
+        <span class="st"><b>live</b><small>8 weeks beating both</small></span><span class="arr">→</span>
+        <span class="st"><b>off</b><small>4 weeks worse</small></span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:28px">FX in the picture</h3>
+  <div class="g2">
+    <div class="card">
+      <p class="over">GBP base · INR beside · both stored</p>
+      <h3>Every Indian figure twice</h3>
+      <p class="small">The base currency is GBP. Each member reads figures in GBP or INR; every Indian figure shows in rupees with its pounds beside it, and the household total is in pounds with the INR view one tap away. The stored value is always both: the native amount and its GBP equivalent on the day.</p>
+      <div class="tscroll" style="box-shadow:none">
+        <table class="tbl">
+          <thead><tr><th>One Valuation row</th><th class="n">Value</th></tr></thead>
+          <tbody>
+            <tr><td>Instrument</td><td class="n">Nifty 50 ETF (NSE)</td></tr>
+            <tr><td><code>price</code> · <code>price_ccy</code></td><td class="n">270.00 · INR</td></tr>
+            <tr><td><code>units</code></td><td class="n">1,250</td></tr>
+            <tr><td><code>fx_to_gbp</code></td><td class="n">0.008889 (₹112.50 to £1, ECB)</td></tr>
+            <tr><td><code>value_gbp</code></td><td class="n">£3,000.00</td></tr>
+            <tr><td><code>source</code></td><td class="n">close</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cap"><span class="illus">Illustrative</span>₹3,37,500 of the ETF on 23 Oct, kept with its £3,000 at that day's ECB rate. INR and GBP views must agree with the FX of the day; a test checks it.</p>
+    </div>
+    <div class="tgchat" aria-label="Illustrative currency check in Telegram: rupees typed against a pound holding">
+      <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>bot · illustrative · MA-156</small></div></div>
+      <div class="tg-bub"><span class="tg-sub">You: I put ₹20,000 into Balanced</span><br>Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way.<br><span class="tg-sub">Nothing is saved yet.</span><div class="tg-time">19:10</div></div>
+      <div class="tg-btns two"><span class="tg-btn">Pounds that arrived</span><span class="tg-btn">Use the ECB rate</span><span class="tg-btn">A rupee holding</span><span class="tg-btn">Cancel</span></div>
+    </div>
+  </div>
+  <p class="cap">The currency check (MA-156, phase 1): every holding keeps the currency it is bought and valued in; money typed in another is never saved as typed. <i>Use the ECB rate</i> is the engine's conversion at that day's reference rate, with its date, marked an estimate; <i>Pounds that arrived</i> records the member's figure with the implied rate beside it. The original amount, rate and source stay on the transaction. Every pair, both ways, on a typed line, a guided flow, a screenshot, a CAS or broker line.</p>
+
+  <div class="g2">
+    <div class="card">
+      <p class="over">IN2 · MA-152</p>
+      <h3>The existing Indian portfolio, imported once</h3>
+      <div class="tscroll" style="box-shadow:none">
+        <table class="tbl">
+          <thead><tr><th>What is held</th><th>The file to send</th><th>What it gives</th></tr></thead>
+          <tbody>
+            <tr><td>Mutual funds, every fund house</td><td>The detailed CAS PDF from CAMS, KFintech or MF Central</td><td>Every folio and scheme, the units, and every purchase, SIP, switch and redemption since inception</td></tr>
+            <tr><td>Shares, ETFs and funds in demat</td><td>The NSDL or CDSL CAS, or the broker's holdings and tradebook export</td><td>Holdings and quantities by ISIN, and the trades</td></tr>
+            <tr><td>Anything else</td><td>A screenshot or a typed line</td><td>One holding at a time</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list small">
+        <li>Every file is kept in S3 first and opens from the Audit page; each change's audit row names it.</li>
+        <li>Parsed by code (a pinned open-source CAS parser, tested on synthetic statements); Claude reads only a file the parsers cannot.</li>
+        <li>Matched by ISIN: a fund to its AMFI scheme code, a share or ETF to its <code>.NS</code> or <code>.BO</code> listing. Anything unmatched is listed, never guessed.</li>
+        <li>A dry run, one summary card, Confirm with the second check, fingerprints so a statement never adds twice, rollback by import id.</li>
+        <li>No PAN, address or account number in any record; a protected PDF's password is used in memory and never stored.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="over">IN3 · MA-153</p>
+      <h3>Accounts, suggestions and the tax flag</h3>
+      <div class="chips"><span class="chip mp-neutral">demat</span><span class="chip mp-neutral">mf_folio</span><span class="chip mp-neutral">nre</span><span class="chip mp-neutral">nro</span><span class="chip mp-neutral">ppf, nps, elss if held</span></div>
+      <p class="small">Each account has country IN and currency INR. "ISA-safe" becomes "wrapper-aware": a suggestion names only actions that suit the account it is about, and the bot still never trades.</p>
+      <p class="small">For a UK resident many Indian funds are not UK "reporting funds", so gains may be taxed differently. The bot flags those holdings in plain words and says to check with a tax adviser. It never gives tax advice.</p>
+      <p class="small ink2">Privacy mode hides rupees as it hides pounds. The cards and pages are designed first, in Claude Design, before any is built.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:28px">Cost and order</h3>
+  <div class="g2">
+    <div class="card">
+      <p class="over">Cost · ARCHITECTURE §22.5</p>
+      <h3>£0 on the free path</h3>
+      <p class="small">India costs nothing beyond a few more jobs a day inside the free tiers. A paid feed is a request to the admin with its price, counted inside the £50 cap for AWS and others (section 11).</p>
+      <div class="tscroll" style="box-shadow:none">
+        <table class="tbl">
+          <thead><tr><th>Paid Indian feed, only if approved</th><th class="n">Price</th></tr></thead>
+          <tbody>
+            <tr><td>Twelve Data Grow (its free tier has no NSE or BSE)</td><td class="n">$79 a month</td></tr>
+            <tr><td>Zerodha Kite Connect, with history, for a Zerodha account</td><td class="n">₹500 a month</td></tr>
+            <tr><td>Indian mutual funds, look-through, FX, economy, news</td><td class="n">free; none needed</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <p class="over">Order · about 3 to 4 weeks</p>
+      <h3>IN1 first, then the rest</h3>
+      <div class="states" role="img" aria-label="Order: IN1 first; IN2 needs IN1, the Excel importer MA-111 and file keeping MA-148; IN3 needs both; IN4 needs IN1, and phase 11 for its forecasts.">
+        <span class="st"><b>IN1 · prices</b><small>after phase 2</small></span><span class="arr">→</span>
+        <span class="st"><b>IN2 · import</b><small>with MA-111, MA-148</small></span><span class="arr">→</span>
+        <span class="st"><b>IN3 · views</b><small>needs IN1 and IN2</small></span>
+      </div>
+      <div class="states">
+        <span class="st"><b>IN4 · engine, Forecaster</b><small>after IN1; phase 11 for forecasts</small></span>
+        <span class="st"><b>MA-156 · any currency</b><small>phase 1, already planned</small></span>
+      </div>
+      <p class="small" style="margin-top:12px"><strong>Tests:</strong> synthetic CAS statements and broker exports import exactly once; an unmatched ISIN is listed, not guessed; each Indian chain falls through to stale; INR and GBP views agree with the FX of the day; golden tests for the India basket.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="sec" id="s13" aria-labelledby="s13-h">
+  <header class="sh"><span class="num">13</span><div><p class="over">The road</p><h2 id="s13-h">What each story needs before it can start</h2><div class="keys"><span class="key">epic MA-117: F1 to F7</span><span class="key">epic MA-127: E1 to E8</span><span class="key">epic MA-147: IN1 to IN4</span></div></div></header>
+  <p class="intro">All three epics are later work, after the rules engine and its track record. Indicatively, the Forecaster takes 8 to 12 weeks, the agent team 6 to 8 and India 3 to 4. F1 and F2 can start any time after phase 2, and F2's first report tests the rules engine early. IN1 can start after phase 2 too; the currency check India leans on, MA-156, is phase 1.</p>
+  <div class="lanekey"><span><i style="background:var(--mp-coral)"></i>Forecaster, F1 to F7 (MA-119 to MA-125)</span><span><i style="background:var(--mp-chart-2)"></i>Agent team, E1 to E8 (MA-129 to MA-136)</span><span><i style="background:var(--mp-chart-4)"></i>India, IN1 to IN4 (MA-151 to MA-154), with MA-156</span></div>
   <div class="road">
     <div class="gate"><h4>After phase 2</h4>
       <div class="story f"><b>F1 · Data</b><small>Ten years, point in time; exposure maps</small><span class="key">MA-119</span></div>
@@ -1574,12 +1784,30 @@ footer p { max-width: 90ch; }
       <div class="story e"><b>E7 · Ops warden · E8 · Budgets</b><small>Alongside</small><span class="key">MA-135 · MA-136</span></div>
     </div>
   </div>
-  <p class="cap">The exit for phase 11: over ten years of walk-forward tests and 8 live weeks, the risk forecasts beat the base rate, and the steered contributions cut the worst fall and the time underwater against buy-and-hold, within the growth trade-off the household sets. For phase 12: a month in which every change was inside its band or approved, every prediction was graded, and spend stayed inside both budgets.</p>
+  <h3 style="margin-top:24px">India, phase 13</h3>
+  <div class="road">
+    <div class="gate"><h4>Phase 1</h4>
+      <div class="story i"><b>Money in any currency</b><small>Checked against each holding's currency, both ways</small><span class="key">MA-156</span></div>
+    </div>
+    <div class="gate"><h4>After phase 2</h4>
+      <div class="story i"><b>IN1 · Indian prices</b><small>The AMFI, mfapi.in and bhavcopy plugins; yfinance .NS and .BO; NSE's calendar</small><span class="key">MA-151</span></div>
+    </div>
+    <div class="gate"><h4>After IN1, the importer and file keeping</h4>
+      <div class="story i"><b>IN2 · The import</b><small>CAS and broker files, matched by ISIN, one Confirm; needs MA-111 and MA-148</small><span class="key">MA-152</span></div>
+    </div>
+    <div class="gate"><h4>After IN1 and IN2</h4>
+      <div class="story i"><b>IN3 · Accounts and views</b><small>INR with GBP beside; wrapper-aware; the tax flag; designed first</small><span class="key">MA-153</span></div>
+    </div>
+    <div class="gate"><h4>After IN1; phase 11 for forecasts</h4>
+      <div class="story i"><b>IN4 · Engine and Forecaster</b><small>The India basket, Indian news, the RBI's calendar</small><span class="key">MA-154</span></div>
+    </div>
+  </div>
+  <p class="cap">The exit for phase 11: over ten years of walk-forward tests and 8 live weeks, the risk forecasts beat the base rate, and the steered contributions cut the worst fall and the time underwater against buy-and-hold, within the growth trade-off the household sets. For phase 12: a month in which every change was inside its band or approved, every prediction was graded, and spend stayed inside both budgets. For phase 13: a member sends their CAS and broker export, taps Confirm once, and the Indian holdings with their history appear in the brief and the web app in INR and GBP, with the files they came from open from the Audit page.</p>
 </section>
 
 <footer>
-  <p><strong>Sources.</strong> ARCHITECTURE.md §5 (data layer, price chains), §6 (the engine), §11, §15.1, §15.2, §19 (the Forecaster), §20 (the agent team), §21 (queues); PLAN.md phases 2, 6, 7, 8, 11 and 12. Where this page and those documents differ, the documents win.</p>
-  <p>MyPaisa is software for one household, not regulated advice. It suggests and explains; it never trades, and every decision stays with the household. Sharing its calls with other households would start to look like regulated advice, so it is not shared. Every figure on this page is illustrative: no real balance, price or result is shown, and nothing here promises accuracy.</p>
+  <p><strong>Sources.</strong> ARCHITECTURE.md §4.1 and §4.7 (holdings, money in any currency), §5 (data layer, price chains, FX), §6 (the engine), §11, §15.1, §15.2, §19 (the Forecaster), §20 (the agent team), §21 (queues), §22 (Indian markets); PLAN.md phases 1 (MA-156), 2, 6, 7, 8, 11, 12 and 13; TECH_STACK.md's Indian sources. Where this page and those documents differ, the documents win.</p>
+  <p>MyPaisa is software for one household, not regulated advice. It suggests and explains; it never trades, and every decision stays with the household. Sharing its calls with other households would start to look like regulated advice, so it is not shared. Every figure on this page is illustrative: no real balance, price, rate or result is shown, and nothing here promises accuracy. It never gives tax advice: where UK rules may treat an Indian fund differently, it says so in plain words and says to check with a tax adviser.</p>
 </footer>
 
 </div>

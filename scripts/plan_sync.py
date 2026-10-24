@@ -101,6 +101,12 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
                 errors.append(f"{k}: UI with no board and no note saying why")
         if d in ("planned", "picked") and not it.get("boards"):
             errors.append(f"{k}: design is {d!r} but no board is listed")
+        opened = it.get("open", [])
+        if not isinstance(opened, list) or not all(isinstance(q, str) and q for q in opened):
+            errors.append(f"{k}: open must be a list of questions")
+        else:
+            for q in opened:
+                warnings.append(f"{k}: open, must be settled before it starts: {q}")
         for b in it.get("boards", []):
             proj = projects.get(b.get("project"))
             if not proj:
@@ -181,6 +187,13 @@ def start(trace: dict, key: str) -> int:
         print(f"  ARCHITECTURE.md §{s} {sections.get(s, '(missing)')}")
     for b in it.get("boards", []):
         print(f"  board: {b['file']} · {b['board']}")
+    if it.get("notes"):
+        print(f"  notes: {it['notes']}")
+    if it.get("open"):
+        for q in it["open"]:
+            print(f"  open: {q}")
+        print("  STOP: settle the open questions with Arun, change the boards, docs and Jira to match, then clear them from the trace.")
+        return 1
     d = it.get("design")
     if it.get("ui") and d == "todo":
         print("  STOP: this story has UI and no board. Design it first (/design-first), then record the board in the trace.")

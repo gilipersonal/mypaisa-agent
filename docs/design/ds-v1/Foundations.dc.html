@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa DS v1: Foundations</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-title { font: 700 34px/41px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; margin: 0 0 10px; }
+          .dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 24px; text-wrap: pretty; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; }
+          .dv-row { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+          .dv-idx { display: flex; flex-wrap: wrap; gap: 8px; }
+          .dv-idx a { font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; background: rgba(0, 0, 0, 0.06); border-radius: 999px; padding: 9px 14px; text-decoration: none; }
+          .rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 32px; max-width: 1344px; margin: 0 0 24px; }
+          .rule { font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .rule b { color: #14171F; display: block; margin-bottom: 2px; }
+          .pane { width: 656px; max-width: 100%; flex: none; box-sizing: border-box; padding: 24px; border-radius: 18px; display: flex; flex-direction: column; gap: 22px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); }
+          .pane.full { width: auto; flex: 1 1 100%; }
+          .phead { display: flex; align-items: baseline; justify-content: space-between; }
+          .lbl { font: 500 11px/14px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-3); letter-spacing: 0; }
+          .sub-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: -10px; }
+          /* colour */
+          .cgrid { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+          .ccol { flex: 0 1 656px; max-width: 656px; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+          .cghead { display: flex; align-items: baseline; gap: 10px; margin: 0 0 8px; }
+          .cgname { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+          .cghint { font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #5A606C; }
+          .ctable { border-radius: 14px; overflow: hidden; background: #F9F8F6; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); }
+          .crow { display: grid; grid-template-columns: 210px minmax(0, 1fr) minmax(0, 1fr); }
+          .crow + .crow { border-top: 1px solid rgba(0, 0, 0, 0.07); }
+          .chdr > span { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; padding: 8px 14px; }
+          .cmeta { padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; }
+          .ctok { font: 600 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: #14171F; }
+          .cuse { font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .ccell { display: flex; align-items: center; gap: 12px; padding: 10px 14px; letter-spacing: 0; }
+          .spec { width: 64px; height: 44px; border-radius: 10px; flex: none; display: grid; place-items: center; position: relative; overflow: hidden; box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .aa { font: 600 17px/1 var(--mp-font); }
+          .sbar { position: absolute; left: 9px; right: 9px; top: 50%; transform: translateY(-50%); border-radius: 2px; }
+          .cnums { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+          .chex { font: 500 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink); }
+          .cratio { font: 600 15px/20px var(--mp-font); color: var(--mp-ink); }
+          .con { font: 11px/14px var(--mp-font); color: var(--mp-ink-3); text-wrap: pretty; }
+          /* type */
+          .trow { display: grid; grid-template-columns: 188px minmax(0, 1fr); gap: 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--mp-line); }
+          .tname { display: block; font: 600 13px/18px var(--mp-font); color: var(--mp-ink); letter-spacing: 0; margin-bottom: 2px; }
+          .tspec { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .figs { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 16px; align-items: start; }
+          .figcol { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 14px; background: var(--mp-surface); border-radius: var(--mp-r-row); margin-top: 6px; }
+          .prop { font-variant-numeric: proportional-nums; }
+          .figcol > span { border-right: 2px solid var(--mp-accent); padding-right: 4px; }
+          .stack { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+          .f-inter { font-family: "Inter", system-ui, sans-serif; }
+          .f-nunito { font-family: "Nunito", system-ui, sans-serif; font-weight: 800; }
+          .f-nunito.mp-num-l { font-family: "Nunito", system-ui, sans-serif; }
+          /* space, shape, elevation */
+          .sprow { display: grid; grid-template-columns: 92px 44px 28px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 30px; }
+          .spsq { background: var(--mp-accent); border-radius: 2px; }
+          .radii { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; align-items: start; }
+          .rspec { height: 72px; display: flex; align-items: flex-end; }
+          .rbox { height: 64px; background: var(--mp-surface); box-shadow: var(--mp-shadow); }
+          .elev { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: end; }
+          .targets { display: flex; gap: 28px; align-items: flex-end; }
+          .hit { outline: 1.5px dashed var(--mp-focus); outline-offset: 0; }
+          /* layout and size classes */
+          .sztable { max-width: 1344px; border-radius: 14px; overflow: hidden; background: #F9F8F6; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); margin: 0 0 24px; }
+          .szr { display: grid; grid-template-columns: 150px 1.3fr 1fr 1fr 1.2fr 1.1fr; }
+          .szr + .szr { border-top: 1px solid rgba(0, 0, 0, 0.07); }
+          .szr > span { padding: 10px 14px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .szr > span > b { display: block; color: #14171F; }
+          .szh > span { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; padding: 8px 14px; }
+          .szframes { display: flex; flex-wrap: wrap; gap: 20px 16px; align-items: flex-start; }
+          .szwrap { position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 0 0 1px var(--mp-line), var(--mp-shadow); }
+          .szapp { position: absolute; left: 0; top: 0; transform: scale(0.5); transform-origin: 0 0; overflow: hidden; background: var(--mp-bg); }
+          .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+          .bb { box-sizing: border-box; }
+          /* motion */
+          .curves { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+          .curve { display: flex; gap: 14px; align-items: flex-start; background: var(--mp-surface); border-radius: var(--mp-r-row); padding: 12px; }
+          .cv-grid { stroke: var(--mp-chart-grid); fill: none; }
+          .cv-hand { stroke: var(--mp-ink-3); stroke-width: 1; }
+          .cv-dot { fill: var(--mp-surface); stroke: var(--mp-ink-3); stroke-width: 1.5; }
+          .cv-line { stroke: var(--mp-chart-line); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+          .durrow { display: grid; grid-template-columns: 108px 52px minmax(0, 1fr) 236px; gap: 12px; align-items: center; min-height: 30px; }
+          .durtrack { height: 6px; }
+          .durbar { height: 6px; border-radius: 3px; background: var(--mp-accent); }
+          .demo-wrap { min-height: 230px; }
+          .demos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+          .demo { border-radius: var(--mp-r-row); padding: 12px; min-height: 230px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .mini { padding: 10px 12px; border-radius: 14px; }
+          .d1 { --d: 90ms; } .d2 { --d: 180ms; } .d3 { --d: 270ms; } .d4 { --d: 360ms; }
+          .gbar-t { height: 10px; }
+          .gbar { height: 10px; border-radius: 5px; }
+          .gl { display: grid; grid-template-columns: 40px minmax(0, 1fr) 30px; gap: 8px; align-items: center; }
+          /* icons */
+          .icons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+          .ic { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--mp-surface); border-radius: 12px; min-height: 58px; box-sizing: border-box; }
+          .ic .ms { color: var(--mp-ink); flex: none; width: 26px; }
+          .icn { display: block; font: 500 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink); letter-spacing: 0; }
+          .isizes { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; }
+          .isz { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+          /* voice */
+          .vpair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+          .vdo, .vnot { border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+          .vdo { background: var(--mp-surface); box-shadow: var(--mp-shadow); }
+          .vnot { box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .vhead { display: flex; align-items: center; gap: 6px; }
+          .vwhy { grid-column: 1 / -1; margin-top: -2px; }
+          /* MyPaisa mark, 1c Watcher (MA-103): drawn inline from docs/mark*.svg; the theme sets its colours */
+          .mpm { display: block; flex: none; }
+          .mpm-ring { fill: none; stroke: var(--mp-hero); }
+          .t-dark .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-coin { fill: var(--mp-hero); }
+          .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+          .mpm-dot { fill: var(--mp-coral); }
+          .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+        </style>
+      </helmet>
+
+      <!-- ================= HEAD ================= -->
+      <section class="dv-turn" id="top" data-screen-label="Foundations: index">
+        <h1 class="dv-title">MyPaisa DS v1 · Foundations</h1>
+        <p class="dv-intro">Direction 1a, "Warm ledger": Monzo's warmth on the bones of Apple's Human Interface Guidelines. Every value on this page comes from <b>tokens.css</b>; every specimen is drawn twice from one markup, light (<code>.t-light</code>) and dark (<code>.t-dark</code>), the way the Mini App follows Telegram's colour scheme. Contrast ratios are measured with the WCAG 2.2 formula: text needs 4.5:1, graphics and focus rings 3:1. Illustrative figures throughout; members are "You" and "Asha".</p>
+        <nav class="dv-idx" aria-label="Foundations">
+          <a href="#colour">1 · Colour</a><a href="#type">2 · Type</a><a href="#space">3 · Space, shape, elevation</a><a href="#layout">4 · Layout and size classes</a><a href="#motion">5 · Motion</a><a href="#icons">6 · Iconography</a><a href="#voice">7 · Voice</a>
+        </nav>
+      </section>
+
+      <!-- ================= 1 COLOUR ================= -->
+      <section class="dv-turn" id="colour" data-screen-label="Foundations 1: Colour">
+        <div class="dv-thd"><a class="dv-tid" href="#colour">1</a><span class="dv-tname">Colour</span></div>
+        <p class="dv-intro">Semantic tokens, never raw hex in a screen. Each row shows the token in light and dark with the surface it is used on: text tokens are drawn as "Aa" on that surface, fills carry the text that sits on them, lines and marks are drawn as strokes. The ratio is the pair that matters for that token. The fixed encodings at the end keep one meaning on every page. Green means good, and only that: gains with ▲ and status-OK marks (done, verified, nothing to do). It is never a category, a progress bar or a meter.</p>
+        <div class="cgrid">
+          <sc-for list="{{ colourCols }}" as="col" hint-placeholder-count="2">
+            <div class="ccol">
+              <sc-for list="{{ col.groups }}" as="g" hint-placeholder-count="3">
+                <div>
+                  <div class="cghead"><span class="cgname">{{ g.name }}</span><span class="cghint">{{ g.hint }}</span></div>
+                  <div class="ctable">
+                    <div class="crow chdr"><span>Token</span><span>Light · .t-light</span><span>Dark · .t-dark</span></div>
+                    <sc-for list="{{ g.tokens }}" as="k" hint-placeholder-count="4">
+                      <div class="crow">
+                        <div class="cmeta"><code class="ctok">{{ k.name }}</code><span class="cuse">{{ k.use }}</span></div>
+                        <sc-for list="{{ k.cells }}" as="c" hint-placeholder-count="2">
+                          <div class="ccell {{ c.cls }}">
+                            <div class="spec" style="background: {{ c.ground }}">
+                              <sc-if value="{{ c.aa }}" hint-placeholder-val="{{ true }}"><span class="aa" style="color: {{ c.fg }}">Aa</span></sc-if>
+                              <sc-if value="{{ c.isBar }}" hint-placeholder-val="{{ false }}"><span class="sbar" style="background: {{ c.bar }}; height: {{ c.barH }}"></span></sc-if>
+                            </div>
+                            <div class="cnums"><span class="chex">{{ c.hex }}</span><span class="cratio">{{ c.ratio }}</span><span class="con">{{ c.on }}</span></div>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- ================= 2 TYPE ================= -->
+      <section class="dv-turn" id="type" data-screen-label="Foundations 2: Type">
+        <div class="dv-thd"><a class="dv-tid" href="#type">2</a><span class="dv-tname">Type</span></div>
+        <p class="dv-intro">Apple's Dynamic Type sizes at the default "Large" setting, in the system font, so the Mini App reads like part of the phone. Figures that carry the story (the household total, a headline stat) are set rounded and heavy. One size per job; hierarchy comes from size and weight, never from colour alone.</p>
+        <div class="rules">
+          <div class="rule"><b>Text: SF Pro, Inter elsewhere</b><code>-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif</code></div>
+          <div class="rule"><b>Figures: SF Pro Rounded, Nunito elsewhere</b><code>ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui</code>. Only <code>.mp-num-hero</code> and <code>.mp-num-l</code>.</div>
+          <div class="rule"><b>Tabular figures everywhere</b><code>.mp</code> sets <code>font-variant-numeric: tabular-nums</code>, so pounds and percentages line up in columns and do not jitter when they count up.</div>
+        </div>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Type {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div>
+                <sc-for list="{{ typeScale }}" as="s" hint-placeholder-count="13">
+                  <div class="trow">
+                    <div><span class="tname">{{ s.name }}</span><span class="lbl">{{ s.cls }} · {{ s.spec }}</span></div>
+                    <div class="tspec {{ s.cls }}">{{ s.sample }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="figs">
+                <div><div class="lbl">Tabular · default · edges line up</div><div class="figcol mp-hl"><span>£4,596</span><span>£4,228</span><span>£4,210</span><span>£1,730</span></div></div>
+                <div><div class="lbl">Proportional · avoid · edges wander</div><div class="figcol mp-hl prop"><span>£4,596</span><span>£4,228</span><span>£4,210</span><span>£1,730</span></div></div>
+                <div>
+                  <div class="lbl">Off Apple devices</div>
+                  <div class="stack">
+                    <div class="f-inter mp-hl">Inter 600 · Balanced</div>
+                    <div class="f-inter mp-body">Inter · Not a reason to sell.</div>
+                    <div class="fx ac gap8"><span class="f-nunito mp-num-l">£25,800</span><span class="lbl">Nunito 800</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- ================= 3 SPACE, SHAPE, ELEVATION ================= -->
+      <section class="dv-turn" id="space" data-screen-label="Foundations 3: Space, shape, elevation">
+        <div class="dv-thd"><a class="dv-tid" href="#space">3</a><span class="dv-tname">Space, shape, elevation</span></div>
+        <p class="dv-intro">A 4 pt grid, six radii that grow with the size of the thing, and three heights of surface. Grouped lists sit flat on the background like iOS Settings; cards lift a little; only sheets cast a real shadow. Every tappable thing is at least 44 × 44 pt, even when the glyph inside is 22.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Space and shape {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="sub-h"><span class="mp-hl">Spacing</span><span class="lbl">4 pt grid · --mp-s1 … --mp-s10</span></div>
+              <div class="fx col gap4">
+                <sc-for list="{{ spacing }}" as="s" hint-placeholder-count="8">
+                  <div class="sprow">
+                    <span class="lbl">{{ s.tok }}</span>
+                    <span class="fx ac"><span class="spsq" style="width: {{ s.sz }}; height: {{ s.sz }}"></span></span>
+                    <span class="mp-foot mp-w6">{{ s.px }}</span>
+                    <span class="mp-foot mp-ink2">{{ s.use }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="sub-h"><span class="mp-hl">Radii</span><span class="lbl">--mp-r-*</span></div>
+              <div class="radii">
+                <sc-for list="{{ radii }}" as="r" hint-placeholder-count="6">
+                  <div class="fx col gap8">
+                    <div class="rspec"><div class="rbox" style="border-radius: {{ r.r }}; height: {{ r.h }}; width: 100%"></div></div>
+                    <div><div class="mp-foot mp-w6">{{ r.name }} · {{ r.v }}</div><div class="mp-cap mp-ink3">{{ r.use }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="sub-h"><span class="mp-hl">Elevation</span><span class="lbl">--mp-shadow · sheet shadow</span></div>
+              <div class="elev">
+                <div class="fx col gap8">
+                  <div class="mp-group"><div class="mp-row"><span class="mp-body">Balanced</span><span class="mp-foot mp-ink3" style="margin-left: auto">£18,640</span></div><div class="mp-row"><span class="mp-body">Cash pot</span><span class="mp-foot mp-ink3" style="margin-left: auto">£400</span></div></div>
+                  <div><div class="mp-foot mp-w6">Flat · grouped list</div><div class="mp-cap mp-ink3">surface on background, no shadow</div></div>
+                </div>
+                <div class="fx col gap8">
+                  <div class="mp-card"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 4px">84%</div></div>
+                  <div><div class="mp-foot mp-w6">Raised · card</div><div class="mp-cap mp-ink3">--mp-shadow, two soft layers</div></div>
+                </div>
+                <div class="fx col gap8">
+                  <div class="mp-sheet" style="padding-bottom: 14px"><div class="mp-grabber"></div><div class="mp-hl">Why PAUSE?</div><div class="mp-foot mp-ink3">Keep what you have.</div></div>
+                  <div><div class="mp-foot mp-w6">Overlay · sheet</div><div class="mp-cap mp-ink3">0 −8 40, 18% black, above everything</div></div>
+                </div>
+              </div>
+              <div class="sub-h"><span class="mp-hl">44 pt targets</span><span class="lbl">dashed = the tappable area</span></div>
+              <div class="targets">
+                <div class="fx col gap8"><button class="iconbtn hit" aria-label="Privacy mode"><span class="ms">visibility</span></button><span class="mp-cap mp-ink3">Icon button · 44 × 44</span></div>
+                <div class="fx col gap8"><a class="mp-tab on hit" href="#space"><span class="ms ms-fill">home</span>Overview</a><span class="mp-cap mp-ink3">Tab · shares the bar, 48 high</span></div>
+                <div class="fx col gap8"><div class="mp-seg hit" style="width: 160px" role="group" aria-label="Period"><button class="mp-seg-i on">6M</button><button class="mp-seg-i">1Y</button></div><span class="mp-cap mp-ink3">Segment · 40 in a 44 track</span></div>
+              </div>
+              <div class="fx col gap8"><div class="mp-group hit" style="width: 358px"><div class="mp-row"><span class="mp-body">Technical details</span><span class="ms mp-ink3 ms-s" style="margin-left: auto">chevron_right</span></div></div><span class="mp-cap mp-ink3">Row · the full width × 44, the whole row taps</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- ================= 4 LAYOUT AND SIZE CLASSES ================= -->
+      <section class="dv-turn" id="layout" data-screen-label="Foundations 4: Layout and size classes">
+        <div class="dv-thd"><a class="dv-tid" href="#layout">4</a><span class="dv-tname">Layout and size classes</span></div>
+        <p class="dv-intro">One markup, three size classes. The app's root, <code>.mp-app</code>, is a size container, so the frame decides, not the device: the same page is one column on a phone, two columns in an iPad or Telegram Desktop window, and a sidebar layout in a laptop browser. The widths are Apple's size classes in web pixels. Light and dark are stacked here so the wide frames have room.</p>
+        <div class="sztable" role="table" aria-label="Size classes">
+          <div class="szr szh" role="row"><span role="columnheader">Size class</span><span role="columnheader">Who sees it</span><span role="columnheader">Navigation</span><span role="columnheader">Columns</span><span role="columnheader">Gutters and gaps</span><span role="columnheader">Page header</span></div>
+          <sc-for list="{{ sizeClasses }}" as="s" hint-placeholder-count="3">
+            <div class="szr" role="row"><span role="cell"><b>{{ s.name }}</b><code>{{ s.range }}</code></span><span role="cell">{{ s.who }}</span><span role="cell">{{ s.nav }}</span><span role="cell">{{ s.cols }}</span><span role="cell">{{ s.gut }}</span><span role="cell">{{ s.head }}</span></div>
+          </sc-for>
+        </div>
+        <div class="rules">
+          <div class="rule"><b>The frame decides, not the device</b><code>.mp-app</code> is <code>container: app / inline-size</code>. Telegram Desktop's Mini App window, an iPad in Split View and a tablet Mini App switch class at the same widths as a browser, and again when they are resized.</div>
+          <div class="rule"><b>One markup, no device builds</b><code>.mp-shell</code> holds <code>.mp-shell-side</code> (wide only) and <code>.mp-shell-tabs</code> (compact and regular). <code>.mp-only-compact</code> and <code>.mp-only-wide</code> show or hide the odd piece.</div>
+          <div class="rule"><b>Content never stretches</b>Regular stays one column until 760, then splits into two equal columns. On wide the columns are <code>minmax(0, 1.3fr) minmax(300px, 1fr)</code>, so the list never gets narrower than 300, and <code>.mp-pagepad</code> caps the content at 1180, centred past 1360. The stats are 2 × 2 at every size.</div>
+        </div>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane full {{ t.cls }}" data-screen-label="Size classes {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">live .mp-app containers, drawn at 50%</span></div>
+              <div class="szframes">
+                <sc-for list="{{ frames }}" as="z" hint-placeholder-count="3">
+                  <div class="fx col gap6">
+                    <div class="fx ac jb gap8"><span class="mp-foot mp-w6">{{ z.name }}</span><span class="lbl">{{ z.dim }}</span></div>
+                    <div class="szwrap" style="width: {{ z.sw }}; height: {{ z.sh }}">
+                      <div class="mp-app szapp" style="width: {{ z.w }}; height: {{ z.h }}" data-screen-label="Size class {{ z.name }}">
+                        <div class="mp-shell" style="height: 100%">
+                          <div class="mp-shell-side">
+                            <nav class="mp-side bb" style="background: var(--mp-bg); border-right: 1px solid var(--mp-line)" aria-label="Sections">
+                              <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+                              <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
+                            </nav>
+                          </div>
+                          <div class="mp-shell-main">
+                            <div class="mp-pagepad">
+                              <div class="mp-pagehead">
+                                <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink3">Prices to Friday's close · read-only</div></div>
+                                <div class="mp-seg" style="min-width: 260px" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
+                              </div>
+                              <div class="mp-cols">
+                                <div class="mp-col">
+                                  <div class="mp-hero">
+                                    <div class="mp-over mp-hero-2">Household · Fri close</div>
+                                    <div class="mp-num-hero" style="margin-top: 6px">£25,800</div>
+                                    <div class="mp-sub mp-hero-2">▲ £612 this month · ▼ 0.6% this week</div>
+                                    <svg viewBox="0 0 300 70" preserveAspectRatio="none" style="display: block; width: 100%; height: 70px; margin-top: 12px" aria-hidden="true"><path d="{{ heroChart.area }}" fill="var(--mp-hero-area)"></path><path d="{{ heroChart.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" vector-effect="non-scaling-stroke"></path></svg>
+                                  </div>
+                                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday.</div></div></div>
+                                </div>
+                                <div class="mp-col">
+                                  <div class="mp-group">
+                                    <sc-for list="{{ rows }}" as="h" hint-placeholder-count="5">
+                                      <div class="mp-row"><div class="mp-row-lead mp-neutral">{{ h.lead }}</div><div class="mp-hl" style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ h.name }}</div><div style="text-align: right"><div class="mp-sub mp-w6">{{ h.val }}</div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div></div>
+                                    </sc-for>
+                                  </div>
+                                  <div class="mp-stats">
+                                    <div class="mp-card"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 6px">84%</div><div class="mp-foot mp-ink3">in dollars</div></div>
+                                    <div class="mp-card"><div class="mp-over mp-ink3">Track record</div><div class="mp-num-l" style="margin-top: 6px">20 / 31</div><div class="mp-foot mp-ink3">held up</div></div>
+                                    <div class="mp-card"><div class="mp-over mp-ink3">Positions</div><div class="mp-num-l" style="margin-top: 6px">1.6 of 4</div><div class="mp-foot mp-ink3">effective</div></div>
+                                    <div class="mp-card"><div class="mp-over mp-ink3">AI cost</div><div class="mp-num-l" style="margin-top: 6px">£6.40</div><div class="mp-foot mp-ink3">of £50</div></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mp-shell-tabs tabs-abs">
+                          <nav class="mp-tabbar" style="flex: 1" aria-label="Sections">
+                            <sc-for list="{{ tabs }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                          </nav>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- ================= 5 MOTION ================= -->
+      <section class="dv-turn" id="motion" data-screen-label="Foundations 5: Motion">
+        <div class="dv-thd"><a class="dv-tid" href="#motion">5</a><span class="dv-tname">Motion</span></div>
+        <p class="dv-intro">Motion explains where something came from and then gets out of the way. Two curves and six durations cover every case.</p>
+        <div class="rules">
+          <div class="rule"><b>Transform and opacity only</b>Nothing animates width, height, colour or layout; the browser keeps every frame on the compositor.</div>
+          <div class="rule"><b>Nothing loops</b>Each animation plays once when its content arrives. The loading skeleton pulses four times, then rests.</div>
+          <div class="rule"><b>Reduced motion lands at once</b>Every animation sits inside <code>prefers-reduced-motion: no-preference</code>; with reduced motion the final state simply appears.</div>
+        </div>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Motion {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="sub-h"><span class="mp-hl">Curves</span><span class="lbl">progress over time</span></div>
+              <div class="curves">
+                <sc-for list="{{ curves }}" as="c" hint-placeholder-count="2">
+                  <div class="curve">
+                    <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="{{ c.aria }}">
+                      <rect x="10" y="10" width="100" height="100" class="cv-grid"></rect>
+                      <line x1="10" y1="110" x2="{{ c.h1x }}" y2="{{ c.h1y }}" class="cv-hand"></line>
+                      <line x1="110" y1="10" x2="{{ c.h2x }}" y2="{{ c.h2y }}" class="cv-hand"></line>
+                      <circle cx="{{ c.h1x }}" cy="{{ c.h1y }}" r="3" class="cv-dot"></circle>
+                      <circle cx="{{ c.h2x }}" cy="{{ c.h2y }}" r="3" class="cv-dot"></circle>
+                      <path d="{{ c.d }}" class="cv-line"></path>
+                    </svg>
+                    <div class="fx col gap4" style="min-width: 0">
+                      <span class="lbl" style="color: var(--mp-ink)">{{ c.tok }}</span>
+                      <span class="lbl">{{ c.val }}</span>
+                      <span class="mp-foot mp-ink2">{{ c.use }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="sub-h"><span class="mp-hl">Durations</span><span class="lbl">--mp-t-*</span></div>
+              <div class="fx col gap4">
+                <sc-for list="{{ durations }}" as="d" hint-placeholder-count="6">
+                  <div class="durrow">
+                    <span class="lbl">{{ d.tok }}</span>
+                    <span class="mp-foot mp-w6">{{ d.ms }}</span>
+                    <div class="mp-track durtrack"><div class="durbar" style="width: {{ d.w }}"></div></div>
+                    <span class="mp-foot mp-ink2">{{ d.use }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="sub-h"><span class="mp-hl">Live</span><button class="mp-btn mp-btn-plain" style="min-height: 44px" onClick="{{ replay }}">Play again</button></div>
+              <div class="demo-wrap">
+                <sc-if value="{{ demoOn }}" hint-placeholder-val="{{ true }}">
+                  <div class="demos">
+                    <div class="demo">
+                      <span class="lbl">.mp-rise · 350</span>
+                      <div class="mp-card mini mp-rise"><div class="mp-foot mp-w6">Balanced</div><div class="mp-cap mp-ink3">£18,640 · ▲ 0.4%</div></div>
+                      <div class="mp-card mini mp-rise d1"><div class="mp-foot mp-w6">NASDAQ 100</div><div class="mp-cap mp-ink3">£4,210 · ▼ 3.1%</div></div>
+                      <div class="mp-card mini mp-rise d2"><div class="mp-foot mp-w6">Physical Silver</div><div class="mp-cap mp-ink3">£820 · ▼ 6.2%</div></div>
+                    </div>
+                    <div class="demo">
+                      <span class="lbl">.mp-draw · 700</span>
+                      <svg viewBox="0 0 176 150" style="display: block; width: 100%; height: auto" role="img" aria-label="Six months of value drawing in from May to October">
+                        <line x1="6" y1="38" x2="170" y2="38" stroke="var(--mp-chart-grid)" stroke-width="1"></line>
+                        <line x1="6" y1="75" x2="170" y2="75" stroke="var(--mp-chart-grid)" stroke-width="1"></line>
+                        <line x1="6" y1="112" x2="170" y2="112" stroke="var(--mp-chart-grid)" stroke-width="1"></line>
+                        <path d="{{ demoChart.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="mp-draw"></path>
+                      </svg>
+                    </div>
+                    <div class="demo">
+                      <span class="lbl">.mp-grow · 700</span>
+                      <span class="mp-cap mp-ink3">Currency, looked through · stagger 90</span>
+                      <sc-for list="{{ fx }}" as="b" hint-placeholder-count="5">
+                        <div class="gl"><span class="mp-cap mp-w6">{{ b.k }}</span><div class="mp-track gbar-t"><div class="gbar mp-grow {{ b.d }}" style="width: {{ b.w }}; background: {{ b.c }}"></div></div><span class="mp-cap mp-ink2" style="text-align: right">{{ b.v }}</span></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- ================= 6 ICONOGRAPHY ================= -->
+      <section class="dv-turn" id="icons" data-screen-label="Foundations 6: Iconography">
+        <div class="dv-thd"><a class="dv-tid" href="#icons">6</a><span class="dv-tname">Iconography</span></div>
+        <p class="dv-intro">Material Symbols Rounded stands in for SF Symbols on the web: weight 500, optical size 24, outlined by default and filled for the selected tab and for status ticks. Use the ligature name, <code>&lt;span class="ms"&gt;home&lt;/span&gt;</code>. Nineteen icons cover the product; an icon always sits beside a word or carries an <code>aria-label</code>. No emoji anywhere; ▲ and ▼ are text glyphs for change, not icons.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Iconography {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="icons">
+                <sc-for list="{{ icons }}" as="i" hint-placeholder-count="18">
+                  <div class="ic"><span class="ms ms-l" aria-hidden="true">{{ i.n }}</span><div style="min-width: 0"><span class="icn">{{ i.n }}</span><span class="mp-cap mp-ink3">{{ i.use }}</span></div></div>
+                </sc-for>
+              </div>
+              <div class="sub-h"><span class="mp-hl">Sizes and fill</span><span class="lbl">.ms-s · .ms · .ms-l · .ms-fill</span></div>
+              <div class="isizes">
+                <div class="isz"><span class="ms ms-s">chevron_right</span><span class="lbl">18 · rows</span></div>
+                <div class="isz"><span class="ms">home</span><span class="lbl">22 · default</span></div>
+                <div class="isz"><span class="ms ms-l">check_circle</span><span class="lbl">26 · cards</span></div>
+                <div class="isz"><span class="ms ms-fill mp-acc">home</span><span class="lbl">filled · tab</span></div>
+                <div class="isz"><span class="ms ms-fill mp-up ms-l">check_circle</span><span class="lbl">filled · status</span></div>
+                <div class="isz"><span class="ms mp-ink3">menu</span><span class="lbl">ink-3 · idle</span></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- ================= 7 VOICE ================= -->
+      <section class="dv-turn" id="voice" data-screen-label="Foundations 7: Voice">
+        <div class="dv-thd"><a class="dv-tid" href="#voice">7</a><span class="dv-tname">Voice</span></div>
+        <p class="dv-intro">Plain, warm, second person: a friend who is good with money, not a terminal. Say what it means for you first and keep the detail one tap away. Figures come from the engine and Friday's prices, never from the AI. The bot never buys or sells; a stance is "a view, not advice".</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Voice {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <sc-for list="{{ voice }}" as="v" hint-placeholder-count="6">
+                <div class="vpair">
+                  <div class="vdo"><div class="vhead"><span class="ms ms-fill ms-s mp-up" aria-hidden="true">check_circle</span><span class="mp-over mp-up">Write</span></div><div class="mp-body">{{ v.yes }}</div></div>
+                  <div class="vnot"><div class="vhead"><span class="mp-over mp-ink3">Instead of</span></div><div class="mp-callout mp-ink2">{{ v.no }}</div></div>
+                  <div class="vwhy mp-foot mp-ink3">{{ v.why }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <p class="dv-cap" style="margin-top: 28px">MyPaisa DS v1 · Foundations · MA-101 · tokens.css · illustrative figures</p>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const st = this.state || {};
+          const v = (n) => 'var(--mp-' + n + ')';
+          const cell = (cls, a, o) => ({ cls: cls, hex: a[0], ratio: a[1], on: a[2], ground: o.g, fg: o.fg || 'transparent', bar: o.bar || 'transparent', barH: o.h || '0px', isBar: !!o.bar, aa: !o.bar });
+          const T = (name, use, o, l, d) => ({ name: name, use: use, cells: [cell('mp t-light', l, o), cell('mp t-dark', d, o)] });
+          const txt = (n, g) => ({ g: v(g || 'surface'), fg: v(n) });
+          const bar = (n, h, g) => ({ g: v(g || 'surface'), bar: v(n), h: h });
+          const colourCols = [
+            { groups: [
+              { name: 'Ground and surfaces', hint: 'Where everything sits', tokens: [
+                T('--mp-bg', 'Grouped background: the page behind cards and lists', txt('ink', 'bg'), ['#F6F4F1', '16.3:1', 'ink on it'], ['#0A0F18', '17.6:1', 'ink on it']),
+                T('--mp-surface', 'Cards, grouped rows, sheets', txt('ink', 'surface'), ['#FFFFFF', '17.9:1', 'ink on it'], ['#151C27', '15.7:1', 'ink on it']),
+                T('--mp-surface-2', 'Fills: segmented track, neutral chips, pressed rows, skeletons', txt('ink-3', 'surface-2'), ['#F0EDE8', '4.6:1', 'ink-3 on it, the lowest text pair'], ['#1E2633', '5.1:1', 'ink-3 on it, the lowest text pair']),
+                T('--mp-seg-on', 'The selected segment, lifted above its track', txt('ink', 'seg-on'), ['#FFFFFF', '17.9:1', 'ink on it'], ['#3A4456', '9.0:1', 'ink on it']),
+                T('--mp-line', 'Hairlines between rows; never text', bar('line', '1px'), ['#E4E0DA', '1.3:1', 'vs surface, decorative'], ['#283141', '1.3:1', 'vs surface, decorative']),
+                T('--mp-material', 'Tab bar and sticky headers, over a 20 px blur', txt('ink-3', 'material'), ['#FFFFFF at 78%', '5.3:1', 'tab label (ink-3) on it'], ['#151C27 at 78%', '5.9:1', 'tab label (ink-3) on it'])
+              ] },
+              { name: 'Text', hint: 'Three inks, AA on every surface', tokens: [
+                T('--mp-ink', 'Primary text and figures', txt('ink'), ['#14171F', '17.9:1', 'on surface'], ['#F3F5F8', '15.7:1', 'on surface']),
+                T('--mp-ink-2', 'Secondary text, sub-lines, unselected segments', txt('ink-2'), ['#4E5462', '7.6:1', 'on surface'], ['#AEB6C4', '8.4:1', 'on surface']),
+                T('--mp-ink-3', 'Footnotes, captions, unselected tabs', txt('ink-3'), ['#646A78', '5.4:1', 'on surface; 4.6:1 on surface-2'], ['#8D96A6', '5.7:1', 'on surface; 5.1:1 on surface-2'])
+              ] },
+              { name: 'Hero', hint: 'The navy card: one number, one line, one chart', tokens: [
+                T('--mp-hero', 'Hero card ground; the chart PNGs sent in Telegram', txt('hero-ink', 'hero'), ['#13213A', '16.1:1', 'hero-ink on it'], ['#1A2944', '14.5:1', 'hero-ink on it']),
+                T('--mp-hero-2', 'Fills inside the hero: segmented track, masks', txt('hero-ink-2', 'hero-2'), ['#1C2E4D', '7.6:1', 'hero-ink-2 on it'], ['#233558', '6.8:1', 'hero-ink-2 on it']),
+                T('--mp-hero-ink', 'The hero figure and its labels', txt('hero-ink', 'hero'), ['#FFFFFF', '16.1:1', 'on hero'], ['#FFFFFF', '14.5:1', 'on hero']),
+                T('--mp-hero-ink-2', 'Hero secondary text and overline', txt('hero-ink-2', 'hero'), ['#B7C2D6', '9.0:1', 'on hero'], ['#B7C2D6', '8.1:1', 'on hero'])
+              ] },
+              { name: 'Accent', hint: 'One accent: coral draws, brick writes', tokens: [
+                T('--mp-coral', 'Lines and marks on the hero; never small text on light', bar('coral', '3px', 'hero'), ['#FF6B4F', '5.7:1', 'on hero, a graphic (3:1 needed)'], ['#FF7A5E', '5.7:1', 'on hero, a graphic (3:1 needed)']),
+                T('--mp-accent', 'Links, the selected tab, filled buttons', txt('accent'), ['#C2381F', '5.4:1', 'on surface'], ['#FF7A5E', '6.7:1', 'on surface']),
+                T('--mp-on-accent', 'The label on a filled button', txt('on-accent', 'accent'), ['#FFFFFF', '5.4:1', 'on accent'], ['#1A0B06', '7.5:1', 'on accent']),
+                T('--mp-focus', 'Keyboard focus ring, 3 px, offset 2', bar('focus', '3px'), ['#2453C9', '6.7:1', 'vs surface (3:1 needed)'], ['#8FB2FF', '8.1:1', 'vs surface (3:1 needed)'])
+              ] }
+            ] },
+            { groups: [
+              { name: 'Meaning', hint: 'Gains green with ▲, falls quiet with ▼, red only to act', tokens: [
+                T('--mp-up', 'Good: gains with ▲, and status-OK marks (done, verified, nothing to do)', txt('up'), ['#1D7A3E', '5.4:1', 'on surface'], ['#44D17A', '8.7:1', 'on surface']),
+                T('--mp-down-quiet', 'Everyday falls, always with ▼; never alarm red', txt('down-quiet'), ['#4E5462', '7.6:1', 'on surface'], ['#AEB6C4', '8.4:1', 'on surface']),
+                T('--mp-alert', 'Red-tier alerts that ask for action; rare. A crimson, kept apart from the coral accent so a destructive action never looks like the primary one', txt('alert'), ['#B5123F', '6.7:1', 'on surface; 6.1:1 on bg'], ['#FF6B8B', '6.3:1', 'on surface; 7.1:1 on bg, 5.4:1 on hero']),
+                T('--mp-alert-bg', 'Ground of the alert chip and banner', txt('alert', 'alert-bg'), ['#FCE4EA', '5.6:1', 'alert on it'], ['#3A1724', '5.8:1', 'alert on it'])
+              ] },
+              { name: 'Stances', hint: 'Text on its own tint; the word is the signal', tokens: [
+                T('--mp-add · -bg', 'ADD: room to add at your usual pace', txt('add', 'add-bg'), ['#1D7A3E', '4.6:1', 'on #E2F2E7'], ['#5BDB8B', '8.1:1', 'on #16301F']),
+                T('--mp-hold · -bg', 'HOLD: keep going as you are', txt('hold', 'hold-bg'), ['#2453C9', '5.6:1', 'on #E5ECFB'], ['#8FB2FF', '7.0:1', 'on #1A2747']),
+                T('--mp-pause · -bg', 'PAUSE: keep what you have, hold new money', txt('pause', 'pause-bg'), ['#8A5300', '5.5:1', 'on #FCEED6'], ['#F6BC4F', '8.5:1', 'on #33270E']),
+                T('--mp-trim · -bg', 'TRIM: it has grown past its share', txt('trim', 'trim-bg'), ['#B13A22', '5.0:1', 'on #FBE5DF'], ['#FF9A80', '7.4:1', 'on #3A1D16']),
+                T('--mp-reb · -bg', 'REBALANCE: the mix has drifted from your plan', txt('reb', 'reb-bg'), ['#6B3FB8', '5.8:1', 'on #EEE7FA'], ['#B79CFF', '6.6:1', 'on #2A2142']),
+                T('--mp-watch · -bg', 'WATCH: nothing to do, worth an eye', txt('watch', 'watch-bg'), ['#4E5462', '6.4:1', 'on #EDEBE7'], ['#AEB6C4', '7.0:1', 'on #232B38'])
+              ] },
+              { name: 'Data', hint: 'One line, one area, a quiet grid, extra series hues', tokens: [
+                T('--mp-chart-line', 'Value and price lines on surfaces (coral on the hero)', bar('chart-line', '3px'), ['#C2381F', '5.4:1', 'vs surface'], ['#FF7A5E', '6.7:1', 'vs surface']),
+                T('--mp-chart-area', 'Fill under the line', bar('chart-area', '22px'), ['#FF6B4F at 14%', 'fill', 'under the line only'], ['#FF7A5E at 16%', 'fill', 'under the line only']),
+                T('--mp-chart-grid', 'Grid lines and baselines', bar('chart-grid', '1px'), ['#ECE8E2', '1.2:1', 'vs surface, decorative'], ['#222B39', '1.2:1', 'vs surface, decorative']),
+                T('--mp-chart-2', 'Second series; single-series bars', bar('chart-2', '3px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
+                T('--mp-chart-3', 'A third line series only; green means good, so never a category, progress bar or meter', bar('chart-3', '3px'), ['#1D7A3E', '5.4:1', 'vs surface'], ['#5BDB8B', '9.7:1', 'vs surface']),
+                T('--mp-chart-4', 'Fourth series', bar('chart-4', '3px'), ['#8A5300', '6.3:1', 'vs surface'], ['#F6BC4F', '10.0:1', 'vs surface']),
+                T('--mp-chart-5', 'Fifth series', bar('chart-5', '3px'), ['#6B3FB8', '6.9:1', 'vs surface'], ['#B79CFF', '7.5:1', 'vs surface'])
+              ] }
+            ] },
+            { groups: [
+              { name: 'Fixed encodings', hint: 'One meaning on every page; meters use --mp-meter, never green', tokens: [
+                T('--mp-pillar-for', 'Technical pillars that support the stance', bar('pillar-for', '10px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
+                T('--mp-pillar-against', 'Pillars that weigh against it', bar('pillar-against', '10px'), ['#8A5300', '6.3:1', 'vs surface'], ['#F6BC4F', '10.0:1', 'vs surface']),
+                T('--mp-ccy-usd', 'US dollar, in every currency chart', bar('ccy-usd', '10px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
+                T('--mp-ccy-gbp', 'Pound', bar('ccy-gbp', '10px'), ['#4E5462', '7.6:1', 'vs surface'], ['#AEB6C4', '8.4:1', 'vs surface']),
+                T('--mp-ccy-eur', 'Euro', bar('ccy-eur', '10px'), ['#6B3FB8', '6.9:1', 'vs surface'], ['#B79CFF', '7.5:1', 'vs surface']),
+                T('--mp-ccy-jpy', 'Yen', bar('ccy-jpy', '10px'), ['#8A5300', '6.3:1', 'vs surface'], ['#F6BC4F', '10.0:1', 'vs surface']),
+                T('--mp-ccy-other', 'Every other currency; quiet on purpose and always labelled', bar('ccy-other', '10px'), ['#878177', '3.9:1', 'vs surface; 3.3:1 on .mp-track'], ['#6B7587', '3.7:1', 'vs surface; 3.3:1 on .mp-track']),
+                T('--mp-asset-shares', 'Shares, in every asset mix', bar('asset-shares', '10px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
+                T('--mp-asset-bonds', 'Bonds', bar('asset-bonds', '10px'), ['#6B3FB8', '6.9:1', 'vs surface'], ['#B79CFF', '7.5:1', 'vs surface']),
+                T('--mp-asset-silver', 'Silver', bar('asset-silver', '10px'), ['#646A78', '5.4:1', 'vs surface'], ['#8D96A6', '5.7:1', 'vs surface']),
+                T('--mp-asset-cash', 'Cash', bar('asset-cash', '10px'), ['#8A5300', '6.3:1', 'vs surface'], ['#F6BC4F', '10.0:1', 'vs surface']),
+                T('--mp-meter', 'Spend, budget and progress meters, on .mp-track', bar('meter', '10px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
+                T('--mp-mask', 'Privacy placeholder on surfaces: a shape where pounds were, never text', bar('mask', '14px'), ['#DCD7CF', '1.4:1', 'vs surface; a placeholder, not text'], ['#323D50', '1.6:1', 'vs surface; a placeholder, not text']),
+                T('--mp-mask-hero', 'Privacy placeholder on the hero card, never text', bar('mask-hero', '14px', 'hero'), ['#2C4068', '1.6:1', 'vs hero; a placeholder, not text'], ['#334A75', '1.6:1', 'vs hero; a placeholder, not text']),
+                T('--mp-hero-area', 'Area under the coral line on the hero', bar('hero-area', '22px', 'hero'), ['#FF6B4F at 18%', 'fill', 'on hero, under the line'], ['#FF7A5E at 18%', 'fill', 'on hero, under the line'])
+              ] }
+            ] }
+          ];
+          const curve = (tok, p, use, aria) => {
+            const X = (n) => (10 + n * 100).toFixed(1), Y = (n) => (110 - n * 100).toFixed(1);
+            return { tok: tok, val: 'cubic-bezier(' + p.join(', ') + ')', use: use, aria: aria, h1x: X(p[0]), h1y: Y(p[1]), h2x: X(p[2]), h2y: Y(p[3]), d: 'M10,110 C' + X(p[0]) + ',' + Y(p[1]) + ' ' + X(p[2]) + ',' + Y(p[3]) + ' 110,10' };
+          };
+          const series = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
+          const min = Math.min.apply(null, series), max = Math.max.apply(null, series);
+          const pts = series.map((x, i) => (6 + i * (164 / 11)).toFixed(1) + ',' + (132 - ((x - min) / (max - min)) * 112).toFixed(1));
+          const hp = series.map((x, i) => (i * (300 / 11)).toFixed(1) + ',' + (62 - ((x - min) / (max - min)) * 54).toFixed(1));
+          const heroLine = 'M' + hp.join(' L');
+          const sections = [
+            { icon: 'home', side: 'Overview', tab: 'Overview' },
+            { icon: 'donut_small', side: 'Holdings', tab: 'Holdings' },
+            { icon: 'join_inner', side: 'Overlap', tab: 'Overlap' },
+            { icon: 'insights', side: 'Track record', tab: 'Record' },
+            { icon: 'history', side: 'Activity', tab: '' },
+            { icon: 'fact_check', side: 'Audit', tab: '' }
+          ].map((n, i) => Object.assign(n, { on: i === 0 ? 'on' : '', fill: i === 0 ? 'ms-fill' : '' }));
+          const tabs = sections.filter((n) => n.tab).concat([{ icon: 'menu', tab: 'More', on: '', fill: '' }]);
+          return {
+            sizeClasses: [
+              { name: 'Compact', range: 'under 600', who: 'The Mini App on iPhone and Android phones', nav: 'Bottom tab bar, five tabs', cols: 'One column; stats 2 × 2', gut: '16 at the sides, 16 between', head: 'Large title on its own row, controls under it' },
+              { name: 'Regular', range: '600 to 1023', who: 'iPad and tablet Mini App, Telegram Desktop’s Mini App window, a narrow browser', nav: 'The tab bar stays', cols: 'One column until 760, then two equal columns; stats 2 × 2', gut: '24 at the sides, 20 between', head: 'Title left, controls right, one row' },
+              { name: 'Wide', range: '1024 and over', who: 'A laptop browser; a wide Telegram Desktop window', nav: 'Sidebar, 248 wide, replaces the tab bar', cols: 'Two columns, 1.3fr : minmax(300px, 1fr); stats 2 × 2', gut: '32 at the sides, 24 between; content capped at 1180, centred past 1360', head: 'Title left, controls right, one row' }
+            ],
+            frames: [
+              { name: 'Compact', dim: '390 · phone', w: '390px', h: '760px', sw: '195px', sh: '380px' },
+              { name: 'Regular', dim: '680 · one column', w: '680px', h: '760px', sw: '340px', sh: '380px' },
+              { name: 'Regular', dim: '900 · iPad, Telegram Desktop: two columns', w: '900px', h: '760px', sw: '450px', sh: '380px' },
+              { name: 'Wide', dim: '1180 · laptop browser', w: '1180px', h: '700px', sw: '590px', sh: '350px' },
+              { name: 'Wide, centred', dim: '1600 · content capped at 1180, centred past 1360', w: '1600px', h: '700px', sw: '800px', sh: '350px' }
+            ],
+            nav: sections,
+            tabs: tabs,
+            heroChart: { line: heroLine, area: heroLine + ' L300,70 L0,70 Z' },
+            rows: [
+              { lead: 'BA', name: 'Balanced', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up' },
+              { lead: 'NQ', name: 'NASDAQ 100', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq' },
+              { lead: 'RB', name: 'Automation & Robotics', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up' },
+              { lead: 'AG', name: 'Physical Silver', val: '£820', ch: '▼ 6.2%', chCls: 'mp-dq' },
+              { lead: '£', name: 'Cash pot', val: '£400', ch: '—', chCls: 'mp-ink3' }
+            ],
+            themes: [{ label: 'Light', cls: 'mp t-light tg-light', sel: '.mp.t-light' }, { label: 'Dark', cls: 'mp t-dark tg-dark', sel: '.mp.t-dark' }],
+            colourCols: colourCols,
+            typeScale: [
+              { name: 'Large title', cls: 'mp-large', spec: '34/41 · Bold · −2%', sample: 'Overview' },
+              { name: 'Title 1', cls: 'mp-t1', spec: '28/34 · Bold · −2%', sample: 'Track record' },
+              { name: 'Title 2', cls: 'mp-t2', spec: '22/28 · Bold · −1.5%', sample: 'Nothing to do this week' },
+              { name: 'Title 3', cls: 'mp-t3', spec: '20/25 · Semibold', sample: 'Why PAUSE?' },
+              { name: 'Headline', cls: 'mp-hl', spec: '17/22 · Semibold', sample: 'NASDAQ 100 · £4,210' },
+              { name: 'Body', cls: 'mp-body', spec: '17/22 · Regular', sample: 'Keep what you have; hold this month’s top-up.' },
+              { name: 'Callout', cls: 'mp-callout', spec: '16/21 · Regular', sample: 'Not a reason to sell. A view, not advice.' },
+              { name: 'Subhead', cls: 'mp-sub', spec: '15/20 · Regular', sample: '▲ £612 this month · ▼ 0.6% this week' },
+              { name: 'Footnote', cls: 'mp-foot', spec: '13/18 · Regular', sample: 'Next review Saturday. Prices to Friday’s close.' },
+              { name: 'Caption', cls: 'mp-cap', spec: '12/16 · Regular', sample: 'Illustrative figures · BlackRock MyMap · ISA' },
+              { name: 'Overline', cls: 'mp-over', spec: '12/16 · Semibold · caps · +6%', sample: 'Household · Fri close' },
+              { name: 'Hero figure', cls: 'mp-num-hero', spec: '44/48 · Heavy · rounded', sample: '£25,800' },
+              { name: 'Large figure', cls: 'mp-num-l', spec: '28/32 · Heavy · rounded', sample: '20 / 31' }
+            ],
+            spacing: [
+              { tok: '--mp-s1', px: '4', sz: '4px', use: 'Icon to label inside a chip' },
+              { tok: '--mp-s2', px: '8', sz: '8px', use: 'Between chips and small controls' },
+              { tok: '--mp-s3', px: '12', sz: '12px', use: 'Between the parts of a row' },
+              { tok: '--mp-s4', px: '16', sz: '16px', use: 'Screen margin, card padding, between cards' },
+              { tok: '--mp-s5', px: '20', sz: '20px', use: 'Hero card padding' },
+              { tok: '--mp-s6', px: '24', sz: '24px', use: 'Browser page padding, between groups' },
+              { tok: '--mp-s8', px: '32', sz: '32px', use: 'Between sections on the browser' },
+              { tok: '--mp-s10', px: '40', sz: '40px', use: 'Above a page’s first section' }
+            ],
+            radii: [
+              { name: 'Chip', v: '999', r: 'var(--mp-r-chip)', h: '36px', use: 'chips, switch' },
+              { name: 'Control', v: '10', r: 'var(--mp-r-ctl)', h: '44px', use: 'segments, tiles, sidebar' },
+              { name: 'Row', v: '14', r: 'var(--mp-r-row)', h: '52px', use: 'groups, buttons, toast' },
+              { name: 'Sheet', v: '16', r: 'var(--mp-r-sheet) var(--mp-r-sheet) 0 0', h: '58px', use: 'top corners only' },
+              { name: 'Card', v: '20', r: 'var(--mp-r-card)', h: '64px', use: 'cards' },
+              { name: 'Hero', v: '24', r: 'var(--mp-r-hero)', h: '72px', use: 'the hero card' }
+            ],
+            curves: [
+              curve('--mp-ease', [0.22, 1, 0.36, 1], 'Everything that settles: rises, the chart draw, bars, the press, the switch.', 'Ease-out curve: fast start, long gentle settle'),
+              curve('--mp-ease-sheet', [0.32, 0.72, 0, 1], 'iOS sheet and page push: the sheet rises and the next page slides in.', 'Sheet curve: quick, decisive, no overshoot')
+            ],
+            durations: [
+              { tok: '--mp-t-tap', ms: '120', w: '17.1%', use: 'Press: a button scales to 97%' },
+              { tok: '--mp-t-fast', ms: '200', w: '28.6%', use: 'Switch knob, fades, a toast' },
+              { tok: '--mp-t-push', ms: '350', w: '50%', use: 'Page push, cards rising' },
+              { tok: '--mp-t-sheet', ms: '420', w: '60%', use: 'A bottom sheet up or down' },
+              { tok: '--mp-t-count', ms: '600', w: '85.7%', use: 'The hero total counts up, once' },
+              { tok: '--mp-t-draw', ms: '700', w: '100%', use: 'A chart line draws, bars grow' }
+            ],
+            demoOn: !st.off,
+            replay: () => { this.setState({ off: true }); setTimeout(() => this.setState({ off: false }), 60); },
+            demoChart: { line: 'M' + pts.join(' L') },
+            fx: [
+              { k: 'USD', v: '84%', w: '84%', d: '', c: 'var(--mp-ccy-usd)' },
+              { k: 'GBP', v: '9%', w: '9%', d: 'd1', c: 'var(--mp-ccy-gbp)' },
+              { k: 'JPY', v: '3%', w: '3%', d: 'd2', c: 'var(--mp-ccy-jpy)' },
+              { k: 'EUR', v: '3%', w: '3%', d: 'd3', c: 'var(--mp-ccy-eur)' },
+              { k: 'Other', v: '1%', w: '1%', d: 'd4', c: 'var(--mp-ccy-other)' }
+            ],
+            icons: [
+              { n: 'home', use: 'Overview tab' },
+              { n: 'donut_small', use: 'Holdings tab' },
+              { n: 'join_inner', use: 'Overlap tab' },
+              { n: 'insights', use: 'Track record tab' },
+              { n: 'menu', use: 'More tab' },
+              { n: 'more_horiz', use: 'Telegram’s own ··· (context only)' },
+              { n: 'history', use: 'Activity' },
+              { n: 'fact_check', use: 'Audit' },
+              { n: 'visibility', use: 'Privacy mode off' },
+              { n: 'visibility_off', use: 'Privacy mode on' },
+              { n: 'chevron_right', use: 'Row opens a page' },
+              { n: 'arrow_back_ios_new', use: 'Back, in Telegram’s header' },
+              { n: 'check_circle', use: 'All clear, verified' },
+              { n: 'info', use: 'Stale prices, a note' },
+              { n: 'warning', use: 'Worth a look, needs you' },
+              { n: 'notifications', use: 'Alerts setting' },
+              { n: 'lock', use: 'Read-only, signed in' },
+              { n: 'chat', use: 'Open chat, Ask in the chat' },
+              { n: 'open_in_new', use: 'Leaves MyPaisa' }
+            ],
+            voice: [
+              { yes: 'Nothing to do this week.', no: 'No actionable signals detected.', why: 'Say what it means for you, in the words you would use.' },
+              { yes: 'Keep what you have. Hold this month’s top-up until the trend settles. Not a reason to sell.', no: 'PAUSE signal: reduce new allocations pending trend confirmation.', why: 'A stance is a view, not an order. The bot never buys or sells.' },
+              { yes: 'NASDAQ 100 is down 3.1% this week. Falls like this are common.', no: 'Alert! NASDAQ 100 has dropped 3.1%.', why: 'Calm about losses: quiet ink and ▼. Red is kept for alerts that ask you to act.' },
+              { yes: '£25,800 at Friday’s close.', no: 'Our AI estimates your portfolio at £25,800.', why: 'Figures come from the engine and the prices, never from the AI.' },
+              { yes: 'You hold Nvidia three ways, about 2.1% of everything. We’ll say if it passes 5%.', no: 'Concentration: NVDA effective weight 2.1% across 3 instruments.', why: 'Look-through in plain words: what, how much, and when it would matter.' },
+              { yes: 'Friday’s prices are late, so you’re seeing Thursday’s. We’ll update when they land.', no: 'Error 503: upstream price feed unavailable.', why: 'An error says what happened, what it means for you and what happens next.' }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

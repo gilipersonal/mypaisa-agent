@@ -1,0 +1,3375 @@
+{
+  "version": 1,
+  "updated": "2026-10-24",
+  "claude_design": {
+    "app": {
+      "id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7",
+      "name": "MyPaisa app v1",
+      "dir": "docs/design/app-v1"
+    },
+    "ds": {
+      "id": "2f7310cd-e56a-4d13-8339-8fc637249c9a",
+      "name": "MyPaisa DS v1",
+      "dir": "docs/design/ds-v1"
+    }
+  },
+  "phases": [
+    {
+      "phase": 0,
+      "epic": "MA-9",
+      "title": "Prerequisites",
+      "plan_heading": "## Phase 0 — Prerequisites"
+    },
+    {
+      "phase": 1,
+      "epic": "MA-10",
+      "title": "Registry and Telegram ingestion",
+      "plan_heading": "## Phase 1 — Registry and Telegram ingestion"
+    },
+    {
+      "phase": 2,
+      "epic": "MA-11",
+      "title": "Prices and the engine",
+      "plan_heading": "## Phase 2 — Prices and the engine"
+    },
+    {
+      "phase": 3,
+      "epic": "MA-12",
+      "title": "Briefs, alerts, charts, technical mode",
+      "plan_heading": "## Phase 3 — Briefs, alerts, charts, technical mode"
+    },
+    {
+      "phase": 4,
+      "epic": "MA-13",
+      "title": "Chat, research cards, scenarios",
+      "plan_heading": "## Phase 4 — Chat, research cards, scenarios"
+    },
+    {
+      "phase": 5,
+      "epic": "MA-14",
+      "title": "The web app: dashboard, audit log, activity (read-only, behind login)",
+      "plan_heading": "## Phase 5 — The web app: dashboard, audit log, activity (read-only, behind login)"
+    },
+    {
+      "phase": 6,
+      "epic": "MA-15",
+      "title": "Track record and calibration",
+      "plan_heading": "## Phase 6 — Track record and calibration"
+    },
+    {
+      "phase": 7,
+      "epic": "MA-16",
+      "title": "News, events, sentiment (shadow)",
+      "plan_heading": "## Phase 7 — News, events, sentiment (shadow)"
+    },
+    {
+      "phase": 8,
+      "epic": "MA-17",
+      "title": "Stances go live",
+      "plan_heading": "## Phase 8 — Stances go live"
+    },
+    {
+      "phase": 9,
+      "epic": "MA-18",
+      "title": "MyPaisa: the whole wealth tracker on this backend (later, not a priority)",
+      "plan_heading": "## Phase 9 — MyPaisa: the whole wealth tracker on this backend (later, not a priority)"
+    },
+    {
+      "phase": 10,
+      "epic": "MA-19",
+      "title": "New kinds of holding (when you add one)",
+      "plan_heading": "## Phase 10 — New kinds of holding (when you add one)"
+    },
+    {
+      "phase": 11,
+      "epic": "MA-117",
+      "title": "The Forecaster: a second engine beside the rules engine (later)",
+      "plan_heading": "## Phase 11 — The Forecaster: a second engine beside the rules engine (later)"
+    },
+    {
+      "phase": 12,
+      "epic": "MA-127",
+      "title": "The agent team: configured, approved, self-healing, self-learning (later)",
+      "plan_heading": "## Phase 12 — The agent team: configured, approved, self-healing, self-learning (later)"
+    },
+    {
+      "phase": 13,
+      "epic": "MA-147",
+      "title": "Indian markets and the existing Indian portfolio (later)",
+      "plan_heading": "## Phase 13 — Indian markets and the existing Indian portfolio (later)"
+    }
+  ],
+  "items": [
+    {
+      "key": "MA-20",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The dev Telegram bot exists, with its token in SSM and the MyPaisa picture",
+      "status": "To Do",
+      "labels": [
+        "manual"
+      ],
+      "arch": [
+        "14",
+        "18.1"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Logo.dc.html",
+          "board": "1c Telegram avatar"
+        }
+      ],
+      "notes": "Sets the dev bot's picture from docs/mark-1024.png: the 1c Watcher mark picked on MA-103."
+    },
+    {
+      "key": "MA-21",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Claude API access is paid from the plan, with dev and prod workspaces and spend limits",
+      "status": "To Do",
+      "labels": [
+        "manual"
+      ],
+      "arch": [
+        "15.1",
+        "18.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-22",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "A free Twelve Data key is in SSM for the US lines and the FX fallback",
+      "status": "To Do",
+      "labels": [
+        "manual"
+      ],
+      "arch": [
+        "5.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-23",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Each Monzo fund's factsheet and a valuation screenshot are ready to send to the bot",
+      "status": "To Do",
+      "labels": [
+        "manual"
+      ],
+      "arch": [
+        "4.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-24",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The Python project skeleton exists with its gates and the working rules",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "13",
+        "16"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-25",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-26",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.1",
+        "18.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-27",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The holdings registry stores members, accounts, holdings and valuations per household",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-28",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Every record change writes a hash-chained audit row in the same transaction",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.6"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-29",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Every Lambda run leaves a RunRecord, logs, traces and an error alarm",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "10",
+        "4.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-30",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "A thin Telegram client sends rich messages with an HTML fallback, photos and buttons",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Plumbing only. The rich message and HTML fallback it sends are drawn in ds-v1 Telegram kit · 1 · Portfolio card (MA-36)."
+    },
+    {
+      "key": "MA-31",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The webhook accepts only Telegram's signed updates and hands them off once",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "3",
+        "18.2",
+        "21.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-32",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The first person in the chat owns the household and can invite and remove members",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.5"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the invite message, the deep-link join or the /members list and remove; ds-v1 Telegram kit controls · 8 only shows /invite and /members in the owner's command menu. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-33",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Each member has their own accounts, and a joint account can have two owners",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.1",
+        "4.5"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-34",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Design the Portfolio card and the Confirm card before they are built",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "1 · Portfolio card"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "5 · Confirm after a factsheet"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I3 · Portfolio summary tile"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "b · Adding a holding from a factsheet"
+        }
+      ],
+      "notes": "Both cards were drawn under MA-101 in Warm ledger (picked 24 Oct 2026): the Portfolio card as rich message, privacy mode and HTML fallback; the Confirm card with one unsure field."
+    },
+    {
+      "key": "MA-35",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The bot answers onboarding, /add, /update, /privacy, /pause, /resume and /help",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "2",
+        "8",
+        "9.1"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "8 · Reply keyboard and command menu"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "b · Adding a holding from a factsheet"
+        }
+      ],
+      "notes": "Arun kept /pause and /resume as the kill switch (24 Oct 2026), though PAUSE is also a stance: the stance only appears on a holding's card with its confidence, never as a command. The command menu board (ds-v1 Telegram kit controls · 8) is redrawn from /mute to /pause. The onboarding message and the /help reply are not drawn."
+    },
+    {
+      "key": "MA-36",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The Portfolio card shows the household and each member's holdings",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "1 · Portfolio card"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I3 · Portfolio summary tile"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "10 · Wide chat: Telegram Desktop, 720 wide"
+        }
+      ],
+      "notes": "Household and per-member views are drawn as the Portfolio card with its summary tile."
+    },
+    {
+      "key": "MA-37",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Sending a factsheet or a valuation screenshot adds or updates a holding after Confirm",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.2",
+        "4.6"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "5 · Confirm after a factsheet"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "b · Adding a holding from a factsheet"
+        }
+      ],
+      "notes": "Adding from a factsheet is drawn end to end; updating a valuation from a screenshot is not drawn."
+    },
+    {
+      "key": "MA-38",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "\"I put £200 into Balanced\" becomes a transaction after Confirm",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.1",
+        "4.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "6 · Guided flow: one message, edited in place"
+        }
+      ],
+      "notes": "Free text lands on the guided flow's \"Result · check and confirm\" step for a transaction; steps already answered are skipped."
+    },
+    {
+      "key": "MA-39",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.1"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "6 · Guided flow: one message, edited in place"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "7 · Inline keyboard patterns"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "b · Adding a holding from a factsheet"
+        }
+      ],
+      "notes": "Logging a transaction and adding a holding are drawn; updating a valuation and changing a setting are not."
+    },
+    {
+      "key": "MA-40",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "\"What changed this week?\" lists every change with who and when",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.6"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the chat answer to \"What changed this week?\"; the same log is drawn on the web as Browser · Audit and Mini App · Audit (MA-79). None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-41",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "One PriceSource contract lets each price feed plug in, chained per kind and per environment",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-42",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "yfinance, Twelve Data, screenshot and stale plugins price the holdings every day",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-43",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "The BlackRock page, FT and EODHD plugins back up the free feeds",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-44",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "ECB FX rates and market calendars are loaded daily",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-45",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "Input hygiene drops bad bars before anything is scored",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-46",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "A source-comparison report shows which feed actually serves the Monzo funds' NAV",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-47",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "A proxy basket from each fund's top holdings estimates the day before the NAV lands",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1",
+        "4.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-48",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "The desk's indicators are ported to pandas and match its own answers",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-49",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "Trend, Momentum and Risk pillars and the flags score each holding",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-50",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "The holder's cascade turns the pillars into ADD, HOLD, PAUSE, TRIM, REBALANCE or WATCH with a confidence",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-51",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "US, UK and EU macro regimes feed each holding through its look-through weights",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.2",
+        "5.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-52",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "Forecast ranges by block bootstrap give each holding a likely range and P(fall greater than 5%)",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.5"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-53",
+      "type": "Story",
+      "epic": "MA-11",
+      "phase": 2,
+      "summary": "The ingest and engine jobs write signals and shadow stances every weekday by 07:10",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5",
+        "6.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-54",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "The Anthropic client routes, caches and refuses to let Claude invent a number",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "1",
+        "8"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-55",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "Design the morning brief, evening wrap and alert cards",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "3 · Morning brief and evening wrap"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "4 · Alerts"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "a · Friday’s wrap, then Monday morning: brief, stance, why"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "c · A red alert after the US close"
+        }
+      ],
+      "notes": "Drawn under MA-101 in Warm ledger (picked 24 Oct 2026)."
+    },
+    {
+      "key": "MA-56",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "Design the chart house style shared by the chat and the web app",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.1",
+        "9.3"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I1 · Holding history chart"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I2 · Portfolio curve with past stances"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I3 · Portfolio summary tile"
+        },
+        {
+          "project": "ds",
+          "file": "Components 2.dc.html",
+          "board": "11 · Charts and tracks"
+        }
+      ],
+      "notes": "Navy PNGs with the coral line for the chat; the same chart pattern for the web app in Components 2."
+    },
+    {
+      "key": "MA-57",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "The morning brief and evening wrap arrive as cards, with a Technical section and glossary",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.2",
+        "11"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "3 · Morning brief and evening wrap"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "2 · Stance card"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "9 · Glossary answer"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "a · Friday’s wrap, then Monday morning: brief, stance, why"
+        }
+      ],
+      "notes": "The Technical fold is drawn on the stance card; the glossary as a callback alert."
+    },
+    {
+      "key": "MA-58",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "Charts in the house style are sent with each card",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I1 · Holding history chart"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I2 · Portfolio curve with past stances"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I3 · Portfolio summary tile"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "key": "MA-59",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "Alerts come in tiers, respect quiet hours and never repeat within their cooldown",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "11"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "4 · Alerts"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "c · A red alert after the US close"
+        }
+      ],
+      "notes": "Amber and red tiers, the weekly red budget and the cooldown line are drawn."
+    },
+    {
+      "key": "MA-60",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "Tapping \"I acted\" records a decision the Saturday review can check",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.2",
+        "11"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "c · A red alert after the US close"
+        }
+      ],
+      "notes": "Steps c3 (what did you do?) and c4 (decision logged)."
+    },
+    {
+      "key": "MA-61",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "A dead man's switch and the error alarms tell the chat when a job did not run",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "10"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "Not drawn: the 07:45 dead man's switch message is not in Telegram admin.dc.html (its four cards are the approval request, the failed-work alert, the spend steps and the incident). Draw it before the story starts."
+    },
+    {
+      "key": "MA-62",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "You can ask the bot anything about your holdings and it answers from its tools",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "a · Friday’s wrap, then Monday morning: brief, stance, why"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "8 · Reply keyboard and command menu"
+        }
+      ],
+      "notes": "Journey a's Why? answer with numbered sources and the Ask key are drawn; a free question and its answer have no board of their own."
+    },
+    {
+      "key": "MA-63",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "Design the research cards: stance, holding profile, overlap, fund vs benchmark, bear vs bull, scenario",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "7",
+        "9.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "2 · Stance card"
+        }
+      ],
+      "notes": "Only the stance card is drawn. Holding profile, overlap, fund vs benchmark, bear vs bull and scenario cards have no board. None of the files being drawn now (Admin center 2, Telegram admin, Forecast, Audit and files, India) covers it."
+    },
+    {
+      "key": "MA-64",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "The stance and holding-profile cards explain each holding and what would change the view",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "7",
+        "9.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "2 · Stance card"
+        },
+        {
+          "project": "app",
+          "file": "Telegram chats.dc.html",
+          "board": "a · Friday’s wrap, then Monday morning: brief, stance, why"
+        }
+      ],
+      "notes": "The holding-profile card is not drawn. None of the files being drawn now (Admin center 2, Telegram admin, Forecast, Audit and files, India) covers it."
+    },
+    {
+      "key": "MA-65",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "The overlap review and fund-vs-benchmark cards show what your funds share and how they compare",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "7",
+        "5.2"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the overlap review or fund-vs-benchmark cards in the chat; the web Overlap pages (Mini App · Overlap, Browser · Overlap) belong to MA-78. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-66",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "Bear vs bull argues both sides in two calls and a judge, bounded to one round",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "7",
+        "8"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the bear vs bull card. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-67",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "\"What if the pound falls 10%?\" gets a scenario card from the look-through exposure",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "2",
+        "9.2",
+        "5.2"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the scenario card; the stance card only carries the What if? button. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-68",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "The bot searches the web for sources and never follows instructions it finds there",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8",
+        "14"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-69",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "\"Stop pinging me under 2%\" sets a preference after Confirm",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "2",
+        "4.6"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the preference Confirm card (it would follow ds-v1 Telegram kit · 5 · Confirm after a factsheet); its audit row appears on Browser · Audit. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-70",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "Design the browser boards: Overview, a holding, Overlap, Scorecard and the login page at laptop width",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.3"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · Overview"
+        },
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · A holding (NASDAQ 100)"
+        },
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · Overlap"
+        },
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · Track record"
+        },
+        {
+          "project": "app",
+          "file": "Browser 2.dc.html",
+          "board": "Browser · Login"
+        },
+        {
+          "project": "app",
+          "file": "Responsive.dc.html",
+          "board": "Responsive · one Overview, five widths"
+        }
+      ],
+      "notes": "Drawn in Warm ledger under MA-101 (picked 24 Oct 2026); Scorecard is drawn as Track record."
+    },
+    {
+      "key": "MA-71",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "Design the Audit and Activity pages on both sets of boards",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.3",
+        "10"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Browser 2.dc.html",
+          "board": "Browser · Activity"
+        },
+        {
+          "project": "app",
+          "file": "Browser 2.dc.html",
+          "board": "Browser · Audit"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Activity (pushed from More)"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Audit (pushed from More)"
+        }
+      ],
+      "notes": "Drawn under MA-101. Audit and files.dc.html (being drawn) adds files to Audit, a Files view and Activity; re-check these boards against it when it lands."
+    },
+    {
+      "key": "MA-72",
+      "type": "Task",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The Google sign-in client, the bot's web domain and two-step verification are set up",
+      "status": "To Do",
+      "labels": [
+        "manual"
+      ],
+      "arch": [
+        "4.5",
+        "18.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-73",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The web app is hosted on its own S3 and CloudFront per environment, with security headers",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.3",
+        "18.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-74",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "A read-only api Lambda serves each member only what they may see",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.5",
+        "9.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-75",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The Mini App signs a member in from Telegram through Cognito, and the api checks the session on every request",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.5",
+        "9.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Sign-in is invisible; the 12-hour lock it triggers is drawn under MA-102 (Telegram second check · 2)."
+    },
+    {
+      "key": "MA-76",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "In a browser a member signs in with Telegram, Google or a passkey through Cognito, with no password",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.5",
+        "9.3"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Browser 2.dc.html",
+          "board": "Browser · Login"
+        }
+      ],
+      "notes": "Browser · Login now has the passkey as the third way in, after Telegram and Google (ARCHITECTURE.md §4.5, §9.3); redrawn 24 Oct 2026 in MA-155."
+    },
+    {
+      "key": "MA-77",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "A member links their Google account to their Cognito identity with a six-digit code sent from their own phone",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.5"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the six-digit code page or the /link replies in the chat; unlinking from the Admin center is in MA-102's boards. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-78",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "Overview, a holding, Overlap and Scorecard work in the Mini App and in the browser",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.3"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Overview"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Overview · scrolled"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Overview · privacy on"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Holdings"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · A holding (pushed from Holdings)"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · A holding · scrolled"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Why? sheet"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Overlap"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Track record"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · More"
+        },
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · Overview"
+        },
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · A holding (NASDAQ 100)"
+        },
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · Overlap"
+        },
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · Track record"
+        },
+        {
+          "project": "app",
+          "file": "Responsive.dc.html",
+          "board": "Responsive · one Overview, five widths"
+        },
+        {
+          "project": "app",
+          "file": "Prototype.dc.html",
+          "board": "Prototype phone"
+        }
+      ],
+      "notes": "Drawn in Warm ledger under MA-101 (picked 24 Oct 2026)."
+    },
+    {
+      "key": "MA-79",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The Audit and Activity pages show every change and every run, with what it cost",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.6",
+        "9.3",
+        "10"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Browser 2.dc.html",
+          "board": "Browser · Activity"
+        },
+        {
+          "project": "app",
+          "file": "Browser 2.dc.html",
+          "board": "Browser · Audit"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Activity (pushed from More)"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Audit (pushed from More)"
+        }
+      ],
+      "notes": "Audit and files.dc.html (being drawn) extends Audit with files and redraws Activity; re-check after it lands. Also shown on boards drawn for other stories: Audit and files · Browser · Audit with files. B5 Activity now shows the Claude spend against the $160 prod ceiling and its step, with AWS and others against their own £50 cap (§15.1, §15.2); redrawn 24 Oct 2026 in MA-155."
+    },
+    {
+      "key": "MA-80",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The Portfolio card opens the Mini App, and /web sends the laptop address",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.1",
+        "9.3",
+        "18.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "1 · Portfolio card"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "7 · Inline keyboard patterns"
+        }
+      ],
+      "notes": "The Open dashboard web_app button is drawn; the /web reply is not."
+    },
+    {
+      "key": "MA-81",
+      "type": "Story",
+      "epic": "MA-15",
+      "phase": 6,
+      "summary": "The forecast grader checks whether the ranges and P(fall greater than 5%) came true",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.5"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-82",
+      "type": "Story",
+      "epic": "MA-15",
+      "phase": 6,
+      "summary": "The stance grader scores every call against doing nothing, with a reliability table",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-83",
+      "type": "Story",
+      "epic": "MA-15",
+      "phase": 6,
+      "summary": "Confidence learns from its own track record, recalibrated only after 8 weeks",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-84",
+      "type": "Story",
+      "epic": "MA-15",
+      "phase": 6,
+      "summary": "/scorecard shows the track record in the chat and on the dashboard",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.4",
+        "9.3"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Browser.dc.html",
+          "board": "Browser · Track record"
+        },
+        {
+          "project": "app",
+          "file": "Mini App.dc.html",
+          "board": "Mini App · Track record"
+        }
+      ],
+      "notes": "The Scorecard page is drawn as Track record; the /scorecard card in the chat has no board. None of the files being drawn now (Admin center 2, Telegram admin, Forecast, Audit and files, India) covers it."
+    },
+    {
+      "key": "MA-85",
+      "type": "Story",
+      "epic": "MA-15",
+      "phase": 6,
+      "summary": "The Saturday review on Opus reflects on the last four weeks",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8",
+        "11"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the Saturday review message; its curve image is drawn (ds-v1 Telegram kit images · I2). None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-86",
+      "type": "Story",
+      "epic": "MA-16",
+      "phase": 7,
+      "summary": "The news job collects and de-duplicates articles about what you hold",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "11"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-87",
+      "type": "Story",
+      "epic": "MA-16",
+      "phase": 7,
+      "summary": "Each article is scored and rolled into a daily sentiment index",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "11"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-88",
+      "type": "Story",
+      "epic": "MA-16",
+      "phase": 7,
+      "summary": "The event calendar and a sentiment line reach the brief and the chat",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "11"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "The brief board (ds-v1 Telegram kit · 3) carries an event line (\"The Fed decides on Wednesday\") but no sentiment line, and the chat answer is not drawn. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-89",
+      "type": "Story",
+      "epic": "MA-16",
+      "phase": 7,
+      "summary": "Sentiment tilts the cascade by one notch, in shadow, only when the price pillars agree",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.3",
+        "11"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-90",
+      "type": "Story",
+      "epic": "MA-17",
+      "phase": 8,
+      "summary": "The go-live gate checks in code that stances beat the baseline for 8 weeks running",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "1",
+        "6.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-91",
+      "type": "Story",
+      "epic": "MA-17",
+      "phase": 8,
+      "summary": "Stance chips appear on the Portfolio card and in the brief, and /calls lists them",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.3",
+        "9.2"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "1 · Portfolio card"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "3 · Morning brief and evening wrap"
+        }
+      ],
+      "notes": "Stances are drawn in the Portfolio card's Stance column and the brief; the story still asks design-first for the live chip, and /calls has no board."
+    },
+    {
+      "key": "MA-92",
+      "type": "Story",
+      "epic": "MA-17",
+      "phase": 8,
+      "summary": "A guardrail review proves there is no path to \"sell everything\"",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "1",
+        "6.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-93",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "Property, deposits, policies, pensions and loans can be added and updated through the bot",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "12"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the asset and debt flows in the chat. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-94",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "Wealth maths: XIRR to the penny, deposit accrual, loan schedules and a daily net worth",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.6"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on India · Mini App · Overview with India (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-95",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "Design and build the Overview, Assets and Debts screens for the whole household",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "12",
+        "9.3"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the household Overview, Assets and Debts screens. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-96",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "Forecast and budget: a thirty-year projection and a monthly budget set by chat",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.6",
+        "12"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the Budget and Forecast screens (Forecast.dc.html is the Forecaster's view, MA-124, not this projection). None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-97",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "Reports and exports replace the old wealth tracker, which is then retired",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "17",
+        "18.2"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the reports (composition by type and institution) or their exports. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-98",
+      "type": "Story",
+      "epic": "MA-19",
+      "phase": 10,
+      "summary": "An iShares ETF from Monzo's \"Build your own\" range is added and priced like the funds",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.3",
+        "5.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-99",
+      "type": "Story",
+      "epic": "MA-19",
+      "phase": 10,
+      "summary": "A share gets valuation and earnings cards, with a fundamentals source chosen then",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.3",
+        "7",
+        "17"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the valuation and earnings cards. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-101",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "A new MyPaisa design system, after Monzo's warmth and Apple's HIG, with the dashboard, Mini App and Telegram components prototyped",
+      "status": "Done",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.3",
+        "13",
+        "17"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "MyPaisa DS v1.dc.html",
+          "board": "1a · Warm ledger"
+        },
+        {
+          "project": "ds",
+          "file": "Foundations.dc.html",
+          "board": "1 · Colour"
+        },
+        {
+          "project": "ds",
+          "file": "Foundations.dc.html",
+          "board": "2 · Type"
+        },
+        {
+          "project": "ds",
+          "file": "Foundations.dc.html",
+          "board": "3 · Space, shape, elevation"
+        },
+        {
+          "project": "ds",
+          "file": "Foundations.dc.html",
+          "board": "4 · Layout and size classes"
+        },
+        {
+          "project": "ds",
+          "file": "Foundations.dc.html",
+          "board": "5 · Motion"
+        },
+        {
+          "project": "ds",
+          "file": "Foundations.dc.html",
+          "board": "6 · Iconography"
+        },
+        {
+          "project": "ds",
+          "file": "Foundations.dc.html",
+          "board": "7 · Voice"
+        },
+        {
+          "project": "ds",
+          "file": "Components.dc.html",
+          "board": "1 · Buttons"
+        },
+        {
+          "project": "ds",
+          "file": "Components.dc.html",
+          "board": "2 · Chips"
+        },
+        {
+          "project": "ds",
+          "file": "Components.dc.html",
+          "board": "3 · Segmented control and switch"
+        },
+        {
+          "project": "ds",
+          "file": "Components.dc.html",
+          "board": "4 · Grouped rows"
+        },
+        {
+          "project": "ds",
+          "file": "Components.dc.html",
+          "board": "5 · Hero card"
+        },
+        {
+          "project": "ds",
+          "file": "Components.dc.html",
+          "board": "6 · Summary and stat cards"
+        },
+        {
+          "project": "ds",
+          "file": "Components.dc.html",
+          "board": "7 · Privacy mask"
+        },
+        {
+          "project": "ds",
+          "file": "Components 2.dc.html",
+          "board": "8 · Navigation"
+        },
+        {
+          "project": "ds",
+          "file": "Components 2.dc.html",
+          "board": "9 · Sheet and toast"
+        },
+        {
+          "project": "ds",
+          "file": "Components 2.dc.html",
+          "board": "10 · List states"
+        },
+        {
+          "project": "ds",
+          "file": "Components 2.dc.html",
+          "board": "11 · Charts and tracks"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "0 · Telegram kit: the rules"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "1 · Portfolio card"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "2 · Stance card"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "3 · Morning brief and evening wrap"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "4 · Alerts"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit.dc.html",
+          "board": "5 · Confirm after a factsheet"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "6 · Guided flow: one message, edited in place"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "7 · Inline keyboard patterns"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "8 · Reply keyboard and command menu"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "9 · Glossary answer"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "10 · Wide chat: Telegram Desktop, 720 wide"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I1 · Holding history chart"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I2 · Portfolio curve with past stances"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit images.dc.html",
+          "board": "I3 · Portfolio summary tile"
+        }
+      ],
+      "notes": "Warm ledger (1a) picked by Arun on 24 Oct 2026; 1b Native clarity and 1c Pot wall stay on the directions page as the record. The app screens drawn in it are traced to the stories that build them (MA-34, MA-55, MA-70, MA-71, MA-78, MA-79)."
+    },
+    {
+      "key": "MA-102",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The owner can sign out any member's Telegram or browser session from the Admin center, and Telegram sessions need a second check",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "1",
+        "4.5"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "A · People first"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "A at 390 · phone browser"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 1 · Fresh check"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 2 · Pause confirmation"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 3 · After the pause"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 4 · This browser"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 5.1 · Pause your own account: the fresh check"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 5.2 · Pause your own account: the warning"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 5.3 · Signed out, paused"
+        },
+        {
+          "project": "app",
+          "file": "Admin center.dc.html",
+          "board": "Flow 6 · Admin under More"
+        },
+        {
+          "project": "app",
+          "file": "Telegram second check.dc.html",
+          "board": "1 · Set up the second check, the first time"
+        },
+        {
+          "project": "app",
+          "file": "Telegram second check.dc.html",
+          "board": "2 · Locked after 12 hours"
+        },
+        {
+          "project": "app",
+          "file": "Telegram second check.dc.html",
+          "board": "3 · A change needs the check"
+        },
+        {
+          "project": "app",
+          "file": "Telegram second check.dc.html",
+          "board": "4 · A new device"
+        },
+        {
+          "project": "app",
+          "file": "Telegram second check.dc.html",
+          "board": "5 · Signed out everywhere, and paused"
+        }
+      ],
+      "notes": "Picked A · People first and the Telegram second check (Arun, 24 Oct 2026). B · Sessions first stays on the Admin center canvas as the record, not the spec. Still to draw before the build: the owner's Restore and its log row, a failed fresh check, a household with only the owner. Also shown on boards drawn for other stories: Admin center 2 · Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2 · Browser · Admin · Alerts · Replay, the fresh check; Admin center 2 · Browser · Admin · Approvals · Approve, the fresh check."
+    },
+    {
+      "key": "MA-103",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "MyPaisa has a new mark in Warm ledger that animates once when the app opens",
+      "status": "Done",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.3"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Logo.dc.html",
+          "board": "1c · Watcher"
+        },
+        {
+          "project": "ds",
+          "file": "Logo.dc.html",
+          "board": "1c Telegram avatar"
+        }
+      ],
+      "notes": "Picked 1c Watcher (Arun, 24 Oct 2026); 1a Stance line and 1b Ruled pound stay as the record."
+    },
+    {
+      "key": "MA-104",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "Any question about the household's money gets an answer from a read-only SQL copy of the ledger",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "19.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-105",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "The old wealth tracker's holdings and debts come into MyPaisa once, checked by the owner",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.5"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the import summary card and its Confirm. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-106",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "4.5",
+        "9.3",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-107",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.4",
+        "20.5"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-108",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "A nightly check reports any prod change made outside Terraform",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.4",
+        "20.5"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-109",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Each environment has its own Cognito sign-in with Telegram, Google and passkeys",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.5",
+        "17",
+        "18.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-110",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Dev is seeded with a synthetic household built around the real Monzo OEICs",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-111",
+      "type": "Story",
+      "epic": "MA-18",
+      "phase": 9,
+      "summary": "The owner fills prod's history from an Excel workbook sent to the bot",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "12",
+        "18.5",
+        "22.2",
+        "22.5"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "No board for the workbook dry-run summary card and its Confirm; the CAS import flow in India.dc.html (MA-152) uses the same pattern. None of the files drawn in MA-155 (Admin center 2, Telegram admin, Forecast, Audit and files, India, Currency check) covers it; draw it before the story starts (MA-158)."
+    },
+    {
+      "key": "MA-112",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The architecture records the $100 Claude budget for prod, its ceiling ladder and the chat-memory rules",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "4.5",
+        "8",
+        "9.3",
+        "10",
+        "12",
+        "15",
+        "16",
+        "17",
+        "18"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-113",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Every Claude call is metered and nothing runs past the monthly ceiling",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "15.1",
+        "15.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Metering only; the member-facing step messages are drawn under MA-114. Its output is shown on Admin center 2 · Browser · Admin · Spend (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-114",
+      "type": "Story",
+      "epic": "MA-12",
+      "phase": 3,
+      "summary": "As spend nears the ceiling, the bot steps down to cheaper ways of working before it stops",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "15.1"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend · Move the ceiling, the consequences"
+        },
+        {
+          "project": "app",
+          "file": "Telegram admin.dc.html",
+          "board": "Telegram · Spend steps"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-115",
+      "type": "Story",
+      "epic": "MA-13",
+      "phase": 4,
+      "summary": "The chat sends Claude only the current conversation, kept short, with notes on recent ones",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-116",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The owner moves the Claude ceiling up or down in the Admin center",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "15.1",
+        "15.2"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend · Move the ceiling, the fresh check"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend · Move the ceiling, the consequences"
+        },
+        {
+          "project": "app",
+          "file": "Telegram admin.dc.html",
+          "board": "Telegram · Spend steps"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-118",
+      "type": "Task",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "The architecture records the Forecaster, a second engine beside the rules engine",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "16",
+        "17",
+        "19"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-119",
+      "type": "Story",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "F1: ten years of point-in-time market, economy and world-event data sit in one queryable store",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "19.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-120",
+      "type": "Story",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "F2: a backtest lab replays any strategy over ten years, starting with today's rules engine",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on Forecast · Browser · Forecaster · Proof (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-121",
+      "type": "Story",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "F3: the Forecaster names the market's mood and forecasts the next four weeks' risk",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "19.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on Forecast · Browser · Holding · Forecast (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-122",
+      "type": "Story",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "F4: similar past days and a library of event impacts explain what usually happened next",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "19.3",
+        "19.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on Forecast · Browser · Holding · Forecast (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-123",
+      "type": "Story",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "F5: a calibrated four-week direction forecast combines the models, with an honest confidence",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "19.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on Forecast · Browser · Holding · Forecast; Forecast · Browser · Forecaster · Proof (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-124",
+      "type": "Story",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "F6: the Forecaster's view appears beside the rules engine in Telegram and the web app",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "19.7"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Forecast.dc.html",
+          "board": "Browser · Holding · Forecast"
+        },
+        {
+          "project": "app",
+          "file": "Forecast.dc.html",
+          "board": "Browser · Holding · Forecast · UK fund"
+        },
+        {
+          "project": "app",
+          "file": "Forecast.dc.html",
+          "board": "Mini App · Holding · Forecast"
+        },
+        {
+          "project": "app",
+          "file": "Forecast.dc.html",
+          "board": "Telegram · Side-by-side card"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-125",
+      "type": "Story",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "F7: monthly money and rebalancing are steered by risk to cut deep falls while growing steadily",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "19.5"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Forecast.dc.html",
+          "board": "Telegram · First of the month split"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The card's fourth button is \"Something else\", so it never seems to suggest skipping a contribution; the Agent Journey page matches."
+    },
+    {
+      "key": "MA-126",
+      "type": "Task",
+      "epic": "MA-117",
+      "phase": 11,
+      "summary": "The Forecaster's data sources, their prices and the news-to-holdings matching are written down",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "5.1",
+        "15",
+        "19",
+        "19.2",
+        "19.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-128",
+      "type": "Task",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "The architecture records the agent team, the settings and approvals, the learning loop, self-healing and the new budgets",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "5.1",
+        "6.4",
+        "15",
+        "15.1",
+        "16",
+        "17",
+        "18.1",
+        "19.2",
+        "20"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-129",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E1: every behaviour is a versioned setting with bounds, and nothing changes it except through the settings service",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "20.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on Admin center 2 · Browser · Admin · Settings (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-130",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and admins give instructions",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "20.3"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Approvals"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Approvals · Approve, the fresh check"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Approvals · Approved"
+        },
+        {
+          "project": "app",
+          "file": "Telegram admin.dc.html",
+          "board": "Telegram · Approval request"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The request ids (cr-26, cr-27) and the setting keys on the boards are illustrative."
+    },
+    {
+      "key": "MA-131",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E3: a data steward keeps prices flowing from free sources, repairs gaps, and asks before adding a paid one",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1",
+        "19.2",
+        "20"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Asks for a paid feed through the admin desk; that card is MA-130's. Its output is shown on Admin center 2 · Browser · Admin · Agents and incidents (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-132",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E4: every prediction is stored as made and graded every day against what prices actually did",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "20.4",
+        "20.6"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-133",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E5: confidence is recalibrated every day within safe bounds, and rolled back on its own if it gets worse",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "20.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-134",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E6: challenger models and rule changes run beside the current ones and are promoted only on evidence and the admin's approval",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "20.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Promotions are proposed through the admin desk; that card is MA-130's."
+    },
+    {
+      "key": "MA-135",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E7: an ops warden runs the daily pipeline, repairs what it safely can and opens an incident for the admin when it cannot",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "20.5"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Agents and incidents"
+        },
+        {
+          "project": "app",
+          "file": "Telegram admin.dc.html",
+          "board": "Telegram · Incident"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-136",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "E8: each agent has its share of the $200 Claude credit, and AWS and other services stay inside their cap",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "15.2",
+        "20.7"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Agents and incidents"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-137",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the web app, Telegram and email",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "15.2"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Alerts"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Alerts · Replayed"
+        },
+        {
+          "project": "app",
+          "file": "Telegram admin.dc.html",
+          "board": "Telegram · Failed work alert"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round."
+    },
+    {
+      "key": "MA-138",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The architecture records the queues, retries and replay that keep messages and jobs from being lost",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "13",
+        "16",
+        "20.5",
+        "21"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-139",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Each member's messages travel through ordered queues, in and out, are retried with backoff and are never lost",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "21"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-140",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue that alerts and can be replayed",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "21"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-141",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The architecture is drawn in Lucid with AWS shapes, the plan and stack documents agree with it, and two explainer pages walk through every flow",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "3",
+        "4.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-142",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The household's prod bot and prod's Twelve Data key exist, each in prod's SSM path beside dev's",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.1"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Logo.dc.html",
+          "board": "1c Telegram avatar"
+        }
+      ],
+      "notes": "Sets the household's prod bot picture from docs/mark-1024.png: the 1c Watcher mark picked on MA-103."
+    },
+    {
+      "key": "MA-143",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Each environment has its own Google sign-in client, with its id and secret in SSM, before Cognito is built",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "17",
+        "18.1",
+        "18.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-144",
+      "type": "Task",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Telegram reaches each environment through api(-dev).mypaisapp.com, and the dev bot runs by long polling on the laptop",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.1",
+        "18.2"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-145",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "A failed-work alert carries a Replay button that puts the dead-lettered work back on its queue",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "15.2",
+        "21.3"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Alerts"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Alerts · Replay, the fresh check"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Alerts · Replayed"
+        },
+        {
+          "project": "app",
+          "file": "Telegram admin.dc.html",
+          "board": "Telegram · Failed work alert"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Replay asking for Face ID in Telegram is the designer's detail, not ARCHITECTURE's; settle it in the options round."
+    },
+    {
+      "key": "MA-146",
+      "type": "Story",
+      "epic": "MA-127",
+      "phase": 12,
+      "summary": "The ops warden replays dead-lettered work on its own once the cause is healthy, and opens an incident if it fails again",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "20.5",
+        "21.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Automatic replay; the Replay button is MA-145's and the incident card MA-135's. Its output is shown on Admin center 2 · Browser · Admin · Agents and incidents (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-148",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.1",
+        "4.6",
+        "14"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on Audit and files · Browser · Files; India · Telegram · CAS import (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-149",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The Audit page opens the original file behind each change, through a short-lived link only the right member can use",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.6",
+        "9.3"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Browser · Audit with files"
+        },
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Browser · File viewer"
+        },
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Browser · Files"
+        },
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Mini App · Audit and file"
+        },
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Telegram · Source button"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-150",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The architecture and plan record Indian markets as phase 13 and keep every file a member sends, viewable from the audit log",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "4.1",
+        "4.6",
+        "9.3",
+        "14",
+        "16",
+        "22"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-151",
+      "type": "Story",
+      "epic": "MA-147",
+      "phase": 13,
+      "summary": "IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "5.1",
+        "22"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Its output is shown on India · Browser · Holding · Indian fund; India · Browser · Holding · NSE share; India · Telegram · Brief with India (drawn for the stories with UI)."
+    },
+    {
+      "key": "MA-152",
+      "type": "Story",
+      "epic": "MA-147",
+      "phase": 13,
+      "summary": "IN2: The existing Indian portfolio is imported from a CAS statement or a broker export, with every past transaction, after one Confirm",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "18.5",
+        "22"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "India.dc.html",
+          "board": "Telegram · CAS import"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-153",
+      "type": "Story",
+      "epic": "MA-147",
+      "phase": 13,
+      "summary": "IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "4.1",
+        "9",
+        "22"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "India.dc.html",
+          "board": "Mini App · Overview with India"
+        },
+        {
+          "project": "app",
+          "file": "India.dc.html",
+          "board": "Browser · Overview with India"
+        },
+        {
+          "project": "app",
+          "file": "India.dc.html",
+          "board": "Browser · Holding · Indian fund"
+        },
+        {
+          "project": "app",
+          "file": "India.dc.html",
+          "board": "Browser · Holding · NSE share"
+        },
+        {
+          "project": "app",
+          "file": "India.dc.html",
+          "board": "Telegram · Brief with India"
+        },
+        {
+          "project": "app",
+          "file": "Currency check.dc.html",
+          "board": "Telegram · A rupee holding instead"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-154",
+      "type": "Story",
+      "epic": "MA-147",
+      "phase": 13,
+      "summary": "IN4: The engine and the Forecaster read Indian markets through an India basket, Indian news and the RBI's calendar",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "6.2",
+        "19.2",
+        "19.3",
+        "22"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-155",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": ""
+    },
+    {
+      "key": "MA-156",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "A transaction can be typed in any currency, and the bot checks it against the holding's own currency and puts a mismatch right before Confirm",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "4.1",
+        "4.7",
+        "5.3",
+        "22.3"
+      ],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Currency check.dc.html",
+          "board": "Telegram · Currency check"
+        },
+        {
+          "project": "app",
+          "file": "Currency check.dc.html",
+          "board": "Telegram · Pounds that arrived"
+        },
+        {
+          "project": "app",
+          "file": "Currency check.dc.html",
+          "board": "Telegram · ECB rate estimate"
+        },
+        {
+          "project": "app",
+          "file": "Currency check.dc.html",
+          "board": "Telegram · No currency named"
+        },
+        {
+          "project": "app",
+          "file": "Currency check.dc.html",
+          "board": "Telegram · A rupee holding instead"
+        },
+        {
+          "project": "app",
+          "file": "Currency check.dc.html",
+          "board": "Telegram · Currency check, privacy on"
+        }
+      ],
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+    },
+    {
+      "key": "MA-158",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The 17 stories with UI that have no board yet are drawn in Claude Design before any of them starts",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Design work, tracked here; each story it draws for has its own UI row (MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-105, MA-111)."
+    }
+  ],
+  "others": [
+    {
+      "key": "MA-1",
+      "type": "Task",
+      "summary": "Track the repo's work in Jira with the jira-flow plugin",
+      "status": "Done",
+      "notes": "Repo tooling, before the phase epics"
+    },
+    {
+      "key": "MA-2",
+      "type": "Task",
+      "summary": "Record the MA workflow's transition ids in the jira-flow config",
+      "status": "Done",
+      "notes": "Repo tooling"
+    },
+    {
+      "key": "MA-3",
+      "type": "Task",
+      "summary": "Ship stories on autopilot with one question: the merge",
+      "status": "Done",
+      "notes": "Repo rule: .claude/rules/ship-autopilot.md"
+    },
+    {
+      "key": "MA-4",
+      "type": "Task",
+      "summary": "Switch off the independent review for this repo",
+      "status": "Done",
+      "notes": "Repo rule: .claude/rules/ship-autopilot.md; the review is now opt-in at the merge question (MA-157)"
+    },
+    {
+      "key": "MA-5",
+      "type": "Story",
+      "summary": "Design every UI change before building it, with a design-first skill for MyPaisa",
+      "status": "Done",
+      "notes": "Repo skill: .claude/skills/design-first"
+    },
+    {
+      "key": "MA-6",
+      "type": "Task",
+      "summary": "One design spec for the web app, with Mini App and browser boards, named the same in every doc",
+      "status": "Done",
+      "notes": "Design rule cited by docs/design/README.md"
+    },
+    {
+      "key": "MA-7",
+      "type": "Task",
+      "summary": "Let \"merge it\" cover everything after the merge, branch deletion included",
+      "status": "Done",
+      "notes": "Repo rule: .claude/rules/ship-autopilot.md"
+    },
+    {
+      "key": "MA-8",
+      "type": "Bug",
+      "summary": "Autoship's fallback for deleting a merged branch on GitHub is blocked on main",
+      "status": "Done",
+      "notes": "Repo tooling"
+    },
+    {
+      "key": "MA-100",
+      "type": "Task",
+      "summary": "The taxonomy lists the phase epics, which path belongs to which, and the manual and design labels",
+      "status": "In Review",
+      "notes": "Superseded by MA-155, which brings .claude/jira/taxonomy.md up to phase 13; its PR #21 can be closed unmerged"
+    },
+    {
+      "key": "MA-157",
+      "type": "Task",
+      "summary": "The independent review is offered before every merge in this repo, and runs only when Arun says yes",
+      "status": "To Do",
+      "notes": "Repo rule: .claude/rules/ship-autopilot.md; ships with MA-155's PR"
+    }
+  ]
+}
