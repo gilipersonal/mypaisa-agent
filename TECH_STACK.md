@@ -6,7 +6,9 @@ Versions are pinned in `pyproject.toml` and `uv.lock` once phase 1 lands; until
 then "current" means the latest stable release at the time of writing
 (23 Oct 2026).
 
-Status: design. Nothing is built.
+Status: design. Nothing is built. The architecture is drawn in Lucid, seven
+AWS views and a sequence, linked and embedded in `ARCHITECTURE.md`
+(24 Oct 2026, MA-141).
 
 ---
 
@@ -14,7 +16,7 @@ Status: design. Nothing is built.
 
 | Piece | Choice | Why |
 | --- | --- | --- |
-| Runtime | Python 3.14 on AWS Lambda, one arm64 container image, eight handlers (`webhook`, `agent`, `ingest`, `engine`, `news`, `score`, `docs`, `api`) | pandas and matplotlib exceed the zip limit; Graviton is cheaper; one image means one build |
+| Runtime | Python 3.14 on AWS Lambda, one arm64 container image; handlers `webhook`, `agent`, `sender`, `worker` (running the ingest, engine, news, score, docs and brief jobs by type), `api`, the authorizer and the Cognito custom-auth triggers | pandas and matplotlib exceed the zip limit; Graviton is cheaper; one image means one build |
 | Packaging | `uv`, `pyproject.toml`, `uv.lock` | Fast, reproducible installs in CI and in the image |
 | Models and validation | pydantic v2 | Tool inputs, Telegram updates, every registry item, with `schema_version` |
 | Data maths | pandas, numpy, pyarrow | The engine ported from the Agentic Trading Desk; parquet history in S3 |
@@ -73,6 +75,7 @@ Status: design. Nothing is built.
 | Developer machine | uv, Docker (image builds), AWS CLI with the `agent-toolkit` profile through the dev developer role, the AWS MCP for reading, Terraform, tflint, GitHub CLI, pre-commit |
 | Local run | The code on the laptop against dev in AWS: the dev bot by long polling, the console from `localhost` against `api-dev`, the dev Cognito pool for sign-in; tests never reach AWS or the Anthropic API |
 | Secrets | Never in files, chat, logs or Terraform state; put by hand into each environment's SSM path; CI holds no AWS keys |
+| Diagrams and design pages | Lucidchart, AWS 2024 shapes: `docs/design/lucid/gen_aws_architecture.py` writes the Standard Import JSON for the seven views, and the PNG exports sit beside it; the explainer pages (MyPaisa Agent Journey, MyPaisa Market Agent) are single HTML files in `docs/design/`, published as claude.ai artifacts, in MyPaisa DS v1 "Warm ledger" (MA-101) with the crimson alert of MA-102 |
 
 ## 5. Services outside AWS
 

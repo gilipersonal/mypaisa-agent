@@ -6,7 +6,13 @@ the holdings registry and the Telegram ingestion to the front, because the
 first thing you will do is feed the bot your Monzo funds, and adds the engine
 port, the research cards, the Mini App and the confidence calibration.
 
-Status: planning. Nothing is built.
+Status: planning. Nothing is built. The architecture is drawn in Lucid (seven
+AWS views and a sequence, linked from `ARCHITECTURE.md`), and two pages walk
+through the flows end to end:
+[MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7) and
+[MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)
+(MA-141). Every phase is an epic in Jira project MA, and every deliverable
+below is a story or task under it.
 
 ---
 
@@ -34,9 +40,9 @@ Status: planning. Nothing is built.
 | Create two bots with BotFather, one for dev and the household's for prod; each token into its own SSM path (`/mypaisa-agent/dev/telegram/bot_token`, `/mypaisa-agent/prod/telegram/bot_token`); the picture with `/setuserpic` from `docs/mark-1024.png` on both | You |
 | Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of $160 and $40 (together the Max 20x plan's $200 monthly credit, the agents' allowance; each limit is the hard cap behind that environment's Claude ceiling, `ARCHITECTURE.md` §15.1); no payment method and auto-reload off, so the credit is the last stop; and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The Max 20x plan's monthly API credit ($200) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
-| Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD waits for phase 2 and is taken only if the London closes prove unreliable in the first weeks | Decided |
+| Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD is the last resort: switched on only with an admin's approval when no free source can serve a holding or its history (Historian £19.99 a month, `ARCHITECTURE.md` §19.2) | Decided |
 | Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key` and `/mypaisa-agent/prod/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
-| Terraform bootstrap (MA-26): `infra/modules/mypaisa` with the two roots `infra/dev` and `infra/prod`, each with its own state key in the existing state bucket; `infra/bootstrap`, applied once from the laptop, with the account's GitHub OIDC provider reused and three roles pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy`, `ci-prod-deploy`); `dev` and `prod` GitHub environments, prod needing your approval; the developer role with its explicit deny on `env=prod`; the zone and the certificate looked up by name (`ARCHITECTURE.md` §18.2); AWS Budgets at £40 and £50 | Claude |
+| Terraform bootstrap (MA-26): `infra/modules/mypaisa` with the two roots `infra/dev` and `infra/prod`, each with its own state key in the existing state bucket; `infra/bootstrap`, applied once from the laptop, with the account's GitHub OIDC provider reused and three roles pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy`, `ci-prod-deploy`); `dev` and `prod` GitHub environments, prod needing your approval; the developer role with its explicit deny on `env=prod`; the zone and the certificate looked up by name (`ARCHITECTURE.md` §18.2); AWS Budgets at £75 as the backstop behind the app's £50 cap (`ARCHITECTURE.md` §15.2, MA-137) | Claude |
 | The PR gates in GitHub Actions (MA-25): ruff, pyright, pytest with moto, `terraform fmt` and `validate`, tflint, the Terraform security scan, gitleaks, pip-audit, `jira-key`, and a plan for both environments on every PR touching `infra/` | Claude |
 | A Google OAuth client per environment (MA-109): any Gmail account can own the Google Cloud project, no billing account is needed, and it has no link to AWS. The consent screen is "External" (a personal Gmail cannot choose "Internal") with only the basic email and profile scopes, so it can be published without Google's review. Each client is a "Web application" whose authorised redirect is `https://auth-dev.mypaisapp.com/oauth2/idpresponse` or `https://auth.mypaisapp.com/oauth2/idpresponse`; the client id and secret go into that environment's SSM path | You |
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
@@ -604,6 +610,7 @@ What is ported from where, so the work can be checked against the original.
 | 7 News and sentiment | 3 days | Week 9 |
 | 8 Stances live | after 8 weeks of shadow | Week 17+ |
 | 9 MyPaisa: assets, debts, budget, forecast | 4–6 weeks | After phase 8, when wanted |
+| 10 New kinds of holding | a day or two each | When a new kind is added |
 | 11 The Forecaster | 8–12 weeks | F1 and F2 any time after phase 2; the rest after phase 7, when wanted |
 | 12 The agent team | 6–8 weeks | E1 and E2 after phase 5; the rest with phases 6 and 11, when wanted |
 

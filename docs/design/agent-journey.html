@@ -1,0 +1,1927 @@
+<title>MyPaisa Agent Journey</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap");
+
+/* MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102.
+   Every colour is a token here; components use tokens only. */
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+  --font-round: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --mp-bg: #F6F4F1; --mp-surface: #FFFFFF; --mp-surface-2: #F0EDE8; --mp-line: #E4E0DA;
+  --mp-material: rgba(246, 244, 241, 0.88);
+  --mp-ink: #14171F; --mp-ink-2: #4E5462; --mp-ink-3: #646A78;
+  --mp-hero: #13213A; --mp-hero-2: #1C2E4D; --mp-hero-ink: #FFFFFF; --mp-hero-ink-2: #B7C2D6;
+  --mp-coral: #FF6B4F; --mp-accent: #C2381F; --mp-on-accent: #FFFFFF;
+  --mp-up: #1D7A3E; --mp-down-quiet: #4E5462;
+  --mp-alert: #B5123F; --mp-alert-bg: #FCE4EA;
+  --mp-add: #1D7A3E; --mp-add-bg: #E2F2E7;
+  --mp-hold: #2453C9; --mp-hold-bg: #E5ECFB;
+  --mp-pause: #8A5300; --mp-pause-bg: #FCEED6;
+  --mp-reb: #6B3FB8; --mp-reb-bg: #EEE7FA;
+  --mp-watch: #4E5462; --mp-watch-bg: #EDEBE7;
+  --mp-chart-line: #C2381F; --mp-chart-area: rgba(255, 107, 79, 0.14); --mp-chart-grid: #ECE8E2;
+  --mp-chart-2: #2453C9; --mp-chart-4: #8A5300; --mp-chart-5: #6B3FB8;
+  --mp-focus: #2453C9; --mp-seg-on: #FFFFFF; --mp-seg-shadow: rgba(0, 0, 0, 0.12);
+  --mp-hero-area: rgba(255, 107, 79, 0.18); --mp-hero-seg-ink: #13213A;
+  --mp-up-hero: #8BE8AC; --mp-up-hero-bg: rgba(68, 209, 122, 0.16);
+  --mp-meter: #2453C9; --mp-mask: #DCD7CF; --mp-mask-hero: #2C4068;
+  --mp-scrim: rgba(5, 8, 14, 0.42);
+  --mp-shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
+  --mp-shadow-sm: 0 1px 2px rgba(20, 23, 31, 0.06);
+  /* Telegram draws its own chrome; these are its light colours */
+  --tg-bg: #E4EAEF; --tg-head: #F7F7F8; --tg-bubble: #FFFFFF; --tg-out: #E1FEC6;
+  --tg-text: #0F1419; --tg-sub: #5B6773; --tg-link: #1F6FB5;
+  --tg-btn: rgba(255, 255, 255, 0.92); --tg-btn-text: #1F6FB5; --tg-line: #D5DDE4;
+  --tg-kb: #F2F4F6; --tg-quote: #E8F1FA; --tg-shadow: rgba(0, 0, 0, 0.08);
+  --tg-svc: #5E6A75; --tg-svc-ink: #FFFFFF; --tg-out-sub: #546145;
+  /* the five lanes of every path */
+  --lane-m: var(--mp-coral); --lane-t: var(--tg-link); --lane-a: var(--mp-chart-4);
+  --lane-c: var(--mp-chart-5); --lane-e: var(--mp-ink-3);
+  --arrow: var(--mp-ink-3);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --mp-bg: #0A0F18; --mp-surface: #151C27; --mp-surface-2: #1E2633; --mp-line: #283141;
+    --mp-material: rgba(10, 15, 24, 0.86);
+    --mp-ink: #F3F5F8; --mp-ink-2: #AEB6C4; --mp-ink-3: #8D96A6;
+    --mp-hero: #1A2944; --mp-hero-2: #233558; --mp-hero-ink: #FFFFFF; --mp-hero-ink-2: #B7C2D6;
+    --mp-coral: #FF7A5E; --mp-accent: #FF7A5E; --mp-on-accent: #1A0B06;
+    --mp-up: #44D17A; --mp-down-quiet: #AEB6C4;
+    --mp-alert: #FF6B8B; --mp-alert-bg: #3A1724;
+    --mp-add: #5BDB8B; --mp-add-bg: #16301F;
+    --mp-hold: #8FB2FF; --mp-hold-bg: #1A2747;
+    --mp-pause: #F6BC4F; --mp-pause-bg: #33270E;
+    --mp-reb: #B79CFF; --mp-reb-bg: #2A2142;
+    --mp-watch: #AEB6C4; --mp-watch-bg: #232B38;
+    --mp-chart-line: #FF7A5E; --mp-chart-area: rgba(255, 122, 94, 0.16); --mp-chart-grid: #222B39;
+    --mp-chart-2: #8FB2FF; --mp-chart-4: #F6BC4F; --mp-chart-5: #B79CFF;
+    --mp-focus: #8FB2FF; --mp-seg-on: #3A4456; --mp-seg-shadow: rgba(0, 0, 0, 0.4);
+    --mp-hero-area: rgba(255, 122, 94, 0.18);
+    --mp-meter: #8FB2FF; --mp-mask: #323D50; --mp-mask-hero: #334A75;
+    --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    --mp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --tg-bg: #0E1621; --tg-head: #17212B; --tg-bubble: #182533; --tg-out: #2B5278;
+    --tg-text: #F2F6FA; --tg-sub: #93A8BB; --tg-link: #6AB2F2;
+    --tg-btn: #1E2C3A; --tg-btn-text: #E8F0F8; --tg-line: #26323F;
+    --tg-kb: #17212B; --tg-quote: #1B2E42; --tg-shadow: rgba(0, 0, 0, 0.3);
+    --tg-svc: #1E2C3A; --tg-svc-ink: #E8F0F8; --tg-out-sub: #B8CCE0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --mp-bg: #0A0F18; --mp-surface: #151C27; --mp-surface-2: #1E2633; --mp-line: #283141;
+  --mp-material: rgba(10, 15, 24, 0.86);
+  --mp-ink: #F3F5F8; --mp-ink-2: #AEB6C4; --mp-ink-3: #8D96A6;
+  --mp-hero: #1A2944; --mp-hero-2: #233558; --mp-hero-ink: #FFFFFF; --mp-hero-ink-2: #B7C2D6;
+  --mp-coral: #FF7A5E; --mp-accent: #FF7A5E; --mp-on-accent: #1A0B06;
+  --mp-up: #44D17A; --mp-down-quiet: #AEB6C4;
+  --mp-alert: #FF6B8B; --mp-alert-bg: #3A1724;
+  --mp-add: #5BDB8B; --mp-add-bg: #16301F;
+  --mp-hold: #8FB2FF; --mp-hold-bg: #1A2747;
+  --mp-pause: #F6BC4F; --mp-pause-bg: #33270E;
+  --mp-reb: #B79CFF; --mp-reb-bg: #2A2142;
+  --mp-watch: #AEB6C4; --mp-watch-bg: #232B38;
+  --mp-chart-line: #FF7A5E; --mp-chart-area: rgba(255, 122, 94, 0.16); --mp-chart-grid: #222B39;
+  --mp-chart-2: #8FB2FF; --mp-chart-4: #F6BC4F; --mp-chart-5: #B79CFF;
+  --mp-focus: #8FB2FF; --mp-seg-on: #3A4456; --mp-seg-shadow: rgba(0, 0, 0, 0.4);
+  --mp-hero-area: rgba(255, 122, 94, 0.18);
+  --mp-meter: #8FB2FF; --mp-mask: #323D50; --mp-mask-hero: #334A75;
+  --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  --mp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --tg-bg: #0E1621; --tg-head: #17212B; --tg-bubble: #182533; --tg-out: #2B5278;
+  --tg-text: #F2F6FA; --tg-sub: #93A8BB; --tg-link: #6AB2F2;
+  --tg-btn: #1E2C3A; --tg-btn-text: #E8F0F8; --tg-line: #26323F;
+  --tg-kb: #17212B; --tg-quote: #1B2E42; --tg-shadow: rgba(0, 0, 0, 0.3);
+  --tg-svc: #1E2C3A; --tg-svc-ink: #E8F0F8; --tg-out-sub: #B8CCE0;
+  color-scheme: dark;
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--mp-bg); color: var(--mp-ink); font: 400 16px/1.5 var(--font); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
+h1, h2, h3, h4, h5, p, ol, ul, dl, dd, figure { margin: 0; }
+a { color: var(--mp-accent); text-underline-offset: 2px; }
+code { font: 500 0.86em/1.3 var(--mono); background: var(--mp-surface-2); color: var(--mp-ink); border-radius: 6px; padding: 1px 5px; overflow-wrap: anywhere; letter-spacing: 0; }
+:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; border-radius: 6px; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.ic { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vertical-align: -3px; }
+.ic-l { width: 24px; height: 24px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* the one gutter, set once */
+.page { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+.inner { max-width: 1180px; margin: 0 auto; }
+
+/* ---------- sticky contents ---------- */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: 12px; padding: 10px 0; background: var(--mp-material); -webkit-backdrop-filter: saturate(180%) blur(18px); backdrop-filter: saturate(180%) blur(18px); border-bottom: 1px solid var(--mp-line); }
+.brand { flex: none; font: 700 15px/20px var(--font); color: var(--mp-ink); text-decoration: none; white-space: nowrap; }
+.toc { flex: 1; min-width: 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; padding: 2px; }
+.toc a { flex: none; display: inline-flex; align-items: center; min-height: 34px; padding: 0 12px; border-radius: 999px; background: var(--mp-surface); border: 1px solid var(--mp-line); color: var(--mp-ink-2); font: 600 13px/18px var(--font); text-decoration: none; white-space: nowrap; }
+.toc a b { color: var(--mp-accent); margin-right: 6px; }
+.theme { flex: none; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--mp-line); background: var(--mp-surface-2); color: var(--mp-ink); font: 600 13px/18px var(--font); cursor: pointer; }
+@media (max-width: 560px) { .brand { display: none; } }
+
+/* ---------- hero and intro ---------- */
+.hero { margin-top: 20px; background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 24px; padding: 28px 24px 0; overflow: hidden; }
+.over { font: 600 12px/16px var(--font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-ink-3); }
+.hero .over { color: var(--mp-hero-ink-2); }
+.hero h1 { margin-top: 8px; font: 800 34px/41px var(--font-round); letter-spacing: -0.02em; }
+.hero-sub { margin-top: 10px; max-width: 760px; font: 400 17px/24px var(--font); color: var(--mp-hero-ink-2); }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.hero-facts span { background: var(--mp-hero-2); color: var(--mp-hero-ink); border-radius: 999px; padding: 6px 12px; font: 600 13px/18px var(--font); }
+.hero-note { margin-top: 16px; max-width: 760px; font: 400 15px/20px var(--font); color: var(--mp-hero-ink-2); }
+.hero-line { display: block; width: calc(100% + 48px); height: 64px; margin: 18px -24px 0; }
+.hero-line path { vector-effect: non-scaling-stroke; }
+
+.sec-h { margin-top: 44px; font: 700 22px/28px var(--font); letter-spacing: -0.015em; }
+.sec-sub { margin-top: 6px; max-width: 820px; font: 400 16px/22px var(--font); color: var(--mp-ink-2); }
+.grid { display: grid; gap: 12px; margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.card { background: var(--mp-surface); border-radius: 20px; padding: 16px; box-shadow: var(--mp-shadow); min-width: 0; }
+.card h3 { font: 600 17px/22px var(--font); }
+.card p { margin-top: 6px; font: 400 15px/20px var(--font); color: var(--mp-ink-2); }
+.card .tag { display: inline-flex; align-items: center; gap: 6px; font: 600 12px/16px var(--font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-ink-3); margin-bottom: 8px; }
+.lanecard h3 { display: flex; align-items: center; gap: 8px; }
+.lanecard p code { font-size: 0.82em; }
+.idx { display: flex; gap: 14px; align-items: flex-start; text-decoration: none; color: inherit; background: var(--mp-surface); border-radius: 20px; padding: 14px 16px; box-shadow: var(--mp-shadow); min-width: 0; }
+.idx b { flex: none; width: 36px; font: 800 22px/28px var(--font-round); color: var(--mp-accent); }
+.idx span { display: block; min-width: 0; }
+.idx strong { display: block; font: 600 16px/21px var(--font); color: var(--mp-ink); }
+.idx small { display: block; margin-top: 2px; font: 400 13px/18px var(--font); color: var(--mp-ink-2); }
+.sg { color: var(--mp-accent); font-weight: 600; box-shadow: inset 0 -1.5px 0 var(--mp-coral); }
+
+/* ---------- a flow ---------- */
+.flow { margin-top: 72px; scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 72px); }
+.flow-h { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 16px; align-items: start; }
+.flow-n { font: 800 34px/41px var(--font-round); color: var(--mp-accent); min-width: 44px; }
+.flow-h h2 { font: 700 28px/34px var(--font); letter-spacing: -0.02em; padding-top: 3px; }
+.lede { grid-column: 2; margin-top: 8px; max-width: 840px; font: 400 17px/24px var(--font); color: var(--mp-ink-2); }
+.meta { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font: 600 13px/18px var(--font); white-space: nowrap; background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.chip.trig { display: inline-block; white-space: normal; border-radius: 14px; background: var(--mp-surface); border: 1px solid var(--mp-line); color: var(--mp-ink); font-weight: 500; }
+.chip.trig b { font-weight: 700; margin-right: 2px; }
+@media (max-width: 600px) {
+  .flow-h { grid-template-columns: minmax(0, 1fr); }
+  .lede, .meta { grid-column: 1; }
+  .flow-n { font-size: 28px; line-height: 34px; }
+  .flow-h h2 { font-size: 22px; line-height: 28px; }
+}
+.blk { display: flex; align-items: center; gap: 8px; margin: 32px 0 12px; font: 600 12px/16px var(--font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-ink-3); }
+.blk::after { content: ""; flex: 1; height: 1px; background: var(--mp-line); }
+
+/* ---------- the path: five lanes, numbered steps ---------- */
+.seq-card { background: var(--mp-surface); border-radius: 20px; box-shadow: var(--mp-shadow); padding: 16px; }
+.seq-card + .seq-card { margin-top: 16px; }
+.route { font: 600 17px/22px var(--font); margin: 2px 0 12px; }
+.route small { display: block; font: 400 14px/19px var(--font); color: var(--mp-ink-2); margin-top: 2px; }
+.seq-wrap { container: seq / inline-size; }
+.lanes { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin-bottom: 2px; }
+.lh { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0 3px; padding: 6px 4px; border-radius: 10px; background: var(--mp-surface-2); font: 600 12px/16px var(--font); letter-spacing: 0.04em; text-transform: uppercase; color: var(--mp-ink-2); text-align: center; min-width: 0; }
+.lh-a { grid-column: span 2; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.dm { background: var(--lane-m); } .dt { background: var(--lane-t); } .da { background: var(--lane-a); } .dc { background: var(--lane-c); } .de { background: var(--lane-e); }
+.seq-body { position: relative; padding-bottom: 4px; }
+.life { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px dashed var(--mp-line); }
+.l1 { left: calc(100% * 0.5 / 6); } .l2 { left: calc(100% * 1.5 / 6); } .l3 { left: 50%; } .l4 { left: calc(100% * 4.5 / 6); } .l5 { left: calc(100% * 5.5 / 6); }
+.seq { position: relative; list-style: none; padding: 0; counter-reset: st; }
+.st { position: relative; counter-increment: st; padding-top: 12px; }
+.st::before { content: attr(data-lanes); position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.fm { --f: 0.5; } .ft { --f: 1.5; } .fa { --f: 3; } .fc { --f: 4.5; } .fe { --f: 5.5; }
+.toM { --t: 0.5; } .toT { --t: 1.5; } .toA { --t: 3; } .toC { --t: 4.5; } .toE { --t: 5.5; }
+.inM { --c: 0.5; --w: 0.94; } .inT { --c: 1.5; --w: 0.94; } .inA { --c: 3; --w: 1.92; } .inC { --c: 4.5; --w: 0.94; } .inE { --c: 5.5; --w: 0.94; }
+.note { --c: 3; --w: 5.9; counter-increment: none; }
+.mv { padding-left: calc(100% * min(var(--f), var(--t)) / 6); padding-right: calc(100% * (6 - max(var(--f), var(--t))) / 6); }
+.act, .note { padding-left: calc(100% * (var(--c) - var(--w) / 2) / 6); padding-right: calc(100% * (6 - var(--c) - var(--w) / 2) / 6); }
+.lb { display: block; text-align: center; padding: 0 10px 5px; font: 400 13px/18px var(--font); color: var(--mp-ink); }
+.ln { display: block; position: relative; height: 2px; border-radius: 2px; background: var(--arrow); }
+.ln::before { content: ""; position: absolute; top: 50%; left: -3px; width: 6px; height: 6px; border-radius: 50%; background: var(--arrow); transform: translateY(-50%); }
+.ln::after { content: ""; position: absolute; top: 50%; right: -2px; transform: translateY(-50%); border-style: solid; border-width: 5px 0 5px 9px; border-color: transparent transparent transparent var(--arrow); }
+.rev .ln::before { left: auto; right: -3px; }
+.rev .ln::after { right: auto; left: -2px; border-width: 5px 9px 5px 0; border-color: transparent var(--arrow) transparent transparent; }
+.box { display: block; position: relative; background: var(--mp-surface); border: 1px solid var(--mp-line); border-radius: 12px; padding: 8px 10px; font: 400 13px/18px var(--font); color: var(--mp-ink); box-shadow: var(--mp-shadow-sm); }
+.inM .box { border-left: 3px solid var(--lane-m); } .inT .box { border-left: 3px solid var(--lane-t); } .inA .box { border-left: 3px solid var(--lane-a); } .inC .box { border-left: 3px solid var(--lane-c); } .inE .box { border-left: 3px solid var(--lane-e); }
+.note .box { background: var(--mp-bg); border-style: dashed; color: var(--mp-ink-2); box-shadow: none; }
+.lb::before, .act .box::before { content: counter(st); display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; margin-right: 6px; border-radius: 999px; background: var(--mp-hero); color: var(--mp-hero-ink); font: 700 11px/1 var(--font); vertical-align: 1px; }
+.lb b, .box b { font-weight: 600; }
+@container seq (max-width: 759px) {
+  .lanes, .life { display: none; }
+  .st, .mv, .act, .note { padding: 12px 0 0 0; }
+  .st::before { position: static; width: auto; height: auto; overflow: visible; clip-path: none; display: inline-block; margin-bottom: 4px; padding: 2px 8px; border-radius: 999px; background: var(--mp-surface-2); color: var(--mp-ink-2); font: 600 11px/16px var(--font); letter-spacing: 0.04em; text-transform: uppercase; white-space: normal; }
+  .note::before { content: none; }
+  .lb { text-align: left; padding: 8px 10px; background: var(--mp-bg); border-radius: 12px; }
+  .ln { display: none; }
+}
+
+/* ---------- what the member sees ---------- */
+.mocks { display: flex; flex-wrap: wrap; gap: 24px 20px; justify-content: center; align-items: flex-start; }
+.mock { flex: 0 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.mock.mid { flex: 0 1 420px; }
+.mock.wide { flex: 1 1 540px; }
+.mock figcaption { padding: 0 8px; text-align: center; font: 400 13px/18px var(--font); color: var(--mp-ink-2); }
+.mock figcaption b { color: var(--mp-ink); font-weight: 600; }
+
+/* Telegram, in its own light or dark */
+.phone { width: 100%; display: flex; flex-direction: column; position: relative; border-radius: 30px; border: 1px solid var(--mp-line); background: var(--tg-bg); overflow: hidden; box-shadow: var(--mp-shadow); color: var(--tg-text); }
+.tgbar { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--tg-head); border-bottom: 1px solid var(--tg-line); }
+.tgback { color: var(--tg-link); font: 400 15px/20px var(--font); flex: none; }
+.ava { width: 34px; height: 34px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--mp-hero); color: var(--mp-coral); font: 800 14px/1 var(--font-round); }
+.tgn { min-width: 0; }
+.tgn b { display: block; font: 600 15px/19px var(--font); }
+.tgn span { display: block; font: 400 12px/16px var(--font); color: var(--tg-sub); }
+.chat { padding: 12px 10px 14px; display: flex; flex-direction: column; gap: 8px; }
+.svc { align-self: center; background: var(--tg-svc); color: var(--tg-svc-ink); border-radius: 999px; padding: 2px 10px; font: 500 12px/16px var(--font); }
+.msg { align-self: flex-start; max-width: 94%; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.msg.full { align-self: stretch; max-width: 100%; }
+.msg.out { align-self: flex-end; }
+.bub { background: var(--tg-bubble); border-radius: 16px 16px 16px 6px; padding: 8px 12px 6px; font: 400 15px/20px var(--font); box-shadow: 0 1px 1px var(--tg-shadow); min-width: 0; overflow-wrap: anywhere; }
+.out .bub { background: var(--tg-out); border-radius: 16px 16px 6px 16px; }
+.bub p + p, .bub p + .kv, .bub .kv + p, .bub .hr + p, .bub p + .qt, .bub .qt + p, .bub .png + p, .bub p + .png { margin-top: 6px; }
+.bub h5 { font: 600 15px/20px var(--font); margin-bottom: 4px; }
+.bub small { font-size: 13px; line-height: 18px; color: var(--tg-sub); }
+.out .t, .out .bub small { color: var(--tg-out-sub); }
+.t { display: block; margin-top: 2px; text-align: right; font: 400 11px/13px var(--font); color: var(--tg-sub); }
+.kv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; font-size: 14px; line-height: 19px; }
+.kv > :nth-child(even) { text-align: right; white-space: nowrap; }
+.kv.wrap { grid-template-columns: fit-content(46%) minmax(0, 1fr); }
+.kv.wrap > :nth-child(even) { white-space: normal; }
+.hr { height: 1px; background: var(--tg-line); margin: 6px 0; }
+.amb { background: var(--mp-pause-bg); color: var(--mp-pause); border-radius: 6px; padding: 0 5px; font-weight: 600; }
+.qt { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; font-size: 14px; line-height: 19px; }
+.mono { font: 13px/18px var(--mono); overflow-wrap: anywhere; }
+.ok { color: var(--mp-up); font-weight: 600; }
+.up { color: var(--mp-up); }
+.dq { color: var(--mp-down-quiet); }
+.muted { color: var(--mp-ink-2); }
+.small { font-size: 13px; line-height: 18px; }
+.acc { color: var(--mp-accent); }
+.alert-t { color: var(--mp-alert); }
+.tg-link { color: var(--tg-link); }
+.group.inset { background: var(--mp-bg); }
+.dl2 { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; font: 400 14px/19px var(--font); }
+.dl2 > :nth-child(odd) { color: var(--mp-ink-2); white-space: nowrap; }
+.dl2 > :nth-child(even) { text-align: right; font-weight: 600; }
+.spendhead { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font: 400 14px/19px var(--font); }
+.spendhead b { font-weight: 600; }
+.redchip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 1px 8px; background: var(--mp-alert-bg); color: var(--mp-alert); font: 700 12px/18px var(--font); letter-spacing: 0.04em; text-transform: uppercase; }
+.ibs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+.ibs.c1 { grid-template-columns: minmax(0, 1fr); }
+.ibs.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ib { min-height: 40px; display: flex; align-items: center; justify-content: center; padding: 4px 8px; border-radius: 10px; background: var(--tg-btn); color: var(--tg-btn-text); font: 600 14px/18px var(--font); text-align: center; box-shadow: 0 1px 1px var(--tg-shadow); }
+.rkb { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 6px; background: var(--tg-kb); border-top: 1px solid var(--tg-line); }
+.rk { min-height: 40px; display: grid; place-items: center; border-radius: 8px; background: var(--tg-bubble); color: var(--tg-text); font: 500 14px/18px var(--font); }
+.file { display: flex; align-items: center; gap: 10px; }
+.file i { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; flex: none; background: var(--tg-link); color: var(--tg-bubble); font: 700 11px/1 var(--font); font-style: normal; }
+.file b { display: block; font: 600 14px/18px var(--font); }
+.file small { display: block; }
+.shot { width: 200px; max-width: 100%; border-radius: 10px; background: var(--mp-surface); border: 1px solid var(--tg-line); padding: 10px; color: var(--mp-ink); }
+.shot .s1 { font: 600 11px/14px var(--font); color: var(--mp-ink-3); }
+.shot .s2 { font: 800 20px/24px var(--font-round); margin-top: 2px; }
+.shot .s3 { height: 6px; border-radius: 3px; background: var(--mp-surface-2); margin-top: 8px; }
+.shot .s3.w { width: 60%; }
+.png { border-radius: 12px; background: var(--mp-hero); color: var(--mp-hero-ink); padding: 10px 12px 0; overflow: hidden; }
+.png .p1 { font: 600 11px/14px var(--font); letter-spacing: 0.04em; text-transform: uppercase; color: var(--mp-hero-ink-2); }
+.png .p2 { font: 800 22px/26px var(--font-round); }
+.png svg { display: block; width: calc(100% + 24px); height: 48px; margin: 4px -12px 0; }
+.png path { vector-effect: non-scaling-stroke; }
+
+/* the Mini App inside Telegram, and the web app */
+.phone.mini { background: var(--mp-bg); color: var(--mp-ink); }
+.mahead { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; padding: 0 14px; background: var(--tg-head); color: var(--tg-text); border-bottom: 1px solid var(--tg-line); font: 500 15px/20px var(--font); }
+.mahead span:first-child, .mahead span:last-child { color: var(--tg-link); min-width: 44px; }
+.mahead span:last-child { text-align: right; }
+.app { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+.lt { font: 700 28px/34px var(--font); letter-spacing: -0.02em; }
+.tabbar { display: flex; justify-content: space-around; padding: 6px 4px 14px; background: var(--mp-material); border-top: 1px solid var(--mp-line); margin-top: auto; }
+.tab { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--mp-ink-3); font: 500 10px/12px var(--font); }
+.tab.on { color: var(--mp-accent); }
+.tab .ic { width: 22px; height: 22px; }
+.dshero { background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 24px; padding: 16px 16px 0; overflow: hidden; }
+.dshero .lbl { font: 600 12px/16px var(--font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-hero-ink-2); }
+.big { font: 800 40px/46px var(--font-round); letter-spacing: -0.03em; white-space: nowrap; }
+.upchip { display: inline-block; border-radius: 999px; padding: 2px 8px; background: var(--mp-up-hero-bg); color: var(--mp-up-hero); font: 600 12px/16px var(--font); white-space: nowrap; }
+.dnchip { display: inline-block; border-radius: 999px; padding: 2px 8px; background: var(--mp-hero-2); color: var(--mp-hero-ink-2); font: 600 12px/16px var(--font); white-space: nowrap; }
+.dshero svg { display: block; width: calc(100% + 32px); height: 56px; margin: 8px -16px 0; }
+.dshero path, .chartbox path, .chartbox line { vector-effect: non-scaling-stroke; }
+.seg { display: flex; gap: 2px; padding: 2px; border-radius: 10px; background: var(--mp-surface-2); }
+.seg span { flex: 1; min-width: 0; text-align: center; padding: 6px 4px; border-radius: 8px; font: 600 13px/18px var(--font); color: var(--mp-ink-2); }
+.seg span.on { background: var(--mp-seg-on); color: var(--mp-ink); box-shadow: 0 1px 3px var(--mp-seg-shadow); }
+.dshero .seg { background: var(--mp-hero-2); margin-top: 12px; }
+.dshero .seg span { color: var(--mp-hero-ink-2); }
+.dshero .seg span.on { background: var(--mp-hero-ink); color: var(--mp-hero-seg-ink); }
+.group { background: var(--mp-surface); border-radius: 14px; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; min-height: 44px; }
+.group .row + .row { border-top: 1px solid var(--mp-line); }
+.grow { flex: 1; min-width: 0; }
+.row b, .row strong { display: block; font: 600 15px/20px var(--font); }
+.row small { display: block; font: 400 13px/18px var(--font); color: var(--mp-ink-3); }
+.num { white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+.num small { text-align: right; }
+.lead { width: 36px; height: 36px; border-radius: 10px; flex: none; display: grid; place-items: center; background: var(--mp-surface-2); color: var(--mp-ink-2); font: 700 13px/1 var(--font); }
+.lead .ic { width: 20px; height: 20px; }
+.st-chip { display: inline-flex; align-items: center; border-radius: 999px; padding: 2px 8px; font: 600 12px/16px var(--font); white-space: nowrap; }
+.c-hold { color: var(--mp-hold); background: var(--mp-hold-bg); }
+.c-pause { color: var(--mp-pause); background: var(--mp-pause-bg); }
+.c-add { color: var(--mp-add); background: var(--mp-add-bg); }
+.c-neutral { color: var(--mp-ink-2); background: var(--mp-surface-2); }
+.c-alert { color: var(--mp-alert); background: var(--mp-alert-bg); }
+.okline { display: flex; align-items: center; gap: 8px; color: var(--mp-up); font: 600 15px/20px var(--font); }
+.mask { display: inline-block; min-width: 72px; border-radius: 8px; background: var(--mp-mask); color: transparent; user-select: none; }
+.dshero .mask { background: var(--mp-mask-hero); }
+.btn { min-height: 44px; padding: 0 16px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 600 15px/20px var(--font); white-space: nowrap; }
+.btn-p { background: var(--mp-accent); color: var(--mp-on-accent); }
+.btn-t { background: var(--mp-surface-2); color: var(--mp-ink); }
+.btn-d { background: var(--mp-alert-bg); color: var(--mp-alert); }
+.btn-plain { color: var(--mp-accent); }
+.btn-w { width: 100%; }
+.meter { position: relative; height: 10px; border-radius: 999px; background: var(--mp-surface-2); box-shadow: inset 0 0 0 1px var(--mp-line); overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: 999px; background: var(--mp-meter); }
+.ticks { position: relative; height: 18px; font: 600 11px/16px var(--font); color: var(--mp-ink-3); }
+.ticks span { position: absolute; top: 2px; transform: translateX(-50%); white-space: nowrap; }
+.ticks span.end { transform: translateX(-100%); }
+.tickmarks { position: absolute; inset: 0; }
+.tickmarks i { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--mp-surface); }
+.chartbox { position: relative; margin-top: 4px; }
+.chartbox svg { display: block; width: 100%; height: 150px; overflow: visible; }
+.chartlbl { position: absolute; transform: translate(-50%, -100%); margin-top: -6px; font: 700 11px/14px var(--font); white-space: nowrap; }
+.chartdot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-chart-line); }
+.horizon { position: absolute; top: 0; bottom: 0; background: var(--mp-pause-bg); border-left: 1px dashed var(--mp-pause); }
+.horizon span { position: absolute; top: 4px; left: 4px; right: 2px; font: 700 10px/12px var(--font); color: var(--mp-pause); letter-spacing: 0.03em; }
+.axis { position: relative; height: 16px; margin-top: 4px; font: 500 11px/16px var(--font); color: var(--mp-ink-3); }
+.axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--mp-surface); color: var(--mp-ink); border-radius: 16px 16px 0 0; padding: 8px 16px 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; box-shadow: 0 -8px 40px var(--mp-scrim); }
+.grab { width: 36px; height: 5px; border-radius: 3px; background: var(--mp-line); }
+.scrim { position: absolute; inset: 0; background: var(--mp-scrim); }
+.pin { display: flex; gap: 10px; justify-content: center; }
+.pin i { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--mp-ink-3); }
+.pin i.f { background: var(--mp-ink); border-color: var(--mp-ink); }
+
+/* a browser window */
+.browser { width: 100%; border-radius: 14px; border: 1px solid var(--mp-line); background: var(--mp-bg); overflow: hidden; box-shadow: var(--mp-shadow); container: br / inline-size; }
+.bbar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
+.bdot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--mp-line); }
+.addr { flex: 1; min-width: 0; margin-left: 6px; padding: 4px 12px; border-radius: 999px; background: var(--mp-surface); color: var(--mp-ink-2); font: 500 12px/16px var(--font); white-space: nowrap; overflow: hidden; }
+.bpage { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.ptitle { font: 700 22px/28px var(--font); letter-spacing: -0.015em; }
+.ptop { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.cols { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@container br (min-width: 640px) { .cols { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr); } .cols.even { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.panel { background: var(--mp-surface); border-radius: 20px; padding: 14px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.panel h4 { font: 600 15px/20px var(--font); }
+.panel .over { margin-bottom: -2px; }
+.person { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--mp-line); background: var(--mp-surface); }
+.person.on { background: var(--mp-surface-2); border-color: var(--mp-ink-3); }
+.person b, .person small { display: block; }
+.person b { font: 600 15px/20px var(--font); }
+.person small { font: 400 13px/18px var(--font); }
+.avatar { width: 36px; height: 36px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--mp-hero); color: var(--mp-hero-ink); font: 700 14px/1 var(--font); }
+.fresh { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 500 13px/18px var(--font); color: var(--mp-ink-2); }
+.fresh .ic { color: var(--mp-up); }
+.action { display: flex; flex-direction: column; gap: 4px; }
+.action small { font: 400 13px/18px var(--font); color: var(--mp-ink-2); }
+.logrow { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 8px; font: 400 13px/18px var(--font); color: var(--mp-ink-2); }
+.logrow b { color: var(--mp-ink); font-weight: 600; }
+.route-t { width: 100%; border-collapse: collapse; font: 400 13px/18px var(--font); }
+.route-t th, .route-t td { text-align: left; padding: 7px 6px; border-top: 1px solid var(--mp-line); vertical-align: top; }
+.route-t thead th { border-top: 0; font-weight: 600; color: var(--mp-ink-3); font-size: 12px; }
+.route-t td:first-child { color: var(--mp-ink); }
+.route-t td { color: var(--mp-ink-2); }
+.scroll { overflow-x: auto; }
+
+/* ---------- safeguards and stories ---------- */
+.sgs { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.sgc { display: flex; gap: 10px; align-items: flex-start; background: var(--mp-surface); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.sgc > .ic { color: var(--mp-accent); margin-top: 2px; }
+.sgc b { display: block; font: 600 15px/20px var(--font); }
+.sgc span { display: block; margin-top: 2px; font: 400 14px/19px var(--font); color: var(--mp-ink-2); }
+.keys { display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); }
+.key { display: flex; gap: 10px; align-items: baseline; padding: 8px 12px; border-radius: 12px; background: var(--mp-surface); color: var(--mp-ink); text-decoration: none; min-width: 0; }
+.key b { flex: none; min-width: 62px; font: 700 13px/18px var(--mono); color: var(--mp-accent); white-space: nowrap; }
+.key span { min-width: 0; font: 400 14px/19px var(--font); color: var(--mp-ink-2); }
+.key:hover span { color: var(--mp-ink); }
+.facts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.fact { background: var(--mp-surface); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.fact dt { display: flex; align-items: center; gap: 8px; font: 600 13px/18px var(--font); color: var(--mp-ink); }
+.fact dt .ic { color: var(--mp-accent); }
+.fact dd { margin-top: 4px; font: 400 14px/19px var(--font); color: var(--mp-ink-2); }
+
+/* small diagrams */
+.timeline { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.tl { position: relative; background: var(--mp-surface); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.tl b { display: block; font: 800 22px/28px var(--font-round); color: var(--mp-ink); }
+.tl span { display: block; margin-top: 2px; font: 400 14px/19px var(--font); color: var(--mp-ink-2); }
+.gates { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 165px), 1fr)); }
+.gate { background: var(--mp-surface); border-radius: 14px; padding: 10px 12px; min-width: 0; }
+.gate small { display: block; font: 600 12px/16px var(--font); letter-spacing: 0.04em; text-transform: uppercase; color: var(--mp-ink-3); }
+.gate b { display: flex; align-items: center; gap: 6px; margin-top: 4px; font: 600 15px/20px var(--font); }
+.gate b .ic { color: var(--mp-up); }
+.gate span { display: block; margin-top: 2px; font: 400 13px/18px var(--font); color: var(--mp-ink-2); }
+.mem { display: grid; gap: 8px; }
+.convo { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 10px 14px; border-radius: 14px; background: var(--mp-surface); border: 1px solid var(--mp-line); }
+.convo .st-chip { justify-self: start; }
+.convo.now { border: 2px solid var(--mp-coral); }
+.convo b { font: 600 14px/19px var(--font); }
+.convo span { font: 400 14px/19px var(--font); color: var(--mp-ink-2); min-width: 0; }
+.memgap { text-align: center; font: 500 12px/16px var(--font); color: var(--mp-ink-3); }
+@media (max-width: 640px) { .convo { grid-template-columns: minmax(0, 1fr); } }
+.queues { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.queue { background: var(--mp-surface); border-radius: 20px; padding: 14px 16px; min-width: 0; }
+.queue h4 { display: flex; align-items: center; gap: 8px; font: 600 14px/19px var(--mono); overflow-wrap: anywhere; }
+.queue h4 .ic { color: var(--lane-a); }
+.queue dl { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 4px 10px; margin-top: 10px; font: 400 14px/19px var(--font); }
+.queue dt { color: var(--mp-ink-3); }
+.retry { background: var(--mp-surface); border-radius: 20px; padding: 16px; }
+.tries { display: flex; align-items: center; margin-top: 12px; }
+.try { width: 30px; height: 30px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--mp-surface-2); border: 1.5px solid var(--mp-ink-3); font: 700 12px/1 var(--font); color: var(--mp-ink); }
+.try.dlq { width: auto; padding: 0 10px; border-radius: 999px; background: var(--mp-hero); border-color: var(--mp-hero); color: var(--mp-hero-ink); }
+.wait { height: 2px; background: var(--mp-line); min-width: 8px; }
+.w1 { flex: 1; } .w2 { flex: 2; } .w3 { flex: 4; } .w4 { flex: 7; } .w5 { flex: 3; }
+.trylbl { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; font: 400 13px/18px var(--font); color: var(--mp-ink-2); }
+.ladder { display: grid; gap: 10px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 900px) { .ladder { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); } }
+.rung { background: var(--mp-surface); border-radius: 20px; padding: 14px; min-width: 0; }
+.rung b { display: block; font: 800 28px/32px var(--font-round); letter-spacing: -0.02em; }
+.rung h4 { margin-top: 2px; font: 600 15px/20px var(--font); }
+.rung ul { margin-top: 8px; padding-left: 18px; font: 400 14px/19px var(--font); color: var(--mp-ink-2); }
+.rung li + li { margin-top: 4px; }
+.rung.stop { background: var(--mp-hero); color: var(--mp-hero-ink); }
+.rung.stop ul { color: var(--mp-hero-ink-2); }
+.spendbar { background: var(--mp-surface); border-radius: 20px; padding: 16px; margin-bottom: 12px; }
+.spendbar .meter { height: 14px; margin-top: 10px; }
+.callout { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: var(--mp-surface); border: 1px solid var(--mp-line); font: 400 15px/20px var(--font); color: var(--mp-ink); }
+.callout .ic { color: var(--mp-accent); margin-top: 1px; }
+.split { display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr); }
+.split .eng { border-radius: 10px; padding: 6px 8px; background: var(--tg-quote); }
+.split .eng b { display: block; font: 600 13px/18px var(--font); }
+.split .eng small { display: block; color: var(--tg-text); }
+
+footer.foot { margin-top: 80px; padding-top: 20px; border-top: 1px solid var(--mp-line); font: 400 14px/20px var(--font); color: var(--mp-ink-2); display: grid; gap: 8px; }
+footer.foot b { color: var(--mp-ink); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .toc a, .key, .idx { transition: background-color 120ms cubic-bezier(0.22, 1, 0.36, 1), border-color 120ms; }
+  .toc a:hover, .idx:hover { border-color: var(--mp-ink-3); }
+}
+</style>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 3 10.5l7 2.5 2.5 7z"/><path d="M10 13 21 3"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 19h10.5a4 4 0 0 0 .4-8 6 6 0 0 0-11.6 1.6A3.3 3.3 0 0 0 7 19z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3c.6 4.6 3.4 7.4 8 8-4.6.6-7.4 3.4-8 8-.6-4.6-3.4-7.4-8-8 4.6-.6 7.4-3.4 8-8z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.5c0 4.6-3.1 8-7.5 9.5-4.4-1.5-7.5-4.9-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+  <symbol id="i-retry" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4.5-5"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></symbol>
+  <symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.5 6.2A9.6 9.6 0 0 1 12 6c5.5 0 9 6 9 6a16 16 0 0 1-3 3.7M6.6 7.6C4.3 9.2 3 12 3 12s3.5 6 9 6c1.5 0 2.9-.4 4.1-1"/></symbol>
+  <symbol id="i-queue" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="4" rx="1.5"/><rect x="3" y="10" width="18" height="4" rx="1.5"/><rect x="3" y="15" width="12" height="4" rx="1.5"/></symbol>
+  <symbol id="i-face" viewBox="0 0 24 24"><path d="M4 8.5V6a2 2 0 0 1 2-2h2.5M15.5 4H18a2 2 0 0 1 2 2v2.5M20 15.5V18a2 2 0 0 1-2 2h-2.5M8.5 20H6a2 2 0 0 1-2-2v-2.5"/><path d="M9 9.5v1.5M15 9.5v1.5M12 9.5v4h-1M9.5 16a4 4 0 0 0 5 0"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l8.5-8.5M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.1M4.5 12h.1M4.5 18h.1"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+</svg>
+
+<div class="page">
+<div class="inner">
+
+<header class="topbar">
+  <a class="brand" href="#top">MyPaisa Agent Journey</a>
+  <nav class="toc" aria-label="The flows">
+    <a href="#invite"><b>1</b>Invite</a>
+    <a href="#signin"><b>2</b>Sign in</a>
+    <a href="#holding"><b>3</b>Add a holding</a>
+    <a href="#money"><b>4</b>Log money</a>
+    <a href="#brief"><b>5</b>Morning brief</a>
+    <a href="#alert"><b>6</b>Red alert</a>
+    <a href="#ask"><b>7</b>Ask</a>
+    <a href="#webapp"><b>8</b>Web app</a>
+    <a href="#admin"><b>9</b>Admin center</a>
+    <a href="#failure"><b>10</b>When it fails</a>
+    <a href="#ladder"><b>11</b>Spend ladder</a>
+    <a href="#monthly"><b>12</b>First of the month</a>
+  </nav>
+  <button class="theme" id="themeBtn" type="button">Dark</button>
+</header>
+
+<main id="top">
+
+<section class="hero" aria-labelledby="h-title">
+  <p class="over">MyPaisa Agent · design only, nothing is built yet</p>
+  <h1 id="h-title">MyPaisa Agent Journey</h1>
+  <p class="hero-sub">How a household uses MyPaisa Agent, one flow at a time: what the member does, the path it takes through Telegram, AWS and Claude, what the member sees, and what keeps it safe. Each flow names the Jira stories that build it.</p>
+  <div class="hero-facts">
+    <span>A Telegram bot and a read-only web app</span>
+    <span>AWS us-east-1, dev and prod</span>
+    <span>Claude through the Anthropic API</span>
+    <span>It never trades</span>
+  </div>
+  <p class="hero-note">Every figure on this page is illustrative. "You" are the household's owner; Asha is the second member. The facts come from <code>ARCHITECTURE.md</code>, <code>PLAN.md</code> and the MA-101 and MA-102 design decisions.</p>
+  <svg class="hero-line" viewBox="0 0 600 64" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6 L600 64 L0 64 Z" fill="var(--mp-hero-area)" stroke="none"/>
+    <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/>
+  </svg>
+</section>
+
+<h2 class="sec-h">Four rules every flow keeps</h2>
+<p class="sec-sub">From <code>ARCHITECTURE.md</code> §1. Each path below shows where they bite.</p>
+<div class="grid">
+  <div class="card"><p class="tag">Rule 1</p><h3>Claude never produces a number</h3><p>Every figure comes from code with tests. Claude chooses what to say and how to say it.</p></div>
+  <div class="card"><p class="tag">Rule 2</p><h3>The bot cannot trade</h3><p>No broker login, no orders. It suggests only ISA-safe actions.</p></div>
+  <div class="card"><p class="tag">Rule 3</p><h3>Summary first, detail on tap</h3><p>Every message has a plain top and a technical underside. Nothing technical is shown unasked.</p></div>
+  <div class="card"><p class="tag">Rule 4</p><h3>One write path</h3><p>Every change, whatever the screen, goes through the bot: a card, a Confirm tap, an audit row. The web app is read-only by construction.</p></div>
+</div>
+
+<h2 class="sec-h">How to read a flow</h2>
+<p class="sec-sub">Each path is a numbered sequence across five lanes. An arrow is a hand-off from one lane to another; a box is work done inside one lane. Safeguards are <span class="sg">underlined in coral</span>. On a narrow screen the same steps stack, each tagged with its lanes.</p>
+<div class="grid">
+  <div class="card lanecard"><h3><i class="dot dm"></i>Member</h3><p>You or Asha, on a phone in Telegram or on a laptop in a browser.</p></div>
+  <div class="card lanecard"><h3><i class="dot dt"></i>Telegram</h3><p>The Bot API, the chat with its buttons, the Mini App container, the Login Widget, Face ID through Telegram's prompt.</p></div>
+  <div class="card lanecard"><h3><i class="dot da"></i>AWS</h3><p>API Gateway, the webhook λ, the SQS FIFO updates queue, the agent λ, the SQS work queue and worker λ, the SQS outbox and sender λ, DynamoDB, S3, Cognito, EventBridge Scheduler, Step Functions (phase 12), SNS, CloudWatch.</p></div>
+  <div class="card lanecard"><h3><i class="dot dc"></i>Claude</h3><p>The Anthropic API: Haiku, Sonnet and Opus 5.5, server-side web search and fetch, Message Batches.</p></div>
+  <div class="card lanecard"><h3><i class="dot de"></i>External data</h3><p>Free sources first: yfinance, Twelve Data's free tier, ECB FX, issuer pages, FT, RSS. Google, when it vouches for a sign-in.</p></div>
+</div>
+
+<h2 class="sec-h">The safeguards, in one place</h2>
+<p class="sec-sub">They recur across the flows, so here is what each one means.</p>
+<div class="sgs" style="margin-top:16px">
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span>Every change is shown as a card first and saved only after the member taps Confirm. A change across several records is one plan with one Confirm.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>An <code>AuditEvent</code> in the same DynamoDB transaction as the change: who, when, through what, before and after, which run. Hash-chained, never deleted.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span><code>/privacy</code> hides pounds in every card, in the Mini App and on the web.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>Face ID or a 6-digit PIN on the phone after 12 hours idle and after Confirm on any change; a fresh passkey or Google check in the browser for the owner's actions.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>The spend ladder</b><span>The month's Claude spend is read before every call; at 70, 85, 95 and 100% of the ceiling the bot steps down. Alerts are never dropped.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries and dead-letter queues</b><span>Every hand-off goes through SQS: retried with backoff, idempotent, and kept in a dead-letter queue with an alarm and a replay when it keeps failing.</span></div></div>
+</div>
+
+<h2 class="sec-h">The twelve flows</h2>
+<div class="grid">
+  <a class="idx" href="#invite"><b>1</b><span><strong>Joining by invite</strong><small><code>/invite</code> and a one-time link · phase 1</small></span></a>
+  <a class="idx" href="#signin"><b>2</b><span><strong>Signing in</strong><small>Mini App, Telegram, Google, passkey; the second check · phases 1 and 5</small></span></a>
+  <a class="idx" href="#holding"><b>3</b><span><strong>Adding a holding</strong><small>A factsheet PDF or a screenshot · phase 1</small></span></a>
+  <a class="idx" href="#money"><b>4</b><span><strong>Logging money in plain words</strong><small>"I put £200 into Balanced today" · phase 1</small></span></a>
+  <a class="idx" href="#brief"><b>5</b><span><strong>The 07:15 morning brief</strong><small>Scheduler, queues, free prices, the engine · phases 2 and 3</small></span></a>
+  <a class="idx" href="#alert"><b>6</b><span><strong>A red alert after the US close</strong><small>Tiers, cooldowns, quiet hours, two reds a week · phase 3</small></span></a>
+  <a class="idx" href="#ask"><b>7</b><span><strong>Asking a question</strong><small>Chat memory, tools, Why? with sources · phase 4</small></span></a>
+  <a class="idx" href="#webapp"><b>8</b><span><strong>The web app and the Mini App</strong><small>Overview, a holding, Audit, Activity · phase 5</small></span></a>
+  <a class="idx" href="#admin"><b>9</b><span><strong>The Admin center</strong><small>Sessions, spend, approvals · phases 5 and 12</small></span></a>
+  <a class="idx" href="#failure"><b>10</b><span><strong>When something fails</strong><small>Retries, dead-letter queues, replay · phases 1, 5 and 12</small></span></a>
+  <a class="idx" href="#ladder"><b>11</b><span><strong>The spend ladder in practice</strong><small>70, 85, 95 and 100% · phases 1 and 3</small></span></a>
+  <a class="idx" href="#monthly"><b>12</b><span><strong>The first of the month</strong><small>The contribution prompt · phases 1 and 11</small></span></a>
+</div>
+
+<!-- ============ 1. Joining by invite ============ -->
+<section class="flow" id="invite" aria-labelledby="h-invite">
+  <div class="flow-h">
+    <span class="flow-n">01</span>
+    <h2 id="h-invite">Joining by invite</h2>
+    <p class="lede">The owner sends <code>/invite</code>. Asha taps a one-time link on her own phone and becomes a member of the same household, with her own chat, her own accounts and her own preferences.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the owner sends <code>/invite</code> (or <code>/invite viewer</code>)</span><span class="chip">Phase 1</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You send <code>/invite</code> in your private chat with the bot</span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">Telegram posts the update to <b>API Gateway</b>, <code>/telegram/webhook</code>, with its secret token</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>webhook λ</b> checks the secret, puts the update on the <b>SQS FIFO updates</b> queue in your lane (<code>update_id</code> dedupes) and answers Telegram at once</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> resolves <code>from.id</code> to you, checks you are the owner, and writes an <b>Invite</b> to <b>DynamoDB</b>: single use, 24-hour expiry, this household, this role. Its <span class="sg">audit row</span> goes in the same transaction</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The reply goes on the <b>SQS outbox</b>; <b>sender λ</b> sends the link <code>t.me/&lt;bot&gt;?start=&lt;token&gt;</code></span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">Asha opens the link on her own phone; Telegram starts her private chat with the token</span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">The <code>/start</code> update takes the same path: webhook λ, Asha's lane on the updates queue, agent λ</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> checks the token: unused, under 24 hours old, this household. It marks it used, creates Asha's <b>Member</b> row and her <b>Cognito</b> user in <code>mypaisa-prod-users</code>, each with an <span class="sg">audit row</span></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">sender λ sends the welcome and the first of three setup questions</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">Asha answers with buttons: base currency, what she holds, how often to be told things</span><span class="ln"></span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the members see</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">Thursday</span>
+          <div class="msg out"><div class="bub">/invite<span class="t">18:02</span></div></div>
+          <div class="msg"><div class="bub"><p>Here is a one-time link for your household. Send it to the person joining. It works once, for 24 hours, and makes them a <b>member</b>.</p><p class="mono">t.me/&lt;bot&gt;?start=&lt;token&gt;</p><p><small>For a read-only member, send <code>/invite viewer</code> instead.</small></p><span class="t">18:02</span></div></div>
+        </div>
+        <div class="rkb" aria-hidden="true"><span class="rk">Portfolio</span><span class="rk">Today</span><span class="rk">Ask</span><span class="rk">Settings</span></div>
+      </div>
+      <figcaption><b>Your chat.</b> The owner's one-time link.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">/start<span class="t">18:20</span></div></div>
+          <div class="msg"><div class="bub"><p>Welcome to MyPaisa. You have joined your household as a member. Three quick questions and you are set.</p><span class="t">18:20</span></div></div>
+          <div class="msg"><div class="bub"><p><b>1 of 3.</b> Which currency should I show your money in?</p><span class="t">18:20</span></div><div class="ibs"><span class="ib">Pounds (GBP)</span><span class="ib">Rupees (INR)</span></div></div>
+          <div class="msg out"><div class="bub">Pounds (GBP)<span class="t">18:21</span></div></div>
+          <div class="msg"><div class="bub"><p><b>2 of 3.</b> What do you hold? Send a factsheet or a screenshot, or type it.</p><span class="t">18:21</span></div><div class="ibs c3"><span class="ib">Send a file</span><span class="ib">Type it</span><span class="ib">Later</span></div></div>
+          <div class="msg"><div class="bub"><p><b>3 of 3.</b> How often should I tell you things?</p><span class="t">18:22</span></div><div class="ibs c1"><span class="ib">The morning brief and alerts</span><span class="ib">Alerts only</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>Asha's chat.</b> Three setup questions, one at a time, with buttons.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><div><b>A one-time link</b><span>Single use, a 24-hour expiry, bound to one household and one role.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Only Telegram's signed updates</b><span>The webhook refuses anything without Telegram's secret token; <code>update_id</code> drops duplicates.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Strangers get silence</b><span>An unknown Telegram id gets no answer. Groups are ignored; the bot works in private chats only.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>The invite, the new member and her Cognito user each leave a row in the same transaction as the change.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>No passwords</b><span>Password sign-in and self sign-up are off in Cognito. A user exists only because someone joined through <code>/invite</code>.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Nothing lost on the way</b><span>Both updates travel the FIFO queue in their member's lane, in order, retried and dead-lettered if they keep failing.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-32"><b>MA-32</b><span>The first person in the chat owns the household and can invite and remove members</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-109"><b>MA-109</b><span>Each environment has its own Cognito sign-in with Telegram, Google and passkeys</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-35"><b>MA-35</b><span>The bot answers onboarding, /add, /update, /privacy, /pause, /resume and /help</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-33"><b>MA-33</b><span>Each member has their own accounts, and a joint account can have two owners</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-31"><b>MA-31</b><span>The webhook accepts only Telegram's signed updates and hands them off once</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+  </div>
+</section>
+
+<!-- ============ 2. Signing in ============ -->
+<section class="flow" id="signin" aria-labelledby="h-signin">
+  <div class="flow-h">
+    <span class="flow-n">02</span>
+    <h2 id="h-signin">Signing in</h2>
+    <p class="lede">There are no passwords. Inside Telegram, Telegram vouches for the member. On a laptop it is Telegram, Google or a passkey. Every route goes through the environment's Cognito user pool and ends in the same short-lived session, and a change needs a second check on the phone.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> opening the Mini App, or <code>console.mypaisapp.com</code> in a browser</span><span class="chip">Phase 1 (identity)</span><span class="chip">Phase 5 (web)</span></div>
+  </div>
+
+  <h3 class="blk">The paths</h3>
+  <div class="seq-card">
+    <p class="route">Route 1: the Mini App, inside Telegram<small>Telegram's signed <code>initData</code>, exchanged for Cognito tokens</small></p>
+    <div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">Asha taps the <b>web_app</b> button on the Portfolio card</span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">Telegram opens <code>console.mypaisapp.com</code> from <b>CloudFront</b> and <b>S3</b> (a public shell with no data) and hands it <code>initData</code>: an HMAC over the user and a timestamp, keyed by the bot token</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The page sends <code>initData</code> to <b>API Gateway</b> <code>/auth/telegram</code>. <b>Cognito</b>'s custom-auth Lambdas check the signature in constant time, an age under five minutes, and no replay</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Cognito issues Asha's tokens. <b>api λ</b> keeps them behind a session cookie for its own host: <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>, a day inside Telegram. Access tokens last five minutes</span></li>
+      <li class="st act inT" data-lanes="Telegram"><span class="box"><span class="sg">Second check</span>: after 12 hours idle, a lock screen with no figures. Face ID through Telegram's prompt, or the 6-digit PIN</span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">Asha passes Face ID. Three wrong PINs keep it locked, changes included, for 15 minutes and tell the owner</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">On every <code>/v1</code> call the authorizer checks the session, Asha's status and her session epoch; the data routes are GET only</span></li>
+    </ol></div></div>
+  </div>
+  <div class="seq-card">
+    <p class="route">Route 2: a browser on a laptop<small>The Telegram Login Widget, Sign in with Google, or a passkey</small></p>
+    <div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toA" data-lanes="Member to AWS"><span class="lb">Asha opens <code>console.mypaisapp.com</code>; <b>CloudFront</b> serves the shell and the sign-in page</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb"><b>Telegram</b>: the Login Widget, one tap, confirmed in the Telegram app on her phone</span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">The signed payload reaches the same custom-auth Lambdas: HMAC keyed by the bot token, five-minute freshness, no replay</span><span class="ln"></span></li>
+      <li class="st mv fm toE" data-lanes="Member to External (Google)"><span class="lb"><b>Google</b>: Sign in with Google through <code>auth.mypaisapp.com</code>, Cognito's Google provider</span><span class="ln"></span></li>
+      <li class="st mv fe toA rev" data-lanes="External (Google) to AWS"><span class="lb">Cognito maps Google's stable account id (<code>sub</code>) to the member it was linked to, never the address. A Google account linked to nobody is refused</span><span class="ln"></span></li>
+      <li class="st mv fm toA" data-lanes="Member to AWS"><span class="lb"><b>Passkey</b>: WebAuthn, with a passkey registered after her first sign-in; the relying-party id is fixed per environment</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Every door ends the same way: a cookie on the api's host, 30 days on a laptop, five-minute access tokens behind it that page scripts never see. Each web sign-in is an <span class="sg">audit row</span></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">A new device: Asha's chat asks <i>Was this you?</i>, and the owner gets a message with <b>Open Admin center</b></span><span class="ln"></span></li>
+    </ol></div></div>
+  </div>
+
+  <h3 class="blk">The session, the same behind every door</h3>
+  <dl class="facts">
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Access tokens</dt><dd>Five minutes, refreshed by the api, never held by page scripts.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>The cookie</dt><dd><code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>, set by <code>api.mypaisapp.com</code> for its own host. 30 days on a laptop, a day inside Telegram.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>Every call</dt><dd>Session, member status and session epoch checked, so removing or pausing a member locks them out at once.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Two environments</dt><dd>Tokens from dev are refused by prod. CORS admits only that environment's console.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>Linking Google</dt><dd>A six-digit code on the web, valid ten minutes, sent as <code>/link &lt;code&gt;</code> from the member's own Telegram chat. Every link and unlink is an audit row.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg>The second check</dt><dd>Set up once: Face ID through Telegram, a 6-digit PIN for when Face ID is not there, and a card recommending Telegram's own two-step verification, which MyPaisa cannot check.</dd></div>
+  </dl>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock mid">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com</span></div>
+        <div class="bpage">
+          <div><p class="over">MyPaisa</p><p class="ptitle">Sign in</p><p style="margin-top:4px" class="muted">No passwords. Use the account you joined with.</p></div>
+          <span class="btn btn-p btn-w"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Continue with Telegram</span>
+          <span class="btn btn-t btn-w"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Sign in with Google</span>
+          <span class="btn btn-t btn-w"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>Use a passkey</span>
+          <p class="muted small">A Google account that is not linked to a member is refused. Link it from the chat with <code>/link</code>.</p>
+        </div>
+      </div>
+      <figcaption><b>Browser.</b> The three doors, nothing before sign-in names a member.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone mini">
+        <div class="mahead"><span>Close</span><span>MyPaisa</span><span>···</span></div>
+        <div class="app" style="align-items:center;text-align:center;padding:40px 20px 28px;gap:12px">
+          <span class="lead" style="width:56px;height:56px;border-radius:16px"><svg class="ic ic-l" aria-hidden="true"><use href="#i-lock"/></svg></span>
+          <p class="lt" style="font-size:22px;line-height:28px">MyPaisa is locked</p>
+          <p class="muted">It has been 12 hours. Check it's you to see your figures.</p>
+          <span class="btn btn-p btn-w"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg>Unlock with Face ID</span>
+          <span class="btn btn-plain">Use PIN</span>
+          <div class="pin" aria-label="PIN, 2 of 6 digits entered"><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i></div>
+          <p class="muted small">Three wrong PINs keep it locked for 15 minutes and tell the owner.</p>
+        </div>
+      </div>
+      <figcaption><b>Mini App.</b> Locked after 12 hours idle, with no figures behind it.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone" style="min-height:520px">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg"><div class="bub"><p>Bought £200 of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.57</p><span class="t">08:14</span></div><div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div></div>
+        </div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <span class="grab"></span>
+          <svg class="ic ic-l acc" style="width:40px;height:40px" aria-hidden="true"><use href="#i-face"/></svg>
+          <p class="lt" style="font-size:20px;line-height:25px">Check it's you</p>
+          <p class="muted">Confirm saves a change to your records.</p>
+          <span class="btn btn-p btn-w">Use Face ID</span>
+          <span class="btn btn-plain">Use PIN</span>
+        </div>
+      </div>
+      <figcaption><b>After Confirm.</b> Telegram opens the Mini App as a half-height sheet.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg"><div class="bub"><p><b>New sign-in to MyPaisa</b></p><p>A browser on a Windows laptop, signed in with Google, today at 19:41.</p><p>Was this you?</p><span class="t">19:41</span></div><div class="ibs"><span class="ib">Yes, it was me</span><span class="ib">No, sign it out</span></div></div>
+          <span class="svc">The owner's chat</span>
+          <div class="msg"><div class="bub"><p>Asha has a new sign-in she has not confirmed yet: a browser on a Windows laptop, with Google.</p><span class="t">19:41</span></div><div class="ibs c1"><span class="ib">Open Admin center</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>A new device.</b> The member is asked; the owner is told.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Signatures, checked properly</b><span>HMAC keyed by the bot token, compared in constant time, <code>auth_date</code> within five minutes, a replay refused.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>Face ID or the PIN after 12 hours idle and after Confirm on any change. Reading stays one tap.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Lockout</b><span>Three wrong PINs keep it locked for 15 minutes and tell the owner.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Was this you?</b><span>A new device is asked about at once, and the owner can end it from the Admin center.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>Google by id, not by address</b><span>A renamed Gmail still works; an address handed to someone else does not.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>Every web sign-in, link and unlink is recorded.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-109"><b>MA-109</b><span>Each environment has its own Cognito sign-in with Telegram, Google and passkeys</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-75"><b>MA-75</b><span>The Mini App signs a member in from Telegram through Cognito, and the api checks the session on every request</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>In a browser a member signs in with Telegram, Google or a passkey through Cognito, with no password</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-77"><b>MA-77</b><span>A member links their Google account with a six-digit code sent from their own phone</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>A read-only api Lambda serves each member only what they may see</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-72"><b>MA-72</b><span>The Google sign-in client, the bot's web domain and two-step verification are set up</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>The owner can sign out any member's session from the Admin center, and Telegram sessions need a second check</span></a>
+  </div>
+</section>
+
+<!-- ============ 3. Adding a holding ============ -->
+<section class="flow" id="holding" aria-labelledby="h-holding">
+  <div class="flow-h">
+    <span class="flow-n">03</span>
+    <h2 id="h-holding">Adding a holding from a factsheet or a screenshot</h2>
+    <p class="lede">Send the fund's factsheet PDF, then a screenshot of its value in the Monzo app. Claude reads them; code checks them; nothing is saved until the member taps Confirm. Anything Claude is unsure of comes back in amber.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a PDF or a screenshot sent to the bot, or <code>/add</code></span><span class="chip">Phase 1</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You send the Balanced fund's factsheet PDF (or <code>/add</code> first)</span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">API Gateway, webhook λ, your lane on the updates queue, then <b>agent λ</b></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> keeps the file in a private <b>S3</b> bucket with a lifecycle rule and puts a document read on the <b>SQS work</b> queue; <b>worker λ</b> runs the docs job</span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The PDF and a schema: name, ISIN, charge, allocation, top holdings, benchmark, currency</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Structured JSON, a citation for each figure and a confidence for each field</span><span class="ln"></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">A card of what was read, low-confidence fields in amber, with <b>Confirm</b>, <b>Edit</b> and <b>Cancel</b></span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You tap <span class="sg">Confirm</span>, then pass the <span class="sg">second check</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Instrument</b> and <b>Document</b> saved in <b>DynamoDB</b>, each with an <span class="sg">audit row</span>; price sources resolved from the ISIN (the Yahoo id, the BlackRock page)</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb"><i>Added. How much do you hold? Send a screenshot or type it.</i></span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You send a screenshot of the Monzo valuation; the same docs job reads it with Claude</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">After Confirm and the second check: <b>Position</b>, <b>Valuation</b> (source <code>user_screenshot</code>) and <b>Transaction</b>, each with an audit row. The screenshot is deleted after extraction unless you say keep</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub"><div class="file"><i>PDF</i><span><b>MyMap 5 factsheet.pdf</b><small>4 pages</small></span></div><span class="t">20:31</span></div></div>
+          <div class="msg"><div class="bub">
+            <h5>Here is what I read</h5>
+            <div class="kv wrap">
+              <span>Fund</span><span>BlackRock MyMap 5 (Monzo "Balanced")</span>
+              <span>Kind</span><span>UK fund (OEIC)</span>
+              <span>ISIN</span><span>GB00········</span>
+              <span>Shares and bonds</span><span>about 66% · 34%</span>
+              <span>Under the hood</span><span>mostly USD</span>
+              <span>Top holdings</span><span>10, each with its page</span>
+              <span>Benchmark</span><span><span class="amb">none found, check</span></span>
+              <span>Price currency</span><span><span class="amb">GBP?</span></span>
+            </div>
+            <p><small>Amber means I am not sure. Tap Edit to fix it.</small></p>
+            <span class="t">20:31</span></div>
+            <div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>The factsheet card.</b> Two fields in amber, asked about. Identifiers shortened here.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg"><div class="bub"><p>Added. How much do you hold? Send a screenshot or type it.</p><span class="t">20:33</span></div></div>
+          <div class="msg out"><div class="bub"><div class="shot" aria-label="A screenshot of the Monzo app"><div class="s1">Balanced · Monzo</div><div class="s2">£22,925</div><div class="s3"></div><div class="s3 w"></div></div><span class="t">20:34</span></div></div>
+          <div class="msg"><div class="bub">
+            <p>Balanced <b>£22,925</b> on 23 Oct · units 1,234.5 at NAV 18.57</p>
+            <div class="hr"></div>
+            <p class="ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Saved · confirmed with Face ID</p>
+            <span class="t">20:35</span></div>
+          </div>
+          <p class="svc">The card edited in place after Confirm</p>
+        </div>
+      </div>
+      <figcaption><b>The screenshot.</b> Read, matched to the holding, saved only after Confirm.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span>A holding is never saved without the Confirm tap. The same path handles an ETF, a share or cash.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Amber when unsure</b><span>Any field Claude is unsure of is shown in amber and asked about.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>A source for every figure</b><span>Extracted figures carry the line they came from. Claude reads; it does not invent a number.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>Face ID or the PIN after Confirm, then the card edits to "Saved · confirmed with Face ID".</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Files kept short</b><span>A private bucket with a lifecycle rule; screenshots deleted after extraction unless you say keep.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A document's words are data</b><span>Text inside a PDF is untrusted and never followed as an instruction; no tool can trade or delete.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries</b><span>The document read is a job on the work queue: five tries with backoff, then a dead-letter queue and an alarm.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-37"><b>MA-37</b><span>Sending a factsheet or a valuation screenshot adds or updates a holding after Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-34"><b>MA-34</b><span>Design the Portfolio card and the Confirm card before they are built</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-27"><b>MA-27</b><span>The holdings registry stores members, accounts, holdings and valuations per household</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>Telegram sessions need a second check</span></a>
+  </div>
+</section>
+
+<!-- ============ 4. Logging money ============ -->
+<section class="flow" id="money" aria-labelledby="h-money">
+  <div class="flow-h">
+    <span class="flow-n">04</span>
+    <h2 id="h-money">Logging money in plain words</h2>
+    <p class="lede">Type it the way you would say it. When the sentence has everything, it goes straight to a Confirm card. When something is missing, the bot asks for that one thing, with buttons, editing the same message so the chat stays tidy.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put £200 into Balanced today", or "I want to log a transaction"</span><span class="chip">Phase 1</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You type <i>I put £200 into Balanced today</i></span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">webhook λ, then your lane on the <b>SQS FIFO updates</b> queue: your messages one at a time, in order; Asha's run in parallel</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> reads this cycle's <span class="sg">spend meter</span> (one item), then builds the current conversation</span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The conversation and the strict tools to Sonnet; <code>tool_choice</code> stays <code>auto</code></span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Claude calls <code>propose_change</code>: a buy of £200 in Balanced, today. Every detail is there, so no questions</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Code works out the units from the NAV: about 10.8 at 18.57. A <b>PendingAction</b> row holds the proposal for up to a day</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The Confirm card, through the outbox and sender λ</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb"><span class="sg">Confirm</span>, then the <span class="sg">second check</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> and the <b>Position</b>'s units saved with an <span class="sg">audit row</span>, in one transaction; the card edits in place</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">Missing a detail? <code>ask_user</code> ends the turn with one question and its buttons. The next tap resumes the flow from the PendingAction; whatever was already said is skipped; a day of silence clears it.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">I put £200 into Balanced today<span class="t">08:13</span></div></div>
+          <div class="msg"><div class="bub"><p>Bought <b>£200</b> of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.57</p><span class="t">08:13</span></div><div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div></div>
+          <p class="svc">After Confirm and Face ID, the same card</p>
+          <div class="msg"><div class="bub"><p>Bought <b>£200</b> of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.57</p><div class="hr"></div><p class="ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Saved · confirmed with Face ID</p><span class="t">08:14</span></div></div>
+        </div>
+        <div class="rkb" aria-hidden="true"><span class="rk">Portfolio</span><span class="rk">Today</span><span class="rk">Ask</span><span class="rk">Settings</span></div>
+      </div>
+      <figcaption><b>One sentence.</b> Everything was said, so it goes straight to Confirm.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">I want to log a transaction<span class="t">19:02</span></div></div>
+          <div class="msg"><div class="bub"><p>What kind?</p></div><div class="ibs"><span class="ib">Bought</span><span class="ib">Sold</span><span class="ib">Dividend</span><span class="ib">Fee</span></div></div>
+          <div class="msg out"><div class="bub">Bought</div></div>
+          <div class="msg"><div class="bub"><p>Into which holding?</p></div><div class="ibs"><span class="ib">Balanced</span><span class="ib">NASDAQ 100</span><span class="ib">Robotics</span><span class="ib">Silver</span></div><div class="ibs c1"><span class="ib">Something new</span></div></div>
+          <div class="msg out"><div class="bub">Balanced</div></div>
+          <div class="msg"><div class="bub"><p>How much, in pounds?</p></div><div class="ibs"><span class="ib">£100</span><span class="ib">£200</span><span class="ib">£500</span><span class="ib">Type an amount</span></div></div>
+          <div class="msg out"><div class="bub">£200</div></div>
+          <div class="msg"><div class="bub"><p>When?</p></div><div class="ibs c3"><span class="ib">Today</span><span class="ib">Yesterday</span><span class="ib">Pick a date</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>The guided flow.</b> Shown as a sequence here; in the chat each answer edits the same message. It ends on the same Confirm card.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span><code>propose_change</code> saves nothing; only the Confirm tap does.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Numbers from code</b><span>Claude reads "£200" and "today"; the units and the NAV come from code.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Nothing asked twice</b><span>It never asks for what it can look up, and skips every question the sentence already answered.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><div><b>A day, then gone</b><span>A PendingAction expires after 24 hours; an expired Confirm is refused.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>Face ID or the PIN after Confirm on any change.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>Who, when, "via typed" or "via button", before and after, and the run that made it.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-38"><b>MA-38</b><span>"I put £200 into Balanced" becomes a transaction after Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-34"><b>MA-34</b><span>Design the Portfolio card and the Confirm card before they are built</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-139"><b>MA-139</b><span>Each member's messages travel through ordered queues, in and out, retried with backoff and never lost</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>Telegram sessions need a second check</span></a>
+  </div>
+</section>
+
+<!-- ============ 5. The morning brief ============ -->
+<section class="flow" id="brief" aria-labelledby="h-brief">
+  <div class="flow-h">
+    <span class="flow-n">05</span>
+    <h2 id="h-brief">The 07:15 morning brief, end to end</h2>
+    <p class="lede">At 07:00 the prices come in from free sources; by 07:10 the engine has scored every holding; at 07:15 each member's brief arrives. If a price is late, the brief still goes, and says so.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> EventBridge Scheduler, Europe/London, each weekday</span><span class="chip">Phase 2 (prices, engine)</span><span class="chip">Phase 3 (the brief)</span></div>
+  </div>
+
+  <h3 class="blk">The morning, by the clock</h3>
+  <div class="timeline">
+    <div class="tl"><b>07:00</b><span>Ingest. The Scheduler queues one job per holding; free sources first.</span></div>
+    <div class="tl"><b>07:10</b><span>Signals. The engine has scored every holding; stances stay in shadow until phase 8.</span></div>
+    <div class="tl"><b>07:15</b><span>Brief. Once for the household and once for each member who wants one, in their own preferences.</span></div>
+    <div class="tl"><b>07:45</b><span>Dead man's switch. If the brief has not gone out, an alarm tells the owner.</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box">07:00 <b>EventBridge Scheduler</b>. The <code>/pause</code> flag is checked first, then one ingest job per holding goes on the <b>SQS work</b> queue</span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External data"><span class="lb"><b>worker λ</b> runs each job down the holding's chain: yfinance, then Twelve Data's free tier, then the issuer page; ECB for FX</span><span class="ln"></span></li>
+      <li class="st mv fe toA rev" data-lanes="External data to AWS"><span class="lb">Bars in the native currency with their source; pence turned into pounds; raw answers kept in <b>S3</b></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">A source that answers nothing is skipped. Last in every chain is <code>stale</code>: the previous close, <span class="sg">labelled</span>, never silently reused, and left out of scoring</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The finished job queues the next. The <b>engine</b> runs its self-tests, then indicators, pillars, macro and the stance, and writes Signals to <b>DynamoDB</b> by 07:10</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">07:15 a brief job per member reads the signals and that member's preferences: privacy mode, simple or technical, their accounts and a line per household member</span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The engine's numbers and the cached card rubric go to Sonnet, after the <span class="sg">spend meter</span> is read</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Claude writes the words. A validator checks every figure against the engine's; on a refusal or an error the plain template goes instead</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The card and its PNG chart go on the <b>SQS outbox</b>, one lane per chat, so they arrive in order; <b>sender λ</b> honours Telegram's limits and <code>retry_after</code></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">Telegram delivers the brief</span><span class="ln"></span></li>
+      <li class="st mv ft toM rev" data-lanes="Telegram to Member"><span class="lb">You read the top; the technical detail is one tap away</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">07:45 <b>CloudWatch</b>: if the brief has not gone out, the dead man's switch alarm reaches the owner</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">From phase 12 one <b>Step Functions</b> state machine drives the same jobs (ingest, engine, Forecaster, grade, calibrate, brief) with retries and backoff on every step, and the ops warden repairs what it safely can.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">Monday 26 October</span>
+          <div class="msg"><div class="bub">
+            <h5>Morning brief · Mon 26 Oct</h5>
+            <div class="png" role="img" aria-label="Chart image: your accounts over the last month, rising">
+              <div class="p1">Your accounts · 1 month</div><div class="p2">£24,110</div>
+              <svg viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 38 L20 36 L40 37 L60 31 L80 33 L100 27 L120 29 L140 22 L160 24 L180 17 L200 14 L200 48 L0 48 Z" fill="var(--mp-hero-area)"/><path d="M0 38 L20 36 L40 37 L60 31 L80 33 L100 27 L120 29 L140 22 L160 24 L180 17 L200 14" fill="none" stroke="var(--mp-coral)" stroke-width="2"/></svg>
+            </div>
+            <p><b>You</b> · £24,110 · <span class="up">▲ 0.4%</span> on Friday · <span class="up">▲ 2.1%</span> this month</p>
+            <div class="kv">
+              <span>Balanced (Monzo)</span><span>£22,925 <span class="up">▲ 0.6%</span></span>
+              <span>Cash (Monzo pot)</span><span>£1,185 flat</span>
+            </div>
+            <p><b>Asha</b> · NASDAQ 100 ETF <span class="dq">▼ 1.2%</span> on Friday, <span class="dq">▼ 8.4%</span> from its high</p>
+            <p>Why: the pound's moves explain most of Balanced's wobble; US tech fell on Friday.</p>
+            <p><small>Data: yfinance ✓ · Twelve Data ✓ · ECB ✓</small></p>
+            <p class="ok">Nothing to do this week. Next review Saturday.</p>
+            <span class="t">07:15</span></div>
+            <div class="ibs"><span class="ib">Today</span><span class="ib">Balanced</span><span class="ib">Technical ▾</span><span class="ib">Ask</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>The owner's brief.</b> Your accounts, a line for Asha, the chart as a PNG in the hero navy.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">If a price is late</span>
+          <div class="msg"><div class="bub">
+            <h5>Morning brief · Mon 26 Oct</h5>
+            <p><b>You</b> · £24,110 · <span class="up">▲ 0.4%</span> on Friday</p>
+            <div class="hr"></div>
+            <p><b>Asha</b> · NASDAQ 100 ETF <span class="amb">stale</span></p>
+            <p>No source had Friday's close by 07:00, so this is Thursday's, marked stale and left out of today's scoring. It is filled on the next run.</p>
+            <p><small>Data: yfinance no answer · Twelve Data no answer · previous close used</small></p>
+            <span class="t">07:15</span></div>
+          </div>
+          <span class="svc">Privacy mode on</span>
+          <div class="msg"><div class="bub">
+            <h5>Morning brief · Mon 26 Oct</h5>
+            <p><b>You</b> · <span class="mask" aria-label="hidden">£00,000</span> · <span class="up">▲ 0.4%</span> on Friday</p>
+            <div class="kv"><span>Balanced (Monzo)</span><span><span class="mask" aria-label="hidden">£00,000</span> <span class="up">▲ 0.6%</span></span></div>
+            <span class="t">07:15</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Labelled, not skipped.</b> A late price goes out marked stale; privacy mode hides pounds but keeps the moves.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Claude never produces a number</b><span>The validator catches an invented figure; a refusal or error falls back to the plain template.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Stale is labelled, not skipped</b><span>The previous close, marked stale and kept out of scoring. The brief, the wrap and alerts are always attempted.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries and dead-letter queues</b><span>Each job: five tries, backoff from 30 seconds to 30 minutes, then its dead-letter queue. Idempotent per date.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg><div><b>Free sources kept inside their limits</b><span>The work queue's concurrency keeps Twelve Data's free tier at 8 calls a minute; ingest spends at most 200 of its 800 daily credits.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>The dead man's switch</b><span>07:45: no brief, an alarm. Any holding's price older than two days also raises one.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds hidden in the card when the member has turned it on.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>The kill switch</b><span><code>/pause</code> sets a flag every scheduled run checks first.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-53"><b>MA-53</b><span>The ingest and engine jobs write signals and shadow stances every weekday by 07:10</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-41"><b>MA-41</b><span>One PriceSource contract lets each price feed plug in, chained per kind and per environment</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-42"><b>MA-42</b><span>yfinance, Twelve Data, screenshot and stale plugins price the holdings every day</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-44"><b>MA-44</b><span>ECB FX rates and market calendars are loaded daily</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-45"><b>MA-45</b><span>Input hygiene drops bad bars before anything is scored</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-54"><b>MA-54</b><span>The Anthropic client routes, caches and refuses to let Claude invent a number</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-55"><b>MA-55</b><span>Design the morning brief, evening wrap and alert cards</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-57"><b>MA-57</b><span>The morning brief and evening wrap arrive as cards, with a Technical section and glossary</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-58"><b>MA-58</b><span>Charts in the house style are sent with each card</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-61"><b>MA-61</b><span>A dead man's switch and the error alarms tell the chat when a job did not run</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries and a dead-letter queue</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-139"><b>MA-139</b><span>Messages travel through ordered queues, in and out, and are never lost</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-135"><b>MA-135</b><span>E7: an ops warden runs the daily pipeline and repairs what it safely can (phase 12)</span></a>
+  </div>
+</section>
+
+<!-- ============ 6. A red alert ============ -->
+<section class="flow" id="alert" aria-labelledby="h-alert">
+  <div class="flow-h">
+    <span class="flow-n">06</span>
+    <h2 id="h-alert">A red alert after the US close</h2>
+    <p class="lede">After the US close the engine sees the NASDAQ 100 ETF is 8.4% below its high, just past Asha's 8% alert. Code decides whether it rings, and how loudly; Claude only words it.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the 21:00 run after the US close</span><span class="chip">Phase 3</span></div>
+  </div>
+
+  <h3 class="blk">The gates, all in code</h3>
+  <div class="gates">
+    <div class="gate"><small>Tier</small><b><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Red</b><span>Red rings; amber is silent; the rest waits for the digest.</span></div>
+    <div class="gate"><small>Cooldown</small><b><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Clear</b><span>Not sent for this holding within its cooldown.</span></div>
+    <div class="gate"><small>Quiet hours</small><b><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Outside</b><span>Asha's own hours, checked before anything makes a sound.</span></div>
+    <div class="gate"><small>Weekly red budget</small><b><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>1 of 2 used</b><span>At most two reds a week per member.</span></div>
+    <div class="gate"><small>Repeat filter</small><b><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>New</b><span>Haiku checks she has not already been told this.</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box">21:00 <b>EventBridge Scheduler</b> queues the evening ingest on the <b>SQS work</b> queue</span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External data"><span class="lb"><b>worker λ</b> fetches the closes: Twelve Data's free tier for the US lines (<code>QQQ</code> as the check on the NASDAQ 100 ETF), yfinance for London</span><span class="ln"></span></li>
+      <li class="st mv fe toA rev" data-lanes="External data to AWS"><span class="lb">Closes back, written to <b>S3</b></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <b>engine</b> finds the NASDAQ 100 ETF 8.4% below its one-year high, past Asha's 8% threshold: an alert candidate for <b>agent λ</b></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> runs the gates in code: the tier, the <span class="sg">cooldown</span>, Asha's <span class="sg">quiet hours</span> and her <span class="sg">weekly red budget</span></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Haiku's <span class="sg">repeat filter</span>: has Asha already been told this?</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Not a repeat. Sonnet writes the words around the engine's numbers</span><span class="ln"></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">Outbox, then sender λ: a red alert with sound, to Asha, whose account it is (and to you, if you asked for her alerts)</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">Asha reads it and later taps <b>I acted</b></span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">A <b>Decision</b> record, which the Saturday review compares with what the signals said</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box">News alone never raises a red alert. A commodity such as silver alerts at a wider band, 12%, because 8% is a normal week for it. Past 95% of the Claude ceiling the alert still goes, as its plain template.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">Friday 23 October</span>
+          <div class="msg"><div class="bub">
+            <p><span class="redchip"><svg class="ic" aria-hidden="true" style="width:14px;height:14px"><use href="#i-bell"/></svg>Red alert</span></p>
+            <h5 style="margin-top:6px">NASDAQ 100 ETF is 8.4% below its high</h5>
+            <p>That is just past your 8% alert.</p>
+            <div class="kv"><span>Today</span><span class="dq">▼ 1.2%</span><span>This week</span><span class="dq">▼ 3.1%</span><span>From its high</span><span class="dq">▼ 8.4%</span></div>
+            <p><span class="st-chip c-pause">PAUSE · 64%</span> Keep what you have; new money can wait for the next review.</p>
+            <p>Nothing to do tonight.</p>
+            <span class="t">21:08</span></div>
+            <div class="ibs"><span class="ib">Why?</span><span class="ib">Chart</span><span class="ib">What if?</span><span class="ib">I acted</span></div>
+          </div>
+          <div class="msg out"><div class="bub">I acted<span class="t">21:30</span></div></div>
+          <div class="msg"><div class="bub"><p>Noted. Saturday's review will compare it with what the signals said.</p><span class="t">21:30</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>Asha's red alert.</b> Crimson is kept for this tier only. The stance chip appears once stances go live in phase 8.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>Tiers</b><span>Red with sound, amber silent, the rest in a digest. About ten messages a week, two with sound at most.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><div><b>Cooldowns and quiet hours</b><span>Per member, enforced by the agent Lambda, never by the prompt.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Two reds a week</b><span>The weekly red budget is per member; an alert never fires twice in its cooldown.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>No repeats</b><span>Haiku's repeat filter, and a self-audit of what the bot said this week.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Never dropped</b><span>At any step of the spend ladder an alert goes out; a template needs no model.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>The bot cannot trade</b><span>The card suggests only ISA-safe actions and never says sell everything.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-59"><b>MA-59</b><span>Alerts come in tiers, respect quiet hours and never repeat within their cooldown</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-55"><b>MA-55</b><span>Design the morning brief, evening wrap and alert cards</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-60"><b>MA-60</b><span>Tapping "I acted" records a decision the Saturday review can check</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-53"><b>MA-53</b><span>The ingest and engine jobs write signals and shadow stances every weekday</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-58"><b>MA-58</b><span>Charts in the house style are sent with each card</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-91"><b>MA-91</b><span>Stance chips appear on the Portfolio card and in the brief, and /calls lists them (phase 8)</span></a>
+  </div>
+</section>
+
+<!-- ============ 7. Asking a question ============ -->
+<section class="flow" id="ask" aria-labelledby="h-ask">
+  <div class="flow-h">
+    <span class="flow-n">07</span>
+    <h2 id="h-ask">Asking a question in chat</h2>
+    <p class="lede">Ask in plain words. The agent looks up what it needs with its tools, sends Claude only the current conversation, and answers with a card. <b>Why?</b> goes to the web for today's reasons, with the sources cited.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a typed question, or the <b>Ask</b> button</span><span class="chip">Phase 4</span></div>
+  </div>
+
+  <h3 class="blk">Chat memory: keep it all, send little</h3>
+  <div class="mem">
+    <div class="convo"><b>Yesterday 19:02</b><span>Asked about the NASDAQ 100 fall. Closed after 30 minutes of silence; Haiku wrote a one-line note.</span><span class="st-chip c-neutral">note</span></div>
+    <div class="convo"><b>Today 08:13</b><span>Logged £200 into Balanced. Closed when the guided flow finished.</span><span class="st-chip c-neutral">note</span></div>
+    <p class="memgap">42 minutes of silence: a new conversation starts</p>
+    <div class="convo now"><b>Today 08:55</b><span>"Should I add to Balanced this month?" The only conversation sent to Claude, after the cached fixed part and the notes above.</span><span class="st-chip c-hold">sent</span></div>
+  </div>
+  <dl class="facts" style="margin-top:12px">
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Kept</dt><dd>Every message, one <code>ChatTurn</code> row each, stored exactly as returned, for ninety days. History is never edited.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Sent</dt><dd>The cached fixed part (system prompt, tools, card rubrics; one-hour cache), notes on recent conversations, and the current one.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Ends</dt><dd>After 30 minutes of silence or when a guided flow finishes; it stays open while a question waits. Past about 50,000 tokens it starts afresh from a summary.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Costs</dt><dd>About 1.5p to 3p a message on Sonnet, where re-sending whole histories would cost 7p to 85p after a month.</dd></div>
+  </dl>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You ask: <i>should I add to Balanced this month?</i></span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">webhook λ, your lane on the updates queue, then <b>agent λ</b></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">spend meter</span> is read. The last message was 42 minutes ago, so a new conversation starts from the cached fixed part and the notes on recent ones</span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Only the current conversation goes to Sonnet, with strict tools</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Tool calls: <code>get_holding</code>, <code>get_signals</code>, <code>get_stances</code>, <code>get_scorecard</code></span><span class="ln"></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Results from <b>DynamoDB</b>: every number comes from code</span><span class="ln"></span></li>
+      <li class="st act inC" data-lanes="Claude"><span class="box">Above 70% confidence: a bull, a bear and a judge, bounded to one round</span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The stance card's words</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Each turn is a <b>ChatTurn</b> row; the call's cost is added to the meter and the <b>RunRecord</b></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The answer card, with <b>Why?</b>, <b>What if?</b>, <b>Technical</b> and <b>I acted</b></span><span class="ln"></span></li>
+      <li class="st mv fm toA" data-lanes="Member to AWS"><span class="lb">You tap <b>Why?</b> (through Telegram and the updates queue)</span><span class="ln"></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The question goes to Claude with web search and fetch on</span><span class="ln"></span></li>
+      <li class="st mv fc toE" data-lanes="Claude to External data"><span class="lb">Anthropic's server-side search reads today's sources; their text is <span class="sg">untrusted</span> and never obeyed</span><span class="ln"></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The reasons, with each source cited</span><span class="ln"></span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">Should I add to Balanced this month?<span class="t">08:55</span></div></div>
+          <div class="msg"><div class="bub">
+            <h5>Balanced (BlackRock MyMap 5) · £22,925</h5>
+            <p><span class="st-chip c-hold">HOLD</span> next 2 weeks · confidence 71%</p>
+            <p><b>Why:</b> steady uptrend; volatility normal; pound moves explain most of this week's wobble.</p>
+            <p><b>Would change if:</b> a 5% fall from here, or UK inflation surprises on Wed.</p>
+            <p><small>Your track record on HOLD calls: 14 made, 11 held up.</small></p>
+            <span class="t">08:55</span></div>
+            <div class="ibs"><span class="ib">Why?</span><span class="ib">What if?</span><span class="ib">Technical ▾</span><span class="ib">I acted</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>The answer card.</b> A plain top; the technical underside one tap away.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">Why?<span class="t">08:56</span></div></div>
+          <div class="msg"><div class="bub">
+            <h5>Why Balanced wobbled this week</h5>
+            <p>Most of the fund sits in dollar assets. The pound rose against the dollar, which trims what they are worth in pounds. <span class="tg-link">[1]</span> <span class="tg-link">[2]</span></p>
+            <div class="qt">[1] A markets report on the pound, this morning<br>[2] The fund's own page: where it invests</div>
+            <span class="t">08:56</span></div>
+          </div>
+          <span class="svc">Technical ▾ opened</span>
+          <div class="msg"><div class="bub mono" style="font-size:12px;line-height:17px">Trend +2 (price&gt;EMA20, EMA20&gt;50&gt;200)<br>Momentum +1 (RSI 58, MACD hist&gt;0)<br>Macro US +1 · UK 0<br>Risk 0 (vol 48th pct, drawdown −1.9%)<br>Range 1m: −4.8% … +4.1%<br>Data: yfinance ✓ · ECB ✓</div></div>
+        </div>
+      </div>
+      <figcaption><b>Why? and Technical.</b> Sources cited; pillars as numbers, from the engine.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Numbers from tools</b><span>Claude calls the tools and words the card; the stance, confidence and range come from the engine.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Untrusted web text</b><span>Search results that contain instructions are not acted on. No tool can trade, delete or message anyone else.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Short memory, full record</b><span>Only the current conversation is sent; the agent looks up the rest with <code>get_audit</code>, <code>get_portfolio</code>, <code>get_stances</code>.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>At most eight calls a run</b><span>A loop that reaches it stops and says so.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>The spend ladder</b><span>At 85% Why? gets three searches a day; at 95% chat answers on Haiku; at 100% free text waits for the renewal.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span>A question can lead to a change ("stop pinging me under 2%"), but only through a card and Confirm.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-62"><b>MA-62</b><span>You can ask the bot anything about your holdings and it answers from its tools</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-115"><b>MA-115</b><span>The chat sends Claude only the current conversation, kept short, with notes on recent ones</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-63"><b>MA-63</b><span>Design the research cards: stance, holding profile, overlap, fund vs benchmark, bear vs bull, scenario</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-64"><b>MA-64</b><span>The stance and holding-profile cards explain each holding and what would change the view</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-66"><b>MA-66</b><span>Bear vs bull argues both sides in two calls and a judge, bounded to one round</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-68"><b>MA-68</b><span>The bot searches the web for sources and never follows instructions it finds there</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-113"><b>MA-113</b><span>Every Claude call is metered and nothing runs past the monthly ceiling</span></a>
+  </div>
+</section>
+
+<!-- ============ 8. The web app and the Mini App ============ -->
+<section class="flow" id="webapp" aria-labelledby="h-webapp">
+  <div class="flow-h">
+    <span class="flow-n">08</span>
+    <h2 id="h-webapp">The web app and the Mini App</h2>
+    <p class="lede">One static app with two front doors: the Mini App inside Telegram and <code>console.mypaisapp.com</code> in a browser. The same figures, the audit log of every change, and what the agent did and spent. Nothing on it can change a record.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the <b>web_app</b> button on the Portfolio card, <code>/web</code>, or the address</span><span class="chip">Phase 5</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toA" data-lanes="Member to AWS"><span class="lb">The browser, or the Mini App inside Telegram, loads <code>console.mypaisapp.com</code> from <b>CloudFront</b> and <b>S3</b>: a static shell, public, with no data in it</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Signed in as in flow 2: every call to <code>api.mypaisapp.com/v1</code> carries the session cookie</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The authorizer checks session, status, epoch and role; <b>api λ</b> reads <b>DynamoDB</b> through GET routes only and returns just what this member may see</span></li>
+      <li class="st mv fa toM rev" data-lanes="AWS to Member"><span class="lb">Overview, a holding, Overlap and Scorecard, with the Household and Me switch</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Audit</b> reads the <b>AuditEvent</b> rows. <b>Activity</b> reads the <b>RunRecord</b> rows, the schedule board, the spend meter and seven days of <b>CloudWatch</b> alarms</span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">To change anything, the member goes back to the chat: a card, <span class="sg">Confirm</span>, an <span class="sg">audit row</span></span><span class="ln"></span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone mini">
+        <div class="mahead"><span>Close</span><span>MyPaisa</span><span>···</span></div>
+        <div class="app">
+          <div class="dshero">
+            <p class="lbl">You · illustrative</p>
+            <p class="big">£24,110</p>
+            <p style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="upchip">▲ 0.4% today</span><span class="upchip">▲ 2.1% month</span></p>
+            <div class="seg"><span>Household</span><span class="on">Me</span></div>
+            <svg viewBox="0 0 200 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 44 L20 42 L40 43 L60 36 L80 38 L100 31 L120 33 L140 25 L160 27 L180 19 L200 15 L200 56 L0 56 Z" fill="var(--mp-hero-area)"/><path d="M0 44 L20 42 L40 43 L60 36 L80 38 L100 31 L120 33 L140 25 L160 27 L180 19 L200 15" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/></svg>
+          </div>
+          <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Nothing to do this week</p>
+          <div class="group">
+            <div class="row"><span class="lead">BL</span><span class="grow"><b>Balanced</b><small>Monzo · ISA</small></span><span class="num"><b>£22,925</b><small class="up">▲ 0.6%</small></span></div>
+            <div class="row"><span class="lead">£</span><span class="grow"><b>Cash</b><small>Monzo pot</small></span><span class="num"><b>£1,185</b><small>flat</small></span></div>
+          </div>
+        </div>
+        <div class="tabbar" aria-hidden="true">
+          <span class="tab on"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Overview</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Holdings</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>More</span>
+        </div>
+      </div>
+      <figcaption><b>Mini App · Overview.</b> One number, one line, one chart, then "Nothing to do this week".</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone mini">
+        <div class="mahead"><span>‹ Holdings</span><span>MyPaisa</span><span>···</span></div>
+        <div class="app">
+          <div><p class="lt" style="font-size:22px;line-height:28px">NASDAQ 100 ETF</p><p class="muted small">iShares NASDAQ 100 UCITS ETF (Acc) · CNX1 · Asha's ISA</p></div>
+          <div><p class="big" style="font-size:28px;line-height:34px"><span class="mask" aria-label="Value hidden by privacy mode">£0,000</span></p><p class="small" style="margin-top:4px"><span class="dq">▼ 1.2% Friday</span> · <span class="dq">▼ 3.1% this week</span> · <span class="dq">▼ 8.4% from its high</span></p></div>
+          <div class="chartbox" role="img" aria-label="One-year chart: the price peaks, then falls 8.4%, just past the 8% alert line; a PAUSE horizon is shaded for the next two weeks">
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="0" y1="30" x2="300" y2="30" stroke="var(--mp-chart-grid)" stroke-width="1"/>
+              <line x1="0" y1="90" x2="300" y2="90" stroke="var(--mp-chart-grid)" stroke-width="1"/>
+              <path d="M0 96 L20 92 L40 86 L60 88 L80 76 L100 72 L120 64 L140 58 L160 61 L180 47 L200 40 L215 31 L226 26 L236 33 L246 41 L255 47 L262 53 L262 120 L0 120 Z" fill="var(--mp-chart-area)"/>
+              <path d="M0 96 L20 92 L40 86 L60 88 L80 76 L100 72 L120 64 L140 58 L160 61 L180 47 L200 40 L215 31 L226 26 L236 33 L246 41 L255 47 L262 53" fill="none" stroke="var(--mp-chart-line)" stroke-width="2"/>
+              <line x1="0" y1="50" x2="300" y2="50" stroke="var(--mp-alert)" stroke-width="1.5" stroke-dasharray="5 4"/>
+            </svg>
+            <span class="horizon" style="left:87.33%;width:12.67%"><span>PAUSE</span></span>
+            <span class="chartdot" style="left:75.33%;top:21.67%"></span>
+            <span class="chartlbl c-hold st-chip" style="left:60%;top:50%">HOLD</span>
+            <span class="chartlbl c-add st-chip" style="left:33.33%;top:60%">ADD</span>
+            <span class="chartdot" style="left:87.33%;top:44.17%"></span>
+            <span class="chartlbl alert-t" style="left:20%;top:41.67%">your 8% alert</span>
+          </div>
+          <div class="axis" aria-hidden="true"><span style="left:6%">Nov</span><span style="left:30%">Feb</span><span style="left:55%">May</span><span style="left:78%">Aug</span><span style="left:94%">Oct</span></div>
+          <div class="group">
+            <div class="row"><span class="grow"><b>Stance</b><small>Keep what you have; delay new money until the next review</small></span><span class="st-chip c-pause">PAUSE · 64%</span></div>
+            <div class="row"><span class="grow"><b>Privacy mode</b><small>Pounds hidden here and in every card</small></span><span class="st-chip c-neutral">On</span></div>
+          </div>
+        </div>
+        <div class="tabbar" aria-hidden="true">
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Overview</span>
+          <span class="tab on"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Holdings</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>More</span>
+        </div>
+      </div>
+      <figcaption><b>Asha's Mini App · a holding.</b> Privacy mode on; the 8% alert crossed; PAUSE shaded for the next two weeks.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com/audit</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Read-only</p><p class="ptitle">Audit</p></div><div class="filters"><span class="chip">All members</span><span class="chip">All records</span><span class="chip">This week</span></div></div>
+          <div class="group">
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Valuation · update · via screenshot</b><small>You · Fri 23 Oct 20:35 · Balanced: £22,710 → £22,925, source user_screenshot · run 1188</small></span></div>
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Transaction · create · via typed</b><small>You · Fri 23 Oct 08:14 · none → bought £200 of Balanced, about 10.8 units · run 1171</small></span></div>
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg></span><span class="grow"><b>Member · create · via button</b><small>Asha · Thu 22 Oct 18:20 · joined by invite as a member · run 1140</small></span></div>
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg></span><span class="grow"><b>Invite · create · via typed</b><small>You · Thu 22 Oct 18:02 · role member, single use, 24 hours · run 1139</small></span></div>
+          </div>
+          <p class="muted small">Newest first. Each row shows before and after and links to the run that made it. The chain of hashes is checked weekly.</p>
+        </div>
+      </div>
+      <figcaption><b>Browser · Audit.</b> Every change, who made it, through what, and the run behind it.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com/activity</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Read-only</p><p class="ptitle">Activity</p></div><div class="filters"><span class="chip">Today</span></div></div>
+          <div class="cols even">
+            <div class="panel">
+              <h4>Runs today</h4>
+              <div class="logrow"><b>08:14</b><span><b>agent</b> · message · Sonnet, 1 call · propose_change 42 ms · $0.02 · ok</span></div>
+              <div class="logrow"><b>07:15</b><span><b>brief</b> · schedule:brief · Sonnet, 2 calls · 6,120 in, 840 out, 4,900 cached · $0.03 · sent 3 · ok</span></div>
+              <div class="logrow"><b>07:10</b><span><b>engine</b> · schedule:engine · no model calls · 2 holdings scored · ok</span></div>
+              <div class="logrow"><b>07:00</b><span><b>ingest</b> · schedule:ingest · 3 jobs · yfinance 2, Twelve Data 1 · ok</span></div>
+            </div>
+            <div class="panel">
+              <h4>Claude this cycle</h4>
+              <p class="small muted">$41.20 of the $160 ceiling · 26% · normal</p>
+              <div class="meter" role="img" aria-label="26% of the ceiling used"><i style="width:26%"></i><span class="tickmarks"><i style="left:70%"></i><i style="left:85%"></i><i style="left:95%"></i></span></div>
+              <div class="ticks" aria-hidden="true"><span style="left:70%">70</span><span style="left:85%">85</span><span style="left:95%">95%</span></div>
+              <h4>Schedules</h4>
+              <div class="logrow"><b>07:15</b><span>Brief · next tomorrow 07:15</span></div>
+              <div class="logrow"><b>21:15</b><span>Wrap · next tonight</span></div>
+              <h4>Alarms, last 7 days</h4>
+              <p class="small muted">None</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Browser · Activity.</b> What each run did, called and cost, the schedules, and the spend against the ceiling.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only by construction</b><span>The data routes are GET only and the app has no form that posts. Every change goes through the chat.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Checked on every call</b><span>Session, status, epoch and role; tokens never visible to page scripts; a strict Content-Security-Policy.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds hidden here too, with placeholders that stay visible in dark.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Roles</b><span>A member sees the household totals and their own detail; a viewer reads the overview and what members share.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit log, readable</b><span>Filtered by member, record and date; a member sees their own rows and the household's, the owner sees all.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Overview, a holding, Overlap and Scorecard work in the Mini App and in the browser</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit and Activity pages show every change and every run, with what it cost</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>A read-only api Lambda serves each member only what they may see</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>The web app is hosted on its own S3 and CloudFront per environment, with security headers</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-80"><b>MA-80</b><span>The Portfolio card opens the Mini App, and /web sends the laptop address</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-70"><b>MA-70</b><span>Design the browser boards: Overview, a holding, Overlap, Scorecard and the login page</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-71"><b>MA-71</b><span>Design the Audit and Activity pages on both sets of boards</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-101"><b>MA-101</b><span>A new MyPaisa design system, with the dashboard, Mini App and Telegram components prototyped</span></a>
+  </div>
+</section>
+
+<!-- ============ 9. The Admin center ============ -->
+<section class="flow" id="admin" aria-labelledby="h-admin">
+  <div class="flow-h">
+    <span class="flow-n">09</span>
+    <h2 id="h-admin">The Admin center, owner only</h2>
+    <p class="lede">The owner's room, in a browser only. People first: each member's live sessions with the actions that end them. Spend: the Claude ceilings, the AWS cap and where alerts go. Later, the agents' requests for approval. Every action needs a fresh check.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the owner opens the Admin center in a browser</span><span class="chip">Phase 5 (sessions, spend, alerts)</span><span class="chip">Phase 12 (approvals)</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toA" data-lanes="Member (owner) to AWS"><span class="lb">You open the Admin center in your browser. In the Mini App, the More list only says <i>Admin center · Owner only · opens in your browser</i></span><span class="ln"></span></li>
+      <li class="st mv fa toM rev" data-lanes="AWS to Member (owner)"><span class="lb">Any action first asks for a <span class="sg">fresh check</span>: your passkey, or Google again. It lasts five minutes</span><span class="ln"></span></li>
+      <li class="st mv fm toA" data-lanes="Member (owner) to AWS"><span class="lb">You choose Asha, then <b>Sign out everywhere</b></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> calls Cognito's <code>AdminUserGlobalSignOut</code> and raises Asha's session epoch; an <span class="sg">audit row</span> records who, when and why</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Her next request anywhere, Mini App or browser, fails the epoch check</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">Asha's chat gets a plain message that she was signed out</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Pause</b> goes further: <code>AdminDisableUser</code> and the epoch end every session, Telegram and Google alike, and block signing back in. The bot answers one line, the Mini App locks, and only the owner restores it. The owner may pause their own account, after a warning.</span></li>
+      <li class="st mv fm toA" data-lanes="Member (owner) to AWS"><span class="lb"><b>Spend</b>: you move the prod Claude ceiling, behind the same fresh check</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>BudgetSettings</b> in <b>DynamoDB</b> updated with an audit row; the next model call reads it. Lowering it below what is spent moves the bot straight to that step, said before Confirm</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">A Telegram message to you confirms the change; alerts follow your routing to the web app, Telegram and email through <b>SNS</b></span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Phase 12, approvals.</b> An agent's request reaches the admin desk and shows in your Telegram chat and on the Approvals page. Approving needs the <span class="sg">second check</span>: Face ID or the PIN in Telegram, the fresh check in the browser. Deciding in one door updates the other.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the owner sees</h3>
+  <div class="mocks">
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com/admin</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Owner only · browser only</p><p class="ptitle">Admin center</p></div><div class="seg" style="min-width:240px"><span class="on">People</span><span>Spend</span><span>Alerts</span></div></div>
+          <p class="fresh"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Checked with your passkey · 4 minutes left</p>
+          <div class="cols">
+            <div class="panel">
+              <p class="over">People</p>
+              <div class="person"><span class="avatar">Y</span><span class="grow"><b>You</b><small class="muted">Owner · 2 sessions, this browser included</small></span></div>
+              <div class="person on"><span class="avatar">A</span><span class="grow"><b>Asha</b><small class="muted">Member · 3 sessions · 1 not confirmed</small></span></div>
+              <p class="over" style="margin-top:6px">Security log</p>
+              <div class="logrow"><b>19:41</b><span><b>Asha</b> signed in with Google on a new device, not confirmed</span></div>
+              <div class="logrow"><b>18:20</b><span><b>Asha</b> joined by invite</span></div>
+              <div class="logrow"><b>Wed</b><span><b>You</b> registered a passkey</span></div>
+            </div>
+            <div class="panel">
+              <p class="over">Asha's sessions</p>
+              <div class="group inset">
+                <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg></span><span class="grow"><b>Browser · Google</b><small>Windows laptop · today 19:41</small></span><span class="st-chip c-pause">Not confirmed</span></div>
+                <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></span><span class="grow"><b>Mini App · Telegram</b><small>iPhone · active now</small></span></div>
+                <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></span><span class="grow"><b>Browser · Telegram Login</b><small>Mac · 2 days ago</small></span></div>
+              </div>
+              <div class="action"><span class="btn btn-d">Sign out everywhere</span><small>Ends all three sessions at their next request. Asha signs in again on each device.</small></div>
+              <div class="action"><span class="btn btn-d">Pause Asha</span><small>Ends every session, Telegram and Google alike, and blocks signing in until you restore her. The bot answers her with one line.</small></div>
+              <div class="action"><span class="btn btn-t">Unlink Google</span><small>Removes her Google sign-in and logs that account out everywhere.</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>People first.</b> The unconfirmed device on top; each action with its consequence; destructive ones in crimson, never the coral primary.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com/admin/spend</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Owner only</p><p class="ptitle">Spend</p></div><div class="seg" style="min-width:240px"><span>People</span><span class="on">Spend</span><span>Alerts</span></div></div>
+          <div class="cols even">
+            <div class="panel">
+              <h4>Claude</h4>
+              <p class="small muted">The Max 20x plan's $200 monthly credit: $160 for prod and $40 for dev.</p>
+              <div class="spendhead"><b>Prod</b><span>$41.20 of $160 · 26%</span></div>
+              <div class="meter" role="img" aria-label="Prod: 26% of the ceiling"><i style="width:26%"></i><span class="tickmarks"><i style="left:70%"></i><i style="left:85%"></i><i style="left:95%"></i></span></div>
+              <div class="ticks" aria-hidden="true"><span style="left:70%">70</span><span style="left:85%">85</span><span style="left:95%">95%</span></div>
+              <div class="spendhead"><b>Dev</b><span>$6.10 of $40 · 15%</span></div>
+              <div class="meter" role="img" aria-label="Dev: 15% of the ceiling"><i style="width:15%"></i><span class="tickmarks"><i style="left:70%"></i><i style="left:85%"></i><i style="left:95%"></i></span></div>
+              <div class="dl2" style="margin-top:6px"><span>Prod, in pounds</span><span>about £123</span><span>Member share</span><span>60%</span><span>Daily guard</span><span>3 × the daily average</span><span>Calls per run</span><span>8</span><span>Console limit</span><span>$160 · $40</span></div>
+              <span class="btn btn-p">Move the ceiling</span>
+            </div>
+            <div class="panel">
+              <h4>AWS and others</h4>
+              <p class="small muted">Both environments; any paid data feed counts here too.</p>
+              <div class="spendhead"><b>This month</b><span>£3 of £50 · 6%</span></div>
+              <div class="meter" role="img" aria-label="6% of the AWS cap"><i style="width:6%"></i><span class="tickmarks"><i style="left:50%"></i><i style="left:80%"></i></span></div>
+              <div class="ticks" aria-hidden="true"><span style="left:50%">50</span><span style="left:80%">80</span><span class="end" style="left:100%">100%</span></div>
+              <div class="dl2"><span>At 80%</span><span>dev's schedules pause</span><span>At 100%</span><span>dev pauses; prod's back-fills, retraining and challengers pause</span><span>Never stop</span><span>the brief, alerts, the chat</span><span>Backstop</span><span>AWS Budgets at £75, in Terraform</span></div>
+              <p class="small muted">Read daily from Cost Explorer; AWS's own figures lag by up to a day.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <h4>Where alerts go</h4>
+            <div class="scroll"><table class="route-t">
+              <thead><tr><th>Alert</th><th>Web app</th><th>Telegram</th><th>Email (SNS)</th></tr></thead>
+              <tbody>
+                <tr><td>A Claude or AWS step reached; the forecast over the cap</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+                <tr><td>An incident; an approval waiting</td><td>Yes</td><td>Yes</td><td>Critical only</td></tr>
+                <tr><td>A data feed stale; a job failed</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+                <tr><td>Holding alerts</td><td>Members' own</td><td>Members' own</td><td>No</td></tr>
+              </tbody>
+            </table></div>
+            <p class="small muted">Email goes through the SNS topic <code>mypaisa-prod-admin-alerts</code> and carries system alerts only. Each channel has quiet hours a critical alert may break through, every alert a cooldown, and non-urgent ones can wait for a daily digest.</p>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Spend.</b> Dollars for Claude, as the credit and the Console are, with pounds beside them; the AWS cap in pounds.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot · your admin chat</span></span></div>
+        <div class="chat">
+          <span class="svc">Phase 12</span>
+          <div class="msg"><div class="bub">
+            <p><small>Data steward asks</small></p>
+            <p>yfinance has not returned Balanced for 3 days; Twelve Data does not list it. EODHD's free key returns its history back to 2019.</p>
+            <p><b>Switch on EODHD Historian at £19.99 a month?</b></p>
+            <p><small>AWS and others: £3 of £50 used this month.<br>Undo: switch it off; nothing else changes.</small></p>
+            <span class="t">09:30</span></div>
+            <div class="ibs"><span class="ib">Approve</span><span class="ib">Reject</span><span class="ib">Why?</span><span class="ib">Later</span></div>
+          </div>
+          <span class="svc">Approve opens the second check</span>
+        </div>
+      </div>
+      <figcaption><b>An approval.</b> What changes, why, the cost and the budget left, the undo.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot · Asha's chat</span></span></div>
+        <div class="chat">
+          <div class="msg"><div class="bub"><p>You have been signed out of MyPaisa everywhere. Open it again to sign in.</p><span class="t">19:46</span></div></div>
+          <span class="svc">If the owner pauses her instead</span>
+          <div class="msg out"><div class="bub">Portfolio<span class="t">19:50</span></div></div>
+          <div class="msg"><div class="bub"><p>Your MyPaisa account is paused. Only the household's owner can restore it.</p><span class="t">19:50</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>The member's side.</b> A plain message; when paused, one line and no buttons.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Owner only, browser only</b><span>Members and viewers never see it; it does not open in the Mini App.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><div><b>The fresh check</b><span>A passkey or Google again, valid five minutes, before any action.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Consequences in plain words</b><span>Each action says what it does; destructive ones use the crimson on its tint.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>Every sign-out, pause, restore, unlink and ceiling change is a row; a ceiling change also messages you in Telegram.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Bounded ceilings</b><span>From $10 to the Console's hard limit; past the plan's credit only with an explicit yes. The app holds no Console admin key.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>Approvals need the second check</b><span>Rejected requests are not proposed again for the period their setting names.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>The owner can sign out any member's Telegram or browser session from the Admin center</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-116"><b>MA-116</b><span>The owner moves the Claude ceiling up or down in the Admin center</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>The admin sets the AWS and Claude caps and their thresholds, and alerts reach the web app, Telegram and email</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-113"><b>MA-113</b><span>Every Claude call is metered and nothing runs past the monthly ceiling</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-130"><b>MA-130</b><span>E2: an admin desk in Telegram and the Admin center where agents ask and seek approval (phase 12)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-136"><b>MA-136</b><span>E8: each agent has its share of the $200 Claude credit (phase 12)</span></a>
+  </div>
+</section>
+
+<!-- ============ 10. When something fails ============ -->
+<section class="flow" id="failure" aria-labelledby="h-failure">
+  <div class="flow-h">
+    <span class="flow-n">10</span>
+    <h2 id="h-failure">When something fails</h2>
+    <p class="lede">Every hand-off goes through an SQS queue. A bad minute at Telegram, at the Anthropic API or at a data source costs a delay, never a message or a day's work. What keeps failing waits in a dead-letter queue until someone, or later the ops warden, replays it.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a timeout, an error or a bad deploy anywhere on a path</span><span class="chip">Phase 1 (queues)</span><span class="chip">Phase 5 ([Replay])</span><span class="chip">Phase 12 (ops warden)</span></div>
+  </div>
+
+  <h3 class="blk">The three queues</h3>
+  <div class="queues">
+    <div class="queue"><h4><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg>mypaisa-&lt;env&gt;-updates.fifo</h4><dl><dt>Carries</dt><dd>Every Telegram update the webhook accepts</dd><dt>Lanes</dt><dd>One per member's chat; <code>update_id</code> dedupes</dd><dt>Consumer</dt><dd>agent λ</dd><dt>Tries</dt><dd>3 within about a minute, then its dead-letter queue, and the member is told it was kept</dd></dl></div>
+    <div class="queue"><h4><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg>mypaisa-&lt;env&gt;-outbox.fifo</h4><dl><dt>Carries</dt><dd>Every message, photo and edit the bot sends</dd><dt>Lanes</dt><dd>One per chat, so a brief's messages arrive in order</dd><dt>Consumer</dt><dd>sender λ</dd><dt>Tries</dt><dd>5, honouring Telegram's <code>retry_after</code>, then its dead-letter queue</dd></dl></div>
+    <div class="queue"><h4><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg>mypaisa-&lt;env&gt;-work</h4><dl><dt>Carries</dt><dd>Each ingest, news feed, document read, the engine, each brief, scoring</dd><dt>Lanes</dt><dd>None needed</dd><dt>Consumer</dt><dd>worker λ, running each job by its type</dd><dt>Tries</dt><dd>5, backoff from 30 seconds to 30 minutes, then its dead-letter queue</dd></dl></div>
+  </div>
+  <div class="retry" style="margin-top:12px">
+    <p class="over">A job on the work queue</p>
+    <div class="tries" role="img" aria-label="Five tries with growing waits, then the dead-letter queue">
+      <span class="try">1</span><span class="wait w1"></span><span class="try">2</span><span class="wait w2"></span><span class="try">3</span><span class="wait w3"></span><span class="try">4</span><span class="wait w4"></span><span class="try">5</span><span class="wait w5"></span><span class="try dlq">DLQ</span>
+    </div>
+    <div class="trylbl"><span>First wait about 30 seconds</span><span>The longest about 30 minutes</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fa toE" data-lanes="AWS to External data"><span class="lb"><b>worker λ</b>'s ingest job for one holding calls a source, which times out</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The message returns to the <b>SQS work</b> queue after a growing wait: <span class="sg">five tries with backoff</span>. Meanwhile the chain falls through, and the brief goes out labelled stale</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">After the fifth try it moves to the <span class="sg">dead-letter queue</span>: kept 14 days, with a copy in <b>S3</b> under <code>raw/dlq/</code> for good</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">A <b>CloudWatch</b> alarm fires the moment the dead-letter queue holds anything; the alert router sends <i>failed work</i></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">Your Telegram chat and the Admin center's Alerts page show it, with <b>[Replay]</b></span><span class="ln"></span></li>
+      <li class="st mv fm toA" data-lanes="Member (owner) to AWS"><span class="lb">You tap <b>Replay</b> once the cause is fixed</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The messages move back to their queue. Handlers are <span class="sg">idempotent</span>, keyed by update id, message id, or job id and date, so nothing runs twice</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Replay, by phase.</b> Phase 1: <code>scripts/redrive.sh &lt;queue&gt;</code>. Phase 5: the [Replay] button on the alert. Phase 12: the ops warden replays on its own once the cause is healthy, at most three times per message with growing gaps; failing the same way again opens an incident.</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">A member's update that fails three times within about a minute goes to the updates dead-letter queue, and the member is told it was kept</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">Replayed after more than an hour, an update is answered <i>still want this?</i> rather than acted on</span><span class="ln"></span></li>
+      <li class="st mv fm toA" data-lanes="Member to AWS"><span class="lb">A Confirm tap whose PendingAction has expired is <span class="sg">refused</span>, so an old tap never saves a change by surprise</span><span class="ln"></span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the members see</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot · your admin chat</span></span></div>
+        <div class="chat">
+          <div class="msg"><div class="bub">
+            <h5>Failed work · prod</h5>
+            <p>One job is in the work queue's dead-letter queue.</p>
+            <div class="kv wrap"><span>Job</span><span>ingest, NASDAQ 100 ETF</span><span>Tried</span><span>5 times</span><span>Last error</span><span>timeout at the source</span></div>
+            <p><small>The brief went out with that price marked stale.</small></p>
+            <span class="t">07:52</span></div>
+            <div class="ibs c1"><span class="ib">Replay</span></div>
+          </div>
+          <div class="msg out"><div class="bub">Replay<span class="t">08:30</span></div></div>
+          <div class="msg"><div class="bub"><p class="ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Replayed 1 job. It ran: the NASDAQ 100 ETF is priced.</p><span class="t">08:31</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>The owner's failed-work alert.</b> Phase 5 adds the Replay button.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot · Asha's chat</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">I put £100 into Balanced<span class="t">09:12</span></div></div>
+          <div class="msg"><div class="bub"><p>I could not handle that just now. It is kept, and I will come back to it.</p><span class="t">09:13</span></div></div>
+          <span class="svc">Replayed at 10:40</span>
+          <div class="msg"><div class="bub"><p>You sent this at 09:12, more than an hour ago: <i>I put £100 into Balanced</i>. Still want this?</p><span class="t">10:40</span></div><div class="ibs"><span class="ib">Yes, go ahead</span><span class="ib">No, drop it</span></div></div>
+          <span class="svc">A Confirm tapped the next day</span>
+          <div class="msg"><div class="bub"><p>That Confirm has expired, so nothing was saved. Log it again if you still want it.</p><span class="t">11:05</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>The member's side.</b> Kept, asked again when old, and an expired Confirm refused.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Backoff, not hammering</b><span>Growing waits; the work queue's concurrency keeps the free sources inside their limits; the agent's reserved concurrency keeps Claude spend in bounds.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Idempotent</b><span>Every handler records what it has done, so a retry or a replay never does anything twice.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Fail fast on the hopeless</b><span>A malformed update, an unknown chat or an instrument with no source goes straight to the dead-letter queue with its reason.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>Never silent</b><span>An alarm the moment a dead-letter queue holds anything; the brief, the wrap and alerts are always attempted.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><div><b>Old taps are not trusted</b><span>Over an hour old: "still want this?". An expired Confirm: refused.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Bounded self-repair</b><span>The ops warden replays at most three times, then raises an incident with the errors attached.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-139"><b>MA-139</b><span>Each member's messages travel through ordered queues, in and out, are retried with backoff and are never lost</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue that alerts and can be replayed</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>Alerts reach the web app, Telegram and email; "failed work" carries a [Replay] button</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-135"><b>MA-135</b><span>E7: an ops warden repairs what it safely can and opens an incident when it cannot (phase 12)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-61"><b>MA-61</b><span>A dead man's switch and the error alarms tell the chat when a job did not run</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-29"><b>MA-29</b><span>Every Lambda run leaves a RunRecord, logs, traces and an error alarm</span></a>
+  </div>
+</section>
+
+<!-- ============ 11. The spend ladder ============ -->
+<section class="flow" id="ladder" aria-labelledby="h-ladder">
+  <div class="flow-h">
+    <span class="flow-n">11</span>
+    <h2 id="h-ladder">The Claude spend ladder in practice</h2>
+    <p class="lede">The agents' allowance is the Max 20x plan's $200 monthly credit: $160 for prod and $40 for dev, each a ceiling the owner moves. As the month's spend climbs, the bot steps down to cheaper ways of working before it stops. Alerts always go out.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> every model call reads the meter first</span><span class="chip">Phase 1 (meter, 100% stop)</span><span class="chip">Phase 3 (the lower steps)</span></div>
+  </div>
+
+  <h3 class="blk">The steps</h3>
+  <div class="spendbar">
+    <div class="spendhead"><b>Prod, this cycle (illustrative)</b><span>$41.20 of $160 · 26%</span></div>
+    <div class="meter" role="img" aria-label="26% of the prod ceiling"><i style="width:26%"></i><span class="tickmarks"><i style="left:70%"></i><i style="left:85%"></i><i style="left:95%"></i></span></div>
+    <div class="ticks" aria-hidden="true"><span style="left:70%">70</span><span style="left:85%">85</span><span style="left:95%">95%</span></div>
+  </div>
+  <div class="ladder">
+    <div class="rung"><b>&lt; 70%</b><h4>Normal</h4><ul><li>Sonnet for chat and cards, Opus for the Saturday review</li><li>The bull and bear debate above 70% confidence</li><li>Why? with web search</li></ul></div>
+    <div class="rung"><b>70%</b><h4>A heads-up</h4><ul><li>One message to the owner: what is spent, on what, and the days left</li><li>Nothing changes</li></ul></div>
+    <div class="rung"><b>85%</b><h4>Savers</h4><ul><li>The debate is skipped</li><li>The Saturday review runs on Sonnet instead of Opus</li><li>Why? gets three searches a day</li><li>Nightly sentiment scoring pauses; stances keep the last index</li></ul></div>
+    <div class="rung"><b>95%</b><h4>Essentials only</h4><ul><li>Chat answers on Haiku</li><li>The brief, the wrap and alerts go out as plain templates with the engine's numbers</li><li>Reading a factsheet or screenshot still works</li></ul></div>
+    <div class="rung stop"><b>100%</b><h4>Templates only</h4><ul><li>Claude stops until the cycle renews or the owner raises the ceiling</li><li>Every card goes out as its plain template; buttons and guided flows work</li><li>A typed message gets one line saying when free text is back</li></ul></div>
+  </div>
+  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><span><b>Alerts are never dropped at any step:</b> a template needs no model. Raising the ceiling moves the bot back up the ladder at the next call.</span></p>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box">Before every model call, <b>agent λ</b> reads this cycle's <b>SpendMonth</b> row in <b>DynamoDB</b>: one item</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">step</span> decides whether and how the call is made: which model, whether to debate, how many searches. The guards per member, per day and per run apply on top</span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The call, if the step allows it</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The API's own usage counts: input, output and thinking, cache writes and reads, web searches</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The cost, from the price table, added atomically to SpendMonth by member, feature, agent, model and day, and written on the <b>RunRecord</b></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">At 70, 85, 95 and 100%: a message to the owner, through the alert router to the web app, Telegram and email (<b>SNS</b>)</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Behind the meter.</b> Each Claude Console workspace has its spend limit set by hand to the hard limit ($160 prod, $40 dev) and stops the key outright if the meter is ever wrong. Behind that, the credit itself: no payment method, auto-reload off. The meter is reconciled weekly against the Console.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">The guards under the ladder</h3>
+  <dl class="facts">
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Per member</dt><dd>No member spends more than 60% of the ceiling; past it, that member's chat runs at the 95% step for the rest of the cycle.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>Per day</dt><dd>No day spends more than three times the cycle's daily average, about $16 at a $160 ceiling; past it, the rest of the day runs at the 95% step.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg>Per run</dt><dd>At most eight model calls in one run; a loop that reaches it stops and says so.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Per agent (phase 12)</dt><dd>Each agent has its share of the ceiling, the concierge 55%; past it, that agent drops to its 95% step and the reserve covers the chat first.</dd></div>
+  </dl>
+
+  <h3 class="blk">What the members see</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot · your admin chat</span></span></div>
+        <div class="chat">
+          <span class="svc">At 85%</span>
+          <div class="msg"><div class="bub">
+            <h5>Claude spend: 85% of $160</h5>
+            <p>$136 spent this cycle, mostly the chat and the briefs. 9 days left.</p>
+            <p>Savers are on: no bull and bear debate, the Saturday review on Sonnet, three Why? searches a day, sentiment scoring paused.</p>
+            <p><small>Move the ceiling in the Admin center, behind the fresh check.</small></p>
+            <span class="t">14:02</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>85%.</b> The owner is told what changed.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">At 95%: the plain template</span>
+          <div class="msg"><div class="bub">
+            <h5>Morning brief · Mon 26 Oct</h5>
+            <p><b>You</b> · £24,110 · <span class="up">▲ 0.4%</span> on Friday</p>
+            <div class="kv"><span>Balanced (Monzo)</span><span>£22,925 <span class="up">▲ 0.6%</span></span><span>Cash (Monzo pot)</span><span>£1,185 flat</span></div>
+            <p><b>Asha</b> · NASDAQ 100 ETF <span class="dq">▼ 1.2%</span> on Friday</p>
+            <p class="ok">Nothing to do this week.</p>
+            <span class="t">07:15</span></div>
+            <div class="ibs"><span class="ib">Today</span><span class="ib">Technical ▾</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>95%.</b> The same numbers from the engine, the words from the template.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">At 100%</span>
+          <div class="msg out"><div class="bub">Why did the NASDAQ fund drop?<span class="t">19:20</span></div></div>
+          <div class="msg"><div class="bub"><p>Free text is back on 1 Nov, when the plan's credit renews. The buttons and the cards still work.</p><span class="t">19:20</span></div></div>
+        </div>
+        <div class="rkb" aria-hidden="true"><span class="rk">Portfolio</span><span class="rk">Today</span><span class="rk">Ask</span><span class="rk">Settings</span></div>
+      </div>
+      <figcaption><b>100%.</b> One line; everything with a button keeps working. The renewal date is illustrative.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-113"><b>MA-113</b><span>Every Claude call is metered and nothing runs past the monthly ceiling</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-114"><b>MA-114</b><span>As spend nears the ceiling, the bot steps down to cheaper ways of working before it stops</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-116"><b>MA-116</b><span>The owner moves the Claude ceiling up or down in the Admin center</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>The admin sets the caps and their alert thresholds; alerts reach the web app, Telegram and email</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-136"><b>MA-136</b><span>E8: each agent has its share of the $200 Claude credit (phase 12)</span></a>
+  </div>
+</section>
+
+<!-- ============ 12. The first of the month ============ -->
+<section class="flow" id="monthly" aria-labelledby="h-monthly">
+  <div class="flow-h">
+    <span class="flow-n">12</span>
+    <h2 id="h-monthly">The first-of-the-month contribution prompt</h2>
+    <p class="lede">On the first of the month the bot asks, on its own account, whether the usual contribution went in. Later, the Forecaster's risk-steered split sits beside the rules engine's on the same prompt.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the first of the month</span><span class="chip">Phase 1 (the prompt)</span><span class="chip">Phase 11 (the steered split)</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>EventBridge Scheduler</b> on the 1st puts the job on the <b>SQS work</b> queue; the agent asks each member whose usual contribution is due</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb"><code>ask_user</code>: did your usual £200 go into Balanced? With buttons; a <b>PendingAction</b> waits up to a day</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You tap <i>Yes, £200 as usual</i></span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">The tap resumes the flow from the PendingAction; code works out the units</span><span class="ln"></span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The Confirm card</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb"><span class="sg">Confirm</span>, then the <span class="sg">second check</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> saved with its <span class="sg">audit row</span>; the card edits in place</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Later, phase 11 (F7).</b> The prompt carries two suggested splits: the rules engine's, from each holding's stance, and the Forecaster's, steered by risk. Contributions always continue; new money tilts away from holdings in a stressed or falling mood or with a high chance of a deep fall; rebalancing stays within bands and a drawdown budget the owner sets. It never says sell everything, stays ISA-safe, and only suggests.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">The Forecaster's split appears here only after 8 live weeks beating both the base rate and the rules engine; until then it is in the Saturday review, labelled "in practice". It switches itself off when its record slips.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the members see</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">1 November</span>
+          <div class="msg"><div class="bub"><p>It is the 1st. Did your usual <b>£200</b> go into Balanced?</p><span class="t">09:00</span></div><div class="ibs c1"><span class="ib">Yes, £200 as usual</span></div><div class="ibs"><span class="ib">A different amount</span><span class="ib">Not this month</span></div></div>
+          <div class="msg out"><div class="bub">Yes, £200 as usual<span class="t">09:41</span></div></div>
+          <div class="msg"><div class="bub"><p>Bought <b>£200</b> of Balanced (Monzo) on 1 Nov · about 10.8 units at NAV 18.57</p><div class="hr"></div><p class="ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Saved · confirmed with Face ID</p><span class="t">09:42</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>Today.</b> Asked, confirmed, checked, saved.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot · Asha's chat</span></span></div>
+        <div class="chat">
+          <span class="svc">Later: phase 11</span>
+          <div class="msg"><div class="bub">
+            <p>It is the 1st. Your usual <b>£200</b> goes £100 to Balanced and £100 to the NASDAQ 100 ETF. This month:</p>
+            <div class="split" style="margin-top:6px">
+              <div class="eng"><b>Rules engine</b><small>Balanced <span class="st-chip c-hold">HOLD</span> £200 · NASDAQ 100 ETF <span class="st-chip c-pause">PAUSE</span> £0 until the next review</small></div>
+              <div class="eng"><b>Forecaster</b><small>Balanced £150 · NASDAQ 100 ETF £50 · mood stressed since 3 Oct; chance of a 5% fall 21% (usually 12%)</small></div>
+            </div>
+            <p>The two engines differ on the NASDAQ 100 ETF. Either way the £200 goes in.</p>
+            <span class="t">09:00</span></div>
+            <div class="ibs"><span class="ib">Rules engine's</span><span class="ib">Forecaster's</span><span class="ib">My usual split</span><span class="ib">Not this month</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Later.</b> Both engines side by side, the disagreement said out loud; Confirm and the second check follow.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Asked, never assumed</b><span>Nothing is logged until the member answers; a day of silence clears the question.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm, check, audit</b><span>The same write path as every change: a card, Confirm, the second check, an audit row.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Suggestions only</b><span>The bot cannot trade. The split moves new money, never the holdings, and never says sell everything.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A forecaster that has to earn it</b><span>8 live weeks beating the base rate and the rules engine before it is shown; off again when its record slips.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-38"><b>MA-38</b><span>"I put £200 into Balanced" becomes a transaction after Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>Telegram sessions need a second check</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-124"><b>MA-124</b><span>F6: the Forecaster's view appears beside the rules engine in Telegram and the web app</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-125"><b>MA-125</b><span>F7: monthly money and rebalancing are steered by risk to cut deep falls while growing steadily</span></a>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="foot">
+  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.2, §4.5, §4.6, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20 and §21; <code>PLAN.md</code> phases 0 to 12; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center and the Telegram second check.</p>
+  <p><b>Look.</b> MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102. Telegram draws its own chrome; MyPaisa owns the words, their order, the buttons and the PNG images.</p>
+  <p><b>Status.</b> Design only; nothing is built. Every figure, date, time and wording in the mocks is illustrative.</p>
+</footer>
+
+</div>
+</div>
+
+<script>
+(function () {
+  var b = document.getElementById('themeBtn');
+  if (!b) return;
+  var root = document.documentElement;
+  function current() {
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  function label() {
+    var next = current() === 'dark' ? 'light' : 'dark';
+    b.textContent = next === 'dark' ? 'Dark' : 'Light';
+    b.setAttribute('aria-label', 'Switch to the ' + next + ' theme');
+  }
+  try { var s = localStorage.getItem('mpj-theme'); if (s === 'light' || s === 'dark') root.setAttribute('data-theme', s); } catch (e) {}
+  label();
+  b.addEventListener('click', function () {
+    var next = current() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('mpj-theme', next); } catch (e) {}
+    label();
+  });
+  if (window.matchMedia) {
+    try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', label); } catch (e) {}
+  }
+})();
+</script>
