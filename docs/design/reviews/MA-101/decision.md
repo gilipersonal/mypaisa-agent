@@ -122,4 +122,12 @@ opens without dimming Telegram's header, and the tabs keep their place.
 
 ## The pick
 
-Pending: Arun to choose 1a, 1b, 1c or "none of these". Recorded here and on MA-101 when made.
+**1a, Warm ledger.** Arun, 24 Oct 2026: "I will go with Concept design 1, make the update in Claude Design
+and then also make the new screens for Admin and Authentication of Telegram as discussed."
+
+MyPaisa DS v1 is now the design system in force (`.claude/skills/design-first/SKILL.md`). The screens in the
+MyPaisa app v1 project are the web app's spec; the Nocturne artboards in `docs/design/dashboard/` are
+superseded (`docs/design/README.md`). 1b and 1c stay on the directions page as the record. The Admin center
+and the Telegram sign-in screens are designed in this system under MA-102.
+
+Screenshots of the three directions as they were when picked: `options/`.

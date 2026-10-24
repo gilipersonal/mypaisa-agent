@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks for a change to how MyPaisa looks or flows, on the web app (web/, one spec in docs/design/dashboard/ with Mini App boards for Telegram and browser boards for the laptop), the Telegram cards, buttons and guided flows, the chat's PNG charts, the design pages (architecture, journeys) or the mark; such as a new page or card, a redesign, or a change to layout, flow, visuals, copy hierarchy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps) in Claude Design (the MyPaisa DS and MyPaisa app projects), keeping the record in docs/design/reviews/MA-<n>/; review every page for glitches in light and dark at every size class; and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks for a change to how MyPaisa looks or flows, on the web app (web/, one spec in the MyPaisa app v1 Claude Design project with Mini App boards for Telegram and browser boards for the laptop), the Telegram cards, buttons and guided flows, the chat's PNG charts, the design pages (architecture, journeys) or the mark; such as a new page or card, a redesign, or a change to layout, flow, visuals, copy hierarchy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps) in Claude Design (the MyPaisa DS and MyPaisa app projects), keeping the record in docs/design/reviews/MA-<n>/; review every page for glitches in light and dark at every size class; and build only the option Arun picks.
 ---
 
 # Design first
@@ -30,10 +30,10 @@ with one obvious fix. When unsure whether something is a design change, treat it
   - `ARCHITECTURE.md`: the four rules (§1), the Telegram front end (§9: navigation, the example cards, guided
     flows) and the web app (§9.3);
   - `PLAN.md`, the phase the surface belongs to (phase 5 for the web app);
-  - `docs/design/README.md` and the surface's existing design: for the web app, the one spec in
-    `docs/design/dashboard/` with its Mini App boards (`Main`, `Holding`, `Overlap`, `Scorecard`, `Light` `.dc.html`,
-    laid out by `canvas.json`) and its browser boards once drawn; `journeys.html` for the chat; `architecture.html` for
-    the explainer;
+  - `docs/design/README.md` and the surface's existing design: for the web app, the one spec in the MyPaisa app v1
+    Claude Design project (Mini App, Browser, Browser 2, Responsive, Prototype; the Nocturne artboards in
+    `docs/design/dashboard/` are superseded); Telegram chats there and `journeys.html` for the chat; `architecture.html`
+    for the explainer;
   - earlier reviews for the same surface in `docs/design/reviews/`.
 - Capture how the screens involved look now into `docs/design/reviews/MA-<n>/current/`:
   - once `web/` exists, serve it (`python3 -m http.server 8000 --directory web`, the origin Google sign-in allows)
@@ -63,10 +63,10 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 
 - **Precedence.**
   1. Arun's words.
-  2. `ARCHITECTURE.md` and `PLAN.md`, then the boards in `docs/design/dashboard/`, the web app's one spec.
-  3. The design system in force: **MyPaisa DS v1** ("Warm ledger", `tokens.css` in the MyPaisa DS v1 Claude Design
-     project, a copy in `docs/design/reviews/MA-101/`) once Arun picks it on MA-101; until then the Nocturne look the
-     artboards use (ink `#161826`, surfaces `#232532`, violet `#b5abfc`, Inter).
+  2. `ARCHITECTURE.md` and `PLAN.md`, then the boards in the MyPaisa app v1 Claude Design project, the web app's one spec.
+  3. The design system in force: **MyPaisa DS v1** ("Warm ledger", picked by Arun on 24 Oct 2026, MA-101): `tokens.css`
+     in the MyPaisa DS v1 Claude Design project, a copy in `docs/design/reviews/MA-101/`. Its boards in the MyPaisa
+     app v1 project are the spec; the older Nocturne artboards in `docs/design/dashboard/` are superseded.
   4. impeccable.
   5. The other skills.
 
@@ -149,8 +149,8 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 
 - **When.** Only after Arun picks an option in the current request. Build that option only.
 - **How.** On the same branch:
-  1. Update the spec first when the pick changes it: both sets of boards in `docs/design/dashboard/`, or the example cards
-     in `ARCHITECTURE.md` §9.2. Republishing the live dashboard artifact is Arun's call; ask.
+  1. Update the spec first when the pick changes it: both sets of boards in the MyPaisa app v1 Claude Design project,
+     or the example cards in `ARCHITECTURE.md` §9.2. Republishing the live dashboard artifact is Arun's call; ask.
   2. Build with impeccable, comp-led when the pick includes an approved comp: `web/` for the web app,
      `telegram.py` and `cards/` for the chat, the house chart style for charts.
   3. Run the gates in `.claude/jira-flow.json` (none until `pyproject.toml` lands; then

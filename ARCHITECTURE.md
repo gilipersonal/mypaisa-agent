@@ -691,8 +691,8 @@ Bot:  Bought £200 of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.5
 
 ### 9.3 The web app: on a laptop and inside Telegram
 
-One static app (the wealth tracker's Nocturne look, lightweight-charts),
-built from the one design spec in `docs/design/dashboard/`, which has a set
+One static app (MyPaisa DS v1, "Warm ledger", picked on MA-101; lightweight-charts),
+built from the one design spec in Claude Design (`docs/design/README.md`), which has a set
 of boards for each door (Mini App boards for the phone, browser boards for the
 laptop; `docs/design/README.md`). It has two front doors to the same pages:
 
@@ -936,4 +936,4 @@ since data feeds are shared but model calls are not.
 - A Google OAuth client id per environment, created in the Google Cloud Console with the app's hostname as an authorised JavaScript origin; the consent screen needs only the basic profile and email scopes, so no Google verification review applies.
 - The Telegram Login Widget needs the app's domain set with `/setdomain` in BotFather; confirm the CloudFront default hostname is accepted (it is a plain hostname, so it should be), or whether a custom domain is wanted.
 - Whether the CloudFront free flat-rate plan covers a second distribution in the account; if not, the web app goes under a path on the tracker's distribution with its own cache behaviours.
-- For §12: which members report in INR; whether the redesigned screens are a new Claude Design project in Nocturne or evolve the tracker's design; and whether the old tracker's domain and distribution pass to the new app or are retired. Decisions for phase 9, not now.
+- For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and whether the old tracker's domain and distribution pass to the new app or are retired. Decisions for phase 9, not now.

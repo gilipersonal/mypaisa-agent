@@ -214,7 +214,7 @@ browser, as `ARCHITECTURE.md` §9.3.
   boards (the five phone artboards: Overview, a holding, Overlap, Scorecard,
   the light theme) and the browser boards (the same pages in two columns at
   laptop width, and the login page), as `docs/design/README.md` describes;
-  the Nocturne look, lightweight-charts.
+  the MyPaisa DS v1 "Warm ledger" look (MA-101), lightweight-charts.
 - Two new pages: **Audit** (the §4.6 log, filtered by member, record and
   date, before and after, a link to the run) and **Activity** (the §10 runs
   with their model calls, tokens, cost, tools and outcome; the schedule
@@ -335,7 +335,7 @@ shipping read-only pages over data the bot already maintains:
    split, the daily `NetWorth` series, the maturity timeline.
 3. **Screens, redesigned.** Overview, Assets and one asset, Debts and one
    loan, on the web app and in the Mini App, from a new design in the
-   Nocturne system; the Portfolio card grows into the overview.
+   MyPaisa DS v1 system; the Portfolio card grows into the overview.
 4. **Forecast and budget.** `ForecastAssumptions` and `Budget` with their
    flows ("assume 5% on property", "my salary is now …"); the thirty-year
    projection; the Budget and Forecast screens.

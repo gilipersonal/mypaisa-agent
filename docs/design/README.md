@@ -22,7 +22,7 @@ Decided on 2026-10-23 (MA-6). The web app is one static app in `web/` with two
 front doors to the same pages (`ARCHITECTURE.md` §9.3): the **Mini App**, opened
 from the chat inside Telegram, and the **browser**, the same app at its own
 address on a laptop. It has one design spec, `dashboard/`, not a design doc per
-door. The pages, the figures, the cards, the Nocturne look and the read-only
+door. The pages, the figures, the cards, the look and the read-only
 rule are shared; only the layout and the frame around it differ, so each door
 gets its own set of boards in the same spec:
 
@@ -34,6 +34,13 @@ gets its own set of boards in the same spec:
 | Theme | Telegram's `colorScheme` and `themeParams` | the system's light or dark setting |
 | Sign-in | none to design: Telegram signs `initData` | the login page: Telegram Login Widget and Sign in with Google |
 | Also | safe-area insets, expand to full height, an optional `MainButton` | hover, keyboard focus, wider tables for Audit and Activity |
+
+**The look is MyPaisa DS v1, "Warm ledger"** (Arun picked it on 2026-10-24,
+MA-101; `reviews/MA-101/decision.md`). Its `tokens.css` lives in the MyPaisa DS
+v1 project in Claude Design, with a copy in `reviews/MA-101/`. The boards drawn
+in it, Mini App and browser, live in the MyPaisa app v1 project in Claude Design
+and are now the spec; the Nocturne artboards in `dashboard/` are kept as the
+earlier record and superseded by them.
 
 A page changed on one set of boards is changed on the other in the same design
 round, so the two doors never drift. Name the boards by door and page
