@@ -32,7 +32,7 @@ Status: planning. Nothing is built.
 | Task | Owner |
 | --- | --- |
 | Create two bots with BotFather, one for dev and the household's for prod; each token into its own SSM path (`/mypaisa-agent/dev/telegram/bot_token`, `/mypaisa-agent/prod/telegram/bot_token`); the picture with `/setuserpic` from `docs/mark-1024.png` on both | You |
-| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of £35 and £10, and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
+| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of $100 and $10 (prod's is the hard limit behind the Claude ceiling, `ARCHITECTURE.md` §15.1), and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
 | Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD waits for phase 2 and is taken only if the London closes prove unreliable in the first weeks | Decided |
 | Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key` and `/mypaisa-agent/prod/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
@@ -105,6 +105,13 @@ What you hold, recorded through the chat, with no analysis yet.
   names, ISINs and factsheets you supply, never your balances), with
   members, accounts, holdings, a year of transactions and valuations; one
   command wipes and reseeds dev, and it refuses to run against prod.
+- The Claude meter and ceiling (MA-113, `ARCHITECTURE.md` §15.1): every
+  model call costed from the API's usage counts into the cycle's
+  `SpendMonth` row; `BudgetSettings` seeded at $100 in prod and $10 in dev;
+  no call past 100% of the ceiling, the card going out as its template; the
+  guards per member (60%), per day (three times the daily average) and per
+  run (eight model calls); a message to the owner at 70% and 100%. Needed
+  here because the `docs` and `agent` Lambdas call Claude from this phase.
 - The release pipeline (MA-107): a merge to `main` builds the Lambdas once,
   deploys dev and runs the smoke tests, then deploys prod after your approval
   behind each Lambda's `live` alias, rolling back on a failed smoke test. The
@@ -116,7 +123,9 @@ use, expiry, wrong household); the isolation rules; the Confirm state
 machine; the guided flows (resume after a day, expiry, skipping fields
 already given, two members mid-flow at once); the custom-auth triggers
 (valid, expired, tampered, replayed, a removed member) and a dev token
-refused by prod; a property test that every
+refused by prod; the meter costing recorded `usage` blocks to the cent, a
+concurrent add, the 100% stop and each guard, and a cycle rolling over on the
+renewal day; a property test that every
 write produces exactly one audit row and the chain verifies; a `RunRecord`
 on success and on failure; schema migration on a v0 item.
 
@@ -196,9 +205,14 @@ Claude starts writing on top of numbers that already work.
 - Alert tiers, cooldowns, weekly red budget, quiet hours, Haiku repeat
   filter; `I acted` and the decision log; dead man's switch and error alarms
   to the chat.
+- The ladder's lower steps (MA-114): at 85% of the ceiling the debate is
+  skipped, the Saturday review drops to Sonnet, "Why?" is limited to three
+  searches a day and sentiment scoring pauses; at 95% chat runs on Haiku and
+  the brief, wrap and alerts go out as templates; alerts are never dropped.
 
 **Tests:** validator catches an invented number; alert state machine with
-frozen time; card rendering from recorded Claude responses; chart snapshot
+frozen time; spend driven through each step of the ladder with frozen time,
+checking which calls are made and on which model; card rendering from recorded Claude responses; chart snapshot
 tests.
 
 **Exit:** two weeks of briefs; no alert fires twice in its cooldown; a
@@ -212,7 +226,14 @@ layman reads the top of a card and understands it without the bottom.
 
 You can ask anything about what you hold.
 
-- The tool loop with strict tools; chat memory; `Ask` keyboard button.
+- The tool loop with strict tools, `tool_choice` always `auto`; `Ask`
+  keyboard button.
+- Chat memory (MA-115, `ARCHITECTURE.md` §8): every message a `ChatTurn` row
+  kept ninety days and never edited; only the current conversation sent; a
+  conversation ends after thirty minutes of silence unless a question is
+  waiting; a new one starts from the cached fixed part (one-hour TTL) and
+  Haiku's one-line notes on recent conversations; past about 50,000 tokens it
+  starts afresh from a summary.
 - Cards: `stance`, `holding-profile`, `overlap-review`, `fund-vs-benchmark`,
   `bear-vs-bull` (two calls and a judge), `scenario`.
 - Anthropic's server-side `web_search` and `web_fetch`, results treated as
@@ -220,7 +241,10 @@ You can ask anything about what you hold.
 - Natural-language preferences with Confirm.
 
 **Tests:** each card against fixtures; scripted conversations on recorded
-responses; the judge never overrides the cascade's action; search results
+responses; the stored history replaying byte for byte; a conversation
+closing at thirty minutes but not while a question waits;
+`cache_read_input_tokens` above zero on the second message; the judge never
+overrides the cascade's action; search results
 containing instructions are not acted on.
 
 **Exit:** ten real questions answered with sources; the overlap review on
@@ -244,7 +268,14 @@ browser, as `ARCHITECTURE.md` §9.3.
   date, before and after, a link to the run) and **Activity** (the §10 runs
   with their model calls, tokens, cost, tools and outcome; the schedule
   board with last and next run and price freshness; this month's spend
-  against the cap; the last seven days of alarms).
+  against the ceiling and the step it is on; the last seven days of alarms).
+- The Admin center's **Spend** section (MA-116), designed first like every
+  screen: this cycle's spend by member, feature and model against the
+  ceiling, the step and the days left; the owner sets the ceiling (from $10
+  to the hard limit), the member share, the renewal day and the hard limit,
+  each behind the fresh check (MA-102), each an audit row and a message to
+  the owner; a ceiling above the hard limit is refused with the steps to
+  raise the Console limit first.
 - The `api` Lambda behind `api(-dev).mypaisapp.com`: GET routes only for
   the household's data, plus the Admin center's owner-only security actions
   behind a fresh check (MA-102); sign-in through the Cognito pool built in
@@ -460,7 +491,7 @@ handler writes its `RunRecord`, both covered by tests.
 | Confidence numbers that are not calibrated | Weekly reliability table; recalibration rule; "no clear view" below 55% |
 | Rich messages behave differently than the write-ups say | HTML fallback on day one |
 | Alert fatigue | Weekly red budget, cooldowns, repeat filter |
-| Cost overrun | Budgets alert and stop; daily token ceiling; `/pause` |
+| Cost overrun | The Claude ceiling's ladder steps down at 85% and 95% and stops at 100%; guards per member, per day and per run; the Console workspace limit as the hard backstop; AWS Budgets for AWS; `/pause` |
 | Prompt injection via news or a PDF | Untrusted text marked; no dangerous tools exist; Confirm on every write |
 | A session cookie stolen from a laptop | `HttpOnly`, `Secure`, `SameSite=Strict`, five-minute access tokens behind it; the data routes are read-only; status and epoch re-checked on every call; the owner signs the member out everywhere or pauses them (MA-102) |
 | A change meant for dev reaches prod | Separate state per environment; the developer role denied on `env=prod`; prod applied only by CI after your approval; the nightly drift check |

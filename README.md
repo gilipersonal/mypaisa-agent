@@ -46,7 +46,7 @@ words. It holds no broker login and cannot trade.
 | The news | RSS from central banks and the financial press | `news` and `score` Lambdas |
 | The dashboard | one read-only web app: a Mini App inside Telegram, and on a laptop at `console.mypaisapp.com`, signed in with Telegram, Google or a passkey, no password | its own S3 + CloudFront per environment, Cognito for sign-in, an `api` Lambda behind API Gateway that can only read |
 | The audit log | every change to the records: who, when, through what, before and after | `AuditEvent` rows in DynamoDB, hash-chained, written with the change; the Audit page and "what changed this week?" |
-| What the agent did | every run: its trigger, model calls, tokens, cost, tools and outcome; the schedule board; spend against the cap | `RunRecord` rows in DynamoDB behind the Activity page; CloudWatch, X-Ray and alarms to the chat |
+| What the agent did | every run: its trigger, model calls, tokens, cost, tools and outcome; the schedule board; Claude spend against the ceiling | `RunRecord` rows in DynamoDB behind the Activity page; CloudWatch, X-Ray and alarms to the chat |
 | The destination | this web app becomes MyPaisa, the household wealth tracker: assets of every kind, debts, budget, a forecast with XIRR, reports, in GBP or INR; read-only; every update through the bot | [gilipersonal/wealth-tracker](https://github.com/gilipersonal/wealth-tracker) is the screen reference until then; phase 9 in `PLAN.md`, later and not a priority |
 
 The first holding is the household's Monzo ISA, a BlackRock MyMap fund. Holdings are a generic model: ETFs, shares,
@@ -114,7 +114,7 @@ they move with Anthropic's releases; the first set is below.
 | Saturday review | Opus 5.5, `anthropic.claude-opus-5-5` | high | The week in context, with the scorecard, the decisions logged and the events ahead. |
 
 **Guardrails on every call:** tools with `strict` schemas and `tool_choice: auto`; adaptive thinking with the effort
-above; the system prompt, tool list and rubric cached; a per-day token ceiling; a refusal or an error falls back to
+above; the system prompt, tool list and rubric cached; the monthly Claude ceiling ($100 in prod, moved in the Admin center) with its ladder and guards; a refusal or an error falls back to
 the plain-template brief, so a message is never missed because of a model. Before anything is sent, every number in
 the text is checked against that turn's tool results; a number with no source fails the message, which is
 regenerated once and then sent as the plain facts. Search results and fetched pages reach the model marked as
@@ -208,7 +208,7 @@ no one.
 On claude.ai, go to Settings → Billing → API credits and link a Claude Console organisation to your Max or Team
 plan (you need 7 days on the plan; the link cannot be moved later without support, so pick the organisation you
 will build in). No payment method is needed: the plan's monthly API credit ($100 on Max 5x) pays for the calls. In
-that organisation create two workspaces, `mypaisa-prod` with a £35 spend limit and `mypaisa-dev` with £10, and a
+that organisation create two workspaces, `mypaisa-prod` with a $100 spend limit (the hard limit behind the app's Claude ceiling) and `mypaisa-dev` with $10, and a
 key in each, `mypaisa-agent-dev` and `mypaisa-agent-prod`. Put each straight into its own environment's path, as
 with the bot token:
 
@@ -258,7 +258,7 @@ The brief arrives in the chat as a silent push. From then on the Scheduler runs 
 | Build the image as CI does | `docker build --platform linux/arm64 -t mypaisa-agent .` |
 | Tail a function's logs | `aws logs tail /aws/lambda/mypaisa-dev-agent --follow` |
 | Set the dev webhook again after polling locally | `scripts/set-webhook.sh dev` |
-| See this month's spend | `scripts/cost.sh` (AWS Cost Explorer plus the Anthropic usage report by model, against the £50 cap) |
+| See this month's spend | `scripts/cost.sh` (AWS Cost Explorer plus the Anthropic usage report by model, against the Claude ceiling and the AWS budget) |
 | Grade every forecast and call whose horizon has passed | `scripts/run.sh dev grade` |
 
 ## Tests
@@ -305,7 +305,7 @@ lives in SSM Parameter Store only, put by hand; anything that adds cost is asked
 | Claude | the Anthropic API from the `agent`, `docs` and `score` Lambdas; Opus 5.5, Sonnet 5.5, Haiku 5.5; key in SSM |
 | IAM | one execution role per function and environment, scoped to its own table, bucket and parameters; three OIDC roles for CI; a developer role with an explicit deny on `env=prod` |
 | Monitoring | CloudWatch Logs (14 days), an error alarm per function, the 07:45 dead man's switch, all delivered to the chat |
-| Budget | prod: AWS Budgets at £40 (alert) and £50 (disable the Scheduler rules); dev: capped at £10 |
+| Budget | AWS spend: AWS Budgets at £40 (alert) and £50 (disable the Scheduler rules) in prod, £10 in dev. Claude spend: its own ceiling, $100 in prod and $10 in dev, moved in the Admin center (`ARCHITECTURE.md` §15.1) |
 
 ### Access
 
@@ -361,7 +361,8 @@ A failed brief, an error burst or a missed schedule reaches the Telegram chat as
 Under £1 a month on AWS for both environments at this traffic: Lambda, DynamoDB, Scheduler, API Gateway, Cognito
 and SSM sit inside the free tiers; S3, CloudFront, logs and ECR are pence. Claude is £7 to £21 a month depending on the routing and how much
 you chat, sentiment scoring £1.50 to £2.50 through Batches, web search under £1, and EODHD £16 if chosen. Totals:
-about £9.70 lean, £32 standard, £42 full, against the £50 cap. `TECH_STACK.md` has the table for dev and prod.
+about £9.70 lean, £32 standard, £42 full. Prod's Claude spend is held under a $100 ceiling (about £77) that you move in
+the Admin center; it steps down at 85% and 95% and stops at 100%. `TECH_STACK.md` has the table for dev and prod.
 
 ## How work is done here
 
