@@ -100,7 +100,12 @@ flowchart LR
     apigw[API Gateway<br/>api.mypaisapp.com]
     cog[Cognito<br/>auth.mypaisapp.com]
     hook[webhook λ]
+    uq[(SQS FIFO · updates<br/>one lane per member)]
     agent[agent λ · Claude tool loop]
+    ob[(SQS FIFO · outbox<br/>one lane per chat)]
+    send[sender λ]
+    wq[(SQS · work)]
+    dlq[(dead-letter queues<br/>alarm · replay)]
     ingest[ingest λ · prices, NAV, FX]
     engine[engine λ · indicators, pillars, macro, stance]
     news[news λ · RSS, events]
@@ -122,25 +127,29 @@ flowchart LR
   you <--> tg
   you <--> mini
   you <--> web
-  tg --> apigw --> hook -- async --> agent
-  agent --> tg
+  tg --> apigw --> hook --> uq --> agent
+  agent --> ob --> send --> tg
   mini & web --> cf
   mini & web -- sign in · Telegram, Google, passkey --> cog
   mini & web -- session · /v1 --> apigw --> api --> ddb
-  sched --> ingest & news & score & agent
+  sched & agent --> wq
+  wq -- worker λ runs each job --> ingest & news & score & docs & engine
+  uq & ob & wq -. after the last try .-> dlq
   ingest --> mkt & ecb
   ingest --> s3 --> engine --> ddb
   engine -- alert candidates --> agent
   agent <--> br
   agent <--> ddb
-  agent --> docs --> br
+  docs --> br
   docs --> s3
   news --> rss
   score --> br
 ```
 
-One container image, eight handlers. The agent Lambda is the only one that
-talks to you in the chat. The api Lambda is the only one the web app talks
+One container image, eight handlers. Nothing waits on anything else directly:
+your messages, the bot's replies and every background job travel through SQS
+queues that retry them and keep what still fails (§21). The agent Lambda is
+the only one that talks to you in the chat. The api Lambda is the only one the web app talks
 to, and apart from the owner's security actions in the Admin center (MA-102)
 it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
 every one of them writes a `RunRecord` saying what it did (§10).
@@ -903,6 +912,7 @@ maintains, so nothing is shown that cannot be changed from the chat.
 | Telegram | Thin client on httpx; **rich messages with HTML fallback; `initData` and Login Widget verification in Cognito's custom-auth Lambdas** |
 | **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Telegram custom auth, Google, passkeys; five-minute access tokens** |
 | Runtime | Lambda container image, arm64 |
+| **Queues** | **SQS: a FIFO queue in (one lane per member), a FIFO queue out (one lane per chat), a work queue for background jobs, and a dead-letter queue behind each, with alarms and replay (§21)** |
 | Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform only, GitHub Actions with OIDC; **dev and prod as two isolated copies in one account (§18)** |
 | **Web app hosting** | **S3 + CloudFront per environment at `console(-dev).mypaisapp.com`; API Gateway HTTP API at `api(-dev).mypaisapp.com`; scheduled Lambdas have no public endpoint** |
 | **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind the app's Activity and Audit pages** |
@@ -1144,6 +1154,7 @@ a daily digest instead.
 | Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Forecaster | A second engine, phase 11, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
+| Queues | SQS between every part that could fail: updates in and replies out through FIFO queues with one lane per member or chat, background jobs through a work queue, retries with backoff, idempotent handlers, a dead-letter queue behind each with an alarm and replay (§21, MA-138) | Arun: "resilient and self heal with retries from Queues"; nothing a member sends, nothing the bot sends and no day's work is lost to a bad minute somewhere else |
 | Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on an admin's approval, in Telegram or the web; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
 | Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
@@ -1598,7 +1609,11 @@ accuracy and, above all, honest confidence grow over the years.
 
 The daily run (ingest, engine, Forecaster, grade, calibrate, brief) is one
 Step Functions state machine with retries and backoff on every step and
-idempotent writes. What the system fixes on its own, and tells the admin in
+idempotent writes, its jobs carried by the queues of §21. When a dead-letter
+queue fills, the ops warden finds the cause (Telegram, the Anthropic API, a
+data source, a deploy) and, once it is healthy again, replays the messages
+at most three times with growing gaps; a message that fails the same way
+again becomes an incident with its errors attached. What the system fixes on its own, and tells the admin in
 the digest: a failed step retried; a source failed over within its chain; a
 gap filled on the next run; a missed schedule caught up; a model or a
 calibration map rolled back to its last good version; a step that still
@@ -1664,3 +1679,82 @@ grading and calibration (E4, E5) can start as soon as there are graded
 stances (phase 6); challengers (E6) need the Forecaster (phase 11); the ops
 warden (E7) and the agent budgets (E8) come with them. One household, its
 admins, and nothing shared: the bounds of §4.5 stand.
+
+---
+
+## 21. Queues: nothing lost, everything retried (MA-138)
+
+Arun, 24 Oct 2026: "Add SQS, the system should be resilient and self heal
+with retries from Queues."
+
+Every place where one part hands work to another goes through an SQS queue.
+A queue holds the work until it succeeds, retries it with backoff when it
+fails, and keeps it in a dead-letter queue when it has failed too often, so
+a bad minute at Telegram, at the Anthropic API or at a data source costs a
+delay, never a message or a day's work.
+
+### 21.1 The queues
+
+| Queue | Carries | Lanes | Consumer | Tries, then |
+| --- | --- | --- | --- | --- |
+| `mypaisa-<env>-updates.fifo` | Every Telegram update the webhook accepts | One per member's chat (message group); Telegram's `update_id` dedupes | `agent` | 3 within about a minute, then its dead-letter queue, and the member is told it was kept |
+| `mypaisa-<env>-outbox.fifo` | Every message, photo and edit the bot sends | One per chat, so a brief's messages arrive in order | `sender` | 5, honouring Telegram's `retry_after`, then its dead-letter queue |
+| `mypaisa-<env>-work` | Background jobs: each instrument's ingest, each news feed, each document read, the engine, each brief, scoring | None needed | `worker` (the same image, running each job by its type) | 5, backoff from 30 seconds to 30 minutes, then its dead-letter queue |
+
+The webhook only checks Telegram's secret, queues the update and answers at
+once, so Telegram never times out. Each member's messages are handled one
+at a time and in order, while members run in parallel; that keeps a guided
+flow and the append-only chat history (§8) in step. Answers to button taps
+are sent at once rather than queued, so the tap stops spinning. The
+scheduler puts jobs on the work queue (each schedule has its own retry
+policy and dead-letter queue), a finished job can queue the next (ingest,
+then engine, then brief), and from phase 12 the Step Functions run of §20.5
+drives the same jobs.
+
+### 21.2 Rules every consumer keeps
+
+- **Idempotent.** Every handler records what it has done (Powertools
+  idempotency, keyed by `update_id`, message id, or job id and date), so a
+  retry or a replay never does anything twice.
+- **Backoff, not hammering.** A failed message comes back after a growing
+  wait; the work queue's maximum concurrency keeps yfinance, Twelve Data's
+  free tier (8 calls a minute) and the other free sources inside their
+  limits; reserved concurrency on the agent keeps Claude calls and spend in
+  bounds (§15.1).
+- **Fail fast on what cannot succeed.** A malformed update, an unknown chat or
+  an instrument with no source goes straight to the dead-letter queue with its
+  reason, instead of using up its tries.
+- **Never silent.** The brief, the wrap and alerts are always attempted; if
+  their inputs are late they go out labelled stale.
+- **Settings.** Tries, backoff, concurrency and the replay limits are
+  settings (§15.2, §20.2).
+
+### 21.3 Dead-letter queues and replay
+
+Each queue, and the scheduler, has a dead-letter queue. Messages stay there
+14 days, SQS's limit, and a copy goes to `raw/dlq/` in S3 for good. Each
+dead-letter queue has an alarm the moment it holds anything, which reaches
+the admin through the alert router (§15.2) as "failed work".
+
+Replay moves dead-lettered messages back to their queue:
+
+| From | How |
+| --- | --- |
+| Phase 1 (MA-139, MA-140) | `scripts/redrive.sh <queue>` |
+| Phase 5 (MA-137) | A [Replay] button on the alert, in the Admin center and the admin's Telegram chat |
+| Phase 12 (MA-135) | The ops warden replays on its own once the cause is healthy again, at most three times per message with growing gaps; a message that fails the same way again becomes an incident |
+
+Replays are safe: handlers are idempotent; an update more than an hour old is
+answered "still want this?" rather than acted on; and a Confirm tap whose
+`PendingAction` has expired is refused, so an old tap can never save a
+change by surprise.
+
+### 21.4 Cost
+
+SQS's free tier is a million requests a month. The household sends and
+receives a few thousand messages and jobs a month; the larger part is the
+Lambda service polling the three queues while they are empty, which counts
+as requests too. Dev's queue triggers are switched off while dev's schedules
+are, so the expected cost is nothing to about a dollar a month, measured in
+the first month and inside the AWS cap of §15.2. The dead-letter alarms cost
+a few pence each beyond CloudWatch's ten free alarms.

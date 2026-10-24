@@ -80,9 +80,16 @@ What you hold, recorded through the chat, with no analysis yet.
 - API Gateway HTTP API at `api(-dev).mypaisapp.com`, with
   `/telegram/webhook` and `/auth/telegram`. On the laptop the dev bot runs by
   long polling against dev, so no webhook is needed to develop.
-- `webhook` Lambda (secret token, chat allowlist, dedupe, async hand-off) and
-  the first `agent` Lambda: onboarding, `/add`, `/update`, `Portfolio`,
-  `/privacy`, `/pause`, `/resume`, `/help`.
+- `webhook` Lambda (secret token, chat allowlist) that puts each update on
+  the `updates.fifo` queue, one lane per member, deduped by `update_id`, and
+  the first `agent` Lambda reading it: onboarding, `/add`, `/update`,
+  `Portfolio`, `/privacy`, `/pause`, `/resume`, `/help`.
+- Queues from day one (MA-139, MA-140, `ARCHITECTURE.md` §21): replies
+  through `outbox.fifo` and a `sender` Lambda that honours Telegram's limits;
+  background jobs (document reads now, ingest and news as they arrive)
+  through the `work` queue and a `worker` Lambda; retries with backoff,
+  idempotent handlers, a dead-letter queue behind each with an alarm to the
+  chat, and `scripts/redrive.sh` to replay.
 - `docs` Lambda: factsheet PDF and screenshot extraction with Claude on
   the Anthropic API (structured outputs, citations, per-field confidence); the Confirm
   / Edit / Cancel card; nothing saved without Confirm.
@@ -120,7 +127,10 @@ What you hold, recorded through the chat, with no analysis yet.
   nightly drift check follows (MA-108).
 
 **Tests:** extraction against three real factsheets and three screenshots
-(fixtures with expected JSON); webhook security; the invite flow (single
+(fixtures with expected JSON); webhook security; one member's messages in
+order while two members run in parallel; a duplicate update ignored; a
+failure retried and then dead-lettered with an alarm; a replayed old update
+asking first; an expired Confirm refused; the invite flow (single
 use, expiry, wrong household); the isolation rules; the Confirm state
 machine; the guided flows (resume after a day, expiry, skipping fields
 already given, two members mid-flow at once); the custom-auth triggers
@@ -284,7 +294,8 @@ browser, as `ARCHITECTURE.md` §9.3.
   brief, alerts and chat never stop), metered daily from Cost Explorer; the
   AWS Budgets backstop at £75 in Terraform; one alert router to the web app's
   Alerts page, the admin's Telegram chat and email through SNS (1,000 a month
-  free), with quiet hours, cooldowns and a digest.
+  free), with quiet hours, cooldowns and a digest; "failed work" alerts from
+  the dead-letter queues carry a [Replay] button (§21).
 - The `api` Lambda behind `api(-dev).mypaisapp.com`: GET routes only for
   the household's data, plus the Admin center's owner-only security actions
   behind a fresh check (MA-102); sign-in through the Cognito pool built in
@@ -531,7 +542,9 @@ one household and its admins.
   admin's approval; the old version restored if the new one slips.
 - **E7, the ops warden (MA-135).** The daily run as one Step Functions state
   machine with retries; safe repairs on its own; an incident for the rest;
-  heartbeats from every agent.
+  heartbeats from every agent; dead-lettered work
+  replayed on its own once its cause is healthy, at most three times, then an
+  incident.
 - **E8, budgets for the team (MA-136).** Each agent's share of the plan's
   $200 Claude credit, metered by agent; paid feeds recorded as subscriptions
   against the AWS and others cap of MA-137.
@@ -631,6 +644,7 @@ handler writes its `RunRecord`, both covered by tests.
 | A Forecaster model that learned the past by heart | Walk-forward tests with a gap, the last two years held out, calibration checks, 8 live weeks before it is shown, and a switch-off when its record slips |
 | Look-ahead: a backtest that saw the future | Every row stamped with the date it was known; the lab refuses a strategy that peeks at tomorrow |
 | Two engines disagreeing confuses the household | Both shown side by side with their track records; the disagreement is said out loud; the rules engine stays the default |
+| A message or a job is lost when something fails | Every hand-off through an SQS queue with retries and backoff; idempotent handlers; a dead-letter queue behind each with an alarm, a copy in S3, and replay by script, button or the ops warden |
 | Cost overrun | The Claude ceiling's ladder steps down at 85% and 95% and stops at 100%; guards per member, per day and per run; the Console workspace limit as the hard backstop; AWS Budgets for AWS; `/pause` |
 | Prompt injection via news or a PDF | Untrusted text marked; no dangerous tools exist; Confirm on every write |
 | A session cookie stolen from a laptop | `HttpOnly`, `Secure`, `SameSite=Strict`, five-minute access tokens behind it; the data routes are read-only; status and epoch re-checked on every call; the owner signs the member out everywhere or pauses them (MA-102) |
