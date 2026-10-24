@@ -1,0 +1,6085 @@
+{
+ "version": 1,
+ "pages": [
+  {
+   "id": "p1",
+   "title": "1 System overview",
+   "shapes": [
+    {
+     "id": "t_p1",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>MyPaisa Agent \u00b7 system overview</b></span></p><p style=\"text-align:left\">prod in us-east-1; dev is the same shape with -dev names \u00b7 design only, 24 Oct 2026 \u00b7 coral = chat and data \u00b7 blue = sign-in and the web app \u00b7 crimson dashed = failure path</p></div>"
+    },
+    {
+     "id": "home",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 40,
+      "y": 200,
+      "w": 360,
+      "h": 1280
+     },
+     "containerTitle": {
+      "text": "Household"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "h_tg",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 230,
+      "w": 300,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram app</b><br>chat, buttons, files<br>second check: Face ID or PIN</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "h_mem",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 410,
+      "w": 300,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Members</b><br>owner (admin) \u00b7 member \u00b7 viewer<br>joined by a one-time invite</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "h_mini",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 640,
+      "w": 300,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Mini App</b> in Telegram<br>console.mypaisapp.com \u00b7 read-only</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "h_web",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 800,
+      "w": 300,
+      "h": 130
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Laptop browser</b><br>console.mypaisapp.com<br>signs in through Cognito:<br>Telegram \u00b7 Google \u00b7 passkey</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "h_mail",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1230,
+      "w": 300,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin's email</b><br>system alerts through SNS<br>1,000 a month free</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "tgapi",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1000,
+      "y": 160,
+      "w": 420,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram Bot API</b><br>webhook in \u00b7 messages out</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "o_claude",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1515,
+      "y": 160,
+      "w": 340,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Anthropic API</b> \u00b7 Haiku \u00b7 Sonnet<br>$200 credit: $160 prod \u00b7 $40 dev</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "cloud",
+     "type": "namedContainer",
+     "className": "AWSCloudAWS2024",
+     "boundingBox": {
+      "x": 440,
+      "y": 320,
+      "w": 1760,
+      "h": 1160
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS account 545595341442 \u00b7 Terraform only \u00b7 prod deployed by CI</b></p>"
+    },
+    {
+     "id": "region",
+     "type": "namedContainer",
+     "className": "RegionAWS2024",
+     "boundingBox": {
+      "x": 480,
+      "y": 380,
+      "w": 1680,
+      "h": 1060
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>us-east-1 \u00b7 mypaisa-prod-* (dev: mypaisa-dev-*)</b></p>"
+    },
+    {
+     "id": "r53",
+     "type": "namedShape",
+     "className": "ArchAmazonRoute53AWS2024",
+     "boundingBox": {
+      "x": 540,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Route 53\nmypaisapp.com zone"
+    },
+    {
+     "id": "acm",
+     "type": "namedShape",
+     "className": "ArchAWSCertificateManagerAWS2024",
+     "boundingBox": {
+      "x": 740,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ACM\n*.mypaisapp.com"
+    },
+    {
+     "id": "apigw",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 1100,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\napi.mypaisapp.com"
+    },
+    {
+     "id": "hook",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1280,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "webhook \u03bb\nsecret check"
+    },
+    {
+     "id": "qin",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1460,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS updates.fifo\nlane per member"
+    },
+    {
+     "id": "agent",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1640,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "agent \u03bb\nClaude tool loop"
+    },
+    {
+     "id": "qout",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1820,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS outbox.fifo\nlane per chat"
+    },
+    {
+     "id": "send",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 2000,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "sender \u03bb\nTelegram limits"
+    },
+    {
+     "id": "cf",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudFrontAWS2024",
+     "boundingBox": {
+      "x": 560,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "CloudFront\nconsole.mypaisapp.com"
+    },
+    {
+     "id": "s3web",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 780,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3\nstatic web app"
+    },
+    {
+     "id": "cog",
+     "type": "namedShape",
+     "className": "ArchAmazonCognitoAWS2024",
+     "boundingBox": {
+      "x": 1000,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Cognito (Essentials)\nauth.mypaisapp.com"
+    },
+    {
+     "id": "trig",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1200,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Cognito triggers \u03bb\nTelegram HMAC"
+    },
+    {
+     "id": "api",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1420,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "api \u03bb \u00b7 /v1\nread-only JSON\nadmin actions"
+    },
+    {
+     "id": "ecr",
+     "type": "namedShape",
+     "className": "ArchAmazonElasticContainerRegistryAWS2024",
+     "boundingBox": {
+      "x": 1640,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ECR\none arm64 image"
+    },
+    {
+     "id": "iam",
+     "type": "namedShape",
+     "className": "ArchAWSIdentityandAccessManagementAWS2024",
+     "boundingBox": {
+      "x": 1840,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "IAM\nrole per function"
+    },
+    {
+     "id": "sched",
+     "type": "namedShape",
+     "className": "ResAmazonEventBridgeSchedulerAWS2024",
+     "boundingBox": {
+      "x": 560,
+      "y": 980,
+      "w": 90,
+      "h": 90
+     },
+     "text": "EventBridge Scheduler\nEurope/London"
+    },
+    {
+     "id": "qwork",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 780,
+      "y": 980,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS work\nbackground jobs"
+    },
+    {
+     "id": "worker",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1000,
+      "y": 980,
+      "w": 90,
+      "h": 90
+     },
+     "text": "worker \u03bb\ningest \u00b7 news \u00b7 docs\nengine \u00b7 briefs"
+    },
+    {
+     "id": "sfn",
+     "type": "namedShape",
+     "className": "ArchAWSStepFunctionsAWS2024",
+     "boundingBox": {
+      "x": 1220,
+      "y": 980,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Step Functions\ndaily run (phase 12)"
+    },
+    {
+     "id": "bus",
+     "type": "namedShape",
+     "className": "ResAmazonEventBridgeCustomEventBusAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 980,
+      "w": 90,
+      "h": 90
+     },
+     "text": "EventBridge bus\nagent team (phase 12)"
+    },
+    {
+     "id": "lake",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1660,
+      "y": 980,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 lake\nParquet \u00b7 DuckDB"
+    },
+    {
+     "id": "ddb",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1880,
+      "y": 980,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nregistry \u00b7 audit \u00b7 state"
+    },
+    {
+     "id": "sns",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleNotificationServiceAWS2024",
+     "boundingBox": {
+      "x": 560,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SNS admin-alerts\nemail \u00b7 alert router"
+    },
+    {
+     "id": "cw",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 780,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "CloudWatch + X-Ray\nlogs \u00b7 alarms"
+    },
+    {
+     "id": "dlq",
+     "type": "namedShape",
+     "className": "ResAmazonSimpleQueueServiceQueueAWS2024",
+     "boundingBox": {
+      "x": 1000,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "dead-letter queues\nkept 14 days"
+    },
+    {
+     "id": "ssm",
+     "type": "namedShape",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSM Parameter Store\nkeys, set by hand"
+    },
+    {
+     "id": "budg",
+     "type": "namedShape",
+     "className": "ArchAWSBudgetsAWS2024",
+     "boundingBox": {
+      "x": 1660,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "AWS Budgets\n\u00a375 backstop"
+    },
+    {
+     "id": "ce",
+     "type": "namedShape",
+     "className": "ArchAWSCostExplorerAWS2024",
+     "boundingBox": {
+      "x": 1880,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Cost Explorer\ndaily AWS meter"
+    },
+    {
+     "id": "out",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 2240,
+      "y": 380,
+      "w": 360,
+      "h": 1000
+     },
+     "containerTitle": {
+      "text": "Outside AWS"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "o_data",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 2270,
+      "y": 440,
+      "w": 300,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data first</b><br>yfinance \u00b7 Twelve Data free<br>FRED \u00b7 BoE \u00b7 ECB \u00b7 EIA<br>GDELT \u00b7 RSS<br>EODHD only on approval</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "o_google",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 2270,
+      "y": 680,
+      "w": 300,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Google</b><br>OAuth client per environment</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "o_gh",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 2270,
+      "y": 850,
+      "w": 300,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>GitHub Actions</b><br>OIDC, no AWS keys<br>gates \u00b7 plan \u00b7 build once<br>dev, then prod on approval</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "o_jira",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 2270,
+      "y": 1070,
+      "w": 300,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Jira MA</b><br>every change traced</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "p1_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "h_tg",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "tgapi",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "chat",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p1_l2",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "tgapi",
+      "position": {
+       "x": 0.34523809523809523,
+       "y": 1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "apigw",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "POST /telegram/webhook",
+       "position": 0.15,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p1_l3",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "apigw",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "hook",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l4",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "hook",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "qin",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l5",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "qin",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "agent",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l6",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "agent",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "qout",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l7",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "qout",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "send",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l8",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "send",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "tgapi",
+      "position": {
+       "x": 0.85,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "sendMessage",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p1_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "agent",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "o_claude",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "messages",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p1_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "h_mini",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "cf",
+      "position": {
+       "x": 0,
+       "y": 0.3
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "h_web",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "cf",
+      "position": {
+       "x": 0,
+       "y": 0.8
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l12",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "cf",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "s3web",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l13",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "cog",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "trig",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l14",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "apigw",
+      "position": {
+       "x": 1,
+       "y": 0.85
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "api",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "/v1 \u00b7 cookie",
+       "position": 0.75,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p1_l15",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "sched",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "qwork",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l16",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "qwork",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "worker",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l17",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "dlq",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "cw",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p1_l18",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "cw",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "sns",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p1_l19",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "sns",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "h_mail",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    }
+   ]
+  },
+  {
+   "id": "p2",
+   "title": "2 Environments and delivery",
+   "shapes": [
+    {
+     "id": "t_p2",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Environments, domains and delivery</b></span></p><p style=\"text-align:left\">one AWS account, every component twice \u00b7 Terraform only, applied by CI \u00b7 prod after Arun's approval \u00b7 MA-26, MA-107, MA-108, MA-106</p></div>"
+    },
+    {
+     "id": "dev_laptop",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 40,
+      "y": 170,
+      "w": 360,
+      "h": 520
+     },
+     "containerTitle": {
+      "text": "Developer laptop"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "lap1",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 230,
+      "w": 300,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Local run against dev</b><br>dev bot by long polling<br>console on localhost \u2192 api-dev</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "lap2",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 400,
+      "w": 300,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Developer role</b><br>works in dev \u00b7 explicit deny<br>on anything tagged env=prod</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "lap3",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 560,
+      "w": 300,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>AWS MCP</b><br>reads only \u00b7 never changes</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "gh",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 40,
+      "y": 760,
+      "w": 360,
+      "h": 880
+     },
+     "containerTitle": {
+      "text": "GitHub \u00b7 gilipersonal/mypaisa-agent"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "g1",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 820,
+      "w": 300,
+      "h": 230
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Every PR: gates</b><br>ruff \u00b7 pyright \u00b7 pytest + moto<br>terraform fmt/validate \u00b7 tflint<br>security scan \u00b7 gitleaks \u00b7 pip-audit<br>jira-key</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "g2",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1100,
+      "w": 300,
+      "h": 90
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Plan for dev and prod</b><br>posted on the PR (ci-plan)</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "g3",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1295,
+      "w": 300,
+      "h": 90
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Merge to main</b><br>build once \u2192 ECR by digest</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "g4",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1420,
+      "w": 300,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>prod environment</b><br>Arun approves \u00b7 main only</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "g5",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1550,
+      "w": 300,
+      "h": 80
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Nightly drift check</b> (MA-108)</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "acct",
+     "type": "namedContainer",
+     "className": "AWSAccountAWS2024",
+     "boundingBox": {
+      "x": 460,
+      "y": 170,
+      "w": 1880,
+      "h": 1350
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS account 545595341442 \u00b7 us-east-1</b></p>"
+    },
+    {
+     "id": "shared",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 500,
+      "y": 270,
+      "w": 1800,
+      "h": 240
+     },
+     "containerTitle": {
+      "text": "Shared in the account"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FBFAF8"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "s_r53",
+     "type": "namedShape",
+     "className": "ArchAmazonRoute53AWS2024",
+     "boundingBox": {
+      "x": 560,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Route 53 zone\n(wealth-tracker dns/ root)"
+    },
+    {
+     "id": "s_acm",
+     "type": "namedShape",
+     "className": "ArchAWSCertificateManagerAWS2024",
+     "boundingBox": {
+      "x": 800,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ACM wildcard\n*.mypaisapp.com"
+    },
+    {
+     "id": "s_ecr",
+     "type": "namedShape",
+     "className": "ArchAmazonElasticContainerRegistryAWS2024",
+     "boundingBox": {
+      "x": 1040,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ECR\nimage by digest"
+    },
+    {
+     "id": "s_state",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1280,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 Terraform state\nmypaisa-agent/\u2039env\u203a/"
+    },
+    {
+     "id": "s_oidc",
+     "type": "namedShape",
+     "className": "ResAWSIdentityAccessManagementAWSSTSAWS2024",
+     "boundingBox": {
+      "x": 1520,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "GitHub OIDC provider\n(reused)"
+    },
+    {
+     "id": "s_roles",
+     "type": "namedShape",
+     "className": "ResAWSIdentityAccessManagementRoleAWS2024",
+     "boundingBox": {
+      "x": 1760,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ci-plan \u00b7 ci-dev-deploy\nci-prod-deploy"
+    },
+    {
+     "id": "s_budg",
+     "type": "namedShape",
+     "className": "ArchAWSBudgetsAWS2024",
+     "boundingBox": {
+      "x": 2000,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "AWS Budgets\n\u00a375 backstop"
+    },
+    {
+     "id": "devc",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 500,
+      "y": 580,
+      "w": 880,
+      "h": 850
+     },
+     "containerTitle": {
+      "text": "dev \u00b7 mypaisa-dev-* \u00b7 *-dev.mypaisapp.com \u00b7 synthetic data"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F2F5FB"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dev_cf",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudFrontAWS2024",
+     "boundingBox": {
+      "x": 560,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "CloudFront + S3\nconsole-dev"
+    },
+    {
+     "id": "dev_api",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 780,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\napi-dev"
+    },
+    {
+     "id": "dev_cog",
+     "type": "namedShape",
+     "className": "ArchAmazonCognitoAWS2024",
+     "boundingBox": {
+      "x": 1000,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Cognito\nauth-dev"
+    },
+    {
+     "id": "dev_ssm",
+     "type": "namedShape",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "boundingBox": {
+      "x": 1220,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSM\n/mypaisa-agent/dev/"
+    },
+    {
+     "id": "dev_lam",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 560,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Lambdas\nlive alias \u00b7 rollback"
+    },
+    {
+     "id": "dev_sqs",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 780,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS\nupdates \u00b7 outbox \u00b7 work"
+    },
+    {
+     "id": "dev_ddb",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1000,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nseeded"
+    },
+    {
+     "id": "dev_s3",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1220,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 lake + docs\nsynthetic"
+    },
+    {
+     "id": "dev_keys",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 560,
+      "y": 1110,
+      "w": 760,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Own keys</b>: Telegram bot \u00b7 Claude workspace ($40 limit) \u00b7 Google OAuth client \u00b7 Cognito pool \u00b7 Twelve Data key<br>values put in SSM by hand; Terraform ignores them</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dev_apply",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 560,
+      "y": 1280,
+      "w": 760,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Applied by</b> the developer (saved plan file) or CI (ci-dev-deploy)<br>smoke tests against api-dev after every deploy</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "prodc",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 1420,
+      "y": 580,
+      "w": 880,
+      "h": 850
+     },
+     "containerTitle": {
+      "text": "prod \u00b7 mypaisa-prod-* \u00b7 *.mypaisapp.com \u00b7 household data"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FBF4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "prod_cf",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudFrontAWS2024",
+     "boundingBox": {
+      "x": 1480,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "CloudFront + S3\nconsole"
+    },
+    {
+     "id": "prod_api",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 1700,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\napi"
+    },
+    {
+     "id": "prod_cog",
+     "type": "namedShape",
+     "className": "ArchAmazonCognitoAWS2024",
+     "boundingBox": {
+      "x": 1920,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Cognito\nauth"
+    },
+    {
+     "id": "prod_ssm",
+     "type": "namedShape",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "boundingBox": {
+      "x": 2140,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSM\n/mypaisa-agent/prod/"
+    },
+    {
+     "id": "prod_lam",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1480,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Lambdas\nlive alias \u00b7 rollback"
+    },
+    {
+     "id": "prod_sqs",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1700,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS\nupdates \u00b7 outbox \u00b7 work"
+    },
+    {
+     "id": "prod_ddb",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1920,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nprevent_destroy"
+    },
+    {
+     "id": "prod_s3",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 2140,
+      "y": 860,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 lake + docs\nversioned"
+    },
+    {
+     "id": "prod_keys",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1480,
+      "y": 1110,
+      "w": 760,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Own keys</b>: Telegram bot \u00b7 Claude workspace ($160 limit) \u00b7 Google OAuth client \u00b7 Cognito pool \u00b7 Twelve Data key<br>values put in SSM by hand; Terraform ignores them</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "prod_apply",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1480,
+      "y": 1280,
+      "w": 760,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Applied only by CI</b> (ci-prod-deploy) after dev passes and Arun approves<br>live alias moves \u00b7 failed smoke test rolls back on its own</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "p2_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "g3",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "dev_apply",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "deploy dev",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p2_l2",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "g4",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "prod_apply",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "deploy prod after approval",
+       "position": 0.35,
+       "side": "bottom"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p3",
+   "title": "3 Identity and sign-in",
+   "shapes": [
+    {
+     "id": "t_p3",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Identity and sign-in</b></span></p><p style=\"text-align:left\">one Cognito user pool per environment \u00b7 one user per member \u00b7 Telegram, Google and passkeys \u00b7 MA-109, MA-75, MA-76, MA-77, MA-102</p></div>"
+    },
+    {
+     "id": "doors",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 40,
+      "y": 200,
+      "w": 380,
+      "h": 1210
+     },
+     "containerTitle": {
+      "text": "Doors in"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_mini",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 230,
+      "w": 320,
+      "h": 130
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Mini App</b><br>Telegram signs initData<br>(HMAC with the bot token)<br>second check: Face ID or PIN</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_widget",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 400,
+      "w": 320,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Browser \u00b7 Telegram Login Widget</b><br>one tap, confirmed in the app</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_google",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 560,
+      "w": 320,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Browser \u00b7 Sign in with Google</b><br>linked by a code typed in the chat</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_passkey",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 720,
+      "w": 320,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Browser \u00b7 passkey</b><br>WebAuthn, after the first sign-in</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_new",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 900,
+      "w": 320,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>New device?</b><br>\"Was this you?\" to the member<br>and the owner<br>[Yes, it was me] [No, sign it out]</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_chat",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1130,
+      "w": 320,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>The chat itself</b><br>update.from.id \u2192 member<br>unknown id: silence<br>paused: one line, nothing else</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "cl3",
+     "type": "namedContainer",
+     "className": "AWSCloudAWS2024",
+     "boundingBox": {
+      "x": 480,
+      "y": 170,
+      "w": 1520,
+      "h": 1240
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 prod (dev the same)</b></p>"
+    },
+    {
+     "id": "i_api",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 600,
+      "y": 300,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\n/auth/telegram \u00b7 /v1"
+    },
+    {
+     "id": "i_trig",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 840,
+      "y": 300,
+      "w": 90,
+      "h": 90
+     },
+     "text": "auth challenge \u03bb\nHMAC \u00b7 5 min \u00b7 no replay"
+    },
+    {
+     "id": "i_idp",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1360,
+      "y": 230,
+      "w": 340,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Linked to one Cognito user</b><br>Telegram id<br>Google (provider, sub)<br>passkeys (WebAuthn)<br>relying party fixed per env</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "i_cog",
+     "type": "namedShape",
+     "className": "ArchAmazonCognitoAWS2024",
+     "boundingBox": {
+      "x": 1080,
+      "y": 560,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Cognito user pool\nno passwords \u00b7 no sign-up"
+    },
+    {
+     "id": "i_apil",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1360,
+      "y": 560,
+      "w": 90,
+      "h": 90
+     },
+     "text": "api \u03bb\nsets the session cookie"
+    },
+    {
+     "id": "i_cookie",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1580,
+      "y": 540,
+      "w": 360,
+      "h": 160
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Session cookie</b> on api.mypaisapp.com<br>HttpOnly \u00b7 Secure \u00b7 SameSite=Strict<br>5-minute tokens behind it<br>never visible to page scripts</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "i_ssm",
+     "type": "namedShape",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "boundingBox": {
+      "x": 1080,
+      "y": 840,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSM\nbot token = HMAC key"
+    },
+    {
+     "id": "i_ddb",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 840,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nMember: status, role, epoch"
+    },
+    {
+     "id": "i_authz",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1715,
+      "y": 840,
+      "w": 90,
+      "h": 90
+     },
+     "text": "authorizer \u03bb\nsession \u00b7 status \u00b7 epoch\non every call"
+    },
+    {
+     "id": "i_admin",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 560,
+      "y": 1060,
+      "w": 700,
+      "h": 200
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin center (owner only, browser only)</b><br>fresh check within 5 minutes: passkey or Google<br>Sign out everywhere \u2192 AdminUserGlobalSignOut + epoch + 1<br>Pause \u2192 AdminDisableUser; every session ends<br>every action: audit row + Telegram to the member and the owner</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCE4EA"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "i_out",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 1115,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS outbox\nnotices to members"
+    }
+   ],
+   "lines": [
+    {
+     "id": "p3_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_mini",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_api",
+      "position": {
+       "x": 0,
+       "y": 0.35
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "initData",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l2",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_widget",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_api",
+      "position": {
+       "x": 0,
+       "y": 0.85
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "widget payload",
+       "position": 0.45,
+       "side": "bottom"
+      }
+     ]
+    },
+    {
+     "id": "p3_l3",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_google",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_cog",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "Google via auth.mypaisapp.com",
+       "position": 0.45,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l4",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_passkey",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_cog",
+      "position": {
+       "x": 0,
+       "y": 0.9
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "WebAuthn",
+       "position": 0.3,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l5",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_api",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_trig",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l6",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_trig",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_cog",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "tokens",
+       "position": 0.3,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l7",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_cog",
+      "position": {
+       "x": 1,
+       "y": 0.2
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_idp",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l8",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_cog",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_apil",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "code",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_apil",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_cookie",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_cookie",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_authz",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_authz",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_ddb",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l12",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_admin",
+      "position": {
+       "x": 1,
+       "y": 0.2
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_cog",
+      "position": {
+       "x": 1,
+       "y": 0.8
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "sign out \u00b7 disable",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l13",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_admin",
+      "position": {
+       "x": 1,
+       "y": 0.675
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_out",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l14",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_new",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_admin",
+      "position": {
+       "x": 0,
+       "y": 0.4
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     },
+     "text": [
+      {
+       "text": "No, sign it out",
+       "position": 0.6,
+       "side": "top"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p4",
+   "title": "4 Queues and self-healing",
+   "shapes": [
+    {
+     "id": "t_p4",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Queues, retries and replay</b></span></p><p style=\"text-align:left\">nothing is lost: every hand-off goes through SQS \u00b7 idempotent handlers \u00b7 a dead-letter queue behind each \u00b7 MA-139, MA-140, MA-137, MA-135</p></div>"
+    },
+    {
+     "id": "q_tg",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 40,
+      "y": 210,
+      "w": 220,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram</b><br>a member's message</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "cl4",
+     "type": "namedContainer",
+     "className": "AWSCloudAWS2024",
+     "boundingBox": {
+      "x": 320,
+      "y": 160,
+      "w": 1900,
+      "h": 1240
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 us-east-1 \u00b7 prod (dev has the same queues)</b></p>"
+    },
+    {
+     "id": "q_apigw",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 380,
+      "y": 220,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\n/telegram/webhook"
+    },
+    {
+     "id": "q_hook",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 620,
+      "y": 220,
+      "w": 90,
+      "h": 90
+     },
+     "text": "webhook \u03bb\nsecret check \u00b7 answers at once"
+    },
+    {
+     "id": "q_in",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 880,
+      "y": 220,
+      "w": 90,
+      "h": 90
+     },
+     "text": "updates.fifo\ngroup = member's chat\ndedupe = update_id"
+    },
+    {
+     "id": "q_agent",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1160,
+      "y": 220,
+      "w": 90,
+      "h": 90
+     },
+     "text": "agent \u03bb\nlane per member"
+    },
+    {
+     "id": "q_out",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 220,
+      "w": 90,
+      "h": 90
+     },
+     "text": "outbox.fifo\ngroup = chat"
+    },
+    {
+     "id": "q_send",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1700,
+      "y": 220,
+      "w": 90,
+      "h": 90
+     },
+     "text": "sender \u03bb\nhonours retry_after"
+    },
+    {
+     "id": "q_tg2",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 2280,
+      "y": 220,
+      "w": 230,
+      "h": 90
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram</b><br>replies in order</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "q_sched",
+     "type": "namedShape",
+     "className": "ResAmazonEventBridgeSchedulerAWS2024",
+     "boundingBox": {
+      "x": 380,
+      "y": 560,
+      "w": 90,
+      "h": 90
+     },
+     "text": "EventBridge Scheduler\nretry policy + own DLQ"
+    },
+    {
+     "id": "q_work",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 880,
+      "y": 560,
+      "w": 90,
+      "h": 90
+     },
+     "text": "work queue\ningest \u00b7 news \u00b7 docs\nengine \u00b7 briefs \u00b7 scoring"
+    },
+    {
+     "id": "q_worker",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1160,
+      "y": 560,
+      "w": 90,
+      "h": 90
+     },
+     "text": "worker \u03bb\ncapped concurrency"
+    },
+    {
+     "id": "q_free",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1440,
+      "y": 560,
+      "w": 300,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data sources</b><br>yfinance \u00b7 Twelve Data (8/min)<br>FRED \u00b7 GDELT \u00b7 RSS</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "q_idem",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 880,
+      "y": 820,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nidempotency records\n(Powertools)"
+    },
+    {
+     "id": "q_rules",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1440,
+      "y": 760,
+      "w": 700,
+      "h": 190
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Retry rules, all settings</b><br>updates: 3 tries within about a minute, so a lane never stays stuck<br>outbox: 5 tries, waiting as long as Telegram asks<br>work: 5 tries, backoff 30 seconds to 30 minutes<br>what can never succeed: straight to its dead-letter queue</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "fail",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 360,
+      "y": 1040,
+      "w": 1820,
+      "h": 320
+     },
+     "containerTitle": {
+      "text": "Failure path"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCE4EA"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "dashed"
+      }
+     }
+    },
+    {
+     "id": "q_dlq",
+     "type": "namedShape",
+     "className": "ResAmazonSimpleQueueServiceQueueAWS2024",
+     "boundingBox": {
+      "x": 440,
+      "y": 1130,
+      "w": 90,
+      "h": 90
+     },
+     "text": "dead-letter queues\nupdates \u00b7 outbox \u00b7 work \u00b7 scheduler\nkept 14 days"
+    },
+    {
+     "id": "q_s3",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 720,
+      "y": 1130,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 raw/dlq/\ncopy for good"
+    },
+    {
+     "id": "q_cw",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 980,
+      "y": 1130,
+      "w": 90,
+      "h": 90
+     },
+     "text": "CloudWatch alarm\ndepth over 0"
+    },
+    {
+     "id": "q_sns",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleNotificationServiceAWS2024",
+     "boundingBox": {
+      "x": 1240,
+      "y": 1130,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SNS admin-alerts\n\u2192 alert router"
+    },
+    {
+     "id": "q_replay",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1500,
+      "y": 1095,
+      "w": 640,
+      "h": 160
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh \u00b7 phase 5: [Replay] on the alert<br>phase 12: the ops warden, once the cause is healthy,<br>at most 3 times, then an incident<br>an update over an hour old asks \"still want this?\"</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "p4_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_tg",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_apigw",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l2",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_apigw",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_hook",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l3",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_hook",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_in",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l4",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_in",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_agent",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l5",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_agent",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_out",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l6",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_out",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_send",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l7",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_send",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_tg2",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l8",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_sched",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_work",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "jobs",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_work",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_worker",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_worker",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_free",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_worker",
+      "position": {
+       "x": 0.75,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_out",
+      "position": {
+       "x": 0,
+       "y": 0.85
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "briefs",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l12",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_agent",
+      "position": {
+       "x": 0,
+       "y": 0.75
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_work",
+      "position": {
+       "x": 1,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "documents",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l13",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_worker",
+      "position": {
+       "x": 0,
+       "y": 1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_idem",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#646A78",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "done?",
+       "position": 0.72,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l14",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_work",
+      "position": {
+       "x": 0,
+       "y": 0.65
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_dlq",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     },
+     "text": [
+      {
+       "text": "after the last try",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l15",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_dlq",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_s3",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p4_l16",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_s3",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_cw",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p4_l17",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_cw",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_sns",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p4_l18",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_sns",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_replay",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    }
+   ]
+  },
+  {
+   "id": "p5",
+   "title": "5 Data stores",
+   "shapes": [
+    {
+     "id": "t_p5",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Where the data lives</b></span></p><p style=\"text-align:left\">DynamoDB for state, small and fast \u00b7 S3 for the record, in Parquet, queried with DuckDB \u00b7 SSM for keys \u00b7 MA-27, MA-104, MA-132</p></div>"
+    },
+    {
+     "id": "cl5",
+     "type": "namedContainer",
+     "className": "AWSCloudAWS2024",
+     "boundingBox": {
+      "x": 40,
+      "y": 170,
+      "w": 2260,
+      "h": 1040
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 one copy per environment (mypaisa-dev-*, mypaisa-prod-*)</b></p>"
+    },
+    {
+     "id": "ddbc",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 70,
+      "y": 270,
+      "w": 1210,
+      "h": 640
+     },
+     "containerTitle": {
+      "text": "DynamoDB \u00b7 one table, on-demand"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FBFAF8"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "ddbi",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 110,
+      "y": 330,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\non-demand"
+    },
+    {
+     "id": "k1",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 260,
+      "y": 320,
+      "w": 990,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>Keys</b> PK=HH#&lt;household&gt; \u00b7 SK=TX#&lt;date&gt;#&lt;id&gt; \u00b7 VAL#&lt;position&gt;#&lt;date&gt; \u00b7 NW#&lt;date&gt; \u00b7 AUD#&lt;ts&gt;#&lt;id&gt;<br>GSI1 MEMBER# \u00b7 GSI2 POS# / LIAB# \u00b7 the registry never scans</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg0",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 100,
+      "y": 480,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Household</b><br>Portfolio \u00b7 Member \u00b7 Invite<br>Account (owners, institution)</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg1",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 390,
+      "y": 480,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Holdings</b><br>Instrument (exposure map)<br>Position \u00b7 Valuation \u00b7 Document<br>Transaction \u00b7 Liability (phase 9)</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg2",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 680,
+      "y": 480,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Analysis</b><br>Signal \u00b7 Stance \u00b7 MacroRegime<br>Forecast \u00b7 ModelVersion<br>ScoreDaily \u00b7 CalibrationMap</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg3",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 970,
+      "y": 480,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Members and chat</b><br>ChatTurn (90 days, append-only)<br>Decision \u00b7 AlertState<br>PendingAction (a day)</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg4",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 100,
+      "y": 680,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Audit and runs</b><br>AuditEvent (hash-chained)<br>RunRecord (90 days)<br>SentimentIndex \u00b7 ArticleScore</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg5",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 390,
+      "y": 680,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Settings and approvals</b><br>Setting \u00b7 ConfigVersion<br>ChangeRequest \u00b7 AdminQuestion<br>Incident (phase 12)</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg6",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 680,
+      "y": 680,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Budgets and alerts</b><br>BudgetSettings \u00b7 SpendMonth<br>AwsSpendMonth \u00b7 AlertRule \u00b7 Alert</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "dg7",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 970,
+      "y": 680,
+      "w": 270,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Identity</b><br>Cognito holds users;<br>Member holds role, status,<br>session epoch</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F5EEFB"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "lakec",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 1320,
+      "y": 270,
+      "w": 950,
+      "h": 640
+     },
+     "containerTitle": {
+      "text": "S3 lake bucket \u00b7 Parquet by date"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FBFAF8"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "lakei",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1350,
+      "y": 330,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 lake\nversioned in prod"
+    },
+    {
+     "id": "pf0",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1500,
+      "y": 320,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>raw/&lt;source&gt;/dt=</b><br>as fetched \u00b7 90 days, then IA</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "pf1",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1880,
+      "y": 320,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>curated/</b><br>prices, economy, events, news matches<br>with the date each was known</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "pf2",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1500,
+      "y": 460,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>features/dt=</b><br>each day's feature snapshot</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "pf3",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1880,
+      "y": 460,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>predictions/model=/dt=</b><br>every stance and forecast as made</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "pf4",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1500,
+      "y": 600,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>outcomes/model=/dt=</b><br>every grade</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "pf5",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1880,
+      "y": 600,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>models/ \u00b7 calibration/</b><br>model files, test reports, maps</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "pf6",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1500,
+      "y": 740,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>reports/ \u00b7 config/snapshots/</b><br>backtests, reviews, daily settings</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "pf7",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1880,
+      "y": 740,
+      "w": 350,
+      "h": 120
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>raw/dlq/</b><br>dead-lettered messages, for good</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F1F6EA"
+      },
+      "stroke": {
+       "color": "#1D7A3E",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "duck",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1350,
+      "y": 990,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DuckDB in Lambda\nreads Parquet (MA-104)"
+    },
+    {
+     "id": "docs",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1650,
+      "y": 990,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 documents\nfactsheets \u00b7 screenshots"
+    },
+    {
+     "id": "web",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1950,
+      "y": 990,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 web app\nbehind CloudFront"
+    },
+    {
+     "id": "ssm5",
+     "type": "namedShape",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "boundingBox": {
+      "x": 150,
+      "y": 990,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSM /mypaisa-agent/\u2039env\u203a/\nbot token \u00b7 webhook secret\nClaude key \u00b7 Google secret"
+    },
+    {
+     "id": "rule5",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 380,
+      "y": 980,
+      "w": 870,
+      "h": 140
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Rules</b><br>nothing is overwritten: corrections are new rows \u00b7 secrets set by hand, never in Terraform state<br>prod tables: deletion protection and point-in-time recovery \u00b7 the whole history is a few GB</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "p5_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "ddbi",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "k1",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#646A78",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p5_l2",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "duck",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "lakec",
+      "position": {
+       "x": 0.07894736842105263,
+       "y": 1
+      }
+     },
+     "stroke": {
+      "color": "#1D7A3E",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "queries",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p6",
+   "title": "6 Market agent and learning loop",
+   "shapes": [
+    {
+     "id": "t_p6",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The market agent: rules engine, Forecaster and the learning loop</b></span></p><p style=\"text-align:left\">phase 2 rules engine \u00b7 phase 11 Forecaster (MA-117) \u00b7 phase 12 learning loop and agents (MA-127) \u00b7 code decides, Claude explains</p></div>"
+    },
+    {
+     "id": "m_src",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 40,
+      "y": 200,
+      "w": 300,
+      "h": 260
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data first</b><br>yfinance \u00b7 Twelve Data free<br>FRED / ALFRED \u00b7 BoE \u00b7 ECB \u00b7 ONS<br>EIA (oil) \u00b7 GDELT \u00b7 GPR index<br>RSS \u00b7 calendars<br>EODHD only if approved</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "cl6",
+     "type": "namedContainer",
+     "className": "AWSCloudAWS2024",
+     "boundingBox": {
+      "x": 400,
+      "y": 170,
+      "w": 1900,
+      "h": 1340
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 prod</b></p>"
+    },
+    {
+     "id": "wf",
+     "type": "namedContainer",
+     "className": "AWSStepFunctionsWorkflowAWS2024",
+     "boundingBox": {
+      "x": 440,
+      "y": 230,
+      "w": 1540,
+      "h": 600
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>Daily run \u00b7 Step Functions \u00b7 retries on every step (phase 12)</b></p>"
+    },
+    {
+     "id": "m_steward",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 500,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "data steward\nfailover \u00b7 gaps \u00b7 quotas"
+    },
+    {
+     "id": "m_lake",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 760,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 curated\nknown-date stamped"
+    },
+    {
+     "id": "m_feat",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1000,
+      "y": 320,
+      "w": 90,
+      "h": 90
+     },
+     "text": "features\ntrend \u00b7 momentum \u00b7 risk\nmacro \u00b7 news tone"
+    },
+    {
+     "id": "m_rules",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1260,
+      "y": 270,
+      "w": 90,
+      "h": 90
+     },
+     "text": "analyst \u00b7 rules engine\npillars \u00b7 cascade \u00b7 confidence"
+    },
+    {
+     "id": "m_fc",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1260,
+      "y": 520,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Forecaster models\nmood \u00b7 risk \u00b7 similar days\nevent impacts \u00b7 direction"
+    },
+    {
+     "id": "m_cal",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1540,
+      "y": 400,
+      "w": 90,
+      "h": 90
+     },
+     "text": "calibrate and combine\nCalibrationMap"
+    },
+    {
+     "id": "m_store",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1800,
+      "y": 300,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nStance \u00b7 Forecast"
+    },
+    {
+     "id": "m_pred",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1800,
+      "y": 560,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 predictions/\nevery one as made"
+    },
+    {
+     "id": "m_card",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 2100,
+      "y": 400,
+      "w": 90,
+      "h": 90
+     },
+     "text": "outbox \u2192 Telegram\nside-by-side card"
+    },
+    {
+     "id": "m_news",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 500,
+      "y": 620,
+      "w": 90,
+      "h": 90
+     },
+     "text": "news scout\nHaiku through Batches"
+    },
+    {
+     "id": "m_expo",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 720,
+      "y": 610,
+      "w": 420,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Exposure map per holding</b> \u00b7 news relevance<br>fund: holdings, countries, sectors, currencies<br>share: company, sector, markets, rivals<br>commodity: gold, silver, oil drivers</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "learn",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 440,
+      "y": 900,
+      "w": 1540,
+      "h": 560
+     },
+     "containerTitle": {
+      "text": "Learning loop \u00b7 daily, bounded, approved (phase 12, MA-132 to MA-134)"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#EEE7FA"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "m_calrule",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 480,
+      "y": 1000,
+      "w": 480,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Daily calibration</b><br>refit on a rolling window<br>at most 2 points per bucket a day<br>used only when better \u00b7 10 days' probation<br>rolls back on its own</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "m_score",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1120,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ScoreDaily\n30 \u00b7 90 \u00b7 365 days"
+    },
+    {
+     "id": "m_out",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 outcomes/\nnever overwritten"
+    },
+    {
+     "id": "m_grade",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1760,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "grader\nafter each close\nBrier \u00b7 log loss \u00b7 range"
+    },
+    {
+     "id": "m_chal",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 500,
+      "y": 1290,
+      "w": 90,
+      "h": 90
+     },
+     "text": "tuner\nchallengers: retrain,\nparameters, rule ranges"
+    },
+    {
+     "id": "m_lab",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 700,
+      "y": 1270,
+      "w": 420,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Backtest lab</b> (MA-120)<br>ten years, walk-forward with a gap<br>last two years held out<br>then 8 live weeks in shadow</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "m_cr",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1270,
+      "y": 1290,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ChangeRequest\nwith scores side by side"
+    },
+    {
+     "id": "m_desk",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1490,
+      "y": 1270,
+      "w": 440,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin desk</b><br>Telegram card or Admin center<br>approve with the second check<br>then ModelVersion goes live</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCE4EA"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "m_claude",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 40,
+      "y": 560,
+      "w": 300,
+      "h": 140
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Claude</b><br>Haiku tags news<br>Sonnet explains<br>never a number</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "p6_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_src",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_steward",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l2",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_steward",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_lake",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l3",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_lake",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_feat",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l4",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_feat",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_rules",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l5",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_feat",
+      "position": {
+       "x": 1,
+       "y": 0.8
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_fc",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l6",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_rules",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_cal",
+      "position": {
+       "x": 0,
+       "y": 0.2
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l7",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_fc",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_cal",
+      "position": {
+       "x": 0,
+       "y": 0.8
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l8",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_cal",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_store",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l9",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_cal",
+      "position": {
+       "x": 1,
+       "y": 0.8
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_pred",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_store",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_card",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_news",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_expo",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "tags",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p6_l12",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_expo",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_fc",
+      "position": {
+       "x": 0,
+       "y": 0.8
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l13",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_news",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_claude",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "dashed"
+     },
+     "text": [
+      {
+       "text": "Haiku",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p6_l14",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_pred",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_grade",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "horizon passed",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p6_l15",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_grade",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_out",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l16",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_out",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_score",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l17",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_score",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_calrule",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l18",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_chal",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_lab",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p6_l19",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_lab",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_cr",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "beats current",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p6_l20",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "m_cr",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "m_desk",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    }
+   ]
+  },
+  {
+   "id": "p7",
+   "title": "7 Agent team, caps and alerts",
+   "shapes": [
+    {
+     "id": "t_p7",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The agent team, settings, spend caps and alerts</b></span></p><p style=\"text-align:left\">phase 5 caps and alerts (MA-137) \u00b7 phase 12 agents and settings (MA-127) \u00b7 everything configurable by the admin, nothing changed without asking</p></div>"
+    },
+    {
+     "id": "adm",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 40,
+      "y": 170,
+      "w": 400,
+      "h": 1000
+     },
+     "containerTitle": {
+      "text": "Admins only"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "a_tg",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 230,
+      "w": 340,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin's Telegram chat</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with Face ID or PIN</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "a_web",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 440,
+      "w": 340,
+      "h": 170
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin center</b> (console)<br>Spend \u00b7 Alerts \u00b7 Approvals<br>Settings \u00b7 Agents \u00b7 Incidents<br>fresh check: passkey or Google</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "a_mail",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 670,
+      "w": 340,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Email</b><br>system alerts only, via SNS</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "a_rule",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 830,
+      "w": 340,
+      "h": 300
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Bands</b><br>inside a setting's automatic band: an agent may act, and says so in the daily digest<br>outside it: a request to an admin<br>never: trade, read a secret, delete data, apply infrastructure</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "cl7",
+     "type": "namedContainer",
+     "className": "AWSCloudAWS2024",
+     "boundingBox": {
+      "x": 500,
+      "y": 170,
+      "w": 1780,
+      "h": 1530
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 prod</b></p>"
+    },
+    {
+     "id": "agc",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 540,
+      "y": 270,
+      "w": 1700,
+      "h": 220
+     },
+     "containerTitle": {
+      "text": "Nine agents \u00b7 Lambda \u00b7 each with its own IAM role and tools"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#EEE7FA"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "ag0",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 580,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "concierge\nchat \u00b7 cards"
+    },
+    {
+     "id": "ag1",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 765,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "data steward\nsources"
+    },
+    {
+     "id": "ag2",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 950,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "news scout\ntags news"
+    },
+    {
+     "id": "ag3",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1135,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "analyst\nrules engine"
+    },
+    {
+     "id": "ag4",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1320,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "Forecaster\nmodels"
+    },
+    {
+     "id": "ag5",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1505,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "grader and tuner\nlearning loop"
+    },
+    {
+     "id": "ag6",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1690,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "ops warden\nrepairs"
+    },
+    {
+     "id": "ag7",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1875,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "budget keeper\nmeter \u00b7 ladder"
+    },
+    {
+     "id": "ag8",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 2060,
+      "y": 330,
+      "w": 80,
+      "h": 80
+     },
+     "text": "admin desk\nthe asking"
+    },
+    {
+     "id": "a_api",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 600,
+      "y": 580,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\n/v1/admin"
+    },
+    {
+     "id": "a_bus",
+     "type": "namedShape",
+     "className": "ResAmazonEventBridgeCustomEventBusAWS2024",
+     "boundingBox": {
+      "x": 1300,
+      "y": 580,
+      "w": 90,
+      "h": 90
+     },
+     "text": "EventBridge bus\nmypaisa-\u2039env\u203a-events"
+    },
+    {
+     "id": "a_set",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 860,
+      "y": 760,
+      "w": 90,
+      "h": 90
+     },
+     "text": "settings service\nschema \u00b7 range \u00b7 band"
+    },
+    {
+     "id": "a_setdb",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1100,
+      "y": 760,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Setting\nConfigVersion"
+    },
+    {
+     "id": "a_snap",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1340,
+      "y": 760,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 config/snapshots/"
+    },
+    {
+     "id": "a_cr",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1700,
+      "y": 760,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ChangeRequest\nAdminQuestion \u00b7 Incident"
+    },
+    {
+     "id": "caps",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 540,
+      "y": 960,
+      "w": 1700,
+      "h": 680
+     },
+     "containerTitle": {
+      "text": "Caps and alerts, set in the Admin center (MA-137)"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCE4EA"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "c_claude",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 580,
+      "y": 1020,
+      "w": 540,
+      "h": 280
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Claude: Max 20x credit $200 a month</b><br>ceilings $160 prod \u00b7 $40 dev (settings)<br>meter: every call costed from usage \u2192 SpendMonth<br>steps 70% tell \u00b7 85% savers \u00b7 95% essentials \u00b7 100% templates<br>guards: member 60% \u00b7 day 3x average \u00b7 8 calls a run<br>hard stops: Console workspace limits, then the credit</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "c_ce",
+     "type": "namedShape",
+     "className": "ArchAWSCostExplorerAWS2024",
+     "boundingBox": {
+      "x": 1160,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Cost Explorer\nonce a day"
+    },
+    {
+     "id": "c_aws",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1320,
+      "y": 1020,
+      "w": 480,
+      "h": 220
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>AWS and others: \u00a350 a month</b><br>steps 50% \u00b7 80% \u00b7 100% \u00b7 forecast over cap<br>80%: dev's schedules pause<br>100%: non-essential prod jobs pause<br>never the brief, alerts or chat<br>actions are flags, not resource changes</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "c_budg",
+     "type": "namedShape",
+     "className": "ArchAWSBudgetsAWS2024",
+     "boundingBox": {
+      "x": 600,
+      "y": 1460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "AWS Budgets \u00a375\nTerraform backstop"
+    },
+    {
+     "id": "c_sns",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleNotificationServiceAWS2024",
+     "boundingBox": {
+      "x": 900,
+      "y": 1460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SNS admin-alerts\n\u2192 admin's email\n1,000 a month free"
+    },
+    {
+     "id": "c_rt",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1200,
+      "y": 1460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "alert router\ntype \u00d7 severity matrix\nquiet hours \u00b7 cooldown"
+    },
+    {
+     "id": "c_out",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1500,
+      "y": 1460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS outbox\n\u2192 admin's Telegram"
+    },
+    {
+     "id": "c_web",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1780,
+      "y": 1450,
+      "w": 400,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Web Alerts page</b><br>Alert rows \u00b7 badge \u00b7 [Replay] on failed work</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "p7_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_tg",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "agc",
+      "position": {
+       "x": 0,
+       "y": 0.2
+      }
+     },
+     "stroke": {
+      "color": "#13213A",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p7_l2",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "a_web",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_api",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p7_l3",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "a_api",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_set",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "change a setting",
+       "position": 0.3,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p7_l4",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "agc",
+      "position": {
+       "x": 0.47352941176470587,
+       "y": 1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_bus",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p7_l5",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "a_bus",
+      "position": {
+       "x": 0,
+       "y": 0.8
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_set",
+      "position": {
+       "x": 0.7,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "propose",
+       "position": 0.4,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p7_l6",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "a_bus",
+      "position": {
+       "x": 1,
+       "y": 0.8
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_cr",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "ask an admin",
+       "position": 0.4,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p7_l7",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "a_set",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_setdb",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p7_l8",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "a_setdb",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "a_snap",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#6B3FB8",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p7_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "c_ce",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "c_aws",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p7_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "c_budg",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "c_sns",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     },
+     "text": [
+      {
+       "text": "over \u00a375",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p7_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "c_rt",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "c_sns",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "email",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p7_l12",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "c_rt",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "c_out",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "Telegram",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p7_l13",
+     "lineType": "elbow",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "c_rt",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "c_web",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "web",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

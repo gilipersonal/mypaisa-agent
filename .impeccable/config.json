@@ -17,6 +17,83 @@
         "value": "inter",
         "createdAt": "2026-10-23T22:53:01.414Z",
         "reason": "Claude: Inter is only the non-Apple fallback for SF Pro, the Apple HIG system font the brief asks for; the design-first skill allows Inter"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "docs/design/agent-journey.html",
+          "docs/design/market-agent.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.717Z",
+        "reason": "Static pass pairs dark-theme tokens with light backgrounds; measured in Chromium, every text element passes WCAG AA in light and dark (MA-141)"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/agent-journey.html",
+          "docs/design/market-agent.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.749Z",
+        "reason": "Telegram's own blockquote bar, drawn as Telegram draws it in the chat mocks"
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "docs/design/agent-journey.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.775Z",
+        "reason": "Muted hero text #AEB6C4 on the hero navy measures 7.4:1"
+      },
+      {
+        "rule": "gpt-thin-border-wide-shadow",
+        "value": "*",
+        "files": [
+          "docs/design/agent-journey.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.800Z",
+        "reason": "The card shadow is MyPaisa DS v1's --mp-shadow token (MA-101)"
+      },
+      {
+        "rule": "all-caps-body",
+        "value": "*",
+        "files": [
+          "docs/design/agent-journey.html",
+          "docs/design/market-agent.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.825Z",
+        "reason": "Short section eyebrows, the design system's eyebrow style"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/agent-journey.html",
+          "docs/design/market-agent.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.849Z",
+        "reason": "Flush children are horizontal scroll wrappers, segmented controls and hero edges by design"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/agent-journey.html",
+          "docs/design/market-agent.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.875Z",
+        "reason": "1.25 to 1.29 line-height on display headings only"
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          "docs/design/market-agent.html"
+        ],
+        "createdAt": "2026-10-24T18:25:59.900Z",
+        "reason": "11 to 11.5px captions and Telegram timestamps, at the 11px floor"
       }
     ]
   }

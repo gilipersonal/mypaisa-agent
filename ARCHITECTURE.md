@@ -16,18 +16,43 @@ Telegram front end both of them lack. v1 (prices, briefs, alerts, chat, news,
 calls on Lambda) stands underneath; sections that have not changed are kept
 short.
 
-Animated version (v3 of the page, matching this document):
-<https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx>. The user journeys:
-<https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam>. The dashboard screens:
-<https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp>. Sources for all three are
-in `docs/design/`.
+The design is drawn and explained in these places (24 Oct 2026, MA-141):
 
-The component diagram, every service, the one agent and the DynamoDB entities
-in detail, is a Lucidchart document: <https://lucid.app/lucidchart/d03dd3bc-9525-43b2-a16e-8696cbfdab86/edit>
-(private to the account; share from the document's menu). Its rendered image
-and the import JSON it was built from are in `docs/design/lucid/`.
+- **The architecture, in Lucid**, on AWS 2024 shapes, one Lucid document per
+  view. They are private to the account; share them from each document's
+  menu. The PNG exports embedded below, the Lucid Standard Import JSON and the
+  script that generates it are in `docs/design/lucid/`.
 
-![MyPaisa Agent component diagram](docs/design/lucid/architecture.png)
+  | View | Lucid document | Drawn in |
+  | --- | --- | --- |
+  | 1 System overview | [open](https://lucid.app/lucidchart/c67e066b-141a-4b94-a860-b0501c6632ee/edit) | §3 |
+  | 2 Environments, domains and delivery | [open](https://lucid.app/lucidchart/60bffe0d-133b-489c-ae02-526a987252fc/edit) | §18 |
+  | 3 Identity and sign-in | [open](https://lucid.app/lucidchart/9376b624-efcc-4f56-96a9-9a00e9b8fa24/edit) | §4.5 |
+  | 4 Queues, retries and replay | [open](https://lucid.app/lucidchart/3077ebaa-b165-4936-933c-d68109de8544/edit) | §21 |
+  | 5 Where the data lives | [open](https://lucid.app/lucidchart/7a201f31-ab98-4e4c-bc00-35c5cd377fd3/edit) | §20.6 |
+  | 6 The market agent and the learning loop | [open](https://lucid.app/lucidchart/55cbf4c8-3603-4346-9a05-bb045b15fa16/edit) | §19 |
+  | 7 The agent team, settings, caps and alerts | [open](https://lucid.app/lucidchart/d8bc9ec7-ef1f-41fd-b372-7b8feea22b1a/edit) | §15.2, §20 |
+  | Adding a holding (sequence) | [open](https://lucid.app/lucidchart/06ed33f1-7704-4e57-9d91-baeb317ac271/edit) | §4.2 |
+
+- **[MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7)**:
+  twelve flows end to end (invite, sign-in, adding a holding, logging money,
+  the morning brief, a red alert, a question, the web app, the Admin center,
+  failures and replay, the spend ladder, the first of the month), each across
+  the member, Telegram, AWS, Claude and data lanes, with what the member sees,
+  the safeguards and the Jira stories that build it.
+- **[MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)**:
+  the market side end to end: free data, the rules engine, news matched to
+  holdings, the Forecaster's five models, both engines side by side, the
+  daily learning loop, the strategy layer, how it proves itself,
+  self-healing and the budgets.
+- Earlier pages, kept for reference: the
+  [animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx)
+  (v3, before the queues and the agent team), the
+  [first user journeys](https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam)
+  and the [dashboard screens](https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp).
+
+Sources for the pages are in `docs/design/`; both new pages use MyPaisa DS v1,
+"Warm ledger" (MA-101), with the crimson alert of MA-102, in light and dark.
 
 Status: design only.
 
@@ -86,67 +111,18 @@ Silence is a feature: about ten messages a week, two with sound at most.
 
 ## 3. System context
 
-The compact view. The full component diagram, with the platform services, the
-agent's tools and routing, and the DynamoDB entities, is the Lucidchart
-document linked above.
+Page 1 of the Lucid architecture ([open](https://lucid.app/lucidchart/c67e066b-141a-4b94-a860-b0501c6632ee/edit)): the household's doors on
+the left, the chat path along the top (API Gateway, the webhook, the updates
+queue, the agent, the outbox, the sender), the web app and sign-in below it,
+the background jobs, the stores, and the failure path to the admin's email.
+The other six pages zoom into one part each and are drawn in their sections.
 
-```mermaid
-flowchart LR
-  you([You · Telegram app])
-  tg[Telegram Bot API<br/>rich messages · buttons · files]
-  mini[Mini App dashboard<br/>inside Telegram]
-  web[Web app<br/>laptop browser, behind login]
-  subgraph aws[AWS us-east-1 · Terraform]
-    apigw[API Gateway<br/>api.mypaisapp.com]
-    cog[Cognito<br/>auth.mypaisapp.com]
-    hook[webhook λ]
-    uq[(SQS FIFO · updates<br/>one lane per member)]
-    agent[agent λ · Claude tool loop]
-    ob[(SQS FIFO · outbox<br/>one lane per chat)]
-    send[sender λ]
-    wq[(SQS · work)]
-    dlq[(dead-letter queues<br/>alarm · replay)]
-    ingest[ingest λ · prices, NAV, FX]
-    engine[engine λ · indicators, pillars, macro, stance]
-    news[news λ · RSS, events]
-    score[score λ · sentiment]
-    docs[docs λ · factsheets, screenshots]
-    api[api λ · read-only JSON<br/>dashboard · audit · activity]
-    cf[CloudFront<br/>console.mypaisapp.com · static app]
-    sched[EventBridge Scheduler<br/>Europe/London]
-    ddb[(DynamoDB · registry, state)]
-    s3[(S3 · prices, docs, charts, web app)]
-    cw[CloudWatch + X-Ray<br/>logs · traces · metrics · alarms]
-    ssm[(SSM · keys)]
-  end
-  br[Anthropic API<br/>Haiku / Sonnet / Opus 5.5<br/>web search · batches]
-  mkt[EODHD / yfinance<br/>BlackRock pages · FT]
-  ecb[ECB FX]
-  rss[RSS feeds]
+![System overview, Lucid page 1](docs/design/lucid/01-overview.png)
 
-  you <--> tg
-  you <--> mini
-  you <--> web
-  tg --> apigw --> hook --> uq --> agent
-  agent --> ob --> send --> tg
-  mini & web --> cf
-  mini & web -- sign in · Telegram, Google, passkey --> cog
-  mini & web -- session · /v1 --> apigw --> api --> ddb
-  sched & agent --> wq
-  wq -- worker λ runs each job --> ingest & news & score & docs & engine
-  uq & ob & wq -. after the last try .-> dlq
-  ingest --> mkt & ecb
-  ingest --> s3 --> engine --> ddb
-  engine -- alert candidates --> agent
-  agent <--> br
-  agent <--> ddb
-  docs --> br
-  docs --> s3
-  news --> rss
-  score --> br
-```
-
-One container image, eight handlers. Nothing waits on anything else directly:
+One container image and a handful of handlers: `webhook`, `agent`, `sender`,
+`worker` (which runs each background job by its type: ingest, engine, news,
+scoring, documents, briefs), `api`, the authorizer and the Cognito triggers.
+Nothing waits on anything else directly:
 your messages, the bot's replies and every background job travel through SQS
 queues that retry them and keep what still fails (§21). The agent Lambda is
 the only one that talks to you in the chat. The api Lambda is the only one the web app talks
@@ -205,31 +181,12 @@ items of an older version, run once from a script, never by hand.
 
 ### 4.2 Adding a holding, from Telegram
 
-```mermaid
-sequenceDiagram
-  participant U as You
-  participant A as agent λ
-  participant D as docs λ
-  participant B as Claude (Anthropic API)
-  participant R as Registry
-  U->>A: /add (or just sends a PDF)
-  A->>U: "Send the factsheet, a screenshot, or tell me what it is"
-  U->>A: factsheet.pdf
-  A->>D: extract(factsheet)
-  D->>B: PDF + schema (name, ISIN, OCF, allocation, top holdings, benchmark, currency)
-  B-->>D: structured JSON with citations
-  D-->>A: extracted + confidence per field
-  A->>U: Card: what I read, with the low-confidence fields marked · [Confirm] [Edit] [Cancel]
-  U->>A: Confirm
-  A->>R: Instrument + Document; resolve price sources (ISIN → yahoo id, BlackRock page)
-  A->>U: "Added. How much do you hold? Send a screenshot or type it."
-  U->>A: screenshot
-  A->>D: extract(screenshot)
-  D->>B: image + schema (holding name, value, units?, date)
-  A->>U: Card: Balanced £22,925 on 23 Oct · units 1,234.5 at NAV 18.57 · [Confirm]
-  U->>A: Confirm
-  A->>R: Position + Valuation(source=user_screenshot) + Transaction
-```
+Every hop goes through a queue (§21): the update waits in the member's lane,
+the document read is a job on the work queue run by the worker, and every
+reply goes out through the outbox. The sequence in Lucid:
+[open](https://lucid.app/lucidchart/06ed33f1-7704-4e57-9d91-baeb317ac271/edit).
+
+![Adding a holding from Telegram, Lucid sequence](docs/design/lucid/08-add-holding-sequence.png)
 
 Any field Claude is unsure of is shown in amber and asked about. A holding is
 never saved without the Confirm tap. The same path handles an ETF (ISIN and
@@ -287,6 +244,10 @@ year), set once per account.
 
 ### 4.5 Identity, members and views
 
+
+![Identity and sign-in, Lucid page 3](docs/design/lucid/03-identity.png)
+
+Page 3: the doors in, the Telegram custom auth, Cognito, the session cookie, the authorizer, and the owner's sign-out and pause. [Open it in Lucid](https://lucid.app/lucidchart/9376b624-efcc-4f56-96a9-9a00e9b8fa24/edit).
 **There are no passwords.** Telegram authenticates every person who talks to
 the bot, and it signs the identity it hands to the Mini App. On a laptop,
 Google can vouch for the person instead, through a Google account linked to
@@ -911,11 +872,14 @@ maintains, so nothing is shown that cannot be changed from the chat.
 | Charts | matplotlib (Agg) for PNG; **lightweight-charts in the web app** |
 | Telegram | Thin client on httpx; **rich messages with HTML fallback; `initData` and Login Widget verification in Cognito's custom-auth Lambdas** |
 | **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Telegram custom auth, Google, passkeys; five-minute access tokens** |
-| Runtime | Lambda container image, arm64 |
+| Runtime | Lambda container image, arm64; **handlers `webhook`, `agent`, `sender`, `worker` (each job by its type), `api`, the authorizer and the Cognito triggers** |
 | **Queues** | **SQS: a FIFO queue in (one lane per member), a FIFO queue out (one lane per chat), a work queue for background jobs, and a dead-letter queue behind each, with alarms and replay (§21)** |
 | Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform only, GitHub Actions with OIDC; **dev and prod as two isolated copies in one account (§18)** |
 | **Web app hosting** | **S3 + CloudFront per environment at `console(-dev).mypaisapp.com`; API Gateway HTTP API at `api(-dev).mypaisapp.com`; scheduled Lambdas have no public endpoint** |
 | **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind the app's Activity and Audit pages** |
+| **Caps and alerts** | **The app's meters and steps (§15); Cost Explorer read once a day for the AWS meter; AWS Budgets at £75 as the backstop; SNS `mypaisa-<env>-admin-alerts` for the admin's email** |
+| **Orchestration (phase 12)** | **Step Functions for the daily run; an EventBridge custom bus, `mypaisa-<env>-events`, between the agents (§20)** |
+| **Design and diagrams** | **Lucidchart on the AWS 2024 shapes, generated by `docs/design/lucid/gen_aws_architecture.py`; explainer pages as claude.ai artifacts in MyPaisa DS v1, "Warm ledger" (MA-101)** |
 
 ---
 
@@ -1072,6 +1036,10 @@ neither environment can eat the other's share.
 
 ### 15.2 Caps and alerts, set by the admin in the Admin center (MA-137)
 
+
+![The agent team, settings, caps and alerts, Lucid page 7](docs/design/lucid/07-agents-caps.png)
+
+Page 7: the two caps, the meters, the alert router and where each alert goes; the agent team and the settings service of §20 sit above them. [Open it in Lucid](https://lucid.app/lucidchart/d8bc9ec7-ef1f-41fd-b372-7b8feea22b1a/edit).
 Every threshold below is a setting the admin changes in the Admin center's
 Spend and Alerts pages (and, from phase 12, from the admin's chat, §20.3),
 behind the fresh check, each change an audit row and a Telegram message.
@@ -1175,6 +1143,10 @@ a daily digest instead.
 
 ## 18. Environments, domains and delivery
 
+
+![Environments, domains and delivery, Lucid page 2](docs/design/lucid/02-environments.png)
+
+Page 2: one account, what is shared in it, dev and prod side by side with their own keys, and how a change reaches each. [Open it in Lucid](https://lucid.app/lucidchart/60bffe0d-133b-489c-ae02-526a987252fc/edit).
 Arun's decisions, 24 Oct 2026 (MA-106): "I will be developing local, from day 1
 I need the auth to be fixed using AWS tech"; one AWS account with every
 component twice; dev seeded with synthetic data, prod a clean slate; everything
@@ -1296,6 +1268,10 @@ tracker's data is mapped (MA-105).
 
 ## 19. The Forecaster: a second engine beside the rules engine (phase 11, later)
 
+
+![The market agent and the learning loop, Lucid page 6](docs/design/lucid/06-market-agent.png)
+
+Page 6: free data in, the rules engine and the Forecaster side by side, calibration, the card, and the daily learning loop of §20.4 below them. [Open it in Lucid](https://lucid.app/lucidchart/55cbf4c8-3603-4346-9a05-bb045b15fa16/edit).
 Arun, 24 Oct 2026 (MA-117): "My target is to minimize loss and grow money
 over time steadily ... another agent which will give really predictive
 recommendation side by side with the one you are building ... I want this
@@ -1625,6 +1601,10 @@ man's switch, the nightly drift check (MA-108) and the Lambda rollback
 
 ### 20.6 Where the data lives
 
+
+![Where the data lives, Lucid page 5](docs/design/lucid/05-data.png)
+
+Page 5: the one DynamoDB table and its entity groups, the S3 lake and its prefixes, DuckDB, the documents and web buckets, and SSM. [Open it in Lucid](https://lucid.app/lucidchart/7a201f31-ab98-4e4c-bc00-35c5cd377fd3/edit).
 **S3**, the record, in the `mypaisa-<env>-lake` bucket, versioned, in
 Parquet, queried with DuckDB:
 
@@ -1684,6 +1664,10 @@ admins, and nothing shared: the bounds of §4.5 stand.
 
 ## 21. Queues: nothing lost, everything retried (MA-138)
 
+
+![Queues, retries and replay, Lucid page 4](docs/design/lucid/04-queues.png)
+
+Page 4: the three queues and their consumers, the idempotency records, the retry rules, and the failure path from the dead-letter queues to replay. [Open it in Lucid](https://lucid.app/lucidchart/3077ebaa-b165-4936-933c-d68109de8544/edit).
 Arun, 24 Oct 2026: "Add SQS, the system should be resilient and self heal
 with retries from Queues."
 
@@ -1741,8 +1725,8 @@ Replay moves dead-lettered messages back to their queue:
 | From | How |
 | --- | --- |
 | Phase 1 (MA-139, MA-140) | `scripts/redrive.sh <queue>` |
-| Phase 5 (MA-137) | A [Replay] button on the alert, in the Admin center and the admin's Telegram chat |
-| Phase 12 (MA-135) | The ops warden replays on its own once the cause is healthy again, at most three times per message with growing gaps; a message that fails the same way again becomes an incident |
+| Phase 5 (MA-137, MA-145) | A [Replay] button on the alert, in the Admin center and the admin's Telegram chat |
+| Phase 12 (MA-135, MA-146) | The ops warden replays on its own once the cause is healthy again, at most three times per message with growing gaps; a message that fails the same way again becomes an incident |
 
 Replays are safe: handlers are idempotent; an update more than an hour old is
 answered "still want this?" rather than acted on; and a Confirm tap whose
