@@ -82,13 +82,17 @@ def captions(path: Path) -> set[str]:
     as '<number> · <name>' with the number from the same board ('1 · Portfolio card', never '4 · ...')."""
     if path not in _captions:
         t = html.unescape(path.read_text(errors="replace"))
-        caps, ids = set(), set()
+        caps, option_ids = set(), set()
 
-        def pair(n: str, name: str) -> None:
+        def pair(n: str, name: str, option: bool = False) -> None:
+            """A numbered board: its name, and the name after its own number, unless the name already starts with it."""
             n, name = (n or "").strip(), (name or "").strip()
             if n and name and len(n) <= 6:
-                ids.add(n)
-                caps.update({name, f"{n} · {name}", f"{n} {name}"})
+                if option:
+                    option_ids.add(n)
+                caps.add(name)
+                if not re.match(rf"^{re.escape(n)}\b", name):
+                    caps.update({f"{n} · {name}", f"{n} {name}"})
 
         for cls in ("dv-cap", "dv-sname", "dv-oname", "dv-tname"):
             for m in re.finditer(rf'class="{cls}"[^>]*>(.*?)</(?:p|span|div|a)>', t, re.S):
@@ -112,19 +116,22 @@ def captions(path: Path) -> set[str]:
             if "board" in fields:  # the object's title is its board field; its name is something else (a holding)
                 continue
             caps.update(fields.get(k) for k in ("cap", "name"))
-            pair(fields.get("id") or fields.get("tag"), fields.get("name"))
+            pair(fields.get("id") or fields.get("tag"), fields.get("name"), option=True)
         for m in re.finditer(rf"\b\w+\(\s*'([^'\n]{{1,6}})'\s*,\s*\{{\s*name\s*:\s*{lit}", t):  # make('1c', { name: 'Watcher' })
-            pair(m.group(1), m.group(2).replace("\\'", "'"))
+            pair(m.group(1), m.group(2).replace("\\'", "'"), option=True)
         # A board field names a board wherever it is: board: 'Browser · Holding · Forecast'.
         caps.update(m.group(1) for m in re.finditer(rf"\bboard\s*:\s*{lit}", t))
-        # A title built from the board's number: data-screen-label="{{ o.id }} Telegram avatar {{ t.label }}".
+        # A title built from an option's number: data-screen-label="{{ o.id }} Telegram avatar {{ t.label }}",
+        # expanded only with the numbers of the options the canvas lists (1a, 1b, 1c), never its section numbers.
         for m in re.finditer(r'data-screen-label="\{\{\s*\w+\.id\s*\}\}([^"]*)"', t):
             rest = _caption(m.group(1))
             if rest:
-                caps.update(f"{n} {rest}" for n in ids)
+                caps.update(f"{n} {rest}" for n in option_ids)
         # A board title kept in a constant: const B1 = 'Telegram · Currency check'.
         caps.update(m.group(1) for m in re.finditer(rf"\b\w+\s*=\s*'((?:{DOORS}) · [^'\\\n]+)'", t))
-        _captions[path] = {c for c in caps if c and re.search(r"\w", c)}
+        # Script fragments are not titles: "' + w.label.replace(/", " + lapScr.name : ".
+        code = re.compile(r"['\"]\s*\+|\+\s*['\"]|\+\s*\w+\.\w|\.replace\(|\?\s*\w+\.\w")
+        _captions[path] = {c for c in caps if c and re.search(r"\w", c) and not code.search(c)}
     return _captions[path]
 
 
@@ -141,7 +148,7 @@ def board_ok(board: str, file: str, path: Path) -> bool:
     if board in caps:
         return True
     m = re.match(rf"^({DOORS}) · (.+)$", board)
-    return bool(m and door(file) == m.group(1) and m.group(2) in caps)
+    return bool(m and door(file) == m.group(1) and m.group(2) in caps and not re.match(rf"^({DOORS}) · ", m.group(2)))
 
 
 def sha256(path: Path) -> str:
@@ -197,6 +204,8 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
             warnings.append(f"{k}: {what}: {'; '.join(it[field])}")
     if it.get("undrawn") and not ui:
         errors.append(f"{k}: lists undrawn screens but has no UI")
+    if it.get("open") and status in ("In Review", "Done"):
+        errors.append(f"{k}: {status} with open questions ({'; '.join(it['open'])}); settle them and clear open first")
     if it.get("undrawn") and status in ("In Review", "Done"):
         errors.append(f"{k}: {status} with screens still undrawn ({'; '.join(it['undrawn'])}); draw them and clear undrawn first")
     for b in it.get("boards", []):
@@ -232,8 +241,26 @@ def key_order(key: str) -> tuple[int, str]:
     return (int(m.group(1)), "") if m else (10**9, key or "")
 
 
+def shape_errors(trace: dict) -> list[str]:
+    """The trace's own shape: lists of objects where objects belong. Every other check assumes it."""
+    errors = []
+    if not isinstance(trace, dict):
+        return ["docs/trace.json must hold an object"]
+    for field in ("phases", "items", "others"):
+        val = trace.get(field, [])
+        if not isinstance(val, list):
+            errors.append(f"{field} must be a list")
+        else:
+            errors += [f"{field}: an entry is not an object: {str(x)[:80]}" for x in val if not isinstance(x, dict)]
+    if not isinstance(trace.get("claude_design", {}), dict):
+        errors.append("claude_design must be an object")
+    return errors
+
+
 def check(trace: dict) -> tuple[list[str], list[str]]:
-    errors, warnings = [], []
+    errors, warnings = shape_errors(trace), []
+    if errors:
+        return errors, warnings
     ctx = context(trace)
     plan_lines = set(PLAN.read_text().splitlines())
     by_phase = {p.get("phase"): p for p in trace.get("phases", [])}
@@ -408,6 +435,12 @@ BOARD_CASES = [
     ("app", "India.dc.html", "MF folio · Fund house A", False),
     ("app", "Forecast.dc.html", "Browser · Forecaster · Proof", True), ("app", "Forecast.dc.html", "Balanced", False),
     ("app", "Forecast.dc.html", "f2 Balanced", False), ("app", "Forecast.dc.html", "NASDAQ 100 ETF", False),
+    ("ds", "Logo.dc.html", "1a Telegram avatar", True), ("ds", "Logo.dc.html", "1 Telegram avatar", False),
+    ("ds", "Logo.dc.html", "1 sign-in", False), ("ds", "Logo.dc.html", "1 intro", False),
+    ("app", "Prototype.dc.html", "' + w.label.replace(/", False), ("app", "Prototype.dc.html", " + lapScr.name : ", False),
+    ("app", "Telegram admin.dc.html", "Telegram · Approval request", True),
+    ("app", "Telegram admin.dc.html", "Telegram · Telegram · Approval request", False),
+    ("app", "Admin center.dc.html", "B · B · Sessions first", False),
 ]
 
 
@@ -428,6 +461,10 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 2
     trace = load(TRACE)
+    if argv[1] in ("render", "start") and (bad := shape_errors(trace)):
+        for e in bad:
+            print(f"DRIFT: {e}")
+        return 1
     if argv[1] == "render":
         TRACE_MD.write_text(render(trace))
         print(f"wrote {TRACE_MD.relative_to(ROOT)}")

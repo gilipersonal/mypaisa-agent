@@ -827,12 +827,15 @@ The pages, all read-only:
   the last seven days.
 
 There is no write path for the household's records. The api's data routes
-are GET only, the app has no form that posts, and every change still goes
-through a card and a Confirm tap in the chat, where it is audited. The
+are GET only, the app has no form that posts a record (the CAS password of
+§22.2 is typed into the Mini App only to open a file in memory, and changes
+nothing), and every change still goes through a card and a Confirm tap in
+the chat, where it is audited. The
 exceptions are the owner's admin settings and operations in the Admin center
 (Arun, 24 Oct 2026: "Dashboard will be read only (except for admin)"): the
 security actions (sign out, pause, restore, unlink; MA-102); the Claude
-ceiling, the caps and their alert thresholds (§15.1, §15.2, MA-116, MA-137);
+ceiling, the caps, their alert thresholds and the alert routing, quiet hours
+and cooldowns (§15.1, §15.2, MA-116, MA-137);
 replaying dead-lettered work (§21.3, MA-145); approving or rejecting an
 agent's request and rolling a setting back (§20.2, §20.3, MA-130); and
 choosing how an incident ends (§20.5, MA-135). Each is behind a fresh check

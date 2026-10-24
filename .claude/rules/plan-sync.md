@@ -61,10 +61,10 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 - An ARCHITECTURE section the trace cites that does not exist.
 - A key cited in ARCHITECTURE, PLAN, TECH_STACK or the READMEs that is not in the trace.
 - A UI story with no board and no note; a UI story with no board that is In Review or Done; a `planned` or `picked` story with no board; a story with no UI and a design state or undrawn screens.
-- A `planned` story that is In Review or Done: code came before Arun's pick (rule 3). A story In Review or Done with screens still `undrawn`.
+- A `planned` story that is In Review or Done: code came before Arun's pick (rule 3). A story In Review or Done with screens still `undrawn` or questions still `open`.
 - `ui` and the `design` label disagreeing: the label marks exactly the stories with UI (`.claude/jira/taxonomy.md`).
 - A board file missing from the repo mirror or from `claude-design.json`; a board name that is not exactly one of its canvas's titles (a caption, or a numbered board as `<number> · <name>` with its own number), optionally after the door the whole file draws; a mirrored file whose size or hash no longer matches; a file in the mirror that `claude-design.json` does not record.
-- A key in both `items` and `others`, a row with no key, a phase with no epic.
+- A key in both `items` and `others`; a row, phase or entry that is not an object; a row with no key, summary, status or type; a phase with no epic or title; a field of the wrong type.
 - `docs/TRACE.md` not rendered from the current trace.
 
 A UI story with no board, or with screens still to draw (`undrawn`), may sit
