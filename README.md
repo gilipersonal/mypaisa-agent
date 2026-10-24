@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="docs/mark.svg" width="96" height="96" alt="The MyPaisa Agent mark">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/mark-animated-dark.svg">
+  <img src="docs/mark-animated.svg" width="96" height="96" alt="The MyPaisa mark: a navy coin with a pound sign, a thin orbit around it, and one coral dot keeping watch">
+</picture>
 
 # MyPaisa Agent
 
@@ -89,7 +92,7 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 | `tests/` | pytest: golden files for every signal, property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
 | `infra/terraform/` | Every AWS resource: the Lambdas and their image, the Scheduler rules, the DynamoDB table, the S3 bucket, SSM parameters, the IAM roles, the budget and the alarms; `envs/dev.tfvars`. |
 | `.github/workflows/` | `deploy.yml`: lint, typecheck, tests and `terraform plan` on every pull request; build, apply and deploy from `main` through OIDC. |
-| `docs/` | The mark: `mark.svg` for this page, `mark-1024.png` for the bot's Telegram picture (`/setuserpic` in BotFather), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the three design pages as source: the animated architecture, the user journeys, and the dashboard artboards. |
+| `docs/` | The mark, "Watcher" (MA-103): `mark.svg` and `mark-dark.svg` for light and dark grounds, `mark-animated.svg` and `mark-animated-dark.svg` for this page (the intro plays once, and Reduce Motion shows the final frame), `mark-small.svg` for 32 px and below and the favicon, `mark-icon.svg` and `mark-1024.png` for the bot's Telegram picture (`/setuserpic` in BotFather), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the three design pages as source: the animated architecture, the user journeys, and the dashboard artboards. |
 | `Dockerfile` | One container image for every Lambda, arm64, on the AWS Python 3.14 base, since pandas and matplotlib exceed the zip limit. |
 
 ## Models
