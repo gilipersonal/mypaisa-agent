@@ -56,7 +56,7 @@ Status: design. Nothing is built.
 | Route 53 + ACM | The `mypaisapp.com` zone and the `*.mypaisapp.com` certificate already exist, owned by the wealth tracker's Terraform; MyPaisa looks them up and adds its six records (MA-97 hands the zone over later) |
 | X-Ray | One trace per run from the webhook through the agent to the Anthropic API, DynamoDB, S3 and Telegram; inside the free tier at this volume |
 | CloudWatch | Logs with 14-day retention and saved Logs Insights queries; ten custom metrics and one dashboard per environment; an error alarm per function; the 07:45 dead man's switch; cost, freshness and audit-chain alarms; all delivered to the chat |
-| AWS Budgets | prod: alert at £40, disable the Scheduler rules at £50; dev: cap at £10 |
+| AWS Budgets | AWS spend only (Claude has its own ceiling, §6 Guard rails): prod alerts at £40 and disables the Scheduler rules at £50; dev capped at £10 |
 | IAM | One execution role per function and environment (only its own table, bucket and SSM path); three OIDC roles for CI pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy` on `main`, `ci-prod-deploy` on `main` and the `prod` environment); a developer role for dev with an explicit deny on anything tagged `env=prod`; all in Terraform, nothing by hand |
 
 ## 4. Infrastructure and tooling
@@ -73,7 +73,7 @@ Status: design. Nothing is built.
 
 | Service | Plan | Used for |
 | --- | --- | --- |
-| Anthropic API | Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; paid from the Max or Team plan's monthly API credit ($100 on Max 5x) through the linked Console organisation, with a spend limit per workspace (£35 prod, £10 dev) | Every model call, document extraction, web search and fetch, the nightly scoring |
+| Anthropic API | Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; paid from the Max or Team plan's monthly API credit ($100 on Max 5x) through the linked Console organisation, with a spend limit per workspace ($100 prod, the hard limit behind the ceiling; $10 dev) | Every model call, document extraction, web search and fetch, the nightly scoring |
 | Telegram Bot API | Free | The chat, files, rich messages, the Mini App, the Login Widget for the laptop |
 | Google OAuth | Free | Sign in with Google through Cognito's Google provider; one OAuth client per environment, its secret in that environment's SSM path |
 | Twelve Data | Free Basic tier (8 credits a minute, 800 a day) | US closes, the US macro basket, the earnings calendar, FX fallback, ISIN lookup |
@@ -107,8 +107,11 @@ actually runs.
 | Domains and certificates | £0 | £0 | £0 | £0 | The zone and the wildcard certificate already exist; six records; ACM is free |
 | **Total** | **£2–4** | **£9.70** | **£32** | **£42** | |
 
-Both environments together: about **£12–14 a month lean, £34–36 standard**,
-under the £50 cap. There is no one-off cost and no reserved commitment;
+Both environments together: about **£12–14 a month lean, £34–36 standard**.
+Prod's Claude lines sit under their own ceiling, $100 a month by default
+(about £77), which the owner moves in the Admin center; expected use for two
+members is $24 to $39 (`ARCHITECTURE.md` §15.1). There is no one-off cost and
+no reserved commitment;
 stopping an environment is `terraform destroy` on it.
 
 ### What moves the number
@@ -125,9 +128,9 @@ stopping an environment is `terraform destroy` on it.
 
 ### Guard rails
 
-- Anthropic Console: one workspace per environment in the organisation linked to the plan, each with a spend limit (£35 prod, £10 dev) that hard-stops its key; the plan's credit ($100 a month on Max 5x) is the whole model budget, auto-reload stays off, and when the credit is exhausted the API stops until the next cycle, which the dead man's switch reports.
-- AWS Budgets: prod alerts at £40 and disables the schedules at £50; dev is capped at £10.
-- A per-day Claude token ceiling in the agent, and one per household.
+- The Claude ceiling (`ARCHITECTURE.md` §15.1): $100 a month in prod and $10 in dev, set by the owner in the Admin center; every call metered from the API's usage counts and checked before it is made; a message at 70%, savers at 85%, essentials only at 95%, Claude off at 100% with every card falling back to its template; no member past 60% of it, no day past three times the daily average, no run past eight model calls.
+- Anthropic Console: one workspace per environment in the organisation linked to the plan, each with a spend limit that hard-stops its key ($100 prod, the hard limit behind the ceiling; $10 dev); the plan's credit ($100 a month on Max 5x) pays for both, auto-reload stays off, and when the credit is exhausted the API stops until the next cycle, which the dead man's switch reports.
+- AWS Budgets, for AWS spend only: prod alerts at £40 and disables the schedules at £50; dev is capped at £10.
 - `/pause` stops everything that speaks or scores.
 - The figures are from published free tiers and list prices, not a bill; the
   first month of prod gives the real number.

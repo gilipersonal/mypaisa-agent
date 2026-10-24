@@ -171,7 +171,9 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
-| **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. |
+| **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
+| **BudgetSettings** | `portfolio_id`, `monthly_ceiling_usd` (prod $100, dev $10), `hard_limit_usd` (the Console workspace limit, typed in to match it), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
+| **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
 | **SentimentIndex**, **ArticleScore**, **WebhookSeen** | per portfolio or global | |
 | **PendingAction** | `member_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `settings` · `confirm`), `step`, `collected` (the answers so far), `message_id`, `expires_at` (24 h) | The state of a guided flow: what the bot is waiting for from this member. The next message or tap resumes it; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `agent_proposal` · `schedule` · `migration`), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
@@ -330,8 +332,9 @@ write outside that member's rights. One DynamoDB table cannot enforce that
 with IAM alone, so it is enforced in code and covered by tests ("member A can
 never read household B; a member cannot read another member's detail unless
 shared"). Each member's chat memory, decisions, preferences and cooldowns are
-their own. A per-household Claude token ceiling sits under the account-level
-budget, so one chatty member cannot spend the household's allowance.
+their own. The monthly Claude ceiling is the household's (§15.1), and no
+member may spend more than their share of it (60% by default), so one chatty
+member cannot spend the household's allowance.
 
 **Scope.** Two members in one household is personal software. Several
 unrelated households using a bot that says "ADD, 64% confidence" starts to
@@ -605,6 +608,31 @@ question and its buttons, and a `PendingAction` row that records what the
 bot is waiting for; the next message or tap from that member resumes the
 flow, and a day of silence clears it.
 
+**Chat memory: keep it all, send little** (MA-115). Every message is kept,
+one `ChatTurn` row each, for ninety days; only the current conversation is
+sent to Claude. A conversation ends after thirty minutes of silence or when a
+guided flow finishes, but stays open while the bot waits on an `ask_user`
+answer (up to the `PendingAction`'s day). A new conversation starts from the
+fixed part (system prompt, tools, card rubrics; cached with the one-hour TTL,
+since household messages often come more than five minutes apart) and a few
+one-line notes on the member's recent conversations, written by Haiku when
+each one closed. The notes come after the cached part, so both members share
+one cached copy of it. Nothing else from old chats is sent: the agent looks
+up what it needs (`get_audit`, `get_portfolio`, `get_stances`), as it never
+asks for what it can look up. A conversation that passes about 50,000 tokens
+starts afresh from a summary. Re-sending whole histories would cost 7p to 85p
+a message after a month and keep growing; this way a message costs about
+1.5p to 3p on Sonnet.
+
+**Two rules the loop keeps, from the API as it is now.** History is
+append-only: each response's content is stored exactly as returned and an
+earlier turn is never edited or trimmed, because the 5.5 models tie their
+thinking to the conversation and an edited history is refused on newer
+accounts; a conversation is shortened only by starting a new one. And no tool
+call is forced: `tool_choice` stays `auto` (forcing one is an error on Sonnet
+5.5 and Opus 5.5), tools are `strict: true`, and the prompt says which tool
+to use.
+
 **Borrowed patterns:** the bull/bear debate as two calls plus a judge for any
 stance above 70% confidence and for the weekly review; a reflection step that
 reads the last four weeks of stances and their grades before writing the
@@ -621,8 +649,9 @@ the turn with a question; the answer resumes it through `PendingAction`) and
 
 **Guardrails in code, not prompt:** no tool can trade, spend beyond a search
 query, delete data, or message anyone but your chat. Protected positions are
-filtered before the cascade runs. The daily token ceiling, the weekly red
-budget and quiet hours are enforced by the agent Lambda. `/pause` sets a flag
+filtered before the cascade runs. The monthly Claude ceiling with its
+ladder and guards (§15.1), the weekly red budget and quiet hours are enforced
+by the agent Lambda. `/pause` sets a flag
 every scheduled run checks first.
 
 ---
@@ -736,14 +765,15 @@ The pages, all read-only:
   trigger, the model calls and their tokens and cost, the tools it called
   and how long they took, what it sent, and any error; a board of the
   scheduled jobs with their last and next run and the freshness of each
-  holding's price; this month's Claude spend against the cap; alarms from
+  holding's price; this month's Claude spend against the ceiling and the step it is on; alarms from
   the last seven days.
 
 There is no write path for the household's records. The api's data routes
 are GET only, the app has no form that posts, and every change still goes
-through a card and a Confirm tap in the chat, where it is audited. The one
-exception is the owner's security actions in the Admin center (sign out, pause,
-restore, unlink), behind a fresh check with a passkey or Google (MA-102).
+through a card and a Confirm tap in the chat, where it is audited. The
+exceptions are the owner's settings in the Admin center: the security actions
+(sign out, pause, restore, unlink; MA-102) and the Claude ceiling (§15.1,
+MA-116), each behind a fresh check with a passkey or Google.
 Privacy mode hides pounds here too. Each environment has its own S3 bucket and
 CloudFront distribution for the app (`console-dev` and `console`), and its own
 API Gateway HTTP API on a custom domain (`api-dev` and `api`), §18.
@@ -758,7 +788,7 @@ Three readers, three surfaces, one source of truth.
 | --- | --- | --- |
 | You, in the web app | the Activity page (§9.3) and the Audit page (§4.6) | What did the bot do today, what did it call, what did it cost, what changed and who changed it |
 | Whoever operates it, in AWS | one CloudWatch dashboard per environment, Logs Insights, X-Ray | Where did a run fail, which tool is slow, is a schedule late |
-| The chat | alarms delivered as messages to the owner | Something needs a person: a job did not run, spend is near the cap, a feed is stale |
+| The chat | alarms delivered as messages to the owner | Something needs a person: a job did not run, Claude spend has reached a step of the ladder (§15.1), a feed is stale |
 
 **The source of truth is the `RunRecord`.** Every Lambda, not only the
 agent, writes one row per run when it finishes, success or failure: the
@@ -785,8 +815,8 @@ ninety days.
   per environment shows them; the first three dashboards are free.
 
 **Alarms**, each delivered to the owner's chat: an error in any function; the
-07:45 dead man's switch when the brief has not gone out; daily model cost
-over the ceiling; any holding's price older than two days; a burst of
+07:45 dead man's switch when the brief has not gone out; each step of the
+Claude ladder and the daily guard (§15.1); any holding's price older than two days; a burst of
 rejected webhook calls; the audit chain failing its weekly check. Alarms are
 also `RunRecord` rows of trigger `alarm`, so the Activity page lists them.
 
@@ -820,7 +850,7 @@ the old repository is retired when the new app covers it. What stays fixed:
 
 | | |
 | --- | --- |
-| **Read-only, everywhere** | No screen writes the household's records, except the owner's security actions in the Admin center (MA-102). Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
+| **Read-only, everywhere** | No screen writes the household's records; the Admin center holds only the owner's settings: the security actions (MA-102) and the Claude ceiling (MA-116). Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The ISA of phase 1 and the household's property, deposits, policies, pensions and loans are rows of the same shapes. |
 | **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Telegram, Google or a passkey to log in, through each environment's Cognito pool. |
 | **Two currencies** | GBP and INR side by side, from the ECB's daily rates, chosen per member; USD and EUR for the holdings that trade in them. |
@@ -917,10 +947,85 @@ Two members on the standard setup: about £35. The Claude lines are paid by
 the monthly API credit that comes with the Max or Team plan ($100 a month on
 Max 5x, about £77), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
-cost is £0 and the cap is the credit itself. Stock fundamentals (EODHD
+cost is £0. Prod's Claude spend is held under a ceiling of $100 a month that
+the owner moves in the Admin center (§15.1). Stock fundamentals (EODHD
 Fundamentals) would add about £46 a month and are not planned unless a single
 share is added. A second *household* would add roughly a full set (£10–34),
 since data feeds are shared but model calls are not.
+
+### 15.1 The Claude budget and its ceiling
+
+Arun, 24 Oct 2026 (MA-112): "I have on prod a budget of $100 per month ... It
+should be configurable for me to move the ceiling up/down from Admin portal."
+
+**What $100 buys.** Two members are expected to spend about $24 a month on
+the standard setup and $39 on the full one (the Claude lines above, in
+dollars). The ceiling leaves room for two and a half to four times that; it
+is a guard against a bad month or a runaway loop, not a ration.
+
+| Line, two members | Standard | Full |
+| --- | ---: | ---: |
+| Briefs, alerts, chat, cards, Saturday review | $20 | $34 |
+| Sentiment scoring, via Batches | $3 | $3 |
+| Document extraction | $0.25 | $0.25 |
+| Web search | $0.65 | $1.30 |
+| **Expected** | **$24** | **$39** |
+| **Ceiling** | **$100** | **$100** |
+
+**The ceiling, set in the Admin center.** `BudgetSettings` holds the monthly
+ceiling ($100 in prod, $10 in dev), each member's share (60%), and the day the
+plan's credit renews, which starts each cycle. The owner moves the ceiling up
+or down in the Admin center (MA-116): owner only, in a browser, behind the
+fresh check (MA-102), with an audit row and a Telegram message to the owner;
+it takes effect on the next model call. Lowering it below what is already
+spent puts the bot straight onto the step that implies, and the Admin center
+says which before Confirm. The chat can report spend (`get_spend`) but not
+change it.
+
+**The meter** (MA-113). Every model call's cost is worked out from the API's
+own `usage` counts and the price table: input, output and thinking, cache
+writes and reads, web searches, Batches at half price. It is added to the
+cycle's `SpendMonth` row with an atomic add, by member, feature, model and
+day, and written on the `RunRecord` as before. Before every call the agent
+reads that row, one item, and the step decides whether and how the call is
+made. The meter is reconciled weekly against the Console (§10).
+
+**The ladder** (MA-113, MA-114):
+
+| Spent this cycle | What happens |
+| --- | --- |
+| under 70% | Normal. |
+| 70% | One message to the owner: what is spent, on what, and the days left. Nothing changes. |
+| 85% | Savers: the bull/bear debate is skipped, the Saturday review runs on Sonnet instead of Opus, "Why?" searches are limited to three a day, and the nightly sentiment scoring pauses (stances keep the last index). The owner is told. |
+| 95% | Essentials only: chat answers on Haiku; the brief, the wrap and alerts go out as their plain templates with the engine's numbers; reading a factsheet or screenshot still works. The owner is told. |
+| 100% | Claude stops until the cycle renews or the owner raises the ceiling. Every card goes out as its plain template, buttons and guided flows work as before, and a typed message gets one line saying free text is back on the renewal day. |
+
+Alerts are never dropped at any step: a template needs no model. Raising the
+ceiling moves the bot back up the ladder at the next call.
+
+**Guards under the ladder**, so one bad hour cannot spend a month:
+
+- **Per member:** no member spends more than their share of the ceiling; past
+  it, that member's chat runs at the 95% step for the rest of the cycle.
+- **Per day:** no day spends more than three times the cycle's daily average
+  ($10 a day at a $100 ceiling); past it, the rest of the day runs at the 95%
+  step.
+- **Per run:** at most eight model calls in one run; a loop that reaches it
+  stops and says so.
+
+**The backstop is the Console.** The prod workspace's spend limit in the
+Claude Console is set by hand to the hard limit, $100 to start, and stops the
+key outright if the meter is ever wrong. The Admin center moves the ceiling
+anywhere from $10 to that hard limit; to go higher, raise the Console limit
+first and then type the new hard limit into the Admin center. The app holds
+no Console admin key, so it cannot change the Console itself.
+
+**One credit, two environments.** The plan's $100 credit pays for both
+workspaces, and auto-reload stays off. Dev's spend comes out of the same
+credit, so with the prod ceiling at $100 the credit could run out first, at
+about $90 of prod spend in a month when dev is busy; the ladder steps down
+long before that. A ceiling above what the credit covers needs credits bought
+in the Console; nothing is charged without that.
 
 ---
 
@@ -947,6 +1052,8 @@ since data feeds are shared but model calls are not.
 | Web app auth | An `HttpOnly`, `SameSite=Strict` session cookie on the api's host with five-minute Cognito access tokens behind it; the static shell is public and holds no data; the api's authorizer checks session, status and epoch on every call | No token in page scripts; sign-out and pause take effect on the next request |
 | Google sign-in | Cognito's Google provider, one OAuth client per environment; a Google account linked to a member by a code typed into the chat | One identity per member across Telegram, Google and passkeys; the link is proven from the member's own phone |
 | Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate bots, Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
+| Claude budget | Prod's Claude spend is held under a monthly ceiling, $100 by default and moved by the owner in the Admin center; a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); the bot degrades to templates rather than going silent, and a runaway loop cannot spend a month |
+| Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
@@ -959,6 +1066,7 @@ since data feeds are shared but model calls are not.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
 - A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
+- The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $100 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
 
@@ -984,7 +1092,7 @@ shared between the two except the account, the DNS zone and the certificate.
 | Cognito user pool | `mypaisa-dev-users` | `mypaisa-prod-users` |
 | Secrets, SSM | `/mypaisa-agent/dev/...` | `/mypaisa-agent/prod/...` |
 | Telegram bot | its own dev bot | the household's bot |
-| Claude API key | its own workspace key, capped at £10 a month | its own workspace key, capped at £35 a month |
+| Claude API key and ceiling | its own workspace key; a $10 ceiling | its own workspace key; a $100 ceiling the owner moves in the Admin center, with the Console limit as the hard backstop (§15.1) |
 | Google OAuth client | its own | its own |
 
 **Kept apart by IAM, not by trust.** Each Lambda's role names only its own
