@@ -278,8 +278,8 @@ pages.append(p)
 
 # ---------------------------------------------------------------- 5 data
 p = Page("p5", "5 Data stores", "Where the data lives",
-         "DynamoDB for state, small and fast · S3 for the record, in Parquet, queried with DuckDB · SSM for keys · MA-27, MA-104, MA-132")
-p.group("cl5", "cloud", 40, 170, 2260, 1040, "AWS · one copy per environment (mypaisa-dev-*, mypaisa-prod-*)")
+         "DynamoDB for state, small and fast · S3 for the record, in Parquet, queried with DuckDB · every file sent kept for good · SSM for keys · MA-27, MA-104, MA-132, MA-148")
+p.group("cl5", "cloud", 40, 170, 2260, 1080, "AWS · one copy per environment (mypaisa-dev-*, mypaisa-prod-*)")
 p.cont("ddbc", 70, 270, 1210, 640, "DynamoDB · one table, on-demand", F_AWS, PURPLE)
 p.icon("ddbi", "ddb", 110, 330, "DynamoDB<br>on-demand")
 p.box("k1", 260, 320, 990, 110, "<b>Keys</b> PK=HH#&lt;household&gt; · SK=TX#&lt;date&gt;#&lt;id&gt; · VAL#&lt;position&gt;#&lt;date&gt; · NW#&lt;date&gt; · AUD#&lt;ts&gt;#&lt;id&gt;<br>GSI1 MEMBER# · GSI2 POS# / LIAB# · the registry never scans", align="left")
@@ -312,10 +312,10 @@ for i, (k, v) in enumerate(prefixes):
     x = 1500 + (i % 2) * 380; y = 320 + (i // 2) * 140
     p.box(f"pf{i}", x, y, 350, 120, f"<b>{k}</b><br>{v}", "#F1F6EA", GREEN)
 p.icon("duck", "lambda", 1350, 990, "DuckDB in Lambda<br>reads Parquet (MA-104)")
-p.icon("docs", "s3", 1650, 990, "S3 documents<br>factsheets · screenshots")
+p.icon("docs", "s3", 1650, 990, "S3 documents<br>every file sent, kept<br>opened from Audit")
 p.icon("web", "s3", 1950, 990, "S3 web app<br>behind CloudFront")
 p.icon("ssm5", "ssm", 150, 990, "SSM /mypaisa-agent/&lt;env&gt;/<br>bot token · webhook secret<br>Claude key · Google secret")
-p.box("rule5", 380, 980, 870, 140, "<b>Rules</b><br>nothing is overwritten: corrections are new rows · secrets set by hand, never in Terraform state<br>prod tables: deletion protection and point-in-time recovery · the whole history is a few GB",
+p.box("rule5", 380, 980, 870, 190, "<b>Rules</b><br>nothing is overwritten: corrections are new rows · secrets set by hand, never in Terraform state<br>every file a member sends is kept for good, linked from its audit row, opened through a 5-minute link (MA-148, MA-149)<br>prod tables: deletion protection and point-in-time recovery · the whole history is a few GB",
       F_NOTE, GREY)
 p.line("ddbi", "k1", "", color=GREY, pa=R, pb=Lf)
 p.line("duck", "lakec", "queries", color=GREEN, pa=T, pb=((1395 - 1320) / 950, 1))
@@ -323,8 +323,8 @@ pages.append(p)
 
 # ---------------------------------------------------------------- 6 market agent and learning loop
 p = Page("p6", "6 Market agent and learning loop", "The market agent: rules engine, Forecaster and the learning loop",
-         "phase 2 rules engine · phase 11 Forecaster (MA-117) · phase 12 learning loop and agents (MA-127) · code decides, Claude explains")
-p.box("m_src", 40, 200, 300, 260, "<b>Free data first</b><br>yfinance · Twelve Data free<br>FRED / ALFRED · BoE · ECB · ONS<br>EIA (oil) · GDELT · GPR index<br>RSS · calendars<br>EODHD only if approved", F_OUT, AMBER)
+         "phase 2 rules engine · phase 11 Forecaster (MA-117) · phase 12 learning loop and agents (MA-127) · phase 13 India (MA-147) · code decides, Claude explains")
+p.box("m_src", 40, 190, 300, 330, "<b>Free data first</b><br>yfinance · Twelve Data free<br>FRED / ALFRED · BoE · ECB · ONS<br>EIA (oil) · GDELT · GPR index<br>RSS · calendars<br><b>India (phase 13)</b>: AMFI NAVs<br>mfapi.in · NSE/BSE bhavcopy<br>RBI · NSDL flows<br>EODHD only if approved", F_OUT, AMBER)
 p.group("cl6", "cloud", 400, 170, 1900, 1340, "AWS · prod")
 p.group("wf", "sfnwf", 440, 230, 1540, 600, "Daily run · Step Functions · retries on every step (phase 12)")
 p.icon("m_steward", "lambda", 500, 320, "data steward<br>failover · gaps · quotas")
@@ -347,7 +347,7 @@ p.icon("m_chal", "lambda", 500, 1290, "tuner<br>challengers: retrain,<br>paramet
 p.box("m_lab", 700, 1270, 420, 150, "<b>Backtest lab</b> (MA-120)<br>ten years, walk-forward with a gap<br>last two years held out<br>then 8 live weeks in shadow", F_NOTE, PURPLE)
 p.icon("m_cr", "ddb", 1270, 1290, "ChangeRequest<br>with scores side by side")
 p.box("m_desk", 1490, 1270, 440, 150, "<b>Admin desk</b><br>Telegram card or Admin center<br>approve with the second check<br>then ModelVersion goes live", F_FAIL, CRIMSON)
-p.box("m_claude", 40, 560, 300, 140, "<b>Claude</b><br>Haiku tags news<br>Sonnet explains<br>never a number", F_OUT, AMBER)
+p.box("m_claude", 40, 580, 300, 140, "<b>Claude</b><br>Haiku tags news<br>Sonnet explains<br>never a number", F_OUT, AMBER)
 p.line("m_src", "m_steward", "", color=AMBER, pa=R, pb=Lf)
 p.line("m_steward", "m_lake", "", pa=R, pb=Lf)
 p.line("m_lake", "m_feat", "", pa=R, pb=Lf)

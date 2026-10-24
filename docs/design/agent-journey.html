@@ -811,7 +811,7 @@ footer.foot b { color: var(--mp-ink); }
     <ol class="seq">
       <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You send the Balanced fund's factsheet PDF (or <code>/add</code> first)</span><span class="ln"></span></li>
       <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">API Gateway, webhook λ, your lane on the updates queue, then <b>agent λ</b></span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> keeps the file in a private <b>S3</b> bucket with a lifecycle rule and puts a document read on the <b>SQS work</b> queue; <b>worker λ</b> runs the docs job</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> stores the file for good in the private <b>S3</b> documents bucket, with a <b>Document</b> row and an <u>audit row</u>, and puts a document read on the <b>SQS work</b> queue; <b>worker λ</b> runs the docs job</span></li>
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The PDF and a schema: name, ISIN, charge, allocation, top holdings, benchmark, currency</span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Structured JSON, a citation for each figure and a confidence for each field</span><span class="ln"></span></li>
       <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">A card of what was read, low-confidence fields in amber, with <b>Confirm</b>, <b>Edit</b> and <b>Cancel</b></span><span class="ln"></span></li>
@@ -819,7 +819,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Instrument</b> and <b>Document</b> saved in <b>DynamoDB</b>, each with an <span class="sg">audit row</span>; price sources resolved from the ISIN (the Yahoo id, the BlackRock page)</span></li>
       <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb"><i>Added. How much do you hold? Send a screenshot or type it.</i></span><span class="ln"></span></li>
       <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You send a screenshot of the Monzo valuation; the same docs job reads it with Claude</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">After Confirm and the second check: <b>Position</b>, <b>Valuation</b> (source <code>user_screenshot</code>) and <b>Transaction</b>, each with an audit row. The screenshot is deleted after extraction unless you say keep</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">After Confirm and the second check: <b>Position</b>, <b>Valuation</b> (source <code>user_screenshot</code>) and <b>Transaction</b>, each with an audit row that names the screenshot it came from. The screenshot stays in S3 and opens from the Audit page</span></li>
     </ol></div>
   </div></div>
 
@@ -875,7 +875,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Amber when unsure</b><span>Any field Claude is unsure of is shown in amber and asked about.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>A source for every figure</b><span>Extracted figures carry the line they came from. Claude reads; it does not invent a number.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>Face ID or the PIN after Confirm, then the card edits to "Saved · confirmed with Face ID".</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Files kept short</b><span>A private bucket with a lifecycle rule; screenshots deleted after extraction unless you say keep.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Every file kept, and yours to see</b><span>Each file you send is kept for good in a private, encrypted bucket and opens from the Audit page through a five-minute link, for you and the owner only (MA-148, MA-149).</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A document's words are data</b><span>Text inside a PDF is untrusted and never followed as an instruction; no tool can trade or delete.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries</b><span>The document read is a job on the work queue: five tries with backoff, then a dead-letter queue and an alarm.</span></div></div>
   </div>
@@ -1378,7 +1378,7 @@ footer.foot b { color: var(--mp-ink); }
         <div class="bpage">
           <div class="ptop"><div><p class="over">Read-only</p><p class="ptitle">Audit</p></div><div class="filters"><span class="chip">All members</span><span class="chip">All records</span><span class="chip">This week</span></div></div>
           <div class="group">
-            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Valuation · update · via screenshot</b><small>You · Fri 23 Oct 20:35 · Balanced: £22,710 → £22,925, source user_screenshot · run 1188</small></span></div>
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Valuation · update · via screenshot</b><small>You · Fri 23 Oct 20:35 · Balanced: £22,710 → £22,925, source user_screenshot · run 1188 · file: monzo-valuation.png, Open</small></span></div>
             <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Transaction · create · via typed</b><small>You · Fri 23 Oct 08:14 · none → bought £200 of Balanced, about 10.8 units · run 1171</small></span></div>
             <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg></span><span class="grow"><b>Member · create · via button</b><small>Asha · Thu 22 Oct 18:20 · joined by invite as a member · run 1140</small></span></div>
             <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg></span><span class="grow"><b>Invite · create · via typed</b><small>You · Thu 22 Oct 18:02 · role member, single use, 24 hours · run 1139</small></span></div>

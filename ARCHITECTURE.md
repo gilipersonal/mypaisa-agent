@@ -29,8 +29,8 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141):
   | 2 Environments, domains and delivery | [open](https://lucid.app/lucidchart/60bffe0d-133b-489c-ae02-526a987252fc/edit) | §18 |
   | 3 Identity and sign-in | [open](https://lucid.app/lucidchart/9376b624-efcc-4f56-96a9-9a00e9b8fa24/edit) | §4.5 |
   | 4 Queues, retries and replay | [open](https://lucid.app/lucidchart/3077ebaa-b165-4936-933c-d68109de8544/edit) | §21 |
-  | 5 Where the data lives | [open](https://lucid.app/lucidchart/7a201f31-ab98-4e4c-bc00-35c5cd377fd3/edit) | §20.6 |
-  | 6 The market agent and the learning loop | [open](https://lucid.app/lucidchart/55cbf4c8-3603-4346-9a05-bb045b15fa16/edit) | §19 |
+  | 5 Where the data lives | [open](https://lucid.app/lucidchart/a86198f7-d101-4550-9402-3348f08c5eb5/edit) | §20.6 |
+  | 6 The market agent and the learning loop | [open](https://lucid.app/lucidchart/35e7ddc4-3aa4-46bf-b301-dadb0cde0b48/edit) | §19, §22 |
   | 7 The agent team, settings, caps and alerts | [open](https://lucid.app/lucidchart/d8bc9ec7-ef1f-41fd-b372-7b8feea22b1a/edit) | §15.2, §20 |
   | Adding a holding (sequence) | [open](https://lucid.app/lucidchart/06ed33f1-7704-4e57-9d91-baeb317ac271/edit) | §4.2 |
 
@@ -148,7 +148,7 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash` · later `property` · `deposit` · `policy` · `pension` · `debt`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `country?`, `institution?`, `maturity_date?`, `rate?`, `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither, a property has an address and a deposit has a maturity date. |
 | **Position** | `account_id`, `instrument_id`, `units`, `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. |
 | **Valuation** | `instrument_id`, `date`, `price`, `price_ccy`, `fx_to_gbp`, `units`, `value_gbp`, `source` (`nav` · `close` · `proxy` · `user_screenshot` · `user_typed` · `formula`), `provisional` | The time series the wealth tracker reads. User-supplied values are kept alongside computed ones; a gap between them is a signal (wrong units, a fee, a late NAV). |
-| **Document** | `instrument_id`, `type` (`factsheet` · `kiid` · `annual_report` · `screenshot`), `s3_key`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | The factsheet is the source of look-through until a better feed exists. |
+| **Document** | `document_id`, `kind` (`factsheet` · `kiid` · `annual_report` · `screenshot` · `cas` · `broker_export` · `spreadsheet` · `other`), `s3_key`, `sha256`, `mime`, `bytes`, `original_name`, `sent_by`, `sent_at`, `message_id`, `instrument_id?`, `import_id?`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | **One row for every file a member sends, kept in S3 for good** (§4.6, MA-148). The factsheet is the source of look-through until a better feed exists. |
 | **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy`, `amount_gbp` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. XIRR, payoff curves and the forecast are computed from it, so every money movement is recorded with its date from day one. |
 | **Liability** | `account_id`, `kind` (`mortgage` · `loan` · `card`), `principal`, `rate`, `term_months`, `started_at`, `emi`, `schedule[]` (computed), `ccy` | A debt: the balance against the original plan, the interest and principal split, the payoff date; its events are Transactions. Later, §12. |
 | **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | Computed daily by the engine from Valuation and Liability; the series the overview and the forecast chart read. Later, §12. |
@@ -169,7 +169,7 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
 | **SentimentIndex**, **ArticleScore**, **WebhookSeen** | per portfolio or global | |
 | **PendingAction** | `member_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `settings` · `confirm`), `step`, `collected` (the answers so far), `message_id`, `expires_at` (24 h) | The state of a guided flow: what the bot is waiting for from this member. The next message or tap resumes it; expiry clears it. |
-| **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `agent_proposal` · `schedule` · `migration`), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
+| **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `cas` · `broker_export` · `agent_proposal` · `schedule` · `migration`), `document_id?` (the file a change came from), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
 | **RunRecord** | `run_id`, `function`, `trigger` (`message` · `callback` · `schedule:<name>` · `alarm`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output and cached tokens, cost, ms), `tool_calls[]` (name, ms, ok, error), `messages_sent`, `outcome`, `error?` | What one run of any Lambda did and cost. 90-day TTL. The web app's Activity page and the cost guard rails read these. See §10. |
 
 Signals and macro regimes are per instrument and shared by everyone who holds
@@ -343,6 +343,22 @@ rows are readable in two places: the Audit page of the web app, with filters
 by member, record and date, and from the chat with a question such as "what
 changed this week?", which the agent answers through `get_audit`. Rows are
 never deleted; at a few hundred a year they cost nothing to keep.
+
+**Every file is kept, and opens from the log** (Arun, 24 Oct 2026: "all
+the files and images I send should be stored on S3 and I should be able to
+view that in audit logs"). Every file or image a member sends (a factsheet,
+a screenshot, a CAS statement, a broker export, a spreadsheet) is copied to
+`s3://mypaisa-<env>-documents/<household>/<member>/<yyyy>/<mm>/` before
+anything reads it, whatever happens next, with a `Document` row and an audit
+row of its own; every change made from it carries its `document_id`
+(MA-148). Nothing is deleted after reading: the bucket has no expiry rule,
+and prod's is versioned and protected from destruction. On the Audit page a
+row made from a file shows its kind, name and size, a thumbnail for an
+image, and Open; a Files view lists every file with the changes it fed
+(MA-149). Open is a presigned link valid five minutes, given only after the
+authorizer checks the role: a member opens their own files, the owner any,
+a viewer none; each opening is itself an audit row. In the chat a change
+card's Source button sends the original back.
 
 ---
 
@@ -744,7 +760,8 @@ The pages, all read-only:
   Household / Me / member switch from §4.5. Two columns at laptop width.
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
   and date; each row shows before and after and links to the run that made
-  it.
+  it, and a row made from a file opens that file; a **Files** view lists every
+  file sent (MA-149).
 - **Activity**: what the agent and the jobs did (§10). Each run with its
   trigger, the model calls and their tokens and cost, the tools it called
   and how long they took, what it sent, and any error; a board of the
@@ -887,9 +904,11 @@ maintains, so nothing is shown that cannot be changed from the chat.
 
 As v1 (no keys, IAM in Terraform, OIDC pinned to this repository's ids,
 webhook secret, chat allowlist, dedupe, untrusted text), plus: uploaded
-documents stay in a private bucket with a lifecycle rule; extracted figures
-carry their source line; screenshots are deleted after extraction unless you
-say keep; privacy mode hides pounds in every card and in the Mini App; the
+every file a member sends is kept for good in a private, encrypted bucket
+and opens only through five-minute links after a role check (§4.6, MA-148,
+MA-149); extracted figures carry their source line, and extracted records
+never keep a PAN, an address or an account number; a protected PDF's
+password is never stored; privacy mode hides pounds in every card and in the Mini App; the
 Mini App serves nothing without a valid, recent `initData` signature.
 
 The web app adds: identity is Cognito's, one pool per environment (§4.5). The
@@ -1100,6 +1119,8 @@ a daily digest instead.
 | Decision | Choice | Reason |
 | --- | --- | --- |
 | Engine | Port the desk's maths, rewrite its cascade | The maths is sound and self-tested; the cascade is for traders |
+| Files | Every file a member sends kept in S3 for good, with a `Document` row, linked from the audit log and opened from the Audit page (MA-148, MA-149) | Arun, 24 Oct 2026: "all the files and images I send should be stored on S3 and I should be able to view that in audit logs"; replaces deleting screenshots after extraction |
+| Indian markets | Phase 13 (§22, MA-147): AMFI, mfapi.in, yfinance `.NS`/`.BO` and the bhavcopy, free first; the existing portfolio imported from a CAS or a broker export | Arun's Indian mutual funds and shares, to be fed later |
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
@@ -1271,7 +1292,7 @@ tracker's data is mapped (MA-105).
 
 ![The market agent and the learning loop, Lucid page 6](docs/design/lucid/06-market-agent.png)
 
-Page 6: free data in, the rules engine and the Forecaster side by side, calibration, the card, and the daily learning loop of §20.4 below them. [Open it in Lucid](https://lucid.app/lucidchart/55cbf4c8-3603-4346-9a05-bb045b15fa16/edit).
+Page 6: free data in, the rules engine and the Forecaster side by side, calibration, the card, and the daily learning loop of §20.4 below them. [Open it in Lucid](https://lucid.app/lucidchart/35e7ddc4-3aa4-46bf-b301-dadb0cde0b48/edit).
 Arun, 24 Oct 2026 (MA-117): "My target is to minimize loss and grow money
 over time steadily ... another agent which will give really predictive
 recommendation side by side with the one you are building ... I want this
@@ -1604,7 +1625,7 @@ man's switch, the nightly drift check (MA-108) and the Lambda rollback
 
 ![Where the data lives, Lucid page 5](docs/design/lucid/05-data.png)
 
-Page 5: the one DynamoDB table and its entity groups, the S3 lake and its prefixes, DuckDB, the documents and web buckets, and SSM. [Open it in Lucid](https://lucid.app/lucidchart/7a201f31-ab98-4e4c-bc00-35c5cd377fd3/edit).
+Page 5: the one DynamoDB table and its entity groups, the S3 lake and its prefixes, DuckDB, the documents and web buckets, and SSM. [Open it in Lucid](https://lucid.app/lucidchart/a86198f7-d101-4550-9402-3348f08c5eb5/edit).
 **S3**, the record, in the `mypaisa-<env>-lake` bucket, versioned, in
 Parquet, queried with DuckDB:
 
@@ -1742,3 +1763,86 @@ as requests too. Dev's queue triggers are switched off while dev's schedules
 are, so the expected cost is nothing to about a dollar a month, measured in
 the first month and inside the AWS cap of §15.2. The dead-letter alarms cost
 a few pence each beyond CloudWatch's ten free alarms.
+
+---
+
+## 22. Indian markets: shares, ETFs and mutual funds (phase 13, later)
+
+Arun, 24 Oct 2026 (MA-147): "If later I want to add Indian market in the mix
+will it work? ... I also have some existing portfolio of MF and stock in
+India market which I will feed later." It works without changing the core:
+currency, country and the kind of holding are data (§4), every feed is a
+plugin in a chain (§5.1), and the INR view is already planned (phase 9).
+India adds plugins, two kinds, account types, a macro basket and an
+importer.
+
+### 22.1 Sources, free first (IN1, MA-151)
+
+| Holding | First (free) | Fallback (free) | Paid, only on the admin's approval |
+| --- | --- | --- | --- |
+| Indian mutual funds | AMFI's daily NAV file for every scheme, the official industry source, matched by AMFI scheme code and ISIN | mfapi.in (free JSON with each scheme's full NAV history; community-run, so a fallback and the history source, not the record); a screenshot | none needed |
+| NSE and BSE shares and ETFs | yfinance with `.NS`, then `.BO` tickers: daily candles and ten years of history | The exchanges' own bhavcopy end-of-day files, free to download for personal use; stale last | Twelve Data's Grow plan ($79 a month; its free tier has no NSE or BSE); Zerodha Kite Connect at ₹500 a month with history, if the member has a Zerodha account |
+| Look-through of funds | The fund houses' monthly portfolio disclosures, which SEBI requires | The factsheet | none |
+| INR exchange rate | The ECB's daily reference rate (it includes INR) | The RBI/FBIL reference rate | none |
+| Economy and stress | RBI's database (policy rate, yields), MOSPI's inflation, India VIX, NSDL's daily foreign portfolio investor flows | FRED's India series | none |
+| News and events | Economic Times, Mint and Business Standard by RSS; NSE company announcements; GDELT's India coverage | none | none |
+
+Two new kinds: `in_mutual_fund`, one NAV a day and no candles, like a UK
+OEIC; and `in_listed`, an NSE or BSE share or ETF with daily candles. NSE
+and BSE close at 15:30 IST (10:00 or 11:00 UK time) and AMFI's NAVs arrive
+by the UK evening, so the jobs run on the work queue after those times and
+the 07:15 brief carries India's previous day. NSE's trading holidays come
+from the exchange's calendar.
+
+### 22.2 The existing Indian portfolio, imported once (IN2, MA-152)
+
+| What the member holds | The file to send | What it gives |
+| --- | --- | --- |
+| Mutual funds, every fund house | The detailed Consolidated Account Statement (CAS) PDF from CAMS, KFintech or MF Central | Every folio and scheme, units, and every purchase, SIP, switch and redemption since inception, so cost and XIRR are right from day one |
+| Shares, ETFs and funds in demat | The NSDL or CDSL CAS, or the broker's holdings and tradebook export (for example Zerodha Console's CSV) | Holdings and quantities by ISIN, and the trades from the tradebook |
+| Anything else | A screenshot or a typed line | One holding at a time, as for the UK funds |
+
+The files are parsed by code (an open-source CAS parser, pinned and tested
+on synthetic statements); Claude reads only a file the parsers cannot. Each
+holding is matched by ISIN: a fund to its AMFI scheme code, a share or ETF
+to its `.NS` or `.BO` listing; anything unmatched is listed, never guessed.
+The import has the Excel importer's safety (§18.5, MA-111): a dry run, one
+summary card, fingerprints so the same statement never adds twice, Confirm
+with the second check, rollback by import id, and an audit row per change
+that names the file it came from. The file itself is kept in S3 like every
+other (§4.6, MA-148). A protected PDF's password is typed once into the
+Mini App, used in memory and never stored, logged or sent; or the member
+sends an unlocked copy. The records never keep the PAN, the address or an
+account number, though the file is kept as sent.
+
+### 22.3 Accounts, currency and suggestions (IN3, MA-153)
+
+New account types `demat`, `mf_folio`, `nre` and `nro` (and `ppf`, `nps`,
+`elss` if one is held), each with country `IN` and currency INR. Every
+Indian figure shows in INR with its GBP value beside it; the household
+total is in the base currency with the INR view one tap away (MA-94).
+Privacy mode hides rupees as it hides pounds. "ISA-safe" becomes
+"wrapper-aware": a suggestion names only actions that suit the account it is
+about, and the bot still never trades. For a UK resident many Indian funds
+are not UK "reporting funds", so gains may be taxed differently; the bot
+flags those holdings in plain words and says to check with a tax adviser.
+It never gives tax advice. The cards and pages are designed first.
+
+### 22.4 The engine and the Forecaster (IN4, MA-154)
+
+An India basket joins the UK, EU and US ones in the macro pillar (§6.2):
+the Nifty 50 against Indian government bonds, India VIX, the rupee against
+the dollar, foreign portfolio investor flows and the RBI's policy rate. The
+news scout reads the Indian feeds, and the exposure maps come from the fund
+houses' monthly disclosures. The calendars add the RBI's policy dates,
+India's inflation releases, NSE holidays and results season. The Forecaster
+(§19) and its lab take the Indian holdings on the same terms: nothing is
+shown until its gates are passed.
+
+### 22.5 Cost and order
+
+On the free path India costs nothing beyond a few more jobs a day inside the
+free tiers. A paid feed is a request to the admin with its price, counted
+inside the £50 cap (§15.2). IN1 comes first; IN2 needs IN1, the Excel
+importer (MA-111) and file keeping (MA-148); IN3 needs both; IN4 needs IN1
+and, for the Forecaster, phase 11.
