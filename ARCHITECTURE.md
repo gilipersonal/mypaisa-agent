@@ -79,7 +79,11 @@ whole household's wealth later are the same records, not a migration.
    unasked.
 4. **One write path.** Every change to the records, whatever the screen, goes
    through the bot: a card, a Confirm tap, an audit row. The web app, today
-   and when it becomes the full MyPaisa, is read-only by construction.
+   and when it becomes the full MyPaisa, is read-only by construction for the
+   household's records. Arun, 24 Oct 2026: "Dashboard will be read only
+   (except for admin)". The one exception is the owner's Admin center, which
+   acts on the admin's own settings and operations, each behind a fresh check
+   and an audit row (§9.3).
 
 ---
 
@@ -127,8 +131,9 @@ Nothing waits on anything else directly:
 your messages, the bot's replies and every background job travel through SQS
 queues that retry them and keep what still fails (§21). The agent Lambda is
 the only one that talks to you in the chat. The api Lambda is the only one the web app talks
-to, and apart from the owner's security actions in the Admin center (MA-102)
-it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
+to, and apart from the owner's admin actions in the Admin center (§9.3: the
+security actions, the ceiling and caps, replays, agents' requests and
+settings, incidents), each behind a fresh check, it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
 every one of them writes a `RunRecord` saying what it did (§10).
 
 ---
@@ -824,9 +829,15 @@ The pages, all read-only:
 There is no write path for the household's records. The api's data routes
 are GET only, the app has no form that posts, and every change still goes
 through a card and a Confirm tap in the chat, where it is audited. The
-exceptions are the owner's settings in the Admin center: the security actions
-(sign out, pause, restore, unlink; MA-102) and the Claude ceiling (§15.1,
-MA-116), each behind a fresh check with a passkey or Google.
+exceptions are the owner's admin settings and operations in the Admin center
+(Arun, 24 Oct 2026: "Dashboard will be read only (except for admin)"): the
+security actions (sign out, pause, restore, unlink; MA-102); the Claude
+ceiling, the caps and their alert thresholds (§15.1, §15.2, MA-116, MA-137);
+replaying dead-lettered work (§21.3, MA-145); approving or rejecting an
+agent's request and rolling a setting back (§20.2, §20.3, MA-130); and
+choosing how an incident ends (§20.5, MA-135). Each is behind a fresh check
+with a passkey or Google, writes an audit row, and none changes the
+household's records.
 Privacy mode hides pounds here too. Each environment has its own S3 bucket and
 CloudFront distribution for the app (`console-dev` and `console`), and its own
 API Gateway HTTP API on a custom domain (`api-dev` and `api`), §18.
@@ -903,7 +914,7 @@ the old repository is retired when the new app covers it. What stays fixed:
 
 | | |
 | --- | --- |
-| **Read-only, everywhere** | No screen writes the household's records; the Admin center holds only the owner's settings: the security actions (MA-102) and the Claude ceiling (MA-116). Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
+| **Read-only, everywhere** | No screen writes the household's records; the Admin center holds only the owner's admin settings and operations (§9.3): the security actions, the ceiling and caps, replays, agents' requests and settings, incidents, each behind a fresh check. Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The ISA of phase 1 and the household's property, deposits, policies, pensions and loans are rows of the same shapes. |
 | **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Telegram, Google or a passkey to log in, through each environment's Cognito pool. |
 | **Two currencies** | GBP and INR side by side, from the ECB's daily rates, chosen per member; USD and EUR for the holdings that trade in them. |

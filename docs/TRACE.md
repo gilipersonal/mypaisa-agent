@@ -165,7 +165,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-94 | Wealth maths: XIRR to the penny, deposit accrual, loan schedules and a daily net worth | To Do | §6.6 | none |  |
 | MA-95 | Design and build the Overview, Assets and Debts screens for the whole household | To Do | §12, §9.3 | todo |  |
 | MA-96 | Forecast and budget: a thirty-year projection and a monthly budget set by chat | To Do | §6.6, §12 | todo |  |
-| MA-97 | Reports and exports replace the old wealth tracker, which is then retired | To Do | §17, §18.2 | todo |  |
+| MA-97 | Reports and exports replace the old wealth tracker, which is then retired | To Do | §12 | todo |  |
 | MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §19.2 | none |  |
 | MA-105 | The old wealth tracker's holdings and debts come into MyPaisa once, checked by the owner | To Do | §18.5 | todo |  |
 | MA-111 | The owner fills prod's history from an Excel workbook sent to the bot | To Do | §12, §18.5, §22.2, §22.5 | todo |  |

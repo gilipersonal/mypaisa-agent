@@ -75,8 +75,9 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 
   A skill's defaults (its fonts, palettes, card styles) never override the artboards or the design system.
 - **The product's rules hold in every design** (`ARCHITECTURE.md`):
-  - **read-only web:** no form, button or link in the web app writes anything; a change is always a card and a
-    Confirm tap in the chat;
+  - **read-only web:** no form, button or link in the web app writes the household's records; a change is always a
+    card and a Confirm tap in the chat. The one exception is the owner's Admin center, whose admin settings and
+    operations each sit behind a fresh check (`ARCHITECTURE.md` §9.3; Arun: "read only (except for admin)");
   - **the summary first:** the layman sees the summary, the detail is one tap away (the `Technical` section, `Why?`);
     show both `simple` and `technical` modes where a card has them;
   - **Claude never produces a number:** every figure on a design is the engine's or the registry's, and the copy never

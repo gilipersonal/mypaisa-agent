@@ -9,6 +9,7 @@ Jira and Claude Design halves need their MCP tools and live in /plan-sync.
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
     python3 scripts/plan_sync.py start MA-149  # what a story needs before work starts
+    python3 scripts/plan_sync.py selftest      # the board-name check against known good and bad names (CI)
 """
 from __future__ import annotations
 
@@ -28,7 +29,6 @@ PLAN = ROOT / "PLAN.md"
 CITING = [ARCH, PLAN, ROOT / "TECH_STACK.md", ROOT / "README.md", ROOT / "docs" / "design" / "README.md"]
 KEY = re.compile(r"\bMA-(\d+)\b")
 DESIGN_STATES = {"none", "planned", "picked", "todo"}
-STARTED = {"In Progress", "In Review", "Done"}
 
 
 def load(path: Path) -> dict:
@@ -61,54 +61,70 @@ _captions: dict[Path, set[str]] = {}
 DOORS = r"Mini App|Browser|Telegram"
 
 
-def _plain(s: str) -> str:
-    """Caption text with its markup and template parts removed: 'Holdings · {{ t.label }}' -> 'Holdings'."""
-    s = re.sub(r"<[^>]+>", "", s)
-    s = re.sub(r"\{\{[^}]*\}\}", " ", s)
-    return re.sub(r"\s+", " ", s).strip(" ·")
+BOARD_MARKERS = {"anchor", "keys", "arch", "intro", "notes", "desc", "frames", "msgs", "phones", "screens"}
+
+
+def _caption(s: str) -> str | None:
+    """A caption's text, or None when it is not one. Markup is dropped; a template is allowed only as a
+    trailing theme suffix ('Holdings · {{ t.label }}' -> 'Holdings'), and a label ending in ':' is not a title."""
+    s = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", s)).strip()
+    if "{{" in s:
+        m = re.match(r"^(.*?\S)\s*(?:·\s*)?(?:\{\{[^}]*\}\}\s*)+$", s)
+        if not m or "{{" in m.group(1):
+            return None
+        s = m.group(1)
+    s = s.strip(" ·")
+    return s if re.search(r"\w", s) and not s.endswith(":") else None
 
 
 def captions(path: Path) -> set[str]:
-    """The board titles a canvas defines, exactly: its captions and names, and each numbered board as
-    '<number> · <name>' with the number from the same board ('1 · Portfolio card', never '4 · Portfolio card')."""
+    """The board titles a canvas defines, exactly: its captions and board names, and each numbered board
+    as '<number> · <name>' with the number from the same board ('1 · Portfolio card', never '4 · ...')."""
     if path not in _captions:
         t = html.unescape(path.read_text(errors="replace"))
-        caps = set()
+        caps, ids = set(), set()
+
+        def pair(n: str, name: str) -> None:
+            n, name = (n or "").strip(), (name or "").strip()
+            if n and name and len(n) <= 6:
+                ids.add(n)
+                caps.update({name, f"{n} · {name}", f"{n} {name}"})
+
         for cls in ("dv-cap", "dv-sname", "dv-oname", "dv-tname"):
             for m in re.finditer(rf'class="{cls}"[^>]*>(.*?)</(?:p|span|div|a)>', t, re.S):
-                caps.add(_plain(m.group(1)))
+                caps.add(_caption(m.group(1)))
         for m in re.finditer(r'data-screen-label="([^"]*)"', t):
-            caps.add(_plain(m.group(1)))
+            caps.add(_caption(m.group(1)))
         # A numbered board heading: <a class="dv-tid">1</a><span class="dv-tname">Colour</span> (or dv-oid, dv-oname).
         for m in re.finditer(r'class="dv-(t|o)id"[^>]*>(.*?)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
-            n, name = _plain(m.group(2)), _plain(m.group(3))
-            caps |= {f"{n} · {name}", f"{n} {name}"}
+            pair(_caption(m.group(2)), _caption(m.group(3)))
         # The canvas's own index of boards: <a href="#colour">1 · Colour</a>.
         for m in re.finditer(r'<nav class="dv-idx"[^>]*>(.*?)</nav>', t, re.S):
-            caps |= {_plain(x) for x in re.findall(r"<a [^>]*>(.*?)</a>", m.group(1), re.S)}
-        # Boards listed as data, the number paired with the name where the board's object opens:
-        # { id: '1', anchor: 'k1', name: 'Portfolio card', ... }; and every name, cap or board field.
+            caps.update(_caption(x) for x in re.findall(r"<a [^>]*>(.*?)</a>", m.group(1), re.S))
+        # Boards listed as data. Only an object that is a board (it has one of a board's own fields: anchor,
+        # keys, notes, intro, ...) gives its cap, name, or number and name: { id: '1', anchor: 'k1', name: ... }.
         lit = r"'((?:[^'\\\n]|\\.)*)'"
-        ids = set()
-        for m in re.finditer(rf"\{{\s*(?:id|tag)\s*:\s*'([^'\n]{{1,6}})'\s*,\s*(?:\w+\s*:\s*(?:'[^'\n]*'|[\w.]+)\s*,\s*)*?name\s*:\s*{lit}", t):
-            n, name = m.group(1), m.group(2).replace("\\'", "'")
-            ids.add(n)
-            caps |= {name, f"{n} · {name}", f"{n} {name}"}
+        for m in re.finditer(r"\{([^{}\[\]]{0,800})", t):
+            head = m.group(1)
+            if not BOARD_MARKERS & set(re.findall(r"\b(\w+)\s*:", head)):
+                continue
+            fields = {k: v.replace("\\'", "'") for k, v in re.findall(rf"\b(id|tag|name|cap|board)\s*:\s*{lit}", head)}
+            if "board" in fields:  # the object's title is its board field; its name is something else (a holding)
+                continue
+            caps.update(fields.get(k) for k in ("cap", "name"))
+            pair(fields.get("id") or fields.get("tag"), fields.get("name"))
         for m in re.finditer(rf"\b\w+\(\s*'([^'\n]{{1,6}})'\s*,\s*\{{\s*name\s*:\s*{lit}", t):  # make('1c', { name: 'Watcher' })
-            n, name = m.group(1), m.group(2).replace("\\'", "'")
-            ids.add(n)
-            caps |= {name, f"{n} · {name}", f"{n} {name}"}
-        # Every cap or board field, and a name field that is a full title ('b · Adding a holding ...').
-        for m in re.finditer(rf"\b(?:cap|board)\s*:\s*{lit}|\bname\s*:\s*'((?:[^'\\\n]|\\.)*·(?:[^'\\\n]|\\.)*)'", t):
-            caps.add((m.group(1) if m.group(1) is not None else m.group(2)).replace("\\'", "'"))
+            pair(m.group(1), m.group(2).replace("\\'", "'"))
+        # A board field names a board wherever it is: board: 'Browser · Holding · Forecast'.
+        caps.update(m.group(1) for m in re.finditer(rf"\bboard\s*:\s*{lit}", t))
         # A title built from the board's number: data-screen-label="{{ o.id }} Telegram avatar {{ t.label }}".
         for m in re.finditer(r'data-screen-label="\{\{\s*\w+\.id\s*\}\}([^"]*)"', t):
-            rest = _plain(m.group(1))
-            caps |= {f"{n} {rest}" for n in ids}
+            rest = _caption(m.group(1))
+            if rest:
+                caps.update(f"{n} {rest}" for n in ids)
         # A board title kept in a constant: const B1 = 'Telegram · Currency check'.
-        for m in re.finditer(rf"\b\w+\s*=\s*'((?:{DOORS}) · [^'\\\n]+)'", t):
-            caps.add(m.group(1))
-        _captions[path] = caps - {""}
+        caps.update(m.group(1) for m in re.finditer(rf"\b\w+\s*=\s*'((?:{DOORS}) · [^'\\\n]+)'", t))
+        _captions[path] = {c for c in caps if c and re.search(r"\w", c)}
     return _captions[path]
 
 
@@ -135,7 +151,14 @@ def sha256(path: Path) -> str:
 def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     """What is wrong with one trace row (errors), and what it still waits on (warnings)."""
     errors, warnings = [], []
-    k = it.get("key") or "?"
+    k = it.get("key") if isinstance(it.get("key"), str) else "?"
+    for field in ("key", "summary", "status", "type"):
+        if not isinstance(it.get(field), str) or not it.get(field):
+            errors.append(f"{k}: {field} is required and must be text")
+            return errors, warnings
+    if it.get("notes") is not None and not isinstance(it.get("notes"), str):
+        errors.append(f"{k}: notes must be text")
+        return errors, warnings
     for field, kind in (("arch", str), ("labels", str), ("boards", dict), ("open", str), ("undrawn", str)):
         val = it.get(field, [])
         if not isinstance(val, list) or not all(isinstance(x, kind) for x in val):
@@ -159,7 +182,7 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     if ui != ("design" in it.get("labels", [])):
         errors.append(f"{k}: ui is {ui} but the 'design' label is {'missing' if ui else 'set'}; the label marks every story with UI (.claude/jira/taxonomy.md)")
     if d == "todo":
-        if status in STARTED:
+        if status in ("In Review", "Done"):
             errors.append(f"{k}: {status} with UI and no board; draw it first (/design-first)")
         elif it.get("notes"):
             warnings.append(f"{k}: UI not drawn yet ({it['notes']})")
@@ -178,8 +201,8 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
         errors.append(f"{k}: {status} with screens still undrawn ({'; '.join(it['undrawn'])}); draw them and clear undrawn first")
     for b in it.get("boards", []):
         proj = ctx["projects"].get(b.get("project"))
-        if not proj or not b.get("file"):
-            errors.append(f"{k}: board {b!r} needs a project from claude_design and a file")
+        if not proj or not isinstance(proj.get("dir"), str) or not isinstance(b.get("file"), str) or not isinstance(b.get("board"), str):
+            errors.append(f"{k}: board {b!r} needs a project from claude_design (with a dir), a file and a board name")
             continue
         path = ROOT / proj["dir"] / b["file"]
         if not path.is_file():
@@ -227,8 +250,9 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
     for n in sorted({n for n in plan_numbers if plan_numbers.count(n) > 1}):
         errors.append(f"PLAN.md has two '## Phase {n}' headings")
     for p in trace.get("phases", []):
-        if not p.get("epic"):
-            errors.append(f"phase {p.get('phase')}: no epic")
+        for field in ("epic", "title"):
+            if not p.get(field):
+                errors.append(f"phase {p.get('phase')}: no {field}")
         if p.get("plan_heading") not in plan_lines:
             errors.append(f"phase {p.get('phase')} ({p.get('epic')}): heading not in PLAN.md: {p.get('plan_heading')!r}")
 
@@ -236,7 +260,7 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
     seen = set()
     for it in trace.get("items", []):
         k = it.get("key")
-        if not k:
+        if not isinstance(k, str) or not k:
             errors.append(f"an item has no key: {str(it)[:80]}")
             continue
         if k in seen:
@@ -262,6 +286,9 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
 
     # The mirror matches what is on disk, and nothing on disk is unrecorded.
     for proj_key, proj in ctx["projects"].items():
+        if not isinstance(proj, dict) or not isinstance(proj.get("dir"), str):
+            errors.append(f"claude_design.{proj_key} needs a dir")
+            continue
         recorded = ctx["mirror"].get(proj_key, {}).get("files", {})
         base = ROOT / proj["dir"]
         if base.is_dir():
@@ -301,9 +328,9 @@ def render(trace: dict) -> str:
         "| none | No UI |",
         "",
     ]
-    for p in sorted(trace.get("phases", []), key=lambda p: p["phase"]):
+    for p in sorted(trace.get("phases", []), key=lambda p: (str(type(p.get("phase"))), p.get("phase") or 0)):
         rows = sorted((i for i in items if i.get("epic") == p["epic"]), key=lambda i: key_order(i.get("key", "")))
-        out += [f"## Phase {p['phase']}: {p['title']} ({p['epic']})", ""]
+        out += [f"## Phase {p.get('phase')}: {p.get('title', '')} ({p.get('epic', '')})", ""]
         if not rows:
             out += ["No stories yet.", ""]
             continue
@@ -311,7 +338,7 @@ def render(trace: dict) -> str:
         for i in rows:
             arch = ", ".join(f"§{s}" for s in (i.get("arch") if isinstance(i.get("arch"), list) else []) if s in sections) or ""
             boards = "; ".join(f"{b.get('file', '?')}: {b.get('board', '?')}" for b in (i.get("boards") if isinstance(i.get("boards"), list) else []) if isinstance(b, dict))
-            summary = i.get("summary", "").replace("|", "/")
+            summary = str(i.get("summary") or "").replace("|", "/")
             out.append(f"| {i.get('key', '?')} | {summary} | {i.get('status', '')} | {arch} | {i.get('design', '')} | {boards} |")
         out.append("")
     return "\n".join(out)
@@ -363,8 +390,41 @@ def start(trace: dict, key: str) -> int:
     return 0
 
 
+# Board names the check must accept (True) or refuse (False), from the reviews of PR #32.
+BOARD_CASES = [
+    ("ds", "Telegram kit.dc.html", "1 · Portfolio card", True), ("ds", "Telegram kit.dc.html", "2 · Stance card", True),
+    ("ds", "Telegram kit.dc.html", "4 · Portfolio card", False), ("ds", "Telegram kit.dc.html", "1 · Stance card", False),
+    ("ds", "Telegram kit.dc.html", "2 · S", False), ("ds", "Telegram kit.dc.html", "Light", False),
+    ("ds", "Logo.dc.html", "1c Telegram avatar", True), ("ds", "Logo.dc.html", "1c · Watcher", True),
+    ("ds", "Foundations.dc.html", "1 · Colour", True),
+    ("app", "Mini App.dc.html", "Mini App · Overview · scrolled", True), ("app", "Mini App.dc.html", "Mini App · Track record", True),
+    ("app", "Mini App.dc.html", "Browser · Holdings", False), ("app", "Browser 2.dc.html", "Mini App · Login", False),
+    ("app", "Currency check.dc.html", "Telegram · Currency check", True), ("app", "Currency check.dc.html", "Browser · Confirm", False),
+    ("app", "Currency check.dc.html", "Every holding has one currency", False),
+    ("app", "Admin center 2.dc.html", "Browser · Admin · Settings", True), ("app", "Admin center 2.dc.html", "Prod", False),
+    ("app", "Telegram admin.dc.html", " ", False), ("app", "Telegram admin.dc.html", " · ", False), ("app", "Telegram admin.dc.html", "Note:", False),
+    ("app", "Telegram chats.dc.html", "Telegram chats:", False),
+    ("app", "India.dc.html", "Mini App · Overview with India", True), ("app", "India.dc.html", "Demat account", False),
+    ("app", "India.dc.html", "MF folio · Fund house A", False),
+    ("app", "Forecast.dc.html", "Browser · Forecaster · Proof", True), ("app", "Forecast.dc.html", "Balanced", False),
+    ("app", "Forecast.dc.html", "f2 Balanced", False), ("app", "Forecast.dc.html", "NASDAQ 100 ETF", False),
+]
+
+
+def selftest(trace: dict) -> int:
+    dirs = {k: v.get("dir") for k, v in trace.get("claude_design", {}).items()}
+    bad = 0
+    for proj, file, board, want in BOARD_CASES:
+        got = board_ok(board, file, ROOT / dirs[proj] / file)
+        if got != want:
+            bad += 1
+            print(f"FAIL: {board!r} in {file}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
+    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {bad} wrong")
+    return 1 if bad else 0
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) < 2 or argv[1] not in ("check", "render", "start"):
+    if len(argv) < 2 or argv[1] not in ("check", "render", "start", "selftest"):
         print(__doc__)
         return 2
     trace = load(TRACE)
@@ -372,6 +432,8 @@ def main(argv: list[str]) -> int:
         TRACE_MD.write_text(render(trace))
         print(f"wrote {TRACE_MD.relative_to(ROOT)}")
         return 0
+    if argv[1] == "selftest":
+        return selftest(trace)
     if argv[1] == "start":
         if len(argv) < 3:
             print("usage: python3 scripts/plan_sync.py start MA-<n>")

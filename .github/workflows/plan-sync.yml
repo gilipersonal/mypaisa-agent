@@ -22,5 +22,8 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: The board-name check knows a board from a stray string
+        run: python3 scripts/plan_sync.py selftest
+
       - name: Trace, docs and design mirror agree
         run: python3 scripts/plan_sync.py check
