@@ -31,16 +31,19 @@ Status: planning. Nothing is built.
 
 | Task | Owner |
 | --- | --- |
-| Create the bot with BotFather; token into SSM; picture with `/setuserpic` from `docs/mark-1024.png` | You |
-| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of £35 and £10, and one API key in each; put the dev key into SSM at `/mypaisa-agent/dev/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
+| Create two bots with BotFather, one for dev and the household's for prod; each token into its own SSM path (`/mypaisa-agent/dev/telegram/bot_token`, `/mypaisa-agent/prod/telegram/bot_token`); the picture with `/setuserpic` from `docs/mark-1024.png` on both | You |
+| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of £35 and £10, and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
 | Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD waits for phase 2 and is taken only if the London closes prove unreliable in the first weeks | Decided |
-| Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
-| Terraform bootstrap: state key, OIDC role pinned to this repository's numeric id, `dev` GitHub environment, AWS Budgets at £40 and £50 | Claude |
+| Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key` and `/mypaisa-agent/prod/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
+| Terraform bootstrap (MA-26): `infra/modules/mypaisa` with the two roots `infra/dev` and `infra/prod`, each with its own state key in the existing state bucket; `infra/bootstrap`, applied once from the laptop, with the account's GitHub OIDC provider reused and three roles pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy`, `ci-prod-deploy`); `dev` and `prod` GitHub environments, prod needing your approval; the developer role with its explicit deny on `env=prod`; the zone and the certificate looked up by name (`ARCHITECTURE.md` §18.2); AWS Budgets at £40 and £50 | Claude |
+| The PR gates in GitHub Actions (MA-25): ruff, pyright, pytest with moto, `terraform fmt` and `validate`, tflint, the Terraform security scan, gitleaks, pip-audit, `jira-key`, and a plan for both environments on every PR touching `infra/` | Claude |
+| A Google OAuth client per environment (MA-109): any Gmail account can own the Google Cloud project, no billing account is needed, and it has no link to AWS. The consent screen is "External" (a personal Gmail cannot choose "Internal") with only the basic email and profile scopes, so it can be published without Google's review. Each client is a "Web application" whose authorised redirect is `https://auth-dev.mypaisapp.com/oauth2/idpresponse` or `https://auth.mypaisapp.com/oauth2/idpresponse`; the client id and secret go into that environment's SSM path | You |
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
 
-**Exit:** `terraform plan` runs clean from CI through OIDC; the budget
-exists; model access is granted; the bot token is in SSM.
+**Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
+the gates run on every PR; the budget exists; model access is granted; both
+bots' tokens, both Claude keys and both Google clients are in SSM.
 
 **Cost:** £0.
 
@@ -57,9 +60,16 @@ What you hold, recorded through the chat, with no analysis yet.
   `country`; `Instrument.maturity_date`, `rate`; the cashflow types on
   `Transaction`) exist from day one, so no migration stands between the ISA
   and the rest of the household's wealth.
-- Identity: the first person to open the chat becomes the household's
-  owner; `/invite` makes a one-time deep link; `/members` lists and removes;
-  the webhook resolves `from.id` to a member and ignores everyone else.
+- Identity on AWS from day one (MA-109, `ARCHITECTURE.md` §4.5): a Cognito
+  user pool per environment (Essentials) with the `auth(-dev).mypaisapp.com`
+  domain; Telegram through custom-auth Lambda triggers over `initData` and
+  the Login Widget (constant-time HMAC, five-minute freshness, replay
+  refused); Google as a provider; passkeys; five-minute access tokens behind
+  an `HttpOnly` cookie and the member's session epoch. The first person to
+  open the chat becomes the household's owner; `/invite` makes a one-time
+  deep link, and joining creates the member's Cognito user; `/members` lists
+  and removes; the webhook resolves `from.id` to a member and ignores
+  everyone else.
   Isolation tests: a member cannot read another household, nor another
   member's detail unless shared.
 - Accounts per member (ISA, GIA, SIPP, cash; joint accounts with two
@@ -67,6 +77,9 @@ What you hold, recorded through the chat, with no analysis yet.
 - Telegram client: `sendMessage` (HTML), rich messages with fallback,
   `sendPhoto`, `editMessageText`, `getFile`, `setMyCommands`, reply keyboard,
   menu button, callback queries.
+- API Gateway HTTP API at `api(-dev).mypaisapp.com`, with
+  `/telegram/webhook` and `/auth/telegram`. On the laptop the dev bot runs by
+  long polling against dev, so no webhook is needed to develop.
 - `webhook` Lambda (secret token, chat allowlist, dedupe, async hand-off) and
   the first `agent` Lambda: onboarding, `/add`, `/update`, `Portfolio`,
   `/privacy`, `/pause`, `/resume`, `/help`.
@@ -88,12 +101,22 @@ What you hold, recorded through the chat, with no analysis yet.
 - Portfolio card as a table (rich message or HTML), valued from the last
   user-supplied figures, with the Household / Me switch and, for the owner, a
   tab per member.
+- The dev seed (MA-110): a synthetic household on Monzo-shaped funds (the
+  names, ISINs and factsheets you supply, never your balances), with
+  members, accounts, holdings, a year of transactions and valuations; one
+  command wipes and reseeds dev, and it refuses to run against prod.
+- The release pipeline (MA-107): a merge to `main` builds the Lambdas once,
+  deploys dev and runs the smoke tests, then deploys prod after your approval
+  behind each Lambda's `live` alias, rolling back on a failed smoke test. The
+  nightly drift check follows (MA-108).
 
 **Tests:** extraction against three real factsheets and three screenshots
 (fixtures with expected JSON); webhook security; the invite flow (single
 use, expiry, wrong household); the isolation rules; the Confirm state
 machine; the guided flows (resume after a day, expiry, skipping fields
-already given, two members mid-flow at once); a property test that every
+already given, two members mid-flow at once); the custom-auth triggers
+(valid, expired, tampered, replayed, a removed member) and a dev token
+refused by prod; a property test that every
 write produces exactly one audit row and the chain verifies; a `RunRecord`
 on success and on failure; schema migration on a v0 item.
 
@@ -101,7 +124,9 @@ on success and on failure; schema migration on a v0 item.
 has added holdings from the chat alone; each sees their own detail and the
 household overview, and you see hers; a screenshot updates a member's
 valuations and both views change; "what changed this week?" lists every
-change either of you made, with who and when.
+change either of you made, with who and when; each of you is a Cognito user
+in prod; the dev bot runs from your laptop on seeded data; a merge reaches
+prod only after your approval.
 
 **Cost:** about £0.50 (a few Claude calls).
 
@@ -115,7 +140,7 @@ The maths, ported from the desk and extended.
   feed (`yfinance`, `twelvedata`, `eodhd`, `issuer_page`, `ft`, `proxy`,
   `screenshot`, `stale`), a registry that imports only the plugins in use,
   per-plugin identifiers on the instrument, and chains per kind set in
-  `envs/<env>.tfvars` (and a `.env` for local). yfinance is the default
+  `infra/<env>/terraform.tfvars` (and a `.env` for local). yfinance is the default
   chain head in every environment; the EODHD plugin ships with the others,
   switched on by putting it first in the chain and adding its key.
 - Price source chain: yfinance (`0P…L` ids for the funds, tickers for ETFs),
@@ -220,47 +245,39 @@ browser, as `ARCHITECTURE.md` §9.3.
   with their model calls, tokens, cost, tools and outcome; the schedule
   board with last and next run and price freshness; this month's spend
   against the cap; the last seven days of alarms).
-- The `api` Lambda: GET routes only, plus the login endpoints; `initData`
-  validation, Telegram Login Widget verification and Google ID token
-  verification (signature against Google's keys, audience, expiry, verified
-  address, member found by `sub`); the signed session cookie; membership
-  and role checked on every call; JSON limited to what that member may see.
+- The `api` Lambda behind `api(-dev).mypaisapp.com`: GET routes only for
+  the household's data, plus the Admin center's owner-only security actions
+  behind a fresh check (MA-102); sign-in through the Cognito pool built in
+  phase 1 (Telegram, Google, passkey); the `HttpOnly`, `SameSite=Strict`
+  session cookie with five-minute access tokens behind it; session, status,
+  epoch and role checked on every call; CORS for that environment's console
+  only; JSON limited to what that member may see.
 - Linking a Google account: the six-digit code shown on the web, `/link
   <code>` in the chat from the member's own phone, `google_sub` and
   `google_email` on the Member; link and unlink from `/members` for the
   owner; every link, unlink and web login an audit row.
 - Hosting in Terraform: the app's S3 bucket and CloudFront distribution per
-  environment; the api Lambda's Function URL (IAM auth) as the `/api/*`
-  origin through CloudFront; the CloudFront Function that checks the cookie
-  at the edge, with the signing secret in KeyValueStore put there by a
-  command; security headers.
+  environment at `console-dev.mypaisapp.com` and `console.mypaisapp.com`,
+  with their records in the existing zone and the existing wildcard
+  certificate; security headers. The shell is public and holds no data.
 - `web_app` button on the Portfolio card; a `/web` command that sends the
   laptop address.
-- You: `/setdomain` in BotFather with the app's hostname, once per
-  environment; a Google OAuth client id in the Google Cloud Console, the id
-  into SSM; two-step verification on each member's Telegram and Google
-  accounts. Any Gmail account can own the Google Cloud project, no billing
-  account is needed, and the project has no link to AWS. The consent screen
-  is "External" (a personal Gmail cannot choose "Internal"), with only the
-  basic email and profile scopes, so it can be published without Google's
-  review; in "Testing" only listed test users can sign in, which also works
-  for one person. The client is a "Web application" whose authorised
-  JavaScript origins are the dev and prod hostnames and `http://localhost:8000`;
-  one client with all three origins is enough. The id is public, not a secret;
-  the flow used has no client secret at all.
+- You: `/setdomain` in BotFather for the Login Widget, the dev bot with
+  `console-dev.mypaisapp.com` and the household's bot with
+  `console.mypaisapp.com`; two-step verification on each member's Telegram
+  and Google accounts. The Google clients exist from phase 0.
 
-**Tests:** `initData`, Login Widget and Google ID token verification
-(valid, expired, tampered, wrong audience, unverified address, a Google
-account linked to nobody, a member of another household, a removed member);
-the link code (right code, wrong code, expired, used twice, sent from the
-wrong chat); the cookie check
-in the CloudFront Function through `aws cloudfront test-function`; every
-route against each role; JSON shape; the Audit page showing a change made in
+**Tests:** sign-in by each door (a Google account linked to nobody, a
+member of another household, a removed member, a paused member); the link
+code (right code, wrong code, expired, used twice, sent from the wrong
+chat); the cookie (missing, expired, from the other environment, after sign
+out everywhere); CORS from another origin; every route against each role; JSON shape; the Audit page showing a change made in
 the chat within a minute; Playwright screenshots at phone and laptop widths
 in both themes.
 
-**Exit:** you open it on your laptop, log in with Telegram and then with
-Google, and see the same numbers as the chat either way; the Audit page shows the change you just made from the
+**Exit:** you open `console.mypaisapp.com` on your laptop, log in with
+Telegram, then Google, then a passkey, and see the same numbers as the chat
+each way; the Audit page shows the change you just made from the
 chat, with who and when; the Activity page shows the run that made it, with
 what it cost; your wife sees her own view from her phone; a removed member
 cannot get in.
@@ -330,20 +347,29 @@ shipping read-only pages over data the bot already maintains:
    loan, logging rent, interest, a maturity, an EMI, a prepayment, a rate
    change and a preclosure; valuation reminders when a figure is overdue;
    maturity announcements.
-2. **Wealth maths.** The `wealth/` module of §6.6: XIRR against spreadsheet
+2. **History import.** The Excel importer (MA-111, `ARCHITECTURE.md`
+   §18.5): one versioned template sent to the bot, a dry run, Confirm with
+   the second check, batch writes with audit rows, a fingerprint so a file
+   sent twice adds nothing, and rollback by import id. Tested on dev's
+   synthetic data first, then used to hydrate prod with the past
+   investments XIRR needs, after the tracker's data is mapped (MA-105).
+3. **Wealth maths.** The `wealth/` module of §6.6: XIRR against spreadsheet
    fixtures to the penny, deposit accrual, the loan schedule and interest
    split, the daily `NetWorth` series, the maturity timeline.
-3. **Screens, redesigned.** Overview, Assets and one asset, Debts and one
+4. **Screens, redesigned.** Overview, Assets and one asset, Debts and one
    loan, on the web app and in the Mini App, from a new design in the
    MyPaisa DS v1 system; the Portfolio card grows into the overview.
-4. **Forecast and budget.** `ForecastAssumptions` and `Budget` with their
+5. **Forecast and budget.** `ForecastAssumptions` and `Budget` with their
    flows ("assume 5% on property", "my salary is now …"); the thirty-year
    projection; the Budget and Forecast screens.
-5. **Reports, exports, retirement.** Composition by type and institution,
-   exports as GET routes; the old repository's domain or distribution
-   handed over or retired.
+6. **Reports, exports, retirement.** Composition by type and institution,
+   exports as GET routes; the zone moves from the old tracker's Terraform to
+   this repository's and the apex `mypaisapp.com` redirects to the console
+   (MA-97).
 
-**Tests:** XIRR, schedule and projection fixtures with known answers; every
+**Tests:** XIRR, schedule and projection fixtures with known answers; the
+importer (a wrong template version, a bad row, the same file twice, a
+rollback); every
 new flow's Confirm path and audit row; the viewer's masked figures; the
 INR and GBP views of the same household agreeing to the penny at the day's
 rate.
@@ -392,8 +418,8 @@ What is ported from where, so the work can be checked against the original.
 
 | Phase | Effort | Calendar |
 | --- | --- | --- |
-| 0 Prerequisites | half a day, mostly yours | Week 1 |
-| 1 Registry and ingestion | 4 days | Weeks 1–2 |
+| 0 Prerequisites | 1 day, half of it yours | Week 1 |
+| 1 Registry, ingestion, identity, both environments | 7 days | Weeks 1–3 |
 | 2 Prices and engine | 5 days | Weeks 2–3 |
 | 3 Briefs, alerts, charts, technical mode | 3 days | Week 4 |
 | 4 Chat, cards, scenarios | 4 days | Weeks 5–6 |
@@ -411,7 +437,9 @@ What is ported from where, so the work can be checked against the original.
 uv run ruff check . && uv run ruff format --check .
 uv run pyright
 uv run pytest --cov --cov-fail-under=90
-cd infra/terraform && terraform fmt -check && terraform validate
+terraform fmt -check -recursive infra
+for env in dev prod; do terraform -chdir=infra/$env validate; done
+tflint --recursive
 ```
 
 Plus: golden tests for any engine change; a card change ships with both its
@@ -434,6 +462,8 @@ handler writes its `RunRecord`, both covered by tests.
 | Alert fatigue | Weekly red budget, cooldowns, repeat filter |
 | Cost overrun | Budgets alert and stop; daily token ceiling; `/pause` |
 | Prompt injection via news or a PDF | Untrusted text marked; no dangerous tools exist; Confirm on every write |
-| A session cookie stolen from a laptop | Signed, `HttpOnly`, `Secure`, thirty-day expiry; the API is read-only; membership re-checked on every call; the owner removes a member or rotates the secret |
+| A session cookie stolen from a laptop | `HttpOnly`, `Secure`, `SameSite=Strict`, five-minute access tokens behind it; the data routes are read-only; status and epoch re-checked on every call; the owner signs the member out everywhere or pauses them (MA-102) |
+| A change meant for dev reaches prod | Separate state per environment; the developer role denied on `env=prod`; prod applied only by CI after your approval; the nightly drift check |
+| An import writes bad history into prod | Dry run first; fingerprints stop duplicates; Confirm with the second check; rollback by import id; tested on dev first |
 | Observability that costs more than the app | Ten metrics, one dashboard, sampled traces, fourteen-day logs, `RunRecord` rows that expire after ninety days |
 | OIDC trust mismatch on first deploy | Pin this repository's ids; read CloudTrail |
