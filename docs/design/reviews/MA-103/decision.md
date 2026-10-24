@@ -54,4 +54,10 @@ Motion. 32 and 16 px use a separate small cut with heavier strokes and fewer par
 
 ## The pick
 
-Pending: Arun to choose 1a, 1b, 1c or "none of these".
+**1c, Watcher.** Arun, 24 Oct 2026: "1c". Today's coin and £, with a thin orbit and one coral dot that travels
+two thirds of it once and comes to rest at half past one: the agent keeping watch. 1a and 1b stay on the Logo
+page, marked "Not picked".
+
+The pick replaces `docs/mark.svg` and its PNGs, and the coin in every Claude Design screen (the sidebar, the
+sign-in page, the bot's avatar in Telegram's chat list and header). The note against 1c, that its dot can read
+as an unread badge on a small round avatar, is checked again on the chat list once the new mark is in place.
