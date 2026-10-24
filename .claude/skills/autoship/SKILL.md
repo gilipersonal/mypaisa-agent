@@ -1,6 +1,6 @@
 ---
 name: autoship
-description: Take an MA story in this repo from finished work to an open PR without asking, then ask once whether to merge into main; on a yes, merge, move the issue to Done and sync main. Use when a story's work is done, when asked to "ship", "autoship", "raise the PR", or "finish MA-n" in mypaisa-agent.
+description: Take an MA story in this repo from finished work to an open PR without asking, then ask once whether to merge into main, offering the independent review first; on a yes, review if asked, merge, move the issue to Done and sync main. Use when a story's work is done, when asked to "ship", "autoship", "raise the PR", or "finish MA-n" in mypaisa-agent.
 ---
 
 # Autoship an MA story
@@ -35,9 +35,9 @@ Uncommitted files that belong to another story are left alone and named.
    (`python3 scripts/plan_sync.py check`) always applies: if the story changed
    a board, a phase or a story, run `/plan-sync MA-<n>` first so the trace,
    the design mirror and Jira agree before the PR.
-2. **No review.** The independent review from `~/.claude/CLAUDE.md` is
-   switched off in this repo (`ship-autopilot.md`); go straight on unless
-   Arun asked for a reviewer.
+2. **No review yet.** The independent review from `~/.claude/CLAUDE.md` is
+   opt-in in this repo and offered at the merge question (step 3,
+   `ship-autopilot.md`); go straight on unless Arun asked for a reviewer.
 3. **Commit** this story's files, subject `MA-<n>: <what>`, no attribution.
 4. **Push**: `git push -u origin <branch>`.
 5. **Raise the PR** (skip if one is open): title `[MA-<n>] <summary>`, body
@@ -55,14 +55,25 @@ Uncommitted files that belong to another story are left alone and named.
 
 Ask once, in words, naming everything:
 
-> MA-<n> is ready: PR #<n> `[MA-<n>] ...`, checks green (<names>). Merge it
-> into main? (MA-<n> goes to Done after the merge.)
+> MA-<n> is ready: PR #<n> `[MA-<n>] ...`, checks green (<names>). Review it
+> first, then merge, or merge it into main now? (MA-<n> goes to Done after
+> the merge.)
 
 Use the turn's next-step question (or `AskUserQuestion` when there is none)
-with "Merge it" first and "Not now" second. Do not merge on anything but a
-yes given in the turn that is running.
+with "Review, then merge" and "Merge now" (and "Not now" where the question
+allows a third answer). Do not merge on anything but a yes given in the turn
+that is running.
 
-## 4. After a yes, without asking again
+On "Review, then merge": start a fresh sub-agent that saw none of the making,
+with the PR number, the issue key and the files to read (`.claude/rules/`,
+`ARCHITECTURE.md`, `PLAN.md`, the story's acceptance criteria and boards),
+and ask for blocking and non-blocking findings on the PR's diff. Fix the
+blocking ones on the branch, push, wait for the checks, and review again with
+another fresh sub-agent; at most five rounds, then stop and ask Arun whether
+to go on, listing what is left. A clean review goes straight to step 4; put
+the non-blocking findings in the report and on the issue.
+
+## 4. After a yes (and a clean review, if one was asked for), without asking again
 
 Arun's "merge it" covers every step below, branch deletion included
 (`ship-autopilot.md`, "Merge it" is the whole yes). Ask nothing more.

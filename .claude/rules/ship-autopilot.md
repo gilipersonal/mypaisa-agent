@@ -4,14 +4,31 @@
 and two rules in the user's global `~/.claude/CLAUDE.md`, "raise, merge and
 close only when asked" and "independent review before anything is shown",
 for work in `gilipersonal/mypaisa-agent`. Everywhere else those rules stand
-unchanged. Arun set this on 2026-10-23 (MA-3, MA-4).
+unchanged. Arun set this on 2026-10-23 (MA-3, MA-4); the review became
+opt-in, offered before every merge, on 2026-10-24 (MA-157).
 
-## No independent review here
+## The independent review is opt-in, offered before every merge
 
-The separate-reviewer pass from `~/.claude/CLAUDE.md` is switched off in this
-repo: no review sub-agent before work is shown, reported done or shipped, and
-no re-review round. Check your own work the ordinary way (run the gates, look
-at the result) and go straight on. A reviewer runs only when Arun asks for one.
+Arun, 24 Oct 2026 (MA-157): "the rule is made opt-in, you ask to run it for
+this repo on any change just before you merge the PR. just for this Repo".
+
+- **Not on its own.** No review sub-agent runs before work is shown, reported
+  done or raised as a PR. Check your own work the ordinary way (run the
+  gates, look at the result) and go straight on.
+- **Offered at every merge.** The merge question also offers the review, in
+  the same one question: review it first, then merge, or merge it now. Never
+  merge without having offered it.
+- **Review first** means a fresh sub-agent that saw none of the making
+  reviews the PR's diff against `.claude/rules/`, `ARCHITECTURE.md`,
+  `PLAN.md`, the picked boards and the story's acceptance criteria, and
+  returns blocking and non-blocking findings. Blocking findings are fixed on
+  the branch, pushed, and re-reviewed by another fresh sub-agent, at most five
+  rounds; if blocking findings remain after the fifth, stop and ask Arun
+  whether to go on, listing them. A clean review (no blocking findings) leads
+  straight to the merge: "review it first, then merge" is the yes. The
+  non-blocking findings go into the report and onto the issue.
+- **Merge now** merges with no review.
+- Arun can ask for a reviewer at any other time too.
 
 ## What changes
 
@@ -65,10 +82,12 @@ done, take it to the merge question without stopping: commit, push, raise the
 PR, move the issue to In Review, wait for the checks. Then ask exactly once,
 naming the PR and its checks:
 
-> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key). Merge it into
-> main? (MA-7 goes to Done after the merge.)
+> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key). Review it
+> first, then merge, or merge it into main now? (MA-7 goes to Done after the
+> merge.)
 
-A yes merges, closes the issue and syncs `main`. A no, or no answer, leaves
+Either yes merges (after a clean review, for the first), closes the issue and
+syncs `main`. A no, or no answer, leaves
 the PR open and the issue In Review; say so in one line.
 
 ### "Merge it" is the whole yes
