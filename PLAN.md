@@ -108,6 +108,9 @@ What you hold, recorded through the chat, with no analysis yet.
 - The audit log from day one: an `AuditEvent` row in the same transaction
   as every record change, hash-chained; `get_audit` and "what changed this
   week?" in the chat.
+- Every file and image a member sends kept in S3 for good, before anything
+  reads it, with a `Document` row and an audit row; every change made from a
+  file names it (MA-148).
 - Observability from the first Lambda: a `RunRecord` per run with model
   calls, tokens, cost and tool calls; Powertools Logger, Tracer and Metrics
   wired in the handler base; the error alarm per function to the chat.
@@ -283,7 +286,8 @@ browser, as `ARCHITECTURE.md` §9.3.
   laptop width, and the login page), as `docs/design/README.md` describes;
   the MyPaisa DS v1 "Warm ledger" look (MA-101), lightweight-charts.
 - Two new pages: **Audit** (the §4.6 log, filtered by member, record and
-  date, before and after, a link to the run) and **Activity** (the §10 runs
+  date, before and after, a link to the run, and the file behind a change
+  opened through a five-minute link, with a Files view, MA-149) and **Activity** (the §10 runs
   with their model calls, tokens, cost, tools and outcome; the schedule
   board with last and next run and price freshness; this month's spend
   against the ceiling and the step it is on; the last seven days of alarms).
@@ -576,6 +580,41 @@ DynamoDB items sit in their free tiers at this volume.
 
 ---
 
+## Phase 13 — Indian markets and the existing Indian portfolio (later)
+
+`ARCHITECTURE.md` §22, epic MA-147. Indian mutual funds, NSE and BSE shares
+and ETFs beside the UK holdings, free sources first, and the household's
+existing Indian portfolio loaded once with its whole history.
+
+- **IN1, Indian prices (MA-151).** The `amfi`, `mfapi` and `bhavcopy`
+  plugins; yfinance with `.NS` and `.BO`; the kinds `in_mutual_fund` and
+  `in_listed`; INR from the ECB with the RBI/FBIL rate behind it; NSE's
+  holiday calendar; jobs after the Indian close.
+- **IN2, the import (MA-152).** The detailed CAS from CAMS, KFintech or MF
+  Central, the NSDL or CDSL CAS, and a broker's holdings and tradebook
+  export; parsed in code, matched by ISIN, a dry run, one summary card,
+  Confirm with the second check, rollback by import id; every file kept
+  (MA-148); no PAN, address or account number in any record.
+- **IN3, accounts and views (MA-153).** `demat`, `mf_folio`, `nre`, `nro`;
+  INR with GBP beside it; wrapper-aware suggestions; the reporting-fund tax
+  flag; designed first.
+- **IN4, the engine and the Forecaster (MA-154).** The India basket, Indian
+  news and disclosures, the RBI's calendar; the Forecaster's gates as in
+  phase 11.
+
+**Tests:** synthetic CAS statements and broker exports import exactly once;
+an unmatched ISIN is listed, not guessed; each Indian chain falls through to
+stale; INR and GBP views agree with the FX of the day; golden tests for the
+India basket.
+
+**Exit:** a member sends their CAS and broker export, taps Confirm once, and
+the Indian holdings with their history appear in the brief and the web app
+in INR and GBP, with the files they came from open from the Audit page.
+
+**Cost:** £0 on the free path; a paid feed only on the admin's approval.
+
+---
+
 ## Reverse-engineering workbook
 
 What is ported from where, so the work can be checked against the original.
@@ -613,6 +652,7 @@ What is ported from where, so the work can be checked against the original.
 | 10 New kinds of holding | a day or two each | When a new kind is added |
 | 11 The Forecaster | 8–12 weeks | F1 and F2 any time after phase 2; the rest after phase 7, when wanted |
 | 12 The agent team | 6–8 weeks | E1 and E2 after phase 5; the rest with phases 6 and 11, when wanted |
+| 13 Indian markets and the Indian portfolio | 3–4 weeks | IN1 after phase 2; IN2 after phase 1's importer; IN4's forecasts with phase 11, when wanted |
 
 ---
 

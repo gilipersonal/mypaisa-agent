@@ -3636,7 +3636,7 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Where the data lives</b></span></p><p style=\"text-align:left\">DynamoDB for state, small and fast \u00b7 S3 for the record, in Parquet, queried with DuckDB \u00b7 SSM for keys \u00b7 MA-27, MA-104, MA-132</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Where the data lives</b></span></p><p style=\"text-align:left\">DynamoDB for state, small and fast \u00b7 S3 for the record, in Parquet, queried with DuckDB \u00b7 every file sent kept for good \u00b7 SSM for keys \u00b7 MA-27, MA-104, MA-132, MA-148</p></div>"
     },
     {
      "id": "cl5",
@@ -3646,7 +3646,7 @@
       "x": 40,
       "y": 170,
       "w": 2260,
-      "h": 1040
+      "h": 1080
      },
      "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 one copy per environment (mypaisa-dev-*, mypaisa-prod-*)</b></p>"
     },
@@ -4120,7 +4120,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "S3 documents\nfactsheets \u00b7 screenshots"
+     "text": "S3 documents\nevery file sent, kept\nopened from Audit"
     },
     {
      "id": "web",
@@ -4153,9 +4153,9 @@
       "x": 380,
       "y": 980,
       "w": 870,
-      "h": 140
+      "h": 190
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Rules</b><br>nothing is overwritten: corrections are new rows \u00b7 secrets set by hand, never in Terraform state<br>prod tables: deletion protection and point-in-time recovery \u00b7 the whole history is a few GB</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Rules</b><br>nothing is overwritten: corrections are new rows \u00b7 secrets set by hand, never in Terraform state<br>every file a member sends is kept for good, linked from its audit row, opened through a 5-minute link (MA-148, MA-149)<br>prod tables: deletion protection and point-in-time recovery \u00b7 the whole history is a few GB</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -4246,18 +4246,18 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The market agent: rules engine, Forecaster and the learning loop</b></span></p><p style=\"text-align:left\">phase 2 rules engine \u00b7 phase 11 Forecaster (MA-117) \u00b7 phase 12 learning loop and agents (MA-127) \u00b7 code decides, Claude explains</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The market agent: rules engine, Forecaster and the learning loop</b></span></p><p style=\"text-align:left\">phase 2 rules engine \u00b7 phase 11 Forecaster (MA-117) \u00b7 phase 12 learning loop and agents (MA-127) \u00b7 phase 13 India (MA-147) \u00b7 code decides, Claude explains</p></div>"
     },
     {
      "id": "m_src",
      "type": "rectangle",
      "boundingBox": {
       "x": 40,
-      "y": 200,
+      "y": 190,
       "w": 300,
-      "h": 260
+      "h": 330
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data first</b><br>yfinance \u00b7 Twelve Data free<br>FRED / ALFRED \u00b7 BoE \u00b7 ECB \u00b7 ONS<br>EIA (oil) \u00b7 GDELT \u00b7 GPR index<br>RSS \u00b7 calendars<br>EODHD only if approved</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data first</b><br>yfinance \u00b7 Twelve Data free<br>FRED / ALFRED \u00b7 BoE \u00b7 ECB \u00b7 ONS<br>EIA (oil) \u00b7 GDELT \u00b7 GPR index<br>RSS \u00b7 calendars<br><b>India (phase 13)</b>: AMFI NAVs<br>mfapi.in \u00b7 NSE/BSE bhavcopy<br>RBI \u00b7 NSDL flows<br>EODHD only if approved</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -4592,7 +4592,7 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 40,
-      "y": 560,
+      "y": 580,
       "w": 300,
       "h": 140
      },

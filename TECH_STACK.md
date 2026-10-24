@@ -54,7 +54,7 @@ AWS views and a sequence, linked and embedded in `ARCHITECTURE.md`
 | Cognito | One user pool per environment, Essentials plan, on `auth-dev.mypaisapp.com` and `auth.mypaisapp.com`; custom-auth triggers for Telegram, Google as a provider, passkeys; free under 10,000 monthly users |
 | EventBridge Scheduler | 07:00, 07:15, 21:00, 21:15 on weekdays; 23:30 daily; 08:00 Saturday; every 3 h for news; all in `Europe/London` |
 | DynamoDB | One on-demand table per environment; TTL on chat turns, webhook dedupe, article scores |
-| S3 | Prices and FX as parquet; documents (private, lifecycle rule); articles (90-day rule); charts (30-day rule) |
+| S3 | Prices and FX as parquet; documents: every file a member sends, kept for good (private, encrypted, versioned in prod, no expiry rule), opened from the Audit page through five-minute presigned links (MA-148, MA-149); articles (90-day rule); charts (30-day rule) |
 | ECR | The container image, one repository, lifecycle rule keeping the last ten |
 | SSM Parameter Store | SecureString, standard tier, one path per environment (`/mypaisa-agent/dev/...`, `/mypaisa-agent/prod/...`): bot token, webhook secret, the Anthropic API key, Twelve Data and EODHD keys, the Google OAuth client secret; values put by hand, Terraform creates the parameters and ignores their values |
 | CloudFront + S3 | The web app on its own bucket and distribution per environment, `console-dev.mypaisapp.com` and `console.mypaisapp.com`; the shell is public and holds no data |
@@ -94,6 +94,11 @@ AWS views and a sequence, linked and embedded in `ARCHITECTURE.md`
 | US Energy Information Administration (EIA) | Free | Daily Brent and WTI (the Forecaster) |
 | GDELT and the geopolitical risk index | Free | World events and their tone by country and theme (the Forecaster) |
 | Fund manager pages (BlackRock, Vanguard) | Free | UK fund prices and holdings files when a feed misses a fund |
+| AMFI daily NAV file (phase 13) | Free | Every Indian mutual fund's NAV each day, by scheme code and ISIN (`ARCHITECTURE.md` §22) |
+| mfapi.in (phase 13) | Free, community-run | Each Indian scheme's full NAV history; the fallback behind AMFI |
+| NSE and BSE bhavcopy (phase 13) | Free for personal use | End-of-day prices for Indian shares and ETFs when yfinance's `.NS`/`.BO` miss |
+| RBI database, MOSPI, NSDL (phase 13) | Free | India's rates, yields and inflation as first published; daily foreign portfolio flows |
+| Zerodha Kite Connect (phase 13) | ₹500 a month, not chosen | Broker-grade Indian prices and history, only on the admin's approval if the free chain fails |
 | Marketaux | About $29 a month, not chosen | Fallback for per-company news sentiment if Claude Haiku's tagging falls short |
 
 ---
