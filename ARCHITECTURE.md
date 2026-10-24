@@ -170,6 +170,8 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Budget**, **ForecastAssumptions** | per member; per portfolio | Monthly income and planned spend with EMIs and surplus; the growth, contribution and surplus-allocation assumptions the thirty-year projection runs on. Later, §12. |
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
+| **Forecast** | `instrument_id`, `date`, `horizon_days` (20), `p_up`, `p_fall_5`, `range` {p10, p50, p90}, `mood`, `analogs` {count, recovered}, `events[]`, `drivers[]`, `model_version`, `graded` | One per holding per day from the Forecaster (§19), later; graded like a stance. |
+| **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.5). |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
 | **BudgetSettings** | `portfolio_id`, `monthly_ceiling_usd` (prod $100, dev $10), `hard_limit_usd` (the Console workspace limit, typed in to match it), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
@@ -1055,6 +1057,7 @@ in the Console; nothing is charged without that.
 | Claude budget | Prod's Claude spend is held under a monthly ceiling, $100 by default and moved by the owner in the Admin center; a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); the bot degrades to templates rather than going silent, and a runaway loop cannot spend a month |
 | Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
+| Forecaster | A second engine, phase 11, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
 | Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
 ## 17. Open questions
@@ -1066,6 +1069,7 @@ in the Console; nothing is charged without that.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
 - A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
+- For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $100 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
@@ -1188,3 +1192,136 @@ in through one versioned Excel template (MA-111), sent to the bot as a file:
 The same importer works in dev against the synthetic data, so it is tested
 before it ever touches prod. It is built in phase 9, after the wealth
 tracker's data is mapped (MA-105).
+
+---
+
+## 19. The Forecaster: a second engine beside the rules engine (phase 11, later)
+
+Arun, 24 Oct 2026 (MA-117): "My target is to minimize loss and grow money
+over time steadily ... another agent which will give really predictive
+recommendation side by side with the one you are building ... I want this
+view of web dashboard as well as integration with my Telegram app."
+
+The rules engine of §6 stays as it is: transparent, fixed rules that a person
+can check by hand. The Forecaster is a second engine beside it that learns
+from ten years of history, gives its own view of each holding, and is graded
+on the same track record. It never replaces the rules engine and never trades.
+(It is not the thirty-year wealth forecast of §12, which projects stated
+assumptions.)
+
+### 19.1 What can and cannot be forecast
+
+| Can | Cannot |
+| --- | --- |
+| How rough the next few weeks will be, and the chance of a deep fall: calm and rough spells cluster, so risk is far more forecastable than direction | Tomorrow's up or down: short-term moves are mostly noise, and a tool claiming 80 to 90% accuracy has learned its past by heart |
+| The market's mood (calm and rising, choppy, stressed, falling) | Rare shocks: wars and pandemics have too few past cases for confident numbers |
+| What usually followed days like today, and how a holding moved after past events of a kind | Candles or opening prices for OEICs: they price once a day and deal at the next day's price |
+| A modest, honest edge on direction over weeks, not days | Anything faster than the household can act on |
+
+So the horizon is four weeks (20 trading days), the first aim is avoiding deep
+falls, and direction is the last and least trusted piece.
+
+### 19.2 Data, as it was known on each day (F1, MA-119)
+
+Ten years, from 2015 or inception, in Parquet in the `mypaisa-<env>-lake`
+bucket and queried with DuckDB (the same copy as MA-104):
+
+| Kind | What | Source |
+| --- | --- | --- |
+| Prices | Daily prices for each holding, the top constituents of each fund and the index it tracks; open, high, low, close and volume for anything exchange-traded, the NAV for OEICs | yfinance, Twelve Data, EODHD |
+| Economy | Policy rates, 2-year and 10-year yields, inflation, unemployment | FRED, Bank of England, ECB |
+| Market stress | VIX, high-yield and investment-grade credit spreads, the dollar index, oil, gold | yfinance, FRED |
+| World events | Daily event counts and tone by country and theme; the published geopolitical risk index | GDELT, the GPR index |
+| Calendars and news | Central bank decisions, inflation releases, earnings of top holdings; the RSS news of §11 | the calendar of §11 |
+
+Every row carries the date it became known, and revisions are added rather
+than overwritten, so a backtest of 2018 sees only what was known in 2018. A
+daily refresh runs after the close; a gap or a stale feed is an alarm in the
+chat. Each source's terms are recorded; the use is personal.
+
+### 19.3 The models (F3 to F5, MA-121 to MA-123)
+
+| Model | Answers | Method | Trust |
+| --- | --- | --- | --- |
+| Market mood | Calm and rising, choppy, stressed or falling, with its probability | A regime model over cross-asset features, smoothed so it does not flip daily | Good |
+| Risk | Four-week volatility and the chance of a fall over 5%, per holding | A volatility model and gradient-boosted trees, combined and calibrated | Good |
+| Similar days | What followed the 30 days since 2015 most like today, after 5, 20 and 60 days | Nearest neighbours over a feature vector, the last 20 days left out | Good, and easy to explain |
+| Event impacts | How this holding moved after past rate surprises, inflation surprises, elections, conflict, tariffs, pandemics, earnings misses | Event studies: average move, spread, number of cases, confidence interval; under 8 cases marked low confidence | Fair |
+| Direction | The chance of being up in four weeks, the likely range (10th, 50th, 90th percentile) and the main drivers | Gradient-boosted trees combined with the four above, calibrated; conformal intervals for the range | Modest |
+
+Claude's part is the same as everywhere (§1): it files each day's news under
+the event types (Haiku, through Batches) and explains the result. Every
+number, the event impacts included, comes from code.
+
+### 19.4 The strategy layer: where the goal is won (F7, MA-125)
+
+Forecasts become suggestions about the money the household already moves:
+contributions always continue; new money tilts away from holdings in a
+stressed or falling mood or with a high chance of a deep fall; a trend
+filter; rebalancing within bands; and a drawdown budget the owner sets. It
+never says sell everything, stays ISA-safe, and only suggests (§1). It shows
+as the suggested split on the first-of-the-month contribution prompt, beside
+the rules engine's.
+
+### 19.5 How it proves itself (F2, MA-120)
+
+- **A backtest lab** replays any strategy one day at a time over the ten
+  years, with fees, next-day pricing for OEICs and monthly contributions, and
+  reports yearly growth, the worst fall, the worst year, time below a
+  previous high and the calls' calibration, against buy-and-hold with
+  monthly contributions and a simple trend rule. Its first report is the
+  rules engine itself, years before its live track record could say as much.
+- **Walk-forward tests** train on the past and test on the years after, with
+  a gap so no window overlaps; the last two years are held back for a final
+  test. A model that does not beat the base rate there is not used.
+- **Practice first.** Every forecast is a `Forecast` row, graded when its four
+  weeks are up. For each holding the Forecaster appears in weekday cards only
+  after 8 live weeks beating both the base rate and the rules engine; until
+  then it appears only in the Saturday review, labelled "in practice".
+- **It switches itself off** when its live record is worse than the base rate
+  for four weeks, and the owner is told. Models are retrained monthly; each
+  version is a `ModelVersion` row with its test scores.
+
+### 19.6 How it is shown (F6, MA-124)
+
+In Telegram, beside the rules engine (illustrative figures):
+
+```
+NASDAQ 100 ETF
+Rules engine   PAUSE · 64%
+Forecaster     next 4 weeks
+  Chance up          52%
+  Chance of −5%      21%   (usually 12%)
+  Likely range       −7% … +6%
+  Market mood        Stressed, since 3 Oct
+  Similar days       31 since 2015; 18 recovered within 4 weeks
+  Main drivers       momentum fading, US yields rising, chip export news
+[Why?] [Chart] [Track record]
+```
+
+When the two engines disagree, the card says so; below the confidence floor
+it says "no clear view". In the web app, a Forecast page per holding: a fan
+chart of the likely range, the mood timeline, the similar days drawn over
+today's chart, the event-impact table, the main drivers, candles for ETFs and
+shares, and both engines' track records side by side. Both are designed first
+(design-first), with privacy mode and both themes.
+
+### 19.7 Where it runs and what it costs
+
+The data is small (a few thousand days for a few dozen series), so daily
+forecasts run in a Lambda from the same image, and the monthly retrain runs
+in a Lambda too (up to 15 minutes and 10 GB), moving to a Fargate task only
+if it outgrows that; the one-off GDELT backfill runs as such a task. Models
+are files in S3 behind their `ModelVersion` rows. The data is free apart from
+the EODHD feed already in §15 (share-level fundamentals, about £46 a month,
+only if chosen); compute is a few dollars a month; Haiku filing the news is
+well under a dollar a month, inside the Claude ceiling of §15.1.
+
+### 19.8 Order
+
+F1 (data) and F2 (the lab) can start any time after phase 2, and F2's first
+report tests the rules engine. F3 and F4 follow, F5 after them, F6 once the
+web app and the track record exist (phases 5 and 6), F7 after F2 and F3. F2,
+F3 and F7 do most of the work for the goal; F5 is the least reliable piece.
+The bounds of §4.5 hold: this is software for one household; sharing its
+calls with other households would start to look like regulated advice.

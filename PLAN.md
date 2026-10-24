@@ -425,6 +425,66 @@ Adding an iShares ETF from Monzo's "Build your own" range or, later, a share:
 
 ---
 
+## Phase 11 — The Forecaster: a second engine beside the rules engine (later)
+
+A second engine that learns from ten years of history and gives its own view
+of each holding beside the rules engine, graded on the same track record, as
+`ARCHITECTURE.md` §19. Epic MA-117. The goal is Arun's: fewer deep falls and
+steady growth, so market mood and risk come first and direction last.
+
+- **F1, data (MA-119).** Ten years, from 2015, of prices (each holding, the
+  funds' top constituents, the indexes they track), the economy (FRED, Bank
+  of England, ECB), market stress (VIX, credit spreads, dollar, oil, gold),
+  world events (GDELT counts and tone, the geopolitical risk index) and the
+  calendars, in Parquet with DuckDB; every row stamped with the date it was
+  known; a daily refresh with a stale-feed alarm.
+- **F2, the backtest lab (MA-120).** Any strategy replayed day by day with
+  fees, OEIC next-day pricing and monthly contributions; worst fall, worst
+  year, time underwater, growth and calibration against buy-and-hold and a
+  trend rule. First report: today's rules engine over ten years.
+- **F3, mood and risk (MA-121).** The market's mood each day and, per
+  holding, four-week volatility and the chance of a fall over 5%, calibrated;
+  in shadow.
+- **F4, similar days and event impacts (MA-122).** The 30 most similar days
+  since 2015 and what followed; the measured effect of rate and inflation
+  surprises, elections, conflict, tariffs, pandemics and earnings misses on
+  each holding; Haiku files each day's news under those types.
+- **F5, direction (MA-123).** The chance of being up in four weeks, the
+  likely range and its drivers, combined with F3 and F4 and calibrated;
+  monthly retraining; model versions with their test scores; it switches
+  itself off when its live record slips.
+- **F6, the side-by-side view (MA-124).** Designed first: the Telegram card
+  beside the rules engine's call, with disagreement flagged, and a Forecast
+  page per holding in the web app; shown for a holding only after 8 live
+  weeks beating the base rate and the rules engine, in the Saturday review
+  until then.
+- **F7, risk-steered money (MA-125).** Contributions continue, tilted away
+  from stressed holdings, with a trend filter, rebalancing bands and a
+  drawdown budget the owner sets; shown as the suggested split on the
+  first-of-the-month prompt.
+
+**Order.** F1 and F2 can start any time after phase 2, and F2 tests the rules
+engine early. F3 and F4 next (F4 needs phase 7's news), then F5; F6 needs
+phases 5 and 6; F7 needs F2 and F3.
+
+**Tests:** no feature used before the date it was known; a strategy that peeks
+at tomorrow caught by the lab; walk-forward folds with a gap and the last two
+years held out; calibration curves; a known-answer backtest to the penny; the
+event study against a hand-worked example; the switch-off; the card and the
+page from fixtures, with Playwright screenshots.
+
+**Exit:** over ten years of walk-forward tests and 8 live weeks, the risk
+forecasts beat the base rate; the steered contributions cut the worst fall and
+the time underwater against buy-and-hold, within the growth trade-off you
+set; both engines' views and records sit side by side in Telegram and the web
+app.
+
+**Cost:** the data is free apart from the EODHD feed already planned; compute
+a few dollars a month; Haiku filing the news under a dollar, inside the
+Claude ceiling.
+
+---
+
 ## Reverse-engineering workbook
 
 What is ported from where, so the work can be checked against the original.
@@ -459,6 +519,7 @@ What is ported from where, so the work can be checked against the original.
 | 7 News and sentiment | 3 days | Week 9 |
 | 8 Stances live | after 8 weeks of shadow | Week 17+ |
 | 9 MyPaisa: assets, debts, budget, forecast | 4–6 weeks | After phase 8, when wanted |
+| 11 The Forecaster | 8–12 weeks | F1 and F2 any time after phase 2; the rest after phase 7, when wanted |
 
 ---
 
@@ -491,6 +552,9 @@ handler writes its `RunRecord`, both covered by tests.
 | Confidence numbers that are not calibrated | Weekly reliability table; recalibration rule; "no clear view" below 55% |
 | Rich messages behave differently than the write-ups say | HTML fallback on day one |
 | Alert fatigue | Weekly red budget, cooldowns, repeat filter |
+| A Forecaster model that learned the past by heart | Walk-forward tests with a gap, the last two years held out, calibration checks, 8 live weeks before it is shown, and a switch-off when its record slips |
+| Look-ahead: a backtest that saw the future | Every row stamped with the date it was known; the lab refuses a strategy that peeks at tomorrow |
+| Two engines disagreeing confuses the household | Both shown side by side with their track records; the disagreement is said out loud; the rules engine stays the default |
 | Cost overrun | The Claude ceiling's ladder steps down at 85% and 95% and stops at 100%; guards per member, per day and per run; the Console workspace limit as the hard backstop; AWS Budgets for AWS; `/pause` |
 | Prompt injection via news or a PDF | Untrusted text marked; no dangerous tools exist; Confirm on every write |
 | A session cookie stolen from a laptop | `HttpOnly`, `Secure`, `SameSite=Strict`, five-minute access tokens behind it; the data routes are read-only; status and epoch re-checked on every call; the owner signs the member out everywhere or pauses them (MA-102) |
