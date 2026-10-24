@@ -78,11 +78,16 @@ Status: design. Nothing is built.
 | Telegram Bot API | Free | The chat, files, rich messages, the Mini App, the Login Widget for the laptop |
 | Google OAuth | Free | Sign in with Google through Cognito's Google provider; one OAuth client per environment, its secret in that environment's SSM path |
 | Twelve Data | Free Basic tier (8 credits a minute, 800 a day) | US closes, the US macro basket, the earnings calendar, FX fallback, ISIN lookup |
-| EODHD | All World EOD, $19.99/month or $199/year, when chosen | Dependable London and Frankfurt closes by ISIN |
+| EODHD | Historian (daily prices, 30+ years, 100,000 calls a day, news feed included): £19.99 a month or £199.90 a year. Fundamentals: £59.99 a month (£599.90 a year). All-in-One: £99.99 a month (£999.90 a year). Prices as shown on 24 Oct 2026 | Dependable London and Frankfurt closes by ISIN; UK funds by ISIN under `.EUFUND`; the Forecaster's ten-year back-fill (`ARCHITECTURE.md` §19.2) |
 | yfinance | Free, unofficial | Closes and the fund's `0P…L` NAV when running lean |
 | ECB reference rates | Free | GBP, USD, EUR daily fixes |
 | BlackRock and iShares product pages | Free | Fund NAV check, holdings files for look-through |
 | RSS feeds (BoE, Fed, ECB, FT, Reuters, BlackRock) | Free | News |
+| FRED and ALFRED, Bank of England, ECB, ONS | Free | The economy as first published: rates, yields, real yields, inflation, jobs; credit spreads (the Forecaster, phase 11) |
+| US Energy Information Administration (EIA) | Free | Daily Brent and WTI (the Forecaster) |
+| GDELT and the geopolitical risk index | Free | World events and their tone by country and theme (the Forecaster) |
+| Fund manager pages (BlackRock, Vanguard) | Free | UK fund prices and holdings files when a feed misses a fund |
+| Marketaux | About $29 a month, not chosen | Fallback for per-company news sentiment if Claude Haiku's tagging falls short |
 
 ---
 
@@ -104,11 +109,11 @@ actually runs.
 | Claude: factsheet and screenshot extraction | £0.20 | £0.20 | £0.20 | £0.20 | A few documents a month |
 | Claude: web search (~60 a month) | £0 | £0.50 | £0.50 | £1 | $10 per 1,000 searches |
 | Twelve Data | £0 | £0 | £0 | £0 | Free tier; the same free key in both environments' SSM paths |
-| EODHD | £0 | £0 | £16 | £16 | One subscription, shared; dev reads the same feed |
+| EODHD | £0 | £0 | £20 | £20 | Historian at £19.99 (£16.66 paid yearly); one subscription, shared; dev reads the same feed |
 | Domains and certificates | £0 | £0 | £0 | £0 | The zone and the wildcard certificate already exist; six records; ACM is free |
-| **Total** | **£2–4** | **£9.70** | **£32** | **£42** | |
+| **Total** | **£2–4** | **£9.70** | **£36** | **£46** | |
 
-Both environments together: about **£12–14 a month lean, £34–36 standard**.
+Both environments together: about **£12–14 a month lean, £38–40 standard**.
 Prod's Claude lines sit under their own ceiling, $100 a month by default
 (about £77), which the owner moves in the Admin center; expected use for two
 members is $24 to $39 (`ARCHITECTURE.md` §15.1). There is no one-off cost and
@@ -121,10 +126,10 @@ stopping an environment is `terraform destroy` on it.
 | --- | ---: |
 | Another household member (their briefs and chat) | £2–5 |
 | Another ETF or fund | about £0.10 |
-| A single share with the valuation and earnings cards (EODHD Fundamentals) | about £46; decide only if a share is added |
+| A single share with the valuation and earnings cards (EODHD Fundamentals) | £59.99 (£49.99 paid yearly), or £80 more for the All-in-One plan in place of Historian; decide only if a share is added |
 | Doubling chat use | £4–8 |
 | EODHD on the annual plan | saves about £3 |
-| Twelve Data's free tier turning out to cover LSE and Xetra | saves the £16 EODHD line; standard becomes about £18 |
+| Twelve Data's free tier turning out to cover LSE and Xetra | saves the £20 EODHD line until the Forecaster needs it; standard becomes about £16 |
 | Heavier use of "Why?" (web search) | about £1 per 100 extra searches |
 
 ### Guard rails

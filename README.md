@@ -360,8 +360,8 @@ A failed brief, an error burst or a missed schedule reaches the Telegram chat as
 
 Under £1 a month on AWS for both environments at this traffic: Lambda, DynamoDB, Scheduler, API Gateway, Cognito
 and SSM sit inside the free tiers; S3, CloudFront, logs and ECR are pence. Claude is £7 to £21 a month depending on the routing and how much
-you chat, sentiment scoring £1.50 to £2.50 through Batches, web search under £1, and EODHD £16 if chosen. Totals:
-about £9.70 lean, £32 standard, £42 full. Prod's Claude spend is held under a $100 ceiling (about £77) that you move in
+you chat, sentiment scoring £1.50 to £2.50 through Batches, web search under £1, and EODHD £20 if chosen. Totals:
+about £9.70 lean, £36 standard, £46 full. Prod's Claude spend is held under a $100 ceiling (about £77) that you move in
 the Admin center; it steps down at 85% and 95% and stops at 100%. `TECH_STACK.md` has the table for dev and prod.
 
 ## How work is done here
