@@ -51,17 +51,22 @@ browser is marked "This browser" and is signed out from the account menu, not fr
 - **Signed out, and paused.** A plain message after "Sign out everywhere". A paused account gets one line from
   the bot, no buttons, and a locked Mini App with no figures.
 
-## Decisions to confirm with the pick
+## Decisions (Arun, 24 Oct 2026)
 
-1. **What pausing ends.** Recommended: pausing also signs out every session that came through Telegram (the
-   Mini App, and a browser signed in with Telegram), because a hijacked Telegram account could have opened
-   them. A browser signed in with Google stays signed in, so the member can still read on their laptop.
-   "Sign out everywhere" ends all of them.
-2. **The owner's own account.** The owner can't pause their own Telegram from the Admin center. Their action
-   reads "Sign out everywhere else".
-3. **Alert red and coral are close.** In dark mode `--mp-alert` (#FF7B6B) and the coral accent (#FF7A5E) are
-   nearly the same; in light they are near too. The screens keep them apart by shape (alert on a pale tint,
-   coral solid), but a later tokens change could move alert towards a truer red.
+1. **Pausing ends every session.** Pausing a member's Telegram account also signs them out everywhere: the
+   Mini App, a browser signed in with Telegram, and a browser signed in with Google. The bot answers one line
+   and the Mini App locks until the owner restores it. (Recommended was Telegram-based sessions only; Arun
+   chose the safer rule.)
+   A paused member cannot sign back in anywhere: signing in with Google shows the paused screen and no
+   figures. Only the owner lifts a pause.
+2. **The owner can pause their own account, with a warning.** After a fresh check and a warning that it signs
+   out this browser too. Restoring it means signing in with Google or the passkey. For when the owner's own
+   phone or Telegram may be in someone else's hands.
+3. **Alert becomes a truer red.** `--mp-alert` moves from #B42318 to #B5123F (light, 6.7:1 on white) and from
+   #FF7B6B to #FF6B8B (dark, 6.3:1 on the surface), with tints #FCE4EA and #3A1724. It is a crimson, kept
+   apart from the coral accent, so a destructive action never looks like the primary one. `tokens.css` in
+   `docs/design/reviews/MA-101/` and both Claude Design projects carry it, and every page's hard-coded old red
+   was replaced.
 
 ## What the build will touch
 
@@ -80,4 +85,8 @@ I checked both pages again myself, and changed the lock-screen lockout so three 
 
 ## The pick
 
-Pending: Arun to choose A or B for the Admin center, and to confirm the three decisions above.
+**A, People first.** Arun, 24 Oct 2026, with the three decisions above. B stays on the page, marked "Not
+picked". The build follows A once MA-32 and MA-74 to MA-77 are in.
+
+Before the build, the picked option still needs its remaining states (design-first): the owner's Restore after
+signing back in, its log row, a failed fresh check, and a household with only the owner.
