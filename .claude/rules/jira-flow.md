@@ -16,8 +16,12 @@ table, the labels and the issue templates. The skills are `/jira-flow:status`,
    fits, `/jira-flow:plan` creates one. Ask only when the epic is genuinely
    ambiguous.
 
-2. **Work starts: the issue moves.** When editing begins for a story that is
-   `To Do`, transition it to `In Progress`. One story in progress per branch.
+2. **Work starts: the issue moves, and the plan is checked.** Before editing
+   a story, run `python3 scripts/plan_sync.py start MA-<n>` (and `/plan-sync
+   MA-<n>`): the story must be in `docs/trace.json`, its ARCHITECTURE sections
+   must exist, and a story with UI must have its boards (`.claude/rules/plan-sync.md`).
+   When editing begins for a story that is `To Do`, transition it to
+   `In Progress`. One story in progress per branch.
 
 3. **Work lands: the issue records it.** Before reporting a change as done,
    run `/jira-flow:track`: it comments on the issue with the files changed,
@@ -28,7 +32,8 @@ table, the labels and the issue templates. The skills are `/jira-flow:status`,
    gap found, a bug hit: create it at once (`/jira-flow:plan` for stories and
    tasks, `/jira-flow:bug` for bugs), link it to the current issue, and say the
    key in the report. Do not keep a to-do list in the conversation; keep it in
-   Jira.
+   Jira. A planned story also gets its PLAN.md bullet and its `docs/trace.json`
+   row in the same change, so the plan, the designs and Jira never drift.
 
 5. **A PR is traced or it is not raised.** Branch `MA-<n>-<slug>`, every
    commit subject `MA-<n>: <what>`, PR title `[MA-<n>] <what>`, PR

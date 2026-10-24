@@ -31,7 +31,10 @@ Uncommitted files that belong to another story are left alone and named.
 
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
-   No gates configured: say "no gates configured".
+   No gates configured: say "no gates configured". The `plan-sync` gate
+   (`python3 scripts/plan_sync.py check`) always applies: if the story changed
+   a board, a phase or a story, run `/plan-sync MA-<n>` first so the trace,
+   the design mirror and Jira agree before the PR.
 2. **No review.** The independent review from `~/.claude/CLAUDE.md` is
    switched off in this repo (`ship-autopilot.md`); go straight on unless
    Arun asked for a reviewer.

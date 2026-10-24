@@ -26,6 +26,9 @@ with one obvious fix. When unsure whether something is a design change, treat it
   issues need no asking (`.claude/rules/jira-flow.md`, `.claude/rules/ship-autopilot.md`).
 - Create the branch `MA-<n>-<slug>` from `main` now, so the designs can be committed. The build continues on the same
   branch after the pick.
+- Run `python3 scripts/plan_sync.py start MA-<n>`: it names the story's ARCHITECTURE sections and its boards. Boards
+  drawn ahead of the story (`design: "planned"`) are the starting point for the options, not a pick
+  (`.claude/rules/plan-sync.md`).
 - Read the context:
   - `ARCHITECTURE.md`: the four rules (§1), the Telegram front end (§9: navigation, the example cards, guided
     flows) and the web app (§9.3);
@@ -142,7 +145,10 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
   2. Ask for the pick with `AskUserQuestion`: one choice per option, the recommended one first, plus "None of these:
      rework".
   3. Read comments left in Claude Design (`list_comments`), and acknowledge them once handled.
-- **The pick.** Record it in `decision.md` and on the MA issue.
+- **The pick.** Record it in `decision.md` and on the MA issue. Then keep the plan in sync (`.claude/rules/plan-sync.md`):
+  in `docs/trace.json` set the story's `design` to `picked` and list the picked boards (each board's note names its
+  Jira keys); run `/plan-sync MA-<n>` to copy the changed Claude Design files into `docs/design/app-v1/` with their
+  etags; then `python3 scripts/plan_sync.py render` and `check`.
   - "None of these", or feedback, means another round: back to step 1, in the same projects as new files or a new vN.
 
 ## 4. Build the picked option

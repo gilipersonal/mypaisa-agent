@@ -18,23 +18,59 @@ feature is filed as an Epic.
 
 ## Epics
 
-No epics yet: the project was empty when this file was written. Add a row per
-epic as it is created.
+One epic per phase of `PLAN.md` (MA-100, then MA-117, MA-127 and MA-147 as
+phases 11 to 13 were planned). Every story under an epic is in
+`docs/trace.json` with its ARCHITECTURE sections and its boards
+(`.claude/rules/plan-sync.md`). MA-1 to MA-8 came before the epics and have
+none.
 
-| Key | Summary | Labels |
+| Key | Phase | Summary |
 | --- | --- | --- |
+| MA-9 | 0 | Accounts, keys, CI and the repo skeleton; standalone docs and design tasks |
+| MA-10 | 1 | The household records what it holds through the chat |
+| MA-11 | 2 | Daily prices and the ported engine |
+| MA-12 | 3 | Brief, wrap, alerts and charts in Telegram |
+| MA-13 | 4 | Chat and research cards |
+| MA-14 | 5 | The web app, Mini App and browser, the Admin center |
+| MA-15 | 6 | Track record and calibration |
+| MA-16 | 7 | News, events and sentiment in shadow |
+| MA-17 | 8 | Stances go live |
+| MA-18 | 9 | MyPaisa, the whole wealth tracker (later) |
+| MA-19 | 10 | New kinds of holding (when one is added) |
+| MA-117 | 11 | The Forecaster beside the rules engine (later) |
+| MA-127 | 12 | The agent team: configured, approved, self-healing, self-learning (later) |
+| MA-147 | 13 | Indian markets and the existing Indian portfolio (later) |
 
-Where a change goes, by path (fill this in as the repo's shape settles):
+Where a change goes, by path. A path that serves several phases goes to the
+epic of the story at hand; the table is the default.
 
 | Path | Epic |
 | --- | --- |
-| `src/**` | |
-| `.github/**`, `.claude/**`, repo docs | |
+| `pyproject.toml`, `.github/**`, `infra/bootstrap/`, `CLAUDE.md` | MA-9 |
+| `infra/modules/mypaisa/`, `infra/dev/`, `infra/prod/` | MA-9, then the story that adds the resource |
+| `src/mypaisa_agent/registry/`, `audit.py`, `runs.py`, `telegram.py`, `handlers/{webhook,agent,sender,worker}`, the docs job, the queues | MA-10 |
+| `src/mypaisa_agent/prices/`, `data/`, `engine/` | MA-11 |
+| the Anthropic client and validator, `cards/{brief,wrap}`, `alerts/`, charts | MA-12 |
+| `tools/`, research `cards/` | MA-13 |
+| `web/`, `handlers/api`, the authorizer, web hosting, the Admin center | MA-14 |
+| `calls/`, scoring | MA-15 |
+| `news/`, `events/` | MA-16 |
+| `wealth/` | MA-18 |
+| `forecaster/`, the backtest lab | MA-117 |
+| `agents/`, settings, the admin desk, Step Functions | MA-127 |
+| `importers/` for Indian statements, the Indian price plugins | MA-147 |
+| `docs/design/app-v1/`, `docs/design/ds-v1/`, `docs/trace.json` | the story whose boards they are; sync work under MA-9 |
+| `.claude/**`, repo docs outside a phase | MA-9 (a standalone Task) |
 
 ## Labels
 
-No labels in use yet. `bug` marks bugs; add platform and theme labels here
-(and in `jira.labels` in `.claude/jira-flow.json`) as they are chosen.
+`bug` marks bugs. Two theme labels (also in `jira.labels.themes` in
+`.claude/jira-flow.json`):
+
+| Label | Means |
+| --- | --- |
+| `manual` | Arun does it by hand (an account, a key, an export); no PR |
+| `design` | The story changes what a member sees; it has boards in Claude Design and `ui: true` in the trace, and goes through `/design-first` before code |
 
 Bugs are type `Bug` and also carry the `bug` label so one JQL
 covers them.

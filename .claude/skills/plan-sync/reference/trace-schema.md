@@ -1,0 +1,67 @@
+# The trace: `docs/trace.json`
+
+One file ties every planned piece of work to where it is described and where
+it is drawn. `scripts/plan_sync.py check` reads it against the repo;
+`/plan-sync` reads it against Jira and Claude Design. `docs/TRACE.md` is
+rendered from it (`python3 scripts/plan_sync.py render`) and never edited by
+hand.
+
+```json
+{
+  "version": 1,
+  "updated": "2026-10-24",
+  "claude_design": {
+    "app": {"id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7", "name": "MyPaisa app v1", "dir": "docs/design/app-v1"},
+    "ds":  {"id": "2f7310cd-e56a-4d13-8339-8fc637249c9a", "name": "MyPaisa DS v1",  "dir": "docs/design/ds-v1"}
+  },
+  "phases": [
+    {"phase": 0, "epic": "MA-9", "title": "Prerequisites", "plan_heading": "## Phase 0 — Prerequisites"}
+  ],
+  "items": [
+    {
+      "key": "MA-149",
+      "type": "Story",
+      "epic": "MA-14",
+      "phase": 5,
+      "summary": "The Audit page opens the original file behind each change ...",
+      "status": "To Do",
+      "labels": ["design"],
+      "arch": ["4.6", "9.3"],
+      "ui": true,
+      "design": "planned",
+      "boards": [
+        {"project": "app", "file": "Audit and files.dc.html", "board": "Browser · Audit with files"}
+      ],
+      "notes": ""
+    }
+  ]
+}
+```
+
+## Fields
+
+| Field | Meaning |
+| --- | --- |
+| `phases[]` | One row per PLAN.md phase: its number, its Jira epic, its title, and the exact PLAN.md heading line |
+| `items[].key` | The Jira key. Every story, task and bug under a phase epic is listed; epics are listed only in `phases` |
+| `type` | `Story`, `Task` or `Bug`, as in Jira |
+| `epic`, `phase` | The parent epic and its phase number; they must agree with `phases` |
+| `summary`, `status`, `labels` | As in Jira when the trace was last synced (`/plan-sync` refreshes them) |
+| `arch` | The ARCHITECTURE.md sections the work follows, as numbers (`"4.6"`, `"19.7"`, `"22"`); each must be a heading |
+| `ui` | `true` when the work changes what a member sees: a web page, a Mini App screen, a Telegram card, button, flow or chart |
+| `design` | `none` (no UI), `planned` (a board exists, not yet put through design-first's options round), `picked` (Arun picked an option; the board is the spec), `todo` (UI with no board yet; a failure unless `notes` says why) |
+| `boards[]` | Where the screens are drawn: `project` is a key of `claude_design`, `file` a file in that project (mirrored under its `dir`), `board` the board's name on the canvas (`Mini App · Overview`, `Browser · Audit`, `Telegram · Brief card`) |
+| `notes` | Anything a reader needs: why a UI item has no board yet, which option was picked, what supersedes what |
+
+## The mirror: `docs/design/claude-design.json`
+
+Every file in both Claude Design projects is copied, decoded, into its `dir`
+with the etag Claude Design reported when it was copied:
+
+```json
+{"app": {"files": {"Admin center.dc.html": {"etag": "1792843410448735", "bytes": 77812}}},
+ "ds":  {"files": {"tokens.css": {"etag": "1792837988879998", "bytes": 23784}}}}
+```
+
+A file whose Claude Design etag differs from the recorded one has changed
+there and must be copied again (and its boards checked against the trace).

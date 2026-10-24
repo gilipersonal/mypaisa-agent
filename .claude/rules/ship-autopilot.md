@@ -47,7 +47,9 @@ repo their asking is replaced:
   1, 3 and 5 and take the recommended option each time (approve the plan,
   build every step, post the tracking comment and file the follow-ups).
   `work.checkpoint` is `phase`, which only drops Checkpoint 3; this rule
-  drops 1 and 5. It still stops on a red gate or a failed check. Its Phase 6 goes through `/autoship`, not
+  drops 1 and 5. It still stops on a red gate or a failed check, and on
+  `python3 scripts/plan_sync.py start MA-<n>` refusing the story (a UI story
+  with no board, `.claude/rules/plan-sync.md`). Its Phase 6 goes through `/autoship`, not
   `/jira-flow:ship`.
 - `/jira-flow:ship` and `/jira-flow:pr` are not used for ending a story here;
   use `/autoship`. Their "only when the reader asked for a PR" does not apply
