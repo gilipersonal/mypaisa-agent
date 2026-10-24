@@ -32,7 +32,7 @@ Status: planning. Nothing is built.
 | Task | Owner |
 | --- | --- |
 | Create two bots with BotFather, one for dev and the household's for prod; each token into its own SSM path (`/mypaisa-agent/dev/telegram/bot_token`, `/mypaisa-agent/prod/telegram/bot_token`); the picture with `/setuserpic` from `docs/mark-1024.png` on both | You |
-| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of about $210 and $55 (the agents' allowance is £200 a month across both, £160 and £40 by default; each limit is the hard cap behind that environment's Claude ceiling, `ARCHITECTURE.md` §15.1); a payment method on the organisation for spend above the plan's credit; and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The plan's monthly API credit ($100 on Max 5x) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
+| Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of $160 and $40 (together the Max 20x plan's $200 monthly credit, the agents' allowance; each limit is the hard cap behind that environment's Claude ceiling, `ARCHITECTURE.md` §15.1); no payment method and auto-reload off, so the credit is the last stop; and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The Max 20x plan's monthly API credit ($200) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
 | Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD waits for phase 2 and is taken only if the London closes prove unreliable in the first weeks | Decided |
 | Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key` and `/mypaisa-agent/prod/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
@@ -107,8 +107,9 @@ What you hold, recorded through the chat, with no analysis yet.
   command wipes and reseeds dev, and it refuses to run against prod.
 - The Claude meter and ceiling (MA-113, `ARCHITECTURE.md` §15.1): every
   model call costed from the API's usage counts into the cycle's
-  `SpendMonth` row, in pounds at the day's rate; `BudgetSettings` seeded at
-  £160 in prod and £40 in dev (the agents' £200);
+  `SpendMonth` row, in dollars with pounds beside them; `BudgetSettings`
+  seeded at $160 in prod and $40 in dev (the plan's $200 credit), its steps,
+  guards and shares all settings;
   no call past 100% of the ceiling, the card going out as its template; the
   guards per member (60%), per day (three times the daily average) and per
   run (eight model calls); a message to the owner at 70% and 100%. Needed
@@ -277,6 +278,13 @@ browser, as `ARCHITECTURE.md` §9.3.
   each behind the fresh check (MA-102), each an audit row and a message to
   the owner; a ceiling above the hard limit is refused with the steps to
   raise the Console limit first.
+- **Caps and alerts** (MA-137, `ARCHITECTURE.md` §15.2), in the same
+  section: the Claude ladder's steps and guards; the AWS and others cap (£50),
+  its steps (50%, 80%, 100%, forecast) and actions (dev pauses first; the
+  brief, alerts and chat never stop), metered daily from Cost Explorer; the
+  AWS Budgets backstop at £75 in Terraform; one alert router to the web app's
+  Alerts page, the admin's Telegram chat and email through SNS (1,000 a month
+  free), with quiet hours, cooldowns and a digest.
 - The `api` Lambda behind `api(-dev).mypaisapp.com`: GET routes only for
   the household's data, plus the Admin center's owner-only security actions
   behind a fresh check (MA-102); sign-in through the Cognito pool built in
@@ -524,9 +532,9 @@ one household and its admins.
 - **E7, the ops warden (MA-135).** The daily run as one Step Functions state
   machine with retries; safe repairs on its own; an incident for the rest;
   heartbeats from every agent.
-- **E8, budgets for the team (MA-136).** Each agent's share of the £200
-  Claude allowance, metered by agent; the £50 for AWS and others as one AWS
-  Budgets budget plus paid feeds recorded as subscriptions.
+- **E8, budgets for the team (MA-136).** Each agent's share of the plan's
+  $200 Claude credit, metered by agent; paid feeds recorded as subscriptions
+  against the AWS and others cap of MA-137.
 
 **Order.** E1 and E2 can come forward once the web app and the second check
 exist (phase 5, MA-102); E3 after phase 2; E4 and E5 once stances are graded
@@ -542,7 +550,7 @@ incident; metering by agent.
 **Exit:** a month in which every change was either inside its band or
 approved by an admin, every prediction was graded, calibration stayed
 within tolerance, every failure was repaired or raised, and spend stayed
-inside £200 for the agents and £50 for AWS and others.
+inside the $200 credit for the agents and the cap for AWS and others.
 
 **Cost:** inside the two budgets; Step Functions, EventBridge and the extra
 DynamoDB items sit in their free tiers at this volume.

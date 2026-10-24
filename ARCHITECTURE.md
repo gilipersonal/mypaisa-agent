@@ -179,8 +179,9 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.6). |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
-| **BudgetSettings** | `portfolio_id`, `monthly_ceiling_gbp` (prod £160, dev £40: the agents' £200), `hard_limit_usd` (the Console workspace limit, typed in to match it), `agent_shares{}` (§20.7), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
-| **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_gbp`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
+| **BudgetSettings** | `portfolio_id`, `ceiling_usd` (prod $160, dev $40: the Max 20x plan's $200 credit), `steps[]` (70, 85, 95, 100), `daily_guard_x` (3), `run_max_calls` (8), `hard_limit_usd` (the Console workspace limit, typed in to match it), `agent_shares{}` (§20.7), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
+| **AwsSpendMonth**, **AlertRule**, **Alert** | AWS and others: month to date by service and `env`, the forecast, `cap_gbp`, `steps[]`, `actions{}`, `step`; alert routing: type × severity → web, Telegram, email, quiet hours, cooldown; each alert sent, where and when | The AWS meter and caps, and the alert router (§15.2). |
+| **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
 | **SentimentIndex**, **ArticleScore**, **WebhookSeen** | per portfolio or global | |
 | **PendingAction** | `member_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `settings` · `confirm`), `step`, `collected` (the answers so far), `message_id`, `expires_at` (24 h) | The state of a guided flow: what the bot is waiting for from this member. The next message or tap resumes it; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `agent_proposal` · `schedule` · `migration`), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
@@ -957,12 +958,13 @@ account is now the key to both the chat and the web app.
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
 Two members on the standard setup: about £39. The Claude lines are paid by
-the monthly API credit that comes with the Max or Team plan ($100 a month on
-Max 5x, about £77), spent through a Console organisation linked to the plan;
+the monthly API credit that comes with the Max 20x plan ($200 a month,
+about £154), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
-cost is £0. The agents' allowance is £200 a month across prod and dev, £160
-and £40 by default, each a ceiling the admin moves (§15.1); AWS and other
-services have their own £50 (§20.7). Stock fundamentals (EODHD
+cost is £0. The agents' allowance is the Max 20x plan's credit, $200 a month
+(about £154) across prod and dev, $160 and $40 by default, each a ceiling the
+admin moves (§15.1); AWS and other services have their own cap, £50 by
+default (§15.2). Stock fundamentals (EODHD
 Fundamentals) would add £59.99 a month (£49.99 paid yearly), or the
 All-in-One plan at £99.99 would replace both, and are not planned unless a
 single share is added; EODHD's prices as shown on its pricing page on 24 Oct
@@ -973,19 +975,22 @@ since data feeds are shared but model calls are not.
 
 Arun, 24 Oct 2026 (MA-112): "I have on prod a budget of $100 per month ... It
 should be configurable for me to move the ceiling up/down from Admin portal."
-Raised the same day (MA-127): "in production+dev you will have combined API
-key allowance of £200 just for Agent usage (AWS pricing and others will be
-separate £50)."
+Raised the same day (MA-127, MA-137): "Claude Spend Budget will be £200, I
+have Max x20 plan which give me that. Threshold to be set and kept
+configurable which I can control from Web portal Admin." AWS and others
+"will be separate £50".
 
-**The allowance.** £200 a month for the agents across both environments: a
-prod ceiling of £160 and a dev ceiling of £40 by default, each a setting the
-admin moves, their sum kept within £200 by the two Console workspace limits
-(about $210 and $55). Ceilings are set in pounds; the meter costs each call
-in dollars from the price table and converts at the day's ECB rate. The
-plan's $100 credit pays first; the rest needs a payment method on the
-Console organisation (§17).
+**The allowance is the plan's credit.** The Max 20x plan's API credit is
+$200 a month, about £154 at $1.30, rather than £200; the defaults stay
+inside it so nothing reaches a card: a prod ceiling of $160 and a dev
+ceiling of $40, each a setting the admin moves. Ceilings are in dollars, as
+the credit and the Console are; the Admin center shows pounds beside them at
+the day's ECB rate. With no payment method and auto-reload off, the credit
+itself is the last stop. Going past $200 (to a full £200, about $260, say)
+means adding a card on the Console organisation, and the Admin center asks
+for an explicit yes before a ceiling may pass the credit.
 
-**What £160 buys.** Two members are expected to spend about $24 a month on
+**What $160 buys.** Two members are expected to spend about $24 a month on
 the standard setup and $39 on the full one (the Claude lines above, in
 dollars, about £18 to £30), plus a few pounds once the Forecaster and the
 agents of §20 run. The ceiling is a guard against a bad month or a runaway
@@ -998,10 +1003,12 @@ loop, not a ration.
 | Document extraction | $0.25 | $0.25 |
 | Web search | $0.65 | $1.30 |
 | **Expected** | **$24** | **$39** |
-| **Prod ceiling** | **£160 (about $208)** | **£160** |
+| **Prod ceiling** | **$160** | **$160** |
 
 **The ceiling, set by the admin.** `BudgetSettings` holds the monthly
-ceiling (£160 in prod, £40 in dev), each member's share (60%), each agent's
+ceiling ($160 in prod, $40 in dev), the steps of the ladder (70%, 85%, 95%,
+100%), each member's share (60%), the daily guard (three times the daily
+average), the calls per run (eight), each agent's
 share (§20.7), and the day the plan's credit renews, which starts each
 cycle. The admin moves the ceiling up or down in the Admin center (MA-116),
 or from phase 12 in the admin's Telegram chat (§20.3): admins only, behind
@@ -1037,23 +1044,76 @@ ceiling moves the bot back up the ladder at the next call.
 - **Per member:** no member spends more than their share of the ceiling; past
   it, that member's chat runs at the 95% step for the rest of the cycle.
 - **Per day:** no day spends more than three times the cycle's daily average
-  (about £16 a day at a £160 ceiling); past it, the rest of the day runs at the 95%
+  (about $16 a day at a $160 ceiling); past it, the rest of the day runs at the 95%
   step.
 - **Per run:** at most eight model calls in one run; a loop that reaches it
   stops and says so.
 
 **The backstop is the Console.** Each workspace's spend limit in the Claude
-Console is set by hand to its hard limit (about $210 for prod and $55 for
-dev to start) and stops the key outright if the meter is ever wrong. The
-Admin center moves the ceiling anywhere from £10 to that hard limit; to go higher, raise the Console limit
+Console is set by hand to its hard limit ($160 for prod and $40 for dev to
+start) and stops the key outright if the meter is ever wrong. The Admin
+center moves the ceiling anywhere from $10 to that hard limit; to go higher, raise the Console limit
 first and then type the new hard limit into the Admin center. The app holds
 no Console admin key, so it cannot change the Console itself.
 
-**One credit, then the card.** The plan's $100 credit pays for both
-workspaces first. Spend above it, up to the £200 allowance, needs a payment
-method on the Console organisation, with either credits bought each month or
-auto-reload switched on; the two workspace limits cap the total either way
-(§17).
+**One credit, two environments.** The plan's $200 credit pays for both
+workspaces, and the two workspace limits ($160 and $40) add up to it, so
+neither environment can eat the other's share.
+
+### 15.2 Caps and alerts, set by the admin in the Admin center (MA-137)
+
+Every threshold below is a setting the admin changes in the Admin center's
+Spend and Alerts pages (and, from phase 12, from the admin's chat, §20.3),
+behind the fresh check, each change an audit row and a Telegram message.
+
+**Claude.** The ceiling per environment, the ladder's steps (any ascending
+list; 70%, 85%, 95% and 100% by default), what each step does (§15.1), the
+member share, the daily guard, the calls per run and each agent's share
+(§20.7). Hard stops behind them: the Console workspace limits, then the
+credit itself.
+
+**AWS and others.** AWS has no true spending cap, so the app caps by acting:
+
+| Setting | Default |
+| --- | --- |
+| Monthly cap for AWS and paid data feeds, both environments | £50 |
+| Alert steps | 50%, 80%, 100%, and when the month's forecast passes the cap |
+| At 80% | Dev's schedules pause |
+| At 100% | Dev pauses; prod's non-essential jobs (back-fills, retraining, challengers) pause; the brief, alerts and the chat never stop |
+
+The meter reads Cost Explorer once a day (month to date by service and by the
+`env` tag, and the month's forecast), about $0.01 a request, into
+`AwsSpendMonth`; AWS's own figures lag by up to a day, and the page says
+so. The actions are flags the jobs read, as `/pause` is, never changes to AWS
+resources, so Terraform stays the only thing that changes infrastructure.
+Behind them sits one AWS Budgets cost budget at a hard limit (£75 by
+default, set in dollars), made by Terraform and not from the web: it alerts
+on actual and forecast spend, and its action stops dev's schedules.
+Monitoring is free, and so are the first two action-enabled budgets; raising
+the hard limit is a pull request.
+
+**Alerts.** One router sends every alert by a matrix the admin sets:
+
+| Alert | Web app | Telegram | Email |
+| --- | --- | --- | --- |
+| Claude or AWS step reached, forecast over the cap | yes | yes | yes |
+| Incident, an approval waiting (§20.3) | yes | yes | critical only |
+| Data feed stale, a job failed | yes | yes | no |
+| Holding alerts (§11) | members' own, as today | members' own, as today | no |
+
+- **Web app:** an Alerts page in the Admin center and a badge, admins only for
+  system alerts.
+- **Telegram:** the admin's own chat; critical with sound, the rest silent.
+- **Email:** through Amazon SNS, a topic `mypaisa-<env>-admin-alerts` with the
+  admin's address subscribed (put in SSM by hand, the subscription made by
+  Terraform, confirmed once by clicking the link AWS sends). The first 1,000
+  email notifications a month are free, far more than this needs. Email
+  carries system alerts only, never a holding's value, unless the admin
+  turns that on.
+
+Each channel has quiet hours that a critical alert may break through, every
+alert has a cooldown so it is not repeated, and non-urgent alerts can go to
+a daily digest instead.
 
 ---
 
@@ -1080,7 +1140,7 @@ auto-reload switched on; the two workspace limits cap the total either way
 | Web app auth | An `HttpOnly`, `SameSite=Strict` session cookie on the api's host with five-minute Cognito access tokens behind it; the static shell is public and holds no data; the api's authorizer checks session, status and epoch on every call | No token in page scripts; sign-out and pause take effect on the next request |
 | Google sign-in | Cognito's Google provider, one OAuth client per environment; a Google account linked to a member by a code typed into the chat | One identity per member across Telegram, Google and passkeys; the link is proven from the member's own phone |
 | Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate bots, Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
-| Claude budget | The agents' allowance is £200 a month across prod and dev (£160 and £40 by default, each a ceiling the admin moves in the Admin center or the admin's chat); AWS and others have their own £50; a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); the bot degrades to templates rather than going silent, and a runaway loop cannot spend a month |
+| Claude budget | The agents' allowance is the Max 20x plan's $200 monthly credit across prod and dev ($160 and $40 by default, each a ceiling the admin moves); AWS and others have their own cap (£50); every step, action and alert route set in the Admin center (§15.2); a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); the bot degrades to templates rather than going silent, and a runaway loop cannot spend a month |
 | Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Forecaster | A second engine, phase 11, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
@@ -1097,7 +1157,7 @@ auto-reload switched on; the two workspace limits cap the total either way
 - A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
 - For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
-- How Claude spend above the plan's $100 credit is paid: credits bought each month, or auto-reload with the workspace limits as the cap; and whether a second person is made an admin (§20.3).
+- Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card); and whether a second person is made an admin (§20.3).
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $100 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
@@ -1124,7 +1184,7 @@ shared between the two except the account, the DNS zone and the certificate.
 | Cognito user pool | `mypaisa-dev-users` | `mypaisa-prod-users` |
 | Secrets, SSM | `/mypaisa-agent/dev/...` | `/mypaisa-agent/prod/...` |
 | Telegram bot | its own dev bot | the household's bot |
-| Claude API key and ceiling | its own workspace key; a £40 ceiling | its own workspace key; a £160 ceiling the admin moves, with the Console limit as the hard backstop (§15.1) |
+| Claude API key and ceiling | its own workspace key; a $40 ceiling | its own workspace key; a $160 ceiling the admin moves, with the Console limit as the hard backstop (§15.1) |
 | Google OAuth client | its own | its own |
 
 **Kept apart by IAM, not by trust.** Each Lambda's role names only its own
@@ -1571,8 +1631,8 @@ whole history stays in the low gigabytes, so storage costs pennies.
 
 ### 20.7 Budgets for the team (E8, MA-136)
 
-**Claude: £200 a month for the agents** across both environments (£160 prod,
-£40 dev by default; §15.1). Each agent has a share of its environment's
+**Claude: the plan's $200 a month for the agents** across both environments
+($160 prod, $40 dev by default; §15.1). Each agent has a share of its environment's
 ceiling, metered by agent; the defaults, each a setting:
 
 | Agent | Share |
@@ -1588,10 +1648,9 @@ ceiling, metered by agent; the defaults, each a setting:
 An agent past its share drops to its 95% step (§15.1); the reserve covers
 the chat before anything else.
 
-**AWS and other services: £50 a month** across both environments. One AWS
-Budgets cost budget for the account alerts the admin at 50%, 80% and 100%,
-and at 100% stops dev's schedules first. Paid data feeds (none by default)
-are recorded as subscriptions against the same £50, so a request to switch
+**AWS and other services: £50 a month** across both environments by default,
+with its steps, actions and alerts set in the Admin center (§15.2). Paid data
+feeds (none by default) are recorded as subscriptions against the same cap, so a request to switch
 one on shows the headroom left. Expected use is a few pounds: Lambda,
 DynamoDB, Step Functions and EventBridge sit inside their free tiers at this
 volume.

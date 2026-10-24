@@ -114,7 +114,7 @@ they move with Anthropic's releases; the first set is below.
 | Saturday review | Opus 5.5, `anthropic.claude-opus-5-5` | high | The week in context, with the scorecard, the decisions logged and the events ahead. |
 
 **Guardrails on every call:** tools with `strict` schemas and `tool_choice: auto`; adaptive thinking with the effort
-above; the system prompt, tool list and rubric cached; the monthly Claude ceiling (£160 in prod and £40 in dev, the agents' £200, moved by the admin) with its ladder and guards; a refusal or an error falls back to
+above; the system prompt, tool list and rubric cached; the monthly Claude ceiling ($160 in prod and $40 in dev, the Max 20x plan's $200 credit, moved by the admin) with its ladder and guards; a refusal or an error falls back to
 the plain-template brief, so a message is never missed because of a model. Before anything is sent, every number in
 the text is checked against that turn's tool results; a number with no source fails the message, which is
 regenerated once and then sent as the plain facts. Search results and fetched pages reach the model marked as
@@ -207,8 +207,8 @@ no one.
 
 On claude.ai, go to Settings → Billing → API credits and link a Claude Console organisation to your Max or Team
 plan (you need 7 days on the plan; the link cannot be moved later without support, so pick the organisation you
-will build in). The plan's monthly API credit ($100 on Max 5x) pays first; the agents' allowance is £200 a month, so add a payment method for the rest. In
-that organisation create two workspaces, `mypaisa-prod` with a spend limit of about $210 and `mypaisa-dev` with about $55 (the hard caps behind the app's £160 and £40 ceilings), and a
+will build in). No payment method is needed: the Max 20x plan's monthly API credit ($200) pays for the calls; leave auto-reload off. In
+that organisation create two workspaces, `mypaisa-prod` with a $160 spend limit and `mypaisa-dev` with $40 (the hard caps behind the app's ceilings), and a
 key in each, `mypaisa-agent-dev` and `mypaisa-agent-prod`. Put each straight into its own environment's path, as
 with the bot token:
 
@@ -305,7 +305,8 @@ lives in SSM Parameter Store only, put by hand; anything that adds cost is asked
 | Claude | the Anthropic API from the `agent`, `docs` and `score` Lambdas; Opus 5.5, Sonnet 5.5, Haiku 5.5; key in SSM |
 | IAM | one execution role per function and environment, scoped to its own table, bucket and parameters; three OIDC roles for CI; a developer role with an explicit deny on `env=prod` |
 | Monitoring | CloudWatch Logs (14 days), an error alarm per function, the 07:45 dead man's switch, all delivered to the chat |
-| Budget | AWS and others: £50 a month across both environments, one AWS Budgets budget alerting at 50%, 80% and 100% and stopping dev's schedules first. Claude for the agents: £200 a month, £160 prod and £40 dev, moved by the admin (`ARCHITECTURE.md` §15.1, §20.7) |
+| Budget | Claude for the agents: the Max 20x plan's $200 credit, $160 prod and $40 dev. AWS and others: £50 across both environments, metered daily from Cost Explorer, with AWS Budgets at £75 as the Terraform backstop. Every cap, step, action and alert route is set in the Admin center (`ARCHITECTURE.md` §15.2) |
+| Alerts | The web app's Alerts page, the admin's Telegram chat, and email through the SNS topic `mypaisa-<env>-admin-alerts` (address in SSM, confirmed once) |
 
 ### Access
 
@@ -361,8 +362,8 @@ A failed brief, an error burst or a missed schedule reaches the Telegram chat as
 Under £1 a month on AWS for both environments at this traffic: Lambda, DynamoDB, Scheduler, API Gateway, Cognito
 and SSM sit inside the free tiers; S3, CloudFront, logs and ECR are pence. Claude is £7 to £21 a month depending on the routing and how much
 you chat, sentiment scoring £1.50 to £2.50 through Batches, web search under £1, and EODHD £20 only if a free source fails and you approve it. Totals:
-about £9.70 lean, £36 standard, £46 full. The agents' Claude allowance is £200 a month (£160 prod, £40 dev) and AWS and
-others have £50; you move the ceilings as admin, and Claude steps down at 85% and 95% and stops at 100%. `TECH_STACK.md` has the table for dev and prod.
+about £9.70 lean, £36 standard, £46 full. The agents' Claude allowance is the Max 20x plan's $200 credit ($160 prod, $40 dev) and AWS and
+others have £50; you set every cap and threshold in the Admin center, and alerts reach the web app, Telegram and email. `TECH_STACK.md` has the table for dev and prod.
 
 ## How work is done here
 
