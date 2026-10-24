@@ -45,7 +45,8 @@ Status: design. Nothing is built.
 
 | Service | Role |
 | --- | --- |
-| Lambda | The eight handlers, from one container image; from phase 12 one per agent (`ARCHITECTURE.md` §20) |
+| Lambda | The handlers, from one container image, including `sender` (replies out) and `worker` (background jobs by type); from phase 12 one per agent (`ARCHITECTURE.md` §20) |
+| SQS | `updates.fifo` (one lane per member), `outbox.fifo` (one lane per chat) and `work`, each with a dead-letter queue and an alarm; retries with backoff and replay (`ARCHITECTURE.md` §21); inside the free tier of a million requests a month, or about a dollar |
 | Step Functions, EventBridge bus (phase 12) | The daily run as one state machine with retries; agents publish events on `mypaisa-<env>-events`; inside the free tiers at this volume |
 | API Gateway HTTP API | One per environment on its custom domain, `api-dev.mypaisapp.com` and `api.mypaisapp.com`: `/telegram/webhook` (secret-token header, dedupe), `/auth/telegram`, `/v1/...` read-only JSON, `/v1/admin/...` for the owner |
 | Cognito | One user pool per environment, Essentials plan, on `auth-dev.mypaisapp.com` and `auth.mypaisapp.com`; custom-auth triggers for Telegram, Google as a provider, passkeys; free under 10,000 monthly users |

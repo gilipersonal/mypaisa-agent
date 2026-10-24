@@ -258,6 +258,7 @@ The brief arrives in the chat as a silent push. From then on the Scheduler runs 
 | Build the image as CI does | `docker build --platform linux/arm64 -t mypaisa-agent .` |
 | Tail a function's logs | `aws logs tail /aws/lambda/mypaisa-dev-agent --follow` |
 | Set the dev webhook again after polling locally | `scripts/set-webhook.sh dev` |
+| Replay failed messages or jobs from a dead-letter queue | `scripts/redrive.sh dev updates` (also `outbox`, `work`, `scheduler`) |
 | See this month's spend | `scripts/cost.sh` (AWS Cost Explorer plus the Anthropic usage report by model, against the Claude ceiling and the AWS budget) |
 | Grade every forecast and call whose horizon has passed | `scripts/run.sh dev grade` |
 
@@ -293,7 +294,8 @@ lives in SSM Parameter Store only, put by hand; anything that adds cost is asked
 | Region | `us-east-1` |
 | Terraform state | `s3://wealth-tracker-tfstate`, keys `mypaisa-agent/dev/infra.tfstate` and `mypaisa-agent/prod/infra.tfstate` |
 | Names | `mypaisa-<env>-<part>`, every resource tagged `env` |
-| Lambda | `webhook`, `agent`, `ingest`, `engine`, `news`, `score`, `docs`, `api` and the Cognito auth triggers, one arm64 container image in ECR, a `live` alias per function |
+| SQS | `mypaisa-<env>-updates.fifo`, `-outbox.fifo` and `-work`, each with a dead-letter queue and an alarm; replay with `scripts/redrive.sh` (`ARCHITECTURE.md` §21) |
+| Lambda | `webhook`, `agent`, `sender`, `worker` (ingest, news, score, docs, engine and briefs by job type), `api` and the Cognito auth triggers, one arm64 container image in ECR, a `live` alias per function |
 | API Gateway | an HTTP API per environment on `api-dev.mypaisapp.com` and `api.mypaisapp.com`; `/telegram/webhook` protected by the Telegram secret token |
 | Cognito | a user pool per environment on `auth-dev.mypaisapp.com` and `auth.mypaisapp.com`: Telegram, Google, passkeys |
 | CloudFront + S3 | the web app on `console-dev.mypaisapp.com` and `console.mypaisapp.com` |
