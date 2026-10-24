@@ -48,6 +48,14 @@
   --mp-chart-4: #8A5300;
   --mp-chart-5: #6B3FB8;
   --mp-focus: #2453C9;
+  --mp-seg-on: #FFFFFF;      /* the selected segment, lifted above its track */
+  --mp-hero-area: rgba(255, 107, 79, 0.18);   /* the area under the coral line on the hero */
+  /* fixed encodings, the same on every page (green stays for gains only) */
+  --mp-pillar-for: #2453C9;  --mp-pillar-against: #8A5300;   /* technical pillars: blue supports, amber weighs against */
+  --mp-ccy-usd: #2453C9; --mp-ccy-gbp: #4E5462; --mp-ccy-eur: #6B3FB8; --mp-ccy-jpy: #8A5300; --mp-ccy-other: #878177;   /* every mark 3:1+ on surface and on .mp-track */
+  --mp-asset-shares: #2453C9; --mp-asset-bonds: #6B3FB8; --mp-asset-silver: #646A78; --mp-asset-cash: #8A5300;
+  --mp-meter: #2453C9;       /* spend and budget meters */
+  --mp-mask: #DCD7CF; --mp-mask-hero: #2C4068;   /* privacy placeholders: plainly there, never mistaken for text */
   --mp-shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
   color-scheme: light;
 }
@@ -86,6 +94,13 @@
   --mp-chart-4: #F6BC4F;
   --mp-chart-5: #B79CFF;
   --mp-focus: #8FB2FF;
+  --mp-seg-on: #3A4456;      /* lighter than the track, as iOS dark does: ink 9.0:1 */
+  --mp-hero-area: rgba(255, 122, 94, 0.18);
+  --mp-pillar-for: #8FB2FF;  --mp-pillar-against: #F6BC4F;
+  --mp-ccy-usd: #8FB2FF; --mp-ccy-gbp: #AEB6C4; --mp-ccy-eur: #B79CFF; --mp-ccy-jpy: #F6BC4F; --mp-ccy-other: #6B7587;
+  --mp-asset-shares: #8FB2FF; --mp-asset-bonds: #B79CFF; --mp-asset-silver: #8D96A6; --mp-asset-cash: #F6BC4F;
+  --mp-meter: #8FB2FF;
+  --mp-mask: #323D50; --mp-mask-hero: #334A75;
   --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
 }
@@ -121,7 +136,7 @@
 .mp-cap    { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0; }
 .mp-over   { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
 .mp-num-hero { font-family: var(--mp-font-round); font-size: 44px; line-height: 48px; font-weight: 800; letter-spacing: -0.03em; }
-.mp-num-l    { font-family: var(--mp-font-round); font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.02em; }
+.mp-num-l    { font-family: var(--mp-font-round); font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
 .mp-num      { font-variant-numeric: tabular-nums; }
 .mp-ink2 { color: var(--mp-ink-2); }
 .mp-ink3 { color: var(--mp-ink-3); }
@@ -129,6 +144,7 @@
 .mp-dq   { color: var(--mp-down-quiet); }
 .mp-acc  { color: var(--mp-accent); }
 .mp-w6 { font-weight: 600; } .mp-w7 { font-weight: 700; }
+.mp a:not([class]), .mp a.mp-link { color: var(--mp-accent); text-underline-offset: 2px; }
 
 /* ---------- icons: Material Symbols Rounded (an SF Symbols stand-in on the web) ---------- */
 .ms { font-family: "Material Symbols Rounded"; font-weight: 500; font-style: normal; font-size: 22px; line-height: 1; display: inline-block; font-variation-settings: "FILL" 0, "wght" 500, "opsz" 24; -webkit-font-feature-settings: "liga"; user-select: none; }
@@ -159,7 +175,7 @@
 .mp-ring { width: 18px; height: 18px; border-radius: 50%; flex: none; }
 
 /* ---------- controls (all ≥44px tall where tappable) ---------- */
-.mp-btn { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; font: 600 17px/22px var(--mp-font); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; transition: transform var(--mp-t-tap) var(--mp-ease), opacity var(--mp-t-tap); }
+.mp-btn { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; font: 600 17px/22px var(--mp-font); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mp-t-tap) var(--mp-ease), opacity var(--mp-t-tap); }
 .mp-btn:active { transform: scale(0.97); }
 .mp-btn:focus-visible, .mp-seg-i:focus-visible, .mp-tab:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
 .mp-btn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
@@ -168,7 +184,7 @@
 .mp-btn-small   { min-height: 44px; padding: 0 14px; font-size: 15px; border-radius: 12px; }
 .mp-seg   { display: flex; background: var(--mp-surface-2); border-radius: 10px; padding: 2px; gap: 2px; }
 .mp-seg-i { flex: 1; min-height: 40px; border: 0; background: transparent; border-radius: 8px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); cursor: pointer; }
-.mp-seg-i.on { background: var(--mp-surface); color: var(--mp-ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.mp-seg-i.on { background: var(--mp-seg-on); color: var(--mp-ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .mp-hero .mp-seg { background: var(--mp-hero-2); }
 .mp-hero .mp-seg-i { color: var(--mp-hero-ink-2); }
 .mp-hero .mp-seg-i.on { background: var(--mp-hero-ink); color: #13213A; }
@@ -179,9 +195,9 @@
 
 /* ---------- navigation ---------- */
 .mp-tabbar { display: flex; justify-content: space-around; padding: 6px 4px 22px; background: var(--mp-material); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 0.5px solid var(--mp-line); }
-.mp-tab { min-width: 64px; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--mp-ink-3); font: 500 10px/12px var(--mp-font); text-decoration: none; background: none; border: 0; cursor: pointer; }
+.mp-tab { flex: 1 1 0; min-width: 0; max-width: 120px; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--mp-ink-3); font: 500 10px/12px var(--mp-font); text-decoration: none; background: none; border: 0; cursor: pointer; }
 .mp-tab.on { color: var(--mp-accent); }
-.mp-side { width: 248px; flex: none; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
+.mp-side { width: 248px; box-sizing: border-box; flex: none; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
 .mp-side-i { min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 10px; color: var(--mp-ink-2); font: 500 15px/20px var(--mp-font); text-decoration: none; }
 .mp-side-i.on { background: var(--mp-surface); color: var(--mp-ink); font-weight: 600; box-shadow: var(--mp-shadow); }
 .mp-side-i.on .ms { color: var(--mp-accent); }
@@ -191,10 +207,10 @@
 .tgh-a { color: var(--tg-link); min-height: 44px; display: flex; align-items: center; gap: 2px; }
 
 /* ---------- privacy, states ---------- */
-.mp-mask { display: inline-block; border-radius: 8px; background: var(--mp-surface-2); color: transparent; min-width: 64px; letter-spacing: 0; }
-.mp-hero .mp-mask { background: var(--mp-hero-2); }
+.mp-mask { display: inline-block; border-radius: 8px; background: var(--mp-mask); color: transparent; min-width: 64px; letter-spacing: 0; }
+.mp-hero .mp-mask { background: var(--mp-mask-hero); }
 .mp-skel { background: var(--mp-surface-2); border-radius: 8px; }
-.mp-sheet { background: var(--mp-surface); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18); padding: 8px 16px 24px; }
+.mp-sheet { background: var(--mp-surface); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18); padding: 8px 16px max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
 .mp-grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--mp-line); margin: 0 auto 10px; }
 .mp-toast { background: var(--mp-ink); color: var(--mp-bg); border-radius: 14px; padding: 12px 16px; font: 500 15px/20px var(--mp-font); box-shadow: var(--mp-shadow); }
 
@@ -226,7 +242,7 @@
 .tg-out { background: var(--tg-out); border-radius: 16px 16px 6px 16px; align-self: flex-end; }
 .tg-time { font-size: 11px; line-height: 13px; color: var(--tg-sub); text-align: right; margin-top: 2px; }
 .tg-btns { display: grid; gap: 4px; max-width: 344px; margin-top: 4px; }
-.tg-btn { min-height: 44px; border-radius: 10px; background: var(--tg-btn); color: var(--tg-btn-text); font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 8px; border: 0; }
+.tg-btn { min-height: 44px; border-radius: 10px; background: var(--tg-btn); color: var(--tg-btn-text); font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 8px; border: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tg-pre { font: 13px/18px ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; }
 .tg-quote { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; font-size: 14px; line-height: 19px; }
 .tg-kb { background: var(--tg-kb); padding: 6px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
@@ -248,14 +264,29 @@
 .dnchip { color: var(--mp-hero-ink-2); background: var(--mp-hero-2); } /* a falling month on the hero, never red: 7.6:1 / 6.8:1 */
 .mp-scrim { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.42); }
 .mp-disabled, [aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
+.mp-track { background: var(--mp-surface-2); box-shadow: inset 0 0 0 1px var(--mp-line); border-radius: 999px; overflow: hidden; }  /* empty part of a bar or meter stays visible */
+
+/* ---------- charts: SVG draws lines and areas; every label and marker is HTML on top ----------
+   An SVG <text> filled from a template never renders, and an SVG scaled with its column shrinks its
+   strokes and dots. So: the svg is preserveAspectRatio="none" with vector-effect: non-scaling-stroke,
+   and labels and dots are absolutely placed spans with left/top in % of the chart box. */
+.mp-chartbox { position: relative; }
+.mp-chartbox > svg { display: block; width: 100%; overflow: visible; }
+.mp-chartbox path, .mp-chartbox line { vector-effect: non-scaling-stroke; }
+.mp-chartbox .mp-draw { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }  /* a dash draw breaks under non-scaling strokes; fade the box in instead */
+.mp-chartdot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--mp-hero-ink); box-shadow: 0 0 0 2px var(--mp-coral); }
+.mp-chartlbl { position: absolute; transform: translate(-50%, -100%); margin-top: -8px; font: 700 11px/14px var(--mp-font); letter-spacing: 0.02em; white-space: nowrap; }
+.mp-chartaxis { position: relative; height: 16px; font: 500 11px/16px var(--mp-font); }
+.mp-chartaxis > span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
 
 /* ---------- adaptive layout: one markup, three size classes ----------
    The app's root is a size container, so the frame decides (a phone, Telegram Desktop's Mini App
    window, an iPad, a laptop), not the device. Apple's size classes, in web widths:
    compact  < 600   phone and the Mini App: one column, bottom tab bar, large title on its own row
-   regular  600-1023 tablet, Telegram Desktop: two equal columns, tab bar stays, gutters 24
-   wide     >= 1024 laptop: sidebar 248, two columns 1.3 : 1 (the list never under 360), no tab bar,
-                    content capped at 1180 and centred */
+   regular  600-1023 tablet, Telegram Desktop: tab bar stays, gutters 24; one column until each of two
+                    can be about 340 wide (760), then two equal columns
+   wide     >= 1024 laptop: sidebar 248, two columns 1.3 : 1 (the list never under 300), no tab bar,
+                    content capped at 1180, centred past 1360 */
 .mp-app { container: app / inline-size; min-height: 100%; }
 .mp-shell { display: flex; min-height: 100%; }
 .mp-shell-side { display: none; }
@@ -270,14 +301,17 @@
 @container app (min-width: 600px) {
   .mp-pagepad { padding: 20px 24px 112px; gap: 20px; }
   .mp-pagehead { flex-direction: row; align-items: flex-end; justify-content: space-between; }
-  .mp-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .mp-cols { gap: 20px; }
   .mp-only-compact { display: none; }
+}
+@container app (min-width: 760px) {
+  .mp-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @container app (min-width: 1024px) {
   .mp-shell-side { display: flex; }
   .mp-shell-tabs { display: none; }
   .mp-pagepad { padding: 28px 32px 40px; max-width: 1180px; box-sizing: border-box; width: 100%; }
-  .mp-cols { grid-template-columns: minmax(0, 1.3fr) minmax(360px, 1fr); gap: 24px; }
+  .mp-cols { grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr); gap: 24px; }
   .mp-only-wide { display: revert; }
 }
 @container app (min-width: 1360px) {

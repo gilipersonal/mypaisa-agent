@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/reviews/MA-101/tokens.css"
+        ],
+        "createdAt": "2026-10-23T22:53:01.394Z",
+        "reason": "Claude: .tg-quote mocks Telegram's own blockquote, which Telegram draws with a left bar; MyPaisa cannot restyle it"
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-23T22:53:01.414Z",
+        "reason": "Claude: Inter is only the non-Apple fallback for SF Pro, the Apple HIG system font the brief asks for; the design-first skill allows Inter"
+      }
+    ]
+  }
+}

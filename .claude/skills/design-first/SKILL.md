@@ -111,9 +111,10 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 - **Illustrative data.** Every figure, member and holding on a design is illustrative and labelled so. Never the
   household's real balances, names or accounts.
 - **Adaptive.** Every web page is built on the design system's adaptive shell (`.mp-app` container, `.mp-shell`,
-  `.mp-cols`): compact under 600 (one column, tab bar), regular 600 to 1023 (two columns, tab bar), wide 1024 and up
-  (sidebar, two columns, capped at 1180). No fixed pixel column widths; charts fluid. Show at least one page at all
-  three size classes (the app project's Responsive page).
+  `.mp-cols`): compact under 600 (one column, tab bar), regular 600 to 1023 (tab bar; one column until 760, then two),
+  wide 1024 and up (sidebar, two columns, the list never under 300, capped at 1180). No fixed pixel column widths;
+  charts fluid, with labels and dots in HTML over the SVG (never a template value inside SVG `<text>`, which does not
+  render). Show at least one page at all three size classes (the app project's Responsive page).
 
 ## 2. Where designs live, and the record
 
