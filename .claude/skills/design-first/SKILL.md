@@ -26,7 +26,7 @@ with one obvious fix. When unsure whether something is a design change, treat it
   issues need no asking (`.claude/rules/jira-flow.md`, `.claude/rules/ship-autopilot.md`).
 - Create the branch `MA-<n>-<slug>` from `main` now, so the designs can be committed. The build continues on the same
   branch after the pick.
-- Run `python3 scripts/plan_sync.py start MA-<n>`: it names the story's ARCHITECTURE sections and its boards. Boards
+- Run `python3 scripts/plan_sync.py start MA-<n>`: it names the story's ARCHITECTURE sections and its boards. It refuses a story with no board (`todo`) or with screens still `undrawn`; inside design-first that refusal is expected, because drawing them is this round's work. Its other refusals (a missing section, a board file, an open question) are not, and stop the round. Boards
   drawn ahead of the story (`design: "planned"`) are the starting point for the options, not a pick
   (`.claude/rules/plan-sync.md`).
 - Read the context:

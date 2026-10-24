@@ -453,6 +453,11 @@
           "project": "ds",
           "file": "Telegram kit controls.dc.html",
           "board": "10 · Wide chat: Telegram Desktop, 720 wide"
+        },
+        {
+          "project": "ds",
+          "file": "Telegram kit controls.dc.html",
+          "board": "7 · Inline keyboard patterns"
         }
       ],
       "notes": "Household and per-member views are drawn as the Portfolio card with its summary tile."
@@ -547,7 +552,11 @@
           "board": "b · Adding a holding from a factsheet"
         }
       ],
-      "notes": "Logging a transaction and adding a holding are drawn; updating a valuation and changing a setting are not."
+      "notes": "Logging a transaction and adding a holding are drawn; updating a valuation and changing a setting are not. The screens in undrawn are drawn under MA-158 before the story starts.",
+      "undrawn": [
+        "updating a valuation",
+        "changing a setting"
+      ]
     },
     {
       "key": "MA-40",
@@ -1582,7 +1591,10 @@
           "board": "7 · Inline keyboard patterns"
         }
       ],
-      "notes": "The Open dashboard web_app button is drawn; the /web reply is not."
+      "notes": "The Open dashboard web_app button is drawn; the /web reply is not. The screens in undrawn are drawn under MA-158 before the story starts.",
+      "undrawn": [
+        "the /web reply"
+      ]
     },
     {
       "key": "MA-81",
@@ -1798,6 +1810,7 @@
       ],
       "notes": "Stances are drawn in the Portfolio card's Stance column and the brief; the story still asks design-first for the live chip, and /calls has no board. The screens in undrawn are drawn under MA-158 before the story starts.",
       "undrawn": [
+        "the live stance chip",
         "the /calls list in the chat"
       ]
     },
@@ -2585,7 +2598,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Its output is shown on Forecast · Browser · Forecaster · Proof (drawn for the stories with UI)."
+      "notes": "Its output is shown on Forecast · Browser · Forecaster · Proof (drawn for the stories with UI). Its lab report is drawn as Browser · Forecaster · Proof, which MA-124 carries as an open question."
     },
     {
       "key": "MA-121",
@@ -2634,7 +2647,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Its output is shown on Forecast · Browser · Holding · Forecast; Forecast · Browser · Forecaster · Proof (drawn for the stories with UI)."
+      "notes": "Its output is shown on Forecast · Browser · Holding · Forecast; Forecast · Browser · Forecaster · Proof (drawn for the stories with UI). Shown on Forecast · Browser · Holding · Forecast (MA-124); the Proof page is an open question on MA-124."
     },
     {
       "key": "MA-124",
@@ -2671,9 +2684,17 @@
           "project": "app",
           "file": "Forecast.dc.html",
           "board": "Telegram · Side-by-side card"
+        },
+        {
+          "project": "app",
+          "file": "Forecast.dc.html",
+          "board": "Browser · Forecaster · Proof"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts.",
+      "open": [
+        "Browser · Forecaster · Proof (Forecast.dc.html, F6) is drawn as a page reached from Track record, but ARCHITECTURE §19.6 and §19.7 describe no such page and MA-124's criteria do not name it: keep it (add it to §19.7 and MA-124) or drop the board."
+      ]
     },
     {
       "key": "MA-125",
@@ -3320,14 +3341,9 @@
           "project": "app",
           "file": "India.dc.html",
           "board": "Telegram · Brief with India"
-        },
-        {
-          "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · A rupee holding instead"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts."
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Rupees and pounds checked against each holding's currency are MA-156's boards (Currency check.dc.html, Telegram · A rupee holding instead)."
     },
     {
       "key": "MA-154",
@@ -3426,7 +3442,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Design work, tracked here. No board yet: MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-105, MA-111. Screens still to draw (each row's undrawn list): MA-35, MA-37, MA-62, MA-63, MA-64, MA-84, MA-91, MA-102."
+      "notes": "Design work, tracked here. No board yet: MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-105, MA-111. Screens still to draw (each row's undrawn list): MA-35, MA-37, MA-39, MA-62, MA-63, MA-64, MA-80, MA-84, MA-91, MA-102."
     },
     {
       "key": "MA-157",

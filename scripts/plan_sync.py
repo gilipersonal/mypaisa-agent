@@ -57,9 +57,8 @@ def known_keys(trace: dict) -> set[str]:
     return keys - {None}
 
 
-_captions: dict[Path, tuple[set[str], set[str]]] = {}
-CAPTION_KEYS = r"name|board|cap|title|label|tname|h|lab"
-ID_KEYS = r"id|oid|tag|num|n"
+_captions: dict[Path, set[str]] = {}
+DOORS = r"Mini App|Browser|Telegram"
 
 
 def _plain(s: str) -> str:
@@ -69,54 +68,79 @@ def _plain(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip(" ·")
 
 
-def captions(path: Path) -> tuple[set[str], set[str]]:
-    """The board captions a canvas defines, and the board ids it numbers them with."""
+def captions(path: Path) -> set[str]:
+    """The board titles a canvas defines, exactly: its captions and names, and each numbered board as
+    '<number> · <name>' with the number from the same board ('1 · Portfolio card', never '4 · Portfolio card')."""
     if path not in _captions:
         t = html.unescape(path.read_text(errors="replace"))
-        caps, ids = set(), set()
-        for q in ("'", '"'):
-            for m in re.finditer(rf"\b(?:{CAPTION_KEYS})\s*:\s*{q}((?:[^{q}\\]|\\.)*){q}", t):
-                caps.add(m.group(1).replace("\\" + q, q))
-            for m in re.finditer(rf"\b(?:{ID_KEYS})\s*:\s*{q}([^{q}]{{1,6}}){q}", t):
-                ids.add(m.group(1))
+        caps = set()
         for cls in ("dv-cap", "dv-sname", "dv-oname", "dv-tname"):
             for m in re.finditer(rf'class="{cls}"[^>]*>(.*?)</(?:p|span|div|a)>', t, re.S):
                 caps.add(_plain(m.group(1)))
-        for m in re.finditer(r'class="dv-(?:oid|tid)"[^>]*>(.*?)</(?:a|span)>', t, re.S):
-            ids.add(_plain(m.group(1)))
-        for m in re.finditer(r'<a href="#[^"]*">(.*?)</a>', t, re.S):
-            caps.add(_plain(m.group(1)))
-        for m in re.finditer(r"\b\w+\s*=\s*'([^'\\\n]{3,120})'", t):
-            caps.add(m.group(1))
         for m in re.finditer(r'data-screen-label="([^"]*)"', t):
             caps.add(_plain(m.group(1)))
-        _captions[path] = (caps - {""}, ids - {""})
+        # A numbered board heading: <a class="dv-tid">1</a><span class="dv-tname">Colour</span> (or dv-oid, dv-oname).
+        for m in re.finditer(r'class="dv-(t|o)id"[^>]*>(.*?)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
+            n, name = _plain(m.group(2)), _plain(m.group(3))
+            caps |= {f"{n} · {name}", f"{n} {name}"}
+        # The canvas's own index of boards: <a href="#colour">1 · Colour</a>.
+        for m in re.finditer(r'<nav class="dv-idx"[^>]*>(.*?)</nav>', t, re.S):
+            caps |= {_plain(x) for x in re.findall(r"<a [^>]*>(.*?)</a>", m.group(1), re.S)}
+        # Boards listed as data, the number paired with the name where the board's object opens:
+        # { id: '1', anchor: 'k1', name: 'Portfolio card', ... }; and every name, cap or board field.
+        lit = r"'((?:[^'\\\n]|\\.)*)'"
+        ids = set()
+        for m in re.finditer(rf"\{{\s*(?:id|tag)\s*:\s*'([^'\n]{{1,6}})'\s*,\s*(?:\w+\s*:\s*(?:'[^'\n]*'|[\w.]+)\s*,\s*)*?name\s*:\s*{lit}", t):
+            n, name = m.group(1), m.group(2).replace("\\'", "'")
+            ids.add(n)
+            caps |= {name, f"{n} · {name}", f"{n} {name}"}
+        for m in re.finditer(rf"\b\w+\(\s*'([^'\n]{{1,6}})'\s*,\s*\{{\s*name\s*:\s*{lit}", t):  # make('1c', { name: 'Watcher' })
+            n, name = m.group(1), m.group(2).replace("\\'", "'")
+            ids.add(n)
+            caps |= {name, f"{n} · {name}", f"{n} {name}"}
+        # Every cap or board field, and a name field that is a full title ('b · Adding a holding ...').
+        for m in re.finditer(rf"\b(?:cap|board)\s*:\s*{lit}|\bname\s*:\s*'((?:[^'\\\n]|\\.)*·(?:[^'\\\n]|\\.)*)'", t):
+            caps.add((m.group(1) if m.group(1) is not None else m.group(2)).replace("\\'", "'"))
+        # A title built from the board's number: data-screen-label="{{ o.id }} Telegram avatar {{ t.label }}".
+        for m in re.finditer(r'data-screen-label="\{\{\s*\w+\.id\s*\}\}([^"]*)"', t):
+            rest = _plain(m.group(1))
+            caps |= {f"{n} {rest}" for n in ids}
+        # A board title kept in a constant: const B1 = 'Telegram · Currency check'.
+        for m in re.finditer(rf"\b\w+\s*=\s*'((?:{DOORS}) · [^'\\\n]+)'", t):
+            caps.add(m.group(1))
+        _captions[path] = caps - {""}
     return _captions[path]
 
 
 def door(file: str) -> str | None:
     """The door a whole file draws for ('Mini App.dc.html' -> 'Mini App'), when its name says so."""
-    m = re.match(r"^(Mini App|Browser|Telegram)\b", file)
+    m = re.match(rf"^({DOORS})\b", file)
     return m.group(1) if m else None
 
 
 def board_ok(board: str, file: str, path: Path) -> bool:
-    """A board name is one of its canvas's captions, optionally after the board's own number
-    ('1 · Portfolio card', '1c Telegram avatar') or the door the file draws ('Mini App · Holdings')."""
-    caps, ids = captions(path)
+    """A board name is exactly one of its canvas's titles, or the door the file draws followed by one
+    ('Mini App · Holdings' in Mini App.dc.html, whose board is captioned 'Holdings')."""
+    caps = captions(path)
     if board in caps:
         return True
-    m = re.match(r"^(Mini App|Browser|Telegram) · (.+)$", board)
-    if m and door(file) == m.group(1) and m.group(2) in caps:
-        return True
-    m = re.match(r"^(\S{1,6}?)(?: ·)? (.+)$", board)
-    return bool(m and m.group(1) in ids and (m.group(2) in caps or any(c.startswith(m.group(2)) for c in caps)))
+    m = re.match(rf"^({DOORS}) · (.+)$", board)
+    return bool(m and door(file) == m.group(1) and m.group(2) in caps)
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     """What is wrong with one trace row (errors), and what it still waits on (warnings)."""
     errors, warnings = [], []
     k = it.get("key") or "?"
+    for field, kind in (("arch", str), ("labels", str), ("boards", dict), ("open", str), ("undrawn", str)):
+        val = it.get(field, [])
+        if not isinstance(val, list) or not all(isinstance(x, kind) for x in val):
+            errors.append(f"{k}: {field} must be a list of {kind.__name__}s")
+            return errors, warnings
     ph = ctx["phases"].get(it.get("epic"))
     if not ph:
         errors.append(f"{k}: epic {it.get('epic')} is not a phase epic")
@@ -146,13 +170,12 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     if d in ("planned", "picked") and not it.get("boards"):
         errors.append(f"{k}: design is {d!r} but no board is listed")
     for field, what in (("open", "open, must be settled before it starts"), ("undrawn", "screens still to draw before it starts")):
-        val = it.get(field, [])
-        if not isinstance(val, list) or not all(isinstance(q, str) and q for q in val):
-            errors.append(f"{k}: {field} must be a list of strings")
-        elif val:
-            warnings.append(f"{k}: {what}: {'; '.join(val)}")
+        if it.get(field):
+            warnings.append(f"{k}: {what}: {'; '.join(it[field])}")
     if it.get("undrawn") and not ui:
         errors.append(f"{k}: lists undrawn screens but has no UI")
+    if it.get("undrawn") and status in ("In Review", "Done"):
+        errors.append(f"{k}: {status} with screens still undrawn ({'; '.join(it['undrawn'])}); draw them and clear undrawn first")
     for b in it.get("boards", []):
         proj = ctx["projects"].get(b.get("project"))
         if not proj or not b.get("file"):
@@ -162,8 +185,11 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
         if not path.is_file():
             errors.append(f"{k}: board file {proj['dir']}/{b['file']} is not in the repo mirror")
             continue
-        if b["file"] not in ctx["mirror"].get(b["project"], {}).get("files", {}):
+        meta = ctx["mirror"].get(b["project"], {}).get("files", {}).get(b["file"])
+        if meta is None:
             errors.append(f"{k}: {b['file']} is not recorded in docs/design/claude-design.json")
+        elif (meta.get("bytes") is not None and path.stat().st_size != meta["bytes"]) or (meta.get("sha256") and sha256(path) != meta["sha256"]):
+            errors.append(f"{k}: {proj['dir']}/{b['file']} differs from the copy recorded in claude-design.json; copy it again")
         if not b.get("board") or not board_ok(b["board"], b["file"], path):
             errors.append(f"{k}: no board captioned {b.get('board')!r} in {proj['dir']}/{b['file']}")
     return errors, warnings
@@ -183,10 +209,6 @@ def key_order(key: str) -> tuple[int, str]:
     return (int(m.group(1)), "") if m else (10**9, key or "")
 
 
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
 def check(trace: dict) -> tuple[list[str], list[str]]:
     errors, warnings = [], []
     ctx = context(trace)
@@ -198,6 +220,12 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
         m = re.match(r"^## Phase (\d+)\b", line)
         if m and int(m.group(1)) not in by_phase:
             errors.append(f"PLAN.md has '{line}' but the trace has no phase {m.group(1)}")
+    numbers = [p.get("phase") for p in trace.get("phases", [])]
+    for n in sorted({n for n in numbers if numbers.count(n) > 1}, key=str):
+        errors.append(f"phase {n} is listed twice in the trace")
+    plan_numbers = [int(m.group(1)) for line in PLAN.read_text().splitlines() if (m := re.match(r"^## Phase (\d+)\b", line))]
+    for n in sorted({n for n in plan_numbers if plan_numbers.count(n) > 1}):
+        errors.append(f"PLAN.md has two '## Phase {n}' headings")
     for p in trace.get("phases", []):
         if not p.get("epic"):
             errors.append(f"phase {p.get('phase')}: no epic")
@@ -281,8 +309,8 @@ def render(trace: dict) -> str:
             continue
         out += ["| Key | Summary | Status | Architecture | Design | Boards |", "| --- | --- | --- | --- | --- | --- |"]
         for i in rows:
-            arch = ", ".join(f"§{s}" for s in i.get("arch", []) if s in sections) or ""
-            boards = "; ".join(f"{b.get('file', '?')}: {b.get('board', '?')}" for b in i.get("boards", []))
+            arch = ", ".join(f"§{s}" for s in (i.get("arch") if isinstance(i.get("arch"), list) else []) if s in sections) or ""
+            boards = "; ".join(f"{b.get('file', '?')}: {b.get('board', '?')}" for b in (i.get("boards") if isinstance(i.get("boards"), list) else []) if isinstance(b, dict))
             summary = i.get("summary", "").replace("|", "/")
             out.append(f"| {i.get('key', '?')} | {summary} | {i.get('status', '')} | {arch} | {i.get('design', '')} | {boards} |")
         out.append("")

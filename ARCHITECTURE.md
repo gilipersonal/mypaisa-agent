@@ -393,7 +393,9 @@ holds (GBP); the position's currency is the one that counts here.
   the member's figure and keeps the rupee amount and the implied rate beside
   it. "Use the ECB rate" is the engine's conversion at the ECB reference rate
   for that day, or the last one published before it at a weekend or an ECB
-  holiday (§5.3), with the rate and its date on the card; it is marked an
+  holiday (§5.3), with the rate and its date on the card. The ECB publishes
+  each currency against the euro, so pounds to rupees is the engine's cross
+  of the two euro rates of that day. It is marked an
   estimate until a statement, a screenshot or the next valuation confirms it.
   The button appears once the daily rates are loaded (MA-44, phase 2);
   before then the bot asks for the amount that arrived.
