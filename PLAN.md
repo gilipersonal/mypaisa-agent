@@ -188,7 +188,7 @@ the desk's synthetic generator; self-test gate.
 **Exit:** five trading days of signals landing by 07:10 that match a manual
 spot check; the desk's own test cases pass on the port.
 
-**Cost:** £0.10 (£16 more with EODHD).
+**Cost:** £0.10 (£20 more with EODHD Historian).
 
 ---
 
@@ -345,7 +345,7 @@ whether 70% means 70%.
 
 **Exit:** three weeks of indices; 30 scored articles spot-checked.
 
-**Cost:** about £17 a month cumulative (£33 with EODHD).
+**Cost:** about £17 a month cumulative (£37 with EODHD).
 
 ---
 
@@ -360,7 +360,7 @@ whether 70% means 70%.
 **Exit:** the gate passes, or the review says why it has not and stances stay
 in the Saturday review.
 
-**Cost:** about £20 a month cumulative (£36 with EODHD).
+**Cost:** about £20 a month cumulative (£40 with EODHD).
 
 ---
 
@@ -420,8 +420,8 @@ Adding an iShares ETF from Monzo's "Build your own" range or, later, a share:
 - The `/add` path already handles it (ISIN and ticker from the factsheet).
 - A price source for the listing (EODHD or yfinance), already in the chain.
 - For a share: the `valuation-snapshot` and `earnings-analysis` cards and a
-  fundamentals source that covers the LSE; about £46 a month more if EODHD
-  Fundamentals is used. Decide then, not now.
+  fundamentals source that covers the LSE; £59.99 a month more (£49.99 paid
+  yearly) if EODHD Fundamentals is used. Decide then, not now.
 
 ---
 
@@ -437,7 +437,12 @@ steady growth, so market mood and risk come first and direction last.
   of England, ECB), market stress (VIX, credit spreads, dollar, oil, gold),
   world events (GDELT counts and tone, the geopolitical risk index) and the
   calendars, in Parquet with DuckDB; every row stamped with the date it was
-  known; a daily refresh with a stale-feed alarm.
+  known; a daily refresh with a stale-feed alarm. Sources and prices as
+  `ARCHITECTURE.md` §19.2: free first, EODHD Historian (£19.99 a month) for
+  London, UK funds by ISIN and the back-fill, its free key tried on each fund
+  first. Each holding's exposure map: a fund's holdings, countries, sectors
+  and currencies; a share's company, sector, markets, suppliers and rivals; a
+  commodity's drivers.
 - **F2, the backtest lab (MA-120).** Any strategy replayed day by day with
   fees, OEIC next-day pricing and monthly contributions; worst fall, worst
   year, time underwater, growth and calibration against buy-and-hold and a
@@ -448,7 +453,10 @@ steady growth, so market mood and risk come first and direction last.
 - **F4, similar days and event impacts (MA-122).** The 30 most similar days
   since 2015 and what followed; the measured effect of rate and inflation
   surprises, elections, conflict, tariffs, pandemics and earnings misses on
-  each holding; Haiku files each day's news under those types.
+  each holding; Haiku tags each day's news with the companies, countries,
+  sectors, commodities and central banks it names, its event type and its
+  direction, and code scores each story against each holding's exposure map,
+  so the brief can say which stories touch which holdings (§19.3).
 - **F5, direction (MA-123).** The chance of being up in four weeks, the
   likely range and its drivers, combined with F3 and F4 and calibrated;
   monthly retraining; model versions with their test scores; it switches
@@ -479,7 +487,7 @@ the time underwater against buy-and-hold, within the growth trade-off you
 set; both engines' views and records sit side by side in Telegram and the web
 app.
 
-**Cost:** the data is free apart from the EODHD feed already planned; compute
+**Cost:** the data is free apart from EODHD Historian, £19.99 a month; compute
 a few dollars a month; Haiku filing the news under a dollar, inside the
 Claude ceiling.
 

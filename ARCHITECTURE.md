@@ -171,7 +171,7 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **Forecast** | `instrument_id`, `date`, `horizon_days` (20), `p_up`, `p_fall_5`, `range` {p10, p50, p90}, `mood`, `analogs` {count, recovered}, `events[]`, `drivers[]`, `model_version`, `graded` | One per holding per day from the Forecaster (§19), later; graded like a stance. |
-| **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.5). |
+| **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.6). |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
 | **BudgetSettings** | `portfolio_id`, `monthly_ceiling_usd` (prod $100, dev $10), `hard_limit_usd` (the Console workspace limit, typed in to match it), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
@@ -424,7 +424,7 @@ labelled, never silently reused.
 
 | Kind | Default chain (local, dev, and prod until switched) | With EODHD | Freshness |
 | --- | --- | --- | --- |
-| OEIC (Monzo's BlackRock funds) | yfinance on the fund's `0P…L` id · BlackRock UK product page · FT tearsheet · proxy basket · last user screenshot | unchanged; EODHD has no UK OEICs | NAV once a day, published next morning; proxy intraday, labelled provisional |
+| OEIC (Monzo's BlackRock funds) | yfinance on the fund's `0P…L` id · BlackRock UK product page · FT tearsheet · proxy basket · last user screenshot | EODHD by ISIN under `.EUFUND` (many UK funds are listed; how far back each fund's history goes is checked with the free key first), then the default chain | NAV once a day, published next morning; proxy intraday, labelled provisional |
 | ETF or ETC on LSE / Xetra | yfinance · Twelve Data (free tier, if it serves the exchange) · issuer NAV (iShares publishes daily) · stale | eodhd · yfinance · Twelve Data · issuer NAV · stale | Each exchange close; GBX normalised to GBP |
 | ETF or stock on NYSE / Nasdaq | Twelve Data (free tier) · yfinance · stale | twelvedata · eodhd · yfinance · stale | 21:00 UK close |
 | Stock on LSE / Xetra | as ETF on LSE / Xetra | as ETF on LSE / Xetra | same |
@@ -941,18 +941,20 @@ account is now the key to both the chat and the web app.
 | Claude: sentiment scoring, via Batches | £1.50 | £2.50 | £2.50 |
 | Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Claude: web search (~60 a month at $10 per 1,000) | £0.50 | £0.50 | £1 |
-| Market data (EODHD All World EOD) | £0 | £16 | £16 |
-| **Total, one member** | **£9.70** | **£32** | **£42** |
+| Market data (EODHD Historian, £19.99 a month) | £0 | £20 | £20 |
+| **Total, one member** | **£9.70** | **£36** | **£46** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
-Two members on the standard setup: about £35. The Claude lines are paid by
+Two members on the standard setup: about £39. The Claude lines are paid by
 the monthly API credit that comes with the Max or Team plan ($100 a month on
 Max 5x, about £77), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
 cost is £0. Prod's Claude spend is held under a ceiling of $100 a month that
 the owner moves in the Admin center (§15.1). Stock fundamentals (EODHD
-Fundamentals) would add about £46 a month and are not planned unless a single
-share is added. A second *household* would add roughly a full set (£10–34),
+Fundamentals) would add £59.99 a month (£49.99 paid yearly), or the
+All-in-One plan at £99.99 would replace both, and are not planned unless a
+single share is added; EODHD's prices as shown on its pricing page on 24 Oct
+2026. A second *household* would add roughly a full set (£10–34),
 since data feeds are shared but model calls are not.
 
 ### 15.1 The Claude budget and its ceiling
@@ -1226,34 +1228,88 @@ falls, and direction is the last and least trusted piece.
 Ten years, from 2015 or inception, in Parquet in the `mypaisa-<env>-lake`
 bucket and queried with DuckDB (the same copy as MA-104):
 
-| Kind | What | Source |
-| --- | --- | --- |
-| Prices | Daily prices for each holding, the top constituents of each fund and the index it tracks; open, high, low, close and volume for anything exchange-traded, the NAV for OEICs | yfinance, Twelve Data, EODHD |
-| Economy | Policy rates, 2-year and 10-year yields, inflation, unemployment | FRED, Bank of England, ECB |
-| Market stress | VIX, high-yield and investment-grade credit spreads, the dollar index, oil, gold | yfinance, FRED |
-| World events | Daily event counts and tone by country and theme; the published geopolitical risk index | GDELT, the GPR index |
-| Calendars and news | Central bank decisions, inflation releases, earnings of top holdings; the RSS news of §11 | the calendar of §11 |
+| Kind | What | Chosen source | Cost |
+| --- | --- | --- | --- |
+| Shares, ETFs, commodity ETCs | Daily open, high, low, close and volume; the top constituents of each fund and the index it tracks | yfinance first; EODHD Historian for London and the ten-year back-fill (30+ years of daily prices, 100,000 calls a day, its news feed included) | Free; EODHD £19.99 a month (£199.90 a year) |
+| UK funds (OEICs) | The daily price (one a day, no candles) | EODHD by ISIN under `.EUFUND`; Yahoo's `0P…` id; the fund manager's page (BlackRock, Vanguard) | Inside the EODHD line |
+| Commodity drivers | Gold, silver, Brent and WTI futures; daily Brent and WTI | yfinance; the US Energy Information Administration (EIA) | Free |
+| Economy | Policy rates, 2-year and 10-year yields, real yields, inflation, unemployment, each as first published | FRED with its ALFRED archive; Bank of England; ECB; ONS | Free |
+| Market stress | VIX, high-yield and investment-grade credit spreads, the dollar index | yfinance, FRED | Free |
+| World events | Daily event counts and tone by country and theme; the geopolitical risk index | GDELT; the Caldara and Iacoviello GPR index | Free |
+| News | Stories on the household's holdings, their countries and sectors | GDELT; the RSS feeds of §11; EODHD's news feed | Free, or inside the EODHD line |
+| Calendars | Central bank decisions, inflation releases, earnings of top holdings, elections | The banks' and the ONS's published calendars; earnings dates from EODHD or yfinance | Free |
+
+**When EODHD is taken.** The rules engine starts on the free sources, and
+phase 2's comparison decides whether its London closes need EODHD (§5.1).
+The Forecaster needs it at the latest when F1 starts, for the ten-year
+back-fill and UK funds by ISIN. Before paying, its free key is tried on each
+fund the household holds and the history it returns is recorded; if a fund
+is missing, Yahoo's `0P…` id and the fund manager's page stand in. Share-level
+fundamentals (£59.99 a month, or £99.99 for the All-in-One plan) only if
+shares are added and their cards are wanted.
+
+**Not chosen**, with the reason: Morningstar and FE fundinfo (the industry's
+UK fund data, sold on business licences); Twelve Data Grow ($79 a month; UK
+funds only on Pro at $229) while EODHD covers both; Alpha Vantage premium
+(from $49.99) and Marketaux (about $29) for news sentiment, while Claude Haiku
+tags the news (§19.3), with Marketaux the fallback if that tagging falls
+short.
+
+**Shares come from another platform.** Monzo offers only BlackRock funds and
+ETFs, gold and silver among them, and no individual shares; a share would be
+held on another platform, in an `Account` with its own `institution`, and
+reaches the bot the same way (a statement, a screenshot or a typed line).
 
 Every row carries the date it became known, and revisions are added rather
 than overwritten, so a backtest of 2018 sees only what was known in 2018. A
 daily refresh runs after the close; a gap or a stale feed is an alarm in the
 chat. Each source's terms are recorded; the use is personal.
 
-### 19.3 The models (F3 to F5, MA-121 to MA-123)
+### 19.3 Matching news and events to the holdings (F1, F4; MA-119, MA-122)
+
+**Every holding has an exposure map**, kept on the instrument's `exposure`
+(§4) and refreshed on its own clock:
+
+| Kind | What it is exposed to | Refreshed |
+| --- | --- | --- |
+| OEIC or ETF | Its top holdings, countries, sectors and currencies, from the factsheet and the holdings file (look-through, §5.2) | Monthly; iShares files daily |
+| Share | The company, its sector, its main markets, its main suppliers and rivals | Each quarter's results |
+| Commodity ETC | Its drivers. Gold: real yields, the dollar, central-bank buying, geopolitical stress. Silver: gold's drivers and industrial demand. Oil: OPEC+ decisions, stockpiles, supply from the Middle East and Russia, world growth | A fixed list, reviewed yearly |
+| Cash | Its interest rate and currency | With the rate |
+
+**Each day's stories are tagged.** The news of §19.2 goes to Claude Haiku
+through Batches, which tags each story with the companies, countries,
+sectors, commodities and central banks it names, its event type (§19.4) and
+the direction it points. The tags are checked weekly on a labelled sample.
+
+**Relevance is worked out in code**: a story's weight on a holding is the
+holding's exposure to the entities the story names. A chip-export story
+reaches a NASDAQ fund through its chipmakers' weight; an OPEC+ cut reaches an
+oil holding through its first driver; a surprise from the Fed reaches gold
+through real yields and the dollar. Stories under a floor are dropped; the
+rest are stored on `ArticleScore` (`entities[]`, `event_type`, `matches[]`).
+
+**Where the matches go**: into the event-impact lookup (how this holding
+moved after past events of that type), into the direction forecast as
+features, and into the morning brief ("3 stories touch your holdings
+today", each with its holding and the measured past effect). Code produces
+every number; news alone never raises a red alert (§6.3).
+
+### 19.4 The models (F3 to F5, MA-121 to MA-123)
 
 | Model | Answers | Method | Trust |
 | --- | --- | --- | --- |
 | Market mood | Calm and rising, choppy, stressed or falling, with its probability | A regime model over cross-asset features, smoothed so it does not flip daily | Good |
 | Risk | Four-week volatility and the chance of a fall over 5%, per holding | A volatility model and gradient-boosted trees, combined and calibrated | Good |
 | Similar days | What followed the 30 days since 2015 most like today, after 5, 20 and 60 days | Nearest neighbours over a feature vector, the last 20 days left out | Good, and easy to explain |
-| Event impacts | How this holding moved after past rate surprises, inflation surprises, elections, conflict, tariffs, pandemics, earnings misses | Event studies: average move, spread, number of cases, confidence interval; under 8 cases marked low confidence | Fair |
+| Event impacts | How this holding moved after past rate surprises, inflation surprises, elections, conflict, tariffs, pandemics, earnings misses, OPEC+ decisions | Event studies: average move, spread, number of cases, confidence interval; under 8 cases marked low confidence | Fair |
 | Direction | The chance of being up in four weeks, the likely range (10th, 50th, 90th percentile) and the main drivers | Gradient-boosted trees combined with the four above, calibrated; conformal intervals for the range | Modest |
 
 Claude's part is the same as everywhere (§1): it files each day's news under
 the event types (Haiku, through Batches) and explains the result. Every
 number, the event impacts included, comes from code.
 
-### 19.4 The strategy layer: where the goal is won (F7, MA-125)
+### 19.5 The strategy layer: where the goal is won (F7, MA-125)
 
 Forecasts become suggestions about the money the household already moves:
 contributions always continue; new money tilts away from holdings in a
@@ -1263,7 +1319,7 @@ never says sell everything, stays ISA-safe, and only suggests (§1). It shows
 as the suggested split on the first-of-the-month contribution prompt, beside
 the rules engine's.
 
-### 19.5 How it proves itself (F2, MA-120)
+### 19.6 How it proves itself (F2, MA-120)
 
 - **A backtest lab** replays any strategy one day at a time over the ten
   years, with fees, next-day pricing for OEICs and monthly contributions, and
@@ -1282,7 +1338,7 @@ the rules engine's.
   for four weeks, and the owner is told. Models are retrained monthly; each
   version is a `ModelVersion` row with its test scores.
 
-### 19.6 How it is shown (F6, MA-124)
+### 19.7 How it is shown (F6, MA-124)
 
 In Telegram, beside the rules engine (illustrative figures):
 
@@ -1306,18 +1362,18 @@ today's chart, the event-impact table, the main drivers, candles for ETFs and
 shares, and both engines' track records side by side. Both are designed first
 (design-first), with privacy mode and both themes.
 
-### 19.7 Where it runs and what it costs
+### 19.8 Where it runs and what it costs
 
 The data is small (a few thousand days for a few dozen series), so daily
 forecasts run in a Lambda from the same image, and the monthly retrain runs
 in a Lambda too (up to 15 minutes and 10 GB), moving to a Fargate task only
 if it outgrows that; the one-off GDELT backfill runs as such a task. Models
 are files in S3 behind their `ModelVersion` rows. The data is free apart from
-the EODHD feed already in §15 (share-level fundamentals, about £46 a month,
-only if chosen); compute is a few dollars a month; Haiku filing the news is
+EODHD Historian, £19.99 a month (§19.2; share-level fundamentals £59.99 more,
+only if shares are added); compute is a few dollars a month; Haiku filing the news is
 well under a dollar a month, inside the Claude ceiling of §15.1.
 
-### 19.8 Order
+### 19.9 Order
 
 F1 (data) and F2 (the lab) can start any time after phase 2, and F2's first
 report tests the rules engine. F3 and F4 follow, F5 after them, F6 once the
