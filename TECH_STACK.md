@@ -45,7 +45,8 @@ Status: design. Nothing is built.
 
 | Service | Role |
 | --- | --- |
-| Lambda | The eight handlers, from one container image |
+| Lambda | The eight handlers, from one container image; from phase 12 one per agent (`ARCHITECTURE.md` §20) |
+| Step Functions, EventBridge bus (phase 12) | The daily run as one state machine with retries; agents publish events on `mypaisa-<env>-events`; inside the free tiers at this volume |
 | API Gateway HTTP API | One per environment on its custom domain, `api-dev.mypaisapp.com` and `api.mypaisapp.com`: `/telegram/webhook` (secret-token header, dedupe), `/auth/telegram`, `/v1/...` read-only JSON, `/v1/admin/...` for the owner |
 | Cognito | One user pool per environment, Essentials plan, on `auth-dev.mypaisapp.com` and `auth.mypaisapp.com`; custom-auth triggers for Telegram, Google as a provider, passkeys; free under 10,000 monthly users |
 | EventBridge Scheduler | 07:00, 07:15, 21:00, 21:15 on weekdays; 23:30 daily; 08:00 Saturday; every 3 h for news; all in `Europe/London` |
@@ -57,7 +58,9 @@ Status: design. Nothing is built.
 | Route 53 + ACM | The `mypaisapp.com` zone and the `*.mypaisapp.com` certificate already exist, owned by the wealth tracker's Terraform; MyPaisa looks them up and adds its six records (MA-97 hands the zone over later) |
 | X-Ray | One trace per run from the webhook through the agent to the Anthropic API, DynamoDB, S3 and Telegram; inside the free tier at this volume |
 | CloudWatch | Logs with 14-day retention and saved Logs Insights queries; ten custom metrics and one dashboard per environment; an error alarm per function; the 07:45 dead man's switch; cost, freshness and audit-chain alarms; all delivered to the chat |
-| AWS Budgets | AWS spend only (Claude has its own ceiling, §6 Guard rails): prod alerts at £40 and disables the Scheduler rules at £50; dev capped at £10 |
+| AWS Budgets | The backstop, in Terraform: one cost budget at the hard limit (£75 by default, in dollars) alerting on actual and forecast spend, with an action that stops dev's schedules; monitoring and the first two action-enabled budgets are free. The working cap (£50) and its steps are app settings (`ARCHITECTURE.md` §15.2) |
+| Cost Explorer | Read once a day: month-to-date cost by service and `env` tag, and the forecast, for the app's AWS meter; about $0.01 a request |
+| SNS | `mypaisa-<env>-admin-alerts`: the admin's email subscribed (address in SSM, subscription by Terraform); the first 1,000 email notifications a month are free |
 | IAM | One execution role per function and environment (only its own table, bucket and SSM path); three OIDC roles for CI pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy` on `main`, `ci-prod-deploy` on `main` and the `prod` environment); a developer role for dev with an explicit deny on anything tagged `env=prod`; all in Terraform, nothing by hand |
 
 ## 4. Infrastructure and tooling
@@ -74,11 +77,11 @@ Status: design. Nothing is built.
 
 | Service | Plan | Used for |
 | --- | --- | --- |
-| Anthropic API | Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; paid from the Max or Team plan's monthly API credit ($100 on Max 5x) through the linked Console organisation, with a spend limit per workspace ($100 prod, the hard limit behind the ceiling; $10 dev) | Every model call, document extraction, web search and fetch, the nightly scoring |
+| Anthropic API | Haiku 5.5 $0.10/$0.50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20 per million tokens; Batches at half price; web search $10 per 1,000; paid from the Max 20x plan's monthly API credit ($200) through the linked Console organisation, with a spend limit per workspace ($160 prod, $40 dev, the hard caps behind the ceilings); no payment method, auto-reload off | Every model call, document extraction, web search and fetch, the nightly scoring |
 | Telegram Bot API | Free | The chat, files, rich messages, the Mini App, the Login Widget for the laptop |
 | Google OAuth | Free | Sign in with Google through Cognito's Google provider; one OAuth client per environment, its secret in that environment's SSM path |
 | Twelve Data | Free Basic tier (8 credits a minute, 800 a day) | US closes, the US macro basket, the earnings calendar, FX fallback, ISIN lookup |
-| EODHD | Historian (daily prices, 30+ years, 100,000 calls a day, news feed included): £19.99 a month or £199.90 a year. Fundamentals: £59.99 a month (£599.90 a year). All-in-One: £99.99 a month (£999.90 a year). Prices as shown on 24 Oct 2026 | Dependable London and Frankfurt closes by ISIN; UK funds by ISIN under `.EUFUND`; the Forecaster's ten-year back-fill (`ARCHITECTURE.md` §19.2) |
+| EODHD | Last resort, only on an admin's approval when no free source can serve a holding. Historian (daily prices, 30+ years, 100,000 calls a day, news feed included): £19.99 a month or £199.90 a year. Fundamentals: £59.99 a month (£599.90 a year). All-in-One: £99.99 a month (£999.90 a year). Prices as shown on 24 Oct 2026 | Dependable London and Frankfurt closes by ISIN; UK funds by ISIN under `.EUFUND`; the Forecaster's ten-year back-fill (`ARCHITECTURE.md` §19.2) |
 | yfinance | Free, unofficial | Closes and the fund's `0P…L` NAV when running lean |
 | ECB reference rates | Free | GBP, USD, EUR daily fixes |
 | BlackRock and iShares product pages | Free | Fund NAV check, holdings files for look-through |
@@ -114,9 +117,12 @@ actually runs.
 | **Total** | **£2–4** | **£9.70** | **£36** | **£46** | |
 
 Both environments together: about **£12–14 a month lean, £38–40 standard**.
-Prod's Claude lines sit under their own ceiling, $100 a month by default
-(about £77), which the owner moves in the Admin center; expected use for two
-members is $24 to $39 (`ARCHITECTURE.md` §15.1). There is no one-off cost and
+The agents' Claude allowance is the Max 20x plan's $200 monthly credit (about
+£154) across both environments ($160 prod, $40 dev by default), each ceiling
+moved by the admin; expected use for two members is about $24 to $39
+(`ARCHITECTURE.md` §15.1). AWS and other services have their own cap, £50 by
+default (§15.2). EODHD is counted only if a free source
+fails and an admin approves it. There is no one-off cost and
 no reserved commitment;
 stopping an environment is `terraform destroy` on it.
 
@@ -134,9 +140,10 @@ stopping an environment is `terraform destroy` on it.
 
 ### Guard rails
 
-- The Claude ceiling (`ARCHITECTURE.md` §15.1): $100 a month in prod and $10 in dev, set by the owner in the Admin center; every call metered from the API's usage counts and checked before it is made; a message at 70%, savers at 85%, essentials only at 95%, Claude off at 100% with every card falling back to its template; no member past 60% of it, no day past three times the daily average, no run past eight model calls.
-- Anthropic Console: one workspace per environment in the organisation linked to the plan, each with a spend limit that hard-stops its key ($100 prod, the hard limit behind the ceiling; $10 dev); the plan's credit ($100 a month on Max 5x) pays for both, auto-reload stays off, and when the credit is exhausted the API stops until the next cycle, which the dead man's switch reports.
-- AWS Budgets, for AWS spend only: prod alerts at £40 and disables the schedules at £50; dev is capped at £10.
+- The Claude ceiling (`ARCHITECTURE.md` §15.1, §15.2): $160 a month in prod and $40 in dev, the plan's $200 credit, with every step, guard and share a setting the admin changes in the Admin center or, from phase 12, the admin's chat; each agent metered against its share (§20.7); every call metered from the API's usage counts and checked before it is made; a message at 70%, savers at 85%, essentials only at 95%, Claude off at 100% with every card falling back to its template; no member past 60% of it, no day past three times the daily average, no run past eight model calls.
+- Anthropic Console: one workspace per environment in the organisation linked to the plan, each with a spend limit that hard-stops its key ($160 prod, $40 dev); the Max 20x plan's $200 credit pays for both, with no payment method and auto-reload off, so the credit is the last stop.
+- AWS and others, £50 a month across both environments by default: the app meters it daily from Cost Explorer, alerts at 50%, 80%, 100% and on the forecast, and pauses dev's schedules at 80% and non-essential prod jobs at 100% (never the brief, alerts or chat); AWS Budgets at £75 is the Terraform backstop; paid data feeds count against the cap.
+- Alerts to the web app, the admin's Telegram chat and email (SNS, free up to 1,000 a month), routed by a matrix the admin sets, with quiet hours and cooldowns.
 - `/pause` stops everything that speaks or scores.
 - The figures are from published free tiers and list prices, not a bill; the
   first month of prod gives the real number.
