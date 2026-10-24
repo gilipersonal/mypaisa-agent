@@ -18,6 +18,7 @@ Status: design. Nothing is built.
 | Packaging | `uv`, `pyproject.toml`, `uv.lock` | Fast, reproducible installs in CI and in the image |
 | Models and validation | pydantic v2 | Tool inputs, Telegram updates, every registry item, with `schema_version` |
 | Data maths | pandas, numpy, pyarrow | The engine ported from the Agentic Trading Desk; parquet history in S3 |
+| The Forecaster (phase 11, later) | DuckDB over the Parquet lake; scikit-learn, LightGBM, a regime model (hidden Markov) and a volatility model (`arch`); conformal intervals; SHAP for the main drivers | A second engine beside the rules engine (`ARCHITECTURE.md` §19); small data, so it runs in Lambda |
 | Calendars and FX | `exchange_calendars`; ECB reference rates for USD, EUR and INR | XLON, XETR, XNYS sessions and holidays; the clock-change weeks; GBP or INR per member |
 | HTTP | httpx | Telegram, ECB, EODHD, Twelve Data, RSS, product pages |
 | Price feeds | One `PriceSource` contract; a plugin per feed (yfinance, Twelve Data, EODHD, issuer pages, FT, proxy, screenshot); the chain per kind in each environment's Terraform root (`infra/dev`, `infra/prod`), a `.env` for local | yfinance by default and for local development, no key; EODHD by configuration and a key in SSM; every plugin passes the same contract tests on recorded responses |
