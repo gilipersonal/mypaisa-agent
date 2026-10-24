@@ -97,7 +97,8 @@ flowchart LR
   mini[Mini App dashboard<br/>inside Telegram]
   web[Web app<br/>laptop browser, behind login]
   subgraph aws[AWS us-east-1 · Terraform]
-    url[Function URL]
+    apigw[API Gateway<br/>api.mypaisapp.com]
+    cog[Cognito<br/>auth.mypaisapp.com]
     hook[webhook λ]
     agent[agent λ · Claude tool loop]
     ingest[ingest λ · prices, NAV, FX]
@@ -106,7 +107,7 @@ flowchart LR
     score[score λ · sentiment]
     docs[docs λ · factsheets, screenshots]
     api[api λ · read-only JSON<br/>dashboard · audit · activity]
-    cf[CloudFront + edge function<br/>static app · /api/* · cookie check]
+    cf[CloudFront<br/>console.mypaisapp.com · static app]
     sched[EventBridge Scheduler<br/>Europe/London]
     ddb[(DynamoDB · registry, state)]
     s3[(S3 · prices, docs, charts, web app)]
@@ -121,11 +122,11 @@ flowchart LR
   you <--> tg
   you <--> mini
   you <--> web
-  tg --> url --> hook -- async --> agent
+  tg --> apigw --> hook -- async --> agent
   agent --> tg
-  mini -- initData --> cf
-  web -- Telegram Login · Google --> cf
-  cf --> api --> ddb
+  mini & web --> cf
+  mini & web -- sign in · Telegram, Google, passkey --> cog
+  mini & web -- session · /v1 --> apigw --> api --> ddb
   sched --> ingest & news & score & agent
   ingest --> mkt & ecb
   ingest --> s3 --> engine --> ddb
@@ -140,7 +141,8 @@ flowchart LR
 
 One container image, eight handlers. The agent Lambda is the only one that
 talks to you in the chat. The api Lambda is the only one the web app talks
-to, and it can only read. Every other Lambda produces data they read, and
+to, and apart from the owner's security actions in the Admin center (MA-102)
+it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
 every one of them writes a `RunRecord` saying what it did (§10).
 
 ---
@@ -272,12 +274,20 @@ Google can vouch for the person instead, through a Google account linked to
 the member once, from the chat. "Login" is: which Telegram or Google account
 is this, which member is it linked to, and which household is that member in.
 
+**One identity store, on AWS from day one** (Arun, 24 Oct 2026; MA-109). Each
+environment has its own Amazon Cognito user pool, `mypaisa-dev-users` and
+`mypaisa-prod-users` (Essentials plan, free under 10,000 monthly users), with
+one user per member: that member's Telegram id, Google account and passkeys
+are all linked to the same Cognito user. There are still no passwords:
+password sign-in and self sign-up are off, and a user is created only when
+someone joins through `/invite`.
+
 | Where | How the member is identified |
 | --- | --- |
-| The chat | Every update carries `from.id`, a stable numeric Telegram user id. The webhook already accepts only updates signed by Telegram (secret token); the old single-chat allowlist becomes a `Member` lookup. A known id acts as that member; an unknown id gets silence. |
-| The Mini App | Telegram signs `initData` (an HMAC over the user and a timestamp, keyed by the bot token). The Function URL checks the signature and the age, looks up the member, and serves only what that member may see. |
-| The web app in a browser | Either the Telegram Login Widget (one tap, confirmed in the Telegram app on the phone) or Sign in with Google (the Gmail account linked to the member). Both hand the api Lambda a signed proof of identity, which it verifies and maps to the member before setting the session cookie (§9.3). A Google account that is not linked to any member is refused, whatever its address. |
-| The wealth tracker, later | Amazon Cognito (email, passkey, Google, MFA; free at this scale). A one-time code shown on the web and sent to the bot ties the Cognito user to the member. Not a priority now; nothing in the bot depends on it. |
+| The chat | Every update carries `from.id`, a stable numeric Telegram user id. The webhook already accepts only updates signed by Telegram (secret token); the old single-chat allowlist becomes a `Member` lookup. A known id acts as the member whose Cognito user it is linked to; an unknown id gets silence, and a paused member gets one line and nothing else (MA-102). |
+| The Mini App | Telegram signs `initData` (an HMAC over the user and a timestamp, keyed by the bot token). The api's `/auth/telegram` route hands it to Cognito's custom-auth Lambdas, which check the signature in constant time, an age under five minutes and no replay, then issue that member's tokens. Inside Telegram the second check is Face ID or a PIN (MA-102); passkeys belong to browsers. |
+| The web app in a browser | Cognito, three ways: the Telegram Login Widget (verified by the same custom-auth Lambdas), Sign in with Google (Cognito's Google provider, through the environment's sign-in domain `auth(-dev).mypaisapp.com`), or a passkey (WebAuthn). A Google account that is not linked to any member is refused, whatever its address. |
+| Every door | Access tokens last five minutes and are refreshed by the api, never held by page scripts. Sign out everywhere and pause use Cognito's own calls (`AdminUserGlobalSignOut`, `AdminDisableUser`) together with the member's session epoch, so they take effect on the next request (MA-102). |
 
 **Joining.** The owner sends `/invite` (optionally `/invite viewer`). The bot
 replies with a one-time deep link, `t.me/<bot>?start=<token>`, single use,
@@ -290,8 +300,9 @@ is simply re-invited. Private chats only: the bot ignores groups.
 their own phone, so that both identities are proven by the person who owns
 them: on the web, Sign in with Google for an account not yet linked shows a
 six-digit code that lasts ten minutes; the member sends `/link <code>` to the
-bot from their own Telegram chat; the bot stores Google's stable account id
-(`sub`) and the address on that member and confirms in both places. The
+bot from their own Telegram chat; the bot links that Google identity to the
+member's Cognito user and stores Google's stable account id (`sub`) and the
+address on that member and confirms in both places. The
 owner can also link on a member's behalf by address from `/members`, and
 unlink from the same place; unlinking logs that account out everywhere.
 `sub` is the key, the address is for display, so a renamed Gmail still works
@@ -384,19 +395,20 @@ A plugin that is not in any chain is never imported, so a missing key is
 not an error.
 
 **Chains by configuration.** The chain per kind lives in
-`infra/terraform/envs/<env>.tfvars` and reaches the Lambdas as one
+each environment's Terraform root (`infra/dev/terraform.tfvars`,
+`infra/prod/terraform.tfvars`) and reaches the Lambdas as one
 environment variable, with a per-instrument override in
 `Instrument.price_sources[]` for the odd case:
 
 ```hcl
-# envs/dev.tfvars (local uses the same shape from a .env file)
+# infra/dev/terraform.tfvars (local uses the same shape from a .env file)
 price_chains = {
   oeic      = ["yfinance", "issuer_page", "ft", "proxy", "screenshot"]
   lse_etf   = ["yfinance", "twelvedata", "issuer_page", "stale"]
   us_etf    = ["twelvedata", "yfinance", "stale"]
   cash      = ["ecb", "twelvedata"]
 }
-# envs/prod.tfvars, once EODHD is chosen: put it first and add its key
+# infra/prod/terraform.tfvars, once EODHD is chosen: put it first and add its key
 #   lse_etf = ["eodhd", "yfinance", "twelvedata", "issuer_page", "stale"]
 #   us_etf  = ["twelvedata", "eodhd", "yfinance", "stale"]
 ```
@@ -698,19 +710,20 @@ laptop; `docs/design/README.md`). It has two front doors to the same pages:
 
 | Door | Who opens it | How the member is identified |
 | --- | --- | --- |
-| **Mini App**, from the `web_app` button on the Portfolio card | a member on their phone, inside Telegram | Telegram's signed `initData`, checked for signature and age by the api Lambda |
-| **Browser**, at the app's own address, with Telegram | a member on a laptop | the Telegram Login Widget: one tap, confirmed in the Telegram app on their phone, no password; the signed payload is checked by the api Lambda (HMAC keyed by the bot token, five-minute freshness) |
-| **Browser**, the same address, with Google | a member on a laptop, or anywhere Telegram is not to hand | Sign in with Google (Google Identity Services): the browser gets an ID token from Google, posts it to the api Lambda, which verifies the signature against Google's published keys, the audience (our client id), the expiry and that the address is verified, then finds the member linked to that Google account (§4.5). Nothing else from Google is used or stored. |
+| **Mini App**, from the `web_app` button on the Portfolio card, at `console.mypaisapp.com` | a member on their phone, inside Telegram | Telegram's signed `initData`, exchanged for Cognito tokens through the custom-auth Lambdas (§4.5) |
+| **Browser**, at `console.mypaisapp.com`, with Telegram | a member on a laptop | the Telegram Login Widget: one tap, confirmed in the Telegram app on their phone, no password; verified by the same custom-auth Lambdas (HMAC keyed by the bot token, five-minute freshness, no replay) |
+| **Browser**, the same address, with Google or a passkey | a member on a laptop, or anywhere Telegram is not to hand | Cognito's Google provider (the Google account linked to the member, §4.5), or a passkey registered after the first sign-in. Nothing else from Google is used or stored. |
 
-Every door ends the same way: the api Lambda looks up the member and sets a
-signed session cookie (member, household, role, expiry; thirty days on a
-laptop, a day inside Telegram; `HttpOnly`, `Secure`, `SameSite=Lax`). From
-then on a CloudFront Function checks the cookie's signature and expiry at the
-edge on every request, before anything reaches S3 or the Lambda, and sends a
-browser without one to the login page. The login page, the Mini App entry and
-the static assets are the only public paths, and they contain no data. The
-api Lambda checks membership and role again on every call, so removing a
-member with `/members` locks them out at once, cookie or no cookie.
+Every door ends the same way: the api at `api.mypaisapp.com` sets a session
+cookie for its own host (thirty days on a laptop, a day inside Telegram;
+`HttpOnly`, `Secure`, `SameSite=Strict`), with the member's Cognito tokens
+behind it, access tokens of five minutes refreshed by the api. The console and
+the api are the same site, so the cookie travels with the console's calls and
+no token is ever visible to page scripts; CORS admits only that environment's
+console (and `localhost` in dev). The static shell is public and holds no
+data: every figure comes from the api, whose authorizer checks the session,
+the member's status and session epoch on every call, so removing or pausing a
+member locks them out at once.
 
 The pages, all read-only:
 
@@ -726,12 +739,14 @@ The pages, all read-only:
   holding's price; this month's Claude spend against the cap; alarms from
   the last seven days.
 
-There is no write path. The api Lambda has only GET routes, the app has no
-form that posts, and every change still goes through a card and a Confirm tap
-in the chat, where it is audited. Privacy mode hides pounds here too. The app
-lives on its own S3 bucket and CloudFront distribution per environment (the
-same free flat-rate plan as the tracker), with the api Lambda's Function URL
-as a second origin under `/api/*`, reachable only through CloudFront.
+There is no write path for the household's records. The api's data routes
+are GET only, the app has no form that posts, and every change still goes
+through a card and a Confirm tap in the chat, where it is audited. The one
+exception is the owner's security actions in the Admin center (sign out, pause,
+restore, unlink), behind a fresh check with a passkey or Google (MA-102).
+Privacy mode hides pounds here too. Each environment has its own S3 bucket and
+CloudFront distribution for the app (`console-dev` and `console`), and its own
+API Gateway HTTP API on a custom domain (`api-dev` and `api`), §18.
 
 ---
 
@@ -805,9 +820,9 @@ the old repository is retired when the new app covers it. What stays fixed:
 
 | | |
 | --- | --- |
-| **Read-only, everywhere** | No screen writes. Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row. The web app's api Lambda keeps GET routes only. |
+| **Read-only, everywhere** | No screen writes the household's records, except the owner's security actions in the Admin center (MA-102). Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The ISA of phase 1 and the household's property, deposits, policies, pensions and loans are rows of the same shapes. |
-| **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Telegram or Google to log in; no Cognito unless a separate login is ever wanted. |
+| **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Telegram, Google or a passkey to log in, through each environment's Cognito pool. |
 | **Two currencies** | GBP and INR side by side, from the ECB's daily rates, chosen per member; USD and EUR for the holdings that trade in them. |
 | **Numbers from code** | XIRR, schedules, net worth and the forecast from §6.6; Claude writes the words around them and answers "why is my net worth down this month?" from the same tools. |
 
@@ -841,10 +856,11 @@ maintains, so nothing is shown that cannot be changed from the chat.
 | Claude | **the `anthropic` SDK against the Anthropic API, key in SSM**; structured outputs; server-side web search and fetch; Message Batches; **PDF and image input for documents** |
 | **Documents** | **S3 + Claude extraction with citations; no OCR library** |
 | Charts | matplotlib (Agg) for PNG; **lightweight-charts in the web app** |
-| Telegram | Thin client on httpx; **rich messages with HTML fallback; Mini App `initData` validation (HMAC); Login Widget verification for the laptop** |
+| Telegram | Thin client on httpx; **rich messages with HTML fallback; `initData` and Login Widget verification in Cognito's custom-auth Lambdas** |
+| **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Telegram custom auth, Google, passkeys; five-minute access tokens** |
 | Runtime | Lambda container image, arm64 |
-| Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform, GitHub Actions with OIDC |
-| **Web app hosting** | **Its own S3 bucket and CloudFront distribution per environment; a CloudFront Function with KeyValueStore checks the session cookie at the edge; the `api` Lambda is a second origin under `/api/*`, reachable only through CloudFront** |
+| Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform only, GitHub Actions with OIDC; **dev and prod as two isolated copies in one account (§18)** |
+| **Web app hosting** | **S3 + CloudFront per environment at `console(-dev).mypaisapp.com`; API Gateway HTTP API at `api(-dev).mypaisapp.com`; scheduled Lambdas have no public endpoint** |
 | **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind the app's Activity and Audit pages** |
 
 ---
@@ -858,21 +874,27 @@ carry their source line; screenshots are deleted after extraction unless you
 say keep; privacy mode hides pounds in every card and in the Mini App; the
 Mini App serves nothing without a valid, recent `initData` signature.
 
-The web app adds: the Telegram Login payload is verified (HMAC keyed by the
-SHA-256 of the bot token, `auth_date` within five minutes) and a Google ID
-token is verified (RS256 signature against Google's JWKS, cached a day;
-issuer; audience equal to our OAuth client id; expiry; `email_verified`;
-the double-submit CSRF cookie Google's button sets) and mapped to a member
-by `sub`, never by address, before any cookie is set; Google's OAuth client
-id is configuration, not a secret, and no Google client secret exists
-because the ID-token flow needs none; the session cookie is signed, `HttpOnly`, `Secure`, `SameSite=Lax`,
-and checked at the CloudFront edge on every request; the signing secret
-lives in SSM and the CloudFront KeyValueStore, put there by a command, never
-by Terraform (the same reason the tracker's auth function is unmanaged), and
-rotating it logs everyone out; the api Lambda re-checks membership and role
-on every call and has no route that writes; its Function URL requires IAM
-auth and is reachable only through CloudFront; responses carry a strict
-Content-Security-Policy; the audit log is append-only and hash-chained. The
+The web app adds: identity is Cognito's, one pool per environment (§4.5). The
+Telegram Login payload and `initData` are verified in Cognito's custom-auth
+Lambdas (HMAC keyed by the bot token, compared in constant time, `auth_date`
+within five minutes, replay refused); Google comes through Cognito's Google
+provider and is mapped to a member through the identity linked to their
+Cognito user, never by address; passkeys are WebAuthn with a relying-party id
+fixed per environment before anyone registers. The session cookie is
+`HttpOnly`, `Secure`, `SameSite=Strict`, set by the api for its own host, with
+five-minute access tokens behind it; the api's authorizer checks the session,
+the member's status and session epoch on every call; tokens from one
+environment are refused by the other. CORS admits only that environment's
+console. The Admin center's owner actions need a fresh check within five
+minutes (MA-102). Responses carry a strict Content-Security-Policy; the audit
+log is append-only and hash-chained.
+
+The two environments share one AWS account and are kept apart by IAM: every
+Lambda role reaches only its own environment's resources; the developer's role
+works in dev and an explicit deny keeps it out of anything tagged `env=prod`;
+prod changes only through CI from `main`, after approval (§18). Secret values
+live only in SSM, set by hand; Terraform creates the parameters and ignores
+their values. The
 family should turn on Telegram's two-step verification, since a Telegram
 account is now the key to both the chat and the web app.
 
@@ -882,13 +904,13 @@ account is now the key to both the chat and the web app.
 
 | Line | Lean | Standard | Full |
 | --- | ---: | ---: | ---: |
-| AWS, including the web app, X-Ray and the dashboard | £0.30 | £0.40 | £0.50 |
+| AWS, both environments, including the web app, API Gateway, Cognito (free under 10,000 monthly users), X-Ray and the dashboards | £0.50 | £0.70 | £1 |
 | Claude: briefs, alerts, chat, cards, Saturday review | £7 | £12 | £21 |
 | Claude: sentiment scoring, via Batches | £1.50 | £2.50 | £2.50 |
 | Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Claude: web search (~60 a month at $10 per 1,000) | £0.50 | £0.50 | £1 |
 | Market data (EODHD All World EOD) | £0 | £16 | £16 |
-| **Total, one member** | **£9.50** | **£32** | **£42** |
+| **Total, one member** | **£9.70** | **£32** | **£42** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
 Two members on the standard setup: about £35. The Claude lines are paid by
@@ -913,7 +935,7 @@ since data feeds are shared but model calls are not.
 | Front end | Telegram rich messages + PNG charts + one read-only web app, as a Mini App in Telegram and in a laptop browser | Simple by default, technical on tap, interactive when wanted; the laptop gets the audit log and the agent's activity |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
-| Identity | Telegram user id in the chat, signed `initData` in the Mini App, the Telegram Login Widget or Sign in with Google in a laptop browser, invites by one-time link; Cognito only when the wealth tracker is stitched on | No passwords to build, phish or forget; one person, two proofs of who they are, the same member either way |
+| Identity | Amazon Cognito from day one, one user pool per environment: Telegram (custom auth over `initData` and the Login Widget), Google and passkeys linked to one user per member; invites by one-time link; replaces the earlier "Cognito only later" (MA-106, 24 Oct 2026) | No passwords; one identity however you arrive; sign-out, pause and MFA come built in; free at this scale |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 | Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
@@ -922,8 +944,10 @@ since data feeds are shared but model calls are not.
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
-| Web app auth | A signed session cookie checked by a CloudFront Function at the edge, issued after `initData`, the Login Widget or a Google ID token is verified; membership re-checked by the api Lambda on every call | Nothing is served to a stranger, not even the page shell; nothing new to administer |
-| Google sign-in | Google Identity Services directly, the ID token verified in the api Lambda, one Google account linked per member by a code typed into the chat; not Cognito | One script tag and one JWT check, no user pool, no hosted UI, no client secret; Google already enforces its own two-step verification; Cognito can federate to the same accounts later if the tracker needs it |
+| Web app auth | An `HttpOnly`, `SameSite=Strict` session cookie on the api's host with five-minute Cognito access tokens behind it; the static shell is public and holds no data; the api's authorizer checks session, status and epoch on every call | No token in page scripts; sign-out and pause take effect on the next request |
+| Google sign-in | Cognito's Google provider, one OAuth client per environment; a Google account linked to a member by a code typed into the chat | One identity per member across Telegram, Google and passkeys; the link is proven from the member's own phone |
+| Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate bots, Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
+| Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
 ## 17. Open questions
@@ -933,7 +957,126 @@ since data feeds are shared but model calls are not.
 - Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed); answered by the source-comparison report in the first weeks of phase 2, since it sits second in the London chain from day one.
 - Rich messages: confirm block types and limits against the official Bot API changelog before relying on tables.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
-- A Google OAuth client id per environment, created in the Google Cloud Console with the app's hostname as an authorised JavaScript origin; the consent screen needs only the basic profile and email scopes, so no Google verification review applies.
-- The Telegram Login Widget needs the app's domain set with `/setdomain` in BotFather; confirm the CloudFront default hostname is accepted (it is a plain hostname, so it should be), or whether a custom domain is wanted.
-- Whether the CloudFront free flat-rate plan covers a second distribution in the account; if not, the web app goes under a path on the tracker's distribution with its own cache behaviours.
-- For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and whether the old tracker's domain and distribution pass to the new app or are retired. Decisions for phase 9, not now.
+- A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
+- The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
+- Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
+- For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
+
+## 18. Environments, domains and delivery
+
+Arun's decisions, 24 Oct 2026 (MA-106): "I will be developing local, from day 1
+I need the auth to be fixed using AWS tech"; one AWS account with every
+component twice; dev seeded with synthetic data, prod a clean slate; everything
+on AWS through Terraform, read with the AWS MCP; prod deployed only by GitHub
+CI; `console-dev.mypaisapp.com` and `console.mypaisapp.com` for the web app.
+
+### 18.1 Two environments, one account
+
+One AWS account (`us-east-1`), every component twice. Names are
+`mypaisa-<env>-<part>` and every resource carries the tag `env`. Nothing is
+shared between the two except the account, the DNS zone and the certificate.
+
+| Part | dev | prod |
+| --- | --- | --- |
+| DynamoDB (registry, transactions, audit) | `mypaisa-dev-*`, synthetic data | `mypaisa-prod-*`, empty at launch; deletion protection and point-in-time recovery |
+| S3 (console, exports, imports) | `mypaisa-dev-*` | `mypaisa-prod-*`, versioned |
+| Lambdas, API, schedules | `mypaisa-dev-*`; the schedules are off unless switched on | `mypaisa-prod-*` |
+| Cognito user pool | `mypaisa-dev-users` | `mypaisa-prod-users` |
+| Secrets, SSM | `/mypaisa-agent/dev/...` | `/mypaisa-agent/prod/...` |
+| Telegram bot | its own dev bot | the household's bot |
+| Claude API key | its own workspace key, capped at £10 a month | its own workspace key, capped at £35 a month |
+| Google OAuth client | its own | its own |
+
+**Kept apart by IAM, not by trust.** Each Lambda's role names only its own
+environment's resources. The developer's role works in dev; an explicit deny
+keeps it out of anything tagged `env=prod`, so a slip on a laptop cannot touch
+the household's data. Tokens from one pool are refused by the other
+environment's api.
+
+**Local development** runs the code on the laptop against dev in AWS: the dev
+bot by long polling (no webhook needed), the console from `localhost` against
+`api-dev`, the dev Cognito pool for sign-in. There is no local copy of AWS.
+
+**Data.** Dev is seeded with synthetic data shaped on real Monzo funds (the
+names, ISINs and factsheets Arun supplies, never his balances) by a seed
+script that can wipe and reseed (MA-110). Prod starts empty and fills only
+through the app: the bot's guided flows, and for years of history the Excel
+importer (§18.5). No script writes to prod tables.
+
+### 18.2 Domains
+
+`mypaisapp.com` is registered in Route 53. The zone, the registration and the
+certificate (the apex and `*.mypaisapp.com`, in `us-east-1`) belong to the
+wealth tracker's Terraform (`wealth-tracker/infra/terraform/dns/`, its own
+state). MyPaisa looks them up by name and creates only its own six records; the
+apex keeps serving the old tracker until MA-97 hands the zone over and turns
+the apex into a redirect to the console.
+
+| Name | What | dev | prod |
+| --- | --- | --- | --- |
+| Console | S3 + CloudFront, the web app and the Mini App | `console-dev.mypaisapp.com` | `console.mypaisapp.com` |
+| API | API Gateway HTTP API custom domain: `/v1/...`, `/v1/admin/...`, `/telegram/webhook`, `/auth/telegram` | `api-dev.mypaisapp.com` | `api.mypaisapp.com` |
+| Sign-in | Cognito custom domain: Google's redirect, the hosted endpoints | `auth-dev.mypaisapp.com` | `auth.mypaisapp.com` |
+
+The scheduled Lambdas (the brief, the wrap, the refreshers) have no public
+address. The console and the api share the site `mypaisapp.com`, so the
+session cookie is `SameSite=Strict` and still travels with the console's calls.
+
+### 18.3 Identity
+
+§4.5 and §14 hold the detail. In short: one Cognito user pool per environment,
+Essentials plan; one user per member, with their Telegram id, Google account
+and passkeys linked to it; Telegram through custom-auth Lambda triggers that
+verify `initData` and the Login Widget; five-minute access tokens behind an
+`HttpOnly` cookie; sign-out everywhere and pause through Cognito and the
+member's session epoch (MA-102). Built in phase 1, so every later piece starts
+signed in (MA-109).
+
+### 18.4 Delivery
+
+**Terraform only.** `infra/modules/mypaisa` holds the whole stack once;
+`infra/dev` and `infra/prod` call it with their own settings and keep separate
+state (`mypaisa-agent/<env>/infra.tfstate` in the existing state bucket). A
+change is planned to a file, the plan is read, and that file is applied.
+Prod resources that hold data carry `prevent_destroy`. Secret values are put in
+SSM by hand; Terraform creates the parameters and ignores their values. The
+AWS MCP is for reading (describe, logs, metrics, costs) and never changes a
+resource (`.claude/rules/aws-changes.md`).
+
+**GitHub CI, as on smart-clearance** (MA-25, MA-107):
+
+| Stage | When | What |
+| --- | --- | --- |
+| Gates | every PR | ruff, pyright, pytest (AWS faked with moto), `terraform fmt` and `validate`, tflint, a security scan of the Terraform, gitleaks, pip-audit, the `jira-key` check |
+| Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
+| Build | merge to `main` | the Lambda packages built once and stored by digest; the same build goes to both environments |
+| Dev | after the build | apply dev, deploy, smoke tests against `api-dev` |
+| Prod | after dev passes and Arun approves in the GitHub `prod` environment | apply prod, deploy behind each Lambda's `live` alias, smoke tests, automatic rollback to the previous version on failure |
+| Drift | nightly | `terraform plan` for both environments; any difference is a message in the chat (MA-108) |
+
+CI reaches AWS through the account's GitHub OIDC provider with three roles:
+`ci-plan` (read only, any branch), `ci-dev-deploy` (`main` only) and
+`ci-prod-deploy` (`main` and the `prod` environment only). These roles, and
+the developer role, live in a small root of their own, `infra/bootstrap`,
+applied once from the laptop, since CI cannot assume a role that does not
+exist yet. Actions are pinned
+to commit SHAs, workflows hold `contents: read` unless a step needs more, and
+runs of the same workflow on the same branch never overlap.
+
+### 18.5 Hydrating prod: the Excel importer
+
+Prod starts empty, and years of past investments are needed for XIRR. They come
+in through one versioned Excel template (MA-111), sent to the bot as a file:
+
+1. The bot reads the workbook and checks it against the template's version:
+   sheets, columns, types, dates, currencies, known holdings.
+2. A dry run shows what would be added, what is already there (matched by a
+   fingerprint of each row, so sending the same file twice adds nothing) and
+   every row it refuses, with the reason.
+3. Confirm, with the second check (MA-102), writes the rows in batches, each
+   with its audit row, under one import id.
+4. Any import can be rolled back by its id.
+
+The same importer works in dev against the synthetic data, so it is tested
+before it ever touches prod. It is built in phase 9, after the wealth
+tracker's data is mapped (MA-105).

@@ -44,7 +44,7 @@ words. It holds no broker login and cannot trade.
 | The numbers | DynamoDB (one table) and S3 (parquet) | `ingest` and `engine` Lambdas |
 | The records | factsheets and screenshots read into the registry | `docs` Lambda, Claude reading PDFs and images |
 | The news | RSS from central banks and the financial press | `news` and `score` Lambdas |
-| The dashboard | one read-only web app: a Mini App inside Telegram, and on a laptop behind a Telegram or Google login, no password | its own S3 + CloudFront per environment, a cookie check at the edge, an `api` Lambda that can only read |
+| The dashboard | one read-only web app: a Mini App inside Telegram, and on a laptop at `console.mypaisapp.com`, signed in with Telegram, Google or a passkey, no password | its own S3 + CloudFront per environment, Cognito for sign-in, an `api` Lambda behind API Gateway that can only read |
 | The audit log | every change to the records: who, when, through what, before and after | `AuditEvent` rows in DynamoDB, hash-chained, written with the change; the Audit page and "what changed this week?" |
 | What the agent did | every run: its trigger, model calls, tokens, cost, tools and outcome; the schedule board; spend against the cap | `RunRecord` rows in DynamoDB behind the Activity page; CloudWatch, X-Ray and alarms to the chat |
 | The destination | this web app becomes MyPaisa, the household wealth tracker: assets of every kind, debts, budget, a forecast with XIRR, reports, in GBP or INR; read-only; every update through the bot | [gilipersonal/wealth-tracker](https://github.com/gilipersonal/wealth-tracker) is the screen reference until then; phase 9 in `PLAN.md`, later and not a priority |
@@ -88,10 +88,10 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 | --- | --- |
 | `src/mypaisa_agent/` | The Python package. `registry/` (instruments, positions, valuations, documents; the kind profiles), `data/` (one `PriceSource` contract and a plugin per feed: yfinance, Twelve Data, EODHD, issuer pages, FT, proxy, screenshot; the chain per kind chosen by configuration per environment, yfinance by default; ECB FX, calendars; input hygiene), `engine/` (indicators, pillars, flags, macro, the holder's cascade, confidence; ported from the Agentic Trading Desk with its self-tests as golden files), `cards/` (stance, holding profile, overlap review, bear vs bull, scenario), `docs/` (factsheet and screenshot extraction through Claude), `news/` and `events/` (RSS, dedupe, scoring; the calendar), `calls/` (the hash-chained ledger, grader, scorecard, calibration), `tools/` (one file per Claude tool), `agent.py` (the tool loop, model routing, caching, the debate), `telegram.py` (rich messages with HTML fallback, buttons, files, Mini App auth), `handlers/` (one entry point per Lambda: webhook, agent, ingest, engine, news, score, docs, api); `audit.py` (the hash-chained audit rows) and `runs.py` (the `RunRecord` per run). |
 | `playbooks/` | Prompt files loaded into the agent's context only when a task matches: `read-central-bank-statement`, `map-headline-to-holdings`, `write-stance`, `grade-stance`. Versioned with the code. |
-| `web/` | The read-only web app: static HTML with lightweight-charts in the MyPaisa DS v1 "Warm ledger" look, built from the one spec (Mini App and browser boards in the MyPaisa app v1 project in Claude Design; `docs/design/README.md`), plus the Audit and Activity pages; opened as a Mini App in Telegram and in a laptop browser; served from its own S3 + CloudFront with a cookie check at the edge. |
+| `web/` | The read-only web app: static HTML with lightweight-charts in the MyPaisa DS v1 "Warm ledger" look, built from the one spec (Mini App and browser boards in the MyPaisa app v1 project in Claude Design; `docs/design/README.md`), plus the Audit and Activity pages; opened as a Mini App in Telegram and in a laptop browser; served from its own S3 + CloudFront at `console-dev.mypaisapp.com` and `console.mypaisapp.com`. |
 | `tests/` | pytest: golden files for every signal, property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
-| `infra/terraform/` | Every AWS resource: the Lambdas and their image, the Scheduler rules, the DynamoDB table, the S3 bucket, SSM parameters, the IAM roles, the budget and the alarms; `envs/dev.tfvars`. |
-| `.github/workflows/` | `deploy.yml`: lint, typecheck, tests and `terraform plan` on every pull request; build, apply and deploy from `main` through OIDC. |
+| `infra/` | Every AWS resource, Terraform only: `modules/mypaisa` holds the stack once (the Lambdas and their image, API Gateway, Cognito, the Scheduler rules, DynamoDB, S3, CloudFront, the DNS records, SSM parameters, the IAM roles, the budget and the alarms); `dev/` and `prod/` call it with their own settings and state; `bootstrap/` makes the CI roles once. `ARCHITECTURE.md` §18. |
+| `.github/workflows/` | The gates and a plan for both environments on every pull request; from `main`, build once, deploy dev, then prod after approval; a nightly drift check; all through OIDC. |
 | `docs/` | The mark, "Watcher" (MA-103): `mark.svg` and `mark-dark.svg` for light and dark grounds, `mark-animated.svg` and `mark-animated-dark.svg` for this page (the intro plays once, and Reduce Motion shows the final frame), `mark-small.svg` for 32 px and below and the favicon, `mark-icon.svg` and `mark-1024.png` for the bot's Telegram picture (`/setuserpic` in BotFather), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the three design pages as source: the animated architecture, the user journeys, and the dashboard artboards. |
 | `Dockerfile` | One container image for every Lambda, arm64, on the AWS Python 3.14 base, since pandas and matplotlib exceed the zip limit. |
 
@@ -100,7 +100,7 @@ Today: the three documents above and `docs/mark.svg`. After phase 1, by `PLAN.md
 Every model call goes to the Anthropic API through the official Python SDK. The API key lives in SSM Parameter
 Store, is read once per cold start, and never appears in code, logs or chat. The key belongs to a workspace in the
 Claude Console organisation linked to the Max or Team plan, so the plan's monthly API credit pays for every call,
-and the workspace's spend limit hard-stops it. Model ids are set per environment in `infra/terraform/envs/*.tfvars`, since
+and the workspace's spend limit hard-stops it. Model ids are set per environment in `infra/dev` and `infra/prod`, since
 they move with Anthropic's releases; the first set is below.
 
 | Route | Model | Effort | What the model is asked for |
@@ -156,15 +156,15 @@ macOS or Linux. Nothing is installed globally except these tools.
 | uv | 0.12 or later | the package, its tests and tools (uv fetches Python 3.14 itself) | `brew install uv` |
 | Docker | recent, running | building the Lambda image locally | Docker Desktop, OrbStack or Colima |
 | AWS CLI | v2 | every cloud operation, with the `agent-toolkit` profile | `brew install awscli` |
-| Terraform | 1.9 or later | `infra/terraform/` only | `brew install terraform` |
+| Terraform | 1.9 or later | `infra/` only | `brew install terraform` |
 | GitHub CLI (`gh`) | recent | pull requests, reading the repository id for the OIDC trust | `brew install gh` |
 | jq | any | the scripts | `brew install jq` |
 
 You also need, in the AWS account `545595341442`: a profile that can assume the operator role (`agent-toolkit`)
 and the parameters in SSM listed under [Secrets](#secrets). The Anthropic API key comes from
 a workspace in the [Claude Console](https://platform.claude.com) organisation linked to your Max or Team plan, with
-a spend limit set on the workspace. The Telegram bot is made once
-with BotFather.
+a spend limit set on the workspace. The two Telegram bots, dev and the household's, are made
+with BotFather, and each environment has its own Google OAuth client (`PLAN.md`, phase 0).
 
 ## Set up from scratch
 
@@ -196,6 +196,9 @@ read -rs TOKEN && aws ssm put-parameter --name /mypaisa-agent/dev/telegram/bot_t
 openssl rand -hex 32 | aws ssm put-parameter --name /mypaisa-agent/dev/telegram/webhook_secret --type SecureString --value "$(cat)"
 ```
 
+Do the same for the household's bot under `/mypaisa-agent/prod/telegram/...`. Each environment has its own bot,
+so nothing typed in dev reaches the household.
+
 Your `chat_id` arrives with the first message you send the bot after the webhook is set (step 6): the deploy prints
 it from the logs, and you store it the same way under `.../telegram/chat_id`. Until it is stored, the bot answers
 no one.
@@ -206,35 +209,43 @@ On claude.ai, go to Settings → Billing → API credits and link a Claude Conso
 plan (you need 7 days on the plan; the link cannot be moved later without support, so pick the organisation you
 will build in). No payment method is needed: the plan's monthly API credit ($100 on Max 5x) pays for the calls. In
 that organisation create two workspaces, `mypaisa-prod` with a £35 spend limit and `mypaisa-dev` with £10, and a
-key named `mypaisa-agent-dev` in the dev workspace. Put it straight into SSM, as with the bot token:
+key in each, `mypaisa-agent-dev` and `mypaisa-agent-prod`. Put each straight into its own environment's path, as
+with the bot token:
 
 ```bash
 read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/dev/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
+read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/prod/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
 ```
 
 No model access request is needed; the key works immediately.
 
 ### 5. Terraform
 
-The state lives beside the wealth tracker's, under its own key. The OIDC role's trust policy is pinned to this
-repository's own numeric id, which the first apply reads from GitHub:
+The state lives beside the wealth tracker's, one key per environment. The CI roles' trust policies are pinned to
+this repository's own numeric id. They are made once from the laptop, since CI cannot assume a role that does not
+exist yet; after that, dev is applied from the laptop or by CI, and prod only by CI:
 
 ```bash
-cd infra/terraform
 export AWS_PROFILE=agent-toolkit
-terraform init
-terraform plan  -var-file=envs/dev.tfvars -var="github_repo_id=$(gh api repos/gilipersonal/mypaisa-agent --jq .id)" -out=dev.tfplan
-terraform apply dev.tfplan
+REPO_ID=$(gh api repos/gilipersonal/mypaisa-agent --jq .id)
+terraform -chdir=infra/bootstrap init && terraform -chdir=infra/bootstrap plan -var="github_repo_id=$REPO_ID" -out=boot.tfplan
+terraform -chdir=infra/bootstrap apply boot.tfplan
+terraform -chdir=infra/dev init && terraform -chdir=infra/dev plan -out=dev.tfplan
+terraform -chdir=infra/dev apply dev.tfplan
 ```
 
-Read the whole plan before applying it. The first apply creates the budget before anything that can spend.
+Read the whole plan before applying it. The first apply creates the budget before anything that can spend. Prod is
+applied by the release workflow after your approval in the GitHub `prod` environment (`ARCHITECTURE.md` §18.4).
 
 ### 6. The webhook and the first brief
 
 ```bash
-scripts/set-webhook.sh dev                    # setWebhook with the Function URL and the secret from SSM
+scripts/set-webhook.sh dev                    # setWebhook to https://api-dev.mypaisapp.com/telegram/webhook with the secret from SSM
 scripts/run.sh dev ingest && scripts/run.sh dev signals && scripts/run.sh dev brief
 ```
+
+To work on the bot from the laptop, `scripts/poll.sh` runs the dev bot by long polling against dev's tables. Telegram
+allows a webhook or polling, not both, so it removes the dev webhook first; `scripts/set-webhook.sh dev` puts it back.
 
 The brief arrives in the chat as a silent push. From then on the Scheduler runs it.
 
@@ -242,11 +253,11 @@ The brief arrives in the chat as a silent push. From then on the Scheduler runs 
 
 | Task | Command |
 | --- | --- |
-| Add or change a holding | In the chat: send a factsheet or a screenshot, or type it, then tap Confirm. `seed/positions.yaml` + `scripts/seed.sh dev` only for the first run |
+| Add or change a holding | In the chat: send a factsheet or a screenshot, or type it, then tap Confirm. In dev, `scripts/seed.sh dev --reset` wipes and reseeds the synthetic household; it refuses to run against prod |
 | Run one job now | `scripts/run.sh dev ingest` (also `engine`, `brief`, `wrap`, `news`, `score`, `review`, `grade`) |
 | Build the image as CI does | `docker build --platform linux/arm64 -t mypaisa-agent .` |
-| Tail a function's logs | `aws logs tail /aws/lambda/mypaisa-agent-dev-agent --follow` |
-| Set the webhook again after a URL change | `scripts/set-webhook.sh dev` |
+| Tail a function's logs | `aws logs tail /aws/lambda/mypaisa-dev-agent --follow` |
+| Set the dev webhook again after polling locally | `scripts/set-webhook.sh dev` |
 | See this month's spend | `scripts/cost.sh` (AWS Cost Explorer plus the Anthropic usage report by model, against the £50 cap) |
 | Grade every forecast and call whose horizon has passed | `scripts/run.sh dev grade` |
 
@@ -258,7 +269,9 @@ The gates run in CI on every pull request; run them before pushing:
 uv run ruff check . && uv run ruff format --check .
 uv run pyright
 uv run pytest --cov --cov-fail-under=90
-cd infra/terraform && terraform fmt -check && terraform validate
+terraform fmt -check -recursive infra
+for env in dev prod; do terraform -chdir=infra/$env validate; done
+tflint --recursive
 ```
 
 Live checks run on request only and say what they cost first: a brief against the live API
@@ -266,11 +279,11 @@ Live checks run on request only and say what they cost first: a brief against th
 
 ## Working on AWS
 
-Everything in the cloud is one set of resources in the wealth tracker's AWS account, made by Terraform in
-`infra/terraform/`, and operated with the AWS CLI and the scripts. The rules: every resource is Terraform, never
-made by hand; IAM is never edited in the console; plans are read in full before they are applied; no AWS key exists
-anywhere; every secret lives in SSM Parameter Store only; anything that adds cost is asked about first, with its
-price.
+Everything in the cloud is two sets of resources, dev and prod, in the wealth tracker's AWS account, made by
+Terraform in `infra/` and read with the AWS MCP and the CLI. The rules (`.claude/rules/aws-changes.md`): every
+resource is Terraform, never made by hand; the AWS MCP reads and never changes; IAM is never edited in the console;
+plans are read in full before they are applied; prod is applied only by CI; no AWS key exists anywhere; every secret
+lives in SSM Parameter Store only, put by hand; anything that adds cost is asked about first, with its price.
 
 ### The account
 
@@ -278,26 +291,32 @@ price.
 | --- | --- |
 | Account | `545595341442`, profile `agent-toolkit` |
 | Region | `us-east-1` |
-| Terraform state | `s3://wealth-tracker-tfstate`, key `mypaisa-agent/dev/infra.tfstate` |
-| Lambda | `webhook`, `agent`, `ingest`, `engine`, `news`, `score`, `docs`, one arm64 container image in ECR |
-| Function URL | on `webhook` only, auth `NONE`, protected by the Telegram secret token and the chat allowlist |
+| Terraform state | `s3://wealth-tracker-tfstate`, keys `mypaisa-agent/dev/infra.tfstate` and `mypaisa-agent/prod/infra.tfstate` |
+| Names | `mypaisa-<env>-<part>`, every resource tagged `env` |
+| Lambda | `webhook`, `agent`, `ingest`, `engine`, `news`, `score`, `docs`, `api` and the Cognito auth triggers, one arm64 container image in ECR, a `live` alias per function |
+| API Gateway | an HTTP API per environment on `api-dev.mypaisapp.com` and `api.mypaisapp.com`; `/telegram/webhook` protected by the Telegram secret token |
+| Cognito | a user pool per environment on `auth-dev.mypaisapp.com` and `auth.mypaisapp.com`: Telegram, Google, passkeys |
+| CloudFront + S3 | the web app on `console-dev.mypaisapp.com` and `console.mypaisapp.com` |
+| DNS | the `mypaisapp.com` zone and wildcard certificate belong to the wealth tracker's Terraform; MyPaisa adds six records |
 | EventBridge Scheduler | `07:00`, `07:15`, `21:00`, `21:15` weekdays; `23:30` daily; `08:00` Saturday; every 3 h for news; all `Europe/London` |
-| DynamoDB | one on-demand table, `mypaisa-agent-dev`, with TTL |
-| S3 | `mypaisa-agent-dev`: prices and FX as parquet, articles (90-day rule), charts (30-day rule) |
-| SSM Parameter Store | `/mypaisa-agent/dev/...`, SecureString, standard tier |
+| DynamoDB | on-demand tables per environment, with TTL; prod's with deletion protection and point-in-time recovery |
+| S3 | per environment: prices and FX as parquet, articles (90-day rule), charts (30-day rule), imports; prod's versioned |
+| SSM Parameter Store | `/mypaisa-agent/dev/...` and `/mypaisa-agent/prod/...`, SecureString, standard tier |
 | Claude | the Anthropic API from the `agent`, `docs` and `score` Lambdas; Opus 5.5, Sonnet 5.5, Haiku 5.5; key in SSM |
-| IAM | one execution role per function, scoped to its table, bucket and parameters; one OIDC role for CI |
+| IAM | one execution role per function and environment, scoped to its own table, bucket and parameters; three OIDC roles for CI; a developer role with an explicit deny on `env=prod` |
 | Monitoring | CloudWatch Logs (14 days), an error alarm per function, the 07:45 dead man's switch, all delivered to the chat |
-| Budget | AWS Budgets at £40 (alert) and £50 (disable the Scheduler rules) |
+| Budget | prod: AWS Budgets at £40 (alert) and £50 (disable the Scheduler rules); dev: capped at £10 |
 
 ### Access
 
-- **Operators** use the `agent-toolkit` profile. Terraform needs it; nothing else does once deployed.
-- **CI** assumes the OIDC role from the `dev` GitHub environment only. The trust policy's subject is
-  `repo:gilipersonal@325700199/mypaisa-agent@<repo_id>:environment:dev`; GitHub's immutable subject claims embed
-  both numeric ids, so the wealth tracker's policy cannot be copied. On `AccessDenied` from
-  `AssumeRoleWithWebIdentity`, read CloudTrail first: it records the exact subject presented.
-- The `dev` environment's deployment branch policy is what keeps deploys on `main`; the subject carries no branch.
+- **Operators** use the `agent-toolkit` profile through the developer role, which works in dev and is denied
+  anything tagged `env=prod`. Reading prod goes through the AWS MCP, read-only.
+- **CI** assumes one of three OIDC roles: `ci-plan` (read only, any pull request), `ci-dev-deploy` (`main` only) and
+  `ci-prod-deploy` (`main` and the `prod` GitHub environment only). The trust policies' subjects embed this
+  repository's numeric ids, e.g. `repo:gilipersonal@325700199/mypaisa-agent@<repo_id>:environment:prod`, so the
+  wealth tracker's policies cannot be copied. On `AccessDenied` from `AssumeRoleWithWebIdentity`, read CloudTrail
+  first: it records the exact subject presented.
+- The `prod` environment needs your approval and allows deploys from `main` only; the subject carries no branch.
 - Never create an IAM user or an access key for this project.
 
 ### Secrets
@@ -305,43 +324,44 @@ price.
 Terraform creates the parameter names and never holds a value. The values are put with the AWS CLI as in
 [Set up](#3-the-telegram-bot), read by each function once per cold start, and never logged.
 
+Each environment has its own set, under `/mypaisa-agent/dev/...` and `/mypaisa-agent/prod/...`:
+
 | Parameter | What it is |
 | --- | --- |
-| `/mypaisa-agent/dev/telegram/bot_token` | from BotFather |
-| `/mypaisa-agent/dev/telegram/webhook_secret` | random, sent by Telegram as `X-Telegram-Bot-Api-Secret-Token` |
-| `/mypaisa-agent/dev/telegram/chat_id` | the one chat the bot answers |
-| `/mypaisa-agent/dev/twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
-| `/mypaisa-agent/dev/anthropic/api_key` | the Anthropic API key from the `mypaisa-dev` workspace, which has its own spend limit |
-| `/mypaisa-agent/dev/eodhd/api_key` | EODHD, if chosen over the free sources |
+| `.../telegram/bot_token` | from BotFather, that environment's bot |
+| `.../telegram/webhook_secret` | random, sent by Telegram as `X-Telegram-Bot-Api-Secret-Token` |
+| `.../telegram/chat_id` | the one chat the bot answers |
+| `.../twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
+| `.../anthropic/api_key` | the Anthropic API key from that environment's workspace, which has its own spend limit |
+| `.../google/client_secret` | that environment's Google OAuth client, for Cognito's Google provider |
+| `.../eodhd/api_key` | EODHD, if chosen over the free sources |
 
 A secret-scanning step runs on every pull request.
 
 ### Releasing
 
-A merge to `main` builds the image, pushes it to ECR, applies Terraform and points every function at the new image.
-Roll back by re-applying with the previous image tag (every tag is a commit):
-
-```bash
-cd infra/terraform && terraform apply -var-file=envs/dev.tfvars -var="image_tag=<commit>"
-```
+A merge to `main` builds the image once and pushes it to ECR by digest, applies dev, deploys and runs the smoke
+tests against `api-dev`; then it waits for your approval in the GitHub `prod` environment, applies prod and moves
+each function's `live` alias to the new version. A failed smoke test moves the alias back on its own. To roll back
+by hand, re-run the release workflow for the previous commit; prod is never applied from a laptop.
 
 ### Logs and alarms
 
 Each function logs one JSON object a line with a correlation id per update or schedule run.
 
 ```bash
-aws logs tail /aws/lambda/mypaisa-agent-dev-agent --since 1h
-aws logs filter-log-events --log-group-name /aws/lambda/mypaisa-agent-dev-ingest --filter-pattern '{ $.level = "ERROR" }'
+aws logs tail /aws/lambda/mypaisa-dev-agent --since 1h
+aws logs filter-log-events --log-group-name /aws/lambda/mypaisa-dev-ingest --filter-pattern '{ $.level = "ERROR" }'
 ```
 
 A failed brief, an error burst or a missed schedule reaches the Telegram chat as a short message with the reason.
 
 ### Costs
 
-Under £1 a month on AWS at this traffic: Lambda, DynamoDB, Scheduler, the Function URL and SSM sit inside the
-always-free tiers; S3, logs and ECR are pence. Claude is £7 to £21 a month depending on the routing and how much
+Under £1 a month on AWS for both environments at this traffic: Lambda, DynamoDB, Scheduler, API Gateway, Cognito
+and SSM sit inside the free tiers; S3, CloudFront, logs and ECR are pence. Claude is £7 to £21 a month depending on the routing and how much
 you chat, sentiment scoring £1.50 to £2.50 through Batches, web search under £1, and EODHD £16 if chosen. Totals:
-about £9.50 lean, £32 standard, £42 full, against the £50 cap. `TECH_STACK.md` has the table for dev and prod.
+about £9.70 lean, £32 standard, £42 full, against the £50 cap. `TECH_STACK.md` has the table for dev and prod.
 
 ## How work is done here
 
