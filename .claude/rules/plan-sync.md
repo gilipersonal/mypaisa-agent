@@ -40,9 +40,9 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    the story until Arun settles it and all four records are changed to match;
    then clear it and say in the row's notes `Settled: <the question's words up
    to its first colon>` with the answer (a drawn `undrawn` item likewise gets
-   `Drawn: <the item>`). When the plan does settle it (ARCHITECTURE.md says so
-   plainly), change the board to match the plan instead, and say so the same
-   way.
+   `Drawn: <the item, as it was listed>`). When the plan does settle it
+   (ARCHITECTURE.md says so plainly), change the board to match the plan
+   instead, and name the disagreement and the plan's answer in the notes.
 7. **Claude Design is edited there, copied here.** Boards are drawn in Claude
    Design; the repo copy is refreshed by `/plan-sync` whenever an etag moves.
    The repo copy is what a PR reviews and what the check reads.

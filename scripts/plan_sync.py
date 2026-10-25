@@ -448,13 +448,13 @@ def start(trace: dict, key: str) -> int:
         for q in it["open"]:
             print(f"  open: {q}")
         print("  STOP: settle the open questions with Arun, change the boards, docs and Jira to match, then clear each from the trace"
-              " and say in the notes 'Settled: <its words up to the first colon>' with the answer.")
+              " and say in the notes 'Settled: <the question's words up to its first colon>' with the answer.")
         return 1
     if it.get("undrawn"):
         for q in it["undrawn"]:
             print(f"  undrawn: {q}")
         print("  STOP: draw these screens first (/design-first), or land the pending fix an item names; add their boards to the"
-              " row, then clear each item and say in the notes 'Drawn: <the item>'.")
+              " row, then clear each item and say in the notes 'Drawn: <the item, as it was listed>'.")
         return 1
     d = it.get("design")
     if it.get("ui") and d == "todo":
