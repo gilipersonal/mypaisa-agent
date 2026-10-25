@@ -100,9 +100,12 @@ past their bubble by design.)
 
 ## The pick
 
-Not yet made. Arun picks one option, a mix (for example 1b with 1c's tidy-away), or none of these (another
-round, as new files in the same projects).
+- Pick: **1b, Ask again, in pounds**, as drawn, with its own privacy rule (no amount and no rate on the card).
+- Date: 25 Oct 2026.
+- In Arun's words: asked "Which option for MA-156's currency correction should be built?", he chose "1b Ask again,
+  in pounds (Recommended)".
 
-- Pick:
-- Date:
-- In Arun's words:
+Before the build, 1b gets its remaining states drawn (listed above: the HTML fallback, a long holding name, two or
+more rupee holdings, the "$" that needs asking, pounds typed against a rupee holding, the screenshot path); they
+are the trace row's `undrawn` list, so `start MA-156` refuses until they are. The build itself also waits for
+phase 0 and 1 (MA-24's skeleton, MA-38's typed transactions, MA-44's ECB rates).

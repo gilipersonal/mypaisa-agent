@@ -384,7 +384,7 @@ holds (GBP); the position's currency is the one that counts here.
 | --- | --- |
 | "I put 200 into Balanced" | No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is" |
 | "I put £200 into Balanced" | Same currency: the card as in §4.2, then Confirm |
-| "I put ₹20,000 into Balanced" | Saves nothing yet. "Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way." Buttons: **Pounds that arrived** (type it, or send the platform's confirmation), **Use the ECB rate** (an estimate, marked so), **A rupee holding** (listed when there is one), **Cancel** |
+| "I put ₹20,000 into Balanced" | Saves nothing yet. "Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way." Then the guided flow's own amount question, asked again in the holding's currency: "How many pounds arrived?" Type them or send the platform's confirmation; **Use the ECB rate** is one tap with its figure on the button (an estimate, marked so, offered once the rates load); **A rupee holding** is named when there is one; **Cancel**. Confirm stays a separate tap (MA-156, option 1b, picked 25 Oct 2026) |
 | "1.5 lakh into my Nifty 50 index fund" (phase 13) | An INR holding, so ₹1,50,000 with no question; pounds typed against it get the same correction the other way |
 | "Which currency is Balanced in?" | "Pounds (GBP), from the factsheet you sent on 3 March" |
 
@@ -411,7 +411,9 @@ holds (GBP); the position's currency is the one that counts here.
   screenshot or statement it came from is its `document_id`.
 - **Every pair, both ways, every door.** The same check runs on a typed
   message, the guided flow, a screenshot, and a CAS or broker line (§22.2)
-  whose currency differs from the holding's. Privacy mode hides both amounts.
+  whose currency differs from the holding's. Privacy mode shows no amount and
+  no rate on the card, only words, currencies and dates (the rate with one
+  amount would give the other away); Show amounts reveals one card.
 - **Designed first.** The correction card, its buttons and the Confirm card
   with two currencies are drawn as `Currency check.dc.html` in Claude Design
   and put through design-first when MA-156 starts.
