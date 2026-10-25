@@ -143,7 +143,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
+      ]
     },
     {
       "key": "MA-22",
@@ -2383,7 +2386,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Google's client secret and Terraform state: Cognito's Google provider (aws_cognito_identity_provider) takes client_secret in provider_details, which has no write-only form, so Terraform would store it in state, against ARCHITECTURE 14 and MA-159 (no secret ever in state). Settle how it reaches Cognito: accept it in the encrypted state bucket as the one exception, or set it outside a Terraform resource."
+      ]
     },
     {
       "key": "MA-110",
@@ -3111,7 +3117,10 @@
           "board": "1c Telegram avatar"
         }
       ],
-      "notes": "Sets the household's prod bot picture from docs/mark-1024.png: the 1c Watcher mark picked on MA-103."
+      "notes": "Sets the household's prod bot picture from docs/mark-1024.png: the 1c Watcher mark picked on MA-103.",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
+      ]
     },
     {
       "key": "MA-143",
@@ -3505,7 +3514,8 @@
       "labels": [],
       "arch": [
         "14",
-        "18.1"
+        "18.1",
+        "18.4"
       ],
       "ui": false,
       "design": "none",

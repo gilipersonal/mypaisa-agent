@@ -1340,7 +1340,8 @@ signed in (MA-109).
 state (`mypaisa-agent/<env>/infra.tfstate` in the existing state bucket). A
 change is planned to a file, the plan is read, and that file is applied.
 Prod resources that hold data carry `prevent_destroy`. Secret values are put in
-SSM by hand; Terraform creates the parameters and ignores their values. The
+SSM by hand, after the first apply; Terraform creates each parameter with a
+write-only placeholder (`value_wo`, §14), so no value reaches its state. The
 AWS MCP is for reading (describe, logs, metrics, costs) and never changes a
 resource (`.claude/rules/aws-changes.md`).
 

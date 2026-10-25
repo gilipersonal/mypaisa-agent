@@ -1,0 +1,77 @@
+[
+  {
+    "id": "r1-B1",
+    "round": 1,
+    "finding": "ARCHITECTURE 18.4 and TECH_STACK's SSM row no longer say Terraform ignores the values; both say write-only placeholder",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "TECH_STACK.md",
+        "README.md",
+        "PLAN.md",
+        ".claude/rules/*.md",
+        "docs/design/*.html"
+      ],
+      "pattern": "ignores\\s+(their|its)\\s+values?|placeholder\\s+and\\s+`?ignore_changes",
+      "ignore_case": true,
+      "present": false
+    }
+  },
+  {
+    "id": "r1-B2",
+    "round": 1,
+    "finding": "MA-159's trace row cites 18.4, the delivery section that states the pattern",
+    "check": {
+      "type": "trace",
+      "key": "MA-159",
+      "field": "arch",
+      "contains": "18.4"
+    }
+  },
+  {
+    "id": "r1-B3",
+    "round": 1,
+    "finding": "the README's prerequisites ask for Terraform 1.11 or later, as write-only arguments need",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import re,sys; s=open('README.md').read(); m=re.search(r'\\| Terraform \\| ([0-9.]+) or later', s); sys.exit(0 if m and tuple(map(int,m.group(1).split('.')))>=(1,11) else 1)\""
+    }
+  },
+  {
+    "id": "r1-B4",
+    "round": 1,
+    "finding": "the README's set-up applies Terraform before any secret is put, so the apply makes each parameter first",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; s=open('README.md').read(); a=s.find('terraform -chdir=infra/dev apply'); b=s.find('aws ssm put-parameter'); sys.exit(0 if 0<=a<b else 1)\""
+    }
+  },
+  {
+    "id": "r1-B5",
+    "round": 1,
+    "finding": "the architecture page's phase 0 puts Terraform before the secrets",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,re; s=open('docs/design/architecture.html').read(); m=re.search(r'<b>Prerequisites\\.</b>(.*?)</li>', s, re.S); t=m.group(1) if m else ''; sys.exit(0 if 'Terraform' in t and t.find('Terraform')<t.find('SSM') else 1)\""
+    }
+  },
+  {
+    "id": "r1-B6",
+    "round": 1,
+    "finding": "who puts prod's values and how Google's secret reaches Cognito are open questions on MA-21, MA-142 and MA-109 (start refuses them)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; ok=all(any(s in q for q in d[k].get('open',[])) or not d[k].get('open') and d[k]['status']!='To Do' for k,s in (('MA-21','prod'),('MA-142','prod'),('MA-109','Google'))); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r1-B7",
+    "round": 1,
+    "finding": "Jira MA-20, MA-21, MA-22, MA-26, MA-142, MA-143 prescribe the write-only placeholder and depend on MA-26 for the SSM step",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-20, MA-21, MA-22, MA-26, MA-142, MA-143: no 'ignore_changes' or 'ignores its value'; the SSM step depends on MA-26; comments on MA-21, MA-142, MA-109 hold the open questions"
+    }
+  }
+]
