@@ -110,8 +110,9 @@ holdings, the "$" that needs asking, pounds typed against a rupee holding, the s
 review of PR #34, the ECB estimate's Confirm card with privacy on, the question card before the daily rates load (no
 estimate button), privacy on for planned boards 4 and 5, the Technical details fold with privacy on, what Cancel
 leaves on screen, the answer to "Which currency is Balanced in?" and the audit row with both amounts. They are the
-trace row's `undrawn` list, so `start MA-156` refuses until they are. The HTML fallback and technical mode were
-drawn for 1b only, after the pick, rather than for every option.
+trace row's `undrawn` list, so `start MA-156` refuses until they are. The HTML fallback is drawn for 1b only,
+after the pick, rather than for every option. When one is drawn, its board goes on the row and the notes say
+`Drawn: <the state>`.
 
 The build waits for MA-24's skeleton and MA-38's typed transactions (phase 0 and 1). The estimate button joins when
 MA-44 loads the daily ECB rates (phase 2); until then it is left out and the question is the same.

@@ -89,7 +89,7 @@
 
       <section class="dv-turn" id="b0" data-screen-label="Currency check: intro">
         <div class="dv-thd"><a class="dv-tid" href="#b0">MA-156</a><span class="dv-tname">Currency check: money in any currency, checked against the holding</span></div>
-        <p class="dv-intro">Arun, 24 Oct 2026: “If the holdings are in GBP and I try to invest INR to GBP holding, chat should be able to correct me.” A member can type money in any currency for any holding; the bot checks it against the holding’s own currency before anything reaches Confirm. Six boards from ARCHITECTURE.md §4.7 (with §4.1, §5.3 and §22.3), each in Telegram light and dark. Telegram draws the chat; MyPaisa owns the words, their order and which buttons appear. Design system: MyPaisa DS v1, Warm ledger. Illustrative figures throughout: ₹20,000, £176.10 and the Nifty 50 index fund are made up for these boards; the rate is the one illustrative rate every MyPaisa board uses, £1 = ₹112.50, the ECB reference rate of Friday 23 Oct (the ECB publishes none on Saturday 24 Oct). “You” is the owner.</p>
+        <p class="dv-intro">Arun, 24 Oct 2026: “If the holdings are in GBP and I try to invest INR to GBP holding, chat should be able to correct me.” A member can type money in any currency for any holding; the bot checks it against the holding’s own currency before anything reaches Confirm. Six boards from ARCHITECTURE.md §4.7 (with §4.1, §5.3 and §22.3), each in Telegram light and dark. Since the pick of 25 Oct 2026, boards 1 to 3 and 6 are superseded by option 1b (Currency check options.dc.html, MA-156) and kept as the starting point; boards 4 and 5 stay part of the spec with 1b. Telegram draws the chat; MyPaisa owns the words, their order and which buttons appear. Design system: MyPaisa DS v1, Warm ledger. Illustrative figures throughout: ₹20,000, £176.10 and the Nifty 50 index fund are made up for these boards; the rate is the one illustrative rate every MyPaisa board uses, £1 = ₹112.50, the ECB reference rate of Friday 23 Oct (the ECB publishes none on Saturday 24 Oct). “You” is the owner.</p>
         <div class="ngrid">
           <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
             <div class="ncard" data-screen-label="Note: {{ n.h }}">
@@ -213,8 +213,8 @@
                 { b: 'The one the platform shows', t: '(Position.ccy), read from the factsheet or screenshot when the holding was added and confirmed on that card, so it is never guessed again. A fund’s own base currency can differ; the share class held is the one that counts.' },
                 { b: 'Reading amounts is code:', t: '£ $ € ₹, GBP, USD, EUR, INR, pounds, rupees, Rs, lakh and crore. Claude only fills the fields when the wording is free; the figure is always the member’s own, echoed back for Confirm.' } ] },
               { h: 'A converted figure is never Claude’s', ps: [
-                { b: 'Pounds that arrived', t: 'records the member’s own figure and keeps the rupees and the rate they imply beside it.' },
-                { b: 'Use the ECB rate', t: 'is the engine’s conversion at the ECB reference rate for the day (§5.3), with the rate and its date on the card, marked an estimate until a statement, a screenshot or the next valuation confirms it.' } ] },
+                { b: 'The pounds that arrived,', t: 'typed in answer to option 1b’s “How many pounds arrived?” or read from the screenshot, are the member’s own figure, with the rupees and the rate they imply kept beside it.' },
+                { b: 'The ECB estimate', t: 'is the engine’s conversion at the ECB reference rate for the day (§5.3), one tap on 1b’s question with its figure on the button, then the rate and its date on the card, marked an estimate until a statement, a screenshot or the next valuation confirms it.' } ] },
               { h: 'Stored in the holding’s currency, the original kept', ps: [
                 { b: 'The record:', t: 'amount and ccy are the holding’s; orig_amount, orig_ccy, fx_rate, fx_source and fx_date keep what was typed and how it became the recorded figure. The audit row shows both.' },
                 { b: 'Every door, both ways:', t: 'a typed message, the guided flow, a screenshot, a CAS or broker line. Pounds typed against a rupee holding get the same correction the other way. The bot records money already moved; it cannot trade.' } ] }
@@ -241,15 +241,15 @@
                   ['The rate’s own date:', 'at a weekend or on a bank holiday, the last published rate and its date: here Friday 23 Oct’s, on Saturday 24 Oct.'],
                   ['Shown once the daily rates load', '(MA-44, phase 2); until then the button is left out and the bot asks for the pounds that arrived. Edit goes back to the four ways on.'] ] })
               ] },
-              { id: '4', anchor: 'b4', name: B4, st: 'Planned.', plan: 'Put through design-first\'s options round when the story starts.', intro: 'You type “I put 200 into Balanced”. No currency is named, so the holding’s is assumed and the Confirm card says so in words. Illustrative figures.', steps: [
+              { id: '4', anchor: 'b4', name: B4, st: 'Picked.', plan: 'Part of the spec with option 1b (Currency check options.dc.html, 25 Oct 2026, MA-156).', intro: 'You type “I put 200 into Balanced”. No currency is named, so the holding’s is assumed and the Confirm card says so in words. Illustrative figures.', steps: [
                 S(B4, { cap: '4 · 12:10 · no currency named', clock: '12:10', msgs: [today, typed200, conf200], name: 'No currency named', notes: [
                   ['No question:', 'the holding’s currency is assumed and the card says so on a line of its own, “£200, in pounds as Balanced is”.'],
-                  ['Edit', 'changes the amount or the currency; another currency gets the correction on board 1.'],
+                  ['Edit', 'changes the amount or the currency; another currency gets option 1b’s question, in pounds (1b·1 in Currency check options).'],
                   ['Typing £200', 'gives the same card without that line (§4.2).'] ] })
               ] },
-              { id: '5', anchor: 'b5', name: B5, st: 'Planned.', plan: 'Put through design-first\'s options round when the story starts.', intro: 'After A rupee holding: the card lists your holdings in rupees (one here, an illustrative Nifty 50 index fund in an MF folio, phase 13) and confirms ₹20,000 into it, in rupees, with Indian digit grouping. Illustrative figures.', steps: [
+              { id: '5', anchor: 'b5', name: B5, st: 'Picked.', plan: 'Part of the spec with option 1b (Currency check options.dc.html, 25 Oct 2026, MA-156).', intro: 'After Nifty 50 instead on option 1b’s question: the card names your holding in rupees (one here, an illustrative Nifty 50 index fund in an MF folio, phase 13) and confirms ₹20,000 into it, in rupees, with Indian digit grouping. Illustrative figures.', steps: [
                 S(B5, { cap: '5 · 12:11 · a rupee holding instead', clock: '12:11', msgs: [today, typed, confR], name: 'A rupee holding instead', notes: [
-                  ['Your holdings in rupees:', 'one here, so the card confirms straight into it. With two or more it asks which first, a button each. Back returns to the four ways on.'],
+                  ['Your holdings in rupees:', 'one here, so the question’s button names it and the card confirms straight into it. With two or more the button reads A rupee holding and the bot asks which first, a button each. Back returns to 1b’s question, in pounds (1b·1 in Currency check options).'],
                   ['Indian digit grouping for rupees:', '₹1,50,000, not ₹150,000; “1.5 lakh” typed reads as ₹1,50,000 with no question. A rupee holding’s value shows its pound value beside it (§22.3).'],
                   ['In rupees, as the fund is.', 'Pounds typed against a rupee holding get the same correction the other way.'] ] })
               ] },
