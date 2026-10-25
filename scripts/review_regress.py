@@ -13,9 +13,10 @@ decision the review must keep), each with a check that passes while the fix hold
   (`present: false`) the regex `pattern`, matched across line breaks (`\\s` spans them), case-insensitively when
   `ignore_case` is true. A missing file, or a glob that matches nothing, is a failure, never a pass.
 - `trace`: a row of docs/trace.json (`key`) whose `field` equals `value`, or contains `contains`, or lists a board
-  named `board`. With `or_drawn: "<file>"`, a `contains` check on the `undrawn` list also passes once the screens
-  are drawn: the list is gone and the row is `planned` or `picked` with a board in that file (a to-do item that is
-  done is not lost, and clearing the list without the boards still fails).
+  named `board`. A `contains` check on the `undrawn` list may add `or_drawn: {"file": "<file>", "boards": [...]}`: it
+  also passes once the screen is drawn, that is, the row is `planned` or `picked` and lists every named board of
+  that file (a to-do item that is done is not lost; dropping the board that draws it still fails, whatever else
+  stays on the row). It applies to nothing else.
 - `manual`: a check only a person or a tool outside the repo can make (Jira text, a board); it is printed for the
   reviewers, who must look at it.
 
@@ -65,10 +66,11 @@ def run_check(c: dict) -> tuple[bool | None, str]:
         if "board" in c:
             return any(b.get("board") == c["board"] for b in row.get("boards", [])), f"{c['key']} lists board {c['board']!r}"
         val = row.get(c["field"])
-        drawn_in = c.get("or_drawn")
-        if (drawn_in and not row.get("undrawn") and row.get("design") in ("planned", "picked")
-                and any(b.get("file") == drawn_in for b in row.get("boards", []))):
-            return True, f"{c['key']} drawn in {drawn_in} (its undrawn list is cleared)"
+        drawn = c.get("or_drawn")
+        if drawn and c.get("field") == "undrawn" and "contains" in c and row.get("design") in ("planned", "picked"):
+            have = {(b.get("file"), b.get("board")) for b in row.get("boards", [])}
+            if drawn["boards"] and all((drawn["file"], n) in have for n in drawn["boards"]):
+                return True, f"{c['key']} drawn: {', '.join(drawn['boards'])} ({drawn['file']})"
         if "value" in c:
             return val == c["value"], f"{c['key']}.{c['field']} == {c['value']!r}"
         return any(c["contains"] in str(x) for x in (val or [])) if isinstance(val, list) else c["contains"] in str(val), \

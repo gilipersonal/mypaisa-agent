@@ -1,0 +1,67 @@
+[
+  {
+    "id": "r1-B1",
+    "round": 1,
+    "finding": "or_drawn passes only when the boards that draw the screen are on the row, and only on a contains check of undrawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json; sys.path.insert(0,'scripts'); import review_regress as rr; t=json.load(open('docs/trace.json')); r=[i for i in t['items'] if i['key']=='MA-137'][0]; c={'type':'trace','key':'MA-137','field':'undrawn','contains':'digest','or_drawn':{'file':'Admin center 3.dc.html','boards':['Telegram · Daily digest']}}; a=rr.run_check(c)[0]; import pathlib,tempfile,shutil; sys.exit(0 if a and not rr.run_check(dict(c,or_drawn={'file':'Admin center 3.dc.html','boards':['Telegram · No such board']}))[0] and not rr.run_check({'type':'trace','key':'MA-137','field':'epic','value':'MA-X','or_drawn':{'file':'Admin center 3.dc.html','boards':['Telegram · Daily digest']}})[0] else 1)\""
+    }
+  },
+  {
+    "id": "r1-B2",
+    "round": 1,
+    "finding": "MA-102's open question names the Cognito conflict: a paused (disabled) user cannot sign in at all",
+    "check": {
+      "type": "trace",
+      "key": "MA-102",
+      "field": "open",
+      "contains": "AdminDisableUser"
+    }
+  },
+  {
+    "id": "r1-B3",
+    "round": 1,
+    "finding": "MA-99's price is settled by the plan (59.99) and its open question cleared",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-99'][0]; sys.exit(0 if not r.get('open') and '59.99' in r['notes'] else 1)\""
+    }
+  },
+  {
+    "id": "r1-B4",
+    "round": 1,
+    "finding": "the open questions of MA-57, MA-99 and MA-102 are on their Jira stories (rule 6)",
+    "check": {
+      "type": "manual",
+      "what": "Jira comments: MA-102 (sign-in after a pause, AdminDisableUser), MA-99 (settled at 59.99), MA-57 and MA-59 (stance gate settled by 11, boards annotated)"
+    }
+  },
+  {
+    "id": "r1-B5",
+    "round": 1,
+    "finding": "MA-116, MA-77, MA-95, MA-96 and MA-97 list the acceptance states no board draws yet",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-116':'below what is already spent','MA-77':'Asha gets','MA-95':'privacy on','MA-96':'privacy on','MA-97':'privacy on'}; ok=all(n in ' | '.join(d[k].get('undrawn',[])) or (d[k]['design'] in ('planned','picked') and not d[k].get('undrawn')) and d[k]['status']!='To Do' for k,n in need.items()); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r1-B6",
+    "round": 1,
+    "finding": "each board defect round 1 found and MA-160 has not yet applied is in its story's undrawn list, so start refuses the story",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; done=d['MA-160']['status']=='Done'; ok=done or all(any('MA-160' in u for u in d[k].get('undrawn',[])) for k in ('MA-32','MA-37','MA-63','MA-124','MA-137','MA-77')); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r1-B7",
+    "round": 1,
+    "finding": "the stance-bearing kit and chat boards say they show the cards after the 8-week gate, and MA-57's open question is cleared (settled by ARCHITECTURE 11)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys,re; a=open('docs/design/ds-v1/Telegram kit.dc.html').read(); b=open('docs/design/app-v1/Telegram chats.dc.html').read(); n=lambda s: len(re.findall(r'after the 8-week gate', s)); r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-57'][0]; sys.exit(0 if n(a)>=3 and n(b)>=2 and not r.get('open') else 1)\""
+    }
+  }
+]

@@ -55,6 +55,7 @@ Added the day each was learned; reviewers check every item.
    explainer pages (PR #32: one admin; read only except for admin).
 6. **A fixed-list check on a to-do list passes once the item is done.** "Still
    listed as undrawn" broke the moment MA-158 drew the screens; the check is
-   "listed, or drawn in the file that drew it" (`or_drawn: "<file>"`), so the
-   next story's work does not read as a regression, and clearing the list
-   without the boards still does (MA-158).
+   "listed, or drawn on the boards that draw it" (`or_drawn` names the file
+   and the boards), so the next story's work does not read as a regression,
+   and dropping the board that draws the screen still does, whatever else
+   stays on the row (MA-158, PR #35 round 1).

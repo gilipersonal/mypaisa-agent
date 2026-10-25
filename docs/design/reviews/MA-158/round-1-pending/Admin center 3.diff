@@ -1,0 +1,79 @@
+--- orig/Admin center 3.dc.html	2026-10-25 12:00:07
++++ edit/Admin center 3.dc.html	2026-10-25 12:16:29
+@@ -570,7 +570,7 @@
+                                         </div>
+                                       </sc-for>
+                                     </div>
+-                                    <div class="mp-foot mp-ink3" style="margin-top: 10px">Critical alerts ring in Telegram and may break quiet hours; the rest arrive silently. Email carries system alerts only, never a holding's value.</div>
++                                    <div class="mp-foot mp-ink3" style="margin-top: 10px">Critical alerts ring in Telegram and may break quiet hours; the rest arrive silently. Email carries system alerts only, never a holding's value, unless you turn that on in Change the routing.</div>
+                                     <div class="btnrow"><button class="mp-btn mp-btn-small mp-btn-tinted"><span class="ms ms-s">alt_route</span>Change the routing</button></div>
+                                   </div>
+                                 </div>
+@@ -672,6 +672,7 @@
+                                         <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="3">
+                                           <div class="mc" role="cell">
+                                             <sc-if value="{{ c.lock }}" hint-placeholder-val="{{ false }}"><span class="lockv"><span class="ms">lock</span>{{ c.t }}</span></sc-if>
++                                            <sc-if value="{{ c.isTxt }}" hint-placeholder-val="{{ false }}"><span class="mp-sub mp-w6">{{ c.t }}</span><span class="mp-foot mp-ink3">{{ c.s }}</span></sc-if>
+                                             <sc-if value="{{ c.isSeg }}" hint-placeholder-val="{{ true }}"><div class="mp-seg" role="group" aria-label="{{ c.aria }}"><sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="3"><button class="mp-seg-i {{ o.cls }}" aria-pressed="{{ o.pr }}">{{ o.t }}</button></sc-for></div></sc-if>
+                                             <sc-if value="{{ c.hasWas }}" hint-placeholder-val="{{ false }}"><span class="was">{{ c.was }}</span></sc-if>
+                                           </div>
+@@ -997,8 +998,9 @@
+                 ['shield', 'Above £75 is the AWS Budgets backstop\'s, made by Terraform: raising that is a pull request.'], TOLD ]) ], ok: 'Save 1 change' }),
+             route: D({ w: 'dx', icon: 'alt_route', title: 'Change where alerts go', sub: 'Each kind of alert, to each channel. Critical rings in Telegram and may break quiet hours; the rest arrive silently.', parts: [
+               { isMx: true, rows: (() => {
+-                const S3 = (on, aria, was) => ({ lock: false, isSeg: true, aria: aria, hasWas: !!was, was: was || '', t: '', opts: ['All', 'Critical', 'Off'].map((t) => ({ t: t, cls: t === on ? 'on' : '', pr: t === on ? 'true' : 'false' })) });
+-                const LK = (t) => ({ lock: true, isSeg: false, t: t, aria: '', opts: [], hasWas: false, was: '' });
++                const S3 = (on, aria, was) => ({ lock: false, isTxt: false, s: '', isSeg: true, aria: aria, hasWas: !!was, was: was || '', t: '', opts: ['All', 'Critical', 'Off'].map((t) => ({ t: t, cls: t === on ? 'on' : '', pr: t === on ? 'true' : 'false' })) });
++                const LK = (t) => ({ lock: true, isTxt: false, s: '', isSeg: false, t: t, aria: '', opts: [], hasWas: false, was: '' });
++                const TX = (t, sub) => ({ lock: false, isTxt: true, s: sub, isSeg: false, t: t, aria: '', opts: [], hasWas: false, was: '' });
+                 const R = (t, s, tg, em, was) => ({ t: t, s: s, cells: [LK('Always'), S3(tg, t + ', Telegram'), S3(em, t + ', email', was)] });
+                 return [
+                   R('Claude spend', 'Critical at 100%', 'All', 'Critical', 'Was All'),
+@@ -1007,8 +1009,9 @@
+                   R('An approval waiting', 'Never critical', 'All', 'Critical'),
+                   R('A data feed stale', 'Never critical', 'All', 'Off'),
+                   R('Failed work', 'Never critical', 'All', 'Off'),
+-                  { t: 'Holding alerts', s: 'Each member\'s own, as today', cells: [LK('Their own'), LK('Their own'), LK('Off')] } ]; })() },
+-              P.note('The Alerts page and its badge keep every system alert, so the web app column is fixed. Email carries system alerts only, never a holding\'s value.'),
++                  { t: 'Holding alerts', s: 'Each member\'s own, as today', cells: [LK('Their own'), LK('Their own'), TX('Off', 'Set by the switch below')] } ]; })() },
++              P.rows('', [{ k: 'Include holding values in email', d: 'Off, as it starts. Turned on, the holding alerts you get in Telegram are emailed to you too, with the holding\'s value in them. Telegram, the web app and members\' own alerts do not change.', c: 'sw', on: false }]),
++              P.note('The Alerts page and its badge keep every system alert, so the web app column is fixed. Email carries system alerts only, never a holding\'s value, unless you turn on Include holding values in email.'),
+               P.cons([
+                 ['mail', 'Email would carry only the 100% steps and the forecast over the cap; the steps below 100% still reach the web app and Telegram.'], TOLD ]) ], ok: 'Save 2 changes' }),
+             quiet: D({ w: 'dw', icon: 'bedtime', title: 'Change quiet hours, cooldowns and the digest', parts: [
+@@ -1164,7 +1167,7 @@
+               notes: [n('Each action names its flag,', 'so the builder and the Alerts page use the same words: aws.pause.dev.schedules, aws.pause.dev, aws.pause.prod.background.'), n('£75 is the top,', 'because the AWS Budgets backstop is Terraform\'s; the dialog says raising it is a pull request.')] }, 'spend', { dlg: dlgs.aws, chip: chipOk('08:33') }),
+             G({ id: 'al3', tag: 'AL.3', name: 'Browser · Admin · Alerts · Change the routing', keys: 'MA-137', arch: 'ARCHITECTURE §15.2',
+               desc: 'The routing matrix as an editor, each kind of alert by channel. Email for Claude and AWS spend moves from All to Critical only; the web column is fixed, and holding alerts stay each member\'s own.',
+-              notes: [n('Three words per cell,', 'All, Critical and Off as segments, the choice lifted; a changed cell says what it was. Never a coloured dot.'), n('Locked cells say why with a lock:', 'the Alerts page keeps every system alert, and holding alerts belong to members.')] }, 'alerts', { dlg: dlgs.route, chip: chipOk('08:33') }),
++              notes: [n('Three words per cell,', 'All, Critical and Off as segments, the choice lifted; a changed cell says what it was. Never a coloured dot.'), n('Locked cells say why with a lock:', 'the Alerts page keeps every system alert, and holding alerts belong to members.'), n('Holding values stay out of email unless you choose:', 'Include holding values in email is off as it starts and can be turned on here (ARCHITECTURE §15.2); like any change it needs the fresh check, writes an audit row and is told in Telegram (g2).')] }, 'alerts', { dlg: dlgs.route, chip: chipOk('08:33') }),
+             G({ id: 'al4', tag: 'AL.4', name: 'Browser · Admin · Alerts · Change quiet hours, cooldowns and the digest', keys: 'MA-137', arch: 'ARCHITECTURE §15.2',
+               desc: 'Quiet hours per channel with critical breaking through, the cooldowns, and the daily digest option and its time. Telegram\'s quiet hours now start at 21:30 instead of 22:00.',
+               notes: [n('The web app has no quiet hours:', 'it makes no sound, and the badge waits.'), n('Failed work\'s cooldown is fixed:', 'once per queue until it is replayed.'), n('22:00, 6 hours and 19:00 are the designer\'s,', 'to settle in the options round.')] }, 'alerts', { dlg: dlgs.quiet, chip: chipOk('08:33') }),
+@@ -1246,7 +1249,7 @@
+           const gQuiet = M({ time: '08:46', text: ['*Quiet hours changed* · Telegram', 'They start at 21:30 instead of 22:00, and end at 07:00. A critical alert still breaks through.'] });
+           const gQueue = M({ time: '08:47', text: ['*Queue tries changed* · the work queue', '5 → 6 tries before its dead-letter queue. The waits stay 30 seconds to 30 minutes.', '_Each change is an audit row. These messages arrive silently._'] });
+           /* h · the daily digest (MA-137, MA-130) */
+-          const dig5 = M({ time: '19:00', btns: [[AC]], text: ['*Daily digest* · Sat 31 Oct', '^Non-urgent alerts since yesterday at 19:00, sent once, silently', '*Data feed stale* · Physical Silver. yfinance was late; failed over to FT at 21:40. Closed.', '*Failed work* · prod. 1 job, replayed by you at 08:30; it ran.', '*Claude:* prod $41.20 of $160, 26%; dev $6.10 of $40. Renews Sun 1 Nov.', '*AWS and others:* £3 of £50, 6%, read at 06:00.', '_Nothing needs you. Critical alerts never wait for the digest._'] });
++          const dig5 = M({ time: '19:00', btns: [[AC]], text: ['*Daily digest* · Sat 31 Oct', '^Non-urgent alerts since yesterday at 19:00, sent once, silently', '*Data feed stale* · Physical Silver. yfinance was late; failed over to FT at 21:40. Closed.', '*Failed work* · prod. 3 jobs, replayed by you at 08:30: 2 ran, 1 failed again (Physical Silver, back in the dead-letter queue at 09:24).', '*Claude:* prod $41.20 of $160, 26%; dev $6.10 of $40. Renews Sun 1 Nov.', '*AWS and others:* £3 of £50, 6%, read at 06:00.', '_Nothing needs you. Critical alerts never wait for the digest._'] });
+           const dig12 = M({ time: '19:00', btns: [['cr‑26 · Promote v8?', 'The ISIN question'], [AC]], text: ['*Daily digest* · Sat 31 Oct', '*Waiting for you (2)*', '1. Promote the risk model v8 over v7? From the grader and tuner; expires Sat 7 Nov.', '2. Which is the Monzo Balanced fund\'s ISIN? From the data steward.', '*Fixed on its own (3)*', 'Physical Silver failed over to FT; a calibration map rolled back; the Forecaster\'s run retried.', '*Alerts (2):* Physical Silver\'s stale feed, closed; 1 job replayed, it ran.', '*Closed today:* inc‑7, the news scout, at 08:38.', '*Spend:* Claude prod $41.20 of $160; AWS and others £3 of £50.'] });
+           /* i · the AWS cap's steps (MA-137), a made-up runaway November */
+           const a50 = M({ time: '06:02', btns: [[AC]], text: ['*AWS and others: 50% of £50*', '£25.10 this month, to Sun 22 Nov: AWS\'s figures lag by up to a day.', '*Where:* dev £18.40, prod £6.70; most of it Lambda in dev.', 'Nothing pauses yet. At 80%, £40, dev\'s schedules pause.', '_No flag set. Silent._'] });
+@@ -1297,7 +1300,7 @@
+           const yFail = M({ time: '09:36', btns: [[AC]], text: ['*A fresh check failed* in the Admin center', 'Google signed in s•••@gmail.com, which is not your account. Chrome on MacBook Air · London, UK · 09:36.', '*Nothing was changed.*', '_If this was not you, sign out everywhere from the Admin center, and check your Google account._'] });
+ 
+           const journeys = J([
+-            { tag: 'e', anchor: 'te', name: 'Telegram · Ceiling moved', keys: 'MA-116', arch: 'ARCHITECTURE §15.1, §15.2', intro: 'The message to the owner after a ceiling change in the Admin center: two separate flows on Saturday 31 Oct. In e1 prod moves down to $50, below what is spent (Admin center 2, S.2); in e2 the hard limit is typed to $200 and prod moves past the credit with the explicit yes (S.5, S.6). Changes arrive silently.', steps: [
++            { tag: 'e', anchor: 'te', name: 'Telegram · Ceiling moved', keys: 'MA-116', arch: 'ARCHITECTURE §15.1, §15.2', intro: 'The message to the owner after a ceiling change in the Admin center: two separate flows on Saturday 31 Oct. In e1 prod moves down to $50, just above the $41.20 spent, so 82% of it is used (Admin center 2, S.2); in e2 the hard limit is typed to $200 and prod moves past the credit with the explicit yes (S.5, S.6). Changes arrive silently.', steps: [
+               S({ cap: 'e1 · Sat 08:30 · moved down', clock: '08:30', msgs: [today, ceilDown], note: 'What moved, by whom, how they were checked and when it takes effect; then where that leaves the bot, the next thresholds and the shares, all from the meter.' }),
+               S({ cap: 'e2 · Sat 08:36 · past the credit', clock: '08:36', msgs: [today, hardMsg, pastMsg], note: 'Typing the hard limit is its own message, and says the ceiling did not move. Past the credit, the message names the yes and the card.' }) ] },
+             { tag: 'f', anchor: 'tf', name: 'Telegram · A member asks about spend', keys: 'MA-116', arch: 'ARCHITECTURE §15.1, §4.5', intro: 'Asha, a member, asks the chat what Claude has cost (get_spend), then asks it to raise the limit. She gets the meter\'s figures, her own share among them, and a plain refusal: only the owner changes the ceiling, in the Admin center.', steps: [
+@@ -1305,7 +1308,7 @@
+               S({ who: ASHA, cap: 'f2 · Sat 12:06 · and asks to change it', clock: '12:06', msgs: [today, aQ, aA, aQ2, aNo], note: 'A plain refusal that says who can and where, and that nothing changed. No button: there is nothing a member can do here.' }) ] },
+             { tag: 'g', anchor: 'tg', name: 'Telegram · A cap, a threshold or a route changed', keys: 'MA-137', arch: 'ARCHITECTURE §15.2, §21.2', intro: 'The messages to the owner after the changes drawn on S.8, S.9, AL.3, AL.4 and AL.5, each a separate flow on Saturday 31 Oct morning. Every change to a cap, a step, an action or a route says what moved, by whom, how checked, and what it means now. Silent.', steps: [
+               S({ cap: 'g1 · Sat 08:41 · a step and a cap', clock: '08:41', msgs: [today, gSteps, gCap], note: 'A threshold change says the new dollar figure; a cap change lists its new steps and what each does, and that no flag is set.' }),
+-              S({ cap: 'g2 · Sat 08:47 · a route, quiet hours, a queue', clock: '08:47', msgs: [today, gRoute, gQuiet, gQueue], note: 'A route change says what email now carries and what still reaches the web app and the chat. Quiet hours and queue tries say the before and after.' }) ] },
++              S({ cap: 'g2 · Sat 08:47 · a route, quiet hours, a queue', clock: '08:47', msgs: [today, gRoute, gQuiet, gQueue], note: 'A route change says what email now carries and what still reaches the web app and the chat. Turning on holding values in email (AL.3, off as it starts) is said the same way, naming what email will now carry. Quiet hours and queue tries say the before and after.' }) ] },
+             { tag: 'h', anchor: 'th', name: 'Telegram · Daily digest', keys: 'MA-137 · MA-130', arch: 'ARCHITECTURE §15.2, §20.3, §20.5', intro: 'One message at 19:00 (the designer\'s time, settled in the options round) holding what did not need to arrive at once. In phase 5 (MA-137) it carries non-urgent alerts; from phase 12 (MA-130) the same message also carries the requests and questions waiting, and what the system fixed on its own. Incidents and critical alerts never wait for it.', steps: [
+               S({ cap: 'h1 · Sat 19:00 · phase 5', clock: '19:00', msgs: [today, dig5], note: 'Each alert in one line, its tier in the first words; then where spend stands. The last line says nothing needs you, or what does.' }),
+               S({ cap: 'h2 · Sat 19:00 · from phase 12', clock: '19:00', msgs: [today, dig12], note: 'Waiting items first, numbered, each with a button that sends its card again; what was fixed on its own; what closed today. If cr-26 was decided, it is not listed.' }) ] },
