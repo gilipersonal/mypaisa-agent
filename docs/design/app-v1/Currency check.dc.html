@@ -104,7 +104,7 @@
         <section class="dv-turn" id="{{ j.anchor }}" data-screen-label="{{ j.name }}">
           <div class="dv-thd"><span class="dv-tid">{{ j.id }}</span><span class="dv-tname">{{ j.name }}</span></div>
           <p class="dv-intro">{{ j.intro }}</p>
-          <p class="dv-plan"><b>MA-156 · ARCHITECTURE §4.7 · Planned.</b> Put through design-first's options round when the story starts.</p>
+          <p class="dv-plan"><b>MA-156 · ARCHITECTURE §4.7 · {{ j.st }}</b> {{ j.plan }}</p>
           <div class="kcard">
             <sc-for list="{{ j.steps }}" as="st" hint-placeholder-count="1">
               <div class="srow">
@@ -220,40 +220,40 @@
                 { b: 'Every door, both ways:', t: 'a typed message, the guided flow, a screenshot, a CAS or broker line. Pounds typed against a rupee holding get the same correction the other way. The bot records money already moved; it cannot trade.' } ] }
             ],
             boards: [
-              { id: '1', anchor: 'b1', name: B1, intro: 'You type “I put ₹20,000 into Balanced”. Balanced is held in pounds, so the bot saves nothing, says why in plain words and offers four ways on. Illustrative figures.', steps: [
+              { id: '1', anchor: 'b1', name: B1, st: 'Superseded', plan: 'by option 1b (Currency check options.dc.html, picked 25 Oct 2026, MA-156); kept as the starting point.', intro: 'You type “I put ₹20,000 into Balanced”. Balanced is held in pounds, so the bot saves nothing, says why in plain words and offers four ways on. Illustrative figures.', steps: [
                 S(B1, { cap: '1 · 12:10 · rupees, pound holding', clock: '12:10', msgs: [today, typed, corr(false)], name: 'The correction card', notes: [
                   ['Saves nothing, and says why first:', 'Balanced is held in pounds (GBP), so it can’t take rupees directly; the rupees were changed to pounds on the way. The last line says nothing is saved yet.'],
                   ['A clear correction, not an alert:', 'no amber (that marks a field Claude is unsure of) and no crimson (that is for alerts). The words carry it.'],
                   ['The detail is a tap away:', 'Why pounds? opens in place: “Pounds (GBP), from the factsheet you sent on 3 March.”'],
                   ['Four ways on.', 'The two longer labels take a row each; they go past the kit’s two words because each names what it does. A rupee holding shows only when there is one. No button trades.'] ] })
               ] },
-              { id: '2', anchor: 'b2', name: B2, intro: 'After Pounds that arrived: the card asks for the pounds that reached Balanced, you type 176.10, and the Confirm card records £176.10 with the rupees and the rate they imply (₹113.57 per £) kept beside it. Illustrative figures.', steps: [
+              { id: '2', anchor: 'b2', name: B2, st: 'Superseded', plan: 'by option 1b (Currency check options.dc.html, picked 25 Oct 2026, MA-156); kept as the starting point.', intro: 'After Pounds that arrived: the card asks for the pounds that reached Balanced, you type 176.10, and the Confirm card records £176.10 with the rupees and the rate they imply (₹113.57 per £) kept beside it. Illustrative figures.', steps: [
                 S(B2, { cap: '2 · 12:12 · the pounds that arrived', clock: '12:12', msgs: [today, typed, askP(false), typedP, confP(false)], name: 'Pounds that arrived', notes: [
                   ['The card edits in place', 'into one question. Its Back and Cancel go once the pounds are typed, so no old button can be tapped.'],
                   ['A screenshot works too:', 'the platform’s confirmation is read, kept as the record’s file, and its figure echoed here for Confirm.'],
                   ['Your figure, as typed:', '£176.10. The rupees and the rate they imply, ₹113.57 per £, sit beside it in a quieter line; the rate is worked out by the engine.'],
                   ['Confirm, then the second check', '(MA-102), then it is saved in pounds, with ₹20,000 kept as the original and fx_source as_credited.'] ] })
               ] },
-              { id: '3', anchor: 'b3', name: B3, intro: 'After Use the ECB rate: the engine converts ₹20,000 at the ECB reference rate of Friday 23 Oct, ₹112.50 per £, since the ECB publishes none on Saturday 24 Oct. The Confirm card marks £177.78 as an estimate and names where it came from. Illustrative figures and rate.', steps: [
+              { id: '3', anchor: 'b3', name: B3, st: 'Superseded', plan: 'by option 1b (Currency check options.dc.html, picked 25 Oct 2026, MA-156); kept as the starting point.', intro: 'After Use the ECB rate: the engine converts ₹20,000 at the ECB reference rate of Friday 23 Oct, ₹112.50 per £, since the ECB publishes none on Saturday 24 Oct. The Confirm card marks £177.78 as an estimate and names where it came from. Illustrative figures and rate.', steps: [
                 S(B3, { cap: '3 · 12:11 · the ECB rate, an estimate', clock: '12:11', msgs: [today, typed, confE], name: 'ECB rate estimate', notes: [
                   ['Estimate is the first word', 'of the headline, and a line says what makes it firm: a statement, a screenshot or the next valuation (fx_source ecb until then).'],
                   ['The source is named:', 'ECB rate, 23 Oct, converted by MyPaisa’s engine. Claude only puts it into words.'],
                   ['The rate’s own date:', 'at a weekend or on a bank holiday, the last published rate and its date: here Friday 23 Oct’s, on Saturday 24 Oct.'],
                   ['Shown once the daily rates load', '(MA-44, phase 2); until then the button is left out and the bot asks for the pounds that arrived. Edit goes back to the four ways on.'] ] })
               ] },
-              { id: '4', anchor: 'b4', name: B4, intro: 'You type “I put 200 into Balanced”. No currency is named, so the holding’s is assumed and the Confirm card says so in words. Illustrative figures.', steps: [
+              { id: '4', anchor: 'b4', name: B4, st: 'Planned.', plan: 'Put through design-first\'s options round when the story starts.', intro: 'You type “I put 200 into Balanced”. No currency is named, so the holding’s is assumed and the Confirm card says so in words. Illustrative figures.', steps: [
                 S(B4, { cap: '4 · 12:10 · no currency named', clock: '12:10', msgs: [today, typed200, conf200], name: 'No currency named', notes: [
                   ['No question:', 'the holding’s currency is assumed and the card says so on a line of its own, “£200, in pounds as Balanced is”.'],
                   ['Edit', 'changes the amount or the currency; another currency gets the correction on board 1.'],
                   ['Typing £200', 'gives the same card without that line (§4.2).'] ] })
               ] },
-              { id: '5', anchor: 'b5', name: B5, intro: 'After A rupee holding: the card lists your holdings in rupees (one here, an illustrative Nifty 50 index fund in an MF folio, phase 13) and confirms ₹20,000 into it, in rupees, with Indian digit grouping. Illustrative figures.', steps: [
+              { id: '5', anchor: 'b5', name: B5, st: 'Planned.', plan: 'Put through design-first\'s options round when the story starts.', intro: 'After A rupee holding: the card lists your holdings in rupees (one here, an illustrative Nifty 50 index fund in an MF folio, phase 13) and confirms ₹20,000 into it, in rupees, with Indian digit grouping. Illustrative figures.', steps: [
                 S(B5, { cap: '5 · 12:11 · a rupee holding instead', clock: '12:11', msgs: [today, typed, confR], name: 'A rupee holding instead', notes: [
                   ['Your holdings in rupees:', 'one here, so the card confirms straight into it. With two or more it asks which first, a button each. Back returns to the four ways on.'],
                   ['Indian digit grouping for rupees:', '₹1,50,000, not ₹150,000; “1.5 lakh” typed reads as ₹1,50,000 with no question. A rupee holding’s value shows its pound value beside it (§22.3).'],
                   ['In rupees, as the fund is.', 'Pounds typed against a rupee holding get the same correction the other way.'] ] })
               ] },
-              { id: '6', anchor: 'b6', name: B6, intro: 'Board 1 with privacy mode on: the amounts MyPaisa writes are hidden as the DS hides money, while the currencies, the explanation and the buttons stay readable. 6b is the Confirm card with both amounts hidden. Illustrative figures.', steps: [
+              { id: '6', anchor: 'b6', name: B6, st: 'Superseded', plan: 'by option 1b (Currency check options.dc.html, picked 25 Oct 2026, MA-156); kept as the starting point.', intro: 'Board 1 with privacy mode on: the amounts MyPaisa writes are hidden as the DS hides money, while the currencies, the explanation and the buttons stay readable. 6b is the Confirm card with both amounts hidden. Illustrative figures.', steps: [
                 S(B6, { part: '6a', cap: '6a · 12:10 · correction, privacy on', clock: '12:10', msgs: [today, typed, corr(true)], name: 'The correction, privacy on', notes: [
                   ['Amounts hidden as the DS hides money:', '₹ •••• in the card. The currencies, the explanation and the four ways on stay readable, so the correction still makes sense.'],
                   ['Your own message stays as you typed it:', 'Telegram draws it. MyPaisa hides every amount it writes.'],
