@@ -160,10 +160,11 @@ macOS or Linux. Nothing is installed globally except these tools.
 | Terraform | 1.11 or later | `infra/` only | `brew install hashicorp/tap/terraform` (Terraform is no longer in Homebrew's core) |
 | GitHub CLI (`gh`) | recent | pull requests, reading the repository id for the OIDC trust | `brew install gh` |
 | jq | any | the scripts | `brew install jq` |
+| tflint | recent | the Terraform lint in [Tests](#tests) | `brew install tflint` |
 
 You also need, in the AWS account `545595341442`, a profile that can assume the operator role (`agent-toolkit`).
-The SSM parameters listed under [Secrets](#secrets) are not a prerequisite: step 3's apply makes them, and steps 4 and
-5 put the values in. The Anthropic API key comes from
+The SSM parameters listed under [Secrets](#secrets) are not a prerequisite: step 3's apply makes dev's (prod's are made
+by its first release), and steps 4 and 5 put dev's values in. The Anthropic API key comes from
 a workspace in the [Claude Console](https://platform.claude.com) organisation linked to your Max or Team plan, with
 a spend limit set on the workspace. The two Telegram bots, dev and the household's, are made
 with BotFather, and each environment has its own Google OAuth client (`PLAN.md`, phase 0).
@@ -244,6 +245,13 @@ read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/anth
 
 The prod key goes into `/mypaisa-agent/prod/anthropic/api_key` the same way, once prod's first release has made the
 parameter, by the identity MA-21 names.
+
+Dev's Twelve Data key (MA-22) and its Google OAuth client's secret (MA-143) go in the same way:
+
+```bash
+read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/twelvedata/api_key --type SecureString --value "$KEY" && unset KEY
+read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/google/client_secret --type SecureString --value "$KEY" && unset KEY
+```
 
 No model access request is needed; the key works immediately.
 
