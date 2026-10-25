@@ -1,0 +1,113 @@
+[
+  {
+    "id": "r1-B1",
+    "round": 1,
+    "finding": "ARCHITECTURE 18.4 and TECH_STACK's SSM row no longer say Terraform ignores the values; both say write-only placeholder",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "TECH_STACK.md",
+        "README.md",
+        "PLAN.md",
+        ".claude/rules/*.md",
+        "docs/design/*.html"
+      ],
+      "pattern": "ignores\\s+(their|its|the)\\s+values?|placeholder\\s+and\\s+`?ignore_changes",
+      "ignore_case": true,
+      "present": false
+    }
+  },
+  {
+    "id": "r1-B2",
+    "round": 1,
+    "finding": "MA-159's trace row cites 18.4, the delivery section that states the pattern",
+    "check": {
+      "type": "trace",
+      "key": "MA-159",
+      "field": "arch",
+      "contains": "18.4"
+    }
+  },
+  {
+    "id": "r1-B3",
+    "round": 1,
+    "finding": "the README's prerequisites ask for Terraform 1.11 or later, as write-only arguments need",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import re,sys; s=open('README.md').read(); m=re.search(r'\\| Terraform \\| ([0-9.]+) or later', s); sys.exit(0 if m and tuple(map(int,m.group(1).split('.')))>=(1,11) else 1)\""
+    }
+  },
+  {
+    "id": "r1-B4",
+    "round": 1,
+    "finding": "the README's set-up applies Terraform before any secret is put, so the apply makes each parameter first",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; s=open('README.md').read(); a=s.find('terraform -chdir=infra/dev apply'); b=s.find('aws ssm put-parameter'); sys.exit(0 if 0<=a<b else 1)\""
+    }
+  },
+  {
+    "id": "r1-B5",
+    "round": 1,
+    "finding": "the architecture page's phase 0 puts Terraform before the secrets",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,re; s=open('docs/design/architecture.html').read(); m=re.search(r'<b>Prerequisites\\.</b>(.*?)</li>', s, re.S); t=m.group(1) if m else ''; sys.exit(0 if 'Terraform' in t and t.find('Terraform')<t.find('SSM') else 1)\""
+    }
+  },
+  {
+    "id": "r1-B6",
+    "round": 1,
+    "finding": "who puts prod's values (MA-21, MA-142, MA-143, MA-26) and how Google's secret reaches Cognito (MA-109) stay open questions until the row's notes say 'Settled: ' with the answer",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; Q={'MA-21':'Who puts prod','MA-142':'Who puts prod','MA-143':'Who puts prod','MA-26':'Who puts prod','MA-109':'Google'+chr(39)+'s client secret and Terraform state'}; ok=all(any(q.startswith(p) for p in [v] for q in d[k].get('open',[])) or ('Settled: '+v) in d[k]['notes'] for k,v in Q.items()); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r1-B7",
+    "round": 1,
+    "finding": "Jira MA-20, MA-21, MA-22, MA-26, MA-142, MA-143 prescribe the write-only placeholder and depend on MA-26 for the SSM step",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-20, MA-21, MA-22, MA-26, MA-142, MA-143: no 'ignore_changes' or 'ignores its value'; the SSM step depends on MA-26; comments on MA-21, MA-142, MA-109 hold the open questions"
+    }
+  },
+  {
+    "id": "r1-B1b",
+    "round": 1,
+    "finding": "ARCHITECTURE 18.4 and TECH_STACK's SSM row say the values go in after the first apply, over a write-only placeholder",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,re; a=open('ARCHITECTURE.md').read(); t=open('TECH_STACK.md').read(); ok=re.search(r'by\\s+hand,\\s+after\\s+the\\s+first\\s+apply;\\s+Terraform\\s+creates\\s+each\\s+parameter\\s+with\\s+a\\s+write-only\\s+placeholder', a) and 'values put by hand after the first apply, over a write-only placeholder' in t; sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r2-B1",
+    "round": 2,
+    "finding": "the README's prerequisites and PLAN's phase 0 exit no longer need the SSM values before Terraform's apply; Terraform installs from HashiCorp's tap",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,re; r=open('README.md').read(); p=open('PLAN.md').read(); ok='brew install hashicorp/tap/terraform' in r and 'not a prerequisite' in r and not re.search(r'both\\s+bots.\\s+tokens,\\s+both\\s+Claude\\s+keys', p); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r3-B1",
+    "round": 3,
+    "finding": "the README puts dev's Twelve Data key and Google client secret after the apply, and the phase of the first prod release is open on MA-107 and MA-142",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=open('README.md').read(); d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; a=r.find('terraform -chdir=infra/dev apply'); ok=0<=a<r.find('/mypaisa-agent/dev/twelvedata/api_key --type') and a<r.find('/mypaisa-agent/dev/google/client_secret --type') and all(any(q.startswith('Which phase holds the first prod release') for q in d[k].get('open',[])) or 'Settled: Which phase holds the first prod release' in d[k]['notes'] for k in ('MA-107','MA-108','MA-142')); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r4-B1",
+    "round": 4,
+    "finding": "the README puts dev's Google client id too, and the rule says Arun deletes a stray parameter himself, never Claude",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; r=open('README.md').read(); a=open('.claude/rules/aws-changes.md').read(); x=r.find('terraform -chdir=infra/dev apply'); ok=0<=x<r.find('/mypaisa-agent/dev/google/client_id --type String') and 'he deletes that parameter himself, by hand' in a and 'Claude never deletes it' in a; sys.exit(0 if ok else 1)\""
+    }
+  }
+]

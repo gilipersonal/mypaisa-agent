@@ -157,15 +157,18 @@ macOS or Linux. Nothing is installed globally except these tools.
 | uv | 0.12 or later | the package, its tests and tools (uv fetches Python 3.14 itself) | `brew install uv` |
 | Docker | recent, running | building the Lambda image locally | Docker Desktop, OrbStack or Colima |
 | AWS CLI | v2 | every cloud operation, with the `agent-toolkit` profile | `brew install awscli` |
-| Terraform | 1.9 or later | `infra/` only | `brew install terraform` |
+| Terraform | 1.11 or later | `infra/` only | `brew install hashicorp/tap/terraform` (Terraform is no longer in Homebrew's core) |
 | GitHub CLI (`gh`) | recent | pull requests, reading the repository id for the OIDC trust | `brew install gh` |
 | jq | any | the scripts | `brew install jq` |
+| tflint | recent | the Terraform lint in [Tests](#tests) | `brew install tflint` |
 
-You also need, in the AWS account `545595341442`: a profile that can assume the operator role (`agent-toolkit`)
-and the parameters in SSM listed under [Secrets](#secrets). The Anthropic API key comes from
+You also need, in the AWS account `545595341442`, a profile that can assume the operator role (`agent-toolkit`).
+The SSM parameters listed under [Secrets](#secrets) are not a prerequisite: step 3's apply makes dev's (prod's are made
+by its first release), and steps 4 and 5 put dev's values in. The Anthropic API key comes from
 a workspace in the [Claude Console](https://platform.claude.com) organisation linked to your Max or Team plan, with
 a spend limit set on the workspace. The two Telegram bots, dev and the household's, are made
-with BotFather, and each environment has its own Google OAuth client (`PLAN.md`, phase 0).
+with BotFather, each environment has its own Google OAuth client (`PLAN.md`, phase 0), and the Twelve Data key comes
+from a free account at twelvedata.com.
 
 ## Set up from scratch
 
@@ -186,41 +189,7 @@ uv run ruff check . && uv run pyright && uv run pytest
 
 The tests run on fixtures and recordings and never reach AWS or a model.
 
-### 3. The Telegram bot
-
-Make the bot with [@BotFather](https://t.me/BotFather) (`/newbot`), turn off group joins (`/setjoingroups`), and put
-the token straight into SSM. It is never pasted into a file, a chat or a shell history:
-
-```bash
-export AWS_PROFILE=agent-toolkit
-read -rs TOKEN && aws ssm put-parameter --name /mypaisa-agent/dev/telegram/bot_token --type SecureString --value "$TOKEN" && unset TOKEN
-openssl rand -hex 32 | aws ssm put-parameter --name /mypaisa-agent/dev/telegram/webhook_secret --type SecureString --value "$(cat)"
-```
-
-Do the same for the household's bot under `/mypaisa-agent/prod/telegram/...`. Each environment has its own bot,
-so nothing typed in dev reaches the household.
-
-Your `chat_id` arrives with the first message you send the bot after the webhook is set (step 6): the deploy prints
-it from the logs, and you store it the same way under `.../telegram/chat_id`. Until it is stored, the bot answers
-no one.
-
-### 4. The Anthropic API key
-
-On claude.ai, go to Settings → Billing → API credits and link a Claude Console organisation to your Max or Team
-plan (you need 7 days on the plan; the link cannot be moved later without support, so pick the organisation you
-will build in). No payment method is needed: the Max 20x plan's monthly API credit ($200) pays for the calls; leave auto-reload off. In
-that organisation create two workspaces, `mypaisa-prod` with a $160 spend limit and `mypaisa-dev` with $40 (the hard caps behind the app's ceilings), and a
-key in each, `mypaisa-agent-dev` and `mypaisa-agent-prod`. Put each straight into its own environment's path, as
-with the bot token:
-
-```bash
-read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/dev/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
-read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/prod/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
-```
-
-No model access request is needed; the key works immediately.
-
-### 5. Terraform
+### 3. Terraform
 
 The state lives beside the wealth tracker's, one key per environment. The CI roles' trust policies are pinned to
 this repository's own numeric id. They are made once from the laptop, since CI cannot assume a role that does not
@@ -235,8 +204,62 @@ terraform -chdir=infra/dev init && terraform -chdir=infra/dev plan -out=dev.tfpl
 terraform -chdir=infra/dev apply dev.tfplan
 ```
 
-Read the whole plan before applying it. The first apply creates the budget before anything that can spend. Prod is
-applied by the release workflow after your approval in the GitHub `prod` environment (`ARCHITECTURE.md` §18.4).
+Read the whole plan before applying it. The first apply creates the budget before anything that can spend, and
+every secret's SSM parameter with a write-only placeholder (`value_wo`), so no value ever reaches Terraform's state.
+The values go in next, over those placeholders (steps 4 and 5); a value put before its parameter exists makes the
+apply fail. Prod is applied by the release workflow after your approval in the GitHub `prod` environment
+(`ARCHITECTURE.md` §18.4).
+
+### 4. The Telegram bot
+
+Make the bot with [@BotFather](https://t.me/BotFather) (`/newbot`), turn off group joins (`/setjoingroups`), and put
+the token straight into SSM, over the placeholder the apply made. It is never pasted into a file, a chat or a shell
+history:
+
+```bash
+export AWS_PROFILE=agent-toolkit
+read -rs TOKEN && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/telegram/bot_token --type SecureString --value "$TOKEN" && unset TOKEN
+openssl rand -hex 32 | aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/telegram/webhook_secret --type SecureString --value "$(cat)"
+```
+
+Do the same for the household's bot under `/mypaisa-agent/prod/telegram/...` once prod's first release has made
+those parameters. The developer role is denied anything tagged `env=prod`, so the identity that puts prod's values
+is still to be named (open on MA-21, MA-26, MA-142 and MA-143). Each environment has its own bot, so nothing typed in dev reaches
+the household.
+
+Your `chat_id` arrives with the first message you send the bot after the webhook is set (step 6): the deploy prints
+it from the logs, and you store it the same way under `.../telegram/chat_id`. Until it is stored, the bot answers
+no one.
+
+### 5. The Anthropic API key
+
+On claude.ai, go to Settings → Billing → API credits and link a Claude Console organisation to your Max or Team
+plan (you need 7 days on the plan; the link cannot be moved later without support, so pick the organisation you
+will build in). No payment method is needed: the Max 20x plan's monthly API credit ($200) pays for the calls; leave auto-reload off. In
+that organisation create two workspaces, `mypaisa-prod` with a $160 spend limit and `mypaisa-dev` with $40 (the hard caps behind the app's ceilings), and a
+key in each, `mypaisa-agent-dev` and `mypaisa-agent-prod`. Put each straight into its own environment's path, as
+with the bot token:
+
+```bash
+read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
+```
+
+The prod key goes into `/mypaisa-agent/prod/anthropic/api_key` the same way, once prod's first release has made the
+parameter, by the identity still to be named (open on MA-21, MA-26, MA-142 and MA-143).
+
+No model access request is needed; the key works immediately.
+
+Dev's Twelve Data key (MA-22) and its Google OAuth client's id and secret (MA-143) go in the same way (the id is not a
+secret, so it is a plain String):
+
+```bash
+read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/twelvedata/api_key --type SecureString --value "$KEY" && unset KEY
+read -r ID && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/google/client_id --type String --value "$ID" && unset ID
+read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/google/client_secret --type SecureString --value "$KEY" && unset KEY
+```
+
+Prod's go in the same way after prod's first release has made their parameters.
+
 
 ### 6. The webhook and the first brief
 
@@ -326,8 +349,9 @@ lives in SSM Parameter Store only, put by hand; anything that adds cost is asked
 
 ### Secrets
 
-Terraform creates the parameter names and never holds a value. The values are put with the AWS CLI as in
-[Set up](#3-the-telegram-bot), read by each function once per cold start, and never logged.
+Terraform creates each parameter with a write-only placeholder and never holds a value. The values are put over it
+with the AWS CLI, after the apply that made the parameter, as in
+[Set up](#4-the-telegram-bot), read by each function once per cold start, and never logged.
 
 Each environment has its own set, under `/mypaisa-agent/dev/...` and `/mypaisa-agent/prod/...`:
 
@@ -338,6 +362,7 @@ Each environment has its own set, under `/mypaisa-agent/dev/...` and `/mypaisa-a
 | `.../telegram/chat_id` | the one chat the bot answers |
 | `.../twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
 | `.../anthropic/api_key` | the Anthropic API key from that environment's workspace, which has its own spend limit |
+| `.../google/client_id` | that environment's Google OAuth client id (a plain String, not a secret) |
 | `.../google/client_secret` | that environment's Google OAuth client, for Cognito's Google provider |
 | `.../eodhd/api_key` | EODHD, if chosen over the free sources |
 
