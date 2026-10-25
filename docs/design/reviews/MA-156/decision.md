@@ -108,7 +108,7 @@ past their bubble by design.)
 Before the build, 1b gets its remaining states drawn: the HTML fallback, a long holding name, two or more rupee
 holdings, the "$" that needs asking, pounds typed against a rupee holding, the screenshot path; and, found in the
 review of PR #34, the ECB estimate's Confirm card with privacy on, the question card before the daily rates load (no
-estimate button), privacy on for planned boards 4 and 5, the Technical details fold with privacy on, what Cancel
+estimate button), privacy on for boards 4 and 5, the Technical details fold with privacy on, what Cancel
 leaves on screen, the answer to "Which currency is Balanced in?" and the audit row with both amounts. They are the
 trace row's `undrawn` list, so `start MA-156` refuses until they are. The HTML fallback is to be drawn for 1b
 only, after the pick, rather than for every option. The Prototype's currency chats are relinked to 1b with MA-160,

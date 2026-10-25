@@ -20,7 +20,7 @@
     "finding": "MA-156's undrawn list holds each acceptance state not yet drawn, until the row's notes say 'Drawn: ' with that state, so start refuses meanwhile",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-156'][0]; u=r.get('undrawn',[]); n=r['notes']; need=('the ECB estimate'+chr(39)+'s Confirm card with privacy on','the question card before the daily rates load','privacy on for boards 4 and 5','the Technical details fold open with privacy on','what Cancel leaves on screen','the answer to','the audit row showing both amounts'); sys.exit(0 if all(any(x.startswith(w) for x in u) or ('Drawn: '+w) in n for w in need) else 1)\""
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-156'][0]; u=r.get('undrawn',[]); n=r['notes']; need=('the ECB estimate'+chr(39)+'s Confirm card with privacy on','the question card before the daily rates load','privacy on for boards 4 and 5','the Technical details fold open with privacy on','what Cancel leaves on screen','the answer to '+chr(34)+'Which currency','the audit row showing both amounts'); sys.exit(0 if all(any(x.startswith(w) for x in u) or ('Drawn: '+w) in n for w in need) else 1)\""
     }
   },
   {
@@ -52,7 +52,7 @@
     "finding": "the Journey page's general privacy safeguard states 1b's rule, no amount and no rate on a two-currency card",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys,re; s=open('docs/design/agent-journey.html').read(); sys.exit(0 if 'on a card with two currencies it hides both' not in s and re.search(r'currency check.s cards \\(MA-156[^)]*\\) it shows no amount and no rate', s) else 1)\""
+      "run": "python3 -c \"import sys,re; s=open('docs/design/agent-journey.html').read(); sys.exit(0 if not re.search(r'on\\s+a\\s+card\\s+with\\s+two\\s+currencies\\s+it\\s+hides\\s+both', s) and re.search(r'currency\\s+check.s\\s+cards\\s+\\(MA-156[^)]*\\)\\s+it\\s+shows\\s+no\\s+amount\\s+and\\s+no\\s+rate', s) else 1)\""
     }
   },
   {
@@ -61,7 +61,7 @@
     "finding": "MA-156 cannot start while any Prototype currency chat still targets a superseded Currency check board (MA-160)",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys,re; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-156'][0]; p=open('docs/design/app-v1/Prototype.dc.html').read(); old=re.search(r'C\\(.c-cc[0-9]+.,\\s*CC,\\s*.Telegram · (Currency check|Pounds that arrived|ECB rate estimate).|privBase:\\s*.Telegram · Currency check, privacy on', p); sys.exit(0 if any('MA-160' in u for u in r.get('undrawn',[])) or (old is None and 'c-cc' in p) else 1)\""
+      "run": "python3 -c \"import json,sys,re; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-156'][0]; p=open('docs/design/app-v1/Prototype.dc.html').read(); old=re.search(r'.Telegram · (Currency check|Pounds that arrived|ECB rate estimate).|Telegram · Currency check, privacy on', p); sys.exit(0 if any('MA-160' in u for u in r.get('undrawn',[])) or (old is None and 'c-cc' in p) else 1)\""
     }
   }
 ]
