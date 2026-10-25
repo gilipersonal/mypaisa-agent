@@ -41,10 +41,10 @@
   {
     "id": "r2-B1",
     "round": 2,
-    "finding": "a partly drawn story cannot start",
+    "finding": "a partly drawn story cannot start (a row of its own with an undrawn list is refused)",
     "check": {
-      "type": "cmd_fails",
-      "run": "python3 scripts/plan_sync.py start MA-63"
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json,io,contextlib; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':'To Do','labels':['design'],'arch':[],'ui':True,'design':'planned','boards':[{'project':'app','file':'Admin center 2.dc.html','board':'Browser · Admin · Settings'}],'notes':'','undrawn':['x']}; t['items'].append(r); o=io.StringIO(); c=contextlib.redirect_stdout(o); c.__enter__(); n=p.start(t,'MA-X'); c.__exit__(None,None,None); sys.exit(0 if n==1 else 1)\""
     }
   },
   {
@@ -79,10 +79,10 @@
   {
     "id": "r3-B1",
     "round": 3,
-    "finding": "MA-39, MA-80 and MA-91 list their undrawn screens",
+    "finding": "MA-39, MA-80 and MA-91 list their undrawn screens until they are drawn",
     "check": {
       "type": "cmd",
-      "run": "for k in MA-39 MA-80 MA-91; do ! python3 scripts/plan_sync.py start $k >/dev/null || exit 1; done"
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; f={'MA-39':'Chat basics.dc.html','MA-80':'Chat basics.dc.html','MA-91':'Research cards.dc.html'}; ok=all(d[k].get('undrawn') or (d[k]['design'] in ('planned','picked') and any(b['file']==v for b in d[k]['boards'])) for k,v in f.items()); sys.exit(0 if ok else 1)\""
     }
   },
   {
@@ -141,7 +141,8 @@
       "type": "trace",
       "key": "MA-130",
       "field": "undrawn",
-      "contains": "agent's question"
+      "contains": "agent's question",
+      "or_drawn": "Admin center 3.dc.html"
     }
   },
   {
@@ -161,7 +162,8 @@
       "type": "trace",
       "key": "MA-35",
       "field": "undrawn",
-      "contains": "/pause and /resume"
+      "contains": "/pause and /resume",
+      "or_drawn": "Chat basics.dc.html"
     }
   },
   {
@@ -192,7 +194,8 @@
       "type": "trace",
       "key": "MA-130",
       "field": "undrawn",
-      "contains": "digest"
+      "contains": "digest",
+      "or_drawn": "Admin center 3.dc.html"
     }
   },
   {
@@ -233,7 +236,8 @@
       "type": "trace",
       "key": "MA-137",
       "field": "undrawn",
-      "contains": "digest"
+      "contains": "digest",
+      "or_drawn": "Admin center 3.dc.html"
     }
   },
   {
@@ -314,7 +318,8 @@
       "type": "trace",
       "key": "MA-116",
       "field": "undrawn",
-      "contains": "past the $200 credit"
+      "contains": "past the $200 credit",
+      "or_drawn": "Admin center 3.dc.html"
     }
   },
   {
@@ -325,7 +330,8 @@
       "type": "trace",
       "key": "MA-137",
       "field": "undrawn",
-      "contains": "routing matrix"
+      "contains": "routing matrix",
+      "or_drawn": "Admin center 3.dc.html"
     }
   },
   {
@@ -336,7 +342,8 @@
       "type": "trace",
       "key": "MA-145",
       "field": "undrawn",
-      "contains": "fails again"
+      "contains": "fails again",
+      "or_drawn": "Admin center 3.dc.html"
     }
   },
   {
@@ -379,7 +386,8 @@
       "type": "trace",
       "key": "MA-145",
       "field": "undrawn",
-      "contains": "still want this?"
+      "contains": "still want this?",
+      "or_drawn": "Admin center 3.dc.html"
     }
   },
   {
@@ -437,7 +445,7 @@
     "finding": "MA-137 lists the AWS step and forecast alerts as undrawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); sys.exit(0 if \\\"step alerts\\\" in u and 'forecast passes the AWS cap' in u else 1)\""
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); drawn=not r.get('undrawn') and r['design'] in ('planned','picked') and any(b['file']=='Admin center 3.dc.html' for b in r['boards']); sys.exit(0 if drawn or ('step alerts' in u and 'forecast passes the AWS cap' in u) else 1)\""
     }
   },
   {

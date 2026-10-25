@@ -53,3 +53,8 @@ Added the day each was learned; reviewers check every item.
 5. **An owner decision changes every record at once:** the docs, the trace,
    the Jira descriptions (not only summaries or comments), the boards and the
    explainer pages (PR #32: one admin; read only except for admin).
+6. **A fixed-list check on a to-do list passes once the item is done.** "Still
+   listed as undrawn" broke the moment MA-158 drew the screens; the check is
+   "listed, or drawn in the file that drew it" (`or_drawn: "<file>"`), so the
+   next story's work does not read as a regression, and clearing the list
+   without the boards still does (MA-158).
