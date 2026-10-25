@@ -547,7 +547,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="card"><p class="tag">Rule 1</p><h3>Claude never produces a number</h3><p>Every figure comes from code with tests. Claude chooses what to say and how to say it.</p></div>
   <div class="card"><p class="tag">Rule 2</p><h3>The bot cannot trade</h3><p>No broker login, no orders. It suggests only actions that suit the account: ISA-safe for the UK wrappers, wrapper-aware for Indian accounts.</p></div>
   <div class="card"><p class="tag">Rule 3</p><h3>Summary first, detail on tap</h3><p>Every message has a plain top and a technical underside. Nothing technical is shown unasked.</p></div>
-  <div class="card"><p class="tag">Rule 4</p><h3>One write path</h3><p>Every change to the household's records, whatever the screen, goes through the bot: a card, a Confirm tap, an audit row. The web app is read-only for those records. The one exception is the owner's Admin center, which acts on the admin's own settings and operations, each behind a fresh check and an audit row ("Dashboard will be read only (except for admin)").</p></div>
+  <div class="card"><p class="tag">Rule 4</p><h3>One write path</h3><p>Every change to the household's records, whatever the screen, goes through the bot: a card, a Confirm tap, an audit row. The web app is read-only for those records. The one exception is the owner's Admin center, which acts on admin settings and operations, never on a record, each behind a fresh check and an audit row ("Dashboard will be read only (except for admin)").</p></div>
 </div>
 
 <h2 class="sec-h">How to read a flow</h2>
@@ -1449,7 +1449,7 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only by construction</b><span>The data routes are GET only and the app has no form that posts a record. Every change to the records goes through the chat; the owner's Admin center actions are the one exception, each behind a fresh check.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only by construction</b><span>The data routes are GET only and the app has no form that posts a record. Every change to the records goes through the chat. The web app's one write path is the owner's Admin center, for admin settings and operations only, each behind a fresh check; none changes a record.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Checked on every call</b><span>Session, status, epoch and role; tokens never visible to page scripts; a strict Content-Security-Policy.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds and rupees hidden here too, with placeholders that stay visible in dark.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Roles</b><span>A member sees the household totals and their own detail; a viewer reads the overview and what members share.</span></div></div>

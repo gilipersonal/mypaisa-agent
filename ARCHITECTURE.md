@@ -82,8 +82,8 @@ whole household's wealth later are the same records, not a migration.
    and when it becomes the full MyPaisa, is read-only by construction for the
    household's records. Arun, 24 Oct 2026: "Dashboard will be read only
    (except for admin)". The one exception is the owner's Admin center, which
-   acts on the admin's own settings and operations, each behind a fresh check
-   and an audit row (§9.3).
+   acts on admin settings and operations, never on a record, each behind a
+   fresh check and an audit row (§9.3).
 
 ---
 
@@ -963,7 +963,8 @@ pensions since 2024") are answered without a database running all month:
   is for the questions it cannot express. Optionally (MA-104), the same
   files can be read with Athena or with DuckDB on the owner's laptop; either
   needs a read-only role of its own for that prefix, since no human role
-  reads prod today (§18.1), and the role is decided when the story starts.
+  reads prod's records today (§18.1; the AWS MCP reads only metadata), and
+  the role is decided when the story starts.
 
 ---
 
@@ -1655,7 +1656,7 @@ request says what changes, from and to, why with its evidence, the cost and
 the budget left, the risk and the undo, and when it expires. Agents also ask
 plain questions ("Which fund is the Monzo Balanced fund's ISIN?") with
 buttons or a typed answer that resumes their work. The admin gives
-instructions in their own words ("put Twelve Data first for London", "raise dev to £50",
+instructions in their own words ("put Twelve Data first for London", "raise dev to $50",
 "why did the Forecaster go quiet on silver?"); the concierge turns an
 instruction into the same request with a Confirm card, and a question into an
 answer from the agent concerned. Non-urgent requests wait for one daily

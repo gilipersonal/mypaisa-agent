@@ -3,13 +3,15 @@
 
     python3 scripts/review_regress.py MA-155
 
-Reads review/<key>/fixed.json, one entry per blocking finding a review found and a later round fixed, each with a
-check that passes while the fix holds (the global rule in ~/.claude/CLAUDE.md, "Fixed stays fixed"). Check types:
+Reads review/<key>/fixed.json, one entry per blocking finding a review found and a later round fixed (and any owner
+decision the review must keep), each with a check that passes while the fix holds (the global rule in ~/.claude/CLAUDE.md, "Fixed stays fixed"). Check types:
 
 - `cmd`: a shell command that must exit 0 (`"run": "python3 scripts/plan_sync.py selftest"`).
 - `cmd_fails`: a shell command that must exit non-zero (`start` refusing a story).
-- `grep`: `file` (or each of `files`) must contain (`present: true`) or must not contain (`present: false`) the regex
-  `pattern`, matched across line breaks (`\\s` spans them); a missing file is a failure, never a pass.
+- `grep`: `file`, or each of `files` (which may hold glob patterns such as `docs/design/app-v1/*.dc.html`, and
+  takes the place of `file` when both are given), must contain (`present: true`) or must not contain
+  (`present: false`) the regex `pattern`, matched across line breaks (`\\s` spans them), case-insensitively when
+  `ignore_case` is true. A missing file, or a glob that matches nothing, is a failure, never a pass.
 - `trace`: a row of docs/trace.json (`key`) whose `field` equals `value`, or contains `contains`, or lists a board
   named `board`.
 - `manual`: a check only a person or a tool outside the repo can make (Jira text, a board); it is printed for the
@@ -35,14 +37,21 @@ def run_check(c: dict) -> tuple[bool | None, str]:
         ok = (r.returncode == 0) == (kind == "cmd")
         return ok, c["run"]
     if kind == "grep":
-        files = c.get("files") or [c["file"]]
-        missing = [f for f in files if not (ROOT / f).is_file()]
+        files, missing = [], []
+        for f in c.get("files") or [c["file"]]:
+            found = sorted(p.relative_to(ROOT).as_posix() for p in ROOT.glob(f)) if any(ch in f for ch in "*?[") else [f]
+            if not found or not all((ROOT / x).is_file() for x in found):
+                missing.append(f)
+            files += found
         if missing:
             return False, f"missing: {', '.join(missing)}"
-        hits = [f for f in files if re.search(c["pattern"], (ROOT / f).read_text(), re.M | re.I * bool(c.get("ignore_case")))]
+        flags = re.M | (re.I if c.get("ignore_case") else 0)
+        hits = [f for f in files if re.search(c["pattern"], (ROOT / f).read_text(), flags)]
         want = c.get("present", True)
         ok = len(hits) == len(files) if want else not hits
-        return ok, f"{', '.join(files)} {'has' if want else 'lacks'} /{c['pattern']}/" + (f" (found in {', '.join(hits)})" if hits and not want else "")
+        detail = f" (lacking in {', '.join(f for f in files if f not in hits)})" if want and not ok else ""
+        detail += f" (found in {', '.join(hits)})" if hits and not want else ""
+        return ok, f"{len(files)} file(s) {'have' if want else 'lack'} /{c['pattern']}/{detail}"
     if kind == "trace":
         trace = json.loads((ROOT / "docs" / "trace.json").read_text())
         row = next((i for i in trace.get("items", []) if i.get("key") == c["key"]), None)
@@ -65,6 +74,9 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 2
     ledger = ROOT / "review" / argv[1] / "fixed.json"
+    if not ledger.is_file():
+        print(f"review-regress {argv[1]}: no ledger yet (review/{argv[1]}/fixed.json); nothing fixed to re-check")
+        return 0
     entries = json.loads(ledger.read_text())
     failed = manual = 0
     for e in entries:

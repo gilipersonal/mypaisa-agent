@@ -110,7 +110,7 @@ After a no: leave the PR open and the issue In Review, and say so in one line.
 ## Report
 
 ```
-PR:    <url> [MA-<n>] ...  merged <sha> (checks: jira-key ok, plan-sync ok; review: clean in <n> rounds | unreviewed, Arun said merge now)
+PR:    <url> [MA-<n>] ...  merged <sha> (checks: jira-key ok, plan-sync ok; gates: <names>; review: clean in <n> rounds | unreviewed, Arun said merge now)
 Jira:  MA-<n> Done (comments: PR raised, merged)
 Base:  main at <sha>, checkout synced
 ```

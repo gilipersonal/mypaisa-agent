@@ -43,6 +43,8 @@ this repo on any change just before you merge the PR. just for this Repo".
      `review/MA-<n>/state.json`.
   5. **At most five rounds;** if blocking findings remain after the fifth,
      stop and ask Arun whether to go on, listing them and what each fix costs.
+     The question names the merge ("Fix them, run round 6, then merge on a
+     clean round?"), so his yes covers both, as the merge question's does.
   A clean round (no blocking findings in any lane) leads straight to the
   merge: "review it first, then merge" is the yes. The non-blocking findings
   go into the report and onto the issue.

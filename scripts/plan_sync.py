@@ -97,9 +97,11 @@ def captions(path: Path) -> set[str]:
         for cls in ("dv-cap", "dv-sname", "dv-oname", "dv-tname"):
             for m in re.finditer(rf'class="{cls}"[^>]*>(.*?)</(?:p|span|div|a)>', t, re.S):
                 caps.add(_caption(m.group(1)))
-        for m in re.finditer(r'<(\w+)([^>]*)data-screen-label="([^"]*)"', t):
-            if not re.search(r'class="[^"]*\bdv-turn\b', m.group(2)):  # a turn's label names the turn, not a board
-                caps.add(_caption(m.group(3)))
+        for m in re.finditer(r'data-screen-label="([^"]*)"', t):
+            tag = t[t.rfind("<", 0, m.start()):t.find(">", m.end()) + 1]  # the label's own tag
+            cls = re.search(r"""\bclass\s*=\s*(["'])(.*?)\1""", tag)
+            if not (cls and "dv-turn" in cls.group(2).split()):  # a turn's label names the turn, not a board
+                caps.add(_caption(m.group(1)))
         # A numbered board heading: <a class="dv-tid">1</a><span class="dv-tname">Colour</span> (or dv-oid, dv-oname).
         for m in re.finditer(r'class="dv-(t|o)id"[^>]*>(.*?)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
             pair(_caption(m.group(2)), _caption(m.group(3)))
@@ -512,6 +514,10 @@ def selftest(trace: dict) -> int:
     dirs = {k: v.get("dir") for k, v in trace.get("claude_design", {}).items()}
     bad = 0
     for proj, file, board, want in BOARD_CASES:
+        if proj not in dirs or not (ROOT / dirs[proj] / file).is_file():
+            bad += 1
+            print(f"DRIFT: selftest needs {proj}/{file}, which the trace or the mirror does not have")
+            continue
         got = board_ok(board, file, ROOT / dirs[proj] / file)
         if got != want:
             bad += 1

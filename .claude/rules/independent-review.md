@@ -25,7 +25,9 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   pages); the rules and skills; the boards and the design mirror when they
   change. All in one message, each blind to the making.
 - **The ledger** is per story: `review/MA-<n>/fixed.json` (each fixed blocking
-  finding with a check that tests the behaviour, not the code's text) and
+  finding, and any owner decision the review must keep, with a check that tests
+  the behaviour, not the code's text; a story with no ledger yet has nothing to
+  re-check, and the runner says so) and
   `review/MA-<n>/state.json` (rounds, the reviewed sha, Arun's word for any
   round past five). `scripts/review_regress.py MA-<n>` runs the checks; a
   `manual` check is one the reviewers must look at.

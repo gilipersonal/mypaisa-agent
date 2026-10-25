@@ -300,12 +300,13 @@ browser, as `ARCHITECTURE.md` §9.3.
   board with last and next run and price freshness; this month's spend
   against the ceiling and the step it is on; the last seven days of alarms).
 - The Admin center's **Spend** section (MA-116), designed first like every
-  screen: this cycle's spend by member, feature and model against the
+  screen: this cycle's spend by member, feature, agent and model against the
   ceiling, the step and the days left; the owner sets the ceiling (from $10
   to the hard limit), the member share, the renewal day and the hard limit,
   each behind the fresh check (MA-102), each an audit row and a message to
-  the owner; a ceiling above the hard limit is refused with the steps to
-  raise the Console limit first.
+  the owner; a ceiling past the plan's credit needs an explicit yes, and one
+  above the hard limit is refused with the steps to raise the Console limit
+  first.
 - **Caps and alerts** (MA-137, `ARCHITECTURE.md` §15.2), in the same
   section: the Claude ladder's steps and guards; the AWS and others cap (£50),
   its steps (50%, 80%, 100%, forecast) and actions (dev pauses first; the
