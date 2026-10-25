@@ -61,10 +61,8 @@
     "round": 2,
     "finding": "start runs the row's own checks",
     "check": {
-      "type": "grep",
-      "file": "scripts/plan_sync.py",
-      "pattern": "errors, _ = item_findings\\(it, ctx\\)",
-      "present": true
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json,io,contextlib; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r=[i for i in t['items'] if i['key']=='MA-20'][0]; r['arch']=['99.9']; o=io.StringIO(); c=contextlib.redirect_stdout(o); c.__enter__(); n=p.start(t,'MA-20'); c.__exit__(None,None,None); sys.exit(0 if n==1 else 1)\""
     }
   },
   {
@@ -111,10 +109,8 @@
     "round": 3,
     "finding": "a story In Review or Done with undrawn screens fails the check",
     "check": {
-      "type": "grep",
-      "file": "scripts/plan_sync.py",
-      "pattern": "with screens still undrawn",
-      "present": true
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r=[i for i in t['items'] if i['key']=='MA-130'][0]; r['status']='Done'; e,_=p.item_findings(r,p.context(t)); sys.exit(0 if any('still undrawn' in x for x in e) else 1)\""
     }
   },
   {
@@ -201,11 +197,21 @@
   },
   {
     "id": "r6-admin",
-    "round": 6,
-    "finding": "one admin: no spec doc allows a second",
+    "round": "Arun, 25 Oct 2026",
+    "finding": "one admin (Arun's decision, not a review finding): no spec doc or page allows a second",
     "check": {
-      "type": "cmd",
-      "run": "! grep -n -i -E '\\badmins\\b|\\ban admin\\b|second admin can be added|second person is made an admin' ARCHITECTURE.md PLAN.md TECH_STACK.md README.md docs/design/market-agent.html"
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "PLAN.md",
+        "TECH_STACK.md",
+        "README.md",
+        "docs/design/market-agent.html",
+        "docs/design/agent-journey.html"
+      ],
+      "pattern": "\\ban\\s+admin\\b(?!\\s+desk)|\\badmins\\b|second admin can be added|second person is made an admin",
+      "present": false,
+      "ignore_case": true
     }
   },
   {
@@ -226,6 +232,117 @@
       "key": "MA-137",
       "field": "undrawn",
       "contains": "digest"
+    }
+  },
+  {
+    "id": "r8-d1",
+    "round": 8,
+    "finding": "a bare yes at the merge question means review first; merge it or merge now merges unreviewed",
+    "check": {
+      "type": "grep",
+      "file": ".claude/rules/ship-autopilot.md",
+      "pattern": "a bare \"yes\", or\\s+any answer that asks for the review, means review first",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-d2",
+    "round": 8,
+    "finding": "the repo's review rule file exists where the global rule looks for it",
+    "check": {
+      "type": "grep",
+      "file": ".claude/rules/independent-review.md",
+      "pattern": "review/MA-<n>/fixed\\.json",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-c1",
+    "round": 8,
+    "finding": "the Journey page's Rule 4 card carries the admin exception",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/agent-journey.html",
+      "pattern": "The one exception is the owner's Admin center",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-c2",
+    "round": 8,
+    "finding": "no 'an admin' across a line break (covered by r6-admin)",
+    "check": {
+      "type": "grep",
+      "file": "PLAN.md",
+      "pattern": "\\ban\\s+admin's\\b",
+      "present": false,
+      "ignore_case": true
+    }
+  },
+  {
+    "id": "r8-c3",
+    "round": 8,
+    "finding": "Athena and the laptop both need their own read-only role for the ledger export",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "either\\s+needs a read-only role of its own",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-c4",
+    "round": 8,
+    "finding": "the ceiling's minimum is $10 in PLAN",
+    "check": {
+      "type": "grep",
+      "file": "PLAN.md",
+      "pattern": "from \\$10\\s+to the hard limit",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-b1",
+    "round": 8,
+    "finding": "MA-116 lists its undrawn settings, the credit warning and the hard-limit refusal",
+    "check": {
+      "type": "trace",
+      "key": "MA-116",
+      "field": "undrawn",
+      "contains": "past the $200 credit"
+    }
+  },
+  {
+    "id": "r8-b2",
+    "round": 8,
+    "finding": "MA-137 lists its undrawn edit screens",
+    "check": {
+      "type": "trace",
+      "key": "MA-137",
+      "field": "undrawn",
+      "contains": "routing matrix"
+    }
+  },
+  {
+    "id": "r8-b3",
+    "round": 8,
+    "finding": "MA-145 lists the replay that fails again",
+    "check": {
+      "type": "trace",
+      "key": "MA-145",
+      "field": "undrawn",
+      "contains": "fails again"
+    }
+  },
+  {
+    "id": "r8-a1",
+    "round": 8,
+    "finding": "the fixed list's checks test behaviour, not code text (r2-B3 and r3-B4 mutate a copy)",
+    "check": {
+      "type": "grep",
+      "file": "review/MA-155/fixed.json",
+      "pattern": "r\\['arch'\\]=\\['99\\.9'\\]",
+      "present": true
     }
   }
 ]

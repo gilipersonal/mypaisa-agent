@@ -97,8 +97,9 @@ def captions(path: Path) -> set[str]:
         for cls in ("dv-cap", "dv-sname", "dv-oname", "dv-tname"):
             for m in re.finditer(rf'class="{cls}"[^>]*>(.*?)</(?:p|span|div|a)>', t, re.S):
                 caps.add(_caption(m.group(1)))
-        for m in re.finditer(r'data-screen-label="([^"]*)"', t):
-            caps.add(_caption(m.group(1)))
+        for m in re.finditer(r'<(\w+)([^>]*)data-screen-label="([^"]*)"', t):
+            if not re.search(r'class="[^"]*\bdv-turn\b', m.group(2)):  # a turn's label names the turn, not a board
+                caps.add(_caption(m.group(3)))
         # A numbered board heading: <a class="dv-tid">1</a><span class="dv-tname">Colour</span> (or dv-oid, dv-oname).
         for m in re.finditer(r'class="dv-(t|o)id"[^>]*>(.*?)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
             pair(_caption(m.group(2)), _caption(m.group(3)))
@@ -271,6 +272,10 @@ def shape_errors(trace: dict) -> list[str]:
             errors += [f"{field}: an entry is not an object: {str(x)[:80]}" for x in val if not isinstance(x, dict)]
     if not isinstance(trace.get("claude_design", {}), dict):
         errors.append("claude_design must be an object")
+    else:
+        for name, proj in trace.get("claude_design", {}).items():
+            if not isinstance(proj, dict) or not isinstance(proj.get("dir"), str):
+                errors.append(f"claude_design.{name} must be an object with a text dir")
     for p in trace.get("phases", []) if isinstance(trace.get("phases"), list) else []:
         if isinstance(p, dict) and not (isinstance(p.get("phase"), int) and all(isinstance(p.get(f), str) for f in ("epic", "title", "plan_heading"))):
             errors.append(f"phases: {str(p)[:80]} needs a number and text epic, title and plan_heading")
@@ -495,10 +500,15 @@ BOARD_CASES = [
     ("app", "Currency check.dc.html", "Currency check: intro", False), ("app", "Admin center 2.dc.html", "Admin center 2", False),
     ("ds", "MyPaisa DS v1.dc.html", "Telegram draws the bubble and buttons; MyPaisa owns the PNG, the words and their order.", False),
     ("ds", "MyPaisa DS v1.dc.html", "1a · Warm ledger", True),
+    ("app", "Browser.dc.html", "Browser · Browser boards 1 to 4", False), ("app", "Mini App.dc.html", "Mini App · Mini App screens", False),
 ]
 
 
 def selftest(trace: dict) -> int:
+    if bad_shape := shape_errors(trace):
+        for e in bad_shape:
+            print(f"DRIFT: {e}")
+        return 1
     dirs = {k: v.get("dir") for k, v in trace.get("claude_design", {}).items()}
     bad = 0
     for proj, file, board, want in BOARD_CASES:

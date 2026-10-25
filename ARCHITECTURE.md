@@ -834,8 +834,9 @@ the chat, where it is audited. The
 exceptions are the owner's admin settings and operations in the Admin center
 (Arun, 24 Oct 2026: "Dashboard will be read only (except for admin)"): the
 security actions (sign out, pause, restore, unlink; MA-102); the Claude
-ceiling, the caps, their alert thresholds and the alert routing, quiet hours
-and cooldowns (§15.1, §15.2, MA-116, MA-137);
+ceiling with its member share, renewal day and hard limit, the caps, their
+alert thresholds and the alert routing, quiet hours and cooldowns (§15.1,
+§15.2, MA-116, MA-137);
 replaying dead-lettered work (§21.3, MA-145); approving or rejecting an
 agent's request and rolling a setting back (§20.2, §20.3, MA-130); and
 choosing how an incident ends (§20.5, MA-135). Each is behind a fresh check
@@ -960,9 +961,9 @@ pensions since 2024") are answered without a database running all month:
   be checked. The card is designed first.
 - The structured `query_ledger` tool (MA-62) stays the first choice; this one
   is for the questions it cannot express. Optionally (MA-104), the same
-  files can be read with Athena; reading them from the laptop would need a
-  read-only role of its own for that prefix, since the developer role cannot
-  read prod (§18.1), and is decided when the story starts.
+  files can be read with Athena or with DuckDB on the owner's laptop; either
+  needs a read-only role of its own for that prefix, since no human role
+  reads prod today (§18.1), and the role is decided when the story starts.
 
 ---
 
@@ -1412,7 +1413,7 @@ falls, and direction is the last and least trusted piece.
 ### 19.2 Data, as it was known on each day (F1, MA-119)
 
 Ten years, from 2015 or inception, in Parquet in the `mypaisa-<env>-lake`
-bucket and queried with DuckDB (the same copy as MA-104):
+bucket and queried with DuckDB (the same DuckDB-over-Parquet approach as MA-104's ledger export):
 
 | Kind | What | Chosen source | Cost |
 | --- | --- | --- | --- |

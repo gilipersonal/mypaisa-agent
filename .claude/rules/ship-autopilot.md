@@ -47,7 +47,12 @@ this repo on any change just before you merge the PR. just for this Repo".
   merge: "review it first, then merge" is the yes. The non-blocking findings
   go into the report and onto the issue.
 - **Merge now** merges with no review.
-- Arun can ask for a reviewer at any other time too.
+- Arun can ask for a reviewer at any other time too; it runs the same way
+  (gates first, parallel lanes, the delta after round 1, the fixed list).
+- After each round, update `review/MA-<n>/state.json` (the round, the
+  reviewed sha, its blocking count, and Arun's word for any round past five)
+  and comment the round's result on the issue. The lessons go into
+  `.claude/rules/independent-review.md` the same day.
 
 ## What changes
 
@@ -102,8 +107,8 @@ PR, move the issue to In Review, wait for the checks. Then ask exactly once,
 naming the PR and its checks:
 
 > MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key, plan-sync). Review it
-> first, then merge, or merge it into main now? (MA-7 goes to Done after the
-> merge.)
+> first (lanes: scripts, trace, docs, rules; up to five rounds), then merge,
+> or merge it into main now? (MA-7 goes to Done after the merge.)
 
 Either yes merges (after a clean review, for the first), closes the issue and
 syncs `main`. A no, or no answer, leaves
@@ -112,11 +117,12 @@ the PR open and the issue In Review; say so in one line.
 ### "Merge it" is the whole yes
 
 Arun's rule, 2026-10-23 (MA-7): "I'll just say merge it. If you need to delete
-the branch, delete the branch. Don't ask me." His "merge it" (or any plain yes
-to the merge question) covers every step after the merge, with no further
-question in words. A bare "yes" or "merge it" means merge now; any answer
-that asks for the review means review first, then merge on a clean review
-(MA-157):
+the branch, delete the branch. Don't ask me." His "merge it" (or a yes to the
+merge question) covers every step after the merge, with no further question in
+words. What each answer means (Arun, 25 Oct 2026, so the repo and the global
+rule agree): "merge it" or "merge now" merges with no review; a bare "yes", or
+any answer that asks for the review, means review first, then merge on a clean
+review (MA-157); anything else leaves the PR open:
 
 - merge the PR;
 - delete the story's `MA-*` branch on GitHub and locally, however it has to

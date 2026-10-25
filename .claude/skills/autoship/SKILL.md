@@ -58,8 +58,11 @@ Uncommitted files that belong to another story are left alone and named.
 Ask once, in words, naming everything:
 
 > MA-<n> is ready: PR #<n> `[MA-<n>] ...`, checks green (<names>). Review it
-> first, then merge, or merge it into main now? (MA-<n> goes to Done after
-> the merge.)
+> first (lanes: <the lanes the PR touches>; up to five rounds), then merge,
+> or merge it into main now? (MA-<n> goes to Done after the merge.)
+
+A bare "yes" means review first; "merge it" or "merge now" means merge with no
+review (`ship-autopilot.md`).
 
 Use the turn's next-step question (or `AskUserQuestion` when there is none)
 with "Review, then merge" and "Merge now" (and "Not now" where the question
@@ -71,12 +74,13 @@ says, in parallel lanes. Run the gates and `scripts/review_regress.py MA-<n>`
 first. Then start one fresh sub-agent per lane in a single message (scripts
 and checks; the trace against Jira; the spec docs; the rules and skills; the
 boards, when changed), each with the PR number, the issue key, its lane's
-files and the story's acceptance criteria, never the maker's notes; round 1
+files, the story's acceptance criteria, the repo's rules and
+`review/MA-<n>/fixed.json` (fixes it must not undo), never the maker's notes; round 1
 covers everything, later rounds the delta since `reviewed_sha` in
 `review/MA-<n>/state.json`. Merge their findings. Fix the blocking ones on
 the branch, add each to `review/MA-<n>/fixed.json` with a check, push, wait
 for the checks, and run the next round; at most five rounds, then stop and
-ask Arun whether to go on, listing what is left. A clean round goes straight
+ask Arun whether to go on, listing what is left and what each fix costs. A clean round goes straight
 to step 4; put the non-blocking findings in the report and on the issue.
 
 ## 4. After a yes (and a clean review, if one was asked for), without asking again
@@ -106,7 +110,7 @@ After a no: leave the PR open and the issue In Review, and say so in one line.
 ## Report
 
 ```
-PR:    <url> [MA-<n>] ...  merged <sha> (checks: jira-key ok, plan-sync ok; review: clean in <n> rounds | not asked)
+PR:    <url> [MA-<n>] ...  merged <sha> (checks: jira-key ok, plan-sync ok; review: clean in <n> rounds | unreviewed, Arun said merge now)
 Jira:  MA-<n> Done (comments: PR raised, merged)
 Base:  main at <sha>, checkout synced
 ```

@@ -139,8 +139,9 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
   dark and at every size class it claims, click through anything interactive, and read every image: clipped or
   touching text, icons showing as words, misalignment, overflow, empty halves, light/dark differences, contrast,
   targets under 44 px, charts out of line, numbers that disagree between pages. Fix and look again. When Arun asks for
-  it (as on MA-101), a fresh reviewer that did not make the pages does this pass too, and its blockers are fixed
-  before Arun sees the work.
+  it (as on MA-101), fresh reviewers that did not make the pages do this pass too, the way every review here runs
+  (`.claude/rules/independent-review.md`: gates first, parallel lanes, the delta after round 1, the fixed list), and
+  their blockers are fixed before Arun sees the work.
 - **Asking.**
   1. Give Arun the claude.ai/design links (never a serve URL), and comment them on the MA issue.
   2. Ask for the pick with `AskUserQuestion`: one choice per option, the recommended one first, plus "None of these:

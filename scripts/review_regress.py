@@ -8,7 +8,8 @@ check that passes while the fix holds (the global rule in ~/.claude/CLAUDE.md, "
 
 - `cmd`: a shell command that must exit 0 (`"run": "python3 scripts/plan_sync.py selftest"`).
 - `cmd_fails`: a shell command that must exit non-zero (`start` refusing a story).
-- `grep`: `file` must contain (`present: true`) or must not contain (`present: false`) the regex `pattern`.
+- `grep`: `file` (or each of `files`) must contain (`present: true`) or must not contain (`present: false`) the regex
+  `pattern`, matched across line breaks (`\\s` spans them); a missing file is a failure, never a pass.
 - `trace`: a row of docs/trace.json (`key`) whose `field` equals `value`, or contains `contains`, or lists a board
   named `board`.
 - `manual`: a check only a person or a tool outside the repo can make (Jira text, a board); it is printed for the
@@ -34,9 +35,14 @@ def run_check(c: dict) -> tuple[bool | None, str]:
         ok = (r.returncode == 0) == (kind == "cmd")
         return ok, c["run"]
     if kind == "grep":
-        text = (ROOT / c["file"]).read_text()
-        found = re.search(c["pattern"], text, re.M) is not None
-        return found == c.get("present", True), f"{c['file']} {'has' if c.get('present', True) else 'lacks'} /{c['pattern']}/"
+        files = c.get("files") or [c["file"]]
+        missing = [f for f in files if not (ROOT / f).is_file()]
+        if missing:
+            return False, f"missing: {', '.join(missing)}"
+        hits = [f for f in files if re.search(c["pattern"], (ROOT / f).read_text(), re.M | re.I * bool(c.get("ignore_case")))]
+        want = c.get("present", True)
+        ok = len(hits) == len(files) if want else not hits
+        return ok, f"{', '.join(files)} {'has' if want else 'lacks'} /{c['pattern']}/" + (f" (found in {', '.join(hits)})" if hits and not want else "")
     if kind == "trace":
         trace = json.loads((ROOT / "docs" / "trace.json").read_text())
         row = next((i for i in trace.get("items", []) if i.get("key") == c["key"]), None)
@@ -60,13 +66,14 @@ def main(argv: list[str]) -> int:
         return 2
     ledger = ROOT / "review" / argv[1] / "fixed.json"
     entries = json.loads(ledger.read_text())
-    failed = 0
+    failed = manual = 0
     for e in entries:
         ok, what = run_check(e["check"])
         mark = "MANUAL" if ok is None else ("ok    " if ok else "BROKEN")
         failed += ok is False
+        manual += ok is None
         print(f"{mark} {e['id']}: {e['finding']} [{what}]")
-    print(f"review-regress {argv[1]}: {len(entries)} fixed findings, {failed} broken")
+    print(f"review-regress {argv[1]}: {len(entries)} fixed findings, {failed} broken, {manual} for the reviewers to check by eye")
     return 1 if failed else 0
 
 

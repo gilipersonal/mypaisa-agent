@@ -301,7 +301,7 @@ browser, as `ARCHITECTURE.md` §9.3.
   against the ceiling and the step it is on; the last seven days of alarms).
 - The Admin center's **Spend** section (MA-116), designed first like every
   screen: this cycle's spend by member, feature and model against the
-  ceiling, the step and the days left; the owner sets the ceiling (from £10
+  ceiling, the step and the days left; the owner sets the ceiling (from $10
   to the hard limit), the member share, the renewal day and the hard limit,
   each behind the fresh check (MA-102), each an audit row and a message to
   the owner; a ceiling above the hard limit is refused with the steps to
@@ -318,7 +318,9 @@ browser, as `ARCHITECTURE.md` §9.3.
   the household's data, plus the Admin center's owner-only admin actions,
   each behind a fresh check (`ARCHITECTURE.md` §9.3): the security actions
   (MA-102), the ceiling and caps with their alert routing (MA-116, MA-137)
-  and replaying failed work (MA-145); sign-in through the Cognito pool built in
+  and replaying failed work (MA-145) in this phase; deciding agents' requests,
+  rolling a setting back and closing an incident (MA-130, MA-135) join in
+  phase 12; sign-in through the Cognito pool built in
   phase 1 (Telegram, Google, passkey); the `HttpOnly`, `SameSite=Strict`
   session cookie with five-minute access tokens behind it; session, status,
   epoch and role checked on every call; CORS for that environment's console
@@ -542,7 +544,7 @@ Claude ceiling.
 ## Phase 12 — The agent team: configured, approved, self-healing, self-learning (later)
 
 The bot becomes a small team of agents with narrow jobs, every behaviour a
-setting the admin controls, every change outside a setting's band an
+setting the admin controls, every change outside a setting's band the
 admin's approval in Telegram or the web, every prediction graded daily, and
 repairs made where they are safe, as `ARCHITECTURE.md` §20. Epic MA-127. For
 one household and its one admin, the owner.
@@ -564,7 +566,7 @@ one household and its one admin, the owner.
   window, at most two points a day per bucket, used only when better, on 10
   days' probation with automatic rollback.
 - **E6, challengers (MA-134).** Retrains, parameters and rule thresholds
-  tried over ten years and in shadow; promoted only on evidence and an
+  tried over ten years and in shadow; promoted only on evidence and the
   admin's approval; the old version restored if the new one slips.
 - **E7, the ops warden (MA-135).** The daily run as one Step Functions state
   machine with retries; safe repairs on its own; an incident for the rest;

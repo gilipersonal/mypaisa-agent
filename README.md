@@ -314,7 +314,7 @@ lives in SSM Parameter Store only, put by hand; anything that adds cost is asked
 ### Access
 
 - **Operators** use the `agent-toolkit` profile through the developer role, which works in dev and is denied
-  anything tagged `env=prod`. Reading prod goes through the AWS MCP, read-only.
+  anything tagged `env=prod`. Reading prod goes through the AWS MCP, read-only: describe, list, logs, metrics and costs, never a record or a secret.
 - **CI** assumes one of three OIDC roles: `ci-plan` (read only, any pull request), `ci-dev-deploy` (`main` only) and
   `ci-prod-deploy` (`main` and the `prod` GitHub environment only). The trust policies' subjects embed this
   repository's numeric ids, e.g. `repo:gilipersonal@325700199/mypaisa-agent@<repo_id>:environment:prod`, so the
