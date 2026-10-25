@@ -32,7 +32,7 @@ Uncommitted files that belong to another story are left alone and named.
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured". The `plan-sync` gate
-   (`python3 scripts/plan_sync.py check`) always applies. Before it, run
+   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`) always applies. Before it, run
    `/plan-sync --design` every time, so any board edited in Claude Design is
    copied in with its etag; and if the story changed a board, a phase or a
    story, run `/plan-sync MA-<n>` too, so the trace, the design mirror and

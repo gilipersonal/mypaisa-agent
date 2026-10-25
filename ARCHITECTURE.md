@@ -162,9 +162,9 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **Forecast** | `instrument_id`, `date`, `horizon_days` (20), `p_up`, `p_fall_5`, `range` {p10, p50, p90}, `mood`, `analogs` {count, recovered}, `events[]`, `drivers[]`, `model_version`, `graded` | One per holding per day from the Forecaster (§19), later; graded like a stance. |
-| **Setting**, **ConfigVersion** | `key`, `value`, `schema` (type, range), `auto_band`, `approval` (`auto` · `admin`), `version`, `updated_by` (an admin or an agent), `reason`; one `ConfigVersion` row per change, never edited | Every behaviour the admin controls (§20.2). |
-| **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`telegram` · `web`), `expires_at` | An agent's request for an admin's approval (§20.3). |
-| **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from an admin, and what they could not fix themselves (§20.3, §20.5). |
+| **Setting**, **ConfigVersion** | `key`, `value`, `schema` (type, range), `auto_band`, `approval` (`auto` · `admin`), `version`, `updated_by` (the admin or an agent), `reason`; one `ConfigVersion` row per change, never edited | Every behaviour the admin controls (§20.2). |
+| **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`telegram` · `web`), `expires_at` | An agent's request for the admin's approval (§20.3). |
+| **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from the admin, and what they could not fix themselves (§20.3, §20.5). |
 | **ScoreDaily** | `model`, `instrument_id`, `mood`, `date`, the day's graded count, hit rate, Brier score, log loss, range coverage, rolling 30, 90 and 365-day values | The learning loop's daily scoreboard (§20.4); the full outcomes live in S3. |
 | **CalibrationMap** | `model`, `version`, `buckets[]` (said vs seen), `fitted_on`, `window`, `status` (`probation` · `live` · `rolled_back`) | The map from raw confidence to calibrated confidence (§20.4). |
 | **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.6). |
@@ -299,7 +299,7 @@ login is an audit row.
 
 | Role | Can |
 | --- | --- |
-| owner | Invite and remove members, change any account or holding, set the household budget and settings, see every member's detail |
+| owner | Invite and remove members, change any account or holding, set the household budget and settings, see every member's detail. The owner is the household's one admin (Arun, 25 Oct 2026: "there is only 1 admin"): the only person who sees the Admin center, the admin's Telegram chat and the admin desk |
 | member | Add, change and remove holdings in their own accounts; see the household overview; see their own detail; opt in to sharing their detail with the household |
 | viewer | Read the household overview and whatever members share; nothing else |
 
@@ -428,7 +428,7 @@ free, no key) is the default everywhere and the only feed local development
 needs. Switching to EODHD is a setting plus a key in SSM, not a code
 change, and it is a last resort: free sources first (yfinance, Twelve Data's
 free tier, free websites where their terms allow), EODHD only when the data
-steward shows a free source cannot serve a holding and an admin approves
+steward shows a free source cannot serve a holding and the admin approves
 (§20.3).
 
 **The contract.** A plugin implements:
@@ -586,7 +586,7 @@ weekly (Brier score, reliability table by bucket); the mapping changes only
 after 8 weeks of evidence and the change is logged. From phase 12 the
 learning loop grades every day and moves the map daily within small bounds,
 with an automatic rollback; changes to the rules themselves still need
-evidence and an admin's approval (§20.4).
+evidence and the admin's approval (§20.4).
 
 ### 6.5 Forecast ranges
 
@@ -941,6 +941,27 @@ redesigned screens, then budget and reports, then retiring the old
 repository. Each step ships read-only pages over data that the bot already
 maintains, so nothing is shown that cannot be changed from the chat.
 
+### 12.1 Any question, answered from a read-only SQL copy of the ledger (MA-104)
+
+Arun, 24 Oct 2026: "I will be making such queries in future about my
+transactions and investments." Questions nobody planned for ("average
+monthly dividend per member over two years", "how much went into ISAs versus
+pensions since 2024") are answered without a database running all month:
+
+- A nightly job exports the household's ledger (transactions, valuations,
+  net worth, positions, accounts) to S3 as Parquet, under that household's
+  prefix, encrypted, with a set retention.
+- A `query_ledger_sql` tool runs DuckDB inside the Lambda over that
+  household's files only. Claude writes the SQL from the question; the query
+  is read-only (SELECT only), stops at 10,000 rows or 10 seconds, and cannot
+  reach another household's prefix.
+- The figures in the answer come from the result, never from the model, and
+  the SQL is shown under the answer's Technical section so every answer can
+  be checked. The card is designed first.
+- The structured `query_ledger` tool (MA-62) stays the first choice; this one
+  is for the questions it cannot express. The same files can be read with
+  Athena, or DuckDB on the owner's laptop.
+
 ---
 
 ## 13. Tech stack (changes from v1 in bold)
@@ -1070,7 +1091,7 @@ ceiling ($160 in prod, $40 in dev), the steps of the ladder (70%, 85%, 95%,
 average), the calls per run (eight), each agent's
 share (§20.7), and the day the plan's credit renews, which starts each
 cycle. The admin moves the ceiling up or down in the Admin center (MA-116),
-or from phase 12 in the admin's Telegram chat (§20.3): admins only, behind
+or from phase 12 in the admin's Telegram chat (§20.3): the admin only, behind
 the fresh check (MA-102), with an audit row and a Telegram message to the
 admin; it takes effect on the next model call. Lowering it below what is already
 spent puts the bot straight onto the step that implies, and the Admin center
@@ -1164,8 +1185,8 @@ the hard limit is a pull request.
 | Data feed stale, a job failed | yes | yes | no |
 | Holding alerts (§11) | members' own, as today | members' own, as today | no |
 
-- **Web app:** an Alerts page in the Admin center and a badge, admins only for
-  system alerts.
+- **Web app:** an Alerts page in the Admin center and a badge, for the admin
+  only, for system alerts.
 - **Telegram:** the admin's own chat; critical with sound, the rest silent.
 - **Email:** through Amazon SNS, a topic `mypaisa-<env>-admin-alerts` with the
   admin's address subscribed (put in SSM by hand, the subscription made by
@@ -1194,13 +1215,14 @@ a daily digest instead.
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 | The kill switch's name | `/pause` and `/resume`, kept though PAUSE is also a stance; the stance only appears on a holding's card with its confidence, never as a command (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Three different things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §8); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5); the PAUSE stance is a view on one holding |
+| One admin | The owner is the household's only admin: the Admin center, the admin's Telegram chat, the admin desk, approvals and alerts are theirs alone; no role makes a second admin (Arun, 25 Oct 2026: "there is only 1 admin") | One person decides every change to the system; the second check and the audit row are enough without a second approver |
 | Money in any currency | Each position has one currency; an amount typed in another is never saved as it is: the bot names the holding's currency and asks for the amount that arrived, or offers the ECB rate as a marked estimate; the original amount, rate and source are kept on the transaction (MA-156, 24 Oct 2026) | Rupees are never recorded as pounds; the number stays the member's or the engine's, never Claude's |
 | Identity | Amazon Cognito from day one, one user pool per environment: Telegram (custom auth over `initData` and the Login Widget), Google and passkeys linked to one user per member; invites by one-time link; replaces the earlier "Cognito only later" (MA-106, 24 Oct 2026) | No passwords; one identity however you arrive; sign-out, pause and MFA come built in; free at this scale |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 | Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
 | Batch scoring | Message Batches for the nightly sentiment scoring | Half price; overnight latency is fine |
-| Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind a setting; yfinance and Twelve Data's free tier first, free websites where their terms allow, EODHD only as a last resort on an admin's approval | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
+| Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind a setting; yfinance and Twelve Data's free tier first, free websites where their terms allow, EODHD only as a last resort on the admin's approval | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
@@ -1212,7 +1234,7 @@ a daily digest instead.
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Forecaster | A second engine, phase 11, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
 | Queues | SQS between every part that could fail: updates in and replies out through FIFO queues with one lane per member or chat, background jobs through a work queue, retries with backoff, idempotent handlers, a dead-letter queue behind each with an alarm and replay (§21, MA-138) | Arun: "resilient and self heal with retries from Queues"; nothing a member sends, nothing the bot sends and no day's work is lost to a bad minute somewhere else |
-| Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on an admin's approval, in Telegram or the web; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
+| Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on the admin's approval, in Telegram or the web; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
 | Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
 ## 17. Open questions
@@ -1225,7 +1247,7 @@ a daily digest instead.
 - A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
 - For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
-- Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card); and whether a second person is made an admin (§20.3).
+- Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card).
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $100 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
@@ -1405,7 +1427,7 @@ bucket and queried with DuckDB (the same copy as MA-104):
 engines run on yfinance, Twelve Data's free tier and free websites where
 their terms allow. EODHD is switched on only when the data steward (§20.1)
 shows that no free source can serve a named holding (or its ten-year
-history) and an admin approves the request, which shows the evidence, the
+history) and the admin approves the request, which shows the evidence, the
 £19.99 a month and the headroom in the £50 line for AWS and others. Before
 it asks, it tries EODHD's free key on that holding and records what comes
 back. A paid feed not needed for 60 days is proposed for cancellation. Share-level
@@ -1533,7 +1555,7 @@ forecasts run in a Lambda from the same image, and the monthly retrain runs
 in a Lambda too (up to 15 minutes and 10 GB), moving to a Fargate task only
 if it outgrows that; the one-off GDELT backfill runs as such a task. Models
 are files in S3 behind their `ModelVersion` rows. The data is free; EODHD Historian (£19.99 a month)
-only if a free source fails and an admin approves (§19.2), inside the £50
+only if a free source fails and the admin approves (§19.2), inside the £50
 line for AWS and others; compute is a few dollars a month; Haiku filing the news is
 well under a dollar a month, inside the Claude ceiling of §15.1.
 
@@ -1563,13 +1585,13 @@ and rules produce every number and decision; Claude tags, writes, asks and
 answers. **Nothing changes without a trace**: every behaviour is a setting,
 and every change is a version and an audit row. **Outside its band, it
 asks**: an agent may act on its own only inside the automatic band its
-settings allow; anything else is a request to an admin.
+settings allow; anything else is a request to the admin.
 
 ### 20.1 The agents
 
-| Agent | Its job | Brain | On its own | Asks an admin |
+| Agent | Its job | Brain | On its own | Asks the admin |
 | --- | --- | --- | --- | --- |
-| **Concierge** (the `agent` Lambda) | Talks to members in the chat; routes an admin's instructions to the admin desk | Sonnet, Haiku for small turns | Answers, reads, proposes changes to records with a Confirm card (§8) | n/a: members confirm their own records |
+| **Concierge** (the `agent` Lambda) | Talks to members in the chat; routes the admin's instructions to the admin desk | Sonnet, Haiku for small turns | Answers, reads, proposes changes to records with a Confirm card (§8) | n/a: members confirm their own records |
 | **Data steward** | Keeps prices and data flowing from free sources; watches freshness, gaps, disagreement and free quotas | Code; Haiku writes its requests | Fails over within the chain, retries, fills gaps, labels stale data | A new or reordered source, any paid feed, a source's terms |
 | **News scout** | Collects news and events, tags them, matches them to holdings (§19.3) | Haiku through Batches; code scores | Tags and matches | A new feed or event type |
 | **Analyst** | The rules engine (§6) | Code only | Runs daily | Any rule threshold change (through the tuner) |
@@ -1577,7 +1599,7 @@ settings allow; anything else is a request to an admin.
 | **Grader and tuner** | The learning loop (§20.4) | Code; Sonnet writes the weekly and monthly reviews | Grades daily, moves calibration within bounds, rolls back a worse map | Promoting a challenger, any change to rules or models |
 | **Ops warden** | Runs the daily pipeline and repairs it (§20.5) | Code; Haiku summarises incidents | Retries, catches up, rolls back to the last good version | Anything it cannot fix: an incident |
 | **Budget keeper** | The meter, the ladder and the guards (§15.1) | Code | Steps down and back up | Ceilings and shares are the admin's |
-| **Admin desk** | The one channel between agents and admins (§20.3) | Code; Haiku turns an admin's words into a request | Queues, batches, reminds, expires | It is the asking |
+| **Admin desk** | The one channel between agents and the admin (§20.3) | Code; Haiku turns the admin's words into a request | Queues, batches, reminds, expires | It is the asking |
 
 Each agent is a Lambda with its own role, tools, model routing and budget
 share. They do not call each other directly: they publish events on the
@@ -1603,10 +1625,10 @@ setting directly. Lambdas read settings through a cache of a minute at
 most. Secrets stay in SSM and infrastructure in Terraform: a setting may
 name a secret, never hold one.
 
-### 20.3 The admin desk: Telegram and the web, admins only (E2, MA-130)
+### 20.3 The admin desk: Telegram and the web, the admin only (E2, MA-130)
 
-Admins are the owner and anyone the owner makes an admin; members and
-viewers never see the desk. Both doors show the same queue:
+The admin is the owner, the household's one admin (Arun, 25 Oct 2026:
+"there is only 1 admin"); members and viewers never see the desk. Both doors show the same queue:
 
 - **In Telegram**, in the admin's own chat with the bot. A request arrives as
   a card, for example:
@@ -1629,8 +1651,8 @@ check in the browser (MA-102). Deciding in one door updates the other. Each
 request says what changes, from and to, why with its evidence, the cost and
 the budget left, the risk and the undo, and when it expires. Agents also ask
 plain questions ("Which fund is the Monzo Balanced fund's ISIN?") with
-buttons or a typed answer that resumes their work. Admins give instructions
-in their own words ("put Twelve Data first for London", "raise dev to £50",
+buttons or a typed answer that resumes their work. The admin gives
+instructions in their own words ("put Twelve Data first for London", "raise dev to £50",
 "why did the Forecaster go quiet on silver?"); the concierge turns an
 instruction into the same request with a Confirm card, and a question into an
 answer from the agent concerned. Non-urgent requests wait for one daily
@@ -1747,7 +1769,7 @@ rest and can come forward once the web app and the second check exist
 grading and calibration (E4, E5) can start as soon as there are graded
 stances (phase 6); challengers (E6) need the Forecaster (phase 11); the ops
 warden (E7) and the agent budgets (E8) come with them. One household, its
-admins, and nothing shared: the bounds of §4.5 stand.
+one admin, and nothing shared: the bounds of §4.5 stand.
 
 ---
 

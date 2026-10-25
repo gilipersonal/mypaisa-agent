@@ -40,7 +40,7 @@ below is a story or task under it.
 | Create two bots with BotFather, one for dev and the household's for prod; each token into its own SSM path (`/mypaisa-agent/dev/telegram/bot_token`, `/mypaisa-agent/prod/telegram/bot_token`); the picture with `/setuserpic` from `docs/mark-1024.png` on both | You |
 | Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of $160 and $40 (together the Max 20x plan's $200 monthly credit, the agents' allowance; each limit is the hard cap behind that environment's Claude ceiling, `ARCHITECTURE.md` §15.1); no payment method and auto-reload off, so the credit is the last stop; and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The Max 20x plan's monthly API credit ($200) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
 | Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
-| Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD is the last resort: switched on only with an admin's approval when no free source can serve a holding or its history (Historian £19.99 a month, `ARCHITECTURE.md` §19.2) | Decided |
+| Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD is the last resort: switched on only with the admin's approval when no free source can serve a holding or its history (Historian £19.99 a month, `ARCHITECTURE.md` §19.2) | Decided |
 | Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key` and `/mypaisa-agent/prod/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
 | Terraform bootstrap (MA-26): `infra/modules/mypaisa` with the two roots `infra/dev` and `infra/prod`, each with its own state key in the existing state bucket; `infra/bootstrap`, applied once from the laptop, with the account's GitHub OIDC provider reused and three roles pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy`, `ci-prod-deploy`); `dev` and `prod` GitHub environments, prod needing your approval; the developer role with its explicit deny on `env=prod`; the zone and the certificate looked up by name (`ARCHITECTURE.md` §18.2); AWS Budgets at £75 as the backstop behind the app's £50 cap (`ARCHITECTURE.md` §15.2, MA-137) | Claude |
 | The PR gates in GitHub Actions (MA-25): ruff, pyright, pytest with moto, `terraform fmt` and `validate`, tflint, the Terraform security scan, gitleaks, pip-audit, `jira-key`, and a plan for both environments on every PR touching `infra/` | Claude |
@@ -435,6 +435,12 @@ shipping read-only pages over data the bot already maintains:
    exports as GET routes; the zone moves from the old tracker's Terraform to
    this repository's and the apex `mypaisapp.com` redirects to the console
    (MA-97).
+7. **Any question about the money (MA-104, `ARCHITECTURE.md` §12.1).** A
+   nightly export of the household's ledger to Parquet in S3, and a
+   `query_ledger_sql` tool that runs read-only DuckDB over that household's
+   files only, for questions the structured `query_ledger` tool (MA-62)
+   cannot express; the figures come from the result, and the SQL is shown
+   under Technical; designed first.
 
 **Tests:** XIRR, schedule and projection fixtures with known answers; the
 importer (a wrong template version, a bad row, the same file twice, a
@@ -537,14 +543,14 @@ The bot becomes a small team of agents with narrow jobs, every behaviour a
 setting the admin controls, every change outside a setting's band an
 admin's approval in Telegram or the web, every prediction graded daily, and
 repairs made where they are safe, as `ARCHITECTURE.md` §20. Epic MA-127. For
-one household and its admins.
+one household and its one admin, the owner.
 
 - **E1, settings (MA-129).** Every behaviour a versioned `Setting` with a
   schema, a range, an automatic band and an approval rule; defaults in
   `config/defaults.yaml`; one settings service; a minute's cache; a daily
   snapshot to S3.
 - **E2, the admin desk (MA-130).** Agents' requests and questions, and
-  admins' instructions, in the admin's Telegram chat and the Admin center
+  the admin's instructions, in the admin's Telegram chat and the Admin center
   (Approvals, Settings, Agents, Incidents); approval with the second check;
   a daily digest, incidents at once; designed first.
 - **E3, the data steward (MA-131).** yfinance, Twelve Data's free tier and
@@ -579,7 +585,7 @@ injected failures at each pipeline step recover idempotently or open an
 incident; metering by agent.
 
 **Exit:** a month in which every change was either inside its band or
-approved by an admin, every prediction was graded, calibration stayed
+approved by the admin, every prediction was graded, calibration stayed
 within tolerance, every failure was repaired or raised, and spend stayed
 inside the $200 credit for the agents and the cap for AWS and others.
 
@@ -695,7 +701,7 @@ handler writes its `RunRecord`, both covered by tests.
 | Rich messages behave differently than the write-ups say | HTML fallback on day one |
 | Alert fatigue | Weekly red budget, cooldowns, repeat filter |
 | An agent changes something it should not | One settings service enforcing schema, range and band; approval with the second check for anything outside the band; every change a version and an audit row; secrets and infrastructure out of agents' reach |
-| Self-tuning chases noise | Calibration moves at most two points a day with a probation and rollback; rules and models change only on weeks of evidence and an admin's approval |
+| Self-tuning chases noise | Calibration moves at most two points a day with a probation and rollback; rules and models change only on weeks of evidence and the admin's approval |
 | Too many requests for the admin | Automatic bands for safe changes, a daily digest, incidents only when urgent, rejected requests not repeated within their period |
 | A Forecaster model that learned the past by heart | Walk-forward tests with a gap, the last two years held out, calibration checks, 8 live weeks before it is shown, and a switch-off when its record slips |
 | Look-ahead: a backtest that saw the future | Every row stamped with the date it was known; the lab refuses a strategy that peeks at tomorrow |

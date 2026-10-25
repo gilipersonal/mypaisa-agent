@@ -166,7 +166,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-95 | Design and build the Overview, Assets and Debts screens for the whole household | To Do | §12, §9.3 | todo |  |
 | MA-96 | Forecast and budget: a thirty-year projection and a monthly budget set by chat | To Do | §6.6, §12 | todo |  |
 | MA-97 | Reports and exports replace the old wealth tracker, which is then retired | To Do | §12 | todo |  |
-| MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §19.2 | none |  |
+| MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §12.1, §8 | todo |  |
 | MA-105 | The old wealth tracker's holdings and debts come into MyPaisa once, checked by the owner | To Do | §18.5 | todo |  |
 | MA-111 | The owner fills prod's history from an Excel workbook sent to the bot | To Do | §12, §18.5, §22.2, §22.5 | todo |  |
 
@@ -197,7 +197,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | --- | --- | --- | --- | --- | --- |
 | MA-128 | The architecture records the agent team, the settings and approvals, the learning loop, self-healing and the new budgets | Done | §5.1, §6.4, §15, §15.1, §16, §17, §18.1, §19.2, §20 | none |  |
 | MA-129 | E1: every behaviour is a versioned setting with bounds, and nothing changes it except through the settings service | To Do | §20.2 | none |  |
-| MA-130 | E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and admins give instructions | To Do | §20.3 | planned | Admin center 2.dc.html: Browser · Admin · Approvals; Admin center 2.dc.html: Browser · Admin · Approvals · Approve, the fresh check; Admin center 2.dc.html: Browser · Admin · Approvals · Approved; Telegram admin.dc.html: Telegram · Approval request; Admin center 2.dc.html: Browser · Admin · Settings |
+| MA-130 | E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and the admin gives instructions | To Do | §20.3 | planned | Admin center 2.dc.html: Browser · Admin · Approvals; Admin center 2.dc.html: Browser · Admin · Approvals · Approve, the fresh check; Admin center 2.dc.html: Browser · Admin · Approvals · Approved; Telegram admin.dc.html: Telegram · Approval request; Admin center 2.dc.html: Browser · Admin · Settings |
 | MA-131 | E3: a data steward keeps prices flowing from free sources, repairs gaps, and asks before adding a paid one | To Do | §5.1, §19.2, §20 | none |  |
 | MA-132 | E4: every prediction is stored as made and graded every day against what prices actually did | To Do | §20.4, §20.6 | none |  |
 | MA-133 | E5: confidence is recalibrated every day within safe bounds, and rolled back on its own if it gets worse | To Do | §20.4 | none |  |

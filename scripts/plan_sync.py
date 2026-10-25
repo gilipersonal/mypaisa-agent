@@ -108,15 +108,19 @@ def captions(path: Path) -> set[str]:
         # Boards listed as data. Only an object that is a board (it has one of a board's own fields: anchor,
         # keys, notes, intro, ...) gives its cap, name, or number and name: { id: '1', anchor: 'k1', name: ... }.
         lit = r"'((?:[^'\\\n]|\\.)*)'"
+        # The field a board's number comes from is the one the canvas prints in its number chip,
+        # <a class="dv-oid">{{ g.tag }}</a>; a hidden id is only an anchor. No chip, no numbered titles.
+        shown = set(re.findall(r'class="dv-(?:o|t)id"[^>]*>\s*\{\{\s*\w+\.(\w+)\s*\}\}', t))
         for m in re.finditer(r"\{([^{}\[\]]{0,800})", t):
             head = m.group(1)
             if not BOARD_MARKERS & set(re.findall(r"\b(\w+)\s*:", head)):
                 continue
-            fields = {k: v.replace("\\'", "'") for k, v in re.findall(rf"\b(id|tag|name|cap|board)\s*:\s*{lit}", head)}
+            fields = {k: v.replace("\\'", "'") for k, v in re.findall(rf"\b(id|tag|tid|name|cap|board)\s*:\s*{lit}", head)}
             if "board" in fields:  # the object's title is its board field; its name is something else (a holding)
                 continue
             caps.update(fields.get(k) for k in ("cap", "name"))
-            pair(fields.get("id") or fields.get("tag"), fields.get("name"), option=True)
+            for f in shown & set(fields):
+                pair(fields[f], fields.get("name"), option=True)
         for m in re.finditer(rf"\b\w+\(\s*'([^'\n]{{1,6}})'\s*,\s*\{{\s*name\s*:\s*{lit}", t):  # make('1c', { name: 'Watcher' })
             pair(m.group(1), m.group(2).replace("\\'", "'"), option=True)
         # A board field names a board wherever it is: board: 'Browser · Holding · Forecast'.
@@ -131,7 +135,8 @@ def captions(path: Path) -> set[str]:
         caps.update(m.group(1) for m in re.finditer(rf"\b\w+\s*=\s*'((?:{DOORS}) · [^'\\\n]+)'", t))
         # Script fragments are not titles: "' + w.label.replace(/", " + lapScr.name : ".
         code = re.compile(r"['\"]\s*\+|\+\s*['\"]|\+\s*\w+\.\w|\.replace\(|\?\s*\w+\.\w")
-        _captions[path] = {c for c in caps if c and re.search(r"\w", c) and not code.search(c)}
+        # A caption paragraph is prose, not a title: a title is short and has no sentence in it.
+        _captions[path] = {c for c in caps if c and re.search(r"\w", c) and not code.search(c) and len(c) <= 100 and ". " not in c}
     return _captions[path]
 
 
@@ -148,7 +153,7 @@ def board_ok(board: str, file: str, path: Path) -> bool:
     if board in caps:
         return True
     m = re.match(rf"^({DOORS}) · (.+)$", board)
-    return bool(m and door(file) == m.group(1) and m.group(2) in caps and not re.match(rf"^({DOORS}) · ", m.group(2)))
+    return bool(m and door(file) == m.group(1) and m.group(2) in caps and not re.search(rf"\b({DOORS}) · ", m.group(2)))
 
 
 def sha256(path: Path) -> str:
@@ -159,10 +164,13 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     """What is wrong with one trace row (errors), and what it still waits on (warnings)."""
     errors, warnings = [], []
     k = it.get("key") if isinstance(it.get("key"), str) else "?"
-    for field in ("key", "summary", "status", "type"):
+    for field in ("key", "summary", "status", "type", "epic", "design"):
         if not isinstance(it.get(field), str) or not it.get(field):
             errors.append(f"{k}: {field} is required and must be text")
             return errors, warnings
+    if not isinstance(it.get("ui"), bool) or not isinstance(it.get("phase"), int) or isinstance(it.get("phase"), bool):
+        errors.append(f"{k}: ui must be true or false and phase a number")
+        return errors, warnings
     if it.get("notes") is not None and not isinstance(it.get("notes"), str):
         errors.append(f"{k}: notes must be text")
         return errors, warnings
@@ -209,7 +217,10 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     if it.get("undrawn") and status in ("In Review", "Done"):
         errors.append(f"{k}: {status} with screens still undrawn ({'; '.join(it['undrawn'])}); draw them and clear undrawn first")
     for b in it.get("boards", []):
-        proj = ctx["projects"].get(b.get("project"))
+        if not isinstance(b.get("project"), str):
+            errors.append(f"{k}: board {b!r} needs a project from claude_design")
+            continue
+        proj = ctx["projects"].get(b["project"])
         if not proj or not isinstance(proj.get("dir"), str) or not isinstance(b.get("file"), str) or not isinstance(b.get("board"), str):
             errors.append(f"{k}: board {b!r} needs a project from claude_design (with a dir), a file and a board name")
             continue
@@ -254,6 +265,12 @@ def shape_errors(trace: dict) -> list[str]:
             errors += [f"{field}: an entry is not an object: {str(x)[:80]}" for x in val if not isinstance(x, dict)]
     if not isinstance(trace.get("claude_design", {}), dict):
         errors.append("claude_design must be an object")
+    for p in trace.get("phases", []) if isinstance(trace.get("phases"), list) else []:
+        if isinstance(p, dict) and not (isinstance(p.get("phase"), int) and all(isinstance(p.get(f), str) for f in ("epic", "title", "plan_heading"))):
+            errors.append(f"phases: {str(p)[:80]} needs a number and text epic, title and plan_heading")
+    for o in trace.get("others", []) if isinstance(trace.get("others"), list) else []:
+        if isinstance(o, dict) and not isinstance(o.get("key"), str):
+            errors.append(f"others: {str(o)[:80]} needs a text key")
     return errors
 
 
@@ -441,6 +458,14 @@ BOARD_CASES = [
     ("app", "Telegram admin.dc.html", "Telegram · Approval request", True),
     ("app", "Telegram admin.dc.html", "Telegram · Telegram · Approval request", False),
     ("app", "Admin center.dc.html", "B · B · Sessions first", False),
+    ("app", "Admin center 2.dc.html", "sp1 · Browser · Admin · Spend · Move the ceiling, the fresh check", False),
+    ("app", "Audit and files.dc.html", "F1 · Browser · Audit with files", True),
+    ("app", "India.dc.html", "in-b2 · Browser · Holding · Indian fund", False),
+    ("app", "Mini App.dc.html", "why · Why? sheet", False),
+    ("app", "India.dc.html", "B · Browser · Holding · Indian fund", True),
+    ("app", "Admin center 2.dc.html", "AL.1 · Browser · Admin · Alerts · Replay, the fresh check", True),
+    ("app", "Telegram admin.dc.html", "Telegram · a Telegram · Approval request", False),
+    ("app", "Browser 2.dc.html", "Browser · B5 Browser · Activity", False),
 ]
 
 

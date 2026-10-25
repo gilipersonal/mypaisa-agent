@@ -2281,14 +2281,17 @@
       "phase": 9,
       "summary": "Any question about the household's money gets an answer from a read-only SQL copy of the ledger",
       "status": "To Do",
-      "labels": [],
-      "arch": [
-        "19.2"
+      "labels": [
+        "design"
       ],
-      "ui": false,
-      "design": "none",
+      "arch": [
+        "12.1",
+        "8"
+      ],
+      "ui": true,
+      "design": "todo",
       "boards": [],
-      "notes": ""
+      "notes": "The chat answer with its SQL under Technical is not drawn; MA-158 draws it before the story starts. Its section is ARCHITECTURE.md 12.1 (added 25 Oct 2026, MA-155) and its PLAN bullet is phase 9 item 7."
     },
     {
       "key": "MA-105",
@@ -2785,7 +2788,7 @@
       "type": "Story",
       "epic": "MA-127",
       "phase": 12,
-      "summary": "E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and admins give instructions",
+      "summary": "E2: an admin desk in Telegram and the Admin center where agents ask questions and seek approval, and the admin gives instructions",
       "status": "To Do",
       "labels": [
         "design"
@@ -2825,7 +2828,8 @@
       "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The request ids (cr-26, cr-27) and the setting keys on the boards are illustrative. The screens in undrawn are drawn under MA-158 before the story starts.",
       "undrawn": [
         "an agent's question answered in the chat, with buttons or typed text",
-        "an admin's own instruction turned into a request, with its Confirm card and the second check"
+        "an admin's own instruction turned into a request, with its Confirm card and the second check",
+        "the daily digest message that non-urgent requests wait for (19:00 on the boards; the time is settled in the options round)"
       ]
     },
     {
@@ -2991,7 +2995,7 @@
           "board": "Telegram · Failed work alert"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round."
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. The daily digest itself is drawn under MA-130's undrawn list (one message serves both)."
     },
     {
       "key": "MA-138",
@@ -3446,7 +3450,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Design work, tracked here. No board yet: MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-105, MA-111. Screens still to draw (each row's undrawn list): MA-35, MA-37, MA-39, MA-62, MA-63, MA-64, MA-80, MA-84, MA-91, MA-102 (in its own design round), MA-130."
+      "notes": "Design work, tracked here. No board yet: MA-32, MA-40, MA-61, MA-65, MA-66, MA-67, MA-69, MA-77, MA-85, MA-88, MA-93, MA-95, MA-96, MA-97, MA-99, MA-104, MA-105, MA-111. Screens still to draw (each row's undrawn list): MA-35, MA-37, MA-39, MA-62, MA-63, MA-64, MA-80, MA-84, MA-91, MA-102 (in its own design round), MA-130 (with the daily digest)."
     },
     {
       "key": "MA-157",

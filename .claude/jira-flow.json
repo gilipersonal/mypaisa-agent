@@ -43,7 +43,7 @@
     {
       "name": "plan-sync",
       "cwd": ".",
-      "run": "python3 scripts/plan_sync.py check",
+      "run": "python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check",
       "paths": ["**"]
     }
   ],

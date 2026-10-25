@@ -85,7 +85,7 @@ AWS views and a sequence, linked and embedded in `ARCHITECTURE.md`
 | Telegram Bot API | Free | The chat, files, rich messages, the Mini App, the Login Widget for the laptop |
 | Google OAuth | Free | Sign in with Google through Cognito's Google provider; one OAuth client per environment, its secret in that environment's SSM path |
 | Twelve Data | Free Basic tier (8 credits a minute, 800 a day) | US closes, the US macro basket, the earnings calendar, FX fallback, ISIN lookup |
-| EODHD | Last resort, only on an admin's approval when no free source can serve a holding. Historian (daily prices, 30+ years, 100,000 calls a day, news feed included): £19.99 a month or £199.90 a year. Fundamentals: £59.99 a month (£599.90 a year). All-in-One: £99.99 a month (£999.90 a year). Prices as shown on 24 Oct 2026 | Dependable London and Frankfurt closes by ISIN; UK funds by ISIN under `.EUFUND`; the Forecaster's ten-year back-fill (`ARCHITECTURE.md` §19.2) |
+| EODHD | Last resort, only on the admin's approval when no free source can serve a holding. Historian (daily prices, 30+ years, 100,000 calls a day, news feed included): £19.99 a month or £199.90 a year. Fundamentals: £59.99 a month (£599.90 a year). All-in-One: £99.99 a month (£999.90 a year). Prices as shown on 24 Oct 2026 | Dependable London and Frankfurt closes by ISIN; UK funds by ISIN under `.EUFUND`; the Forecaster's ten-year back-fill (`ARCHITECTURE.md` §19.2) |
 | yfinance | Free, unofficial | Closes and the fund's `0P…L` NAV when running lean |
 | ECB reference rates | Free | GBP, USD, EUR daily fixes |
 | BlackRock and iShares product pages | Free | Fund NAV check, holdings files for look-through |
@@ -131,7 +131,7 @@ The agents' Claude allowance is the Max 20x plan's $200 monthly credit (about
 moved by the admin; expected use for two members is about $24 to $39
 (`ARCHITECTURE.md` §15.1). AWS and other services have their own cap, £50 by
 default (§15.2). EODHD is counted only if a free source
-fails and an admin approves it. There is no one-off cost and
+fails and the admin approves it. There is no one-off cost and
 no reserved commitment;
 stopping an environment is `terraform destroy` on it.
 

@@ -49,7 +49,7 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 | When | Run | What must be true |
 | --- | --- | --- |
 | Starting a story (`/jira-flow:work`, or by hand) | `/plan-sync MA-<n>` (refreshes the row and the story's boards), then `python3 scripts/plan_sync.py start MA-<n>` | The story is traced, its sections exist, its boards exist and are current; a UI story's design is `planned` (run `/design-first`) or `picked`; no `open` question |
-| Before every PR (`/autoship` step 1) | `/plan-sync --design`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py check`) | Every Claude Design etag matches `claude-design.json` (a file edited there is copied here first); no drift; `docs/TRACE.md` is rendered |
+| Before every PR (`/autoship` step 1) | `/plan-sync --design`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`) | Every Claude Design etag matches `claude-design.json` (a file edited there is copied here first); no drift; `docs/TRACE.md` is rendered |
 | On every PR, in CI | `.github/workflows/plan-sync.yml` | The same check |
 | After planning (a new phase, a new story, a design round) | `/plan-sync` | Jira, Claude Design and the trace agree; drift is fixed or filed |
 | Weekly, or when unsure | `/plan-sync --all` | The whole backlog and both Claude Design projects agree with the trace |
@@ -77,7 +77,7 @@ may not reach In Review until they are drawn and the row says so.
 
 `python3 scripts/plan_sync.py selftest` runs the board-name check against
 names it must accept and names it must refuse (every case the reviews of PR
-#32 raised); CI runs it before the check. `start` also runs every check
+#32 raised); the jira-flow gate and CI run it before the check. `start` also runs every check
 above on the story's own row, so a missing section or board stops it too.
 
 Jira-side drift (a key, parent, label or status that differs from the trace)
