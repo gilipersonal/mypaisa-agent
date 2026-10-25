@@ -24,26 +24,36 @@ MUTANTS = [
     ("r2-B3", '    if errors:\n        print("  STOP: fix the row', '    if False:\n        print("  STOP: fix the row'),
     ("r3-B4", '    if it.get("undrawn") and status in ("In Review", "Done"):', '    if False:'),
     ("r3-B4", '    if it.get("undrawn") and status in ("In Review", "Done"):', '    if it.get("undrawn") and status == "Done":'),
+    # These keep the guarded text and change only what it does, so a guard that reads code text misses them.
+    ("r2-B3", 'before the story starts.")\n        return 1\n    if it.get("open"):', 'before the story starts.")\n        return 0\n    if it.get("open"):'),
+    ("r3-B4", '        errors.append(f"{k}: {status} with screens still undrawn', '        str(f"{k}: {status} with screens still undrawn'),
 ]
+
+
+def run_in(root: Path, source: str, entry: str) -> int:
+    for name in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md", "docs", "review"):
+        (root / name).symlink_to(ROOT / name)
+    (root / "scripts").mkdir()
+    (root / "scripts" / "plan_sync.py").write_text(source)
+    return subprocess.run(CHECKS[entry]["run"], shell=True, cwd=root, capture_output=True, text=True).returncode
 
 
 def main() -> int:
     source = (ROOT / "scripts" / "plan_sync.py").read_text()
     missed = 0
+    # Control: on the unchanged script each guard passes in the same scaffold, so a "caught" below is the mutant's doing.
+    for entry in sorted({e for e, _, _ in MUTANTS}):
+        with tempfile.TemporaryDirectory() as tmp:
+            if run_in(Path(tmp), source, entry) != 0:
+                print(f"CONTROL FAILED: {entry} fails on the unchanged script; fix the guard or the scaffold")
+                missed += 1
     for entry, old, new in MUTANTS:
         if source.count(old) != 1:
             print(f"STALE: the mutant for {entry} no longer applies; update review/MA-155/mutants.py")
             missed += 1
             continue
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            for name in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md", "docs", "review"):
-                (root / name).symlink_to(ROOT / name)
-            (root / "scripts").mkdir()
-            (root / "scripts" / "plan_sync.py").write_text(source.replace(old, new))
-            check = CHECKS[entry]
-            r = subprocess.run(check["run"], shell=True, cwd=root, capture_output=True, text=True)
-            caught = (r.returncode != 0) if check["type"] == "cmd" else (r.returncode == 0)
+            caught = run_in(Path(tmp), source.replace(old, new), entry) != 0
         print(f"{'caught' if caught else 'MISSED'} {entry}: {new.strip()[:60]}")
         missed += not caught
     print(f"mutants: {len(MUTANTS)}, missed {missed}")

@@ -345,7 +345,7 @@
     "finding": "the fixed list's behaviour checks catch their fix being undone (r2-B3, r3-B4 fail against mutants)",
     "check": {
       "type": "cmd",
-      "run": "python3 review/MA-155/mutants.py"
+      "run": "python3 review/MA-155/mutants.py && python3 -c \"import json,sys; L={e['id']:e for e in json.load(open('review/MA-155/fixed.json'))}; bad=[i for i,e in L.items() if e['check']['type']=='grep' and any(str(f).endswith('.py') or str(f).startswith('scripts/') for f in (e['check'].get('files') or [e['check'].get('file')]))]; sys.exit(0 if not bad and all(L[k]['check']['type']=='cmd' for k in ('r2-B3','r3-B4')) else 1)\""
     },
     "note": "Amended in round 9 (no grep check may read a script) and round 10 (run against mutants)."
   },
@@ -415,8 +415,9 @@
         ".claude/rules/independent-review.md",
         ".claude/skills/autoship/SKILL.md"
       ],
-      "pattern": "bare\\s+\"yes\"[^.]{0,40}means\\s+merge\\s+now",
-      "present": false
+      "pattern": "bare\\s+[\"“”']?yes[\"“”']?[^.]{0,40}means\\s+merge\\s+now",
+      "present": false,
+      "ignore_case": true
     }
   },
   {
@@ -435,10 +436,19 @@
     "round": 10,
     "finding": "MA-137 lists the AWS step and forecast alerts as undrawn",
     "check": {
-      "type": "trace",
-      "key": "MA-137",
-      "field": "undrawn",
-      "contains": "forecast passes the AWS cap"
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); sys.exit(0 if \\\"step alerts\\\" in u and 'forecast passes the AWS cap' in u else 1)\""
+    }
+  },
+  {
+    "id": "r11-c1",
+    "round": 11,
+    "finding": "15.1's explicit yes is for prod and dev together past the credit",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "ceilings together would pass the credit",
+      "present": true
     }
   }
 ]

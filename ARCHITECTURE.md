@@ -1071,8 +1071,9 @@ ceiling of $40, each a setting the admin moves. Ceilings are in dollars, as
 the credit and the Console are; the Admin center shows pounds beside them at
 the day's ECB rate. With no payment method and auto-reload off, the credit
 itself is the last stop. Going past $200 (to a full £200, about $260, say)
-means adding a card on the Console organisation, and the Admin center asks
-for an explicit yes before a ceiling may pass the credit.
+means adding a card on the Console organisation, so when prod's and dev's
+ceilings together would pass the credit, the Admin center warns that the
+extra needs a card and asks for an explicit yes (MA-116).
 
 **What $160 buys.** Two members are expected to spend about $24 a month on
 the standard setup and $39 on the full one (the Claude lines above, in
@@ -1252,7 +1253,7 @@ a daily digest instead.
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
 - For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
 - Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card).
-- The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $100 credit covers with dev's share taken out (§15.1).
+- The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $200 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
 

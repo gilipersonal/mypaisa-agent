@@ -39,8 +39,8 @@ def run_check(c: dict) -> tuple[bool | None, str]:
     if kind == "grep":
         files, missing = [], []
         for f in c.get("files") or [c["file"]]:
-            if Path(f).is_absolute():
-                missing.append(f"{f} (paths are relative to the repo)")
+            if Path(f).is_absolute() or ".." in Path(f).parts:
+                missing.append(f"{f} (paths stay inside the repo)")
                 continue
             found = sorted(p.relative_to(ROOT).as_posix() for p in ROOT.glob(f) if p.is_file()) if any(ch in f for ch in "*?[") else [f]
             if not found or not all((ROOT / x).is_file() for x in found):
