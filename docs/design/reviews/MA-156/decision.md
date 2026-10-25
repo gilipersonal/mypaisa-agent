@@ -16,7 +16,7 @@ illustrative rate every MyPaisa board uses.
 | Page | What |
 | --- | --- |
 | [Currency check options](https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Currency+check+options.dc.html) | This round: the three options side by side, then each option's cards in Telegram light and dark |
-| [Currency check](https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Currency+check.dc.html) | The six boards drawn ahead of the story on 24 Oct 2026 (MA-155), kept unchanged as the starting point |
+| [Currency check](https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Currency+check.dc.html) | The six boards drawn ahead of the story on 24 Oct 2026 (MA-155), kept as the starting point (boards 1 to 3 and 6 now marked superseded; 4 and 5 marked picked, part of the spec with 1b) |
 | [MA-156 design review](https://claude.ai/artifact/GfNnLMaQ1WsyC2vypvCJGe) | The review page (`board.html` here): the question, the three first cards, the comparison and every step with its notes |
 
 Both Claude Design files are in the MyPaisa app v1 project; the options file is mirrored at
@@ -110,8 +110,9 @@ holdings, the "$" that needs asking, pounds typed against a rupee holding, the s
 review of PR #34, the ECB estimate's Confirm card with privacy on, the question card before the daily rates load (no
 estimate button), privacy on for planned boards 4 and 5, the Technical details fold with privacy on, what Cancel
 leaves on screen, the answer to "Which currency is Balanced in?" and the audit row with both amounts. They are the
-trace row's `undrawn` list, so `start MA-156` refuses until they are. The HTML fallback is drawn for 1b only,
-after the pick, rather than for every option. When one is drawn, its board goes on the row and the notes say
+trace row's `undrawn` list, so `start MA-156` refuses until they are. The HTML fallback is to be drawn for 1b
+only, after the pick, rather than for every option. The Prototype's currency chats are relinked to 1b with MA-160,
+also on the `undrawn` list. When one is drawn, its board goes on the row and the notes say
 `Drawn: <the state>`.
 
 The build waits for MA-24's skeleton and MA-38's typed transactions (phase 0 and 1). The estimate button joins when
