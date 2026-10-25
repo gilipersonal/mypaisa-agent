@@ -384,7 +384,7 @@ holds (GBP); the position's currency is the one that counts here.
 | --- | --- |
 | "I put 200 into Balanced" | No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is" |
 | "I put £200 into Balanced" | Same currency: the card as in §4.2, then Confirm |
-| "I put ₹20,000 into Balanced" | Saves nothing yet. "Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way." Then the guided flow's own amount question, asked again in the holding's currency: "How many pounds arrived?" Type them or send the platform's confirmation; **Use the ECB rate** is one tap with its figure on the button (an estimate, marked so, offered once the rates load); **A rupee holding** is named when there is one; **Cancel**. Confirm stays a separate tap (MA-156, option 1b, picked 25 Oct 2026) |
+| "I put ₹20,000 into Balanced" | Saves nothing yet. "Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way." Then the guided flow's own amount question, asked again in the holding's currency: "How many pounds arrived?" Type them or send the platform's confirmation; the estimate is one tap with its figure on the button, **About £177.78 · ECB estimate** (marked an estimate, offered once the rates load; with privacy on it reads **Use the ECB estimate**); a rupee holding is named when there is one (**Nifty 50 instead**); **Cancel**. Confirm stays a separate tap (MA-156, option 1b, picked 25 Oct 2026) |
 | "1.5 lakh into my Nifty 50 index fund" (phase 13) | An INR holding, so ₹1,50,000 with no question; pounds typed against it get the same correction the other way |
 | "Which currency is Balanced in?" | "Pounds (GBP), from the factsheet you sent on 3 March" |
 
@@ -394,16 +394,17 @@ holds (GBP); the position's currency is the one that counts here.
   only fills the fields when the wording is free; the figure is always the
   member's own, echoed back for Confirm. "$" means US dollars unless the
   member holds another dollar, when the bot asks which.
-- **A converted figure is never Claude's.** "Pounds that arrived" records
-  the member's figure and keeps the rupee amount and the implied rate beside
-  it. "Use the ECB rate" is the engine's conversion at the ECB reference rate
+- **A converted figure is never Claude's.** The pounds typed in answer to
+  "How many pounds arrived?" are the member's figure, recorded with the rupee
+  amount and the rate the engine works out from them beside it. The ECB
+  estimate button is the engine's conversion at the ECB reference rate
   for that day, or the last one published before it at a weekend or an ECB
   holiday (§5.3), with the rate and its date on the card. The ECB publishes
   each currency against the euro, so pounds to rupees is the engine's cross
   of the two euro rates of that day. It is marked an
   estimate until a statement, a screenshot or the next valuation confirms it.
   The button appears once the daily rates are loaded (MA-44, phase 2);
-  before then the bot asks for the amount that arrived.
+  before then it is left out and the question is the same.
 - **Stored in the holding's currency, with the original kept.** The
   Transaction's `amount` and `ccy` are the position's; `orig_amount`,
   `orig_ccy`, `fx_rate`, `fx_source` and `fx_date` keep what was typed and
@@ -414,9 +415,12 @@ holds (GBP); the position's currency is the one that counts here.
   whose currency differs from the holding's. Privacy mode shows no amount and
   no rate on the card, only words, currencies and dates (the rate with one
   amount would give the other away); Show amounts reveals one card.
-- **Designed first.** The correction card, its buttons and the Confirm card
-  with two currencies are drawn as `Currency check.dc.html` in Claude Design
-  and put through design-first when MA-156 starts.
+- **Designed first.** Three options were drawn in Claude Design
+  (`Currency check options.dc.html`) and Arun picked 1b on 25 Oct 2026
+  (`docs/design/reviews/MA-156/decision.md`). The spec is 1b's boards there,
+  with boards 4 and 5 of `Currency check.dc.html`; its boards 1 to 3 and 6
+  are the superseded starting point. The states still to draw before the
+  build are MA-156's `undrawn` list in `docs/trace.json`.
 
 ---
 

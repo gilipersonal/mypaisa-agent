@@ -105,7 +105,16 @@ past their bubble by design.)
 - In Arun's words: asked "Which option for MA-156's currency correction should be built?", he chose "1b Ask again,
   in pounds (Recommended)".
 
-Before the build, 1b gets its remaining states drawn (listed above: the HTML fallback, a long holding name, two or
-more rupee holdings, the "$" that needs asking, pounds typed against a rupee holding, the screenshot path); they
-are the trace row's `undrawn` list, so `start MA-156` refuses until they are. The build itself also waits for
-phase 0 and 1 (MA-24's skeleton, MA-38's typed transactions, MA-44's ECB rates).
+Before the build, 1b gets its remaining states drawn: the HTML fallback, a long holding name, two or more rupee
+holdings, the "$" that needs asking, pounds typed against a rupee holding, the screenshot path; and, found in the
+review of PR #34, the ECB estimate's Confirm card with privacy on, the question card before the daily rates load (no
+estimate button), privacy on for planned boards 4 and 5, the Technical details fold with privacy on, what Cancel
+leaves on screen, the answer to "Which currency is Balanced in?" and the audit row with both amounts. They are the
+trace row's `undrawn` list, so `start MA-156` refuses until they are. The HTML fallback and technical mode were
+drawn for 1b only, after the pick, rather than for every option.
+
+The build waits for MA-24's skeleton and MA-38's typed transactions (phase 0 and 1). The estimate button joins when
+MA-44 loads the daily ECB rates (phase 2); until then it is left out and the question is the same.
+
+Boards 1 to 3 and 6 of `Currency check.dc.html` are the superseded starting point (their notes say so); its boards
+4 and 5 stay part of the spec.

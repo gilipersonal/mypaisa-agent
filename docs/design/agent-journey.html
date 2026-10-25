@@ -1928,7 +1928,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">13</span>
     <h2 id="h-currency">Money in any currency, checked against the holding</h2>
-    <p class="lede">Every holding has one currency: the one it is bought and valued in, as the platform shows it, confirmed once on the card that added it. Type money in any currency and the bot looks up that holding's currency and checks the amount against it. Rupees typed for a pound holding are never saved as typed: the bot says why and offers the ways to put it right.</p>
+    <p class="lede">Every holding has one currency: the one it is bought and valued in, as the platform shows it, confirmed once on the card that added it. Type money in any currency and the bot looks up that holding's currency and checks the amount against it. Rupees typed for a pound holding are never saved as typed: the bot says why and asks again, in pounds.</p>
     <div class="meta"><span class="chip trig"><b>Trigger</b> "I put ₹20,000 into Balanced"</span><span class="chip">Phase 1 (the check)</span><span class="chip">Phase 2 (the ECB-rate estimate)</span><span class="chip">Phase 13 (rupee holdings)</span></div>
   </div>
 
@@ -1936,7 +1936,7 @@ footer.foot b { color: var(--mp-ink); }
   <dl class="facts">
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put 200 into Balanced"</dt><dd>No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is".</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put £200 into Balanced"</dt><dd>The same currency: the usual Confirm card of flow 4.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put ₹20,000 into Balanced"</dt><dd>Saves nothing yet. Balanced is held in pounds, so it cannot take rupees directly. Buttons: <b>Pounds that arrived</b>, <b>Use the ECB rate</b>, <b>A rupee holding</b> (when there is one), <b>Cancel</b>.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put ₹20,000 into Balanced"</dt><dd>Saves nothing yet. Balanced is held in pounds, so the bot asks <b>How many pounds arrived?</b> Type them or send the platform's screenshot; or tap the estimate, its figure on the button (<b>About £177.78 · ECB estimate</b>); or put it in a rupee holding by name (<b>Nifty 50 instead</b>, phase 13); or <b>Cancel</b>.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"1.5 lakh into my Nifty 50 index fund"</dt><dd>Phase 13: an INR holding, so ₹1,50,000 with no question. Pounds typed against it get the same correction the other way.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"Which currency is Balanced in?"</dt><dd>"Pounds (GBP), from the factsheet you sent on 3 March."</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>A "$" on its own</dt><dd>US dollars, unless the member holds another dollar; then the bot asks which.</dd></div>
@@ -1952,13 +1952,13 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The wording is free, so Sonnet fills the fields of <code>propose_change</code>: a buy, into Balanced, today, the amount as typed</span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The proposal comes back. Claude never converts and never supplies a figure</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">The <b>parser</b> in code reads <code>₹20,000</code>: rupees. Balanced's <b>Position</b> has <code>ccy</code> GBP. <span class="sg">The currency check</span>: they differ, so nothing is saved</span></li>
-      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The correction card: <b>Pounds that arrived</b>, <b>Use the ECB rate</b>, <b>A rupee holding</b> (only when there is one) and <b>Cancel</b></span><span class="ln"></span></li>
-      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You tap <b>Use the ECB rate</b>; or <b>Pounds that arrived</b>, and type the figure or send the platform's confirmation</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">The <b>engine</b> converts at the ECB reference rate for that day, from the rates loaded every day (MA-44), and marks the result an <span class="sg">estimate</span>. With <i>Pounds that arrived</i>, your figure is recorded and the implied rate kept beside it</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The question, in pounds: <b>How many pounds arrived?</b> Buttons: the estimate with its figure (<b>About £177.78 · ECB estimate</b>), a rupee holding by name (only when there is one) and <b>Cancel</b></span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You type the pounds, <i>176.10</i>, or send the platform's confirmation; or tap the estimate</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Your figure is recorded, and the <b>engine</b> works out the rate from it. The estimate is the engine's conversion at the ECB reference rate for that day, from the rates loaded every day (MA-44), marked an <span class="sg">estimate</span></span></li>
       <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The Confirm card with two currencies: the pounds, the rupees, the rate and its date</span><span class="ln"></span></li>
       <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb"><span class="sg">Confirm</span>, then the <span class="sg">second check</span></span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> saved in the position's currency (<code>amount</code>, <code>ccy</code> GBP), with <code>orig_amount</code>, <code>orig_ccy</code>, <code>fx_rate</code>, <code>fx_source</code> and <code>fx_date</code> beside it. The <span class="sg">audit row</span> shows both amounts</span></li>
-      <li class="st note" data-lanes="Note"><span class="box">The ECB-rate figure stays marked an estimate until a statement, a screenshot or the next valuation confirms it. Before the daily rates are loaded (phase 2), that button is not offered and the bot asks for the pounds that arrived. The same check runs on the guided flow, a screenshot, and a CAS or broker line (flow 14): every pair, both ways.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">The ECB-rate figure stays marked an estimate until a statement, a screenshot or the next valuation confirms it. Before the daily rates are loaded (phase 2), the estimate button is left out and nothing else changes. The same check runs on the guided flow, a screenshot, and a CAS or broker line (flow 14): every pair, both ways.</span></li>
     </ol></div>
   </div></div>
 
@@ -1969,16 +1969,16 @@ footer.foot b { color: var(--mp-ink); }
         <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
         <div class="chat">
           <div class="msg out"><div class="bub">I put ₹20,000 into Balanced<span class="t">19:10</span></div></div>
-          <div class="msg"><div class="bub"><p>Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way.</p><p><small>Nothing is saved yet.</small></p><span class="t">19:10</span></div><div class="ibs"><span class="ib">Pounds that arrived</span><span class="ib">Use the ECB rate</span><span class="ib">A rupee holding</span><span class="ib">Cancel</span></div></div>
+          <div class="msg"><div class="bub"><p><b>Balanced is held in pounds (GBP),</b> so it can't take rupees. The rupees were changed to pounds on the way in.</p><p><b>How many pounds arrived?</b> Type them, or send a screenshot of the platform's confirmation.</p><p><small>Or use the estimate: ₹112.50 per £, the ECB rate of Fri 23 Oct, worked out by MyPaisa's engine. Nothing is saved yet.</small></p><span class="t">19:10</span></div><div class="ibs"><span class="ib">About £177.78 · ECB estimate</span><span class="ib">Nifty 50 instead</span><span class="ib">Cancel</span></div></div>
         </div>
       </div>
-      <figcaption><b>The correction.</b> Nothing saved, four ways on. <i>A rupee holding</i> is offered only when one is held.</figcaption>
+      <figcaption><b>The question, in pounds.</b> Nothing saved. The estimate shows its figure before you choose it; a rupee holding is offered by name only when one is held.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
         <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
         <div class="chat">
-          <div class="msg out"><div class="bub">Use the ECB rate<span class="t">19:11</span></div></div>
+          <div class="msg out"><div class="bub">About £177.78 · ECB estimate<span class="t">19:11</span></div></div>
           <div class="msg"><div class="bub">
             <h5>Bought into Balanced (Monzo) · 23 Oct</h5>
             <div class="kv">
@@ -1995,28 +1995,27 @@ footer.foot b { color: var(--mp-ink); }
           <div class="msg"><div class="bub"><p><b>£177.78</b> into Balanced, from ₹20,000 at the ECB rate of 23 Oct</p><div class="hr"></div><p class="ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Saved · confirmed with Face ID</p><span class="t">19:12</span></div></div>
         </div>
       </div>
-      <figcaption><b>Use the ECB rate.</b> The engine's conversion, its rate and date on the card, marked an estimate.</figcaption>
+      <figcaption><b>The ECB estimate.</b> One tap, the engine's conversion, its rate and date on the card, marked an estimate; Confirm is still its own tap.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
         <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
         <div class="chat">
-          <div class="msg out"><div class="bub">Pounds that arrived<span class="t">19:11</span></div></div>
-          <div class="msg"><div class="bub"><p>Type the pounds that reached Balanced, or send the platform's confirmation.</p><span class="t">19:11</span></div></div>
-          <div class="msg out"><div class="bub">£176.10<span class="t">19:13</span></div></div>
+          <div class="msg"><div class="bub"><p><b>Balanced is held in pounds (GBP).</b> How many pounds arrived?</p><span class="t">edited 19:13</span></div></div>
+          <div class="msg out"><div class="bub">176.10<span class="t">19:13</span></div></div>
           <div class="msg"><div class="bub">
             <h5>Bought into Balanced (Monzo) · 23 Oct</h5>
             <div class="kv">
               <span>Recorded, in pounds</span><span><b>£176.10</b></span>
               <span>You sent</span><span>₹20,000</span>
-              <span>Rate, as credited</span><span>₹113.57 to £1</span>
+              <span>Rate, from your figures</span><span>₹113.57 to £1</span>
             </div>
             <span class="t">19:13</span></div>
             <div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div>
           </div>
         </div>
       </div>
-      <figcaption><b>Pounds that arrived.</b> Your figure is recorded; the rupees and the implied rate stay beside it.</figcaption>
+      <figcaption><b>The pounds that arrived.</b> Typed in answer; the question drops its buttons. Your figure is recorded; the rupees and the rate the engine works out from them stay beside it.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
@@ -2026,22 +2025,22 @@ footer.foot b { color: var(--mp-ink); }
           <div class="msg out"><div class="bub">1.5 lakh into my Nifty 50 index fund<span class="t">20:02</span></div></div>
           <div class="msg"><div class="bub"><p>Bought <b>₹1,50,000</b> of Nifty 50 index fund on 23 Oct, in rupees as the fund is · about £1,333 at the ECB rate</p><span class="t">20:02</span></div><div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div></div>
           <div class="msg out"><div class="bub">I put £500 into Nifty 50 index fund<span class="t">20:05</span></div></div>
-          <div class="msg"><div class="bub"><p>Nifty 50 index fund is held in rupees (INR), so it can't take pounds directly; the pounds were changed to rupees on the way.</p><span class="t">20:05</span></div><div class="ibs"><span class="ib">Rupees that arrived</span><span class="ib">Use the ECB rate</span><span class="ib">A pound holding</span><span class="ib">Cancel</span></div></div>
+          <div class="msg"><div class="bub"><p><b>Nifty 50 index fund is held in rupees (INR),</b> so it can't take pounds. <b>How many rupees arrived?</b></p><span class="t">20:05</span></div><div class="ibs"><span class="ib">About ₹56,250 · ECB estimate</span><span class="ib">Balanced instead</span><span class="ib">Cancel</span></div></div>
         </div>
       </div>
-      <figcaption><b>The other way.</b> Lakh read by code, no question for rupees; pounds against a rupee holding are put right.</figcaption>
+      <figcaption><b>The other way.</b> Lakh read by code, no question for rupees; pounds against a rupee holding get the same question, in rupees.</figcaption>
     </figure>
   </div>
-  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span><b>Designed first.</b> The correction card, its buttons and the Confirm card with two currencies are being drawn as <code>Currency check.dc.html</code> in Claude Design and go through design-first when MA-156 starts. These mocks show the content, not a picked board. Rate and figures illustrative.</span></p>
+  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span><b>Designed first.</b> Three options were drawn in Claude Design (<code>Currency check options.dc.html</code>, MA-156), and on 25 Oct 2026 Arun picked <b>1b, Ask again, in pounds</b>. These mocks follow it; its remaining states are drawn before the build. Rate and figures illustrative.</span></p>
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>One currency per holding</b><span><code>Position.ccy</code>, read from the factsheet or screenshot and shown on the Confirm card that added it: confirmed once, never guessed again. A fund's own base currency (often USD) can differ; the position's is the one that counts.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Reading amounts is code</b><span>Symbols, the codes of every currency the ECB publishes, the words, lakh and crore. The figure is always the member's own, echoed back for Confirm.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A converted figure is never Claude's</b><span>Either the pounds that arrived, or the engine's conversion at the ECB rate of the day, with the rate and its date on the card, marked an estimate.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A converted figure is never Claude's</b><span>Either the pounds that arrived, or the engine's estimate at the ECB rate of the day, its figure on the button before you choose it, then on the card with the rate and its date, marked an estimate.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The original kept</b><span>What was typed and how it became the recorded figure stay on the Transaction (<code>fx_source</code> as credited, ECB or statement). The audit row shows both; a screenshot or statement behind it is its <code>document_id</code>.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Every pair, both ways, every door</b><span>A typed message, the guided flow, a screenshot, a CAS or broker line. Confirm and the second check before anything is saved.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Hides both amounts on a two-currency card.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>No amount and no rate on the card, only words, currencies and dates, so nothing on it leads to a figure. Show amounts reveals one card.</span></div></div>
   </div>
 
   <h3 class="blk">Built by</h3>
