@@ -66,14 +66,18 @@ with "Review, then merge" and "Merge now" (and "Not now" where the question
 allows a third answer). Do not merge on anything but a yes given in the turn
 that is running.
 
-On "Review, then merge": start a fresh sub-agent that saw none of the making,
-with the PR number, the issue key and the files to read (`.claude/rules/`,
-`ARCHITECTURE.md`, `PLAN.md`, the story's acceptance criteria and boards),
-and ask for blocking and non-blocking findings on the PR's diff. Fix the
-blocking ones on the branch, push, wait for the checks, and review again with
-another fresh sub-agent; at most five rounds, then stop and ask Arun whether
-to go on, listing what is left. A clean review goes straight to step 4; put
-the non-blocking findings in the report and on the issue.
+On "Review, then merge": run the review as `.claude/rules/ship-autopilot.md`
+says, in parallel lanes. Run the gates and `scripts/review_regress.py MA-<n>`
+first. Then start one fresh sub-agent per lane in a single message (scripts
+and checks; the trace against Jira; the spec docs; the rules and skills; the
+boards, when changed), each with the PR number, the issue key, its lane's
+files and the story's acceptance criteria, never the maker's notes; round 1
+covers everything, later rounds the delta since `reviewed_sha` in
+`review/MA-<n>/state.json`. Merge their findings. Fix the blocking ones on
+the branch, add each to `review/MA-<n>/fixed.json` with a check, push, wait
+for the checks, and run the next round; at most five rounds, then stop and
+ask Arun whether to go on, listing what is left. A clean round goes straight
+to step 4; put the non-blocking findings in the report and on the issue.
 
 ## 4. After a yes (and a clean review, if one was asked for), without asking again
 

@@ -18,15 +18,34 @@ this repo on any change just before you merge the PR. just for this Repo".
 - **Offered at every merge.** The merge question also offers the review, in
   the same one question: review it first, then merge, or merge it now. Never
   merge without having offered it.
-- **Review first** means a fresh sub-agent that saw none of the making
-  reviews the PR's diff against `.claude/rules/`, `ARCHITECTURE.md`,
-  `PLAN.md`, the picked boards and the story's acceptance criteria, and
-  returns blocking and non-blocking findings. Blocking findings are fixed on
-  the branch, pushed, and re-reviewed by another fresh sub-agent, at most five
-  rounds; if blocking findings remain after the fifth, stop and ask Arun
-  whether to go on, listing them. A clean review (no blocking findings) leads
-  straight to the merge: "review it first, then merge" is the yes. The
-  non-blocking findings go into the report and onto the issue.
+- **Review first** runs the global rule's review (`~/.claude/CLAUDE.md`,
+  "Independent review"), in parallel lanes on the delta. Arun, 25 Oct 2026,
+  after PR #32's seven one-reviewer rounds: "always use that approach for
+  this repo and make it a global rule".
+  1. **Gates first:** `python3 scripts/plan_sync.py selftest`, `check`, the
+     story's other gates, and `python3 scripts/review_regress.py MA-<n>` once
+     the story has a ledger. Reviewers spend time only on what no gate measures.
+  2. **Lanes, in parallel:** one fresh sub-agent per lane, every Agent call in
+     one message, each blind to the making (the requirements, the rules and
+     the deliverable, never the maker's notes). The lanes here: (a) scripts and
+     checks; (b) the trace against Jira; (c) the spec docs (`ARCHITECTURE.md`,
+     `PLAN.md`, `TECH_STACK.md`, `README.md`, the explainer pages); (d) the
+     rules and skills; (e) the boards and the design mirror, when the PR
+     changes them. Each reports on its part and the joins into it; their
+     findings are merged into one list.
+  3. **Round 1 covers everything; later rounds cover the delta**
+     (`git diff <reviewed_sha>..HEAD` and its joins), with the gates on the
+     whole. A lane with nothing changed sits the round out.
+  4. **Fixed stays fixed:** every fixed blocking finding goes into
+     `review/MA-<n>/fixed.json` with a check that passes while the fix holds;
+     `scripts/review_regress.py` runs them before each round, and reviewers get
+     the list and must not undo any of it. Rounds and the reviewed sha are in
+     `review/MA-<n>/state.json`.
+  5. **At most five rounds;** if blocking findings remain after the fifth,
+     stop and ask Arun whether to go on, listing them and what each fix costs.
+  A clean round (no blocking findings in any lane) leads straight to the
+  merge: "review it first, then merge" is the yes. The non-blocking findings
+  go into the report and onto the issue.
 - **Merge now** merges with no review.
 - Arun can ask for a reviewer at any other time too.
 

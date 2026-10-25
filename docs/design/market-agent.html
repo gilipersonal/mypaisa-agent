@@ -529,7 +529,7 @@ footer p { max-width: 90ch; }
   <div class="tiles">
     <div class="tile"><h3>The rules engine</h3><span class="hk">Phase 2, live from phase 8</span><p>Fixed, transparent rules: indicators, four pillars, the holder's cascade and a confidence score. It calls ADD, HOLD, PAUSE, TRIM, REBALANCE or WAIT.</p></div>
     <div class="tile"><h3>The Forecaster</h3><span class="hk">Phase 11 · epic MA-117</span><p>Five models, risk first and direction last, beside the rules engine and graded on the same record. It never replaces it.</p></div>
-    <div class="tile"><h3>The agent team</h3><span class="hk">Phase 12 · epic MA-127</span><p>Grades every prediction daily, calibrates within small bounds, repairs the pipeline, and asks an admin for anything outside its band.</p></div>
+    <div class="tile"><h3>The agent team</h3><span class="hk">Phase 12 · epic MA-127</span><p>Grades every prediction daily, calibrates within small bounds, repairs the pipeline, and asks the admin for anything outside its band.</p></div>
     <div class="tile"><h3>India in the picture</h3><span class="hk">Phase 13 · epic MA-147</span><p>Indian funds, NSE and BSE shares and ETFs on free sources first, an India basket, Indian news, and the same gates for both engines.</p></div>
   </div>
   <p class="disclaim">Software for one household, not regulated advice, and never tax advice. It never trades, and every decision stays with the household. Every figure, rate and fund name on this page is illustrative: none is a real balance, a real price or a result.</p>
@@ -590,7 +590,7 @@ footer p { max-width: 90ch; }
       </g>
       <line class="sep" x1="32" x2="196" y1="462" y2="462"/>
       <text class="t" x="32" y="486">EODHD, last resort</text>
-      <text class="s" x="32" y="504">only on an admin's approval</text>
+      <text class="s" x="32" y="504">only on the admin's approval</text>
       <text class="s" x="32" y="520">Historian £19.99 a month</text>
       <text class="k" x="32" y="542">F1 MA-119 · E3 MA-131</text>
 
@@ -682,7 +682,7 @@ footer p { max-width: 90ch; }
       <text class="s" x="1018" y="156">api λ, CloudFront</text>
       <rect class="box" x="1002" y="184" width="162" height="70" rx="12"/>
       <text class="t" x="1018" y="209">Admin desk</text>
-      <text class="s" x="1018" y="227">an admin approves,</text>
+      <text class="s" x="1018" y="227">the admin approves,</text>
       <text class="s" x="1018" y="243">with the second check</text>
       <path class="ar" d="M966,70 L1000,70" marker-end="url(#ah)"/>
       <path class="ar" d="M966,142 L1000,142" marker-end="url(#ah)"/>
@@ -777,8 +777,8 @@ footer p { max-width: 90ch; }
   <div class="g2">
     <div class="card">
       <p class="over">Last resort</p>
-      <h3>EODHD, only on an admin's approval</h3>
-      <p class="small">Historian costs <strong>£19.99 a month</strong> (£199.90 a year): 30+ years, 100,000 calls a day, its news feed included. It is switched on only when the data steward shows that no free source can serve a named holding, or its ten-year history, and an admin approves.</p>
+      <h3>EODHD, only on the admin's approval</h3>
+      <p class="small">Historian costs <strong>£19.99 a month</strong> (£199.90 a year): 30+ years, 100,000 calls a day, its news feed included. It is switched on only when the data steward shows that no free source can serve a named holding, or its ten-year history, and the admin approves.</p>
       <ul class="list small">
         <li>Before asking, the steward tries EODHD's free key on that holding and records what comes back.</li>
         <li>The request shows the evidence, the £19.99 and the headroom left in the £50 line for AWS and others.</li>
@@ -830,13 +830,13 @@ footer p { max-width: 90ch; }
     </div>
     <div class="card">
       <h3>The data steward: failover and gap repair</h3>
-      <p class="small">Code keeps the prices flowing; Haiku only writes its requests to an admin.</p>
+      <p class="small">Code keeps the prices flowing; Haiku only writes its requests to the admin.</p>
       <ul class="list small">
         <li><strong>Fails over</strong> within the chain when a source answers nothing or stale data, and marks the valuation provisional.</li>
         <li><strong>Watches</strong> freshness, gaps, free quotas, and disagreement: when two sources serve one instrument, a close more than 0.2% apart, a missing day or a late correction is listed.</li>
         <li><strong>Repairs</strong> a gap on the next run and labels anything it could not fill as stale; a stale series is left out of scoring.</li>
         <li><strong>Raises</strong> a stale feed as an alarm in the chat; the 07:45 alarm fires only when every source has failed for two days.</li>
-        <li><strong>Asks</strong> an admin for a new or reordered source, any paid feed, or a source's terms.</li>
+        <li><strong>Asks</strong> the admin for a new or reordered source, any paid feed, or a source's terms.</li>
       </ul>
     </div>
   </div>
@@ -1269,7 +1269,7 @@ footer p { max-width: 90ch; }
     <div class="card">
       <h3>Challengers: tested over 10 years and 8 live weeks</h3>
       <p class="small">The monthly retrain, other parameters and rule thresholds within their ranges are challengers. Each is tested over the ten years and runs live in shadow. One that beats the current version in the held-out years and over 8 live weeks, by more than a margin, becomes a <code>ChangeRequest</code> to the admin, with the scores side by side.</p>
-      <p class="small">An admin approves in their Telegram chat or the Admin center's Approvals page, with the second check: Face ID or the PIN in Telegram, the fresh check in the browser (MA-102). Deciding in one door updates the other. After a promotion the old version stays ready and is restored on its own if the new one slips.</p>
+      <p class="small">The admin approves in their Telegram chat or the Admin center's Approvals page, with the second check: Face ID or the PIN in Telegram, the fresh check in the browser (MA-102). Deciding in one door updates the other. After a promotion the old version stays ready and is restored on its own if the new one slips.</p>
     </div>
     <div class="tgchat" aria-label="Illustrative change request from the grader and tuner in the admin's Telegram chat">
       <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>admin chat · illustrative</small></div></div>
@@ -1280,7 +1280,7 @@ footer p { max-width: 90ch; }
 
   <div class="card" style="margin-top:16px">
     <h3>Why the rules themselves are not retuned daily</h3>
-    <p class="small">A day's outcomes are mostly noise, and a system that chases yesterday learns noise. Calibration moves a little every day; structure moves only on weeks of evidence and an admin's approval. That is how accuracy, and above all honest confidence, grow over the years.</p>
+    <p class="small">A day's outcomes are mostly noise, and a system that chases yesterday learns noise. Calibration moves a little every day; structure moves only on weeks of evidence and the admin's approval. That is how accuracy, and above all honest confidence, grow over the years.</p>
     <div class="mp-chartbox " style="height:190px;" role="img" aria-label="Illustrative chart over 160 trading days: the daily hit rate across five holdings jumps between 0% and 100%, while the 90-day hit rate stays close to 60%."><svg viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true" focusable="false"><line class="k-grid" x1="0" x2="600" y1="190" y2="190"/><line class="k-grid" x1="0" x2="600" y1="100" y2="100"/><line class="k-grid" x1="0" x2="600" y1="10" y2="10"/><path class="k-jag" d="M0,154 L3.8,46 L7.5,46 L11.3,82 L15.1,118 L18.9,46 L22.6,82 L26.4,82 L30.2,118 L34,154 L37.7,46 L41.5,82 L45.3,82 L49.1,46 L52.8,46 L56.6,154 L60.4,46 L64.2,82 L67.9,190 L71.7,118 L75.5,118 L79.2,82 L83,46 L86.8,46 L90.6,82 L94.3,46 L98.1,118 L101.9,46 L105.7,82 L109.4,46 L113.2,10 L117,82 L120.8,118 L124.5,82 L128.3,82 L132.1,82 L135.8,10 L139.6,118 L143.4,82 L147.2,82 L150.9,82 L154.7,46 L158.5,10 L162.3,82 L166,46 L169.8,10 L173.6,82 L177.4,82 L181.1,82 L184.9,118 L188.7,10 L192.5,46 L196.2,118 L200,118 L203.8,46 L207.5,118 L211.3,154 L215.1,46 L218.9,82 L222.6,46 L226.4,46 L230.2,46 L234,118 L237.7,82 L241.5,118 L245.3,46 L249.1,46 L252.8,46 L256.6,46 L260.4,118 L264.2,82 L267.9,82 L271.7,82 L275.5,82 L279.2,82 L283,118 L286.8,46 L290.6,82 L294.3,46 L298.1,46 L301.9,10 L305.7,118 L309.4,82 L313.2,82 L317,82 L320.8,82 L324.5,82 L328.3,82 L332.1,118 L335.8,118 L339.6,82 L343.4,154 L347.2,82 L350.9,118 L354.7,82 L358.5,154 L362.3,10 L366,82 L369.8,46 L373.6,46 L377.4,82 L381.1,46 L384.9,46 L388.7,46 L392.5,118 L396.2,46 L400,46 L403.8,82 L407.5,154 L411.3,82 L415.1,46 L418.9,82 L422.6,118 L426.4,118 L430.2,82 L434,118 L437.7,82 L441.5,10 L445.3,82 L449.1,154 L452.8,82 L456.6,118 L460.4,82 L464.2,118 L467.9,82 L471.7,82 L475.5,46 L479.2,118 L483,46 L486.8,82 L490.6,10 L494.3,46 L498.1,118 L501.9,118 L505.7,82 L509.4,118 L513.2,82 L517,82 L520.8,118 L524.5,82 L528.3,82 L532.1,154 L535.8,118 L539.6,82 L543.4,46 L547.2,10 L550.9,82 L554.7,82 L558.5,82 L562.3,82 L566,154 L569.8,82 L573.6,46 L577.4,154 L581.1,10 L584.9,82 L588.7,46 L592.5,46 L596.2,10 L600,118"/><path class="k-line" d="M0,83.2 L3.8,82.4 L7.5,82 L11.3,82 L15.1,82.4 L18.9,82.4 L22.6,81.6 L26.4,81.6 L30.2,82.4 L34,83.2 L37.7,83.2 L41.5,83.6 L45.3,84 L49.1,83.6 L52.8,82.8 L56.6,84 L60.4,84 L64.2,84 L67.9,85.6 L71.7,86.4 L75.5,86.4 L79.2,86 L83,85.6 L86.8,84.8 L90.6,85.2 L94.3,85.2 L98.1,86 L101.9,86.4 L105.7,86 L109.4,85.2 L113.2,84.8 L117,84.4 L120.8,84.4 L124.5,84 L128.3,84.4 L132.1,84.4 L135.8,83.2 L139.6,82.8 L143.4,83.2 L147.2,82.4 L150.9,82.4 L154.7,82 L158.5,81.2 L162.3,82 L166,82 L169.8,80.8 L173.6,80.4 L177.4,80 L181.1,80 L184.9,80.4 L188.7,79.6 L192.5,79.2 L196.2,79.6 L200,80 L203.8,80 L207.5,80.4 L211.3,81.2 L215.1,80.8 L218.9,80.8 L222.6,80 L226.4,79.6 L230.2,79.2 L234,79.2 L237.7,79.6 L241.5,80 L245.3,80 L249.1,79.2 L252.8,79.6 L256.6,78.8 L260.4,79.2 L264.2,78.8 L267.9,78.8 L271.7,79.2 L275.5,79.6 L279.2,79.2 L283,79.6 L286.8,79.2 L290.6,79.2 L294.3,78 L298.1,77.6 L301.9,76.8 L305.7,77.6 L309.4,78 L313.2,78.4 L317,78.4 L320.8,77.6 L324.5,77.6 L328.3,77.6 L332.1,77.6 L335.8,78 L339.6,77.2 L343.4,78.4 L347.2,78.8 L350.9,79.2 L354.7,78.8 L358.5,80 L362.3,79.2 L366,79.2 L369.8,78.4 L373.6,77.2 L377.4,77.6 L381.1,77.2 L384.9,76.8 L388.7,76.8 L392.5,77.6 L396.2,76.4 L400,76.4 L403.8,76.4 L407.5,76 L411.3,75.6 L415.1,74.8 L418.9,74.8 L422.6,75.6 L426.4,76.4 L430.2,76.4 L434,77.2 L437.7,76.8 L441.5,76.4 L445.3,76.4 L449.1,77.6 L452.8,78.4 L456.6,78.8 L460.4,78.4 L464.2,78.8 L467.9,78.8 L471.7,78.8 L475.5,79.2 L479.2,79.2 L483,78.8 L486.8,78.8 L490.6,78 L494.3,78 L498.1,79.2 L501.9,79.6 L505.7,80 L509.4,81.2 L513.2,81.2 L517,81.2 L520.8,81.6 L524.5,81.2 L528.3,82 L532.1,83.2 L535.8,83.2 L539.6,82.8 L543.4,82.8 L547.2,81.6 L550.9,80.8 L554.7,81.2 L558.5,81.2 L562.3,81.6 L566,82.8 L569.8,83.2 L573.6,82.4 L577.4,83.2 L581.1,82 L584.9,82.4 L588.7,82.4 L592.5,82.4 L596.2,82 L600,82"/></svg><span class="cl l halo" style="left:0.67%;top:5.00%">100%</span><span class="cl l halo" style="left:0.67%;top:50.00%">50%</span><span class="cl l halo" style="left:0.67%;top:95.00%">0%</span><span class="cl r c-acc halo" style="left:99.00%;top:33.00%">90-day hit rate: 60%</span></div><div class="mp-chartaxis " aria-hidden="true"><span class="a0" style="left:0.00%">160 trading days</span><span class="a1" style="left:100.00%">illustrative</span></div>
     <p class="cap"><span class="illus">Illustrative</span>Grey: one day's hit rate across five holdings. Coral: the same over 90 days.</p>
   </div>

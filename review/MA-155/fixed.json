@@ -1,0 +1,231 @@
+[
+  {
+    "id": "r1-B1",
+    "round": 1,
+    "finding": "the design label marks exactly the stories with UI, and the check compares them",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py check"
+    }
+  },
+  {
+    "id": "r1-B2",
+    "round": 1,
+    "finding": "Browser · Admin · Settings is on MA-130, the UI story PLAN puts it under",
+    "check": {
+      "type": "trace",
+      "key": "MA-130",
+      "board": "Browser · Admin · Settings"
+    }
+  },
+  {
+    "id": "r1-B3",
+    "round": 1,
+    "finding": "MA-155's criteria 3 and 4 say what the check does",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-155: criteria 3 and 4 name /plan-sync --design before every PR and In Review or Done"
+    }
+  },
+  {
+    "id": "r1-B4",
+    "round": 1,
+    "finding": "MA-157 sits under the phase 0 epic",
+    "check": {
+      "type": "trace",
+      "key": "MA-157",
+      "field": "epic",
+      "value": "MA-9"
+    }
+  },
+  {
+    "id": "r2-B1",
+    "round": 2,
+    "finding": "a partly drawn story cannot start",
+    "check": {
+      "type": "cmd_fails",
+      "run": "python3 scripts/plan_sync.py start MA-63"
+    }
+  },
+  {
+    "id": "r2-B2",
+    "round": 2,
+    "finding": "the board check refuses names not on the canvas",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r2-B3",
+    "round": 2,
+    "finding": "start runs the row's own checks",
+    "check": {
+      "type": "grep",
+      "file": "scripts/plan_sync.py",
+      "pattern": "errors, _ = item_findings\\(it, ctx\\)",
+      "present": true
+    }
+  },
+  {
+    "id": "r2-B4",
+    "round": 2,
+    "finding": "ARCHITECTURE 16 separates /pause, the Admin center's Pause and the PAUSE stance",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "Three different things share it",
+      "present": true
+    }
+  },
+  {
+    "id": "r3-B1",
+    "round": 3,
+    "finding": "MA-39, MA-80 and MA-91 list their undrawn screens",
+    "check": {
+      "type": "cmd",
+      "run": "for k in MA-39 MA-80 MA-91; do ! python3 scripts/plan_sync.py start $k >/dev/null || exit 1; done"
+    }
+  },
+  {
+    "id": "r3-B2",
+    "round": 3,
+    "finding": "a board's number is tied to its own name",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r3-B3",
+    "round": 3,
+    "finding": "Browser · Forecaster · Proof is on MA-124 with an open question",
+    "check": {
+      "type": "trace",
+      "key": "MA-124",
+      "board": "Browser · Forecaster · Proof"
+    }
+  },
+  {
+    "id": "r3-B4",
+    "round": 3,
+    "finding": "a story In Review or Done with undrawn screens fails the check",
+    "check": {
+      "type": "grep",
+      "file": "scripts/plan_sync.py",
+      "pattern": "with screens still undrawn",
+      "present": true
+    }
+  },
+  {
+    "id": "r4-B1",
+    "round": 4,
+    "finding": "stray strings are not board titles",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r4-B2",
+    "round": 4,
+    "finding": "the web app is read-only except the owner's admin settings and operations",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "Dashboard will be read only\\s+\\(except for admin\\)",
+      "present": true
+    }
+  },
+  {
+    "id": "r4-B3",
+    "round": 4,
+    "finding": "MA-130 lists its two undrawn chat screens",
+    "check": {
+      "type": "trace",
+      "key": "MA-130",
+      "field": "undrawn",
+      "contains": "agent's question"
+    }
+  },
+  {
+    "id": "r5-B1",
+    "round": 5,
+    "finding": "an option's title expands only with option numbers; script fragments are not titles",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r5-B2",
+    "round": 5,
+    "finding": "MA-35 lists the /pause and /resume replies as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-35",
+      "field": "undrawn",
+      "contains": "/pause and /resume"
+    }
+  },
+  {
+    "id": "r6-B1",
+    "round": 6,
+    "finding": "a board's number is the one its chip prints",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r6-B2",
+    "round": 6,
+    "finding": "MA-104 has UI and its own section",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "^### 12\\.1 ",
+      "present": true
+    }
+  },
+  {
+    "id": "r6-B3",
+    "round": 6,
+    "finding": "MA-130 lists the daily digest as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-130",
+      "field": "undrawn",
+      "contains": "digest"
+    }
+  },
+  {
+    "id": "r6-admin",
+    "round": 6,
+    "finding": "one admin: no spec doc allows a second",
+    "check": {
+      "type": "cmd",
+      "run": "! grep -n -i -E '\\badmins\\b|\\ban admin\\b|second admin can be added|second person is made an admin' ARCHITECTURE.md PLAN.md TECH_STACK.md README.md docs/design/market-agent.html"
+    }
+  },
+  {
+    "id": "r7-B1",
+    "round": 7,
+    "finding": "MA-130's acceptance says the owner is the one admin",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-130: 'Who: the admin only: the owner, the household's one admin'; 'Instructions from the admin'"
+    }
+  },
+  {
+    "id": "r7-B2",
+    "round": 7,
+    "finding": "MA-137 lists the daily digest and the change message as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-137",
+      "field": "undrawn",
+      "contains": "digest"
+    }
+  }
+]

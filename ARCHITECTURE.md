@@ -959,8 +959,10 @@ pensions since 2024") are answered without a database running all month:
   the SQL is shown under the answer's Technical section so every answer can
   be checked. The card is designed first.
 - The structured `query_ledger` tool (MA-62) stays the first choice; this one
-  is for the questions it cannot express. The same files can be read with
-  Athena, or DuckDB on the owner's laptop.
+  is for the questions it cannot express. Optionally (MA-104), the same
+  files can be read with Athena; reading them from the laptop would need a
+  read-only role of its own for that prefix, since the developer role cannot
+  read prod (§18.1), and is decided when the story starts.
 
 ---
 

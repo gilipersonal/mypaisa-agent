@@ -135,8 +135,14 @@ def captions(path: Path) -> set[str]:
         caps.update(m.group(1) for m in re.finditer(rf"\b\w+\s*=\s*'((?:{DOORS}) · [^'\\\n]+)'", t))
         # Script fragments are not titles: "' + w.label.replace(/", " + lapScr.name : ".
         code = re.compile(r"['\"]\s*\+|\+\s*['\"]|\+\s*\w+\.\w|\.replace\(|\?\s*\w+\.\w")
-        # A caption paragraph is prose, not a title: a title is short and has no sentence in it.
-        _captions[path] = {c for c in caps if c and re.search(r"\w", c) and not code.search(c) and len(c) <= 100 and ". " not in c}
+        # Not titles: caption prose (long, or a sentence), a canvas's intro label, the canvas's own name.
+        own = path.name.removesuffix(".dc.html")
+
+        def title(c: str) -> bool:
+            return (bool(re.search(r"\w", c)) and not code.search(c) and len(c) <= 100 and ". " not in c
+                    and not c.endswith(".") and not re.search(r":\s*intro$", c, re.I) and c != own)
+
+        _captions[path] = {c for c in caps if c and title(c)}
     return _captions[path]
 
 
@@ -274,8 +280,22 @@ def shape_errors(trace: dict) -> list[str]:
     return errors
 
 
+def mirror_errors(mirror: object) -> list[str]:
+    """docs/design/claude-design.json: {project: {"files": {name: {etag, bytes, sha256}}}}."""
+    if not isinstance(mirror, dict):
+        return ["docs/design/claude-design.json must hold an object"]
+    errors = []
+    for proj, meta in mirror.items():
+        files = meta.get("files") if isinstance(meta, dict) else None
+        if not isinstance(files, dict):
+            errors.append(f"claude-design.json: {proj} needs a files object")
+            continue
+        errors += [f"claude-design.json: {proj}/{name} must be an object" for name, e in files.items() if not isinstance(e, dict)]
+    return errors
+
+
 def check(trace: dict) -> tuple[list[str], list[str]]:
-    errors, warnings = shape_errors(trace), []
+    errors, warnings = shape_errors(trace) or mirror_errors(load(MIRROR) if MIRROR.exists() else {}), []
     if errors:
         return errors, warnings
     ctx = context(trace)
@@ -389,6 +409,10 @@ def render(trace: dict) -> str:
 
 
 def start(trace: dict, key: str) -> int:
+    epic = next((p for p in trace.get("phases", []) if p.get("epic") == key), None)
+    if epic:
+        print(f"{key} is the phase {epic.get('phase')} epic ({epic.get('title', '')}); start one of its stories, not the epic.")
+        return 1
     it = next((i for i in trace.get("items", []) if i.get("key") == key), None)
     if not it:
         other = next((o for o in trace.get("others", []) if o.get("key") == key), None)
@@ -466,6 +490,11 @@ BOARD_CASES = [
     ("app", "Admin center 2.dc.html", "AL.1 · Browser · Admin · Alerts · Replay, the fresh check", True),
     ("app", "Telegram admin.dc.html", "Telegram · a Telegram · Approval request", False),
     ("app", "Browser 2.dc.html", "Browser · B5 Browser · Activity", False),
+    ("app", "Telegram admin.dc.html", "Telegram admin: intro", False),
+    ("app", "Telegram admin.dc.html", "Telegram · Telegram admin: intro", False),
+    ("app", "Currency check.dc.html", "Currency check: intro", False), ("app", "Admin center 2.dc.html", "Admin center 2", False),
+    ("ds", "MyPaisa DS v1.dc.html", "Telegram draws the bubble and buttons; MyPaisa owns the PNG, the words and their order.", False),
+    ("ds", "MyPaisa DS v1.dc.html", "1a · Warm ledger", True),
 ]
 
 
@@ -486,7 +515,7 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 2
     trace = load(TRACE)
-    if argv[1] in ("render", "start") and (bad := shape_errors(trace)):
+    if argv[1] in ("render", "start") and (bad := shape_errors(trace) or (argv[1] == "start" and mirror_errors(load(MIRROR) if MIRROR.exists() else {}))):
         for e in bad:
             print(f"DRIFT: {e}")
         return 1
@@ -506,7 +535,8 @@ def main(argv: list[str]) -> int:
         print(f"note: {w}")
     for e in errors:
         print(f"DRIFT: {e}")
-    print(f"plan-sync: {len(trace.get('items', []))} items, {len(errors)} drift, {len(warnings)} notes")
+    items = trace.get("items") if isinstance(trace, dict) and isinstance(trace.get("items"), list) else []
+    print(f"plan-sync: {len(items)} items, {len(errors)} drift, {len(warnings)} notes")
     return 1 if errors else 0
 
 

@@ -315,8 +315,10 @@ browser, as `ARCHITECTURE.md` §9.3.
   free), with quiet hours, cooldowns and a digest; "failed work" alerts from
   the dead-letter queues carry a [Replay] button (§21, MA-145).
 - The `api` Lambda behind `api(-dev).mypaisapp.com`: GET routes only for
-  the household's data, plus the Admin center's owner-only security actions
-  behind a fresh check (MA-102); sign-in through the Cognito pool built in
+  the household's data, plus the Admin center's owner-only admin actions,
+  each behind a fresh check (`ARCHITECTURE.md` §9.3): the security actions
+  (MA-102), the ceiling and caps with their alert routing (MA-116, MA-137)
+  and replaying failed work (MA-145); sign-in through the Cognito pool built in
   phase 1 (Telegram, Google, passkey); the `HttpOnly`, `SameSite=Strict`
   session cookie with five-minute access tokens behind it; session, status,
   epoch and role checked on every call; CORS for that environment's console
