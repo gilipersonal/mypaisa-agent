@@ -296,7 +296,7 @@ code { font: 500 0.86em/1.3 var(--mono); background: var(--mp-surface-2); color:
 .app { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
 .lt { font: 700 28px/34px var(--font); letter-spacing: -0.02em; }
 .tabbar { display: flex; justify-content: space-around; padding: 6px 4px 14px; background: var(--mp-material); border-top: 1px solid var(--mp-line); margin-top: auto; }
-.tab { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--mp-ink-3); font: 500 10px/12px var(--font); }
+.tab { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--mp-ink-3); font: 500 11px/13px var(--font); }
 .tab.on { color: var(--mp-accent); }
 .tab .ic { width: 22px; height: 22px; }
 .dshero { background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 24px; padding: 16px 16px 0; overflow: hidden; }
@@ -513,6 +513,10 @@ footer.foot b { color: var(--mp-ink); }
     <a href="#failure"><b>10</b>When it fails</a>
     <a href="#ladder"><b>11</b>Spend ladder</a>
     <a href="#monthly"><b>12</b>First of the month</a>
+    <a href="#currency"><b>13</b>Any currency</a>
+    <a href="#india-import"><b>14</b>Indian portfolio</a>
+    <a href="#inr"><b>15</b>INR and GBP</a>
+    <a href="#india-day"><b>16</b>India's day</a>
   </nav>
   <button class="theme" id="themeBtn" type="button">Dark</button>
 </header>
@@ -522,14 +526,15 @@ footer.foot b { color: var(--mp-ink); }
 <section class="hero" aria-labelledby="h-title">
   <p class="over">MyPaisa Agent · design only, nothing is built yet</p>
   <h1 id="h-title">MyPaisa Agent Journey</h1>
-  <p class="hero-sub">How a household uses MyPaisa Agent, one flow at a time: what the member does, the path it takes through Telegram, AWS and Claude, what the member sees, and what keeps it safe. Each flow names the Jira stories that build it.</p>
+  <p class="hero-sub">How a household uses MyPaisa Agent, one flow at a time: what the member does, the path it takes through Telegram, AWS and Claude, what the member sees, and what keeps it safe. The UK holdings come first; the household's Indian funds, shares and ETFs join them in rupees, with pounds beside every figure. Each flow names the Jira stories that build it.</p>
   <div class="hero-facts">
     <span>A Telegram bot and a read-only web app</span>
     <span>AWS us-east-1, dev and prod</span>
     <span>Claude through the Anthropic API</span>
+    <span>UK and Indian holdings, GBP and INR</span>
     <span>It never trades</span>
   </div>
-  <p class="hero-note">Every figure on this page is illustrative. "You" are the household's owner; Asha is the second member. The facts come from <code>ARCHITECTURE.md</code>, <code>PLAN.md</code> and the MA-101 and MA-102 design decisions.</p>
+  <p class="hero-note">Every figure, rate and fund name on this page is illustrative. "You" are the household's owner; Asha is the second member. The facts come from <code>ARCHITECTURE.md</code> (India in §4.7, §5.3 and §22), <code>PLAN.md</code> (phase 13 for India) and the MA-101 and MA-102 design decisions.</p>
   <svg class="hero-line" viewBox="0 0 600 64" preserveAspectRatio="none" aria-hidden="true">
     <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6 L600 64 L0 64 Z" fill="var(--mp-hero-area)" stroke="none"/>
     <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/>
@@ -540,9 +545,9 @@ footer.foot b { color: var(--mp-ink); }
 <p class="sec-sub">From <code>ARCHITECTURE.md</code> §1. Each path below shows where they bite.</p>
 <div class="grid">
   <div class="card"><p class="tag">Rule 1</p><h3>Claude never produces a number</h3><p>Every figure comes from code with tests. Claude chooses what to say and how to say it.</p></div>
-  <div class="card"><p class="tag">Rule 2</p><h3>The bot cannot trade</h3><p>No broker login, no orders. It suggests only ISA-safe actions.</p></div>
+  <div class="card"><p class="tag">Rule 2</p><h3>The bot cannot trade</h3><p>No broker login, no orders. It suggests only actions that suit the account: ISA-safe for the UK wrappers, wrapper-aware for Indian accounts.</p></div>
   <div class="card"><p class="tag">Rule 3</p><h3>Summary first, detail on tap</h3><p>Every message has a plain top and a technical underside. Nothing technical is shown unasked.</p></div>
-  <div class="card"><p class="tag">Rule 4</p><h3>One write path</h3><p>Every change, whatever the screen, goes through the bot: a card, a Confirm tap, an audit row. The web app is read-only by construction.</p></div>
+  <div class="card"><p class="tag">Rule 4</p><h3>One write path</h3><p>Every change to the household's records, whatever the screen, goes through the bot: a card, a Confirm tap, an audit row. The web app is read-only for those records. The one exception is the owner's Admin center, which acts on admin settings and operations, never on a record, each behind a fresh check and an audit row ("Dashboard will be read only (except for admin)").</p></div>
 </div>
 
 <h2 class="sec-h">How to read a flow</h2>
@@ -552,7 +557,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="card lanecard"><h3><i class="dot dt"></i>Telegram</h3><p>The Bot API, the chat with its buttons, the Mini App container, the Login Widget, Face ID through Telegram's prompt.</p></div>
   <div class="card lanecard"><h3><i class="dot da"></i>AWS</h3><p>API Gateway, the webhook λ, the SQS FIFO updates queue, the agent λ, the SQS work queue and worker λ, the SQS outbox and sender λ, DynamoDB, S3, Cognito, EventBridge Scheduler, Step Functions (phase 12), SNS, CloudWatch.</p></div>
   <div class="card lanecard"><h3><i class="dot dc"></i>Claude</h3><p>The Anthropic API: Haiku, Sonnet and Opus 5.5, server-side web search and fetch, Message Batches.</p></div>
-  <div class="card lanecard"><h3><i class="dot de"></i>External data</h3><p>Free sources first: yfinance, Twelve Data's free tier, ECB FX, issuer pages, FT, RSS. Google, when it vouches for a sign-in.</p></div>
+  <div class="card lanecard"><h3><i class="dot de"></i>External data</h3><p>Free sources first: yfinance, Twelve Data's free tier, ECB FX, issuer pages, FT, RSS. For India (phase 13): AMFI's NAV file, mfapi.in, yfinance <code>.NS</code> and <code>.BO</code>, NSE and BSE bhavcopy, the RBI/FBIL rate, Indian news feeds. Google, when it vouches for a sign-in.</p></div>
 </div>
 
 <h2 class="sec-h">The safeguards, in one place</h2>
@@ -560,18 +565,20 @@ footer.foot b { color: var(--mp-ink); }
 <div class="sgs" style="margin-top:16px">
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span>Every change is shown as a card first and saved only after the member taps Confirm. A change across several records is one plan with one Confirm.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>An <code>AuditEvent</code> in the same DynamoDB transaction as the change: who, when, through what, before and after, which run. Hash-chained, never deleted.</span></div></div>
-  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span><code>/privacy</code> hides pounds in every card, in the Mini App and on the web.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span><code>/privacy</code> hides pounds and rupees in every card, in the Mini App and on the web; on a card with two currencies it hides both.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>The currency check</b><span>Every holding keeps the one currency it is bought and valued in. An amount typed in another is never saved as it is: the bot says why and asks for the amount that arrived (MA-156).</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>Face ID or a 6-digit PIN on the phone after 12 hours idle and after Confirm on any change; a fresh passkey or Google check in the browser for the owner's actions.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>The spend ladder</b><span>The month's Claude spend is read before every call; at 70, 85, 95 and 100% of the ceiling the bot steps down. Alerts are never dropped.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries and dead-letter queues</b><span>Every hand-off goes through SQS: retried with backoff, idempotent, and kept in a dead-letter queue with an alarm and a replay when it keeps failing.</span></div></div>
 </div>
 
-<h2 class="sec-h">The twelve flows</h2>
+<h2 class="sec-h">The sixteen flows</h2>
+<p class="sec-sub">Flows 1 to 12 follow the UK holdings. Flows 13 to 16 bring India into the picture: money in any currency (phase 1), then the Indian portfolio, the two-currency household and India's place in the day (phase 13).</p>
 <div class="grid">
   <a class="idx" href="#invite"><b>1</b><span><strong>Joining by invite</strong><small><code>/invite</code> and a one-time link · phase 1</small></span></a>
   <a class="idx" href="#signin"><b>2</b><span><strong>Signing in</strong><small>Mini App, Telegram, Google, passkey; the second check · phases 1 and 5</small></span></a>
   <a class="idx" href="#holding"><b>3</b><span><strong>Adding a holding</strong><small>A factsheet PDF or a screenshot · phase 1</small></span></a>
-  <a class="idx" href="#money"><b>4</b><span><strong>Logging money in plain words</strong><small>"I put £200 into Balanced today" · phase 1</small></span></a>
+  <a class="idx" href="#money"><b>4</b><span><strong>Logging money in plain words</strong><small>"I put £200 into Balanced today", in the holding's currency · phase 1</small></span></a>
   <a class="idx" href="#brief"><b>5</b><span><strong>The 07:15 morning brief</strong><small>Scheduler, queues, free prices, the engine · phases 2 and 3</small></span></a>
   <a class="idx" href="#alert"><b>6</b><span><strong>A red alert after the US close</strong><small>Tiers, cooldowns, quiet hours, two reds a week · phase 3</small></span></a>
   <a class="idx" href="#ask"><b>7</b><span><strong>Asking a question</strong><small>Chat memory, tools, Why? with sources · phase 4</small></span></a>
@@ -580,6 +587,10 @@ footer.foot b { color: var(--mp-ink); }
   <a class="idx" href="#failure"><b>10</b><span><strong>When something fails</strong><small>Retries, dead-letter queues, replay · phases 1, 5 and 12</small></span></a>
   <a class="idx" href="#ladder"><b>11</b><span><strong>The spend ladder in practice</strong><small>70, 85, 95 and 100% · phases 1 and 3</small></span></a>
   <a class="idx" href="#monthly"><b>12</b><span><strong>The first of the month</strong><small>The contribution prompt · phases 1 and 11</small></span></a>
+  <a class="idx" href="#currency"><b>13</b><span><strong>Money in any currency</strong><small>"I put ₹20,000 into Balanced" gets put right · phase 1, MA-156</small></span></a>
+  <a class="idx" href="#india-import"><b>14</b><span><strong>Importing the Indian portfolio once</strong><small>CAS statements and a broker export, one Confirm · phase 13, MA-152</small></span></a>
+  <a class="idx" href="#inr"><b>15</b><span><strong>The household in INR and GBP</strong><small>Rupees with pounds beside, the tax flag · phase 13, MA-153</small></span></a>
+  <a class="idx" href="#india-day"><b>16</b><span><strong>India in the daily rhythm</strong><small>NSE and BSE closes, AMFI's NAVs, the 07:15 brief · phase 13</small></span></a>
 </div>
 
 <!-- ============ 1. Joining by invite ============ -->
@@ -819,7 +830,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Instrument</b> and <b>Document</b> saved in <b>DynamoDB</b>, each with an <span class="sg">audit row</span>; price sources resolved from the ISIN (the Yahoo id, the BlackRock page)</span></li>
       <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb"><i>Added. How much do you hold? Send a screenshot or type it.</i></span><span class="ln"></span></li>
       <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You send a screenshot of the Monzo valuation; the same docs job reads it with Claude</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">After Confirm and the second check: <b>Position</b>, <b>Valuation</b> (source <code>user_screenshot</code>) and <b>Transaction</b>, each with an audit row that names the screenshot it came from. The screenshot stays in S3 and opens from the Audit page</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">After Confirm and the second check: <b>Position</b>, <b>Valuation</b> (source <code>user_screenshot</code>) and <b>Transaction</b>, each with an audit row that names the screenshot it came from. The Position keeps the currency this card showed, confirmed once (flow 13). The screenshot stays in S3 and opens from the Audit page</span></li>
     </ol></div>
   </div></div>
 
@@ -897,8 +908,8 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">04</span>
     <h2 id="h-money">Logging money in plain words</h2>
-    <p class="lede">Type it the way you would say it. When the sentence has everything, it goes straight to a Confirm card. When something is missing, the bot asks for that one thing, with buttons, editing the same message so the chat stays tidy.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put £200 into Balanced today", or "I want to log a transaction"</span><span class="chip">Phase 1</span></div>
+    <p class="lede">Type it the way you would say it, in any currency. When the sentence has everything and its currency matches the holding's, it goes straight to a Confirm card; with no currency named, the holding's own is assumed and said on the card. When something is missing, the bot asks for that one thing, with buttons, editing the same message so the chat stays tidy. Rupees typed for a pound holding take the currency check of flow 13.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put £200 into Balanced today", "1.5 lakh into my Nifty 50 index fund", or "I want to log a transaction"</span><span class="chip">Phase 1</span><span class="chip">Phase 13 (rupee holdings)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -911,11 +922,12 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> reads this cycle's <span class="sg">spend meter</span> (one item), then builds the current conversation</span></li>
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The conversation and the strict tools to Sonnet; <code>tool_choice</code> stays <code>auto</code></span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Claude calls <code>propose_change</code>: a buy of £200 in Balanced, today. Every detail is there, so no questions</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">A parser in code reads the amount: £ $ € ₹, the codes, the words (pounds, rupees, Rs) and lakh and crore. <span class="sg">£200 against Balanced's own currency</span>, pounds from its factsheet's Confirm card: they match</span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Code works out the units from the NAV: about 10.8 at 18.57. A <b>PendingAction</b> row holds the proposal for up to a day</span></li>
       <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The Confirm card, through the outbox and sender λ</span><span class="ln"></span></li>
       <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb"><span class="sg">Confirm</span>, then the <span class="sg">second check</span></span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> and the <b>Position</b>'s units saved with an <span class="sg">audit row</span>, in one transaction; the card edits in place</span></li>
-      <li class="st note" data-lanes="Note"><span class="box">Missing a detail? <code>ask_user</code> ends the turn with one question and its buttons. The next tap resumes the flow from the PendingAction; whatever was already said is skipped; a day of silence clears it.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">Missing a detail? <code>ask_user</code> ends the turn with one question and its buttons. The next tap resumes the flow from the PendingAction; whatever was already said is skipped; a day of silence clears it. An amount in another currency than the holding's is not saved as typed: it takes the currency check of flow 13.</span></li>
     </ol></div>
   </div></div>
 
@@ -943,19 +955,33 @@ footer.foot b { color: var(--mp-ink); }
           <div class="msg out"><div class="bub">Bought</div></div>
           <div class="msg"><div class="bub"><p>Into which holding?</p></div><div class="ibs"><span class="ib">Balanced</span><span class="ib">NASDAQ 100</span><span class="ib">Robotics</span><span class="ib">Silver</span></div><div class="ibs c1"><span class="ib">Something new</span></div></div>
           <div class="msg out"><div class="bub">Balanced</div></div>
-          <div class="msg"><div class="bub"><p>How much, in pounds?</p></div><div class="ibs"><span class="ib">£100</span><span class="ib">£200</span><span class="ib">£500</span><span class="ib">Type an amount</span></div></div>
+          <div class="msg"><div class="bub"><p>How much? Balanced is held in pounds (GBP).</p></div><div class="ibs"><span class="ib">£100</span><span class="ib">£200</span><span class="ib">£500</span><span class="ib">Type an amount</span></div></div>
           <div class="msg out"><div class="bub">£200</div></div>
           <div class="msg"><div class="bub"><p>When?</p></div><div class="ibs c3"><span class="ib">Today</span><span class="ib">Yesterday</span><span class="ib">Pick a date</span></div></div>
         </div>
       </div>
       <figcaption><b>The guided flow.</b> Shown as a sequence here; in the chat each answer edits the same message. It ends on the same Confirm card.</figcaption>
     </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">I put 200 into Balanced<span class="t">12:40</span></div></div>
+          <div class="msg"><div class="bub"><p>Bought <b>£200</b> of Balanced (Monzo) on 23 Oct, in pounds as Balanced is · about 10.8 units at NAV 18.57</p><span class="t">12:40</span></div><div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div></div>
+          <span class="svc">Later</span>
+          <div class="msg out"><div class="bub">Which currency is Balanced in?<span class="t">18:05</span></div></div>
+          <div class="msg"><div class="bub"><p>Pounds (GBP), from the factsheet you sent on 3 March.</p><span class="t">18:05</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>No currency named.</b> The holding's own is assumed and said on the card, never guessed.</figcaption>
+    </figure>
   </div>
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span><code>propose_change</code> saves nothing; only the Confirm tap does.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Numbers from code</b><span>Claude reads "£200" and "today"; the units and the NAV come from code.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Numbers from code</b><span>Claude fills the fields when the wording is free; a parser in code reads the amount, and the units and the NAV come from code. The figure is always the member's own, echoed back.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>The holding's own currency</b><span>Every position keeps the currency from the Confirm card that added it. An amount in another currency goes to the check of flow 13, never straight in.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Nothing asked twice</b><span>It never asks for what it can look up, and skips every question the sentence already answered.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><div><b>A day, then gone</b><span>A PendingAction expires after 24 hours; an expired Confirm is refused.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>Face ID or the PIN after Confirm on any change.</span></div></div>
@@ -966,6 +992,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-38"><b>MA-38</b><span>"I put £200 into Balanced" becomes a transaction after Confirm</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-156"><b>MA-156</b><span>A transaction can be typed in any currency, and the bot checks it against the holding's own currency before Confirm</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-34"><b>MA-34</b><span>Design the Portfolio card and the Confirm card before they are built</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-139"><b>MA-139</b><span>Each member's messages travel through ordered queues, in and out, retried with backoff and never lost</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
@@ -1008,6 +1035,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv ft toM rev" data-lanes="Telegram to Member"><span class="lb">You read the top; the technical detail is one tap away</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">07:45 <b>CloudWatch</b>: if the brief has not gone out, the dead man's switch alarm reaches the owner</span></li>
       <li class="st note" data-lanes="Note"><span class="box">From phase 12 one <b>Step Functions</b> state machine drives the same jobs (ingest, engine, Forecaster, grade, calibrate, brief) with retries and backoff on every step, and the ops warden repairs what it safely can.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">From phase 13 the brief also carries <b>India's previous day</b>. NSE and BSE close at 15:30 IST and AMFI's fund prices arrive by the UK evening, so the Indian jobs have run long before 07:00; flow 16 follows them.</span></li>
     </ol></div>
   </div></div>
 
@@ -1074,7 +1102,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries and dead-letter queues</b><span>Each job: five tries, backoff from 30 seconds to 30 minutes, then its dead-letter queue. Idempotent per date.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg><div><b>Free sources kept inside their limits</b><span>The work queue's concurrency keeps Twelve Data's free tier at 8 calls a minute; ingest spends at most 200 of its 800 daily credits.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>The dead man's switch</b><span>07:45: no brief, an alarm. Any holding's price older than two days also raises one.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds hidden in the card when the member has turned it on.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds, and rupees once Indian holdings arrive, hidden in the card when the member has turned it on.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>The kill switch</b><span><code>/pause</code> sets a flag every scheduled run checks first.</span></div></div>
   </div>
 
@@ -1421,9 +1449,9 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only by construction</b><span>The data routes are GET only and the app has no form that posts. Every change goes through the chat.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only by construction</b><span>The data routes are GET only and the app has no form that posts a record. Every change to the records goes through the chat. The web app's one write path is the owner's Admin center, for admin settings and operations only, each behind a fresh check; none changes a record.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Checked on every call</b><span>Session, status, epoch and role; tokens never visible to page scripts; a strict Content-Security-Policy.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds hidden here too, with placeholders that stay visible in dark.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds and rupees hidden here too, with placeholders that stay visible in dark.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Roles</b><span>A member sees the household totals and their own detail; a viewer reads the overview and what members share.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit log, readable</b><span>Filtered by member, record and date; a member sees their own rows and the household's, the owner sees all.</span></div></div>
   </div>
@@ -1859,7 +1887,7 @@ footer.foot b { color: var(--mp-ink); }
             </div>
             <p>The two engines differ on the NASDAQ 100 ETF. Either way the £200 goes in.</p>
             <span class="t">09:00</span></div>
-            <div class="ibs"><span class="ib">Rules engine's</span><span class="ib">Forecaster's</span><span class="ib">My usual split</span><span class="ib">Not this month</span></div>
+            <div class="ibs"><span class="ib">Rules engine's</span><span class="ib">Forecaster's</span><span class="ib">My usual split</span><span class="ib">Something else</span></div>
           </div>
         </div>
       </div>
@@ -1885,13 +1913,527 @@ footer.foot b { color: var(--mp-ink); }
   </div>
 </section>
 
+<!-- ============ India in the picture ============ -->
+<h2 class="sec-h" id="india" style="margin-top:80px">India in the picture</h2>
+<p class="sec-sub">The household's Indian mutual funds, shares and ETFs join the UK holdings without changing the core: currency, country and the kind of holding are data, every feed is a plugin in a chain, and the INR view was already planned. India adds price plugins, two kinds of holding, account types, a macro basket and an importer. Free sources first; a paid feed only on the admin's approval.</p>
+<dl class="facts" style="margin-top:16px">
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Two new kinds</dt><dd><code>in_mutual_fund</code>: one NAV a day and no candles, like a UK OEIC. <code>in_listed</code>: an NSE or BSE share or ETF with daily candles.</dd></div>
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Indian accounts</dt><dd><code>demat</code>, <code>mf_folio</code>, <code>nre</code> and <code>nro</code>, and <code>ppf</code>, <code>nps</code> or <code>elss</code> if one is held; each with country IN and currency INR.</dd></div>
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Every figure twice</dt><dd>Rupees with pounds beside them. The stored value is always both: the native amount and its GBP equivalent on the day, at the ECB reference rate, with the RBI/FBIL rate behind it.</dd></div>
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>When</dt><dd>Money in any currency is phase 1 (MA-156). The rest is phase 13, epic MA-147: prices (IN1, MA-151), the import (IN2, MA-152), accounts and views (IN3, MA-153), the engine and the Forecaster (IN4, MA-154). £0 on the free path.</dd></div>
+</dl>
+
+<!-- ============ 13. Money in any currency ============ -->
+<section class="flow" id="currency" aria-labelledby="h-currency">
+  <div class="flow-h">
+    <span class="flow-n">13</span>
+    <h2 id="h-currency">Money in any currency, checked against the holding</h2>
+    <p class="lede">Every holding has one currency: the one it is bought and valued in, as the platform shows it, confirmed once on the card that added it. Type money in any currency and the bot looks up that holding's currency and checks the amount against it. Rupees typed for a pound holding are never saved as typed: the bot says why and offers the ways to put it right.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put ₹20,000 into Balanced"</span><span class="chip">Phase 1 (the check)</span><span class="chip">Phase 2 (the ECB-rate estimate)</span><span class="chip">Phase 13 (rupee holdings)</span></div>
+  </div>
+
+  <h3 class="blk">What the member types, and what the bot does</h3>
+  <dl class="facts">
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put 200 into Balanced"</dt><dd>No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is".</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put £200 into Balanced"</dt><dd>The same currency: the usual Confirm card of flow 4.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put ₹20,000 into Balanced"</dt><dd>Saves nothing yet. Balanced is held in pounds, so it cannot take rupees directly. Buttons: <b>Pounds that arrived</b>, <b>Use the ECB rate</b>, <b>A rupee holding</b> (when there is one), <b>Cancel</b>.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"1.5 lakh into my Nifty 50 index fund"</dt><dd>Phase 13: an INR holding, so ₹1,50,000 with no question. Pounds typed against it get the same correction the other way.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"Which currency is Balanced in?"</dt><dd>"Pounds (GBP), from the factsheet you sent on 3 March."</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>A "$" on its own</dt><dd>US dollars, unless the member holds another dollar; then the bot asks which.</dd></div>
+  </dl>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You type <i>I put ₹20,000 into Balanced</i></span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">webhook λ, your lane on the <b>SQS FIFO updates</b> queue, then <b>agent λ</b>, which reads the <span class="sg">spend meter</span></span><span class="ln"></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The wording is free, so Sonnet fills the fields of <code>propose_change</code>: a buy, into Balanced, today, the amount as typed</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The proposal comes back. Claude never converts and never supplies a figure</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <b>parser</b> in code reads <code>₹20,000</code>: rupees. Balanced's <b>Position</b> has <code>ccy</code> GBP. <span class="sg">The currency check</span>: they differ, so nothing is saved</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The correction card: <b>Pounds that arrived</b>, <b>Use the ECB rate</b>, <b>A rupee holding</b> (only when there is one) and <b>Cancel</b></span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You tap <b>Use the ECB rate</b>; or <b>Pounds that arrived</b>, and type the figure or send the platform's confirmation</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <b>engine</b> converts at the ECB reference rate for that day, from the rates loaded every day (MA-44), and marks the result an <span class="sg">estimate</span>. With <i>Pounds that arrived</i>, your figure is recorded and the implied rate kept beside it</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">The Confirm card with two currencies: the pounds, the rupees, the rate and its date</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb"><span class="sg">Confirm</span>, then the <span class="sg">second check</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> saved in the position's currency (<code>amount</code>, <code>ccy</code> GBP), with <code>orig_amount</code>, <code>orig_ccy</code>, <code>fx_rate</code>, <code>fx_source</code> and <code>fx_date</code> beside it. The <span class="sg">audit row</span> shows both amounts</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">The ECB-rate figure stays marked an estimate until a statement, a screenshot or the next valuation confirms it. Before the daily rates are loaded (phase 2), that button is not offered and the bot asks for the pounds that arrived. The same check runs on the guided flow, a screenshot, and a CAS or broker line (flow 14): every pair, both ways.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">I put ₹20,000 into Balanced<span class="t">19:10</span></div></div>
+          <div class="msg"><div class="bub"><p>Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way.</p><p><small>Nothing is saved yet.</small></p><span class="t">19:10</span></div><div class="ibs"><span class="ib">Pounds that arrived</span><span class="ib">Use the ECB rate</span><span class="ib">A rupee holding</span><span class="ib">Cancel</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>The correction.</b> Nothing saved, four ways on. <i>A rupee holding</i> is offered only when one is held.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">Use the ECB rate<span class="t">19:11</span></div></div>
+          <div class="msg"><div class="bub">
+            <h5>Bought into Balanced (Monzo) · 23 Oct</h5>
+            <div class="kv">
+              <span>Recorded, in pounds</span><span><b>£177.78</b></span>
+              <span>You typed</span><span>₹20,000</span>
+              <span>ECB rate, 23 Oct</span><span>₹112.50 to £1</span>
+              <span>Units at NAV 18.57</span><span>about 9.6</span>
+            </div>
+            <p><span class="amb">Estimate</span> until a statement, a screenshot or the next valuation confirms it.</p>
+            <span class="t">19:11</span></div>
+            <div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div>
+          </div>
+          <p class="svc">After Confirm and Face ID</p>
+          <div class="msg"><div class="bub"><p><b>£177.78</b> into Balanced, from ₹20,000 at the ECB rate of 23 Oct</p><div class="hr"></div><p class="ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Saved · confirmed with Face ID</p><span class="t">19:12</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>Use the ECB rate.</b> The engine's conversion, its rate and date on the card, marked an estimate.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg out"><div class="bub">Pounds that arrived<span class="t">19:11</span></div></div>
+          <div class="msg"><div class="bub"><p>Type the pounds that reached Balanced, or send the platform's confirmation.</p><span class="t">19:11</span></div></div>
+          <div class="msg out"><div class="bub">£176.10<span class="t">19:13</span></div></div>
+          <div class="msg"><div class="bub">
+            <h5>Bought into Balanced (Monzo) · 23 Oct</h5>
+            <div class="kv">
+              <span>Recorded, in pounds</span><span><b>£176.10</b></span>
+              <span>You sent</span><span>₹20,000</span>
+              <span>Rate, as credited</span><span>₹113.57 to £1</span>
+            </div>
+            <span class="t">19:13</span></div>
+            <div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Pounds that arrived.</b> Your figure is recorded; the rupees and the implied rate stay beside it.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">Phase 13: a rupee holding</span>
+          <div class="msg out"><div class="bub">1.5 lakh into my Nifty 50 index fund<span class="t">20:02</span></div></div>
+          <div class="msg"><div class="bub"><p>Bought <b>₹1,50,000</b> of Nifty 50 index fund on 23 Oct, in rupees as the fund is · about £1,333 at the ECB rate</p><span class="t">20:02</span></div><div class="ibs c3"><span class="ib">Confirm</span><span class="ib">Edit</span><span class="ib">Cancel</span></div></div>
+          <div class="msg out"><div class="bub">I put £500 into Nifty 50 index fund<span class="t">20:05</span></div></div>
+          <div class="msg"><div class="bub"><p>Nifty 50 index fund is held in rupees (INR), so it can't take pounds directly; the pounds were changed to rupees on the way.</p><span class="t">20:05</span></div><div class="ibs"><span class="ib">Rupees that arrived</span><span class="ib">Use the ECB rate</span><span class="ib">A pound holding</span><span class="ib">Cancel</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>The other way.</b> Lakh read by code, no question for rupees; pounds against a rupee holding are put right.</figcaption>
+    </figure>
+  </div>
+  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span><b>Designed first.</b> The correction card, its buttons and the Confirm card with two currencies are being drawn as <code>Currency check.dc.html</code> in Claude Design and go through design-first when MA-156 starts. These mocks show the content, not a picked board. Rate and figures illustrative.</span></p>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>One currency per holding</b><span><code>Position.ccy</code>, read from the factsheet or screenshot and shown on the Confirm card that added it: confirmed once, never guessed again. A fund's own base currency (often USD) can differ; the position's is the one that counts.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Reading amounts is code</b><span>Symbols, the codes of every currency the ECB publishes, the words, lakh and crore. The figure is always the member's own, echoed back for Confirm.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A converted figure is never Claude's</b><span>Either the pounds that arrived, or the engine's conversion at the ECB rate of the day, with the rate and its date on the card, marked an estimate.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The original kept</b><span>What was typed and how it became the recorded figure stay on the Transaction (<code>fx_source</code> as credited, ECB or statement). The audit row shows both; a screenshot or statement behind it is its <code>document_id</code>.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Every pair, both ways, every door</b><span>A typed message, the guided flow, a screenshot, a CAS or broker line. Confirm and the second check before anything is saved.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Hides both amounts on a two-currency card.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-156"><b>MA-156</b><span>A transaction can be typed in any currency, and the bot checks it against the holding's own currency and puts a mismatch right before Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-38"><b>MA-38</b><span>"I put £200 into Balanced" becomes a transaction after Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-44"><b>MA-44</b><span>ECB FX rates and market calendars are loaded daily (the ECB-rate button, phase 2)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-153"><b>MA-153</b><span>IN3: Indian accounts show in INR and GBP; rupees and pounds checked both ways (phase 13)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>Telegram sessions need a second check</span></a>
+  </div>
+</section>
+
+<!-- ============ 14. Importing the Indian portfolio ============ -->
+<section class="flow" id="india-import" aria-labelledby="h-india-import">
+  <div class="flow-h">
+    <span class="flow-n">14</span>
+    <h2 id="h-india-import">Importing the existing Indian portfolio, once</h2>
+    <p class="lede">The household's Indian mutual funds, shares and ETFs arrive once, with their whole history, from the statements India already produces. Each file is kept first; code parses it; every holding is matched by ISIN; a dry run shows everything; one Confirm writes it all. Anything that does not match is listed, never guessed.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> you send a CAS statement or a broker export to the bot</span><span class="chip">Phase 13 (IN2)</span><span class="chip">Needs IN1, the Excel importer and file keeping</span></div>
+  </div>
+
+  <h3 class="blk">The files to send</h3>
+  <dl class="facts">
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Mutual funds, every fund house</dt><dd>The detailed Consolidated Account Statement (CAS) PDF from CAMS, KFintech or MF Central: every folio and scheme, the units, and every purchase, SIP, switch and redemption since inception, so cost and XIRR are right from day one.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Shares, ETFs and funds in demat</dt><dd>The NSDL or CDSL CAS, or the broker's holdings and tradebook export (for example Zerodha Console's CSV): holdings and quantities by ISIN, and the trades from the tradebook.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Anything else</dt><dd>A screenshot or a typed line, one holding at a time, as for the UK funds in flow 3.</dd></div>
+  </dl>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You send the detailed CAS PDF from CAMS, then the NSDL CAS and the broker's tradebook CSV</span><span class="ln"></span></li>
+      <li class="st mv ft toA" data-lanes="Telegram to AWS"><span class="lb">webhook λ, your lane on the updates queue, then <b>agent λ</b></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Each file is copied to <b>S3</b> first, <code>mypaisa-&lt;env&gt;-documents/&lt;household&gt;/&lt;member&gt;/&lt;yyyy&gt;/&lt;mm&gt;/</code>, with a <b>Document</b> row (<code>cas</code> or <code>broker_export</code>) and <span class="sg">its own audit row</span>, before anything reads it. A read job per file goes on the <b>SQS work</b> queue</span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">The CAS is protected: you type its password once into the <b>Mini App</b>; it is used in memory and <span class="sg">never stored, logged or sent</span>. Or you send an unlocked copy</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>worker λ</b> parses each file <span class="sg">in code</span>: an open-source CAS parser, pinned and tested on synthetic statements, and the broker's CSV. Claude reads only a file the parsers cannot</span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External data"><span class="lb">Each holding matched by ISIN: a fund to its <b>AMFI</b> scheme code, a share or ETF to its <code>.NS</code> or <code>.BO</code> listing</span><span class="ln"></span></li>
+      <li class="st mv fe toA rev" data-lanes="External data to AWS"><span class="lb">The matches. One share's ISIN has no listing: it is <span class="sg">listed, never guessed</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">dry run</span>: what would be added, what is already there (fingerprints, so the same statement never adds twice) and every line refused, with the reason. No PAN, address or account number goes into any record</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">One summary card, with <b>Confirm</b></span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb"><span class="sg">Confirm</span>, then the <span class="sg">second check</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Written in batches under <b>one import id</b>: the <code>mf_folio</code> and <code>demat</code> Accounts, the <code>in_mutual_fund</code> and <code>in_listed</code> Instruments, Positions in INR and every past Transaction, each with an <span class="sg">audit row</span> that names the file it came from</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">Any import can be <b>rolled back by its id</b>. The files stay in S3 for good and open from the Audit page; a change card's Source button sends the original back. Prices follow from the Indian chains (flow 16), and a CAS or broker line in another currency than its holding's takes the check of flow 13.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">Friday 23 October</span>
+          <div class="msg out"><div class="bub"><div class="file"><i>PDF</i><span><b>CAS_CAMS_detailed.pdf</b><small>Protected · 9 pages</small></span></div><span class="t">20:10</span></div></div>
+          <div class="msg out"><div class="bub"><div class="file"><i>PDF</i><span><b>NSDL_CAS.pdf</b><small>4 pages</small></span></div><span class="t">20:11</span></div></div>
+          <div class="msg out"><div class="bub"><div class="file"><i>CSV</i><span><b>tradebook.csv</b><small>From Zerodha Console</small></span></div><span class="t">20:11</span></div></div>
+          <div class="msg"><div class="bub"><p>Kept all three. The CAMS statement is protected: type its password once in the Mini App. I use it to open the file and keep nothing. Or send an unlocked copy.</p><span class="t">20:11</span></div><div class="ibs c1"><span class="ib">Type the password</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>The files.</b> Kept before they are read; the password used once, in memory.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <div class="msg"><div class="bub">
+            <h5>Indian portfolio · dry run</h5>
+            <div class="kv wrap">
+              <span>From</span><span>CAMS CAS · NSDL CAS · tradebook.csv</span>
+              <span>Mutual funds</span><span>2 schemes in 2 folios</span>
+              <span>Shares and ETFs</span><span>1 ETF on NSE</span>
+              <span>History</span><span>186 past transactions</span>
+              <span>Value</span><span>₹16,87,500 · about £15,000</span>
+              <span>Already here</span><span>none</span>
+              <span>Not matched</span><span><span class="amb">1 share, left out</span></span>
+            </div>
+            <p><small>Matched by ISIN: the funds to their AMFI codes, the ETF to its .NS listing. History: purchases, SIPs, a switch and the ETF's trades.</small></p>
+            <div class="qt">INE0········ in the NSDL CAS: no NSE or BSE listing found. Send a screenshot or type it to add it on its own.</div>
+            <p><small>No PAN, address or account number is kept in the records. The files stay as sent and open from the Audit page.</small></p>
+            <span class="t">20:14</span></div>
+            <div class="ibs"><span class="ib">Confirm</span><span class="ib">Cancel</span></div>
+          </div>
+          <p class="svc">After Confirm and Face ID</p>
+          <div class="msg"><div class="bub"><p>Imported <b>3 holdings</b> and <b>186 transactions</b> under import 0007.</p><div class="hr"></div><p class="ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Saved · confirmed with Face ID</p><p><small>An import can be rolled back by its id.</small></p><span class="t">20:15</span></div></div>
+        </div>
+      </div>
+      <figcaption><b>One summary card.</b> Everything at once; the unmatched share in amber, left out. Identifiers shortened.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com/audit</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Read-only</p><p class="ptitle">Audit</p></div><div class="filters"><span class="chip">You</span><span class="chip">Import 0007</span><span class="chip">This week</span></div></div>
+          <div class="group">
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Document · create · via cas</b><small>You · Fri 23 Oct 20:10 · CAS_CAMS_detailed.pdf · PDF · 1.2 MB · kept in S3 · Open</small></span></div>
+            <div class="row"><span class="lead">₹</span><span class="grow"><b>Position · create · via cas</b><small>You · Fri 23 Oct 20:15 · Nifty 50 index fund in your <code>mf_folio</code>, held in INR · import 0007 · file: CAS_CAMS_detailed.pdf, Open</small></span></div>
+            <div class="row"><span class="lead">₹</span><span class="grow"><b>Transaction · create · via cas</b><small>You · Fri 23 Oct 20:15 · a SIP of ₹5,000 into Nifty 50 index fund on 5 Mar 2019 · import 0007 · file: CAS_CAMS_detailed.pdf, Open</small></span></div>
+            <div class="row"><span class="lead">₹</span><span class="grow"><b>Transaction · create · via broker_export</b><small>You · Fri 23 Oct 20:15 · bought Nifty 50 ETF on NSE, in your <code>demat</code> · import 0007 · file: tradebook.csv, Open</small></span></div>
+          </div>
+          <p class="muted small">A row made from a file shows its kind, name and size and opens it through a five-minute link: a member opens their own files, the owner any, a viewer none. Each opening is itself an audit row. The Files view lists every file with the changes it fed.</p>
+        </div>
+      </div>
+      <figcaption><b>Browser · Audit, filtered to the import.</b> Every change names the file it came from.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>Kept before it is read</b><span>Every file goes to S3 first with a Document row and an audit row, and is never deleted after reading.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Parsed by code</b><span>A pinned open-source CAS parser, tested on synthetic statements. Claude reads only a file the parsers cannot.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Matched by ISIN, never guessed</b><span>A fund to its AMFI scheme code, a share or ETF to its <code>.NS</code> or <code>.BO</code> listing; anything unmatched is listed.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>A dry run, one Confirm</b><span>The Excel importer's safety: one summary card, Confirm with the second check, batch writes with audit rows.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Never twice, and undoable</b><span>Fingerprints stop the same statement adding twice; any import rolls back by its id.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><div><b>The password, once</b><span>Typed into the Mini App, used in memory, never stored, logged or sent.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Nothing personal in the records</b><span>No PAN, address or account number in any record, though the file is kept as sent.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-152"><b>MA-152</b><span>IN2: The existing Indian portfolio is imported from a CAS statement or a broker export, with every past transaction, after one Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-151"><b>MA-151</b><span>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-111"><b>MA-111</b><span>The owner fills prod's history from an Excel workbook sent to the bot: the same dry run, Confirm and rollback</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-148"><b>MA-148</b><span>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit page opens the original file behind each change, through a short-lived link only the right member can use</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>Telegram sessions need a second check</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 13)</span></a>
+  </div>
+</section>
+
+<!-- ============ 15. The household in INR and GBP ============ -->
+<section class="flow" id="inr" aria-labelledby="h-inr">
+  <div class="flow-h">
+    <span class="flow-n">15</span>
+    <h2 id="h-inr">The household in INR and GBP</h2>
+    <p class="lede">Indian holdings sit in Indian accounts, in rupees, with the pound value beside every figure. The household total stays in the base currency, pounds, with the rupee view one tap away. Privacy mode hides rupees as it hides pounds; a suggestion names only what suits its account; and a holding the UK may tax differently is flagged in plain words.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the Portfolio card, the Mini App or the web app, once Indian accounts exist</span><span class="chip">Phase 13 (IN3)</span><span class="chip">Designed first</span></div>
+  </div>
+
+  <h3 class="blk">The accounts, and how a figure is kept</h3>
+  <dl class="facts">
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Indian accounts</dt><dd><code>demat</code>, <code>mf_folio</code>, <code>nre</code> and <code>nro</code>, and <code>ppf</code>, <code>nps</code> or <code>elss</code> if one is held; each with country IN and currency INR, owned by one member or two.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Stored as both</dt><dd>Each valuation keeps the native amount and its GBP equivalent on the day: <code>price</code> and <code>price_ccy</code>, <code>fx_to_gbp</code>, <code>value_gbp</code>.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Read in GBP or INR</dt><dd>Each member reads figures in GBP or INR. The household total is in the base currency, GBP, with the INR view one tap away.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>Never tax advice</dt><dd>For a UK resident many Indian funds are not UK "reporting funds", so gains may be taxed differently. The bot flags those holdings in plain words and says to check with a tax adviser.</dd></div>
+  </dl>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">You tap the <b>web_app</b> button on the Portfolio card; the Mini App opens, signed in as in flow 2</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> reads your Accounts, Positions and Valuations from <b>DynamoDB</b> through GET routes only. Each Indian valuation already holds both figures, rupees and pounds on the day</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The household total in pounds, the base currency. Each Indian line in rupees with its pounds beside it; the ECB rate and its date on the page</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Per holding: <span class="sg">wrapper-aware</span> suggestions that name only actions suiting the account, and the <span class="sg">reporting-fund flag</span> in plain words where the UK may tax gains differently</span></li>
+      <li class="st mv fa toM rev" data-lanes="AWS to Member"><span class="lb">The Overview: UK lines in pounds, Indian lines in rupees with pounds beside, the total in pounds</span><span class="ln"></span></li>
+      <li class="st mv fm toA" data-lanes="Member to AWS"><span class="lb">You tap <b>INR</b>: the same household in rupees, pounds still beside every line</span><span class="ln"></span></li>
+      <li class="st mv fm toT" data-lanes="Member to Telegram"><span class="lb">To change anything, back to the chat: rupees typed for a pound holding, or pounds for an Indian one, take the <span class="sg">currency check</span> of flow 13</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><span class="sg">Privacy mode</span> hides rupees as it hides pounds, in every card, the Mini App and the web. The cards and pages are designed first, in Claude Design, before any is built.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone mini">
+        <div class="mahead"><span>Close</span><span>MyPaisa</span><span>···</span></div>
+        <div class="app">
+          <div class="dshero">
+            <p class="lbl">You · in pounds · illustrative</p>
+            <p class="big">£39,110</p>
+            <p style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="upchip">▲ 0.4% today</span><span class="dnchip">₹43,99,875 in rupees</span></p>
+            <div class="seg"><span class="on">GBP</span><span>INR</span></div>
+            <svg viewBox="0 0 200 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 44 L20 42 L40 43 L60 37 L80 38 L100 32 L120 33 L140 26 L160 27 L180 20 L200 16 L200 56 L0 56 Z" fill="var(--mp-hero-area)"/><path d="M0 44 L20 42 L40 43 L60 37 L80 38 L100 32 L120 33 L140 26 L160 27 L180 20 L200 16" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/></svg>
+          </div>
+          <div class="group">
+            <div class="row"><span class="lead">BL</span><span class="grow"><b>Balanced</b><small>Monzo · ISA · UK</small></span><span class="num"><b>£22,925</b><small class="up">▲ 0.6%</small></span></div>
+            <div class="row"><span class="lead">£</span><span class="grow"><b>Cash</b><small>Monzo pot · UK</small></span><span class="num"><b>£1,185</b><small>flat</small></span></div>
+          </div>
+          <p class="over">India · rupees, pounds beside</p>
+          <div class="group">
+            <div class="row"><span class="lead">N50</span><span class="grow"><b>Nifty 50 index fund</b><small>mf_folio · India</small></span><span class="num"><b>₹9,00,000</b><small>£8,000</small></span></div>
+            <div class="row"><span class="lead">FC</span><span class="grow"><b>Flexi-cap fund</b><small>mf_folio · UK tax flag</small></span><span class="num"><b>₹4,50,000</b><small>£4,000</small></span></div>
+            <div class="row"><span class="lead">ETF</span><span class="grow"><b>Nifty 50 ETF</b><small>demat · NSE</small></span><span class="num"><b>₹3,37,500</b><small>£3,000</small></span></div>
+          </div>
+        </div>
+        <div class="tabbar" aria-hidden="true">
+          <span class="tab on"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Overview</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Holdings</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span>
+          <span class="tab"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>More</span>
+        </div>
+      </div>
+      <figcaption><b>Mini App · Overview.</b> The total in pounds, rupees a tap away; each Indian line in rupees with pounds beside it.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">From the Portfolio card</span>
+          <div class="msg"><div class="bub">
+            <h5>Flexi-cap fund · mf_folio, India</h5>
+            <div class="kv">
+              <span>Value</span><span><b>₹4,50,000</b> · £4,000</span>
+              <span>Friday</span><span class="up">▲ 0.5%</span>
+              <span>ECB rate, 23 Oct</span><span>₹112.50 to £1</span>
+            </div>
+            <p><span class="amb">UK tax</span> This fund may not be a UK "reporting fund", so gains on it may be taxed differently for a UK resident. Check with a tax adviser; MyPaisa does not give tax advice.</p>
+            <p><small>Suggestions here name only what suits this folio; ISA-only ideas are never offered for it. The bot never trades.</small></p>
+            <span class="t">08:40</span></div>
+            <div class="ibs"><span class="ib">Why?</span><span class="ib">Chart</span></div>
+          </div>
+          <span class="svc">Privacy mode on</span>
+          <div class="msg"><div class="bub">
+            <h5>Flexi-cap fund · mf_folio, India</h5>
+            <div class="kv"><span>Value</span><span><span class="mask" aria-label="hidden">₹0,00,000</span> · <span class="mask" aria-label="hidden">£0,000</span></span><span>Friday</span><span class="up">▲ 0.5%</span></div>
+            <span class="t">08:41</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>A holding in Telegram.</b> Rupees with pounds beside; the tax flag in plain words; privacy mode hides both.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">You · illustrative</p><p class="ptitle">Overview</p></div><div class="filters"><div class="seg" style="min-width:180px"><span>Household</span><span class="on">Me</span></div><div class="seg" style="min-width:120px"><span>GBP</span><span class="on">INR</span></div></div></div>
+          <div class="cols">
+            <div class="panel">
+              <p class="over">The INR view</p>
+              <p class="big" style="font-size:32px;line-height:38px">₹43,99,875</p>
+              <p class="small muted">£39,110 in the base currency · ECB rate ₹112.50 to £1 on 23 Oct</p>
+              <p class="fresh"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Stored as both: rupees and pounds on the day</p>
+            </div>
+            <div class="panel">
+              <p class="over">By account</p>
+              <div class="group inset">
+                <div class="row"><span class="grow"><b>Monzo · ISA and pot</b><small>UK · held in GBP</small></span><span class="num"><b>₹27,12,375</b><small>£24,110</small></span></div>
+                <div class="row"><span class="grow"><b>mf_folio</b><small>India · INR · 2 funds</small></span><span class="num"><b>₹13,50,000</b><small>£12,000</small></span></div>
+                <div class="row"><span class="grow"><b>demat</b><small>India · INR · 1 ETF</small></span><span class="num"><b>₹3,37,500</b><small>£3,000</small></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Browser · Overview, INR view.</b> The same household in rupees; pounds stay beside every line.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>Both figures, from the record</b><span>Rupees with pounds beside them, both from the stored valuation, never worked out by Claude.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Hides rupees as it hides pounds, both on a two-currency line.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Wrapper-aware, never a trade</b><span>"ISA-safe" becomes "wrapper-aware": a suggestion names only actions that suit the account it is about, and the bot still never trades.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Plain words, never tax advice</b><span>A possible non-reporting fund is flagged, with "check with a tax adviser".</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>One write path</b><span>The pages are read-only; a change goes through the chat, the currency check, Confirm and an audit row.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-153"><b>MA-153</b><span>IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-156"><b>MA-156</b><span>A transaction can be typed in any currency and is checked against the holding's own currency</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-94"><b>MA-94</b><span>Wealth maths and a daily net worth, with the household's INR view one tap away (phase 9)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Overview, a holding, Overlap and Scorecard work in the Mini App and in the browser</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 13)</span></a>
+  </div>
+</section>
+
+<!-- ============ 16. India in the daily rhythm ============ -->
+<section class="flow" id="india-day" aria-labelledby="h-india-day">
+  <div class="flow-h">
+    <span class="flow-n">16</span>
+    <h2 id="h-india-day">India in the daily rhythm</h2>
+    <p class="lede">India closes while the UK is at work, and its fund prices arrive in the UK evening. Every schedule stays in <code>Europe/London</code>: the Indian jobs run on the work queue after those times, and the 07:15 brief carries India's previous day beside the UK's.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> EventBridge Scheduler, Europe/London, after the Indian close and after AMFI's NAVs</span><span class="chip">Phase 13 (IN1 prices, IN4 engine)</span></div>
+  </div>
+
+  <h3 class="blk">The Indian day, on the UK clock</h3>
+  <div class="timeline">
+    <div class="tl"><b>10:00 or 11:00</b><span>NSE and BSE close at 15:30 IST: 10:00 UK time in winter, 11:00 in British Summer Time. NSE's holiday calendar says which days trade.</span></div>
+    <div class="tl"><b>After the close</b><span>Ingest for Indian shares and ETFs (<code>in_listed</code>): yfinance <code>.NS</code>, then <code>.BO</code>, then the exchanges' bhavcopy, <code>stale</code> last.</span></div>
+    <div class="tl"><b>UK evening</b><span>AMFI's NAVs for every scheme are out. Ingest for Indian funds (<code>in_mutual_fund</code>): AMFI's file, then mfapi.in or a screenshot, <code>stale</code> last.</span></div>
+    <div class="tl"><b>07:10</b><span>The engine has scored every holding; the Indian ones read the India basket in their macro pillar.</span></div>
+    <div class="tl"><b>07:15</b><span>The brief carries India's previous day, in rupees with pounds beside them.</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dt"></i>Telegram</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box">After the 15:30 IST close on a trading day (from <b>NSE's holiday calendar</b>), <b>EventBridge Scheduler</b> (Europe/London) checks the <code>/pause</code> flag, then puts one ingest job per Indian share or ETF on the <b>SQS work</b> queue</span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External data"><span class="lb"><b>worker λ</b> runs the <code>in_listed</code> chain: yfinance <code>.NS</code>, then <code>.BO</code>, then the exchanges' bhavcopy end-of-day file</span><span class="ln"></span></li>
+      <li class="st mv fe toA rev" data-lanes="External data to AWS"><span class="lb">Daily candles in rupees, with their source; raw answers kept in <b>S3</b></span><span class="ln"></span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External data"><span class="lb">In the UK evening, one job per Indian fund: <b>AMFI</b>'s daily NAV file, matched by scheme code and ISIN, with mfapi.in behind it</span><span class="ln"></span></li>
+      <li class="st mv fe toA rev" data-lanes="External data to AWS"><span class="lb">One NAV a day per scheme, no candles, like a UK OEIC</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <b>ECB</b> reference rate includes INR, with the RBI/FBIL rate behind it: each Indian <b>Valuation</b> is stored in rupees and in pounds on the day</span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External data"><span class="lb">News jobs read Economic Times, Mint and Business Standard by RSS, NSE company announcements and GDELT's India coverage</span><span class="ln"></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Haiku tags each story through Batches: the companies, sectors and central bank it names, its event type</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The tags. <span class="sg">Code</span> matches each story to the holdings through exposure maps from the fund houses' monthly disclosures</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">07:10 the <b>engine</b> scores every holding. For Indian holdings the macro pillar reads the <b>India basket</b>: the Nifty 50 against Indian government bonds, India VIX, the rupee against the dollar, foreign portfolio investor flows and the RBI's policy rate</span></li>
+      <li class="st mv fa toT rev" data-lanes="AWS to Telegram"><span class="lb">07:15 the brief, India's previous day included, through the outbox and sender λ</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box">A source that answers nothing is skipped and the chain falls through to <code>stale</code>: labelled, left out of scoring, as in flow 5. The calendars add the RBI's policy dates, India's inflation releases, NSE holidays and results season. The Forecaster (phase 11) takes the Indian holdings on the same terms: nothing is shown until its gates are passed.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">Monday 26 October</span>
+          <div class="msg"><div class="bub">
+            <h5>Morning brief · Mon 26 Oct</h5>
+            <p><b>You</b> · £39,110 · <span class="up">▲ 0.4%</span> on Friday</p>
+            <div class="kv">
+              <span>Balanced (Monzo)</span><span>£22,925 <span class="up">▲ 0.6%</span></span>
+              <span>Cash (Monzo pot)</span><span>£1,185 flat</span>
+            </div>
+            <div class="hr"></div>
+            <p><b>India</b>, Friday's close and NAVs · ₹16,87,500 · about £15,000</p>
+            <div class="kv">
+              <span>Nifty 50 index fund</span><span>₹9,00,000 <span class="up">▲ 0.3%</span></span>
+              <span>Flexi-cap fund</span><span>₹4,50,000 <span class="up">▲ 0.5%</span></span>
+              <span>Nifty 50 ETF (NSE)</span><span>₹3,37,500 <span class="up">▲ 0.3%</span></span>
+            </div>
+            <p><small>Data: yfinance ✓ · Twelve Data ✓ · AMFI ✓ · yfinance .NS ✓ · ECB ✓</small></p>
+            <p class="ok">Nothing to do this week.</p>
+            <span class="t">07:15</span></div>
+            <div class="ibs"><span class="ib">Today</span><span class="ib">India</span><span class="ib">Technical ▾</span><span class="ib">Ask</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>The owner's brief.</b> The UK lines in pounds, India's previous day in rupees with the total in pounds.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="tgbar"><span class="tgback">‹</span><span class="ava">MP</span><span class="tgn"><b>MyPaisa</b><span>bot</span></span></div>
+        <div class="chat">
+          <span class="svc">If an Indian price is late</span>
+          <div class="msg"><div class="bub">
+            <h5>Morning brief · Mon 26 Oct</h5>
+            <p><b>India</b> · Nifty 50 ETF (NSE) <span class="amb">stale</span></p>
+            <p>No source had Friday's close, so this is Thursday's, marked stale and left out of today's scoring. It is filled on the next run.</p>
+            <p><small>Data: yfinance .NS no answer · .BO no answer · bhavcopy no answer · previous close used</small></p>
+            <span class="t">07:15</span></div>
+          </div>
+          <span class="svc">After an NSE trading holiday</span>
+          <div class="msg"><div class="bub">
+            <p><b>India</b> · NSE and BSE were closed on Friday, a holiday on the exchange's calendar. Thursday's close is the latest, so nothing is stale.</p>
+            <span class="t">07:15</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Labelled, not skipped.</b> A late Indian price goes out marked stale; a holiday is known from the calendar.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><div><b>One clock</b><span>Every schedule in <code>Europe/London</code>; the Indian jobs run after the 15:30 IST close and after AMFI's NAVs.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg><div><b>Free sources first</b><span>AMFI, mfapi.in, yfinance, the bhavcopy. A paid feed (Twelve Data's Grow plan, Zerodha Kite Connect) only on the admin's approval, inside the £50 cap.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Stale is labelled</b><span>Each Indian chain falls through to <code>stale</code>: the previous close, labelled and kept out of scoring.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg><div><b>The exchange's own calendar</b><span>NSE's trading holidays come from the exchange's calendar.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries and dead-letter queues</b><span>Each Indian job is a work-queue job: five tries with backoff, then its dead-letter queue and an alarm.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Numbers from code</b><span>Haiku tags the stories; code matches and scores them. News alone never raises a red alert.</span></div></div>
+  </div>
+
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-151"><b>MA-151</b><span>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-154"><b>MA-154</b><span>IN4: The engine and the Forecaster read Indian markets through an India basket, Indian news and the RBI's calendar</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-44"><b>MA-44</b><span>ECB FX rates and market calendars are loaded daily</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-53"><b>MA-53</b><span>The ingest and engine jobs write signals and shadow stances every weekday by 07:10</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-57"><b>MA-57</b><span>The morning brief and evening wrap arrive as cards, with a Technical section and glossary</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries and a dead-letter queue</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 13)</span></a>
+  </div>
+</section>
+
 
 </main>
 
 <footer class="foot">
-  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.2, §4.5, §4.6, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20 and §21; <code>PLAN.md</code> phases 0 to 12; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center and the Telegram second check.</p>
+  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.1, §4.2, §4.5, §4.6, §4.7, §5.1, §5.3, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20, §21 and §22; <code>PLAN.md</code> phases 0 to 13 and phase 1's MA-156; <code>TECH_STACK.md</code>'s Indian sources; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center and the Telegram second check.</p>
   <p><b>Look.</b> MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102. Telegram draws its own chrome; MyPaisa owns the words, their order, the buttons and the PNG images.</p>
-  <p><b>Status.</b> Design only; nothing is built. Every figure, date, time and wording in the mocks is illustrative.</p>
+  <p><b>Status.</b> Design only; nothing is built. Every figure, rate, fund name, file name, date, time and wording in the mocks is illustrative; the Indian cards and pages are still to be designed in Claude Design. MyPaisa never gives tax advice.</p>
 </footer>
 
 </div>

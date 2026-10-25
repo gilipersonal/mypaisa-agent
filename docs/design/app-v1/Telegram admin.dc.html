@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telegram admin</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          /* canvas, as Telegram chats and Telegram second check */
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 16px; text-wrap: pretty; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .dv-note { font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 22px 0 0; max-width: 390px; text-wrap: pretty; }
+          .dv-sname { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+          .dv-plan { display: inline-flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); border-radius: 12px; padding: 8px 12px; margin: 0 0 24px; font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-keys { font: 600 11px/16px ui-monospace, Menlo, monospace; color: #14171F; }
+          .dv-plan b { color: #14171F; }
+          .ngrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 1232px; }
+          .ncard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 24px 28px; display: flex; flex-direction: column; gap: 10px; font: 14px/21px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .ncard b { color: #14171F; }
+          .kcard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 36px; display: flex; flex-direction: column; gap: 44px; width: fit-content; max-width: 100%; box-sizing: border-box; }
+          .krow { display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start; }
+          .kcol { display: flex; flex-direction: column; width: 390px; }
+          /* the phone and Telegram's own chrome (Telegram draws all of this) */
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; background: var(--tg-bg); box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+          .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 7; }
+          .island.fid { width: 120px; height: 120px; border-radius: 40px; display: grid; place-items: center; }
+          .fidg { font-size: 60px; color: #FFFFFF; }
+          .sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .sbar .ms { font-size: 17px; }
+          .sicons { display: flex; align-items: center; gap: 4px; }
+          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
+          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
+          .back .ms { font-size: 22px; }
+          .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
+          .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
+          .cav { width: 36px; height: 36px; border-radius: 50%; flex: none; margin-left: 36px; }
+          .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
+          .msgs.up { padding-bottom: 318px; }
+          .ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
+          .mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
+          .ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
+          .ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
+          .home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
+          .home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
+          .tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-pill: #1F6FB5; }
+          .tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-pill: #3A6EA5; }
+          .msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
+          .msg.w { width: 316px; }
+          .msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
+          .tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
+          .tl { border-bottom-left-radius: 4px; }
+          .tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
+          .tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
+          .tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
+          .dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
+          .day { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
+          .msg .tg-btns { width: 100%; max-width: none; }
+          .c1 { grid-template-columns: minmax(0, 1fr); }
+          .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .tg-btn { position: relative; cursor: pointer; gap: 2px; }
+          .tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
+          .urlg { position: absolute; top: 4px; right: 5px; font-size: 13px; }
+          .bsp { height: 8px; }
+          .ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
+          .b { font-weight: 600; } .i { font-style: italic; } .a { color: var(--tg-link); }
+          /* MyPaisa inside Telegram's half-height sheet, as Telegram second check journey 3 */
+          .tgh { position: relative; flex: none; }
+          .tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
+          .tsheet { position: absolute; left: 0; right: 0; bottom: 0; height: 440px; border-radius: 12px 12px 0 0; overflow: hidden; display: flex; flex-direction: column; z-index: 4; box-shadow: 0 -8px 40px rgba(0,0,0,.18); }
+          .zs { z-index: 3; }
+          .shc { flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 22px 16px 42px; }
+          .fidtile { width: 56px; height: 56px; border-radius: 16px; background: var(--mp-surface); color: var(--mp-ink); display: grid; place-items: center; box-shadow: var(--mp-shadow); }
+          .fidtile .ms { font-size: 34px; }
+          .tc { text-align: center; }
+          .rtx { flex: 1; min-width: 0; }
+          .db { display: block; }
+          .wfull { width: 100%; box-sizing: border-box; }
+          .hind { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 134px; height: 5px; border-radius: 3px; background: var(--mp-ink); z-index: 6; }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t0" data-screen-label="Telegram admin: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#t0">TA</a><span class="dv-tname">Telegram admin: the owner's chat cards (planned)</span></div>
+        <p class="dv-intro">The cards the owner gets in their own chat with the bot: an agent's approval request, failed work with Replay, the Claude spend steps, and an incident. The same items sit on the Admin center's pages (Admin center 2), and deciding in one door updates the other. Telegram draws the chat, the buttons and the half-height sheet; MyPaisa owns the words, which buttons appear and what the sheet says. A tapped inline button is ringed. Each phone in Telegram light and dark. Saturday 31 Oct, as on the Admin center boards; the spend steps are a made-up runaway month. Illustrative figures; You are the owner.</p>
+        <div class="ngrid">
+          <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
+            <div class="ncard" data-screen-label="Note: {{ n.h }}">
+              <span class="dv-sname">{{ n.h }}</span>
+              <sc-for list="{{ n.ps }}" as="p" hint-placeholder-count="2"><span><b>{{ p.b }}</b> {{ p.t }}</span></sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <sc-for list="{{ journeys }}" as="j" hint-placeholder-count="4">
+        <section class="dv-turn" id="{{ j.anchor }}" data-screen-label="{{ j.name }}">
+          <div class="dv-thd"><span class="dv-tid">{{ j.tag }}</span><span class="dv-tname">{{ j.name }}</span></div>
+          <p class="dv-intro">{{ j.intro }}</p>
+          <div class="dv-plan"><span class="dv-keys">{{ j.keys }}</span><span>{{ j.arch }}</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span></div>
+          <div class="kcard">
+            <sc-for list="{{ j.rows }}" as="t" hint-placeholder-count="2">
+              <div class="krow">
+                <sc-for list="{{ t.steps }}" as="st" hint-placeholder-count="3">
+                  <div class="kcol">
+                    <p class="dv-cap">{{ st.cap }} · {{ t.label }}</p>
+                    <div class="phone tg {{ t.tg }}" data-screen-label="{{ st.lab }}">
+                      <div class="island {{ st.isl }}" aria-hidden="true"><sc-if value="{{ st.fid }}" hint-placeholder-val="{{ false }}"><span class="ms fidg">ar_on_you</span></sc-if></div>
+                      <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
+                      <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
+                      <div class="msgs {{ st.msgsC }}">
+                        <sc-for list="{{ st.msgs }}" as="m" hint-placeholder-count="3">
+                          <div class="{{ m.mc }}">
+                            <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="day">{{ m.day }}</span></sc-if>
+                            <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
+                              <div class="tg-bub tl">
+                                <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="3"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
+                                <div class="tg-time"><span>{{ m.time }}</span></div>
+                              </div>
+                              <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="2"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}<sc-if value="{{ k.url }}" hint-placeholder-val="{{ false }}"><span class="ms urlg" aria-label="Opens a link">north_east</span></sc-if></button></sc-for></div></sc-for>
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
+                      <div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
+                      <div class="home" aria-hidden="true"><span></span></div>
+
+                      <!-- Telegram's half-height sheet: Telegram draws its top bar, MyPaisa draws inside -->
+                      <sc-if value="{{ st.sheet }}" hint-placeholder-val="{{ false }}">
+                        <div class="mp-scrim zs"></div>
+                        <div class="tsheet mp {{ t.mp }}" role="dialog" aria-label="MyPaisa in Telegram's sheet">
+                          <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                          <div class="shc">
+                            <div class="fx col ac gap8 tc">
+                              <span class="fidtile"><span class="ms">ar_on_you</span></span>
+                              <div class="mp-t2">Check it's you</div>
+                              <div class="mp-sub mp-ink2">{{ st.shLine }}</div>
+                            </div>
+                            <div class="mp-group"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ st.shIcon }}</span></span><span class="rtx"><span class="mp-hl db">{{ st.shT }}</span><span class="mp-foot mp-ink3 db">{{ st.shSub }}</span></span></div></div>
+                            <button class="mp-btn mp-btn-plain wfull" type="button">Use PIN</button>
+                          </div>
+                          <span class="hind" aria-hidden="true"></span>
+                        </div>
+                      </sc-if>
+                    </div>
+                    <p class="dv-note">{{ st.note }}</p>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          /* chat text, as in Telegram chats: *bold* _italic_ [link]; '' is a gap line, '^' a small grey line. Telegram text has no colour. */
+          const seg = (str) => {
+            const out = []; const re = /(\*[^*]+\*|_[^_]+_|\[[^\]]+\])/g; let last = 0, x;
+            while ((x = re.exec(str))) {
+              if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' });
+              out.push({ t: x[0].slice(1, -1), c: { '*': 'b', '_': 'i', '[': 'a' }[x[0][0]] });
+              last = x.index + x[0].length;
+            }
+            if (last < str.length) out.push({ t: str.slice(last), c: '' });
+            return out;
+          };
+          const kind = (s) => s === '' ? 'sp' : s[0] === '^' ? 'ov' : 'p';
+          const parse = (lines) => {
+            const bl = [];
+            lines.forEach((s) => {
+              const k = kind(s), body = k === 'ov' ? s.slice(1) : s; let b = bl[bl.length - 1];
+              if (!b || b.k !== k || k === 'sp') { b = { k: k, c: k === 'ov' ? 'ov' : 'b' + k, ls: [] }; bl.push(b); }
+              b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: '', c: '' }] : seg(body) });
+            });
+            return bl;
+          };
+          /* a label ending in ' ↗' is a URL button (Telegram adds the corner arrow) */
+          const M = (o) => {
+            if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, blocks: [], rows: [], time: '' };
+            const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((nm) => { const url = nm.slice(-2) === ' ↗'; return { t: url ? nm.slice(0, -2) : nm, url: url, c: nm === o.tap ? 'tap' : '' }; }) }));
+            return { isDay: false, isMsg: true, day: '', mc: 'msg' + (rows.length || o.wide ? ' w' : ''), blocks: parse(o.text || []), time: o.time || '', rows: rows };
+          };
+          const themes = [{ label: 'Telegram light', tg: 'tg-light', mp: 't-light' }, { label: 'Telegram dark', tg: 'tg-dark', mp: 't-dark' }];
+          const S = (o) => Object.assign({ msgsC: '', sheet: false, isl: '', fid: false, shLine: '', shIcon: '', shT: '', shSub: '' }, o);
+          const AC = 'Open Admin center ↗';
+          const today = M({ day: 'Today' });
+          /* each phone gets a one-hole screen label: the runtime fills one hole per attribute */
+          const J = (js) => js.map((j) => Object.assign(j, { rows: themes.map((t) => ({ tg: t.tg, mp: t.mp, label: t.label, steps: j.steps.map((st) => Object.assign({}, st, { lab: j.name + ' · ' + st.cap + ' · ' + t.label })) })) }));
+
+          /* a · an approval request (MA-130, §20.3): the wording of ARCHITECTURE's example card */
+          const ask = ['^Approval · request cr‑27', '*Data steward asks*', 'yfinance has not returned Balanced for 3 days; Twelve Data does not list it. EODHD\'s free key returns its history back to 2019.', '*Switch on EODHD Historian at £19.99 a month?*', '*Changes:* Balanced\'s prices come from EODHD first, yfinance second.', '*Budget left:* AWS and others, £3 of £50 used this month.', '*Risk:* low. *Undo:* switch it off; nothing else changes.'];
+          const req = (tap) => M({ time: '08:02', tap: tap, btns: [['Approve', 'Reject'], ['Why?', 'Later']], text: ask.concat(['_Expires Sat 7 Nov. Nothing changes until you approve and check it\'s you._']) });
+          const approved = M({ time: 'edited 08:05', wide: true, text: ask.concat(['', '*Approved* by You at 08:05 · confirmed with Face ID', '_Audit: Approval · You · 31 Oct 08:05 · cr‑27. The Admin center shows it as decided._']) });
+          const on = M({ time: '08:06', text: ['*EODHD Historian is on.* Balanced is priced again from Friday\'s close; its history back to 2019 is loading.', 'The £19.99 counts in AWS and others from 1 Nov.'] });
+
+          /* b · failed work, with Replay (MA-145, MA-137, §21.3): flow 10's card, on a Saturday */
+          const fwText = ['*Failed work* · prod', 'One job is in the work queue\'s dead-letter queue.', '*Job:* ingest, NASDAQ 100 ETF', '*Tried:* 5 times, 07:00 to 07:52', '*Last error:* timeout at the source', 'Until it runs, the NASDAQ 100 ETF shows Thursday\'s close, marked stale. The Saturday review is at 09:00.'];
+          const fw = (tap) => M({ time: 'edited 08:10', tap: tap, btns: [['Replay'], [AC]], text: fwText.concat(['_The source has answered again since 08:10. Silent: failed work never rings._']) });
+          const fwDone = M({ time: 'edited 08:30', btns: [[AC]], text: fwText.concat(['', '*Replayed* by You at 08:30 · confirmed with Face ID']) });
+          const replayed = M({ time: '08:31', text: ['*Replayed 1 job.* It ran: the NASDAQ 100 ETF is priced at Friday\'s close.', 'The Saturday review at 09:00 uses it.'] });
+
+          /* c · the spend steps (MA-114, MA-116, §15.1): flow 11's 85% card, and the other three in its words */
+          const tail = '_Move the ceiling in the Admin center, behind the fresh check._';
+          const s70 = M({ time: '19:40', btns: [[AC]], text: ['*Claude spend: 70% of $160*', '$112 spent this cycle: the chat $64, briefs and cards $31, the agents $17. 16 days left.', 'Nothing changes yet. At 85% the savers come on.', tail] });
+          const s85 = M({ time: '14:02', btns: [[AC]], text: ['*Claude spend: 85% of $160*', '$136 spent this cycle, mostly the chat and the briefs. 9 days left.', 'Savers are on: no bull and bear debate, the Saturday review on Sonnet, three Why? searches a day, sentiment scoring paused.', tail] });
+          const s95 = M({ time: '12:15', btns: [[AC]], text: ['*Claude spend: 95% of $160*', '$152 spent this cycle. 4 days left.', 'Essentials only: the chat answers on Haiku; the brief, the wrap and alerts go out as plain templates with the engine\'s numbers. Reading a factsheet or a screenshot still works.', tail] });
+          const s100 = M({ time: '18:50', btns: [[AC]], text: ['*Claude spend: 100% of $160*', 'Claude has stopped until 1 Nov, when the plan\'s credit renews, or until you raise the ceiling.', 'Every card goes out as its plain template, and buttons and guided flows work. A typed message gets one line: free text is back on 1 Nov. Alerts are never dropped.', '_$160 is the Console\'s limit for prod: raise it there first to go higher. Past the plan\'s $200 credit needs a card and your yes._'] });
+
+          /* d · an incident (MA-135, §20.5): what happened, what was tried, the choices */
+          const incHead = ['*Incident* · critical · the news scout', '*What happened:* its 03:00 run stopped at the 8-call guard on one GDELT story about the Fed. No heartbeat since 03:12.', '*Tried:* the ops warden restarted it at 05:00, then rolled it back from v14 to v13 at 05:30. It stopped on the same story both times.', '*Meanwhile:* today\'s news is not matched to the holdings; stances use Friday\'s events. Nothing else is affected.'];
+          const inc = (tap) => M({ time: '06:12', tap: tap, btns: [['Skip story', 'Pause scout'], ['Open issue', 'Later'], [AC]], text: incHead.concat(['*Your choices:*', '1. Skip that story and run again, about $0.05.', '2. Pause the news scout until Monday.', '3. Open a Jira issue for a fix; nothing changes.', '_It rang through quiet hours: incidents are critical. inc‑7._']) });
+          const incDone = M({ time: 'edited 08:35', btns: [[AC]], text: incHead.concat(['', '*Chosen:* skip that story and run again · You at 08:35 · confirmed with Face ID']) });
+          const resolved = M({ time: '08:38', text: ['*Resolved* · the news scout', 'The 08:35 run left that story out and tagged 41 stories; its heartbeat is back since 08:36. Today\'s stances use today\'s events.', '_Incident inc‑7 closed. It is in tonight\'s digest._'] });
+
+          return {
+            themes: themes,
+            notes: [
+              { h: 'Two doors, one queue', ps: [
+                { b: 'The same items as the Admin center:', t: 'an approval waiting, failed work, a spend step, an incident. Deciding here edits the Admin center\'s row, and deciding there edits this card ("Replayed from the Admin center").' },
+                { b: 'The admin only: the owner, the household\'s one admin.', t: 'Members and viewers never get these cards; the owner gets them in their own chat with the bot, beside the household\'s cards.' } ] },
+              { h: 'Every act asks for the second check', ps: [
+                { b: 'Approve, Replay and an incident\'s choice', t: 'open Telegram\'s half-height sheet, where Face ID runs at once and the PIN is the way round, exactly as after a Confirm (MA-102). The sheet names the act.' },
+                { b: 'Reject, Why? and Later need no check:', t: 'Reject changes nothing, Why? answers with the agent\'s reasons, and Later moves the card to tonight\'s 19:00 digest.' } ] },
+              { h: 'The tier is in the first words', ps: [
+                { b: 'Telegram text has no colour,', t: 'so each card starts with what it is: Approval, Failed work, Claude spend, Incident · critical. Critical rings and may break quiet hours (22:00 to 07:00); the rest arrive silently.' },
+                { b: 'Every figure is the meter\'s or the scoreboard\'s;', t: 'Claude writes the words around them. No button trades or moves money.' } ] },
+              { h: 'Buttons', ps: [
+                { b: 'Verbs, two words at most,', t: 'two to a row: Approve and Reject, then Why? and Later. Open Admin center is a URL button, full width and last; the Admin center opens in the browser and asks for its own fresh check.' },
+                { b: 'After a decision', t: 'the card is edited in place into the record: the buttons go, and the line says who decided, when and how they were checked.' } ] }
+            ],
+            journeys: J([
+              { tag: 'a', anchor: 'ta', name: 'Telegram · Approval request', keys: 'MA-130', arch: 'ARCHITECTURE §20.3', intro: 'Saturday 31 Oct, 08:02. The data steward asks to switch on EODHD Historian. The card says what changes, why with its evidence, the cost and the budget left, the risk, the undo and when it expires. Approve opens the second check; the card then becomes the record, and the Admin center\'s Approvals page shows it as decided.', steps: [
+                S({ cap: 'a1 · 08:05 · the request', clock: '08:05', msgs: [today, req('Approve')], note: 'ARCHITECTURE\'s example card, with the change, the risk and the expiry added so every request has the same parts. Tap Approve.' }),
+                S({ cap: 'a2 · 08:05 · check it\'s you', clock: '08:05', msgsC: 'up', sheet: true, isl: 'fid', fid: true, shLine: 'Face ID, before MyPaisa approves this request.', shIcon: 'how_to_reg', shT: 'Switch on EODHD Historian', shSub: '£19.99 a month · request cr‑27', msgs: [today, req('Approve')], note: 'Telegram\'s half-height sheet, as after a Confirm. Face ID starts at once; Use PIN is the way round. The sheet names what is being approved.' }),
+                S({ cap: 'a3 · 08:06 · approved', clock: '08:06', msgs: [today, approved, on], note: 'Edited in place: the buttons go and the card records who approved it, when and how. A new message from the steward says what happened next.' }) ] },
+              { tag: 'b', anchor: 'tb', name: 'Telegram · Failed work alert', keys: 'MA-145 · MA-137', arch: 'ARCHITECTURE §15.2, §21.3', intro: 'Saturday 31 Oct. The NASDAQ 100 ETF ingest failed five times and reached the work queue\'s dead-letter queue at 07:52; the card was edited at 08:10 when the source answered again. At 08:30 the owner taps Replay. Replay asks for the second check, as every admin act does; the follow-up says the job ran and what it produced.', steps: [
+                S({ cap: 'b1 · 08:30 · failed work', clock: '08:30', msgs: [today, fw('Replay')], note: 'Flow 10\'s card: the job, the tries, the last error, and what is held up. The last line says the cause is healthy again, which is when to replay. Tap Replay.' }),
+                S({ cap: 'b2 · 08:30 · check it\'s you', clock: '08:30', msgsC: 'up', sheet: true, isl: 'fid', fid: true, shLine: 'Face ID, before MyPaisa replays failed work.', shIcon: 'replay', shT: 'Replay 1 job', shSub: 'Ingest, NASDAQ 100 ETF · the work queue', msgs: [today, fw('Replay')], note: 'The same sheet. Replay is safe, since handlers are idempotent, but it is still an act, so it asks.' }),
+                S({ cap: 'b3 · 08:31 · replayed', clock: '08:31', msgs: [today, fwDone, replayed], note: 'The card says Replayed, by whom and how; the new message says Replayed 1 job and It ran, with the price it produced. Replayed from the Admin center instead, the card says so.' }) ] },
+              { tag: 'c', anchor: 'tc', name: 'Telegram · Spend steps', keys: 'MA-114 · MA-116', arch: 'ARCHITECTURE §15.1', intro: 'The four messages the owner gets as prod\'s Claude spend climbs the ladder, in a made-up runaway month (not the calm 26% of the Admin center\'s Spend page). Each says what is spent, on what, the days left, what has changed, and where to move the ceiling. 70 to 95% arrive silently; 100% is critical and rings.', steps: [
+                S({ cap: 'c1 · Fri 16 Oct · 70%', clock: '19:40', msgs: [M({ day: '16 October' }), s70], note: 'A heads-up: what is spent and on what, the days left, and that nothing changes yet.' }),
+                S({ cap: 'c2 · Fri 23 Oct · 85%', clock: '14:02', msgs: [M({ day: '16 October' }), s70, M({ day: '23 October' }), s85], note: 'Flow 11\'s card: savers are on, each named, so the owner knows what members will notice.' }),
+                S({ cap: 'c3 · Wed 28 Oct · 95%', clock: '12:15', msgs: [M({ day: '23 October' }), s85, M({ day: '28 October' }), s95], note: 'Essentials only: the chat on Haiku and the scheduled cards as templates. Reading a document still works.' }),
+                S({ cap: 'c4 · Fri 30 Oct · 100%', clock: '18:50', msgs: [M({ day: '28 October' }), s95, M({ day: 'Today' }), s100], note: 'Templates only, until the credit renews or the ceiling moves. It says how to go past the Console\'s limit, and that alerts are never dropped.' }) ] },
+              { tag: 'd', anchor: 'td', name: 'Telegram · Incident', keys: 'MA-135', arch: 'ARCHITECTURE §20.5', intro: 'Saturday 31 Oct, 06:12: the ops warden raises an incident it cannot fix. The card says what happened, what was tried and the choices, each with its consequence. The owner reads it at 08:35 and taps Skip story; the second check runs, and a new message says it is resolved.', steps: [
+                S({ cap: 'd1 · 08:35 · the incident', clock: '08:35', msgs: [today, inc('Skip story')], note: 'What happened, what was tried, what is affected meanwhile, then three numbered choices and their buttons. Later moves it to the digest. Tap Skip story.' }),
+                S({ cap: 'd2 · 08:35 · check it\'s you', clock: '08:35', msgsC: 'up', sheet: true, isl: 'fid', fid: true, shLine: 'Face ID, before MyPaisa acts on the incident.', shIcon: 'skip_next', shT: 'Skip that story and run again', shSub: 'News scout · incident inc‑7', msgs: [today, inc('Skip story')], note: 'The same sheet, naming the choice.' }),
+                S({ cap: 'd3 · 08:38 · resolved', clock: '08:38', msgs: [today, incDone, resolved], note: 'The card records the choice; a new message says the run worked, the heartbeat is back and the incident is closed.' }) ] }
+            ])
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

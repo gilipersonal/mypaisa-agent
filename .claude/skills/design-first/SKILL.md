@@ -26,6 +26,9 @@ with one obvious fix. When unsure whether something is a design change, treat it
   issues need no asking (`.claude/rules/jira-flow.md`, `.claude/rules/ship-autopilot.md`).
 - Create the branch `MA-<n>-<slug>` from `main` now, so the designs can be committed. The build continues on the same
   branch after the pick.
+- Run `python3 scripts/plan_sync.py start MA-<n>`: it names the story's ARCHITECTURE sections and its boards. It refuses a story with no board (`todo`) or with screens still `undrawn`; inside design-first that refusal is expected, because drawing them is this round's work. Its other refusals (a missing section, a board file, an open question) are not, and stop the round. Boards
+  drawn ahead of the story (`design: "planned"`) are the starting point for the options, not a pick
+  (`.claude/rules/plan-sync.md`).
 - Read the context:
   - `ARCHITECTURE.md`: the four rules (§1), the Telegram front end (§9: navigation, the example cards, guided
     flows) and the web app (§9.3);
@@ -72,8 +75,9 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
 
   A skill's defaults (its fonts, palettes, card styles) never override the artboards or the design system.
 - **The product's rules hold in every design** (`ARCHITECTURE.md`):
-  - **read-only web:** no form, button or link in the web app writes anything; a change is always a card and a
-    Confirm tap in the chat;
+  - **read-only web:** no form, button or link in the web app writes the household's records; a change is always a
+    card and a Confirm tap in the chat. The one exception is the owner's Admin center, whose admin settings and
+    operations each sit behind a fresh check (`ARCHITECTURE.md` §9.3; Arun: "read only (except for admin)");
   - **the summary first:** the layman sees the summary, the detail is one tap away (the `Technical` section, `Why?`);
     show both `simple` and `technical` modes where a card has them;
   - **Claude never produces a number:** every figure on a design is the engine's or the registry's, and the copy never
@@ -135,14 +139,18 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
   dark and at every size class it claims, click through anything interactive, and read every image: clipped or
   touching text, icons showing as words, misalignment, overflow, empty halves, light/dark differences, contrast,
   targets under 44 px, charts out of line, numbers that disagree between pages. Fix and look again. When Arun asks for
-  it (as on MA-101), a fresh reviewer that did not make the pages does this pass too, and its blockers are fixed
-  before Arun sees the work.
+  it (as on MA-101), fresh reviewers that did not make the pages do this pass too, the way every review here runs
+  (`.claude/rules/independent-review.md`: gates first, parallel lanes, the delta after round 1, the fixed list), and
+  their blockers are fixed before Arun sees the work.
 - **Asking.**
   1. Give Arun the claude.ai/design links (never a serve URL), and comment them on the MA issue.
   2. Ask for the pick with `AskUserQuestion`: one choice per option, the recommended one first, plus "None of these:
      rework".
   3. Read comments left in Claude Design (`list_comments`), and acknowledge them once handled.
-- **The pick.** Record it in `decision.md` and on the MA issue.
+- **The pick.** Record it in `decision.md` and on the MA issue. Then keep the plan in sync (`.claude/rules/plan-sync.md`):
+  in `docs/trace.json` set the story's `design` to `picked` and list the picked boards (each board's note names its
+  Jira keys); run `/plan-sync MA-<n>` to copy the changed Claude Design files into `docs/design/app-v1/` with their
+  etags; then `python3 scripts/plan_sync.py render` and `check`.
   - "None of these", or feedback, means another round: back to step 1, in the same projects as new files or a new vN.
 
 ## 4. Build the picked option

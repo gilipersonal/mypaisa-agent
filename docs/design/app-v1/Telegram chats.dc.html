@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telegram chats</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 24px; text-wrap: pretty; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .dv-note { font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 22px 0 0; max-width: 390px; text-wrap: pretty; }
+          .kcard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 36px; display: flex; flex-direction: column; gap: 44px; width: fit-content; max-width: 100%; box-sizing: border-box; }
+          .krow { display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start; }
+          .kcol { display: flex; flex-direction: column; width: 390px; }
+          /* the phone and Telegram's own chrome (Telegram draws all of this) */
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; background: var(--tg-bg); box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+          .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 2; }
+          .sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .sbar .ms { font-size: 17px; }
+          .sicons { display: flex; align-items: center; gap: 4px; }
+          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
+          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
+          .back .ms { font-size: 22px; }
+          .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
+          .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
+          .coin { width: 36px; height: 36px; border-radius: 50%; background: #13213A; color: #FF6B4F; display: grid; place-items: center; font: 800 17px/1 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; flex: none; margin-left: 36px; }
+          .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
+          .ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
+          .mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
+          .ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
+          .ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
+          .home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
+          .home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
+          /* Telegram additions on top of the .tg-* tokens */
+          .tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-fic: #4FAE4E; --tg-pill: #1F6FB5; }
+          .tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-fic: #5A9BD5; --tg-pill: #3A6EA5; }
+          .msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
+          .msg.w { width: 316px; }
+          .msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
+          .msg.o { align-self: flex-end; align-items: flex-end; margin-left: 0; margin-right: 6px; }
+          .tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
+          .tl { border-bottom-left-radius: 4px; }
+          .tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
+          .tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
+          .tg-out.tl { border-radius: 16px 16px 4px 16px; }
+          .tg-out.tl::before { left: auto; right: -7px; background: var(--tg-out); border-bottom-right-radius: 0; border-bottom-left-radius: 16px 14px; }
+          .tg-out.tl::after { left: auto; right: -10px; border-bottom-right-radius: 0; border-bottom-left-radius: 10px; }
+          .tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
+          .tg-out .tg-time { color: var(--tg-otime); }
+          .tick { font-size: 15px; }
+          .dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
+          .day { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
+          .msg .tg-btns { width: 100%; max-width: none; }
+          .c1 { grid-template-columns: minmax(0, 1fr); }
+          .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+          .tg-btn { position: relative; cursor: pointer; gap: 2px; }
+          .tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
+          .gl { font-size: 18px; line-height: 1; margin-right: -4px; }
+          .bsp { height: 8px; }
+          .bq { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; margin: 4px 0; font-size: 14px; line-height: 19px; }
+          .bx { display: flex; justify-content: space-between; align-items: center; border-top: 0.5px solid var(--tg-line); margin-top: 6px; padding-top: 6px; min-height: 28px; color: var(--tg-link); font-weight: 600; }
+          .bx::after { content: "chevron_right"; font-family: "Material Symbols Rounded"; font-feature-settings: "liga"; font-size: 20px; font-weight: 400; }
+          .ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
+          .b { font-weight: 600; } .i { font-style: italic; } .a { color: var(--tg-link); }
+          .u { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+          .fchip { display: flex; align-items: center; gap: 10px; padding: 2px 0; }
+          .fic { width: 44px; height: 44px; border-radius: 50%; background: var(--tg-fic); color: #FFFFFF; display: grid; place-items: center; flex: none; }
+          .fmeta { display: flex; flex-direction: column; min-width: 0; }
+          .fname { font-weight: 600; font-size: 15px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+          .fsize { font-size: 13px; line-height: 18px; color: var(--tg-otime); }
+          /* our PNGs inside the bubble: drawn at 324 x 216, exported 1080 x 720, zoomed to the bubble */
+          .pimg { margin: -5px -9px 6px; border-radius: 12px 12px 4px 4px; overflow: hidden; }
+          .pimg .pg { zoom: 0.957; }
+          .pg-navy { --p-bg: #13213A; --p-bg2: #1C2E4D; --p-ink: #FFFFFF; --p-ink2: #B7C2D6; --p-line: #FF6B4F; --p-area: rgba(255,107,79,.18); --p-grid: rgba(183,194,214,.16); --p-hz: rgba(246,188,79,.24); --p-pause: #F6BC4F; --p-pause-bg: rgba(246,188,79,.18); --p-add: #5BDB8B; --p-add-bg: rgba(91,219,139,.18); --p-hold: #8FB2FF; --p-hold-bg: rgba(143,178,255,.2); --p-up: #8BE8AC; --p-up-bg: rgba(68,209,122,.16); --p-alert: #FF6B8B; }
+          .pg { width: 324px; height: 216px; box-sizing: border-box; padding: 12px 12px 8px; display: flex; flex-direction: column; background: var(--p-bg); color: var(--p-ink); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; overflow: hidden; }
+          .pg-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+          .pg-over { font-size: 13px; line-height: 18px; font-weight: 600; color: var(--p-ink2); white-space: nowrap; }
+          .pg-chip { font-size: 13px; line-height: 18px; font-weight: 700; padding: 0 7px; border-radius: 999px; white-space: nowrap; }
+          .pg-pause { color: var(--p-pause); background: var(--p-pause-bg); }
+          .pg-up { color: var(--p-up); background: var(--p-up-bg); }
+          .pg-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+          .pg-num { font: 800 26px/30px ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; letter-spacing: -0.02em; }
+          .pg-sub { font-size: 12px; line-height: 15px; color: var(--p-ink2); text-align: right; }
+          /* plot: SVG draws lines and areas; dots, pills and every label are HTML on top */
+          .pplot { position: relative; padding-right: 36px; margin-top: 6px; }
+          .pbox svg { height: 100px; }
+          .pbox .mp-chartdot { width: 9px; height: 9px; }
+          .ldot { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--p-line); transform: translate(-50%, -50%); box-shadow: 0 0 0 2px var(--p-bg); }
+          .lpill { position: absolute; top: 0; transform: translateX(-50%); font-size: 11px; line-height: 14px; font-weight: 700; letter-spacing: 0.02em; padding: 1px 5px; border-radius: 8px; white-space: nowrap; }
+          .lpill.ar { transform: translateX(calc(-100% + 6px)); }
+          .lpill.al { transform: translateX(-6px); }
+          .lpill.ae { transform: translateX(-100%); }
+          .mc-add { color: var(--p-add); background: var(--p-add-bg); }
+          .mc-hold { color: var(--p-hold); background: var(--p-hold-bg); }
+          .mc-pause { color: var(--p-pause); background: var(--p-pause-bg); }
+          .ylab { position: absolute; right: 0; transform: translateY(-50%); font-size: 12px; line-height: 14px; color: var(--p-ink2); }
+          .pg .pax { font: 500 12px/16px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: var(--p-ink2); }
+          .pg-foot { margin-top: auto; display: flex; align-items: center; gap: 10px; font-size: 11px; line-height: 14px; font-weight: 500; color: var(--p-ink2); white-space: nowrap; }
+          .lg { display: inline-flex; align-items: center; gap: 4px; }
+          .sw { width: 14px; height: 0; border-top: 1.5px solid var(--p-ink2); }
+          .sw-al { border-top-style: dashed; }
+          .pg-coin { width: 16px; height: 16px; border-radius: 50%; background: var(--p-line); color: var(--p-bg); display: grid; place-items: center; font: 800 10px/1 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; flex: none; }
+          .pg-fr { margin-left: auto; }
+          /* MyPaisa mark, 1c Watcher (MA-103): drawn inline from docs/mark*.svg; the theme sets its colours */
+          .mpm { display: block; flex: none; }
+          .mpm-ring { fill: none; stroke: var(--mp-hero); }
+          .t-dark .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-coin { fill: var(--mp-hero); }
+          .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+          .mpm-dot { fill: var(--mp-coral); }
+          .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="j0" data-screen-label="Telegram chats: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#j0">T</a><span class="dv-tname">Telegram chats: three journeys</span></div>
+        <p class="dv-intro">The bot's messages as a member sees them, so the words and their order can be judged on a real chat. Telegram draws the chat; MyPaisa owns the words, the buttons that appear and the PNG images (navy, coral line). A tapped inline button is ringed; tapping one sends nothing to the chat, it either edits that message or the bot answers with a new one. One story in time order: Friday's wrap (a0), Friday's red alert (c), Monday's brief (a1 to a3); journey b is the Monday before. Each in Telegram light and dark. Illustrative figures; the components are in the DS project's Telegram kit.</p>
+      </section>
+
+      <sc-for list="{{ journeys }}" as="j" hint-placeholder-count="3">
+        <section class="dv-turn" id="{{ j.anchor }}" data-screen-label="Telegram chats: {{ j.name }}">
+          <div class="dv-thd"><span class="dv-tid">{{ j.id }}</span><span class="dv-tname">{{ j.name }}</span></div>
+          <p class="dv-intro">{{ j.intro }}</p>
+          <div class="kcard">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="krow">
+                <sc-for list="{{ j.steps }}" as="st" hint-placeholder-count="4">
+                  <div class="kcol">
+                    <p class="dv-cap">{{ st.cap }} · {{ t.label }}</p>
+                    <div class="phone tg {{ t.tg }}" data-screen-label="{{ st.cap }} {{ t.label }}">
+                      <div class="island" aria-hidden="true"></div>
+                      <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
+                      <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="coin" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
+                      <div class="msgs">
+                        <sc-for list="{{ st.msgs }}" as="m" hint-placeholder-count="3">
+                          <div class="{{ m.mc }}">
+                            <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="day">{{ m.day }}</span></sc-if>
+                            <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
+                              <div class="tg-bub {{ m.bc }}">
+                                <sc-if value="{{ m.isHold }}" hint-placeholder-val="{{ false }}">
+                                  <div class="pimg" role="img" aria-label="Chart image: NASDAQ 100, 14 Friday closes, its 20-day average, the stances it had, the PAUSE horizon ahead and the dashed 8% alert line">
+                                    <div class="pg pg-navy">
+                                      <div class="pg-top"><span class="pg-over">NASDAQ 100 · 90 days</span><span class="pg-chip pg-pause">PAUSE 61% · 2 weeks</span></div>
+                                      <div class="pg-head"><span class="pg-num">£4,210</span><span class="pg-sub">▼ 1.2% Friday · ▼ 3.1% week<br />▼ 8.4% from its high of £4,596</span></div>
+                                      <div class="pplot">
+                                        <div class="mp-chartbox pbox">
+                                          <svg viewBox="0 0 264 100" preserveAspectRatio="none" aria-hidden="true">
+                                            <sc-for list="{{ hc.grid }}" as="g" hint-placeholder-count="3"><line x1="0" x2="264" y1="{{ g.y }}" y2="{{ g.y }}" stroke="var(--p-grid)" stroke-width="1"></line></sc-for>
+                                            <rect x="{{ hc.bx }}" y="20" width="{{ hc.bw }}" height="80" fill="var(--p-hz)" stroke="var(--p-pause)" stroke-width="1" stroke-dasharray="3 2"></rect>
+                                            <path d="{{ hc.area }}" fill="var(--p-area)"></path>
+                                            <path d="{{ hc.ma }}" fill="none" stroke="var(--p-ink2)" stroke-width="1.25" stroke-linejoin="round"></path>
+                                            <path d="{{ hc.line }}" fill="none" stroke="var(--p-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                            <path d="{{ hc.proj }}" fill="none" stroke="var(--p-line)" stroke-width="2" stroke-dasharray="1 4" stroke-linecap="round"></path>
+                                            <line x1="0" x2="264" y1="{{ hc.ay }}" y2="{{ hc.ay }}" stroke="{{ m.hv.al }}" stroke-width="1.5" stroke-dasharray="5 3"></line>
+                                            <sc-for list="{{ hc.marks }}" as="k" hint-placeholder-count="3"><line x1="{{ k.x }}" x2="{{ k.x }}" y1="17" y2="{{ k.dy }}" stroke="var(--p-ink2)" stroke-width="1" stroke-dasharray="1 2"></line></sc-for>
+                                          </svg>
+                                          <sc-for list="{{ hc.marks }}" as="k" hint-placeholder-count="3"><span class="mp-chartdot" style="left: {{ k.l }}; top: {{ k.t }}"></span><span class="lpill {{ k.mc }}" style="left: {{ k.pl }}">{{ k.w }}</span></sc-for>
+                                        </div>
+                                        <sc-for list="{{ hc.grid }}" as="g" hint-placeholder-count="3"><span class="ylab" style="top: {{ g.t }}">{{ g.l }}</span></sc-for>
+                                        <div class="mp-chartaxis pax"><sc-for list="{{ hc.xl }}" as="x" hint-placeholder-count="3"><span style="left: {{ x.x }}">{{ x.l }}</span></sc-for></div>
+                                      </div>
+                                      <div class="pg-foot"><svg class="mpm" width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z" fill="#233558"></path><g fill="none" stroke="#FFFFFF" stroke-width="3.84" stroke-linecap="round" stroke-linejoin="round"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle cx="37.07" cy="10.93" r="5.4" fill="#FF6B4F"></circle></svg><span class="lg"><span class="sw"></span>20-day avg</span><span class="lg" style="color: {{ m.hv.al }}"><span class="sw sw-al" style="border-top-color: {{ m.hv.al }}"></span>{{ m.hv.lab }}</span></div>
+                                    </div>
+                                  </div>
+                                </sc-if>
+                                <sc-if value="{{ m.isCurve }}" hint-placeholder-val="{{ false }}">
+                                  <div class="pimg" role="img" aria-label="Chart image: household value over six months with the ADD, HOLD and PAUSE stances named where they were taken">
+                                    <div class="pg pg-navy">
+                                      <div class="pg-top"><span class="pg-over">Household · 6 months</span><span class="pg-chip pg-up">▲ 2.4% month</span></div>
+                                      <div class="pg-head"><span class="pg-num">£25,800</span><span class="pg-sub">▲ £612 this month<br />▼ 0.6% this week</span></div>
+                                      <div class="pplot">
+                                        <div class="mp-chartbox pbox">
+                                          <svg viewBox="0 0 264 100" preserveAspectRatio="none" aria-hidden="true">
+                                            <sc-for list="{{ cc.grid }}" as="g" hint-placeholder-count="3"><line x1="0" x2="264" y1="{{ g.y }}" y2="{{ g.y }}" stroke="var(--p-grid)" stroke-width="1"></line></sc-for>
+                                            <path d="{{ cc.area }}" fill="var(--p-area)"></path>
+                                            <path d="{{ cc.line }}" fill="none" stroke="var(--p-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                            <sc-for list="{{ cc.marks }}" as="k" hint-placeholder-count="3"><line x1="{{ k.x }}" x2="{{ k.x }}" y1="17" y2="{{ k.dy }}" stroke="var(--p-ink2)" stroke-width="1" stroke-dasharray="1 2"></line></sc-for>
+                                          </svg>
+                                          <sc-for list="{{ cc.marks }}" as="k" hint-placeholder-count="3"><span class="mp-chartdot" style="left: {{ k.l }}; top: {{ k.t }}"></span><span class="lpill {{ k.mc }}" style="left: {{ k.pl }}">{{ k.w }}</span></sc-for>
+                                          <span class="ldot" style="left: 100%; top: {{ cc.lt }}"></span>
+                                        </div>
+                                        <sc-for list="{{ cc.grid }}" as="g" hint-placeholder-count="3"><span class="ylab" style="top: {{ g.t }}">{{ g.l }}</span></sc-for>
+                                        <div class="mp-chartaxis pax"><sc-for list="{{ cc.xl }}" as="x" hint-placeholder-count="6"><span style="left: {{ x.x }}">{{ x.l }}</span></sc-for></div>
+                                      </div>
+                                      <div class="pg-foot"><svg class="mpm" width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z" fill="#233558"></path><g fill="none" stroke="#FFFFFF" stroke-width="3.84" stroke-linecap="round" stroke-linejoin="round"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle cx="37.07" cy="10.93" r="5.4" fill="#FF6B4F"></circle></svg><span>Fri 30 Oct close</span><span class="pg-fr">Past stances marked</span></div>
+                                    </div>
+                                  </div>
+                                </sc-if>
+                                <sc-if value="{{ m.hasFile }}" hint-placeholder-val="{{ false }}"><div class="fchip"><span class="fic"><span class="ms ms-fill">description</span></span><span class="fmeta"><span class="fname">{{ m.file.n }}</span><span class="fsize">{{ m.file.s }}</span></span></div></sc-if>
+                                <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="3"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
+                                <div class="tg-time"><span>{{ m.time }}</span><sc-if value="{{ m.out }}" hint-placeholder-val="{{ false }}"><span class="ms tick" aria-label="Read">done_all</span></sc-if></div>
+                              </div>
+                              <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="2"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}<sc-if value="{{ k.hasG }}" hint-placeholder-val="{{ false }}"><span class="ms gl" aria-hidden="true">{{ k.g }}</span></sc-if></button></sc-for></div></sc-for>
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
+                      <div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
+                      <div class="home" aria-hidden="true"><span></span></div>
+                    </div>
+                    <p class="dv-note">{{ st.note }}</p>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const f = (n) => Number(n).toFixed(1);
+          const pc = (n, d) => ((n / d) * 100).toFixed(2) + '%';
+          /* message text: *bold* _italic_ ~underline~ [link]; line kinds: '' gap, '^' small grey line, '>' quote, '!' rich fold (shut). ▲ ▼ never end a line on their own. */
+          const seg = (str) => {
+            const out = []; const re = /(\*[^*]+\*|_[^_]+_|~[^~]+~|\[[^\]]+\])/g; let last = 0, x;
+            while ((x = re.exec(str))) {
+              if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' });
+              out.push({ t: x[0].slice(1, -1), c: { '*': 'b', '_': 'i', '~': 'u', '[': 'a' }[x[0][0]] });
+              last = x.index + x[0].length;
+            }
+            if (last < str.length) out.push({ t: str.slice(last), c: '' });
+            return out;
+          };
+          const kind = (s) => s === '' ? 'sp' : s[0] === '>' ? 'q' : s[0] === '!' ? 'x' : s[0] === '^' ? 'ov' : 'p';
+          const parse = (lines) => {
+            const bl = [];
+            lines.forEach((s) => {
+              const k = kind(s), body = (k === 'p' || k === 'sp' ? s : s.slice(1)).replace(/([▲▼]) /g, '$1 '); let b = bl[bl.length - 1];
+              if (!b || b.k !== k || k === 'sp' || k === 'x') { b = { k: k, c: k === 'ov' ? 'ov' : 'b' + k, ls: [] }; bl.push(b); }
+              b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: '', c: '' }] : seg(body) });
+            });
+            return bl;
+          };
+          /* a button label ending in ▸ ▾ ▴ shows a chevron the size of the label */
+          const GL = { '▸': 'chevron_right', '▾': 'expand_more', '▴': 'expand_less' };
+          const HV = { al: 'var(--p-ink2)', lab: 'your 8% alert' };
+          const M = (o) => {
+            if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, blocks: [], rows: [], file: {}, hv: HV };
+            const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((n) => { const g = GL[n.slice(-1)] && n.slice(-2, -1) === ' ' ? GL[n.slice(-1)] : ''; return { t: g ? n.slice(0, -2) : n, g: g, hasG: !!g, c: n === o.tap ? 'tap' : '' }; }) }));
+            return { isDay: false, isMsg: true, day: '', mc: 'msg' + (o.out ? ' o' : '') + (o.img || rows.length || o.wide ? ' w' : ''), bc: (o.out ? 'tg-out ' : '') + 'tl', isHold: o.img === 'hold', isCurve: o.img === 'curve', hasFile: !!o.file, file: o.file || { n: '', s: '' }, blocks: parse(o.text || []), time: o.time || '', out: !!o.out, rows: rows, hv: o.hv || HV };
+          };
+
+          /* charts from the data: the plot box is 264 x 100 (a stance lane 0-18, the plot 20-100) */
+          const W = 264;
+          const P = (pts) => 'M' + pts.map((q) => f(q[0]) + ',' + f(q[1])).join(' L');
+          const nq = [4280, 4330, 4310, 4380, 4420, 4450, 4493, 4540, 4596, 4530, 4470, 4410, 4345, 4210];
+          const hx = (i) => (i * W) / 15, hy = (v) => 20 + ((4700 - v) / 550) * 80;
+          const hp = nq.map((v, i) => [hx(i), hy(v)]);
+          const hma = hp.slice(3).map((q, k) => [q[0], hy((nq[k] + nq[k + 1] + nq[k + 2] + nq[k + 3]) / 4)]);
+          const alertV = 0.92 * Math.max.apply(null, nq);
+          /* a mark: dot on the line, pill in the lane (anchored left, right, centre or at the chart end) */
+          const mk = (pts, xs, list) => list.map((m) => ({ x: f(xs(m[0])), dy: f(pts[m[0]][1] - 6), l: pc(xs(m[0]), W), pl: m[3] === 'ae' ? '100%' : pc(xs(m[0]), W), t: pc(pts[m[0]][1], 100), w: m[1], mc: 'mc-' + m[2] + (m[3] ? ' ' + m[3] : '') }));
+          const hc = { line: P(hp), area: P(hp) + ' L' + f(hx(13)) + ',100 L0,100 Z', ma: P(hma), proj: 'M' + f(hx(13)) + ',' + f(hy(4210)) + ' L' + W + ',' + f(hy(4210)),
+            ay: f(hy(alertV)), bx: f(hx(13)), bw: f(W - hx(13)),
+            grid: [4200, 4400, 4600].map((v) => ({ y: f(hy(v)), t: f(hy(v)) + 'px', l: '£' + (v / 1000).toFixed(1) + 'k' })),
+            marks: mk(hp, hx, [[6, 'HOLD', 'hold', 'ar'], [8, 'ADD', 'add'], [13, 'PAUSE · 2 wks', 'pause', 'ae']]),
+            xl: [['Aug', '14%'], ['Sep', '44%'], ['Oct', '72%']].map((a) => ({ l: a[0], x: a[1] })) };
+          const s6 = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
+          const cx = (i) => (i * W) / 11, cy = (v) => 20 + ((26000 - v) / 2100) * 80;
+          const cp = s6.map((v, i) => [cx(i), cy(v)]);
+          const cc = { line: P(cp), area: P(cp) + ' L' + W + ',100 L0,100 Z', lt: pc(cp[11][1], 100),
+            grid: [24000, 25000, 26000].map((v) => ({ y: f(cy(v)), t: f(cy(v)) + 'px', l: '£' + v / 1000 + 'k' })),
+            marks: mk(cp, cx, [[3, 'ADD', 'add'], [7, 'HOLD', 'hold'], [10, 'PAUSE', 'pause']]),
+            xl: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'].map((l, i) => ({ l: l, x: pc(cx(i * 2 + 0.5), W) })) };
+
+          /* Friday 30 Oct */
+          const amber = M({ time: '14:20', wide: true, btns: [['Silver ▸', 'Why?']], text: ['*Worth a look* · Physical Silver', '▼ 6.2% this week, its largest weekly fall in three months. The stance stays PAUSE 58%: keep what you have, no top-up.', '_Amber: no sound. Nothing more on Silver before tomorrow 07:30._'] });
+          const wrap = M({ img: 'curve', time: '21:05', btns: [['Portfolio ▸', 'Track record ▸']], text: ['*Evening wrap* · Fri 30 Oct', '*£25,800* at the close · ▼ 0.6% this week · ▲ £612 this month.', 'NASDAQ 100 fell 1.2% today and 3.1% on the week; Silver 6.2% on the week. Both were on PAUSE already.', 'Saturday review tomorrow at 09:00.'] });
+          const RED = { al: 'var(--p-alert)', lab: '8% alert · crossed' };
+          const redText = ['*Needs a decision* · NASDAQ 100', '▼ 1.2% today and 3.1% this week, now 8.4% below its high: past the 8% line you set.', 'The stance is PAUSE: keep what you have and hold this month’s top-up, due Wed 4 Nov. Nothing here says sell.'];
+          const redNote = '_Red alert 1 of your 2 this week. No more on NASDAQ 100 for 3 days unless it falls another 3%._';
+          const red1 = M({ img: 'hold', hv: RED, time: '21:14', tap: 'Technical ▾', btns: [['Why?', 'Technical ▾'], ['I acted', 'Dismiss']], text: redText.concat([redNote]) });
+          const red2 = (tap) => M({ img: 'hold', hv: RED, time: 'edited 21:15', tap: tap, btns: [['Why?', 'Technical ▴'], ['I acted', 'Dismiss']], text: redText.concat(['>*Technical details*', '>Trend +2 · Momentum −1 · Macro (US) +1 · Risk −2', '>Flags: exhaustion ×2 (RSI turned from 71, MACD shrinking)', '>Drawdown −8.4% · P(fall > 5%) 14%', '>Data: CNX1 ✓ · iShares NAV ✓ · ECB ✓', redNote]) });
+          const acted = M({ time: '21:16', wide: true, tap: 'Held top-up', btns: [['Held top-up', 'Topped up'], ['Something else', 'Nothing yet']], text: ['^I acted · NASDAQ 100', '*What did you do?*', 'This only records it. MyPaisa cannot trade.'] });
+          const logged = M({ time: 'edited 21:16', wide: true, btns: [['Undo', 'Track record ▸']], text: ['*Logged.* You held this month’s NASDAQ 100 top-up.', 'I will grade the PAUSE call on Fri 13 Nov against doing nothing, and show it in the Saturday review.', '_Audit: Decision · You · 30 Oct 21:16 · from alert run r-1188._'] });
+
+          /* Monday 2 Nov */
+          const brief = (tap) => M({ time: '07:31', wide: true, tap: tap, btns: [['NASDAQ 100 ▸', 'Silver ▸'], ['Portfolio ▸', 'Ask']], text: ['*Good morning.* Prices to Friday’s close.', '*£25,800* · ▼ 0.6% this week · ▲ 2.4% this month. The pound explains −0.3% of the week.', '', '*NASDAQ 100* ▼ 1.2% on Friday and 3.1% on the week, 8.4% below its high. Still PAUSE: keep what you have, hold the top-up.', '*Silver* ▼ 6.2% on the week. PAUSE holds.', '*Balanced* and *Robotics* steady.', '', 'Nothing to do today. The Fed decides on Wednesday.'] });
+          const stance = (tap) => M({ img: 'hold', time: '07:32', tap: tap, btns: [['Why?', 'What if?'], ['Technical ▾', 'I acted']], text: ['*NASDAQ 100* · £4,210 · ▼ 1.2% Friday · ▼ 3.1% this week', '*PAUSE* · 2 weeks · confidence 61%', 'Keep what you have; hold this month’s top-up until the trend settles. Not a reason to sell.', '_Would change if:_ a close back above the 20-day average, or two calm sessions after the Fed.', 'PAUSE calls on this holding: 3 made, 2 right. _A view, not advice._', '!Technical details'] });
+          const why = M({ time: '07:33', btns: [['What if?', 'Technical ▾'], ['I acted']], text: ['*Why PAUSE on NASDAQ 100?*', 'The long trend is still up (Trend +2), but the push has faded: RSI turned down from 71 and the MACD histogram is shrinking. That is two signs of a tiring run.', 'Swings are also bigger than usual for this fund (Risk −2, volatility in its 72nd percentile).', 'A tiring run plus high risk is the rule for PAUSE: keep what you have, hold new money.', '', '*Sources*', '1. Close: [yfinance CNX1], Fri 30 Oct ✓', '2. NAV check: [iShares] ✓ · FX: [ECB] ✓', '3. Engine self-test ✓ at 07:04', '_The figures are the engine’s; I only put them into words. A view, not advice._'] });
+
+          /* Monday 26 Oct: adding a holding */
+          const add1 = M({ out: true, time: '21:13', text: ['/add'] });
+          const add2 = M({ time: '21:13', text: ['Send the factsheet, a screenshot, or tell me what it is.'] });
+          const pdf = M({ out: true, time: '21:14', file: { n: 'iShares-Physical-Silver-factsheet.pdf', s: '412 KB' } });
+          const read = ['*Name:* iShares Physical Silver ETC', '*ISIN:* IE00B4NCWG09', '*Kind:* ETC, backed by physical silver', '*Fee (OCF):* 0.20% a year'];
+          const confirm1 = M({ time: '21:14', tap: 'Edit', btns: [['Confirm', 'Edit', 'Cancel']], text: ['*Here is what I read.*', 'Check it, then tap Confirm.', ''].concat(read, ['*Trading line:* London, in ~GBP~ _(not sure: the factsheet lists a USD and a GBP line)_', '*Account:* GIA', '', '_Nothing is saved until you tap Confirm._']) });
+          const editQ = M({ time: 'edited 21:14', wide: true, tap: 'GBP', btns: [['GBP', 'USD'], ['Back']], text: ['^Edit · Trading line', '*Which currency does your London line trade in?*', 'The factsheet lists two lines for this ETC. Your broker’s app or statement says which one you hold.'] });
+          const confirm2 = (tap, done) => M({ time: 'edited 21:15', tap: tap, btns: done ? [] : [['Confirm', 'Edit', 'Cancel']], wide: true, text: ['*Here is what I read.*', 'Check it, then tap Confirm.', ''].concat(read, ['*Trading line:* London, in GBP ✓ _(you said)_', '*Account:* GIA', '', done ? '_Confirmed by You at 21:15._' : '_Nothing is saved until you tap Confirm._']) });
+          const saved = M({ time: '21:15', text: ['*Saved.* Physical Silver added to your GIA.', '_Audit: Holding added · You · 26 Oct 21:15 · from a factsheet · run r-1139._', '', 'Now, how much do you hold? Send a screenshot or type it.'] });
+
+          const today = M({ day: 'Today' }), friday = M({ day: 'Friday' });
+          return {
+            themes: [{ label: 'Telegram light', tg: 'tg-light' }, { label: 'Telegram dark', tg: 'tg-dark' }],
+            hc: hc, cc: cc,
+            journeys: [
+              { id: 'a', anchor: 'ja', name: 'a · Friday’s wrap, then Monday morning: brief, stance, why', intro: 'Friday 21:05: the evening wrap with the household curve and its three past stances. Monday 07:31: the brief arrives as text so it reads on the lock screen. The member taps NASDAQ 100 ▸, gets the stance card with our chart, then taps Why? and gets the reasons in plain words with their sources.', steps: [
+                { cap: 'a0 · Fri 21:05 · the evening wrap', clock: '21:05', note: 'The newest message is the wrap: the household curve with ADD, HOLD and PAUSE named where they were taken. Friday’s amber note on Silver is above it.', msgs: [friday, amber, wrap] },
+                { cap: 'a1 · Mon 07:31 · the brief arrives', clock: '07:31', note: 'Friday ended with the logged decision (journey c). The total and its one-line reason first, then only the holdings that moved. Tap NASDAQ 100 ▸.', msgs: [friday, logged, today, brief('NASDAQ 100 ▸')] },
+                { cap: 'a2 · Mon 07:32 · the stance card', clock: '07:32', note: 'A new message, not an edit: navigation adds, folds edit. The chart shows HOLD and ADD earlier, PAUSE now and the two weeks it covers. Tap Why?', msgs: [today, brief(''), stance('Why?')] },
+                { cap: 'a3 · Mon 07:33 · why, with sources', clock: '07:33', note: 'The reasons in plain words, each tied to a pillar, then numbered sources. It says the figures are the engine’s, not Claude’s.', msgs: [today, stance(''), why] } ] },
+              { id: 'b', anchor: 'jb', name: 'b · Adding a holding from a factsheet', intro: 'Monday 26 October, 21:13. The member sends a factsheet PDF; the card says what was read and marks the one field Claude is unsure of (underlined, with the reason, since Telegram cannot colour text amber). Edit, Confirm and the save all happen in the same message, then one new message confirms the save and its audit row.', steps: [
+                { cap: 'b1 · 21:14 · sends the factsheet', clock: '21:14', note: 'The outgoing PDF with its file chip and read ticks; the Confirm card marks one unsure field. Tap Edit.', msgs: [today, add1, add2, pdf, confirm1] },
+                { cap: 'b2 · 21:14 · Edit, the unsure field', clock: '21:14', note: 'The card is edited in place to the one question that matters, with the reason it is asked. Tap GBP.', msgs: [today, add1, add2, pdf, editQ] },
+                { cap: 'b3 · 21:15 · the card, settled', clock: '21:15', note: 'The field now says GBP ✓ (you said). Nothing is saved yet. Tap Confirm.', msgs: [today, add1, add2, pdf, confirm2('Confirm', false)] },
+                { cap: 'b4 · 21:15 · saved, with the audit note', clock: '21:15', note: 'The card loses its buttons and records who confirmed. A new message: saved, where, the audit row, and the next question.', msgs: [today, pdf, confirm2('', true), saved] } ] },
+              { id: 'c', anchor: 'jc', name: 'c · A red alert after the US close', intro: 'Friday 30 October, 21:14, after the evening wrap. NASDAQ 100 closed at £4,210, just under the member’s 8% line (£4,228, 8% under the £4,596 high of 25 Sep), so the alert is red: it rings, says it needs a decision, shows the crossed line in the chart and closes with the weekly budget and the cooldown. Technical ▾ opens in place; I acted records what the member did, and the record is logged.', steps: [
+                { cap: 'c1 · 21:14 · red alert', clock: '21:14', note: 'The tier is in the first words; the only red is the crossed line in our PNG. Tap Technical ▾.', msgs: [today, wrap, red1] },
+                { cap: 'c2 · 21:15 · Technical, in place', clock: '21:15', note: 'The same message, edited: the detail opens as a quote above the cooldown line. Tap I acted.', msgs: [today, red2('I acted')] },
+                { cap: 'c3 · 21:16 · what did you do?', clock: '21:16', note: 'A short question with four answers. It says plainly that this only records; no button trades.', msgs: [today, red2(''), acted] },
+                { cap: 'c4 · 21:16 · decision logged', clock: '21:16', note: 'The question becomes the record: what was done, when the call is graded, and the audit row tied to the alert’s run (r-1188). Undo is there for a slip.', msgs: [today, red2(''), logged] } ] }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

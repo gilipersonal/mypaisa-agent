@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa DS v1: three directions, 1a picked</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 28px; text-wrap: pretty; }
+          .dv-picked { display: flex; align-items: center; gap: 12px; max-width: 980px; margin: 0 0 24px; padding: 14px 18px; border-radius: 14px; background: #E2F2E7; color: #14171F; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .dv-picked .ms { color: #1D7A3E; }
+          .dv-opts { display: flex; flex-direction: column; gap: 40px; align-items: flex-start; }
+          .dv-opt { display: flex; flex-direction: column; gap: 12px; }
+          .dv-oid { font: 600 10.5px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+          .dv-olabel { display: flex; align-items: baseline; gap: 10px; font: 400 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-oname { font-weight: 700; color: #14171F; font-size: 17px; }
+          .dv-rec { font: 700 11px/14px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: #1D7A3E; border-radius: 999px; padding: 4px 9px; white-space: nowrap; }
+          .dv-not { font: 600 11px/14px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #4E5462; background: rgba(0,0,0,.07); border-radius: 999px; padding: 4px 9px; white-space: nowrap; }
+          .dv-card { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 28px; display: flex; flex-direction: column; gap: 32px; }
+          .dv-row { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+          .dv-stack { display: flex; flex-direction: column; gap: 28px; width: 390px; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; }
+          .dv-next { margin: 26px 0 0; font: 13px/1.5 -apple-system, system-ui, sans-serif; color: #5A606C; }
+          .dv-why { width: 390px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; display: flex; flex-direction: column; gap: 8px; }
+          .dv-why b { color: #14171F; }
+          .dv-tokens { width: 360px; }
+          .sw { width: 28px; height: 28px; border-radius: 8px; border: 1px solid rgba(0,0,0,.1); }
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); position: relative; }
+          .scr { flex: 1; overflow: hidden; padding: 14px 16px 0; display: flex; flex-direction: column; gap: 16px; }
+          .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+          .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .board { width: 1180px; border-radius: 14px; overflow: hidden; display: flex; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
+          .bmain { flex: 1; min-width: 0; padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 18px; background: var(--mp-bg); }
+          .mk { stroke: var(--mp-coral); stroke-width: 2; fill: var(--mp-hero-ink); }
+          .tgchat { width: 390px; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 20px 40px rgba(0,0,0,.16); }
+          .tgpng { border-radius: 12px; overflow: hidden; margin: -4px -8px 8px; }
+          /* direction 1b: native clarity */
+          .d1b.t-light { --mp-bg: #F2F2F7; --mp-surface: #FFFFFF; --mp-surface-2: #E9E9EE; --mp-line: #D1D1D6; --mp-ink: #000000; --mp-ink-2: #55555A; --mp-ink-3: #636366; --mp-accent: #0A63D8; --mp-coral: #0A63D8; --mp-up: #1E7B34; --mp-chart-line: #0A63D8; --mp-chart-area: rgba(10, 99, 216, 0.10); --mp-material: rgba(249, 249, 249, 0.82); --mp-shadow: none; }
+          .d1b.t-dark { --mp-bg: #000000; --mp-surface: #1C1C1E; --mp-surface-2: #2C2C2E; --mp-line: #38383A; --mp-ink: #FFFFFF; --mp-ink-2: #AEAEB2; --mp-ink-3: #98989F; --mp-accent: #4AA3FF; --mp-on-accent: #000000; --mp-coral: #4AA3FF; --mp-up: #32D74B; --mp-chart-line: #4AA3FF; --mp-chart-area: rgba(74, 163, 255, 0.14); --mp-material: rgba(28, 28, 30, 0.82); --mp-shadow: none; --mp-seg-on: #636366; }
+          .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+          .dot-hold { background: var(--mp-hold); } .dot-pause { background: var(--mp-pause); } .dot-add { background: var(--mp-add); } .dot-none { display: none; }
+          /* direction 1c: pot wall */
+          .d1c.t-light { --mp-bg: #FFFFFF; --mp-surface: #F3F3F5; --mp-surface-2: #E9E9EC; --mp-line: #E2E2E6; --mp-ink: #111111; --mp-ink-2: #4A4A50; --mp-ink-3: #5E5E66; --mp-accent: #C2381F; --pot-1: #86DCD2; --pot-2: #B3BCFF; --pot-3: #F2D59B; --pot-4: #D3D8E1; --pot-5: #B5EBC3; --pot-ink: #111111; --chip-bg: rgba(255, 255, 255, 0.72); --blk: #FF5B3D; --blk-ink: #1A0A06; --blk-2: rgba(26, 10, 6, 0.12); }
+          .d1c.t-dark { --mp-bg: #0E0E10; --mp-surface: #1A1A1E; --mp-surface-2: #26262B; --mp-line: #2E2E34; --mp-ink: #F5F5F7; --mp-ink-2: #A9A9B2; --mp-ink-3: #93939C; --mp-accent: #FF7A5E; --pot-1: #0E6B66; --pot-2: #3D46A8; --pot-3: #6E5216; --pot-4: #3A4150; --pot-5: #1E6B3A; --pot-ink: #F5F5F7; --chip-bg: rgba(0, 0, 0, 0.32); --blk: #FF6A4D; --blk-ink: #1A0A06; --blk-2: rgba(26, 10, 6, 0.14); }
+          .blk { background: var(--blk); color: var(--blk-ink); border-radius: 0 0 30px 30px; margin: -14px -16px 0; padding: 18px 20px 20px; }
+          .blk .mp-seg { background: var(--blk-2); }
+          .blk .mp-seg-i { color: var(--blk-ink); }
+          .blk .mp-seg-i.on { background: var(--blk-ink); color: var(--blk); }
+          .pot { border-radius: 22px; padding: 14px 12px; height: 124px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; color: var(--pot-ink); }
+          .potchip { background: var(--chip-bg); color: var(--pot-ink); letter-spacing: 0; }
+          .nowrap { white-space: nowrap; }
+          /* MyPaisa mark, 1c Watcher (MA-103): drawn inline from docs/mark*.svg; the theme sets its colours */
+          .mpm { display: block; flex: none; }
+          .mpm-ring { fill: none; stroke: var(--mp-hero); }
+          .t-dark .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-coin { fill: var(--mp-hero); }
+          .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+          .mpm-dot { fill: var(--mp-coral); }
+          .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t1" data-screen-label="Turn 1: three directions">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">MyPaisa DS v1: three directions</span></div>
+        <div class="dv-picked"><span class="ms ms-fill">check_circle</span><span><b>Picked: 1a, Warm ledger.</b> Arun chose it on 24 Oct 2026 (MA-101). It is the design system in force: every MyPaisa screen is designed in it from now on. 1b and 1c stay below as the record of what was considered.</span></div>
+        <p class="dv-intro">Arun asked for a new design system after the Monzo app and Apple's Human Interface Guidelines, for the dashboard, the Telegram Mini App and the Telegram cards (MA-101). Each direction is shown on the Overview in the Mini App (light, dark) and in the browser (light, dark), and on one Telegram stance message. Figures, members and holdings are illustrative. Inspired by Monzo, never its name, logo or assets. 1a is worked out in full: Foundations, Components, the Telegram kit here, and every screen in the MyPaisa app v1 project.</p>
+        <div class="dv-opts">
+
+          <!-- ================= 1a WARM LEDGER ================= -->
+          <div class="dv-opt" id="1a">
+            <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span class="dv-oname">Warm ledger</span><span class="dv-rec">Picked · 24 Oct</span><span>Monzo's warmth on Apple's bones: a navy hero card, one coral accent, rounded figures, grouped lists.</span></div>
+            <div class="dv-card">
+              <div class="dv-row">
+                <sc-for list="{{ t1a }}" as="t" hint-placeholder-count="3">
+                  <div>
+                    <p class="dv-cap">Mini App · {{ t.label }}</p>
+                    <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="1a Mini App Overview {{ t.label }}">
+                      <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                      <div class="scr">
+                        <div class="fx ac gap8">
+                          <div class="mp-seg" style="flex: 1" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
+                          <button class="iconbtn" aria-label="Privacy mode"><span class="ms">{{ t.eye }}</span></button>
+                        </div>
+                        <div class="mp-hero">
+                          <div class="fx jb ac"><span class="mp-over mp-hero-2">Household · Fri close</span><span class="mp-chip upchip chip-s">▲ 2.4% month</span></div>
+                          <div class="mp-num-hero" style="margin-top: 8px"><span class="{{ t.maskCls }}">{{ t.total }}</span></div>
+                          <div class="mp-sub mp-hero-2" style="margin-top: 2px">{{ t.month }}</div>
+                          <svg width="318" height="72" viewBox="0 0 318 72" style="display: block; margin: 14px 0 12px" role="img" aria-label="Six months of value, rising, with three past stances marked">
+                            <path d="{{ ch.area }}" fill="var(--mp-hero-area)"></path>
+                            <path d="{{ ch.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="mp-draw"></path>
+                            <sc-for list="{{ ch.marks }}" as="m" hint-placeholder-count="3"><circle cx="{{ m.cx }}" cy="{{ m.cy }}" r="4.5" class="mk"></circle></sc-for>
+                          </svg>
+                          <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div>
+                        </div>
+                        <div class="mp-card fx ac gap12" style="padding: 14px 16px">
+                          <span class="ms ms-fill mp-up ms-l">check_circle</span>
+                          <div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday.</div></div>
+                          <span class="ms mp-ink3">chevron_right</span>
+                        </div>
+                        <div>
+                          <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">this week</span></div>
+                          <div class="mp-group">
+                            <sc-for list="{{ t.hs }}" as="h" hint-placeholder-count="5">
+                              <div class="mp-row" style="padding-top: 10px; padding-bottom: 10px">
+                                <div class="mp-row-lead mp-neutral">{{ h.lead }}</div>
+                                <div style="flex: 1; min-width: 0">
+                                  <div class="mp-hl clip">{{ h.name }}</div>
+                                  <div class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></div>
+                                </div>
+                                <div style="text-align: right"><div class="mp-hl"><span class="{{ h.vcls }}">{{ h.val }}</span></div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </div>
+                      <nav class="mp-tabbar tabs-abs" aria-label="Sections">
+                        <a class="mp-tab on" href="#1a"><span class="ms ms-fill">home</span>Overview</a>
+                        <a class="mp-tab" href="#1a"><span class="ms">donut_small</span>Holdings</a>
+                        <a class="mp-tab" href="#1a"><span class="ms">join_inner</span>Overlap</a>
+                        <a class="mp-tab" href="#1a"><span class="ms">insights</span>Record</a>
+                        <a class="mp-tab" href="#1a"><span class="ms">menu</span>More</a>
+                      </nav>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div class="dv-row">
+                <div>
+                  <p class="dv-cap">Telegram · stance message · dark</p>
+                  <div class="tgchat tg tg-dark">
+                    <div class="fx col gap4" style="padding: 14px 12px">
+                      <div class="tg-bub">
+                        <div class="tgpng" style="background: #13213A; padding: 14px 14px 10px; color: #fff" role="img" aria-label="Chart image: NASDAQ 100, 90 days, falling 8.4% from its high to just under your 8% alert line, with the PAUSE horizon for the next 2 weeks">
+                          <div class="fx jb ac"><span class="mp-over" style="color: #B7C2D6">NASDAQ 100 · 90 days</span><span class="mp-chip chip-s" style="color: #F6BC4F; background: #33270E">PAUSE 61%</span></div>
+                          <div class="fx ac gap8" style="margin-top: 4px"><span class="mp-num-l" style="font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', system-ui, sans-serif">£4,210</span><span class="mp-foot" style="color: #B7C2D6">▼ 8.4% from its high</span></div>
+                          <svg width="300" height="80" viewBox="0 0 300 80" style="display: block; margin-top: 6px">
+                            <rect x="261" y="1" width="38" height="66" rx="4" fill="rgba(246,188,79,0.12)" stroke="#F6BC4F" stroke-width="1" stroke-dasharray="3 3"></rect>
+                            <text x="280" y="16" fill="#F6BC4F" font-size="10" font-weight="700" text-anchor="middle" font-family="-apple-system, system-ui, sans-serif">PAUSE</text>
+                            <text x="280" y="29" fill="#F6BC4F" font-size="10" font-weight="600" text-anchor="middle" font-family="-apple-system, system-ui, sans-serif">2 wks</text>
+                            <line x1="0" y1="{{ cs.ay }}" x2="260" y2="{{ cs.ay }}" stroke="#B7C2D6" stroke-dasharray="4 4" stroke-width="1"></line>
+                            <text x="2" y="78" fill="#B7C2D6" font-size="10" font-family="-apple-system, system-ui, sans-serif">your 8% alert</text>
+                            <path d="{{ cs.line }}" fill="none" stroke="#FF7A5E" stroke-width="2.5" stroke-linejoin="round"></path>
+                            <line x1="{{ cs.lx }}" y1="{{ cs.ly }}" x2="296" y2="{{ cs.ly }}" stroke="#FF7A5E" stroke-width="1.5" stroke-dasharray="2 4"></line>
+                            <circle cx="{{ cs.lx }}" cy="{{ cs.ly }}" r="3.5" fill="#FFFFFF" stroke="#FF7A5E" stroke-width="2"></circle>
+                          </svg>
+                        </div>
+                        <div><b>NASDAQ 100 · PAUSE</b> · confidence 61%</div>
+                        <div style="margin-top: 4px">Keep what you have. Hold this month's top‑up until the trend settles. Not a reason to sell.</div>
+                        <div style="margin-top: 4px"><i>Would change if:</i> a close back above the 20‑day average.</div>
+                        <div class="tg-quote" style="margin-top: 6px">Technical ▸ Trend +2 · Momentum −1 · Risk −2 · P(fall &gt; 5%) 14%</div>
+                        <div class="tg-time">07:31</div>
+                      </div>
+                      <div class="tg-btns" style="grid-template-columns: 1fr 1fr"><button class="tg-btn">Why?</button><button class="tg-btn">What if?</button><button class="tg-btn">Technical ▾</button><button class="tg-btn">I acted</button><button class="tg-btn" style="grid-column: span 2">Open dashboard</button></div>
+                    </div>
+                    <div class="tg-kb"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
+                  </div>
+                  <p class="dv-cap" style="margin-top: 10px; max-width: 390px; white-space: normal">Telegram draws the bubble and buttons; MyPaisa owns the PNG, the words and their order.</p>
+                </div>
+                <div class="dv-why">
+                  <p class="dv-cap">Why 1a</p>
+                  <span><b>The summary first, in one glance.</b> The navy hero card is Monzo's account card made ours: one number, one plain line, one chart. "Nothing to do this week" sits right under it.</span>
+                  <span><b>Calm about losses.</b> Falls are quiet ink with ▼; red is kept for alerts that ask for action. Gains are green with ▲. Colour is never the only signal.</span>
+                  <span><b>Native in Telegram.</b> System font (SF Pro on iPhone), Apple's type sizes, grouped inset lists, a tab bar, 44 pt targets: it feels like part of the phone, not a web page.</span>
+                  <span><b>Privacy mode</b> hides pounds and keeps percentages, so the shape still reads (third phone).</span>
+                  <span><b>Trade-off:</b> the most to build of the three (hero card, chart marks, two themes tuned by hand).</span>
+                </div>
+                <div class="dv-tokens">
+                  <p class="dv-cap">Tokens · light / dark</p>
+                  <div class="fx col gap8">
+                    <div class="fx gap6"><div class="sw" style="background: #F6F4F1"></div><div class="sw" style="background: #FFFFFF"></div><div class="sw" style="background: #14171F"></div><div class="sw" style="background: #13213A"></div><div class="sw" style="background: #FF6B4F"></div><div class="sw" style="background: #C2381F"></div><div class="sw" style="background: #1D7A3E"></div></div>
+                    <div class="fx gap6"><div class="sw" style="background: #0A0F18"></div><div class="sw" style="background: #151C27"></div><div class="sw" style="background: #F3F5F8"></div><div class="sw" style="background: #1A2944"></div><div class="sw" style="background: #FF7A5E"></div><div class="sw" style="background: #FF7A5E"></div><div class="sw" style="background: #44D17A"></div></div>
+                    <div class="mp t-light" style="background: transparent; margin-top: 8px"><div class="mp-num-hero">£25,800</div><div class="mp-foot mp-ink2">SF Pro Rounded figures · SF Pro text · Apple sizes 34 / 28 / 22 / 17 / 15 / 13</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="dv-row">
+                <sc-for list="{{ b1a }}" as="t" hint-placeholder-count="2">
+                  <div>
+                    <p class="dv-cap">Browser · {{ t.label }}</p>
+                    <div class="board {{ t.cls }}" data-screen-label="1a Browser Overview {{ t.label }}">
+                      <aside class="mp-side" style="background: var(--mp-bg); border-right: 1px solid var(--mp-line)">
+                        <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+                        <a class="mp-side-i on" href="#1a"><span class="ms ms-fill">home</span>Overview</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms">donut_small</span>Holdings</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms">join_inner</span>Overlap</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms">insights</span>Track record</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms">history</span>Activity</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms">fact_check</span>Audit</a>
+                        <div style="flex: 1"></div>
+                        <div class="mp-foot mp-ink3" style="padding: 0 12px">Signed in with Telegram<br />You · owner</div>
+                      </aside>
+                      <main class="bmain">
+                        <div class="fx ac jb">
+                          <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink3">Prices to Friday's close · read-only · changes happen in the chat</div></div>
+                          <div class="fx ac gap8"><div class="mp-seg" style="width: 280px" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div><button class="iconbtn" aria-label="Privacy mode"><span class="ms">visibility</span></button></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr); gap: 20px">
+                          <div class="fx col gap16">
+                            <div class="mp-hero">
+                              <div class="fx jb ac gap12"><span class="mp-over mp-hero-2 nowrap">Household · Fri close</span><div class="mp-seg" style="flex: 0 1 220px; min-width: 0"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div></div>
+                              <div class="fx ac gap12" style="margin-top: 6px"><span class="mp-num-hero">£25,800</span><span class="mp-chip upchip">▲ 2.4% month</span></div>
+                              <div class="mp-sub mp-hero-2">▲ £612 this month · ▼ 0.6% this week, the pound −0.3% of it</div>
+                              <div class="mp-chartbox" style="height: 150px; margin-top: 14px" role="img" aria-label="Six months of value with three past stances marked">
+                                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="height: 150px">
+                                  <path d="{{ cb.area }}" fill="var(--mp-hero-area)"></path>
+                                  <path d="{{ cb.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                </svg>
+                                <sc-for list="{{ cb.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot" style="left: {{ m.x }}; top: {{ m.y }}"></span></sc-for>
+                              </div>
+                              <div class="fx jb mp-cap mp-hero-2" style="margin-top: 6px"><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span></div>
+                            </div>
+                            <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#1a">Open chat</a></div>
+                          </div>
+                          <div class="fx col gap16">
+                            <div>
+                              <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">value · this week</span></div>
+                              <div class="mp-group">
+                                <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                                  <div class="mp-row" style="padding-top: 9px; padding-bottom: 9px">
+                                    <div class="mp-row-lead mp-neutral">{{ h.lead }}</div>
+                                    <div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6 clip">{{ h.name }}</div><div class="fx ac gap6"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></div></div>
+                                    <div style="text-align: right"><div class="mp-sub mp-w6">{{ h.val }}</div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div>
+                                  </div>
+                                </sc-for>
+                              </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch">
+                              <div class="mp-card"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 6px">84%</div><div class="mp-foot mp-ink3">in dollars, looked through</div></div>
+                              <div class="mp-card"><div class="mp-over mp-ink3">Track record</div><div class="mp-num-l" style="margin-top: 6px">20 / 31</div><div class="mp-foot mp-ink3">stances held up, 6 weeks</div></div>
+                            </div>
+                          </div>
+                        </div>
+                      </main>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= 1b NATIVE CLARITY ================= -->
+          <div class="dv-opt" id="1b">
+            <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span class="dv-oname">Native clarity</span><span class="dv-not">Not picked · kept as the record</span><span>Apple's Wallet and Stocks: system colours, a large-title number, no hero card, blue as the only accent.</span></div>
+            <div class="dv-card">
+              <div class="dv-row">
+                <sc-for list="{{ t1b }}" as="t" hint-placeholder-count="2">
+                  <div>
+                    <p class="dv-cap">Mini App · {{ t.label }}</p>
+                    <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="1b Mini App Overview {{ t.label }}">
+                      <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                      <div class="scr">
+                        <div>
+                          <div class="mp-foot mp-ink3 mp-w6">HOUSEHOLD · FRI CLOSE</div>
+                          <div class="mp-large" style="font-size: 40px; line-height: 46px; margin-top: 2px">£25,800</div>
+                          <div class="mp-sub mp-up mp-w6">▲ £612 (2.4%) this month</div>
+                        </div>
+                        <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div>
+                        <div class="mp-group" style="padding: 12px">
+                          <svg width="334" height="110" viewBox="0 0 334 110" style="display: block" role="img" aria-label="Six months of value"><path d="{{ cn.area }}" fill="var(--mp-chart-area)"></path><path d="{{ cn.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <div class="mp-group"><div class="mp-row"><span class="ms mp-up">check_circle</span><div style="flex: 1" class="mp-body">Nothing to do this week</div><span class="mp-foot mp-ink3">Sat review</span><span class="ms mp-ink3 ms-s">chevron_right</span></div></div>
+                        <div>
+                          <div class="mp-section mp-foot mp-ink3 mp-w6">HOLDINGS</div>
+                          <div class="mp-group">
+                            <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                              <div class="mp-row" style="padding-top: 9px; padding-bottom: 9px">
+                                <div style="flex: 1; min-width: 0"><div class="mp-body clip">{{ h.name }}</div><div class="fx ac gap6 mp-foot mp-ink3"><span class="dot {{ h.dotCls }}"></span><span>{{ h.stText }}</span></div></div>
+                                <div style="text-align: right"><div class="mp-body">{{ h.val }}</div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div>
+                                <span class="ms mp-ink3 ms-s">chevron_right</span>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </div>
+                      <nav class="mp-tabbar tabs-abs" aria-label="Sections">
+                        <a class="mp-tab on" href="#1b"><span class="ms ms-fill">home</span>Overview</a>
+                        <a class="mp-tab" href="#1b"><span class="ms">donut_small</span>Holdings</a>
+                        <a class="mp-tab" href="#1b"><span class="ms">join_inner</span>Overlap</a>
+                        <a class="mp-tab" href="#1b"><span class="ms">insights</span>Record</a>
+                        <a class="mp-tab" href="#1b"><span class="ms">menu</span>More</a>
+                      </nav>
+                    </div>
+                  </div>
+                </sc-for>
+                <div class="dv-stack">
+                  <div>
+                    <p class="dv-cap">Telegram · the same message; only the PNG changes</p>
+                    <div class="tgchat tg tg-light">
+                      <div class="fx col gap4" style="padding: 14px 12px">
+                        <div class="tg-bub">
+                          <div class="tgpng" style="background: #FFFFFF; border: 1px solid #E5E5EA; padding: 14px 14px 10px" role="img" aria-label="Chart image in 1b style">
+                            <div class="mp-foot mp-w6" style="color: #636366">NASDAQ 100 · 90 DAYS</div>
+                            <div class="mp-t2" style="color: #000">£4,210 <span class="mp-foot mp-w6" style="color: #8A5300">Pause · 61%</span></div>
+                            <svg width="300" height="70" viewBox="0 0 300 70" style="display: block; margin-top: 6px"><path d="{{ cn2.line }}" fill="none" stroke="#0A63D8" stroke-width="2" stroke-linejoin="round"></path></svg>
+                          </div>
+                          <div><b>NASDAQ 100 · PAUSE</b> · confidence 61%</div>
+                          <div style="margin-top: 4px">Keep what you have. Hold this month's top‑up until the trend settles. Not a reason to sell.</div>
+                          <div class="tg-time">07:31</div>
+                        </div>
+                        <div class="tg-btns" style="grid-template-columns: 1fr 1fr"><button class="tg-btn">Why?</button><button class="tg-btn">What if?</button></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="dv-why">
+                    <p class="dv-cap">Why 1b, and why not</p>
+                    <span><b>For:</b> the most native, the quickest to build, the calmest. Every colour is Apple's own system colour, darkened only where AA needed it.</span>
+                    <span><b>Against:</b> nothing in it says MyPaisa or Monzo; it reads like a settings screen. Stances become small coloured dots that a layman will miss.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="dv-row">
+                <sc-for list="{{ b1b }}" as="t" hint-placeholder-count="2">
+                  <div>
+                    <p class="dv-cap">Browser · {{ t.label }}</p>
+                    <div class="board {{ t.cls }}" data-screen-label="1b Browser Overview {{ t.label }}">
+                      <aside class="mp-side" style="background: var(--mp-surface-2)">
+                        <div class="fx ac gap10" style="padding: 4px 8px 18px"><span class="ms ms-fill mp-acc ms-l">account_balance</span><span class="mp-hl">MyPaisa</span></div>
+                        <a class="mp-side-i on" href="#1b"><span class="ms">home</span>Overview</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms">donut_small</span>Holdings</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms">join_inner</span>Overlap</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms">insights</span>Track record</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms">history</span>Activity</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms">fact_check</span>Audit</a>
+                      </aside>
+                      <main class="bmain">
+                        <div class="fx ac jb"><div class="mp-large">Overview</div><div class="mp-seg" style="width: 280px"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div></div>
+                        <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr); gap: 20px">
+                          <div class="mp-group" style="padding: 20px">
+                            <div class="mp-foot mp-ink3 mp-w6">HOUSEHOLD · FRI CLOSE</div>
+                            <div class="mp-large" style="font-size: 44px; line-height: 50px">£25,800</div>
+                            <div class="mp-sub mp-up mp-w6">▲ £612 (2.4%) this month</div>
+                            <svg width="100%" height="200" viewBox="0 0 452 200" preserveAspectRatio="none" style="display: block; margin-top: 16px"><path d="{{ cnb.area }}" fill="var(--mp-chart-area)"></path><path d="{{ cnb.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" vector-effect="non-scaling-stroke"></path></svg>
+                          </div>
+                          <div class="mp-group">
+                            <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                              <div class="mp-row"><div style="flex: 1; min-width: 0"><div class="mp-sub clip">{{ h.name }}</div><div class="fx ac gap6 mp-foot mp-ink3"><span class="dot {{ h.dotCls }}"></span>{{ h.stText }}</div></div><div style="text-align: right"><div class="mp-sub">{{ h.val }}</div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div></div>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </main>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= 1c POT WALL ================= -->
+          <div class="dv-opt" id="1c">
+            <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span class="dv-oname">Pot wall</span><span class="dv-not">Not picked · kept as the record</span><span>Monzo turned up: a coral block, every holding a coloured pot, rounded everything.</span></div>
+            <div class="dv-card">
+              <div class="dv-row">
+                <sc-for list="{{ t1c }}" as="t" hint-placeholder-count="2">
+                  <div>
+                    <p class="dv-cap">Mini App · {{ t.label }}</p>
+                    <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="1c Mini App Overview {{ t.label }}">
+                      <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                      <div class="scr">
+                        <div class="blk">
+                          <div class="mp-over">Household · Fri close</div>
+                          <div class="mp-num-hero" style="font-size: 52px; line-height: 56px; margin-top: 4px">£25,800</div>
+                          <div class="mp-sub mp-w6">▲ £612 this month</div>
+                          <div class="mp-seg" style="margin-top: 14px"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
+                        </div>
+                        <div class="fx jb ac"><span class="mp-t3">Your pots</span><span class="mp-foot mp-ink3">5 holdings</span></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+                          <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                            <div class="pot" style="background: {{ h.pot }}">
+                              <div class="mp-sub mp-w6 clip">{{ h.name }}</div>
+                              <div><div class="mp-num-l" style="font-size: 24px">{{ h.val }}</div><div class="fx ac gap4" style="margin-top: 4px; flex-wrap: nowrap"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s potchip">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-w6 nowrap">{{ h.ch }}</span></div></div>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </div>
+                      <nav class="mp-tabbar tabs-abs" aria-label="Sections">
+                        <a class="mp-tab on" href="#1c"><span class="ms ms-fill">home</span>Overview</a>
+                        <a class="mp-tab" href="#1c"><span class="ms">donut_small</span>Holdings</a>
+                        <a class="mp-tab" href="#1c"><span class="ms">join_inner</span>Overlap</a>
+                        <a class="mp-tab" href="#1c"><span class="ms">insights</span>Record</a>
+                        <a class="mp-tab" href="#1c"><span class="ms">menu</span>More</a>
+                      </nav>
+                    </div>
+                  </div>
+                </sc-for>
+                <div class="dv-why">
+                  <p class="dv-cap">Why 1c, and why not</p>
+                  <span><b>For:</b> the most joyful and the most Monzo; a holding is a thing you can see and point at.</span>
+                  <span><b>Against:</b> colour is spent on decoration, so stances and falls compete with it; Overlap, Activity and Audit (dense pages) have nowhere to go; the closest to Monzo's own look, which MyPaisa must not copy.</span>
+                </div>
+              </div>
+              <div class="dv-row">
+                <sc-for list="{{ b1c }}" as="t" hint-placeholder-count="2">
+                  <div>
+                    <p class="dv-cap">Browser · {{ t.label }}</p>
+                    <div class="board {{ t.cls }}" data-screen-label="1c Browser Overview {{ t.label }}">
+                      <aside class="mp-side" style="background: var(--mp-bg); border-right: 1px solid var(--mp-line)">
+                        <div class="fx ac gap10" style="padding: 4px 8px 18px"><div class="coin" style="background: var(--blk); color: var(--blk-ink)">£</div><span class="mp-hl">MyPaisa</span></div>
+                        <a class="mp-side-i on" href="#1c"><span class="ms ms-fill">home</span>Overview</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms">donut_small</span>Holdings</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms">join_inner</span>Overlap</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms">insights</span>Track record</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms">history</span>Activity</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms">fact_check</span>Audit</a>
+                      </aside>
+                      <main class="bmain">
+                        <div class="blk" style="margin: -24px -28px 0; border-radius: 0 0 30px 30px; padding: 24px 28px"><div class="mp-over">Household · Fri close</div><div class="fx ac gap16"><span class="mp-num-hero" style="font-size: 56px; line-height: 62px">£25,800</span><span class="mp-hl">▲ £612 this month</span></div></div>
+                        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+                          <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                            <div class="pot" style="background: {{ h.pot }}; height: 140px; padding: 14px"><div class="mp-hl clip">{{ h.name }}</div><div><div class="mp-num-l">{{ h.val }}</div><div class="fx ac gap6" style="margin-top: 4px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s potchip">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-w6 nowrap">{{ h.ch }}</span></div></div></div>
+                          </sc-for>
+                        </div>
+                      </main>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="dv-next">Picked: <a class="dv-oid" href="#1a">1a</a> Warm ledger. Next in this system: the Admin center and the Telegram second check (MA-102), in the MyPaisa app v1 project.</p>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const series = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
+          const mk = (s, w, h, pad, marks) => {
+            const min = Math.min.apply(null, s), max = Math.max.apply(null, s), n = s.length;
+            const pts = s.map((v, i) => [(i * (w / (n - 1))).toFixed(1), (h - pad - ((v - min) / (max - min)) * (h - 2 * pad)).toFixed(1)]);
+            const line = 'M' + pts.map((p) => p.join(',')).join(' L');
+            return { line: line, area: line + ' L' + w + ',' + h + ' L0,' + h + ' Z', marks: (marks || []).map((i) => ({ cx: pts[i][0], cy: pts[i][1], x: pts[i][0] + '%', y: pts[i][1] + '%' })) };
+          };
+          // NASDAQ 100: 14 Friday closes, 31 Jul to 30 Oct; high 4596 on 25 Sep; the 8% alert is 0.92 x high
+          const nq = [4280, 4330, 4310, 4380, 4420, 4450, 4493, 4540, 4596, 4530, 4470, 4410, 4345, 4210];
+          const nqChart = (w, h, lo, hi, xmax) => {
+            const y = (v) => (6 + ((hi - v) / (hi - lo)) * (h - 12)).toFixed(1);
+            const pts = nq.map((v, i) => [((i / xmax) * w).toFixed(1), y(v)]);
+            const last = pts[pts.length - 1];
+            return { line: 'M' + pts.map((p) => p.join(',')).join(' L'), ay: y(0.92 * 4596), lx: last[0], ly: last[1] };
+          };
+          const base = [
+            { lead: 'BA', name: 'Balanced', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', st: 'HOLD', conf: '71%', stCls: 'mp-hold', dotCls: 'dot-hold', stText: 'Hold · 71%', hasSt: true, pot: 'var(--pot-1)' },
+            { lead: 'NQ', name: 'NASDAQ 100', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', st: 'PAUSE', conf: '61%', stCls: 'mp-pause', dotCls: 'dot-pause', stText: 'Pause · 61%', hasSt: true, pot: 'var(--pot-2)' },
+            { lead: 'RB', name: 'Automation & Robotics', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', st: 'ADD', conf: '58%', stCls: 'mp-add', dotCls: 'dot-add', stText: 'Add · 58%', hasSt: true, pot: 'var(--pot-3)' },
+            { lead: 'AG', name: 'Physical Silver', sub: 'iShares · GIA', val: '£820', ch: '▼ 6.2%', chCls: 'mp-dq', st: 'PAUSE', conf: '58%', stCls: 'mp-pause', dotCls: 'dot-pause', stText: 'Pause · 58%', hasSt: true, pot: 'var(--pot-4)' },
+            { lead: '£', name: 'Cash pot', sub: 'Easy access', val: '£400', ch: '—', chCls: 'mp-ink3', st: '', conf: '', stCls: '', dotCls: 'dot-none', stText: 'Easy access', hasSt: false, pot: 'var(--pot-5)' }
+          ];
+          const hold = (priv) => base.map((h) => Object.assign({}, h, { val: priv ? '£0,000' : h.val, vcls: priv ? 'mp-mask' : '' }));
+          return {
+            hs: base,
+            ch: mk(series, 318, 72, 8, [3, 7, 10]),
+            cb: mk(series, 100, 100, 8, [3, 7, 10]),
+            cn: mk(series, 334, 110, 8),
+            cnb: mk(series, 452, 200, 10),
+            cs: nqChart(300, 74, 4150, 4640, 15),
+            cn2: nqChart(300, 70, 4150, 4640, 13),
+            t1a: [
+              { label: 'Light', cls: 'mp t-light', tg: 'tg-light', hs: hold(false), total: '£25,800', maskCls: '', month: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility' },
+              { label: 'Dark', cls: 'mp t-dark', tg: 'tg-dark', hs: hold(false), total: '£25,800', maskCls: '', month: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility' },
+              { label: 'Dark · privacy on', cls: 'mp t-dark', tg: 'tg-dark', hs: hold(true), total: '£00,000', maskCls: 'mp-mask', month: '▼ 0.6% this week', eye: 'visibility_off' }
+            ],
+            b1a: [{ label: 'Light', cls: 'mp t-light' }, { label: 'Dark', cls: 'mp t-dark' }],
+            t1b: [{ label: 'Light', cls: 'mp d1b t-light', tg: 'tg-light' }, { label: 'Dark', cls: 'mp d1b t-dark', tg: 'tg-dark' }],
+            b1b: [{ label: 'Light', cls: 'mp d1b t-light' }, { label: 'Dark', cls: 'mp d1b t-dark' }],
+            t1c: [{ label: 'Light', cls: 'mp d1c t-light', tg: 'tg-light' }, { label: 'Dark', cls: 'mp d1c t-dark', tg: 'tg-dark' }],
+            b1c: [{ label: 'Light', cls: 'mp d1c t-light' }, { label: 'Dark', cls: 'mp d1c t-dark' }]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

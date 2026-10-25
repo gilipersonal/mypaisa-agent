@@ -1,0 +1,29 @@
+name: plan-sync
+
+# The plan, the designs and Jira stay in step (MA-155, .claude/rules/plan-sync.md).
+# This is the repo-side check: docs/trace.json against ARCHITECTURE.md, PLAN.md,
+# the docs that cite Jira keys and the Claude Design mirror in docs/design/.
+# No secrets, no network.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  plan-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: The board-name check knows a board from a stray string
+        run: python3 scripts/plan_sync.py selftest
+
+      - name: Trace, docs and design mirror agree
+        run: python3 scripts/plan_sync.py check

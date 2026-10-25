@@ -1,6 +1,6 @@
 ---
 name: autoship
-description: Take an MA story in this repo from finished work to an open PR without asking, then ask once whether to merge into main; on a yes, merge, move the issue to Done and sync main. Use when a story's work is done, when asked to "ship", "autoship", "raise the PR", or "finish MA-n" in mypaisa-agent.
+description: Take an MA story in this repo from finished work to an open PR without asking, then ask once whether to merge into main, offering the independent review first; on a yes, review if asked, merge, move the issue to Done and sync main. Use when a story's work is done, when asked to "ship", "autoship", "raise the PR", or "finish MA-n" in mypaisa-agent.
 ---
 
 # Autoship an MA story
@@ -31,10 +31,15 @@ Uncommitted files that belong to another story are left alone and named.
 
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
-   No gates configured: say "no gates configured".
-2. **No review.** The independent review from `~/.claude/CLAUDE.md` is
-   switched off in this repo (`ship-autopilot.md`); go straight on unless
-   Arun asked for a reviewer.
+   No gates configured: say "no gates configured". The `plan-sync` gate
+   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`) always applies. Before it, run
+   `/plan-sync --design` every time, so any board edited in Claude Design is
+   copied in with its etag; and if the story changed a board, a phase or a
+   story, run `/plan-sync MA-<n>` too, so the trace, the design mirror and
+   Jira agree before the PR.
+2. **No review yet.** The independent review from `~/.claude/CLAUDE.md` is
+   opt-in in this repo and offered at the merge question (step 3,
+   `ship-autopilot.md`); go straight on unless Arun asked for a reviewer.
 3. **Commit** this story's files, subject `MA-<n>: <what>`, no attribution.
 4. **Push**: `git push -u origin <branch>`.
 5. **Raise the PR** (skip if one is open): title `[MA-<n>] <summary>`, body
@@ -52,14 +57,35 @@ Uncommitted files that belong to another story are left alone and named.
 
 Ask once, in words, naming everything:
 
-> MA-<n> is ready: PR #<n> `[MA-<n>] ...`, checks green (<names>). Merge it
-> into main? (MA-<n> goes to Done after the merge.)
+> MA-<n> is ready: PR #<n> `[MA-<n>] ...`, checks green (<names>). Review it
+> first (lanes: <the lanes the PR touches>; up to five rounds), then merge,
+> or merge it into main now? (MA-<n> goes to Done after the merge.)
+
+A bare "yes" means review first; "merge it" or "merge now" means merge with no
+review (`ship-autopilot.md`).
 
 Use the turn's next-step question (or `AskUserQuestion` when there is none)
-with "Merge it" first and "Not now" second. Do not merge on anything but a
-yes given in the turn that is running.
+with "Review, then merge" and "Merge now" (and "Not now" where the question
+allows a third answer). Do not merge on anything but a yes given in the turn
+that is running.
 
-## 4. After a yes, without asking again
+On "Review, then merge": run the review as `.claude/rules/ship-autopilot.md`
+says, in parallel lanes. Run the gates and `scripts/review_regress.py MA-<n>`
+first. Then start one fresh sub-agent per lane in a single message (scripts
+and checks; the trace against Jira; the spec docs; the rules and skills; the
+boards, when changed), each with the PR number, the issue key, its lane's
+files, the story's acceptance criteria, the repo's rules and
+`review/MA-<n>/fixed.json` (fixes it must not undo), never the maker's notes; round 1
+covers everything, later rounds the delta since `reviewed_sha` in
+`review/MA-<n>/state.json`. Merge their findings. Fix the blocking ones on
+the branch, add each (and any owner decision the review must keep) to `review/MA-<n>/fixed.json` with a check, push, wait
+for the checks, and run the next round; at most five rounds, then stop and
+ask Arun whether to go on, listing what is left and what each fix costs. The question names the merge
+("Fix them, run round 6, then merge on a clean round?"), so his yes covers both (`ship-autopilot.md`);
+a yes to a question that does not name the merge is not a yes to merge. A clean round goes straight
+to step 4; put the non-blocking findings in the report and on the issue.
+
+## 4. After a yes (and a clean review, if one was asked for), without asking again
 
 Arun's "merge it" covers every step below, branch deletion included
 (`ship-autopilot.md`, "Merge it" is the whole yes). Ask nothing more.
@@ -86,7 +112,7 @@ After a no: leave the PR open and the issue In Review, and say so in one line.
 ## Report
 
 ```
-PR:    <url> [MA-<n>] ...  merged <sha> (checks: jira-key ok)
+PR:    <url> [MA-<n>] ...  merged <sha> (checks: jira-key ok, plan-sync ok; gates: <names>; review: clean in <n> rounds | unreviewed, Arun said merge now)
 Jira:  MA-<n> Done (comments: PR raised, merged)
 Base:  main at <sha>, checkout synced
 ```

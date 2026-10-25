@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa responsive Overview</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1000px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 20px; text-wrap: pretty; }
+          .dv-rules { display: grid; grid-template-columns: repeat(3, 320px); gap: 16px; margin: 0 0 32px; }
+          .dv-rule { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 14px 16px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-rule b { color: #14171F; display: block; font-size: 15px; margin-bottom: 4px; }
+          .dv-row { display: flex; gap: 40px; align-items: flex-start; margin-bottom: 48px; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; white-space: nowrap; }
+          .frame { position: relative; overflow: hidden; border-radius: 18px; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 24px 50px rgba(0,0,0,.16); }
+          .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+          .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .sideframe { border-right: 1px solid var(--mp-line); background: var(--mp-bg); }
+          .headtools { display: flex; align-items: center; gap: 8px; }
+          .segw { flex: 1; min-width: 240px; }
+          .nowrap { white-space: nowrap; }
+          /* the holdings list adapts to its own width: under 320 the sub-line drops and names take two lines */
+          .hlist { container-type: inline-size; }
+          .h-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          @container (max-width: 320px) {
+            .h-sub { display: none; }
+            .h-name { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+          }
+          /* MyPaisa mark, 1c Watcher (MA-103): drawn inline from docs/mark*.svg; the theme sets its colours */
+          .mpm { display: block; flex: none; }
+          .mpm-ring { fill: none; stroke: var(--mp-hero); }
+          .t-dark .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-coin { fill: var(--mp-hero); }
+          .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+          .mpm-dot { fill: var(--mp-coral); }
+          .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
+          .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t1" data-screen-label="Responsive Overview">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Responsive · one Overview, five widths</span></div>
+        <p class="dv-intro">The web app is adaptive: one markup, three of Apple's size classes, decided by the width of the window it is in (a phone, Telegram Desktop's Mini App window, an iPad, a laptop), not by the device. Every frame below is the same markup in a container of that width; nothing is drawn twice by hand. The rules live at the end of tokens.css (<code>.mp-app</code>, <code>.mp-shell</code>, <code>.mp-cols</code>). In the Mini App, Telegram's own header replaces the large title; everything under it is this markup. Illustrative figures.</p>
+        <div class="dv-rules">
+          <div class="dv-rule"><b>Compact · under 600</b>Phone browser and the Mini App. One column, in summary order: hero, this week, holdings, stats. Bottom tab bar. Large title on its own row, controls under it. Gutters 16.</div>
+          <div class="dv-rule"><b>Regular · 600 to 1023</b>Telegram Desktop, iPad split view, iPad portrait. Tab bar stays (touch). Title and controls share a row. One column until each of two can be about 340 wide (760); then two equal columns, the story left and the list right. Gutters 24.</div>
+          <div class="dv-rule"><b>Wide · 1024 and up</b>Laptop. A 248 sidebar replaces the tab bar; columns 1.3 : 1, the list never under 300; stats stay 2 × 2; content capped at 1180 and centred past 1360. Gutters 32.</div>
+        </div>
+
+        <sc-for list="{{ rows }}" as="t" hint-placeholder-count="4">
+          <div class="dv-row">
+            <sc-for list="{{ t.frames }}" as="f" hint-placeholder-count="3">
+              <div>
+                <p class="dv-cap">{{ f.label }} · {{ t.label }}</p>
+                <div class="frame mp-app mp {{ t.cls }}" style="width: {{ f.w }}px; height: {{ f.h }}px" data-screen-label="Overview {{ f.label }} {{ t.label }}">
+                  <div class="mp-shell">
+                    <aside class="mp-shell-side mp-side sideframe" aria-label="Sections">
+                      <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+                      <a class="mp-side-i on" href="#t1"><span class="ms ms-fill">home</span>Overview</a>
+                      <a class="mp-side-i" href="#t1"><span class="ms">donut_small</span>Holdings</a>
+                      <a class="mp-side-i" href="#t1"><span class="ms">join_inner</span>Overlap</a>
+                      <a class="mp-side-i" href="#t1"><span class="ms">insights</span>Track record</a>
+                      <a class="mp-side-i" href="#t1"><span class="ms">history</span>Activity</a>
+                      <a class="mp-side-i" href="#t1"><span class="ms">fact_check</span>Audit</a>
+                      <div style="flex: 1"></div>
+                      <div class="mp-foot mp-ink3" style="padding: 0 12px">Signed in with Telegram<br />You · owner</div>
+                    </aside>
+                    <div class="mp-shell-main">
+                      <div class="mp-pagepad">
+                        <div class="mp-pagehead">
+                          <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink3">Prices to Friday's close · read-only</div></div>
+                          <div class="headtools"><div class="mp-seg segw" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div><button class="iconbtn" aria-label="Privacy mode"><span class="ms">visibility</span></button></div>
+                        </div>
+                        <div class="mp-cols">
+                          <div class="mp-col">
+                            <div class="mp-hero">
+                              <div class="fx jb ac gap8"><span class="mp-over mp-hero-2 nowrap">Household · Fri close</span><span class="mp-chip upchip chip-s">▲ 2.4% month</span></div>
+                              <div class="mp-num-hero" style="margin-top: 8px">£25,800</div>
+                              <div class="mp-sub mp-hero-2">▲ £612 this month · ▼ 0.6% this week</div>
+                              <div class="mp-chartbox" style="height: 120px; margin: 14px 0 12px" role="img" aria-label="Six months of value with three past stances marked">
+                                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="height: 120px"><path d="{{ ch.area }}" fill="var(--mp-hero-area)"></path><path d="{{ ch.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round"></path></svg>
+                                <sc-for list="{{ ch.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot" style="left: {{ m.x }}; top: {{ m.y }}"></span></sc-for>
+                              </div>
+                              <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div>
+                            </div>
+                            <div class="mp-card fx ac gap12" style="padding: 14px 16px"><span class="ms ms-fill mp-up ms-l">check_circle</span><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday. Ask anything in the chat.</div></div><span class="ms mp-ink3">chevron_right</span></div>
+                          </div>
+                          <div class="mp-col">
+                            <div class="hlist">
+                              <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">this week</span></div>
+                              <div class="mp-group">
+                                <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                                  <div class="mp-row" style="padding-top: 10px; padding-bottom: 10px">
+                                    <div class="mp-row-lead mp-neutral">{{ h.lead }}</div>
+                                    <div style="flex: 1; min-width: 0"><div class="mp-hl h-name">{{ h.name }}</div><div class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-ink3 clip {{ h.subCls }}">{{ h.sub }}</span></div></div>
+                                    <div style="text-align: right"><div class="mp-hl">{{ h.val }}</div><div class="mp-foot nowrap {{ h.chCls }}">{{ h.ch }}</div></div>
+                                  </div>
+                                </sc-for>
+                              </div>
+                            </div>
+                            <div class="mp-stats">
+                              <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 4px">84%</div><div class="mp-foot mp-ink3">in dollars</div></div>
+                              <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Record</div><div class="mp-num-l" style="margin-top: 4px">20 / 31</div><div class="mp-foot mp-ink3">stances held up</div></div>
+                              <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">This month</div><div class="mp-num-l" style="margin-top: 4px">£6.40</div><div class="mp-foot mp-ink3">of the £50 cap</div></div>
+                              <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Next review</div><div class="mp-num-l" style="margin-top: 4px">Sat</div><div class="mp-foot mp-ink3">09:00, in the chat</div></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                      </div>
+                      <nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><a class="mp-tab on" href="#t1"><span class="ms ms-fill">home</span>Overview</a><a class="mp-tab" href="#t1"><span class="ms">donut_small</span>Holdings</a><a class="mp-tab" href="#t1"><span class="ms">join_inner</span>Overlap</a><a class="mp-tab" href="#t1"><span class="ms">insights</span>Record</a><a class="mp-tab" href="#t1"><span class="ms">menu</span>More</a></nav>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const s = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
+          const min = Math.min.apply(null, s), max = Math.max.apply(null, s), n = s.length;
+          const pts = s.map((v, i) => [(i * 100 / (n - 1)), 8 + (1 - (v - min) / (max - min)) * 84]);
+          const line = 'M' + pts.map((p) => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join(' L');
+          const small = [
+            { label: 'Phone 390 · compact', w: 390, h: 1320 },
+            { label: 'Telegram Desktop, iPad split 600 · regular, one column', w: 600, h: 1280 },
+            { label: 'iPad 768 · regular, two columns', w: 768, h: 880 }
+          ];
+          const big = [
+            { label: 'Laptop 1024 · wide', w: 1024, h: 760 },
+            { label: 'Desktop 1440 · wide, centred', w: 1440, h: 760 }
+          ];
+          return {
+            rows: [
+              { label: 'Light', cls: 't-light', frames: small },
+              { label: 'Light', cls: 't-light', frames: big },
+              { label: 'Dark', cls: 't-dark', frames: small },
+              { label: 'Dark', cls: 't-dark', frames: big }
+            ],
+            ch: { line: line, area: line + ' L100,100 L0,100 Z', marks: [3, 7, 10].map((i) => ({ x: pts[i][0].toFixed(2) + '%', y: pts[i][1].toFixed(2) + '%' })) },
+            hs: [
+              { lead: 'BA', name: 'Balanced', sub: 'MyMap · ISA', subCls: 'h-sub', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', st: 'HOLD', conf: '71%', stCls: 'mp-hold', hasSt: true },
+              { lead: 'NQ', name: 'NASDAQ 100', sub: 'iShares · ISA', subCls: 'h-sub', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', st: 'PAUSE', conf: '61%', stCls: 'mp-pause', hasSt: true },
+              { lead: 'RB', name: 'Automation & Robotics', sub: 'iShares · ISA', subCls: 'h-sub', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', st: 'ADD', conf: '58%', stCls: 'mp-add', hasSt: true },
+              { lead: 'AG', name: 'Physical Silver', sub: 'iShares · GIA', subCls: 'h-sub', val: '£820', ch: '▼ 6.2%', chCls: 'mp-dq', st: 'PAUSE', conf: '58%', stCls: 'mp-pause', hasSt: true },
+              { lead: '£', name: 'Cash pot', sub: 'Easy access', subCls: '', val: '£400', ch: '—', chCls: 'mp-ink3', st: '', conf: '', stCls: '', hasSt: false }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

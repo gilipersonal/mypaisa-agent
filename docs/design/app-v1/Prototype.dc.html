@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa Mini App prototype</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .stage { min-height: 100vh; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; justify-content: center; padding: 40px 24px; box-sizing: border-box; }
+          .panel { width: 340px; max-width: 100%; display: flex; flex-direction: column; gap: 14px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .panel h1 { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; margin: 0; letter-spacing: -0.02em; }
+          .panel b { color: #14171F; }
+          .ctl { display: flex; gap: 8px; flex-wrap: wrap; }
+          .ctl-b { min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(0,0,0,.14); background: #fff; color: #14171F; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; cursor: pointer; }
+          .ctl-b.on { background: #14171F; color: #fff; border-color: #14171F; }
+          .ctl-b:focus-visible { outline: 3px solid #2453C9; outline-offset: 2px; }
+          .spec { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+          .spec code { font: 12px/16px ui-monospace, Menlo, monospace; color: #5A606C; }
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); position: relative; flex: none; }
+          .tgh { position: relative; }
+          .tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
+          .tghb { background: none; border: 0; font: inherit; cursor: pointer; padding: 0 6px 0 0; }
+          .tghb:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; border-radius: 8px; }
+          .viewport { flex: 1; position: relative; overflow: hidden; background: #05080E; }
+          .scr { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 16px; background: var(--mp-bg); box-sizing: border-box; }
+          .scr.off { visibility: hidden; pointer-events: none; }
+          .scr.on { z-index: 1; }
+          .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; }
+          .chip-l { padding: 6px 14px; font-size: 17px; line-height: 22px; font-weight: 700; letter-spacing: .02em; }
+          .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .rowbtn { width: 100%; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+          .rowbtn:active { background: var(--mp-surface-2); }
+          .rowbtn:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: -3px; }
+          .sdot { box-shadow: 0 0 0 2px var(--mp-surface); }
+          .d-hold { background: var(--mp-hold); } .d-add { background: var(--mp-add); } .d-pause { background: var(--mp-pause); }
+          .lbl-l { transform: translate(-100%, -100%); margin-left: -4px; }
+          .hz { left: auto; right: 0; top: 3px; transform: none; margin-top: 0; }
+          .albl { position: absolute; left: 0; margin-top: 3px; font: 700 11px/14px var(--mp-font); white-space: nowrap; }
+          .dashkey { width: 16px; height: 0; border-top: 2px dashed var(--mp-alert); flex: none; }
+          .pwrap { position: relative; flex: 1; min-width: 0; height: 10px; }
+          .ptrk { position: absolute; inset: 0; }
+          .pmid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--mp-ink-3); }
+          .pbar { position: absolute; top: 0; bottom: 0; border-radius: 999px; }
+          .pfor { background: var(--mp-pillar-for); } .pagainst { background: var(--mp-pillar-against); transform-origin: right center; }
+          .stack { display: flex; height: 14px; border-radius: 7px; overflow: hidden; gap: 2px; }
+          .lgd { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+          .rbt { height: 10px; }
+          .rb { height: 100%; border-radius: 999px; }
+          .rb-said { background: var(--mp-ink-2); } .rb-hap { background: var(--mp-coral); }
+          .wk { flex: 1; height: 10px; }
+          .wk.on { background: var(--mp-meter); box-shadow: none; }
+          .meter-f { height: 100%; background: var(--mp-meter); border-radius: 999px; }
+          .avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 700 13px/1 var(--mp-font); flex: none; }
+          .av-you { background: var(--mp-hold-bg); color: var(--mp-hold); } .av-asha { background: var(--mp-reb-bg); color: var(--mp-reb); }
+          .fchip { min-height: 44px; display: inline-flex; align-items: center; gap: 4px; padding: 0 12px; border-radius: 999px; border: 0; background: var(--mp-surface); color: var(--mp-ink); font: 600 13px/18px var(--mp-font); box-shadow: var(--mp-shadow); white-space: nowrap; }
+          .runrow { align-items: flex-start; }
+          .rtime { margin-top: 2px; flex: none; }
+          .rico { margin-top: 1px; flex: none; }
+          .nbh { white-space: nowrap; }
+          .okchip { color: var(--mp-up); background: var(--mp-add-bg); }
+          .mp-mask.mmin { min-width: 40px; }
+          .late { animation-delay: 650ms; }
+          .scrim { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.42); z-index: 4; border: 0; padding: 0; cursor: pointer; }
+          .sheet-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; }
+          @media (prefers-reduced-motion: no-preference) {
+            .scr.push-in { z-index: 2; animation: nav-in var(--mp-t-push) var(--mp-ease-sheet) both; box-shadow: -8px 0 24px rgba(0, 0, 0, 0.16); }
+            .scr.push-out { animation: nav-under var(--mp-t-push) var(--mp-ease-sheet) both; pointer-events: none; }
+            .scr.pop-in { animation: nav-back var(--mp-t-push) var(--mp-ease-sheet) both; pointer-events: none; }
+            .scr.pop-out { z-index: 2; animation: nav-away var(--mp-t-push) var(--mp-ease-sheet) both; box-shadow: -8px 0 24px rgba(0, 0, 0, 0.16); pointer-events: none; }
+            .mp-out { animation: mp-out 280ms var(--mp-ease-sheet) both; }
+            .scrim-out { animation: mp-fadeout 280ms linear both; }
+          }
+          @keyframes nav-in { from { transform: translateX(100%); } to { transform: none; } }
+          @keyframes nav-under { from { transform: none; opacity: 1; } to { transform: translateX(-30%); opacity: 0.78; } }
+          @keyframes nav-back { from { transform: translateX(-30%); opacity: 0.78; } to { transform: none; opacity: 1; } }
+          @keyframes nav-away { from { transform: none; } to { transform: translateX(100%); } }
+          @keyframes mp-out { to { transform: translateY(100%); } }
+          @keyframes mp-fadeout { to { opacity: 0; } }
+          /* doors: the Mini App is live; the browser, the chat and the planned Mini App screens play their boards in place */
+          .phone.gone, .lap.gone { display: none; }
+          .ptk { position: relative; }
+          .ptk > .tk { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--mp-ink-2); }
+          .bhost { position: relative; }
+          .bhost-phone { position: absolute; inset: 0; z-index: 8; display: none; background: var(--mp-bg); }
+          .bhost-phone.on { display: block; }
+          .bhost-lap { min-height: 100%; }
+          .bhost-phone.on::before, .bhost-lap::before { content: "Loading the board"; position: absolute; left: 0; right: 0; top: 45%; text-align: center; font: 500 13px/18px var(--mp-font); color: var(--mp-ink-3); }
+          .lap { flex: none; display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; background: #2A2D33; box-shadow: 0 0 0 1px rgba(0,0,0,.24), 0 30px 60px rgba(0,0,0,.22); }
+          .lap-bar { height: 38px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 14px; color: #C9CDD4; font: 500 12px/16px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .lap-dots { display: flex; gap: 6px; flex: none; }
+          .lap-dots i { width: 10px; height: 10px; border-radius: 50%; background: #5A5E66; }
+          .lap-url { flex: 1; min-width: 0; text-align: center; padding: 4px 10px; border-radius: 8px; background: #1B1D22; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .lap-scr { position: relative; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; background: var(--mp-bg); }
+          .spec a { color: #C2381F; font-weight: 600; }
+          .stepn { font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+        </style>
+      </helmet>
+      <div class="stage" data-screen-label="Mini App prototype">
+        <div class="phone mp {{ tcls }} {{ tgcls }} {{ phoneCls }}" data-screen-label="Prototype phone">
+          <div class="tgh" aria-hidden="{{ liveHidden }}">
+            <sc-if value="{{ isRoot }}" hint-placeholder-val="{{ true }}"><span class="tgh-a">Close</span></sc-if>
+            <sc-if value="{{ isSub }}" hint-placeholder-val="{{ false }}"><button class="tgh-a tghb" onClick="{{ back }}" aria-label="{{ backAria }}"><span class="ms ms-s" aria-hidden="true">arrow_back_ios_new</span>{{ backLabel }}</button></sc-if>
+            <span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms" aria-hidden="true">more_horiz</span></span>
+          </div>
+          <div class="viewport" aria-hidden="{{ liveHidden }}">
+            <sc-if value="{{ alive }}" hint-placeholder-val="{{ true }}">
+
+              <!-- OVERVIEW -->
+              <div class="scr {{ cls.overview }}" data-scr="overview">
+                <div class="fx ac gap8 {{ an.overview }}" style="--d: 0ms">
+                  <div class="mp-seg" style="flex: 1" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i" aria-pressed="false">Me</button><button class="mp-seg-i" aria-pressed="false">Asha</button></div>
+                  <button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ privPressed }}" onClick="{{ togglePriv }}"><span class="ms" aria-hidden="true">{{ eye }}</span></button>
+                </div>
+                <div class="mp-hero {{ an.overview }}" style="--d: 40ms">
+                  <div class="fx jb ac"><span class="mp-over mp-hero-2">Household · Fri close</span><span class="mp-chip upchip chip-s">▲ 2.4% month</span></div>
+                  <div class="mp-num-hero" style="margin-top: 8px" role="img" aria-label="{{ totalLabel }}"><span class="{{ maskCls }}" aria-hidden="true">{{ total }}</span></div>
+                  <div class="mp-sub mp-hero-2" style="margin-top: 2px">{{ sub }}</div>
+                  <div class="mp-chartbox" style="margin: 14px 0 12px" role="img" aria-label="Six months of value, May to October, with three past stances marked">
+                    <svg viewBox="0 0 318 120" preserveAspectRatio="none" style="height: 120px" aria-hidden="true">
+                      <path d="{{ ov.area }}" fill="var(--mp-hero-area)" class="{{ fd.overview }}"></path>
+                      <path d="{{ ov.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="{{ fd.overview }}"></path>
+                    </svg>
+                    <sc-for list="{{ ov.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot {{ fd.overview }} late" style="left: {{ m.x }}; top: {{ m.y }}"></span></sc-for>
+                  </div>
+                  <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div>
+                </div>
+                <div class="mp-card fx ac gap12 {{ an.overview }}" style="padding: 14px 16px; --d: 80ms"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday. Ask anything in the chat.</div></div></div>
+                <div class="{{ an.overview }}" style="--d: 120ms">
+                  <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">this week</span></div>
+                  <div class="mp-group">
+                    <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                      <button class="rowbtn mp-row" style="padding-top: 10px; padding-bottom: 10px" onClick="{{ pushHoldO }}" aria-label="{{ h.aria }}">
+                        <span class="mp-row-lead mp-neutral">{{ h.lead }}</span>
+                        <span style="flex: 1; min-width: 0"><span class="mp-hl clip" style="display: block">{{ h.name }}</span><span class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></span></span>
+                        <span style="text-align: right; flex: none"><span class="mp-hl" style="display: block"><span class="{{ h.v.c }}">{{ h.v.t }}</span></span><span class="mp-foot {{ h.chCls }}" style="display: block">{{ h.ch }}</span></span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="mp-stats {{ an.overview }}" style="--d: 160ms">
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 4px">84%</div><div class="mp-foot mp-ink3">in dollars</div></div>
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Record</div><div class="mp-num-l" style="margin-top: 4px">20 / 31</div><div class="mp-foot mp-ink3">stances held up</div></div>
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">This month</div><div class="mp-num-l" style="margin-top: 4px"><span class="{{ cost.c }}" role="{{ cost.r }}" aria-label="{{ cost.l }}">{{ cost.t }}</span></div><div class="mp-foot mp-ink3">{{ capShort }}</div></div>
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Next review</div><div class="mp-num-l" style="margin-top: 4px">Sat</div><div class="mp-foot mp-ink3">09:00, in the chat</div></div>
+                </div>
+                <div class="mp-cap mp-ink3">Illustrative figures.</div>
+              </div>
+
+              <!-- HOLDINGS (the tab's root) -->
+              <div class="scr {{ cls.holdings }}" data-scr="holdings" style="gap: 14px">
+                <div class="{{ an.holdings }}"><div class="mp-large">Holdings</div><div class="mp-foot mp-ink3">{{ holdingsSub }}</div></div>
+                <div class="{{ an.holdings }}" style="--d: 40ms">
+                  <div class="fx jb mp-section"><span class="mp-over mp-ink3">Five holdings</span><span class="mp-foot mp-ink3">this week</span></div>
+                  <div class="mp-group">
+                    <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                      <button class="rowbtn mp-row" style="padding-top: 10px; padding-bottom: 10px" onClick="{{ pushHoldH }}" aria-label="{{ h.aria }}">
+                        <span class="mp-row-lead mp-neutral">{{ h.lead }}</span>
+                        <span style="flex: 1; min-width: 0"><span class="mp-hl clip" style="display: block">{{ h.name }}</span><span class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></span></span>
+                        <span style="text-align: right; flex: none"><span class="mp-hl" style="display: block"><span class="{{ h.v.c }}">{{ h.v.t }}</span></span><span class="mp-foot {{ h.chCls }}" style="display: block">{{ h.ch }}</span></span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="mp-foot mp-ink3 mp-section {{ an.holdings }}" style="--d: 80ms">Tap a holding for its chart, its stance and the technical detail. In this prototype every row opens NASDAQ 100.</div>
+                <div class="mp-cap mp-ink3">Illustrative figures.</div>
+              </div>
+
+              <!-- A HOLDING: one copy per stack (pushed from Overview, pushed from Holdings) -->
+              <sc-for list="{{ holdInst }}" as="hi" hint-placeholder-count="2">
+                <div class="scr {{ hi.cls }}" data-scr="{{ hi.id }}" style="gap: 14px">
+                  <div><div class="mp-over mp-ink3">iShares · ISA</div><div class="mp-t1">NASDAQ 100</div><div class="mp-foot mp-ink3">IE00B53SZB19 · London CNX1 · GBP</div></div>
+                  <div class="mp-seg" role="group" aria-label="Holding page"><button class="mp-seg-i on" aria-pressed="true">Overview</button><button class="mp-seg-i" aria-pressed="false" onClick="{{ hi.openFc }}">Forecast</button><button class="mp-seg-i" aria-pressed="false" aria-disabled="true">Record</button></div>
+                  <div class="mp-card" style="padding: 14px 16px 12px">
+                    <div class="mp-num-l"><span class="{{ hval.c }}" role="{{ hval.r }}" aria-label="{{ hval.l }}">{{ hval.t }}</span></div>
+                    <div class="mp-foot mp-dq" style="margin-top: 2px; text-wrap: pretty">▼ 1.2% Friday · ▼ 3.1% this week · <span class="nbh">▼ 8.4% from its high</span></div>
+                    <div class="fx jb ac mp-cap" style="margin-top: 12px"><span class="mp-ink3">Friday closes, 90 days</span><span class="fx ac gap6 mp-ink2"><span class="dashkey"></span>your 8% alert</span></div>
+                    <div class="mp-chartbox" style="margin-top: 8px" role="img" aria-label="{{ hc.aria }}">
+                      <svg viewBox="0 0 326 132" preserveAspectRatio="none" style="height: 132px" aria-hidden="true">
+                        <rect x="{{ hc.shX }}" y="{{ hc.shY }}" width="{{ hc.shW }}" height="{{ hc.shH }}" fill="var(--mp-pause-bg)" stroke="var(--mp-pause)" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" class="{{ hi.fd }}"></rect>
+                        <line x1="0" y1="{{ hc.alertY }}" x2="326" y2="{{ hc.alertY }}" stroke="var(--mp-alert)" stroke-width="1.5" stroke-dasharray="5 4"></line>
+                        <path d="{{ hc.proj }}" fill="none" stroke="var(--mp-pause)" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round" class="{{ hi.fd }} late"></path>
+                        <path d="{{ hc.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="{{ hi.fd }}"></path>
+                      </svg>
+                      <span class="mp-chartlbl hz c-pause">PAUSE · next 2 weeks</span>
+                      <span class="albl c-alert" style="top: {{ hc.alertTop }}">{{ hc.alertTxt }}</span>
+                      <sc-for list="{{ hc.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot sdot {{ m.dot }} {{ hi.fd }} late" style="left: {{ m.x }}; top: {{ m.y }}"></span><sc-if value="{{ m.has }}" hint-placeholder-val="{{ true }}"><span class="mp-chartlbl {{ m.c }} {{ m.pos }}" style="left: {{ m.x }}; top: {{ m.y }}">{{ m.lbl }}</span></sc-if></sc-for>
+                    </div>
+                    <div class="mp-chartaxis mp-ink3" style="margin-top: 6px" aria-hidden="true"><sc-for list="{{ hc.months }}" as="mo" hint-placeholder-count="3"><span style="left: {{ mo.x }}">{{ mo.t }}</span></sc-for></div>
+                  </div>
+                  <div class="mp-card" style="padding: 16px">
+                    <div class="fx ac gap10"><span class="mp-chip chip-l mp-pause">PAUSE</span><span class="mp-foot mp-ink2">confidence 61% · for 2 weeks</span></div>
+                    <div class="mp-body" style="margin-top: 10px; text-wrap: pretty">Keep what you have; hold this month's top&#8209;up until the trend settles. Not a reason to sell.</div>
+                    <div class="mp-foot mp-ink2" style="margin-top: 8px"><b>Would change if</b> a close back above the 20&#8209;day average, or two calm sessions after the Fed.</div>
+                    <div class="mp-foot mp-ink3" style="margin-top: 6px">PAUSE calls on this holding: 3 made, 2 right. A view, not advice.</div>
+                    <div class="fx gap8" style="margin-top: 12px"><button class="mp-btn mp-btn-tinted mp-btn-small whybtn" style="flex: 1" onClick="{{ openWhy }}" aria-haspopup="dialog">Why?</button><button class="mp-btn mp-btn-primary mp-btn-small" style="flex: 1">Ask in the chat</button></div>
+                  </div>
+                  <div>
+                    <div class="fx jb mp-section"><span class="mp-over mp-ink3">Technical</span><span class="mp-foot mp-ink3">−2 to +2 · Fri close</span></div>
+                    <div class="mp-group">
+                      <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="4">
+                        <div class="mp-row"><span class="mp-sub" style="width: 92px; flex: none">{{ p.n }}</span><div class="pwrap" role="img" aria-label="{{ p.aria }}"><div class="mp-track ptrk"><div class="pbar {{ p.cls }} {{ hi.gr }}" style="left: {{ p.left }}; width: {{ p.w }}; --d: 200ms"></div></div><div class="pmid"></div></div><span class="mp-sub mp-w6" style="width: 28px; flex: none; text-align: right">{{ p.t }}</span></div>
+                      </sc-for>
+                    </div>
+                    <div class="fx gap12 mp-cap mp-ink2" style="margin-top: 8px; padding-left: 16px"><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-pillar-for)"></span>in its favour</span><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-pillar-against)"></span>against it</span></div>
+                  </div>
+                  <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                </div>
+              </sc-for>
+
+              <!-- OVERLAP -->
+              <div class="scr {{ cls.overlap }}" data-scr="overlap" style="gap: 12px">
+                <div class="{{ an.overlap }}"><div class="mp-large">Overlap</div><div class="mp-foot mp-ink3">What you really hold, from the issuers' files, 29 Oct</div></div>
+                <div class="mp-stats {{ an.overlap }}" style="--d: 40ms">
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Effective</div><div class="mp-num-l" style="margin-top: 4px">1.6 of 4</div><div class="mp-foot mp-ink2">your holdings behave like fewer than two; Balanced is 72%</div></div>
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">In dollars</div><div class="mp-num-l" style="margin-top: 4px">84%</div><div class="mp-foot mp-ink2">a 1% move in GBP/USD moves you 0.8%</div></div>
+                </div>
+                <div class="mp-card {{ an.overlap }}" style="padding: 14px 16px; --d: 80ms">
+                  <div class="mp-hl">Currency, looked through</div>
+                  <div class="stack" style="margin-top: 10px" role="img" aria-label="US dollar 84%, pound 9%, yen 3%, euro 3%, other 1%"><sc-for list="{{ ccy }}" as="c" hint-placeholder-count="5"><div class="{{ gr.overlap }}" style="width: {{ c.p }}; background: {{ c.c }}; --d: 200ms"></div></sc-for></div>
+                  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 10px; margin-top: 10px"><sc-for list="{{ ccy }}" as="c" hint-placeholder-count="5"><div class="fx ac gap6 mp-foot"><span class="lgd" style="background: {{ c.c }}"></span><span class="mp-w6">{{ c.k }}</span><span class="mp-ink2">{{ c.p }}</span></div></sc-for></div>
+                </div>
+                <div class="{{ an.overlap }}" style="--d: 120ms">
+                  <div class="mp-section mp-over mp-ink3">Same companies, two wrappers</div>
+                  <div class="mp-group">
+                    <sc-for list="{{ ovl }}" as="o" hint-placeholder-count="3">
+                      <div class="mp-row" style="display: block; padding-top: 10px; padding-bottom: 10px"><div class="fx jb gap8"><span class="mp-sub mp-w6">{{ o.pair }}</span><span class="mp-sub mp-w6" style="white-space: nowrap">{{ o.v }}</span></div><div class="mp-foot mp-ink3">{{ o.names }}</div></div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="mp-card fx gap10 {{ an.overlap }}" style="padding: 12px 14px; align-items: flex-start; --d: 160ms"><span class="ms mp-ink2" aria-hidden="true">info</span><span class="mp-foot mp-ink2">Nvidia is held three ways and is about 2.1% of everything. Fine at this size; the brief will say if it passes 5%.</span></div>
+                <div class="mp-cap mp-ink3">Illustrative figures.</div>
+              </div>
+
+              <!-- TRACK RECORD -->
+              <div class="scr {{ cls.record }}" data-scr="record" style="gap: 14px">
+                <div class="{{ an.record }}"><div class="mp-large">Track record</div><div class="mp-foot mp-ink3">6 weeks of graded stances · updated Saturday</div></div>
+                <div class="mp-stats {{ an.record }}" style="--d: 40ms">
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Stances</div><div class="mp-num-l" style="margin-top: 4px">20 / 31</div><div class="mp-foot mp-ink2">held up · 64%</div></div>
+                  <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Vs doing nothing</div><div class="mp-num-l mp-up" style="margin-top: 4px">+0.7%</div><div class="mp-foot mp-ink2">per stance, average</div></div>
+                </div>
+                <div class="mp-card {{ an.record }}" style="padding: 14px 16px; --d: 80ms">
+                  <div class="fx jb ac"><span class="mp-hl">Does 64% mean 64%?</span><span class="mp-foot mp-ink3">Brier 0.21</span></div>
+                  <div class="fx col gap12" style="margin-top: 10px">
+                    <sc-for list="{{ rel }}" as="r" hint-placeholder-count="3">
+                      <div><div class="fx jb mp-foot"><span class="mp-w6">said {{ r.b }}</span><span class="mp-ink2">{{ r.txt }}</span></div><div class="fx col gap4" style="margin-top: 6px"><div class="mp-track rbt"><div class="rb rb-said {{ gr.record }}" style="width: {{ r.said }}; --d: 160ms"></div></div><div class="mp-track rbt"><div class="rb rb-hap {{ gr.record }}" style="width: {{ r.hap }}; --d: 260ms"></div></div></div></div>
+                    </sc-for>
+                  </div>
+                  <div class="fx gap12 mp-cap mp-ink2" style="margin-top: 10px"><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-ink-2)"></span>what the bot said</span><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-coral)"></span>what happened</span></div>
+                  <div class="mp-foot mp-ink3" style="margin-top: 6px">79% of outcomes landed inside the 80% range.</div>
+                </div>
+                <div class="mp-card {{ an.record }}" style="padding: 14px 16px; --d: 120ms">
+                  <div class="fx jb ac"><span class="mp-hl">Stances go live when</span><span class="mp-foot mp-w6 mp-ink2">week 6 of 8</span></div>
+                  <div class="fx gap4" style="margin-top: 10px" role="img" aria-label="6 of 8 weeks done"><sc-for list="{{ weeks }}" as="w" hint-placeholder-count="8"><div class="mp-track wk {{ w.cls }}"></div></sc-for></div>
+                  <div class="mp-foot mp-ink2" style="margin-top: 8px">Six weeks in a row above doing nothing. Two more and stance chips appear on weekday cards.</div>
+                </div>
+                <div class="mp-cap mp-ink3">Illustrative figures.</div>
+              </div>
+
+              <!-- MORE (the tab's root) -->
+              <div class="scr {{ cls.more }}" data-scr="more" style="gap: 14px">
+                <div class="{{ an.more }}"><div class="mp-large">More</div><div class="mp-foot mp-ink3">The pages you need less often</div></div>
+                <div class="mp-group {{ an.more }}" style="--d: 40ms">
+                  <button class="rowbtn mp-row" onClick="{{ pushActivity }}"><span class="mp-icontile mp-neutral" aria-hidden="true"><span class="ms ms-s">history</span></span><span style="flex: 1; min-width: 0"><span class="mp-hl" style="display: block">Activity</span><span class="mp-foot mp-ink3" style="display: block">What the agent did, and what it cost</span></span><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></button>
+                  <button class="rowbtn mp-row" onClick="{{ pushAudit }}"><span class="mp-icontile mp-neutral" aria-hidden="true"><span class="ms ms-s">fact_check</span></span><span style="flex: 1; min-width: 0"><span class="mp-hl" style="display: block">Audit</span><span class="mp-foot mp-ink3" style="display: block">Every change, who made it and when</span></span><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></button>
+                  <div class="mp-row"><span class="mp-icontile mp-neutral" aria-hidden="true"><span class="ms ms-s">info</span></span><span style="flex: 1; min-width: 0"><span class="mp-hl" style="display: block">About</span><span class="mp-foot mp-ink3" style="display: block">Version, data sources and privacy</span></span></div>
+                </div>
+                <div class="{{ an.more }}" style="--d: 60ms">
+                  <div class="mp-section mp-over mp-ink3">Owner</div>
+                  <div class="mp-group"><button class="rowbtn mp-row" onClick="{{ openAdmin }}" aria-label="Admin center, owner only, opens in your browser"><span class="mp-icontile mp-neutral" aria-hidden="true"><span class="ms ms-s">shield_person</span></span><span style="flex: 1; min-width: 0"><span class="mp-hl" style="display: block">Admin center</span><span class="mp-foot mp-ink3" style="display: block">Owner only · opens in your browser</span></span><span class="ms ms-s mp-ink3" aria-hidden="true">open_in_new</span></button></div>
+                </div>
+                <div class="mp-foot mp-ink3 mp-section {{ an.more }}" style="--d: 80ms">Read-only: settings, alerts and every change happen in the chat.</div>
+                <div class="mp-cap mp-ink3">Illustrative figures.</div>
+              </div>
+
+              <!-- ACTIVITY (pushed from More) -->
+              <div class="scr {{ cls.activity }}" data-scr="activity" style="gap: 14px">
+                <div><div class="mp-large">Activity</div><div class="mp-foot mp-ink3">What the agent did today, and what it cost</div></div>
+                <div class="mp-card" style="padding: 14px 16px">
+                  <div class="fx jb ac"><span class="mp-hl">Claude, this cycle</span><span class="mp-foot mp-up mp-w6">Normal step</span></div>
+                  <div class="fx ac gap8" style="margin-top: 4px"><span class="mp-num-l"><span class="{{ cost.c }}" role="{{ cost.r }}" aria-label="{{ cost.l }}">{{ cost.t }}</span></span><span class="mp-foot mp-ink2">{{ capLong }}</span></div>
+                  <div class="mp-track ptk" style="height: 10px; margin-top: 10px" role="img" aria-label="25% of the Claude ceiling used; steps at 70, 85 and 95%"><div class="meter-f {{ gr.activity }}" style="width: 25%; --d: 200ms"></div><i class="tk" style="left: 70%"></i><i class="tk" style="left: 85%"></i><i class="tk" style="left: 95%"></i></div>
+                  <div class="mp-foot mp-ink2" style="margin-top: 8px">Under 70%: nothing held back. You are told at 70%, 85% and 95%; at 100% Claude stops until 1 Nov.</div>
+                  <div class="mp-foot mp-ink3" style="margin-top: 4px">{{ awsLine }}</div>
+                </div>
+                <div>
+                  <div class="fx jb mp-section"><span class="mp-over mp-ink3">Today</span><span class="mp-foot mp-ink3">5 runs</span></div>
+                  <div class="mp-group">
+                    <sc-for list="{{ runs }}" as="r" hint-placeholder-count="5">
+                      <div class="mp-row runrow"><span class="mp-foot mp-ink3 mp-w6 rtime" style="width: 40px">{{ r.time }}</span><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">{{ r.job }}</div><div class="mp-foot mp-ink3">{{ r.meta }}</div></div><span class="mp-foot mp-w6 rtime"><span class="{{ r.cost.c }}" role="{{ r.cost.r }}" aria-label="{{ r.cost.l }}">{{ r.cost.t }}</span></span><span class="ms ms-s rico {{ r.okCls }}" role="img" aria-label="{{ r.okLabel }}">{{ r.icon }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="mp-card fx gap12" style="padding: 12px 14px; align-items: flex-start"><div class="mp-icontile mp-pause" aria-hidden="true"><span class="ms ms-s">warning</span></div><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">One amber alarm this week</div><div class="mp-foot mp-ink2">Tue: the EODHD trial was slow, so prices came from yfinance. No action needed.</div></div></div>
+                <div class="mp-cap mp-ink3">Illustrative figures.</div>
+              </div>
+
+              <!-- AUDIT (pushed from More) -->
+              <div class="scr {{ cls.audit }}" data-scr="audit" style="gap: 14px">
+                <div class="fx jb gap8" style="align-items: flex-start"><div><div class="mp-large">Audit</div><div class="mp-foot mp-ink3">Every change, who made it and when</div></div><span class="mp-chip chip-s okchip" style="margin-top: 12px"><span class="ms ms-s" aria-hidden="true">verified</span>Chain verified</span></div>
+                <div class="fx gap8"><button class="fchip">Everyone<span class="ms ms-s" aria-hidden="true">expand_more</span></button><button class="fchip">All records<span class="ms ms-s" aria-hidden="true">expand_more</span></button><button class="fchip">This week<span class="ms ms-s" aria-hidden="true">expand_more</span></button></div>
+                <sc-for list="{{ audit }}" as="g" hint-placeholder-count="4">
+                  <div>
+                    <div class="mp-section mp-over mp-ink3">{{ g.day }}</div>
+                    <div class="mp-group">
+                      <div class="mp-row" style="align-items: flex-start"><div class="avatar {{ g.av }}" aria-hidden="true">{{ g.who1 }}</div><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">{{ g.w1 }}<sc-if value="{{ g.hasAmt }}" hint-placeholder-val="{{ false }}"><span class="{{ g.amt.c }}" role="{{ g.amt.r }}" aria-label="{{ g.amt.l }}">{{ g.amt.t }}</span></sc-if>{{ g.w2 }}</div><div class="mp-foot mp-ink2"><span class="{{ g.ch.c }}" role="{{ g.ch.r }}" aria-label="{{ g.ch.l }}">{{ g.ch.t }}</span></div><div class="mp-foot mp-ink3">{{ g.meta }}</div></div><span class="ms mp-ink3 ms-s" style="margin-top: 2px" aria-hidden="true">chevron_right</span></div>
+                    </div>
+                  </div>
+                </sc-for>
+                <div class="mp-cap mp-ink3">Illustrative figures.</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sheetShown }}" hint-placeholder-val="{{ false }}">
+              <button class="scrim {{ scrimCls }}" aria-label="Close the sheet" onClick="{{ closeWhy }}"></button>
+              <div class="sheet-abs mp-sheet {{ sheetCls }}" role="dialog" aria-modal="true" aria-label="Why PAUSE">
+                <div class="mp-grabber"></div>
+                <div class="fx ac jb"><span class="mp-t2">Why PAUSE?</span><button class="iconbtn sheetclose" aria-label="Close" onClick="{{ closeWhy }}"><span class="ms" aria-hidden="true">close</span></button></div>
+                <div class="fx col gap12" style="margin-top: 10px">
+                  <sc-for list="{{ whys }}" as="w" hint-placeholder-count="3">
+                    <div class="fx gap12"><div class="mp-icontile {{ w.cls }}" aria-hidden="true"><span class="ms ms-s">{{ w.icon }}</span></div><div style="flex: 1; min-width: 0"><div class="mp-hl">{{ w.h }}</div><div class="mp-foot mp-ink2">{{ w.b }}</div></div></div>
+                  </sc-for>
+                </div>
+                <div class="mp-foot mp-ink3" style="margin-top: 14px">From the engine, Friday's close: yfinance CNX1 ✓ · iShares NAV ✓ · ECB FX ✓. A view, not advice.</div>
+                <button class="mp-btn mp-btn-primary" style="margin-top: 14px; width: 100%">Ask more in the chat</button>
+              </div>
+            </sc-if>
+          </div>
+          <nav class="mp-tabbar tabs-abs" aria-label="Sections" aria-hidden="{{ liveHidden }}">
+            <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="5"><button class="mp-tab {{ tb.on }}" onClick="{{ tb.go }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</button></sc-for>
+          </nav>
+          <!-- a planned screen, a chat card: the board itself, played over the live phone (filled by the logic below) -->
+          <div class="bhost bhost-phone {{ bhPhone }}" role="region" aria-label="{{ phoneBoardLabel }}"></div>
+        </div>
+
+        <!-- the browser door: a laptop window showing the browser boards at 1280, scaled to fit -->
+        <div class="lap mp {{ tcls }} {{ lapCls }}" data-screen-label="Browser prototype" style="width: {{ lapW }}">
+          <div class="lap-bar"><span class="lap-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="lap-url">console.mypaisapp.com</span><span class="lap-dots" aria-hidden="true"></span></div>
+          <div class="lap-scr" style="height: {{ lapH }}" role="region" aria-label="{{ lapLabel }}"><div class="bhost bhost-lap"></div></div>
+        </div>
+
+        <div class="panel">
+          <h1>{{ ptitle }}</h1>
+          <sc-if value="{{ isMini }}" hint-placeholder-val="{{ true }}"><span>Direction 1a (MyPaisa DS v1), clickable, with the motion the build ships. Five tabs as Apple's tab bar: Overview, Holdings, Overlap, Record and More. Tap a holding on Overview or on Holdings, then <b>Why?</b> or <b>Forecast</b>; on More, open Activity, Audit (now with its files) or the owner's <b>Admin center</b>, which opens the browser. Turn on <b>India holdings</b> for the Overview with India. A pushed page keeps its tab selected and Telegram's Back names where it goes. Every holding row opens NASDAQ 100 here. Planned screens play their boards, with the boards' own illustrative figures.</span></sc-if>
+          <sc-if value="{{ isLap }}" hint-placeholder-val="{{ false }}"><span>The laptop door, played from the browser boards at 1280 and scaled to fit. Start at Login; the sidebar, tabs and buttons that lead somewhere are outlined when you point at them, and a click elsewhere shows them all. <b>Admin</b> in the sidebar is the owner's Admin center: People, Spend, Alerts, Approvals, Settings, Agents. Each board keeps its own illustrative figures.</span></sc-if>
+          <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}"><span>The Telegram cards planned for the new work, played from their boards. Pick a card, then tap the ringed button or Next to step through it; a card's own buttons lead on where a board is drawn for them. Telegram draws the chat; MyPaisa owns the words and the buttons.</span></sc-if>
+          <div class="ctl" role="group" aria-label="Door"><button class="ctl-b {{ dMini }}" aria-pressed="{{ dMiniP }}" onClick="{{ toMini }}">Mini App</button><button class="ctl-b {{ dLap }}" aria-pressed="{{ dLapP }}" onClick="{{ toLap }}">Browser</button><button class="ctl-b {{ dChat }}" aria-pressed="{{ dChatP }}" onClick="{{ toChat }}">Chat</button></div>
+          <div class="ctl"><button class="ctl-b {{ lightOn }}" aria-pressed="{{ lightPressed }}" onClick="{{ setLight }}">Light</button><button class="ctl-b {{ darkOn }}" aria-pressed="{{ darkPressed }}" onClick="{{ setDark }}">Dark</button><button class="ctl-b {{ privOn }}" aria-pressed="{{ privPressed }}" onClick="{{ togglePriv }}">Privacy</button><button class="ctl-b {{ indiaOn }}" aria-pressed="{{ indiaPressed }}" onClick="{{ toggleIndia }}">India holdings</button><sc-if value="{{ isMini }}" hint-placeholder-val="{{ true }}"><button class="ctl-b" onClick="{{ replay }}">Replay motion</button></sc-if></div>
+          <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
+            <div class="spec">
+              <b>Cards</b>
+              <div class="ctl"><sc-for list="{{ cards }}" as="c" hint-placeholder-count="10"><button class="ctl-b {{ c.on }}" aria-pressed="{{ c.p }}" onClick="{{ c.go }}">{{ c.n }}</button></sc-for></div>
+              <div class="fx ac gap8"><button class="ctl-b" onClick="{{ prevStep }}" aria-label="Previous step">Previous</button><span class="stepn" style="flex: 1; text-align: center">{{ stepTxt }}</span><button class="ctl-b" onClick="{{ nextStep }}" aria-label="Next step">Next</button></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hasHere }}" hint-placeholder-val="{{ false }}">
+            <div class="spec">
+              <b>{{ here.name }}</b>
+              <span>Drawn on <a href="{{ here.href }}" target="_blank" rel="noopener">{{ here.label }}</a>, in {{ here.file }}. Outlined parts lead on; a click elsewhere on the board shows them.</span>
+              <sc-if value="{{ here.hasNote }}" hint-placeholder-val="{{ false }}"><span>{{ here.note }}</span></sc-if>
+              <sc-if value="{{ here.hasLinks }}" hint-placeholder-val="{{ true }}"><div class="ctl"><sc-for list="{{ here.links }}" as="k" hint-placeholder-count="3"><button class="ctl-b" onClick="{{ k.go }}">{{ k.n }}</button></sc-for></div></sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isMini }}" hint-placeholder-val="{{ true }}">
+          <div class="spec">
+            <b>Motion in this prototype</b>
+            <span>First open of a tab: cards rise 10 px and fade in, 40 ms apart <code>350ms ease(0.22,1,0.36,1)</code>. Back and tab taps never replay it.</span>
+            <span>The total counts up from zero once, on first open <code>600ms</code>; the chart fades in <code>200ms</code> and its stance dots after it. A chart line is never dash-drawn: that breaks under non-scaling strokes.</span>
+            <span>Push: both screens stay on screen <code>--mp-t-push 350ms, --mp-ease-sheet</code>; the new one slides in from the right while the old one slides 30% left and dims. Back reverses it.</span>
+            <span>Tabs switch at once, and each tab keeps its place: its pushed page and its scroll position.</span>
+            <span>Why? sheet: slides up over a dimmed screen <code>420ms</code>, below Telegram's bar, which is not ours to dim; ✕, the scrim or Esc close it <code>280ms</code>.</span>
+            <span><b>Rules:</b> transform and opacity only; nothing loops; with Reduce Motion on, every screen lands in its final state at once and the total shows without counting.</span>
+          </div>
+          </sc-if>
+        </div>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        constructor(props) {
+          super(props);
+          this.state = this.fresh();
+          this._onKey = (e) => { if (e.key !== 'Escape') return; if (this.state.sheet === 'open') { this.closeSheet(); return; } const w = this._want && this._want[this.state.door === 'lap' ? 'lap' : 'phone']; if (w && w.esc) this.go(w.esc); };
+          this._onResize = () => { clearTimeout(this._rt); this._rt = setTimeout(() => this.forceUpdate(), 120); };
+          this._fr = {};
+        }
+        fresh() {
+          return { tab: 'overview', stacks: { overview: ['overview'], holdings: ['holdings'], overlap: ['overlap'], record: ['record'], more: ['more'] }, trans: null, sheet: 'closed', dark: false, priv: false, n: 0, seen: { overview: true }, alive: true, door: 'mini', india: false, mbs: {}, lap: 'b-login', lapHist: [], chat: 'c-cc1' };
+        }
+        componentDidMount() { this.count(); document.addEventListener('keydown', this._onKey); window.addEventListener('resize', this._onResize); this.syncFrames(); }
+        componentDidUpdate() { this.syncFrames(); }
+        componentWillUnmount() { cancelAnimationFrame(this._raf); clearTimeout(this._t); clearTimeout(this._nt); clearTimeout(this._st); clearTimeout(this._rt); document.removeEventListener('keydown', this._onKey); window.removeEventListener('resize', this._onResize); }
+        reduce() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+        pushMs() {
+          const ph = document.querySelector('.phone');
+          const v = ph ? parseFloat(getComputedStyle(ph).getPropertyValue('--mp-t-push')) : NaN;
+          return isNaN(v) ? 350 : v;
+        }
+        count() {
+          cancelAnimationFrame(this._raf);
+          const target = 25800;
+          if (this.reduce()) { this.setState({ n: target }); return; }
+          const t0 = performance.now();
+          const step = (t) => {
+            const p = Math.min(1, (t - t0) / 600);
+            this.setState({ n: Math.round(target * (1 - Math.pow(1 - p, 3))) });
+            if (p < 1) this._raf = requestAnimationFrame(step);
+          };
+          this._raf = requestAnimationFrame(step);
+        }
+        nav(next, trans) {
+          const reduce = this.reduce();
+          this.setState(Object.assign({}, next, { trans: reduce ? null : trans, sheet: 'closed' }));
+          clearTimeout(this._nt);
+          if (!reduce) this._nt = setTimeout(() => this.setState({ trans: null }), this.pushMs() + 30);
+        }
+        push(id) {
+          const st = this.state;
+          if (st.trans) return;
+          const stack = st.stacks[st.tab];
+          const from = stack[stack.length - 1];
+          if (from === id) return;
+          const el = document.querySelector('[data-scr="' + id + '"]');
+          if (el) el.scrollTop = 0;
+          const stacks = Object.assign({}, st.stacks, { [st.tab]: stack.concat(id) });
+          this.nav({ stacks: stacks, seen: Object.assign({}, st.seen, { [id]: true }) }, { kind: 'push', from: from, to: id });
+        }
+        pop(toRoot) {
+          const st = this.state;
+          if (st.trans) return;
+          const stack = st.stacks[st.tab];
+          if (stack.length < 2) return;
+          const rest = toRoot ? stack.slice(0, 1) : stack.slice(0, -1);
+          const stacks = Object.assign({}, st.stacks, { [st.tab]: rest });
+          this.nav({ stacks: stacks }, { kind: 'pop', from: stack[stack.length - 1], to: rest[rest.length - 1] });
+        }
+        goTab(t) {
+          const st = this.state;
+          if (st.trans) return;
+          if (t === st.tab) {
+            if (st.stacks[t].length > 1) { this.pop(true); return; }
+            const el = document.querySelector('[data-scr="' + t + '"]');
+            if (el) el.scrollTo({ top: 0, behavior: this.reduce() ? 'auto' : 'smooth' });
+            return;
+          }
+          const s = st.stacks[t];
+          this.setState({ tab: t, sheet: 'closed', seen: Object.assign({}, st.seen, { [s[s.length - 1]]: true }) });
+        }
+        closeSheet() {
+          if (this.state.sheet !== 'open') return;
+          const refocus = () => { const b = document.querySelector('.scr.on .whybtn'); if (b) b.focus(); };
+          if (this.reduce()) { this.setState({ sheet: 'closed' }, refocus); return; }
+          this.setState({ sheet: 'closing' });
+          clearTimeout(this._st);
+          this._st = setTimeout(() => this.setState({ sheet: 'closed' }, refocus), 280);
+        }
+        /* ---------- the board player: one hidden iframe per board file and slot; only the board on show is visible ---------- */
+        screens() {
+          if (this._scr) return this._scr;
+          const AD1 = 'Admin center.dc.html', AD2 = 'Admin center 2.dc.html', AUD = 'Audit and files.dc.html', FC = 'Forecast.dc.html', IN = 'India.dc.html', CC = 'Currency check.dc.html', TA = 'Telegram admin.dc.html', B1 = 'Browser.dc.html', B2 = 'Browser 2.dc.html';
+          const R = (s, t, go, n) => ({ s: s, t: t, go: go, n: n || '' });
+          const SIDE = [R('.mp-side-i', 'Overview', 'OV'), R('.mp-side-i', 'Holdings', 'b-hold'), R('.mp-side-i', 'Overlap', 'b-ol'), R('.mp-side-i', 'Track record', 'b-tr'), R('.mp-side-i', 'Activity', 'b-act'), R('.mp-side-i', 'Audit', 'b-aud'), R('.mp-side-i', 'Admin', 'a-people')];
+          const TABS = [R('.mp-seg-i', 'People', 'a-people'), R('.mp-seg-i', 'Spend', 'a-spend'), R('.mp-seg-i', 'Alerts', 'a-alerts'), R('.mp-seg-i', 'Approvals', 'a-appr'), R('.mp-seg-i', 'Settings', 'a-set'), R('.mp-seg-i', 'Agents', 'a-agents')];
+          const BAR = [R('.mp-tab', 'Overview', 'L:tab:overview'), R('.mp-tab', 'Holdings', 'L:tab:holdings'), R('.mp-tab', 'Overlap', 'L:tab:overlap'), R('.mp-tab', 'Record', 'L:tab:record'), R('.mp-tab', 'More', 'L:tab:more')];
+          const PRIV = R('.iconbtn', 'Privacy', 'L:priv');
+          const NEXT = R('.tg-btn.tap', '', 'NEXT', 'The ringed button');
+          const CHECK = [R('.mp-btn', 'Use your passkey', '', 'Use your passkey'), R('.mp-btn', 'Use Google instead', '')];
+          const fresh = (go, back) => CHECK.map((r) => Object.assign({}, r, { go: go })).concat([R('.mp-btn', 'Cancel', back, 'Cancel')]);
+          const L = (id, file, base, name, o) => Object.assign({ id: id, door: 'lap', file: file, base: base, theme: 'plain', name: name, rules: [], links: [], note: '' }, o || {});
+          const P = (id, file, base, name, o) => Object.assign({ id: id, door: 'mini', file: file, base: base, theme: 'plain', name: name, rules: [], links: [], note: '' }, o || {});
+          const C = (id, file, base, name, o) => Object.assign({ id: id, door: 'chat', file: file, base: base, theme: 'tg', name: name, rules: [NEXT], links: [], note: '' }, o || {});
+          const list = [
+            /* the browser */
+            L('b-login', B2, 'Browser · Login', 'Login', { rules: [R('', 'Sign in with Telegram', 'OV', 'Sign in with Telegram'), R('', 'Sign in with Google', 'OV'), R('', 'Sign in with a passkey', 'OV', 'Sign in with a passkey')], note: 'Three ways in: Telegram, Google, and a passkey added after the first sign-in (MA-76).' }),
+            L('b-ov', B1, 'Browser · Overview', 'Overview', { privLabel: 'Browser · Overview · Light · privacy on', rules: [R('.mp-row', '', 'b-hold', 'A holding'), R('.mp-card', 'Overlap', 'b-ol'), R('.mp-card', 'Track record', 'b-tr'), PRIV], note: 'Turn on India holdings for the Overview with India (phase 13).' }),
+            L('b-ovin', IN, 'Browser · Overview with India', 'Overview with India', { privLabel: 'Browser · Overview with India · Light · privacy on', rules: [R('.mp-row', 'Flexi-cap fund', 'b-inf', 'An Indian fund'), R('.mp-row', 'Index fund', 'b-inf'), R('.mp-row', 'Nifty 50 ETF', 'b-nse', 'An NSE share'), R('.mp-row', 'Balanced', 'b-fc-uk', 'Balanced, its Forecast'), R('.mp-row', 'NASDAQ 100', 'b-hold'), R('.mp-row', 'Physical Silver', 'b-hold'), PRIV], note: 'MA-153 · MA-94. Every Indian figure in rupees with its pounds beside, at £1 = ₹112.50.' }),
+            L('b-hold', B1, 'Browser · A holding', 'A holding', { rules: [R('.crumb', '', 'OV', 'Back to Overview'), R('a', 'Overlap', 'b-ol')], links: [R('', '', 'b-fc', 'Its Forecast tab (planned)')], note: 'Drawn before the holding page had its Overview, Forecast and Track record tabs (MA-124).' }),
+            L('b-fc', FC, 'Browser · Holding · Forecast', 'A holding · Forecast', { rules: [R('.crumb', '', 'OV', 'Back'), R('.mp-seg-i', 'Overview', 'b-hold', 'Overview tab'), R('', 'Why? in the chat', 'S:chat:c-s2', 'Why? in the chat'), R('', 'Ask in the chat', 'S:chat:c-s1')], links: [R('', '', 'b-fc-uk', 'The same tab for a UK fund')], note: 'MA-124, MA-121, MA-122, MA-123.' }),
+            L('b-fc-uk', FC, 'Browser · Holding · Forecast · UK fund', 'Balanced · Forecast', { rules: [R('.crumb', '', 'OV', 'Back'), R('', 'Why? in the chat', 'S:chat:c-s2', 'Why? in the chat'), R('', 'Ask in the chat', 'S:chat:c-s1')], links: [R('', '', 'b-fc', 'NASDAQ 100 ETF instead')], note: 'MA-124.' }),
+            L('b-inf', IN, 'Browser · Holding · Indian fund', 'An Indian fund', { rules: [R('.crumb', '', 'OV', 'Back to Overview')], links: [R('', '', 'b-nse', 'An NSE share instead')], note: 'MA-153 · MA-151.' }),
+            L('b-nse', IN, 'Browser · Holding · NSE share', 'An NSE share', { rules: [R('.crumb', '', 'OV', 'Back to Overview')], links: [R('', '', 'b-inf', 'An Indian fund instead')], note: 'MA-151 · MA-153.' }),
+            L('b-ol', B1, 'Browser · Overlap', 'Overlap', { privLabel: 'Browser · Overlap · Light · privacy on', rules: [PRIV] }),
+            L('b-tr', B1, 'Browser · Track record', 'Track record', { links: [R('', '', 'b-proof', 'The Forecaster\'s proof (planned)')] }),
+            L('b-proof', FC, 'Browser · Forecaster · Proof', 'Forecaster · Proof', { rules: [R('.crumb', '', 'b-tr', 'Back to Track record')], note: 'MA-120 · MA-123. Reached from Track record.' }),
+            L('b-act', B2, 'Browser · Activity', 'Activity', { note: 'The month\'s Claude spend against the $160 ceiling and its step, with AWS and others against their own £50 cap (MA-79, §15).' }),
+            L('b-aud', AUD, 'Browser · Audit with files', 'Audit', { rules: [R('.mp-seg-i', 'Files', 'b-files', 'Files view'), R('.mp-btn', 'Open monzo-valuation.png', 'b-fv-img', 'Open the screenshot'), R('.mp-btn', 'Open balanced-factsheet.pdf', 'b-fv-pdf', 'Open the factsheet')], note: 'MA-149 · MA-79.' }),
+            L('b-files', AUD, 'Browser · Files · owner', 'Audit · Files', { rules: [R('.mp-seg-i', 'Changes', 'b-aud', 'Changes view'), R('.mp-btn', 'Open monzo-valuation.png', 'b-fv-img', 'Open the screenshot'), R('.mp-btn', 'Open balanced-factsheet.pdf', 'b-fv-pdf', 'Open the factsheet')], links: [R('', '', 'b-files-v', 'As a viewer')], note: 'MA-149 · MA-148.' }),
+            L('b-files-v', AUD, 'Browser · Files · viewer, empty', 'Audit · Files, as a viewer', { rules: [R('.mp-seg-i', 'Changes', 'b-aud', 'Changes view')], links: [R('', '', 'b-files', 'As the owner')], note: 'MA-149. A viewer sees no files.' }),
+            L('b-fv-img', AUD, 'Browser · File viewer · image', 'File viewer · a screenshot', { rules: [R('', 'Close the file', 'BACK', 'Close the file')], esc: 'BACK', links: [R('', '', 'b-fv-pdf', 'A PDF instead')], note: 'MA-149. The link works for five minutes.' }),
+            L('b-fv-pdf', AUD, 'Browser · File viewer · PDF', 'File viewer · a factsheet', { rules: [R('', 'Close the file', 'BACK', 'Close the file')], esc: 'BACK', links: [R('', '', 'b-fv-img', 'A screenshot instead')], note: 'MA-149.' }),
+            L('a-people', AD1, 'A · People first', 'Admin · People', { theme: 'w1280', links: [R('', '', 'a-spend', 'Spend'), R('', '', 'a-alerts', 'Alerts'), R('', '', 'a-appr', 'Approvals'), R('', '', 'a-set', 'Settings'), R('', '', 'a-agents', 'Agents')], note: 'MA-102, picked. Drawn before the Admin center had its page tabs; the other pages are on Admin center 2. Owner only, browser only.' }),
+            L('a-spend', AD2, 'Browser · Admin · Spend', 'Admin · Spend', { theme: 'w1280', rules: TABS.concat([R('.mp-btn', 'Move the ceiling', 'a-spend-1', 'Move the ceiling'), R('', 'Every budget setting', 'a-set')]), note: 'MA-113 · MA-114 · MA-116 · MA-137 · MA-136.' }),
+            L('a-spend-1', AD2, 'Spend · Move the ceiling 1, fresh check', 'Admin · Spend · the fresh check', { theme: 'w1280', rules: fresh('a-spend-2', 'a-spend'), esc: 'a-spend', note: 'MA-116 · MA-102.' }),
+            L('a-spend-2', AD2, 'Spend · Move the ceiling 2, consequences', 'Admin · Spend · the consequences', { theme: 'w1280', rules: [R('.mp-btn', 'Cancel', 'a-spend', 'Cancel')], esc: 'a-spend', note: 'MA-116 · MA-114. The page after the move is not drawn.' }),
+            L('a-alerts', AD2, 'Browser · Admin · Alerts', 'Admin · Alerts', { theme: 'w1280', rules: TABS.concat([R('.mp-btn', 'Replay', 'a-alerts-1', 'Replay'), R('', 'Open in Agents', 'a-agents'), R('', 'Open in Approvals', 'a-appr')]), note: 'MA-137 · MA-145.' }),
+            L('a-alerts-1', AD2, 'Alerts · Replay 1, fresh check', 'Admin · Alerts · the fresh check', { theme: 'w1280', rules: fresh('a-alerts-2', 'a-alerts'), esc: 'a-alerts', note: 'MA-145 · MA-102.' }),
+            L('a-alerts-2', AD2, 'Alerts · Replay 2, the result', 'Admin · Alerts · replayed', { theme: 'w1280', rules: TABS, note: 'MA-145 · MA-137.' }),
+            L('a-appr', AD2, 'Browser · Admin · Approvals', 'Admin · Approvals', { theme: 'w1280', rules: TABS.concat([R('.mp-btn', 'Approve', 'a-appr-1', 'Approve')]), note: 'MA-130.' }),
+            L('a-appr-1', AD2, 'Approvals · Approve 1, fresh check', 'Admin · Approvals · the fresh check', { theme: 'w1280', rules: fresh('a-appr-2', 'a-appr'), esc: 'a-appr', note: 'MA-130 · MA-102.' }),
+            L('a-appr-2', AD2, 'Approvals · Approve 2, decided', 'Admin · Approvals · decided', { theme: 'w1280', rules: TABS, note: 'MA-130.' }),
+            L('a-set', AD2, 'Browser · Admin · Settings', 'Admin · Settings', { theme: 'w1280', rules: TABS, note: 'MA-129.' }),
+            L('a-agents', AD2, 'Browser · Admin · Agents and incidents', 'Admin · Agents and incidents', { theme: 'w1280', rules: TABS, note: 'MA-131 · MA-135 · MA-146 · MA-136.' }),
+            /* planned Mini App screens, over the live phone */
+            P('m-fc1', FC, 'Mini App · Holding · Forecast · m1 · as it opens', 'A holding · Forecast', { rules: [R('.tgh-a', 'Holdings', 'L:pop', 'Back'), R('.mp-seg-i', 'Overview', 'L:live', 'Overview tab')], down: 'm-fc2', links: [R('', '', 'm-fc2', 'Scroll to the end')], note: 'MA-124. Scroll for the rest of the page.' }),
+            P('m-fc2', FC, 'Mini App · Holding · Forecast · m2 · scrolled to the end', 'A holding · Forecast, scrolled', { rules: [R('.tgh-a', 'Holdings', 'L:pop', 'Back'), R('.mp-row', 'Similar days and events', 'm-fc3', 'Similar days and events')], up: 'm-fc1', links: [R('', '', 'm-fc1', 'Back to the top')], note: 'MA-124.' }),
+            P('m-fc3', FC, 'Mini App · Holding · Forecast · m3 · one tap: similar days and events', 'Similar days and events', { rules: [R('.tgh-a', 'Forecast', 'm-fc2', 'Back to Forecast')], esc: 'm-fc2', note: 'MA-124.' }),
+            P('m-in1', IN, 'Mini App · Overview with India · as it opens', 'Overview with India', { rules: [R('.mp-seg-i', 'Rupees', 'm-in3', 'The rupee view'), PRIV, R('.mp-row', 'Balanced', 'L:hold'), R('.mp-row', 'NASDAQ 100', 'L:hold'), R('.mp-row', 'Physical Silver', 'L:hold')], down: 'm-in2', links: [R('', '', 'm-in2', 'Scroll to India')], note: 'MA-153 · MA-94. Scroll for India.' }),
+            P('m-in2', IN, 'Mini App · Overview with India · scrolled to India', 'Overview with India, scrolled', { rules: [PRIV, R('.mp-row', 'Balanced', 'L:hold'), R('.mp-row', 'NASDAQ 100', 'L:hold'), R('.mp-row', 'Physical Silver', 'L:hold')], up: 'm-in1', links: [R('', '', 'm-in1', 'Back to the top'), R('', '', 'S:lap:b-inf', 'An Indian fund, in the browser'), R('', '', 'S:lap:b-nse', 'An NSE share, in the browser')], note: 'MA-153. The Indian holding pages are drawn for the browser.' }),
+            P('m-in3', IN, 'Mini App · Overview with India · the rupee view', 'Overview with India, in rupees', { rules: [R('.mp-seg-i', 'Pounds', 'm-in1', 'Back to pounds'), PRIV], note: 'MA-94.' }),
+            P('m-in4', IN, 'Mini App · Overview with India · privacy on, scrolled', 'Overview with India, privacy on', { rules: [PRIV], note: 'MA-153. Privacy hides rupees as it hides pounds.' }),
+            P('m-aud', AUD, 'Mini App · Audit and file · the row', 'Audit, with files', { rules: [R('.tgh-a', 'More', 'L:pop', 'Back to More'), R('.mp-btn', 'Open', 'm-file', 'Open a file')], note: 'MA-149. Every file a member sends is kept and opens from its row.' }),
+            P('m-file', AUD, 'Mini App · Audit and file · the file', 'A file, from Audit', { rules: [R('.tgh-a', 'Audit', 'm-aud', 'Back to Audit')], esc: 'm-aud', note: 'MA-149.' }),
+            /* chat cards */
+            C('c-cc1', CC, 'Telegram · Currency check', 'Currency check', { privBase: 'Telegram · Currency check, privacy on · 6a', rules: [R('.tg-btn', 'Pounds that arrived', 'c-cc2', 'Pounds that arrived'), R('.tg-btn', 'Use the ECB rate', 'c-cc3', 'Use the ECB rate'), R('.tg-btn', 'A rupee holding', 'c-cc5', 'A rupee holding')], note: 'MA-156. ₹20,000 into a pound holding.' }),
+            C('c-cc2', CC, 'Telegram · Pounds that arrived', 'Currency check · pounds that arrived', { privBase: 'Telegram · Currency check, privacy on · 6b', rules: [R('.tg-btn', 'Edit', 'c-cc1', 'Edit')], note: 'MA-156. £176.10 arrived, so ₹113.57 per £.' }),
+            C('c-cc3', CC, 'Telegram · ECB rate estimate', 'Currency check · the ECB rate', { rules: [R('.tg-btn', 'Edit', 'c-cc1', 'Edit')], note: 'MA-156. ₹112.50 per £, the ECB rate of 23 Oct: £177.78, an estimate.' }),
+            C('c-cc4', CC, 'Telegram · No currency named', 'Currency check · no currency named', { note: 'MA-156.' }),
+            C('c-cc5', CC, 'Telegram · A rupee holding instead', 'Currency check · a rupee holding', { rules: [R('.tg-btn', 'Back', 'c-cc1', 'Back'), R('.tg-btn', 'Edit', 'c-cc1')], note: 'MA-156.' }),
+            C('c-i1', IN, 'i1 · Mon 20:40 · sends the CAS', 'CAS import · the statement', { note: 'MA-152 · MA-148.' }),
+            C('c-i2', IN, 'i2 · the password, once', 'CAS import · the password, once', { note: 'MA-152. Used once, never stored.' }),
+            C('c-i3', IN, 'i3 · Mon 20:41 · the dry run', 'CAS import · the dry run', { note: 'MA-152.' }),
+            C('c-i4', IN, 'i4 · Confirm, then the second check', 'CAS import · the second check', { rules: [NEXT, R('[role=dialog]', '', 'NEXT')], note: 'MA-152 · MA-102.' }),
+            C('c-i5', IN, 'i5 · Mon 20:42 · saved', 'CAS import · saved', { rules: [NEXT, R('.tg-btn', 'Source', 'NEXT', 'Source')], note: 'MA-152.' }),
+            C('c-i6', IN, 'i6 · Mon 20:45 · the file, from Audit', 'CAS import · the file, from Audit', { note: 'MA-148 · MA-149.' }),
+            C('c-b1', IN, 'b1 · Tue 07:15 · the brief', 'Brief with India', { privBase: 'b2 · Tue 07:15 · privacy on', rules: [R('.tg-btn', 'India', 'L:india', 'India, in the Mini App')], note: 'MA-153 · MA-151.' }),
+            C('c-s1', FC, 'Telegram · Side-by-side card · s1 · Sat 09:01 · the card', 'Side-by-side card', { note: 'MA-124. The rules engine and the Forecaster, side by side.' }),
+            C('c-s2', FC, 'Telegram · Side-by-side card · s2 · Sat 09:03 · Why? both sides', 'Side-by-side card · Why?', { rules: [], note: 'MA-124.' }),
+            C('c-f1', FC, 'Telegram · First of the month split · f1 · 09:00 · both splits', 'First of the month split', { privBase: 'Telegram · First of the month split · f5 · 09:00 · privacy mode on', note: 'MA-125.' }),
+            C('c-f2', FC, 'Telegram · First of the month split · f2 · 09:41 · Confirm', 'First of the month split · Confirm', { note: 'MA-125.' }),
+            C('c-f3', FC, 'Telegram · First of the month split · f3 · 09:42 · the second check', 'First of the month split · the second check', { rules: [NEXT, R('[role=dialog]', '', 'NEXT')], note: 'MA-125 · MA-102.' }),
+            C('c-f4', FC, 'Telegram · First of the month split · f4 · 09:42 · saved', 'First of the month split · saved', { rules: [], note: 'MA-125.' }),
+            C('c-src1', AUD, 'Telegram · Source button · s1', 'Source button', { note: 'MA-149.' }),
+            C('c-src2', AUD, 'Telegram · Source button · s2', 'Source button · the file sent back', { rules: [], note: 'MA-149.' }),
+            C('c-ap1', TA, 'Telegram · Approval request · a1 · 08:05 · the request', 'Approval request', { note: 'MA-130.' }),
+            C('c-ap2', TA, 'Telegram · Approval request · a2 · 08:05 · check it\'s you', 'Approval request · the second check', { rules: [NEXT, R('[role=dialog]', '', 'NEXT')], note: 'MA-130 · MA-102.' }),
+            C('c-ap3', TA, 'Telegram · Approval request · a3 · 08:06 · approved', 'Approval request · approved', { rules: [], links: [R('', '', 'S:lap:a-appr', 'Approvals, in the browser')], note: 'MA-130.' }),
+            C('c-fw1', TA, 'Telegram · Failed work alert · b1 · 08:30 · failed work', 'Failed work alert', { rules: [NEXT, R('.tg-btn', 'Open Admin center', 'S:lap:a-alerts', 'Open Admin center')], note: 'MA-145 · MA-137.' }),
+            C('c-fw2', TA, 'Telegram · Failed work alert · b2 · 08:30 · check it\'s you', 'Failed work alert · the second check', { rules: [NEXT, R('[role=dialog]', '', 'NEXT')], note: 'MA-145 · MA-102.' }),
+            C('c-fw3', TA, 'Telegram · Failed work alert · b3 · 08:31 · replayed', 'Failed work alert · replayed', { rules: [R('.tg-btn', 'Open Admin center', 'S:lap:a-alerts-2', 'Open Admin center')], note: 'MA-145.' }),
+            C('c-sp1', TA, 'Telegram · Spend steps · c1 · Fri 16 Oct · 70%', 'Spend steps · 70%', { rules: [R('.tg-btn', 'Open Admin center', 'S:lap:a-spend', 'Open Admin center')], note: 'MA-114 · MA-116.' }),
+            C('c-sp2', TA, 'Telegram · Spend steps · c2 · Fri 23 Oct · 85%', 'Spend steps · 85%', { rules: [R('.tg-btn', 'Open Admin center', 'S:lap:a-spend', 'Open Admin center')], note: 'MA-114 · MA-116.' }),
+            C('c-sp3', TA, 'Telegram · Spend steps · c3 · Wed 28 Oct · 95%', 'Spend steps · 95%', { rules: [R('.tg-btn', 'Open Admin center', 'S:lap:a-spend', 'Open Admin center')], note: 'MA-114 · MA-116.' }),
+            C('c-sp4', TA, 'Telegram · Spend steps · c4 · Fri 30 Oct · 100%', 'Spend steps · 100%', { rules: [R('.tg-btn', 'Open Admin center', 'S:lap:a-spend', 'Open Admin center')], note: 'MA-114 · MA-116.' }),
+            C('c-inc1', TA, 'Telegram · Incident · d1 · 08:35 · the incident', 'Incident', { rules: [NEXT, R('.tg-btn', 'Open Admin center', 'S:lap:a-agents', 'Open Admin center')], note: 'MA-135.' }),
+            C('c-inc2', TA, 'Telegram · Incident · d2 · 08:35 · check it\'s you', 'Incident · the second check', { rules: [NEXT, R('[role=dialog]', '', 'NEXT')], note: 'MA-135 · MA-102.' }),
+            C('c-inc3', TA, 'Telegram · Incident · d3 · 08:38 · resolved', 'Incident · resolved', { rules: [R('.tg-btn', 'Open Admin center', 'S:lap:a-agents', 'Open Admin center')], note: 'MA-135.' })
+          ];
+          const out = {};
+          /* the older browser boards were drawn before the owner's Admin entry joined the sidebar */
+          ['b-ov', 'b-hold', 'b-ol', 'b-tr', 'b-act'].forEach((id) => { const x = list.find((q) => q.id === id); x.links = x.links.concat([R('', '', 'a-people', 'Admin center (owner)')]); });
+          list.forEach((x) => { x.rules = x.rules.concat(x.door === 'lap' ? SIDE : x.door === 'mini' ? BAR : []); out[x.id] = x; });
+          this._cards = [
+            ['Currency check', ['c-cc1', 'c-cc2', 'c-cc3', 'c-cc4', 'c-cc5']], ['CAS import', ['c-i1', 'c-i2', 'c-i3', 'c-i4', 'c-i5', 'c-i6']], ['Brief with India', ['c-b1']],
+            ['Side-by-side card', ['c-s1', 'c-s2']], ['First of the month split', ['c-f1', 'c-f2', 'c-f3', 'c-f4']], ['Source button', ['c-src1', 'c-src2']],
+            ['Approval request', ['c-ap1', 'c-ap2', 'c-ap3']], ['Failed work alert', ['c-fw1', 'c-fw2', 'c-fw3']], ['Spend steps', ['c-sp1', 'c-sp2', 'c-sp3', 'c-sp4']], ['Incident', ['c-inc1', 'c-inc2', 'c-inc3']]
+          ];
+          this._scr = out;
+          return out;
+        }
+        label(x) {
+          const d = this.state.dark, p = this.state.priv;
+          if (p && x.privLabel) return x.privLabel;
+          const base = p && x.privBase ? x.privBase : x.base;
+          if (x.theme === 'tg') return base + (d ? ' · Telegram dark' : ' · Telegram light');
+          return base + (x.theme === 'w1280' ? ' · 1280' : '') + (d ? ' · Dark' : ' · Light');
+        }
+        liveTop() { const s = this.state.stacks[this.state.tab]; return s[s.length - 1]; }
+        miniBoard() {
+          const st = this.state, cur = this.liveTop();
+          let b = st.mbs[cur] || (cur === 'audit' ? 'm-aud' : cur === 'overview' && st.india ? 'm-in1' : null);
+          if (b && b.indexOf('m-in') === 0) b = st.priv ? 'm-in4' : b === 'm-in4' ? 'm-in2' : b;
+          return b;
+        }
+        cardOf(id) { this.screens(); for (let i = 0; i < this._cards.length; i++) { const k = this._cards[i][1].indexOf(id); if (k >= 0) return { i: i, k: k, ids: this._cards[i][1] }; } return { i: 0, k: 0, ids: this._cards[0][1] }; }
+        step(dir) { const c = this.cardOf(this.state.chat), k = Math.max(0, Math.min(c.ids.length - 1, c.k + dir)); this.setState({ door: 'chat', chat: c.ids[k] }); }
+        go(t) {
+          const st = this.state;
+          if (!t) return;
+          if (t === 'OV') t = st.india ? 'b-ovin' : 'b-ov';
+          if (t === 'NEXT') { this.step(1); return; }
+          if (t === 'BACK') {
+            if (st.door === 'lap') { const h = st.lapHist.slice(), prev = h.pop(); if (prev) this.setState({ lap: prev, lapHist: h }); }
+            else this.step(-1);
+            return;
+          }
+          if (t.indexOf('S:') === 0) { this.go(t.split(':')[2]); return; }
+          if (t.indexOf('L:') === 0) {
+            const c = t.slice(2), cur = this.liveTop(), mbs = Object.assign({}, st.mbs);
+            delete mbs[cur];
+            if (c === 'priv') { this.setState({ priv: !st.priv }); return; }
+            if (c === 'india') { this.setState({ door: 'mini', india: true, tab: 'overview', sheet: 'closed', stacks: Object.assign({}, st.stacks, { overview: ['overview'] }), mbs: Object.assign({}, st.mbs, { overview: 'm-in2' }), seen: Object.assign({}, st.seen, { overview: true }) }); return; }
+            if (c === 'live') { this.setState({ mbs: mbs }); return; }
+            if (c === 'pop') { this.setState({ mbs: mbs }, () => this.pop(false)); return; }
+            if (c === 'hold') { this.setState({ mbs: mbs }, () => this.push('holdO')); return; }
+            if (c.indexOf('tab:') === 0) { this.setState({ mbs: mbs }, () => this.goTab(c.slice(4))); return; }
+            return;
+          }
+          const x = this.screens()[t];
+          if (!x) return;
+          if (x.door === 'lap') { this.setState(t === st.lap ? { door: 'lap' } : { door: 'lap', lap: t, lapHist: st.lapHist.concat(st.lap).slice(-40) }); return; }
+          if (x.door === 'chat') { this.setState({ door: 'chat', chat: t }); return; }
+          this.setState({ door: 'mini', sheet: 'closed', mbs: Object.assign({}, st.mbs, { [this.liveTop()]: t }) });
+        }
+        lapScale() {
+          const vw = window.innerWidth || 1440;
+          return vw >= 1100 ? Math.max(0.5, Math.min(0.75, (vw - 480) / 1280)) : Math.max(0.25, Math.min(0.75, (vw - 64) / 1280));
+        }
+        frameFor(slot, file) {
+          const k = slot + '|' + file;
+          if (this._fr[k]) return this._fr[k];
+          const host = document.querySelector('.bhost-' + slot);
+          if (!host) return null;
+          const f = document.createElement('iframe');
+          f.setAttribute('title', 'Board');
+          f.style.cssText = 'position: absolute; left: 0; top: 0; border: 0; visibility: hidden; transform-origin: 0 0; width: ' + (slot === 'lap' ? 1280 : 390) + 'px; height: ' + (slot === 'lap' ? 800 : 844) + 'px';
+          const rec = { k: k, slot: slot, file: file, f: f, doc: null, want: null, cur: null, tries: 0 };
+          f.addEventListener('load', () => { try { rec.doc = f.contentDocument; this.prep(rec); this.place(rec); } catch (e) { rec.doc = null; } });
+          f.src = encodeURI(file);
+          host.appendChild(f);
+          this._fr[k] = rec;
+          return rec;
+        }
+        prep(rec) {
+          const d = rec.doc;
+          if (!d || d.__proto) return;
+          d.__proto = true;
+          const css = d.createElement('style');
+          css.textContent = 'html, body { background: transparent !important; overflow: hidden !important; } body { visibility: hidden !important; }'
+            + ' [data-proto-solo] { visibility: visible !important; position: fixed !important; left: 0 !important; top: 0 !important; margin: 0 !important; z-index: 2147483647 !important; box-shadow: none !important; border-radius: 0 !important; }'
+            + ' [data-proto-hot] { cursor: pointer !important; }'
+            + ' [data-proto-hot]:hover, [data-proto-hot]:focus-visible { outline: 3px solid #2453C9 !important; outline-offset: 2px !important; }'
+            + ' html.proto-flash [data-proto-hot] { outline: 3px solid rgba(36, 83, 201, 0.6) !important; outline-offset: 2px !important; }';
+          (d.head || d.documentElement).appendChild(css);
+          d.addEventListener('click', (e) => {
+            const solo = d.querySelector('[data-proto-solo]');
+            if (!solo || !solo.contains(e.target)) return;
+            e.preventDefault(); e.stopPropagation();
+            const h = e.target.closest('[data-proto-hot]');
+            if (h && h.__go) { this.go(h.__go); return; }
+            d.documentElement.classList.add('proto-flash');
+            clearTimeout(rec.ft); rec.ft = setTimeout(() => d.documentElement.classList.remove('proto-flash'), 700);
+          }, true);
+          d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && rec.want && rec.want.esc) { e.preventDefault(); this.go(rec.want.esc); } }, true);
+          d.addEventListener('wheel', (e) => {
+            const w = rec.want;
+            if (!w) return;
+            if (rec.slot === 'lap') { const scr = rec.f.parentNode && rec.f.parentNode.parentNode; if (scr) scr.scrollTop += e.deltaY; e.preventDefault(); return; }
+            const now = Date.now();
+            if (now - (this._wt || 0) < 700) return;
+            if (e.deltaY > 8 && w.down) { this._wt = now; this.go(w.down); } else if (e.deltaY < -8 && w.up) { this._wt = now; this.go(w.up); }
+          }, { passive: false });
+        }
+        place(rec) {
+          const d = rec.doc, w = rec.want, now = (this._want || {})[rec.slot];
+          if (!d || !w) return;
+          if (!now || now.file !== rec.file) { rec.f.style.visibility = 'hidden'; return; }
+          const el = d.querySelector('[data-screen-label="' + w.label.replace(/"/g, '\\"') + '"]');
+          if (!el) { clearTimeout(rec.t); if (rec.tries++ < 100) rec.t = setTimeout(() => this.place(rec), 100); return; }
+          rec.tries = 0;
+          d.querySelectorAll('[data-proto-solo]').forEach((x) => { if (x !== el) x.removeAttribute('data-proto-solo'); });
+          el.setAttribute('data-proto-solo', '');
+          el.style.removeProperty('left'); el.style.removeProperty('top');
+          const r0 = el.getBoundingClientRect();
+          if (Math.abs(r0.left) > 0.5) el.style.setProperty('left', -r0.left + 'px', 'important');
+          if (Math.abs(r0.top) > 0.5) el.style.setProperty('top', -r0.top + 'px', 'important');
+          const INTER = 'a, button, [role=button], [role=tab], [role=dialog], .mp-row, .tg-btn, .tgh-a, .mp-tab, .mp-seg-i, .crumb';
+          const txt = (n) => (n.nodeType === 3 ? n.nodeValue : n.nodeType !== 1 || (n.classList && n.classList.contains('ms')) ? '' : Array.prototype.map.call(n.childNodes, txt).join(''));
+          const key = (x) => ((x.getAttribute('aria-label') || '') + ' ' + txt(x)).replace(/\s+/g, ' ');
+          d.querySelectorAll('[data-proto-hot]').forEach((x) => { x.removeAttribute('data-proto-hot'); x.__go = null; });
+          w.rules.forEach((r) => {
+            if (!r.go) return;
+            el.querySelectorAll(r.s || INTER).forEach((x) => {
+              if (x.hasAttribute('data-proto-hot') || (r.t && key(x).indexOf(r.t) < 0)) return;
+              x.setAttribute('data-proto-hot', ''); x.__go = r.go;
+            });
+          });
+          d.querySelectorAll('[data-proto-hot]').forEach((x) => { if (x.querySelector('[data-proto-hot]')) { x.removeAttribute('data-proto-hot'); x.__go = null; } });
+          const wd = el.offsetWidth, ht = el.offsetHeight;
+          rec.f.style.width = wd + 'px'; rec.f.style.height = ht + 'px';
+          rec.f.setAttribute('title', w.name);
+          if (rec.slot === 'lap') {
+            const s = this.lapScale(), host = rec.f.parentNode;
+            rec.f.style.transform = 'scale(' + s + ')';
+            host.style.height = Math.ceil(ht * s) + 'px';
+            if (rec.cur !== w.label && host.parentNode) {
+              /* a board drawn with a dialog open opens scrolled to the dialog */
+              const scr = host.parentNode, dlg = el.querySelector('[role=dialog], [aria-modal=true]');
+              let top = 0;
+              if (dlg) { const er = el.getBoundingClientRect(), dr = dlg.getBoundingClientRect(); top = Math.max(0, (dr.top - er.top + dr.height / 2) * s - scr.clientHeight / 2); }
+              scr.scrollTop = top;
+            }
+          }
+          const fresh = rec.cur !== w.label || rec.f.style.visibility !== 'visible';
+          rec.cur = w.label;
+          rec.f.style.visibility = 'visible';
+          const rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (fresh && !rm && rec.slot === 'phone' && rec.f.animate) rec.f.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
+        }
+        syncFrames() {
+          const want = this._want || {};
+          ['phone', 'lap'].forEach((slot) => {
+            const w = want[slot];
+            Object.keys(this._fr).forEach((k) => { const r = this._fr[k]; if (r.slot === slot && (!w || r.file !== w.file)) r.f.style.visibility = 'hidden'; });
+            if (!w) return;
+            const rec = this.frameFor(slot, w.file);
+            if (!rec) return;
+            const same = rec.want && rec.want.label === w.label && rec.cur === w.label && rec.f.style.visibility === 'visible' && rec.scale === this.lapScale();
+            rec.want = w; rec.scale = this.lapScale();
+            if (rec.doc && !same) this.place(rec);
+          });
+        }
+        renderVals() {
+          const st = this.state;
+          const f2 = (n) => n.toFixed(2);
+          const s6 = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
+          const lo6 = Math.min.apply(null, s6), hi6 = Math.max.apply(null, s6);
+          const p6 = s6.map((v, i) => [i * 100 / (s6.length - 1), 8 + (1 - (v - lo6) / (hi6 - lo6)) * 84]);
+          // the phone is a fixed 390 wide, so each chart's viewBox is its real size in px (1:1, strokes stay true)
+          const HW = 318, HH = 120, CW = 326, CH = 132;
+          const line6 = 'M' + p6.map((p) => f2(p[0] * HW / 100) + ',' + f2(p[1] * HH / 100)).join(' L');
+          const s14 = [4280, 4330, 4310, 4380, 4420, 4450, 4493, 4540, 4596, 4530, 4470, 4410, 4345, 4210];
+          const X = (i) => i / 15 * 100, Y = (v) => (4700 - v) / 550 * 100;
+          const XP = (i) => X(i) * CW / 100, YP = (v) => Y(v) * CH / 100;
+          const last = s14.length - 1;
+          const alertV = 0.92 * Math.max.apply(null, s14);
+          const mask = (txt, ph, small) => (st.priv ? { t: ph, c: 'mp-mask' + (small ? ' mmin' : ''), r: 'img', l: 'hidden' } : { t: txt, c: '', r: null, l: null });
+          const plain = (txt) => ({ t: txt, c: '', r: null, l: null });
+          // navigation
+          const stack = st.stacks[st.tab];
+          const cur = stack[stack.length - 1];
+          const parent = stack.length > 1 ? stack[stack.length - 2] : null;
+          const names = { overview: 'Overview', holdings: 'Holdings', more: 'More' };
+          const tr = st.trans;
+          const cls = (id) => (tr && id === tr.to ? 'on ' + (tr.kind === 'push' ? 'push-in' : 'pop-in') : tr && id === tr.from ? 'on ' + (tr.kind === 'push' ? 'push-out' : 'pop-out') : id === cur ? 'on' : 'off');
+          const ids = ['overview', 'holdings', 'holdO', 'holdH', 'overlap', 'record', 'more', 'activity', 'audit'];
+          const each = (fn) => { const o = {}; ids.forEach((id) => { o[id] = fn(id); }); return o; };
+          const seen = (id) => !!st.seen[id];
+          const tabDefs = [['overview', 'Overview', 'home'], ['holdings', 'Holdings', 'donut_small'], ['overlap', 'Overlap', 'join_inner'], ['record', 'Record', 'insights'], ['more', 'More', 'menu']];
+          const base = [
+            { lead: 'BA', name: 'Balanced', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', say: 'up 0.4%', chCls: 'mp-up', st: 'HOLD', conf: '71%', stCls: 'mp-hold', hasSt: true },
+            { lead: 'NQ', name: 'NASDAQ 100', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', say: 'down 3.1%', chCls: 'mp-dq', st: 'PAUSE', conf: '61%', stCls: 'mp-pause', hasSt: true },
+            { lead: 'RB', name: 'Automation & Robotics', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', say: 'up 0.2%', chCls: 'mp-up', st: 'ADD', conf: '58%', stCls: 'mp-add', hasSt: true },
+            { lead: 'AG', name: 'Physical Silver', sub: 'iShares · GIA', val: '£820', ch: '▼ 6.2%', say: 'down 6.2%', chCls: 'mp-dq', st: 'PAUSE', conf: '58%', stCls: 'mp-pause', hasSt: true },
+            { lead: '£', name: 'Cash pot', sub: 'Easy access', val: '£400', ch: '—', say: 'no change', chCls: 'mp-ink3', st: '', conf: '', stCls: '', hasSt: false }
+          ];
+          // the doors, and the board each one is showing
+          const SCR = this.screens();
+          const door = st.door;
+          const mb = door === 'mini' ? this.miniBoard() : null;
+          const phoneScr = door === 'chat' ? SCR[st.chat] : mb ? SCR[mb] : null;
+          const lapScr = door === 'lap' ? SCR[st.lap] : null;
+          const mk = (x) => (x ? Object.assign({}, x, { label: this.label(x) }) : null);
+          this._want = { phone: mk(phoneScr), lap: mk(lapScr) };
+          const show = lapScr || phoneScr;
+          const DP = 'https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=';
+          const links = show ? show.rules.filter((r) => r.n).concat(show.links).filter((r, i, a) => a.findIndex((q) => q.n === r.n) === i).map((r) => ({ n: r.n, go: () => this.go(r.go) })) : [];
+          const here = show ? { name: show.name, label: this.label(show), file: show.file.replace('.dc.html', ''), href: DP + encodeURIComponent(show.file), note: show.note, hasNote: !!show.note, links: links, hasLinks: links.length > 0 } : { name: '', label: '', file: '', href: '', note: '', hasNote: false, links: [], hasLinks: false };
+          const sc = this.lapScale();
+          const cardAt = this.cardOf(st.chat);
+          const doorVals = {
+            isMini: door === 'mini', isLap: door === 'lap', isChat: door === 'chat',
+            ptitle: door === 'lap' ? 'Browser prototype' : door === 'chat' ? 'Chat cards' : 'Mini App prototype',
+            dMini: door === 'mini' ? 'on' : '', dLap: door === 'lap' ? 'on' : '', dChat: door === 'chat' ? 'on' : '',
+            dMiniP: door === 'mini' ? 'true' : 'false', dLapP: door === 'lap' ? 'true' : 'false', dChatP: door === 'chat' ? 'true' : 'false',
+            toMini: () => this.setState({ door: 'mini' }), toLap: () => this.setState({ door: 'lap' }), toChat: () => this.setState({ door: 'chat' }),
+            indiaOn: st.india ? 'on' : '', indiaPressed: st.india ? 'true' : 'false',
+            toggleIndia: () => { const m = Object.assign({}, st.mbs); delete m.overview; this.setState({ india: !st.india, mbs: m, lap: st.lap === 'b-ov' || st.lap === 'b-ovin' ? (st.india ? 'b-ov' : 'b-ovin') : st.lap }); },
+            phoneCls: door === 'lap' ? 'gone' : '', lapCls: door === 'lap' ? '' : 'gone',
+            bhPhone: phoneScr ? 'on' : '', liveHidden: phoneScr ? 'true' : null,
+            phoneBoardLabel: phoneScr ? 'Board: ' + phoneScr.name : 'Board',
+            lapW: Math.round(1280 * sc) + 'px', lapH: Math.round(800 * sc) + 'px', lapLabel: lapScr ? 'Browser board: ' + lapScr.name : 'Browser',
+            hasHere: !!show, here: here,
+            cards: this._cards.map((c, i) => ({ n: c[0], on: i === cardAt.i ? 'on' : '', p: i === cardAt.i ? 'true' : 'false', go: () => this.setState({ door: 'chat', chat: c[1][0] }) })),
+            stepTxt: 'Step ' + (cardAt.k + 1) + ' of ' + cardAt.ids.length,
+            prevStep: () => this.step(-1), nextStep: () => this.step(1)
+          };
+          const pill = (n, v) => ({ n: n, t: (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), aria: n + ' ' + (v > 0 ? 'plus ' : v < 0 ? 'minus ' : '') + Math.abs(v) + ', ' + (v >= 0 ? 'in its favour' : 'against it'), cls: v >= 0 ? 'pfor' : 'pagainst', left: (v >= 0 ? 50 : 50 - Math.abs(v) * 12.5) + '%', w: Math.abs(v) * 12.5 + '%' });
+          return Object.assign(doorVals, {
+            tcls: st.dark ? 't-dark' : 't-light', tgcls: st.dark ? 'tg-dark' : 'tg-light',
+            lightOn: st.dark ? '' : 'on', darkOn: st.dark ? 'on' : '', privOn: st.priv ? 'on' : '',
+            lightPressed: st.dark ? 'false' : 'true', darkPressed: st.dark ? 'true' : 'false', privPressed: st.priv ? 'true' : 'false',
+            eye: st.priv ? 'visibility_off' : 'visibility',
+            maskCls: st.priv ? 'mp-mask' : '',
+            total: st.priv ? '£00,000' : '£' + st.n.toLocaleString('en-GB'),
+            totalLabel: st.priv ? 'hidden' : '£25,800',
+            sub: st.priv ? '▼ 0.6% this week' : '▲ £612 this month · ▼ 0.6% this week',
+            cost: mask('$39.80', '$00.00'),
+            capShort: st.priv ? 'of the Claude ceiling' : 'of the $160 ceiling',
+            capLong: st.priv ? 'of the Claude ceiling · 25%' : 'of the $160 ceiling · 25% · about £31',
+            awsLine: st.priv ? 'AWS and others have their own cap.' : 'AWS and others: £3 of their own £50 cap.',
+            holdingsSub: st.priv ? 'Five holdings · prices to Friday\'s close' : '£25,800 in five holdings · prices to Friday\'s close',
+            hval: mask('£4,210', '£0,000'),
+            hs: base.map((h) => Object.assign({}, h, { v: mask(h.val, '£0,000'), aria: h.name + ', ' + (st.priv ? 'value hidden' : h.val) + ', ' + h.say + ' this week' + (h.hasSt ? ', ' + h.st + ' ' + h.conf : '') })),
+            alive: st.alive,
+            cls: each(cls),
+            an: each((id) => (seen(id) ? 'mp-rise' : '')),
+            fd: each((id) => (seen(id) ? 'mp-fade' : '')),
+            gr: each((id) => (seen(id) ? 'mp-grow' : '')),
+            holdInst: ['holdO', 'holdH'].map((id) => ({ id: id, cls: cls(id), fd: seen(id) ? 'mp-fade' : '', gr: seen(id) ? 'mp-grow' : '', openFc: () => this.go('m-fc1') })),
+            openAdmin: () => this.go('S:lap:a-people'),
+            isRoot: stack.length === 1, isSub: stack.length > 1,
+            backLabel: parent ? names[parent] : '', backAria: parent ? 'Back to ' + names[parent] : 'Back',
+            tabs: tabDefs.map((d) => ({ label: d[1], icon: d[2], on: d[0] === st.tab ? 'on' : '', fill: d[0] === st.tab ? 'ms-fill' : '', cur: d[0] === st.tab ? 'page' : null, go: () => this.goTab(d[0]) })),
+            pushHoldO: () => this.push('holdO'),
+            pushHoldH: () => this.push('holdH'),
+            pushActivity: () => this.push('activity'),
+            pushAudit: () => this.push('audit'),
+            back: () => this.pop(false),
+            sheetShown: st.sheet !== 'closed', sheetCls: st.sheet === 'closing' ? 'mp-out' : 'mp-sheet-in', scrimCls: st.sheet === 'closing' ? 'scrim-out' : 'mp-fade',
+            openWhy: () => this.setState({ sheet: 'open' }, () => { const b = document.querySelector('.sheetclose'); if (b) b.focus(); }),
+            closeWhy: () => this.closeSheet(),
+            setLight: () => this.setState({ dark: false }), setDark: () => this.setState({ dark: true }),
+            togglePriv: () => this.setState({ priv: !st.priv }),
+            replay: () => {
+              cancelAnimationFrame(this._raf); clearTimeout(this._t); clearTimeout(this._nt); clearTimeout(this._st);
+              this.setState(Object.assign(this.fresh(), { dark: st.dark, priv: st.priv, alive: false, india: st.india, lap: st.lap, lapHist: st.lapHist, chat: st.chat }));
+              this._t = setTimeout(() => { this.setState({ alive: true }); this.count(); }, 40);
+            },
+            ov: { line: line6, area: line6 + ' L' + HW + ',' + HH + ' L0,' + HH + ' Z', marks: [3, 7, 10].map((i) => ({ x: f2(p6[i][0]) + '%', y: f2(p6[i][1]) + '%' })) },
+            hc: {
+              line: 'M' + s14.map((v, i) => f2(XP(i)) + ',' + f2(YP(v))).join(' L'),
+              alertY: f2(YP(alertV)), alertTop: f2(Y(alertV)) + '%', alertTxt: st.priv ? '8% alert' : '£' + Math.round(alertV).toLocaleString('en-GB'),
+              shX: f2(XP(last)), shW: f2(CW - XP(last)), shY: f2(0.14 * CH), shH: f2(0.855 * CH),
+              proj: 'M' + f2(XP(last)) + ',' + f2(YP(s14[last])) + ' L' + CW + ',' + f2(YP(s14[last])),
+              marks: [[6, 'HOLD', 'd-hold', 'c-hold', 'lbl-l'], [8, 'ADD', 'd-add', 'c-add', ''], [13, '', 'd-pause', 'c-pause', '']].map((m) => ({ x: f2(X(m[0])) + '%', y: f2(Y(s14[m[0]])) + '%', lbl: m[1], has: !!m[1], dot: m[2], c: m[3], pos: m[4] })),
+              months: [{ t: 'Aug', x: '14%' }, { t: 'Sep', x: '44%' }, { t: 'Oct', x: '72%' }],
+              aria: st.priv
+                ? 'Fourteen Friday closes, 31 July to 30 October: up to a high on 25 September, then down 8.4%, just under your 8% alert. HOLD 66% on 11 September, ADD 64% on 25 September, PAUSE 61% now, for the next two weeks.'
+                : 'Fourteen Friday closes, 31 July to 30 October: up to £4,596 on 25 September, then down to £4,210, just under your 8% alert at £4,228. HOLD 66% on 11 September, ADD 64% on 25 September, PAUSE 61% now, for the next two weeks.'
+            },
+            pillars: [pill('Trend', 2), pill('Momentum', -1), pill('Macro (US)', 1), pill('Risk', -2)],
+            whys: [
+              { icon: 'trending_down', cls: 'mp-pause', h: 'Momentum is fading', b: 'RSI turned down from 71 and the MACD histogram is shrinking: two signs of exhaustion.' },
+              { icon: 'bolt', cls: 'mp-pause', h: 'Risk is elevated', b: 'Volatility is in its 72nd percentile and the price is 8.4% off its high.' },
+              { icon: 'trending_up', cls: 'mp-hold', h: 'The long trend still holds', b: 'Above its 200‑day average, so this is a pause, not a reason to sell.' }
+            ],
+            ccy: [
+              { k: 'USD', p: '84%', c: 'var(--mp-ccy-usd)' }, { k: 'GBP', p: '9%', c: 'var(--mp-ccy-gbp)' }, { k: 'JPY', p: '3%', c: 'var(--mp-ccy-jpy)' }, { k: 'EUR', p: '3%', c: 'var(--mp-ccy-eur)' }, { k: 'Other', p: '1%', c: 'var(--mp-ccy-other)' }
+            ],
+            ovl: [
+              { pair: 'Balanced and NASDAQ 100', v: '9% of Balanced', names: 'Apple, Microsoft, Nvidia, Amazon, Alphabet, Meta, Broadcom' },
+              { pair: 'Robotics and NASDAQ 100', v: '3% of Robotics', names: 'Nvidia, Intuitive Surgical, Cadence, Synopsys' },
+              { pair: 'Silver and anything', v: 'none', names: 'That is its job: it moves on different news.' }
+            ],
+            rel: [
+              { b: '55–60%', txt: 'happened 7 of 12 · 58%', said: '57.5%', hap: '58%' },
+              { b: '60–70%', txt: 'happened 10 of 16 · 63%', said: '65%', hap: '63%' },
+              { b: '70%+', txt: '3 of 3 · 100% (too few yet)', said: '74%', hap: '100%' }
+            ],
+            weeks: [1, 2, 3, 4, 5, 6, 7, 8].map((i) => ({ cls: i <= 6 ? 'on' : '' })),
+            runs: [
+              { time: '07:00', job: 'Ingest prices', meta: '12 s · 5 of 5 priced', cost: mask('£0.00', '£0.00', true), icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '07:04', job: 'Engine', meta: '8 s · self-test ✓', cost: mask('£0.00', '£0.00', true), icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '07:31', job: 'Morning brief', meta: 'Sonnet · 3 calls · 9.4k tokens', cost: mask('£0.03', '£0.00', true), icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '12:10', job: 'Chat: "Why PAUSE?"', meta: 'Sonnet · 2 calls · 4.1k tokens', cost: mask('£0.02', '£0.00', true), icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '21:05', job: 'Evening wrap', meta: 'due tonight', cost: plain('—'), icon: 'schedule', okCls: 'mp-ink3', okLabel: 'Scheduled' }
+            ],
+            audit: [
+              { day: 'Today', av: 'av-you', who1: 'Y', w1: 'Bought ', hasAmt: true, amt: mask('£200', '£000'), w2: ' of Balanced', ch: mask('units 1,003.2 → 1,014.0', 'units 0,000.0'), meta: 'You · chat Confirm · 12:14 · r‑1182' },
+              { day: 'Yesterday', av: 'av-asha', who1: 'A', w1: 'Cash pot updated', hasAmt: false, amt: plain(''), w2: '', ch: mask('£350 → £400', '£000 → £000'), meta: 'Asha · screenshot · 19:02 · r‑1170' },
+              { day: '28 October', av: 'av-you', who1: 'Y', w1: 'Stop pinging me under 2%', hasAmt: false, amt: plain(''), w2: '', ch: plain('alert floor off → 2%'), meta: 'You · chat · 08:40 · r‑1151' },
+              { day: '26 October', av: 'av-you', who1: 'Y', w1: 'Physical Silver added', hasAmt: false, amt: plain(''), w2: '', ch: plain('into your GIA'), meta: 'You · factsheet · 21:15 · r‑1139' }
+            ]
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

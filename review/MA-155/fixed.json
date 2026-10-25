@@ -1,0 +1,454 @@
+[
+  {
+    "id": "r1-B1",
+    "round": 1,
+    "finding": "the design label marks exactly the stories with UI, and the check compares them",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py check"
+    }
+  },
+  {
+    "id": "r1-B2",
+    "round": 1,
+    "finding": "Browser · Admin · Settings is on MA-130, the UI story PLAN puts it under",
+    "check": {
+      "type": "trace",
+      "key": "MA-130",
+      "board": "Browser · Admin · Settings"
+    }
+  },
+  {
+    "id": "r1-B3",
+    "round": 1,
+    "finding": "MA-155's criteria 3 and 4 say what the check does",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-155: criteria 3 and 4 name /plan-sync --design before every PR and In Review or Done"
+    }
+  },
+  {
+    "id": "r1-B4",
+    "round": 1,
+    "finding": "MA-157 sits under the phase 0 epic",
+    "check": {
+      "type": "trace",
+      "key": "MA-157",
+      "field": "epic",
+      "value": "MA-9"
+    }
+  },
+  {
+    "id": "r2-B1",
+    "round": 2,
+    "finding": "a partly drawn story cannot start",
+    "check": {
+      "type": "cmd_fails",
+      "run": "python3 scripts/plan_sync.py start MA-63"
+    }
+  },
+  {
+    "id": "r2-B2",
+    "round": 2,
+    "finding": "the board check refuses names not on the canvas",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r2-B3",
+    "round": 2,
+    "finding": "start runs the row's own checks",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json,io,contextlib; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':'To Do','labels':[],'arch':[],'ui':False,'design':'none','boards':[],'notes':''}; t['items'].append(r); q=lambda: (lambda o: (contextlib.redirect_stdout(o).__enter__(), p.start(t,'MA-X'))[1])(io.StringIO()); a=q(); r['arch']=['99.9']; b=q(); sys.exit(0 if (a,b)==(0,1) else 1)\""
+    }
+  },
+  {
+    "id": "r2-B4",
+    "round": 2,
+    "finding": "ARCHITECTURE 16 separates /pause, the Admin center's Pause and the PAUSE stance",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "Three different things share it",
+      "present": true
+    }
+  },
+  {
+    "id": "r3-B1",
+    "round": 3,
+    "finding": "MA-39, MA-80 and MA-91 list their undrawn screens",
+    "check": {
+      "type": "cmd",
+      "run": "for k in MA-39 MA-80 MA-91; do ! python3 scripts/plan_sync.py start $k >/dev/null || exit 1; done"
+    }
+  },
+  {
+    "id": "r3-B2",
+    "round": 3,
+    "finding": "a board's number is tied to its own name",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r3-B3",
+    "round": 3,
+    "finding": "Browser · Forecaster · Proof is on MA-124 with an open question",
+    "check": {
+      "type": "trace",
+      "key": "MA-124",
+      "board": "Browser · Forecaster · Proof"
+    }
+  },
+  {
+    "id": "r3-B4",
+    "round": 3,
+    "finding": "a story In Review or Done with undrawn screens fails the check",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); ok=True\nfor s in ('In Review','Done'):\n r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':s,'labels':['design'],'arch':[],'ui':True,'design':'picked','boards':[{'project':'app','file':'Admin center 2.dc.html','board':'Browser · Admin · Settings'}],'notes':'','undrawn':['x']}; e,_=p.item_findings(r,p.context(t)); ok=ok and any('still undrawn' in x for x in e)\nsys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r4-B1",
+    "round": 4,
+    "finding": "stray strings are not board titles",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r4-B2",
+    "round": 4,
+    "finding": "the web app is read-only except the owner's admin settings and operations",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "Dashboard will be read only\\s+\\(except for admin\\)",
+      "present": true
+    }
+  },
+  {
+    "id": "r4-B3",
+    "round": 4,
+    "finding": "MA-130 lists its two undrawn chat screens",
+    "check": {
+      "type": "trace",
+      "key": "MA-130",
+      "field": "undrawn",
+      "contains": "agent's question"
+    }
+  },
+  {
+    "id": "r5-B1",
+    "round": 5,
+    "finding": "an option's title expands only with option numbers; script fragments are not titles",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r5-B2",
+    "round": 5,
+    "finding": "MA-35 lists the /pause and /resume replies as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-35",
+      "field": "undrawn",
+      "contains": "/pause and /resume"
+    }
+  },
+  {
+    "id": "r6-B1",
+    "round": 6,
+    "finding": "a board's number is the one its chip prints",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r6-B2",
+    "round": 6,
+    "finding": "MA-104 has UI and its own section",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "^### 12\\.1 ",
+      "present": true
+    }
+  },
+  {
+    "id": "r6-B3",
+    "round": 6,
+    "finding": "MA-130 lists the daily digest as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-130",
+      "field": "undrawn",
+      "contains": "digest"
+    }
+  },
+  {
+    "id": "r6-admin",
+    "round": "Arun, 25 Oct 2026",
+    "finding": "one admin (Arun's decision, not a review finding): no spec doc or page allows a second",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "PLAN.md",
+        "TECH_STACK.md",
+        "README.md",
+        "docs/design/market-agent.html",
+        "docs/design/agent-journey.html",
+        "docs/design/app-v1/*.dc.html",
+        "docs/design/ds-v1/*.dc.html"
+      ],
+      "pattern": "\\ban(?:\\s|&nbsp;|<[^>]+>)+admin\\b(?!\\s+desk)|\\badmins\\b|second admin can be added|second person is made an admin",
+      "present": false,
+      "ignore_case": true
+    }
+  },
+  {
+    "id": "r7-B1",
+    "round": 7,
+    "finding": "MA-130's acceptance says the owner is the one admin",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-130: 'Who: the admin only: the owner, the household's one admin'; 'Instructions from the admin'"
+    }
+  },
+  {
+    "id": "r7-B2",
+    "round": 7,
+    "finding": "MA-137 lists the daily digest and the change message as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-137",
+      "field": "undrawn",
+      "contains": "digest"
+    }
+  },
+  {
+    "id": "r8-d1",
+    "round": 8,
+    "finding": "a bare yes at the merge question means review first; merge it or merge now merges unreviewed",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/rules/ship-autopilot.md",
+        ".claude/rules/independent-review.md"
+      ],
+      "pattern": "a\\s+bare\\s+\"yes\",\\s+or\\s+any\\s+answer\\s+that\\s+asks\\s+for\\s+the\\s+review,\\s+means\\s+review\\s+first",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-d2",
+    "round": 8,
+    "finding": "the repo's review rule file exists where the global rule looks for it",
+    "check": {
+      "type": "grep",
+      "file": ".claude/rules/independent-review.md",
+      "pattern": "review/MA-<n>/fixed\\.json",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-c1",
+    "round": 8,
+    "finding": "the Journey page's Rule 4 card carries the admin exception",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/agent-journey.html",
+      "pattern": "The one exception is the owner's Admin center",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-c2",
+    "round": 8,
+    "finding": "no 'an admin' across a line break (covered by r6-admin)",
+    "check": {
+      "type": "grep",
+      "file": "PLAN.md",
+      "pattern": "\\ban\\s+admin's\\b",
+      "present": false,
+      "ignore_case": true
+    }
+  },
+  {
+    "id": "r8-c3",
+    "round": 8,
+    "finding": "Athena and the laptop both need their own read-only role for the ledger export",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "either\\s+needs a read-only role of its own",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-c4",
+    "round": 8,
+    "finding": "the ceiling's minimum is $10 in PLAN",
+    "check": {
+      "type": "grep",
+      "file": "PLAN.md",
+      "pattern": "from \\$10\\s+to the hard limit",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-b1",
+    "round": 8,
+    "finding": "MA-116 lists its undrawn settings, the credit warning and the hard-limit refusal",
+    "check": {
+      "type": "trace",
+      "key": "MA-116",
+      "field": "undrawn",
+      "contains": "past the $200 credit"
+    }
+  },
+  {
+    "id": "r8-b2",
+    "round": 8,
+    "finding": "MA-137 lists its undrawn edit screens",
+    "check": {
+      "type": "trace",
+      "key": "MA-137",
+      "field": "undrawn",
+      "contains": "routing matrix"
+    }
+  },
+  {
+    "id": "r8-b3",
+    "round": 8,
+    "finding": "MA-145 lists the replay that fails again",
+    "check": {
+      "type": "trace",
+      "key": "MA-145",
+      "field": "undrawn",
+      "contains": "fails again"
+    }
+  },
+  {
+    "id": "r8-a1",
+    "round": 8,
+    "finding": "the fixed list's behaviour checks catch their fix being undone (r2-B3, r3-B4 fail against mutants)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 review/MA-155/mutants.py && python3 -c \"import json,sys; L={e['id']:e for e in json.load(open('review/MA-155/fixed.json'))}; bad=[i for i,e in L.items() if e['check']['type']=='grep' and any(str(f).endswith('.py') or str(f).startswith('scripts/') for f in (e['check'].get('files') or [e['check'].get('file')]))]; sys.exit(0 if not bad and all(L[k]['check']['type']=='cmd' for k in ('r2-B3','r3-B4')) else 1)\""
+    },
+    "note": "Amended in round 9 (no grep check may read a script) and round 10 (run against mutants)."
+  },
+  {
+    "id": "r9-c1",
+    "round": 9,
+    "finding": "the Journey page says the Admin center changes no record",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/agent-journey.html",
+      "pattern": "none changes a record",
+      "present": true
+    }
+  },
+  {
+    "id": "r9-c2",
+    "round": 9,
+    "finding": "12.1 says no human role reads prod's records, the MCP only metadata",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "reads prod's records today \\(§18\\.1; the AWS MCP reads only metadata",
+      "present": true
+    }
+  },
+  {
+    "id": "r9-b1",
+    "round": 9,
+    "finding": "MA-145 lists the old-update and expired-Confirm replies as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-145",
+      "field": "undrawn",
+      "contains": "still want this?"
+    }
+  },
+  {
+    "id": "r9-b2",
+    "round": 9,
+    "finding": "no board says Admins only (covered by r6-admin over the boards)",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/app-v1/Telegram admin.dc.html",
+      "pattern": "Admins only",
+      "present": false
+    }
+  },
+  {
+    "id": "r8-d1b",
+    "round": 10,
+    "finding": "the autoship skill says a bare yes means review first",
+    "check": {
+      "type": "grep",
+      "file": ".claude/skills/autoship/SKILL.md",
+      "pattern": "bare\\s+\"yes\"\\s+means\\s+review\\s+first",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-d1c",
+    "round": 10,
+    "finding": "no repo rule says a bare yes means merge now",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/rules/ship-autopilot.md",
+        ".claude/rules/independent-review.md",
+        ".claude/skills/autoship/SKILL.md"
+      ],
+      "pattern": "bare\\s+[\"“”']?yes[\"“”']?[^.]{0,40}means\\s+merge\\s+now",
+      "present": false,
+      "ignore_case": true
+    }
+  },
+  {
+    "id": "r10-d1",
+    "round": 10,
+    "finding": "the skill's past-five question names the merge",
+    "check": {
+      "type": "grep",
+      "file": ".claude/skills/autoship/SKILL.md",
+      "pattern": "The\\s+question\\s+names\\s+the\\s+merge",
+      "present": true
+    }
+  },
+  {
+    "id": "r10-b1",
+    "round": 10,
+    "finding": "MA-137 lists the AWS step and forecast alerts as undrawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); sys.exit(0 if \\\"step alerts\\\" in u and 'forecast passes the AWS cap' in u else 1)\""
+    }
+  },
+  {
+    "id": "r11-c1",
+    "round": 11,
+    "finding": "15.1's explicit yes is for prod and dev together past the credit",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "ceilings together would pass the credit",
+      "present": true
+    }
+  }
+]

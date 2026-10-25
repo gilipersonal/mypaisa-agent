@@ -79,7 +79,11 @@ whole household's wealth later are the same records, not a migration.
    unasked.
 4. **One write path.** Every change to the records, whatever the screen, goes
    through the bot: a card, a Confirm tap, an audit row. The web app, today
-   and when it becomes the full MyPaisa, is read-only by construction.
+   and when it becomes the full MyPaisa, is read-only by construction for the
+   household's records. Arun, 24 Oct 2026: "Dashboard will be read only
+   (except for admin)". The one exception is the owner's Admin center, which
+   acts on admin settings and operations, never on a record, each behind a
+   fresh check and an audit row (§9.3).
 
 ---
 
@@ -93,6 +97,7 @@ whole household's wealth later are the same records, not a migration.
 | Send a factsheet PDF | Reads it, shows a card: name, ISIN, cost, what it holds, where it invests; you tap Confirm |
 | Send a screenshot of your Monzo valuations | Reads the values, matches them to holdings, updates the records, shows a before/after card; you tap Confirm |
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
+| Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so the bot says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with buttons: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
 | Open the web app on your laptop | Log in with Telegram (a tap in the Telegram app) or with Google (the Gmail account linked to you), no password either way; the same dashboard, plus the audit log of every change and what the agent did and spent; read-only |
 | Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
@@ -126,8 +131,9 @@ Nothing waits on anything else directly:
 your messages, the bot's replies and every background job travel through SQS
 queues that retry them and keep what still fails (§21). The agent Lambda is
 the only one that talks to you in the chat. The api Lambda is the only one the web app talks
-to, and apart from the owner's security actions in the Admin center (MA-102)
-it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
+to, and apart from the owner's admin actions in the Admin center (§9.3: the
+security actions, the ceiling and caps, replays, agents' requests and
+settings, incidents), each behind a fresh check, it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
 every one of them writes a `RunRecord` saying what it did (§10).
 
 ---
@@ -146,19 +152,19 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Invite** | `portfolio_id`, `token`, `role`, `created_by`, `expires_at`, `used_by?` | Single use, 24-hour expiry, bound to one portfolio and role. |
 | **Account** | `portfolio_id`, `id`, `name`, `category` (`investment` · `cash` · `deposit` · `policy` · `pension` · `property` · `debt`), `type` (`ISA` · `GIA` · `SIPP` · `cash` · `fixed_deposit` · `policy` · `pension` · `property` · `mortgage` · `loan` · `card`), `ccy`, `institution` (`Monzo`, `LIC`, a bank, …), `country`, `owners[]` (member ids; two for a joint account) | A tax wrapper, a pot, a property or a loan belonging to one or two members. Finances are managed here, per member. Phase 1 uses `investment` and `cash`; the other categories wait for §12 but the field exists from day one. |
 | **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash` · later `property` · `deposit` · `policy` · `pension` · `debt`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `country?`, `institution?`, `maturity_date?`, `rate?`, `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither, a property has an address and a deposit has a maturity date. |
-| **Position** | `account_id`, `instrument_id`, `units`, `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. |
+| **Position** | `account_id`, `instrument_id`, `units`, `ccy` (the currency it is bought and valued in, as the platform shows it), `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. Money logged against it is checked against `ccy` (§4.7). |
 | **Valuation** | `instrument_id`, `date`, `price`, `price_ccy`, `fx_to_gbp`, `units`, `value_gbp`, `source` (`nav` · `close` · `proxy` · `user_screenshot` · `user_typed` · `formula`), `provisional` | The time series the wealth tracker reads. User-supplied values are kept alongside computed ones; a gap between them is a signal (wrong units, a fee, a late NAV). |
 | **Document** | `document_id`, `kind` (`factsheet` · `kiid` · `annual_report` · `screenshot` · `cas` · `broker_export` · `spreadsheet` · `other`), `s3_key`, `sha256`, `mime`, `bytes`, `original_name`, `sent_by`, `sent_at`, `message_id`, `instrument_id?`, `import_id?`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | **One row for every file a member sends, kept in S3 for good** (§4.6, MA-148). The factsheet is the source of look-through until a better feed exists. |
-| **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy`, `amount_gbp` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. XIRR, payoff curves and the forecast are computed from it, so every money movement is recorded with its date from day one. |
+| **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy` (always the position's), `amount_gbp`, `orig_amount?`, `orig_ccy?`, `fx_rate?`, `fx_source?` (`as_credited` · `ecb` · `statement`), `fx_date?` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. XIRR, payoff curves and the forecast are computed from it, so every money movement is recorded with its date from day one. |
 | **Liability** | `account_id`, `kind` (`mortgage` · `loan` · `card`), `principal`, `rate`, `term_months`, `started_at`, `emi`, `schedule[]` (computed), `ccy` | A debt: the balance against the original plan, the interest and principal split, the payoff date; its events are Transactions. Later, §12. |
 | **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | Computed daily by the engine from Valuation and Liability; the series the overview and the forecast chart read. Later, §12. |
 | **Budget**, **ForecastAssumptions** | per member; per portfolio | Monthly income and planned spend with EMIs and surplus; the growth, contribution and surplus-allocation assumptions the thirty-year projection runs on. Later, §12. |
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **Forecast** | `instrument_id`, `date`, `horizon_days` (20), `p_up`, `p_fall_5`, `range` {p10, p50, p90}, `mood`, `analogs` {count, recovered}, `events[]`, `drivers[]`, `model_version`, `graded` | One per holding per day from the Forecaster (§19), later; graded like a stance. |
-| **Setting**, **ConfigVersion** | `key`, `value`, `schema` (type, range), `auto_band`, `approval` (`auto` · `admin`), `version`, `updated_by` (an admin or an agent), `reason`; one `ConfigVersion` row per change, never edited | Every behaviour the admin controls (§20.2). |
-| **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`telegram` · `web`), `expires_at` | An agent's request for an admin's approval (§20.3). |
-| **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from an admin, and what they could not fix themselves (§20.3, §20.5). |
+| **Setting**, **ConfigVersion** | `key`, `value`, `schema` (type, range), `auto_band`, `approval` (`auto` · `admin`), `version`, `updated_by` (the admin or an agent), `reason`; one `ConfigVersion` row per change, never edited | Every behaviour the admin controls (§20.2). |
+| **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`telegram` · `web`), `expires_at` | An agent's request for the admin's approval (§20.3). |
+| **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from the admin, and what they could not fix themselves (§20.3, §20.5). |
 | **ScoreDaily** | `model`, `instrument_id`, `mood`, `date`, the day's graded count, hit rate, Brier score, log loss, range coverage, rolling 30, 90 and 365-day values | The learning loop's daily scoreboard (§20.4); the full outcomes live in S3. |
 | **CalibrationMap** | `model`, `version`, `buckets[]` (said vs seen), `fitted_on`, `window`, `status` (`probation` · `live` · `rolled_back`) | The map from raw confidence to calibrated confidence (§20.4). |
 | **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.6). |
@@ -293,7 +299,7 @@ login is an audit row.
 
 | Role | Can |
 | --- | --- |
-| owner | Invite and remove members, change any account or holding, set the household budget and settings, see every member's detail |
+| owner | Invite and remove members, change any account or holding, set the household budget and settings, see every member's detail. The owner is the household's one admin (Arun, 25 Oct 2026: "there is only 1 admin"): the only person who sees the Admin center, the admin's Telegram chat and the admin desk |
 | member | Add, change and remove holdings in their own accounts; see the household overview; see their own detail; opt in to sharing their detail with the household |
 | viewer | Read the household overview and whatever members share; nothing else |
 
@@ -360,6 +366,56 @@ authorizer checks the role: a member opens their own files, the owner any,
 a viewer none; each opening is itself an audit row. In the chat a change
 card's Source button sends the original back.
 
+### 4.7 Money in any currency, checked against the holding (MA-156)
+
+Arun, 24 Oct 2026: "On the telegram App, I should be able to add
+transactions using Any currency for any fund and chatbot to figure what the
+base currency of the holdings, If the holdings are in GBP and I try to invest
+INR to GBP holding, chat should be able to correct me."
+
+Every holding has one currency: the one it is bought and valued in, as the
+platform shows it (`Position.ccy`). It is read from the factsheet or the
+screenshot when the holding is added and shown on that Confirm card, so it is
+confirmed once and never guessed again. A fund's own base currency
+(`Instrument.base_ccy`, often USD) can differ from the share class a member
+holds (GBP); the position's currency is the one that counts here.
+
+| The member types | The bot |
+| --- | --- |
+| "I put 200 into Balanced" | No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is" |
+| "I put £200 into Balanced" | Same currency: the card as in §4.2, then Confirm |
+| "I put ₹20,000 into Balanced" | Saves nothing yet. "Balanced is held in pounds (GBP), so it can't take rupees directly; the rupees were changed to pounds on the way." Buttons: **Pounds that arrived** (type it, or send the platform's confirmation), **Use the ECB rate** (an estimate, marked so), **A rupee holding** (listed when there is one), **Cancel** |
+| "1.5 lakh into my Nifty 50 index fund" (phase 13) | An INR holding, so ₹1,50,000 with no question; pounds typed against it get the same correction the other way |
+| "Which currency is Balanced in?" | "Pounds (GBP), from the factsheet you sent on 3 March" |
+
+- **Reading amounts is code.** A parser reads symbols (£ $ € ₹), codes
+  (GBP, USD, EUR, INR and every currency the ECB publishes), words (pounds,
+  dollars, euros, rupees, Rs) and Indian number words (lakh, crore). Claude
+  only fills the fields when the wording is free; the figure is always the
+  member's own, echoed back for Confirm. "$" means US dollars unless the
+  member holds another dollar, when the bot asks which.
+- **A converted figure is never Claude's.** "Pounds that arrived" records
+  the member's figure and keeps the rupee amount and the implied rate beside
+  it. "Use the ECB rate" is the engine's conversion at the ECB reference rate
+  for that day, or the last one published before it at a weekend or an ECB
+  holiday (§5.3), with the rate and its date on the card. The ECB publishes
+  each currency against the euro, so pounds to rupees is the engine's cross
+  of the two euro rates of that day. It is marked an
+  estimate until a statement, a screenshot or the next valuation confirms it.
+  The button appears once the daily rates are loaded (MA-44, phase 2);
+  before then the bot asks for the amount that arrived.
+- **Stored in the holding's currency, with the original kept.** The
+  Transaction's `amount` and `ccy` are the position's; `orig_amount`,
+  `orig_ccy`, `fx_rate`, `fx_source` and `fx_date` keep what was typed and
+  how it became the recorded figure. The audit row (§4.6) shows both, and a
+  screenshot or statement it came from is its `document_id`.
+- **Every pair, both ways, every door.** The same check runs on a typed
+  message, the guided flow, a screenshot, and a CAS or broker line (§22.2)
+  whose currency differs from the holding's. Privacy mode hides both amounts.
+- **Designed first.** The correction card, its buttons and the Confirm card
+  with two currencies are drawn as `Currency check.dc.html` in Claude Design
+  and put through design-first when MA-156 starts.
+
 ---
 
 ## 5. Data layer
@@ -372,7 +428,7 @@ free, no key) is the default everywhere and the only feed local development
 needs. Switching to EODHD is a setting plus a key in SSM, not a code
 change, and it is a last resort: free sources first (yfinance, Twelve Data's
 free tier, free websites where their terms allow), EODHD only when the data
-steward shows a free source cannot serve a holding and an admin approves
+steward shows a free source cannot serve a holding and the admin approves
 (§20.3).
 
 **The contract.** A plugin implements:
@@ -464,7 +520,8 @@ uploaded or monthly from the page.
 
 GBP base; USD, EUR and INR, all published daily by the ECB. Each member can
 read figures in GBP or INR; the stored value is always both the native
-amount and its GBP equivalent on the day. Exchange calendars XLON, XETR,
+amount and its GBP equivalent on the day. Money typed in one currency for a
+holding in another is checked and converted as in §4.7. Exchange calendars XLON, XETR,
 XNYS. All schedules in `Europe/London`.
 
 ---
@@ -529,7 +586,7 @@ weekly (Brier score, reliability table by bucket); the mapping changes only
 after 8 weeks of evidence and the change is logged. From phase 12 the
 learning loop grades every day and moves the map daily within small bounds,
 with an automatic rollback; changes to the rules themselves still need
-evidence and an admin's approval (§20.4).
+evidence and the admin's approval (§20.4).
 
 ### 6.5 Forecast ranges
 
@@ -770,11 +827,21 @@ The pages, all read-only:
   the last seven days.
 
 There is no write path for the household's records. The api's data routes
-are GET only, the app has no form that posts, and every change still goes
-through a card and a Confirm tap in the chat, where it is audited. The
-exceptions are the owner's settings in the Admin center: the security actions
-(sign out, pause, restore, unlink; MA-102) and the Claude ceiling (§15.1,
-MA-116), each behind a fresh check with a passkey or Google.
+are GET only, the app has no form that posts a record (the CAS password of
+§22.2 is typed into the Mini App only to open a file in memory, and changes
+nothing), and every change still goes through a card and a Confirm tap in
+the chat, where it is audited. The
+exceptions are the owner's admin settings and operations in the Admin center
+(Arun, 24 Oct 2026: "Dashboard will be read only (except for admin)"): the
+security actions (sign out, pause, restore, unlink; MA-102); the Claude
+ceiling with its member share, renewal day and hard limit, the caps, their
+alert thresholds and the alert routing, quiet hours and cooldowns (§15.1,
+§15.2, MA-116, MA-137);
+replaying dead-lettered work (§21.3, MA-145); approving or rejecting an
+agent's request and rolling a setting back (§20.2, §20.3, MA-130); and
+choosing how an incident ends (§20.5, MA-135). Each is behind a fresh check
+with a passkey or Google, writes an audit row, and none changes the
+household's records.
 Privacy mode hides pounds here too. Each environment has its own S3 bucket and
 CloudFront distribution for the app (`console-dev` and `console`), and its own
 API Gateway HTTP API on a custom domain (`api-dev` and `api`), §18.
@@ -851,7 +918,7 @@ the old repository is retired when the new app covers it. What stays fixed:
 
 | | |
 | --- | --- |
-| **Read-only, everywhere** | No screen writes the household's records; the Admin center holds only the owner's settings: the security actions (MA-102) and the Claude ceiling (MA-116). Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
+| **Read-only, everywhere** | No screen writes the household's records; the Admin center holds only the owner's admin settings and operations (§9.3): the security actions, the ceiling and caps, replays, agents' requests and settings, incidents, each behind a fresh check. Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The ISA of phase 1 and the household's property, deposits, policies, pensions and loans are rows of the same shapes. |
 | **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Telegram, Google or a passkey to log in, through each environment's Cognito pool. |
 | **Two currencies** | GBP and INR side by side, from the ECB's daily rates, chosen per member; USD and EUR for the holdings that trade in them. |
@@ -874,6 +941,30 @@ Order of work in `PLAN.md` phase 9: the kinds and their bot flows first
 redesigned screens, then budget and reports, then retiring the old
 repository. Each step ships read-only pages over data that the bot already
 maintains, so nothing is shown that cannot be changed from the chat.
+
+### 12.1 Any question, answered from a read-only SQL copy of the ledger (MA-104)
+
+Arun, 24 Oct 2026: "I will be making such queries in future about my
+transactions and investments." Questions nobody planned for ("average
+monthly dividend per member over two years", "how much went into ISAs versus
+pensions since 2024") are answered without a database running all month:
+
+- A nightly job exports the household's ledger (transactions, valuations,
+  net worth, positions, accounts) to S3 as Parquet, under that household's
+  prefix, encrypted, with a set retention.
+- A `query_ledger_sql` tool runs DuckDB inside the Lambda over that
+  household's files only. Claude writes the SQL from the question; the query
+  is read-only (SELECT only), stops at 10,000 rows or 10 seconds, and cannot
+  reach another household's prefix.
+- The figures in the answer come from the result, never from the model, and
+  the SQL is shown under the answer's Technical section so every answer can
+  be checked. The card is designed first.
+- The structured `query_ledger` tool (MA-62) stays the first choice; this one
+  is for the questions it cannot express. Optionally (MA-104), the same
+  files can be read with Athena or with DuckDB on the owner's laptop; either
+  needs a read-only role of its own for that prefix, since no human role
+  reads prod's records today (§18.1; the AWS MCP reads only metadata, §18.4), and
+  the role is decided when the story starts.
 
 ---
 
@@ -980,8 +1071,9 @@ ceiling of $40, each a setting the admin moves. Ceilings are in dollars, as
 the credit and the Console are; the Admin center shows pounds beside them at
 the day's ECB rate. With no payment method and auto-reload off, the credit
 itself is the last stop. Going past $200 (to a full £200, about $260, say)
-means adding a card on the Console organisation, and the Admin center asks
-for an explicit yes before a ceiling may pass the credit.
+means adding a card on the Console organisation, so when prod's and dev's
+ceilings together would pass the credit, the Admin center warns that the
+extra needs a card and asks for an explicit yes (MA-116).
 
 **What $160 buys.** Two members are expected to spend about $24 a month on
 the standard setup and $39 on the full one (the Claude lines above, in
@@ -1004,7 +1096,7 @@ ceiling ($160 in prod, $40 in dev), the steps of the ladder (70%, 85%, 95%,
 average), the calls per run (eight), each agent's
 share (§20.7), and the day the plan's credit renews, which starts each
 cycle. The admin moves the ceiling up or down in the Admin center (MA-116),
-or from phase 12 in the admin's Telegram chat (§20.3): admins only, behind
+or from phase 12 in the admin's Telegram chat (§20.3): the admin only, behind
 the fresh check (MA-102), with an audit row and a Telegram message to the
 admin; it takes effect on the next model call. Lowering it below what is already
 spent puts the bot straight onto the step that implies, and the Admin center
@@ -1098,8 +1190,8 @@ the hard limit is a pull request.
 | Data feed stale, a job failed | yes | yes | no |
 | Holding alerts (§11) | members' own, as today | members' own, as today | no |
 
-- **Web app:** an Alerts page in the Admin center and a badge, admins only for
-  system alerts.
+- **Web app:** an Alerts page in the Admin center and a badge, for the admin
+  only, for system alerts.
 - **Telegram:** the admin's own chat; critical with sound, the rest silent.
 - **Email:** through Amazon SNS, a topic `mypaisa-<env>-admin-alerts` with the
   admin's address subscribed (put in SSM by hand, the subscription made by
@@ -1127,12 +1219,15 @@ a daily digest instead.
 | Front end | Telegram rich messages + PNG charts + one read-only web app, as a Mini App in Telegram and in a laptop browser | Simple by default, technical on tap, interactive when wanted; the laptop gets the audit log and the agent's activity |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
+| The kill switch's name | `/pause` and `/resume`, kept though PAUSE is also a stance; the stance only appears on a holding's card with its confidence, never as a command (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Three different things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §8); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5); the PAUSE stance is a view on one holding |
+| One admin | The owner is the household's only admin: the Admin center, the admin's Telegram chat, the admin desk, approvals and alerts are theirs alone; no role makes a second admin (Arun, 25 Oct 2026: "there is only 1 admin") | One person decides every change to the system; the second check and the audit row are enough without a second approver |
+| Money in any currency | Each position has one currency; an amount typed in another is never saved as it is: the bot names the holding's currency and asks for the amount that arrived, or offers the ECB rate as a marked estimate; the original amount, rate and source are kept on the transaction (MA-156, 24 Oct 2026) | Rupees are never recorded as pounds; the number stays the member's or the engine's, never Claude's |
 | Identity | Amazon Cognito from day one, one user pool per environment: Telegram (custom auth over `initData` and the Login Widget), Google and passkeys linked to one user per member; invites by one-time link; replaces the earlier "Cognito only later" (MA-106, 24 Oct 2026) | No passwords; one identity however you arrive; sign-out, pause and MFA come built in; free at this scale |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 | Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
 | Batch scoring | Message Batches for the nightly sentiment scoring | Half price; overnight latency is fine |
-| Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind a setting; yfinance and Twelve Data's free tier first, free websites where their terms allow, EODHD only as a last resort on an admin's approval | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
+| Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind a setting; yfinance and Twelve Data's free tier first, free websites where their terms allow, EODHD only as a last resort on the admin's approval | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
@@ -1144,7 +1239,7 @@ a daily digest instead.
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Forecaster | A second engine, phase 11, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
 | Queues | SQS between every part that could fail: updates in and replies out through FIFO queues with one lane per member or chat, background jobs through a work queue, retries with backoff, idempotent handlers, a dead-letter queue behind each with an alarm and replay (§21, MA-138) | Arun: "resilient and self heal with retries from Queues"; nothing a member sends, nothing the bot sends and no day's work is lost to a bad minute somewhere else |
-| Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on an admin's approval, in Telegram or the web; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
+| Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on the admin's approval, in Telegram or the web; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
 | Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
 ## 17. Open questions
@@ -1157,8 +1252,8 @@ a daily digest instead.
 - A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
 - For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
-- Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card); and whether a second person is made an admin (§20.3).
-- The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $100 credit covers with dev's share taken out (§15.1).
+- Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card).
+- The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $200 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
 
@@ -1320,7 +1415,7 @@ falls, and direction is the last and least trusted piece.
 ### 19.2 Data, as it was known on each day (F1, MA-119)
 
 Ten years, from 2015 or inception, in Parquet in the `mypaisa-<env>-lake`
-bucket and queried with DuckDB (the same copy as MA-104):
+bucket and queried with DuckDB (the same DuckDB-over-Parquet approach as MA-104's ledger export):
 
 | Kind | What | Chosen source | Cost |
 | --- | --- | --- | --- |
@@ -1337,7 +1432,7 @@ bucket and queried with DuckDB (the same copy as MA-104):
 engines run on yfinance, Twelve Data's free tier and free websites where
 their terms allow. EODHD is switched on only when the data steward (§20.1)
 shows that no free source can serve a named holding (or its ten-year
-history) and an admin approves the request, which shows the evidence, the
+history) and the admin approves the request, which shows the evidence, the
 £19.99 a month and the headroom in the £50 line for AWS and others. Before
 it asks, it tries EODHD's free key on that holding and records what comes
 back. A paid feed not needed for 60 days is proposed for cancellation. Share-level
@@ -1465,7 +1560,7 @@ forecasts run in a Lambda from the same image, and the monthly retrain runs
 in a Lambda too (up to 15 minutes and 10 GB), moving to a Fargate task only
 if it outgrows that; the one-off GDELT backfill runs as such a task. Models
 are files in S3 behind their `ModelVersion` rows. The data is free; EODHD Historian (£19.99 a month)
-only if a free source fails and an admin approves (§19.2), inside the £50
+only if a free source fails and the admin approves (§19.2), inside the £50
 line for AWS and others; compute is a few dollars a month; Haiku filing the news is
 well under a dollar a month, inside the Claude ceiling of §15.1.
 
@@ -1495,13 +1590,13 @@ and rules produce every number and decision; Claude tags, writes, asks and
 answers. **Nothing changes without a trace**: every behaviour is a setting,
 and every change is a version and an audit row. **Outside its band, it
 asks**: an agent may act on its own only inside the automatic band its
-settings allow; anything else is a request to an admin.
+settings allow; anything else is a request to the admin.
 
 ### 20.1 The agents
 
-| Agent | Its job | Brain | On its own | Asks an admin |
+| Agent | Its job | Brain | On its own | Asks the admin |
 | --- | --- | --- | --- | --- |
-| **Concierge** (the `agent` Lambda) | Talks to members in the chat; routes an admin's instructions to the admin desk | Sonnet, Haiku for small turns | Answers, reads, proposes changes to records with a Confirm card (§8) | n/a: members confirm their own records |
+| **Concierge** (the `agent` Lambda) | Talks to members in the chat; routes the admin's instructions to the admin desk | Sonnet, Haiku for small turns | Answers, reads, proposes changes to records with a Confirm card (§8) | n/a: members confirm their own records |
 | **Data steward** | Keeps prices and data flowing from free sources; watches freshness, gaps, disagreement and free quotas | Code; Haiku writes its requests | Fails over within the chain, retries, fills gaps, labels stale data | A new or reordered source, any paid feed, a source's terms |
 | **News scout** | Collects news and events, tags them, matches them to holdings (§19.3) | Haiku through Batches; code scores | Tags and matches | A new feed or event type |
 | **Analyst** | The rules engine (§6) | Code only | Runs daily | Any rule threshold change (through the tuner) |
@@ -1509,7 +1604,7 @@ settings allow; anything else is a request to an admin.
 | **Grader and tuner** | The learning loop (§20.4) | Code; Sonnet writes the weekly and monthly reviews | Grades daily, moves calibration within bounds, rolls back a worse map | Promoting a challenger, any change to rules or models |
 | **Ops warden** | Runs the daily pipeline and repairs it (§20.5) | Code; Haiku summarises incidents | Retries, catches up, rolls back to the last good version | Anything it cannot fix: an incident |
 | **Budget keeper** | The meter, the ladder and the guards (§15.1) | Code | Steps down and back up | Ceilings and shares are the admin's |
-| **Admin desk** | The one channel between agents and admins (§20.3) | Code; Haiku turns an admin's words into a request | Queues, batches, reminds, expires | It is the asking |
+| **Admin desk** | The one channel between agents and the admin (§20.3) | Code; Haiku turns the admin's words into a request | Queues, batches, reminds, expires | It is the asking |
 
 Each agent is a Lambda with its own role, tools, model routing and budget
 share. They do not call each other directly: they publish events on the
@@ -1535,10 +1630,10 @@ setting directly. Lambdas read settings through a cache of a minute at
 most. Secrets stay in SSM and infrastructure in Terraform: a setting may
 name a secret, never hold one.
 
-### 20.3 The admin desk: Telegram and the web, admins only (E2, MA-130)
+### 20.3 The admin desk: Telegram and the web, the admin only (E2, MA-130)
 
-Admins are the owner and anyone the owner makes an admin; members and
-viewers never see the desk. Both doors show the same queue:
+The admin is the owner, the household's one admin (Arun, 25 Oct 2026:
+"there is only 1 admin"); members and viewers never see the desk. Both doors show the same queue:
 
 - **In Telegram**, in the admin's own chat with the bot. A request arrives as
   a card, for example:
@@ -1561,8 +1656,8 @@ check in the browser (MA-102). Deciding in one door updates the other. Each
 request says what changes, from and to, why with its evidence, the cost and
 the budget left, the risk and the undo, and when it expires. Agents also ask
 plain questions ("Which fund is the Monzo Balanced fund's ISIN?") with
-buttons or a typed answer that resumes their work. Admins give instructions
-in their own words ("put Twelve Data first for London", "raise dev to £50",
+buttons or a typed answer that resumes their work. The admin gives
+instructions in their own words ("put Twelve Data first for London", "lower dev to $30",
 "why did the Forecaster go quiet on silver?"); the concierge turns an
 instruction into the same request with a Confirm card, and a question into an
 answer from the agent concerned. Non-urgent requests wait for one daily
@@ -1679,7 +1774,7 @@ rest and can come forward once the web app and the second check exist
 grading and calibration (E4, E5) can start as soon as there are graded
 stances (phase 6); challengers (E6) need the Forecaster (phase 11); the ops
 warden (E7) and the agent budgets (E8) come with them. One household, its
-admins, and nothing shared: the bounds of §4.5 stand.
+one admin, and nothing shared: the bounds of §4.5 stand.
 
 ---
 
@@ -1821,6 +1916,8 @@ New account types `demat`, `mf_folio`, `nre` and `nro` (and `ppf`, `nps`,
 `elss` if one is held), each with country `IN` and currency INR. Every
 Indian figure shows in INR with its GBP value beside it; the household
 total is in the base currency with the INR view one tap away (MA-94).
+Rupees typed against a pound holding, or pounds against an Indian one, get
+the correction of §4.7 (MA-156).
 Privacy mode hides rupees as it hides pounds. "ISA-safe" becomes
 "wrapper-aware": a suggestion names only actions that suit the account it is
 about, and the bot still never trades. For a UK resident many Indian funds

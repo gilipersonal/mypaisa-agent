@@ -25,7 +25,7 @@
     "labels": {
       "bug": "bug",
       "platforms": [],
-      "themes": []
+      "themes": ["manual", "design"]
     },
     "taxonomy": ".claude/jira/taxonomy.md"
   },
@@ -39,7 +39,14 @@
     "prTemplate": ".github/pull_request_template.md",
     "route": "gh"
   },
-  "gates": [],
+  "gates": [
+    {
+      "name": "plan-sync",
+      "cwd": ".",
+      "run": "python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check",
+      "paths": ["**"]
+    }
+  ],
   "work": {
     "checkpoint": "phase",
     "commitEach": "never",

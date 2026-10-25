@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa app v1: Admin center 2</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: var(--mp-accent); } a:hover { opacity: 0.85; }
+          /* canvas chrome, as Admin center.dc.html */
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1000px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 20px; text-wrap: pretty; }
+          .dv-rules { display: grid; grid-template-columns: repeat(4, 320px); gap: 16px; margin: 0 0 44px; }
+          .dv-rule { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 14px 16px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .dv-rule b { color: #14171F; display: block; font-size: 15px; margin-bottom: 4px; }
+          .dv-opts { display: flex; flex-direction: column; gap: 64px; align-items: flex-start; }
+          .dv-opt { display: flex; flex-direction: column; gap: 14px; }
+          .dv-oid { font: 600 10.5px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; white-space: nowrap; }
+          .dv-olabel { display: flex; align-items: baseline; gap: 10px; font: 400 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-oname { font-weight: 700; color: #14171F; font-size: 17px; white-space: nowrap; }
+          .dv-odesc { max-width: 900px; text-wrap: pretty; }
+          .dv-row { display: flex; gap: 40px; align-items: flex-start; }
+          .dv-fr { flex: none; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; white-space: nowrap; }
+          .dv-note { flex: none; width: 300px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; display: flex; flex-direction: column; gap: 10px; padding-top: 22px; text-wrap: pretty; }
+          .dv-note b { color: #14171F; }
+          .dv-sname { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+          .dv-plan { background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .dv-keys { font: 600 11px/16px ui-monospace, Menlo, monospace; color: #14171F; }
+          /* the board: the adaptive shell, as option A */
+          .board { width: 1280px; position: relative; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
+          .side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+          .brand { padding: 4px 8px 18px; }
+          .side-sep { height: 1px; background: var(--mp-line); margin: 8px 12px; flex: none; }
+          .acct { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px; padding: 8px 10px; box-sizing: border-box; border: 0; border-radius: 12px; background: transparent; color: var(--mp-ink); font: inherit; text-align: left; cursor: pointer; }
+          .tabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; }
+          .grow { flex: 1; min-width: 0; }
+          .blk { display: block; }
+          .pad { padding: 20px; }
+          .nowrap { white-space: nowrap; }
+          .wrapx { flex-wrap: wrap; }
+          .m0 { margin: 0; }
+          .r { text-align: right; }
+          .mono { font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+          .ttl { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+          .crumb { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -8px 0 -6px; color: var(--mp-accent); font: 600 15px/20px var(--mp-font); text-decoration: none; }
+          @container app (min-width: 1024px) { .nwide { display: none; } }
+          .okchip { color: var(--mp-up); background: var(--mp-add-bg); }
+          .chip-ic { font-size: 16px; }
+          .av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 700 12px/1 var(--mp-font); flex: none; }
+          .av-you { background: var(--mp-hold-bg); color: var(--mp-hold); }
+          .btn-alert-t { background: var(--mp-alert-bg); color: var(--mp-alert); }
+          .gbadge { width: 24px; height: 24px; border-radius: 50%; background: var(--mp-surface); color: var(--mp-ink); display: grid; place-items: center; font: 700 14px/1 var(--mp-font); }
+          .sub-h { margin: 18px 0 2px; }
+          .lnk { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; font: 600 15px/20px var(--mp-font); color: var(--mp-accent); text-decoration: none; white-space: nowrap; }
+          .lnk-s { min-height: 32px; font-size: 13px; line-height: 18px; }
+          .btnrow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+          .actfoot { display: flex; gap: 8px; align-items: flex-start; }
+          /* the Admin center's own pages, under the page head */
+          .secnav { margin-top: -6px; }
+          .seci { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 8px; text-decoration: none; }
+          .seci .ms { font-size: 18px; }
+          .cnt { min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; display: inline-grid; place-items: center; font: 700 12px/1 var(--mp-font); }
+          /* meters: the track, the fill, the step marks over it, and their labels in HTML */
+          .mwrap { position: relative; margin-top: 10px; }
+          .meter { height: 12px; }
+          .meter > .fill { display: block; height: 100%; border-radius: 999px; background: var(--mp-meter); }
+          .mini { height: 6px; margin-top: 6px; }
+          .tk { position: absolute; top: -4px; width: 2px; height: 20px; margin-left: -1px; border-radius: 1px; background: var(--mp-ink-2); }
+          .tlabs { position: relative; height: 16px; margin-top: 6px; }
+          .tlabs > span { position: absolute; transform: translateX(-50%); font: 500 12px/16px var(--mp-font); color: var(--mp-ink-3); white-space: nowrap; }
+          .env { padding-top: 14px; margin-top: 14px; border-top: 1px solid var(--mp-line); }
+          .bl { align-items: baseline; }
+          /* the ladder, and any list of steps */
+          .lad { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--mp-line); }
+          .lad-p { font: 700 15px/20px var(--mp-font); }
+          .lad.now { background: var(--mp-surface-2); border-radius: 12px; border-top-color: transparent; padding: 10px 12px; margin: 0 -12px; }
+          .lad.now + .lad { border-top-color: transparent; }
+          .nowchip { margin-left: 8px; vertical-align: 1px; }
+          /* rows of two: a label and what it is */
+          .krow { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 2px 12px; padding: 10px 0; border-top: 1px solid var(--mp-line); align-items: baseline; }
+          .krow.first { border-top: 0; padding-top: 4px; }
+          .kk { font: 600 13px/18px var(--mp-font); color: var(--mp-ink-3); }
+          .shr { display: grid; grid-template-columns: minmax(0, 1fr) 128px; gap: 4px 16px; align-items: center; padding: 10px 0; border-top: 1px solid var(--mp-line); }
+          .shr.first { border-top: 0; margin-top: 4px; }
+          .segs { margin: 10px 0 4px; }
+          /* alerts */
+          .alrow { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 14px 0; border-top: 1px solid var(--mp-line); }
+          .alrow.first { border-top: 0; padding-top: 6px; }
+          .kv6 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 16px; padding: 12px 14px; border-radius: 12px; background: var(--mp-surface-2); }
+          .kvv { overflow-wrap: anywhere; }
+          .res { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-add-bg); color: var(--mp-ink); }
+          .l-when { text-align: right; }
+          .mx { display: grid; grid-template-columns: minmax(0, 1fr) 84px 84px 104px; }
+          .mxr { display: contents; }
+          .mxr > * { padding: 10px 8px 10px 0; border-top: 1px solid var(--mp-line); min-width: 0; }
+          .mxr.hd > * { border-top: 0; padding-top: 4px; }
+          .cell { display: flex; align-items: flex-start; gap: 4px; font: 600 13px/18px var(--mp-font); }
+          .cell .ms { font-size: 16px; margin-top: 1px; }
+          .cell.off { color: var(--mp-ink-3); font-weight: 500; }
+          .setr { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 2px 12px; padding: 12px 0; border-top: 1px solid var(--mp-line); }
+          .setr.first { border-top: 0; padding-top: 4px; }
+          /* approvals */
+          .rq { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+          .rq.sel { box-shadow: 0 0 0 2px var(--mp-ink-2), var(--mp-shadow); }
+          .rqh { display: flex; align-items: center; gap: 10px; }
+          .ev { display: grid; grid-template-columns: minmax(0, 1fr) 52px 52px; gap: 0 12px; margin-top: 2px; }
+          .evcap { margin-top: 8px; }
+          .ev > span { padding: 6px 0; border-top: 1px solid var(--mp-line); }
+          .ev > .eh { border-top: 0; padding-top: 0; }
+          .drow { align-items: flex-start; padding-top: 12px; padding-bottom: 12px; }
+          .drow.sel { box-shadow: inset 0 0 0 2px var(--mp-ink-2); border-radius: 14px; }
+          /* settings */
+          .sgh { margin: 16px 0 0; }
+          .srow2 { display: flex; flex-direction: column; gap: 4px; padding: 12px 12px; margin: 0 -12px; border-radius: 12px; color: inherit; text-decoration: none; border-top: 1px solid var(--mp-line); }
+          .srow2.sel { background: var(--mp-surface-2); border-top-color: transparent; box-shadow: inset 0 0 0 2px var(--mp-ink-2); }
+          .srow2.sel + .srow2 { border-top-color: transparent; }
+          .chain { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+          .chain > span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; border-radius: 999px; background: var(--mp-surface-2); font: 600 13px/18px var(--mp-font); }
+          .chn { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-surface); font: 700 11px/1 var(--mp-font); }
+          .vrow { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 12px; padding: 12px 0; border-top: 1px solid var(--mp-line); }
+          .vb { width: 40px; height: 28px; border-radius: 8px; display: grid; place-items: center; font: 700 13px/1 var(--mp-font); }
+          .vact { grid-column: 2; justify-self: start; margin-top: 4px; }
+          /* agents and incidents */
+          .cq { container: card / inline-size; }
+          .agt { display: grid; grid-template-columns: minmax(0, 1.7fr) 104px minmax(0, 1.5fr) 168px 136px; column-gap: 16px; align-items: center; padding: 10px 0; min-height: 60px; border-top: 1px solid var(--mp-line); }
+          .agt.hd { min-height: 0; padding: 0 0 8px; border-top: 0; }
+          .agn { display: flex; align-items: center; gap: 12px; min-width: 0; }
+          .ih { margin: 16px 0 6px; }
+          .tli { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px; padding: 6px 0; }
+          .chs { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; padding: 12px 0; border-top: 1px solid var(--mp-line); }
+          .chs .mp-btn { justify-self: end; }
+          /* the fresh check and every confirmation: a bottom sheet on compact, a centred dialog from 600 (as option A) */
+          .ovl { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; }
+          .dlg { position: relative; padding: 8px 20px 34px; box-sizing: border-box; }
+          .dlg-in { display: flex; flex-direction: column; gap: 12px; }
+          .dlg-ic { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; align-self: flex-start; margin-top: 4px; }
+          .cancel { align-self: center; }
+          .cons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+          .cons li { display: flex; gap: 10px; align-items: flex-start; }
+          .dbtns { display: flex; flex-direction: column-reverse; gap: 10px; margin-top: 4px; }
+          .stepper { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: var(--mp-surface-2); }
+          .stepper .iconbtn { background: var(--mp-surface); }
+          .stv { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+          .tc { text-align: center; }
+          @container app (min-width: 600px) {
+            .ovl { justify-content: center; align-items: center; padding: 24px; }
+            .dlg { width: 100%; max-width: 460px; border-radius: 20px; padding: 28px; }
+            .dlg-in { gap: 14px; }
+            .grab { display: none; }
+            .dbtns { flex-direction: row; }
+            .db { flex: 1 1 auto; }
+          }
+          /* the toast after an action */
+          .toastw { position: absolute; left: 0; right: 0; bottom: 96px; display: flex; justify-content: center; padding: 0 16px; z-index: 6; pointer-events: none; }
+          .toast { display: flex; align-items: center; gap: 10px; max-width: 680px; }
+          .mp-pagepad.pp-toast { padding-bottom: 184px; }
+          @container app (min-width: 1024px) {
+            .toastw { left: 248px; bottom: 32px; }
+            .mp-pagepad.pp-toast { padding-bottom: 112px; }
+          }
+          /* narrower cards: the agents table and the alert's facts become labelled rows */
+          @container card (max-width: 759px) {
+            .agt { grid-template-columns: minmax(0, 1fr) auto; row-gap: 6px; }
+            .agt.hd { display: none; }
+          }
+          @container app (max-width: 759px) { .kv6 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+          /* MyPaisa mark, 1c Watcher (MA-103): drawn inline from docs/mark*.svg; the theme sets its colours */
+          .mpm { display: block; flex: none; }
+          .mpm-coin { fill: var(--mp-hero); }
+          .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+          .mpm-dot { fill: var(--mp-coral); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="admin2" data-screen-label="Admin center 2">
+        <div class="dv-thd"><a class="dv-tid" href="#admin2">A2</a><span class="dv-tname">Admin center 2: Spend, Alerts, Approvals, Settings, Agents and incidents (planned)</span></div>
+        <p class="dv-intro">The Admin center pages planned after MA-102, extending the picked option A, People first: the same sidebar with Admin selected, the same page head and fresh-check chip, and under it a row of the center's six pages (People is the page in Admin center). Owner only, browser only. Every action here needs the fresh check, says what it does before you confirm it, writes an audit row and sends you a Telegram message; destructive actions are crimson on its tint, never the coral primary. Drawn at 1280 on the adaptive shell from tokens.css, light and dark. Now is Saturday 31 Oct, 08:28; each flow starts with no fresh check. Illustrative figures; You and Asha are fictional. The same requests, alerts and incidents reach the owner's chat in Telegram admin.</p>
+        <div class="dv-rules">
+          <div class="dv-rule"><b>Still the one exception to read-only</b>These pages hold the owner's settings, so they act: move a ceiling, replay failed work, approve or reject an agent's request, roll a setting back, choose how an incident ends. Every other page stays read-only, and nothing here can touch a holding or the history.</div>
+          <div class="dv-rule"><b>One check for every action</b>The fresh check from MA-102: your passkey on this Mac, or a fresh Google sign-in, good for 5 minutes. Reading needs none. In Telegram the same act asks for the second check: Face ID or the PIN.</div>
+          <div class="dv-rule"><b>Two doors, one queue</b>Approvals, alerts and incidents also reach your Telegram chat. Deciding in one door updates the other: a request approved in Telegram shows here as decided, and a replay here edits the Telegram card.</div>
+          <div class="dv-rule"><b>Code decides, Claude explains</b>Every figure comes from the meter, Cost Explorer, the scoreboards or the settings store. An agent acts alone only inside a setting's automatic band; anything else is a request to you.</div>
+        </div>
+
+        <div class="dv-opts">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+            <div class="dv-opt" id="{{ g.id }}">
+              <div class="dv-olabel"><a class="dv-oid" href="#{{ g.id }}">{{ g.tag }}</a><span class="dv-oname">{{ g.name }}</span><span class="dv-odesc">{{ g.desc }}</span></div>
+              <div class="dv-row">
+                <sc-for list="{{ g.views }}" as="v" hint-placeholder-count="2">
+                  <div class="dv-fr">
+                    <p class="dv-cap">{{ v.cap }}</p>
+                    <div class="board mp mp-app {{ v.cls }}" data-screen-label="{{ v.cap }}">
+                      <div class="mp-shell">
+                        <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
+                          <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+                          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i" href="#admin2"><span class="ms">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
+                          <div class="side-sep" role="separator"></div>
+                          <a class="mp-side-i on" href="#admin2" aria-current="page"><span class="ms ms-fill">shield_person</span>Admin</a>
+                          <div style="flex: 1"></div>
+                          <button class="acct" aria-haspopup="menu" aria-label="Account menu: You, owner, signed in with Google"><span class="av av-you" aria-hidden="true">Y</span><span class="grow"><span class="mp-sub mp-w6 blk">You · owner</span><span class="mp-foot mp-ink3 blk">Signed in with Google</span></span><span class="ms ms-s mp-ink3">unfold_more</span></button>
+                        </aside>
+                        <main class="mp-shell-main">
+                          <div class="mp-pagepad {{ v.ppCls }}">
+                            <header class="mp-pagehead">
+                              <div>
+                                <a class="crumb nwide" href="#admin2"><span class="ms ms-s">arrow_back_ios_new</span>More</a>
+                                <div class="mp-large">Admin center</div>
+                                <div class="mp-foot mp-ink3">Owner only · every action needs a fresh check</div>
+                              </div>
+                              <div><span class="mp-chip {{ v.chip.cls }}"><span class="ms chip-ic">{{ v.chip.icon }}</span>{{ v.chip.txt }}</span></div>
+                            </header>
+                            <nav class="mp-seg secnav" aria-label="Admin center pages">
+                              <sc-for list="{{ v.secs }}" as="s" hint-placeholder-count="6"><a class="mp-seg-i seci {{ s.cls }}" href="#admin2" aria-current="{{ s.cur }}" aria-label="{{ s.aria }}"><span class="ms {{ s.fill }}">{{ s.icon }}</span>{{ s.label }}<sc-if value="{{ s.hasN }}" hint-placeholder-val="{{ false }}"><span class="cnt {{ s.nCls }}">{{ s.n }}</span></sc-if></a></sc-for>
+                            </nav>
+
+                            <!-- ================= SPEND (MA-113, MA-114, MA-116, MA-137, MA-136) ================= -->
+                            <sc-if value="{{ v.isSpend }}" hint-placeholder-val="{{ false }}">
+                              <div class="mp-cols">
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Claude</span><span class="mp-foot mp-ink3">Cycle 1 to 31 Oct · renews Sun 1 Nov</span></div>
+                                    <p class="mp-foot mp-ink2 m0">The Max 20x plan's $200 monthly credit: $160 for prod and $40 for dev, each a ceiling you move. Pounds at today's ECB rate, $1.30.</p>
+                                    <sc-for list="{{ sp.envs }}" as="e" hint-placeholder-count="2">
+                                      <div class="env">
+                                        <div class="fx ac jb gap8"><span class="mp-sub mp-w6">{{ e.name }}</span><span class="mp-chip chip-s okchip"><span class="ms chip-ic">check_circle</span>{{ e.step }}</span></div>
+                                        <div class="fx gap8 bl wrapx" style="margin-top: 4px"><span class="mp-num-l">{{ e.spent }}</span><span class="mp-sub mp-ink2">of {{ e.ceil }} · {{ e.pct }}</span><span class="mp-foot mp-ink3">{{ e.gbp }}</span></div>
+                                        <div class="mwrap" role="img" aria-label="{{ e.aria }}"><div class="meter mp-track"><span class="fill" style="width: {{ e.w }}"></span></div><sc-for list="{{ sp.ticks }}" as="t" hint-placeholder-count="3"><span class="tk" style="left: {{ t.l }}"></span></sc-for></div>
+                                        <div class="tlabs" aria-hidden="true"><sc-for list="{{ sp.ticks }}" as="t" hint-placeholder-count="3"><span style="left: {{ t.l }}">{{ t.t }}</span></sc-for></div>
+                                      </div>
+                                    </sc-for>
+                                    <div class="mp-over mp-ink3 sub-h">The ladder, prod</div>
+                                    <sc-for list="{{ sp.ladder }}" as="l" hint-placeholder-count="5">
+                                      <div class="lad {{ l.cls }}">
+                                        <span class="lad-p">{{ l.p }}</span>
+                                        <div class="fx col gap2"><span class="mp-sub mp-w6">{{ l.t }}<sc-if value="{{ l.now }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s okchip nowchip">Now</span></sc-if></span><span class="mp-foot mp-ink2">{{ l.d }}</span></div>
+                                        <span class="mp-foot mp-w6 nowrap">{{ l.at }}</span>
+                                      </div>
+                                    </sc-for>
+                                    <div class="mp-foot mp-ink3" style="margin-top: 8px">Alerts are never dropped at any step: a template needs no model. Raising the ceiling moves the bot back up at the next call.</div>
+                                    <div class="btnrow"><button class="mp-btn mp-btn-small mp-btn-primary"><span class="ms ms-s">tune</span>Move the ceiling</button><span class="mp-foot mp-ink3 grow">From $10 to the Console's limit. Past the plan's $200 credit only with your explicit yes.</span></div>
+                                  </div>
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">This cycle, by member</span><span class="mp-foot mp-ink3">$41.20 in all</span></div>
+                                    <div class="mp-seg segs" role="group" aria-label="Break down by"><button class="mp-seg-i on" aria-pressed="true">Member</button><button class="mp-seg-i">Feature</button><button class="mp-seg-i">Model</button><button class="mp-seg-i">Day</button></div>
+                                    <sc-for list="{{ sp.members }}" as="m" hint-placeholder-count="3">
+                                      <div class="shr {{ m.cls }}"><div><div class="mp-sub mp-w6">{{ m.n }}</div><div class="mp-foot mp-ink3">{{ m.s }}</div></div><div><div class="mp-sub mp-w6 r">{{ m.v }}</div><sc-if value="{{ m.hasM }}" hint-placeholder-val="{{ true }}"><div class="mini mp-track" role="img" aria-label="{{ m.aria }}"><span class="fill" style="display: block; height: 100%; width: {{ m.w }}; background: var(--mp-meter); border-radius: 999px"></span></div></sc-if></div></div>
+                                    </sc-for>
+                                  </div>
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Each agent's share</span><span class="mp-chip chip-s mp-neutral">Phase 12</span></div>
+                                    <p class="mp-foot mp-ink2 m0">A share of prod's $160, metered by agent. Past its share an agent drops to its 95% step; the reserve covers the chat first.</p>
+                                    <sc-for list="{{ sp.agents }}" as="m" hint-placeholder-count="7">
+                                      <div class="shr {{ m.cls }}"><div><div class="mp-sub mp-w6">{{ m.n }}</div><div class="mp-foot mp-ink3">{{ m.s }}</div></div><div><div class="mp-sub mp-w6 r">{{ m.v }}</div><div class="mini mp-track" role="img" aria-label="{{ m.aria }}"><span class="fill" style="display: block; height: 100%; width: {{ m.w }}; background: var(--mp-meter); border-radius: 999px"></span></div></div></div>
+                                    </sc-for>
+                                  </div>
+                                </div>
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Guards under the ladder</span><span class="mp-foot mp-ink3">so one bad hour cannot spend a month</span></div>
+                                    <sc-for list="{{ sp.guards }}" as="k" hint-placeholder-count="4">
+                                      <div class="krow {{ k.cls }}"><span class="kk">{{ k.k }}</span><div><div class="mp-sub mp-w6">{{ k.v }}</div><div class="mp-foot mp-ink2">{{ k.d }}</div></div></div>
+                                    </sc-for>
+                                    <div class="mp-over mp-ink3 sub-h">Behind the meter</div>
+                                    <sc-for list="{{ sp.behind }}" as="k" hint-placeholder-count="2">
+                                      <div class="krow {{ k.cls }}"><span class="kk">{{ k.k }}</span><div><div class="mp-sub mp-w6">{{ k.v }}</div><div class="mp-foot mp-ink2">{{ k.d }}</div></div></div>
+                                    </sc-for>
+                                    <a class="lnk" href="#se">Every budget setting, in Settings<span class="ms ms-s">chevron_right</span></a>
+                                  </div>
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">AWS and others</span><span class="mp-foot mp-ink3">October · read daily at 06:00</span></div>
+                                    <p class="mp-foot mp-ink2 m0">£50 a month across both environments; paid data feeds count here too.</p>
+                                    <div class="fx gap8 bl wrapx" style="margin-top: 12px"><span class="mp-num-l">£3</span><span class="mp-sub mp-ink2">of £50 · 6%</span><span class="mp-foot mp-ink3">October's forecast £3.20</span></div>
+                                    <div class="mwrap" role="img" aria-label="£3 of a £50 cap, 6%; steps at 50 and 80%"><div class="meter mp-track"><span class="fill" style="width: 6%"></span></div><sc-for list="{{ sp.awsTicks }}" as="t" hint-placeholder-count="2"><span class="tk" style="left: {{ t.l }}"></span></sc-for></div>
+                                    <div class="tlabs" aria-hidden="true"><sc-for list="{{ sp.awsTicks }}" as="t" hint-placeholder-count="2"><span style="left: {{ t.l }}">{{ t.t }}</span></sc-for></div>
+                                    <div class="mp-over mp-ink3 sub-h">Steps, and what each does</div>
+                                    <sc-for list="{{ sp.aws }}" as="l" hint-placeholder-count="4">
+                                      <div class="lad"><span class="lad-p">{{ l.p }}</span><span class="mp-foot mp-ink2">{{ l.d }}</span><span class="mp-foot mp-w6 nowrap">{{ l.at }}</span></div>
+                                    </sc-for>
+                                    <sc-for list="{{ sp.awsKv }}" as="k" hint-placeholder-count="3">
+                                      <div class="krow"><span class="kk">{{ k.k }}</span><div><div class="mp-sub mp-w6">{{ k.v }}</div><div class="mp-foot mp-ink2">{{ k.d }}</div></div></div>
+                                    </sc-for>
+                                    <div class="mp-foot mp-ink3" style="margin-top: 4px">AWS's own figures lag by up to a day. Each action is a flag the jobs read, never a change to AWS: Terraform stays the only thing that changes infrastructure.</div>
+                                    <div class="btnrow"><button class="mp-btn mp-btn-small mp-btn-tinted"><span class="ms ms-s">tune</span>Change the cap</button></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <!-- ================= ALERTS (MA-137, MA-145) ================= -->
+                            <sc-if value="{{ v.isAlerts }}" hint-placeholder-val="{{ false }}">
+                              <div class="mp-card pad">
+                                <div class="ttl"><span class="mp-hl">Alerts</span><span class="mp-foot mp-ink3">{{ v.fw.count }} · newest first</span></div>
+                                <div class="alrow first">
+                                  <span class="mp-icontile {{ v.fw.tile }}"><span class="ms ms-s">{{ v.fw.icon }}</span></span>
+                                  <div class="fx col gap8" style="min-width: 0">
+                                    <div class="fx ac gap8 wrapx"><span class="mp-hl">Failed work · prod</span><span class="mp-chip chip-s {{ v.fw.stCls }}"><span class="ms chip-ic">{{ v.fw.stIcon }}</span>{{ v.fw.st }}</span></div>
+                                    <div class="mp-sub mp-ink2">{{ v.fw.line }}</div>
+                                    <div class="kv6">
+                                      <sc-for list="{{ v.fw.kv }}" as="k" hint-placeholder-count="6"><div><div class="mp-foot mp-ink3">{{ k.k }}</div><div class="mp-sub mp-w6 kvv {{ k.c }}">{{ k.v }}</div></div></sc-for>
+                                    </div>
+                                    <sc-if value="{{ v.fw.done }}" hint-placeholder-val="{{ false }}"><div class="res"><span class="ms ms-s ms-fill mp-up">check_circle</span><span class="mp-sub">Replayed 1 job at 08:30, by You with your passkey. It ran: the NASDAQ 100 ETF is priced at Friday's close (08:31).</span></div></sc-if>
+                                    <div class="mp-foot mp-ink2">{{ v.fw.effect }}</div>
+                                    <sc-if value="{{ v.fw.open }}" hint-placeholder-val="{{ true }}"><div class="fx ac gap12 wrapx"><button class="mp-btn mp-btn-small mp-btn-primary"><span class="ms ms-s">replay</span>Replay</button><span class="mp-foot mp-ink3 grow">Moves the job back to its queue. Handlers are idempotent, so nothing runs twice. In phase 12 the ops warden replays it at 08:40 if you have not.</span></div></sc-if>
+                                    <div class="mp-foot mp-ink3">Sent at 07:52 to the web app and your Telegram chat, silently. Email is off for failed work.</div>
+                                  </div>
+                                  <div class="l-when"><span class="mp-foot mp-w6 blk">07:52</span><span class="mp-cap mp-ink3 blk">31 Oct</span></div>
+                                </div>
+                                <sc-for list="{{ al.rows }}" as="a" hint-placeholder-count="3">
+                                  <div class="alrow">
+                                    <span class="mp-icontile {{ a.tile }}"><span class="ms ms-s">{{ a.icon }}</span></span>
+                                    <div class="fx col gap4" style="min-width: 0">
+                                      <div class="fx ac gap8 wrapx"><span class="mp-sub mp-w6">{{ a.t }}</span><span class="mp-chip chip-s {{ a.stCls }}"><span class="ms chip-ic">{{ a.stIcon }}</span>{{ a.st }}</span></div>
+                                      <span class="mp-foot mp-ink2">{{ a.d }}</span>
+                                      <span class="mp-foot mp-ink3">{{ a.sent }}</span>
+                                      <sc-if value="{{ a.hasLink }}" hint-placeholder-val="{{ true }}"><a class="lnk lnk-s" href="#admin2">{{ a.link }}<span class="ms ms-s">chevron_right</span></a></sc-if>
+                                    </div>
+                                    <div class="l-when"><span class="mp-foot mp-w6 blk">{{ a.time }}</span><span class="mp-cap mp-ink3 blk">{{ a.date }}</span></div>
+                                  </div>
+                                </sc-for>
+                              </div>
+                              <div class="mp-cols">
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Where alerts go</span><span class="mp-foot mp-ink3">each kind and severity, to each channel</span></div>
+                                    <div class="mx" role="table" aria-label="Alert routing">
+                                      <div class="mxr hd mp-over mp-ink3" role="row"><span role="columnheader">Alert</span><span role="columnheader">Web app</span><span role="columnheader">Telegram</span><span role="columnheader">Email (SNS)</span></div>
+                                      <sc-for list="{{ al.mx }}" as="r" hint-placeholder-count="4">
+                                        <div class="mxr" role="row">
+                                          <div role="cell"><div class="mp-sub mp-w6">{{ r.t }}</div><div class="mp-foot mp-ink3">{{ r.s }}</div></div>
+                                          <sc-for list="{{ r.c }}" as="c" hint-placeholder-count="3"><div role="cell"><span class="cell {{ c.cls }}"><span class="ms">{{ c.icon }}</span>{{ c.t }}</span></div></sc-for>
+                                        </div>
+                                      </sc-for>
+                                    </div>
+                                    <div class="mp-foot mp-ink3" style="margin-top: 10px">Critical alerts ring in Telegram and may break quiet hours; the rest arrive silently. Email carries system alerts only, never a holding's value.</div>
+                                    <div class="btnrow"><button class="mp-btn mp-btn-small mp-btn-tinted"><span class="ms ms-s">alt_route</span>Change the routing</button></div>
+                                  </div>
+                                </div>
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Quiet hours, cooldown, digest</span></div>
+                                    <sc-for list="{{ al.set }}" as="k" hint-placeholder-count="4">
+                                      <div class="setr {{ k.cls }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ k.icon }}</span></span><div><div class="mp-foot mp-ink3">{{ k.k }}</div><div class="mp-sub mp-w6">{{ k.v }}</div><div class="mp-foot mp-ink2">{{ k.d }}</div></div></div>
+                                    </sc-for>
+                                    <div class="btnrow"><button class="mp-btn mp-btn-small mp-btn-tinted"><span class="ms ms-s">tune</span>Change</button></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <!-- ================= APPROVALS (MA-130) ================= -->
+                            <sc-if value="{{ v.isAppr }}" hint-placeholder-val="{{ false }}">
+                              <div class="mp-cols">
+                                <div class="mp-col">
+                                  <div class="fx jb mp-section" style="padding-bottom: 0"><span class="mp-over mp-ink3">Waiting for you</span><span class="mp-foot mp-ink3">{{ v.ap.waitN }}</span></div>
+                                  <sc-for list="{{ v.ap.wait }}" as="r" hint-placeholder-count="2">
+                                    <div class="mp-card rq {{ r.sel }}">
+                                      <div class="rqh"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="grow mp-foot mp-ink3">{{ r.from }}</span><span class="mp-chip chip-s {{ r.kCls }}"><span class="ms chip-ic">{{ r.kIcon }}</span>{{ r.kind }}</span></div>
+                                      <div class="mp-hl">{{ r.t }}</div>
+                                      <div class="mp-foot mp-ink2">{{ r.meta }}</div>
+                                    </div>
+                                  </sc-for>
+                                  <div class="fx jb mp-section" style="padding-bottom: 0; margin-top: 8px"><span class="mp-over mp-ink3">Decided</span><span class="mp-foot mp-ink3">last 7 days</span></div>
+                                  <div class="mp-group">
+                                    <sc-for list="{{ v.ap.done }}" as="r" hint-placeholder-count="2">
+                                      <div class="mp-row drow {{ r.sel }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="grow"><span class="mp-foot mp-ink3 blk">{{ r.from }}</span><span class="mp-sub mp-w6 blk">{{ r.t }}</span><span class="mp-foot mp-ink2 blk">{{ r.how }}</span></span><span class="mp-chip chip-s {{ r.stCls }}"><span class="ms chip-ic">{{ r.stIcon }}</span>{{ r.st }}</span></div>
+                                    </sc-for>
+                                  </div>
+                                  <div class="mp-foot mp-ink3" style="padding: 0 4px 0 16px">A rejected request is not asked again for the period its setting names.</div>
+                                </div>
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="fx ac gap12"><span class="mp-icontile mp-neutral"><span class="ms ms-s">grading</span></span><span class="grow mp-sub mp-w6">Grader and tuner asks</span><span class="mp-chip chip-s {{ v.ap.st.cls }}"><span class="ms chip-ic">{{ v.ap.st.icon }}</span>{{ v.ap.st.t }}</span></div>
+                                    <div class="mp-t2" style="margin-top: 12px">Promote the risk model v8 over v7?</div>
+                                    <div class="mp-foot mp-ink3" style="margin: 2px 0 8px">Asked today at 06:40 · request cr-26</div>
+                                    <sc-for list="{{ ap.kv }}" as="k" hint-placeholder-count="6">
+                                      <div class="krow {{ k.cls }}"><span class="kk">{{ k.k }}</span><div><div class="mp-sub">{{ k.v }}</div><sc-if value="{{ k.ev }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3 evcap">Brier score, lower is better</div><div class="ev mp-foot" role="table" aria-label="Brier score, lower is better"><span class="eh mp-ink3" role="columnheader">Tested over</span><span class="eh mp-ink3 r" role="columnheader">v8</span><span class="eh mp-ink3 r" role="columnheader">v7</span><span>Held-out years</span><span class="r mp-w6">0.162</span><span class="r">0.171</span><span>8 live weeks</span><span class="r mp-w6">0.158</span><span class="r">0.169</span></div></sc-if></div></div>
+                                    </sc-for>
+                                    <sc-if value="{{ v.ap.open }}" hint-placeholder-val="{{ true }}">
+                                      <div class="btnrow"><button class="mp-btn mp-btn-small mp-btn-primary"><span class="ms ms-s">check</span>Approve</button><button class="mp-btn mp-btn-small mp-btn-tinted">Reject</button><button class="mp-btn mp-btn-small mp-btn-tinted">Why?</button></div>
+                                      <div class="mp-foot mp-ink3" style="margin-top: 10px">Approve needs a fresh check. Why? opens the tuner's reasons in plain words, with the scoreboard behind them.</div>
+                                    </sc-if>
+                                    <sc-if value="{{ v.ap.closed }}" hint-placeholder-val="{{ false }}">
+                                      <div class="res" style="margin-top: 14px"><span class="ms ms-s ms-fill mp-up">check_circle</span><span class="mp-sub">Approved at 08:29 by You, with your passkey. v8 serves from the next Forecaster run; v7 stays ready.</span></div>
+                                    </sc-if>
+                                    <div class="mp-foot mp-ink3 fx ac gap6" style="margin-top: 12px"><span class="ms ms-s">send</span>{{ v.ap.door }}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <!-- ================= SETTINGS (MA-130, MA-129) ================= -->
+                            <sc-if value="{{ v.isSet }}" hint-placeholder-val="{{ false }}">
+                              <div class="mp-cols">
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Every behaviour, as a setting</span><span class="mp-foot mp-ink3">31 settings · 4 changed this week</span></div>
+                                    <div class="mp-seg segs" role="group" aria-label="Show"><button class="mp-seg-i on" aria-pressed="true">All</button><button class="mp-seg-i">Agents may move</button><button class="mp-seg-i">Changed this week</button></div>
+                                    <sc-for list="{{ se.groups }}" as="gr" hint-placeholder-count="4">
+                                      <div class="mp-over mp-ink3 sgh">{{ gr.name }}</div>
+                                      <sc-for list="{{ gr.rows }}" as="s" hint-placeholder-count="2">
+                                        <a class="srow2 {{ s.sel }}" href="#se" aria-current="{{ s.cur }}">
+                                          <span class="fx jb gap12 bl"><span class="mp-sub mp-w6">{{ s.n }}</span><span class="mp-sub mp-w6 r">{{ s.v }}</span></span>
+                                          <span class="mono mp-ink3">{{ s.key }}</span>
+                                          <span class="fx ac gap8 wrapx"><span class="mp-foot mp-ink2">Range {{ s.range }} · band {{ s.band }}</span><span class="mp-chip chip-s mp-neutral"><span class="ms chip-ic">{{ s.mIcon }}</span>{{ s.mode }}</span></span>
+                                        </a>
+                                      </sc-for>
+                                    </sc-for>
+                                    <div class="mp-foot mp-ink3" style="margin-top: 12px">Showing 11 of 31. Defaults live in config/defaults.yaml, checked in CI; a setting may name a secret, never hold one.</div>
+                                  </div>
+                                </div>
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="mp-foot mp-ink3">Data · data.chain.oeic</div>
+                                    <div class="mp-t2" style="margin-top: 4px">Price chain for OEICs</div>
+                                    <div class="mp-foot mp-ink2" style="margin-top: 4px">Monzo's BlackRock funds, Balanced among them. The first source with fresh data wins; stale is last everywhere.</div>
+                                    <div class="mp-over mp-ink3 sub-h">Value now · v4</div>
+                                    <div class="chain"><sc-for list="{{ se.chain }}" as="c" hint-placeholder-count="6"><span><span class="chn">{{ c.n }}</span>{{ c.t }}</span></sc-for></div>
+                                    <div style="margin-top: 10px">
+                                      <sc-for list="{{ se.kv }}" as="k" hint-placeholder-count="4"><div class="krow"><span class="kk">{{ k.k }}</span><span class="mp-foot mp-ink2">{{ k.v }}</span></div></sc-for>
+                                    </div>
+                                    <div class="mp-over mp-ink3 sub-h">Version history</div>
+                                    <sc-for list="{{ se.hist }}" as="h" hint-placeholder-count="4">
+                                      <div class="vrow">
+                                        <span class="vb {{ h.vCls }}">{{ h.v }}</span>
+                                        <div class="fx col gap2" style="min-width: 0"><span class="mp-foot mp-ink3">{{ h.when }}</span><span class="mp-sub mp-w6">{{ h.who }}</span><span class="mp-foot mp-ink2">{{ h.what }}</span></div>
+                                        <sc-if value="{{ h.canBack }}" hint-placeholder-val="{{ true }}"><button class="mp-btn mp-btn-small mp-btn-tinted vact"><span class="ms ms-s">history</span>{{ h.back }}</button></sc-if>
+                                      </div>
+                                    </sc-for>
+                                    <div class="mp-foot mp-ink3" style="margin-top: 6px">Rolling back writes a new version, v5, after a fresh check, and says what changes before you confirm: back to v3 or earlier switches EODHD off. Versions are never edited; a snapshot goes to S3 every day.</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <!-- ================= AGENTS AND INCIDENTS (MA-131, MA-135, MA-146, MA-136) ================= -->
+                            <sc-if value="{{ v.isAgents }}" hint-placeholder-val="{{ false }}">
+                              <div class="mp-card pad cq">
+                                <div class="ttl"><span class="mp-hl">The agents</span><span class="mp-foot mp-ink3">9 · each reports a heartbeat every 5 minutes · prod</span></div>
+                                <div role="table" aria-label="The agents" style="margin-top: 10px">
+                                  <div class="agt hd mp-over mp-ink3" role="row"><span role="columnheader">Agent</span><span role="columnheader">Heartbeat</span><span role="columnheader">Last run</span><span role="columnheader">This cycle's spend</span><span role="columnheader">Status</span></div>
+                                  <sc-for list="{{ ag.rows }}" as="a" hint-placeholder-count="9">
+                                    <div class="agt" role="row">
+                                      <div class="agn" role="cell"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ a.icon }}</span></span><span style="min-width: 0"><span class="mp-sub mp-w6 blk">{{ a.name }}</span><span class="mp-foot mp-ink3 blk">{{ a.job }}</span></span></div>
+                                      <div role="cell"><span class="mp-sub mp-w6 blk {{ a.hbCls }}">{{ a.hb }}</span><span class="mp-foot mp-ink3 blk">{{ a.hbAgo }}</span></div>
+                                      <div role="cell"><span class="mp-sub blk">{{ a.last }}</span><span class="mp-foot mp-ink2 blk">{{ a.lastWhat }}</span></div>
+                                      <div role="cell"><span class="mp-sub mp-w6 blk">{{ a.spend }}</span><sc-if value="{{ a.hasM }}" hint-placeholder-val="{{ true }}"><div class="mini mp-track" role="img" aria-label="{{ a.aria }}"><span class="fill" style="display: block; height: 100%; width: {{ a.w }}; background: var(--mp-meter); border-radius: 999px"></span></div></sc-if><sc-if value="{{ a.hasSub }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink3 blk">{{ a.sub }}</span></sc-if></div>
+                                      <div role="cell"><span class="mp-chip chip-s {{ a.stCls }}"><span class="ms chip-ic">{{ a.stIcon }}</span>{{ a.st }}</span></div>
+                                    </div>
+                                  </sc-for>
+                                </div>
+                                <div class="mp-foot mp-ink3" style="margin-top: 10px">No agent can trade, read a secret, delete data or change AWS; an agent can at most open a Jira issue proposing a change. Fifteen minutes without a heartbeat opens an incident.</div>
+                              </div>
+                              <div class="mp-cols">
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Open incidents</span><span class="mp-foot mp-ink3">1 · critical first</span></div>
+                                    <div class="fx ac gap8 wrapx" style="margin-top: 8px"><span class="mp-chip chip-s mp-alertchip"><span class="ms chip-ic">error</span>Critical · open since 06:12</span><span class="mono mp-ink3">inc-7 · raised by the ops warden</span></div>
+                                    <div class="mp-t3" style="margin-top: 10px">The news scout is silent</div>
+                                    <div class="mp-over mp-ink3 ih">What happened</div>
+                                    <div class="mp-sub">Its 03:00 run stopped at the per-run guard, 8 model calls, on one GDELT story about the Fed. It has sent no heartbeat since 03:12.</div>
+                                    <div class="mp-over mp-ink3 ih">What was tried</div>
+                                    <sc-for list="{{ ag.tried }}" as="t" hint-placeholder-count="4"><div class="tli"><span class="mp-foot mp-w6">{{ t.at }}</span><span class="mp-foot mp-ink2">{{ t.d }}</span></div></sc-for>
+                                    <div class="mp-over mp-ink3 ih">Meanwhile</div>
+                                    <div class="mp-foot mp-ink2">Today's news is not matched to the holdings; stances use Friday's events. Prices, the engine, alerts and the chat are not affected.</div>
+                                    <div class="mp-over mp-ink3 ih">Your choices</div>
+                                    <sc-for list="{{ ag.choices }}" as="c" hint-placeholder-count="3">
+                                      <div class="chs"><div><div class="mp-sub mp-w6">{{ c.t }}</div><div class="mp-foot mp-ink2">{{ c.d }}</div></div><button class="mp-btn mp-btn-small {{ c.btn }}"><span class="ms ms-s">{{ c.icon }}</span>{{ c.label }}</button></div>
+                                    </sc-for>
+                                    <div class="mp-foot mp-ink3" style="margin-top: 4px">Each choice needs a fresh check and is an audit row; the incident card in your Telegram chat updates too.</div>
+                                  </div>
+                                </div>
+                                <div class="mp-col">
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">Fixed on its own</span><span class="mp-foot mp-ink3">in tonight's 19:00 digest</span></div>
+                                    <sc-for list="{{ ag.fixed }}" as="f" hint-placeholder-count="3">
+                                      <div class="setr {{ f.cls }}"><span class="mp-icontile okchip"><span class="ms ms-s">{{ f.icon }}</span></span><div><div class="mp-foot mp-ink3">{{ f.at }}</div><div class="mp-sub mp-w6">{{ f.t }}</div><div class="mp-foot mp-ink2">{{ f.d }}</div></div></div>
+                                    </sc-for>
+                                  </div>
+                                  <div class="mp-card pad">
+                                    <div class="ttl"><span class="mp-hl">What the ops warden may do alone</span></div>
+                                    <div class="mp-foot mp-ink2">Retry a failed step, fail over within a source chain, fill a gap on the next run, catch up a missed schedule, roll a model or a calibration map back to its last good version, skip a step that still fails and label its output stale, and replay failed work at most three times once its cause is healthy. Everything else comes to you as an incident.</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <div class="mp-foot mp-ink3 actfoot"><span class="ms ms-s">verified_user</span><span>{{ v.foot }}</span></div>
+                            <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                          </div>
+                          <nav class="mp-tabbar mp-shell-tabs tabs" aria-label="Sections"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.cls }}" href="#admin2" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for></nav>
+                        </main>
+                      </div>
+                      <sc-if value="{{ v.hasToast }}" hint-placeholder-val="{{ false }}">
+                        <div class="toastw"><div class="mp-toast toast" role="status"><span class="ms ms-s ms-fill">check_circle</span><span>{{ v.toast }}</span></div></div>
+                      </sc-if>
+                      <sc-if value="{{ v.hasOvl }}" hint-placeholder-val="{{ false }}">
+                        <div class="ovl">
+                          <div class="mp-scrim"></div>
+                          <div class="dlg mp-sheet" role="dialog" aria-modal="true" aria-label="{{ v.dlgLabel }}">
+                            <div class="mp-grabber grab"></div>
+                            <sc-if value="{{ v.isFresh }}" hint-placeholder-val="{{ true }}">
+                              <div class="dlg-in">
+                                <span class="dlg-ic mp-hold"><span class="ms ms-l">passkey</span></span>
+                                <div class="mp-t2">Confirm it's you</div>
+                                <div class="mp-sub mp-ink2">{{ v.freshFor }}</div>
+                                <button class="mp-btn mp-btn-primary"><span class="ms">passkey</span>Use your passkey</button>
+                                <button class="mp-btn mp-btn-tinted"><span class="gbadge" aria-hidden="true">G</span>Use Google instead</button>
+                                <div class="mp-foot mp-ink3 fx ac gap6"><span class="ms ms-s">timer</span>Needed once every 5 minutes for actions here</div>
+                                <button class="mp-btn mp-btn-plain cancel">Cancel</button>
+                              </div>
+                            </sc-if>
+                            <sc-if value="{{ v.isCeil }}" hint-placeholder-val="{{ false }}">
+                              <div class="dlg-in">
+                                <span class="dlg-ic mp-hold"><span class="ms ms-l">tune</span></span>
+                                <div class="mp-t2">Move the prod ceiling</div>
+                                <div class="mp-seg" role="group" aria-label="Environment"><button class="mp-seg-i on" aria-pressed="true">Prod</button><button class="mp-seg-i">Dev</button></div>
+                                <div class="stepper"><button class="iconbtn" aria-label="Lower by $10"><span class="ms">remove</span></button><div class="stv"><span class="mp-num-l">$50</span><span class="mp-foot mp-ink3">from $160 · about £38</span></div><button class="iconbtn" aria-label="Raise by $10"><span class="ms">add</span></button></div>
+                                <div class="mp-foot mp-ink3 tc">$10 to $160, the Console's limit for prod</div>
+                                <ul class="cons">
+                                  <sc-for list="{{ ceil }}" as="c" hint-placeholder-count="4"><li><span class="ms ms-s mp-ink3">{{ c.icon }}</span><span class="mp-sub">{{ c.t }}</span></li></sc-for>
+                                </ul>
+                                <div class="dbtns"><button class="mp-btn mp-btn-tinted db">Cancel</button><button class="mp-btn mp-btn-primary db">Move to $50</button></div>
+                                <div class="mp-foot mp-ink3 fx ac gap6"><span class="ms ms-s mp-up">verified_user</span>Fresh check at 08:28, good until 08:33</div>
+                              </div>
+                            </sc-if>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+                <div class="dv-note">
+                  <span class="dv-sname">{{ g.name }}</span>
+                  <div class="dv-plan"><span class="dv-keys">{{ g.keys }}</span><span>{{ g.arch }}</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span></div>
+                  <sc-for list="{{ g.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const A = (o, x) => Object.assign({}, o, x || {});
+          const n = (b, t) => ({ b: b, t: t });
+          const nav = [['home', 'Overview'], ['donut_small', 'Holdings'], ['join_inner', 'Overlap'], ['insights', 'Track record'], ['history', 'Activity'], ['fact_check', 'Audit']].map((i) => ({ icon: i[0], label: i[1] }));
+          const tabs = [['home', 'Overview', false], ['donut_small', 'Holdings', false], ['join_inner', 'Overlap', false], ['insights', 'Record', false], ['menu', 'More', true]].map((d) => ({ icon: d[0], label: d[1], cls: d[2] ? 'on' : '', fill: d[2] ? 'ms-fill' : '', cur: d[2] ? 'page' : null }));
+
+          /* the center's six pages; counts are words too, so colour is never the only signal */
+          const secs = (on, c) => [['people', 'group', 'People', null], ['spend', 'savings', 'Spend', null], ['alerts', 'notifications', 'Alerts', c.al], ['appr', 'how_to_reg', 'Approvals', c.ap], ['set', 'tune', 'Settings', null], ['agents', 'smart_toy', 'Agents', c.ag]].map((s) => ({
+            cls: s[0] === on ? 'on' : '', cur: s[0] === on ? 'page' : null, fill: s[0] === on ? 'ms-fill' : '', icon: s[1], label: s[2],
+            hasN: !!s[3], n: s[3] ? s[3][0] : '', nCls: s[3] ? s[3][1] : '', aria: s[2] + (s[3] ? ', ' + s[3][0] + ' ' + s[3][2] : '') }));
+          const C0 = { al: ['3', 'mp-alertchip', 'open'], ap: ['2', 'mp-neutral', 'waiting'], ag: ['1', 'mp-alertchip', 'incident open'] };
+          const chipNeed = { cls: 'mp-neutral', icon: 'lock', txt: 'Fresh check needed for actions' };
+          const chipOk = { cls: 'okchip', icon: 'verified_user', txt: 'Fresh check good until 08:33' };
+          const FOOT = {
+            spend: 'Moving a ceiling, a step, a share or the cap needs a fresh check, takes effect on the next model call or job, writes an audit row and sends you a Telegram message. The chat can report spend but never change it.',
+            alerts: 'Replay and every routing change need a fresh check, write an audit row and send you a Telegram message.',
+            appr: 'Approving needs the fresh check here and Face ID or the PIN in Telegram. Every decision is an audit row.',
+            set: 'Every change, from you or an agent, goes through the one settings service: it checks the range, the band and the approval rule, then writes a version and an audit row.',
+            agents: 'Each choice on an incident needs a fresh check, writes an audit row and closes or updates the card in your Telegram chat.'
+          };
+
+          /* failed work, before and after the replay (MA-145) */
+          const fwOpen = { open: true, done: false, count: '3 open, 1 closed', tile: 'mp-alertchip', icon: 'error', st: 'Needs you', stCls: 'mp-alertchip', stIcon: 'error',
+            line: 'One job is in the work queue\'s dead-letter queue. Its source has answered again since 08:10.',
+            kv: [['Queue', 'mypaisa-prod-work', 'mono'], ['Count', '1 job', ''], ['Oldest', '36 min, since 07:52', ''], ['Reason', 'Timeout at the source', ''], ['Job', 'Ingest, NASDAQ 100 ETF', ''], ['Tried', '5 times, 07:00 to 07:52', '']].map((k) => ({ k: k[0], v: k[1], c: k[2] })),
+            effect: 'Until it runs, the NASDAQ 100 ETF shows Thursday\'s close, marked stale, and the Saturday review at 09:00 would use it.' };
+          const fwDone = A(fwOpen, { open: false, done: true, count: '2 open, 2 closed', tile: 'okchip', icon: 'check_circle', st: 'Replayed', stCls: 'okchip', stIcon: 'check_circle',
+            line: 'The dead-letter queue is empty again.',
+            kv: [['Queue', 'mypaisa-prod-work', 'mono'], ['Count', '0 jobs', ''], ['Oldest', 'None', ''], ['Reason', 'Timeout at the source', ''], ['Job', 'Ingest, NASDAQ 100 ETF', ''], ['Tried', '5 times, then replayed once', '']].map((k) => ({ k: k[0], v: k[1], c: k[2] })),
+            effect: 'The Saturday review at 09:00 uses Friday\'s close. The card in your Telegram chat now says Replayed from the Admin center.' });
+
+          /* approvals, before and after (MA-130) */
+          const apWait = { open: true, closed: false, waitN: '2', st: { cls: 'mp-pause', icon: 'hourglass_top', t: 'Waiting · 7 days left' }, door: 'Also in your Telegram chat, in tonight\'s digest. Deciding in one door updates the other.',
+            wait: [
+              { sel: 'sel', icon: 'grading', from: 'Grader and tuner · today 06:40', kind: 'Approval', kCls: 'mp-hold', kIcon: 'how_to_reg', t: 'Promote the risk model v8 over v7?', meta: 'Cost none · risk low · expires Sat 7 Nov' },
+              { sel: '', icon: 'dataset', from: 'Data steward · Fri 18:20', kind: 'Question', kCls: 'mp-neutral', kIcon: 'help', t: 'Which is the Monzo Balanced fund\'s ISIN?', meta: 'Answer it in your Telegram chat, in your own words' } ],
+            done: [
+              { sel: '', icon: 'dataset', from: 'Data steward · cr-27', t: 'Switch on EODHD Historian at £19.99 a month', how: 'Approved in Telegram · You, Face ID · today 08:05', st: 'Approved', stCls: 'okchip', stIcon: 'check_circle' },
+              { sel: '', icon: 'newspaper', from: 'News scout · cr-22', t: 'Add a Reddit forum as a news feed', how: 'Rejected here · You · 28 Oct · not again before 27 Nov', st: 'Rejected', stCls: 'mp-neutral', stIcon: 'block' } ] };
+          const apDone = A(apWait, { open: false, closed: true, waitN: '1', st: { cls: 'okchip', icon: 'check_circle', t: 'Approved' }, door: 'Your Telegram card for cr-26 now says Approved here.',
+            wait: [apWait.wait[1]],
+            done: [{ sel: 'sel', icon: 'grading', from: 'Grader and tuner · cr-26', t: 'Promote the risk model v8 over v7', how: 'Approved here · You, passkey · today 08:29', st: 'Approved', stCls: 'okchip', stIcon: 'check_circle' }].concat(apWait.done) });
+
+          const L = { cls: 't-light', label: 'Light' }, D = { cls: 't-dark', label: 'Dark' };
+          const view = (page, th, o) => A({
+            cls: th.cls, cap: o.cap + ' · 1280 · ' + th.label,
+            isSpend: page === 'spend', isAlerts: page === 'alerts', isAppr: page === 'appr', isSet: page === 'set', isAgents: page === 'agents',
+            secs: secs(page, o.counts || C0), chip: o.ok ? chipOk : chipNeed,
+            hasOvl: !!o.ovl, isFresh: o.ovl === 'fresh', isCeil: o.ovl === 'ceil', freshFor: o.freshFor || '', dlgLabel: o.ovl === 'ceil' ? 'Move the prod ceiling' : 'Confirm it\'s you',
+            hasToast: !!o.toast, toast: o.toast || '', ppCls: o.toast ? 'pp-toast' : '',
+            fw: o.done ? fwDone : fwOpen, ap: o.done ? apDone : apWait, foot: FOOT[page] });
+          const both = (page, o) => [view(page, L, o), view(page, D, o)];
+
+          /* SPEND: prod $41.20 of $160, dev $6.10 of $40 (agent-journey flow 9) */
+          const ticks = [['70%', '70%'], ['85%', '85%'], ['95%', '95%']].map((t) => ({ l: t[0], t: t[1] }));
+          const sp = {
+            ticks: ticks,
+            awsTicks: [['50%', '50%'], ['80%', '80%']].map((t) => ({ l: t[0], t: t[1] })),
+            envs: [
+              { name: 'Prod', step: 'Normal, under 70%', spent: '$41.20', ceil: '$160', pct: '26%', gbp: 'about £32 of £123', w: '25.75%', aria: 'Prod: $41.20 of $160, 26%; steps at 70, 85 and 95%' },
+              { name: 'Dev', step: 'Normal, under 70%', spent: '$6.10', ceil: '$40', pct: '15%', gbp: 'about £5 of £31', w: '15.25%', aria: 'Dev: $6.10 of $40, 15%; steps at 70, 85 and 95%' } ],
+            ladder: [
+              { p: '< 70%', t: 'Normal', d: 'Sonnet for chat and cards, Opus for the Saturday review, Why? with web search.', at: 'now $41.20', now: true, cls: 'now' },
+              { p: '70%', t: 'A heads-up', d: 'One message to you: what is spent, on what, and the days left. Nothing changes.', at: '$112', now: false, cls: '' },
+              { p: '85%', t: 'Savers', d: 'No bull and bear debate, the Saturday review on Sonnet, three Why? searches a day, sentiment scoring paused.', at: '$136', now: false, cls: '' },
+              { p: '95%', t: 'Essentials only', d: 'Chat on Haiku; the brief, the wrap and alerts as plain templates with the engine\'s numbers.', at: '$152', now: false, cls: '' },
+              { p: '100%', t: 'Templates only', d: 'Claude stops until 1 Nov or until you raise the ceiling; buttons and guided flows still work.', at: '$160', now: false, cls: '' } ],
+            members: [
+              { n: 'You', s: 'Share 60% of the ceiling: $96', v: '$20.40', w: '21.25%', hasM: true, aria: 'You: $20.40 of a $96 share', cls: 'first' },
+              { n: 'Asha', s: 'Share 60% of the ceiling: $96', v: '$8.10', w: '8.44%', hasM: true, aria: 'Asha: $8.10 of a $96 share', cls: '' },
+              { n: 'Household jobs', s: 'Scoring, reviews and the agents; no member\'s share', v: '$12.70', w: '0%', hasM: false, aria: '', cls: '' } ],
+            agents: [
+              ['Concierge', 'The chat, cards, briefs · 55%', '$30.60 of $88', 34.8], ['Forecaster explanations', '10%', '$3.40 of $16', 21.3], ['News scout', '10%', '$3.10 of $16', 19.4],
+              ['Grader and tuner reviews', '10%', '$2.60 of $16', 16.3], ['Admin desk', '5%', '$0.90 of $8', 11.3], ['Data steward and ops warden', '5%', '$0.60 of $8', 7.5], ['Reserve, the chat first', '5%', '$0 of $8', 0]
+            ].map((a, i) => ({ n: a[0], s: a[1], v: a[2], w: a[3] + '%', aria: a[0] + ': ' + a[2], cls: i === 0 ? 'first' : '' })),
+            guards: [
+              { k: 'A member', v: '60% of the ceiling, $96 each', d: 'You $20.40, Asha $8.10. Past it, that member\'s chat runs at the 95% step for the rest of the cycle.', cls: 'first' },
+              { k: 'A day', v: '3 × the daily average, about $16', d: 'Today $0.90 so far. Past it, the rest of the day runs at the 95% step.', cls: '' },
+              { k: 'A run', v: '8 model calls', d: 'A loop that reaches it stops and says so: the news scout did at 03:00 (Agents).', cls: '' },
+              { k: 'An agent', v: 'Its share of the ceiling', d: 'Phase 12. Past it, that agent drops to its 95% step.', cls: '' } ],
+            behind: [
+              { k: 'Console limits', v: '$160 prod · $40 dev', d: 'Set by hand in the Claude Console; they stop the key outright if the meter is ever wrong. The app holds no Console admin key, so it cannot change them.', cls: 'first' },
+              { k: 'The credit', v: '$200 a month, no card', d: 'Auto-reload is off, so the credit itself is the last stop. The meter was checked against the Console on Mon 26 Oct: $0.12 apart.', cls: '' } ],
+            aws: [
+              { p: '50%', d: 'You are told; also when the month\'s forecast passes the cap.', at: '£25' },
+              { p: '80%', d: 'Dev\'s schedules pause.', at: '£40' },
+              { p: '100%', d: 'Dev pauses; prod\'s back-fills, retraining and challengers pause.', at: '£50' },
+              { p: 'Never', d: 'The brief, alerts and the chat never stop.', at: '' } ],
+            awsKv: [
+              { k: 'Flags now', v: 'None set', d: 'Dev\'s schedules and prod\'s background jobs run as normal.' },
+              { k: 'Paid feeds', v: 'EODHD Historian, £19.99 a month', d: 'From 1 Nov; approved in Telegram today at 08:05 (cr-27).' },
+              { k: 'Backstop', v: 'AWS Budgets at £75', d: 'Made by Terraform, not from here; it stops dev\'s schedules. Raising it is a pull request.' } ]
+          };
+          const ceil = [
+            { icon: 'stairs', t: '$41.20 is already spent: 82% of $50. At the next call the bot moves to the 70% step: you get one message, nothing else changes.' },
+            { icon: 'speed', t: 'Savers would start at $42.50, essentials at $47.50, and Claude would stop at $50 until 1 Nov.' },
+            { icon: 'group', t: 'Each member\'s share becomes $30, and the daily guard about $5.' },
+            { icon: 'notifications', t: 'An audit row, and a Telegram message to you.' } ];
+
+          /* ALERTS (MA-137, §15.2) */
+          const cAll = { t: 'All', icon: 'check', cls: '' }, cCrit = { t: 'Critical only', icon: 'priority_high', cls: '' }, cOff = { t: 'Off', icon: 'remove', cls: 'off' }, cOwn = { t: 'Members\' own', icon: 'person', cls: '' };
+          const al = {
+            rows: [
+              { icon: 'error', tile: 'mp-alertchip', t: 'Incident · the news scout is silent', st: 'Critical', stCls: 'mp-alertchip', stIcon: 'error', d: 'Its 03:00 run stopped at the 8-call guard; no heartbeat since 03:12. Two fixes tried.', sent: 'Web app, Telegram (it rang through quiet hours) and email.', hasLink: true, link: 'Open in Agents', time: '06:12', date: '31 Oct' },
+              { icon: 'how_to_reg', tile: 'mp-hold', t: 'Approval waiting · Promote the risk model v8 over v7?', st: 'Waiting', stCls: 'mp-pause', stIcon: 'hourglass_top', d: 'From the grader and tuner. Expires Sat 7 Nov.', sent: 'Web app at once; Telegram in tonight\'s digest; no email, as it is not critical.', hasLink: true, link: 'Open in Approvals', time: '06:40', date: '31 Oct' },
+              { icon: 'check_circle', tile: 'okchip', t: 'Data feed stale · Physical Silver', st: 'Closed', stCls: 'okchip', stIcon: 'check_circle', d: 'yfinance was late; the chain failed over to FT at 21:40. Fixed on its own.', sent: 'Web app; Telegram in the digest.', hasLink: false, link: '', time: '21:31', date: '30 Oct' } ],
+            mx: [
+              { t: 'A Claude or AWS step; the forecast over the cap', s: 'Critical at 100% and over the cap', c: [cAll, cAll, cAll] },
+              { t: 'An incident; an approval waiting', s: 'Incidents are critical', c: [cAll, cAll, cCrit] },
+              { t: 'Failed work; a data feed stale', s: 'Never critical', c: [cAll, cAll, cOff] },
+              { t: 'Holding alerts', s: 'Each member\'s own, as today', c: [cOwn, cOwn, cOff] } ],
+            set: [
+              { icon: 'bedtime', k: 'Quiet hours', v: '22:00 to 07:00, Telegram and email', d: 'A critical alert breaks through.', cls: 'first' },
+              { icon: 'timer', k: 'Cooldown', v: 'The same alert at most once in 6 hours', d: 'Failed work: once per queue until it is replayed.', cls: '' },
+              { icon: 'summarize', k: 'Daily digest', v: '19:00, in your Telegram chat', d: 'Non-urgent alerts, waiting requests, and what the system fixed on its own.', cls: '' },
+              { icon: 'mail', k: 'Email through SNS', v: 'mypaisa-prod-admin-alerts', d: 'To y•••@gmail.com, subscription confirmed. The first 1,000 a month are free.', cls: '' } ]
+          };
+
+          /* APPROVALS: the request in full (§20.3) */
+          const ap = { kv: [
+            { k: 'What changes', v: 'The Forecaster\'s risk model, v7 → v8 (setting forecaster.risk.model).', ev: false, cls: 'first' },
+            { k: 'Why', v: 'v8 beats v7 in the held-out years and over 8 live weeks, by more than the margin.', ev: true, cls: '' },
+            { k: 'Cost', v: 'None. Claude and AWS spend do not change.', ev: false, cls: '' },
+            { k: 'Risk', v: 'Low.', ev: false, cls: '' },
+            { k: 'Undo', v: 'v7 stays ready and comes back on its own if v8 slips.', ev: false, cls: '' },
+            { k: 'Expires', v: 'Sat 7 Nov, 06:40. Unanswered by then, nothing changes.', ev: false, cls: '' } ] };
+
+          /* SETTINGS (MA-130, MA-129, §20.3, §20.2) */
+          const M = { auto: ['smart_toy', 'Automatic in band'], ask: ['how_to_reg', 'Agent asks you'], tuner: ['grading', 'Through the tuner'], admin: ['admin_panel_settings', 'Admin only'] };
+          const S = (nm, key, val, range, band, mode, sel) => ({ n: nm, key: key, v: val, range: range, band: band, mIcon: M[mode][0], mode: M[mode][1], sel: sel ? 'sel' : '', cur: sel ? 'true' : null });
+          const se = {
+            groups: [
+              { name: 'Budgets', rows: [S('Prod Claude ceiling', 'budget.claude.prod.ceiling', '$160', '$10 to $160', 'none', 'admin'), S('Ladder steps', 'budget.claude.steps', '70, 85, 95, 100%', 'any rising list', 'none', 'admin'), S('AWS and others cap', 'budget.aws.cap', '£50', '£10 to £75', 'none', 'admin')] },
+              { name: 'Data', rows: [S('Price chain for OEICs', 'data.chain.oeic', 'EODHD first, 6 sources', 'free sources, any order', 'one place, 7 days', 'ask', true), S('Price chain for London ETFs', 'data.chain.lse_etf', 'yfinance first, 4 sources', 'free sources, any order', 'one place, 7 days', 'ask')] },
+              { name: 'Engine and learning', rows: [S('Exhaustion flags for PAUSE', 'engine.pause.exhaustion_min', '2', '1 to 4', 'none', 'tuner'), S('Calibration maps', 'learn.calibration.map', 'refitted today 05:40', 'bounded', '±2 points a day', 'auto'), S('Probation for a new map', 'learn.calibration.probation', '10 trading days', '5 to 30', 'none', 'admin')] },
+              { name: 'Alerts and queues', rows: [S('Red alerts a week, each member', 'alerts.red.per_week', '2', '0 to 5', 'none', 'admin'), S('Work queue tries', 'queue.work.max_tries', '5', '1 to 10', 'none', 'admin'), S('Replays by the ops warden', 'queue.replay.max', '3 a message', '0 to 5', 'none', 'admin')] } ],
+            chain: ['EODHD', 'yfinance', 'FT tearsheet', 'BlackRock page', 'Proxy basket', 'Stale'].map((t, i) => ({ n: String(i + 1), t: t })),
+            kv: [
+              { k: 'Range', v: 'Free sources in any order. A paid source only on an approved request.' },
+              { k: 'Automatic band', v: 'The data steward may move a free source one place up or down, for up to 7 days.' },
+              { k: 'Approval', v: 'Anything outside the band is a request to you; cr-27 was one.' },
+              { k: 'Read by', v: 'The worker\'s ingest jobs, through a cache of a minute at most.' } ],
+            hist: [
+              { v: 'v4', vCls: 'okchip', when: 'Current · today 08:05', who: 'You approved cr-27 in Telegram, Face ID', what: 'EODHD Historian added, first.', canBack: false, back: '' },
+              { v: 'v3', vCls: 'mp-neutral', when: 'Thu 29 Oct 07:10', who: 'Data steward, inside its band', what: 'FT moved above the BlackRock page for 7 days: the page was slow. Ends Thu 5 Nov.', canBack: true, back: 'Roll back to v3' },
+              { v: 'v2', vCls: 'mp-neutral', when: 'Mon 12 Oct 20:15', who: 'You', what: 'Proxy basket added before stale.', canBack: true, back: 'Roll back to v2' },
+              { v: 'v1', vCls: 'mp-neutral', when: 'Thu 1 Oct', who: 'Default, from config/defaults.yaml', what: 'yfinance, BlackRock page, FT tearsheet, stale.', canBack: true, back: 'Roll back to v1' } ]
+          };
+
+          /* AGENTS AND INCIDENTS (MA-131, MA-135, MA-146, MA-136; §20.1, §20.5) */
+          const ok = { st: 'Running', stCls: 'okchip', stIcon: 'check_circle', hbCls: '' };
+          const G = (o) => A({ hasM: !!o.w, hasSub: !!o.sub, sub: o.sub || '', w: o.w || '0%', aria: o.name + ': ' + o.spend }, o);
+          const ag = {
+            rows: [
+              G(A(ok, { icon: 'support_agent', name: 'Concierge', job: 'Talks to members; routes your instructions', hb: '08:27', hbAgo: '1 min ago', last: '08:21', lastWhat: 'A chat with Asha', spend: '$30.60 of $88', w: '34.8%' })),
+              G(A(ok, { icon: 'dataset', name: 'Data steward', job: 'Keeps prices flowing from free sources', hb: '08:26', hbAgo: '2 min ago', last: '08:10', lastWhat: 'yfinance answers again', spend: '$0.60 of $8', w: '7.5%', sub: 'Shared with the ops warden' })),
+              G({ icon: 'newspaper', name: 'News scout', job: 'Collects news, matches it to holdings', hb: '03:12', hbAgo: '5 hours silent', hbCls: 'c-alert', last: '03:00', lastWhat: 'Stopped at the 8-call guard', spend: '$3.10 of $16', w: '19.4%', st: 'Incident', stCls: 'mp-alertchip', stIcon: 'error' }),
+              G(A(ok, { icon: 'calculate', name: 'Analyst', job: 'The rules engine', hb: '08:25', hbAgo: '3 min ago', last: 'Fri 21:20', lastWhat: 'Stances after the US close', spend: 'No Claude', sub: 'Code only' })),
+              G(A(ok, { icon: 'online_prediction', name: 'Forecaster', job: 'The risk and return models', hb: '08:25', hbAgo: '3 min ago', last: '06:30', lastWhat: 'The daily run', spend: '$3.40 of $16', w: '21.3%' })),
+              G({ icon: 'grading', name: 'Grader and tuner', job: 'Grades daily, calibrates within bounds', hb: '08:24', hbAgo: '4 min ago', hbCls: '', last: '06:40', lastWhat: 'Asked you to promote v8', spend: '$2.60 of $16', w: '16.3%', st: 'Asked you', stCls: 'mp-pause', stIcon: 'hourglass_top' }),
+              G(A(ok, { icon: 'engineering', name: 'Ops warden', job: 'Runs the daily pipeline and repairs it', hb: '08:27', hbAgo: '1 min ago', last: '08:20', lastWhat: '1 job to replay at 08:40', spend: 'In the steward\'s $8', sub: 'Haiku for incident notes' })),
+              G(A(ok, { icon: 'account_balance_wallet', name: 'Budget keeper', job: 'The meter, the ladder and the guards', hb: '08:28', hbAgo: 'now', last: '08:28', lastWhat: 'Normal step, 26%', spend: 'No Claude', sub: 'Code only' })),
+              G(A(ok, { icon: 'admin_panel_settings', name: 'Admin desk', job: 'Between the agents and you', hb: '08:27', hbAgo: '1 min ago', last: '08:05', lastWhat: 'cr-27 approved in Telegram', spend: '$0.90 of $8', w: '11.3%' })) ],
+            tried: [
+              { at: '03:00', d: 'The per-run guard stopped the run at 8 calls, as it should.' },
+              { at: '05:00', d: 'The ops warden restarted it: it stopped again on the same story.' },
+              { at: '05:30', d: 'Rolled back from v14 to v13, its last good version: stopped again.' },
+              { at: '06:12', d: 'Raised to you: web app, Telegram (it rang through quiet hours) and email.' } ],
+            choices: [
+              { t: 'Skip that story and run again', d: 'The story is marked bad and left out. A run costs about $0.05 of the scout\'s $16.', label: 'Skip the story', icon: 'skip_next', btn: 'mp-btn-primary' },
+              { t: 'Pause the news scout until Monday', d: 'No news matching until Mon 06:00; stances keep Friday\'s events.', label: 'Pause until Mon', icon: 'pause_circle', btn: 'btn-alert-t' },
+              { t: 'Open a Jira issue for a fix', d: 'The ops warden files it with the errors attached. Nothing changes in the app.', label: 'Open an issue', icon: 'bug_report', btn: 'mp-btn-tinted' } ],
+            fixed: [
+              { icon: 'alt_route', at: 'Fri 21:40', t: 'Physical Silver failed over to FT', d: 'yfinance was late; the next source in its chain answered.', cls: 'first' },
+              { icon: 'history', at: 'Sat 05:40', t: 'A calibration map rolled back', d: 'Silver\'s rules-engine map did worse on its probation, so the last good one is back.', cls: '' },
+              { icon: 'replay', at: 'Sat 06:35', t: 'The Forecaster\'s run retried', d: 'It timed out once at 06:30 and finished on the second try.', cls: '' } ]
+          };
+
+          const groups = [
+            { id: 'sp', tag: 'S', name: 'Browser · Admin · Spend', keys: 'MA-113 · MA-114 · MA-116 · MA-137 · MA-136', arch: 'ARCHITECTURE §15.1, §15.2, §20.7', desc: 'Claude first: the Max 20x credit split into prod and dev ceilings, this cycle\'s meters with the ladder\'s marks, the ladder in words, then by member and by agent. Beside it the guards, what stands behind the meter, and AWS and others with its steps, flags and backstop.',
+              views: both('spend', { cap: 'Browser · Admin · Spend' }),
+              notes: [n('Dollars for Claude,', 'as the credit and the Console are, with pounds beside them at the day\'s ECB rate; pounds for AWS and others. Meters are the meter blue, never green; the marks at 70, 85 and 95% are ink, labelled in HTML under the track, and the ceiling is the end of the track.'), n('The ladder says what each step does,', 'with the dollar figure it starts at for prod, and marks where the bot is now. The guards and the Console limits sit beside it, so the owner sees every stop in one place.'), n('AWS and others acts by flags', 'the jobs read, never by changing AWS; the £75 AWS Budgets backstop is Terraform\'s, so it is shown, not editable.')] },
+            { id: 'sp1', tag: 'S.1', name: 'Browser · Admin · Spend · Move the ceiling, the fresh check', keys: 'MA-116 · MA-102', arch: 'ARCHITECTURE §15.1', desc: 'You tap Move the ceiling with no check in the last 5 minutes: the fresh check of MA-102, naming the action.',
+              views: both('spend', { cap: 'Spend · Move the ceiling 1, fresh check', ovl: 'fresh', freshFor: 'You are about to move the prod Claude ceiling.' }),
+              notes: [n('The same dialog as Flow 1 in Admin center,', 'passkey first, Google instead, Cancel. It names what it unlocks.')] },
+            { id: 'sp2', tag: 'S.2', name: 'Browser · Admin · Spend · Move the ceiling, the consequences', keys: 'MA-116 · MA-114', arch: 'ARCHITECTURE §15.1', desc: 'Prod from $160 down to $50. Before Move to $50, the dialog says where that leaves the bot, what changes for members and the guards, and who is told.',
+              views: both('spend', { cap: 'Spend · Move the ceiling 2, consequences', ovl: 'ceil', ok: true }),
+              notes: [n('Lowering below what is spent', 'puts the bot straight onto the step that implies, and the dialog says which before Confirm: here the 70% step, one message and nothing else.'), n('Bounds:', '$10 to the Console\'s limit for that workspace. To go higher, raise the Console limit first, then type the new hard limit here; past the plan\'s $200 credit needs a card on the Console and an explicit yes in this dialog.'), n('Move to $50 is coral, not crimson:', 'it stops nothing. A ceiling that would stop Claude at once (under $41.20) would turn the button crimson and say so.')] },
+            { id: 'al', tag: 'AL', name: 'Browser · Admin · Alerts', keys: 'MA-137 · MA-145', arch: 'ARCHITECTURE §15.2, §21.3', desc: 'The alerts first, newest on top, the failed-work alert open with its queue, count, oldest age, reason and Replay. Under them the routing matrix, and quiet hours, cooldown, digest and email.',
+              views: both('alerts', { cap: 'Browser · Admin · Alerts' }),
+              notes: [n('Failed work says what is stuck and what it is holding up:', 'the queue, how many, the oldest, the reason, and that the source is healthy again, which is when to replay. Replay is coral: it moves the job back and stops nothing.'), n('The matrix is kind by channel,', 'each cell a word with an icon (All, Critical only, Off), never a coloured dot. Severity is said under each kind.'), n('Where each alert went', 'is written on the alert itself, so the owner can trust the routing.')] },
+            { id: 'al1', tag: 'AL.1', name: 'Browser · Admin · Alerts · Replay, the fresh check', keys: 'MA-145 · MA-102', arch: 'ARCHITECTURE §21.3', desc: 'You tap Replay at 08:30: the fresh check names the queue and the count.',
+              views: both('alerts', { cap: 'Alerts · Replay 1, fresh check', ovl: 'fresh', freshFor: 'You are about to replay 1 job from the work queue\'s dead-letter queue.' }),
+              notes: [n('Replay is safe,', 'because handlers are idempotent, but it is still an action, so it asks; the Telegram door asks for Face ID for the same reason.')] },
+            { id: 'al2', tag: 'AL.2', name: 'Browser · Admin · Alerts · Replayed', keys: 'MA-145 · MA-137', arch: 'ARCHITECTURE §21.3', desc: 'The job ran. The alert turns to Replayed with what happened, the count goes to 0, and the toast says the Telegram card says so too.',
+              views: both('alerts', { cap: 'Alerts · Replay 2, the result', ok: true, done: true, toast: 'Replayed 1 job. It ran: the NASDAQ 100 ETF is priced. Your Telegram card says so too.', counts: { al: ['2', 'mp-alertchip', 'open'], ap: C0.ap, ag: C0.ag } }),
+              notes: [n('The result, not just the act:', 'Replayed 1 job and It ran, with the price it produced. A replay that fails the same way again becomes an incident (phase 12, MA-146).'), n('One door updates the other:', 'the failed-work card in Telegram is edited to Replayed from the Admin center.')] },
+            { id: 'ap', tag: 'AP', name: 'Browser · Admin · Approvals', keys: 'MA-130', arch: 'ARCHITECTURE §20.3', desc: 'Requests as cards, waiting first, as members are in People; the chosen request in full on the right: what changes, why with its evidence, cost, risk, undo and expiry, then Approve, Reject and Why?.',
+              views: both('appr', { cap: 'Browser · Admin · Approvals' }),
+              notes: [n('Every request has the same seven parts', 'in the same order, so the owner learns where to look. Evidence is a small table, not a sentence of numbers.'), n('Decided in Telegram shows here:', 'cr-27, EODHD, approved at 08:05 with Face ID. A plain question from an agent waits here too, answered in the chat in the owner\'s own words.'), n('Approve is coral, Reject tinted:', 'neither is destructive. Why? opens the agent\'s reasons, written by Claude from the scoreboard\'s figures.')] },
+            { id: 'ap1', tag: 'AP.1', name: 'Browser · Admin · Approvals · Approve, the fresh check', keys: 'MA-130 · MA-102', arch: 'ARCHITECTURE §20.3', desc: 'Approving needs the fresh check here, as it needs Face ID or the PIN in Telegram.',
+              views: both('appr', { cap: 'Approvals · Approve 1, fresh check', ovl: 'fresh', freshFor: 'You are about to approve: Promote the risk model v8 over v7.' }),
+              notes: [n('Approval without the check is refused', 'by the server too (PLAN phase 12\'s test), not just hidden here.')] },
+            { id: 'ap2', tag: 'AP.2', name: 'Browser · Admin · Approvals · Approved', keys: 'MA-130', arch: 'ARCHITECTURE §20.3', desc: 'The request moves to Decided, the detail records who approved it, how and when, and the toast says the Telegram card is updated.',
+              views: both('appr', { cap: 'Approvals · Approve 2, decided', ok: true, done: true, toast: 'Approved. v8 serves from the next Forecaster run; your Telegram card now says Approved.', counts: { al: C0.al, ap: ['1', 'mp-neutral', 'waiting'], ag: C0.ag } }),
+              notes: [n('The decision is the record:', 'who, how they were checked, when, and what happens next; the buttons go. The audit row carries cr-26.')] },
+            { id: 'se', tag: 'SE', name: 'Browser · Admin · Settings', keys: 'MA-130 · MA-129', arch: 'ARCHITECTURE §20.3, §20.2', desc: 'Every behaviour as a setting, grouped, each with its value, range, automatic band and approval rule; the chosen setting with its version history and Roll back.',
+              views: both('set', { cap: 'Browser · Admin · Settings' }),
+              notes: [n('Plain names first, the key under them', 'in monospace for the builder; the approval rule is a chip with an icon and a word.'), n('The history says who moved it and how:', 'you, an agent inside its band, or an approved request; each older version has Roll back, which needs a fresh check and states the consequence first.'), n('Defaults come from config/defaults.yaml;', 'live values are versions in DynamoDB, never edited, snapshotted to S3 daily.')] },
+            { id: 'ag', tag: 'AG', name: 'Browser · Admin · Agents and incidents', keys: 'MA-131 · MA-135 · MA-146 · MA-136', arch: 'ARCHITECTURE §20.1, §20.5', desc: 'The nine agents in one table: heartbeat, last run, this cycle\'s share of spend and status. Under it the open incident in full (what happened, what was tried, the choices) and what the system fixed on its own.',
+              views: both('agents', { cap: 'Browser · Admin · Agents and incidents' }),
+              notes: [n('A silent agent is the incident:', 'its heartbeat is in crimson words (5 hours silent), its status says Incident, and the incident beside it says why.'), n('What was tried, with times,', 'before the choices, so the owner does not repeat it. Each choice says its consequence; Pause is crimson because it stops an agent.'), n('Spend per agent', 'matches the Spend page\'s shares; code-only agents say No Claude.')] }
+          ];
+
+          return { groups: groups, nav: nav, tabs: tabs, sp: sp, ceil: ceil, al: al, ap: ap, se: se, ag: ag };
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa DS v1: Components</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-title { font: 700 34px/41px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; margin: 0 0 10px; }
+          .dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 24px; text-wrap: pretty; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; }
+          .dv-idx { display: flex; flex-wrap: wrap; gap: 8px; }
+          .dv-idx a { font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; background: rgba(0, 0, 0, 0.06); border-radius: 999px; padding: 9px 14px; text-decoration: none; }
+          /* light above dark, each pane as wide as its content, never wider than the page */
+          .dv-row { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
+          .pane { max-width: 100%; box-sizing: border-box; padding: 24px; border-radius: 18px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); }
+          .phead { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
+          .lbl { font: 500 11px/14px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-3); letter-spacing: 0; }
+          .specs { display: flex; flex-wrap: wrap; gap: 28px 32px; align-items: flex-start; }
+          .spec { display: flex; flex-direction: column; gap: 12px; flex: none; min-width: 0; }
+          .w358 { width: 358px; } .w420 { width: 420px; }
+          .wrap { flex-wrap: wrap; }
+          .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 32px; max-width: 1344px; margin: 24px 0 0; }
+          .note { font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .note b { display: block; color: #14171F; margin-bottom: 2px; }
+          .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          /* static states for the specimens */
+          .is-pressed { transform: scale(0.97); }
+          .is-focus { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+          .row-pressed { background: var(--mp-surface-2); }
+          .swbtn { border: 0; padding: 0; cursor: pointer; }
+          .rowlink { color: inherit; text-decoration: none; }
+          /* buttons: fixed state columns, wide enough for the widest label plus the focus ring */
+          .brow { display: grid; grid-template-columns: 148px repeat(4, 140px); column-gap: 16px; align-items: center; min-height: 58px; }
+          /* chips */
+          .chipgrid { display: grid; grid-template-columns: repeat(2, 316px); gap: 10px 24px; }
+          .chiprow { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; align-items: center; }
+          .herostrip { padding: 14px 16px; border-radius: 16px; }
+          /* hero and cards at phone width */
+          .hero-w { width: 358px; box-sizing: border-box; }
+          .herochart { height: 72px; margin: 14px 0 12px; }
+          .herochart > svg { height: 100%; }
+          .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+          .stat { display: flex; flex-direction: column; }
+        </style>
+      </helmet>
+
+      <!-- ================= HEAD ================= -->
+      <section class="dv-turn" id="top" data-screen-label="Components: index">
+        <h1 class="dv-title">MyPaisa DS v1 · Components</h1>
+        <p class="dv-intro">The building blocks of direction 1a, "Warm ledger", each in light and dark from one markup, with its anatomy and its states. Light sits above dark so every specimen keeps its real phone width (358). Every class here is in <b>tokens.css</b>; nothing on this page adds a colour. This page holds the controls and content blocks; <b>Components 2</b> holds navigation, overlays, list states and charts. Illustrative figures; members are "You" and "Asha".</p>
+        <nav class="dv-idx" aria-label="Components">
+          <a href="#buttons">1 · Buttons</a><a href="#chips">2 · Chips</a><a href="#select">3 · Segmented control and switch</a><a href="#rows">4 · Grouped rows</a><a href="#hero">5 · Hero card</a><a href="#cards">6 · Summary and stat cards</a><a href="#privacy">7 · Privacy mask</a>
+        </nav>
+      </section>
+
+      <!-- ================= 1 BUTTONS ================= -->
+      <section class="dv-turn" id="buttons" data-screen-label="Components 1: Buttons">
+        <div class="dv-thd"><a class="dv-tid" href="#buttons">1</a><span class="dv-tname">Buttons</span></div>
+        <p class="dv-intro">Four buttons, four states. On the web a button only navigates or opens the chat: nothing in MyPaisa's web app writes, so there is no Buy, Sell, Save or Delete to design.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Buttons {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="specs">
+                <div class="spec" style="gap: 4px">
+                  <div class="brow" style="min-height: 0"><span></span><span class="lbl">Default</span><span class="lbl">Pressed · 97%</span><span class="lbl">Focus · keyboard</span><span class="lbl">Disabled · 40%</span></div>
+                  <sc-for list="{{ btns }}" as="b" hint-placeholder-count="4">
+                    <div class="brow">
+                      <div><div class="mp-foot mp-w6">{{ b.name }}</div><div class="lbl">{{ b.spec }}</div></div>
+                      <sc-for list="{{ b.states }}" as="s" hint-placeholder-count="4"><div><button class="{{ s.cls }}" disabled="{{ s.dis }}">{{ s.label }}</button></div></sc-for>
+                    </div>
+                  </sc-for>
+                </div>
+                <div class="spec w420">
+                  <span class="lbl">With an icon · icon 22, gap 8, icon first</span>
+                  <div class="fx ac gap12 wrap">
+                    <a class="mp-btn mp-btn-primary" href="#buttons"><span class="ms">chat</span>Ask in the chat</a>
+                    <a class="mp-btn mp-btn-tinted" href="#buttons"><span class="ms">open_in_new</span>Open in Telegram</a>
+                    <a class="mp-btn mp-btn-tinted mp-btn-small" href="#buttons"><span class="ms ms-s">chat</span>Open chat</a>
+                  </div>
+                  <span class="lbl">Full width, in a card · phone width 358</span>
+                  <div class="mp-card fx col gap12 w358" style="box-sizing: border-box">
+                    <div><div class="mp-hl">Want to change something?</div><div class="mp-foot mp-ink3">Every change is a card you confirm in the chat.</div></div>
+                    <a class="mp-btn mp-btn-primary" href="#buttons" style="width: 100%; box-sizing: border-box">Open chat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="notes">
+          <div class="note"><b>Primary</b>50 high, radius 14, padding 0 20, Headline 17/22 semibold, one line. <code>--mp-accent</code> fill with <code>--mp-on-accent</code> label: 5.4:1 light, 7.5:1 dark. One per screen, for the main way on.</div>
+          <div class="note"><b>Tinted</b>The same box in <code>--mp-surface-2</code> with an ink label: 15.3:1 light, 13.9:1 dark. Secondary moves: Technical, Ask in the chat, Open in Telegram.</div>
+          <div class="note"><b>Plain and small</b>Plain: no fill, accent label, 44 high, padding 0 8, for in-line moves like Why?. Small: 44 high, radius 12, 15/20 semibold, padding 0 14, inside cards and toolbars.</div>
+          <div class="note"><b>Pressed</b>Scales to 97% over 120 ms on <code>--mp-ease</code> (<code>:active</code>). Nothing changes colour, so the label stays as readable as at rest.</div>
+          <div class="note"><b>Focus</b>A 3 px ring in <code>--mp-focus</code>, 2 px outside, on <code>:focus-visible</code> only: keyboard users see it, taps do not. 6.7:1 and 8.1:1 against the surface.</div>
+          <div class="note"><b>Disabled</b><code>.mp-disabled</code> (or <code>aria-disabled="true"</code>): 40% opacity, no pointer, plus <code>disabled</code> to leave the tab order. Use it only when the reason sits next to it; most of the time, hide the button instead.</div>
+        </div>
+      </section>
+
+      <!-- ================= 2 CHIPS ================= -->
+      <section class="dv-turn" id="chips" data-screen-label="Components 2: Chips">
+        <div class="dv-thd"><a class="dv-tid" href="#chips">2</a><span class="dv-tname">Chips</span></div>
+        <p class="dv-intro">A stance is a view, not advice, and the chip says which one in a word. Six stance chips, a neutral chip for plain facts, and the alert chip for the red tier only. The bot cannot trade, so no chip ever sits beside a Buy or Sell.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Chips {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="specs">
+                <div class="spec">
+                  <span class="lbl">Stances · .mp-chip + .mp-add … .mp-watch</span>
+                  <div class="chipgrid">
+                    <sc-for list="{{ stances }}" as="s" hint-placeholder-count="6">
+                      <div class="chiprow"><span><span class="mp-chip {{ s.cls }}">{{ s.word }}</span></span><span class="mp-foot mp-ink2">{{ s.mean }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="spec w420">
+                  <span class="lbl">With confidence · word first · .chip-s 12 in rows</span>
+                  <div class="fx ac gap8 wrap">
+                    <span class="mp-chip mp-hold">HOLD 71%</span><span class="mp-chip mp-pause">PAUSE 61%</span><span class="mp-chip mp-add">ADD 58%</span>
+                    <span class="mp-chip chip-s mp-hold">HOLD 71%</span><span class="mp-chip chip-s mp-pause">PAUSE 61%</span><span class="mp-chip chip-s mp-add">ADD 58%</span>
+                  </div>
+                  <span class="lbl">Neutral and alert · .mp-neutral · .mp-alertchip</span>
+                  <div class="fx ac gap8 wrap">
+                    <span class="mp-chip mp-neutral">ISA</span><span class="mp-chip mp-neutral">GIA</span><span class="mp-chip mp-neutral">Thu close</span><span class="mp-chip mp-neutral"><span class="ms ms-s">lock</span>Read-only</span>
+                    <span class="mp-chip mp-alertchip"><span class="ms ms-s">warning</span>Past your 8% alert</span>
+                  </div>
+                  <span class="lbl">On the hero · .upchip 7.9:1 / 7.1:1 · .dnchip 7.6:1 / 6.8:1</span>
+                  <div class="mp-hero herostrip fx ac jb">
+                    <span class="mp-over mp-hero-2">Household · Fri close</span>
+                    <span class="fx ac gap8"><span class="mp-chip chip-s upchip">▲ 2.4% month</span><span class="mp-chip chip-s dnchip">▼ 0.6% week</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="notes">
+          <div class="note"><b>Anatomy</b>A pill: padding 4 10, 13/18 semibold, +1% tracking, one line, an optional 18 icon 4 before the word. <code>.chip-s</code> (padding 2 8, 12/16) sits inside list rows beside the sub-line.</div>
+          <div class="note"><b>Contrast</b>Text on its own tint: ADD 4.6:1, HOLD 5.6:1, PAUSE 5.5:1, TRIM 5.0:1, REBALANCE 5.8:1, WATCH 6.4:1 in light; 6.6:1 or more in dark. Neutral 6.5:1 and 7.5:1; alert 5.4:1 and 6.2:1.</div>
+          <div class="note"><b>The word is the signal</b>Always the stance word, then the confidence: "PAUSE 61%". Colour only supports it, so the chip reads the same in greyscale and to a screen reader.</div>
+          <div class="note"><b>Neutral</b>For facts: the wrapper (ISA, GIA), the price date, read-only. Never for a stance.</div>
+          <div class="note"><b>Alert</b>Only the red tier, which asks you to act, and it always says why in words. An everyday fall is quiet ink with ▼, never this chip.</div>
+          <div class="note"><b>Icons inside chips</b>Inherit the chip's text colour. Never put a stance class on a bare icon: it brings its tint with it. Use <code>.c-pause</code> and friends for text-only colour.</div>
+        </div>
+      </section>
+
+      <!-- ================= 3 SEGMENTED CONTROL AND SWITCH ================= -->
+      <section class="dv-turn" id="select" data-screen-label="Components 3: Segmented control and switch">
+        <div class="dv-thd"><a class="dv-tid" href="#select">3</a><span class="dv-tname">Segmented control and switch</span></div>
+        <p class="dv-intro">The segmented control changes what you are looking at (whose view, which period). The switch is only for view preferences that stay on this device, such as Privacy mode; anything that changes your data or your alerts is a card in the chat.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Segmented and switch {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="specs">
+                <div class="spec w358">
+                  <span class="lbl">On a surface · .mp-seg</span>
+                  <div class="mp-seg" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i" aria-pressed="false">Me</button><button class="mp-seg-i" aria-pressed="false">Asha</button></div>
+                  <span class="lbl">Focus on a segment</span>
+                  <div class="mp-seg" role="group" aria-label="Whose view, focused"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i is-focus" aria-pressed="false">Me</button><button class="mp-seg-i" aria-pressed="false">Asha</button></div>
+                  <span class="lbl">On the hero · .mp-hero .mp-seg</span>
+                  <div class="mp-hero herostrip">
+                    <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i" aria-pressed="false">1M</button><button class="mp-seg-i on" aria-pressed="true">6M</button><button class="mp-seg-i" aria-pressed="false">1Y</button><button class="mp-seg-i" aria-pressed="false">All</button></div>
+                  </div>
+                </div>
+                <div class="spec w358">
+                  <span class="lbl">Switch · off, on, focus</span>
+                  <div class="fx ac gap16">
+                    <button class="mp-switch swbtn" role="switch" aria-checked="false" aria-label="Off"><span class="mp-switch-k"></span></button>
+                    <button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="On"><span class="mp-switch-k"></span></button>
+                    <button class="mp-switch on swbtn is-focus" role="switch" aria-checked="true" aria-label="On, focused"><span class="mp-switch-k"></span></button>
+                  </div>
+                  <span class="lbl">In a row · the row is the 44 pt target</span>
+                  <div class="mp-group">
+                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility_off</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink3">Hides pounds, keeps percentages</div></div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink3">Off: pounds are shown</div></div><button class="mp-switch swbtn" role="switch" aria-checked="false" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="notes">
+          <div class="note"><b>Segmented</b>Track <code>--mp-surface-2</code>, radius 10, padding 2, gap 2. Segments are 40 high (44 with the track), radius 8, 13/18 semibold. Selected: <code>--mp-seg-on</code> (white in light, a lifted #3A4456 in dark) with ink, 17.9:1 and 9.0:1, and a 1 px shadow. Others: ink-2, 6.5:1 and 7.5:1.</div>
+          <div class="note"><b>On the hero</b>Track <code>--mp-hero-2</code>; others in hero-ink-2 (7.6:1 and 6.8:1); the selected segment is white with navy text, 16.1:1. Periods only: 1M, 6M, 1Y, All.</div>
+          <div class="note"><b>Behaviour</b>Two to four short segments, one or two words each. Each is a <code>button</code> with <code>aria-pressed</code>; the content below swaps in place and the page does not move.</div>
+          <div class="note"><b>Switch</b>51 × 31, knob 27, on is <code>--mp-up</code>; the knob slides 20 over 200 ms. <code>role="switch"</code> with <code>aria-checked</code>; the row's label names the setting and the whole row toggles it.</div>
+          <div class="note"><b>Not colour alone</b>Off, the track carries a 1.5 px ring in ink-3: 5.4:1 light and 5.7:1 dark against the surface. On, the green track is 5.4:1 and 8.7:1 against the surface. The knob's side carries the state too.</div>
+          <div class="note"><b>Read-only</b>A switch here never writes your data. Alert floors, members and holdings change through a card and a Confirm tap in the chat.</div>
+        </div>
+      </section>
+
+      <!-- ================= 4 GROUPED ROWS ================= -->
+      <section class="dv-turn" id="rows" data-screen-label="Components 4: Grouped rows">
+        <div class="dv-thd"><a class="dv-tid" href="#rows">4</a><span class="dv-tname">Grouped rows</span></div>
+        <p class="dv-intro">Apple's inset grouped list, the backbone of every page: a section header, a white group with a 14 radius, hairlines inset from the left. Three kinds of row: a holding, a setting, and a row that opens a page. Each group is shown at phone width.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Grouped rows {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="specs">
+                <div class="spec w358">
+                  <span class="lbl">Holding rows · third row pressed</span>
+                  <div>
+                    <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">week</span></div>
+                    <div class="mp-group">
+                      <sc-for list="{{ holdRows }}" as="h" hint-placeholder-count="3">
+                        <div class="mp-row {{ h.rowCls }}" style="padding-top: 10px; padding-bottom: 10px">
+                          <div class="mp-row-lead mp-neutral">{{ h.lead }}</div>
+                          <div style="flex: 1; min-width: 0">
+                            <div class="mp-hl clip">{{ h.name }}</div>
+                            <div class="fx ac gap6" style="margin-top: 2px"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }}</span><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></div>
+                          </div>
+                          <div style="text-align: right"><div class="mp-hl">{{ h.val }}</div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <span class="lbl">lead 36 · name 17 · chip-s + sub 13 · value 17 · change 13</span>
+                </div>
+                <div class="spec w358">
+                  <span class="lbl">Setting rows</span>
+                  <div>
+                    <div class="mp-section"><span class="mp-over mp-ink3">Settings</span></div>
+                    <div class="mp-group">
+                      <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility_off</span></span><div class="mp-body" style="flex: 1">Privacy mode</div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s">notifications</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Alert floor</div><div class="mp-foot mp-ink3">Change it in the chat</div></div><span class="mp-body mp-ink3">2%</span><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s">lock</span></span><div class="mp-body" style="flex: 1">Members</div><span class="mp-body mp-ink3">You, Asha</span><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="spec w358">
+                  <span class="lbl">Rows that open a page</span>
+                  <div>
+                    <div class="mp-section"><span class="mp-over mp-ink3">NASDAQ 100</span></div>
+                    <div class="mp-group">
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Why PAUSE?</div><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Technical details</div><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div style="flex: 1; min-width: 0"><div class="mp-body">Track record</div><div class="mp-foot mp-ink3">PAUSE: 3 made, 2 right</div></div><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="notes">
+          <div class="note"><b>Holding row</b>Lead tile 36, radius 10, neutral, two letters. Name in Headline; under it a small stance chip and a short sub-line in Footnote ink-3 (MyMap · ISA, not the full fund name). Value in Headline, right-aligned and tabular; the week's change under it, ▲ in <code>--mp-up</code> or ▼ in <code>--mp-down-quiet</code>.</div>
+          <div class="note"><b>The row box</b>At least 44 high, padding 11 16 (10 for two lines), gap 12. Hairlines in <code>--mp-line</code>, half a pixel, inset 16 from the left. The group has radius 14 and no shadow.</div>
+          <div class="note"><b>Section header</b>Overline in ink-3, inset 16, 6 above the group; a Footnote on the right names the column (week, value).</div>
+          <div class="note"><b>Setting row</b>A 32 icon tile (<code>.mp-icontile</code>, radius 9, neutral), the label in Body, then a value in ink-3, a switch, or a chevron. Settings that write say where they change: in the chat.</div>
+          <div class="note"><b>Row that opens a page</b>Ends in <code>chevron_right</code> 18 in ink-3; the whole row is the link. Never a chevron on a row that does nothing.</div>
+          <div class="note"><b>Pressed</b>The row fills with <code>--mp-surface-2</code> while it is held and the next page pushes in over 350 ms. Long names clip with an ellipsis; figures never wrap.</div>
+        </div>
+      </section>
+
+      <!-- ================= 5 HERO CARD ================= -->
+      <section class="dv-turn" id="hero" data-screen-label="Components 5: Hero card">
+        <div class="dv-thd"><a class="dv-tid" href="#hero">5</a><span class="dv-tname">Hero card</span></div>
+        <p class="dv-intro">Monzo's account card made ours: the one navy surface, holding one number, one plain line and one chart. It opens every Overview and is the image the bot sends in Telegram. With privacy on, pounds become masks and everything else stays.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Hero card {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="specs">
+                <sc-for list="{{ heroes }}" as="h" hint-placeholder-count="2">
+                  <div class="spec w358">
+                    <span class="lbl">{{ h.label }}</span>
+                    <div class="mp-hero hero-w">
+                      <div class="fx jb ac gap8"><span class="mp-over mp-hero-2 clip">Household · Fri close</span><span class="mp-chip upchip chip-s">▲ 2.4% month</span></div>
+                      <div class="mp-num-hero" style="margin-top: 8px"><span class="{{ h.maskCls }}" aria-label="{{ h.aria }}">{{ h.total }}</span></div>
+                      <div class="mp-sub mp-hero-2" style="margin-top: 2px">{{ h.sub }}</div>
+                      <div class="mp-chartbox herochart" role="img" aria-label="Six months of value, rising, with three past stances marked">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="mp-fade" aria-hidden="true">
+                          <path d="{{ heroChart.area }}" fill="var(--mp-hero-area)"></path>
+                          <path d="{{ heroChart.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                        </svg>
+                        <sc-for list="{{ heroChart.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot" style="left: {{ m.x }}; top: {{ m.y }}"></span></sc-for>
+                      </div>
+                      <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i" aria-pressed="false">1M</button><button class="mp-seg-i on" aria-pressed="true">6M</button><button class="mp-seg-i" aria-pressed="false">1Y</button><button class="mp-seg-i" aria-pressed="false">All</button></div>
+                    </div>
+                    <div class="fx ac gap8"><button class="iconbtn" aria-label="Privacy mode"><span class="ms">{{ h.eye }}</span></button><span class="mp-foot mp-ink2">{{ h.eyeNote }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="notes">
+          <div class="note"><b>Card</b><code>.mp-hero</code>: <code>--mp-hero</code> ground, radius 24, padding 20, 358 wide on a phone. It is navy in both themes: the one dark surface in light, a lifted navy in dark.</div>
+          <div class="note"><b>Text</b>Overline and sub-line in hero-ink-2 (9.0:1 and 8.1:1); the figure is <code>.mp-num-hero</code>, 44/48 rounded heavy, in white (16.1:1 and 14.5:1). It counts up once over 600 ms.</div>
+          <div class="note"><b>Month chip</b><code>.upchip</code>: green ▲ on a 16% green tint, 7.9:1 and 7.1:1. A falling month uses <code>.dnchip</code>, hero-ink-2 on hero-2 with ▼ (7.6:1 and 6.8:1), never red.</div>
+          <div class="note"><b>Chart</b>Coral line 2.5 px with round joins over <code>--mp-hero-area</code>, in a <code>.mp-chartbox</code>: the SVG stretches (<code>preserveAspectRatio="none"</code>, non-scaling stroke) and past stances are <code>.mp-chartdot</code> spans placed by %, white ringed in coral. No axes: the figure above carries the number. Fades in over 200 ms; <code>.mp-draw</code> breaks under a non-scaling stroke.</div>
+          <div class="note"><b>Period</b>The segmented control on the hero, 1M · 6M · 1Y · All, 6M by default.</div>
+          <div class="note"><b>Privacy on</b>Pounds become a mask in hero-2; percentages, the month chip and the chart's shape stay, so the story still reads. The mask holds a placeholder with the same digits (£00,000), never the real figure, and reads as "Hidden".</div>
+        </div>
+      </section>
+
+      <!-- ================= 6 SUMMARY AND STAT CARDS ================= -->
+      <section class="dv-turn" id="cards" data-screen-label="Components 6: Summary and stat cards">
+        <div class="dv-thd"><a class="dv-tid" href="#cards">6</a><span class="dv-tname">Summary and stat cards</span></div>
+        <p class="dv-intro">Summary first: the "this week" card sits under the hero and says, in one sentence, whether there is anything to do. Three tones: all clear (most weeks), worth a look (amber), and asks for action (red, rare). Stat cards hold one figure each.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Summary and stat cards {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="specs">
+                <div class="spec w358">
+                  <sc-for list="{{ weekly }}" as="w" hint-placeholder-count="3">
+                    <div class="fx col gap6">
+                      <span class="lbl">{{ w.tone }}</span>
+                      <a class="mp-card fx ac gap12 rowlink" href="#cards" style="padding: 14px 16px">
+                        <span class="ms ms-fill ms-l {{ w.icls }}" aria-hidden="true">{{ w.icon }}</span>
+                        <div style="flex: 1; min-width: 0"><div class="mp-hl">{{ w.title }}</div><div class="mp-foot mp-ink3">{{ w.body }}</div></div>
+                        <span class="ms mp-ink3">chevron_right</span>
+                      </a>
+                    </div>
+                  </sc-for>
+                </div>
+                <div class="spec w358">
+                  <span class="lbl">Stat cards · .mp-card + .mp-num-l · two across</span>
+                  <div class="stats">
+                    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+                      <div class="mp-card stat"><div class="mp-over mp-ink3">{{ s.over }}</div><div class="mp-num-l" style="margin-top: 6px">{{ s.fig }}</div><div class="mp-foot mp-ink3">{{ s.foot }}</div></div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="spec w420">
+                  <span class="lbl">On the browser · a way on instead of a chevron</span>
+                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#cards">Open chat</a></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="notes">
+          <div class="note"><b>This week</b><code>.mp-card</code>, padding 14 16, gap 12: a 26 filled icon, the sentence in Headline, the next step in Footnote ink-3, and a chevron to the detail. The whole card is the link.</div>
+          <div class="note"><b>Tone by icon and words</b>All clear: <code>check_circle</code> in <code>--mp-up</code>. Worth a look: <code>warning</code> in <code>.c-pause</code>. Asks for action: <code>warning</code> in <code>.c-alert</code>. The sentence always says which; colour is never the only signal.</div>
+          <div class="note"><b>Red is rare</b>Only when you set an alert and it fired, or something needs your decision. A normal fall, a PAUSE or late prices are never red.</div>
+          <div class="note"><b>Stat card</b><code>.mp-card</code>, radius 20, padding 16, <code>--mp-shadow</code>. Overline in ink-3, one figure in <code>.mp-num-l</code> 28/32 rounded on one line, a Footnote saying what it means. Two across at every size; on the browser they sit in the narrow column. Cards in a row share a height.</div>
+          <div class="note"><b>Figures</b>Every figure comes from the engine with its date. A stat card never shows a number the AI wrote.</div>
+          <div class="note"><b>Browser</b>On wide screens the summary card can carry a small tinted Open chat button instead of the chevron, since the chat is a separate window there.</div>
+        </div>
+      </section>
+
+      <!-- ================= 7 PRIVACY MASK ================= -->
+      <section class="dv-turn" id="privacy" data-screen-label="Components 7: Privacy mask">
+        <div class="dv-thd"><a class="dv-tid" href="#privacy">7</a><span class="dv-tname">Privacy mask</span></div>
+        <p class="dv-intro">Privacy mode is for looking at MyPaisa on a train. The eye button hides every pound on every page and keeps percentages, stances and chart shapes, so you can still tell how things are going.</p>
+        <div class="dv-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="pane {{ t.cls }}" data-screen-label="Privacy mask {{ t.label }}">
+              <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
+              <div class="specs">
+                <sc-for list="{{ privacy }}" as="p" hint-placeholder-count="2">
+                  <div class="spec w358">
+                    <div class="fx ac jb"><span class="lbl">{{ p.label }}</span><button class="iconbtn" aria-label="{{ p.btn }}"><span class="ms">{{ p.eye }}</span></button></div>
+                    <div class="mp-group">
+                      <sc-for list="{{ p.rows }}" as="h" hint-placeholder-count="3">
+                        <div class="mp-row" style="padding-top: 10px; padding-bottom: 10px">
+                          <div class="mp-row-lead mp-neutral">{{ h.lead }}</div>
+                          <div style="flex: 1; min-width: 0">
+                            <div class="mp-hl clip">{{ h.name }}</div>
+                            <div class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></div>
+                          </div>
+                          <div style="text-align: right"><div class="mp-hl"><span class="{{ h.vcls }}" aria-label="{{ h.aria }}">{{ h.shown }}</span></div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div class="stats">
+                      <div class="mp-card stat"><div class="mp-over mp-ink3">Household</div><div class="mp-num-l" style="margin-top: 6px"><span class="{{ p.totCls }}" aria-label="{{ p.totAria }}">{{ p.tot }}</span></div><div class="mp-foot mp-up">▲ 2.4% month</div></div>
+                      <div class="mp-card stat"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 6px">84%</div><div class="mp-foot mp-ink3">in dollars</div></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="notes">
+          <div class="note"><b>The mask</b><code>.mp-mask</code>: a <code>--mp-surface-2</code> pill (<code>--mp-hero-2</code> on the hero), radius 8, at least 64 wide, the height of the line it replaces. Text inside is transparent.</div>
+          <div class="note"><b>What hides, what stays</b>Pounds hide: values, totals, amounts in sentences. Percentages, ▲ ▼, stance chips, confidence and chart shapes stay.</div>
+          <div class="note"><b>Never in the page</b>The mask holds a placeholder with the same number of digits (£18,640 becomes £00,000), never the real figure, and carries <code>aria-label="Hidden"</code>, so a screen reader or a screenshot cannot leak it.</div>
+          <div class="note"><b>Nothing moves</b>Figures are tabular, so the placeholder is exactly as wide as the figure it hides: names keep the same room and clip in the same place. Figures narrower than 64 get the 64 minimum.</div>
+          <div class="note"><b>The switch</b>The eye button: <code>visibility</code> when pounds show, <code>visibility_off</code> when hidden, labelled "Privacy mode". It sits next to the whose-view control on every page.</div>
+          <div class="note"><b>Charts</b>Charts keep their line and shape; any pound labels on them are masked like the rest.</div>
+        </div>
+        <p class="dv-cap" style="margin-top: 28px">MyPaisa DS v1 · Components · MA-101 · tokens.css · illustrative figures · continued in Components 2</p>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const B = (name, spec, cls, label) => ({ name: name, spec: spec, states: [
+            { cls: 'mp-btn ' + cls, dis: false, label: label },
+            { cls: 'mp-btn ' + cls + ' is-pressed', dis: false, label: label },
+            { cls: 'mp-btn ' + cls + ' is-focus', dis: false, label: label },
+            { cls: 'mp-btn ' + cls + ' mp-disabled', dis: true, label: label }
+          ] });
+          const series = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
+          // chart in a 0..100 box (preserveAspectRatio="none"); dots are HTML placed by %
+          const mk = (s, marks) => {
+            const min = Math.min.apply(null, s), max = Math.max.apply(null, s), n = s.length;
+            const pts = s.map((v, i) => [+(2 + i * 96 / (n - 1)).toFixed(2), +(12 + (1 - (v - min) / (max - min)) * 76).toFixed(2)]);
+            const line = 'M' + pts.map((p) => p.join(',')).join(' L');
+            return { line: line, area: line + ' L' + pts[n - 1][0] + ',100 L' + pts[0][0] + ',100 Z', marks: marks.map((i) => ({ x: pts[i][0] + '%', y: pts[i][1] + '%' })) };
+          };
+          const rows = [
+            { lead: 'BA', name: 'Balanced', hasSt: true, st: 'HOLD 71%', stCls: 'mp-hold', sub: 'MyMap · ISA', val: '£18,640', mask: '£00,000', ch: '▲ 0.4%', chCls: 'mp-up' },
+            { lead: 'NQ', name: 'NASDAQ 100', hasSt: true, st: 'PAUSE 61%', stCls: 'mp-pause', sub: 'iShares · ISA', val: '£4,210', mask: '£0,000', ch: '▼ 3.1%', chCls: 'mp-dq' },
+            { lead: '£', name: 'Cash pot', hasSt: false, st: '', stCls: '', sub: 'Easy access', val: '£400', mask: '£000', ch: '—', chCls: 'mp-ink3' }
+          ];
+          return {
+            themes: [{ label: 'Light', cls: 'mp t-light tg-light', sel: '.mp.t-light' }, { label: 'Dark', cls: 'mp t-dark tg-dark', sel: '.mp.t-dark' }],
+            btns: [
+              B('Primary', '50 · r14 · accent', 'mp-btn-primary', 'Open chat'),
+              B('Tinted', '50 · r14 · surface-2', 'mp-btn-tinted', 'Technical'),
+              B('Plain', '44 · accent label', 'mp-btn-plain', 'Why?'),
+              B('Small', '44 · r12 · 15', 'mp-btn-tinted mp-btn-small', 'Open chat')
+            ],
+            stances: [
+              { word: 'ADD', cls: 'mp-add', mean: 'Room to add at your usual pace.' },
+              { word: 'HOLD', cls: 'mp-hold', mean: 'Keep going as you are.' },
+              { word: 'PAUSE', cls: 'mp-pause', mean: 'Keep what you have; hold new money.' },
+              { word: 'TRIM', cls: 'mp-trim', mean: 'It has grown past its share.' },
+              { word: 'REBALANCE', cls: 'mp-reb', mean: 'The mix has drifted from your plan.' },
+              { word: 'WATCH', cls: 'mp-watch', mean: 'Nothing to do; worth an eye.' }
+            ],
+            holdRows: [
+              { lead: 'BA', name: 'Balanced', st: 'HOLD 71%', stCls: 'mp-hold', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', rowCls: '' },
+              { lead: 'NQ', name: 'NASDAQ 100', st: 'PAUSE 61%', stCls: 'mp-pause', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', rowCls: '' },
+              { lead: 'RB', name: 'Automation & Robotics', st: 'ADD 58%', stCls: 'mp-add', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', rowCls: 'row-pressed' }
+            ],
+            heroChart: mk(series, [3, 7, 10]),
+            heroes: [
+              { label: 'Normal', total: '£25,800', maskCls: '', aria: '£25,800', sub: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility', eyeNote: 'Privacy off: pounds show' },
+              { label: 'Privacy on', total: '£00,000', maskCls: 'mp-mask', aria: 'Hidden', sub: '▲ 2.4% this month · ▼ 0.6% this week', eye: 'visibility_off', eyeNote: 'Privacy on: pounds hidden' }
+            ],
+            weekly: [
+              { tone: 'All clear · most weeks', icon: 'check_circle', icls: 'mp-up', title: 'Nothing to do this week', body: 'Next review Saturday. Prices to Friday’s close.' },
+              { tone: 'Worth a look · amber', icon: 'warning', icls: 'c-pause', title: 'One thing worth a look', body: 'NASDAQ 100 moved to PAUSE. Keep what you have; not a reason to sell.' },
+              { tone: 'Asks for action · red, rare', icon: 'warning', icls: 'c-alert', title: 'NASDAQ 100 passed your alert', body: '8.4% below its high, past the 8% you set. Have a look in the chat today.' }
+            ],
+            stats: [
+              { over: 'Overlap', fig: '84%', foot: 'in dollars, looked through' },
+              { over: 'Track record', fig: '20 / 31', foot: 'held up, over 6 weeks' },
+              { over: 'Positions', fig: '1.6 of 4', foot: 'effective; Balanced is 72%' },
+              { over: 'AI cost', fig: '£6.40', foot: 'this month, of the £50 cap' }
+            ],
+            privacy: [
+              { label: 'Privacy off', eye: 'visibility', btn: 'Privacy mode, off', rows: rows.map((r) => Object.assign({}, r, { shown: r.val, vcls: '', aria: r.val })), tot: '£25,800', totCls: '', totAria: '£25,800' },
+              { label: 'Privacy on', eye: 'visibility_off', btn: 'Privacy mode, on', rows: rows.map((r) => Object.assign({}, r, { shown: r.mask, vcls: 'mp-mask', aria: 'Hidden' })), tot: '£00,000', totCls: 'mp-mask', totAria: 'Hidden' }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

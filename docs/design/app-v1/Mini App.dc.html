@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa Mini App screens</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 28px; text-wrap: pretty; }
+          .dv-screen { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; margin-bottom: 56px; }
+          .dv-note { flex: none; width: 300px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; display: flex; flex-direction: column; gap: 8px; padding-top: 22px; }
+          .dv-note b { color: #14171F; }
+          .dv-sname { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; }
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); position: relative; flex: none; }
+          .scr { flex: 1; overflow: hidden; padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 16px; }
+          .scr-end { justify-content: flex-end; }
+          .tgh { position: relative; }
+          .tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
+          .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+          .chip-l { padding: 6px 14px; font-size: 17px; line-height: 22px; font-weight: 700; letter-spacing: .02em; }
+          .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .hrow { color: inherit; text-decoration: none; }
+          .sdot { box-shadow: 0 0 0 2px var(--mp-surface); }
+          .d-hold { background: var(--mp-hold); } .d-add { background: var(--mp-add); } .d-pause { background: var(--mp-pause); }
+          .lbl-l { transform: translate(-100%, -100%); margin-left: -4px; }
+          .hz { left: auto; right: 0; top: 3px; transform: none; margin-top: 0; }
+          .albl { position: absolute; left: 0; margin-top: 3px; font: 700 11px/14px var(--mp-font); white-space: nowrap; }
+          .dashkey { width: 16px; height: 0; border-top: 2px dashed var(--mp-alert); flex: none; }
+          .pwrap { position: relative; flex: 1; min-width: 0; height: 10px; }
+          .ptrk { position: absolute; inset: 0; }
+          .pmid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--mp-ink-3); }
+          .pbar { position: absolute; top: 0; bottom: 0; border-radius: 999px; }
+          .pfor { background: var(--mp-pillar-for); } .pagainst { background: var(--mp-pillar-against); }
+          .stack { display: flex; height: 14px; border-radius: 7px; overflow: hidden; gap: 2px; }
+          .lgd { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+          .rbt { height: 10px; }
+          .rb { height: 100%; border-radius: 999px; }
+          .rb-said { background: var(--mp-ink-2); } .rb-hap { background: var(--mp-coral); }
+          .wk { flex: 1; height: 10px; }
+          .wk.on { background: var(--mp-meter); box-shadow: none; }
+          .meter-f { height: 100%; background: var(--mp-meter); border-radius: 999px; }
+          .avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 700 13px/1 var(--mp-font); flex: none; }
+          .av-you { background: var(--mp-hold-bg); color: var(--mp-hold); } .av-asha { background: var(--mp-reb-bg); color: var(--mp-reb); }
+          .scrim { position: absolute; left: 0; right: 0; bottom: 0; top: 52px; background: rgba(5, 8, 14, 0.42); }
+          .sheet-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+          .fchip { min-height: 44px; display: inline-flex; align-items: center; gap: 4px; padding: 0 12px; border-radius: 999px; border: 0; background: var(--mp-surface); color: var(--mp-ink); font: 600 13px/18px var(--mp-font); box-shadow: var(--mp-shadow); white-space: nowrap; }
+          .runrow { align-items: flex-start; }
+          .rtime { margin-top: 2px; flex: none; }
+          .rico { margin-top: 1px; flex: none; }
+          .nbh { white-space: nowrap; }
+          .okchip { color: var(--mp-up); background: var(--mp-add-bg); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t1" data-screen-label="Mini App screens">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Mini App · every screen · light and dark</span></div>
+        <p class="dv-intro">Direction 1a, "Warm ledger" (MyPaisa DS v1). The Mini App opens from the Portfolio card in the chat and follows Telegram's theme. Telegram draws the top bar: Close on a tab's root, and on a pushed page a Back that names where it goes (‹&nbsp;Holdings, ‹&nbsp;More). MyPaisa draws everything below it. Five tabs, as Apple's tab bar: Overview, Holdings, Overlap, Record and More, a list root for Activity, Audit and About. A pushed page keeps the tab it came from selected, and the tab bar stays on it. Long screens are drawn twice, as they open and scrolled to the end; every screen keeps 104 px of bottom padding, so nothing ends behind the tab bar. Read-only: every change happens in the chat. Illustrative figures; "Asha" is a fictional member. The same Overview at tablet and laptop widths is on the Responsive page.</p>
+
+        <!-- OVERVIEW: as it opens, scrolled, privacy on -->
+        <sc-for list="{{ ovRows }}" as="v" hint-placeholder-count="3">
+          <div class="dv-screen" id="{{ v.id }}">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div>
+                <p class="dv-cap">{{ v.cap }} · {{ t.label }}</p>
+                <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="{{ v.cap }} {{ t.label }}">
+                  <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                  <div class="scr {{ v.scr }}">
+                    <div class="fx ac gap8">
+                      <div class="mp-seg" style="flex: 1" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
+                      <button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ v.pressed }}"><span class="ms">{{ v.eye }}</span></button>
+                    </div>
+                    <div class="mp-hero">
+                      <div class="fx jb ac"><span class="mp-over mp-hero-2">Household · Fri close</span><span class="mp-chip upchip chip-s">▲ 2.4% month</span></div>
+                      <div class="mp-num-hero" style="margin-top: 8px"><span class="{{ v.mask }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ v.total }}</span></div>
+                      <div class="mp-sub mp-hero-2" style="margin-top: 2px">{{ v.sub }}</div>
+                      <div class="mp-chartbox" style="margin: 14px 0 12px" role="img" aria-label="Six months of value, May to October, with three past stances marked">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="height: 120px" aria-hidden="true">
+                          <path d="{{ ov.area }}" fill="var(--mp-hero-area)"></path>
+                          <path d="{{ ov.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                        </svg>
+                        <sc-for list="{{ ov.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot" style="left: {{ m.x }}; top: {{ m.y }}"></span></sc-for>
+                      </div>
+                      <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div>
+                    </div>
+                    <div class="mp-card fx ac gap12" style="padding: 14px 16px">
+                      <span class="ms ms-fill mp-up ms-l">check_circle</span>
+                      <div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday. Ask anything in the chat.</div></div>
+                      <span class="ms mp-ink3">chevron_right</span>
+                    </div>
+                    <div>
+                      <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">this week</span></div>
+                      <div class="mp-group">
+                        <sc-for list="{{ v.hs }}" as="h" hint-placeholder-count="5">
+                          <div class="mp-row" style="padding-top: 10px; padding-bottom: 10px">
+                            <div class="mp-row-lead mp-neutral">{{ h.lead }}</div>
+                            <div style="flex: 1; min-width: 0"><div class="mp-hl clip">{{ h.name }}</div><div class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></div></div>
+                            <div style="text-align: right"><div class="mp-hl"><span class="{{ v.mask }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ h.shown }}</span></div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <div class="mp-stats">
+                      <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 4px">84%</div><div class="mp-foot mp-ink3">in dollars</div></div>
+                      <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Record</div><div class="mp-num-l" style="margin-top: 4px">20 / 31</div><div class="mp-foot mp-ink3">stances held up</div></div>
+                      <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">This month</div><div class="mp-num-l" style="margin-top: 4px"><span class="{{ v.mask }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ v.cost }}</span></div><div class="mp-foot mp-ink3">{{ v.capTxt }}</div></div>
+                      <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Next review</div><div class="mp-num-l" style="margin-top: 4px">Sat</div><div class="mp-foot mp-ink3">09:00, in the chat</div></div>
+                    </div>
+                    <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                  </div>
+                  <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.overview }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+                </div>
+              </div>
+            </sc-for>
+            <div class="dv-note"><span class="dv-sname">{{ v.name }}</span><sc-for list="{{ v.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+          </div>
+        </sc-for>
+
+        <!-- HOLDINGS: the tab's root -->
+        <div class="dv-screen" id="holdings">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div>
+              <p class="dv-cap">Holdings · {{ t.label }}</p>
+              <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="Holdings {{ t.label }}">
+                <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                <div class="scr" style="gap: 14px">
+                  <div><div class="mp-large">Holdings</div><div class="mp-foot mp-ink3">£25,800 in five holdings · prices to Friday's close</div></div>
+                  <div>
+                    <div class="fx jb mp-section"><span class="mp-over mp-ink3">Five holdings</span><span class="mp-foot mp-ink3">this week</span></div>
+                    <div class="mp-group">
+                      <sc-for list="{{ hs }}" as="h" hint-placeholder-count="5">
+                        <a class="mp-row hrow" href="#holding" style="padding-top: 10px; padding-bottom: 10px">
+                          <span class="mp-row-lead mp-neutral">{{ h.lead }}</span>
+                          <span style="flex: 1; min-width: 0"><span class="mp-hl clip" style="display: block">{{ h.name }}</span><span class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }} {{ h.conf }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></span></span>
+                          <span style="text-align: right"><span class="mp-hl" style="display: block">{{ h.val }}</span><span class="mp-foot {{ h.chCls }}" style="display: block">{{ h.ch }}</span></span>
+                        </a>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div class="mp-foot mp-ink3 mp-section">Tap a holding for its chart, its stance and the technical detail. Changes happen in the chat.</div>
+                  <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                </div>
+                <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.holdings }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+              </div>
+            </div>
+          </sc-for>
+          <div class="dv-note"><span class="dv-sname">Holdings</span><span><b>The Holdings tab's root</b> is the five holdings as one grouped list: stance chip and confidence under the name, value and this week on the right.</span><span><b>A tap pushes the holding</b> and Holdings stays selected; Telegram's Back then reads ‹&nbsp;Holdings.</span><span><b>The same rows sit on Overview</b>, where a tap pushes the holding with Overview selected and ‹&nbsp;Overview.</span></div>
+        </div>
+
+        <!-- A HOLDING (pushed from Holdings): as it opens, scrolled, with the Why? sheet -->
+        <sc-for list="{{ hdRows }}" as="v" hint-placeholder-count="3">
+          <div class="dv-screen" id="{{ v.id }}">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div>
+                <p class="dv-cap">{{ v.cap }} · {{ t.label }}</p>
+                <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="{{ v.cap }} {{ t.label }}">
+                  <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>Holdings</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                  <div class="scr {{ v.scr }}" style="gap: 14px" aria-hidden="{{ v.behind }}">
+                    <div><div class="mp-over mp-ink3">iShares · ISA</div><div class="mp-t1">NASDAQ 100</div><div class="mp-foot mp-ink3">IE00B53SZB19 · London CNX1 · GBP</div></div>
+                    <div class="mp-card" style="padding: 14px 16px 12px">
+                      <div class="mp-num-l">£4,210</div>
+                      <div class="mp-foot mp-dq" style="margin-top: 2px; text-wrap: pretty">▼ 1.2% Friday · ▼ 3.1% this week · <span class="nbh">▼ 8.4% from its high</span></div>
+                      <div class="fx jb ac mp-cap" style="margin-top: 12px"><span class="mp-ink3">Friday closes, 90 days</span><span class="fx ac gap6 mp-ink2"><span class="dashkey"></span>your 8% alert</span></div>
+                      <div class="mp-chartbox" style="margin-top: 8px" role="img" aria-label="{{ hc.aria }}">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="height: 132px" aria-hidden="true">
+                          <rect x="{{ hc.shX }}" y="14" width="{{ hc.shW }}" height="85.5" fill="var(--mp-pause-bg)" stroke="var(--mp-pause)" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"></rect>
+                          <line x1="0" y1="{{ hc.alertY }}" x2="100" y2="{{ hc.alertY }}" stroke="var(--mp-alert)" stroke-width="1.5" stroke-dasharray="5 4"></line>
+                          <path d="{{ hc.proj }}" fill="none" stroke="var(--mp-pause)" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round"></path>
+                          <path d="{{ hc.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                        </svg>
+                        <span class="mp-chartlbl hz c-pause">PAUSE · next 2 weeks</span>
+                        <span class="albl c-alert" style="top: {{ hc.alertTop }}">{{ hc.alertTxt }}</span>
+                        <sc-for list="{{ hc.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot sdot {{ m.dot }}" style="left: {{ m.x }}; top: {{ m.y }}"></span><sc-if value="{{ m.has }}" hint-placeholder-val="{{ true }}"><span class="mp-chartlbl {{ m.c }} {{ m.pos }}" style="left: {{ m.x }}; top: {{ m.y }}">{{ m.lbl }}</span></sc-if></sc-for>
+                      </div>
+                      <div class="mp-chartaxis mp-ink3" style="margin-top: 6px" aria-hidden="true"><sc-for list="{{ hc.months }}" as="mo" hint-placeholder-count="3"><span style="left: {{ mo.x }}">{{ mo.t }}</span></sc-for></div>
+                    </div>
+                    <div class="mp-card" style="padding: 16px">
+                      <div class="fx ac gap10"><span class="mp-chip chip-l mp-pause">PAUSE</span><span class="mp-foot mp-ink2">confidence 61% · for 2 weeks</span></div>
+                      <div class="mp-body" style="margin-top: 10px; text-wrap: pretty">Keep what you have; hold this month's top&#8209;up until the trend settles. Not a reason to sell.</div>
+                      <div class="mp-foot mp-ink2" style="margin-top: 8px"><b>Would change if</b> a close back above the 20&#8209;day average, or two calm sessions after the Fed.</div>
+                      <div class="mp-foot mp-ink3" style="margin-top: 6px">PAUSE calls on this holding: 3 made, 2 right. A view, not advice.</div>
+                      <div class="fx gap8" style="margin-top: 12px"><a class="mp-btn mp-btn-tinted mp-btn-small" style="flex: 1" href="#why">Why?</a><a class="mp-btn mp-btn-primary mp-btn-small" style="flex: 1" href="#holding">Ask in the chat</a></div>
+                    </div>
+                    <div>
+                      <div class="fx jb mp-section"><span class="mp-over mp-ink3">Technical</span><span class="mp-foot mp-ink3">−2 to +2 · Fri close</span></div>
+                      <div class="mp-group">
+                        <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="4">
+                          <div class="mp-row"><span class="mp-sub" style="width: 92px; flex: none">{{ p.n }}</span><div class="pwrap"><div class="mp-track ptrk"><div class="pbar {{ p.cls }}" style="left: {{ p.left }}; width: {{ p.w }}"></div></div><div class="pmid"></div></div><span class="mp-sub mp-w6" style="width: 28px; flex: none; text-align: right">{{ p.t }}</span></div>
+                        </sc-for>
+                      </div>
+                      <div class="fx gap12 mp-cap mp-ink2" style="margin-top: 8px; padding-left: 16px"><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-pillar-for)"></span>in its favour</span><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-pillar-against)"></span>against it</span></div>
+                    </div>
+                    <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                  </div>
+                  <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.holdings }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+                  <sc-if value="{{ v.why }}" hint-placeholder-val="{{ false }}">
+                    <div class="scrim"></div>
+                    <div class="sheet-abs mp-sheet" role="dialog" aria-label="Why PAUSE">
+                      <div class="mp-grabber"></div>
+                      <div class="fx ac jb"><span class="mp-t2">Why PAUSE?</span><button class="iconbtn" aria-label="Close"><span class="ms">close</span></button></div>
+                      <div class="fx col gap12" style="margin-top: 10px">
+                        <sc-for list="{{ whys }}" as="w" hint-placeholder-count="3">
+                          <div class="fx gap12"><div class="mp-icontile {{ w.cls }}"><span class="ms ms-s">{{ w.icon }}</span></div><div style="flex: 1; min-width: 0"><div class="mp-hl">{{ w.h }}</div><div class="mp-foot mp-ink2">{{ w.b }}</div></div></div>
+                        </sc-for>
+                      </div>
+                      <div class="mp-foot mp-ink3" style="margin-top: 14px">From the engine, Friday's close: yfinance CNX1 ✓ · iShares NAV ✓ · ECB FX ✓. A view, not advice.</div>
+                      <a class="mp-btn mp-btn-primary" style="margin-top: 14px; width: 100%; box-sizing: border-box" href="#why">Ask more in the chat</a>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+            <div class="dv-note"><span class="dv-sname">{{ v.name }}</span><sc-for list="{{ v.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+          </div>
+        </sc-for>
+
+        <!-- OVERLAP -->
+        <sc-for list="{{ olRows }}" as="v" hint-placeholder-count="2">
+        <div class="dv-screen" id="{{ v.id }}">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div>
+              <p class="dv-cap">{{ v.cap }} · {{ t.label }}</p>
+              <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="{{ v.cap }} {{ t.label }}">
+                <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                <div class="scr {{ v.scr }}" style="gap: 12px">
+                  <div><div class="mp-large">Overlap</div><div class="mp-foot mp-ink3">What you really hold, from the issuers' files, 29 Oct</div></div>
+                  <div class="mp-stats">
+                    <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Effective</div><div class="mp-num-l" style="margin-top: 4px">1.6 of 4</div><div class="mp-foot mp-ink2">your holdings behave like fewer than two; Balanced is 72%</div></div>
+                    <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">In dollars</div><div class="mp-num-l" style="margin-top: 4px">84%</div><div class="mp-foot mp-ink2">a 1% move in GBP/USD moves you 0.8%</div></div>
+                  </div>
+                  <div class="mp-card" style="padding: 14px 16px">
+                    <div class="mp-hl">Currency, looked through</div>
+                    <div class="stack" style="margin-top: 10px" role="img" aria-label="US dollar 84%, pound 9%, yen 3%, euro 3%, other 1%"><sc-for list="{{ ccy }}" as="c" hint-placeholder-count="5"><div style="width: {{ c.p }}; background: {{ c.c }}"></div></sc-for></div>
+                    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 10px; margin-top: 10px"><sc-for list="{{ ccy }}" as="c" hint-placeholder-count="5"><div class="fx ac gap6 mp-foot"><span class="lgd" style="background: {{ c.c }}"></span><span class="mp-w6">{{ c.k }}</span><span class="mp-ink2">{{ c.p }}</span></div></sc-for></div>
+                  </div>
+                  <div>
+                    <div class="mp-section mp-over mp-ink3">Same companies, two wrappers</div>
+                    <div class="mp-group">
+                      <sc-for list="{{ ovl }}" as="o" hint-placeholder-count="3">
+                        <div class="mp-row" style="display: block; padding-top: 10px; padding-bottom: 10px"><div class="fx jb gap8"><span class="mp-sub mp-w6">{{ o.pair }}</span><span class="mp-sub mp-w6" style="white-space: nowrap">{{ o.v }}</span></div><div class="mp-foot mp-ink3">{{ o.names }}</div></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div class="mp-card fx gap10" style="padding: 12px 14px; align-items: flex-start"><span class="ms mp-ink2">info</span><span class="mp-foot mp-ink2">Nvidia is held three ways and is about 2.1% of everything. Fine at this size; the brief will say if it passes 5%.</span></div>
+                  <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                </div>
+                <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.overlap }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+              </div>
+            </div>
+          </sc-for>
+          <div class="dv-note"><span class="dv-sname">{{ v.name }}</span><sc-for list="{{ v.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+        </div>
+        </sc-for>
+
+        <!-- TRACK RECORD -->
+        <div class="dv-screen" id="record">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div>
+              <p class="dv-cap">Track record · {{ t.label }}</p>
+              <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="Track record {{ t.label }}">
+                <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                <div class="scr" style="gap: 14px">
+                  <div><div class="mp-large">Track record</div><div class="mp-foot mp-ink3">6 weeks of graded stances · updated Saturday</div></div>
+                  <div class="mp-stats">
+                    <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Stances</div><div class="mp-num-l" style="margin-top: 4px">20 / 31</div><div class="mp-foot mp-ink2">held up · 64%</div></div>
+                    <div class="mp-card" style="padding: 14px"><div class="mp-over mp-ink3">Vs doing nothing</div><div class="mp-num-l mp-up" style="margin-top: 4px">+0.7%</div><div class="mp-foot mp-ink2">per stance, average</div></div>
+                  </div>
+                  <div class="mp-card" style="padding: 14px 16px">
+                    <div class="fx jb ac"><span class="mp-hl">Does 64% mean 64%?</span><span class="mp-foot mp-ink3">Brier 0.21</span></div>
+                    <div class="fx col gap12" style="margin-top: 10px">
+                      <sc-for list="{{ rel }}" as="r" hint-placeholder-count="3">
+                        <div><div class="fx jb mp-foot"><span class="mp-w6">said {{ r.b }}</span><span class="mp-ink2">{{ r.txt }}</span></div><div class="fx col gap4" style="margin-top: 6px"><div class="mp-track rbt"><div class="rb rb-said" style="width: {{ r.said }}"></div></div><div class="mp-track rbt"><div class="rb rb-hap" style="width: {{ r.hap }}"></div></div></div></div>
+                      </sc-for>
+                    </div>
+                    <div class="fx gap12 mp-cap mp-ink2" style="margin-top: 10px"><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-ink-2)"></span>what the bot said</span><span class="fx ac gap6"><span class="lgd" style="background: var(--mp-coral)"></span>what happened</span></div>
+                    <div class="mp-foot mp-ink3" style="margin-top: 6px">79% of outcomes landed inside the 80% range.</div>
+                  </div>
+                  <div class="mp-card" style="padding: 14px 16px">
+                    <div class="fx jb ac"><span class="mp-hl">Stances go live when</span><span class="mp-foot mp-w6 mp-ink2">week 6 of 8</span></div>
+                    <div class="fx gap4" style="margin-top: 10px" role="img" aria-label="6 of 8 weeks done"><sc-for list="{{ weeks }}" as="w" hint-placeholder-count="8"><div class="mp-track wk {{ w.cls }}"></div></sc-for></div>
+                    <div class="mp-foot mp-ink2" style="margin-top: 8px">Six weeks in a row above doing nothing. Two more and stance chips appear on weekday cards.</div>
+                  </div>
+                  <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                </div>
+                <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.record }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+              </div>
+            </div>
+          </sc-for>
+          <div class="dv-note"><span class="dv-sname">Track record</span><span><b>The bot grading itself, in public.</b> 20 of 31 stances held up over 6 weeks. Said vs happened as paired bars per confidence bucket, each on its own track; the small 70%+ bucket is called out as meaning little yet.</span><span><b>The go-live gate is visible</b>: eight segments, filled week by week in the meter colour (green means good news, never progress), so nobody wonders why stances are not on weekday cards yet.</span></div>
+        </div>
+
+        <!-- MORE: the tab's root -->
+        <div class="dv-screen" id="more">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div>
+              <p class="dv-cap">More · {{ t.label }}</p>
+              <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="More {{ t.label }}">
+                <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                <div class="scr" style="gap: 14px">
+                  <div><div class="mp-large">More</div><div class="mp-foot mp-ink3">The pages you need less often</div></div>
+                  <div class="mp-group">
+                    <sc-for list="{{ moreRows }}" as="m" hint-placeholder-count="3">
+                      <a class="mp-row hrow" href="{{ m.href }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ m.icon }}</span></span><span style="flex: 1; min-width: 0"><span class="mp-hl" style="display: block">{{ m.t }}</span><span class="mp-foot mp-ink3" style="display: block">{{ m.s }}</span></span><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                    </sc-for>
+                  </div>
+                  <div class="mp-foot mp-ink3 mp-section">Read-only: settings, alerts and every change happen in the chat.</div>
+                  <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                </div>
+                <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.more }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+              </div>
+            </div>
+          </sc-for>
+          <div class="dv-note"><span class="dv-sname">More</span><span><b>A list root, as Apple's More tab is</b>: Activity, Audit and About, each a row with a chevron that pushes its page with More still selected.</span><span><b>Its icon is menu, not ···</b>, because Telegram draws its own ··· at the top right.</span></div>
+        </div>
+
+        <!-- ACTIVITY (pushed from More) -->
+        <div class="dv-screen" id="activity">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div>
+              <p class="dv-cap">Activity (pushed from More) · {{ t.label }}</p>
+              <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="Activity {{ t.label }}">
+                <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>More</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                <div class="scr" style="gap: 14px">
+                  <div><div class="mp-large">Activity</div><div class="mp-foot mp-ink3">What the agent did today, and what it cost</div></div>
+                  <div class="mp-card" style="padding: 14px 16px">
+                    <div class="fx jb ac"><span class="mp-hl">This month</span><span class="mp-foot mp-up mp-w6">on track</span></div>
+                    <div class="fx ac gap8" style="margin-top: 4px"><span class="mp-num-l">£6.40</span><span class="mp-foot mp-ink2">of the £50 cap · 13%</span></div>
+                    <div class="mp-track" style="height: 10px; margin-top: 10px" role="img" aria-label="13% of the monthly cap used"><div class="meter-f" style="width: 13%"></div></div>
+                  </div>
+                  <div>
+                    <div class="fx jb mp-section"><span class="mp-over mp-ink3">Today</span><span class="mp-foot mp-ink3">5 runs</span></div>
+                    <div class="mp-group">
+                      <sc-for list="{{ runs }}" as="r" hint-placeholder-count="5">
+                        <div class="mp-row runrow"><span class="mp-foot mp-ink3 mp-w6 rtime" style="width: 40px">{{ r.time }}</span><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">{{ r.job }}</div><div class="mp-foot mp-ink3">{{ r.meta }}</div></div><span class="mp-foot mp-w6 rtime">{{ r.cost }}</span><span class="ms ms-s rico {{ r.okCls }}" role="img" aria-label="{{ r.okLabel }}">{{ r.icon }}</span></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div class="mp-card fx gap12" style="padding: 12px 14px; align-items: flex-start"><div class="mp-icontile mp-pause"><span class="ms ms-s">warning</span></div><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">One amber alarm this week</div><div class="mp-foot mp-ink2">Tue: the EODHD trial was slow, so prices came from yfinance. No action needed.</div></div></div>
+                  <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                </div>
+                <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.more }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+              </div>
+            </div>
+          </sc-for>
+          <div class="dv-note"><span class="dv-sname">Activity</span><span><b>Pushed from More</b>: More stays selected and Back reads ‹&nbsp;More.</span><span><b>Cost in pounds, against the cap</b>, before anything else: the owner's first question. The meter's empty part keeps its ring in dark mode.</span><span><b>Each run is one row</b>: the time sits on the title's first line, then the model and its calls, the cost and the outcome.</span></div>
+        </div>
+
+        <!-- AUDIT (pushed from More) -->
+        <div class="dv-screen" id="audit">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div>
+              <p class="dv-cap">Audit (pushed from More) · {{ t.label }}</p>
+              <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="Audit {{ t.label }}">
+                <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>More</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                <div class="scr" style="gap: 14px">
+                  <div class="fx jb gap8" style="align-items: flex-start"><div><div class="mp-large">Audit</div><div class="mp-foot mp-ink3">Every change, who made it and when</div></div><span class="mp-chip chip-s okchip" style="margin-top: 12px"><span class="ms ms-s">verified</span>Chain verified</span></div>
+                  <div class="fx gap8"><button class="fchip">Everyone<span class="ms ms-s">expand_more</span></button><button class="fchip">All records<span class="ms ms-s">expand_more</span></button><button class="fchip">This week<span class="ms ms-s">expand_more</span></button></div>
+                  <sc-for list="{{ audit }}" as="g" hint-placeholder-count="4">
+                    <div>
+                      <div class="mp-section mp-over mp-ink3">{{ g.day }}</div>
+                      <div class="mp-group">
+                        <sc-for list="{{ g.items }}" as="a" hint-placeholder-count="1">
+                          <div class="mp-row" style="align-items: flex-start"><div class="avatar {{ a.av }}">{{ a.who1 }}</div><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">{{ a.what }}</div><div class="mp-foot mp-ink2">{{ a.change }}</div><div class="mp-foot mp-ink3">{{ a.meta }}</div></div><span class="ms mp-ink3 ms-s" style="margin-top: 2px">chevron_right</span></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-for>
+                  <div class="mp-cap mp-ink3">Illustrative figures.</div>
+                </div>
+                <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ nav.more }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+              </div>
+            </div>
+          </sc-for>
+          <div class="dv-note"><span class="dv-sname">Audit</span><span><b>Grouped by day, newest first</b>, one group per day (26 October has its own); each row says who, what, before → after, the door it came through (always the chat) and the run that made it. The chevron opens that run.</span><span><b>"Chain verified"</b> says the log has not been edited since it was written.</span><span><b>Filters only narrow the view</b>; nothing here writes.</span></div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const f2 = (n) => n.toFixed(2);
+          // Overview hero: six months, x 0..100, y 8..92 (the mapping the Responsive page uses)
+          const s6 = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
+          const lo6 = Math.min.apply(null, s6), hi6 = Math.max.apply(null, s6);
+          const p6 = s6.map((v, i) => [i * 100 / (s6.length - 1), 8 + (1 - (v - lo6) / (hi6 - lo6)) * 84]);
+          const line6 = 'M' + p6.map((p) => f2(p[0]) + ',' + f2(p[1])).join(' L');
+          // NASDAQ 100: 14 Friday closes, x domain 0..15 (the two future weeks of the PAUSE), y domain 4150..4700
+          const s14 = [4280, 4330, 4310, 4380, 4420, 4450, 4493, 4540, 4596, 4530, 4470, 4410, 4345, 4210];
+          const X = (i) => i / 15 * 100, Y = (v) => (4700 - v) / 550 * 100;
+          const last = s14.length - 1;
+          const alertV = 0.92 * Math.max.apply(null, s14);
+          const hc = {
+            line: 'M' + s14.map((v, i) => f2(X(i)) + ',' + f2(Y(v))).join(' L'),
+            alertY: f2(Y(alertV)), alertTop: f2(Y(alertV)) + '%', alertTxt: '£' + Math.round(alertV).toLocaleString('en-GB'),
+            shX: f2(X(last)), shW: f2(100 - X(last)),
+            proj: 'M' + f2(X(last)) + ',' + f2(Y(s14[last])) + ' L100,' + f2(Y(s14[last])),
+            marks: [[6, 'HOLD', 'd-hold', 'c-hold', 'lbl-l'], [8, 'ADD', 'd-add', 'c-add', ''], [13, '', 'd-pause', 'c-pause', '']].map((m) => ({ x: f2(X(m[0])) + '%', y: f2(Y(s14[m[0]])) + '%', lbl: m[1], has: !!m[1], dot: m[2], c: m[3], pos: m[4] })),
+            months: [{ t: 'Aug', x: '14%' }, { t: 'Sep', x: '44%' }, { t: 'Oct', x: '72%' }],
+            aria: 'Fourteen Friday closes, 31 July to 30 October: up to £4,596 on 25 September, then down to £4,210, just under your 8% alert at £4,228. HOLD 66% on 11 September, ADD 64% on 25 September, PAUSE 61% now, for the next two weeks.'
+          };
+          const tabDefs = [['overview', 'Overview', 'home'], ['holdings', 'Holdings', 'donut_small'], ['overlap', 'Overlap', 'join_inner'], ['record', 'Record', 'insights'], ['more', 'More', 'menu']];
+          const tabs = (sel) => tabDefs.map((d) => ({ href: '#' + d[0], label: d[1], icon: d[2], on: d[0] === sel ? 'on' : '', fill: d[0] === sel ? 'ms-fill' : '', cur: d[0] === sel ? 'page' : null }));
+          const hs = [
+            { lead: 'BA', name: 'Balanced', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', st: 'HOLD', conf: '71%', stCls: 'mp-hold', hasSt: true },
+            { lead: 'NQ', name: 'NASDAQ 100', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', st: 'PAUSE', conf: '61%', stCls: 'mp-pause', hasSt: true },
+            { lead: 'RB', name: 'Automation & Robotics', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', st: 'ADD', conf: '58%', stCls: 'mp-add', hasSt: true },
+            { lead: 'AG', name: 'Physical Silver', sub: 'iShares · GIA', val: '£820', ch: '▼ 6.2%', chCls: 'mp-dq', st: 'PAUSE', conf: '58%', stCls: 'mp-pause', hasSt: true },
+            { lead: '£', name: 'Cash pot', sub: 'Easy access', val: '£400', ch: '—', chCls: 'mp-ink3', st: '', conf: '', stCls: '', hasSt: false }
+          ];
+          const ovVariant = (priv, o) => Object.assign({
+            scr: '', pressed: priv ? 'true' : 'false', eye: priv ? 'visibility_off' : 'visibility',
+            mask: priv ? 'mp-mask' : '', mrole: priv ? 'img' : null, mlab: priv ? 'hidden' : null,
+            total: priv ? '£00,000' : '£25,800',
+            sub: priv ? '▼ 0.6% this week' : '▲ £612 this month · ▼ 0.6% this week',
+            cost: priv ? '£0.00' : '£6.40', capTxt: priv ? 'of the monthly cap' : 'of the £50 cap',
+            hs: hs.map((h) => Object.assign({}, h, { shown: priv ? '£0,000' : h.val }))
+          }, o);
+          const pill = (n, v) => ({ n: n, t: (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), cls: v >= 0 ? 'pfor' : 'pagainst', left: (v >= 0 ? 50 : 50 - Math.abs(v) * 12.5) + '%', w: Math.abs(v) * 12.5 + '%' });
+          return {
+            themes: [{ label: 'Light', cls: 'mp t-light', tg: 'tg-light' }, { label: 'Dark', cls: 'mp t-dark', tg: 'tg-dark' }],
+            nav: { overview: tabs('overview'), holdings: tabs('holdings'), overlap: tabs('overlap'), record: tabs('record'), more: tabs('more') },
+            ov: { line: line6, area: line6 + ' L100,100 L0,100 Z', marks: [3, 7, 10].map((i) => ({ x: f2(p6[i][0]) + '%', y: f2(p6[i][1]) + '%' })) },
+            hc: hc,
+            hs: hs,
+            ovRows: [
+              ovVariant(false, { id: 'overview', cap: 'Overview', name: 'Overview', notes: [
+                { b: 'One markup with the Responsive page\'s 390 frame:', t: 'hero with a 120 px chart, this week, the holdings, then four stats in a 2 × 2 grid, in summary order.' },
+                { b: 'Telegram\'s header replaces the large title in the Mini App.', t: 'MyPaisa\'s name already sits in Telegram\'s bar, so Overview starts with the controls; the phone browser shows the large title.' },
+                { b: 'Dots on the line', t: 'are the bot\'s past stances. Falls are quiet ink with ▼; green means good: gains with ▲, and status marks such as this check.' }
+              ] }),
+              ovVariant(false, { id: 'overview-scrolled', cap: 'Overview · scrolled', name: 'Overview, scrolled', scr: 'scr-end', notes: [
+                { b: 'Scrolled to the end.', t: 'Cash pot and the four stats sit above the tab bar: the screen keeps 104 px of bottom padding, so its last line clears the bar.' },
+                { b: 'Illustrative figures', t: 'closes every screen, above the bar like everything else.' }
+              ] }),
+              ovVariant(true, { id: 'overview-privacy', cap: 'Overview · privacy on', name: 'Overview, privacy on', notes: [
+                { b: 'Privacy mode hides pounds and keeps percentages:', t: 'the total, each value and this month\'s cost become pills that read "hidden".' },
+                { b: 'The subline keeps only the week', t: '(▼ 0.6% this week), so it never repeats the chip\'s ▲ 2.4% month.' }
+              ] })
+            ],
+            hdRows: [
+              { id: 'holding', cap: 'A holding (pushed from Holdings)', name: 'A holding', scr: '', why: false, behind: null, notes: [
+                { b: 'Pushed from Holdings:', t: 'Holdings stays selected and Telegram\'s Back reads ‹ Holdings. Pushed from Overview it reads ‹ Overview, with Overview selected.' },
+                { b: 'The chart carries the stance:', t: 'HOLD and ADD where they were issued, PAUSE now, and its horizon, the next two weeks, shaded amber to the right of the last close. The horizon is the future, never the past.' },
+                { b: 'Your 8% alert is the dashed red line', t: 'at £4,228; Friday\'s £4,210 closed just under it, so it shows as crossed. The only red on the page. Month ticks sit mid-month.' }
+              ] },
+              { id: 'holding-scrolled', cap: 'A holding · scrolled', name: 'A holding, scrolled', scr: 'scr-end', why: false, behind: null, notes: [
+                { b: 'Scrolled to the end:', t: 'all four technical pillars, Macro (US) and Risk −2 included, sit above the tab bar.' },
+                { b: 'Pillars are diverging bars', t: 'on a ringed track: blue in its favour, amber against it, the number beside each bar.' }
+              ] },
+              { id: 'why', cap: 'Why? sheet', name: 'Why? sheet', scr: '', why: true, behind: 'true', notes: [
+                { b: 'A sheet, not a page', t: '(Apple\'s medium detent): the holding stays behind, dimmed. Telegram\'s own bar is not dimmed, because Telegram draws it.' },
+                { b: 'Three reasons, each one line,', t: 'in the engine\'s words, with the sources underneath. More questions go to the chat, where the bot can answer and log it.' }
+              ] }
+            ],
+            olRows: [
+              { id: 'overlap', cap: 'Overlap', name: 'Overlap', scr: '', notes: [
+                { b: 'Two numbers a layman can repeat:', t: '1.6 of 4, so your holdings behave like fewer than two; and 84% of you is in dollars.' },
+                { b: 'Currency is a stacked bar with the numbers in the legend,', t: 'never colour alone, in the fixed currency colours every page uses.' },
+                { b: 'Pairs read in words:', t: '"Balanced and NASDAQ 100", the share they have in common on the right and the companies under it.' },
+                { b: 'The note says when to care', t: '(above 5%), so the page answers "is this a problem?" before it is asked.' }
+              ] }
+            ],
+            pillars: [pill('Trend', 2), pill('Momentum', -1), pill('Macro (US)', 1), pill('Risk', -2)],
+            whys: [
+              { icon: 'trending_down', cls: 'mp-pause', h: 'Momentum is fading', b: 'RSI turned down from 71 and the MACD histogram is shrinking: two signs of exhaustion.' },
+              { icon: 'bolt', cls: 'mp-pause', h: 'Risk is elevated', b: 'Volatility is in its 72nd percentile and the price is 8.4% off its high.' },
+              { icon: 'trending_up', cls: 'mp-hold', h: 'The long trend still holds', b: 'Above its 200‑day average, so this is a pause, not a reason to sell.' }
+            ],
+            ccy: [
+              { k: 'USD', p: '84%', c: 'var(--mp-ccy-usd)' },
+              { k: 'GBP', p: '9%', c: 'var(--mp-ccy-gbp)' },
+              { k: 'JPY', p: '3%', c: 'var(--mp-ccy-jpy)' },
+              { k: 'EUR', p: '3%', c: 'var(--mp-ccy-eur)' },
+              { k: 'Other', p: '1%', c: 'var(--mp-ccy-other)' }
+            ],
+            ovl: [
+              { pair: 'Balanced and NASDAQ 100', v: '9% of Balanced', names: 'Apple, Microsoft, Nvidia, Amazon, Alphabet, Meta, Broadcom' },
+              { pair: 'Robotics and NASDAQ 100', v: '3% of Robotics', names: 'Nvidia, Intuitive Surgical, Cadence, Synopsys' },
+              { pair: 'Silver and anything', v: 'none', names: 'That is its job: it moves on different news.' }
+            ],
+            rel: [
+              { b: '55–60%', txt: 'happened 7 of 12 · 58%', said: '57.5%', hap: '58%' },
+              { b: '60–70%', txt: 'happened 10 of 16 · 63%', said: '65%', hap: '63%' },
+              { b: '70%+', txt: '3 of 3 · 100% (too few yet)', said: '74%', hap: '100%' }
+            ],
+            weeks: [1, 2, 3, 4, 5, 6, 7, 8].map((i) => ({ cls: i <= 6 ? 'on' : '' })),
+            moreRows: [
+              { icon: 'history', t: 'Activity', s: 'What the agent did, and what it cost', href: '#activity' },
+              { icon: 'fact_check', t: 'Audit', s: 'Every change, who made it and when', href: '#audit' },
+              { icon: 'info', t: 'About', s: 'Version, data sources and privacy', href: '#more' }
+            ],
+            runs: [
+              { time: '07:00', job: 'Ingest prices', meta: '12 s · 5 of 5 priced', cost: '£0.00', icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '07:04', job: 'Engine', meta: '8 s · self-test ✓', cost: '£0.00', icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '07:31', job: 'Morning brief', meta: 'Sonnet · 3 calls · 9.4k tokens', cost: '£0.03', icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '12:10', job: 'Chat: "Why PAUSE?"', meta: 'Sonnet · 2 calls · 4.1k tokens', cost: '£0.02', icon: 'check_circle', okCls: 'mp-up', okLabel: 'Done' },
+              { time: '21:05', job: 'Evening wrap', meta: 'due tonight', cost: '—', icon: 'schedule', okCls: 'mp-ink3', okLabel: 'Scheduled' }
+            ],
+            audit: [
+              { day: 'Today', items: [{ av: 'av-you', who1: 'Y', what: 'Bought £200 of Balanced', change: 'units 1,003.2 → 1,014.0', meta: 'You · chat Confirm · 12:14 · r‑1182' }] },
+              { day: 'Yesterday', items: [{ av: 'av-asha', who1: 'A', what: 'Cash pot updated', change: '£350 → £400', meta: 'Asha · screenshot · 19:02 · r‑1170' }] },
+              { day: '28 October', items: [{ av: 'av-you', who1: 'Y', what: 'Stop pinging me under 2%', change: 'alert floor off → 2%', meta: 'You · chat · 08:40 · r‑1151' }] },
+              { day: '26 October', items: [{ av: 'av-you', who1: 'Y', what: 'Physical Silver added', change: 'into your GIA', meta: 'You · factsheet · 21:15 · r‑1139' }] }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>
