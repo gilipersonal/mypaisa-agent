@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Currency check options</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <style>
+          html { background: #ECEAE6; }
+          body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          /* canvas: the dv-turn layout of Telegram chats and Telegram second check */
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 14px; text-wrap: pretty; }
+          .dv-plan { width: fit-content; max-width: 1232px; box-sizing: border-box; margin: 0 0 24px; padding: 9px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-plan b { color: #14171F; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .dv-sname { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+          .kcard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 36px; display: flex; flex-direction: column; gap: 52px; width: fit-content; max-width: 100%; box-sizing: border-box; }
+          .srow { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+          .kcol { display: flex; flex-direction: column; width: 390px; flex: none; }
+          .snote { flex: none; width: 300px; padding-top: 32px; display: flex; flex-direction: column; gap: 8px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .snote b { color: #14171F; }
+          .ngrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 1232px; }
+          .ncard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 24px 28px; display: flex; flex-direction: column; gap: 10px; font: 14px/21px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .ncard b { color: #14171F; }
+          /* the phone and Telegram's own chrome (Telegram draws all of this) */
+          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; background: var(--tg-bg); box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+          .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 7; }
+          .sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .sbar .ms { font-size: 17px; }
+          .sicons { display: flex; align-items: center; gap: 4px; }
+          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
+          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
+          .back .ms { font-size: 22px; }
+          .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
+          .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
+          .cav { width: 36px; height: 36px; border-radius: 50%; flex: none; margin-left: 36px; }
+          .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
+          .ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
+          .mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
+          .ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
+          .ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
+          .home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
+          .home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
+          /* Telegram additions on top of the .tg-* tokens */
+          .tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-pill: #1F6FB5; }
+          .tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-pill: #3A6EA5; }
+          .msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
+          .msg.w { width: 316px; }
+          .msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
+          .msg.o { align-self: flex-end; align-items: flex-end; margin-left: 0; margin-right: 6px; }
+          .tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
+          .tl { border-bottom-left-radius: 4px; }
+          .tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
+          .tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
+          .tg-out.tl { border-radius: 16px 16px 4px 16px; }
+          .tg-out.tl::before { left: auto; right: -7px; background: var(--tg-out); border-bottom-right-radius: 0; border-bottom-left-radius: 16px 14px; }
+          .tg-out.tl::after { left: auto; right: -10px; border-bottom-right-radius: 0; border-bottom-left-radius: 10px; }
+          .tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
+          .tg-out .tg-time { color: var(--tg-otime); }
+          .tick { font-size: 15px; }
+          .dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
+          .day { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
+          .msg .tg-btns { width: 100%; max-width: none; }
+          .c1 { grid-template-columns: minmax(0, 1fr); }
+          .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+          .tg-btn { position: relative; cursor: pointer; gap: 2px; }
+          .tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
+          .bsp { height: 8px; }
+          .ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
+          /* a shut rich fold, as Telegram chats and the kit: the detail a tap away; the whole row is the 44 px target */
+          .bx { display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; min-height: 44px; border-top: 0.5px solid var(--tg-line); margin-top: 6px; color: var(--tg-link); font-weight: 600; cursor: pointer; }
+          .bx::after { content: "chevron_right"; font-family: "Material Symbols Rounded"; font-feature-settings: "liga"; font-size: 20px; font-weight: 400; }
+          .b { font-weight: 600; } .i { font-style: italic; } .a { color: var(--tg-link); }
+          /* options round (MA-156): ids, the recommended mark, the open fold, the next line */
+          .dv-oid { font: 600 10.5px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #14171F; border-radius: 5px; text-decoration: none; }
+          .dv-oid:hover { background: rgba(0,0,0,.14); color: #14171F; }
+          .rec { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 9px; border-radius: 999px; background: #13213A; color: #FFFFFF; flex: none; }
+          .dv-rule { width: fit-content; max-width: 1232px; box-sizing: border-box; margin: 0 0 24px; padding: 9px 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid rgba(0,0,0,.08); font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-rule b { color: #14171F; }
+          .dv-next { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin: 22px 0 0; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .dv-glance { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; margin: 28px 0 12px; }
+          .ltx { display: inline; }
+          .bxo { display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; min-height: 44px; border-top: 0.5px solid var(--tg-line); margin-top: 6px; color: var(--tg-link); font-weight: 600; }
+          .bxo::after { content: "expand_more"; font-family: "Material Symbols Rounded"; font-feature-settings: "liga"; font-size: 20px; font-weight: 400; }
+          .bfo { font-size: 14px; line-height: 19px; padding: 0 0 4px; }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t1" data-screen-label="Currency check options: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">MA-156</a><span class="dv-tname">Currency check: three options for the correction</span></div>
+        <p class="dv-intro">Arun, 24 Oct 2026: “On the telegram App, I should be able to add transactions using Any currency for any fund and chatbot to figure what the base currency of the holdings, If the holdings are in GBP and I try to invest INR to GBP holding, chat should be able to correct me.” Three ways to draw the correction, from the planned boards in Currency check (kept as they were). Each is the whole flow: the correction card, its four ways on, the Confirm card with two currencies, and privacy on, in Telegram light and dark. Telegram draws the chat; MyPaisa owns the words, their order and which buttons appear. Design system: MyPaisa DS v1, Warm ledger. Illustrative figures throughout: ₹20,000, £176.10, the Nifty 50 index fund and Balanced’s NAV of £18.57 are made up; the rate is the one illustrative rate every MyPaisa board uses, £1 = ₹112.50, the ECB reference rate of Friday 23 Oct (the ECB publishes none on Saturday 24 Oct).</p>
+        <div class="ngrid">
+          <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
+            <div class="ncard" data-screen-label="Note: {{ n.h }}">
+              <span class="dv-sname">{{ n.h }}</span>
+              <sc-for list="{{ n.ps }}" as="p" hint-placeholder-count="2"><span><b>{{ p.b }}</b> <sc-for list="{{ p.s }}" as="s" hint-placeholder-count="1"><sc-if value="{{ s.isLink }}" hint-placeholder-val="{{ false }}"><a class="dv-oid" href="{{ s.href }}">{{ s.t }}</a></sc-if><sc-if value="{{ s.isText }}" hint-placeholder-val="{{ true }}"><span class="ltx">{{ s.t }}</span></sc-if></sc-for></span></sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <p class="dv-next"><span>Pick one:</span><a class="dv-oid" href="#1b">1b</a><span>as drawn (recommended) ·</span><a class="dv-oid" href="#1a">1a</a><span>the planned flow ·</span><a class="dv-oid" href="#1c">1c</a><span>one card ·</span><span>or a mix, such as</span><a class="dv-oid" href="#1b">1b</a><span>with the tidy-away of</span><a class="dv-oid" href="#1c">1c</a><span>· or none of these: rework.</span></p>
+      </section>
+
+      <sc-for list="{{ sections }}" as="j" hint-placeholder-count="4">
+        <section class="dv-turn" id="{{ j.id }}" data-screen-label="{{ j.label }}">
+          <div class="dv-thd"><a class="dv-tid" href="{{ j.href }}">{{ j.tid }}</a><span class="dv-tname">{{ j.name }}</span><sc-if value="{{ j.rec }}" hint-placeholder-val="{{ false }}"><span class="rec">Recommended</span></sc-if></div>
+          <p class="dv-intro">{{ j.intro }}</p>
+          <p class="dv-rule"><b>{{ j.ruleB }}</b> {{ j.rule }}</p>
+          <div class="kcard">
+            <sc-for list="{{ j.steps }}" as="st" hint-placeholder-count="1">
+              <div class="srow">
+                <sc-for list="{{ st.th }}" as="t" hint-placeholder-count="2">
+                  <div class="kcol">
+                    <p class="dv-cap">{{ t.cap }}</p>
+                    <!-- a chat frame: Telegram draws all of it; MyPaisa owns the words and the buttons -->
+                    <div class="phone tg {{ t.tg }}" data-screen-label="{{ t.lab }}">
+                      <div class="island" aria-hidden="true"></div>
+                      <div class="sbar"><span>{{ t.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
+                      <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
+                      <div class="msgs">
+                        <sc-for list="{{ t.msgs }}" as="m" hint-placeholder-count="3">
+                          <div class="{{ m.mc }}">
+                            <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="day">{{ m.day }}</span></sc-if>
+                            <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
+                              <div class="tg-bub {{ m.bc }}">
+                                <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="2"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
+                                <div class="tg-time"><span>{{ m.time }}</span><sc-if value="{{ m.out }}" hint-placeholder-val="{{ false }}"><span class="ms tick" aria-label="Read">done_all</span></sc-if></div>
+                              </div>
+                              <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="1"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}</button></sc-for></div></sc-for>
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
+                      <div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
+                      <div class="home" aria-hidden="true"><span></span></div>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ st.hasNote }}" hint-placeholder-val="{{ true }}"><div class="snote"><span class="dv-sname">{{ st.name }}</span><sc-for list="{{ st.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> <sc-for list="{{ n.s }}" as="s" hint-placeholder-count="1"><sc-if value="{{ s.isLink }}" hint-placeholder-val="{{ false }}"><a class="dv-oid" href="{{ s.href }}">{{ s.t }}</a></sc-if><sc-if value="{{ s.isText }}" hint-placeholder-val="{{ true }}"><span class="ltx">{{ s.t }}</span></sc-if></sc-for></span></sc-for></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{}'>
+      class Component extends DCLogic {
+        renderVals() {
+          const NB = ' ';
+          /* keep a figure with its unit or date, and a currency with its mask: "24 Oct", "Fri 23", "9.5 units", "per £", "₹ ••••" never break */
+          const glue = (s) => s.replace(/(\d) (Oct|units)/g, '$1' + NB + '$2').replace(/(Fri|Sat) (\d)/g, '$1' + NB + '$2').replace(/about ([£₹\d])/g, 'about' + NB + '$1').replace(/per £/g, 'per' + NB + '£').replace(/([£₹]) •/g, '$1' + NB + '•');
+          /* chat text, as in Telegram chats: *bold* _italic_ [link]; '' a gap line, '^' a small grey line, '!' a shut fold, '>' an open fold, '~' a line inside it */
+          const seg = (str) => {
+            const out = []; const re = /(\*[^*]+\*|_[^_]+_|\[[^\]]+\])/g; let last = 0, x;
+            while ((x = re.exec(str))) {
+              if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' });
+              out.push({ t: x[0].slice(1, -1), c: { '*': 'b', '_': 'i', '[': 'a' }[x[0][0]] });
+              last = x.index + x[0].length;
+            }
+            if (last < str.length) out.push({ t: str.slice(last), c: '' });
+            return out;
+          };
+          const kind = (s) => s === '' ? 'sp' : s[0] === '^' ? 'ov' : s[0] === '!' ? 'x' : s[0] === '>' ? 'xo' : s[0] === '~' ? 'fo' : 'p';
+          const parse = (lines) => {
+            const bl = [];
+            lines.forEach((s) => {
+              const k = kind(s), body = glue(k === 'p' || k === 'sp' ? s : s.slice(1)); let b = bl[bl.length - 1];
+              if (!b || b.k !== k || k === 'sp' || k === 'x' || k === 'xo') { b = { k: k, c: k === 'ov' ? 'ov' : 'b' + k, ls: [] }; bl.push(b); }
+              b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: '', c: '' }] : seg(body) });
+            });
+            return bl;
+          };
+          const M = (o) => {
+            if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, bc: '', blocks: [], rows: [], time: '', out: false };
+            const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((n) => ({ t: n, c: '' })) }));
+            return { isDay: false, isMsg: true, day: '', mc: 'msg' + (o.out ? ' o' : '') + (rows.length || o.wide ? ' w' : ''), bc: (o.out ? 'tg-out ' : '') + 'tl', blocks: parse(o.text || []), time: o.time || '', out: !!o.out, rows: rows };
+          };
+          /* note text with option ids as links: "#1b" becomes a dv-oid link */
+          const L = (str) => str.split(/(#1[abc])/).filter((p) => p !== '').map((p) => /^#1[abc]$/.test(p) ? { isLink: true, isText: false, t: p.slice(1), href: p } : { isLink: false, isText: true, t: glue(p), href: '' });
+          const themes = [{ label: 'Telegram light', tg: 'tg-light' }, { label: 'Telegram dark', tg: 'tg-dark' }];
+          const S = (board, o) => Object.assign({ hasNote: true }, o, {
+            th: themes.map((th) => ({ cap: o.cap + ' · ' + th.label, lab: board + ' · ' + o.part + ' · ' + th.label, tg: th.tg, msgs: o.msgs, clock: o.clock })),
+            notes: o.notes.map((n) => ({ b: glue(n[0]), s: L(n[1]) }))
+          });
+
+          /* illustrative figures: ₹20,000 typed; £176.10 arrived (so ₹113.57 per £); the ECB rate of Fri 23 Oct, ₹112.50 per £, gives £177.78;
+             Balanced NAV £18.57 (9.5 units for £176.10, 9.6 for £177.78); one rupee holding, the Nifty 50 index fund */
+          const RH = '₹ ••••', PH = '£ ••••';
+          const ENG = 'worked out by MyPaisa’s engine';
+          const CONFIRMQ = [['Confirm', 'Edit', 'Cancel']];
+          const SHOWQ = [['Confirm', 'Edit', 'Cancel'], ['Show amounts']];
+          const SAVE = '_Nothing is saved until you confirm and check it’s you._';
+          const today = M({ day: 'Today' });
+          const typed = M({ out: true, time: '12:10', text: ['I put ₹20,000 into Balanced'] });
+          const typedP = M({ out: true, time: '12:12', text: ['176.10'] });
+
+          /* 1a: four ways on (the planned flow, sharpened); privacy hides what is yours, keeps what is public */
+          const A_corr = M({ time: '12:10', btns: [['Pounds that arrived'], ['Use the ECB rate'], ['A rupee holding', 'Cancel']], text: [
+            '^New transaction · ₹20,000 into Balanced',
+            '*Balanced is held in pounds (GBP),* so it can’t take rupees directly. The rupees were changed to pounds on the way.',
+            '',
+            '*How should I record it?*',
+            'The pounds that arrived are exact; the ECB rate gives an estimate.',
+            '_Nothing is saved yet._',
+            '!Why pounds?' ] });
+          const A_ask = (p) => M({ time: 'edited 12:11', wide: true, text: ['^New transaction · ' + (p ? RH : '₹20,000') + ' into Balanced', '*How many pounds arrived in Balanced?*', 'Type the amount, or send a screenshot of the platform’s confirmation.'] });
+          const A_conf = (p) => M({ time: '12:12', btns: p ? SHOWQ : CONFIRMQ, text: p
+            ? ['^New transaction · check it', '*Bought ' + PH + ' of Balanced* today, 24 Oct', '^' + RH + ' typed · the rate is hidden too, as it comes from your figures', '_Privacy is on: amounts hidden, and any rate worked out from them._ [/privacy] to turn it off.', '', SAVE]
+            : ['^New transaction · check it', '*Bought £176.10 of Balanced* today, 24 Oct · about 9.5 units', '^₹20,000 typed, so ₹113.57 per £', '', SAVE] });
+          const A_est = (p) => M({ time: 'edited 12:11', btns: p ? SHOWQ : CONFIRMQ, text: p
+            ? ['^New transaction · check it', '*Estimate:* bought *' + PH + '* of Balanced today, 24 Oct', RH + ' at ₹112.50 per £', '^ECB rate of Fri 23 Oct, which is public · ' + ENG, '_Privacy is on: amounts hidden. The ECB rate is public, so it stays._ [/privacy] to turn it off.', '', SAVE]
+            : ['^New transaction · check it', '*Estimate:* bought *£177.78* of Balanced today, 24 Oct · about 9.6 units', '₹20,000 at ₹112.50 per £', '^ECB rate of Fri 23 Oct · ' + ENG, 'It stays an estimate until a statement, a screenshot or the next valuation confirms it.', '', SAVE] });
+
+          /* 1b: ask again, in pounds (recommended); privacy shows no amount and no rate on the card */
+          const B_corr = (p) => M({ time: '12:10', btns: [[p ? 'Use the ECB estimate' : 'About £177.78 · ECB estimate'], ['Nifty 50 instead', 'Cancel']], text: [
+            '^New transaction · ' + (p ? RH : '₹20,000') + ' into Balanced',
+            '*Balanced is held in pounds (GBP),* so it can’t take rupees. The rupees were changed to pounds on the way in.',
+            '',
+            '*How many pounds arrived?*',
+            'Type them, or send a screenshot of the platform’s confirmation.',
+            p ? '^Or use the estimate: the ECB rate of Fri 23 Oct, ' + ENG + '.' : '^Or use the estimate: ₹112.50 per £, the ECB rate of Fri 23 Oct, ' + ENG + '.',
+            p ? '_Privacy is on: no amounts or rates on this card._ [/privacy] to turn it off.' : '_Nothing is saved yet._',
+            '!Why pounds?' ] });
+          const B_wait = (p) => M({ time: 'edited 12:12', wide: true, text: ['^New transaction · ' + (p ? RH : '₹20,000') + ' into Balanced', '*Balanced is held in pounds (GBP).* How many pounds arrived?'] });
+          const B_conf = (p) => M({ time: '12:12', btns: p ? SHOWQ : CONFIRMQ, text: p
+            ? ['^New transaction · check it', '*Bought ' + PH + ' of Balanced* today, 24 Oct', '^From ' + RH + ' · rate hidden', '_Privacy is on: no amounts or rates on this card._ [/privacy] to turn it off.', '', SAVE, '!Technical details']
+            : ['^New transaction · check it', '*Bought £176.10 of Balanced* today, 24 Oct · about 9.5 units', '^From ₹20,000, so ₹113.57 per £ · ' + ENG, '', SAVE, '!Technical details'] });
+          const B_est = M({ time: 'edited 12:11', btns: CONFIRMQ, text: ['^New transaction · check it', '*Estimate:* bought *£177.78* of Balanced today, 24 Oct · about 9.6 units', '^From ₹20,000 at ₹112.50 per £ · ECB rate of Fri 23 Oct · ' + ENG, 'It stays an estimate until a statement, a screenshot or the next valuation confirms it.', '', SAVE, '!Technical details'] });
+          const B_tech = M({ time: '12:12', btns: CONFIRMQ, text: ['^New transaction · check it', '*Bought £176.10 of Balanced* today, 24 Oct · about 9.5 units', '^From ₹20,000, so ₹113.57 per £ · ' + ENG, '', SAVE, '>Technical details', '~Recorded: 176.10 GBP in Balanced', '~Typed: 20,000 INR', '~Rate: 113.57 INR per GBP, from your figures', '~Source: as credited, 24 Oct', '~Units: about 9.5 at NAV £18.57, Fri 23 Oct'] });
+
+          /* 1c: the correction inside Confirm; privacy tidies your message away and keeps the rate */
+          const C_card = (p) => M({ time: '12:10', btns: [['Confirm the estimate'], ['Exact pounds', 'Nifty 50 instead'], p ? ['Show amounts', 'Cancel'] : ['Edit', 'Cancel']], text: (p
+            ? ['^New transaction · check it', '_Privacy is on, so I tidied your message away. The record keeps it._', '*Balanced is held in pounds (GBP),* so your rupees are recorded as the pounds they became.', '', 'Recorded: *' + PH + '*, an estimate', 'You typed: ' + RH]
+            : ['^New transaction · check it', '*Balanced is held in pounds (GBP),* so your rupees are recorded as the pounds they became.', '', 'Recorded: *£177.78*, an estimate', 'You typed: ₹20,000']
+            ).concat([p ? '^₹112.50 per £ · ECB rate of Fri 23 Oct · ' + ENG : '^₹112.50 per £ · ECB rate of Fri 23 Oct · ' + ENG + ' · about 9.6 units', '', 'Know the exact pounds? Tap Exact pounds, or type them.'], p ? ['[/privacy] turns privacy off.', '', SAVE] : [SAVE], ['!Why pounds?']) });
+          const C_gone = M({ time: 'edited 12:12', wide: true, text: ['^New transaction · ₹20,000 into Balanced', '_Replaced by the exact pounds, below._'] });
+          const C_conf = M({ time: '12:12', btns: CONFIRMQ, text: ['^New transaction · check it', 'Recorded: *£176.10*, the pounds that arrived', 'You typed: ₹20,000', '^So ₹113.57 per £, from your two figures · ' + ENG + ' · about 9.5 units', '', SAVE] });
+
+          const A = 'Option 1a · Four ways on', B = 'Option 1b · Ask again, in pounds', C = 'Option 1c · Correct inside Confirm';
+          const glancePhone = (cap, msgs) => ({ cap: cap + ' · Telegram light', lab: 'At a glance · ' + cap + ' · Telegram light', tg: 'tg-light', msgs: msgs, clock: '12:10' });
+          return {
+            notes: [
+              { h: 'What all three keep', ps: [
+                { b: 'Every holding has one currency,', s: L('the one the platform shows (Position.ccy), confirmed when the holding was added. No currency named means the holding’s, and the card says so (planned board 4, unchanged).') },
+                { b: 'Nothing is saved', s: L('until Confirm and the second check (MA-102). The bot records money already moved; no button buys or sells.') },
+                { b: 'A converted figure is never Claude’s:', s: L('the rate and the result are the engine’s, at the ECB rate with its date. Telegram text has no colour, so the words carry the correction.') } ] },
+              { h: 'Where they differ', ps: [
+                { b: 'The correction:', s: L('#1a stops and asks how to record it, four buttons; #1b asks again for the amount, in pounds; #1c puts it in the Confirm card with the estimate filled in.') },
+                { b: 'Taps to Confirm:', s: L('#1a two (a way on, then Confirm); #1b one when you type the pounds or tap the estimate; #1c one, Confirm the estimate.') },
+                { b: 'Before the daily ECB rates load (MA-44):', s: L('#1a and #1b drop the estimate button and work as they are; #1c has no estimate to fill in, so it needs a second card, the question of #1b.') } ] },
+              { h: 'The open point: privacy and the rate', ps: [
+                { b: 'On planned board 6b', s: L('privacy hid both amounts but kept the rate, and your own messages, drawn by Telegram, still show what you typed. So the hidden figure could be worked out.') },
+                { b: 'Each option settles it its own way:', s: L('#1a hides what is yours and keeps what is public (the ECB rate); #1b shows no amount and no rate on the card; #1c tidies your message away so the rate can stay.') },
+                { b: 'The privacy rule travels:', s: L('any option’s rule can go with any flow, so a pick can mix them.') } ] },
+              { h: 'Recommended: ask again, in pounds', ps: [
+                { b: 'Option', s: L('#1b, for three reasons.') },
+                { b: 'One pattern, not a new card:', s: L('it is the guided flow’s own question, “How much, in pounds?” (ARCHITECTURE §9.2), asked again in the holding’s currency.') },
+                { b: 'The exact figure leads,', s: L('the estimate is one tap with its figure on the button, and Confirm stays a separate, deliberate tap. #1c makes the estimate the default, so a reflex Confirm saves an estimate.') },
+                { b: 'Privacy is one rule:', s: L('with privacy on, a money card shows no amount and no rate, only words, currencies and dates. It is simple to build and to test, and holds when the card is seen without your messages.') } ] }
+            ],
+            sections: [
+              { id: 'glance', tid: 't1', href: '#glance', label: 'At a glance', name: 'At a glance: the first card of each option', rec: false,
+                intro: 'You type “I put ₹20,000 into Balanced”, and Balanced is held in pounds. This is what comes back in each option, side by side in Telegram light. Each option, its other cards and its privacy state follow below.',
+                ruleB: 'Read across:', rule: 'where the correction sits: a card of its own with four buttons, the amount question asked again in pounds, or inside the Confirm card with the estimate filled in.',
+                steps: [{ hasNote: false, name: 'The first card', notes: [['', '#1a asks how to record it; the four ways on are buttons.'], ['', '#1b asks for the pounds that arrived; the estimate, a rupee holding and Cancel are buttons.'], ['', '#1c is already the Confirm card, the estimate filled in.']].map((n) => ({ b: n[0], s: L(n[1]) })),
+                  th: [glancePhone('1a · Four ways on', [today, typed, A_corr]), glancePhone('1b · Ask again, in pounds', [today, typed, B_corr(false)]), glancePhone('1c · Correct inside Confirm', [today, typed, C_card(false)])] }] },
+              { id: '1a', tid: '1a', href: '#1a', label: A, name: 'Four ways on (the planned flow, sharpened)', rec: false,
+                intro: 'The bot stops, says why in plain words and asks how to record the money: the pounds that arrived, the ECB rate, a rupee holding, or cancel. Each way leads to its own Confirm card. The planned boards 1 to 3, with the privacy state settled. Illustrative figures.',
+                ruleB: 'Privacy: hide what is yours, keep what is public.', rule: 'Amounts and units go. A rate worked out from your own figures goes too; the ECB rate is published for everyone, so it stays, with its date.',
+                steps: [
+                  S(A, { part: '1', cap: '1a·1 · the correction', clock: '12:10', msgs: [today, typed, A_corr], name: 'The correction card', notes: [
+                    ['Saves nothing, and says why first:', 'Balanced is held in pounds (GBP). The last line says nothing is saved yet.'],
+                    ['Four ways on,', 'a button each. The two long labels take a row each; A rupee holding shows only when there is one.'],
+                    ['Why pounds?', 'opens in place: “Pounds (GBP), from the factsheet you sent on 3 March.”'] ] }),
+                  S(A, { part: '2', cap: '1a·2 · the pounds that arrived', clock: '12:12', msgs: [today, typed, A_ask(false), typedP, A_conf(false)], name: 'The Confirm card, two currencies', notes: [
+                    ['The card edits in place', 'into one question; you type 176.10, or send the platform’s screenshot.'],
+                    ['Your figure leads:', '£176.10 in the headline. The rupees and the rate they imply, ₹113.57 per £, sit in a quieter line under it.'],
+                    ['Saved in pounds,', 'with ₹20,000 as the original and the source “as credited”.'] ] }),
+                  S(A, { part: '3', cap: '1a·3 · privacy on, pounds arrived', clock: '12:12', msgs: [today, typed, A_ask(true), typedP, A_conf(true)], name: 'Privacy on: your rate is hidden', notes: [
+                    ['Both amounts hidden, and the units.', 'The rate ₹113.57 per £ comes from your own two figures, so it is hidden too, and the card says why.'],
+                    ['Show amounts', 'shows them on this card only, as Show pounds does in the Telegram kit.'],
+                    ['Your own messages', 'still show what you typed: Telegram draws them, and MyPaisa cannot redraw them.'] ] }),
+                  S(A, { part: '4', cap: '1a·4 · privacy on, the ECB estimate', clock: '12:11', msgs: [today, typed, A_est(true)], name: 'Privacy on: the ECB rate stays', notes: [
+                    ['The ECB rate stays,', 'with its date: anyone can look up ₹112.50 per £ for Fri 23 Oct, so hiding it protects nothing.'],
+                    ['The trade-off:', 'with your ₹20,000 in view, the public rate gives the pounds away. A card seen on its own does not.'] ] })
+                ] },
+              { id: '1b', tid: '1b', href: '#1b', label: B, name: 'Ask again, in pounds', rec: true,
+                intro: 'The correction is the guided flow’s amount question, asked again in the holding’s currency: “How many pounds arrived?” You type them or send the platform’s screenshot; the ECB estimate is one tap, with its figure on the button; a rupee holding is named when there is one. Then Confirm. Illustrative figures.',
+                ruleB: 'Privacy: no amount and no rate on the card.', rule: 'With privacy on, a money card shows only words, currencies and dates: amounts, units and rates all go, and the estimate button loses its figure. Show amounts shows them on that card only.',
+                steps: [
+                  S(B, { part: '1', cap: '1b·1 · the question, in pounds', clock: '12:10', msgs: [today, typed, B_corr(false)], name: 'The question, in pounds', notes: [
+                    ['Says why, then asks:', 'Balanced is held in pounds, so it can’t take rupees. How many pounds arrived?'],
+                    ['Four ways on:', 'type the pounds (or send the screenshot), the estimate, the rupee holding by name, or Cancel. With two or more rupee holdings the button reads A rupee holding and lists them.'],
+                    ['The estimate shows its figure', 'before you choose it: about £177.78, worked out by the engine at the ECB rate of Fri 23 Oct.'] ] }),
+                  S(B, { part: '2', cap: '1b·2 · the pounds that arrived', clock: '12:12', msgs: [today, typed, B_wait(false), typedP, B_conf(false)], name: 'The Confirm card, two currencies', notes: [
+                    ['The question card drops its buttons', 'once you answer, so no old button can be tapped.'],
+                    ['Your figure leads:', '£176.10. From ₹20,000, so ₹113.57 per £, in the quieter line, the rate worked out by the engine.'],
+                    ['Technical details', 'holds the stored fields (see 1b·5).'] ] }),
+                  S(B, { part: '3', cap: '1b·3 · the ECB estimate', clock: '12:11', msgs: [today, typed, B_est], name: 'The ECB estimate', notes: [
+                    ['Estimate is the first word.', 'The card edits in place from the question; Edit goes back to it.'],
+                    ['The source and its date are named,', 'and what makes it firm: a statement, a screenshot or the next valuation.'],
+                    ['Before the daily rates load (MA-44)', 'the estimate button is left out; nothing else changes.'] ] }),
+                  S(B, { part: '4a', cap: '1b·4a · privacy on, the question', clock: '12:10', msgs: [today, typed, B_corr(true)], name: 'Privacy on: the question', notes: [
+                    ['No figure on the card:', 'the rupees are masked, the ECB rate is named by its date, and the button reads Use the ECB estimate.'],
+                    ['The correction still reads:', 'the currencies, the reason and the four ways on stay.'] ] }),
+                  S(B, { part: '4b', cap: '1b·4b · privacy on, Confirm', clock: '12:12', msgs: [today, typed, B_wait(true), typedP, B_conf(true)], name: 'Privacy on: Confirm', notes: [
+                    ['Amounts, units and the rate hidden:', 'nothing on the card leads to a figure.'],
+                    ['Show amounts', 'shows them on this card only (the kit’s Show pounds).'],
+                    ['Your own messages', 'still show what you typed; that is yours, and the tidy-away of #1c can be added if you want the screen clean too.'] ] }),
+                  S(B, { part: '5', cap: '1b·5 · technical mode', clock: '12:12', msgs: [B_wait(false), typedP, B_tech], name: 'Technical mode', notes: [
+                    ['The fold, open:', 'what is stored, in plain labels: recorded 176.10 GBP, typed 20,000 INR, the rate, the source “as credited” and its date.'],
+                    ['The summary stays first;', 'simple mode keeps the fold shut, as in 1b·2.'] ] })
+                ] },
+              { id: '1c', tid: '1c', href: '#1c', label: C, name: 'Correct inside Confirm', rec: false,
+                intro: 'No question first: the bot goes straight to the Confirm card, with the correction as its first line and the ECB estimate filled in, the recorded pounds and the rupees you typed one under the other. Exact pounds, a rupee holding and Cancel are buttons; typing the pounds replaces the estimate. Illustrative figures.',
+                ruleB: 'Privacy: tidy your message away, keep the rate.', rule: 'With privacy on, the bot removes your message with the amount once it is read (a bot may delete a member’s messages in its private chat within 48 hours), and the card says so. With nothing on screen to pair it with, the rate stays.',
+                steps: [
+                  S(C, { part: '1', cap: '1c·1 · inside Confirm', clock: '12:10', msgs: [today, typed, C_card(false)], name: 'One card', notes: [
+                    ['The mismatch, right before Confirm:', 'the story’s own words. Recorded and You typed sit one under the other, so both currencies read at once.'],
+                    ['Fewest taps:', 'Confirm the estimate, then the second check.'],
+                    ['The risk:', 'the estimate is the default, so a reflex Confirm saves an estimate where the exact pounds were known.'] ] }),
+                  S(C, { part: '2', cap: '1c·2 · exact pounds', clock: '12:12', msgs: [today, typed, C_gone, typedP, C_conf], name: 'Exact pounds', notes: [
+                    ['Typing the pounds replaces the estimate:', 'the first card drops its buttons and a new Confirm card follows your figure.'],
+                    ['Before the daily rates load (MA-44)', 'there is no estimate to fill in, so the first card has to ask for the pounds, as #1b does: two designs to build.'] ] }),
+                  S(C, { part: '3', cap: '1c·3 · privacy on, tidied away', clock: '12:10', msgs: [today, C_card(true)], name: 'Privacy on: your message tidied away', notes: [
+                    ['Your message is gone from the chat,', 'and the card’s first line says why. The record and the audit row keep it.'],
+                    ['The rate stays:', 'nothing left on screen pairs with it.'],
+                    ['The trade-off:', 'the bot changes your side of the chat, which is new in MyPaisa; on your other devices the message goes too.'] ] })
+                ] }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

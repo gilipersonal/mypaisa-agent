@@ -1,0 +1,393 @@
+<title>MA-156 design review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+  /* Layout: one review column (max 1180) in MyPaisa DS v1 "Warm ledger": the navy hero card on top, then the question,
+     the three first cards side by side, the comparison, and each option as a run of phone pairs with notes beside them. */
+  :root {
+    --bg: #F6F4F1; --surface: #FFFFFF; --surface-2: #F0EDE8; --line: #E4E0DA;
+    --ink: #14171F; --ink-2: #4E5462; --ink-3: #646A78;
+    --hero: #13213A; --hero-2: #1C2E4D; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6;
+    --coral: #FF6B4F; --accent: #C2381F; --focus: #2453C9;
+    --rec: #13213A; --rec-ink: #FFFFFF; --rec-col: #F8F6F2;
+    --frame: #1B1D22;
+    --show-light: block; --show-dark: none;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+    --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0A0F18; --surface: #151C27; --surface-2: #1E2633; --line: #283141;
+      --ink: #F3F5F8; --ink-2: #AEB6C4; --ink-3: #8D96A6;
+      --hero: #1A2944; --hero-2: #233558; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6;
+      --coral: #FF7A5E; --accent: #FF7A5E; --focus: #8FB0FF;
+      --rec: #F3F5F8; --rec-ink: #0A0F18; --rec-col: #1A222E;
+      --frame: #000000;
+      --show-light: none; --show-dark: block;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0A0F18; --surface: #151C27; --surface-2: #1E2633; --line: #283141;
+    --ink: #F3F5F8; --ink-2: #AEB6C4; --ink-3: #8D96A6;
+    --hero: #1A2944; --hero-2: #233558; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6;
+    --coral: #FF7A5E; --accent: #FF7A5E; --focus: #8FB0FF;
+    --rec: #F3F5F8; --rec-ink: #0A0F18; --rec-col: #1A222E;
+    --frame: #000000;
+    --show-light: none; --show-dark: block;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 40px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.015em; }
+  h2 { font-size: 22px; line-height: 28px; font-weight: 700; }
+  h3 { font-size: 17px; line-height: 22px; font-weight: 600; }
+  p { margin: 0; max-width: 68ch; text-wrap: pretty; }
+  .muted { color: var(--ink-2); }
+  .small { font-size: 13px; line-height: 18px; }
+  .eyebrow { font: 600 11px/15px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .id { font: 600 12px/16px var(--font-mono); padding: 3px 8px; border-radius: 6px; background: var(--surface-2); color: var(--ink); text-decoration: none; white-space: nowrap; }
+  a.id:hover { background: var(--line); }
+  .pill { font: 600 11px/14px var(--font-mono); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .pill.rec { background: var(--rec); color: var(--rec-ink); }
+  section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px; }
+
+  /* the hero card */
+  .hero { background: var(--hero); color: var(--hero-ink); border-radius: 24px; padding: 28px clamp(20px, 4vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .hero::after { content: ""; position: absolute; left: clamp(20px, 4vw, 40px); right: clamp(20px, 4vw, 40px); bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--coral); }
+  .hero .eyebrow { color: var(--hero-ink-2); }
+  .hero h1 { font-size: clamp(26px, 4vw, 34px); line-height: 1.15; font-weight: 700; max-width: 26ch; }
+  .hero blockquote { margin: 0; padding: 0; max-width: 72ch; color: var(--hero-ink-2); font-size: 15px; line-height: 1.55; }
+  .hero blockquote b { color: var(--hero-ink); font-weight: 600; }
+  .hero .row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding-bottom: 6px; }
+  .chip { font: 500 12px/16px var(--font-mono); padding: 5px 10px; border-radius: 14px; background: var(--hero-2); color: var(--hero-ink); max-width: 100%; overflow-wrap: anywhere; }
+  .chip.wait { background: transparent; box-shadow: inset 0 0 0 1px var(--hero-ink-2); }
+  .hero a { color: var(--hero-ink); font-weight: 600; }
+
+  /* the question */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 12px; }
+  .three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .three > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding-top: 12px; border-top: 1px solid var(--line); }
+  .head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+  /* at a glance */
+  .glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .gcard { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .gcard.is-rec { box-shadow: inset 0 0 0 2px var(--rec); border-color: transparent; }
+  .gcard p { font-size: 14px; line-height: 20px; }
+  .gcard .phone { align-self: center; width: min(100%, 260px); }
+
+  /* phones: the bezel is drawn here, round the captured screen */
+  .phone { display: block; width: 100%; height: auto; border-radius: 11.8% / 5.45%; box-shadow: 0 0 0 6px var(--frame), 0 14px 30px rgba(0, 0, 0, 0.16); background: var(--frame); }
+  .only-light { display: var(--show-light); }
+  .only-dark { display: var(--show-dark); }
+
+  /* comparison */
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; line-height: 20px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  tr:last-child th, tr:last-child td { border-bottom: 0; }
+  thead th { font: 600 12px/16px var(--font-mono); color: var(--ink-3); background: var(--surface-2); }
+  tbody th { font-weight: 600; width: 18%; color: var(--ink); }
+  td.rec-col { background: var(--rec-col); }
+
+  /* an option */
+  .opt { border-top: 2px solid var(--ink); padding-top: 22px; gap: 18px; }
+  .opt .lede { font-size: 16px; line-height: 24px; color: var(--ink); }
+  .rule { background: var(--surface-2); border-radius: 14px; padding: 12px 16px; font-size: 14px; line-height: 20px; max-width: 80ch; }
+  .rule b { font-weight: 600; }
+  .step { display: grid; grid-template-columns: minmax(0, 470px) minmax(0, 1fr); gap: 20px 32px; align-items: start; padding: 22px 0; border-top: 1px solid var(--line); }
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; padding: 8px; }
+  .pair figure { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .pair figcaption { font: 500 11px/14px var(--font-mono); color: var(--ink-3); text-align: center; }
+  .notes { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding-top: 6px; }
+  .notes ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .notes li { max-width: 60ch; }
+  .notes li b { font-weight: 600; }
+  .tradeoffs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .tradeoffs > div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; min-width: 0; }
+  .tradeoffs ul { margin: 8px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; }
+
+  /* now */
+  .now img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); }
+  .now figure { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .now .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  footer { font-size: 13px; line-height: 19px; color: var(--ink-2); display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
+  code { font: 500 12.5px/1 var(--font-mono); background: var(--surface-2); padding: 2px 5px; border-radius: 5px; }
+
+  @media (max-width: 900px) {
+    .glance, .three { grid-template-columns: minmax(0, 1fr); }
+    .gcard .phone { width: min(100%, 300px); }
+    .step { grid-template-columns: minmax(0, 1fr); }
+    .pair { max-width: 520px; }
+    .tradeoffs, .now .two { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 420px) { .pair { gap: 16px; padding: 6px; } }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">MA-156 · Design review</span>
+    <h1>Rupees typed into a pound holding: three ways for the chat to correct you</h1>
+    <blockquote>Arun, 24 Oct 2026: “On the telegram App, I should be able to add transactions using Any currency for any fund and chatbot to figure what the base currency of the holdings, <b>If the holdings are in GBP and I try to invest INR to GBP holding, chat should be able to correct me.</b>”</blockquote>
+    <div class="row">
+      <span class="chip">Picked: 1b, by Arun, 25 Oct 2026</span>
+      <span class="chip">£1 = ₹112.50 · ECB · Fri 23 Oct · illustrative</span>
+    </div>
+    <div class="row small">
+      <a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Currency+check+options.dc.html">The options in Claude Design</a>
+      <a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Currency+check.dc.html">The planned boards</a>
+      <a href="https://duttaarun2015.atlassian.net/browse/MA-156">MA-156 in Jira</a>
+    </div>
+  </header>
+
+  <section aria-labelledby="q-h">
+    <div class="card">
+      <span class="eyebrow">The open point for this round</span>
+      <h2 id="q-h">With privacy on, does the card hide the rate too?</h2>
+      <p class="muted">On the planned board 6b, privacy hid both amounts but kept the rate (₹113.57 per £), and your own messages, which Telegram draws, still show what you typed. Rate plus one amount gives the other, so the hidden figure could be worked out. Each option settles it its own way, and the privacy rule can travel: any option’s rule can go with any flow.</p>
+      <div class="three">
+        <div><span class="head"><a class="id" href="#1a">1a</a><b>Hide what is yours</b></span><p class="small muted">A rate worked out from your own figures is hidden; the ECB rate is public, so it stays with its date.</p></div>
+        <div><span class="head"><a class="id" href="#1b">1b</a><b>No figure on the card</b></span><p class="small muted">Amounts, units and every rate go. Only words, currencies and dates stay. Show amounts reveals one card.</p></div>
+        <div><span class="head"><a class="id" href="#1c">1c</a><b>Tidy your message away</b></span><p class="small muted">The bot deletes your message with the amount once read, so nothing on screen pairs with the rate, which stays.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="g-h">
+    <h2 id="g-h">At a glance: what comes back when you type “I put ₹20,000 into Balanced”</h2>
+    <p class="muted">Balanced is held in pounds. The first card of each option, in your page’s theme. Every option keeps the product rules: nothing is saved before Confirm and the second check, the converted figure is the engine’s at the ECB rate with its date, no button buys or sells, and Telegram text carries no colour.</p>
+    <div class="glance">
+      <article class="gcard">
+        <div class="head"><a class="id" href="#1a">1a</a><h3>Four ways on</h3></div>
+        <p class="muted">The planned flow. The bot stops and asks how to record it, with a button for each way.</p>
+        <img class="phone only-light" src="options/1a/1-light.jpg" alt="1a, Telegram light: the correction card says Balanced is held in pounds, asks how to record it, and offers Pounds that arrived, Use the ECB rate, A rupee holding and Cancel." width="585" height="1266" loading="lazy">
+        <img class="phone only-dark" src="options/1a/1-dark.jpg" alt="1a, Telegram dark: the same correction card with four buttons." width="585" height="1266" loading="lazy">
+      </article>
+      <article class="gcard is-rec">
+        <div class="head"><a class="id" href="#1b">1b</a><h3>Ask again, in pounds</h3><span class="pill rec">Recommended</span></div>
+        <p class="muted">The guided flow’s amount question, asked again in the holding’s currency. The estimate is one tap.</p>
+        <img class="phone only-light" src="options/1b/1-light.jpg" alt="1b, Telegram light: the card says Balanced is held in pounds and asks how many pounds arrived; buttons About £177.78 · ECB estimate, Nifty 50 instead and Cancel." width="585" height="1266" loading="lazy">
+        <img class="phone only-dark" src="options/1b/1-dark.jpg" alt="1b, Telegram dark: the same question card in pounds with the estimate button." width="585" height="1266" loading="lazy">
+      </article>
+      <article class="gcard">
+        <div class="head"><a class="id" href="#1c">1c</a><h3>Correct inside Confirm</h3></div>
+        <p class="muted">Straight to the Confirm card, with the correction as its first line and the estimate filled in.</p>
+        <img class="phone only-light" src="options/1c/1-light.jpg" alt="1c, Telegram light: a Confirm card that says Balanced is held in pounds, recorded £177.78 as an estimate, you typed ₹20,000; buttons Confirm the estimate, Exact pounds, Nifty 50 instead, Edit and Cancel." width="585" height="1266" loading="lazy">
+        <img class="phone only-dark" src="options/1c/1-dark.jpg" alt="1c, Telegram dark: the same Confirm card with the estimate filled in." width="585" height="1266" loading="lazy">
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="c-h">
+    <h2 id="c-h">Side by side</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col">1a · Four ways on</th><th scope="col">1b · Ask again, in pounds (recommended)</th><th scope="col">1c · Correct inside Confirm</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">The correction</th><td>A card of its own: why, then “How should I record it?”</td><td class="rec-col">The amount question: why, then “How many pounds arrived?”</td><td>The first line of the Confirm card</td></tr>
+          <tr><th scope="row">Taps to Confirm</th><td>Two: a way on, then Confirm</td><td class="rec-col">One: type the pounds or tap the estimate, then Confirm</td><td>None: Confirm the estimate is on the first card</td></tr>
+          <tr><th scope="row">The two currencies on Confirm</th><td>Pounds in the headline; rupees and rate in a quieter line</td><td class="rec-col">The same, with Technical details holding the stored fields</td><td>Recorded and You typed, one under the other</td></tr>
+          <tr><th scope="row">Before the ECB rates load (MA-44)</th><td>The estimate button is left out</td><td class="rec-col">The estimate button is left out</td><td>No estimate to fill in: needs the 1b question as a second design</td></tr>
+          <tr><th scope="row">Privacy and the rate</th><td>Your rate hidden; the public ECB rate kept</td><td class="rec-col">No amount and no rate on the card</td><td>Your message deleted; the rate kept</td></tr>
+          <tr><th scope="row">The main risk</th><td>A public rate beside your typed amount gives the pounds away</td><td class="rec-col">Your own messages still show what you typed</td><td>A reflex Confirm saves an estimate; the bot changes your side of the chat</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="opt" id="1a" aria-labelledby="h-1a">
+    <div class="head"><span class="id">1a</span><h2 id="h-1a">Four ways on</h2><span class="eyebrow">the planned flow, sharpened</span></div>
+    <p class="lede">The bot stops, says why in plain words and asks how to record the money: the pounds that arrived, the ECB rate, a rupee holding, or cancel. Each way leads to its own Confirm card.</p>
+    <p class="rule"><b>Privacy: hide what is yours, keep what is public.</b> Amounts and units go. A rate worked out from your own figures goes too. The ECB rate is published for everyone, so it stays with its date.</p>
+
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1a/1-light.jpg" alt="1a step 1, Telegram light: the correction card with four ways on." width="585" height="1266" loading="lazy"><figcaption>1a·1 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1a/1-dark.jpg" alt="1a step 1, Telegram dark: the correction card with four ways on." width="585" height="1266" loading="lazy"><figcaption>1a·1 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>The correction card</h3><ul>
+        <li><b>Saves nothing, and says why first:</b> Balanced is held in pounds (GBP). The last line says nothing is saved yet.</li>
+        <li><b>Four ways on,</b> a button each. A rupee holding shows only when there is one.</li>
+        <li><b>Why pounds?</b> opens in place: “Pounds (GBP), from the factsheet you sent on 3 March.”</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1a/2-light.jpg" alt="1a step 2, Telegram light: the card asks how many pounds arrived, you type 176.10, and the Confirm card records £176.10 with ₹20,000 typed, so ₹113.57 per £." width="585" height="1266" loading="lazy"><figcaption>1a·2 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1a/2-dark.jpg" alt="1a step 2, Telegram dark: the pounds that arrived and the Confirm card with two currencies." width="585" height="1266" loading="lazy"><figcaption>1a·2 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>The Confirm card, two currencies</h3><ul>
+        <li><b>The card edits in place</b> into one question; you type 176.10 or send the platform’s screenshot.</li>
+        <li><b>Your figure leads:</b> £176.10 in the headline; the rupees and the rate they imply, ₹113.57 per £, in a quieter line.</li>
+        <li><b>Saved in pounds,</b> with ₹20,000 as the original and the source “as credited”.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1a/3-light.jpg" alt="1a step 3, Telegram light, privacy on: Bought £ •••• of Balanced; ₹ •••• typed, the rate hidden too as it comes from your figures; Show amounts button." width="585" height="1266" loading="lazy"><figcaption>1a·3 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1a/3-dark.jpg" alt="1a step 3, Telegram dark, privacy on: amounts and your rate hidden." width="585" height="1266" loading="lazy"><figcaption>1a·3 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>Privacy on: your rate is hidden</h3><ul>
+        <li><b>Both amounts and the units are hidden.</b> ₹113.57 per £ comes from your two figures, so it goes too, and the card says why.</li>
+        <li><b>Show amounts</b> shows them on this card only, as Show pounds does in the Telegram kit.</li>
+        <li><b>Your own messages</b> still show what you typed: Telegram draws them.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1a/4-light.jpg" alt="1a step 4, Telegram light, privacy on: Estimate, bought £ •••• of Balanced; ₹ •••• at ₹112.50 per £, ECB rate of Fri 23 Oct, which is public." width="585" height="1266" loading="lazy"><figcaption>1a·4 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1a/4-dark.jpg" alt="1a step 4, Telegram dark, privacy on: the ECB rate stays." width="585" height="1266" loading="lazy"><figcaption>1a·4 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>Privacy on: the ECB rate stays</h3><ul>
+        <li><b>The ECB rate stays,</b> with its date: anyone can look up ₹112.50 per £ for Fri 23 Oct.</li>
+        <li><b>The trade-off:</b> with your ₹20,000 in view, the public rate gives the pounds away. A card seen on its own does not.</li>
+      </ul></div>
+    </div>
+    <div class="tradeoffs">
+      <div><h3>For</h3><ul><li>Closest to the planned boards; the least to redraw.</li><li>Every way on is a button, so nothing is hidden behind typing.</li><li>Works unchanged before MA-44: the estimate button is left out.</li></ul></div>
+      <div><h3>Against</h3><ul><li>One more card and one more tap than 1b.</li><li>A new kind of card beside the guided flow’s own questions.</li><li>Privacy depends on the source: a reader has to know which rates are public.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="opt" id="1b" aria-labelledby="h-1b">
+    <div class="head"><span class="id">1b</span><h2 id="h-1b">Ask again, in pounds</h2><span class="pill rec">Recommended</span></div>
+    <p class="lede">The correction is the guided flow’s amount question, asked again in the holding’s currency: “How many pounds arrived?” You type them or send the platform’s screenshot. The ECB estimate is one tap, with its figure on the button. A rupee holding is named when there is one. Then Confirm.</p>
+    <p class="rule"><b>Privacy: no amount and no rate on the card.</b> With privacy on, a money card shows only words, currencies and dates. Amounts, units and rates all go, and the estimate button loses its figure. Show amounts shows them on that card only.</p>
+
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1b/1-light.jpg" alt="1b step 1, Telegram light: Balanced is held in pounds; how many pounds arrived; or use the estimate at ₹112.50 per £; buttons About £177.78 · ECB estimate, Nifty 50 instead, Cancel." width="585" height="1266" loading="lazy"><figcaption>1b·1 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1b/1-dark.jpg" alt="1b step 1, Telegram dark: the question in pounds." width="585" height="1266" loading="lazy"><figcaption>1b·1 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>The question, in pounds</h3><ul>
+        <li><b>Says why, then asks:</b> Balanced is held in pounds, so it can’t take rupees. How many pounds arrived?</li>
+        <li><b>Four ways on:</b> type the pounds (or send the screenshot), the estimate, the rupee holding by name, or Cancel. With two or more rupee holdings the button reads A rupee holding and lists them.</li>
+        <li><b>The estimate shows its figure before you choose it:</b> about £177.78, worked out by the engine at the ECB rate of Fri 23 Oct.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1b/2-light.jpg" alt="1b step 2, Telegram light: you type 176.10; the Confirm card says Bought £176.10 of Balanced, from ₹20,000, so ₹113.57 per £, worked out by MyPaisa’s engine." width="585" height="1266" loading="lazy"><figcaption>1b·2 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1b/2-dark.jpg" alt="1b step 2, Telegram dark: the Confirm card with two currencies." width="585" height="1266" loading="lazy"><figcaption>1b·2 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>The Confirm card, two currencies</h3><ul>
+        <li><b>The question card drops its buttons</b> once you answer, so no old button can be tapped.</li>
+        <li><b>Your figure leads:</b> £176.10. From ₹20,000, so ₹113.57 per £, in the quieter line, worked out by the engine.</li>
+        <li><b>Technical details</b> holds the stored fields (1b·5).</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1b/3-light.jpg" alt="1b step 3, Telegram light: Estimate, bought £177.78 of Balanced, from ₹20,000 at ₹112.50 per £, ECB rate of Fri 23 Oct; it stays an estimate until a statement, a screenshot or the next valuation confirms it." width="585" height="1266" loading="lazy"><figcaption>1b·3 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1b/3-dark.jpg" alt="1b step 3, Telegram dark: the ECB estimate on the Confirm card." width="585" height="1266" loading="lazy"><figcaption>1b·3 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>The ECB estimate</h3><ul>
+        <li><b>Estimate is the first word.</b> The card edits in place from the question; Edit goes back to it.</li>
+        <li><b>The source and its date are named,</b> and what makes it firm: a statement, a screenshot or the next valuation.</li>
+        <li><b>Before the daily rates load (MA-44)</b> the estimate button is left out; nothing else changes.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1b/4a-light.jpg" alt="1b step 4a, Telegram light, privacy on: ₹ •••• into Balanced; the question in pounds; the ECB rate named by its date only; button Use the ECB estimate." width="585" height="1266" loading="lazy"><figcaption>1b·4a · light</figcaption></figure>
+        <figure><img class="phone" src="options/1b/4a-dark.jpg" alt="1b step 4a, Telegram dark, privacy on: the question with no figures." width="585" height="1266" loading="lazy"><figcaption>1b·4a · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>Privacy on: the question</h3><ul>
+        <li><b>No figure on the card:</b> the rupees are masked, the ECB rate is named by its date, and the button reads Use the ECB estimate.</li>
+        <li><b>The correction still reads:</b> the currencies, the reason and the four ways on stay.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1b/4b-light.jpg" alt="1b step 4b, Telegram light, privacy on: Bought £ •••• of Balanced, from ₹ •••• · rate hidden; Show amounts button." width="585" height="1266" loading="lazy"><figcaption>1b·4b · light</figcaption></figure>
+        <figure><img class="phone" src="options/1b/4b-dark.jpg" alt="1b step 4b, Telegram dark, privacy on: Confirm with no amounts and no rate." width="585" height="1266" loading="lazy"><figcaption>1b·4b · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>Privacy on: Confirm</h3><ul>
+        <li><b>Amounts, units and the rate are hidden:</b> nothing on the card leads to a figure.</li>
+        <li><b>Show amounts</b> shows them on this card only.</li>
+        <li><b>Your own messages</b> still show what you typed. The tidy-away of <a class="id" href="#1c">1c</a> can be added if you want the screen clean too.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1b/5-light.jpg" alt="1b step 5, Telegram light, technical mode: Technical details open, recorded 176.10 GBP in Balanced, typed 20,000 INR, rate 113.57 INR per GBP from your figures, source as credited 24 Oct, units about 9.5 at NAV £18.57." width="585" height="1266" loading="lazy"><figcaption>1b·5 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1b/5-dark.jpg" alt="1b step 5, Telegram dark, technical mode with the fold open." width="585" height="1266" loading="lazy"><figcaption>1b·5 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>Technical mode</h3><ul>
+        <li><b>The fold, open:</b> what is stored, in plain labels: recorded 176.10 GBP, typed 20,000 INR, the rate, the source “as credited” and its date.</li>
+        <li><b>The summary stays first;</b> simple mode keeps the fold shut, as in 1b·2.</li>
+      </ul></div>
+    </div>
+    <div class="tradeoffs">
+      <div><h3>Why it is recommended</h3><ul><li>One pattern: it is the guided flow’s own “How much, in pounds?” (ARCHITECTURE §9.2), asked again in the holding’s currency.</li><li>The exact figure leads; the estimate is one tap with its figure in view; Confirm stays a separate, deliberate tap.</li><li>Works unchanged before MA-44, and privacy is one rule that is simple to build and to test.</li></ul></div>
+      <div><h3>Against</h3><ul><li>Typing the pounds is a way on without a button; the card has to say so.</li><li>Privacy hides even the public ECB rate.</li><li>Your own messages still show what you typed.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="opt" id="1c" aria-labelledby="h-1c">
+    <div class="head"><span class="id">1c</span><h2 id="h-1c">Correct inside Confirm</h2><span class="eyebrow">one card</span></div>
+    <p class="lede">No question first: the bot goes straight to the Confirm card, with the correction as its first line and the ECB estimate filled in, the recorded pounds and the rupees you typed one under the other. Exact pounds, a rupee holding and Cancel are buttons; typing the pounds replaces the estimate.</p>
+    <p class="rule"><b>Privacy: tidy your message away, keep the rate.</b> With privacy on, the bot deletes your message with the amount once it is read (a bot may delete a member’s messages in its private chat within 48 hours), and the card says so. With nothing on screen to pair it with, the rate stays.</p>
+
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1c/1-light.jpg" alt="1c step 1, Telegram light: the Confirm card with the correction first, recorded £177.78 as an estimate, you typed ₹20,000, and the buttons Confirm the estimate, Exact pounds, Nifty 50 instead, Edit, Cancel." width="585" height="1266" loading="lazy"><figcaption>1c·1 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1c/1-dark.jpg" alt="1c step 1, Telegram dark: one card with the estimate filled in." width="585" height="1266" loading="lazy"><figcaption>1c·1 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>One card</h3><ul>
+        <li><b>The mismatch, right before Confirm,</b> as the story’s title puts it. Recorded and You typed sit one under the other.</li>
+        <li><b>Fewest taps:</b> Confirm the estimate, then the second check.</li>
+        <li><b>The risk:</b> the estimate is the default, so a reflex Confirm saves an estimate where the exact pounds were known.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1c/2-light.jpg" alt="1c step 2, Telegram light: the first card is replaced; you type 176.10; a new Confirm card records £176.10, the pounds that arrived, you typed ₹20,000, so ₹113.57 per £." width="585" height="1266" loading="lazy"><figcaption>1c·2 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1c/2-dark.jpg" alt="1c step 2, Telegram dark: exact pounds replace the estimate." width="585" height="1266" loading="lazy"><figcaption>1c·2 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>Exact pounds</h3><ul>
+        <li><b>Typing the pounds replaces the estimate:</b> the first card drops its buttons and a new Confirm card follows your figure.</li>
+        <li><b>Before the daily rates load (MA-44)</b> there is no estimate to fill in, so the first card has to ask for the pounds, as <a class="id" href="#1b">1b</a> does: two designs to build.</li>
+      </ul></div>
+    </div>
+    <div class="step">
+      <div class="pair">
+        <figure><img class="phone" src="options/1c/3-light.jpg" alt="1c step 3, Telegram light, privacy on: your message is gone; the card says privacy is on so it tidied your message away and the record keeps it; recorded £ ••••, you typed ₹ ••••, ₹112.50 per £ ECB rate of Fri 23 Oct." width="585" height="1266" loading="lazy"><figcaption>1c·3 · light</figcaption></figure>
+        <figure><img class="phone" src="options/1c/3-dark.jpg" alt="1c step 3, Telegram dark, privacy on: your message tidied away, the rate kept." width="585" height="1266" loading="lazy"><figcaption>1c·3 · dark</figcaption></figure>
+      </div>
+      <div class="notes"><h3>Privacy on: your message tidied away</h3><ul>
+        <li><b>Your message is gone from the chat,</b> and the card’s first line says why. The record and the audit row keep it.</li>
+        <li><b>The rate stays:</b> nothing left on screen pairs with it.</li>
+        <li><b>The trade-off:</b> the bot changes your side of the chat, which is new in MyPaisa; the message goes from your other devices too.</li>
+      </ul></div>
+    </div>
+    <div class="tradeoffs">
+      <div><h3>For</h3><ul><li>Fewest taps, and the mismatch sits right before Confirm.</li><li>Both currencies read at once, at the same weight.</li><li>The only option where nothing on screen gives the amount away.</li></ul></div>
+      <div><h3>Against</h3><ul><li>The estimate is the default, so a reflex Confirm records it.</li><li>Before MA-44 it needs a second design, the 1b question.</li><li>Deleting your messages is new behaviour, and it reaches every device.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="now" aria-labelledby="n-h">
+    <h2 id="n-h">How it looks now: the planned boards</h2>
+    <p class="muted">No app exists yet, so the current screens are the six boards drawn ahead of the story on 24 Oct 2026 (MA-155), captured from Claude Design. Boards 2 to 5 (the pounds that arrived, the ECB estimate, no currency named, a rupee holding) are in the record beside this page.</p>
+    <div class="two">
+      <figure><img src="current/b1.png" alt="Planned board 1, the correction card in Telegram light and dark, with its notes." width="1425" height="1186" loading="lazy"><figcaption class="small muted">Board 1 · the correction card</figcaption></figure>
+      <figure><img src="current/b6.png" alt="Planned board 6, the correction and the Confirm card with privacy on; the rate ₹113.57 per £ still shows." width="1440" height="2114" loading="lazy"><figcaption class="small muted">Board 6 · privacy on, the open point</figcaption></figure>
+    </div>
+  </section>
+
+  <footer>
+    <span>Every figure, member and holding here is illustrative: ₹20,000, £176.10, Balanced’s NAV of £18.57 and the Nifty 50 index fund are made up, and £1 = ₹112.50 is the one illustrative ECB rate every MyPaisa board uses.</span>
+    <span>The record: <code>docs/design/reviews/MA-156/</code> on branch <code>MA-156-currency-check-options</code> (decision.md, the option folders, the current boards). Arun picked 1b on 25 Oct 2026; its remaining states are drawn before the build, which waits for phase 0 and 1.</span>
+  </footer>
+</div>

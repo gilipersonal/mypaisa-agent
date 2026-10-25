@@ -143,7 +143,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
+      ]
     },
     {
       "key": "MA-22",
@@ -229,7 +232,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
+      ]
     },
     {
       "key": "MA-27",
@@ -2714,7 +2720,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Which phase holds the first prod release: PLAN.md lists MA-107 and MA-108 under phase 1, while Jira and the trace put them in phase 0 (MA-9). Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
+      ]
     },
     {
       "key": "MA-108",
@@ -2731,7 +2740,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Which phase holds the first prod release: PLAN.md lists MA-107 and MA-108 under phase 1, while Jira and the trace put them in phase 0 (MA-9). Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
+      ]
     },
     {
       "key": "MA-109",
@@ -2749,7 +2761,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Google's client secret and Terraform state: Cognito's Google provider (aws_cognito_identity_provider) takes client_secret in provider_details, which has no write-only form, so Terraform would store it in state, against ARCHITECTURE 14 and MA-159 (no secret ever in state). Settle how it reaches Cognito: accept it in the encrypted state bucket as the one exception, or set it outside a Terraform resource."
+      ]
     },
     {
       "key": "MA-110",
@@ -3621,7 +3636,11 @@
           "board": "1c Telegram avatar"
         }
       ],
-      "notes": "Sets the household's prod bot picture from docs/mark-1024.png: the 1c Watcher mark picked on MA-103."
+      "notes": "Sets the household's prod bot picture from docs/mark-1024.png: the 1c Watcher mark picked on MA-103.",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's.",
+        "Which phase holds the first prod release: PLAN.md lists MA-107 and MA-108 under phase 1, while Jira and the trace put them in phase 0 (MA-9). Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
+      ]
     },
     {
       "key": "MA-143",
@@ -3639,7 +3658,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
+      ]
     },
     {
       "key": "MA-144",
@@ -3927,7 +3949,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts",
-      "status": "In Review",
+      "status": "Done",
       "labels": [],
       "arch": [],
       "ui": false,
@@ -3952,22 +3974,37 @@
         "22.3"
       ],
       "ui": true,
-      "design": "planned",
+      "design": "picked",
       "boards": [
         {
           "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · Currency check"
+          "file": "Currency check options.dc.html",
+          "board": "1b·1 · the question, in pounds"
         },
         {
           "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · Pounds that arrived"
+          "file": "Currency check options.dc.html",
+          "board": "1b·2 · the pounds that arrived"
         },
         {
           "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · ECB rate estimate"
+          "file": "Currency check options.dc.html",
+          "board": "1b·3 · the ECB estimate"
+        },
+        {
+          "project": "app",
+          "file": "Currency check options.dc.html",
+          "board": "1b·4a · privacy on, the question"
+        },
+        {
+          "project": "app",
+          "file": "Currency check options.dc.html",
+          "board": "1b·4b · privacy on, Confirm"
+        },
+        {
+          "project": "app",
+          "file": "Currency check options.dc.html",
+          "board": "1b·5 · technical mode"
         },
         {
           "project": "app",
@@ -3978,14 +4015,25 @@
           "project": "app",
           "file": "Currency check.dc.html",
           "board": "Telegram · A rupee holding instead"
-        },
-        {
-          "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · Currency check, privacy on"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Open for the options round: with privacy on, board 6b still shows the rate, and the member's own message (drawn by Telegram) still shows the amount typed, so the hidden figure can be worked out; decide whether the card hides the rate too."
+      "notes": "Arun picked option 1b, Ask again, in pounds (25 Oct 2026; docs/design/reviews/MA-156/decision.md): the guided flow's amount question asked again in the holding's currency, the ECB estimate one tap, Confirm a separate tap; with privacy on, no amount and no rate on the card. Boards 4 and 5 of Currency check.dc.html are marked picked, part of the spec with 1b. The undrawn states come before the build, which waits for MA-24's skeleton and MA-38's typed transactions (phase 0 and 1); the estimate button joins when MA-44 loads the daily ECB rates (phase 2), and until then it is left out. Boards 1 to 3 and 6 of Currency check.dc.html are the superseded starting point.",
+      "undrawn": [
+        "the HTML fallback",
+        "a long holding name",
+        "two or more rupee holdings",
+        "the \"$\" that needs asking which dollar",
+        "pounds typed against a rupee holding (phase 13)",
+        "the screenshot path for the pounds that arrived",
+        "the ECB estimate's Confirm card with privacy on",
+        "the question card before the daily rates load (MA-44): no estimate button",
+        "privacy on for boards 4 and 5 (no currency named; a rupee holding instead)",
+        "the Technical details fold open with privacy on",
+        "what Cancel leaves on screen",
+        "the answer to \"Which currency is Balanced in?\"",
+        "the audit row showing both amounts, typed and recorded",
+        "the Prototype's currency chats clicking through 1b's boards, not the superseded Currency check boards 1 to 3 and 6 (fix made, waiting on MA-160)"
+      ]
     },
     {
       "key": "MA-158",
@@ -3993,7 +4041,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts",
-      "status": "In Progress",
+      "status": "In Review",
       "labels": [],
       "arch": [],
       "ui": false,
@@ -4021,13 +4069,31 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The independent review is offered before every merge in this repo, and runs only when Arun says yes",
-      "status": "In Review",
+      "status": "Done",
       "labels": [],
       "arch": [],
       "ui": false,
       "design": "none",
       "boards": [],
       "notes": "Repo rule: .claude/rules/ship-autopilot.md and /autoship; changes MA-4."
+    },
+    {
+      "key": "MA-159",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Secret values never reach Terraform state: the SSM parameters use write-only values, not a placeholder with ignore_changes",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "14",
+        "18.1",
+        "18.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Checked against the AWS provider: parameter.go's Read stores the decrypted value unless value_wo is in use. MA-26 builds infra/ to this pattern."
     }
   ],
   "others": [

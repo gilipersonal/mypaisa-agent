@@ -30,9 +30,10 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-142 | The household's prod bot and prod's Twelve Data key exist, each in prod's SSM path beside dev's | To Do | §18.1 | picked | Logo.dc.html: 1c Telegram avatar |
 | MA-143 | Each environment has its own Google sign-in client, with its id and secret in SSM, before Cognito is built | To Do | §17, §18.1, §18.3 | none |  |
 | MA-150 | The architecture and plan record Indian markets as phase 13 and keep every file a member sends, viewable from the audit log | Done | §4.1, §4.6, §9.3, §14, §16, §22 | none |  |
-| MA-155 | Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts | In Review |  | none |  |
-| MA-157 | The independent review is offered before every merge in this repo, and runs only when Arun says yes | In Review |  | none |  |
-| MA-158 | The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts | In Progress |  | none |  |
+| MA-155 | Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts | Done |  | none |  |
+| MA-157 | The independent review is offered before every merge in this repo, and runs only when Arun says yes | Done |  | none |  |
+| MA-158 | The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts | In Review |  | none |  |
+| MA-159 | Secret values never reach Terraform state: the SSM parameters use write-only values, not a placeholder with ignore_changes | Done | §14, §18.1, §18.4 | none |  |
 | MA-160 | Board fixes found in the reviews of MA-158 and MA-156 are applied in Claude Design and copied into the repo | To Do |  | none |  |
 
 ## Phase 1: Registry and Telegram ingestion (MA-10)
@@ -60,7 +61,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-140 | Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue that alerts and can be replayed | To Do | §21 | none |  |
 | MA-144 | Telegram reaches each environment through api(-dev).mypaisapp.com, and the dev bot runs by long polling on the laptop | To Do | §18.1, §18.2 | none |  |
 | MA-148 | Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it | To Do | §4.1, §4.6, §14 | none |  |
-| MA-156 | A transaction can be typed in any currency, and the bot checks it against the holding's own currency and puts a mismatch right before Confirm | To Do | §4.1, §4.7, §5.3, §22.3 | planned | Currency check.dc.html: Telegram · Currency check; Currency check.dc.html: Telegram · Pounds that arrived; Currency check.dc.html: Telegram · ECB rate estimate; Currency check.dc.html: Telegram · No currency named; Currency check.dc.html: Telegram · A rupee holding instead; Currency check.dc.html: Telegram · Currency check, privacy on |
+| MA-156 | A transaction can be typed in any currency, and the bot checks it against the holding's own currency and puts a mismatch right before Confirm | To Do | §4.1, §4.7, §5.3, §22.3 | picked | Currency check options.dc.html: 1b·1 · the question, in pounds; Currency check options.dc.html: 1b·2 · the pounds that arrived; Currency check options.dc.html: 1b·3 · the ECB estimate; Currency check options.dc.html: 1b·4a · privacy on, the question; Currency check options.dc.html: 1b·4b · privacy on, Confirm; Currency check options.dc.html: 1b·5 · technical mode; Currency check.dc.html: Telegram · No currency named; Currency check.dc.html: Telegram · A rupee holding instead |
 
 ## Phase 2: Prices and the engine (MA-11)
 
