@@ -157,12 +157,13 @@ macOS or Linux. Nothing is installed globally except these tools.
 | uv | 0.12 or later | the package, its tests and tools (uv fetches Python 3.14 itself) | `brew install uv` |
 | Docker | recent, running | building the Lambda image locally | Docker Desktop, OrbStack or Colima |
 | AWS CLI | v2 | every cloud operation, with the `agent-toolkit` profile | `brew install awscli` |
-| Terraform | 1.11 or later | `infra/` only | `brew install terraform` |
+| Terraform | 1.11 or later | `infra/` only | `brew install hashicorp/tap/terraform` (Terraform is no longer in Homebrew's core) |
 | GitHub CLI (`gh`) | recent | pull requests, reading the repository id for the OIDC trust | `brew install gh` |
 | jq | any | the scripts | `brew install jq` |
 
-You also need, in the AWS account `545595341442`: a profile that can assume the operator role (`agent-toolkit`)
-and the parameters in SSM listed under [Secrets](#secrets). The Anthropic API key comes from
+You also need, in the AWS account `545595341442`, a profile that can assume the operator role (`agent-toolkit`).
+The SSM parameters listed under [Secrets](#secrets) are not a prerequisite: step 3's apply makes them, and steps 4 and
+5 put the values in. The Anthropic API key comes from
 a workspace in the [Claude Console](https://platform.claude.com) organisation linked to your Max or Team plan, with
 a spend limit set on the workspace. The two Telegram bots, dev and the household's, are made
 with BotFather, and each environment has its own Google OAuth client (`PLAN.md`, phase 0).

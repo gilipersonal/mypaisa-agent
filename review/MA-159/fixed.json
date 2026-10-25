@@ -13,7 +13,7 @@
         ".claude/rules/*.md",
         "docs/design/*.html"
       ],
-      "pattern": "ignores\\s+(their|its)\\s+values?|placeholder\\s+and\\s+`?ignore_changes",
+      "pattern": "ignores\\s+(their|its|the)\\s+values?|placeholder\\s+and\\s+`?ignore_changes",
       "ignore_case": true,
       "present": false
     }
@@ -59,10 +59,10 @@
   {
     "id": "r1-B6",
     "round": 1,
-    "finding": "who puts prod's values and how Google's secret reaches Cognito are open questions on MA-21, MA-142 and MA-109 (start refuses them)",
+    "finding": "who puts prod's values (MA-21, MA-142, MA-143, MA-26) and how Google's secret reaches Cognito (MA-109) stay open questions until the row's notes say 'Settled: ' with the answer",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; ok=all(any(s in q for q in d[k].get('open',[])) or not d[k].get('open') and d[k]['status']!='To Do' for k,s in (('MA-21','prod'),('MA-142','prod'),('MA-109','Google'))); sys.exit(0 if ok else 1)\""
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; Q={'MA-21':'Who puts prod','MA-142':'Who puts prod','MA-143':'Who puts prod','MA-26':'Who puts prod','MA-109':'Google'+chr(39)+'s client secret and Terraform state'}; ok=all(any(q.startswith(p) for p in [v] for q in d[k].get('open',[])) or ('Settled: '+v) in d[k]['notes'] for k,v in Q.items()); sys.exit(0 if ok else 1)\""
     }
   },
   {
@@ -72,6 +72,29 @@
     "check": {
       "type": "manual",
       "what": "Jira MA-20, MA-21, MA-22, MA-26, MA-142, MA-143: no 'ignore_changes' or 'ignores its value'; the SSM step depends on MA-26; comments on MA-21, MA-142, MA-109 hold the open questions"
+    }
+  },
+  {
+    "id": "r1-B1b",
+    "round": 1,
+    "finding": "ARCHITECTURE and TECH_STACK say the parameters get a write-only placeholder",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "TECH_STACK.md"
+      ],
+      "pattern": "write-only\\s+placeholder",
+      "present": true
+    }
+  },
+  {
+    "id": "r2-B1",
+    "round": 2,
+    "finding": "the README's prerequisites and PLAN's phase 0 exit no longer need the SSM values before Terraform's apply; Terraform installs from HashiCorp's tap",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,re; r=open('README.md').read(); p=open('PLAN.md').read(); ok='brew install hashicorp/tap/terraform' in r and 'not a prerequisite' in r and not re.search(r'both\\s+bots.\\s+tokens,\\s+both\\s+Claude\\s+keys', p); sys.exit(0 if ok else 1)\""
     }
   }
 ]

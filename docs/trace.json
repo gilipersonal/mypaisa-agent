@@ -232,7 +232,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
+      ]
     },
     {
       "key": "MA-27",
@@ -3138,7 +3141,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
+      ]
     },
     {
       "key": "MA-144",

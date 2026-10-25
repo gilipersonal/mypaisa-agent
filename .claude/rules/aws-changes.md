@@ -22,7 +22,7 @@ synthetic data; prod holds the household's.
 | `terraform apply` on prod | **never from the laptop**; only the release workflow, after Arun approves in the GitHub `prod` environment |
 | `infra/bootstrap` (the CI and developer roles) | applied from the laptop once, and again only when Arun asks |
 | Deploy code to prod | only the release workflow from `main`; never `aws lambda update-*` by hand |
-| Put a secret value | Arun, by hand, into SSM (`read -rs` then `put-parameter --overwrite`), after the apply that made the parameter; Terraform creates the parameter with a write-only placeholder (`value_wo` and `value_wo_version`, Terraform 1.11 or later and the `hashicorp/aws` provider 5.87 or later), never `value` or `insecure_value`: the AWS provider stores a SecureString's decrypted value in state on every refresh, whatever `ignore_changes` says, and a write-only value is never stored (MA-159). `value_wo_version` is set once and never bumped: a bump sends the placeholder again, over the real value. A secret is rotated by hand, the same way. Never put a value before Terraform has made its parameter: the create then fails, and importing it would read the value into state |
+| Put a secret value | Arun, by hand, into SSM (`read -rs` then `put-parameter --overwrite`), after the apply that made the parameter; Terraform creates the parameter with a write-only placeholder (`value_wo` and `value_wo_version`, Terraform 1.11 or later and the `hashicorp/aws` provider 5.87 or later), never `value` or `insecure_value`: the AWS provider stores a SecureString's decrypted value in state on every refresh, whatever `ignore_changes` says, and a write-only value is never stored (MA-159). `value_wo_version` is set once and never bumped: a bump sends the placeholder again, over the real value. A secret parameter's other arguments (description, tier, key, pattern) stay fixed too: an in-place change sends an empty value; if one must change, bump `value_wo_version` in that apply and put the value again by hand straight after. A secret is rotated by hand, the same way. Who puts prod's values is open on MA-21, MA-142 and MA-143 (the developer role is denied `env=prod`). Never put a value before Terraform has made its parameter: the create then fails, and importing it would read the value into state |
 | Read a secret value | never; code reads it at run time, and nothing prints it |
 | Write data into dev | only through the seed scripts (`scripts/seed.sh dev`) or the app |
 | Write data into prod | only through the app: the bot's guided flows and the Excel importer (MA-111); no script, no console edit, no MCP call |
@@ -34,8 +34,9 @@ synthetic data; prod holds the household's.
 
 If the nightly drift check (MA-108) or a plan shows a difference nobody made in
 Terraform, do not "fix" it in AWS. Say what changed, then bring it back through
-Terraform: import it, change the code to match, or let the next apply put it
-right, as Arun chooses.
+Terraform: import it (never a secret's parameter: that reads its value into
+state), change the code to match, or let the next apply put it right, as Arun
+chooses.
 
 ## Names and text
 
