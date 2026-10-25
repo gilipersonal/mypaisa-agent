@@ -16,7 +16,8 @@ decision the review must keep), each with a check that passes while the fix hold
   named `board`. A `contains` check on the `undrawn` list may add `or_drawn: {"file": "<file>", "boards": [...]}`: it
   also passes once the screen is drawn, that is, the row is `planned` or `picked` and lists every named board of
   that file (a to-do item that is done is not lost; dropping the board that draws it still fails, whatever else
-  stays on the row). It applies to nothing else.
+  stays on the row). It applies to nothing else; an `or_drawn` without a `file` and a non-empty `boards` list fails
+  the entry. A `contains` check on a field the row lacks fails.
 - `manual`: a check only a person or a tool outside the repo can make (Jira text, a board); it is printed for the
   reviewers, who must look at it.
 
@@ -67,13 +68,18 @@ def run_check(c: dict) -> tuple[bool | None, str]:
             return any(b.get("board") == c["board"] for b in row.get("boards", [])), f"{c['key']} lists board {c['board']!r}"
         val = row.get(c["field"])
         drawn = c.get("or_drawn")
+        if drawn is not None and not (isinstance(drawn, dict) and isinstance(drawn.get("file"), str)
+                                      and isinstance(drawn.get("boards"), list) and drawn["boards"]):
+            return False, f"{c['key']}: or_drawn needs a file and a non-empty boards list, got {drawn!r}"
         if drawn and c.get("field") == "undrawn" and "contains" in c and row.get("design") in ("planned", "picked"):
             have = {(b.get("file"), b.get("board")) for b in row.get("boards", [])}
-            if drawn["boards"] and all((drawn["file"], n) in have for n in drawn["boards"]):
+            if all((drawn["file"], n) in have for n in drawn["boards"]):
                 return True, f"{c['key']} drawn: {', '.join(drawn['boards'])} ({drawn['file']})"
         if "value" in c:
             return val == c["value"], f"{c['key']}.{c['field']} == {c['value']!r}"
-        return any(c["contains"] in str(x) for x in (val or [])) if isinstance(val, list) else c["contains"] in str(val), \
+        if val is None:
+            return False, f"{c['key']} has no {c['field']}"
+        return any(c["contains"] in str(x) for x in val) if isinstance(val, list) else c["contains"] in str(val), \
             f"{c['key']}.{c['field']} contains {c['contains']!r}"
     if kind == "manual":
         return None, c["what"]

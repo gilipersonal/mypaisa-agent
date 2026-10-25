@@ -82,7 +82,7 @@
     "finding": "MA-39, MA-80 and MA-91 list their undrawn screens until they are drawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-39': [('Chat basics.dc.html', 'Telegram · Guided flow: update a value'), ('Chat basics.dc.html', 'Telegram · Guided flow: change a setting')], 'MA-80': [('Chat basics.dc.html', 'Telegram · The laptop address')], 'MA-91': [('Research cards.dc.html', 'Telegram · Live stance chips on the Portfolio card'), ('Research cards.dc.html', 'Telegram · Calls list')]}; ok=all(d[k].get('undrawn') or (d[k]['design'] in ('planned','picked') and all(x in {(b['file'],b['board']) for b in d[k]['boards']} for x in v)) for k,v in need.items()); sys.exit(0 if ok else 1)\""
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-39': (['updating a valuation', 'changing a setting'], [('Chat basics.dc.html', 'Telegram · Guided flow: update a value'), ('Chat basics.dc.html', 'Telegram · Guided flow: change a setting')]), 'MA-80': (['the /web reply'], [('Chat basics.dc.html', 'Telegram · The laptop address')]), 'MA-91': (['the live stance chip', 'the /calls list in the chat'], [('Research cards.dc.html', 'Telegram · Live stance chips on the Portfolio card'), ('Research cards.dc.html', 'Telegram · Calls list')])}; ok=all(all(x in d[k].get('undrawn',[]) for x in items) or (d[k]['design'] in ('planned','picked') and all(b in {(e['file'],e['board']) for e in d[k]['boards']} for b in boards)) for k,(items,boards) in need.items()); sys.exit(0 if ok else 1)\""
     }
   },
   {
@@ -398,7 +398,7 @@
     "finding": "the fixed list's behaviour checks catch their fix being undone (r2-B1, r2-B3, r3-B4 fail against mutants)",
     "check": {
       "type": "cmd",
-      "run": "python3 review/MA-155/mutants.py && python3 -c \"import json,sys; L={e['id']:e for e in json.load(open('review/MA-155/fixed.json'))}; bad=[i for i,e in L.items() if e['check']['type']=='grep' and any(str(f).endswith('.py') or str(f).startswith('scripts/') for f in (e['check'].get('files') or [e['check'].get('file')]))]; sys.exit(0 if not bad and all(L[k]['check']['type']=='cmd' for k in ('r2-B1','r2-B3','r3-B4')) else 1)\""
+      "run": "python3 review/MA-155/mutants.py && python3 -c \"import importlib.util as u,sys; s=u.spec_from_file_location('m','review/MA-155/mutants.py'); m=u.module_from_spec(s); s.loader.exec_module(m); sys.exit(0 if {'r2-B1','r2-B3','r3-B4'} <= {e for e,_,_ in m.MUTANTS} else 1)\" && python3 -c \"import json,sys; L={e['id']:e for e in json.load(open('review/MA-155/fixed.json'))}; bad=[i for i,e in L.items() if e['check']['type']=='grep' and any(str(f).endswith('.py') or str(f).startswith('scripts/') for f in (e['check'].get('files') or [e['check'].get('file')]))]; sys.exit(0 if not bad and all(L[k]['check']['type']=='cmd' for k in ('r2-B1','r2-B3','r3-B4')) else 1)\""
     },
     "note": "Amended in round 9 (no grep check may read a script) and round 10 (run against mutants)."
   },
