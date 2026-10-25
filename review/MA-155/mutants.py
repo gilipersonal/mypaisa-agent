@@ -28,7 +28,7 @@ MUTANTS = [
     ("r2-B3", 'before the story starts.")\n        return 1\n    if it.get("open"):', 'before the story starts.")\n        return 0\n    if it.get("open"):'),
     ("r3-B4", '        errors.append(f"{k}: {status} with screens still undrawn', '        str(f"{k}: {status} with screens still undrawn'),
     ("r2-B1", '    if it.get("undrawn"):\n        for q in it["undrawn"]:', '    if False:\n        for q in it["undrawn"]:'),
-    ("r2-B1", 'then clear undrawn.")\n        return 1', 'then clear undrawn.")\n        return 0'),
+    ("r2-B1", "<the item>'.\")\n        return 1", "<the item>'.\")\n        return 0"),
 ]
 
 

@@ -75,9 +75,12 @@ Run `python3 scripts/plan_sync.py start MA-<n>` after steps 1 to 3 for that
 key, and say what it printed:
 
 - `open` questions: stop. Ask Arun to settle each one, then change the
-  boards, the docs and the story to match and clear `open`.
-- `undrawn` screens: stop. Draw them first (`/design-first`, MA-158), add
-  their boards to the row, then clear `undrawn`.
+  boards, the docs and the story to match, clear it from `open`, and say
+  `Settled: <the question's words up to its first colon>` in the row's notes with the answer.
+- `undrawn` screens: stop. Draw them first (`/design-first`, MA-158), or land
+  the pending fix an item names (MA-160); add their boards to the row, clear
+  each item, and say `Drawn: <the item, as it was listed>` in the notes. The review
+  ledgers look for these two notes.
 - `todo` with UI: stop. The story needs `/design-first` before any code.
 - `planned`: run `/design-first` on its boards (2 or 3 options, Arun picks),
   then set `picked` and copy the board again.

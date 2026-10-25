@@ -973,7 +973,7 @@
           "board": "a · Friday’s wrap, then Monday morning: brief, stance, why"
         }
       ],
-      "notes": "The Technical fold is drawn on the stance card; the glossary as a callback alert. Its stance-bearing boards (Telegram kit 2 and 3, Telegram chats a) show the cards as they read after the 8-week gate (ARCHITECTURE 11, MA-90), as their notes say; before it the brief carries no stance line (Research cards · Brief with the sentiment line). Settled by the plan (rule 6, 25 Oct 2026)."
+      "notes": "The Technical fold is drawn on the stance card; the glossary as a callback alert. Its stance-bearing boards (Telegram kit 2 and 3, Telegram chats a) show the cards as they read after the 8-week gate (ARCHITECTURE 11, MA-90), as their notes say; before it the brief carries no stance line (Research cards · Brief with the sentiment line). Settled by the plan (rule 6, 25 Oct 2026). Settled: The brief boards (ds-v1 Telegram kit 3, Telegram chats journey a) show stances in Monday's brief before the 8-week gate, which ARCHITECTURE 11 forbids (25 Oct 2026): the boards now say they show the cards after the gate, as 11 says."
     },
     {
       "key": "MA-58",
@@ -2273,7 +2273,7 @@
           "board": "Telegram · Earnings card"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. EODHD Fundamentals is £59.99 a month (£49.99 paid yearly), as PLAN.md phase 10, ARCHITECTURE 15 and 19.2 and TECH_STACK.md say (prices as shown on 24 Oct 2026); the Jira description's 'about £46' was corrected to match (rule 6)."
+      "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. EODHD Fundamentals is £59.99 a month (£49.99 paid yearly), as PLAN.md phase 10, ARCHITECTURE 15 and 19.2 and TECH_STACK.md say (prices as shown on 24 Oct 2026); the Jira description's 'about £46' was corrected to match (rule 6). Settled: EODHD Fundamentals' price (25 Oct 2026): £59.99 a month, as the plan says."
     },
     {
       "key": "MA-101",
@@ -2968,7 +2968,7 @@
           "board": "Telegram · An instruction from you"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review.",
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. The Ceiling moved board's intro says $50 is below what is spent while $41.20 is spent; MA-160 rewords it.",
       "undrawn": [
         "the ceiling moved below what is already spent, so Claude stops at once"
       ]
@@ -3523,7 +3523,8 @@
       ],
       "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. Editing the ceiling per environment and the warning past the credit are MA-116's (its Spend boards S.1 and S.2 and its undrawn list), not repeated here. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. Admin center 3's Spend and Alerts pages add entry buttons and a Queues card that Admin center 2 does not have; reconcile the two in the options round. Each agent's share is MA-136's (phase 12). Admin center 3's Spend page leaves out five things Admin center 2 has (the Each agent's share card, the An agent guard, the paid-feeds line, the line that the meter was checked against the Console, the Every budget setting link); Admin center 2 stays the spec for them until the options round reconciles the two. Its S.8 edits the step percentages; what each step does is set on Change the AWS cap, its steps and actions.",
       "undrawn": [
-        "the routing board's holding-alert email cell off by default with an explicit Include holding values in email switch (the board locks it off; fix made, waiting on MA-160)"
+        "the routing board's holding-alert email cell off by default with an explicit Include holding values in email switch (the board locks it off; fix made, waiting on MA-160)",
+        "Admin center 3 · Telegram · Daily digest, its h1 replay line agreeing with the replay boards: 3 replayed, 2 ran, 1 failed again (fix made, waiting on MA-160)"
       ],
       "open": [
         "The admin's alert address: this story and ARCHITECTURE 15.2 put it in SSM by hand with the SNS subscription made by Terraform, but under MA-159 a value goes in only after the apply that made its parameter, and a write-only value cannot feed the subscription. Settle it: the address as a plain Terraform variable (an email address is not a secret), or the subscription made outside a Terraform resource."
@@ -4004,14 +4005,14 @@
       "type": "Task",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "Five board fixes from MA-158's review are applied in Claude Design and copied into the repo",
+      "summary": "Board fixes found in the reviews of MA-158 and MA-156 are applied in Claude Design and copied into the repo",
       "status": "To Do",
       "labels": [],
       "arch": [],
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Design upkeep, tracked here. The edits to Chat basics, Research cards, Admin center 3, Wealth and the Prototype are made and checked, and wait in docs/design/reviews/MA-158/round-1-pending/ because the files are too large for Claude Design's inline write from a session. The Prototype's currency chats still click through Currency check boards 1 to 3 and 6, superseded by MA-156's 1b, until this lands. Applying them clears the undrawn items that name MA-160 on MA-32, MA-37, MA-63, MA-69, MA-77, MA-124, MA-130, MA-137 and MA-156."
+      "notes": "Design upkeep, tracked here. The edits to Chat basics, Research cards, Admin center 3, Wealth and the Prototype are made and checked, and wait in docs/design/reviews/MA-158/round-1-pending/ because the files are too large for Claude Design's inline write from a session. The Prototype's currency chats still click through Currency check boards 1 to 3 and 6, superseded by MA-156's 1b, until this lands. Applying them adds Telegram · Research cards, privacy on to MA-124's boards and clears the undrawn items that name MA-160 on MA-32, MA-37, MA-63, MA-69, MA-77, MA-124, MA-130, MA-137 and MA-156."
     },
     {
       "key": "MA-157",

@@ -5,8 +5,9 @@ in Telegram light and dark; the Prototype's 299 screens with no dead target), bu
 Claude Design's inline write from a session, so they are not in Claude Design yet. Each `.diff` here is the change
 to apply to that file in Claude Design (MyPaisa app v1), against the etag recorded in `docs/design/claude-design.json`
 at the time. After applying: copy the file into `docs/design/app-v1/`, update its etag, bytes and sha256, clear the
-`undrawn` items that name MA-160 (MA-32, MA-37, MA-63, MA-69, MA-77, MA-124, MA-130, MA-137, MA-156), and run
-the gates. That is MA-160.
+`undrawn` items that name MA-160 (MA-32, MA-37, MA-63, MA-69, MA-77, MA-124, MA-130, MA-137, MA-156), say in each
+row's notes `Drawn: <the item, as it was listed>`, add `Telegram · Research cards, privacy on` to MA-124's boards
+(its 7c and 7d draw MA-124's state), and run the gates. That is MA-160.
 
 | File | Fixes |
 | --- | --- |

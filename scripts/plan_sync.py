@@ -222,9 +222,9 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     if it.get("undrawn") and not ui:
         errors.append(f"{k}: lists undrawn screens but has no UI")
     if it.get("open") and status in ("In Review", "Done"):
-        errors.append(f"{k}: {status} with open questions ({'; '.join(it['open'])}); settle them and clear open first")
+        errors.append(f"{k}: {status} with open questions ({'; '.join(it['open'])}); settle them, clear open and say Settled: in the notes first")
     if it.get("undrawn") and status in ("In Review", "Done"):
-        errors.append(f"{k}: {status} with screens still undrawn ({'; '.join(it['undrawn'])}); draw them and clear undrawn first")
+        errors.append(f"{k}: {status} with screens still undrawn ({'; '.join(it['undrawn'])}); draw them, clear undrawn and say Drawn: in the notes first")
     for b in it.get("boards", []):
         if not isinstance(b.get("project"), str):
             errors.append(f"{k}: board {b!r} needs a project from claude_design")
@@ -447,12 +447,14 @@ def start(trace: dict, key: str) -> int:
     if it.get("open"):
         for q in it["open"]:
             print(f"  open: {q}")
-        print("  STOP: settle the open questions with Arun, change the boards, docs and Jira to match, then clear them from the trace.")
+        print("  STOP: settle the open questions with Arun, change the boards, docs and Jira to match, then clear each from the trace"
+              " and say in the notes 'Settled: <its words up to the first colon>' with the answer.")
         return 1
     if it.get("undrawn"):
         for q in it["undrawn"]:
             print(f"  undrawn: {q}")
-        print("  STOP: draw these screens first (/design-first), add their boards to the row, then clear undrawn.")
+        print("  STOP: draw these screens first (/design-first), or land the pending fix an item names; add their boards to the"
+              " row, then clear each item and say in the notes 'Drawn: <the item>'.")
         return 1
     d = it.get("design")
     if it.get("ui") and d == "todo":
