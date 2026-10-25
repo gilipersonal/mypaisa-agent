@@ -963,7 +963,7 @@ pensions since 2024") are answered without a database running all month:
   is for the questions it cannot express. Optionally (MA-104), the same
   files can be read with Athena or with DuckDB on the owner's laptop; either
   needs a read-only role of its own for that prefix, since no human role
-  reads prod's records today (§18.1; the AWS MCP reads only metadata), and
+  reads prod's records today (§18.1; the AWS MCP reads only metadata, §18.4), and
   the role is decided when the story starts.
 
 ---
@@ -1656,7 +1656,7 @@ request says what changes, from and to, why with its evidence, the cost and
 the budget left, the risk and the undo, and when it expires. Agents also ask
 plain questions ("Which fund is the Monzo Balanced fund's ISIN?") with
 buttons or a typed answer that resumes their work. The admin gives
-instructions in their own words ("put Twelve Data first for London", "raise dev to $50",
+instructions in their own words ("put Twelve Data first for London", "lower dev to $30",
 "why did the Forecaster go quiet on silver?"); the concierge turns an
 instruction into the same request with a Confirm card, and a question into an
 answer from the agent concerned. Non-urgent requests wait for one daily

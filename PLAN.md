@@ -304,7 +304,8 @@ browser, as `ARCHITECTURE.md` §9.3.
   ceiling, the step and the days left; the owner sets the ceiling (from $10
   to the hard limit), the member share, the renewal day and the hard limit,
   each behind the fresh check (MA-102), each an audit row and a message to
-  the owner; a ceiling past the plan's credit needs an explicit yes, and one
+  the owner; a ceiling that takes prod and dev together past the plan's credit
+  warns that the extra needs a card and needs an explicit yes, and one
   above the hard limit is refused with the steps to raise the Console limit
   first.
 - **Caps and alerts** (MA-137, `ARCHITECTURE.md` §15.2), in the same

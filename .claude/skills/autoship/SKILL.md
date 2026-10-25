@@ -78,9 +78,11 @@ files, the story's acceptance criteria, the repo's rules and
 `review/MA-<n>/fixed.json` (fixes it must not undo), never the maker's notes; round 1
 covers everything, later rounds the delta since `reviewed_sha` in
 `review/MA-<n>/state.json`. Merge their findings. Fix the blocking ones on
-the branch, add each to `review/MA-<n>/fixed.json` with a check, push, wait
+the branch, add each (and any owner decision the review must keep) to `review/MA-<n>/fixed.json` with a check, push, wait
 for the checks, and run the next round; at most five rounds, then stop and
-ask Arun whether to go on, listing what is left and what each fix costs. A clean round goes straight
+ask Arun whether to go on, listing what is left and what each fix costs. The question names the merge
+("Fix them, run round 6, then merge on a clean round?"), so his yes covers both (`ship-autopilot.md`);
+a yes to a question that does not name the merge is not a yes to merge. A clean round goes straight
 to step 4; put the non-blocking findings in the report and on the issue.
 
 ## 4. After a yes (and a clean review, if one was asked for), without asking again

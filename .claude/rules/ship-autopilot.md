@@ -36,7 +36,7 @@ this repo on any change just before you merge the PR. just for this Repo".
   3. **Round 1 covers everything; later rounds cover the delta**
      (`git diff <reviewed_sha>..HEAD` and its joins), with the gates on the
      whole. A lane with nothing changed sits the round out.
-  4. **Fixed stays fixed:** every fixed blocking finding goes into
+  4. **Fixed stays fixed:** every fixed blocking finding (and any owner decision the review must keep) goes into
      `review/MA-<n>/fixed.json` with a check that passes while the fix holds;
      `scripts/review_regress.py` runs them before each round, and reviewers get
      the list and must not undo any of it. Rounds and the reviewed sha are in

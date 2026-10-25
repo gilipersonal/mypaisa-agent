@@ -39,7 +39,10 @@ def run_check(c: dict) -> tuple[bool | None, str]:
     if kind == "grep":
         files, missing = [], []
         for f in c.get("files") or [c["file"]]:
-            found = sorted(p.relative_to(ROOT).as_posix() for p in ROOT.glob(f)) if any(ch in f for ch in "*?[") else [f]
+            if Path(f).is_absolute():
+                missing.append(f"{f} (paths are relative to the repo)")
+                continue
+            found = sorted(p.relative_to(ROOT).as_posix() for p in ROOT.glob(f) if p.is_file()) if any(ch in f for ch in "*?[") else [f]
             if not found or not all((ROOT / x).is_file() for x in found):
                 missing.append(f)
             files += found

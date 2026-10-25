@@ -3007,7 +3007,7 @@
           "board": "Telegram · Failed work alert"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. The screens in undrawn are drawn under MA-158 before the story starts (it is phase 5, so they cannot wait for MA-130's phase 12). The screens in undrawn are drawn under MA-158 before the story starts. Editing the ceiling per environment and the warning past the credit are MA-116's (its Spend boards S.1 and S.2 and its undrawn list), not repeated here.",
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. The screens in undrawn are drawn under MA-158 before the story starts (it is phase 5, so they cannot wait for MA-130's phase 12). Editing the ceiling per environment and the warning past the credit are MA-116's (its Spend boards S.1 and S.2 and its undrawn list), not repeated here.",
       "undrawn": [
         "the daily digest message (the same message as MA-130's)",
         "the Telegram message to the owner when a cap, a threshold or an alert route changes",
@@ -3016,7 +3016,9 @@
         "editing the alert routing matrix",
         "editing quiet hours, cooldowns and the digest option",
         "editing the queues' retry counts and backoff",
-        "the email alert as it arrives"
+        "the email alert as it arrives",
+        "the AWS cap's step alerts as they arrive in Telegram and on the Alerts page (50%; 80%, dev's schedules pause; 100%, prod's background jobs pause), with the flags they set",
+        "the alert when the month's forecast passes the AWS cap"
       ]
     },
     {

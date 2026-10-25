@@ -110,7 +110,7 @@
     "finding": "a story In Review or Done with undrawn screens fails the check",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys,json; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':'Done','labels':['design'],'arch':[],'ui':True,'design':'picked','boards':[{'project':'app','file':'Admin center 2.dc.html','board':'Browser · Admin · Settings'}],'notes':'','undrawn':['x']}; e,_=p.item_findings(r,p.context(t)); sys.exit(0 if any('still undrawn' in x for x in e) else 1)\""
+      "run": "python3 -c \"import sys,json; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); ok=True\nfor s in ('In Review','Done'):\n r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':s,'labels':['design'],'arch':[],'ui':True,'design':'picked','boards':[{'project':'app','file':'Admin center 2.dc.html','board':'Browser · Admin · Settings'}],'notes':'','undrawn':['x']}; e,_=p.item_findings(r,p.context(t)); ok=ok and any('still undrawn' in x for x in e)\nsys.exit(0 if ok else 1)\""
     }
   },
   {
@@ -208,9 +208,10 @@
         "README.md",
         "docs/design/market-agent.html",
         "docs/design/agent-journey.html",
-        "docs/design/app-v1/*.dc.html"
+        "docs/design/app-v1/*.dc.html",
+        "docs/design/ds-v1/*.dc.html"
       ],
-      "pattern": "\\ban\\s+admin\\b(?!\\s+desk)|\\badmins\\b|second admin can be added|second person is made an admin",
+      "pattern": "\\ban(?:\\s|&nbsp;|<[^>]+>)+admin\\b(?!\\s+desk)|\\badmins\\b|second admin can be added|second person is made an admin",
       "present": false,
       "ignore_case": true
     }
@@ -240,8 +241,13 @@
     "round": 8,
     "finding": "a bare yes at the merge question means review first; merge it or merge now merges unreviewed",
     "check": {
-      "type": "cmd",
-      "run": "grep -q 'a bare \"yes\", or' .claude/rules/ship-autopilot.md && ! grep -n -E 'bare \"yes\" or \"merge it\" means merge now' .claude/rules/ship-autopilot.md .claude/rules/independent-review.md .claude/skills/autoship/SKILL.md"
+      "type": "grep",
+      "files": [
+        ".claude/rules/ship-autopilot.md",
+        ".claude/rules/independent-review.md"
+      ],
+      "pattern": "a\\s+bare\\s+\"yes\",\\s+or\\s+any\\s+answer\\s+that\\s+asks\\s+for\\s+the\\s+review,\\s+means\\s+review\\s+first",
+      "present": true
     }
   },
   {
@@ -336,11 +342,12 @@
   {
     "id": "r8-a1",
     "round": 8,
-    "finding": "the fixed list's checks test behaviour: r2-B3 and r3-B4 are commands, and no grep check reads a script",
+    "finding": "the fixed list's behaviour checks catch their fix being undone (r2-B3, r3-B4 fail against mutants)",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; L={e['id']:e for e in json.load(open('review/MA-155/fixed.json'))}; bad=[i for i,e in L.items() if e['check']['type']=='grep' and any(str(f).endswith('.py') or str(f).startswith('scripts/') for f in (e['check'].get('files') or [e['check'].get('file')]))]; sys.exit(0 if not bad and all(L[k]['check']['type']=='cmd' for k in ('r2-B3','r3-B4')) else 1)\""
-    }
+      "run": "python3 review/MA-155/mutants.py"
+    },
+    "note": "Amended in round 9 (no grep check may read a script) and round 10 (run against mutants)."
   },
   {
     "id": "r9-c1",
@@ -360,7 +367,7 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "reads prod's records today \\(§18\\.1; the AWS MCP reads only metadata\\)",
+      "pattern": "reads prod's records today \\(§18\\.1; the AWS MCP reads only metadata",
       "present": true
     }
   },
@@ -384,6 +391,54 @@
       "file": "docs/design/app-v1/Telegram admin.dc.html",
       "pattern": "Admins only",
       "present": false
+    }
+  },
+  {
+    "id": "r8-d1b",
+    "round": 10,
+    "finding": "the autoship skill says a bare yes means review first",
+    "check": {
+      "type": "grep",
+      "file": ".claude/skills/autoship/SKILL.md",
+      "pattern": "bare\\s+\"yes\"\\s+means\\s+review\\s+first",
+      "present": true
+    }
+  },
+  {
+    "id": "r8-d1c",
+    "round": 10,
+    "finding": "no repo rule says a bare yes means merge now",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/rules/ship-autopilot.md",
+        ".claude/rules/independent-review.md",
+        ".claude/skills/autoship/SKILL.md"
+      ],
+      "pattern": "bare\\s+\"yes\"[^.]{0,40}means\\s+merge\\s+now",
+      "present": false
+    }
+  },
+  {
+    "id": "r10-d1",
+    "round": 10,
+    "finding": "the skill's past-five question names the merge",
+    "check": {
+      "type": "grep",
+      "file": ".claude/skills/autoship/SKILL.md",
+      "pattern": "The\\s+question\\s+names\\s+the\\s+merge",
+      "present": true
+    }
+  },
+  {
+    "id": "r10-b1",
+    "round": 10,
+    "finding": "MA-137 lists the AWS step and forecast alerts as undrawn",
+    "check": {
+      "type": "trace",
+      "key": "MA-137",
+      "field": "undrawn",
+      "contains": "forecast passes the AWS cap"
     }
   }
 ]
