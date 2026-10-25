@@ -149,7 +149,7 @@ app and the chat. `ltx-clip` makes video assets only, never interface motion.
   3. Read comments left in Claude Design (`list_comments`), and acknowledge them once handled.
 - **The pick.** Record it in `decision.md` and on the MA issue. Then keep the plan in sync (`.claude/rules/plan-sync.md`):
   in `docs/trace.json` set the story's `design` to `picked` and list the picked boards (each board's note names its
-  Jira keys); run `/plan-sync MA-<n>` to copy the changed Claude Design files into `docs/design/app-v1/` with their
+  Jira keys), clear each `undrawn` item this round drew and say `Drawn: <the item, as it was listed>` in the notes; run `/plan-sync MA-<n>` to copy the changed Claude Design files into `docs/design/app-v1/` with their
   etags; then `python3 scripts/plan_sync.py render` and `check`.
   - "None of these", or feedback, means another round: back to step 1, in the same projects as new files or a new vN.
 

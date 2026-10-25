@@ -53,3 +53,31 @@ Added the day each was learned; reviewers check every item.
 5. **An owner decision changes every record at once:** the docs, the trace,
    the Jira descriptions (not only summaries or comments), the boards and the
    explainer pages (PR #32: one admin; read only except for admin).
+6. **A fixed-list check on a to-do list passes once the item is done, and only
+   then.** "Still listed as undrawn" broke the moment MA-158 drew the screens.
+   The check is "listed, or that item's own evidence": the boards that draw it
+   (`or_drawn` names the file and the boards), the fixed text in its mirrored
+   board, or the row's notes saying `Drawn: <the item, as it was listed>` or
+   `Settled: <the question's words up to its first colon>` (the trace schema's
+   convention; its needle is the item's or question's opening words). Never a
+   Jira status, a count of boards, or "the whole list is empty" (MA-158, PR #35
+   rounds 1 to 3).
+7. **A new precondition is checked in every record that lists steps or
+   prerequisites:** the README's set-up and prerequisites, PLAN's rows and
+   phase exit, the explainer pages' phase lists, Jira's "Depends on", and the
+   install commands (PR #33 rounds 1 and 2: secrets put before the apply that
+   makes their parameters; Terraform 1.9, then `brew install terraform`, left
+   in the README).
+8. **A pick supersedes the drawn flow everywhere at once:** ARCHITECTURE, both
+   explainer pages, the Prototype's links, the superseded boards' notes, the
+   picked boards' own notes, the decision record's dependencies, the trace
+   row's notes and the Jira story (PR #34
+   rounds 1 and 2: 1a's buttons left on the Journey and Market pages; boards 4
+   and 5 still "Planned" and pointing into 1a).
+9. **Every change drawn on a board shows its card, Confirm and the audit row,
+   with the second check where ARCHITECTURE asks for one, cancelling included, and no state is drawn that the
+   docs make impossible** (PR #35 round 1: "Leave it out saves the rest" with
+   no Confirm; an invite cancelled at once; "already linked" on a page nobody
+   is signed in to). A board fix that cannot reach Claude Design goes into
+   each affected story's `undrawn` list, naming the issue that carries it
+   (MA-160).

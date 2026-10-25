@@ -41,10 +41,10 @@
   {
     "id": "r2-B1",
     "round": 2,
-    "finding": "a partly drawn story cannot start",
+    "finding": "a partly drawn story cannot start (a row of its own with an undrawn list is refused)",
     "check": {
-      "type": "cmd_fails",
-      "run": "python3 scripts/plan_sync.py start MA-63"
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json,io,contextlib; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':'To Do','labels':['design'],'arch':[],'ui':True,'design':'planned','boards':[{'project':'app','file':'Admin center 2.dc.html','board':'Browser · Admin · Settings'}],'notes':''}; t['items'].append(r); q=lambda: (lambda o: (contextlib.redirect_stdout(o).__enter__(), p.start(t,'MA-X'))[1])(io.StringIO()); a=q(); r['undrawn']=['x']; b=q(); sys.exit(0 if (a,b)==(0,1) else 1)\""
     }
   },
   {
@@ -79,10 +79,10 @@
   {
     "id": "r3-B1",
     "round": 3,
-    "finding": "MA-39, MA-80 and MA-91 list their undrawn screens",
+    "finding": "MA-39, MA-80 and MA-91 list their undrawn screens until they are drawn",
     "check": {
       "type": "cmd",
-      "run": "for k in MA-39 MA-80 MA-91; do ! python3 scripts/plan_sync.py start $k >/dev/null || exit 1; done"
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-39': (['updating a valuation', 'changing a setting'], [('Chat basics.dc.html', 'Telegram · Guided flow: update a value'), ('Chat basics.dc.html', 'Telegram · Guided flow: change a setting')]), 'MA-80': (['the /web reply'], [('Chat basics.dc.html', 'Telegram · The laptop address')]), 'MA-91': (['the live stance chip', 'the /calls list in the chat'], [('Research cards.dc.html', 'Telegram · Live stance chips on the Portfolio card'), ('Research cards.dc.html', 'Telegram · Calls list')])}; ok=all(all(x in d[k].get('undrawn',[]) for x in items) or (d[k]['design'] in ('planned','picked') and all(b in {(e['file'],e['board']) for e in d[k]['boards']} for b in boards)) for k,(items,boards) in need.items()); sys.exit(0 if ok else 1)\""
     }
   },
   {
@@ -141,7 +141,14 @@
       "type": "trace",
       "key": "MA-130",
       "field": "undrawn",
-      "contains": "agent's question"
+      "contains": "agent's question",
+      "or_drawn": {
+        "file": "Admin center 3.dc.html",
+        "boards": [
+          "Telegram · An agent's question",
+          "Telegram · An instruction from you"
+        ]
+      }
     }
   },
   {
@@ -161,7 +168,13 @@
       "type": "trace",
       "key": "MA-35",
       "field": "undrawn",
-      "contains": "/pause and /resume"
+      "contains": "/pause and /resume",
+      "or_drawn": {
+        "file": "Chat basics.dc.html",
+        "boards": [
+          "Telegram · Pause and resume"
+        ]
+      }
     }
   },
   {
@@ -192,7 +205,13 @@
       "type": "trace",
       "key": "MA-130",
       "field": "undrawn",
-      "contains": "digest"
+      "contains": "digest",
+      "or_drawn": {
+        "file": "Admin center 3.dc.html",
+        "boards": [
+          "Telegram · Daily digest"
+        ]
+      }
     }
   },
   {
@@ -233,7 +252,14 @@
       "type": "trace",
       "key": "MA-137",
       "field": "undrawn",
-      "contains": "digest"
+      "contains": "digest",
+      "or_drawn": {
+        "file": "Admin center 3.dc.html",
+        "boards": [
+          "Telegram · Daily digest",
+          "Telegram · A cap, a threshold or a route changed"
+        ]
+      }
     }
   },
   {
@@ -314,7 +340,17 @@
       "type": "trace",
       "key": "MA-116",
       "field": "undrawn",
-      "contains": "past the $200 credit"
+      "contains": "past the $200 credit",
+      "or_drawn": {
+        "file": "Admin center 3.dc.html",
+        "boards": [
+          "Browser · Admin · Spend · Move the ceiling past the credit, the explicit yes",
+          "Browser · Admin · Spend · Move the ceiling above the hard limit, refused",
+          "Browser · Admin · Spend · Change the guards: member share, daily guard, calls per run",
+          "Browser · Admin · Spend · Change the renewal day",
+          "Browser · Admin · Spend · Type the hard limit"
+        ]
+      }
     }
   },
   {
@@ -325,7 +361,17 @@
       "type": "trace",
       "key": "MA-137",
       "field": "undrawn",
-      "contains": "routing matrix"
+      "contains": "routing matrix",
+      "or_drawn": {
+        "file": "Admin center 3.dc.html",
+        "boards": [
+          "Browser · Admin · Alerts · Change the routing",
+          "Browser · Admin · Alerts · Change quiet hours, cooldowns and the digest",
+          "Browser · Admin · Alerts · Change the queues' retries and backoff",
+          "Browser · Admin · Spend · Change the ladder's steps",
+          "Browser · Admin · Spend · Change the AWS cap, its steps and actions"
+        ]
+      }
     }
   },
   {
@@ -336,16 +382,23 @@
       "type": "trace",
       "key": "MA-145",
       "field": "undrawn",
-      "contains": "fails again"
+      "contains": "fails again",
+      "or_drawn": {
+        "file": "Admin center 3.dc.html",
+        "boards": [
+          "Browser · Admin · Alerts · Replayed, and failed again",
+          "Telegram · Failed work, replayed and failed again"
+        ]
+      }
     }
   },
   {
     "id": "r8-a1",
     "round": 8,
-    "finding": "the fixed list's behaviour checks catch their fix being undone (r2-B3, r3-B4 fail against mutants)",
+    "finding": "the fixed list's behaviour checks catch their fix being undone (r2-B1, r2-B3, r3-B4 fail against mutants)",
     "check": {
       "type": "cmd",
-      "run": "python3 review/MA-155/mutants.py && python3 -c \"import json,sys; L={e['id']:e for e in json.load(open('review/MA-155/fixed.json'))}; bad=[i for i,e in L.items() if e['check']['type']=='grep' and any(str(f).endswith('.py') or str(f).startswith('scripts/') for f in (e['check'].get('files') or [e['check'].get('file')]))]; sys.exit(0 if not bad and all(L[k]['check']['type']=='cmd' for k in ('r2-B3','r3-B4')) else 1)\""
+      "run": "python3 review/MA-155/mutants.py && python3 -c \"import importlib.util as u,sys; s=u.spec_from_file_location('m','review/MA-155/mutants.py'); m=u.module_from_spec(s); s.loader.exec_module(m); sys.exit(0 if {'r2-B1','r2-B3','r3-B4'} <= {e for e,_,_ in m.MUTANTS} else 1)\" && python3 -c \"import json,sys; L={e['id']:e for e in json.load(open('review/MA-155/fixed.json'))}; bad=[i for i,e in L.items() if e['check']['type']=='grep' and any(str(f).endswith('.py') or str(f).startswith('scripts/') for f in (e['check'].get('files') or [e['check'].get('file')]))]; sys.exit(0 if not bad and all(L[k]['check']['type']=='cmd' for k in ('r2-B1','r2-B3','r3-B4')) else 1)\""
     },
     "note": "Amended in round 9 (no grep check may read a script) and round 10 (run against mutants)."
   },
@@ -379,7 +432,13 @@
       "type": "trace",
       "key": "MA-145",
       "field": "undrawn",
-      "contains": "still want this?"
+      "contains": "still want this?",
+      "or_drawn": {
+        "file": "Admin center 3.dc.html",
+        "boards": [
+          "Telegram · Old updates and expired Confirms"
+        ]
+      }
     }
   },
   {
@@ -437,7 +496,7 @@
     "finding": "MA-137 lists the AWS step and forecast alerts as undrawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); sys.exit(0 if \\\"step alerts\\\" in u and 'forecast passes the AWS cap' in u else 1)\""
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); have={(b['file'],b['board']) for b in r['boards']}; F='Admin center 3.dc.html'; need=[(F,'Telegram · AWS cap steps'),(F,'Browser · Admin · Alerts · The AWS cap'+chr(39)+'s steps and the forecast, with their flags')]; drawn=r['design'] in ('planned','picked') and all(x in have for x in need); sys.exit(0 if drawn or ('step alerts' in u and 'forecast passes the AWS cap' in u) else 1)\""
     }
   },
   {

@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MyPaisa app v1: Wealth, phase 9</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas" />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+html { background: #ECEAE6; }
+body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+/* canvas: the dv-turn layout of India, Browser, Mini App and Telegram chats */
+.dv-turn { padding: 44px 48px 36px; }
+.dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+.dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+.dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+.dv-intro { max-width: 980px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 14px; text-wrap: pretty; }
+.plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 980px; box-sizing: border-box; margin: 0 0 28px; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+.plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; text-decoration: none; }
+a.plan-k:hover { color: #FFFFFF; background: #233558; }
+.plan-s { font-weight: 700; color: #14171F; }
+.idx { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 6px 24px; max-width: 980px; margin: 0 0 8px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+.idx a { color: #14171F; font-weight: 600; text-decoration: none; }
+.idx a:hover { color: #C2381F; }
+.dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dv-sname { font: 700 17px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+.dv-screen { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; margin-bottom: 56px; }
+.dv-note, .snote { flex: none; width: 300px; padding-top: 22px; display: flex; flex-direction: column; gap: 8px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+.dv-note b, .snote b, .bnotes b { color: #14171F; }
+.dv-row { display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; }
+.bnotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px 32px; max-width: 1300px; margin: 24px 0 0; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+.lstate { display: flex; flex-direction: column; gap: 14px; margin-bottom: 48px; }
+.lshead { display: flex; flex-direction: column; gap: 6px; max-width: 980px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+.kcard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 36px; display: flex; flex-direction: column; gap: 52px; width: fit-content; max-width: 100%; box-sizing: border-box; }
+.srow { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.kcol { display: flex; flex-direction: column; width: 390px; flex: none; }
+/* privacy pills keep their text invisible whatever ink class sits beside them */
+.phone .mp-mask, .board .mp-mask { color: transparent; }
+
+/* ---------- the phone: Mini App frames and chat frames ---------- */
+.phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; flex: none; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+.scr { flex: 1; min-height: 0; overflow: hidden; padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 16px; text-wrap: pretty; }
+.scr-end { justify-content: flex-end; }
+.tgh { position: relative; flex: none; }
+.tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
+.tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
+.clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nowrap { white-space: nowrap; }
+.db { display: block; }
+.rtx { flex: 1; min-width: 0; }
+.tr { text-align: right; }
+.wfull { width: 100%; box-sizing: border-box; }
+.grow1 { flex: 1; }
+.wrap { flex-wrap: wrap; }
+.mt2 { margin-top: 2px; } .mt4 { margin-top: 4px; } .mt6 { margin-top: 6px; } .mt12 { margin-top: 12px; }
+.tc { text-align: center; }
+.ccy { flex: none; }
+.ccy .mp-seg-i { min-width: 46px; padding: 0 10px; font-size: 15px; white-space: nowrap; }
+.gfoot { padding: 8px 4px 0 16px; }
+.rowp { padding-top: 10px; padding-bottom: 10px; }
+.cpad { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.board .cpad { padding: 20px; }
+.ctl { align-items: baseline; }
+.pp { margin: 0; text-wrap: pretty; }
+.pover { margin-top: 4px; }
+.bigrow { align-items: baseline; flex-wrap: wrap; }
+.bars { display: flex; flex-direction: column; gap: 10px; }
+.cbar { height: 8px; margin: 6px 0 4px; }
+.cbar > span { display: block; height: 100%; border-radius: 999px; }
+.list { display: flex; flex-direction: column; }
+.li { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 0; box-sizing: border-box; }
+.li + .li { border-top: 1px solid var(--mp-line); }
+.kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--mp-line); border-radius: 12px; overflow: hidden; border: 1px solid var(--mp-line); }
+.kv > div { background: var(--mp-surface); padding: 10px 12px; }
+.stack { display: flex; gap: 2px; height: 14px; border-radius: 999px; overflow: hidden; background: var(--mp-surface-2); }
+.stack > span { display: block; height: 100%; min-width: 3px; }
+.lgd { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; }
+.lgk { display: inline-flex; align-items: center; gap: 6px; }
+.swa { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.k-line { width: 16px; height: 3px; border-radius: 2px; background: var(--mp-chart-line); }
+.k-dash { width: 16px; height: 0; border-top: 2px dashed var(--mp-ink-3); }
+.k-hline { width: 16px; height: 3px; border-radius: 2px; background: var(--mp-coral); }
+.k-hdash { width: 16px; height: 0; border-top: 2px dashed var(--mp-hero-ink-2); }
+.hr { height: 1px; background: var(--mp-line); }
+.banner { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.banner .ms { margin-top: 0; color: var(--mp-ink-2); }
+.hsplit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+.filerow { display: flex; align-items: center; gap: 10px; padding: 0 0 0 10px; border-radius: 12px; background: var(--mp-surface-2); min-height: 56px; }
+.filerow + .filerow { margin-top: 8px; }
+.ftile { background: var(--mp-surface); color: var(--mp-ink-2); }
+.pbtns { margin-top: 2px; }
+.tbl { display: grid; column-gap: 0; align-items: center; }
+.tbl > .r { padding-left: 12px; }
+.tbl > .th { font: 600 12px/16px var(--mp-font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-ink-3); padding: 0 0 8px; border-bottom: 1px solid var(--mp-line); }
+.tbl > .td { font: 15px/20px var(--mp-font); color: var(--mp-ink); padding: 10px 0; border-bottom: 1px solid var(--mp-line); min-height: 20px; }
+.tbl > .r { text-align: right; }
+.tbl > .w6 { font-weight: 600; }
+.tbl > .s { color: var(--mp-ink-2); font-size: 13px; }
+.cols { display: flex; gap: 14px; align-items: flex-end; height: 150px; padding-top: 6px; }
+.colw { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; }
+.colb { flex: 1; width: 100%; max-width: 56px; display: flex; flex-direction: column-reverse; gap: 2px; }
+.colb > span { display: block; width: 100%; border-radius: 4px; }
+.colb.cplan > span { opacity: 0.55; }
+/* charts: SVG draws lines and areas; labels, dots and axes are HTML on top (tokens.css) */
+.chart { margin-top: 4px; }
+.mp-hero .chart { margin-top: 16px; }
+.ch-s svg { height: 110px; } .ch-m svg { height: 160px; } .ch-l svg { height: 220px; }
+.gline-h { stroke: rgba(255, 255, 255, 0.09); stroke-width: 1; }
+.gline-c { stroke: var(--mp-chart-grid); stroke-width: 1; }
+.hline { fill: none; stroke: var(--mp-coral); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.harea { fill: var(--mp-hero-area); }
+.hdash { fill: none; stroke: var(--mp-hero-ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.cline { fill: none; stroke: var(--mp-chart-line); stroke-width: 2.5; stroke-linejoin: round; }
+.carea { fill: var(--mp-chart-area); }
+.cdash { fill: none; stroke: var(--mp-ink-3); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.gy { position: absolute; left: 0; transform: translateY(-100%); margin-top: -3px; font: 500 11px/14px var(--mp-font); white-space: nowrap; }
+.gy-h { color: var(--mp-hero-ink-2); }
+.gy-c { color: var(--mp-ink-3); }
+.board .gy.mp-mask { min-width: 30px; color: transparent; }
+.cdot { position: absolute; width: 8px; height: 8px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-chart-line); }
+.hdot { position: absolute; width: 8px; height: 8px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--mp-hero); box-shadow: 0 0 0 2px var(--mp-hero-ink); }
+.clbl { position: absolute; transform: translate(-50%, -100%); margin-top: -9px; font: 700 11px/14px var(--mp-font); letter-spacing: 0.02em; white-space: nowrap; }
+.clbl.al { transform: translate(-100%, -100%); }
+.clbl.ar { transform: translate(0, -100%); }
+.clbl.bl { transform: translate(-100%, 0); margin-top: 9px; margin-left: -6px; }
+.lbl-h { color: var(--mp-hero-ink); }
+.lbl-c { color: var(--mp-ink-2); }
+.ax-h { color: var(--mp-hero-ink-2); margin-top: 6px; }
+.ax-c { color: var(--mp-ink-3); margin-top: 6px; }
+.bal { text-wrap: balance; }
+.crumb { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -8px 0 -6px; color: var(--mp-accent); font: 600 15px/20px var(--mp-font); text-decoration: none; }
+.phone .mp-t1, .phone .mp-t2 { text-wrap: balance; }
+
+/* ---------- the browser board ---------- */
+.board { width: 1280px; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
+.side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+.brand { padding: 4px 8px 18px; }
+.navlbl { padding: 14px 12px 4px; }
+.side-ft { padding: 0 12px 4px; }
+.main-rel { position: relative; background: var(--mp-bg); }
+.whose { flex: 0 1 280px; min-width: 216px; }
+.mpm { display: block; flex: none; }
+.mpm-ring { fill: none; stroke: var(--mp-hero); }
+.t-dark .mpm-ring { stroke: var(--mp-hero-ink-2); }
+.mpm-coin { fill: var(--mp-hero); }
+.mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+.mpm-dot { fill: var(--mp-coral); }
+.mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
+.mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+
+/* ---------- the Google link page: the Login board's two panels (Browser 2) ---------- */
+.login-b { min-height: 760px; }
+.login { display: grid; grid-template-columns: minmax(0, 1fr); min-height: 760px; }
+.lhero { background: var(--mp-hero); color: var(--mp-hero-ink); padding: 32px 24px; display: flex; flex-direction: column; gap: 24px; }
+.tagline { font: 800 34px/40px var(--mp-font-round); letter-spacing: -0.03em; max-width: 460px; text-wrap: balance; margin: 0; }
+.lform { display: flex; align-items: center; justify-content: center; padding: 40px 24px; background: var(--mp-bg); }
+.lbox { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
+.gbadge { width: 24px; height: 24px; border-radius: 50%; background: var(--mp-surface); color: var(--mp-ink); display: grid; place-items: center; font: 700 14px/1 var(--mp-font); flex: none; }
+.lnote { display: flex; gap: 10px; align-items: flex-start; }
+.acct { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface); box-shadow: var(--mp-shadow); }
+.stile { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; flex: none; }
+.stile .ms { font-size: 30px; }
+.st-ok { background: var(--mp-add-bg); color: var(--mp-up); }
+.st-wait { background: var(--mp-hold-bg); color: var(--mp-hold); }
+.st-off { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.st-alert { background: var(--mp-alert-bg); color: var(--mp-alert); }
+.codebox { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 18px; background: var(--mp-surface); box-shadow: var(--mp-shadow); }
+.code { font: 800 44px/48px var(--mp-font-round); letter-spacing: 0.08em; color: var(--mp-ink); font-variant-numeric: tabular-nums; }
+.cmd { display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 12px; border-radius: 12px; background: var(--mp-surface-2); }
+.cmd code { flex: 1; font: 600 16px/20px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink); }
+.steps { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.steps li { display: flex; gap: 10px; align-items: flex-start; }
+.stn { width: 22px; height: 22px; border-radius: 50%; background: var(--mp-surface-2); color: var(--mp-ink); display: grid; place-items: center; font: 700 12px/1 var(--mp-font); flex: none; }
+.lkv { display: flex; flex-direction: column; border-radius: 14px; background: var(--mp-surface); overflow: hidden; box-shadow: var(--mp-shadow); }
+.lkv > div { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; }
+.lkv > div + div { border-top: 1px solid var(--mp-line); }
+@container app (min-width: 760px) {
+.login { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.lhero { padding: 56px 64px; justify-content: space-between; }
+.tagline { font-size: 44px; line-height: 50px; }
+}
+
+/* ---------- Telegram's own chrome (Telegram draws all of this; MyPaisa owns the words and the buttons) ---------- */
+.island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 7; }
+.island.fid { width: 120px; height: 120px; border-radius: 40px; display: grid; place-items: center; }
+.fidg { font-size: 60px; color: #FFFFFF; }
+.sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+.sbar .ms { font-size: 17px; }
+.sicons { display: flex; align-items: center; gap: 4px; }
+.chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
+.back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
+.back .ms { font-size: 22px; }
+.ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+.csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
+.cav { width: 36px; height: 36px; flex: none; margin-left: 36px; }
+.msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
+.msgs.up { padding-bottom: 318px; }
+.ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
+.mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
+.ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
+.ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
+.home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
+.home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
+.hind { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 134px; height: 5px; border-radius: 3px; background: var(--mp-ink); z-index: 6; }
+.tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-fic: #4FAE4E; --tg-pill: #1F6FB5; }
+.tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-fic: #5A9BD5; --tg-pill: #3A6EA5; }
+.msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
+.msg.w { width: 316px; }
+.msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
+.msg.o { align-self: flex-end; align-items: flex-end; margin-left: 0; margin-right: 6px; }
+.tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
+.tl { border-bottom-left-radius: 4px; }
+.tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
+.tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
+.tg-out.tl { border-radius: 16px 16px 4px 16px; }
+.tg-out.tl::before { left: auto; right: -7px; background: var(--tg-out); border-bottom-right-radius: 0; border-bottom-left-radius: 16px 14px; }
+.tg-out.tl::after { left: auto; right: -10px; border-bottom-right-radius: 0; border-bottom-left-radius: 10px; }
+.tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
+.tg-out .tg-time { color: var(--tg-otime); }
+.tick { font-size: 15px; }
+.dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
+.day { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
+.msg .tg-btns { width: 100%; max-width: none; }
+.c1 { grid-template-columns: minmax(0, 1fr); }
+.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tg-btn { position: relative; cursor: pointer; gap: 2px; }
+.tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
+.glyph { font-size: 18px; line-height: 1; margin-right: -4px; }
+.bq { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; margin: 4px 0; font-size: 14px; line-height: 19px; }
+.ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
+.b { font-weight: 600; } .i { font-style: italic; } .a { color: var(--tg-link); }
+.filec { display: flex; align-items: center; gap: 10px; padding: 2px 0; }
+.fic { width: 44px; height: 44px; border-radius: 50%; background: var(--tg-fic); color: #FFFFFF; display: grid; place-items: center; flex: none; }
+.fmeta { display: flex; flex-direction: column; min-width: 0; }
+.fname { font-weight: 600; font-size: 15px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px; }
+.fsize { font-size: 13px; line-height: 18px; color: var(--tg-otime); }
+.zs { z-index: 3; }
+.tsheet { position: absolute; left: 0; right: 0; bottom: 0; height: 440px; border-radius: 12px 12px 0 0; overflow: hidden; display: flex; flex-direction: column; z-index: 4; box-shadow: 0 -8px 40px rgba(0,0,0,.18); }
+.shc { flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 22px 16px 42px; text-wrap: pretty; }
+.fidtile { width: 56px; height: 56px; border-radius: 16px; background: var(--mp-surface); color: var(--mp-ink); display: grid; place-items: center; box-shadow: var(--mp-shadow); }
+.fidtile .ms { font-size: 34px; }
+</style>
+</helmet>
+
+<!-- ================= INTRO ================= -->
+<section class="dv-turn" id="w0" data-screen-label="Wealth: intro">
+<div class="dv-thd"><a class="dv-tid" href="#w0">W</a><span class="dv-tname">Wealth: the whole household, the imports, and linking Google</span></div>
+<p class="dv-intro">{{ intro1 }}</p>
+<p class="dv-intro">{{ intro2 }}</p>
+<div class="plan"><sc-for list="{{ allKeys }}" as="kk" hint-placeholder-count="7"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>ARCHITECTURE.md §12, §6.6, §18.5, §4.5, §9.3</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
+<div class="idx"><sc-for list="{{ index }}" as="ix" hint-placeholder-count="12"><span><a href="#{{ ix.id }}">{{ ix.name }}</a> <span class="nowrap">· {{ ix.keys }}</span></span></sc-for></div>
+</section>
+
+<!-- ================= MINI APP BOARDS ================= -->
+<sc-for list="{{ mBoards }}" as="bd" hint-placeholder-count="2">
+<section class="dv-turn" id="{{ bd.id }}" data-screen-label="{{ bd.name }}">
+<div class="dv-thd"><span class="dv-tid">M</span><span class="dv-tname">{{ bd.name }}</span></div>
+<p class="dv-intro">{{ bd.intro }}</p>
+<div class="plan"><sc-for list="{{ bd.keys }}" as="kk" hint-placeholder-count="2"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>{{ bd.arch }}</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
+<sc-for list="{{ bd.rows }}" as="v" hint-placeholder-count="2">
+<div class="dv-screen">
+<sc-for list="{{ v.th }}" as="t" hint-placeholder-count="2">
+<div>
+<p class="dv-cap">{{ t.cap }}</p>
+<div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="{{ t.cap }}">
+<div class="tgh"><span class="tgh-a"><sc-if value="{{ v.hasBack }}" hint-placeholder-val="{{ false }}"><span class="ms ms-s">arrow_back_ios_new</span></sc-if>{{ v.back }}</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+<div class="scr {{ v.scr }}">
+<sc-for list="{{ v.blocks }}" as="k" hint-placeholder-count="4">
+<sc-if value="{{ k.isWhose }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap8"><div class="mp-seg grow1" role="group" aria-label="Whose view"><sc-for list="{{ k.segs }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div><sc-if value="{{ k.eye }}" hint-placeholder-val="{{ true }}"><button class="iconbtn" aria-label="Privacy mode: hide amounts" aria-pressed="{{ k.pressed }}"><span class="ms">{{ k.eyeI }}</span></button></sc-if></div></sc-if>
+<sc-if value="{{ k.isSeg }}" hint-placeholder-val="{{ false }}"><div class="mp-seg" role="group" aria-label="{{ k.label }}"><sc-for list="{{ k.segs }}" as="s" hint-placeholder-count="2"><button class="mp-seg-i {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div></sc-if>
+<sc-if value="{{ k.isHead }}" hint-placeholder-val="{{ false }}"><div><div class="mp-large">{{ k.title }}</div><div class="mp-foot mp-ink3">{{ k.sub }}</div></div></sc-if>
+<sc-if value="{{ k.isBanner }}" hint-placeholder-val="{{ false }}"><div class="banner"><span class="ms ms-s" aria-hidden="true">{{ k.icon }}</span><div class="mp-foot rtx"><span class="mp-w6">{{ k.b }}</span> {{ k.t }}</div></div></sc-if>
+<sc-if value="{{ k.isHero }}" hint-placeholder-val="{{ false }}">
+<div class="mp-hero">
+<div class="fx jb ac gap8"><span class="mp-over mp-hero-2 nowrap">{{ k.over }}</span><sc-if value="{{ k.hasCcy }}" hint-placeholder-val="{{ true }}"><div class="mp-seg ccy" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true" aria-label="Pounds">£</button><button class="mp-seg-i seg-s" aria-pressed="false" aria-label="Rupees">₹</button></div></sc-if></div>
+<div class="fx ac gap12 wrap mt6"><span class="mp-num-hero nowrap"><span class="{{ k.a.c }}" role="{{ k.a.r }}" aria-label="{{ k.a.l }}">{{ k.a.v }}</span></span><sc-if value="{{ k.hasChip }}" hint-placeholder-val="{{ true }}"><span class="mp-chip {{ k.chipC }}">{{ k.chip }}</span></sc-if></div>
+<div class="mp-sub mp-hero-2 bal mt4">{{ k.sub }}</div>
+<sc-if value="{{ k.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="hsplit"><sc-for list="{{ k.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.l }}</div><div class="mp-t3 nowrap"><span class="{{ s.a.c }}" role="{{ s.a.r }}" aria-label="{{ s.a.l }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ k.hasChart }}" hint-placeholder-val="{{ false }}">
+<div class="chart {{ k.ch.cv }}">
+<div class="mp-chartbox" role="img" aria-label="{{ k.ch.aria }}">
+<svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+<sc-for list="{{ k.ch.grid }}" as="g" hint-placeholder-count="3"><line x1="0" y1="{{ g.y }}" x2="1000" y2="{{ g.y }}" class="{{ k.ch.gc }}"></line></sc-for>
+<sc-for list="{{ k.ch.areas }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+<sc-for list="{{ k.ch.lines }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+</svg>
+<sc-for list="{{ k.ch.grid }}" as="g" hint-placeholder-count="3"><span class="gy {{ k.ch.lc }} {{ g.m }}" style="top: {{ g.top }}">{{ g.label }}</span></sc-for>
+<sc-for list="{{ k.ch.dots }}" as="d" hint-placeholder-count="1"><span class="{{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}"></span></sc-for>
+<sc-for list="{{ k.ch.lbls }}" as="d" hint-placeholder-count="1"><span class="clbl {{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}">{{ d.t }}</span></sc-for>
+</div>
+<sc-if value="{{ k.ch.hasAx }}" hint-placeholder-val="{{ true }}"><div class="mp-chartaxis {{ k.ch.ax }}" aria-hidden="true"><sc-for list="{{ k.ch.xs }}" as="x" hint-placeholder-count="4"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></sc-if>
+<sc-if value="{{ k.ch.hasKeys }}" hint-placeholder-val="{{ false }}"><div class="lgd mp-foot {{ k.ch.kc }}"><sc-for list="{{ k.ch.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="{{ kk.c }}"></span>{{ kk.t }}</span></sc-for></div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ k.hasPeriod }}" hint-placeholder-val="{{ false }}"><div class="mp-seg mt12" role="group" aria-label="Period"><sc-for list="{{ k.periods }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ k.isSect }}" hint-placeholder-val="{{ false }}">
+<div>
+<div class="fx jb ac gap8 mp-section"><span class="mp-over mp-ink3">{{ k.over }}</span><span class="mp-foot mp-ink3 nowrap"><span class="{{ k.a.c }}" role="{{ k.a.r }}" aria-label="{{ k.a.l }}">{{ k.a.v }}</span></span></div>
+<div class="mp-group">
+<sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="3">
+<div class="mp-row rowp">
+<div class="mp-row-lead mp-neutral">{{ r.lead }}</div>
+<div class="rtx"><div class="mp-hl clip">{{ r.name }}</div><div class="fx ac gap6 mt2"><sc-if value="{{ r.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ r.chipC }}">{{ r.chip }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ r.sub }}</span></div></div>
+<div class="tr"><div class="mp-hl nowrap"><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span></div><div class="mp-foot nowrap {{ r.bC }}"><span class="{{ r.b.c }}" role="{{ r.b.r }}" aria-label="{{ r.b.l }}">{{ r.b.v }}</span></div></div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ k.hasFoot }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3 gfoot">{{ k.foot }}</div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ k.isCard }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<sc-if value="{{ k.hasTitle }}" hint-placeholder-val="{{ true }}"><div class="fx jb gap8 ctl"><span class="mp-hl">{{ k.title }}</span><span class="mp-foot mp-ink3 tr">{{ k.right }}</span></div></sc-if>
+<sc-for list="{{ k.parts }}" as="q" hint-placeholder-count="2">
+<sc-if value="{{ q.isP }}" hint-placeholder-val="{{ false }}"><p class="mp-sub pp {{ q.c }}"><span class="mp-w6">{{ q.b }}</span> {{ q.t }}</p></sc-if>
+<sc-if value="{{ q.isFoot }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink3 pp">{{ q.t }}</p></sc-if>
+<sc-if value="{{ q.isOver }}" hint-placeholder-val="{{ false }}"><div class="mp-over mp-ink3 pover">{{ q.t }}</div></sc-if>
+<sc-if value="{{ q.isTtl }}" hint-placeholder-val="{{ false }}"><div class="mp-t2">{{ q.t }}</div></sc-if>
+<sc-if value="{{ q.isHr }}" hint-placeholder-val="{{ false }}"><div class="hr"></div></sc-if>
+<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx gap12 bigrow"><span class="mp-num-l"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><span class="mp-sub mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span></span></div></sc-if>
+<sc-if value="{{ q.isChips }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap6 wrap"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><span class="mp-chip {{ it.c }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</span></sc-for></div></sc-if>
+<sc-if value="{{ q.isBars }}" hint-placeholder-val="{{ false }}"><div class="bars"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.name }}</span><span class="mp-sub mp-w6 nowrap">{{ it.pct }}</span></div><div class="mp-track cbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span><sc-if value="{{ it.hasB }}" hint-placeholder-val="{{ false }}"><span class="mp-ink3"> · </span><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></sc-if></div><sc-if value="{{ it.hasN }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3">{{ it.n }}</div></sc-if></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="list"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="li"><sc-if value="{{ it.hasI }}" hint-placeholder-val="{{ false }}"><span class="mp-icontile {{ it.ic }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span></sc-if><div class="rtx"><div class="mp-sub {{ it.nc }}">{{ it.name }}</div><div class="mp-foot mp-ink3">{{ it.sub }}</div></div><div class="tr"><div class="mp-sub mp-w6 nowrap {{ it.ac }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kv"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><div class="mp-foot mp-ink3">{{ it.k }}</div><div class="mp-hl {{ it.c }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3">{{ it.s }}</div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stack" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span class="lgk"><span class="swa" style="background: {{ it.col }}"></span>{{ it.name }} {{ it.pct }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="colw"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><div class="mp-cap mp-ink3">{{ it.l }}</div></div></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isChart }}" hint-placeholder-val="{{ false }}">
+<div class="chart {{ q.ch.cv }}">
+<div class="mp-chartbox" role="img" aria-label="{{ q.ch.aria }}">
+<svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+<sc-for list="{{ q.ch.grid }}" as="g" hint-placeholder-count="3"><line x1="0" y1="{{ g.y }}" x2="1000" y2="{{ g.y }}" class="{{ q.ch.gc }}"></line></sc-for>
+<sc-for list="{{ q.ch.areas }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+<sc-for list="{{ q.ch.lines }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+</svg>
+<sc-for list="{{ q.ch.grid }}" as="g" hint-placeholder-count="3"><span class="gy {{ q.ch.lc }} {{ g.m }}" style="top: {{ g.top }}">{{ g.label }}</span></sc-for>
+<sc-for list="{{ q.ch.dots }}" as="d" hint-placeholder-count="1"><span class="{{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}"></span></sc-for>
+<sc-for list="{{ q.ch.lbls }}" as="d" hint-placeholder-count="1"><span class="clbl {{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}">{{ d.t }}</span></sc-for>
+</div>
+<sc-if value="{{ q.ch.hasAx }}" hint-placeholder-val="{{ true }}"><div class="mp-chartaxis {{ q.ch.ax }}" aria-hidden="true"><sc-for list="{{ q.ch.xs }}" as="x" hint-placeholder-count="4"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></sc-if>
+<sc-if value="{{ q.ch.hasKeys }}" hint-placeholder-val="{{ false }}"><div class="lgd mp-foot {{ q.ch.kc }}"><sc-for list="{{ q.ch.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="{{ kk.c }}"></span>{{ kk.t }}</span></sc-for></div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ q.isFiles }}" hint-placeholder-val="{{ false }}"><div><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><div class="filerow"><span class="mp-icontile ftile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><span class="rtx"><span class="mp-foot mp-w6 db clip">{{ it.n }}</span><span class="mp-cap mp-ink3 db">{{ it.s }}</span></span><button class="mp-btn mp-btn-plain mp-btn-small" type="button" aria-label="{{ it.bt }} {{ it.n }}">{{ it.bt }}</button></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isBtns }}" hint-placeholder-val="{{ false }}"><div class="fx gap8 wrap pbtns"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><a class="mp-btn mp-btn-small {{ it.c }}" href="#{{ it.href }}" aria-label="{{ it.l }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</a></sc-for></div></sc-if>
+<sc-if value="{{ q.isTbl }}" hint-placeholder-val="{{ false }}"><div class="tbl" style="grid-template-columns: {{ q.cols }}"><sc-for list="{{ q.head }}" as="h" hint-placeholder-count="3"><div class="th {{ h.c }}">{{ h.t }}</div></sc-for><sc-for list="{{ q.cells }}" as="cl" hint-placeholder-count="6"><div class="td {{ cl.c }}"><span class="{{ cl.m }}" role="{{ cl.r }}" aria-label="{{ cl.l }}">{{ cl.v }}</span></div></sc-for></div></sc-if>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ k.isBtn }}" hint-placeholder-val="{{ false }}"><a class="mp-btn {{ k.c }}" href="#{{ k.href }}"><span class="ms" aria-hidden="true">{{ k.icon }}</span>{{ k.t }}</a></sc-if>
+<sc-if value="{{ k.isCap }}" hint-placeholder-val="{{ false }}"><div class="mp-cap mp-ink3">{{ k.t }}</div></sc-if>
+</sc-for>
+</div>
+<nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ v.tabs }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+</div>
+</div>
+</sc-for>
+<div class="dv-note"><span class="dv-sname">{{ v.name }}</span><sc-for list="{{ v.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+</div>
+</sc-for>
+</section>
+</sc-for>
+
+<!-- ================= BROWSER BOARDS ================= -->
+<sc-for list="{{ bBoards }}" as="bd" hint-placeholder-count="2">
+<section class="dv-turn" id="{{ bd.id }}" data-screen-label="{{ bd.name }}">
+<div class="dv-thd"><span class="dv-tid">B</span><span class="dv-tname">{{ bd.name }}</span></div>
+<p class="dv-intro">{{ bd.intro }}</p>
+<div class="plan"><sc-for list="{{ bd.keys }}" as="kk" hint-placeholder-count="2"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>{{ bd.arch }}</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
+<div class="dv-row">
+<sc-for list="{{ bd.th }}" as="t" hint-placeholder-count="2">
+<div>
+<p class="dv-cap">{{ t.cap }}</p>
+<div class="board mp mp-app {{ t.cls }}" data-screen-label="{{ t.cap }}">
+<div class="mp-shell">
+<aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
+<div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+<sc-for list="{{ t.p.nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#{{ n.href }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink3">{{ n.label }}</div></sc-if></sc-for>
+<div style="flex: 1"></div>
+<div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+</aside>
+<main class="mp-shell-main main-rel">
+<div class="mp-pagepad">
+<header class="mp-pagehead">
+<div><sc-if value="{{ t.p.hasCrumb }}" hint-placeholder-val="{{ false }}"><a class="crumb" href="#{{ t.p.crumbHref }}"><span class="ms ms-s">arrow_back_ios_new</span>{{ t.p.crumb }}</a></sc-if><div class="mp-large">{{ t.p.title }}</div><div class="mp-foot mp-ink3">{{ t.p.meta }}</div></div>
+<div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><sc-for list="{{ t.p.segs }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div><button class="iconbtn" aria-label="Privacy mode: hide amounts" aria-pressed="{{ t.p.pressed }}"><span class="ms">{{ t.p.eyeI }}</span></button></div>
+</header>
+<div class="mp-cols">
+<sc-for list="{{ t.p.cols }}" as="col" hint-placeholder-count="2">
+<div class="mp-col">
+<sc-for list="{{ col.blocks }}" as="k" hint-placeholder-count="3">
+<sc-if value="{{ k.isBanner }}" hint-placeholder-val="{{ false }}"><div class="banner"><span class="ms ms-s" aria-hidden="true">{{ k.icon }}</span><div class="mp-foot rtx"><span class="mp-w6">{{ k.b }}</span> {{ k.t }}</div></div></sc-if>
+<sc-if value="{{ k.isHero }}" hint-placeholder-val="{{ false }}">
+<div class="mp-hero">
+<div class="fx jb ac gap8"><span class="mp-over mp-hero-2 nowrap">{{ k.over }}</span><sc-if value="{{ k.hasPeriod }}" hint-placeholder-val="{{ false }}"><div class="mp-seg" role="group" aria-label="Period" style="flex: 0 1 220px"><sc-for list="{{ k.periods }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div></sc-if></div>
+<div class="fx ac gap12 wrap mt6"><span class="mp-num-hero nowrap"><span class="{{ k.a.c }}" role="{{ k.a.r }}" aria-label="{{ k.a.l }}">{{ k.a.v }}</span></span><sc-if value="{{ k.hasChip }}" hint-placeholder-val="{{ true }}"><span class="mp-chip {{ k.chipC }}">{{ k.chip }}</span></sc-if><div class="grow1"></div><sc-if value="{{ k.hasCcy }}" hint-placeholder-val="{{ true }}"><div class="mp-seg ccy" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true" aria-label="Pounds">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false" aria-label="Rupees">₹ INR</button></div></sc-if></div>
+<div class="mp-sub mp-hero-2 bal mt4">{{ k.sub }}</div>
+<sc-if value="{{ k.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="hsplit"><sc-for list="{{ k.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.l }}</div><div class="mp-t3 nowrap"><span class="{{ s.a.c }}" role="{{ s.a.r }}" aria-label="{{ s.a.l }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ k.hasChart }}" hint-placeholder-val="{{ false }}">
+<div class="chart {{ k.ch.cv }}">
+<div class="mp-chartbox" role="img" aria-label="{{ k.ch.aria }}">
+<svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+<sc-for list="{{ k.ch.grid }}" as="g" hint-placeholder-count="3"><line x1="0" y1="{{ g.y }}" x2="1000" y2="{{ g.y }}" class="{{ k.ch.gc }}"></line></sc-for>
+<sc-for list="{{ k.ch.areas }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+<sc-for list="{{ k.ch.lines }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+</svg>
+<sc-for list="{{ k.ch.grid }}" as="g" hint-placeholder-count="3"><span class="gy {{ k.ch.lc }} {{ g.m }}" style="top: {{ g.top }}">{{ g.label }}</span></sc-for>
+<sc-for list="{{ k.ch.dots }}" as="d" hint-placeholder-count="1"><span class="{{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}"></span></sc-for>
+<sc-for list="{{ k.ch.lbls }}" as="d" hint-placeholder-count="1"><span class="clbl {{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}">{{ d.t }}</span></sc-for>
+</div>
+<sc-if value="{{ k.ch.hasAx }}" hint-placeholder-val="{{ true }}"><div class="mp-chartaxis {{ k.ch.ax }}" aria-hidden="true"><sc-for list="{{ k.ch.xs }}" as="x" hint-placeholder-count="4"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></sc-if>
+<sc-if value="{{ k.ch.hasKeys }}" hint-placeholder-val="{{ false }}"><div class="lgd mp-foot {{ k.ch.kc }}"><sc-for list="{{ k.ch.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="{{ kk.c }}"></span>{{ kk.t }}</span></sc-for></div></sc-if>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ k.isSect }}" hint-placeholder-val="{{ false }}">
+<div>
+<div class="fx jb ac gap8 mp-section"><span class="mp-over mp-ink3">{{ k.over }}</span><span class="mp-foot mp-ink3 nowrap"><span class="{{ k.a.c }}" role="{{ k.a.r }}" aria-label="{{ k.a.l }}">{{ k.a.v }}</span></span></div>
+<div class="mp-group">
+<sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="3">
+<div class="mp-row rowp">
+<div class="mp-row-lead mp-neutral">{{ r.lead }}</div>
+<div class="rtx"><div class="mp-sub mp-w6 clip">{{ r.name }}</div><div class="fx ac gap6 mt2"><sc-if value="{{ r.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ r.chipC }}">{{ r.chip }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ r.sub }}</span></div></div>
+<div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span></div><div class="mp-foot nowrap {{ r.bC }}"><span class="{{ r.b.c }}" role="{{ r.b.r }}" aria-label="{{ r.b.l }}">{{ r.b.v }}</span></div></div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ k.hasFoot }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3 gfoot">{{ k.foot }}</div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ k.isCard }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<sc-if value="{{ k.hasTitle }}" hint-placeholder-val="{{ true }}"><div class="fx jb gap8 ctl"><span class="mp-hl">{{ k.title }}</span><span class="mp-foot mp-ink3 tr">{{ k.right }}</span></div></sc-if>
+<sc-for list="{{ k.parts }}" as="q" hint-placeholder-count="2">
+<sc-if value="{{ q.isP }}" hint-placeholder-val="{{ false }}"><p class="mp-sub pp {{ q.c }}"><span class="mp-w6">{{ q.b }}</span> {{ q.t }}</p></sc-if>
+<sc-if value="{{ q.isFoot }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink3 pp">{{ q.t }}</p></sc-if>
+<sc-if value="{{ q.isOver }}" hint-placeholder-val="{{ false }}"><div class="mp-over mp-ink3 pover">{{ q.t }}</div></sc-if>
+<sc-if value="{{ q.isTtl }}" hint-placeholder-val="{{ false }}"><div class="mp-t2">{{ q.t }}</div></sc-if>
+<sc-if value="{{ q.isHr }}" hint-placeholder-val="{{ false }}"><div class="hr"></div></sc-if>
+<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx gap12 bigrow"><span class="mp-num-l"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><span class="mp-sub mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span></span></div></sc-if>
+<sc-if value="{{ q.isChips }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap6 wrap"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><span class="mp-chip {{ it.c }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</span></sc-for></div></sc-if>
+<sc-if value="{{ q.isBars }}" hint-placeholder-val="{{ false }}"><div class="bars"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.name }}</span><span class="mp-sub nowrap"><span class="mp-w6">{{ it.pct }}</span><span class="mp-ink3"> · </span><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span><sc-if value="{{ it.hasB }}" hint-placeholder-val="{{ false }}"><span class="mp-ink3"> · </span><span class="mp-ink2 {{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></sc-if></span></div><div class="mp-track cbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><sc-if value="{{ it.hasN }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3">{{ it.n }}</div></sc-if></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="list"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="li"><sc-if value="{{ it.hasI }}" hint-placeholder-val="{{ false }}"><span class="mp-icontile {{ it.ic }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span></sc-if><div class="rtx"><div class="mp-sub {{ it.nc }}">{{ it.name }}</div><div class="mp-foot mp-ink3">{{ it.sub }}</div></div><div class="tr"><div class="mp-sub mp-w6 nowrap {{ it.ac }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kv"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><div class="mp-foot mp-ink3">{{ it.k }}</div><div class="mp-hl {{ it.c }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3">{{ it.s }}</div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stack" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span class="lgk"><span class="swa" style="background: {{ it.col }}"></span>{{ it.name }} {{ it.pct }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="colw"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><div class="mp-cap mp-ink3">{{ it.l }}</div></div></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isChart }}" hint-placeholder-val="{{ false }}">
+<div class="chart {{ q.ch.cv }}">
+<div class="mp-chartbox" role="img" aria-label="{{ q.ch.aria }}">
+<svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+<sc-for list="{{ q.ch.grid }}" as="g" hint-placeholder-count="3"><line x1="0" y1="{{ g.y }}" x2="1000" y2="{{ g.y }}" class="{{ q.ch.gc }}"></line></sc-for>
+<sc-for list="{{ q.ch.areas }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+<sc-for list="{{ q.ch.lines }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}" class="{{ p.c }}"></path></sc-for>
+</svg>
+<sc-for list="{{ q.ch.grid }}" as="g" hint-placeholder-count="3"><span class="gy {{ q.ch.lc }} {{ g.m }}" style="top: {{ g.top }}">{{ g.label }}</span></sc-for>
+<sc-for list="{{ q.ch.dots }}" as="d" hint-placeholder-count="1"><span class="{{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}"></span></sc-for>
+<sc-for list="{{ q.ch.lbls }}" as="d" hint-placeholder-count="1"><span class="clbl {{ d.c }}" style="left: {{ d.left }}; top: {{ d.top }}">{{ d.t }}</span></sc-for>
+</div>
+<sc-if value="{{ q.ch.hasAx }}" hint-placeholder-val="{{ true }}"><div class="mp-chartaxis {{ q.ch.ax }}" aria-hidden="true"><sc-for list="{{ q.ch.xs }}" as="x" hint-placeholder-count="4"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></sc-if>
+<sc-if value="{{ q.ch.hasKeys }}" hint-placeholder-val="{{ false }}"><div class="lgd mp-foot {{ q.ch.kc }}"><sc-for list="{{ q.ch.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="{{ kk.c }}"></span>{{ kk.t }}</span></sc-for></div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ q.isFiles }}" hint-placeholder-val="{{ false }}"><div><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><div class="filerow"><span class="mp-icontile ftile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><span class="rtx"><span class="mp-foot mp-w6 db clip">{{ it.n }}</span><span class="mp-cap mp-ink3 db">{{ it.s }}</span></span><button class="mp-btn mp-btn-plain mp-btn-small" type="button" aria-label="{{ it.bt }} {{ it.n }}">{{ it.bt }}</button></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isBtns }}" hint-placeholder-val="{{ false }}"><div class="fx gap8 wrap pbtns"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><a class="mp-btn mp-btn-small {{ it.c }}" href="#{{ it.href }}" aria-label="{{ it.l }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</a></sc-for></div></sc-if>
+<sc-if value="{{ q.isTbl }}" hint-placeholder-val="{{ false }}"><div class="tbl" style="grid-template-columns: {{ q.cols }}"><sc-for list="{{ q.head }}" as="h" hint-placeholder-count="3"><div class="th {{ h.c }}">{{ h.t }}</div></sc-for><sc-for list="{{ q.cells }}" as="cl" hint-placeholder-count="6"><div class="td {{ cl.c }}"><span class="{{ cl.m }}" role="{{ cl.r }}" aria-label="{{ cl.l }}">{{ cl.v }}</span></div></sc-for></div></sc-if>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ k.isBtn }}" hint-placeholder-val="{{ false }}"><a class="mp-btn {{ k.c }}" href="#{{ k.href }}"><span class="ms" aria-hidden="true">{{ k.icon }}</span>{{ k.t }}</a></sc-if>
+<sc-if value="{{ k.isCap }}" hint-placeholder-val="{{ false }}"><div class="mp-cap mp-ink3">{{ k.t }}</div></sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div class="bnotes"><sc-for list="{{ bd.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+</section>
+</sc-for>
+
+<!-- ================= BROWSER · LINK A GOOGLE ACCOUNT (MA-77) ================= -->
+<section class="dv-turn" id="w-link" data-screen-label="Browser · Link a Google account">
+<div class="dv-thd"><span class="dv-tid">B</span><span class="dv-tname">Browser · Link a Google account</span></div>
+<p class="dv-intro">{{ link.intro }}</p>
+<div class="plan"><sc-for list="{{ link.keys }}" as="kk" hint-placeholder-count="2"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>{{ link.arch }}</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
+<sc-for list="{{ link.states }}" as="ls" hint-placeholder-count="2">
+<div class="lstate">
+<div class="lshead"><span class="dv-sname">{{ ls.name }}</span><sc-for list="{{ ls.notes }}" as="n" hint-placeholder-count="2"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+<div class="dv-row">
+<sc-for list="{{ ls.th }}" as="t" hint-placeholder-count="2">
+<div>
+<p class="dv-cap">{{ t.cap }}</p>
+<div class="board login-b mp mp-app {{ t.cls }}" data-screen-label="{{ t.cap }}">
+<div class="login">
+<div class="lhero">
+<div class="fx ac gap12"><svg class="mpm mpm-hero" width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div>
+<div class="fx col gap16">
+<h1 class="tagline">Link Google once, from your own phone.</h1>
+<p class="mp-callout mp-hero-2" style="margin: 0; max-width: 440px">Then a laptop without Telegram to hand can sign you in with Google. The code goes from this page to your own chat with the bot, so both accounts are proven by you. Nothing else from Google is used or stored.</p>
+</div>
+<div class="mp-foot mp-hero-2">Illustrative</div>
+</div>
+<div class="lform">
+<div class="lbox">
+<div class="acct"><span class="gbadge" aria-hidden="true">G</span><div class="rtx"><div class="mp-foot mp-ink3">Signed in with Google as</div><div class="mp-sub mp-w6 clip">asha@example.com</div></div><a class="mp-btn mp-btn-plain mp-btn-small" href="#w-link">Not you?</a></div>
+<div class="fx ac gap12" style="margin-top: 8px"><span class="stile {{ ls.tile }}"><span class="ms">{{ ls.icon }}</span></span><div class="mp-t2 rtx">{{ ls.title }}</div></div>
+<div class="mp-sub mp-ink2">{{ ls.sub }}</div>
+<sc-if value="{{ ls.hasCode }}" hint-placeholder-val="{{ true }}">
+<div class="codebox">
+<div class="fx jb ac gap8"><span class="mp-over mp-ink3">Your code</span><span class="mp-chip mp-hold"><span class="ms ms-s" aria-hidden="true">timer</span>9:12 left of 10 minutes</span></div>
+<div class="code" aria-label="Code 4 8 2 9 1 3">482 913</div>
+<div class="cmd"><code>/link 482913</code><button class="mp-btn mp-btn-tinted mp-btn-small" type="button"><span class="ms ms-s" aria-hidden="true">content_copy</span>Copy</button></div>
+</div>
+<ol class="steps mp-sub">
+<li><span class="stn">1</span><span>Open your chat with MyPaisa in Telegram, on your own phone.</span></li>
+<li><span class="stn">2</span><span>Send <b>/link 482913</b> there.</span></li>
+<li><span class="stn">3</span><span>This page moves on by itself once the bot has it.</span></li>
+</ol>
+<div class="fx ac gap8 mp-foot mp-ink2"><span class="ms ms-s mp-ink3" aria-hidden="true">hourglass_top</span><span>Waiting for your message. Nothing is linked yet.</span></div>
+</sc-if>
+<sc-if value="{{ ls.hasKV }}" hint-placeholder-val="{{ false }}"><div class="lkv mp-sub"><sc-for list="{{ ls.kv }}" as="q" hint-placeholder-count="3"><div><span class="mp-ink3">{{ q.k }}</span><span class="mp-w6 tr">{{ q.v }}</span></div></sc-for></div></sc-if>
+<sc-for list="{{ ls.btns }}" as="b" hint-placeholder-count="2"><a class="mp-btn {{ b.c }}" href="#w-link"><sc-if value="{{ b.hasI }}" hint-placeholder-val="{{ false }}"><span class="ms" aria-hidden="true">{{ b.i }}</span></sc-if>{{ b.t }}</a></sc-for>
+<sc-for list="{{ ls.lnotes }}" as="n" hint-placeholder-count="2"><div class="lnote mp-foot mp-ink2"><span class="ms ms-s mp-ink3" aria-hidden="true">{{ n.i }}</span><span>{{ n.t }}</span></div></sc-for>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</section>
+
+<!-- ================= TELEGRAM BOARDS ================= -->
+<sc-for list="{{ tBoards }}" as="j" hint-placeholder-count="2">
+<section class="dv-turn" id="{{ j.id }}" data-screen-label="{{ j.name }}">
+<div class="dv-thd"><span class="dv-tid">T</span><span class="dv-tname">{{ j.name }}</span></div>
+<p class="dv-intro">{{ j.intro }}</p>
+<div class="plan"><sc-for list="{{ j.keys }}" as="kk" hint-placeholder-count="2"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>{{ j.arch }}</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
+<div class="kcard">
+<sc-for list="{{ j.steps }}" as="st" hint-placeholder-count="3">
+<div class="srow">
+<sc-for list="{{ st.th }}" as="t" hint-placeholder-count="2">
+<div class="kcol">
+<p class="dv-cap">{{ t.lab }}</p>
+<div class="phone tg {{ t.tg }}" data-screen-label="{{ t.lab }}">
+<div class="island {{ st.isl }}" aria-hidden="true"><sc-if value="{{ st.fid }}" hint-placeholder-val="{{ false }}"><span class="ms fidg">ar_on_you</span></sc-if></div>
+<div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
+<div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.950 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
+<div class="msgs {{ st.msgsC }}">
+<sc-for list="{{ st.msgs }}" as="m" hint-placeholder-count="3">
+<div class="{{ m.mc }}">
+<sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="day">{{ m.day }}</span></sc-if>
+<sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
+<div class="tg-bub {{ m.bc }}">
+<sc-if value="{{ m.hasFile }}" hint-placeholder-val="{{ false }}"><div class="filec"><span class="fic"><span class="ms ms-fill">description</span></span><span class="fmeta"><span class="fname">{{ m.file.n }}</span><span class="fsize">{{ m.file.s }}</span></span></div></sc-if>
+<sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="2"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
+<div class="tg-time"><span>{{ m.time }}</span><sc-if value="{{ m.out }}" hint-placeholder-val="{{ false }}"><span class="ms tick" aria-label="Read">done_all</span></sc-if></div>
+</div>
+<sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="1"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}<sc-if value="{{ k.hasG }}" hint-placeholder-val="{{ false }}"><span class="ms glyph" aria-hidden="true">{{ k.g }}</span></sc-if></button></sc-for></div></sc-for>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
+<div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
+<div class="home" aria-hidden="true"><span></span></div>
+<!-- the second check after Confirm (MA-102): MyPaisa in Telegram's half-height sheet -->
+<sc-if value="{{ st.shCheck }}" hint-placeholder-val="{{ false }}">
+<div class="mp-scrim zs"></div>
+<div class="tsheet mp {{ t.mp }}" role="dialog" aria-label="Check it's you">
+<div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+<div class="shc">
+<div class="fx col ac gap8 tc">
+<span class="fidtile"><span class="ms">ar_on_you</span></span>
+<div class="mp-t2">Check it’s you</div>
+<div class="mp-sub mp-ink2">{{ st.chk.t }}</div>
+</div>
+<div class="mp-group"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ st.chk.i }}</span></span><span class="rtx"><span class="mp-hl db">{{ st.chk.what }}</span><span class="mp-foot mp-ink3 db clip">{{ st.chk.from }}</span></span></div></div>
+<button class="mp-btn mp-btn-plain wfull" type="button">Use PIN</button>
+</div>
+<span class="hind" aria-hidden="true"></span>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+<div class="snote"><span class="dv-sname">{{ st.name }}</span><sc-for list="{{ st.notes }}" as="n" hint-placeholder-count="2"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{}'>
+class Component extends DCLogic {
+renderVals() {
+/* ======================= helpers ======================= */
+const r1 = (v) => Math.round(v * 10) / 10;
+const pc = (v) => r1(v) + '%';
+const pc0 = (v) => Math.round(v) + '%';
+const R = 112.5, RATE = '£1 = ₹112.50', RDAY = 'the ECB rate for Fri 23 Oct';
+const gbp = (n) => (n < 0 ? '−' : '') + '£' + Math.round(Math.abs(n)).toLocaleString('en-GB');
+const inr = (n) => { const s = String(Math.round(Math.abs(n))); let h = s.length > 3 ? s.slice(0, -3) : '', o = s.slice(-3); while (h.length > 2) { o = h.slice(-2) + ',' + o; h = h.slice(0, -2); } if (h) o = h + ',' + o; return (n < 0 ? '−' : '') + '₹' + o; };
+const MASK = 'mp-mask';
+const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: MASK, r: 'img', l: 'hidden' } : { v: s, c: '', r: null, l: null });
+const T = (s) => ({ v: s, c: '', r: null, l: null });
+const E = T('');
+const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
+const N2 = (a) => a.map((n) => ({ b: n[0], t: n[1] }));
+const segs = (arr, sel) => arr.map((t) => ({ t: t, on: t === sel ? 'on' : '', p: t === sel ? 'true' : 'false' }));
+const BK = ['Whose', 'Seg', 'Head', 'Banner', 'Hero', 'Sect', 'Card', 'Btn', 'Cap'];
+const blk = (type, o) => { const b = {}; BK.forEach((x) => { b['is' + x] = x === type; }); return Object.assign(b, o); };
+const PK = ['P', 'Foot', 'Over', 'Ttl', 'Hr', 'Big', 'Chips', 'Bars', 'List', 'KV', 'Stack', 'Cols', 'Chart', 'Files', 'Btns', 'Tbl'];
+const prt = (type, o) => { const b = {}; PK.forEach((x) => { b['is' + x] = x === type; }); return Object.assign(b, o || {}); };
+const whose = (priv, eye) => blk('Whose', { segs: segs(['Household', 'Me', 'Asha'], 'Household'), eye: eye !== false, pressed: priv ? 'true' : 'false', eyeI: priv ? 'visibility_off' : 'visibility' });
+const head = (title, sub) => blk('Head', { title: title, sub: sub });
+const cap = (t) => blk('Cap', { t: t || 'Illustrative figures.' });
+const card = (title, right, parts) => blk('Card', { hasTitle: !!title, title: title || '', right: right || '', parts: parts });
+const P = (b, t, c) => prt('P', { b: b, t: t, c: c || '' });
+const F = (t) => prt('Foot', { t: t });
+const O = (t) => prt('Over', { t: t });
+const big = (a, b) => prt('Big', { a: a, b: b || E });
+const LI = (o) => Object.assign({ hasI: false, i: '', ic: 'mp-neutral', name: '', nc: '', sub: '', a: E, b: E, ac: '' }, o);
+const list = (items) => prt('List', { items: items.map(LI) });
+const kv = (items) => prt('KV', { items: items.map((x) => Object.assign({ c: '', s: '' }, x)) });
+const RW = (o) => Object.assign({ lead: '', name: '', sub: '', hasChip: false, chip: '', chipC: '', a: E, b: E, bC: 'mp-ink3' }, o);
+const sect = (over, a, rows, foot) => blk('Sect', { over: over, a: a, rows: rows.map(RW), hasFoot: !!foot, foot: foot || '' });
+const banner = (icon, b, t) => blk('Banner', { icon: icon, b: b, t: t });
+const btn = (t, icon, c, href) => blk('Btn', { t: t, icon: icon, c: c || 'mp-btn-primary', href: href || 'w0' });
+const stackP = (items, aria) => prt('Stack', { items: items, aria: aria });
+const nfmt = (n) => Math.round(n).toLocaleString('en-GB');
+const days = (a, b) => Math.round((b - a) / 86400000);
+const D = (y, m, d) => Date.UTC(y, m - 1, d);
+
+/* a chart: series in data units on a 1000 x 200 box; lines and areas in SVG, everything else HTML */
+const chart = (o) => {
+const H = 200, top = o.top == null ? 16 : o.top, bot = o.bot == null ? 6 : o.bot;
+const X = (i) => r1((i / o.n) * 1000);
+const Y = (v) => r1(top + (1 - (v - o.lo) / (o.hi - o.lo)) * (H - top - bot));
+const lines = [], areas = [];
+(o.series || []).forEach((s) => {
+const pts = s.ys.map((v, i) => [X((s.x0 || 0) + i), Y(v)]);
+let d;
+if (s.step) { d = 'M' + pts[0][0] + ',' + pts[0][1]; for (let i = 1; i < pts.length; i++) d += ' H' + pts[i][0] + ' V' + pts[i][1]; }
+else d = 'M' + pts.map((p) => p.join(',')).join(' L');
+lines.push({ d: d, c: s.c });
+if (s.area) areas.push({ d: d + ' L' + pts[pts.length - 1][0] + ',' + (H - bot) + ' L' + pts[0][0] + ',' + (H - bot) + ' Z', c: s.area });
+});
+const hero = !!o.hero;
+return {
+lines: lines, areas: areas, cv: o.cv || 'ch-m',
+grid: (o.grid || []).map((g) => ({ y: Y(g[0]), top: pc((Y(g[0]) / H) * 100), label: g[1], m: o.priv ? MASK : '' })),
+xs: (o.xs || []).map((x) => ({ left: pc(X(x[0]) / 10), l: x[1] })), hasAx: !!(o.xs && o.xs.length),
+dots: (o.dots || []).map((d) => ({ left: pc(X(d[0]) / 10), top: pc((Y(d[1]) / H) * 100), c: d[2] || (hero ? 'hdot' : 'cdot') })),
+lbls: (o.lbls || []).map((d) => ({ left: pc(X(d[0]) / 10), top: pc((Y(d[1]) / H) * 100), t: d[2], c: (hero ? 'lbl-h ' : 'lbl-c ') + (d[3] || '') })),
+keys: o.keys || [], hasKeys: !!(o.keys && o.keys.length), aria: o.aria,
+gc: hero ? 'gline-h' : 'gline-c', lc: hero ? 'gy-h' : 'gy-c', ax: hero ? 'ax-h' : 'ax-c', kc: hero ? 'mp-hero-2' : 'mp-ink2'
+};
+};
+const chartP = (o) => prt('Chart', { ch: chart(o) });
+
+/* ======================= the illustrative household, Friday 23 October 2026 ======================= */
+const pay = (L, ann, n) => { const r = ann / 12; return (L * r) / (1 - Math.pow(1 + r, -n)); };
+const sim = (L, ann, P, extra) => { const r = ann / 12; let b = L; const bal = [L], int = [0]; let m = 0; while (b > 0.005 && m < 1000) { m++; const i = b * r; const p = Math.min(P, b + i); b = b + i - p; if (extra && extra[m]) b -= extra[m]; if (b < 0) b = 0; bal.push(b); int.push(i); } return { bal: bal, int: int, end: m }; };
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+const MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const mon = (base, k) => { const d = new Date(Date.UTC(base[0], base[1] - 1 + k, 1)); return MN[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); };
+/* the mortgage: £265,000 from Apr 2024 over 25 years at 4.39%, first payment May 2024; £5,000 overpaid in Jun 2025 */
+const mL = 265000, mR = 0.0439, mP = pay(mL, mR, 300);
+const mPlan = sim(mL, mR, mP, null), mAct = sim(mL, mR, mP, { 14: 5000 }), mNow = 30;
+const mBal = mAct.bal[mNow];
+const mEndA = mon([2024, 5], mAct.end - 1), mEndP = mon([2024, 5], mPlan.end - 1), mAhead = mPlan.end - mAct.end;
+const mRestI = sum(sim(mBal, mR, mP).int), mPre = sim(mBal - 2000, mR, mP), mPreSoon = sim(mBal, mR, mP).end - mPre.end, mPreSave = mRestI - sum(mPre.int);
+const mERC = 0.02 * mBal;
+const yrOf = (m) => 2024 + Math.floor((m + 3) / 12);
+const mYear = {}; for (let m = 1; m <= mAct.end; m++) { const y = yrOf(m); mYear[y] = mYear[y] || { i: 0, p: 0 }; mYear[y].i += mAct.int[m]; mYear[y].p += mAct.bal[m - 1] - mAct.bal[m]; }
+const mIntSoFar = sum(mAct.int.slice(1, mNow + 1));
+/* the car loan: £14,500 on 5 Aug 2024 over 5 years at 6.90%, first payment Sep 2024 */
+const cL = 14500, cR = 0.069, cP = pay(cL, cR, 60), cAct = sim(cL, cR, cP, null), cNow = 26, cBal = cAct.bal[cNow];
+const cEnd = mon([2024, 9], cAct.end - 1);
+const cRest = sim(cBal, cR, cP), cPre = sim(cBal - 2000, cR, cP);
+const cPreEnd = mon([2024, 9], cNow + cPre.end - 1), cPreSoon = cRest.end - cPre.end, cPreSave = sum(cRest.int) - sum(cPre.int);
+const cLowP = pay(cBal - 2000, cR, cRest.end), cLowSave = sum(cRest.int) - sum(sim(cBal - 2000, cR, cLowP).int);
+/* interest paid Jan to Oct 2026: mortgage m 21..30, car m 17..26 */
+const intYTD = sum(mAct.int.slice(21, 31)) + sum(cAct.int.slice(17, 27));
+/* deposits, by the accrual code */
+const fdNow = 10000 * (1 + (0.046 * 313) / 365), fdMat = 10460;
+const nreNow = 500000 * Math.pow(1 + 0.071 / 4, (4 * 593) / 365), nreMat = 500000 * Math.pow(1 + 0.071 / 4, 8);
+/* the flat in Pune: cashflows in rupees for XIRR (rent to Sep 2026) */
+const flows = [[D(2018, 3, 20), -5090000]];
+for (let y = 2019, m = 7; y < 2026 || (y === 2026 && m <= 9); m++) { if (m > 12) { m = 1; y++; } if (y === 2026 && m > 9) break; flows.push([D(y, m, 3), y > 2024 || (y === 2024 && m >= 4) ? 18000 : 16000]); }
+for (let y = 2018; y <= 2026; y++) { flows.push([D(y, 8, 15), -30000]); flows.push([D(y, 6, 30), -8000]); }
+const valNow = 6200000, tEnd = D(2026, 10, 23);
+const xnpv = (r, fl) => fl.reduce((a, f) => a + f[1] / Math.pow(1 + r, (f[0] - fl[0][0]) / (365 * 86400000)), 0);
+const xirr = (fl) => { let r = 0.08; for (let i = 0; i < 60; i++) { const f = xnpv(r, fl), h = 1e-6, d = (xnpv(r + h, fl) - f) / h; const nr = r - f / d; if (!isFinite(nr)) break; if (Math.abs(nr - r) < 1e-10) { r = nr; break; } r = nr; } return r; };
+const flatX = xirr(flows.concat([[tEnd, valNow]]).sort((a, b) => a[0] - b[0]));
+const flatEntries = flows.length + 4;
+const rentYTD = flows.filter((f) => f[0] >= D(2026, 1, 1) && f[1] > 0).reduce((a, f) => a + f[1], 0);
+const costYTD = -flows.filter((f) => f[0] >= D(2026, 1, 1) && f[1] < 0).reduce((a, f) => a + f[1], 0);
+/* every asset, in pounds at the day's rate; rupee assets keep their rupees */
+const A = [
+{ id: 'home', cat: 'prop', lead: 'HM', name: 'Home', who: 'Joint', sub: 'Joint · UK · where you live', g: 415000, inst: 'Held directly', b: 'valued Mar 2026' },
+{ id: 'flat', cat: 'prop', lead: 'FP', name: 'Flat in Pune', who: 'You', sub: 'You · India · let', i: valNow, inst: 'Held directly', b: 'Jan 2025', over: true },
+{ id: 'bal', cat: 'inv', lead: 'BA', name: 'Balanced', who: 'You', sub: 'You · Monzo · ISA', g: 22925, inst: 'Monzo', b: '▲ 0.3% Fri', bC: 'mp-up' },
+{ id: 'nq', cat: 'inv', lead: 'NQ', name: 'NASDAQ 100', who: 'Asha', sub: 'Asha · Broker A · ISA', g: 4210, inst: 'Broker A', b: '▲ 0.8% Fri', bC: 'mp-up' },
+{ id: 'ag', cat: 'inv', lead: 'AG', name: 'Physical Silver', who: 'Asha', sub: 'Asha · Broker A · GIA', g: 820, inst: 'Broker A', b: '▼ 0.4% Fri', bC: 'mp-dq' },
+{ id: 'fd', cat: 'dep', lead: 'FD', name: 'Fixed-rate saver', who: 'You', sub: 'You · Bank B · 4.60%', g: fdNow, inst: 'Bank B', b: 'matures 14 Dec', chip: 'In 52 days', chipC: 'mp-neutral' },
+{ id: 'nre', cat: 'dep', lead: 'NR', name: 'NRE fixed deposit', who: 'Asha', sub: 'Asha · Bank C, India · 7.10%', i: nreNow, inst: 'Bank C, India', b: 'matures 9 Mar 2027' },
+{ id: 'cash', cat: 'cash', lead: '£', name: 'Cash', who: 'You', sub: 'You · Monzo pot', g: 1185, inst: 'Monzo', b: '—' },
+{ id: 'wp', cat: 'pen', lead: 'WP', name: 'Workplace pension', who: 'You', sub: 'You · Pension provider D', g: 86400, inst: 'Pension provider D', b: 'statement Sep' },
+{ id: 'sipp', cat: 'pen', lead: 'SP', name: 'SIPP', who: 'Asha', sub: 'Asha · SIPP platform E', g: 31250, inst: 'SIPP platform E', b: 'statement Sep' },
+{ id: 'endw', cat: 'pol', lead: 'EN', name: 'Endowment policy', who: 'You', sub: 'You · Insurer F, India', i: 340000, inst: 'Insurer F, India', b: 'matures Mar 2031' },
+{ id: 'life', cat: 'pol', lead: 'LC', name: 'Life cover', who: 'Joint', sub: 'Joint · Insurer G · £400,000 cover', g: 0, inst: 'Insurer G', b: 'no cash value' }
+];
+A.forEach((a) => { if (a.i != null) a.g = a.i / R; });
+const OWN = sum(A.map((a) => a.g)), OWE = mBal + cBal, NW = OWN - OWE;
+const CATS = [['prop', 'Property', 'var(--mp-chart-2)'], ['pen', 'Pensions', 'var(--mp-chart-5)'], ['inv', 'Investments', 'var(--mp-chart-line)'], ['dep', 'Deposits', 'var(--mp-chart-4)'], ['pol', 'Policies', 'var(--mp-asset-silver)'], ['cash', 'Cash', 'var(--mp-ccy-other)']];
+const catSum = (c) => sum(A.filter((a) => a.cat === c).map((a) => a.g));
+const catCount = (c) => A.filter((a) => a.cat === c).length;
+const S12 = [367900, 369200, 368400, 371000, 372600, 374100, 373300, 376800, 377900, 379400, 381050, NW];
+const yrPct = (NW / S12[0] - 1) * 100, moPct = (NW / S12[10] - 1) * 100, moDelta = NW - S12[10];
+const whoNet = { You: sum(A.filter((a) => a.who === 'You').map((a) => a.g)) - cBal, Asha: sum(A.filter((a) => a.who === 'Asha').map((a) => a.g)), Joint: sum(A.filter((a) => a.who === 'Joint').map((a) => a.g)) - mBal };
+const inIdx = ['flat', 'nre', 'endw'];
+const inG = sum(A.filter((a) => inIdx.indexOf(a.id) >= 0).map((a) => a.g)), inI = valNow + nreNow + 340000;
+const ukNet = NW - inG;
+const amt = (a, priv) => (a.i != null ? V(inr(a.i), priv) : a.g === 0 ? T('—') : V(gbp(a.g), priv));
+const amtB = (a, priv) => (a.i != null ? V(gbp(a.g), priv) : T(a.b));
+
+/* the budget, a month, after today's salary change */
+const salYou = 4350, salYouWas = 4100, salAsha = 3050, rent = 18000 / R;
+const inc = salYou + salAsha + rent;
+const fixedL = [['Mortgage', mP, 'from the loan · on the 1st'], ['Car loan', cP, 'from the loan · on the 5th'], ['Life cover', 38, 'Insurer G'], ['Endowment premium', 2000 / R, '₹24,000 a year, each March']];
+const saveL = [['Balanced, your ISA', 500, 'Monzo'], ['Asha’s ISA', 300, 'Broker A']];
+const planL = [['Living costs', 2900, 'set 14 Sep'], ['Holiday', 400, 'set 2 Oct: “plan £400 a month for the holiday”']];
+const fixed = sum(fixedL.map((x) => x[1])), saving = sum(saveL.map((x) => x[1])), planned = sum(planL.map((x) => x[1]));
+const left = inc - fixed - saving - planned, leftWas = left - (salYou - salYouWas);
+
+/* the forecast: month by month from Nov 2026 to Oct 2056; nominal, then in today's money at 2.5% inflation */
+const fc = (gProp, left0) => {
+const g = (a) => Math.pow(1 + a, 1 / 12) - 1;
+let prop = 415000 + valNow / R, inv = 22925 + 4210 + 820, pen = 86400 + 31250, dep = fdNow + nreNow / R, cash = 1185, pol = 340000 / R, mb = mBal, cb = cBal;
+const out = [{ k: 0, nw: NW, own: OWN, owe: OWE }]; let mE = 0, cE = 0;
+for (let k = 1; k <= 360; k++) {
+const you = k <= 293, asha = k <= 329;
+prop *= 1 + g(gProp); inv *= 1 + g(0.05); pen *= 1 + g(0.05); dep *= 1 + g(0.04); pol *= 1 + g(0.04);
+if (k === 2) { dep -= fdMat; cash += fdMat; }
+if (k === 53) { cash += pol; pol = 0; }
+let freed = 0;
+if (mb > 0) { mb = mb * (1 + mR / 12) - mP; if (mb <= 0) { mb = 0; mE = mE || k; } } else freed += mP;
+if (cb > 0) { cb = cb * (1 + cR / 12) - cP; if (cb <= 0) { cb = 0; cE = cE || k; } } else freed += cP;
+inv += (you ? 500 : 0) + (asha ? 300 : 0);
+pen += (you ? 520 : 0) + (asha ? 250 : 0);
+inv += Math.max(0, (you && asha ? left0 : you || asha ? left0 * 0.4 : 0) + (you || asha ? freed : 0));
+if (!you) pen -= (pen * 0.04) / 12;
+const own = prop + inv + pen + dep + cash + pol, owe = mb + cb, df = Math.pow(1.025, k / 12);
+out.push({ k: k, nw: (own - owe) / df, own: own / df, owe: owe / df });
+}
+return { out: out, mE: mE, cE: cE };
+};
+const F35 = fc(0.03, leftWas), F55 = fc(0.05, leftWas), FC = fc(0.05, left), F3n = fc(0.03, left);
+const nw56 = FC.out[360].nw, m1 = FC.out.find((p) => p.nw >= 1000000).k;
+const kMon = (k) => mon([2026, 11], k - 1);
+
+/* ======================= navigation ======================= */
+const tabDefs = [['ov', 'Overview', 'home', 'w-m-ov'], ['as', 'Assets', 'account_balance_wallet', 'w-m-as'], ['db', 'Debts', 'credit_card', 'w-m-db'], ['pl', 'Plan', 'event_note', 'w-m-bu'], ['more', 'More', 'menu', 'w-m-rp']];
+const tabs = (sel) => tabDefs.map((d) => ({ label: d[1], icon: d[2], href: d[3], on: d[0] === sel ? 'on' : '', fill: d[0] === sel ? 'ms-fill' : '', cur: d[0] === sel ? 'page' : null }));
+const navDefs = [['ov', 'home', 'Overview', 'w-b-ov'], ['as', 'account_balance_wallet', 'Assets', 'w-b-as'], ['db', 'credit_card', 'Debts', 'w-b-db'], ['bu', 'event_note', 'Budget', 'w-b-bu'], ['fc', 'show_chart', 'Forecast', 'w-b-fc'], ['rp', 'summarize', 'Reports', 'w-b-rp'], ['L', '', 'Investing', ''], ['ho', 'donut_small', 'Holdings', 'w0'], ['ol', 'join_inner', 'Overlap', 'w0'], ['tr', 'insights', 'Track record', 'w0'], ['L', '', 'Records', ''], ['ac', 'history', 'Activity', 'w0'], ['au', 'fact_check', 'Audit', 'w0']];
+const nav = (sel) => navDefs.map((d) => ({ isI: d[0] !== 'L', isL: d[0] === 'L', icon: d[1], label: d[2], href: d[3], cls: d[0] === sel ? 'on' : '', fill: d[0] === sel ? 'ms-fill' : '', cur: d[0] === sel ? 'page' : null }));
+const mTh = (cap) => [{ cap: cap + ' · Light', cls: 'mp t-light', tg: 'tg-light' }, { cap: cap + ' · Dark', cls: 'mp t-dark', tg: 'tg-dark' }];
+const META = 'Fri 23 Oct · investments to Friday’s close, the rest as last recorded · read-only, every change happens in the chat · Illustrative figures';
+
+/* ======================= the Overview ======================= */
+const s12m = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+const ovHero = (priv, wide) => blk('Hero', {
+over: 'Net worth · Fri close', hasCcy: true, a: V(gbp(NW), priv), hasChip: true, chip: '▲ ' + r1(yrPct).toFixed(1) + '% in a year', chipC: 'upchip',
+sub: priv ? '▲ ' + r1(moPct).toFixed(1) + '% this month' : '▲ ' + gbp(moDelta) + ' this month · ▲ ' + r1(moPct).toFixed(1) + '%',
+hasSplit: true, split: [{ l: 'What you own', a: V(gbp(OWN), priv) }, { l: 'What you owe', a: V(gbp(OWE), priv) }],
+hasChart: true, ch: chart({ hero: true, priv: priv, cv: wide ? 'ch-l' : 'ch-s', n: 11, lo: wide ? 364000 : 366000, hi: wide ? 386000 : 384000, top: wide ? 20 : 10,
+series: [{ ys: S12, c: 'hline', area: 'harea' }], grid: wide ? [[370000, '£370k'], [375000, '£375k'], [380000, '£380k']] : [],
+xs: wide ? s12m.map((m, i) => [i, m]).filter((x, i) => i % 2 === 0 || i === 11) : [], dots: [[11, NW, 'mp-chartdot']],
+aria: 'Net worth over the last twelve months, rising from about £368,000 to ' + gbp(NW) }),
+hasPeriod: true, periods: segs(['1Y', '5Y', 'All'], '1Y')
+});
+const matList = (priv, n) => list([
+{ hasI: true, i: 'savings', name: 'Fixed-rate saver', sub: 'Bank B · Mon 14 Dec · in 52 days', a: V(gbp(fdMat), priv), b: T('at maturity') },
+{ hasI: true, i: 'savings', name: 'NRE fixed deposit', sub: 'Asha · Bank C, India · Tue 9 Mar 2027', a: V(inr(nreMat), priv), b: V(gbp(nreMat / R), priv) },
+{ hasI: true, i: 'shield', name: 'Endowment policy', sub: 'Insurer F, India · Mar 2031', a: V('₹5,00,000', priv), b: T('plus bonuses') },
+{ hasI: true, i: 'percent', name: 'Mortgage fixed rate ends', sub: 'Joint · Jun 2028 · decide in the chat nearer the time', a: T('4.39%'), b: T('until then') }
+].slice(0, n));
+const catBars = (priv) => prt('Bars', { items: CATS.map((c) => { const v = catSum(c[0]); return { name: c[1], pct: pc(v / OWN * 100), w: pc(v / OWN * 100), col: 'var(--mp-chart-2)', aria: c[1] + ', ' + pc(v / OWN * 100) + ' of what you own', a: V(gbp(v), priv), hasB: false, b: E, hasN: false, n: '' }; }) });
+const oweBars = (priv) => prt('Bars', { items: [['Mortgage', mBal, 'Joint · 4.39% fixed to Jun 2028'], ['Car loan', cBal, 'You · 6.90% · ends ' + cEnd]].map((d) => ({ name: d[0], pct: pc(d[1] / OWE * 100), w: pc(d[1] / OWE * 100), col: 'var(--mp-down-quiet)', aria: d[0] + ', ' + pc(d[1] / OWE * 100) + ' of what you owe', a: V(gbp(d[1]), priv), hasB: false, b: E, hasN: true, n: d[2] })) });
+const whoBars = (priv) => prt('Bars', { items: ['You', 'Asha', 'Joint'].map((w) => ({ name: w === 'Joint' ? 'Joint (Home, less the mortgage)' : w === 'You' ? 'You' : 'Asha', pct: pc(whoNet[w] / NW * 100), w: pc(whoNet[w] / NW * 100), col: 'var(--mp-chart-2)', aria: w + ', ' + pc(whoNet[w] / NW * 100) + ' of net worth', a: V(gbp(whoNet[w]), priv), hasB: false, b: E, hasN: false, n: '' })) });
+const ctryBars = (priv) => prt('Bars', { items: [
+{ name: 'United Kingdom', pct: pc(ukNet / NW * 100), w: pc(ukNet / NW * 100), col: 'var(--mp-chart-2)', aria: 'United Kingdom, ' + pc(ukNet / NW * 100) + ' of net worth', a: V(gbp(ukNet), priv), hasB: false, b: E, hasN: false, n: '' },
+{ name: 'India', pct: pc(inG / NW * 100), w: pc(inG / NW * 100), col: 'var(--mp-chart-2)', aria: 'India, ' + pc(inG / NW * 100) + ' of net worth', a: V(inr(inI), priv), hasB: true, b: V(gbp(inG), priv), hasN: false, n: '' }
+] });
+const largest = (priv) => sect('Largest assets', T('4 of 12'), ['home', 'wp', 'flat', 'sipp'].map((id) => { const a = A.filter((x) => x.id === id)[0]; return { lead: a.lead, name: a.name, sub: a.sub, hasChip: !!a.over, chip: 'Value overdue', chipC: 'mp-pause', a: amt(a, priv), b: amtB(a, priv), bC: a.bC || 'mp-ink3' }; }));
+const ovBlocks = (mode, part) => {
+const priv = mode !== 'gbp', viewer = mode === 'viewer';
+const top = [viewer ? banner('visibility_off', 'You are a viewer.', 'Amounts are hidden for viewers; shares, moves and dates are shown. Only the owner can change your role.') : whose(priv), ovHero(priv, false)];
+if (part === 'top') return top.concat([card('Maturing next', 'next twelve months', [matList(priv, 2)]), card('What you own', 'share · value', [catBars(priv)])]);
+return [card('What you owe', 'share · left to pay', [oweBars(priv)]), card('By member', 'share of net worth', [whoBars(priv)]), card('By country', 'share of net worth', [ctryBars(priv), F('Rupees at ' + RDAY + ', ' + RATE + '.')]), largest(priv), cap('Illustrative figures. Investments at Friday’s close; the rest as last recorded.')];
+};
+const mOv = {
+id: 'w-m-ov', name: 'Mini App · Household overview', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §9.3, §6.6, §4.5',
+intro: 'The Overview for the whole household, on the Overview tab inside Telegram: what you own, what you owe and the net worth, then what matures next and how it splits by kind, member and country (§12: NetWorth by member, category and country; maturing next; largest assets). The Portfolio card grows into it (see Telegram · Portfolio card, whole household). Four states, each in Telegram light and dark: as it opens, scrolled, privacy on, and a viewer.',
+rows: [
+{ th: mTh('Mini App · Household overview · as it opens'), back: 'Close', hasBack: false, scr: '', tabs: tabs('ov'), blocks: ovBlocks('gbp', 'top'), name: 'As it opens', notes: N2([
+['The summary first:', 'net worth on the hero, with what you own and what you owe under it; the year’s line, and the £ ₹ switch of MA-94 (a view, writes nothing).'],
+['What matures next', 'before the split, because it is what a member acts on: a date, a sum and where it is held.'],
+['Navigation grows:', 'the tabs become Overview, Assets, Debts, Plan and More. Holdings sits under Assets, Investments; Overlap, Record and Reports under More. A choice for the options round.']
+]) },
+{ th: mTh('Mini App · Household overview · scrolled'), back: 'Close', hasBack: false, scr: 'scr-end', tabs: tabs('ov'), blocks: ovBlocks('gbp', 'end'), name: 'Scrolled to the end', notes: N2([
+['What you owe, by member, by country:', 'each a share and an amount; India in rupees with pounds beside at the day’s ECB rate.'],
+['Largest assets', 'open each asset (Mini App · An asset). The flat’s value is overdue, said in words on its chip, not only in colour.'],
+['Every figure is the engine’s:', 'net worth, shares and sums come from the wealth maths (MA-94), never from Claude.']
+]) },
+{ th: mTh('Mini App · Household overview · privacy on'), back: 'Close', hasBack: false, scr: '', tabs: tabs('ov'), blocks: ovBlocks('priv', 'top'), name: 'Privacy on', notes: N2([
+['Privacy mode hides money, pounds and rupees alike:', 'every amount becomes a pill read as “hidden”; shares, moves and dates stay.'],
+['The eye is pressed', 'and the hero’s subline keeps only the move in per cent, so no amount slips through in words.']
+]) },
+{ th: mTh('Mini App · Household overview · a viewer'), back: 'Close', hasBack: false, scr: '', tabs: tabs('ov'), blocks: ovBlocks('viewer', 'top'), name: 'A viewer’s figures, masked', notes: N2([
+['A viewer reads the household overview only (§4.5),', 'with amounts masked as the old tracker masks them for a standard user (§12). The api never sends a viewer the amounts, so the masks are not a style.'],
+['No switch and no eye:', 'a viewer has no Me and cannot unmask; the banner says why in words.'],
+['Tested,', 'as MA-95 asks: the viewer’s masked figures.']
+]) }
+]
+};
+const bOvPage = (priv) => ({ nav: nav('ov'), hasCrumb: false, crumb: '', crumbHref: '', title: 'Overview', meta: META, segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: priv ? 'true' : 'false', eyeI: priv ? 'visibility_off' : 'visibility',
+cols: [
+{ blocks: [ovHero(priv, true), card('Maturing next', 'next twelve months, and the fix', [matList(priv, 4)]), card('By member', 'share of net worth', [whoBars(priv)]), card('By country', 'share of net worth', [ctryBars(priv), F('Rupees at ' + RDAY + ', ' + RATE + '. A 1% move in the rupee moves net worth ' + r1(inG / NW * 100) / 100 + '%.')])] },
+{ blocks: [card('What you own', 'share · value', [catBars(priv)]), card('What you owe', 'share · left to pay', [oweBars(priv)]), largest(priv)] }
+] });
+const bOv = {
+id: 'w-b-ov', name: 'Browser · Household overview', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §9.3, §6.6',
+intro: 'The laptop door of the same page at 1280, on the adaptive shell of Browser · Overview: the sidebar grows a Wealth group (Overview, Assets, Debts, Budget, Forecast, Reports) above Investing (Holdings, Overlap, Track record) and Records (Activity, Audit). Left: net worth with the year, what matures next, by member and by country. Right: what you own and owe by kind, and the largest assets. Light, dark, and privacy on.',
+th: [{ cap: 'Browser · Household overview · Light', cls: 't-light', p: bOvPage(false) }, { cap: 'Browser · Household overview · Dark', cls: 't-dark', p: bOvPage(false) }, { cap: 'Browser · Household overview · Light · privacy on', cls: 't-light', p: bOvPage(true) }],
+notes: N2([['Read-only:', 'nothing on the page writes; Maturing next says “decide in the chat”, and each row opens its asset or loan.'], ['Privacy on', 'hides every amount and the chart’s scale; the line, shares and dates stay.'], ['One spec, two doors:', 'the same blocks as the Mini App, in two columns at 1.3 : 1.']])
+};
+
+/* ======================= Assets ======================= */
+const assetRow = (a, priv) => ({ lead: a.lead, name: a.name, sub: a.sub, hasChip: !!(a.over || a.chip), chip: a.over ? 'Value overdue' : a.chip || '', chipC: a.over ? 'mp-pause' : a.chipC || '', a: amt(a, priv), b: amtB(a, priv), bC: a.bC || 'mp-ink3' });
+const catSect = (c, priv) => sect(c[1], V(gbp(catSum(c[0])), priv), A.filter((a) => a.cat === c[0]).map((a) => assetRow(a, priv)), c[0] === 'inv' ? 'Holdings shows these with their stances and the engine’s view.' : c[0] === 'pol' ? 'Life cover pays out only on a claim, so it adds nothing to the total.' : '');
+const ownStack = () => stackP(CATS.map((c) => ({ name: c[1], pct: pc(catSum(c[0]) / OWN * 100), w: pc(Math.max(catSum(c[0]) / OWN * 100, 0.6)), col: c[2] })), 'What you own by kind: ' + CATS.map((c) => c[1] + ' ' + pc0(catSum(c[0]) / OWN * 100)).join(', '));
+const ownCard = (priv) => card('What you own', A.length + ' assets in 6 kinds', [big(V(gbp(OWN), priv), T('household')), ownStack(), F('Rupee assets at ' + RDAY + ', ' + RATE + '. Investments at Friday’s close; the rest as last recorded.')]);
+const dueCard = () => card('Values to update', 'the oldest first', [list([
+{ hasI: true, i: 'schedule', ic: 'mp-pause', name: 'Flat in Pune', sub: 'Last valued Jan 2025, from a broker’s estimate', a: T('21 months'), ac: 'c-pause', b: T('overdue') },
+{ hasI: true, i: 'schedule', ic: 'mp-neutral', name: 'Home', sub: 'Last valued Mar 2026, from an online estimate', a: T('7 months'), b: T('due Mar 2027') }
+]), F('Send a new figure, an estimate or a screenshot in the chat; the bot also reminds you.')]);
+const mAs = {
+id: 'w-m-as', name: 'Mini App · Assets', keys: [key('MA-95')], arch: 'ARCHITECTURE.md §12, §9.3',
+intro: 'Everything the household owns, by kind, on the Assets tab: property, investments, deposits, pensions, policies and cash, each a group with its total. Rupee assets show rupees first and pounds beside. Telegram light and dark, as it opens and scrolled.',
+rows: [
+{ th: mTh('Mini App · Assets · as it opens'), back: 'Close', hasBack: false, scr: '', tabs: tabs('as'), blocks: [head('Assets', 'What the household owns, by kind'), whose(false), ownCard(false), catSect(CATS[0], false), catSect(CATS[2], false)], name: 'As it opens', notes: N2([
+['The total and its split first,', 'one bar by kind with a legend that names each kind and its share, so colour is never the only signal.'],
+['Then each kind as a group:', 'Property first, then Investments. A row opens its asset; the flat’s chip says its value is overdue.']
+]) },
+{ th: mTh('Mini App · Assets · scrolled'), back: 'Close', hasBack: false, scr: 'scr-end', tabs: tabs('as'), blocks: [catSect(CATS[3], false), catSect(CATS[1], false), catSect(CATS[4], false), catSect(CATS[5], false), cap()], name: 'Scrolled to the end', notes: N2([
+['Deposits show when they mature,', 'pensions their last statement, policies their maturity; a deposit within 60 days carries a chip.'],
+['Life cover is listed', 'but adds nothing: it has no cash value, said under the group.']
+]) }
+]
+};
+const bAsPage = () => ({ nav: nav('as'), hasCrumb: false, crumb: '', crumbHref: '', title: 'Assets', meta: META, segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: 'false', eyeI: 'visibility',
+cols: [{ blocks: [ownCard(false), dueCard(), catSect(CATS[0], false), catSect(CATS[2], false)] }, { blocks: [catSect(CATS[3], false), catSect(CATS[1], false), catSect(CATS[4], false), catSect(CATS[5], false)] }] });
+const bAs = {
+id: 'w-b-as', name: 'Browser · Assets', keys: [key('MA-95')], arch: 'ARCHITECTURE.md §12, §9.3',
+intro: 'Assets at 1280: the total and its split, the values that need updating, then every kind as a group across two columns. Light and dark.',
+th: [{ cap: 'Browser · Assets · Light', cls: 't-light', p: bAsPage() }, { cap: 'Browser · Assets · Dark', cls: 't-dark', p: bAsPage() }],
+notes: N2([['Values to update', 'is a list, not a button: the update itself is a guided flow in the chat (Telegram · Reminders and maturities).'], ['Investments', 'keep their daily move; property, pensions and policies show when they were last valued.']])
+};
+
+/* ======================= An asset: the flat in Pune ======================= */
+const valPts = [[D(2018, 3, 20), 4800000], [D(2020, 3, 1), 5150000], [D(2022, 4, 1), 5600000], [D(2025, 1, 15), 6200000], [tEnd, 6200000]];
+const yr0 = D(2018, 1, 1), yrN = (t) => (t - yr0) / (365.25 * 86400000);
+const flatChart = (wide) => chartP(Object.assign({ cv: wide ? 'ch-l' : 'ch-m', n: 9, lo: 4500000, hi: 6500000,
+grid: [[5000000, '₹50 L'], [5500000, '₹55 L'], [6000000, '₹60 L']],
+xs: [[0, '2018'], [2, '2020'], [4, '2022'], [6, '2024'], [8, '2026']],
+dots: valPts.slice(0, 4).map((p) => [yrN(p[0]), p[1]]),
+lbls: wide ? [[yrN(valPts[0][0]), 4800000, 'Bought', 'ar'], [yrN(valPts[3][0]), 6200000, 'Jan 2025', 'al']] : [],
+keys: [{ c: 'k-line', t: 'Value as recorded, a step at each valuation' }],
+aria: 'The flat’s recorded value in rupees: bought for ₹48 lakh in March 2018, valued at ₹51.5 lakh in 2020, ₹56 lakh in 2022 and ₹62 lakh in January 2025' },
+{ series: [{ ys: valPts.map((p) => p[1]), c: 'cline', area: 'carea', step: true }] }));
+/* the step series needs x positions in years, so place its points directly */
+const fixStep = (p) => { const ch = p.ch; const X = (t) => r1((yrN(t) / 9) * 1000); const Y = (v) => r1(16 + (1 - (v - 4500000) / 2000000) * 178); let d = 'M' + X(valPts[0][0]) + ',' + Y(valPts[0][1]); for (let i = 1; i < valPts.length; i++) d += ' H' + X(valPts[i][0]) + ' V' + Y(valPts[i][1]); ch.lines = [{ d: d, c: 'cline' }]; ch.areas = [{ d: d + ' L' + X(valPts[valPts.length - 1][0]) + ',194 L' + X(valPts[0][0]) + ',194 Z', c: 'carea' }]; return p; };
+const flatVal = (wide) => card('', '', [O('Property · India · yours'), (wide ? prt('Hr') : prt('Ttl', { t: 'Flat in Pune' })), big(T(inr(valNow)), T(gbp(valNow / R))), prt('Chips', { items: [{ c: 'mp-pause', i: 'schedule', t: 'Value overdue: 21 months old' }] }), fixStep(flatChart(wide)), F('Valued Jan 2025 from a broker’s estimate. Pounds at ' + RDAY + ', ' + RATE + '.')]);
+const flatKV = () => card('Returns', 'in rupees', [kv([
+{ k: 'XIRR', a: T((flatX * 100).toFixed(1) + '%'), s: 'since Mar 2018, rent and costs in' },
+{ k: 'Rent', a: T('₹18,000'), s: 'a month, since Apr 2024' },
+{ k: 'Bought', a: T(inr(5090000)), s: 'Mar 2018, with stamp duty' },
+{ k: 'Gain on paper', a: T('▲ ' + inr(valNow - 5090000)), c: 'mp-up', s: '▲ ' + r1((valNow / 5090000 - 1) * 100) + '% on cost' },
+{ k: 'Rent this year', a: T(inr(rentYTD)), s: 'Jan to Sep' },
+{ k: 'Costs this year', a: T(inr(costYTD)), s: 'maintenance and tax' }
+]), F('Worked out by the XIRR code from every entry in the ledger, with today’s recorded value as the last; in rupees, the flat’s own currency.')]);
+const flatLedger = () => card('Ledger', flatEntries + ' entries', [list([
+{ name: 'Rent, September', sub: 'Thu 3 Sep 2026 · in the chat', a: T('₹18,000'), b: T('£160') },
+{ name: 'Rent, August', sub: 'Mon 3 Aug 2026 · in the chat', a: T('₹18,000'), b: T('£160') },
+{ name: 'Maintenance', sub: 'Sat 15 Aug 2026 · society charges', a: T('−₹30,000'), b: T('−£267') },
+{ name: 'Property tax', sub: 'Tue 30 Jun 2026', a: T('−₹8,000'), b: T('−£71') },
+{ name: 'Valuation', sub: 'Jan 2025 · broker’s estimate', a: T(inr(valNow)), b: T('a value, not cash') },
+{ name: 'Bought', sub: 'Mar 2018 · with stamp duty and fees', a: T('−' + inr(5090000)), b: T('the first entry') }
+]), F('Each entry came through the chat and is an audit row. October’s rent is logged on Saturday (Telegram · Updating a loan or an asset).')]);
+const flatDocs = () => card('Documents', '3 files', [prt('Files', { items: [{ i: 'picture_as_pdf', bt: 'Open', n: 'sale-deed-2018.pdf', s: 'PDF · 3.1 MB · sent 22 Oct' }, { i: 'picture_as_pdf', bt: 'Open', n: 'rent-agreement-2026.pdf', s: 'PDF · 0.4 MB · sent 22 Oct' }, { i: 'image', bt: 'Open', n: 'valuation-jan-2025.jpg', s: 'JPG · 0.8 MB · the broker’s estimate' }] }), F('Open gives a link that works for five minutes; the opening is logged (MA-148, MA-149).')]);
+const mAsset = {
+id: 'w-m-asset', name: 'Mini App · An asset', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6, §4.6',
+intro: 'One asset, pushed from Assets: the flat in Pune, because it has the most to show (a value in rupees, rent, costs, an overdue valuation and documents). §12: Account, Position, Valuation, the XIRR ledger from Transaction, documents. Telegram light and dark, as it opens and scrolled.',
+rows: [
+{ th: mTh('Mini App · An asset · as it opens'), back: 'Assets', hasBack: true, scr: '', tabs: tabs('as'), blocks: [flatVal(false), flatKV(), cap()], name: 'As it opens', notes: N2([
+['Telegram’s BackButton', 'reads ‹ Assets, and Assets stays selected.'],
+['The value in its own currency,', 'pounds beside; the chip says in words that the value is 21 months old.'],
+['XIRR from code', '(MA-94): every dated cashflow in the ledger, with the recorded value as the last.']
+]) },
+{ th: mTh('Mini App · An asset · scrolled'), back: 'Assets', hasBack: true, scr: 'scr-end', tabs: tabs('as'), blocks: [flatLedger(), flatDocs(), btn('Update the value in the chat', 'chat', 'mp-btn-primary', 'w-t-rem'), cap()], name: 'Scrolled: ledger and documents', notes: N2([
+['The ledger', 'is what XIRR reads; each line is an audit row from the chat.'],
+['Documents open from Audit’s files', 'with a five-minute link.'],
+['Update the value in the chat', 'opens the chat; the page itself writes nothing.']
+]) }
+]
+};
+const bAssetPage = () => ({ nav: nav('as'), hasCrumb: true, crumb: 'Assets', crumbHref: 'w-b-as', title: 'Flat in Pune', meta: 'Property · India · yours · rupees first, pounds beside at ' + RDAY + ' (' + RATE + ') · read-only · Illustrative figures', segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: 'false', eyeI: 'visibility',
+cols: [{ blocks: [flatVal(true), flatKV()] }, { blocks: [flatLedger(), flatDocs(), btn('Update the value in the chat', 'chat', 'mp-btn-primary', 'w-t-rem')] }] });
+const bAsset = {
+id: 'w-b-asset', name: 'Browser · An asset', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6, §4.6',
+intro: 'The same asset at 1280, the way Browser · Holding pages work: a crumb back to Assets, the value and its history on the left with the returns, the ledger and documents on the right. Light and dark.',
+th: [{ cap: 'Browser · An asset · Light', cls: 't-light', p: bAssetPage() }, { cap: 'Browser · An asset · Dark', cls: 't-dark', p: bAssetPage() }],
+notes: N2([['The value chart steps', 'at each valuation; nothing is drawn between valuations that was not recorded.'], ['Every figure is the engine’s', 'or the registry’s: XIRR, gain and the year’s rent and costs.']])
+};
+
+/* ======================= Debts and a loan ======================= */
+const oweCard = (priv, wide) => card('What you owe', '2 loans', [big(V(gbp(OWE), priv), T('household')), kv([
+{ k: 'Paid each month', a: V(gbp(mP + cP), priv), s: 'both loans' },
+{ k: 'Interest this year', a: V(gbp(intYTD), priv), s: 'Jan to Oct' },
+{ k: 'Debt-free', a: T(mEndA), s: 'at today’s payments' },
+{ k: 'Car loan ends', a: T(cEnd), s: 'then £' + Math.round(cP) + ' a month is free' }
+])].concat(wide ? [chartP({ cv: 'ch-m', n: 22, lo: 0, hi: 260000, grid: [[100000, '£100k'], [200000, '£200k']], xs: [[0, '2026'], [5, '2031'], [10, '2036'], [15, '2041'], [20, '2046']],
+series: [{ ys: Array.from({ length: 23 }, (x, i) => { const p = FC.out[Math.min(360, i * 12)]; return p.owe * Math.pow(1.025, Math.min(360, i * 12) / 12); }), c: 'cline', area: 'carea' }],
+dots: [[(cAct.end - cNow) / 12, (sim(mBal, mR, mP).bal[cAct.end - cNow] || 0)]], lbls: [[(cAct.end - cNow) / 12, sim(mBal, mR, mP).bal[cAct.end - cNow], 'Car loan paid', 'ar']],
+keys: [{ c: 'k-line', t: 'What you owe, from the loans’ schedules, in pounds of the day' }], aria: 'What the household owes, falling from ' + gbp(OWE) + ' now to nothing in ' + mEndA + ', with the car loan paid in ' + cEnd })] : []));
+const loanRows = (priv) => sect('Loans', V(gbp(OWE), priv), [
+{ lead: 'MG', name: 'Mortgage', sub: 'Joint · on Home · 4.39% fixed to Jun 2028', hasChip: true, chip: 'Ahead by ' + mAhead + ' months', chipC: 'mp-add', a: V(gbp(mBal), priv), b: V(gbp(mP) + ' a month', priv) },
+{ lead: 'CL', name: 'Car loan', sub: 'You · Lender G · 6.90% · ends ' + cEnd, a: V(gbp(cBal), priv), b: V(gbp(cP) + ' a month', priv) }
+]);
+const comingCard = (priv) => card('Coming up', 'payments and dates', [list([
+{ hasI: true, i: 'event', name: 'Mortgage payment', sub: 'Sun 1 Nov · Lender H', a: V(gbp(mP), priv), b: T('monthly') },
+{ hasI: true, i: 'event', name: 'Car loan payment', sub: 'Thu 5 Nov · Lender G', a: V(gbp(cP), priv), b: T('monthly') },
+{ hasI: true, i: 'percent', name: 'Mortgage fixed rate ends', sub: 'Jun 2028 · decide in the chat nearer the time', a: T('4.39%'), b: T('until then') }
+])]);
+const mDb = {
+id: 'w-m-db', name: 'Mini App · Debts', keys: [key('MA-95')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'Everything the household owes, on the Debts tab: the total, what it costs each month and this year, when it ends, each loan, and what is coming up. Payments are monthly payments (EMIs), from each loan’s schedule. Telegram light and dark.',
+rows: [{ th: mTh('Mini App · Debts'), back: 'Close', hasBack: false, scr: '', tabs: tabs('db'), blocks: [head('Debts', 'What the household owes'), whose(false), oweCard(false, false), loanRows(false), comingCard(false), cap()], name: 'Debts', notes: N2([
+['Plain money words:', 'paid each month, interest this year, debt-free in ' + mEndA + ', all from the schedules (MA-94).'],
+['Ahead of plan', 'is good news, so it is the one green chip, with its words; debts are never drawn in the alert red.'],
+['Coming up', 'lists the next payments and the date the mortgage’s fixed rate ends.']
+]) }]
+};
+const bDbPage = () => ({ nav: nav('db'), hasCrumb: false, crumb: '', crumbHref: '', title: 'Debts', meta: META, segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: 'false', eyeI: 'visibility',
+cols: [{ blocks: [oweCard(false, true)] }, { blocks: [loanRows(false), comingCard(false)] }] });
+const bDb = {
+id: 'w-b-db', name: 'Browser · Debts', keys: [key('MA-95')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'Debts at 1280: the total, its costs and the road to debt-free from the schedules on the left; the loans and the coming dates on the right. Light and dark.',
+th: [{ cap: 'Browser · Debts · Light', cls: 't-light', p: bDbPage() }, { cap: 'Browser · Debts · Dark', cls: 't-dark', p: bDbPage() }],
+notes: N2([['The curve is the schedules’,', 'not a forecast: today’s payments and rates, nothing assumed.'], ['A row opens its loan', '(Browser · A loan).']])
+};
+/* the mortgage page */
+const balPts = (s, step) => { const out = []; for (let m = 0; m <= 300; m += step) out.push(s.bal[Math.min(m, s.bal.length - 1)] || 0); return out; };
+const loanChart = (wide) => chartP({ cv: wide ? 'ch-l' : 'ch-m', n: 25, lo: 0, hi: 280000, grid: [[100000, '£100k'], [200000, '£200k']],
+series: [{ ys: balPts(mPlan, 12), c: 'cdash' }, { ys: balPts(mAct, 12), c: 'cline', area: 'carea' }],
+xs: [[0, '2024'], [5, '2029'], [10, '2034'], [15, '2039'], [20, '2044'], [25, '2049']],
+dots: [[mNow / 12, mBal]], lbls: [[mNow / 12, mBal, 'Today', 'ar']],
+keys: [{ c: 'k-line', t: 'This mortgage, with £5,000 overpaid' }, { c: 'k-dash', t: 'The original plan' }],
+aria: 'Mortgage balance from £265,000 in April 2024: today ' + gbp(mBal) + ', paid off in ' + mEndA + ', ' + mAhead + ' months before the original plan’s ' + mEndP });
+const loanTop = (wide) => card('', '', [O('Mortgage · Joint · on Home · Lender H'), big(T(gbp(mBal)), T('left of £265,000')), prt('Chips', { items: [{ c: 'mp-add', i: 'trending_up', t: 'Ahead of plan by ' + mAhead + ' months' }] }), loanChart(wide)]);
+const loanKV = () => card('The loan', '', [kv([
+{ k: 'Monthly payment', a: T(gbp(mP)), s: 'on the 1st' },
+{ k: 'Rate', a: T('4.39%'), s: 'fixed to Jun 2028' },
+{ k: 'Ends', a: T(mEndA), s: 'the plan said ' + mEndP },
+{ k: 'Interest so far', a: T(gbp(mIntSoFar)), s: 'since Apr 2024' }
+])]);
+const colMax = Math.max.apply(null, [2025, 2026, 2027, 2028].map((y) => mYear[y].i + mYear[y].p)) * 1.04;
+const loanSplit = () => card('Interest and principal, by year', 'paler: the schedule ahead', [prt('Cols', { aria: 'Interest and principal paid each year: ' + [2025, 2026, 2027, 2028].map((y) => y + ' interest ' + gbp(mYear[y].i) + ', principal ' + gbp(mYear[y].p)).join('; '), items: [2025, 2026, 2027, 2028].map((y) => ({ l: String(y), c: y >= 2027 ? 'cplan' : '', segs: [{ h: pc(mYear[y].i / colMax * 100), col: 'var(--mp-chart-4)' }, { h: pc(mYear[y].p / colMax * 100), col: 'var(--mp-chart-2)' }] })), keys: [{ col: 'var(--mp-chart-4)', t: 'Interest' }, { col: 'var(--mp-chart-2)', t: 'Principal' }] }), F('2025 includes the £5,000 overpaid in June; 2026 has November and December from the schedule. This year so far: interest ' + gbp(sum(mAct.int.slice(21, 31))) + '.')]);
+const loanWhatIf = () => card('What if', 'worked out by the loan schedule', [list([
+{ hasI: true, i: 'payments', name: 'Prepay £2,000 now', sub: 'Ends ' + mPreSoon + ' months sooner, same payment', a: T('saves ' + gbp(mPreSave)), ac: 'mp-up', b: T('in interest') },
+{ hasI: true, i: 'task_alt', name: 'Pay it all off today', sub: 'Early repayment charge 2% while the rate is fixed', a: T(gbp(mBal + mERC)), b: T('incl. ' + gbp(mERC) + ' charge') }
+]), F('To do either, say so in the chat (“prepaid £2,000”, “preclose the mortgage”); the page changes nothing.')]);
+const loanEvents = () => card('Events', 'each an audit row', [list([
+{ hasI: true, i: 'event_available', name: 'Payment', sub: 'Thu 1 Oct 2026', a: T(gbp(mP)) },
+{ hasI: true, i: 'payments', name: 'Overpayment', sub: 'Thu 12 Jun 2025 · logged in the chat', a: T('£5,000') },
+{ hasI: true, i: 'flag', name: 'Started', sub: 'Apr 2024 · 25 years at 4.39%, fixed to Jun 2028', a: T('£265,000') }
+])]);
+const mLoan = {
+id: 'w-m-loan', name: 'Mini App · A loan', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'One loan, pushed from Debts: the mortgage. §12: Liability, its Transaction events, the schedule, the audit rows; §6.6: the balance against the original plan, the interest and principal split per year, prepayment and preclosure what-ifs. Telegram light and dark, as it opens and scrolled.',
+rows: [
+{ th: mTh('Mini App · A loan · as it opens'), back: 'Debts', hasBack: true, scr: '', tabs: tabs('db'), blocks: [loanTop(false), loanKV(), cap()], name: 'As it opens', notes: N2([
+['The balance against the plan:', 'the solid line is this mortgage with the overpayment, the dashed one the original plan; a legend names both, so the dash is not the only signal.'],
+['Ahead by ' + mAhead + ' months', 'and the end date come from the schedule, not from Claude.']
+]) },
+{ th: mTh('Mini App · A loan · scrolled'), back: 'Debts', hasBack: true, scr: 'scr-end', tabs: tabs('db'), blocks: [loanSplit(), loanWhatIf(), loanEvents(), btn('Ask in the chat', 'chat', 'mp-btn-tinted', 'w-t-upd'), cap()], name: 'Scrolled: split, what-ifs, events', notes: N2([
+['What-ifs, read-only:', 'prepaying £2,000 and paying it off, each with what it does; to act, say so in the chat (Telegram · Updating a loan or an asset).'],
+['Every event', 'is an audit row from the chat.']
+]) }
+]
+};
+const bLoanPage = () => ({ nav: nav('db'), hasCrumb: true, crumb: 'Debts', crumbHref: 'w-b-db', title: 'Mortgage', meta: 'Joint · on Home · Lender H · from the schedule and the events logged in the chat · read-only · Illustrative figures', segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: 'false', eyeI: 'visibility',
+cols: [{ blocks: [loanTop(true), loanSplit()] }, { blocks: [loanKV(), loanWhatIf(), loanEvents(), btn('Ask in the chat', 'chat', 'mp-btn-tinted', 'w-t-upd')] }] });
+const bLoan = {
+id: 'w-b-loan', name: 'Browser · A loan', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'The mortgage at 1280: the balance against the plan and the yearly split on the left; the terms, the what-ifs and the events on the right. Light and dark.',
+th: [{ cap: 'Browser · A loan · Light', cls: 't-light', p: bLoanPage() }, { cap: 'Browser · A loan · Dark', cls: 't-dark', p: bLoanPage() }],
+notes: N2([['Planned years are paler,', 'and the card’s note says which years are the schedule’s.'], ['The early repayment charge', 'is shown with its amount before anyone asks the chat to preclose.']])
+};
+
+/* ======================= Budget ======================= */
+const BUD = [['Loans', fixedL[0][1] + fixedL[1][1], 'var(--mp-chart-4)'], ['Insurance', fixedL[2][1] + fixedL[3][1], 'var(--mp-asset-silver)'], ['Saving', saving, 'var(--mp-chart-2)'], ['Planned', planned, 'var(--mp-chart-5)'], ['Left over', left, 'var(--mp-chart-line)']];
+const budSum = () => card('October’s plan', 'household · a month', [big(T(gbp(inc)), T('coming in')), stackP(BUD.map((b) => ({ name: b[0], pct: pc0(b[1] / inc * 100), w: pc(b[1] / inc * 100), col: b[2] })), 'Where the month’s money goes: ' + BUD.map((b) => b[0] + ' ' + pc0(b[1] / inc * 100)).join(', ')), F('A plan from what you told the bot, not a record of spending: MyPaisa does not read your bank.')]);
+const budRows = (title, rows, lead) => sect(title, T(gbp(sum(rows.map((x) => x[1])))), rows.map((x) => ({ lead: lead, name: x[0], sub: x[2], hasChip: x[3] === 'chg', chip: 'Changed today', chipC: 'mp-hold', a: T(gbp(x[1])), b: T(x[4] || 'a month') })));
+const inRows = [['Your salary', salYou, 'after tax · from November', 'chg', 'was ' + gbp(salYouWas)], ['Asha’s salary', salAsha, 'after tax'], ['Rent, Flat in Pune', rent, '₹18,000 a month', '', 'a month']];
+const leftCard = () => card('Left over', 'a month', [big(T(gbp(left)), T('was ' + gbp(leftWas) + ' before today')), F('Goes to Balanced each month, as the forecast assumes. Change where it goes in the chat.')]);
+const mBu = {
+id: 'w-m-bu', name: 'Mini App · Budget', keys: [key('MA-96')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'The month’s plan on the Plan tab, Budget beside Forecast: what comes in, the fixed costs (loan payments straight from each loan, MA-93), saving, what is planned, and what is left over. It is the plan told to the bot (“my salary is now …”, “plan £400 a month for …”), not a spending tracker. Telegram light and dark, as it opens and scrolled.',
+rows: [
+{ th: mTh('Mini App · Budget · as it opens'), back: 'Close', hasBack: false, scr: '', tabs: tabs('pl'), blocks: [blk('Seg', { label: 'Plan', segs: segs(['Budget', 'Forecast'], 'Budget') }), whose(false), budSum(), budRows('Coming in', inRows, '+'), budRows('Going out, fixed', fixedL, '−')], name: 'As it opens', notes: N2([
+['Where the month goes,', 'as one bar with a legend of names and shares, then the lines behind it.'],
+['Today’s change is marked', 'in words (“Changed today”, was £4,100), from Telegram · Forecast and budget by chat.']
+]) },
+{ th: mTh('Mini App · Budget · scrolled'), back: 'Close', hasBack: false, scr: 'scr-end', tabs: tabs('pl'), blocks: [budRows('Going out, fixed', fixedL, '−'), budRows('Saving and investing', saveL, '→'), budRows('Planned', planL, '−'), leftCard(), cap()], name: 'Scrolled to the end', notes: N2([
+['Loan payments come from the loans:', 'nobody types them twice; when the car loan ends, its line goes.'],
+['Left over', 'feeds the forecast, which says where it goes.']
+]) }
+]
+};
+const changesCard = (rows) => card('Changes', 'each an audit row, newest first', [list(rows.map((r) => ({ hasI: true, i: 'history', name: r[0], sub: r[1], a: T(r[2]), b: T(r[3]) })))]);
+const bBuPage = () => ({ nav: nav('bu'), hasCrumb: false, crumb: '', crumbHref: '', title: 'Budget', meta: 'October 2026 · the plan told to the bot · read-only, every change happens in the chat · Illustrative figures', segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: 'false', eyeI: 'visibility',
+cols: [{ blocks: [budSum(), leftCard(), changesCard([['Your salary', 'You · Fri 23 Oct 20:31 · in the chat', gbp(salYou), 'was ' + gbp(salYouWas)], ['Holiday', 'You · Fri 2 Oct · “plan £400 a month for the holiday”', '£400', 'new'], ['Living costs', 'You · Mon 14 Sep · in the chat', '£2,900', 'was £2,700']])] },
+{ blocks: [budRows('Coming in', inRows, '+'), budRows('Going out, fixed', fixedL, '−'), budRows('Saving and investing', saveL, '→'), budRows('Planned', planL, '−')] }] });
+const bBu = {
+id: 'w-b-bu', name: 'Browser · Budget', keys: [key('MA-96')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'Budget at 1280, its own item in the sidebar: the plan and what is left over on the left, with the changes that made it; the lines on the right. Light and dark.',
+th: [{ cap: 'Browser · Budget · Light', cls: 't-light', p: bBuPage() }, { cap: 'Browser · Budget · Dark', cls: 't-dark', p: bBuPage() }],
+notes: N2([['Budget and Forecast are two items on the laptop', 'and one Plan tab in the Mini App, because the tab bar holds five.'], ['Changes', 'are the audit rows of the plan, with who, when and the words used.']])
+};
+
+/* ======================= Forecast ======================= */
+const fcYs = (f, step) => { const o = []; for (let k = 0; k <= 360; k += step) o.push(f.out[k].nw); return o; };
+const owYs = (f, step) => { const o = []; for (let k = 0; k <= 360; k += step) o.push(f.out[k].owe); return o; };
+const msK = [[FC.cE, 'Car loan paid'], [FC.mE, 'Mortgage paid'], [293, 'You retire']];
+const fcHero = (wide) => blk('Hero', { over: 'Net worth in 2056 · in today’s money', hasCcy: false, a: T(gbp(nw56)), hasChip: false, chip: '', chipC: '',
+sub: 'From ' + gbp(NW) + ' today. Worked out month by month by the forecast code from the assumptions below; a projection, not a promise.', hasSplit: false, split: [],
+hasChart: true, ch: chart({ hero: true, cv: wide ? 'ch-l' : 'ch-m', n: 30, lo: 0, hi: 2700000, top: 22,
+series: [{ ys: fcYs(FC, 12), c: 'hline', area: 'harea' }, { ys: owYs(FC, 12), c: 'hdash' }],
+grid: [[1000000, '£1m'], [2000000, '£2m']], xs: [[0, '2026'], [5, '2031'], [10, '2036'], [15, '2041'], [20, '2046'], [25, '2051'], [30, '2056']],
+dots: msK.map((m) => [m[0] / 12, FC.out[m[0]].nw]), lbls: wide ? msK.map((m, i) => [m[0] / 12, FC.out[m[0]].nw, m[1], i === 1 ? 'bl' : '']) : [],
+keys: [{ c: 'k-hline', t: 'Net worth' }, { c: 'k-hdash', t: 'What you owe' }],
+aria: 'Thirty-year projection of net worth in today’s money, from ' + gbp(NW) + ' to ' + gbp(nw56) + ' in 2056; the car loan is paid in ' + kMon(FC.cE) + ', the mortgage in ' + kMon(FC.mE) + ', and you retire in Mar 2051' }),
+hasPeriod: false, periods: [] });
+const msCard = () => card('Milestones', 'from the projection', [list([
+{ hasI: true, i: 'savings', name: 'Fixed-rate saver to cash', sub: 'Mon 14 Dec 2026, as the maturities assumption says', a: T('Dec 2026') },
+{ hasI: true, i: 'directions_car', name: 'Car loan paid', sub: gbp(cP) + ' a month freed, to Balanced', a: T(kMon(FC.cE)) },
+{ hasI: true, i: 'flag', name: 'Net worth passes £1m', sub: 'in today’s money', a: T(kMon(m1)) },
+{ hasI: true, i: 'home', name: 'Mortgage paid', sub: gbp(mP) + ' a month freed', a: T(kMon(FC.mE)) },
+{ hasI: true, i: 'beach_access', name: 'You retire, at 60', sub: 'pension drawn at 4% a year', a: T('Mar 2051') },
+{ hasI: true, i: 'beach_access', name: 'Asha retires, at 60', sub: 'her contributions stop', a: T('Mar 2054') }
+])]);
+const asmCard = () => card('Assumptions', 'change any in the chat', [list([
+{ name: 'Property grows', sub: 'Home and Flat in Pune · changed today, was 3%', a: T('5% a year'), b: T('20:24, in the chat') },
+{ name: 'Investments and pensions grow', sub: 'before charges', a: T('5% a year') },
+{ name: 'Deposits earn', sub: 'until they mature', a: T('4% a year') },
+{ name: 'Inflation', sub: 'every figure in today’s money', a: T('2.5% a year') },
+{ name: 'Paid in each month', sub: 'ISAs £800, pensions £770, until each retires', a: T('£1,570') },
+{ name: 'Left over each month', sub: 'from the budget, to Balanced', a: T(gbp(left)), b: T('changed today') },
+{ name: 'Maturities', sub: 'deposits and the endowment go to cash', a: T('to cash') },
+{ name: 'Retirement', sub: 'You and Asha at 60; pensions drawn at 4%', a: T('at 60') }
+]), F('Each assumption is a stated number and each change an audit row (“assume 5% on property”, “retire at 60”).')]);
+const sensCard = () => card('If property grew at 3%', 'the change made today', [kv([{ k: 'At 3% a year', a: T(gbp(F3n.out[360].nw)), s: 'net worth in 2056' }, { k: 'At 5% a year', a: T(gbp(nw56)), s: 'today’s assumption' }]), F('Both worked out by the forecast code, in today’s money.')]);
+const mFc = {
+id: 'w-m-fc', name: 'Mini App · Forecast', keys: [key('MA-96'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'The thirty-year projection on the Plan tab (not the Forecaster’s view of prices, which is Forecast.dc.html): net worth month by month to 2056 in today’s money, from stated assumptions (growth per kind, contributions, the left over, maturities, loans ending), with the assumptions beside the curve and every change an audit row (§6.6). Telegram light and dark, as it opens and scrolled.',
+rows: [
+{ th: mTh('Mini App · Forecast · as it opens'), back: 'Close', hasBack: false, scr: '', tabs: tabs('pl'), blocks: [blk('Seg', { label: 'Plan', segs: segs(['Budget', 'Forecast'], 'Forecast') }), whose(false), fcHero(false), msCard(), cap()], name: 'As it opens', notes: N2([
+['One number, said with its terms:', 'net worth in 2056, in today’s money, and “a projection, not a promise”.'],
+['Milestones', 'are the dots on the curve, named in the list below it, so the dots are never the only signal.']
+]) },
+{ th: mTh('Mini App · Forecast · scrolled'), back: 'Close', hasBack: false, scr: 'scr-end', tabs: tabs('pl'), blocks: [asmCard(), sensCard(), cap()], name: 'Scrolled: the assumptions', notes: N2([
+['The assumptions beside the curve,', 'each a plain number; today’s two changes are marked.'],
+['What one change does:', 'property at 3% against 5%, both from the code.']
+]) }
+]
+};
+const bFcPage = () => ({ nav: nav('fc'), hasCrumb: false, crumb: '', crumbHref: '', title: 'Forecast', meta: 'Thirty years, month by month, in today’s money · from the assumptions told to the bot · read-only · Illustrative figures', segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: 'false', eyeI: 'visibility',
+cols: [{ blocks: [fcHero(true), msCard()] }, { blocks: [asmCard(), sensCard(), changesCard([['Property growth', 'You · Fri 23 Oct 20:24 · “assume 5% on property”', '5%', 'was 3%'], ['Your salary, so the left over', 'You · Fri 23 Oct 20:31 · from the budget', gbp(left), 'was ' + gbp(leftWas)], ['Retirement', 'You · Thu 3 Sep · “retire at 60”', 'at 60', 'was 62']])] }] });
+const bFc = {
+id: 'w-b-fc', name: 'Browser · Forecast', keys: [key('MA-96'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'The projection at 1280: the curve with its milestones named on it and the milestones list on the left; the assumptions, what one change does and the changes on the right. Light and dark.',
+th: [{ cap: 'Browser · Forecast · Light', cls: 't-light', p: bFcPage() }, { cap: 'Browser · Forecast · Dark', cls: 't-dark', p: bFcPage() }],
+notes: N2([['The dashed line is what you owe,', 'named in the legend; it reaches zero when the mortgage is paid.'], ['No range is drawn:', 'the projection is deterministic from its assumptions; the sensitivity card shows what one assumption does instead.']])
+};
+
+/* ======================= Reports ======================= */
+const INST = (() => { const m = {}; A.forEach((a) => { if (a.g > 0 || a.id === 'life') { m[a.inst] = m[a.inst] || { n: 0, g: 0, what: [] }; m[a.inst].n++; m[a.inst].g += a.g; m[a.inst].what.push(a.name); } }); return Object.keys(m).map((k) => Object.assign({ inst: k }, m[k])).sort((x, y) => y.g - x.g); })();
+const typeTbl = (priv) => prt('Tbl', { cols: 'minmax(0, 1.6fr) 56px minmax(0, 1fr) 64px', head: [{ t: 'Kind', c: '' }, { t: 'Held', c: 'r' }, { t: 'Value', c: 'r' }, { t: 'Share', c: 'r' }],
+cells: [].concat.apply([], CATS.map((c) => { const v = catSum(c[0]), m = V(gbp(v), priv); return [{ v: c[1], c: 'w6', m: '', r: null, l: null }, { v: String(catCount(c[0])), c: 'r s', m: '', r: null, l: null }, { v: m.v, c: 'r', m: m.c, r: m.r, l: m.l }, { v: pc(v / OWN * 100), c: 'r s', m: '', r: null, l: null }]; })) });
+const instTbl = (priv) => prt('Tbl', { cols: 'minmax(0, 1.6fr) minmax(0, 1fr) 64px', head: [{ t: 'Institution', c: '' }, { t: 'Value', c: 'r' }, { t: 'Share', c: 'r' }],
+cells: [].concat.apply([], INST.map((x) => { const m = x.g ? V(gbp(x.g), priv) : T('—'); return [{ v: x.inst + ' · ' + x.what.join(', '), c: '', m: '', r: null, l: null }, { v: m.v, c: 'r', m: m.c, r: m.r, l: m.l }, { v: x.g ? pc(x.g / OWN * 100) : '—', c: 'r s', m: '', r: null, l: null }]; })) });
+const instList = (priv) => list(INST.map((x) => ({ name: x.inst, sub: x.what.join(', '), a: x.g ? V(gbp(x.g), priv) : T('—'), b: T(x.g ? pc(x.g / OWN * 100) : 'no value') })));
+const typeList = (priv) => list(CATS.map((c) => ({ name: c[1], sub: catCount(c[0]) + (catCount(c[0]) === 1 ? ' asset' : ' assets'), a: V(gbp(catSum(c[0])), priv), b: T(pc(catSum(c[0]) / OWN * 100)) })));
+const typeCard = (priv, wide) => card('By type', A.length + ' assets · ' + gbp(OWN), [ownStack(), wide ? typeTbl(priv) : typeList(priv)]);
+const instCard = (priv, wide) => card('By institution', INST.length + ' places', [wide ? instTbl(priv) : instList(priv), F('Home and the flat are held directly. Rupee assets at ' + RDAY + ', ' + RATE + '.')]);
+const owedCard = (priv) => card('Owed to', 'the lenders', [list([{ name: 'Lender H', sub: 'Mortgage · joint', a: V(gbp(mBal), priv), b: T(pc(mBal / OWE * 100)) }, { name: 'Lender G', sub: 'Car loan · yours', a: V(gbp(cBal), priv), b: T(pc(cBal / OWE * 100)) }])]);
+const exps = [['By type', 'one row a kind'], ['By institution', 'one row a place, with what it holds'], ['Accounts and valuations', 'every asset and loan, each valuation dated'], ['The ledger', 'every transaction, with its audit id']];
+const expCard = (wide) => card('Exports', 'downloads only', [prt('Files', { items: exps.map((e) => ({ i: 'table_view', bt: 'Download', n: e[0], s: 'CSV or Excel · ' + e[1] })) }), F(wide ? 'Each export is a GET from the api: downloading changes nothing. Privacy mode hides figures on screen only.' : 'Each export is a GET: downloading changes nothing. Inside Telegram, Telegram asks where to save it.')]);
+const mRp = {
+id: 'w-m-rp', name: 'Mini App · Reports', keys: [key('MA-97')], arch: 'ARCHITECTURE.md §12, §9.3',
+intro: 'Reports, pushed from More: what the household is made of, by type and by institution, and the exports, which are downloads (GET routes) and change nothing. Telegram light and dark, as it opens and scrolled.',
+rows: [
+{ th: mTh('Mini App · Reports · as it opens'), back: 'More', hasBack: true, scr: '', tabs: tabs('more'), blocks: [head('Reports', 'What the household is made of, Fri 23 Oct'), whose(false), typeCard(false, false), cap()], name: 'As it opens', notes: N2([
+['Pushed from More,', 'so More stays selected and the BackButton reads ‹ More.'],
+['Composition by type:', 'one bar with a named legend, then each kind with how many assets, the value and its share.']
+]) },
+{ th: mTh('Mini App · Reports · by institution'), back: 'More', hasBack: true, scr: '', tabs: tabs('more'), blocks: [instCard(false, false), owedCard(false)], name: 'Scrolled to By institution', notes: N2([
+['By institution', 'lists each place with what it holds, its value and its share; the two homes are held directly.'],
+['Owed to', 'lists the lenders apart, so a debt never nets against an asset in this report.']
+]) },
+{ th: mTh('Mini App · Reports · exports'), back: 'More', hasBack: true, scr: 'scr-end', tabs: tabs('more'), blocks: [owedCard(false), expCard(false), cap()], name: 'Scrolled to the exports', notes: N2([
+['Exports', 'in CSV or Excel, one Download each; inside Telegram, Telegram’s own prompt saves the file.'],
+['Downloads only:', 'each is a GET route, so nothing changes.']
+]) }
+]
+};
+const bRpPage = () => ({ nav: nav('rp'), hasCrumb: false, crumb: '', crumbHref: '', title: 'Reports', meta: META, segs: segs(['Household', 'Me', 'Asha'], 'Household'), pressed: 'false', eyeI: 'visibility',
+cols: [{ blocks: [typeCard(false, true), instCard(false, true)] }, { blocks: [expCard(true), owedCard(false)] }] });
+const bRp = {
+id: 'w-b-rp', name: 'Browser · Reports', keys: [key('MA-97')], arch: 'ARCHITECTURE.md §12, §9.3',
+intro: 'Reports at 1280: the composition by type and by institution as tables on the left; the exports and the lenders on the right. Light and dark. These replace the old tracker’s reports before it is retired (MA-97).',
+th: [{ cap: 'Browser · Reports · Light', cls: 't-light', p: bRpPage() }, { cap: 'Browser · Reports · Dark', cls: 't-dark', p: bRpPage() }],
+notes: N2([['Read-only:', 'the export buttons are links to GET routes; nothing posts.'], ['The DNS hand-over and the apex redirect', 'of MA-97 have no screen.']])
+};
+
+/* ======================= Browser · Link a Google account (MA-77) ======================= */
+const lTh = (name) => [{ cap: 'Browser · Link a Google account · ' + name + ' · Light', cls: 't-light' }, { cap: 'Browser · Link a Google account · ' + name + ' · Dark', cls: 't-dark' }];
+const LS = (o) => Object.assign({ hasCode: false, hasKV: false, kv: [], btns: [], lnotes: [] }, o);
+const link = {
+keys: [key('MA-77')], arch: 'ARCHITECTURE.md §4.5, §9.3',
+intro: 'What the browser shows after Sign in with Google with an account not yet linked to a member (MA-77): a six-digit code that lasts ten minutes, to send as /link <code> from the member’s own Telegram chat. Drawn on Browser · Login’s two panels, with no figures and no navigation, since nobody is signed in yet. The chat’s side (the /link replies, a wrong code, a code used twice, a code from the wrong chat) is drawn by another designer. Four states, light and dark.',
+states: [
+LS({ name: 'The code, waiting', th: lTh('the code'), tile: 'st-wait', icon: 'link', title: 'Link this Google account', sub: 'Once, from your own phone: it shows that the Google account and the Telegram account are both yours.', hasCode: true,
+btns: [{ c: 'mp-btn-primary', hasI: true, i: 'send', t: 'Open Telegram' }, { c: 'mp-btn-plain', hasI: false, i: '', t: 'Sign in another way' }],
+lnotes: [{ i: 'info', t: 'A wrong code, or one sent from someone else’s chat, links nothing; the bot says why in the chat.' }],
+notes: N2([['The code and the command,', 'with Copy and Open Telegram; neither writes anything. The time left is shown in words, not only as a chip colour.'], ['The page moves on by itself', 'when the bot has the code; nothing is linked until then.']]) }),
+LS({ name: 'Linked, in both places', th: lTh('linked'), tile: 'st-ok', icon: 'check_circle', title: 'Linked', sub: 'This Google account now signs in as Asha. The bot has said so in your chat too.', hasKV: true,
+kv: [{ k: 'Google account', v: 'asha@example.com' }, { k: 'Signs in as', v: 'Asha · member' }, { k: 'When', v: 'Fri 23 Oct, 20:52' }, { k: 'Audit', v: 'Google linked · a row' }],
+btns: [{ c: 'mp-btn-primary', hasI: true, i: 'arrow_forward', t: 'Continue to Overview' }],
+lnotes: [{ i: 'person_remove', t: 'Only the owner unlinks it, from /members or the Admin center (MA-102); that signs out every browser that used it.' }],
+notes: N2([['Both places confirm,', 'as MA-77 asks: this page and a message in the member’s chat.'], ['Google’s stable id is the key;', 'the address is for display, so a renamed Gmail still works.']]) }),
+LS({ name: 'The code ran out', th: lTh('expired'), tile: 'st-off', icon: 'timer_off', title: 'This code has run out', sub: 'Codes last ten minutes and this one was not sent in time, so nothing was linked.',
+btns: [{ c: 'mp-btn-primary', hasI: true, i: 'refresh', t: 'Get a new code' }, { c: 'mp-btn-plain', hasI: false, i: '', t: 'Sign in another way' }],
+lnotes: [{ i: 'info', t: 'The old code no longer works, even if it reaches the bot later.' }],
+notes: N2([['An expired code', 'is one of the six tested cases; the chat side tells the member too.'], ['Get a new code', 'starts again; it creates a code, not a record.']]) }),
+LS({ name: 'Linked to someone else', th: lTh('already linked'), tile: 'st-alert', icon: 'link_off', title: 'This Google account is linked to someone else', sub: 'A Google account signs in as one member only, so it cannot be linked to you as well. Nothing has changed.',
+btns: [{ c: 'mp-btn-tinted', hasI: true, i: 'swap_horiz', t: 'Use a different Google account' }, { c: 'mp-btn-plain', hasI: false, i: '', t: 'Sign in another way' }],
+lnotes: [{ i: 'admin_panel_settings', t: 'If it should be yours, ask the owner to unlink it first, in the Admin center.' }],
+notes: N2([['No code is shown:', 'the page refuses before a code exists, and names no other member.'], ['The alert crimson', 'marks the refusal (MA-102), never the coral of the primary action.']]) })
+]
+};
+
+/* ======================= Telegram: chat text, as in India and Telegram chats ======================= */
+const seg = (str) => { const out = []; const re = /(\*[^*]+\*|_[^_]+_|\[[^\]]+\])/g; let last = 0, x; while ((x = re.exec(str))) { if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' }); out.push({ t: x[0].slice(1, -1), c: { '*': 'b', '_': 'i', '[': 'a' }[x[0][0]] }); last = x.index + x[0].length; } if (last < str.length) out.push({ t: str.slice(last), c: '' }); return out; };
+const kind = (s) => (s === '' ? 'sp' : s[0] === '>' ? 'q' : s[0] === '^' ? 'ov' : 'p');
+const parse = (lines) => { const bl = []; lines.forEach((s) => { const k = kind(s), body = (k === 'p' || k === 'sp' ? s : s.slice(1)).replace(/([▲▼]) /g, '$1 '); let b = bl[bl.length - 1]; if (!b || b.k !== k || k === 'sp') { b = { k: k, c: k === 'ov' ? 'ov' : k === 'q' ? 'bq' : 'b' + k, ls: [] }; bl.push(b); } b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: ' ', c: '' }] : seg(body) }); }); return bl; };
+const GL = { '▸': 'chevron_right', '↗': 'open_in_new' };
+const M = (o) => {
+if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, bc: '', blocks: [], rows: [], time: '', out: false, hasFile: false, file: { n: '', s: '' } };
+const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((n) => { const g = GL[n.slice(-1)] && n.slice(-2, -1) === ' ' ? GL[n.slice(-1)] : ''; return { t: g ? n.slice(0, -2) : n, g: g, hasG: !!g, c: n === o.tap ? 'tap' : '' }; }) }));
+return { isDay: false, isMsg: true, day: '', mc: 'msg' + (o.out ? ' o' : '') + (rows.length || o.wide ? ' w' : ''), bc: (o.out ? 'tg-out ' : '') + 'tl', hasFile: !!o.file, file: o.file || { n: '', s: '' }, blocks: parse(o.text || []), time: o.time || '', out: !!o.out, rows: rows };
+};
+const tThemes = [{ label: 'Telegram light', tg: 'tg-light', mp: 't-light' }, { label: 'Telegram dark', tg: 'tg-dark', mp: 't-dark' }];
+const base = { msgsC: '', shCheck: false, isl: '', fid: false, msgs: [], clock: '', chk: { t: '', i: 'edit_note', what: '', from: '' } };
+const S = (o) => Object.assign({}, base, o, { th: tThemes.map((th) => Object.assign({ lab: o.cap + ' · ' + th.label }, th)), notes: N2(o.notes || []) });
+const CHK = (o) => ({ msgsC: 'up', shCheck: true, isl: 'fid', fid: true, chk: o });
+const NOTE = '_Nothing is saved until you tap Confirm and check it’s you._';
+const conf = (tap) => ({ btns: [['Confirm', 'Change'], ['Cancel']], tap: tap });
+const day = (d) => M({ day: d });
+const you = (t, time) => M({ out: true, time: time, text: [t] });
+
+/* the Portfolio card grows into the household overview (MA-95) */
+const pShare = CATS.map((c) => [c[1], Math.round(catSum(c[0]) / OWN * 100)]);
+const pText = (priv) => [
+'^Portfolio · the whole household',
+'*Net worth* · Fri close',
+(priv ? '*£•••,•••*' : '*' + gbp(NW) + '*') + ' · ▲ ' + r1(moPct).toFixed(1) + '% this month · ▲ ' + r1(yrPct).toFixed(1) + '% in a year',
+priv ? '>Own *£•••,•••* · owe *£•••,•••*' : '>Own *' + gbp(OWN) + '* · owe *' + gbp(OWE) + '*',
+pShare.slice(0, 4).map((s) => '*' + s[0] + '* ' + s[1] + '%').join(' · ') + ' · other ' + (100 - sum(pShare.slice(0, 4).map((s) => s[1]))) + '%',
+'',
+'*Next:* Fixed-rate saver matures Mon 14 Dec' + (priv ? '.' : ', *' + gbp(fdMat) + '*.'),
+'*To update:* Flat in Pune, valued 21 months ago.',
+priv ? '_Privacy mode: amounts hidden, shares and moves kept. /privacy off to show them._' : '_Investments at Friday’s close; the rest as last recorded._'
+];
+const pcard = (priv) => M({ time: '20:10', btns: [['Open MyPaisa ↗'], ['Assets ▸', 'Debts ▸']], text: pText(priv) });
+const tPort = { id: 'w-t-port', name: 'Telegram · Portfolio card, whole household', keys: [key('MA-95')], arch: 'ARCHITECTURE.md §12, §9.1, §9.2',
+intro: 'Friday 23 October, 20:10. The Portfolio card grows into the household overview (§12): net worth, what you own and owe, the split by kind, what is next and what needs updating, with Open MyPaisa (the web_app button) to Mini App · Household overview. Telegram light and dark, and with privacy on.',
+steps: [
+S({ cap: 'p1 · Fri 20:10 · the card', clock: '20:10', msgs: [day('Today'), you('/portfolio', '20:10'), pcard(false)], name: 'The card, whole household', notes: [['The same figures as the Overview,', 'from the same wealth maths; the card is the summary and Open MyPaisa the detail.'], ['Assets ▸ and Debts ▸', 'answer in the chat, for members who never open the Mini App.']] }),
+S({ cap: 'p2 · Fri 20:10 · privacy on', clock: '20:10', msgs: [day('Today'), you('/portfolio', '20:10'), pcard(true)], name: 'Privacy on', notes: [['Amounts become dots;', 'shares, moves and dates stay, and the last line says how to turn it off.']] })
+] };
+
+/* MA-93: adding each kind */
+const addD = 'Today';
+const tAdd = { id: 'w-t-add', name: 'Telegram · Adding an asset or a loan', keys: [key('MA-93')], arch: 'ARCHITECTURE.md §12, §9.1, §6.6, §4.6',
+intro: 'Friday 23 October, 19:02 to 19:18: the owner adds the household’s property, deposit, policy, pension and loan through guided flows, each one message edited in place (Telegram kit, “Guided flow”) that ends in a check-and-confirm card. One mid-flow question is shown for the property; the others show their Confirm card; the loan then goes through Confirm, the second check of MA-102, and is saved with its audit row. Figures the bot states (interest at maturity, the monthly payment) come from the wealth maths, never from Claude. The tracker import is the other route to the same records (Telegram · Old tracker import). Telegram light and dark; a tapped button is ringed.',
+steps: [
+S({ cap: 'a1 · Fri 19:03 · a property, mid-flow', clock: '19:03', msgs: [day(addD), you('add a property', '19:02'), M({ time: 'edited 19:03', tap: 'You', btns: [['You', 'Asha', 'Joint'], ['Back', 'Cancel']], text: ['^Add a property · 3 of 6', '>*Flat in Pune* · India', '>Bought *Mar 2018* for *₹48,00,000*, plus ₹2,90,000 stamp duty and fees', '*Whose is it?*'] })], name: 'A property: one question at a time', notes: [['One message, edited in place:', 'the answers so far in a quote, the next question with its buttons, and the step count.'], ['Back and Cancel', 'on every step; typing an answer works as well as a button.']] }),
+S({ cap: 'a2 · Fri 19:05 · a property, to confirm', clock: '19:05', msgs: [day(addD), you('add a property', '19:02'), M({ time: 'edited 19:05', btns: conf().btns, text: ['^Add a property · check and confirm', '*Flat in Pune* · India · yours', '>Bought *Mar 2018* for *₹50,90,000* with stamp duty and fees', '>Worth *₹62,00,000* · £55,111, a broker’s estimate, Jan 2025', '>Let at *₹18,000 a month* since Apr 2024', '>No loan against it', 'Pounds at the ECB rate for Fri 23 Oct, ' + RATE + '.', NOTE] })], name: 'A property: the card to confirm', notes: [['Everything it will save,', 'in rupees with pounds beside; the valuation keeps its source and date, which the reminder later reads.']] }),
+S({ cap: 'a3 · Fri 19:08 · a deposit', clock: '19:08', msgs: [day(addD), you('add a fixed deposit', '19:07'), M({ time: 'edited 19:08', btns: conf().btns, text: ['^Add a deposit · check and confirm', '*Fixed-rate saver* · Bank B · yours', '>*£10,000* at *4.60%* a year, fixed', '>Opened *14 Dec 2025*, matures *Mon 14 Dec 2026*', '>Interest at maturity *£460*, so *£10,460* on the day', 'Worked out by the accrual code. I will tell you a week before it matures.', NOTE] })], name: 'A deposit', notes: [['The maturity is worked out, not typed:', 'the accrual code gives the interest and the sum on the day.'], ['The announcement', 'is promised here and drawn in Telegram · Reminders and maturities.']] }),
+S({ cap: 'a4 · Fri 19:11 · a policy', clock: '19:11', msgs: [day(addD), you('add my endowment policy', '19:10'), M({ time: 'edited 19:11', btns: conf().btns, text: ['^Add a policy · check and confirm', '*Endowment policy* · Insurer F, India · yours', '>Premium *₹24,000 a year*, each March, to *Mar 2031*', '>Sum assured *₹5,00,000*, plus bonuses when declared', '>Surrender value *₹3,40,000* · £3,022, from the Mar 2026 statement', NOTE] })], name: 'A policy', notes: [['No guessed bonus:', 'the sum assured and the last surrender value, each with its source.'], ['The premium', 'goes into the budget as a fixed cost.']] }),
+S({ cap: 'a5 · Fri 19:14 · a pension', clock: '19:14', msgs: [day(addD), you('add my workplace pension', '19:13'), M({ time: 'edited 19:14', btns: conf().btns, text: ['^Add a pension · check and confirm', '*Workplace pension* · Pension provider D · yours', '>Worth *£86,400*, from the statement of 30 Sep 2026', '>Paid in *£520 a month*, yours and your employer’s', '>Valued from each statement; I will ask for the next one in Mar 2027', NOTE] })], name: 'A pension', notes: [['Valued from statements:', 'the date of the next one sets the valuation reminder.']] }),
+S({ cap: 'a6 · Fri 19:17 · a loan, Confirm', clock: '19:17', msgs: [day(addD), you('add the car loan', '19:16'), M({ time: 'edited 19:17', tap: 'Confirm', btns: conf().btns, text: ['^Add a loan · check and confirm', '*Car loan* · Lender G · yours', '>Borrowed *£14,500* on *5 Aug 2024*, over 5 years', '>*6.90%* a year, fixed · *' + gbp(cP) + ' a month* on the 5th', '>Left to pay *' + gbp(cBal) + '* · ends *' + cEnd + '*', 'Worked out by the loan schedule from what you told me; a statement can correct it.', NOTE] })], name: 'A loan: Confirm', notes: [['The payment and the balance', 'come from the schedule; the member checks them against a statement.']] }),
+S(Object.assign({ cap: 'a7 · Fri 19:17 · the second check', clock: '19:17', msgs: [day(addD), you('add the car loan', '19:16'), M({ time: 'edited 19:17', tap: 'Confirm', btns: conf().btns, text: ['^Add a loan · check and confirm', '*Car loan* · Lender G · yours', '>*6.90%* a year, fixed · *' + gbp(cP) + ' a month* on the 5th', '>Left to pay *' + gbp(cBal) + '* · ends *' + cEnd + '*', NOTE] })], name: 'Then check it’s you', notes: [['The second check of MA-102:', 'Confirm opens MyPaisa in Telegram’s half-height sheet and Face ID starts; Use PIN is the way round.'], ['The sheet names the change,', 'not the money.']] }, CHK({ t: 'Face ID, before MyPaisa saves the loan you confirmed.', i: 'credit_card', what: 'Add a loan: Car loan', from: 'Lender G · yours' }))),
+S({ cap: 'a8 · Fri 19:18 · saved', clock: '19:18', msgs: [day(addD), you('add the car loan', '19:16'), M({ time: 'edited 19:18', btns: [['Debts ↗', 'Undo']], text: ['^Add a loan · saved', '*Saved* · Car loan, as l-0031 · confirmed with Face ID.', '>' + gbp(cP) + ' a month on the 5th · ends ' + cEnd, 'It is on Debts now, with its schedule from 5 Aug 2024.', '_Audit: Loan added · You · Fri 23 Oct 19:18 · run r-2207._'] })], name: 'Saved, and the card is the record', notes: [['Edited in place:', 'the card becomes the record, with its id, how it was confirmed and its audit row.'], ['Undo', 'goes through its own Confirm and check.']] })
+] };
+
+/* MA-93: updating */
+const updD = 'Sat 24 Oct';
+const tUpd = { id: 'w-t-upd', name: 'Telegram · Updating a loan or an asset', keys: [key('MA-93')], arch: 'ARCHITECTURE.md §12, §6.6, §4.6',
+intro: 'Saturday 24 October, the morning after the boards’ Friday close: a prepayment on the car loan, and October’s rent on the flat. The loan’s update menu shows the four things a loan logs (a payment or EMI, a prepayment, a rate change, a preclosure); the prepayment asks whether to end sooner or pay less, with both worked out by the loan schedule, then confirms. Rent follows the same check-and-confirm card. Telegram light and dark.',
+steps: [
+S({ cap: 'u1 · Sat 10:15 · what happened?', clock: '10:15', msgs: [day(updD), you('update the car loan', '10:14'), M({ time: '10:15', tap: 'A prepayment', btns: [['A payment (EMI)', 'A prepayment'], ['The rate changed', 'Paying it off']], text: ['^Car loan · what happened?', '*Car loan* · ' + gbp(cBal) + ' left · ' + gbp(cP) + ' a month', 'Pick one, or tell me in words.'] })], name: 'The four updates a loan has', notes: [['A payment, a prepayment, a rate change, a preclosure:', 'the loan updates MA-93 lists, as one menu; each is its own guided flow ending in the same card.']] }),
+S({ cap: 'u2 · Sat 10:16 · end sooner or pay less', clock: '10:16', msgs: [day(updD), you('£2,000', '10:16'), M({ time: '10:16', tap: 'End sooner', btns: [['End sooner', 'Pay less'], ['Cancel']], text: ['^Car loan · a prepayment of £2,000', '*End sooner, or pay less each month?* Worked out by the loan schedule:', '>*Keep ' + gbp(cP) + ' a month*: ends *' + cPreEnd + '*, ' + cPreSoon + ' months sooner, and saves *' + gbp(cPreSave) + '* in interest', '>*Pay ' + gbp(cLowP) + ' a month*: ends *' + cEnd + '* as now, and saves *' + gbp(cLowSave) + '*'] })], name: 'Both choices, worked out', notes: [['The what-if from the loan page,', 'now with real money: both figures from the schedule, never estimated by Claude.']] }),
+S({ cap: 'u3 · Sat 10:17 · Confirm', clock: '10:17', msgs: [day(updD), you('£2,000', '10:16'), M({ time: 'edited 10:17', tap: 'Confirm', btns: conf().btns, text: ['^Car loan · prepayment · check and confirm', '*£2,000* paid today, Sat 24 Oct', '>Left to pay *' + gbp(cBal) + '* → *' + gbp(cBal - 2000) + '*', '>Still *' + gbp(cP) + ' a month*; ends *' + cPreEnd + '*, was ' + cEnd, '>Interest saved *' + gbp(cPreSave) + '*', NOTE] })], name: 'Confirm, then the second check', notes: [['Before and after,', 'in one card; the second check follows as in Telegram · Adding an asset or a loan.']] }),
+S({ cap: 'u4 · Sat 10:17 · saved', clock: '10:17', msgs: [day(updD), you('£2,000', '10:16'), M({ time: 'edited 10:17', btns: [['Debts ↗', 'Undo']], text: ['^Car loan · saved', '*Saved* · a £2,000 prepayment · confirmed with Face ID.', '>Left to pay *' + gbp(cBal - 2000) + '* · ends *' + cPreEnd + '*', 'The budget’s car loan line ends in ' + cPreEnd + ' too.', '_Audit: Loan prepaid · You · Sat 24 Oct 10:17 · run r-2213._'] })], name: 'Saved', notes: [['The schedule moves', 'and so do the budget and the forecast that read it.']] }),
+S({ cap: 'u5 · Sat 10:20 · rent in', clock: '10:20', msgs: [day(updD), you('rent ₹18,000 in for October', '10:19'), M({ time: '10:20', btns: conf().btns, text: ['^Flat in Pune · rent · check and confirm', '*₹18,000* rent for *October 2026* · £160 at the ECB rate for Fri 23 Oct', '>Received Sat 3 Oct', '>Rent this year *₹1,80,000*, ten months of ten', NOTE] })], name: 'Rent on an asset', notes: [['Logging rent', 'is the same card on an asset; interest on a deposit is too. Each entry feeds the asset’s ledger and its XIRR.']] })
+] };
+
+/* MA-93: reminders and maturities */
+const tRem = { id: 'w-t-rem', name: 'Telegram · Reminders and maturities', keys: [key('MA-93')], arch: 'ARCHITECTURE.md §12, §6.6, §11',
+intro: 'What the bot starts on its own, as MA-93 asks: a valuation reminder when a figure is overdue, and a maturity announcement a week ahead, then the maturity logged on the day through the same check-and-confirm card. Telegram light and dark.',
+steps: [
+S({ cap: 'r1 · Fri 09:00 · a value overdue', clock: '09:00', msgs: [day('Fri 23 Oct'), M({ time: '09:00', btns: [['Update the value', 'It still stands'], ['Remind me in a month']], text: ['^Reminder · a value to update', '*Flat in Pune* was last valued in *Jan 2025*, 21 months ago, so the overview may be out.', 'Send a new figure, a broker’s estimate or a screenshot, or tell me it still stands.'] })], name: 'A valuation reminder', notes: [['When a value is overdue:', 'property after a year, a pension after its statement date. It still stands is a valuation too, dated today, and goes through Confirm.']] }),
+S({ cap: 'r2 · Mon 7 Dec 09:00 · maturing in 7 days', clock: '09:00', msgs: [day('Mon 7 Dec'), M({ time: '09:00', btns: [['Renewing it', 'Moving it to cash'], ['Not decided yet']], text: ['^Maturing in 7 days', 'Your *Fixed-rate saver* at Bank B matures on *Mon 14 Dec*: *£10,000* plus *£460* interest, *£10,460* in all.', 'What happens to it then? I will ask again on the day.'] })], name: 'A maturity announcement', notes: [['A week ahead,', 'with the sum from the accrual code; the answer only sets what the bot asks on the day. The bot cannot move money.']] }),
+S({ cap: 'r3 · Mon 14 Dec 09:05 · the maturity logged', clock: '09:05', msgs: [day('Mon 14 Dec'), M({ time: '09:05', tap: 'Confirm', btns: conf().btns, text: ['^Fixed-rate saver · matured · check and confirm', '*£10,460* paid out today: £10,000 and £460 interest', '>Into *Cash*, your Monzo pot', '>The saver closes and leaves Maturing next', NOTE] })], name: 'The maturity, logged', notes: [['Logging a maturity', 'is the same card; the second check and the saved card follow as for any change.']] })
+] };
+
+/* MA-96: forecast and budget by chat */
+const fD = 'Today';
+const tFb = { id: 'w-t-fb', name: 'Telegram · Forecast and budget by chat', keys: [key('MA-96')], arch: 'ARCHITECTURE.md §12, §6.6',
+intro: 'Friday 23 October, 20:24 and 20:31: “assume 5% on property” changes a forecast assumption, and “my salary is now …” changes the budget; each card shows what it does to the projection, worked out by the forecast code, and goes through Confirm and the second check. The Budget and Forecast boards show the result. Telegram light and dark.',
+steps: [
+S({ cap: 'f1 · Fri 20:24 · an assumption', clock: '20:24', msgs: [day(fD), you('assume 5% on property', '20:24'), M({ time: '20:24', tap: 'Confirm', btns: conf().btns, text: ['^Forecast · an assumption · check and confirm', '*Property growth* 3% → *5% a year*, on Home and Flat in Pune, from today', '>Net worth in 2056, in today’s money: *' + gbp(F35.out[360].nw) + '* → *' + gbp(F55.out[360].nw) + '*', 'Worked out by the forecast code; the other assumptions stay.', NOTE] })], name: '“Assume 5% on property”', notes: [['The assumption and its effect,', 'both from code: the old and new 2056 figures.']] }),
+S({ cap: 'f2 · Fri 20:25 · saved', clock: '20:25', msgs: [day(fD), you('assume 5% on property', '20:24'), M({ time: 'edited 20:25', btns: [['Forecast ↗', 'Undo']], text: ['^Forecast · saved', '*Saved* · property growth 5% a year · confirmed with Face ID.', 'The forecast is redrawn with it.', '_Audit: Assumption changed · You · Fri 23 Oct 20:25 · run r-2231._'] })], name: 'Saved, an audit row', notes: [['Every change to an assumption', 'is an audit row (§6.6), listed under Changes on Browser · Forecast.']] }),
+S({ cap: 'f3 · Fri 20:31 · the salary', clock: '20:31', msgs: [day(fD), you('my salary is now £4,350 a month after tax', '20:31'), M({ time: '20:31', tap: 'Confirm', btns: conf().btns, text: ['^Budget · your salary · check and confirm', '*Your salary* £4,100 → *£4,350 a month* after tax, from November', '>Left over each month *' + gbp(leftWas) + '* → *' + gbp(left) + '*, to Balanced as the forecast assumes', '>Net worth in 2056, in today’s money: *' + gbp(F55.out[360].nw) + '* → *' + gbp(nw56) + '*', NOTE] })], name: '“My salary is now …”', notes: [['The budget and the forecast together:', 'the left over moves, and so does 2056. “Plan £400 a month for …” works the same way.']] })
+] };
+
+/* MA-105: the old tracker, imported once through the Excel importer */
+const nwI = inr(NW * R);
+const trackerCard = (tap) => M({ time: '18:31', tap: tap, btns: [['Confirm', 'Cancel']], text: [
+'^Import · the old wealth tracker · dry run · nothing saved yet',
+'*wealth-tracker.xlsx*, made by the mapping script · template v3 ✓',
+'*Members:* You and Asha matched. The tracker’s third, *Joint*, becomes joint ownership here (3 records), not a person.',
+'*Add 10 records*, each with its owner:',
+'>Property 2 · Deposits 2 · Pensions 2 · Policies 2 · Loans 2',
+'>yours 5 · Asha’s 2 · joint 3',
+'>with 1,184 transactions and 46 valuations behind them',
+'*Already here:* 3 investments and the Cash pot, matched.',
+'*Left out:* Old savings account, closed in 2021 with nothing in it.',
+'*Net worth once imported:* *' + gbp(NW) + '* · ' + nwI + ' at ' + RATE + '. *The same as the tracker’s overview* ✓',
+NOTE] });
+const tTrk = { id: 'w-t-trk', name: 'Telegram · Old tracker import', keys: [key('MA-105'), key('MA-111')], arch: 'ARCHITECTURE.md §18.5, §12, §4.6',
+intro: 'Friday 23 October, 18:30. The mapping script turns the old tracker’s fixtures into the workbook format; the owner sends that workbook to the bot, which runs the Excel importer’s dry run (MA-111) and shows one summary card: members matched, counts by kind and owner, what is already here, what is left out and why, and the totals against the tracker’s own overview. Confirm with the second check; every row is audited “imported from wealth-tracker”; a re-run adds nothing. Telegram light and dark.',
+steps: [
+S({ cap: 'w1 · Fri 18:31 · the summary card', clock: '18:31', msgs: [day('Today'), M({ out: true, time: '18:30', file: { n: 'wealth-tracker.xlsx', s: '0.4 MB' } }), trackerCard('')], name: 'One summary card', notes: [['Every record accounted for:', 'added, already here, or left out with its reason (MA-105).'], ['Owners kept:', 'yours, Asha’s and joint; Asha sees yours only in the household total.'], ['A mapping choice to settle:', 'if the tracker’s third member is a person, the card creates them as a member with no sign-in until invited.']] }),
+S(Object.assign({ cap: 'w2 · Fri 18:32 · Confirm, then the check', clock: '18:32', msgs: [day('Today'), trackerCard('Confirm')], name: 'Confirm, then check it’s you', notes: [['Owner only, with the second check:', 'the sheet names the import and its file.']] }, CHK({ t: 'Face ID, before MyPaisa saves the import you confirmed.', i: 'upload_file', what: 'Import 10 records from the old tracker', from: 'from wealth-tracker.xlsx' }))),
+S({ cap: 'w3 · Fri 18:33 · saved', clock: '18:33', msgs: [day('Today'), M({ time: 'edited 18:33', btns: [['Overview ↗', 'Undo this import']], text: ['^Import · saved', '*Saved* · 10 records, 1,184 transactions and 46 valuations, as import im-0388 · confirmed with Face ID.', 'Each row’s audit says _imported from wealth-tracker_.', '>Net worth *' + gbp(NW) + '*, the same on the Overview now', '_Audit: Import · You · Fri 23 Oct 18:33 · from wealth-tracker.xlsx · run r-2190._'] })], name: 'Saved: the Overview agrees', notes: [['The totals match', 'the old tracker’s, so MA-97 can retire it.'], ['Undo this import', 'rolls back by its id, as in Telegram · Workbook import.']] }),
+S({ cap: 'w4 · Sat 08:30 · sent again', clock: '08:30', msgs: [day('Sat 24 Oct'), M({ out: true, time: '08:29', file: { n: 'wealth-tracker.xlsx', s: '0.4 MB' } }), M({ time: '08:30', wide: true, text: ['^Import · the old wealth tracker · dry run', '*Nothing to add.* All 10 records, their transactions and valuations are already here, from import im-0388.', 'A re-run changes nothing.'] })], name: 'Run again: nothing changes', notes: [['Idempotent:', 'fingerprints match every row, so there is nothing to confirm.']] })
+] };
+
+/* MA-111: the Excel workbook */
+const xD = 'Sat 24 Oct';
+const xFile = M({ out: true, time: '10:40', file: { n: 'mypaisa-import.xlsx', s: '2.3 MB' } });
+const dryCard = (tap) => M({ time: 'edited 10:41', tap: tap, btns: [['Confirm 10,327 rows'], ['Errors as a file', 'Cancel']], text: [
+'^Import · workbook · dry run · nothing saved yet',
+'*mypaisa-import.xlsx* · template v3 ✓ · checked in 38 s',
+'*Rows:* Accounts 6 · Holdings 9 · Transactions 10,214 · Valuations 312',
+'*Would add 10,327* · *already here 205*, matched by fingerprint · *refused 9*',
+'*Refused, never written:*',
+'>Transactions row 412 · “31/02/2019” is not a date',
+'>Transactions row 1,208 · “Balanced Acc” is not in Holdings',
+'>Transactions rows 3,301 and 3,302 · the same row twice',
+'>and 6 more, in the errors file',
+'*XIRR from this history, a preview:* Balanced 6.42% since Mar 2017 · Workplace pension 7.10% since Sep 2012',
+NOTE] });
+const tXl = { id: 'w-t-xl', name: 'Telegram · Workbook import', keys: [key('MA-111')], arch: 'ARCHITECTURE.md §18.5, §12, §4.6',
+intro: 'Saturday 24 October, 10:40. The owner sends the versioned workbook (Accounts, Holdings, Transactions, Valuations). It is kept first, then checked against its template; a dry run lists rows per sheet, what would be added, what is already here by fingerprint, every refused row by sheet and row number, and a preview XIRR per holding. Confirm with the second check writes in batches under one import id; the same file again adds nothing; the whole import rolls back by its id, itself confirmed; a member gets a polite refusal. Very large files go up through the upload script and arrive at the same dry run. Telegram light and dark.',
+steps: [
+S({ cap: 'x1 · Sat 10:40 · the workbook sent', clock: '10:40', msgs: [day(xD), xFile, M({ time: '10:40', wide: true, text: ['*Got it:* a workbook, 2.3 MB. It is kept with your files before anything reads it.', '_Checking it against the template…_'] })], name: 'Sent, kept, checked', notes: [['Kept first', '(MA-148), so even a failed check leaves the original.'], ['Checked by code', 'against the template’s version: sheets, columns, types, dates, currencies and known holdings.']] }),
+S({ cap: 'x2 · Sat 10:41 · the dry run', clock: '10:41', msgs: [day(xD), xFile, dryCard('')], name: 'The dry run, one card', notes: [['Wrong types, unknown holdings and duplicates', 'are reported by sheet and row and never written (MA-111).'], ['Fast enough:', '10,000 transactions checked in under a minute.'], ['XIRR previews', 'come from the XIRR code over the file’s history.']] }),
+S(Object.assign({ cap: 'x3 · Sat 10:42 · Confirm, then the check', clock: '10:42', msgs: [day(xD), dryCard('Confirm 10,327 rows')], name: 'Confirm, then check it’s you', notes: [['The refused rows stay out;', 'Confirm writes only the 10,327 that passed.']] }, CHK({ t: 'Face ID, before MyPaisa writes the rows you confirmed.', i: 'upload_file', what: 'Import 10,327 rows', from: 'from mypaisa-import.xlsx' }))),
+S({ cap: 'x4 · Sat 10:44 · written', clock: '10:44', msgs: [day(xD), M({ time: 'edited 10:44', btns: [['Activity ↗', 'Undo this import']], text: ['^Import · saved', '*Saved* · 10,327 rows as import im-0512 · confirmed with Face ID.', '>Written in 414 batches in 2 min 10 s, inside the table’s limits', '>Each row carries im-0512 and an audit row', 'XIRR now reads the full history.', '_Audit: Import · You · Sat 24 Oct 10:44 · from mypaisa-import.xlsx · run r-2311._'] })], name: 'Written in batches', notes: [['Batches with backoff', 'keep the writes inside DynamoDB’s limits; Activity shows the run.']] }),
+S({ cap: 'x5 · Sat 11:02 · the same file again', clock: '11:02', msgs: [day(xD), M({ out: true, time: '11:01', file: { n: 'mypaisa-import.xlsx', s: '2.3 MB' } }), M({ time: '11:02', wide: true, text: ['^Import · workbook · dry run', '*Nothing new.* All 10,327 rows are already here, from import im-0512.', 'The 9 refused rows are still refused; fix them and send the file again.'] })], name: 'Sent twice, adds nothing', notes: [['Stable fingerprints:', 'the same file adds nothing and needs no Confirm.']] }),
+S({ cap: 'x6 · Sat 11:05 · roll back by its id', clock: '11:05', msgs: [day(xD), you('undo import im-0512', '11:04'), M({ time: '11:05', tap: 'Confirm roll back', btns: [['Confirm roll back'], ['Cancel']], text: ['^Roll back import im-0512 · check and confirm', 'Removes the *10,327 rows* written on Sat 24 Oct at 10:44: 6 accounts, 9 holdings, 10,021 transactions and 291 valuations.', '>Anything added since in the chat stays', '>XIRR goes back to the history before the import', NOTE] })], name: 'A rollback, confirmed', notes: [['Rollback by import id', 'is itself a change: a card, Confirm, the second check and an audit row.']] }),
+S({ cap: 'x7 · Sat 11:06 · rolled back', clock: '11:06', msgs: [day(xD), you('undo import im-0512', '11:04'), M({ time: 'edited 11:06', wide: true, text: ['^Import · rolled back', '*Rolled back* · import im-0512, 10,327 rows removed · confirmed with Face ID.', 'The workbook stays in your files.', '_Audit: Import rolled back · You · Sat 24 Oct 11:06 · run r-2318._'] })], name: 'Rolled back', notes: [['The file is kept', 'even after a rollback; only the rows go.']] }),
+S({ cap: 'x8 · Sat 11:10 · Asha sends one', clock: '11:10', msgs: [day(xD), M({ out: true, time: '11:09', file: { n: 'asha-history.xlsx', s: '0.6 MB' } }), M({ time: '11:10', wide: true, text: ['Thanks, Asha. Only the owner can import a workbook, so I have not read this one.', 'It is kept with your files. Ask the owner to send it, or add things one at a time here.'] })], name: 'A member is refused, politely', notes: [['Owner only:', 'on Asha’s phone, a member’s workbook is kept but never read; a viewer gets the same.']] })
+] };
+
+/* ======================= assemble ======================= */
+const mBoards = [mOv, mAs, mAsset, mDb, mLoan, mBu, mFc, mRp];
+const bBoards = [bOv, bAs, bAsset, bDb, bLoan, bBu, bFc, bRp];
+const tBoards = [tPort, tAdd, tUpd, tRem, tFb, tTrk, tXl];
+const ks = (b) => b.keys.map((k) => k.k).join(', ');
+const index = [].concat(mBoards.map((b) => ({ id: b.id, name: b.name, keys: ks(b) })), bBoards.map((b) => ({ id: b.id, name: b.name, keys: ks(b) })), [{ id: 'w-link', name: 'Browser · Link a Google account', keys: 'MA-77' }], tBoards.map((b) => ({ id: b.id, name: b.name, keys: ks(b) })));
+return {
+intro1: 'Phase 9, epic MA-18 (ARCHITECTURE.md §12): the web app becomes the household’s whole wealth tracker. Property, deposits, policies, pensions and loans are added and updated in the chat (MA-93); the Overview, Assets and Debts show the household (MA-95); Budget and a thirty-year Forecast plan the month and the decades (MA-96); Reports and their exports replace the old tracker (MA-97); the old tracker’s records come in once (MA-105) through the Excel importer (MA-111). With them, the browser page that links a Google account with a six-digit code (MA-77, phase 5). Drawn in MyPaisa DS v1 “Warm ledger” on the shells of the Mini App, Browser, Browser 2 and India boards: Mini App frames at 390 under Telegram’s header, browser boards at 1280, chat flows in Telegram light and dark.',
+intro2: 'The web app stays read-only: no form, button or link writes the household’s records; every change is a card and a Confirm in the chat, with the second check of MA-102 and an audit row. Every figure is the engine’s (MA-94: XIRR, accrual, schedules, net worth, the projection), never Claude’s. Privacy mode hides pounds and rupees. Illustrative figures throughout, as at Friday 23 October 2026: “You” (the owner) and “Asha” (a member) are fictional, institutions are lettered, and rupees convert at one illustrative rate, ' + RATE + ' (the ECB’s, Fri 23 Oct). Net worth ' + gbp(NW) + ': own ' + gbp(OWN) + ', owe ' + gbp(OWE) + '. The tracker import and the add flows are two routes to the same records, each drawn on its own.',
+allKeys: ['MA-93', 'MA-95', 'MA-96', 'MA-97', 'MA-105', 'MA-111', 'MA-77'].map(key), index: index,
+mBoards: mBoards, bBoards: bBoards, link: link, tBoards: tBoards
+};
+}
+}
+</script>
+</body>
+</html>

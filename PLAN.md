@@ -47,6 +47,7 @@ below is a story or task under it.
 | The PR gates in GitHub Actions (MA-25): ruff, pyright, pytest with moto, `terraform fmt` and `validate`, tflint, the Terraform security scan, gitleaks, pip-audit, `jira-key`, and a plan for both environments on every PR touching `infra/` | Claude |
 | A Google OAuth client per environment (MA-143, for MA-109's sign-in): any Gmail account can own the Google Cloud project, no billing account is needed, and it has no link to AWS. The consent screen is "External" (a personal Gmail cannot choose "Internal") with only the basic email and profile scopes, so it can be published without Google's review. Each client is a "Web application" whose authorised redirect is `https://auth-dev.mypaisapp.com/oauth2/idpresponse` or `https://auth.mypaisapp.com/oauth2/idpresponse`; the client id and secret go into that environment's SSM path | You |
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
+| Boards for every story with UI drawn ahead of it in Claude Design (MA-158), with the board fixes found by its review and MA-156's applied there and copied in (MA-160) | Claude |
 
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
 the gates run on every PR; the budget exists; dev's bot token, Claude key,

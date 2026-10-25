@@ -1,0 +1,74 @@
+[
+  {
+    "id": "r1-B1",
+    "round": 1,
+    "finding": "or_drawn passes only when the boards that draw the screen are on the row, and only on a contains check of undrawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys,json,tempfile,pathlib; sys.path.insert(0,'scripts'); import review_regress as rr; F='X.dc.html'; t={'items':[{'key':'MA-X','design':'planned','undrawn':[],'boards':[{'file':F,'board':'A'},{'file':F,'board':'B'}]},{'key':'MA-Y','design':'todo','undrawn':[],'boards':[{'file':F,'board':'A'}]},{'key':'MA-Z','design':'planned','undrawn':['zzz'],'boards':[{'file':F,'board':'A'}]}]}; tmp=tempfile.TemporaryDirectory(); d=pathlib.Path(tmp.name); (d/'docs').mkdir(); (d/'docs'/'trace.json').write_text(json.dumps(t)); rr.ROOT=d; c=lambda k,od,**kw: rr.run_check(dict({'type':'trace','key':k,'field':'undrawn','contains':'zzz','or_drawn':od},**kw))[0]; ok=[c('MA-X',{'file':F,'boards':['A','B']}) is True, c('MA-X',{'file':F,'boards':['A','Missing']}) is False, c('MA-X',{'file':'Other.dc.html','boards':['A']}) is False, c('MA-Y',{'file':F,'boards':['A']}) is False, all(c('MA-Z',bad) is False for bad in ('X',{},{'file':F},{'boards':['A']},{'file':F,'boards':[]})), rr.run_check({'type':'trace','key':'MA-X','field':'undrawn','value':['zzz'],'or_drawn':{'file':F,'boards':['A']}})[0] is False, rr.run_check({'type':'trace','key':'MA-X','field':'notes','contains':'zzz','or_drawn':{'file':F,'boards':['A']}})[0] is False, rr.run_check({'type':'trace','key':'MA-X','field':'undrawn','contains':'zzz'})[0] is False, rr.run_check({'type':'trace','key':'MA-X','field':'open','contains':'on'})[0] is False, rr.run_check({'type':'trace','key':'MA-Z','field':'undrawn','contains':'zzz'})[0] is True]; tmp.cleanup(); sys.exit(0 if all(ok) else 1)\""
+    }
+  },
+  {
+    "id": "r1-B2",
+    "round": 1,
+    "finding": "MA-102's open question names the Cognito conflict (a disabled user cannot sign in at all) until its notes say 'Settled: Signing back in after a pause' with the answer",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-102'][0]; sys.exit(0 if any('AdminDisableUser' in q for q in r.get('open',[])) or 'Settled: Signing back in after a pause' in r['notes'] else 1)\""
+    }
+  },
+  {
+    "id": "r1-B3",
+    "round": 1,
+    "finding": "MA-99's price is settled by the plan (59.99) and its open question cleared",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-99'][0]; sys.exit(0 if not any(q.startswith('EODHD Fundamentals'+chr(39)+' price') for q in r.get('open',[])) and 'Settled: EODHD Fundamentals'+chr(39)+' price' in r['notes'] and '59.99' in r['notes'] else 1)\""
+    }
+  },
+  {
+    "id": "r1-B4",
+    "round": 1,
+    "finding": "the open questions of MA-57, MA-99 and MA-102 are on their Jira stories (rule 6)",
+    "check": {
+      "type": "manual",
+      "what": "Jira comments: MA-102 (sign-in after a pause, AdminDisableUser), MA-99 (settled at 59.99), MA-57 and MA-59 (stance gate settled by 11, boards annotated)"
+    }
+  },
+  {
+    "id": "r1-B5",
+    "round": 1,
+    "finding": "MA-116, MA-77, MA-95, MA-96 and MA-97 list each acceptance state no board draws yet, until the row's notes say 'Drawn: ' with that state",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-116':'the ceiling moved below what is already spent','MA-77':'the message Asha gets','MA-95':'privacy on for Assets','MA-96':'privacy on for Budget','MA-97':'privacy on for Reports'}; ok=all(any(u.startswith(n) for u in d[k].get('undrawn',[])) or ('Drawn: '+n) in d[k]['notes'] for k,n in need.items()); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r1-B6",
+    "round": 1,
+    "finding": "each board defect round 1 found is in its story's undrawn list (naming MA-160) until the fix is in the mirrored board, so start refuses the story meanwhile",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; ev={'MA-32': ('docs/design/app-v1/Chat basics.dc.html', 'or: cancel this invite'), 'MA-37': ('docs/design/app-v1/Chat basics.dc.html', 'the matched value, to confirm'), 'MA-63': ('docs/design/app-v1/Research cards.dc.html', 'Privacy hides every pound, on every card that has one'), 'MA-124': ('docs/design/app-v1/Research cards.dc.html', 'no clear view, privacy on'), 'MA-137': ('docs/design/app-v1/Admin center 3.dc.html', '3 jobs, replayed by you at 08:30: 2 ran, 1 failed again'), 'MA-77': ('docs/design/app-v1/Wealth.dc.html', 'The link was refused'), 'MA-69': ('docs/design/app-v1/Chat basics.dc.html', 'No stance line'), 'MA-130': ('docs/design/app-v1/Admin center 3.dc.html', '3 jobs replayed at 08:30, 2 ran, 1 failed again'), 'MA-116': ('docs/design/app-v1/Admin center 3.dc.html', 'Telegram · Ceiling moved')}; old={'MA-32': ('docs/design/app-v1/Chat basics.dc.html', 'Cancel this invite ends it at once'), 'MA-37': ('docs/design/app-v1/Chat basics.dc.html', 'Leave it out saves the rest'), 'MA-77': ('docs/design/app-v1/Wealth.dc.html', 'the page refuses before a code exists'), 'MA-63': ('docs/design/app-v1/Research cards.dc.html', 'the scorecard, the calls and the no clear view card carry none'), 'MA-124': ('docs/design/app-v1/Research cards.dc.html', 'the scorecard, the calls and the no clear view card carry none'), 'MA-69': ('docs/design/app-v1/Chat basics.dc.html', 'The stance stays PAUSE 58%'), 'MA-130': ('docs/design/app-v1/Admin center 3.dc.html', '1 job replayed, it ran'), 'MA-137': ('docs/design/app-v1/Admin center 3.dc.html', '1 job, replayed by you at 08:30; it ran'), 'MA-116': ('docs/design/app-v1/Admin center 3.dc.html', 'below what is spent')}; fixed=lambda k: (ev[k][1] in open(ev[k][0]).read()) and (old[k][1] not in open(old[k][0]).read()); ok=all(any('MA-160' in u for u in d[k].get('undrawn',[])) or fixed(k) for k in ev); sys.exit(0 if ok else 1)\""
+    }
+  },
+  {
+    "id": "r1-B7",
+    "round": 1,
+    "finding": "the stance-bearing kit and chat boards say they show the cards after the 8-week gate, and MA-57's open question is cleared (settled by ARCHITECTURE 11)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys,re; a=open('docs/design/ds-v1/Telegram kit.dc.html').read(); b=open('docs/design/app-v1/Telegram chats.dc.html').read(); n=lambda s: len(re.findall(r'after the 8-week gate', s)); r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-57'][0]; sys.exit(0 if n(a)>=3 and n(b)>=2 and not any(q.startswith('The brief boards') for q in r.get('open',[])) and 'Settled: The brief boards' in r['notes'] else 1)\""
+    }
+  },
+  {
+    "id": "r2-B1",
+    "round": 2,
+    "finding": "MA-137 holds the admin alert address question open: a write-only address cannot feed Terraform's SNS subscription",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; sys.exit(0 if any(q.startswith('The admin'+chr(39)+'s alert address') for q in r.get('open',[])) or 'Settled: The admin'+chr(39)+'s alert address' in r['notes'] else 1)\""
+    }
+  }
+]

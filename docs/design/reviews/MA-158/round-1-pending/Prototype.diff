@@ -1,0 +1,61 @@
+--- orig/Prototype.dc.html	2026-10-25 12:00:07
++++ edit/Prototype.dc.html	2026-10-25 12:10:11
+@@ -466,7 +466,7 @@
+         screens() {
+           if (this._scr) return this._scr;
+           const AD1 = 'Admin center.dc.html', AD2 = 'Admin center 2.dc.html', AUD = 'Audit and files.dc.html', FC = 'Forecast.dc.html', IN = 'India.dc.html', CC = 'Currency check.dc.html', TA = 'Telegram admin.dc.html', B1 = 'Browser.dc.html', B2 = 'Browser 2.dc.html';
+-          const CB = 'Chat basics.dc.html', RC = 'Research cards.dc.html', AD3 = 'Admin center 3.dc.html', WE = 'Wealth.dc.html';
++          const CB = 'Chat basics.dc.html', RC = 'Research cards.dc.html', AD3 = 'Admin center 3.dc.html', WE = 'Wealth.dc.html', CCO = 'Currency check options.dc.html';
+           const R = (s, t, go, n) => ({ s: s, t: t, go: go, n: n || '' });
+           const SIDE = [R('.mp-side-i', 'Overview', 'OV'), R('.mp-side-i', 'Holdings', 'b-hold'), R('.mp-side-i', 'Overlap', 'b-ol'), R('.mp-side-i', 'Track record', 'b-tr'), R('.mp-side-i', 'Activity', 'b-act'), R('.mp-side-i', 'Audit', 'b-aud'), R('.mp-side-i', 'Admin', 'a-people')];
+           const TABS = [R('.mp-seg-i', 'People', 'a-people'), R('.mp-seg-i', 'Spend', 'a-spend'), R('.mp-seg-i', 'Alerts', 'a-alerts'), R('.mp-seg-i', 'Approvals', 'a-appr'), R('.mp-seg-i', 'Settings', 'a-set'), R('.mp-seg-i', 'Agents', 'a-agents')];
+@@ -520,9 +520,11 @@
+             P('m-aud', AUD, 'Mini App · Audit and file · the row', 'Audit, with files', { rules: [R('.tgh-a', 'More', 'L:pop', 'Back to More'), R('.mp-btn', 'Open', 'm-file', 'Open a file')], note: 'MA-149. Every file a member sends is kept and opens from its row.' }),
+             P('m-file', AUD, 'Mini App · Audit and file · the file', 'A file, from Audit', { rules: [R('.tgh-a', 'Audit', 'm-aud', 'Back to Audit')], esc: 'm-aud', note: 'MA-149.' }),
+             /* chat cards */
+-            C('c-cc1', CC, 'Telegram · Currency check', 'Currency check', { privBase: 'Telegram · Currency check, privacy on · 6a', rules: [R('.tg-btn', 'Pounds that arrived', 'c-cc2', 'Pounds that arrived'), R('.tg-btn', 'Use the ECB rate', 'c-cc3', 'Use the ECB rate'), R('.tg-btn', 'A rupee holding', 'c-cc5', 'A rupee holding')], note: 'MA-156. ₹20,000 into a pound holding.' }),
+-            C('c-cc2', CC, 'Telegram · Pounds that arrived', 'Currency check · pounds that arrived', { privBase: 'Telegram · Currency check, privacy on · 6b', rules: [R('.tg-btn', 'Edit', 'c-cc1', 'Edit')], note: 'MA-156. £176.10 arrived, so ₹113.57 per £.' }),
+-            C('c-cc3', CC, 'Telegram · ECB rate estimate', 'Currency check · the ECB rate', { rules: [R('.tg-btn', 'Edit', 'c-cc1', 'Edit')], note: 'MA-156. ₹112.50 per £, the ECB rate of 23 Oct: £177.78, an estimate.' }),
++            /* MA-156: the picked option 1b (Currency check options); boards 4 and 5 of Currency check stay part of the spec */
++            C('c-cc1', CCO, 'Option 1b · Ask again, in pounds · 1', 'Currency check', { privBase: 'Option 1b · Ask again, in pounds · 4a', rules: [R('.tg-btn', 'ECB estimate', 'c-cc3', 'The ECB estimate'), R('.tg-btn', 'Nifty 50 instead', 'c-cc5', 'A rupee holding')], links: [R('', '', 'c-cc2', 'Type the pounds that arrived')], note: 'MA-156, option 1b, picked. ₹20,000 into a pound holding: how many pounds arrived?' }),
++            C('c-cc2', CCO, 'Option 1b · Ask again, in pounds · 2', 'Currency check · pounds that arrived', { privBase: 'Option 1b · Ask again, in pounds · 4b', rules: [R('.tg-btn', 'Edit', 'c-cc1', 'Edit'), R('.bx', 'Technical details', 'c-cc6', 'Technical details')], note: 'MA-156, option 1b. £176.10 arrived, so ₹113.57 per £.' }),
++            C('c-cc6', CCO, 'Option 1b · Ask again, in pounds · 5', 'Currency check · technical mode', { rules: [R('.tg-btn', 'Edit', 'c-cc1', 'Edit')], note: 'MA-156, option 1b. The stored fields, in plain labels.' }),
++            C('c-cc3', CCO, 'Option 1b · Ask again, in pounds · 3', 'Currency check · the ECB estimate', { rules: [R('.tg-btn', 'Edit', 'c-cc1', 'Edit')], note: 'MA-156, option 1b. ₹112.50 per £, the ECB rate of Fri 23 Oct: £177.78, an estimate.' }),
+             C('c-cc4', CC, 'Telegram · No currency named', 'Currency check · no currency named', { note: 'MA-156.' }),
+             C('c-cc5', CC, 'Telegram · A rupee holding instead', 'Currency check · a rupee holding', { rules: [R('.tg-btn', 'Back', 'c-cc1', 'Back'), R('.tg-btn', 'Edit', 'c-cc1')], note: 'MA-156.' }),
+             C('c-i1', IN, 'i1 · Mon 20:40 · sends the CAS', 'CAS import · the statement', { note: 'MA-152 · MA-148.' }),
+@@ -637,13 +639,13 @@
+           /* the chat: four sets of cards */
+           list.push.apply(list, [].concat(
+             flow('day', 'cb-a', CB, cbH('First open and setup'), 'First open and setup', 'MA-35 · MA-32', ['a1 · 19:30 · a new chat, before Start', 'a2 · 19:30 · the onboarding message', 'a3 · 19:31 · setup 2 of 3, what you hold', 'a4 · 19:31 · setup 3 of 3, how often', 'a5 · 19:32 · set up, the keyboard arrives']),
+-            flow('day', 'cb-b', CB, cbH('Invite a member'), 'Invite a member', 'MA-32', ['b1 · 18:02 · /invite, the card', 'b2 · 18:03 · the link', 'b3 · 18:20 · Asha’s phone: the link opens', 'b4 · 18:20 · Asha joins', 'b5 · 18:20 · the owner is told', 'b6 · a used link, then an old one']),
+-            flow('day', 'cb-c', CB, cbH('Members and removing one'), 'Members, removing one', 'MA-32', ['c1 · 10:05 · /members', 'c2 · 10:05 · Asha, in place', 'c3 · 10:06 · remove: check it', 'c4 · 10:06 · removed', 'c5 · 10:06 · Asha’s phone'], [{ links: [go1('S:lap:a-people', 'People, in the Admin center')] }]),
++            flow('day', 'cb-b', CB, cbH('Invite a member'), 'Invite a member', 'MA-32', ['b1 · 18:02 · /invite, the card', 'b2 · 18:03 · the link', 'b3 · 18:20 · Asha’s phone: the link opens', 'b4 · 18:20 · Asha joins', 'b5 · 18:20 · the owner is told', 'b6 · a used link, then an old one', 'b7 · 18:04 · or: cancel this invite', 'b8 · 18:04 · the invite cancelled'], [{}, { rules: [R('.tg-btn', 'Cancel this invite', 'cb-b7', 'Cancel this invite')] }]),
++            flow('day', 'cb-c', CB, cbH('Members and removing one'), 'Members, removing one', 'MA-32', ['c1 · 10:05 · /members', 'c2 · 10:05 · Asha, in place', 'c3 · 10:06 · remove: check it', 'c4 · 10:06 · removed', 'c5 · 10:06 · Asha’s phone', 'c6 · 10:05 · or: cancel the open invite', 'c7 · 10:05 · the invite cancelled'], [{ rules: [R('.tg-btn', 'Cancel the open invite', 'cb-c6', 'Cancel the open invite')], links: [go1('S:lap:a-people', 'People, in the Admin center')] }, {}, {}, {}, {}, {}, { rules: [R('.tg-btn', 'Back to members', 'cb-c1', 'Back to members')] }]),
+             flow('day', 'cb-d', CB, cbH('Link Google with a code'), '/link with a code', 'MA-77', ['d1 · 20:40 · /link and the code', 'd2 · 20:41 · linked, in both places', 'd3 · or: a wrong code, then too late', 'd4 · a used code, a taken account'], [{ links: [go1('S:lap:wb-link1', 'The code, in the browser')] }, { links: [go1('S:lap:wb-link2', 'Linked, in the browser')] }, { links: [go1('S:lap:wb-link3', 'Ran out, in the browser')] }, { links: [go1('S:lap:wb-link4', 'Taken, in the browser')] }]),
+             flow('day', 'cb-e', CB, cbH('Members: link and unlink Google'), 'Link and unlink Google', 'MA-77 · MA-32', ['e1 · 10:20 · unlink: check it', 'e2 · 10:20 · unlinked', 'e3 · 10:20 · Asha is told', 'e4 · 10:23 · link by address: which?', 'e5 · 10:24 · typed, then the card', 'e6 · 10:25 · linked by address']),
+             flow('day', 'cb-f', CB, cbH('Help and privacy'), '/help and /privacy', 'MA-35', ['f1 · the owner’s /help', 'f2 · a member’s /help', 'f3 · 21:10 · /privacy']),
+             flow('day', 'cb-g', CB, cbH('Pause and resume'), '/pause and /resume', 'MA-35', ['g1 · Mon 22:40 · /pause', 'g2 · Mon 22:40 · Asha is told', 'g3 · Tue 07:40 · while paused', 'g4 · Tue 09:02 · /resume']),
+-            flow('day', 'cb-h', CB, cbH('Valuation from a screenshot'), 'Valuation from a screenshot', 'MA-37', ['h1 · 10:12 · the screenshot and its card', 'h2 · 10:13 · saved', 'h3 · 10:30 · a value that matches nothing', 'h4 · 10:45 · an image it cannot read']),
++            flow('day', 'cb-h', CB, cbH('Valuation from a screenshot'), 'Valuation from a screenshot', 'MA-37', ['h1 · 10:12 · the screenshot and its card', 'h2 · 10:13 · saved', 'h3 · 10:30 · a value that matches nothing', 'h3b · 10:31 · the matched value, to confirm', 'h4 · 10:45 · an image it cannot read']),
+             flow('day', 'cb-i', CB, cbH('Guided flow: update a value'), 'Update a value', 'MA-39', ['i1 · 09:20 · /update', 'i2 · 09:20 · which holding', 'i3 · 09:20 · how much', 'i4 · 09:21 · typed, then the card', 'i5 · 09:21 · saved', 'i6 · or: said in one go', 'i7 · Mon 09:20 · or: left for a day']),
+             flow('day', 'cb-j', CB, cbH('Guided flow: change a setting'), 'Change a setting', 'MA-39', ['j1 · 19:05 · Settings', 'j2 · 19:05 · the question', 'j3 · 19:06 · check it', 'j4 · 19:06 · saved']),
+             flow('day', 'cb-k', CB, cbH('What changed this week'), 'What changed this week', 'MA-40', ['k1 · 20:30 · the owner asks', 'k2 · 20:32 · Asha asks', 'k3 · Sun 8 Nov · a quiet week'], [{ links: [go1('S:lap:b-aud', 'Audit, in the browser')] }]),
+@@ -656,7 +658,7 @@
+             flow('res', 'cr4-', RC, cbH('Bear vs bull card'), 'Bear vs bull', 'MA-63 · MA-66', rs(4, 'abc')),
+             flow('res', 'cr5-', RC, cbH('Scenario card'), 'Scenario', 'MA-63 · MA-67', rs(5, 'abc')),
+             flow('res', 'cr6-', RC, cbH('Research cards, HTML fallback'), 'HTML fallback', 'MA-63 · MA-65 · MA-66', rs(6, 'ab')),
+-            flow('res', 'cr7-', RC, cbH('Research cards, privacy on'), 'Privacy on', 'MA-63 · MA-67 · MA-104', rs(7, 'ab')),
++            flow('res', 'cr7-', RC, cbH('Research cards, privacy on'), 'Privacy on', 'MA-63 · MA-67 · MA-104', rs(7, 'abc')),
+             flow('res', 'cr8-', RC, cbH('Scorecard card'), 'Scorecard', 'MA-84', rs(8, 'ab'), [{ links: [go1('S:lap:b-tr', 'Track record, in the browser')] }]),
+             flow('res', 'cr9-', RC, cbH('Saturday review'), 'Saturday review', 'MA-85 · MA-124', rs(9, 'abc'), [{ links: [go1('c-s1', 'Side-by-side card')] }]),
+             flow('res', 'cr10-', RC, cbH('Brief with the sentiment line'), 'Sentiment line', 'MA-88', rs(10, 'abc')),
+@@ -693,7 +695,7 @@
+           ['b-ov', 'b-hold', 'b-ol', 'b-tr', 'b-act'].forEach((id) => { const x = list.find((q) => q.id === id); x.links = x.links.concat([R('', '', 'a-people', 'Admin center (owner)')]); });
+           list.forEach((x) => { x.rules = x.rules.concat(x.door === 'lap' ? SIDE : x.door === 'mini' ? BAR : []); out[x.id] = x; });
+           const old = {
+-            cc: ['Currency check', ['c-cc1', 'c-cc2', 'c-cc3', 'c-cc4', 'c-cc5']], cas: ['CAS import', ['c-i1', 'c-i2', 'c-i3', 'c-i4', 'c-i5', 'c-i6']], bi: ['Brief with India', ['c-b1']],
++            cc: ['Currency check', ['c-cc1', 'c-cc2', 'c-cc6', 'c-cc3', 'c-cc4', 'c-cc5']], cas: ['CAS import', ['c-i1', 'c-i2', 'c-i3', 'c-i4', 'c-i5', 'c-i6']], bi: ['Brief with India', ['c-b1']],
+             sbs: ['Side-by-side card', ['c-s1', 'c-s2']], fm: ['First of the month split', ['c-f1', 'c-f2', 'c-f3', 'c-f4']], src: ['Source button', ['c-src1', 'c-src2']],
+             ap: ['Approval request', ['c-ap1', 'c-ap2', 'c-ap3']], fw: ['Failed work alert', ['c-fw1', 'c-fw2', 'c-fw3']], sp: ['Spend steps', ['c-sp1', 'c-sp2', 'c-sp3', 'c-sp4']], inc: ['Incident', ['c-inc1', 'c-inc2', 'c-inc3']]
+           };

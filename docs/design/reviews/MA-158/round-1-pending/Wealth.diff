@@ -1,0 +1,45 @@
+--- orig/Wealth.dc.html	2026-10-25 12:00:07
++++ edit/Wealth.dc.html	2026-10-25 12:16:29
+@@ -723,7 +723,7 @@
+ { id: 'ag', cat: 'inv', lead: 'AG', name: 'Physical Silver', who: 'Asha', sub: 'Asha · Broker A · GIA', g: 820, inst: 'Broker A', b: '▼ 0.4% Fri', bC: 'mp-dq' },
+ { id: 'fd', cat: 'dep', lead: 'FD', name: 'Fixed-rate saver', who: 'You', sub: 'You · Bank B · 4.60%', g: fdNow, inst: 'Bank B', b: 'matures 14 Dec', chip: 'In 52 days', chipC: 'mp-neutral' },
+ { id: 'nre', cat: 'dep', lead: 'NR', name: 'NRE fixed deposit', who: 'Asha', sub: 'Asha · Bank C, India · 7.10%', i: nreNow, inst: 'Bank C, India', b: 'matures 9 Mar 2027' },
+-{ id: 'cash', cat: 'cash', lead: '£', name: 'Cash', who: 'You', sub: 'You · Monzo pot', g: 1185, inst: 'Monzo', b: '—' },
++{ id: 'cash', cat: 'cash', lead: '£', name: 'Cash', who: 'You', sub: 'You · Monzo pot', g: 1185, inst: 'Monzo', b: 'no change' },
+ { id: 'wp', cat: 'pen', lead: 'WP', name: 'Workplace pension', who: 'You', sub: 'You · Pension provider D', g: 86400, inst: 'Pension provider D', b: 'statement Sep' },
+ { id: 'sipp', cat: 'pen', lead: 'SP', name: 'SIPP', who: 'Asha', sub: 'Asha · SIPP platform E', g: 31250, inst: 'SIPP platform E', b: 'statement Sep' },
+ { id: 'endw', cat: 'pol', lead: 'EN', name: 'Endowment policy', who: 'You', sub: 'You · Insurer F, India', i: 340000, inst: 'Insurer F, India', b: 'matures Mar 2031' },
+@@ -740,7 +740,7 @@
+ const inIdx = ['flat', 'nre', 'endw'];
+ const inG = sum(A.filter((a) => inIdx.indexOf(a.id) >= 0).map((a) => a.g)), inI = valNow + nreNow + 340000;
+ const ukNet = NW - inG;
+-const amt = (a, priv) => (a.i != null ? V(inr(a.i), priv) : a.g === 0 ? T('—') : V(gbp(a.g), priv));
++const amt = (a, priv) => (a.i != null ? V(inr(a.i), priv) : a.g === 0 ? T('none') : V(gbp(a.g), priv));
+ const amtB = (a, priv) => (a.i != null ? V(gbp(a.g), priv) : T(a.b));
+ 
+ /* the budget, a month, after today's salary change */
+@@ -1119,8 +1119,8 @@
+ const typeTbl = (priv) => prt('Tbl', { cols: 'minmax(0, 1.6fr) 56px minmax(0, 1fr) 64px', head: [{ t: 'Kind', c: '' }, { t: 'Held', c: 'r' }, { t: 'Value', c: 'r' }, { t: 'Share', c: 'r' }],
+ cells: [].concat.apply([], CATS.map((c) => { const v = catSum(c[0]), m = V(gbp(v), priv); return [{ v: c[1], c: 'w6', m: '', r: null, l: null }, { v: String(catCount(c[0])), c: 'r s', m: '', r: null, l: null }, { v: m.v, c: 'r', m: m.c, r: m.r, l: m.l }, { v: pc(v / OWN * 100), c: 'r s', m: '', r: null, l: null }]; })) });
+ const instTbl = (priv) => prt('Tbl', { cols: 'minmax(0, 1.6fr) minmax(0, 1fr) 64px', head: [{ t: 'Institution', c: '' }, { t: 'Value', c: 'r' }, { t: 'Share', c: 'r' }],
+-cells: [].concat.apply([], INST.map((x) => { const m = x.g ? V(gbp(x.g), priv) : T('—'); return [{ v: x.inst + ' · ' + x.what.join(', '), c: '', m: '', r: null, l: null }, { v: m.v, c: 'r', m: m.c, r: m.r, l: m.l }, { v: x.g ? pc(x.g / OWN * 100) : '—', c: 'r s', m: '', r: null, l: null }]; })) });
+-const instList = (priv) => list(INST.map((x) => ({ name: x.inst, sub: x.what.join(', '), a: x.g ? V(gbp(x.g), priv) : T('—'), b: T(x.g ? pc(x.g / OWN * 100) : 'no value') })));
++cells: [].concat.apply([], INST.map((x) => { const m = x.g ? V(gbp(x.g), priv) : T('none'); return [{ v: x.inst + ' · ' + x.what.join(', '), c: '', m: '', r: null, l: null }, { v: m.v, c: 'r', m: m.c, r: m.r, l: m.l }, { v: x.g ? pc(x.g / OWN * 100) : 'none', c: 'r s', m: '', r: null, l: null }]; })) });
++const instList = (priv) => list(INST.map((x) => ({ name: x.inst, sub: x.what.join(', '), a: x.g ? V(gbp(x.g), priv) : T('none'), b: T(x.g ? pc(x.g / OWN * 100) : 'no cash value') })));
+ const typeList = (priv) => list(CATS.map((c) => ({ name: c[1], sub: catCount(c[0]) + (catCount(c[0]) === 1 ? ' asset' : ' assets'), a: V(gbp(catSum(c[0])), priv), b: T(pc(catSum(c[0]) / OWN * 100)) })));
+ const typeCard = (priv, wide) => card('By type', A.length + ' assets · ' + gbp(OWN), [ownStack(), wide ? typeTbl(priv) : typeList(priv)]);
+ const instCard = (priv, wide) => card('By institution', INST.length + ' places', [wide ? instTbl(priv) : instList(priv), F('Home and the flat are held directly. Rupee assets at ' + RDAY + ', ' + RATE + '.')]);
+@@ -1174,10 +1174,10 @@
+ btns: [{ c: 'mp-btn-primary', hasI: true, i: 'refresh', t: 'Get a new code' }, { c: 'mp-btn-plain', hasI: false, i: '', t: 'Sign in another way' }],
+ lnotes: [{ i: 'info', t: 'The old code no longer works, even if it reaches the bot later.' }],
+ notes: N2([['An expired code', 'is one of the six tested cases; the chat side tells the member too.'], ['Get a new code', 'starts again; it creates a code, not a record.']]) }),
+-LS({ name: 'Linked to someone else', th: lTh('already linked'), tile: 'st-alert', icon: 'link_off', title: 'This Google account is linked to someone else', sub: 'A Google account signs in as one member only, so it cannot be linked to you as well. Nothing has changed.',
++LS({ name: 'Linked to someone else', th: lTh('already linked'), tile: 'st-alert', icon: 'link_off', title: 'The link was refused', sub: 'While your code was waiting, this Google account was linked to another member, so the bot could not link it to you when your /link arrived. Nothing has changed for you.',
+ btns: [{ c: 'mp-btn-tinted', hasI: true, i: 'swap_horiz', t: 'Use a different Google account' }, { c: 'mp-btn-plain', hasI: false, i: '', t: 'Sign in another way' }],
+-lnotes: [{ i: 'admin_panel_settings', t: 'If it should be yours, ask the owner to unlink it first, in the Admin center.' }],
+-notes: N2([['No code is shown:', 'the page refuses before a code exists, and names no other member.'], ['The alert crimson', 'marks the refusal (MA-102), never the coral of the primary action.']]) })
++lnotes: [{ i: 'admin_panel_settings', t: 'If it should be yours, ask the owner: only the owner unlinks it, from /members or the Admin center.' }],
++notes: N2([['Only after a code:', 'signing in with a Google account already linked to a member simply signs in as that member (§4.5), so a refusal can only come after a code, when the account was linked elsewhere while the code waited. The chat says the same (Chat basics · Link Google with a code, d4).'], ['The code is gone', 'and no other member is named. The alert crimson marks the refusal (MA-102), never the coral of the primary action.']]) })
+ ]
+ };
+ 
