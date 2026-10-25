@@ -167,7 +167,8 @@ The SSM parameters listed under [Secrets](#secrets) are not a prerequisite: step
 by its first release), and steps 4 and 5 put dev's values in. The Anthropic API key comes from
 a workspace in the [Claude Console](https://platform.claude.com) organisation linked to your Max or Team plan, with
 a spend limit set on the workspace. The two Telegram bots, dev and the household's, are made
-with BotFather, and each environment has its own Google OAuth client (`PLAN.md`, phase 0).
+with BotFather, each environment has its own Google OAuth client (`PLAN.md`, phase 0), and the Twelve Data key comes
+from a free account at twelvedata.com.
 
 ## Set up from scratch
 
@@ -223,7 +224,7 @@ openssl rand -hex 32 | aws ssm put-parameter --overwrite --name /mypaisa-agent/d
 
 Do the same for the household's bot under `/mypaisa-agent/prod/telegram/...` once prod's first release has made
 those parameters. The developer role is denied anything tagged `env=prod`, so the identity that puts prod's values
-is still to be named (open on MA-142 and MA-21). Each environment has its own bot, so nothing typed in dev reaches
+is still to be named (open on MA-21, MA-26, MA-142 and MA-143). Each environment has its own bot, so nothing typed in dev reaches
 the household.
 
 Your `chat_id` arrives with the first message you send the bot after the webhook is set (step 6): the deploy prints
@@ -244,16 +245,21 @@ read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/anth
 ```
 
 The prod key goes into `/mypaisa-agent/prod/anthropic/api_key` the same way, once prod's first release has made the
-parameter, by the identity MA-21 names.
+parameter, by the identity still to be named (open on MA-21, MA-26, MA-142 and MA-143).
 
-Dev's Twelve Data key (MA-22) and its Google OAuth client's secret (MA-143) go in the same way:
+No model access request is needed; the key works immediately.
+
+Dev's Twelve Data key (MA-22) and its Google OAuth client's id and secret (MA-143) go in the same way (the id is not a
+secret, so it is a plain String):
 
 ```bash
 read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/twelvedata/api_key --type SecureString --value "$KEY" && unset KEY
+read -r ID && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/google/client_id --type String --value "$ID" && unset ID
 read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/google/client_secret --type SecureString --value "$KEY" && unset KEY
 ```
 
-No model access request is needed; the key works immediately.
+Prod's go in the same way after prod's first release has made their parameters.
+
 
 ### 6. The webhook and the first brief
 
@@ -356,6 +362,7 @@ Each environment has its own set, under `/mypaisa-agent/dev/...` and `/mypaisa-a
 | `.../telegram/chat_id` | the one chat the bot answers |
 | `.../twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
 | `.../anthropic/api_key` | the Anthropic API key from that environment's workspace, which has its own spend limit |
+| `.../google/client_id` | that environment's Google OAuth client id (a plain String, not a secret) |
 | `.../google/client_secret` | that environment's Google OAuth client, for Cognito's Google provider |
 | `.../eodhd/api_key` | EODHD, if chosen over the free sources |
 

@@ -49,11 +49,11 @@ below is a story or task under it.
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
 
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
-the gates run on every PR; the budget exists; dev's bot token, Claude key and
-Google client are in SSM, over the placeholders dev's apply made. Prod's go in
-after prod's first apply (the release workflow, MA-107; which phase holds it
-is open on MA-107 and MA-142), by the identity MA-21, MA-26, MA-142 and
-MA-143 name.
+the gates run on every PR; the budget exists; dev's bot token, Claude key,
+Twelve Data key and Google client id and secret are in SSM, over the
+placeholders dev's apply made. Prod's go in after prod's first apply (the
+release workflow, MA-107; which phase holds it is open on MA-107, MA-108 and
+MA-142), by the identity MA-21, MA-26, MA-142 and MA-143 name.
 
 **Cost:** £0.
 

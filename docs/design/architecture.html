@@ -683,7 +683,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     </div>
     <div>
       <ol class="phases">
-        <li><b>Prerequisites.</b> Terraform bootstrap with the budgets and the OIDC role, which makes each secret's SSM parameter with a write-only placeholder; then dev's bot token and Anthropic API key put over it by hand, with a Console spend limit (prod's after prod's first apply); factsheets exported.</li>
+        <li><b>Prerequisites.</b> Terraform bootstrap with the budgets and the OIDC role, which makes each secret's SSM parameter with a write-only placeholder; then dev's bot token, Anthropic API key (with a Console spend limit), Twelve Data key and Google client put over it by hand (prod's after prod's first apply); factsheets exported.</li>
         <li><b>Registry and ingestion.</b> Holdings added from the chat by factsheet and screenshot with Confirm; the Portfolio card from your own figures. No analysis yet.</li>
         <li><b>Prices and the engine.</b> The source chain, the desk's maths ported with golden tests, pillars, the holder's cascade, confidence v0, stances in shadow.</li>
         <li><b>Briefs, alerts, charts, technical mode.</b> Claude writes on top of numbers that work; every card with its technical section.</li>

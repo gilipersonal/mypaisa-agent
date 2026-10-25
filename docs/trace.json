@@ -2374,7 +2374,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "",
+      "open": [
+        "Which phase holds the first prod release: PLAN.md lists MA-107 and MA-108 under phase 1, while Jira and the trace put them in phase 0 (MA-9). Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
+      ]
     },
     {
       "key": "MA-109",
