@@ -22,7 +22,7 @@ synthetic data; prod holds the household's.
 | `terraform apply` on prod | **never from the laptop**; only the release workflow, after Arun approves in the GitHub `prod` environment |
 | `infra/bootstrap` (the CI and developer roles) | applied from the laptop once, and again only when Arun asks |
 | Deploy code to prod | only the release workflow from `main`; never `aws lambda update-*` by hand |
-| Put a secret value | Arun, by hand, into SSM (`read -rs` then `put-parameter`); Terraform creates the parameter with a placeholder and `ignore_changes` on its value |
+| Put a secret value | Arun, by hand, into SSM (`read -rs` then `put-parameter --overwrite`); Terraform creates the parameter with a write-only placeholder (`value_wo` and `value_wo_version`, Terraform 1.11 or later), never `value` or `insecure_value`: the AWS provider stores a SecureString's decrypted value in state on every refresh, whatever `ignore_changes` says, and a write-only value is never stored (MA-159) |
 | Read a secret value | never; code reads it at run time, and nothing prints it |
 | Write data into dev | only through the seed scripts (`scripts/seed.sh dev`) or the app |
 | Write data into prod | only through the app: the bot's guided flows and the Excel importer (MA-111); no script, no console edit, no MCP call |

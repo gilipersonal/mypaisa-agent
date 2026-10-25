@@ -1021,8 +1021,10 @@ The two environments share one AWS account and are kept apart by IAM: every
 Lambda role reaches only its own environment's resources; the developer's role
 works in dev and an explicit deny keeps it out of anything tagged `env=prod`;
 prod changes only through CI from `main`, after approval (§18). Secret values
-live only in SSM, set by hand; Terraform creates the parameters and ignores
-their values. The
+live only in SSM, set by hand; Terraform creates the parameters with a
+write-only placeholder (`value_wo`), so no secret ever reaches its state: with
+`value`, the AWS provider would store the decrypted value on every refresh,
+whatever `ignore_changes` says (MA-159). The
 family should turn on Telegram's two-step verification, since a Telegram
 account is now the key to both the chat and the web app.
 

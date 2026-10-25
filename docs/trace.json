@@ -3494,6 +3494,23 @@
       "design": "none",
       "boards": [],
       "notes": "Repo rule: .claude/rules/ship-autopilot.md and /autoship; changes MA-4."
+    },
+    {
+      "key": "MA-159",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Secret values never reach Terraform state: the SSM parameters use write-only values, not a placeholder with ignore_changes",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "14",
+        "18.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Checked against the AWS provider: parameter.go's Read stores the decrypted value unless value_wo is in use. MA-26 builds infra/ to this pattern."
     }
   ],
   "others": [

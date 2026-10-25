@@ -70,11 +70,11 @@ AWS views and a sequence, linked and embedded in `ARCHITECTURE.md`
 
 | Piece | Choice |
 | --- | --- |
-| Infrastructure as code | Terraform ≥ 1.9, the only way anything in AWS changes; `infra/modules/mypaisa` holds the stack once and the roots `infra/dev` and `infra/prod` call it; `infra/bootstrap` makes the CI and developer roles once; state in `s3://wealth-tracker-tfstate` under `mypaisa-agent/<env>/infra.tfstate`; plan to a file, read it, apply that file; prod applied only by CI; `prevent_destroy` on prod's data (`.claude/rules/aws-changes.md`) |
+| Infrastructure as code | Terraform ≥ 1.11 (write-only arguments, so no secret reaches state; MA-159), the only way anything in AWS changes; `infra/modules/mypaisa` holds the stack once and the roots `infra/dev` and `infra/prod` call it; `infra/bootstrap` makes the CI and developer roles once; state in `s3://wealth-tracker-tfstate` under `mypaisa-agent/<env>/infra.tfstate`; plan to a file, read it, apply that file; prod applied only by CI; `prevent_destroy` on prod's data (`.claude/rules/aws-changes.md`) |
 | Environments | `dev` and `prod`, every component twice (`mypaisa-<env>-<part>`, tagged `env`) in account `545595341442`, `us-east-1`; separate Telegram bots, Claude keys, Google clients, Cognito pools and SSM paths; separate budgets; dev seeded with synthetic data, prod empty at launch; dev's schedules off unless a variable turns them on (`ARCHITECTURE.md` §18) |
 | Developer machine | uv, Docker (image builds), AWS CLI with the `agent-toolkit` profile through the dev developer role, the AWS MCP for reading, Terraform, tflint, GitHub CLI, pre-commit |
 | Local run | The code on the laptop against dev in AWS: the dev bot by long polling, the console from `localhost` against `api-dev`, the dev Cognito pool for sign-in; tests never reach AWS or the Anthropic API |
-| Secrets | Never in files, chat, logs or Terraform state; put by hand into each environment's SSM path; CI holds no AWS keys |
+| Secrets | Never in files, chat, logs or Terraform state; put by hand into each environment's SSM path, over a parameter Terraform made with a write-only placeholder (`value_wo`, never `value`, MA-159); CI holds no AWS keys |
 | Diagrams and design pages | Lucidchart, AWS 2024 shapes: `docs/design/lucid/gen_aws_architecture.py` writes the Standard Import JSON for the seven views, and the PNG exports sit beside it; the explainer pages (MyPaisa Agent Journey, MyPaisa Market Agent) are single HTML files in `docs/design/`, published as claude.ai artifacts, in MyPaisa DS v1 "Warm ledger" (MA-101) with the crimson alert of MA-102 |
 
 ## 5. Services outside AWS

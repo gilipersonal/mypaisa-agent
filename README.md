@@ -193,8 +193,8 @@ the token straight into SSM. It is never pasted into a file, a chat or a shell h
 
 ```bash
 export AWS_PROFILE=agent-toolkit
-read -rs TOKEN && aws ssm put-parameter --name /mypaisa-agent/dev/telegram/bot_token --type SecureString --value "$TOKEN" && unset TOKEN
-openssl rand -hex 32 | aws ssm put-parameter --name /mypaisa-agent/dev/telegram/webhook_secret --type SecureString --value "$(cat)"
+read -rs TOKEN && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/telegram/bot_token --type SecureString --value "$TOKEN" && unset TOKEN
+openssl rand -hex 32 | aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/telegram/webhook_secret --type SecureString --value "$(cat)"
 ```
 
 Do the same for the household's bot under `/mypaisa-agent/prod/telegram/...`. Each environment has its own bot,
@@ -214,8 +214,8 @@ key in each, `mypaisa-agent-dev` and `mypaisa-agent-prod`. Put each straight int
 with the bot token:
 
 ```bash
-read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/dev/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
-read -rs KEY && aws ssm put-parameter --name /mypaisa-agent/prod/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
+read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
+read -rs KEY && aws ssm put-parameter --overwrite --name /mypaisa-agent/prod/anthropic/api_key --type SecureString --value "$KEY" && unset KEY
 ```
 
 No model access request is needed; the key works immediately.
