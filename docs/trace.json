@@ -3454,22 +3454,37 @@
         "22.3"
       ],
       "ui": true,
-      "design": "planned",
+      "design": "picked",
       "boards": [
         {
           "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · Currency check"
+          "file": "Currency check options.dc.html",
+          "board": "1b·1 · the question, in pounds"
         },
         {
           "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · Pounds that arrived"
+          "file": "Currency check options.dc.html",
+          "board": "1b·2 · the pounds that arrived"
         },
         {
           "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · ECB rate estimate"
+          "file": "Currency check options.dc.html",
+          "board": "1b·3 · the ECB estimate"
+        },
+        {
+          "project": "app",
+          "file": "Currency check options.dc.html",
+          "board": "1b·4a · privacy on, the question"
+        },
+        {
+          "project": "app",
+          "file": "Currency check options.dc.html",
+          "board": "1b·4b · privacy on, Confirm"
+        },
+        {
+          "project": "app",
+          "file": "Currency check options.dc.html",
+          "board": "1b·5 · technical mode"
         },
         {
           "project": "app",
@@ -3480,14 +3495,25 @@
           "project": "app",
           "file": "Currency check.dc.html",
           "board": "Telegram · A rupee holding instead"
-        },
-        {
-          "project": "app",
-          "file": "Currency check.dc.html",
-          "board": "Telegram · Currency check, privacy on"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Open for the options round: with privacy on, board 6b still shows the rate, and the member's own message (drawn by Telegram) still shows the amount typed, so the hidden figure can be worked out; decide whether the card hides the rate too."
+      "notes": "Arun picked option 1b, Ask again, in pounds (25 Oct 2026; docs/design/reviews/MA-156/decision.md): the guided flow's amount question asked again in the holding's currency, the ECB estimate one tap, Confirm a separate tap; with privacy on, no amount and no rate on the card. Boards 4 and 5 of Currency check.dc.html are marked picked, part of the spec with 1b. The undrawn states come before the build, which waits for MA-24's skeleton and MA-38's typed transactions (phase 0 and 1); the estimate button joins when MA-44 loads the daily ECB rates (phase 2), and until then it is left out. Boards 1 to 3 and 6 of Currency check.dc.html are the superseded starting point.",
+      "undrawn": [
+        "the HTML fallback",
+        "a long holding name",
+        "two or more rupee holdings",
+        "the \"$\" that needs asking which dollar",
+        "pounds typed against a rupee holding (phase 13)",
+        "the screenshot path for the pounds that arrived",
+        "the ECB estimate's Confirm card with privacy on",
+        "the question card before the daily rates load (MA-44): no estimate button",
+        "privacy on for boards 4 and 5 (no currency named; a rupee holding instead)",
+        "the Technical details fold open with privacy on",
+        "what Cancel leaves on screen",
+        "the answer to \"Which currency is Balanced in?\"",
+        "the audit row showing both amounts, typed and recorded",
+        "the Prototype's currency chats clicking through 1b's boards, not the superseded Currency check boards 1 to 3 and 6 (fix made, waiting on MA-160)"
+      ]
     },
     {
       "key": "MA-158",
