@@ -69,7 +69,8 @@ through `/design-first`.
   ARCHITECTURE heading if the doc changed), a cited key not traced (add the
   row), a UI row with no board (`todo` plus a note saying which design round
   will draw it), a board date with a wrong weekday or a board motion role on
-  the wrong element (`fade` in place of `label` or `dot`; fix the board in
+  the wrong element (`fade` in place of `label` or `dot`, or `!important` on a
+  chart label variant's own transform; fix the board in
   Claude Design, through `/design-first`, then copy it again; never edit the
   mirrored copy, whose bytes and sha256 must match Claude Design's).
 

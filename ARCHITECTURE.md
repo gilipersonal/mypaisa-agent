@@ -124,7 +124,7 @@ whole household's wealth later are the same records, not a migration.
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
 | Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so MyPaisa says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with chips: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
-| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it in a window over about 900 pt and a sheet away in a narrower one), plus the audit log of every change and what the agent did and spent; read-only |
+| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; read-only |
 | Open `console.mypaisapp.com` on your laptop, or the web app you installed | Sign in with Apple, Google or a passkey; the same dashboard, Audit and Activity, and for the owner the Admin center; read-only, and every change still made in the app's chat |
 | Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
 | Tap **Today** | The morning brief: what moved, why, anything to do |
@@ -960,8 +960,8 @@ from the boards in MyPaisa iOS v1: one spec, drawn for iPhone and for iPad and
 the foldable, in light and dark (`docs/design/README.md`). Arun, 25 Oct 2026:
 "The read only dashboard should also be shown on the ios tablet duo": every
 one of these screens is laid out for the iPad and the open foldable too, with
-the chat beside it in a window over about 900 pt and a sheet away in a
-narrower one (§9.1).
+the chat beside it over about 900 pt, a sheet away from about 600 to 900 pt,
+and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
 The web app shows the same screens in a browser (§9.4).
 
 The screens, all read-only:
@@ -969,8 +969,9 @@ The screens, all read-only:
 - **Home, a holding, Overlap, Scorecard**: as the boards, with the Household /
   Me / member switch from §4.5. A holding's screen has Why?, What if?, Ask about
   it, and Update value, which opens the chat with the guided flow already
-  started (MA-80). On an iPad or a foldable the chat sits beside them in a
-  window over about 900 pt, and is a sheet away in a narrower one (§9.1).
+  started (MA-80). On an iPad or a foldable the chat sits beside them over
+  about 900 pt, is a sheet away from about 600 to 900 pt, and is a tab in a
+  compact window (§9.1).
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
   and date; each row shows before and after and links to the run that made it,
   and a row made from a file opens that file in Quick Look; **Files** lists
@@ -1431,7 +1432,7 @@ a daily digest instead.
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
-| Front end | One native SwiftUI app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger): the chat with native cards and Swift Charts, and the read-only dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat its own tab on iPhone, beside them over about 900 pt and a sheet away between about 600 and 900 pt (§9.1); and the web app, a read-only PWA for the same dashboard and the Admin center in a browser; no Telegram (MA-161, 25 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "we have webapp for the dashboard and admin portal pwa"; native sign-in, push and Face ID for the chat, any browser for reading |
+| Front end | One native SwiftUI app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger): the chat with native cards and Swift Charts, and the read-only dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1); and the web app, a read-only PWA for the same dashboard and the Admin center in a browser; no Telegram (MA-161, 25 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "we have webapp for the dashboard and admin portal pwa"; native sign-in, push and Face ID for the chat, any browser for reading |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 | The kill switch's name | `/pause` and `/resume`, kept though PAUSE is also a stance; the stance only appears on a holding's card with its confidence, never as a command (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Three different things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §8); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5); the PAUSE stance is a view on one holding |

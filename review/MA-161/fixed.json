@@ -82,7 +82,7 @@
     "finding": "Chart, bar, currency and asset marks, the hero's gain, the empty track and the privacy masks are measured, and hold at 25%",
     "check": {
       "type": "cmd",
-      "run": "python3 scripts/contrast_check.py --selftest mark-lost-on-track track-vanishes mask-vanishes hero-gain-dim chart-4-dim"
+      "run": "python3 scripts/contrast_check.py --selftest mark-lost-on-track track-vanishes mask-vanishes hero-gain-dim chart-4-dim chart-5-dim pillar-for-dim pillar-against-dim asset-lost currency-on-surface"
     }
   },
   {
@@ -574,7 +574,7 @@
     "finding": "Lucid's generator refuses a Document row written anywhere but on arrival, before it writes a file (round 3: a mutated copy with a Confirm-time Document, however the arrow is drawn, is refused and writes nothing)",
     "check": {
       "type": "cmd",
-      "run": "T=$(mktemp -d) && sed 's/agent -> ddb : Instrument + AuditEvent (document_id) in one transaction/agent ->> ddb : Document + Instrument + AuditEvent/' docs/design/lucid/gen_aws_architecture.py > $T/g.py && grep -q 'agent ->> ddb : Document' $T/g.py && ! (cd $T && python3 g.py x.json y.puml >/dev/null 2>&1) && test ! -f $T/x.json"
+      "run": "T=$(mktemp -d) && sed 's/agent -> ddb : Instrument + AuditEvent (document_id) in one transaction/agent -> ddb : Instrument + AuditEvent + the document row/' docs/design/lucid/gen_aws_architecture.py > $T/g.py && grep -q 'the document row' $T/g.py && (cd $T && python3 g.py x.json y.puml 2>&1 | grep -q 'writes a Document row somewhere other than when the file arrives') && test ! -f $T/x.json"
     }
   },
   {
@@ -691,7 +691,7 @@
         "docs/design/reviews/MA-161/decision.md",
         "docs/design/lucid/gen_aws_architecture.py"
       ],
-      "pattern": "Sign in with Apple(?:</b>)?(?: again)?(?: under Face ID)?,? or (?:a |the )?(?:<b>)?passkey(?:</b>)?(?: under Face ID)?(?![^.;]*Google)",
+      "pattern": "(?:Sign in with Apple(?:</b>)?(?: again)?(?: under Face ID)?,? or (?:a |the )?(?:<b>)?passkey(?:</b>)?(?: under Face ID)?(?![^.;]*Google))|second check is a fresh assertion under Face ID",
       "present": false,
       "ignore_case": true
     }
@@ -736,7 +736,7 @@
     "finding": "The web boards' redraw to the iOS household and ledger is listed on MA-183 and MA-149, or drawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (all(any(x.startswith(\\\"the browser boards (Browser, Audit and files) redrawn\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: the browser boards (Browser, Audit and files) redrawn\\\" in t[k].get('notes','') for k in (\\\"MA-183\\\", \\\"MA-149\\\", \\\"MA-184\\\"))) else 1)\""
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (all(any(x.startswith(\\\"the browser boards (Browser, Audit and files) redrawn\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: the browser boards (Browser, Audit and files) redrawn\\\" in t[k].get('notes','') for k in (\\\"MA-183\\\", \\\"MA-149\\\", \\\"MA-184\\\", \\\"MA-84\\\")) and (any(\\\"Browser 2's Audit and Activity\\\" in x for x in t['MA-184'].get('undrawn',[])) or \\\"Drawn: the browser boards (Browser, Audit and files) redrawn\\\" in t['MA-184'].get('notes',''))) else 1)\""
     }
   },
   {
@@ -745,7 +745,7 @@
     "finding": "A motion role sits only on the element its keyframe was made for, and check refuses any other",
     "check": {
       "type": "cmd",
-      "run": "python3 scripts/plan_sync.py selftest | grep -q 'motion roles and one mutated board, 0 wrong' && python3 scripts/plan_sync.py check"
+      "run": "python3 scripts/plan_sync.py selftest | grep -Eq 'motion roles.*one mutated board, 0 wrong' && python3 scripts/plan_sync.py check"
     }
   },
   {
@@ -775,7 +775,7 @@
     "finding": "Foldable · Open, Audit is listed to redraw to the width rule on MA-71, and MA-78 and MA-163 say the rule wins until both foldable boards are redrawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (all(any(x.startswith(\\\"Foldable · Open, Audit redrawn to the width rule\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: Foldable · Open, Audit redrawn to the width rule\\\" in t[k].get('notes','') for k in (\\\"MA-71\\\",)) and all(any(x.startswith(\\\"the iPad and foldable boards follow the width rule\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: the iPad and foldable boards follow the width rule\\\" in t[k].get('notes','') for k in (\\\"MA-78\\\", \\\"MA-163\\\"))) else 1)\""
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (all(any(x.startswith(\\\"Foldable · Open, Audit redrawn to the width rule\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: Foldable · Open, Audit redrawn to the width rule\\\" in t[k].get('notes','') for k in (\\\"MA-71\\\",)) and all(any(x.startswith(\\\"the iPad and foldable boards follow the width rule\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: the iPad and foldable boards follow the width rule\\\" in t[k].get('notes','') for k in (\\\"MA-78\\\", \\\"MA-163\\\", \\\"MA-79\\\")) and all('Foldable · Folded' in x for k in ('MA-78','MA-163','MA-79') for x in t[k].get('undrawn',[]) if x.startswith('the iPad and foldable boards follow the width rule'))) else 1)\""
     }
   },
   {
@@ -829,14 +829,18 @@
   {
     "id": "r3-c4",
     "round": 3,
-    "finding": "No width sentence makes the iPhone's chat a sheet: on iPhone it is a tab",
+    "finding": "No width sentence gives a compact window (every iPhone, a folded foldable, Slide Over) a sheet: the chat is a tab there, a sheet from about 600 to 900 pt, beside the screen over 900 pt (round 4: every phrasing)",
     "check": {
       "type": "grep",
       "files": [
         "ARCHITECTURE.md",
-        "PLAN.md"
+        "PLAN.md",
+        "README.md",
+        "docs/design/README.md",
+        "docs/design/reviews/MA-161/decision.md",
+        "docs/design/agent-journey.html"
       ],
-      "pattern": "iPhone, iPad and foldable, with the chat beside them over about 900 pt and a sheet away below|beside them on the iPad in\\s+landscape and a sheet away on narrower windows",
+      "pattern": "a sheet (away )?in a narrower|narrower iPad and foldable|tab on (the )?iPhone, beside|sheet away below|sheet in a narrower one",
       "present": false
     }
   },
@@ -846,7 +850,7 @@
     "finding": "A board date is read whatever surrounds it: a tag after the month, or a < in a script, never hides it",
     "check": {
       "type": "cmd",
-      "run": "python3 scripts/plan_sync.py selftest | grep -q '18 dates'  && python3 scripts/plan_sync.py selftest"
+      "run": "python3 scripts/plan_sync.py selftest | grep -q 'one mutated board, 0 wrong' && python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; sys.exit(0 if p.date_errors('<span>9:41 Thu 23 Oct</span><span>wifi</span>') and p.date_errors(\\\"a < b; 'Thu 23 Oct'; c > d\\\") else 1)\""
     }
   },
   {
@@ -873,7 +877,7 @@
     "finding": "check itself refuses a misplaced motion role: the mutated-board selftest gives a copy one and expects board motion",
     "check": {
       "type": "cmd",
-      "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in motion_errors\\(path\\.read_text\\(\\)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && ! python3 -I $T/scripts/plan_sync.py selftest >/dev/null; r=$?; rm -rf $T; exit $r"
+      "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in motion_errors\\(path\\.read_text\\(\\)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong motion'; r=$?; rm -rf $T; exit $r"
     }
   },
   {
@@ -888,15 +892,92 @@
   {
     "id": "r3-e2",
     "round": 3,
-    "finding": "Activity rows name only the tools ARCHITECTURE 8 defines: a file is read by extract_document",
+    "finding": "Every tool a board's run or Activity row names is one ARCHITECTURE 8 defines (round 4: render_chart too; check refuses any other)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest | grep -q 'tool names and one mutated board, 0 wrong' && ! python3 scripts/plan_sync.py check | grep -q '^DRIFT: board tool'"
+    }
+  },
+  {
+    "id": "r4-c2",
+    "round": 4,
+    "finding": "A journey step that names Google again is not laned to Apple alone",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import re,sys; t=open('docs/design/agent-journey.html').read(); bad=[m for m in re.finditer(r'<li[^>]*data-lanes=\\\"[^\\\"]*\\(Apple\\)[^\\\"]*\\\"[^>]*>(.*?)</li>', t, re.S) if 'Google again' in m.group(1)]; sys.exit(1 if bad else 0)\""
+    }
+  },
+  {
+    "id": "r4-c3",
+    "round": 4,
+    "finding": "TECH_STACK's sign-in row gives the second check's Google path",
     "check": {
       "type": "grep",
-      "files": [
-        "docs/design/ios-v1/*.dc.html",
-        "docs/design/ds-v1/iOS kit.dc.html"
-      ],
-      "pattern": "\\b(read_file|read_image)\\b",
-      "present": false
+      "file": "TECH_STACK.md",
+      "pattern": "second check is a fresh, server-verified assertion: Sign in with Apple or a passkey under Face ID, or Google again"
+    }
+  },
+  {
+    "id": "r4-d1",
+    "round": 4,
+    "finding": "The rule, the skill and check's own message give each motion fault its fix: fade for a misplaced role, !important for a variant's transform",
+    "check": {
+      "type": "cmd",
+      "run": "grep -q 'add `!important` to it' .claude/rules/plan-sync.md && grep -q '!important. on a' .claude/skills/plan-sync/SKILL.md && python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; e=p.motion_errors('<script src=motion.js></script><style>.mp-chartlbl.al { transform: translate(-100%, 0); }</style><div class=hax data-mo=label>'); sys.exit(0 if any('add !important' in x and '<style>' not in x for x in e) and any('use data-mo=' in x for x in e) else 1)\""
+    }
+  },
+  {
+    "id": "r4-d2",
+    "round": 4,
+    "finding": "Every chart, pillar, asset and currency colour lesson 12 names has a selftest case that dims it",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest chart-4-dim chart-5-dim pillar-for-dim pillar-against-dim asset-lost currency-on-surface mark-lost-on-track"
+    }
+  },
+  {
+    "id": "r4-e1",
+    "round": 4,
+    "finding": "check refuses a board naming a tool ARCHITECTURE 8 does not define, and its selftest proves it",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; sys.exit(0 if p.tool_errors(\\\"tools: [['render_chart', '1 ms']]\\\", p.agent_tools())==['render_chart'] and not p.tool_errors(\\\"tools: [['chart_series', '1 ms']]\\\", p.agent_tools()) else 1)\""
+    }
+  },
+  {
+    "id": "r4-a1",
+    "round": 4,
+    "finding": "A rule outside the measured blocks that sets a new --mp-* or --lg-* colour, or an --mp-* token in ios.css, is refused",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest stray-new-token stray-mp-in-ios"
+    }
+  },
+  {
+    "id": "r4-a2",
+    "round": 4,
+    "finding": "A stray } or a block left open fails the gate instead of ending the read",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest stray-brace unclosed-block"
+    }
+  },
+  {
+    "id": "r4-a3",
+    "round": 4,
+    "finding": "Any transform that reaches a chart label or dot on a motion board is refused unless !important: reordered, descendant, pseudo, a carried class, inline",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Browser.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al.mp-chartlbl { transform: translate(-100%, -100%);')) and p.motion_errors(t.replace(' !important','')) else 1)\" && python3 scripts/plan_sync.py selftest | grep -q '18 motion roles'"
+    }
+  },
+  {
+    "id": "r4-a4",
+    "round": 4,
+    "finding": "A date inside a script is read whatever comparisons sit before it",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; sys.exit(0 if p.date_errors(\\\"<script>for(i=0;i<n;i++){s='Thu 23 Oct'} if(a>b){}</script>\\\") else 1)\""
     }
   }
 ]

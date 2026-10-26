@@ -49,7 +49,7 @@ words. It holds no broker login and cannot trade.
 | The numbers | DynamoDB (one table) and S3 (parquet) | `ingest` and `engine` Lambdas |
 | The records | factsheets and screenshots read into the registry | `docs` Lambda, Claude reading PDFs and images |
 | The news | RSS from central banks and the financial press | `news` and `score` Lambdas |
-| The dashboard | read-only, at both doors: Home, a holding, Overlap, Scorecard, Audit and Files, Activity and the owner's Admin center; in the app, tabs on iPhone and a sidebar on iPad and an open foldable, with the chat beside every screen in a window over about 900 pt and a sheet in a narrower one | an `api` Lambda behind API Gateway that only reads the household's records (the owner's admin settings and operations in the Admin center are the one exception, each behind the second check; none changes a record), Cognito for sign-in |
+| The dashboard | read-only, at both doors: Home, a holding, Overlap, Scorecard, Audit and Files, Activity and the owner's Admin center; in the app, tabs on iPhone and a sidebar on iPad and an open foldable, with the chat beside every screen over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) | an `api` Lambda behind API Gateway that only reads the household's records (the owner's admin settings and operations in the Admin center are the one exception, each behind the second check; none changes a record), Cognito for sign-in |
 | The web app | the same dashboard and Admin center in a browser at `console.mypaisapp.com`: a read-only PWA for a laptop, an iPad or a phone, signed in with Apple, Google or a passkey; no chat, so every change is still made in the app | `web/` on its own S3 + CloudFront per environment, reading the same `api` with an `HttpOnly` session cookie |
 | The audit log | every change to the records: who, when, through what, before and after | `AuditEvent` rows in DynamoDB, hash-chained, written with the change; the Audit screen and "what changed this week?" |
 | What the agent did | every run: its trigger, model calls, tokens, cost, tools and outcome; the schedule board; Claude spend against the ceiling | `RunRecord` rows in DynamoDB behind the Activity screen; CloudWatch, X-Ray and alarms to the owner in the app and by push |
@@ -376,7 +376,8 @@ python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.p
 ```
 
 `plan_sync.py` keeps the plan, the trace, Jira's keys and the Claude Design mirror in step (MA-155), and refuses a
-board date with a wrong weekday and a motion role that would move its element. `contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css`
+board date with a wrong weekday, a `label` or `dot` motion role on another element, and a chart label variant's own
+transform that the arrival would override. `contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css`
 and the glass fills, in light and dark, at full brightness and with the screen at 25%, so text and controls stay
 clear on a dimmed phone (MA-181); it fails closed, and fails when a board project's copy differs from DS v1's. Each
 `selftest` breaks copies on purpose and expects the refusal.

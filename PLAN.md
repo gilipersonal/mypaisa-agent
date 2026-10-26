@@ -100,9 +100,9 @@ through them (`ARCHITECTURE.md` §9).
 - Accounts per member (ISA, GIA, SIPP, cash; joint accounts with two
   owners); every holding added lands in the adding member's account.
 - The app (MA-163, MA-168, MA-169): the shell Arun picked, 1a Chat first
-  (tabs on iPhone; on iPad and an open foldable the sidebar, with the chat
-  beside every screen in a window over about 900 pt and a sheet in a narrower
-  one), the sign-in screen with Apple's and Google's buttons, and
+  (tabs on iPhone; on iPad and an open foldable the sidebar; the chat beside
+  every screen over about 900 pt, a sheet away from about 600 to 900 pt, and
+  a tab in a compact window (every iPhone, a folded foldable, Slide Over)), the sign-in screen with Apple's and Google's buttons, and
   the chat: the conversation, native cards from the agent's JSON (MA-174), the
   composer with the camera, a document scan, Photos and Files, shortcut chips,
   the typed `/commands`, replies streamed word by word.
@@ -337,15 +337,15 @@ your two funds shows the shared holdings and currency exposure.
 ## Phase 5 — The dashboard and the Admin center, in the app and the web app (read-only, behind sign-in)
 
 The dashboard screens of the iOS app on every size of iPhone, iPad and
-foldable, with the chat its own tab on iPhone, beside them over about 900 pt
-and a sheet away between about 600 and 900 pt (`ARCHITECTURE.md` §9.1, §9.3), and the web app, a
+foldable, with the chat beside them over about 900 pt, a sheet away from about
+600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (`ARCHITECTURE.md` §9.1, §9.3), and the web app, a
 read-only PWA for the same dashboard and the Admin center in a browser (§9.4).
 
 - Built from the one spec in the MyPaisa iOS v1 Claude Design project
   (`docs/design/README.md`): the iPhone boards (Home, a holding, Overlap,
   Scorecard, Audit and Files, Activity, the Admin center) and the iPad and
   foldable boards (the same screens at regular width, with the chat beside
-  them in a wide window and a sheet in a narrower one; MA-70, MA-78); Warm ledger (MA-101) on Liquid Glass; Swift Charts.
+  them over about 900 pt and a sheet away from about 600 to 900 pt; MA-70, MA-78); Warm ledger (MA-101) on Liquid Glass; Swift Charts.
 - Two screens of record: **Audit** (the §4.6 log, filtered by member, record
   and date, before and after, a link to the run, and the file behind a change
   opened in Quick Look through a five-minute link, with a Files view, MA-149)
@@ -381,7 +381,7 @@ read-only PWA for the same dashboard and the Admin center in a browser (§9.4).
   agents' requests, rolling a setting back and closing an incident (MA-130,
   MA-135) join in phase 12; JSON limited to what that member may see.
 - The second check (MA-76): a fresh Sign in with Apple or passkey under Face
-  ID (Google members sign in with Google again), bound to the action by the
+  ID (a member who signs in only with Google signs in with Google again), bound to the action by the
   api's challenge and accepted only within five minutes.
 - More than one way in (MA-77): a member adds a second sign-in, Apple or
   Google, or a passkey, from You; the owner can unlink one from the Admin
@@ -411,9 +411,10 @@ sign out everywhere), CORS from another origin, the service worker caching no
 figure, and Playwright screenshots at phone and laptop widths in both themes.
 
 **Exit:** you open Home on your iPhone, on your iPad and on a foldable and see
-the same numbers as the chat, with the chat a tab on the iPhone, beside them
-on the iPad in landscape and a sheet away on narrower iPad and foldable
-windows; you open
+the same numbers as the chat, with the chat beside them over about 900 pt (the
+iPad in landscape), a sheet away from about 600 to 900 pt (the iPad in portrait,
+the foldable open), and a tab in a compact window (the iPhone, the foldable
+folded); you open
 `console.mypaisapp.com` on your laptop, sign in with Apple, then Google, then a
 passkey, install it, and see the same numbers again; the Audit screen
 shows the change you just made in the chat, with who and when; the Activity

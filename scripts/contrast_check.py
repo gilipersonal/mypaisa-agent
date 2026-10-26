@@ -91,11 +91,13 @@ def blocks(css: str) -> list[tuple[str, str, bool]]:
         elif ch == "}":
             depth -= 1
             if not sels:
-                break
+                sys.exit("contrast: FAIL a '}' with no block to close: the stylesheet cannot be read, so nothing in it is measured")
             head = sels.pop()
             if not head.startswith("@"):
                 out.append((head, css[start:i], depth == 0))
             start = i + 1
+    if sels:
+        sys.exit(f"contrast: FAIL a block left open at the end ('{sels[-1]}'): a browser applies it, so it cannot be skipped")
     return out
 
 
@@ -168,21 +170,29 @@ def ios_glass(theme: str) -> dict[str, str]:
     return vals
 
 
+_COLOUR = re.compile(r"#[0-9A-Fa-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(|var\(--(?:mp|lg)-", re.I)
+
+
 def strays() -> list[str]:
-    """Every rule outside the measured blocks that sets a token the measured blocks define (whatever its value: a hex,
-    hsl(), oklch(), color-mix() or var() all paint), and every duplicate or @media copy of a measured block."""
+    """Every rule outside the measured blocks that sets an --mp-* or --lg-* token either named in the measured blocks
+    or holding a colour in any form (hex, rgb, hsl, hwb, lab, lch, oklab, oklch, color(), color-mix(), or a var() of
+    another token): it would paint without being measured. tokens.css, ios.css and motion.css are all read, for both
+    prefixes, and a duplicate or @media copy of a measured block counts as outside."""
     bad = []
-    for name, prefix in (("tokens.css", "mp"), ("ios.css", "lg")):
-        found = measured(name)
-        names = {k for _, vals in found.values() for k in vals}
-        keep = {idx for idx, _ in found.values()}
-        for k, (sel, body, top) in enumerate(blocks((DESIGN / "ds-v1" / name).read_text())):
+    found = {"tokens.css": measured("tokens.css"), "ios.css": measured("ios.css")}
+    names = {("mp" if f == "tokens.css" else "lg") + "-" + k for f, fd in found.items() for _, vals in fd.values() for k in vals}
+    for name in ("tokens.css", "ios.css", "motion.css"):
+        path = DESIGN / "ds-v1" / name
+        if not path.exists():
+            continue
+        keep = {idx for idx, _ in found.get(name, {}).values()}
+        for k, (sel, body, top) in enumerate(blocks(path.read_text())):
             if k in keep:
                 continue
-            for tok in re.findall(r"--" + prefix + r"-([\w-]+)\s*:", body):
-                if tok in names:
+            for tok, val in re.findall(r"--((?:mp|lg)-[\w-]+)\s*:\s*([^;]*)", body):
+                if tok in names or _COLOUR.search(val):
                     where = sel if top else f"{sel} (inside @media or @supports)"
-                    bad.append(f"--{prefix}-{tok} is set in {name} under '{where}', outside the blocks the gate measures")
+                    bad.append(f"--{tok} is set in {name} under '{where}', outside the blocks the gate measures")
     return bad
 
 
@@ -217,7 +227,16 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "stray-duplicate-dark": ("ds-v1/tokens.css", r"\Z", "\n.t-dark { --mp-ink-3: #3A4250; }\n", r"--mp-ink-3 .*'\.t-dark', outside"),
     "stray-media-glass": ("ds-v1/ios.css", r"\Z", "\n@media (min-width: 700px) { .mp { --lg-fill: rgba(255,255,255,0.30); } }\n", r"--lg-fill .*inside @media"),
     "stray-var-value": ("ds-v1/tokens.css", r"\Z", "\n.t-dark .mp-card { --mp-ink-2: var(--mp-line); }\n", r"--mp-ink-2 .* outside"),
+    "stray-new-token": ("ds-v1/tokens.css", r"\Z", "\n.t-dark .mp-card { --mp-warn: #3A4250; }\n", r"--mp-warn .* outside"),
+    "stray-mp-in-ios": ("ds-v1/ios.css", r"\Z", "\n.t-dark .mp { --mp-ink-3: #3A4250; }\n", r"--mp-ink-3 is set in ios\.css"),
+    "stray-brace": ("ds-v1/tokens.css", r"\Z", "\n.x { color: red; } }\n.t-dark { --mp-ink-3: #3A4250; }\n", r"no block to close"),
+    "unclosed-block": ("ds-v1/tokens.css", r"\Z", "\n.t-dark { --mp-ink-3: #3A4250;\n", r"left open at the end"),
     "chart-4-dim": ("ds-v1/tokens.css", r"--mp-chart-4: #[0-9A-Fa-f]{6};", "--mp-chart-4: #E4C9A0;", r"t-light .* chart-4 on surface"),
+    "chart-5-dim": ("ds-v1/tokens.css", r"--mp-chart-5: #[0-9A-Fa-f]{6};", "--mp-chart-5: #D9CBEF;", r"t-light .* chart-5 on surface"),
+    "pillar-for-dim": ("ds-v1/tokens.css", r"--mp-pillar-for: #[0-9A-Fa-f]{6};", "--mp-pillar-for: #C9D6F5;", r"t-light .* pillar-for on surface"),
+    "pillar-against-dim": ("ds-v1/tokens.css", r"--mp-pillar-against: #[0-9A-Fa-f]{6};", "--mp-pillar-against: #EBD9BC;", r"t-light .* pillar-against on surface"),
+    "asset-lost": ("ds-v1/tokens.css", r"--mp-asset-bonds: #[0-9A-Fa-f]{6};", "--mp-asset-bonds: #D2D0D8;", r"t-light .* asset-bonds on (surface|track)"),
+    "currency-on-surface": ("ds-v1/tokens.css", r"--mp-ccy-usd: #[0-9A-Fa-f]{6};", "--mp-ccy-usd: #D6E0F7;", r"t-light .* ccy-usd on surface"),
 }
 
 

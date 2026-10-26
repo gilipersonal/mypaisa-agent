@@ -602,11 +602,12 @@ doc = {"version": 1, "pages": [pg.out() for pg in pages]}
 _seq, _last = SEQUENCE.splitlines(), -1
 _TO_DB = re.compile(r"\bddb\b|DynamoDB")         # any arrow to or from the table, however it is drawn
 _DOCS_JOB = re.compile(r"\bwork\b[^:]*:\s*docs job")
+_DOC = re.compile(r"\bdocuments?\b", re.I)            # "Document", "the document row", never document_id
 for _i, _l in enumerate(_seq):
-    if _TO_DB.search(_l) and "Document" in _l and "file received" not in _l:
+    if _TO_DB.search(_l) and _DOC.search(_l) and "file received" not in _l:
         sys.exit(f"sequence: line {_i + 1} writes a Document row somewhere other than when the file arrives")
     if _DOCS_JOB.search(_l):
-        if not any(_TO_DB.search(x) and "file received" in x and "Document" in x for x in _seq[_last + 1:_i]):
+        if not any(_TO_DB.search(x) and "file received" in x and _DOC.search(x) for x in _seq[_last + 1:_i]):
             sys.exit(f"sequence: the docs job at line {_i + 1} reads a file with no Document row written before it")
         _last = _i
 if _last < 0:

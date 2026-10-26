@@ -34,7 +34,7 @@ this repo on any change just before you merge the PR. just for this Repo".
      changes them. Each reports on its part and the joins into it; their
      findings are merged into one list.
   3. **Round 1 covers everything; later rounds cover the delta**
-     (`git diff <reviewed_sha>..HEAD` and its joins), with the gates on the
+     (the previous round's fixes only: `git diff <previous round's reviewed_sha>..HEAD` and its joins; Arun, 26 Oct 2026), with the gates on the
      whole. A lane with nothing changed sits the round out.
   4. **Fixed stays fixed:** every fixed blocking finding (and any owner decision the review must keep) goes into
      `review/MA-<n>/fixed.json` with a check that passes while the fix holds;

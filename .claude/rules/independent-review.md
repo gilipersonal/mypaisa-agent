@@ -12,7 +12,9 @@ Only when Arun says so. It is offered in the merge question
 (`.claude/rules/ship-autopilot.md`, "The independent review is opt-in", MA-157):
 "merge it" or "merge now" merges with no review; a bare "yes", or any answer
 that asks for the review, means review first, then merge on a clean round.
-Arun can also ask for a reviewer at any other time.
+Arun can also ask for a reviewer at any other time. **Each round needs its own yes**
+(Arun, 25 Oct 2026: "ask me before the reviews please"): a yes covers one round;
+after fixing a round, report it and ask before the next.
 
 ## How it runs here
 
@@ -104,8 +106,12 @@ Added the day each was learned; reviewers check every item.
     a label colour on glass goes into `ios.css` as an `--lg-*` value and into
     `GLASS_TEXT`. A motion role sits only on the element its keyframe was made for
     (`label` on `.mp-chartlbl`, `dot` on `.mp-chartdot`); `plan_sync.py check`
-    refuses a `label` or `dot` anywhere else, however it is quoted (MA-161 round 2: chart axes moved off their cards once
-    the arrival settled).
+    refuses a `label` or `dot` attribute anywhere else, however it is quoted
+    (fix: `fade`), and a board rule giving a `.mp-chartlbl` or `.mp-chartdot`
+    variant its own transform without `!important` (fix: `!important`, since
+    motion.js gives every chart label and dot its role at run time) (MA-161
+    rounds 2 and 3: chart axes and two browser labels moved once the arrival
+    settled).
 12. **A gate fails closed, and its selftest proves it bites:** a file it cannot
     find, a block or selector it cannot parse, or a value in a form it does not
     read is a failure, never a skip; and every fault a review found in it is a
@@ -157,7 +163,8 @@ Added the day each was learned; reviewers check every item.
     Home at 9:41 still showing the total before it).
 20. **A check reads every form the thing can take:** a date beside a tag or
     after a `<` in a script, a token in a second block or inside `@media`, a
-    role in single quotes or set by a script at run time, an arrow drawn
+    role in single quotes, or a chart label's variant transform that motion.js
+    would override at run time, an arrow drawn
     `->>` or `<-` (MA-161 round 3: the round-2 date reader glued "Oct" to the
     next element and lost thirteen dates; the stray check passed a second
     `.t-dark`; motion.js moved two browser labels the board never marked).
@@ -167,3 +174,13 @@ Added the day each was learned; reviewers check every item.
     Open fixed, Foldable · Open, Audit left; the web Admin center's old check
     listed on four of ten stories; C15 at 21:12 still showing the buy
     unconfirmed).
+22. **A rewritten check keeps every refusal the old one made:** before a
+    check is narrowed or rebuilt, its old cases are run against the new code
+    and stay in its selftest (MA-161 round 4: round 3's stray reader dropped
+    a new colour token and an --mp-* token in ios.css, both refused before).
+23. **A rule repeated across records is one phrase, copied word for word:**
+    the width rule was reworded in each record four rounds running, and each
+    rewording missed a case (compact windows, the iPhone, a folded foldable);
+    it now reads the same everywhere: "beside every screen over about 900 pt,
+    a sheet away from about 600 to 900 pt, and a tab in a compact window
+    (every iPhone, a folded foldable, Slide Over)".

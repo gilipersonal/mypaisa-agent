@@ -698,7 +698,7 @@ footer.foot b { color: var(--mp-ink); }
     <span>One iOS app for iPhone and iPad</span>
     <span>A chat, with the dashboard inside</span>
     <span>A read-only web app for the dashboard</span>
-    <span>Sign in with Apple, Google or a passkey</span>
+    <span>Sign in with Apple or Google, or a passkey on the web</span>
     <span>AWS us-east-1, dev and prod</span>
     <span>Claude through the Anthropic API</span>
     <span>UK and Indian holdings, GBP and INR</span>
@@ -755,7 +755,7 @@ footer.foot b { color: var(--mp-ink); }
   <a class="idx" href="#alert"><b>6</b><span><strong>A red alert after the US close</strong><small>Tiers, cooldowns, quiet hours, two reds a week, a time-sensitive push · phase 3</small></span></a>
   <a class="idx" href="#ask"><b>7</b><span><strong>Asking a question</strong><small>Chat memory, tools, a reply streamed as it is written, Why? with sources · phase 4</small></span></a>
   <a class="idx" href="#dashboard"><b>8</b><span><strong>The dashboard in the app</strong><small>Home, a holding, Audit, Activity, on iPhone and iPad · phase 5</small></span></a>
-  <a class="idx" href="#ipad"><b>9</b><span><strong>On the iPad: reading Home while asking about it</strong><small>The chat beside every screen in a window over about 900 pt, a sheet in a narrower one · phases 1 and 5</small></span></a>
+  <a class="idx" href="#ipad"><b>9</b><span><strong>On the iPad: reading Home while asking about it</strong><small>The chat beside every screen over about 900 pt, a sheet away from about 600 to 900 pt · phases 1 and 5</small></span></a>
   <a class="idx" href="#web"><b>10</b><span><strong>The web app on a laptop</strong><small>The dashboard and the Admin center in a browser, installable · phase 5</small></span></a>
   <a class="idx" href="#admin"><b>11</b><span><strong>The Admin center</strong><small>In the app and the web app; devices, spend, approvals, each behind the second check · phases 5 and 12</small></span></a>
   <a class="idx" href="#failure"><b>12</b><span><strong>When something fails</strong><small>Retries, dead-letter queues, replay, offline · phases 1, 5 and 12</small></span></a>
@@ -952,8 +952,8 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fm toP" data-lanes="Member (owner) to App"><span class="lb">You tap an action that needs it: <b>Pause Asha</b> in the Admin center (or an import's Confirm, or a rollback)</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app asks the server for a <span class="sg">challenge bound to that action</span></span><span class="ln"></span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The challenge: one use, five minutes, this action only</span><span class="ln"></span></li>
-      <li class="st mv fp toE" data-lanes="App to External (Apple)"><span class="lb">A fresh <b>Sign in with Apple</b> with the challenge as its nonce; iOS shows the Face ID sheet. Or a passkey under Face ID; a Google-only member signs in with Google again. In the web app: a passkey, or a fresh sign-in</span><span class="ln"></span></li>
-      <li class="st mv fe toP rev" data-lanes="External (Apple) to App"><span class="lb">The fresh assertion</span><span class="ln"></span></li>
+      <li class="st mv fp toE" data-lanes="App to External (Apple or Google)"><span class="lb">A fresh <b>Sign in with Apple</b> with the challenge as its nonce; iOS shows the Face ID sheet. Or a passkey under Face ID; a Google-only member signs in with Google again. In the web app: a passkey, or a fresh sign-in</span><span class="ln"></span></li>
+      <li class="st mv fe toP rev" data-lanes="External (Apple or Google) to App"><span class="lb">The fresh assertion</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The action and the assertion together</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> accepts the action only with an assertion under five minutes old whose nonce is that challenge; then it acts, with its <span class="sg">audit row</span>. A local Face ID check alone never authorises anything on the server</span></li>
     </ol></div></div>
@@ -1052,7 +1052,7 @@ footer.foot b { color: var(--mp-ink); }
         <div class="chat">
           <span class="day">Asha's chat · 19:41</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
-            <div class="mcard"><h5>New sign-in to MyPaisa</h5><p>An iPad, signed in with Google, today at 19:41. Was this you?</p><div class="cbs c2"><span class="cb">Yes, it was me</span><span class="cb d">No, sign it out</span></div></div>
+            <div class="mcard"><h5>New sign-in to MyPaisa</h5><p>An iPad, with Google, today at 19:41. Was this you?</p><div class="cbs c2"><span class="cb">Yes, it was me</span><span class="cb d">No, sign it out</span></div></div>
           </div></div>
           <span class="day">The owner's chat · 19:41</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
@@ -1877,7 +1877,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-71"><b>MA-71</b><span>Design the Audit and Activity screens on iPhone and iPad</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-56"><b>MA-56</b><span>Design the chart house style shared by the chat's cards and the dashboard, in Swift Charts</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell, 1a Chat first: tabs on iPhone, a sidebar on iPad and an open foldable, with the chat beside every screen in a wide window and a sheet in a narrower one</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell, 1a Chat first: tabs on iPhone, a sidebar on iPad and an open foldable, with the chat beside every screen over about 900 pt and a sheet away from about 600 to 900 pt</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-171"><b>MA-171</b><span>Privacy in the app: privacy mode hides amounts everywhere, the app switcher shows nothing, and Face ID can lock the app</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-173"><b>MA-173</b><span>Offline, the app shows the last figures with their time, keeps what is typed and sends it once back online</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-181"><b>MA-181</b><span>Every screen works with VoiceOver, Dynamic Type up to AX5, Increase Contrast, Reduce Transparency and Reduce Motion, and stays legible in light and dark at 25% brightness</span></a>
@@ -2013,7 +2013,7 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell, 1a Chat first: tabs on iPhone, a sidebar on iPad and an open foldable, with the chat beside every screen in a wide window and a sheet in a narrower one</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell, 1a Chat first: tabs on iPhone, a sidebar on iPad and an open foldable, with the chat beside every screen over about 900 pt and a sheet away from about 600 to 900 pt</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-70"><b>MA-70</b><span>Design the iPad and open-foldable layouts: Home, a holding, Overlap, Scorecard and sign-in at regular width</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-80"><b>MA-80</b><span>Each card opens its dashboard screen, and each screen's Ask opens the chat about it</span></a>

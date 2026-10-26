@@ -70,7 +70,7 @@ on a phone that has it and the web page anywhere else.
 
 "The read only dashboard should also be shown on the ios tablet duo": every dashboard screen (Home, a holding,
 Overlap, Scorecard, Audit and Files, Activity, the Admin center) is drawn at regular width on iPad and on an open
-foldable, with the chat beside it in a window over about 900 pt and a sheet away in a narrower one; folded, the same screens fall back to the compact layout without losing their
+foldable, with the chat beside it over about 900 pt and a sheet away from about 600 to 900 pt; folded, the same screens fall back to the compact layout without losing their
 place.
 
 ## Motion (MA-182)
