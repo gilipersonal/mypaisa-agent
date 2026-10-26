@@ -598,7 +598,7 @@
     "adding a holding",
     "updating a valuation",
     "changing a setting",
-    "the long-list question in a guided flow: a short list, More, and Type the name (iPhone · Guided flow shows only the step already answered)"
+    "the long-list question in a guided flow: a short list, More, and Type the name (iPhone · Guided flow: log a transaction shows only the step already answered)"
    ]
   },
   {
@@ -1379,7 +1379,10 @@
      "board": "Foldable · Open, Audit"
     }
    ],
-   "notes": "Drawn under MA-101. Audit and files.dc.html (MA-149) adds files to Audit and a Files view; Browser 2's B5 Activity was redrawn with the Claude ceiling on 24 Oct 2026 (MA-155). MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look. Drawn: Audit and Activity on iPad (iPad · Audit and Activity, and Foldable · Open, Audit)."
+   "notes": "Drawn under MA-101. Audit and files.dc.html (MA-149) adds files to Audit and a Files view; Browser 2's B5 Activity was redrawn with the Claude ceiling on 24 Oct 2026 (MA-155). MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look. Drawn: Audit and Activity on iPad (iPad · Audit and Activity, and Foldable · Open, Audit).",
+   "undrawn": [
+    "Foldable · Open, Audit redrawn to the width rule: at 880 pt the chat is a sheet over Audit and the sidebar a tab bar at the top; the board draws a column beside it (ARCHITECTURE 9.1)"
+   ]
   },
   {
    "key": "MA-72",
@@ -1482,7 +1485,8 @@
    "notes": "Browser · Login has Apple, Google and a passkey (ARCHITECTURE.md §4.5, §9.4); redrawn for MA-185 in MA-161. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look.",
    "undrawn": [
     "the second check for a member who signs in only with Google: Google's sheet again, bound to the action (ARCHITECTURE 4.5)",
-    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)",
+    "the new-device message: a push to the member's other devices and a chat card, \"Was this you?\", with Yes, it was me and No, sign it out; not confirmed in Members and devices until answered; and one line in the owner's chat with Open Admin center (ARCHITECTURE 4.5)"
    ],
    "open": [
     "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account) (asked on MA-77; it decides this story's exact list and its test that no other action asks)"
@@ -1514,7 +1518,7 @@
    "undrawn": [
     "the message Asha gets when the owner unlinks one of her sign-ins (a change to her sign-in is never silent; the owner can only unlink, ARCHITECTURE 4.5)",
     "the Link a Google account page's refusal after a code, on the web's Telegram-era flow (Wealth): taken out with that flow, or redrawn for adding a second sign-in, as MA-185 lists it (fix made, waiting on MA-160)",
-    "iPhone · Sign-in methods' Remove control, its Confirm, and the refusals: removing the last method, and a method already linked to someone else"
+    "iPhone · Sign-in methods' Remove control, its Confirm, and its outcomes: removing the last method refused, and a method removed while a device uses it signing that device out; and adding a method already linked to someone else, refused"
    ],
    "open": [
     "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account)"
@@ -1567,7 +1571,10 @@
      "board": "iPad · Home with the chat beside it"
     }
    ],
-   "notes": "Drawn in Warm ledger under MA-101 (picked 24 Oct 2026). MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look."
+   "notes": "Drawn in Warm ledger under MA-101 (picked 24 Oct 2026). MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look.",
+   "undrawn": [
+    "the iPad and foldable boards follow the width rule where they differ: Foldable · Open and Foldable · Open, Audit draw the chat beside the screen at 880 pt, where ARCHITECTURE 9.1 makes it a sheet; they are redrawn (MA-70, MA-71) and the rule wins over the board until then"
+   ]
   },
   {
    "key": "MA-79",
@@ -2310,12 +2317,14 @@
    ],
    "notes": "Picked A · People first and the Telegram second check (Arun, 24 Oct 2026); its earlier boards stay as picked: Admin center (10), Telegram second check (5). B · Sessions first stays on the Admin center canvas as the record, not the spec. Also shown on boards drawn for other stories: Admin center 2 · Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2 · Browser · Admin · Alerts · Replay, the fresh check; Admin center 2 · Browser · Admin · Approvals · Approve, the fresh check. The owner's Restore and its log row, a failed fresh check and a household with only the owner were drawn in MA-158 (Admin center 3 · People) and are planned, so this story's own design-first round (In Progress) puts them through its options; it cannot reach In Review until they are picked and its open question is settled. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
    "open": [
-    "Signing back in after a pause: this story's acceptance says signing in with Google or the passkey restores the account, while the picked Flow 5.3 (and Admin center 3's boards) add a Restore tap after signing in. Neither can happen as drawn: ARCHITECTURE 4.5 pauses with Cognito's AdminDisableUser, and a disabled user cannot sign in at all, with Apple, Google or a passkey (one Cognito user per member, 16). Settle how a paused member, the owner included, gets back: the owner restores them from the Admin center, or pause uses the session epoch alone and leaves the Cognito user enabled."
+    "Signing back in after a pause: this story's acceptance says signing in with Google or the passkey restores the account, while the picked Flow 5.3 (and Admin center 3's boards) add a Restore tap after signing in. Neither can happen as drawn: ARCHITECTURE 4.5 pauses with Cognito's AdminDisableUser, and a disabled user cannot sign in at all, with Apple, Google or a passkey (one Cognito user per member, 16). Settle how a paused member, the owner included, gets back: the owner restores them from the Admin center, or pause uses the session epoch alone and leaves the Cognito user enabled.",
+    "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account) (asked on MA-77; it decides this story's acceptance that the check is asked on exactly the actions 4.5 lists and no others)"
    ],
    "undrawn": [
     "the web Admin center's People boards redrawn for Apple, Google and passkeys: no Telegram account to pause or restore, no Telegram handle, chip or desktop session, and Flow 5.3's sign-in page (Admin center, Admin center 3; MA-161)",
     "iPhone · A member's Unlink a sign-in method action, behind the second check, and the message the member gets",
-    "the new-device message: a push to the member's other devices and a chat card, \"Was this you?\", with Sign out that device (ARCHITECTURE 4.5)"
+    "the new-device message: a push to the member's other devices and a chat card, \"Was this you?\", with Yes, it was me and No, sign it out; not confirmed in Members and devices until answered; and one line in the owner's chat with Open Admin center (ARCHITECTURE 4.5)",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
    ]
   },
   {
@@ -2579,7 +2588,10 @@
      "board": "Browser · Admin · Spend · Move the ceiling, the consequences"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards."
+   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
+   "undrawn": [
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
+   ]
   },
   {
    "key": "MA-115",
@@ -2945,7 +2957,8 @@
     "an agent's question and an instruction from you, in the owner's chat",
     "the Admin center's Approvals, Settings, Agents and Incidents screens, on iPhone and iPad",
     "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)",
-    "the daily digest in the owner's chat in the app, not in Telegram (Admin center 3; MA-161)"
+    "the daily digest in the owner's chat in the app, not in Telegram (Admin center 3; MA-161)",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
    ]
   },
   {
@@ -3039,7 +3052,8 @@
    ],
    "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
    "undrawn": [
-    "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)"
+    "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
    ]
   },
   {
@@ -3072,7 +3086,8 @@
    ],
    "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
    "undrawn": [
-    "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)"
+    "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
    ]
   },
   {
@@ -3184,7 +3199,8 @@
     "the AWS cap's step alerts, and the alert when the forecast passes the AWS cap",
     "editing the routing matrix, quiet hours, cooldowns, the digest, the queues' retries and backoff, the ladder's steps and the AWS cap",
     "the web routing matrix with Push in place of its Telegram column, and quiet hours for push and email (Admin center 2 and 3; MA-161)",
-    "iPhone · Alert routing's note that email never carries a holding's value, made to agree with ARCHITECTURE 15.2: off unless the admin turns on Include holding values in email"
+    "iPhone · Alert routing's note that email never carries a holding's value, made to agree with ARCHITECTURE 15.2: off unless the admin turns on Include holding values in email",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
    ],
    "open": [
     "The admin's alert address: this story and ARCHITECTURE 15.2 put it in SSM by hand with the SNS subscription made by Terraform, but under MA-159 a value goes in only after the apply that made its parameter, and a write-only value cannot feed the subscription. Settle it: the address as a plain Terraform variable (an email address is not a secret), or the subscription made outside a Terraform resource."
@@ -3781,7 +3797,8 @@
    ],
    "notes": "Arun picked 1a, Chat first, on 26 Oct 2026; 1b and 1c stay on Shell options as the record, marked not picked. The flow boards are drawn in 1a's shell.",
    "undrawn": [
-    "the glass household strip tapped in the chat: Home opening as a sheet over the conversation on iPhone, as MA-163's acceptance asks"
+    "the glass household strip tapped in the chat: Home opening as a sheet over the conversation on iPhone, as MA-163's acceptance asks",
+    "the iPad and foldable boards follow the width rule where they differ: Foldable · Open and Foldable · Open, Audit draw the chat beside the screen at 880 pt, where ARCHITECTURE 9.1 makes it a sheet; they are redrawn (MA-70, MA-71) and the rule wins over the board until then"
    ]
   },
   {
@@ -3944,7 +3961,7 @@
    ],
    "notes": "",
    "undrawn": [
-    "the long-list question in a guided flow: a short list, More, and Type the name (iPhone · Guided flow shows only the step already answered)"
+    "the long-list question in a guided flow: a short list, More, and Type the name (iPhone · Guided flow: log a transaction shows only the step already answered)"
    ]
   },
   {
@@ -4364,7 +4381,8 @@
    ],
    "notes": "Audit and Activity's browser boards were picked on MA-71 and MA-79; the Admin center's are planned. The web app stays (MA-161).",
    "undrawn": [
-    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)",
+    "the browser boards (Browser, Audit and files) redrawn to the iOS boards' household, figures and audit ledger, so the web app shows the same figures and the same rows and runs as the app (lesson 13; MA-161)"
    ]
   },
   {
@@ -4394,7 +4412,7 @@
    "notes": "The login board was picked with Telegram's button on it; MA-161 redrew it (Browser · Login in Browser 2.dc.html), so it is planned again until Arun looks at it in this story's options round. Drawn: the sign-in page with Sign in with Apple, Google and a passkey, without Telegram.",
    "undrawn": [
     "the Prototype's Login link to the Telegram-era Link a Google account flow, removed or redrawn for adding a second sign-in (Prototype, Wealth; MA-161)",
-    "Browser · Login's refusals: an account linked to nobody, a member removed or paused, and an invite link opened in a browser (it says to open it on the iPhone, ARCHITECTURE 4.5)"
+    "Browser · Login's refusals: an account linked to nobody, and a member removed or paused (an invite link opened in a browser shows MA-32's invite page, not the login page; joining is in the iPhone app, ARCHITECTURE 4.5)"
    ]
   }
  ],

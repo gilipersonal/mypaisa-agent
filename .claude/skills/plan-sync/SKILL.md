@@ -68,8 +68,9 @@ through `/design-first`.
 - Fix what the check reports: a missing section (fix the row, or the
   ARCHITECTURE heading if the doc changed), a cited key not traced (add the
   row), a UI row with no board (`todo` plus a note saying which design round
-  will draw it), a board date with a wrong weekday (fix the board in Claude
-  Design, through `/design-first`, then copy it again; never edit the
+  will draw it), a board date with a wrong weekday or a board motion role on
+  the wrong element (`fade` in place of `label` or `dot`; fix the board in
+  Claude Design, through `/design-first`, then copy it again; never edit the
   mirrored copy, whose bytes and sha256 must match Claude Design's).
 
 ## 4. For one story about to start (`MA-<n>`)

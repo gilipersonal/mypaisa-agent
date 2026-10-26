@@ -82,8 +82,9 @@ may not reach In Review until they are drawn and the row says so.
 
 `python3 scripts/plan_sync.py selftest` runs the board-name check against
 names it must accept and names it must refuse (every case the reviews of PR
-#32 raised), the date check against dates it must accept and refuse, and `check`
-itself on a copy of the repo whose board says "Thu 23 Oct", which it must refuse; the jira-flow gate and CI run it before the check. `start` also runs every check
+#32 raised), the date and motion-role checks against cases they must accept and
+refuse, and `check` itself on a copy of the repo whose board says "Thu 23 Oct"
+and puts a `label` role on a non-label element, both of which it must refuse; the jira-flow gate and CI run it before the check. `start` also runs every check
 above on the story's own row, so a missing section or board stops it too.
 
 Jira-side drift (a key, parent, label or status that differs from the trace)

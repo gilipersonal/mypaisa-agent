@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: The board-name and board-date checks know a board from a stray string and a wrong weekday
+      - name: The board-name, board-date and motion-role checks know a board, a weekday and a role from their faults
         run: python3 scripts/plan_sync.py selftest
 
       - name: Trace, docs and design mirror agree

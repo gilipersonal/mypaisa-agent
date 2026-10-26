@@ -337,8 +337,8 @@ your two funds shows the shared holdings and currency exposure.
 ## Phase 5 — The dashboard and the Admin center, in the app and the web app (read-only, behind sign-in)
 
 The dashboard screens of the iOS app on every size of iPhone, iPad and
-foldable, with the chat beside them over about 900 pt and a sheet away below
-(`ARCHITECTURE.md` §9.1, §9.3), and the web app, a
+foldable, with the chat its own tab on iPhone, beside them over about 900 pt
+and a sheet away between about 600 and 900 pt (`ARCHITECTURE.md` §9.1, §9.3), and the web app, a
 read-only PWA for the same dashboard and the Admin center in a browser (§9.4).
 
 - Built from the one spec in the MyPaisa iOS v1 Claude Design project
@@ -411,8 +411,9 @@ sign out everywhere), CORS from another origin, the service worker caching no
 figure, and Playwright screenshots at phone and laptop widths in both themes.
 
 **Exit:** you open Home on your iPhone, on your iPad and on a foldable and see
-the same numbers as the chat, with the chat beside them on the iPad in
-landscape and a sheet away on narrower windows; you open
+the same numbers as the chat, with the chat a tab on the iPhone, beside them
+on the iPad in landscape and a sheet away on narrower iPad and foldable
+windows; you open
 `console.mypaisapp.com` on your laptop, sign in with Apple, then Google, then a
 passkey, install it, and see the same numbers again; the Audit screen
 shows the change you just made in the chat, with who and when; the Activity

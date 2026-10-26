@@ -76,15 +76,55 @@ GLASS_BACKDROP = "accent"
 GLASS_TEXT = [("body", "ink"), ("text", "ink-2"), ("text", "lg-accent"), ("text", "lg-up"), ("presence", "lg-mask")]
 
 
-def parse(css: str) -> dict[str, dict[str, str]]:
+def blocks(css: str) -> list[tuple[str, str, bool]]:
+    """Every rule in a stylesheet as (selector, body, top_level), in order: comments dropped, an @import or other
+    statement before a selector dropped, and a rule inside @media or @supports marked not top-level. The one reader
+    behind parse, ios_glass and strays, so what is measured and what is refused come from the same view."""
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    out, depth, start, sels = [], 0, 0, []
+    for i, ch in enumerate(css):
+        if ch == "{":
+            head = " ".join(css[start:i].split(";")[-1].split())
+            sels.append(head)
+            depth += 1
+            start = i + 1
+        elif ch == "}":
+            depth -= 1
+            if not sels:
+                break
+            head = sels.pop()
+            if not head.startswith("@"):
+                out.append((head, css[start:i], depth == 0))
+            start = i + 1
+    return out
+
+
+# The measured blocks: in tokens.css the first top-level ":root, .t-light" and ".t-dark"; in ios.css the first
+# top-level ".mp" and dark ".mp". Any other rule that sets one of their colour tokens changes what a screen shows
+# without being measured (a second .t-dark wins in the browser; a rule in @media wins at its width).
+MEASURED = {"tokens.css": {"t-light": ":root, .t-light", "t-dark": ".t-dark"},
+            "ios.css": {"t-light": ".mp", "t-dark": ".t-dark.mp, .t-dark .mp"}}
+
+
+def measured(name: str) -> dict[str, tuple[int, dict[str, str]]]:
+    """{theme: (index of its block, {token: value})} for one stylesheet; a missing block ends the run as a failure."""
+    p = DESIGN / "ds-v1" / name
+    if not p.exists():
+        sys.exit(f"contrast: FAIL docs/design/ds-v1/{name} is missing, so {'text on glass is' if name == 'ios.css' else 'nothing is'} measured")
+    rules, found = blocks(p.read_text()), {}
+    prefix = "mp" if name == "tokens.css" else "lg"
+    for theme, sel in MEASURED[name].items():
+        want = {" ".join(x.split()) for x in sel.split(",")}  # a selector list matches in any order
+        idx = next((k for k, (s, _, top) in enumerate(rules) if top and {" ".join(x.split()) for x in s.split(",")} == want), None)
+        if idx is None:
+            sys.exit(f"contrast: FAIL no top-level '{sel}' block ({theme}) in docs/design/ds-v1/{name}")
+        found[theme] = (idx, dict(re.findall(r"--" + prefix + r"-([\w-]+)\s*:\s*([^;]+);", rules[idx][1])))
+    return found
+
+
+def parse() -> dict[str, dict[str, str]]:
     """{theme: {token: value}} for the light root and .t-dark blocks of tokens.css."""
-    themes = {}
-    for name, sel in (("t-light", r":root,\s*\.t-light\s*\{"), ("t-dark", r"\.t-dark\s*\{")):
-        m = re.search(sel + r"(.*?)\n\}", css, re.S)
-        if not m:
-            sys.exit(f"contrast: no {name} block in {TOKENS.relative_to(ROOT)}")
-        themes[name] = dict(re.findall(r"--mp-([\w-]+):\s*([^;]+);", m.group(1)))
-    return themes
+    return {theme: vals for theme, (_, vals) in measured("tokens.css").items()}
 
 
 def rgba(v: str) -> tuple[float, float, float, float]:
@@ -121,39 +161,28 @@ def ratio(a: tuple, b: tuple, k: float = 1.0) -> float:
 
 
 def ios_glass(theme: str) -> dict[str, str]:
-    """ios.css's --lg-* values for a theme: the light block is the one whose selector is .mp alone, the dark block the
-    one whose selector list names .t-dark (in any order). Anything missing ends the run as a failure."""
-    p = DESIGN / "ds-v1" / "ios.css"
-    if not p.exists():
-        sys.exit("contrast: FAIL docs/design/ds-v1/ios.css is missing, so text on glass is not measured")
-    blocks = re.findall(r"(^|\n)([^{}\n]+)\{([^{}]*)\}", p.read_text())
-    want = (lambda sel: sel.strip() == ".mp") if theme == "t-light" else (lambda sel: ".t-dark" in sel and ".mp" in sel)
-    vals = {}
-    for _, sel, body in blocks:
-        if want(sel):
-            vals.update(re.findall(r"--(lg-[\w-]+):\s*([^;]+);", body))
+    """ios.css's --lg-* values for a theme, from its measured block; anything missing ends the run as a failure."""
+    vals = {"lg-" + k: v for k, v in measured("ios.css")[theme][1].items()}
     if "lg-fill" not in vals:
         sys.exit(f"contrast: FAIL no --lg-fill for {theme} in docs/design/ds-v1/ios.css")
     return vals
 
 
 def strays() -> list[str]:
-    """A colour token declared outside the blocks the gate reads would change what the screens show without being
-    measured: any --mp-* colour in tokens.css outside the light root and .t-dark blocks, and any --lg-* colour in
-    ios.css outside the .mp and dark .mp blocks."""
+    """Every rule outside the measured blocks that sets a token the measured blocks define (whatever its value: a hex,
+    hsl(), oklch(), color-mix() or var() all paint), and every duplicate or @media copy of a measured block."""
     bad = []
-    colour = r"(#[0-9A-Fa-f]{3,8}\b|rgba?\()"
-    for name, prefix, read in (("tokens.css", "mp", lambda sel: sel in (":root, .t-light", ".t-dark")),
-                               ("ios.css", "lg", lambda sel: sel == ".mp" or (".t-dark" in sel and sel.replace(" ", "") in (".t-dark.mp,.t-dark.mp",)))):
-        p = DESIGN / "ds-v1" / name
-        if not p.exists():
-            continue
-        css = re.sub(r"/\*.*?\*/", "", p.read_text(), flags=re.S)
-        for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", css):
-            sel = " ".join(m.group(1).split(";")[-1].split())  # a selector, without any @import before it
-            for tok, val in re.findall(r"--(" + prefix + r"-[\w-]+)\s*:\s*([^;]+);", m.group(2)):
-                if re.search(colour, val) and not read(sel):
-                    bad.append(f"--{tok} is set in {name} under '{sel}', outside the blocks the gate measures")
+    for name, prefix in (("tokens.css", "mp"), ("ios.css", "lg")):
+        found = measured(name)
+        names = {k for _, vals in found.values() for k in vals}
+        keep = {idx for idx, _ in found.values()}
+        for k, (sel, body, top) in enumerate(blocks((DESIGN / "ds-v1" / name).read_text())):
+            if k in keep:
+                continue
+            for tok in re.findall(r"--" + prefix + r"-([\w-]+)\s*:", body):
+                if tok in names:
+                    where = sel if top else f"{sel} (inside @media or @supports)"
+                    bad.append(f"--{prefix}-{tok} is set in {name} under '{where}', outside the blocks the gate measures")
     return bad
 
 
@@ -185,6 +214,10 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "hero-gain-dim": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-hero-up: )#[0-9A-Fa-f]{6}", r"\1#2E8F52", r"t-light .* hero-up on hero"),
     "stray-glass-block": ("ds-v1/ios.css", r"\Z", "\n.t-light .mp { --lg-fill: rgba(255, 255, 255, 0.30); }\n", r"--lg-fill .* outside"),
     "stray-token-block": ("ds-v1/tokens.css", r"\Z", "\n.t-dark .mp { --mp-ink-3: #5A6372; }\n", r"--mp-ink-3 .* outside"),
+    "stray-duplicate-dark": ("ds-v1/tokens.css", r"\Z", "\n.t-dark { --mp-ink-3: #3A4250; }\n", r"--mp-ink-3 .*'\.t-dark', outside"),
+    "stray-media-glass": ("ds-v1/ios.css", r"\Z", "\n@media (min-width: 700px) { .mp { --lg-fill: rgba(255,255,255,0.30); } }\n", r"--lg-fill .*inside @media"),
+    "stray-var-value": ("ds-v1/tokens.css", r"\Z", "\n.t-dark .mp-card { --mp-ink-2: var(--mp-line); }\n", r"--mp-ink-2 .* outside"),
+    "chart-4-dim": ("ds-v1/tokens.css", r"--mp-chart-4: #[0-9A-Fa-f]{6};", "--mp-chart-4: #E4C9A0;", r"t-light .* chart-4 on surface"),
 }
 
 
@@ -262,7 +295,7 @@ def main(argv: list[str]) -> int:
     if "--selftest" in argv:
         return selftest(argv[argv.index("--selftest") + 1:])
     report = "--report" in argv
-    themes = parse(TOKENS.read_text())
+    themes = parse()
     bad = 0
     for theme, tok in themes.items():
         surface = rgba(tok["surface"])

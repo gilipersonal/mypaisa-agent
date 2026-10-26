@@ -9,7 +9,7 @@ Jira and Claude Design halves need their MCP tools and live in /plan-sync.
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
     python3 scripts/plan_sync.py start MA-149  # what a story needs before work starts
-    python3 scripts/plan_sync.py selftest      # the board-name and board-date checks against known good and bad cases, and a mutated board (CI)
+    python3 scripts/plan_sync.py selftest      # board names, dates and motion roles against known cases, and check on a mutated board (CI)
 """
 from __future__ import annotations
 
@@ -316,7 +316,9 @@ def date_errors(text: str) -> list[str]:
     The boards are set in October 2026: a date with no year is right if its weekday fits 2026, or 2027 for January
     to September (a date ahead, such as the next results day)."""
     bad = []
-    plain = re.sub(r"<[^>]+>", "", html.unescape(text)).replace("\xa0", " ")  # "Thu&nbsp;<b>23 Oct</b>" reads as a date
+    # a tag becomes a space, so "Thu&nbsp;<b>23 Oct</b>" reads as a date and "23 Oct</span>wifi" keeps its word end;
+    # only a real tag is one ("< 70%" in a script is not), so no tag swallows the text after it
+    plain = html.unescape(re.sub(r"<[A-Za-z/!][^>]*>", " ", text)).replace("\xa0", " ")
     for m in _DATE.finditer(plain):
         day, num, mon, year = m.group(1), int(m.group(2)), _MONTHS[m.group(3)], m.group(4)
         years = [int(year)] if year else ([2026, 2027] if mon < 10 else [2026])
@@ -339,10 +341,17 @@ def motion_errors(text: str) -> list[str]:
     ends on: the arrival would leave it moved by half its size or more (MA-161 review, round 2: chart axes and a dot
     shifted off their cards once the motion settled, correct only with ?static=1)."""
     bad = []
-    for m in re.finditer(r"<[a-z][\w-]*\b[^>]*\bdata-mo=\"(label|dot)\"[^>]*>", text):
-        cls = re.search(r'\bclass="([^"]*)"', m.group(0))
-        if _MOTION_NEEDS[m.group(1)] not in (cls.group(1).split() if cls else []):
-            bad.append(f'data-mo="{m.group(1)}" on class "{cls.group(1) if cls else ""}"')
+    for m in re.finditer(r"<[a-z][\w-]*\b[^>]*\sdata-mo\s*=\s*[\"']?(label|dot)\b[^>]*>", text):
+        cls = re.search(r"""\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""", m.group(0))
+        names = (cls.group(1) or cls.group(2) or cls.group(3) or "").split() if cls else []
+        if _MOTION_NEEDS[m.group(1)] not in names:
+            bad.append(f'data-mo="{m.group(1)}" on class "{" ".join(names)}"')
+    # motion.js gives every .mp-chartlbl and .mp-chartdot its role at run time, so a board variant with its own
+    # transform (.mp-chartlbl.al) is moved too, unless its transform is !important and so outranks the animation
+    for m in re.finditer(r"([^{}]*\.mp-chart(?:lbl|dot)\.[\w-][^{}]*)\{([^{}]*)\}", text):
+        decl = re.search(r"(?<![\w-])transform\s*:\s*([^;}]*)", m.group(2))
+        if decl and "!important" not in decl.group(1):
+            bad.append(f"its own transform on '{' '.join(m.group(1).split())}' without !important")
     return sorted(set(bad))
 
 
@@ -424,7 +433,7 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
                 for d in date_errors(path.read_text()):
                     errors.append(f"board date: {proj['dir']}/{name} says {d!r}, a wrong weekday")
                 for d in motion_errors(path.read_text()):
-                    errors.append(f"board motion: {proj['dir']}/{name} puts {d}, which the settled arrival moves (use fade)")
+                    errors.append(f"board motion: {proj['dir']}/{name} has {d}, which the settled arrival moves (use fade, or !important on the transform)")
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -523,6 +532,10 @@ MOTION_CASES = [
     ('<span class="mp-chartlbl" data-mo="label">', True), ('<div class="mp-chartdot x" data-mo="dot">', True),
     ('<div class="hax" data-mo="label">', False), ('<div data-mo="dot" class="edot">', False),
     ('<div class="gut" data-mo="fade">', True), ('<p data-mo="label">', False),
+    ("<div class='hax' data-mo='label'>", False), ('<div class=hax data-mo=label>', False),
+    ('<div data-class="mp-chartlbl" class="hax" data-mo="label">', False),
+    ('.mp-chartlbl.al { transform: translate(-100%, -100%); }', False),
+    ('.mp-chartlbl.al { transform: translate(-100%, -100%) !important; }', True),
 ]
 
 # Board dates the check must accept and refuse (MA-161 review, round 1: e3's timeline and lesson 10).
@@ -532,6 +545,7 @@ DATE_CASES = [
     ("Thu 23 Oct", False), ("Tue 20 Oct 2025", False), ("Wed 28 Oct", True), ("Sat 31 Oct", True),
     ("Fri 31 Sep", False), ("Thursday 22 October", True), ("Thursday 23 October", False),
     ("Thu&nbsp;23 Oct", False), ("Fri&nbsp;23 Oct", True), ("Thu <b>23 Oct</b>", False), ("Thu 23rd Oct", False),
+    ('<span>9:41 Thu 23 Oct</span><span class="ms">wifi</span>', False), ("a < b; 'Thu 23 Oct'; c > d", False),
 ]
 
 BOARD_CASES = [
@@ -618,19 +632,22 @@ def selftest(trace: dict) -> int:
         shutil.copytree(ROOT / "docs", root / "docs")
         target = root / board
         text = target.read_text() if target.exists() else ""
-        if "Fri 23 Oct" not in text:
+        if "Fri 23 Oct" not in text or 'data-mo="fade"' not in text:
             bad += 1
-            print(f"FAIL: date selftest needs 'Fri 23 Oct' in {board}")
+            print(f"FAIL: the mutated-board selftest needs 'Fri 23 Oct' and a data-mo=\"fade\" in {board}")
         else:
-            target.write_text(text.replace("Fri 23 Oct", "Thu 23 Oct", 1))
+            text = text.replace("Fri 23 Oct", "Thu 23 Oct", 1)
+            text = re.sub(r'data-mo="fade"', 'data-mo="label"', text, count=1)  # a label role on a non-label element
+            target.write_text(text)
             m = json.loads((root / "docs/design/claude-design.json").read_text())
             rec = m["ios"]["files"][Path(board).name]
             rec["bytes"], rec["sha256"] = target.stat().st_size, sha256(target)
             (root / "docs/design/claude-design.json").write_text(json.dumps(m, indent=2) + "\n")
             r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
-            if r.returncode == 0 or "board date" not in r.stdout:
-                bad += 1
-                print(f"FAIL: check passed a board saying 'Thu 23 Oct' (exit {r.returncode})")
+            for what in ("board date", "board motion"):
+                if r.returncode == 0 or what not in r.stdout:
+                    bad += 1
+                    print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")
     print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles and one mutated board, {bad} wrong")
     return 1 if bad else 0
 

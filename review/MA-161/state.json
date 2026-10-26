@@ -1,7 +1,7 @@
 {
   "deliverable": "PR #36 [MA-161]",
-  "rounds": 2,
-  "reviewed_sha": "930592c",
+  "rounds": 3,
+  "reviewed_sha": "689726a",
   "history": [
     {
       "round": 1,
@@ -33,11 +33,21 @@
       "non_blocking": 27,
       "fixed_in": "689726a",
       "range": "c87f466..930592c (round 1's fixes)"
+    },
+    {
+      "round": 3,
+      "sha": "689726a",
+      "range": "930592c..689726a (round 2's fixes only)",
+      "blocking": 22,
+      "arun": "26 Oct 2026: run review round 3 on round 2's fixes only, fix what it finds, then merge on a clean round",
+      "by_lane": {
+        "a scripts and checks": 4,
+        "b trace and Jira": 8,
+        "c spec docs and pages": 4,
+        "d rules and skills": 4,
+        "e boards and mirror": 2
+      },
+      "non_blocking": 17
     }
-  ],
-  "next": {
-    "round": 3,
-    "range": "930592c..689726a (round 2's fixes only)",
-    "waits_for": "Arun's yes (ask before each round); at most five rounds"
-  }
+  ]
 }

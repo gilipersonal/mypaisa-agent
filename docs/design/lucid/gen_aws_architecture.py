@@ -600,11 +600,13 @@ doc = {"version": 1, "pages": [pg.out() for pg in pages]}
 # job reads it, and only there: a Document written anywhere else (at Confirm) is refused, whatever the spelling, and so
 # is a docs job with no Document row before it. Checked before anything is written (MA-161 review, rounds 1 and 2).
 _seq, _last = SEQUENCE.splitlines(), -1
+_TO_DB = re.compile(r"\bddb\b|DynamoDB")         # any arrow to or from the table, however it is drawn
+_DOCS_JOB = re.compile(r"\bwork\b[^:]*:\s*docs job")
 for _i, _l in enumerate(_seq):
-    if re.search(r"->\s*ddb\s*:", _l) and re.search(r"\bDocument\b", _l) and "file received" not in _l:
+    if _TO_DB.search(_l) and "Document" in _l and "file received" not in _l:
         sys.exit(f"sequence: line {_i + 1} writes a Document row somewhere other than when the file arrives")
-    if re.search(r"->\s*work\s*:\s*docs job", _l):
-        if not any(re.search(r"->\s*ddb\s*:", x) and "file received" in x and re.search(r"\bDocument\b", x) for x in _seq[_last + 1:_i]):
+    if _DOCS_JOB.search(_l):
+        if not any(_TO_DB.search(x) and "file received" in x and "Document" in x for x in _seq[_last + 1:_i]):
             sys.exit(f"sequence: the docs job at line {_i + 1} reads a file with no Document row written before it")
         _last = _i
 if _last < 0:

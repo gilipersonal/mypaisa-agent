@@ -28,8 +28,9 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   you are only reviewing the fixes made in previous round, MAX 5 rounds"):
   round 1 reviews everything; every later round reviews only the fixes made
   since the previous round, `git diff <previous reviewed_sha>..HEAD`, and their
-  direct joins, never the whole PR again. Five rounds at most; the range of
-  each is recorded in `state.json`.
+  direct joins, never the whole PR again. Five rounds at most, unless Arun
+  asks for more (ship-autopilot's round-6 question); the range of each is
+  recorded in `state.json`.
 - **The ledger** is per story: `review/MA-<n>/fixed.json` (each fixed blocking
   finding, and any owner decision the review must keep, with a check that tests
   the behaviour, not the code's text; a story with no ledger yet has nothing to
@@ -103,7 +104,7 @@ Added the day each was learned; reviewers check every item.
     a label colour on glass goes into `ios.css` as an `--lg-*` value and into
     `GLASS_TEXT`. A motion role sits only on the element its keyframe was made for
     (`label` on `.mp-chartlbl`, `dot` on `.mp-chartdot`); `plan_sync.py check`
-    refuses any other (MA-161 round 2: chart axes moved off their cards once
+    refuses a `label` or `dot` anywhere else, however it is quoted (MA-161 round 2: chart axes moved off their cards once
     the arrival settled).
 12. **A gate fails closed, and its selftest proves it bites:** a file it cannot
     find, a block or selector it cannot parse, or a value in a form it does not
@@ -112,8 +113,9 @@ Added the day each was learned; reviewers check every item.
     `contrast_check.py` skipped the glass when `ios.css` was missing or its
     dark selector reordered, read an 8-digit hex as opaque, never compared the
     board projects' copies, and measured only three chart colours and the
-    meter: never chart-4 or chart-5, the marks on a bar's track, the track,
-    the masks or the hero's gain;
+    meter: never chart-4 or chart-5, the currency and asset marks, the
+    pillars, the marks on a bar's track, the track, the masks or the hero's
+    gain;
     `--selftest` now holds those cases).
 13. **One figure set and one ledger behind every set of boards:** before
     boards are drawn, the illustrative household is written once (holdings,
@@ -153,3 +155,15 @@ Added the day each was learned; reviewers check every item.
     figure set has a clock, and a change at 08:41 shows in every later frame
     or comes after the last one (MA-161 round 2: the £200 buy at 08:41 beside
     Home at 9:41 still showing the total before it).
+20. **A check reads every form the thing can take:** a date beside a tag or
+    after a `<` in a script, a token in a second block or inside `@media`, a
+    role in single quotes or set by a script at run time, an arrow drawn
+    `->>` or `<-` (MA-161 round 3: the round-2 date reader glued "Oct" to the
+    next element and lost thirteen dates; the stray check passed a second
+    `.t-dark`; motion.js moved two browser labels the board never marked).
+21. **A fix to one board or story is carried to its neighbours the same
+    round:** the next board in the file, every story built from the same
+    boards, and every frame drawn after the change (MA-161 round 3: Foldable ·
+    Open fixed, Foldable · Open, Audit left; the web Admin center's old check
+    listed on four of ten stories; C15 at 21:12 still showing the buy
+    unconfirmed).

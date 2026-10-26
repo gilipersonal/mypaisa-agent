@@ -376,7 +376,7 @@ python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.p
 ```
 
 `plan_sync.py` keeps the plan, the trace, Jira's keys and the Claude Design mirror in step (MA-155), and refuses a
-board date with a wrong weekday. `contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css`
+board date with a wrong weekday and a motion role that would move its element. `contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css`
 and the glass fills, in light and dark, at full brightness and with the screen at 25%, so text and controls stay
 clear on a dimmed phone (MA-181); it fails closed, and fails when a board project's copy differs from DS v1's. Each
 `selftest` breaks copies on purpose and expects the refusal.
