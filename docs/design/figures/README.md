@@ -61,6 +61,12 @@ Arun is the owner and admin; Asha is a member. Their five UK holdings are the iO
 - The first record is £5,000 of Monzo savings, registered at 09:41 on Mon 26 Oct.
 - After it, by country: UK £338,468, India £106,483.
 - After it, by member: Arun £250,868, Asha £194,083.
+- At 09:52, after the valuation check-in, Arun corrects the Home valuation in place: £415,000 → £428,000, labelled
+  "your estimate".
+- After the correction: £457,951 (₹5,15,19,488); by country UK £351,468, India £106,483; by member Arun £257,368,
+  Asha £200,583.
+- The Pune flat's valuation is overdue since 15 Jul, so it is a check-in on Mon 26 Oct.
+- The HDFC balance is ₹14,84,587 after the Thu 5 Nov EMI.
 
 **October's budget**
 - Income £7,560; EMIs £2,153; SIP £89.
@@ -69,7 +75,8 @@ Arun is the owner and admin; Asha is a member. Their five UK holdings are the iO
 - The Barclaycard statement of Sun 1 Nov (£1,458) and the Monzo October statement sum, line by line, to the actuals.
 
 **The Projection**
-- The fan's p10, p50 and p90 by year to 2056 are from an illustrative engine run.
+- The fan's p10, p50 and p90 by year to 2056 are from an illustrative engine run. It starts after the correction,
+  at £457,951; the 2036 middle path is £1,316,000.
 - The assumptions:
   - Parag Parikh's 10.7% XIRR is shrunk to 9.06% (3.8 years of history moves the prior only a little).
   - The FD and the PPF are at their contract rate of 7.1%.
@@ -79,4 +86,4 @@ Arun is the owner and admin; Asha is a member. Their five UK holdings are the iO
   - a home extension, −£35,000 in Jun 2027;
   - Asha's bonus, +£3,000 every March;
   - a new car, −£25,000 in Jun 2031.
-- The what-if: £60,000 down on a second flat in Jun 2028 puts 2036's middle path £82,000 lower.
+- The what-if: £60,000 down on a second flat in Jun 2028 puts 2036's middle path £83,000 lower (£1,233,000).

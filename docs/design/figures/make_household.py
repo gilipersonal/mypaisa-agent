@@ -110,6 +110,7 @@ car_bal, car_pay, car_n, car_int, _ = amortise(14500, 0.069, 48, date(2025, 3, 2
 car_end = end_date(14500, 0.069, 48, date(2025, 3, 20))
 hl_bal, hl_pay, hl_n, hl_int, _ = amortise(4000000, 0.085, 180, date(2015, 8, 5), date(2026, 10, 5))
 hl_end = end_date(4000000, 0.085, 180, date(2015, 8, 5))
+hl_bal_nov, _, _, _, _ = amortise(4000000, 0.085, 180, date(2015, 8, 5), date(2026, 11, 5))  # after the Thu 5 Nov EMI
 card_bal = 1240.0
 
 debts = [
@@ -124,7 +125,7 @@ debts = [
      "ends": car_end.isoformat(), "autopay": True},
     {"id": "hdfc", "kind": "home_loan", "name": "Home loan · HDFC (Pune flat)", "country": "IN", "ccy": "INR",
      "owners": [["arun", 100]], "principal": 4000000, "rate": 0.085, "term_months": 180, "first_payment": "2015-08-05",
-     "payment_day": 5, "payment": hl_pay, "balance": hl_bal, "balance_after": "2026-10-05", "payments_made": hl_n,
+     "payment_day": 5, "payment": hl_pay, "balance": hl_bal, "balance_after": "2026-10-05", "balance_after_nov_emi": hl_bal_nov, "payments_made": hl_n,
      "ends": hl_end.isoformat(), "autopay": False, "linked": "pune"},
     {"id": "card", "kind": "credit_card", "name": "Barclaycard", "country": "UK", "ccy": "GBP", "owners": [["arun", 100]],
      "statement": {"date": "2026-10-01", "balance": card_bal, "minimum": 25.0, "due": "2026-10-20", "paid": "in full"},
@@ -196,6 +197,14 @@ def totals(include_new: bool):
 before = totals(False)
 after = totals(True)
 
+# Corrected in place in the prototype at 09:52 on Mon 26 Oct, after the valuation check-in: Home £415,000 -> £428,000.
+correction = {"record": "home", "field": "value", "from": 415000, "to": 428000, "at": "2026-10-26T09:52", "via": "inline_edit",
+              "label": "your estimate"}
+_home = next(a for a in assets if a["id"] == "home")
+_home["value"] = correction["to"]
+after_correction = totals(True)
+_home["value"] = correction["from"]
+
 # --- Budget (monthly plan, October actuals) ------------------------------------------------------------------------
 plan = [
     ["Bills and council tax", 420], ["Groceries", 650], ["Transport", 220], ["Insurance", 85], ["Eating out", 180],
@@ -246,12 +255,13 @@ assumed = {
 def project(paths: int = 400, years: int = 30, seed: int = 7, extra: list | None = None):
     rnd = random.Random(seed)
     items = plan_items + (extra or [])
-    start = after["net_gbp"]
+    base = after_correction
+    start = base["net_gbp"]
     out = []
     for p in range(paths):
-        liquid = after["liquid_gbp"]
-        locked = after["own_gbp"] - after["liquid_gbp"]
-        debt = after["owe_gbp"]
+        liquid = base["liquid_gbp"]
+        locked = base["own_gbp"] - base["liquid_gbp"]
+        debt = base["owe_gbp"]
         series = []
         for yr in range(1, years + 1):
             shock = rnd.gauss(0, 1) if p else 0.0
@@ -345,11 +355,13 @@ out = {
               "fx": {"gbp_inr": FX, "source": "ECB reference cross-rate, Fri 23 Oct"}},
     "members": members, "assets": assets, "debts": debts, "new_record_in_prototype": new_record,
     "totals_before_new_record": before, "totals_after_new_record": after,
+    "correction_in_prototype": correction, "totals_after_correction": after_correction,
     "budget_oct": budget,
     "statements_oct": statements,
     "what_if": what_if,
     "check_ins": [
         {"when": "2026-10-26T09:00", "what": "Valuation due: Home, Reading", "record": "home", "asks": "Is £415,000 still about right?"},
+        {"when": "2026-10-26T09:00", "what": "Valuation overdue since 15 Jul: Flat, Pune", "record": "pune", "asks": "Is ₹1,10,00,000 still about right?"},
         {"when": "2026-11-01T09:00", "what": "Close October's budget", "asks": "Anything not on a statement?"},
         {"when": "2026-11-05T09:00", "what": "HDFC home loan EMI", "record": "hdfc", "amount": inr(hl_pay), "asks": "Was November's EMI paid?"},
         {"when": "2026-11-10T09:00", "what": "Parag Parikh SIP", "record": "ppfas", "amount": inr(10000), "asks": "Did November's SIP go through?"},
@@ -360,7 +372,7 @@ out = {
     "projection": {"start_net_gbp": start_net, "horizon_years": 30, "assumptions": assumed, "inflation": INFLATION,
                    "priors": {k: {"return": v[0], "volatility": v[1]} for k, v in PRIORS.items()}, "plan_items": plan_items,
                    "fan": fan, "milestones": milestones, "engine_note": "illustrative run for the boards; the product's engine is MA-191's"},
-    "formatted": {"net_before": gbp(before["net_gbp"]), "net_after": gbp(after["net_gbp"]), "net_after_inr": inr(after["net_inr"]),
+    "formatted": {"net_before": gbp(before["net_gbp"]), "net_after": gbp(after["net_gbp"]), "net_after_inr": inr(after["net_inr"]), "net_after_correction": gbp(after_correction["net_gbp"]), "net_after_correction_inr": inr(after_correction["net_inr"]),
                   "mortgage_payment": gbp(mort_pay), "car_payment": gbp(car_pay), "hdfc_emi": inr(hl_pay),
                   "fd_maturity": inr(fd_mat), "fd_value": inr(fd_accrued), "mf_value": inr(mf_value), "infosys_value": inr(120 * 1480.50)},
 }
