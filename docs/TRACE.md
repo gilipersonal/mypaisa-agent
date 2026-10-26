@@ -49,7 +49,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-225 | The Lucid architecture pages show SSE on the api host, the dashboard host, the web chat and the dynamic structure | Done | §3, §4.8, §21.5 | none |  |
 | MA-226 | The explainer pages walk the v4 flows: registering anything, check-ins, statements, in-place correction and the Projection | Done | §4.8, §4.9, §4.10, §6.6 | none |  |
 | MA-227 | The v4 boards still to draw are drawn: Budget and Assets and Debts on iPad, the check-in cards in the web chat, and the new-kind card's second check | Done | §4.5, §9.3, §9.4 | none |  |
-| MA-228 | The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree | In Progress | §16 | none |  |
+| MA-228 | The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree | Done | §16 | none |  |
+| MA-229 | The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled | In Progress | §9.4, §9.5, §16, §21.5 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

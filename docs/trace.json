@@ -6063,7 +6063,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "16"
@@ -6080,6 +6080,25 @@
     "docs/confluence/"
    ],
    "notes": "Arun, 26 Oct 2026: detailed documentation in Confluence phase by phase and screen by screen, with the boards, the artifacts and the design choices linked, a roadmap with estimates and dates, colourful and interactive, and a repo-only check that Confluence, Jira, the designs and the code do not drift; a new design or feature gets its Jira issue and its Confluence page in the same change."
+  },
+  {
+   "key": "MA-229",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "9.4",
+    "9.5",
+    "16",
+    "21.5"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 26 Oct 2026: \"Go with the latest and greatest for this. For UI, I want the what we used for Smart Clearance and bong-panjika, Tanstack, shadecdn-ui, tailwind CSS all those.\" Records the web app on Smart Clearance's stack and the iOS shell on bong-panjika's, Swift Package Manager from day one, the association file behind a CloudFront Function, and the stream on the api's REST API in API Gateway's streaming mode."
   }
  ],
  "others": [
