@@ -99,7 +99,8 @@ made in Confluence.
      `set-database stories <id> published`. With an id, read its rows
      (`content_format: csv`), send the edit envelope that turns them into
      the file's rows (the database guide's edit workflow, `edit_entry` for
-     changed rows, `add_entry` and `delete_entry` for the rest), then
+     changed rows, `add_entry` and `delete_entry` for the rest; the update
+     needs `context.content` set to the CSV just read, or it is refused), then
      `set-database stories <id> published`.
    - `apps`: the Maui apps (`roadmap-gantt` on the roadmap, `decision-cards`
      on the decisions page), made with `createConfluenceMauiApp` (or

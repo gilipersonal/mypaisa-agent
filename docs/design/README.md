@@ -91,8 +91,9 @@ A SvelteKit 3 app in `web/`, at `dashboard.mypaisapp.com` (`dashboard-dev`
 for dev), installable as a PWA (`ARCHITECTURE.md` §9.4): the chat, Home and
 the dashboard as it grows phase by phase (net worth, assets and one asset,
 debts and one loan, Budget, Projection), Audit and Files, Activity, Search
-and the owner's Admin center, with lightweight-charts and the shared motion
-in CSS, the Web Animations API and View Transitions. Its spec is the browser
+and the owner's Admin center, on Tailwind CSS 4 over the tokens with
+shadcn-svelte components and LayerChart charts, and the shared motion in
+Motion 14, Svelte transitions and View Transitions (MA-229). Its spec is the browser
 boards in MyPaisa app v1, at desktop and at phone width (390). Arun picked
 the first of them before MA-161 (MA-70, MA-71, MA-78, MA-79); the sign-in
 page is redrawn for Apple, Google and a passkey (MA-185); the chat and the

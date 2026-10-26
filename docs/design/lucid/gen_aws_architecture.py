@@ -96,7 +96,7 @@ B, R, T, Lf = (0.5, 1), (1, 0.5), (0.5, 0), (0, 0.5)   # bottom, right, top, lef
 pages = []
 
 # ---------------------------------------------------------------- 1 overview
-# The chat runs as a U: in along row B (HTTP API → api → updates.fifo), the agent at the turn, out along row A
+# The chat runs as a U: in along row B (REST API → api → updates.fifo), the agent at the turn, out along row A
 # (outbox.fifo → sender → the SSE stream on the api host), so both doors sit next to it. The sender appends to the
 # member's stream log, which the stream sends to every open door, and pushes through Apple (APNs, straight above it)
 # or Web Push only to a device with no fresh Presence.
@@ -130,7 +130,7 @@ p.icon("ssm", "ssm", c[7], YA, "SSM Parameter Store<br>keys, set by hand")
 # the turn
 p.icon("agent", "lambda", c[3], 590, "agent λ<br>Claude tool loop<br>drafts · Confirm")
 # row B: the way in
-p.icon("apigw", "apigw", c[0], YB, "API Gateway<br>HTTP API + authorizer<br>api.mypaisapp.com")
+p.icon("apigw", "apigw", c[0], YB, "API Gateway<br>REST API + authorizer<br>api.mypaisapp.com")
 p.icon("api", "lambda", c[1], YB, "api λ · /v1<br>chat · data · admin<br>PATCH: a correction<br>/auth/* for sign-in")
 p.icon("qin", "sqs", c[2], YB, "SQS updates.fifo<br>lane per member")
 p.icon("ddb", "ddb", c[4], YB, "DynamoDB<br>records · events · audit<br>stream log · Presence")
@@ -279,12 +279,12 @@ door("d_second", "<b>Second check</b> (MA-76, MA-102)<br>the owner's admin actio
 door("d_paused", "<b>Refused</b><br>a paused member: one line<br>a removed member<br>linked to nobody, no valid invite")
 p.box("o_idp", 560, 180, 420, 110, "<b>Apple · Google</b><br>sign the identity token (app and web)<br>publish their keys (JWKS)", F_OUT, AMBER)
 p.group("cl3", "cloud", 480, 340, 1560, 1100, "AWS · prod (dev the same)")
-p.icon("i_api", "apigw", 580, 420, "HTTP API<br>api.mypaisapp.com")
+p.icon("i_api", "apigw", 580, 420, "REST API<br>api.mypaisapp.com")
 p.icon("i_apil", "lambda", 820, 420, "api λ<br>/auth/apple · /auth/google<br>/auth/passkey/options<br>/auth/passkey · nonce<br>custom auth · web's cookie")
 p.icon("i_cog", "cognito", 1080, 420, "Cognito user pool<br>no passwords · no sign-up<br>no hosted domain:<br>the api calls its API")
 p.icon("i_trig", "lambda", 1340, 420, "custom-auth triggers λ<br>Apple · Google token:<br>issuer · audience · expiry<br>issued under 5 min<br>nonce · no replay<br>passkey assertion:<br>signature · challenge<br>origin · relying-party id")
 p.box("i_idp", 1560, 400, 440, 220, "<b>Linked to one Cognito user</b><br>Apple (sub) · Google (sub)<br>passkeys (WebAuthn)<br>relying party: dashboard.mypaisapp.com<br>(dashboard-dev in dev), whose site serves<br>the app's association file<br>linked to nobody: refused,<br>unless a valid invite creates the member")
-p.icon("i_v1", "apigw", 580, 680, "HTTP API · /v1<br>(the same API)")
+p.icon("i_v1", "apigw", 580, 680, "REST API · /v1<br>(the same API)")
 p.icon("i_ws", "apigw", 580, 900, "SSE stream · /v1/stream<br>api.mypaisapp.com<br>re-checked every 60 s")
 p.icon("i_authz", "lambda", 820, 790, "authorizer λ<br>token or cookie<br>status · epoch")
 p.icon("i_ddb", "ddb", 1080, 790, "DynamoDB<br>Member: status, role, epoch<br>Device: push token, Web Push")
@@ -311,7 +311,7 @@ p.line("d_second", "i_admin", "fresh assertion", color=CRIMSON, pa=door_at("d_se
 p.line("i_admin", "i_cog", "", color=CRIMSON, pa=(1, 0.15), pb=(1, 0.8), kind="elbow")  # the box says what it does
 p.line("i_admin", "i_out", "", color=CRIMSON, pa=(1, 0.6), pb=Lf)
 # The passkey's challenge and assertion go to the api's /auth/passkey routes (added last, so the earlier line ids stay).
-# No label: the box names both routes, and a label here crowds the HTTP API's own.
+# No label: the box names both routes, and a label here crowds the REST API's own.
 p.line("d_passkey", "i_api", "", color=BLUE, pa=(1, 0.3), pb=(0, 0.9))
 pages.append(p)
 
@@ -324,7 +324,7 @@ p.box("q_app", 40, 360, 220, 130, "<b>iOS app or web app</b><br>a member's messa
 p.box("q_apns", 1595, 150, 300, 110, "<b>Apple push · Web Push</b><br>to a device with no<br>fresh presence", F_OUT, AMBER)
 p.box("q_app2", 2280, 150, 240, 340, "<b>Every open door</b><br>replies in order<br>never twice<br>resumes from<br>its last event", F_HOME, NAVY)
 p.group("cl4", "cloud", 320, 300, 1900, 1260, "AWS · us-east-1 · prod (dev has the same queues)")
-p.icon("q_apigw", "apigw", 380, 380, "HTTP API<br>/v1/chat/messages<br>authorizer")
+p.icon("q_apigw", "apigw", 380, 380, "REST API<br>/v1/chat/messages<br>authorizer")
 p.icon("q_hook", "lambda", 620, 380, "api λ<br>answers 202 at once")
 p.icon("q_in", "sqs", 880, 380, "updates.fifo<br>group = member<br>dedupe = client id")
 p.icon("q_agent", "lambda", 1160, 380, "agent λ<br>lane per member")

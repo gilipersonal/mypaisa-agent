@@ -1461,8 +1461,20 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   and at 390 (the phone-web door; the earlier boards picked on MA-70 before
   MA-161, with the sign-in page redrawn for Apple, Google and a passkey;
   MA-183, MA-184, MA-185; the whole-wealth screens drawn by MA-193), in Warm
-  ledger with lightweight-charts and the motion of §9.1. Two columns at laptop
-  width; the adaptive shell of MyPaisa DS v1 below it.
+  ledger, with the motion of §9.1. Two columns at laptop width; the adaptive
+  shell of MyPaisa DS v1 below it.
+- **The stack** (MA-229, the one Smart Clearance's frontend runs, at its
+  latest): SvelteKit 3.1, Svelte 5.57 and Vite 8.3 in TypeScript 6.0, a pnpm 12
+  workspace; Tailwind CSS 4.3 with its theme mapped onto the Warm ledger
+  tokens; shadcn-svelte 1.7 components on bits-ui 2.20, owned in
+  `web/src/lib/components/ui/`; Lucide icons; TanStack Query 6.3 (the SSE
+  stream writes into its cache), Table 9.3 for the lists, Virtual 3.13 for
+  the chat and long lists, and Form 1.33 for the in-place correction and the
+  Admin center's settings (still no creation form); shadcn-svelte's charts on
+  LayerChart 2.9 for the dashboard, and lightweight-charts 5.2 only for the
+  market side's price charts; Motion 14 and Svelte transitions. Tests:
+  Vitest 5, Playwright 1.64 with axe, and a pixel parity check of each screen
+  against its board.
 - **Shared code:** the card types, the formatting (GBP and INR with lakh and
   crore, privacy masking) and the view models live in `web/src/lib/`, written
   once and imported by path by the iOS app's shell (§9.5).
@@ -1484,10 +1496,11 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   `webcredentials`, so a passkey made in the app signs in to the web app; §4.5), so an invite link
   (`https://dashboard.mypaisapp.com/join/<token>`) or a link to a holding opens
   the iOS app on a phone that has it, and the web page anywhere else (MA-73).
-  The single-page app's fallback must not swallow
-  `/.well-known/apple-app-site-association`: that path is served as the file
-  itself, with its JSON type, and only unknown page paths fall back to the
-  app's shell [verify with adapter-static].
+  The file is `web/static/.well-known/apple-app-site-association`, uploaded
+  with `Content-Type: application/json`. There is no S3 error-page fallback:
+  a CloudFront Function sends extension-less page paths to the app's shell
+  and leaves `/.well-known/` and every real file alone, so the association
+  file is always served as itself (MA-229).
 - **Hosting:** S3 and CloudFront per environment, with the existing wildcard
   certificate and strict security headers; the Content-Security-Policy carries
   the hashes SvelteKit generates for its inline scripts, so it needs no
@@ -1505,8 +1518,8 @@ Native shell, as bong-panjika is built: "Performance is key … silky smooth lik
 Monzo". It follows bong-panjika's `frontend-native-apple`, with its
 `swiftui-first` and `native-apple` skills adapted here (MA-165, MA-166).
 
-- **The shell:** bare React Native 0.87, the New Architecture, Hermes,
-  TypeScript, no Expo. It owns the navigation (the system tab bar,
+- **The shell:** bare React Native 0.88 with React 19.3, the New
+  Architecture, Hermes, TypeScript 6.0, no Expo (MA-229). It owns the navigation (the system tab bar,
   `UITabBar`, through Fabric), the store, the api and SSE client (§21.5),
   sign-in orchestration, push registration and the shared models.
 - **The core:** every piece a member looks at is SwiftUI, hosted through a
@@ -1534,9 +1547,16 @@ Monzo". It follows bong-panjika's `frontend-native-apple`, with its
   - a launch budget.
 - **Tests** (MA-166): Jest for the shell; XCUITest, snapshot and
   accessibility checks for the SwiftUI pieces.
-- **Dependencies:** CocoaPods trunk goes read-only on 2 Dec 2026, so the
-  project starts on Swift Package Manager if React Native 0.87 allows it
-  [verify].
+- **The shell's libraries** (MA-229, bong-panjika's, at their latest):
+  TanStack Query 5.105 for React on the same query core as the web app, using
+  the query definitions in `web/src/lib/`; Reanimated 4.7 with Worklets 0.13
+  and Gesture Handler 3.4 for the shell's own motion and gestures; MMKV 4.3 on
+  Nitro Modules 0.37 for the offline store. Tailwind and shadcn are the web's
+  look; here every pixel stays SwiftUI, from the same tokens.
+- **Dependencies:** Swift Package Manager from day one, through React Native
+  0.88's `react-native spm` (opt-in and hardened in 0.88); never CocoaPods,
+  whose trunk goes read-only on 2 Dec 2026. A native library that cannot
+  build with Swift Package Manager is replaced (MA-229).
 - **Bundle ids** are unchanged (`com.mypaisapp.agent`, `com.mypaisapp.agent.dev`).
 
 This replaces v3's app built in SwiftUI alone with XcodeGen; what a member
@@ -1723,8 +1743,8 @@ pensions since 2024") are answered without a database running all month:
 | **Engine** | **The desk's indicator and pillar logic ported to pandas with golden tests; macro baskets per region** |
 | Claude | **the `anthropic` SDK against the Anthropic API, key in SSM**; structured outputs; server-side web search and fetch; Message Batches; **PDF and image input for documents** |
 | **Documents** | **S3 + Claude extraction with citations; no OCR library** |
-| **The app** | **One app for iOS and iPadOS 26 (Liquid Glass): a React Native shell (bare React Native 0.87, the New Architecture, Hermes, TypeScript, no Expo) with a native SwiftUI core in Swift 6, every piece a member looks at hosted through Fabric and fed one formatted JSON model (§9.5); Swift Charts; AuthenticationServices (Sign in with Apple, passkeys) and Google Sign-In for iOS; LocalAuthentication for the app lock; UserNotifications; VisionKit, PhotosUI and Quick Look for files; Jest for the shell, swift-format, XCUITest, snapshot and accessibility tests for the SwiftUI pieces, and a `PERFORMANCE.md` with its benches; TestFlight (§9, §18.4)** |
-| Charts | **Swift Charts in the app and lightweight-charts in the web app, from the engine's series; no image is drawn on the server** |
+| **The app** | **One app for iOS and iPadOS 26 (Liquid Glass): a React Native shell (bare React Native 0.88, the New Architecture, Hermes, TypeScript, no Expo, Swift Package Manager) with a native SwiftUI core in Swift 6, every piece a member looks at hosted through Fabric and fed one formatted JSON model (§9.5); Swift Charts; AuthenticationServices (Sign in with Apple, passkeys) and Google Sign-In for iOS; LocalAuthentication for the app lock; UserNotifications; VisionKit, PhotosUI and Quick Look for files; Jest for the shell, swift-format, XCUITest, snapshot and accessibility tests for the SwiftUI pieces, and a `PERFORMANCE.md` with its benches; TestFlight (§9, §18.4)** |
+| Charts | **Swift Charts in the app and shadcn-svelte's charts on LayerChart in the web app (lightweight-charts for the market side's price charts), from the engine's series; no image is drawn on the server** |
 | **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Sign in with Apple and Google verified in custom-auth Lambdas, passkeys; five-minute access tokens in the Keychain** |
 | **Records** | **Kinds as data, records as documents, append-only events and materialised views in the one DynamoDB table (§4.8); one write service for the chat's Confirm and the correction in place (§4.10); nightly Parquet exports read with DuckDB (§12.1)** |
 | **Wealth maths** | **`wealth/`: XIRR, accrual, loan schedules, the budget and the Projection, deterministic then Monte Carlo, with the old tracker's tested cases as golden fixtures (§6.6)** |
@@ -1732,7 +1752,7 @@ pensions since 2024") are answered without a database running all month:
 | **Delivery to the doors** | **SSE on the api host: the sender appends to each member's stream log, the stream sends it to every open door, and Apple push (HTTP/2 with a token key) and Web Push reach a device with no fresh presence (§21.5)** |
 | **Queues** | **SQS: a FIFO queue in (one lane per member), a FIFO queue out (one lane per member), a work queue for background jobs, and a dead-letter queue behind each, with alarms and replay (§21)** |
 | Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform only, GitHub Actions with OIDC; **dev and prod as two isolated copies in one account (§18)** |
-| **The web app** | **A SvelteKit 3 PWA in `web/` (Svelte 5 runes, adapter-static; MyPaisa DS v1, lightweight-charts, the shared motion in CSS and the Web Animations API) with the chat, the dashboard and the Admin center at desktop and phone width; svelte-check, eslint, vitest and Playwright; on S3 + CloudFront at `dashboard(-dev).mypaisapp.com`, which also serves the iOS app's apple-app-site-association file (§9.4)** |
+| **The web app** | **A SvelteKit 3 PWA in `web/` (Svelte 5 runes, adapter-static; Tailwind CSS 4 over MyPaisa DS v1's tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, the shared motion in Motion 14; MA-229) with the chat, the dashboard and the Admin center at desktop and phone width; svelte-check, eslint, vitest and Playwright; on S3 + CloudFront at `dashboard(-dev).mypaisapp.com`, which also serves the iOS app's apple-app-site-association file (§9.4)** |
 | **Endpoints** | **API Gateway at `api(-dev).mypaisapp.com`, with the stream, `/v1/stream`, on the same host (§21.5); scheduled Lambdas have no public endpoint** |
 | **Local** | **The whole app on the laptop: a moto server for DynamoDB, S3 and SQS (no Docker), the handlers behind one local ASGI app with SSE, the SvelteKit dev server, the iOS simulator, and a scripted agent that replays recorded conversations (§18.1)** |
 | **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind Activity and Audit at every door** |
@@ -2035,6 +2055,7 @@ a daily digest instead.
 | Projection | Code computes and the AI drives: returns shrunk toward priors by how much history there is, salary growth blended with the country's prior, inflation by country, GBP/INR drift from the inflation gap, deterministic then Monte Carlo, each run stored; plan items and saved assumptions the admin's alone (§6.6) | Forecast stays the market's word; every Projection figure comes from code and can be reproduced |
 | Live delivery | SSE on the api host at both doors, with a per-member event log for resume and push only where no stream is open, replacing the API Gateway WebSocket and its `live` host; a spike proves it first (§21.5) | The session cookie reaches the api host; one stream carries replies, cards, check-ins and record changes |
 | Documentation | Confluence (space mypaisaa-agent) is the readable copy of the plan: generated from the trace, PLAN, ARCHITECTURE, the roadmap, the decision records and the design mirror by `scripts/confluence_docs.py`, published through the Atlassian MCP, and checked with the other records by `scripts/plan_sync.py`; every story's estimate and every phase's dates live in `docs/roadmap.json`, and each phase epic's due date in Jira is its target end; each story names the code that builds it (MA-228) | Arun, 26 Oct 2026: the plan, Jira, the designs, the documents and the code stay the same and do not drift; one source for each fact, every copy generated from it and checked |
+| UI and app stack | The web app on Smart Clearance's stack: SvelteKit 3, Tailwind CSS 4 over the Warm ledger tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, Motion. The iOS shell on bong-panjika's: React Native 0.88, TanStack Query on the shared query definitions, Reanimated, MMKV on Nitro, with every pixel SwiftUI. Each at its latest; Swift Package Manager from day one; the api a REST API so the stream can stream (MA-229, 26 Oct 2026) | Arun: "Go with the latest and greatest ... for UI, I want what we used for Smart Clearance and bong-panjika, Tanstack, shadcn-ui, tailwind CSS"; two stacks already proven in his projects, one data layer for both doors |
 | Domains | `dashboard(-dev)` and `api(-dev)`; the `console` and `live` hosts are gone; the apex redirects to `dashboard.mypaisapp.com` at cutover (§18.2) | One host for the web app, its links and its passkeys |
 
 ## 17. Open questions
@@ -2053,8 +2074,8 @@ a daily digest instead.
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $200 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two dashboards' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101). Settled 26 Oct 2026 (MA-186): the apex `mypaisapp.com` redirects to `dashboard.mypaisapp.com` at the cutover in phase 9 (MA-97).
-- Where the stream's route lives (§21.5): a REST API stage with response streaming on the api's custom domain (preferred), or CloudFront routing `/v1/stream` to a Lambda function URL; and whether the authorizer reads the session cookie there [verify]. Settled by the phase 1 spike (MA-195), which writes its answer into §21.5.
-- Checked when the build phases start: the Lambda Web Adapter as a separate build target of the same Dockerfile; the Lambda concurrency quotas for the streams; adapter-static serving the AASA path; Swift Package Manager for React Native 0.87 before CocoaPods trunk goes read-only on 2 Dec 2026 [verify each].
+- Settled 26 Oct 2026 (MA-229): the stream is a route of the api's REST API in API Gateway's streaming mode (§21.5); the Lambda Web Adapter 1.1 runs it as its own build target; the association file is served by a CloudFront Function, with no fallback to swallow it (§9.4); the iOS project is on Swift Package Manager from day one (§9.5).
+- Checked when the build phases start: the Lambda concurrency quotas for the streams [verify].
 
 ## 18. Environments, domains and delivery
 
@@ -2703,13 +2724,18 @@ phone moves the laptop's dashboard. When no door is open, Apple push reaches
 the iOS app and Web Push the installed web app (§11). Built in phase 1
 (MA-30), after a spike (MA-195).
 
-- **The endpoint:** `GET api(-dev).mypaisapp.com/v1/stream`, on the api host so
-  the web app's `HttpOnly` cookie reaches it. Preferred: a REST API stage with
-  response streaming on the same custom domain; the fallback is CloudFront
-  routing that path to a Lambda function URL [verify both; §17].
-- **The function:** Python through the Lambda Web Adapter, as a separate build
-  target of the same Dockerfile, since the adapter would otherwise take over
-  the other handlers [verify].
+- **The endpoint:** `GET api(-dev).mypaisapp.com/v1/stream`, a route of the
+  api's own REST API on its custom domain, so the web app's `HttpOnly` cookie
+  and the authorizer reach it. The route's Lambda proxy integration is in the
+  STREAM response transfer mode (API Gateway response streaming, since
+  November 2025): up to 15 minutes per response, which the 14-minute cycle
+  below fits, and a 5-minute idle timeout, which the 15-second heartbeat
+  keeps open. The api is a REST API, not an HTTP API, because only REST APIs
+  stream (MA-229).
+- **The function:** a Starlette app on Uvicorn behind the Lambda Web Adapter
+  1.1, with `AWS_LWA_INVOKE_MODE=response_stream`, built as its own target of
+  the same Dockerfile, since the adapter would otherwise take over the other
+  handlers (MA-229).
 - **Order and resume:** a per-member sequence counter and an event log,
   `StreamEvent`, kept at least seven days (§4.1). The sender appends each
   finished message, card, card edit, check-in and record change. A door

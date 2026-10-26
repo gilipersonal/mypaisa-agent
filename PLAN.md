@@ -157,18 +157,28 @@ Claude's:
   TestFlight, then deploys prod after your approval behind each Lambda's
   `live` alias, rolling back on a failed smoke test, and sends MyPaisa to
   TestFlight. The nightly drift check follows (MA-108).
-- **The web app's skeleton (MA-194):** `web/` in SvelteKit 3 (Svelte 5 runes,
-  adapter-static), a PWA whose service worker caches the shell only; the
-  fallback leaves `/.well-known/apple-app-site-association` alone, and the CSP
-  carries SvelteKit's hashes; the DS v1 tokens, lightweight-charts and the
-  shared motion; an empty shell at 390 and 1440 in light and dark.
+- **The web app's skeleton (MA-194):** `web/` in SvelteKit 3.1 (Svelte 5
+  runes, adapter-static, Vite 8, TypeScript 6), a pnpm 12 workspace with one
+  catalog of versions, as Smart Clearance's frontend is built; a PWA whose
+  service worker caches the shell only; Tailwind CSS 4 over the DS v1
+  tokens, shadcn-svelte on bits-ui, Lucide icons, TanStack Query, Table,
+  Virtual and Form, shadcn-svelte's charts on LayerChart, and the shared
+  motion in Motion 14 (MA-229); the association file served as itself by a
+  CloudFront Function that sends only page paths to the shell, and the CSP
+  carrying SvelteKit's hashes; an empty shell at 390 and 1440 in light and
+  dark.
   `web/src/lib/` holds what both doors share, written once: the card types,
   formatting in GBP and INR with lakh and crore, privacy masking and the view
-  models. Its gates: svelte-check, eslint, vitest, Playwright screenshots at
-  390 and 1440 in both themes, npm audit.
+  models, and the api client with its TanStack Query definitions. Its gates:
+  svelte-check, eslint, vitest, Playwright screenshots at 390 and 1440 in
+  both themes with axe and a pixel parity check against the boards, pnpm
+  audit.
 - **The iOS app (MA-165, MA-166, MA-167):** `ios/`, a React Native shell
   with a native SwiftUI core, as bong-panjika is built: bare React Native
-  0.87, New Architecture, Hermes, TypeScript, no Expo. The shell owns the
+  0.88 with React 19.3, New Architecture, Hermes, TypeScript, no Expo, its
+  native dependencies through Swift Package Manager from day one, never
+  CocoaPods; TanStack Query on the shared query definitions, Reanimated,
+  Gesture Handler and MMKV on Nitro Modules in the shell (MA-229). The shell owns the
   navigation (the system tab bar through Fabric), the store, the api and SSE
   client, sign-in, push registration and the shared models. Every piece a
   member looks at is SwiftUI, hosted through a Fabric component and fed one
@@ -231,6 +241,14 @@ Claude's:
 - **The boards still to draw (MA-227):** Budget and Assets and Debts on iPad,
   the check-in cards in the web chat, and the new-kind card behind the second
   check, which Arun settled on 26 Oct 2026.
+- **The UI stack, and three build questions settled (MA-229):** the web app
+  on Smart Clearance's stack (SvelteKit 3, Tailwind CSS 4, shadcn-svelte on
+  bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, Motion), the
+  iOS shell on bong-panjika's (React Native 0.88, TanStack Query, Reanimated,
+  MMKV), each at its latest; Swift Package Manager from day one; the
+  association file served by a CloudFront Function; the stream on the api's
+  REST API in API Gateway's streaming mode, through the Lambda Web Adapter
+  1.1.
 - **The plan in Confluence (MA-228):** the whole plan as a page tree in the
   mypaisaa-agent space, phase by phase and screen by screen, with the board
   previews, the design decisions, the explainers and the roadmap, generated
@@ -272,12 +290,11 @@ speaks through this chat (`ARCHITECTURE.md` §9). The stream is proved first,
 with a spike, because both doors are built on it. What the chat records
 arrives from phase 2.
 
-- **The stream, proved first (MA-195).** A spike in dev: Python through the
-  Lambda Web Adapter, as its own build target of the same Dockerfile; the
-  stream on the api host, so the session cookie reaches it, through a REST
-  API stage with response streaming on the shared domain or CloudFront
-  routing that path to a function URL, chosen by the spike and written into
-  `ARCHITECTURE.md`. It passes when the first token delta reaches a browser
+- **The stream, proved first (MA-195).** A spike in dev: a Starlette app on
+  Uvicorn behind the Lambda Web Adapter 1.1 (`response_stream`), as its own
+  build target of the same Dockerfile; the stream on the api host, so the
+  session cookie and the authorizer reach it, as a route of the api's REST
+  API in API Gateway's streaming mode (MA-229). It passes when the first token delta reaches a browser
   and the iOS app in under a second, a killed connection resumes with nothing
   lost or repeated, and the cost per open hour is measured and put to you
   before any apply.
@@ -867,7 +884,7 @@ built with their records in phases 2 to 9.
 - Built from the boards in MyPaisa iOS v1 and MyPaisa app v1
   (`docs/design/README.md`), on iPhone, iPad, the foldable and in a browser;
   Warm ledger (MA-101) on Liquid Glass; Swift Charts in the app and
-  lightweight-charts on the web.
+  shadcn-svelte's charts on LayerChart on the web.
 - **Audit (MA-71, MA-79, MA-149):** the §4.6 log, filtered by member, record
   and date, before and after, a link to the run, and the file behind a change
   opened through a five-minute link (Quick Look in the app), with a Files
@@ -1435,8 +1452,8 @@ tflint --recursive
 # when ios/ changed (MA-165, MA-166): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks for the SwiftUI pieces
 npm run lint --prefix ios && npm test --prefix ios
 xcrun swift-format lint --strict --recursive ios
-xcodebuild test -workspace ios/MyPaisa.xcworkspace -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
-xcodebuild test -workspace ios/MyPaisa.xcworkspace -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M3)'
+xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M3)'
 ```
 
 Plus: golden tests for any engine or wealth maths change, the old tracker's
@@ -1465,9 +1482,9 @@ handler writes its `RunRecord`, both covered by tests.
 | A holder's cascade that is too eager to ADD | PAUSE on exhaustion or elevated risk; top-ups capped; shadow mode first |
 | Confidence numbers that are not calibrated | Weekly reliability table; recalibration rule; "no clear view" below 55% |
 | The SSE stream costs more than planned while idle | Each open stream is a running Lambda, about $0.012 an open hour at 256 MB; one leader tab per browser, the stream closed 60 s after the page is hidden, reserved concurrency of about 20; the spike measures the cost per open hour, and it is put to you before any apply (MA-195) |
-| CocoaPods trunk goes read-only on 2 Dec 2026 | Settled in MA-165 before that date: the iOS project starts on Swift Package Manager if React Native 0.87 allows it, which is still to verify |
+| CocoaPods trunk goes read-only on 2 Dec 2026 | Settled (MA-229): the iOS project starts on Swift Package Manager with React Native 0.88 (opt-in, hardened in 0.88) and never uses CocoaPods; a native library that cannot build with it is replaced (MA-165) |
 | The React Native shell is not smooth enough | Every piece a member looks at is SwiftUI, fed one formatted model; `PERFORMANCE.md` benches on the phone: no dropped frames at 120 Hz scrolling the chat and the dashboard and as cards arrive, a chart scrub at 120 Hz, a launch budget (MA-165) |
-| The web app's fallback swallows the iOS association file | The fallback leaves `/.well-known/apple-app-site-association` alone, with a test for it (MA-194); adapter-static with that path still to verify |
+| The web app's fallback swallows the iOS association file | Settled (MA-229): there is no S3 error-page fallback; a CloudFront Function sends only extension-less page paths to the shell, and the file is served as itself with `Content-Type: application/json`, with a test for it (MA-73, MA-194) |
 | A new app meets an old api, or a TestFlight build expires | The api states its minimum app version and an older app asks to update; prod's Lambdas go live before the prod app; an alert at day 60 of a build's 90 (MA-167) |
 | A card the app does not know yet | Every card carries a plain line; an unknown type or newer version shows it with "Update MyPaisa to see this card" (MA-174) |
 | Alert fatigue, or too many check-ins | Weekly red budget, cooldowns, repeat filter; autopay assumed and a weekly digest, about ten notifications a week (MA-211) |
