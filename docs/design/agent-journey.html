@@ -919,7 +919,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">02</span>
     <h2 id="h-signin">Signing in with Apple, Google or a passkey</h2>
     <p class="lede">There are no passwords. In the app, Apple or Google vouches for the member, natively, and the environment's Cognito user pool turns that into a short-lived session kept in the Keychain. In the web app it is Apple, Google or a passkey, and the session is a cookie the api sets. An import, a rollback, leaving the household and every admin action, from the Admin center or the admin's chat, need a second check, bound to that one action: a fresh Sign in with Apple or a passkey under Face ID in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on a device that is not signed in, opening <code>dashboard.mypaisapp.com</code> in a browser, or an action that needs the second check</span><span class="chip">Phase 1 (sign-in, in the app and the browser)</span><span class="chip">Phase 8 (the second check)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on a device that is not signed in, opening <code>dashboard.mypaisapp.com</code> in a browser, or an action that needs the second check</span><span class="chip">Phase 1 (sign-in and the second check, in the app and the browser)</span></div>
   </div>
 
   <h3 class="blk">The paths</h3>
@@ -3258,7 +3258,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">19</span>
     <h2 id="h-register">Registering anything by talking</h2>
     <p class="lede">There are no forms. Say what you own or owe in your own words, at either door: <i>£5,000 in Monzo savings</i>. The agent drafts the record against its kind, asks only what is missing (here, whose it is) with chips, and shows a Confirm card with the figures code worked out. Confirm saves it with its audit row, and at 09:41 on Mon 26 Oct the household's net worth moves from £439,951 to £444,951 at every open door: your iPhone, Asha's, and the laptop beside them. When nothing the household has fits, the agent proposes a new kind, and the admin approves it behind the second check.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> "£5,000 in Monzo savings", a screenshot or a statement, or the <b>Add anything</b> chip</span><span class="chip">Phase 1 (the stream)</span><span class="chip">Phase 2 (kinds, records, the write service)</span><span class="chip">Phase 8 (the second check)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> "£5,000 in Monzo savings", a screenshot or a statement, or the <b>Add anything</b> chip</span><span class="chip">Phase 1 (the stream)</span><span class="chip">Phase 2 (kinds, records, the write service)</span><span class="chip">Phase 1 (the second check)</span></div>
   </div>
 
   <h3 class="blk">The paths</h3>
