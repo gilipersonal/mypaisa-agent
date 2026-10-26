@@ -13,6 +13,9 @@ published and the hash of the HTML sent, and each board preview's media id and t
     python3 scripts/confluence_docs.py images CAPTURES OUT   # compose the board previews from captured boards
     python3 scripts/confluence_docs.py set-page SLUG ID VERSION [published]  # record a page created, or published
     python3 scripts/confluence_docs.py set-image NAME MEDIA COLLECTION # record an uploaded preview
+    python3 scripts/confluence_docs.py app-prompt NAME       # the prompt a Maui app (roadmap-gantt, decision-cards) is made from
+    python3 scripts/confluence_docs.py set-app NAME ID URL   # record a Maui app made from that prompt
+    python3 scripts/confluence_docs.py set-database NAME ID [published]  # record the story explorer database
 """
 from __future__ import annotations
 
@@ -36,6 +39,7 @@ PAGES = ROOT / "docs" / "confluence"
 REVIEWS = ROOT / "docs" / "design" / "reviews"
 
 JIRA = "https://duttaarun2015.atlassian.net"
+CLOUD_ID = "81c51173-bbea-4905-bbc5-1a880fa348bb"
 GITHUB = "https://github.com/gilipersonal/mypaisa-agent/blob/main/"
 DESIGN = "https://claude.ai/design/p/{id}?file={file}"
 ARTIFACTS = {
@@ -434,6 +438,143 @@ def image(ctx: Ctx, name: str, caption: str = "", width: int = 100) -> str:
             f'data-alt="{esc(name)}"></div>{cap}</figure>')
 
 
+# ---------- the interactive parts: two Maui apps and the story database ----------
+
+# Every design pick, for the flip cards on the decisions page; each fact is from its decision record or the trace.
+DECISION_CARDS = [
+    ("MA-193", "26 Oct 2026", "The web app's shell, with the chat", ["1a Chat beside", "1b Chat first", "1c Ask bar"], "1a Chat beside",
+     "It is the iPad's 1a at the laptop: a Confirm in the chat column moves the page beside it, and at 390 it uses the iPhone's tab bar."),
+    ("MA-193", "26 Oct 2026", "The dashboard (the Overview)", ["1a Net worth first", "1b Two countries", "1c What's next"], "1a Net worth first",
+     "It reads the same at every width: the total, what it is made of, what is due. Each country keeps its own currency inside one card."),
+    ("MA-193", "26 Oct 2026", "The check-in card", ["1a Chips in one row", "1b Paid as the Confirm", "1c A compact row"], "1b Paid as the Confirm",
+     "Paid looks like every other Confirm button, and \"Paid off in full\", which closes a loan, cannot be hit by accident."),
+    ("MA-193", "26 Oct 2026", "The Projection", ["1a The fan first", "1b A story first", "1c Decades"], "1a The fan first",
+     "It is the screen ARCHITECTURE 6.6 lists: the fan, milestones on the line, assumptions with sources, scenario chips and Ask."),
+    ("MA-197", "26 Oct 2026", "Does approving a new kind of record need the second check?", ["Yes, the second check", "No"], "Yes, the second check",
+     "A new kind changes what every member can register, so the admin approves it behind the second check."),
+    ("MA-76", "26 Oct 2026", "When does the second check arrive?", ["Phase 1, with sign-in", "Phase 8, with the Admin center"], "Phase 1, with sign-in",
+     "It comes with sign-in, so approving a new kind can sit behind it from phase 2."),
+    ("MA-161", "26 Oct 2026", "The iOS app's shell", ["1a Chat first", "1b Ask from anywhere", "1c One timeline"], "1a Chat first",
+     "The chat is the front door and the figures are one swipe away; every change starts where it is made."),
+    ("MA-156", "25 Oct 2026", "Money typed in another currency", ["1a Four ways on", "1b Ask again, in pounds", "1c Correct inside Confirm"],
+     "1b Ask again, in pounds", "One pattern, not a new card: the guided flow's own amount question, asked again in the holding's currency."),
+    ("MA-102", "24 Oct 2026", "The Admin center", ["A People first", "B Sessions first"], "A People first",
+     "Signing out, pausing and unlinking all act on a person, so the person comes first."),
+    ("MA-103", "24 Oct 2026", "MyPaisa's mark", ["1a Stance line", "1b Ruled pound", "1c Watcher"], "1c Watcher",
+     "Today's coin and £ with a thin orbit and one coral dot that comes to rest at half past one: the agent keeping watch."),
+    ("MA-101", "24 Oct 2026", "The design system", ["1a Warm ledger", "1b Native clarity", "1c Pot wall"], "1a Warm ledger",
+     "Monzo's warmth on Apple's bones: the summary reads in one glance, with one coral accent on a navy hero card."),
+]
+APP_PAGE = {"roadmap-gantt": "roadmap", "decision-cards": "decisions"}
+
+
+def app_prompt(ctx: Ctx, name: str) -> str:
+    """The self-contained prompt each Maui app is generated from; its hash says when the app must be made again."""
+    if name == "roadmap-gantt":
+        lines, prev = [], None
+        for p in ctx.phases:
+            r = ctx.schedule.get(str(p["phase"]), {})
+            if r.get("on_demand"):
+                continue
+            dep = f"; starts after Phase {prev} ends" if prev is not None else ""
+            lines.append(f"- Phase {p['phase']} · {p['title']} | start {r['start']} | end {r['end']} | group: {group(p['phase'])[1]} "
+                         f"| epic {p['epic']} | {r['lane_days']:g} build days{dep}")
+            prev = p["phase"]
+        miles = "\n".join(f"- {ctx.schedule[str(n)]['end']}: {what}" for n, what in (
+            (0, "Empty shells at every door"), (2, "The first record, moving live"), (4, "Debts kept by check-ins"),
+            (7, "The Projection"), (9, "The whole wealth on prod; the old tracker retired"), (15, "Stances go live"), (20, "The app beyond the chat")))
+        return ("Make an interactive Gantt chart of MyPaisa's build roadmap. Do not show any visible title on the app or the chart.\n"
+                "One task per phase, in this order, with exactly these labels, dates and groups; each phase starts after the one before it ends. "
+                "Colour the bars by group (three groups: Foundations and talk, The whole wealth, The market side) with a legend. On hover, show the epic "
+                "key, the build days and the dates. Keep the axis in months.\n" + "\n".join(lines) +
+                "\nMilestones (diamonds on their date, with these labels):\n" + miles +
+                "\nPhase 16 (New kinds of holding) is built on demand and has no dates; leave it out.")
+    if name == "decision-cards":
+        cards = "\n".join(f"- Front: {q} ({k}, {d}). Back: options: {'; '.join(o)}. Picked: {pick}. Why: {why}"
+                          for k, d, q, o, pick, why in DECISION_CARDS)
+        return ("Make flip cards, one per design decision below, in this order. Do not show any visible title on the app. The front of each card "
+                "shows the question and, smaller, the Jira key and the date. The back lists the options, marks the picked one clearly, and gives "
+                "the reason in one line. Keep every label and word as given.\n" + cards)
+    raise KeyError(name)
+
+
+def decision_cards() -> str:
+    """Every pick as a card that opens on a click: the question on the front, the options with the pick marked and the reason inside."""
+    cards = []
+    for k, d, q, opts, pick, why in DECISION_CARDS:
+        body = ("<ul>" + "".join(f"<li>{'✅ <strong>' + esc(o) + '</strong>' if o == pick else '▫️ ' + esc(o)}</li>" for o in opts) + "</ul>"
+                + f'<div data-type="panel-custom" data-icon=":white_check_mark:" data-color="#E3FCEF"><p><strong>Picked: {esc(pick)}.</strong> {esc(why)}</p></div>'
+                + f'<p style="font-size: 14px">{jira_text(k)} · {esc(d)}</p>')
+        cards.append(f"<details><summary>🎯 {esc(q)}</summary>{body}</details>")
+    rows = [cards[k:k + 3] for k in range(0, len(cards), 3)]
+    return "".join('<section data-type="layout-three-equal">' + "".join(f'<div data-type="column">{c}</div>' for c in r + ["<p></p>"] * (3 - len(r)))
+                   + "</section>" for r in rows)
+
+
+def app_source(ctx: Ctx, name: str) -> str:
+    return sha(app_prompt(ctx, name))
+
+
+def app_embed(ctx: Ctx, name: str, height: int) -> str:
+    rec = ctx.manifest.get("apps", {}).get(name, {})
+    if not rec.get("url"):
+        return ""
+    params = {"macroParams": {"width": {"value": "1000"}, "alignment": {"value": "center"}, "url": {"value": rec["url"]},
+                              "alwaysShowTitle": {"value": "false"}, "height": {"value": str(height)}},
+              "macroMetadata": {"schemaVersion": {"value": "1"}, "title": "native-embed:maui"}}
+    return (f'<div data-type="extension" data-extension-key="native-embed:maui" data-extension-type="com.atlassian.confluence.macro.core" '
+            f"data-layout=\"default\" data-parameters='{esc(json.dumps(params))}'></div>")
+
+
+DATABASES = {"stories": ("Story explorer: every story, filterable", "hub")}
+
+
+def csv_cell(v: object) -> str:
+    v = "" if v is None else str(v)
+    if v == "":
+        return '""'
+    return '"' + v.replace('"', '""') + '"' if any(c in v for c in ',"\n') else v
+
+
+def stories_csv(ctx: Ctx) -> str:
+    """The story explorer, as the CSV Confluence builds a database from: fields, views, then one row per story."""
+    door_tag = {"web": "Web desktop", "phone": "Web phone", "iphone": "iPhone", "ipad": "iPad", "system": "Design system"}
+    design_tag = {"picked": "Picked", "planned": "Planned", "todo": "To draw", "none": "No screens"}
+    fields = [("Story", "jira-work-item", f"cloud_id:{CLOUD_ID}"), ("What it delivers", "text", ""), ("Phase", "tag", ""),
+              ("Group", "tag", ""), ("Type", "tag", ""), ("Status", "tag", ""), ("Design", "tag", ""), ("Doors", "tag", ""),
+              ("Est days", "number", "number_format:number"), ("Boards", "number", "number_format:number"),
+              ("Phase ends", "date", ""), ("Phase page", "confluence-page-link", "")]
+    views = [("All stories", "table", "", "", ""), ("By phase", "board:Phase", "", "", ""),
+             ("By design state", "board:Design", "", "", ""), ("Still to do", "table", "['Status' is not 'Done']", "", "")]
+    out = ["<fields>", "field_name,type,configuration"]
+    out += [f"{f[0]},{f[1]}," + (f'"{f[2]}"' if f[2] else "") for f in fields]  # a field's configuration: quoted, or an empty cell
+    out += ["</fields>", "<views>", "view_name,layout,filters,sorts,hidden_fields"]
+    out += [",".join([csv_cell(v[0]), csv_cell(v[1])] + [f'"{x}"' for x in v[2:]]) for v in views]
+    out += ["</views>", "<data>", ",".join(f[0] for f in fields)]
+    for p in ctx.phases:
+        r = ctx.schedule.get(str(p["phase"]), {})
+        for it in sorted((i for i in ctx.items if i.get("phase") == p["phase"]), key=lambda i: key_n(i["key"])):
+            doors = sorted({door_of(b["board"], b["project"]) for b in it.get("boards") or []}, key=list(DOOR_NAMES).index)
+            tags = [door_tag[d] for d in doors] or (["Back end"] if "manual" not in (it.get("labels") or []) else ["Yours"])
+            row = [f"{JIRA}/browse/{it['key']}", it["summary"], f"Phase {p['phase']}", group(p["phase"])[1], it["type"],
+                   it.get("status", ""), design_tag.get(it.get("design", "none"), "No screens"), "|".join(tags),
+                   f"{ctx.rm['estimates'].get(it['key'], 0):g}", len(it.get("boards") or []), r.get("end") or "",
+                   ctx.page_url(phase_slug(p["phase"])) or ""]
+            out.append(",".join(csv_cell(x) for x in row))
+    out.append("</data>")
+    return "\n".join(out) + "\n"
+
+
+def database_url(ctx: Ctx, name: str) -> str | None:
+    did = ctx.manifest.get("databases", {}).get(name, {}).get("id")
+    return f"{JIRA}/wiki/spaces/{ctx.manifest.get('space', {}).get('key', 'mypaisaaag')}/database/{did}" if did else None
+
+
+def explorer_link(ctx: Ctx) -> str:
+    url = database_url(ctx, "stories")
+    return f'<a href="{url}">the story explorer</a>' if url else "the story explorer"
+
+
 # ---------- page parts ----------
 
 GROUPS = [  # (phases, name, panel colour, cell colour, emoji shortname)
@@ -573,7 +714,8 @@ def render_hub(ctx: Ctx) -> str:
             ("#FFFAE6", ":art:", f"<h3>{len(ctx.cites)} boards</h3><p>{ui} stories have screens, drawn in Claude Design before anything is built.</p>")))
         + "</section>",
         "<h2>🗺️ The journey</h2>", image(ctx, "roadmap.png", "The phases in build order"),
-        f"<p>{ctx.link('roadmap', 'The roadmap')} has each phase's dates, exit demo and your tasks, and how the dates are worked out.</p>",
+        f"<p>{ctx.link('roadmap', 'The roadmap')} has each phase's dates, exit demo and your tasks, and how the dates are worked out. "
+        f"Every story is in {explorer_link(ctx)}, filterable by phase, door, status and design state.</p>",
         "<h2>🧭 Where to look</h2>",
         '<section data-type="layout-three-equal">'
         + "".join(f'<div data-type="column">{cpanel(c, i, f"<h3>{ctx.link(sl, t)}</h3><p>{esc(d)}</p>")}</div>' for sl, t, d, c, i in (
@@ -608,7 +750,9 @@ def render_roadmap(ctx: Ctx) -> str:
         cpanel("#EAE6FF", ":calendar_spiral:", f'<p>Every story is estimated in build days in <a href="{gh("docs/roadmap.json")}">docs/roadmap.json</a>, '
                "and the dates are worked out from those estimates. PLAN.md's Timeline and each phase epic's due date in Jira show the same dates. "
                "To move a date, change an estimate there and run <code>python3 scripts/roadmap.py write</code>.</p>"),
-        toc(), "<h2>🗺️ The journey</h2>", image(ctx, "journey.png", "The phases in build order, from the roadmap's schedule"),
+        toc(), "<h2>🗺️ The journey</h2>", app_embed(ctx, "roadmap-gantt", 680),
+        "<details><summary>The same journey as a still picture</summary>" + image(ctx, "journey.png", "The phases in build order, from the roadmap's schedule") + "</details>",
+        f"<p>Every story, filterable by phase, door, status and design state: {explorer_link(ctx)}.</p>",
         "<h2>🚩 Milestones</h2><ul data-type=\"decision-list\">",
     ]
     for n, what in ((0, "Empty shells at every door, with the seed household"), (1, "Talking to the agent at three doors, replies streaming"),
@@ -650,7 +794,8 @@ def render_roadmap(ctx: Ctx) -> str:
 
 def render_phases(ctx: Ctx) -> str:
     out = [cpanel("#E3FCEF", ":books:", "<p>One page per phase, in build order. Each has the phase epic, every story with its estimate, status "
-                  "and design state, the screens it builds at each door, the plan as PLAN.md writes it, and the epic live from Jira.</p>")]
+                  "and design state, the screens it builds at each door, the plan as PLAN.md writes it, and the epic live from Jira.</p>"
+                  f"<p>To filter every story at once, by phase, door, status or design state, open {explorer_link(ctx)}.</p>")]
     for g in GROUPS:
         out.append(f"<h2>{esc(g[1])}</h2>"
                    '<table data-layout="full-width"><thead><tr><th>Phase</th><th>Status</th><th>Stories</th><th>With screens</th><th>Build days</th>'
@@ -759,7 +904,8 @@ def render_area(ctx: Ctx, area: tuple) -> str:
 def render_decisions(ctx: Ctx) -> str:
     out = [cpanel("#FFEBE6", ":dart:", "<p>Every design round ends in a decision record in the repo: the request in Arun's words, the options "
                   "drawn, the one recommended and why, and the pick. Picked boards are the spec (plan-sync rule 4); the options not picked stay "
-                  "drawn as the record. Each tab holds a record's request, options, boards and pick; the full record is linked.</p>")]
+                  "drawn as the record. Each tab holds a record's request, options, boards and pick; the full record is linked.</p>"),
+           "<h2>🃏 Every pick at a glance</h2>", app_embed(ctx, "decision-cards", 720), decision_cards(), "<h2>📜 The records</h2>"]
     parts = []
     for k in DECISIONS:
         path = REVIEWS / k / "decision.md"
@@ -876,6 +1022,19 @@ def errors(ctx: Ctx | None = None) -> list[str]:
     for f in PAGES.glob("*.html") if PAGES.exists() else []:
         if f.stem not in {s for s, _, _ in model}:
             out.append(f"confluence: docs/confluence/{f.name} is no page the generator makes; remove it (and archive its page)")
+    for name, page in APP_PAGE.items():
+        rec = ctx.manifest.get("apps", {}).get(name, {})
+        if rec.get("url") and rec.get("source") != app_source(ctx, name):
+            out.append(f"confluence: app {name} is older than its inputs: make it again from app-prompt {name}")
+    for name in DATABASES:
+        path, want = PAGES / f"{name}.csv", stories_csv(ctx)
+        rec = ctx.manifest.get("databases", {}).get(name, {})
+        if not path.exists() or path.read_text() != want:
+            out.append(f"confluence: docs/confluence/{name}.csv is stale: run `python3 scripts/confluence_docs.py write`")
+        elif not rec.get("id"):
+            out.append(f"confluence: database {name} has no Confluence id in docs/confluence.json; create it with /plan-sync")
+        elif rec.get("sha256") != sha(want):
+            out.append(f"confluence: database {name} changed in the repo but is not published: update its rows with /plan-sync")
     images = ctx.manifest.get("images", {})
     for name, w in wanted_images(ctx).items():
         rec = images.get(name, {})
@@ -896,6 +1055,11 @@ def pending(ctx: Ctx) -> dict:
                     if (PAGES / f"{s}.html").exists() and rec.get(s, {}).get("sha256") != sha((PAGES / f"{s}.html").read_text())],
         "images": [{"name": n, "page": w["page"], "page_id": rec.get(w["page"], {}).get("id")} for n, w in wanted_images(ctx).items()
                    if not imgs.get(n, {}).get("media") or imgs[n].get("source") != w["source"]],
+        "apps": [{"name": n, "page": pg, "page_id": rec.get(pg, {}).get("id")} for n, pg in APP_PAGE.items()
+                 if ctx.manifest.get("apps", {}).get(n, {}).get("source") != app_source(ctx, n)],
+        "databases": [{"name": n, "title": t, "parent_id": rec.get(par, {}).get("id"), "id": ctx.manifest.get("databases", {}).get(n, {}).get("id")}
+                      for n, (t, par) in DATABASES.items()
+                      if ctx.manifest.get("databases", {}).get(n, {}).get("sha256") != sha(stories_csv(ctx))],
     }
 
 
@@ -921,6 +1085,7 @@ def main(argv: list[str]) -> int:
         PAGES.mkdir(parents=True, exist_ok=True)
         for slug_, _, _ in pages(ctx):
             (PAGES / f"{slug_}.html").write_text(render(ctx, slug_))
+        (PAGES / "stories.csv").write_text(stories_csv(ctx))
         print(f"wrote {len(pages(ctx))} pages to {PAGES.relative_to(ROOT)}")
         return 0
     if cmd == "check":
@@ -944,6 +1109,21 @@ def main(argv: list[str]) -> int:
         rec = {"id": pid, "title": dict((s, t) for s, t, _ in pages(ctx))[slug_], "version": version,
                "sha256": sha(path.read_text()) if published else ""}
         update_manifest(lambda m: m.setdefault("pages", {}).__setitem__(slug_, rec))
+        return 0
+    if cmd == "app-prompt" and len(argv) == 3:
+        print(app_prompt(Ctx(), argv[2]))
+        return 0
+    if cmd == "set-app" and len(argv) == 5:
+        # set-app NAME MAUI_ID URL: the app made from the current app-prompt
+        rec = {"page": APP_PAGE[argv[2]], "id": argv[3], "url": argv[4], "source": app_source(Ctx(), argv[2])}
+        update_manifest(lambda m: m.setdefault("apps", {}).__setitem__(argv[2], rec))
+        return 0
+    if cmd == "set-database" and len(argv) in (4, 5):
+        # set-database NAME ID [published]: "published" says the database now holds docs/confluence/NAME.csv's rows
+        path = PAGES / f"{argv[2]}.csv"
+        rec = {"id": argv[3], "title": DATABASES[argv[2]][0],
+               "sha256": sha(path.read_text()) if len(argv) == 5 and argv[4] == "published" and path.exists() else ""}
+        update_manifest(lambda m: m.setdefault("databases", {}).__setitem__(argv[2], rec))
         return 0
     if cmd == "set-image" and len(argv) == 5:
         w = wanted_images(Ctx())[argv[2]]

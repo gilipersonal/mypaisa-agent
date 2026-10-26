@@ -114,7 +114,7 @@ A hook reminds the session when a prompt talks about a new design or feature
 - A weekday and date on a mirrored board that do not agree ("Thu 23 Oct"); the boards are set in October 2026, and a date with no year may fall in 2027 from January to September (MA-161 review, round 1).
 - `docs/TRACE.md` not rendered from the current trace.
 - A traced story with no estimate in `docs/roadmap.json`, an estimate for an untraced key, a schedule not worked out from the current estimates, or PLAN.md's Timeline table not matching it (MA-228).
-- A Confluence page in `docs/confluence/` not rendered from the current records, a page with no Confluence id, a page changed in the repo but not published, a file there the generator does not make, a board preview not uploaded or older than its boards, or a cited board file in no screen area (MA-228).
+- A Confluence page in `docs/confluence/` not rendered from the current records, a page with no Confluence id, a page changed in the repo but not published, a file there the generator does not make, a board preview not uploaded or older than its boards, a cited board file in no screen area, an interactive app older than the data it was made from, or the story explorer database (`docs/confluence/stories.csv`) stale or not published (MA-228).
 - A Story In Review or Done that names no `code`, or a `code` path that matches nothing (MA-228).
 
 A UI story with no board, or with screens still to draw (`undrawn`), may sit

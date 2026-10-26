@@ -93,6 +93,21 @@ made in Confluence.
      (the `uploadCommand` it returns), and record each returned `fileId`:
      `python3 scripts/confluence_docs.py set-image <name> <fileId> contentId-<page id>`.
      Never write the token to a file or a log.
+   - `databases`: the story explorer (`docs/confluence/stories.csv`, a
+     create envelope). With no id, create it (`contentType: database`,
+     `format: csv`, the file exactly, under the hub) and
+     `set-database stories <id> published`. With an id, read its rows
+     (`content_format: csv`), send the edit envelope that turns them into
+     the file's rows (the database guide's edit workflow, `edit_entry` for
+     changed rows, `add_entry` and `delete_entry` for the rest), then
+     `set-database stories <id> published`.
+   - `apps`: the Maui apps (`roadmap-gantt` on the roadmap, `decision-cards`
+     on the decisions page), made with `createConfluenceMauiApp` (or
+     `editConfluenceMauiApp` once made) from
+     `python3 scripts/confluence_docs.py app-prompt <name>` exactly, then
+     `set-app <name> <maui id> <url>`. They cost Rovo credits and need
+     Confluence's AI features on; until they are made the pages show the
+     native cards and the still picture, and the check asks nothing.
    - then `python3 scripts/confluence_docs.py write`, and `pending` again.
    - `publish`: for each page, read it (`getConfluenceContent`, `detail: full`)
      for its snapshot token, send `docs/confluence/<slug>.html` exactly as
