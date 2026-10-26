@@ -377,7 +377,7 @@ code { font: 500 0.86em/1.3 var(--mono); background: var(--mp-surface-2); color:
   .pchat { border-left: 0; border-top: 1px solid var(--mp-line); }
 }
 
-/* the web app in a browser: the same Warm ledger screens, read-only, no glass layer */
+/* the web app in a browser: the same Warm ledger screens, no glass layer */
 .browser { width: 100%; border-radius: 14px; border: 1px solid var(--mp-line); background: var(--mp-bg); color: var(--mp-ink); overflow: hidden; box-shadow: var(--mp-shadow); container: br / inline-size; }
 .bbar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
 .bdot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--mp-line); }
@@ -691,21 +691,21 @@ footer.foot b { color: var(--mp-ink); }
 <main id="top">
 
 <section class="hero" aria-labelledby="h-title">
-  <p class="over">25 Oct 2026 · MA-141, India added in MA-155, the iOS app in MA-161 · design only, nothing is built yet</p>
+  <p class="over">25 Oct 2026 · MA-141, India added in MA-155, the iOS app in MA-161, re-phased in MA-186 · design only, nothing is built yet</p>
   <h1 id="h-title">MyPaisa Agent Journey</h1>
-  <p class="hero-sub">How a household uses MyPaisa, one flow at a time: what the member does in the MyPaisa app on an iPhone or an iPad, or in the read-only web app in a browser, the path it takes through the app, AWS and Claude, what the member sees, and what keeps it safe. The app is a chat where the household keeps every record, with the dashboard of its holdings one tap away; the web app shows the same dashboard and the owner's Admin center on a laptop. The UK holdings come first; the household's Indian funds, shares and ETFs join them in rupees, with pounds beside every figure. Each flow names the Jira stories that build it.</p>
+  <p class="hero-sub">How a household uses MyPaisa, one flow at a time: what the member does in the MyPaisa app on an iPhone or an iPad, or in the web app in a browser, the path it takes through the app, AWS and Claude, what the member sees, and what keeps it safe. The app is a chat where the household keeps every record, with the dashboard of its holdings one tap away; the web app has the same chat and dashboard, and the owner's Admin center, in a browser on a laptop or a phone. The UK holdings come first; the household's Indian funds, shares and ETFs join them in rupees, with pounds beside every figure. Each flow names the Jira stories that build it.</p>
   <div class="hero-facts">
     <span>One iOS app for iPhone and iPad</span>
     <span>A chat, with the dashboard inside</span>
-    <span>A read-only web app for the dashboard</span>
+    <span>A web app with the chat and the dashboard</span>
     <span>Sign in with Apple or Google, or a passkey on the web</span>
     <span>AWS us-east-1, dev and prod</span>
     <span>Claude through the Anthropic API</span>
     <span>UK and Indian holdings, GBP and INR</span>
     <span>It never trades</span>
   </div>
-  <p class="hero-note">Every figure, rate and fund name on this page is illustrative. "You" are Arun, the household's owner; Asha is the second member. The facts come from <code>ARCHITECTURE.md</code> (identity in §4.5, the chat in §8 and §9, push in §11, the queues in §21, India in §4.7, §5.3 and §22), <code>PLAN.md</code> (phase 13 for India), the MA-101 and MA-102 design decisions and the MA-161 decision record (<code>docs/design/reviews/MA-161/decision.md</code>), with Arun's correction of the same day that the web app stays.</p>
-  <p class="hero-note">Until 25 Oct 2026 MyPaisa was planned as a Telegram bot with a web app beside it; MA-161 replaced the bot with the iOS app, and the web app stays as the read-only dashboard and the Admin center. The screens follow shell 1a, Chat first, which Arun picked on 26 Oct 2026.</p>
+  <p class="hero-note">Every figure, rate and fund name on this page is illustrative. "You" are Arun, the household's owner; Asha is the second member. The facts come from <code>ARCHITECTURE.md</code> (identity in §4.5, the chat in §8 and §9, push in §11, the queues in §21, India in §4.7, §5.3 and §22), <code>PLAN.md</code> (phase 19 for India), the MA-101 and MA-102 design decisions and the MA-161 decision record (<code>docs/design/reviews/MA-161/decision.md</code>), with Arun's correction of the same day that the web app stays.</p>
+  <p class="hero-note">Until 25 Oct 2026 MyPaisa was planned as a Telegram bot with a web app beside it; MA-161 replaced the bot with the iOS app, and the web app stays as the read-only dashboard and the Admin center. On 26 Oct 2026 MA-186 widened the web app into a full door with the chat, a SvelteKit 3 PWA at <code>dashboard.mypaisapp.com</code>, built the iOS app as a React Native shell with a native SwiftUI core, and renumbered the phases in build order: the whole wealth tracker as phases 2 to 9, the market side as phases 10 to 20. The screens follow shell 1a, Chat first, which Arun picked on 26 Oct 2026.</p>
   <svg class="hero-line" viewBox="0 0 600 64" preserveAspectRatio="none" aria-hidden="true">
     <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6 L600 64 L0 64 Z" fill="var(--mp-hero-area)" stroke="none"/>
     <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/>
@@ -718,17 +718,17 @@ footer.foot b { color: var(--mp-ink); }
   <div class="card"><p class="tag">Rule 1</p><h3>Claude never produces a number</h3><p>Every figure comes from code with tests. Claude chooses what to say and how to say it.</p></div>
   <div class="card"><p class="tag">Rule 2</p><h3>The app cannot trade</h3><p>No broker login, no orders. MyPaisa suggests only actions that suit the account: ISA-safe for the UK wrappers, wrapper-aware for Indian accounts.</p></div>
   <div class="card"><p class="tag">Rule 3</p><h3>Summary first, detail on tap</h3><p>Every message and every card has a plain top and a technical underside. Nothing technical is shown unasked.</p></div>
-  <div class="card"><p class="tag">Rule 4</p><h3>One write path</h3><p>Every change to the household's records, whatever the screen, goes through the chat: a card, a Confirm tap, an audit row. The dashboard screens, in the app and in the web app, are read-only for those records; in the app their Update and Ask open the chat. The one exception is the owner's Admin center, in the app or the web app, which acts on admin settings and operations, never on a record, each behind the second check and an audit row ("Dashboard will be read only (except for admin)").</p></div>
+  <div class="card"><p class="tag">Rule 4</p><h3>Create in the chat, correct in place</h3><p>Anything new is created only in the chat: a card, a Confirm tap, an audit row. An existing figure that its kind marks editable can be corrected in place on any screen, at either door. Both go through one write service, which writes the audit row. The one exception is the owner's Admin center, in the app or the web app, which acts on admin settings and operations, never on a record, each behind the second check and an audit row. Arun, 24 Oct 2026: "Dashboard will be read only (except for admin)"; widened on 26 Oct 2026 (MA-186): "The UI should only allow editing existing figures by hand, no creation."</p></div>
 </div>
 
 <h2 class="sec-h">How to read a flow</h2>
 <p class="sec-sub">Each path is a numbered sequence across five lanes. An arrow is a hand-off from one lane to another; a box is work done inside one lane. Safeguards are <span class="sg">underlined in coral</span>. On a narrow screen the same steps stack, each tagged with its lanes.</p>
 <div class="grid">
   <div class="card lanecard"><h3><i class="dot dm"></i>Member</h3><p>You or Asha, in the MyPaisa app on an iPhone or an iPad (or a foldable, folded or open), or in the web app in a browser on a laptop.</p></div>
-  <div class="card lanecard"><h3><i class="dot dp"></i>App and web app</h3><p>MyPaisa, one SwiftUI app for iPhone and iPad on iOS 26: the chat with its cards, composer and shortcut chips; Home, Activity and You; the Admin center for the owner; the Keychain, Face ID, push and the share sheet. It talks to AWS over HTTPS (<code>api.mypaisapp.com</code>) and one live connection (<code>live.mypaisapp.com</code>). Beside it, the web app at <code>console.mypaisapp.com</code>: a read-only progressive web app with the dashboard and the Admin center, and no chat.</p></div>
-  <div class="card lanecard"><h3><i class="dot da"></i>AWS</h3><p>API Gateway (the HTTP api and the WebSocket live connection), the api λ, the SQS FIFO updates queue, the agent λ, the SQS work queue and worker λ, the SQS outbox and sender λ, DynamoDB, S3, Cognito, EventBridge Scheduler, Step Functions (phase 12), SNS, CloudWatch.</p></div>
+  <div class="card lanecard"><h3><i class="dot dp"></i>App and web app</h3><p>MyPaisa, one app for iPhone and iPad on iOS 26, a React Native shell with a native SwiftUI core: the chat with its cards, composer and shortcut chips; Home, Activity and You; the Admin center for the owner; the Keychain, Face ID, push and the share sheet. It talks to AWS over HTTPS (<code>api.mypaisapp.com</code>), and replies stream to it over Server-Sent Events from the same host. Beside it, the web app at <code>dashboard.mypaisapp.com</code>: a SvelteKit 3 progressive web app with the same chat, the dashboard and the Admin center.</p></div>
+  <div class="card lanecard"><h3><i class="dot da"></i>AWS</h3><p>API Gateway (the HTTP api, and the SSE stream on the same host), the api λ, the SQS FIFO updates queue, the agent λ, the SQS work queue and worker λ, the SQS outbox and sender λ, DynamoDB, S3, Cognito, EventBridge Scheduler, Step Functions (phase 18), SNS, CloudWatch.</p></div>
   <div class="card lanecard"><h3><i class="dot dc"></i>Claude</h3><p>The Anthropic API: Haiku, Sonnet and Opus 5.5, server-side web search and fetch, Message Batches.</p></div>
-  <div class="card lanecard"><h3><i class="dot de"></i>External data</h3><p>Free sources first: yfinance, Twelve Data's free tier, ECB FX, issuer pages, FT, RSS. For India (phase 13): AMFI's NAV file, mfapi.in, yfinance <code>.NS</code> and <code>.BO</code>, NSE and BSE bhavcopy, the RBI/FBIL rate, Indian news feeds. Apple and Google, when they vouch for a sign-in; Apple's push service (APNs), when the app is closed.</p></div>
+  <div class="card lanecard"><h3><i class="dot de"></i>External data</h3><p>Free sources first: yfinance, Twelve Data's free tier, ECB FX, issuer pages, FT, RSS. For India: AMFI's NAV file from phase 5; from phase 19, mfapi.in, yfinance <code>.NS</code> and <code>.BO</code>, NSE and BSE bhavcopy, the RBI/FBIL rate, Indian news feeds. Apple and Google, when they vouch for a sign-in; Apple's push service (APNs), when the app is closed.</p></div>
 </div>
 
 <h2 class="sec-h">The safeguards, in one place</h2>
@@ -738,33 +738,33 @@ footer.foot b { color: var(--mp-ink); }
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>An <code>AuditEvent</code> in the same DynamoDB transaction as the change: who, when, through what, before and after, which run. Hash-chained, never deleted.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>The eye on Home and in You, or <code>/privacy</code>, hides pounds and rupees in every card, screen, chart axis and notification; percentages stay, and the app switcher shows only the mark (MA-171). On the currency check's cards (MA-156, ARCHITECTURE §4.7) it shows no amount and no rate, only words, currencies and dates.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>The currency check</b><span>Every holding keeps the one currency it is bought and valued in. An amount typed in another is never saved as it is: MyPaisa says why and asks for the amount that arrived (MA-156).</span></div></div>
-  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Signed in, in the app or the browser</b><span>Sign in with Apple or Google (or, in the browser, a passkey), exchanged for Cognito tokens: in the app they live in the Keychain, this device only; in the web app behind an HttpOnly cookie page scripts never see. Five-minute access tokens; token, status and session epoch checked on every call and every live connection.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Signed in, in the app or the browser</b><span>Sign in with Apple or Google (or, in the browser, a passkey), exchanged for Cognito tokens: in the app they live in the Keychain, this device only; in the web app behind an HttpOnly cookie page scripts never see. Five-minute access tokens; token, status and session epoch checked on every call and on the stream.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>In the app, a fresh Sign in with Apple or a passkey under Face ID (a Google-only member signs in with Google again); in the web app, a passkey or a fresh sign-in. Bound to one action and verified by the server: an import, a rollback, leaving the household, and every admin action, from the Admin center or the admin's chat. A local Face ID alone never authorises anything.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>The spend ladder</b><span>The month's Claude spend is read before every call; at 70, 85, 95 and 100% of the ceiling MyPaisa steps down. Alerts are never dropped.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries and dead-letter queues</b><span>Every hand-off goes through SQS: retried with backoff, idempotent, and kept in a dead-letter queue with an alarm and a replay when it keeps failing. The app keeps what is typed offline and catches up when it opens.</span></div></div>
 </div>
 
 <h2 class="sec-h">The eighteen flows</h2>
-<p class="sec-sub">Flows 1 to 14 follow the UK holdings, flow 9 on the iPad and flow 10 in a browser. Flows 15 to 18 bring India into the picture: money in any currency (phase 1), then the Indian portfolio, the two-currency household and India's place in the day (phase 13).</p>
+<p class="sec-sub">Flows 1 to 14 follow the UK holdings, flow 9 on the iPad and flow 10 in a browser. Flows 15 to 18 bring India into the picture: money in any currency (phase 2), then the Indian portfolio, the two-currency household and India's place in the day (phase 19).</p>
 <div class="grid">
   <a class="idx" href="#invite"><b>1</b><span><strong>Joining by invite</strong><small>A one-time link, shared from the share sheet, opens the app · phase 1</small></span></a>
-  <a class="idx" href="#signin"><b>2</b><span><strong>Signing in with Apple, Google or a passkey</strong><small>In the app and in a browser; a new device; the second check · phases 1 and 5</small></span></a>
-  <a class="idx" href="#holding"><b>3</b><span><strong>Adding a holding</strong><small>A factsheet or a screenshot from the camera, a scan, Photos or Files · phase 1</small></span></a>
-  <a class="idx" href="#money"><b>4</b><span><strong>Logging money in plain words</strong><small>"I put £200 into Balanced today", in the holding's currency · phase 1</small></span></a>
-  <a class="idx" href="#brief"><b>5</b><span><strong>The 07:15 morning brief</strong><small>Scheduler, queues, free prices, the engine, push · phases 2 and 3</small></span></a>
-  <a class="idx" href="#alert"><b>6</b><span><strong>A red alert after the US close</strong><small>Tiers, cooldowns, quiet hours, two reds a week, a time-sensitive push · phase 3</small></span></a>
-  <a class="idx" href="#ask"><b>7</b><span><strong>Asking a question</strong><small>Chat memory, tools, a reply streamed as it is written, Why? with sources · phase 4</small></span></a>
-  <a class="idx" href="#dashboard"><b>8</b><span><strong>The dashboard in the app</strong><small>Home, a holding, Audit, Activity, on iPhone and iPad · phase 5</small></span></a>
-  <a class="idx" href="#ipad"><b>9</b><span><strong>On the iPad: reading Home while asking about it</strong><small>The chat beside every screen over about 900 pt, a sheet away from about 600 to 900 pt · phases 1 and 5</small></span></a>
-  <a class="idx" href="#web"><b>10</b><span><strong>The web app on a laptop</strong><small>The dashboard and the Admin center in a browser, installable · phase 5</small></span></a>
-  <a class="idx" href="#admin"><b>11</b><span><strong>The Admin center</strong><small>In the app and the web app; devices, spend, approvals, each behind the second check · phases 5 and 12</small></span></a>
-  <a class="idx" href="#failure"><b>12</b><span><strong>When something fails</strong><small>Retries, dead-letter queues, replay, offline · phases 1, 5 and 12</small></span></a>
-  <a class="idx" href="#ladder"><b>13</b><span><strong>The spend ladder in practice</strong><small>70, 85, 95 and 100% · phases 1 and 3</small></span></a>
-  <a class="idx" href="#monthly"><b>14</b><span><strong>The first of the month</strong><small>The contribution prompt · phases 1 and 11</small></span></a>
-  <a class="idx" href="#currency"><b>15</b><span><strong>Money in any currency</strong><small>"I put ₹20,000 into Balanced" gets put right · phase 1, MA-156</small></span></a>
-  <a class="idx" href="#india-import"><b>16</b><span><strong>Importing the Indian portfolio once</strong><small>CAS statements and a broker export, one Confirm · phase 13, MA-152</small></span></a>
-  <a class="idx" href="#inr"><b>17</b><span><strong>The household in INR and GBP</strong><small>Rupees with pounds beside, the tax flag · phase 13, MA-153</small></span></a>
-  <a class="idx" href="#india-day"><b>18</b><span><strong>India in the daily rhythm</strong><small>NSE and BSE closes, AMFI's NAVs, the 07:15 brief · phase 13</small></span></a>
+  <a class="idx" href="#signin"><b>2</b><span><strong>Signing in with Apple, Google or a passkey</strong><small>In the app and in a browser; a new device; the second check · phases 1 and 8</small></span></a>
+  <a class="idx" href="#holding"><b>3</b><span><strong>Adding a holding</strong><small>A factsheet or a screenshot from the camera, a scan, Photos or Files · phases 2 and 5</small></span></a>
+  <a class="idx" href="#money"><b>4</b><span><strong>Logging money in plain words</strong><small>"I put £200 into Balanced today", in the holding's currency · phase 5</small></span></a>
+  <a class="idx" href="#brief"><b>5</b><span><strong>The 07:15 morning brief</strong><small>Scheduler, queues, free prices, the engine, push · phases 10 and 11</small></span></a>
+  <a class="idx" href="#alert"><b>6</b><span><strong>A red alert after the US close</strong><small>Tiers, cooldowns, quiet hours, two reds a week, a time-sensitive push · phase 11</small></span></a>
+  <a class="idx" href="#ask"><b>7</b><span><strong>Asking a question</strong><small>Chat memory, tools, a reply streamed as it is written, Why? with sources · phases 1 and 12</small></span></a>
+  <a class="idx" href="#dashboard"><b>8</b><span><strong>The dashboard in the app</strong><small>Home, a holding, Audit, Activity, on iPhone and iPad · phases 2 to 9</small></span></a>
+  <a class="idx" href="#ipad"><b>9</b><span><strong>On the iPad: reading Home while asking about it</strong><small>The chat beside every screen over about 900 pt, a sheet away from about 600 to 900 pt · phases 1 to 9</small></span></a>
+  <a class="idx" href="#web"><b>10</b><span><strong>The web app on a laptop</strong><small>The chat, the dashboard and the Admin center in a browser, installable · phases 1 to 9</small></span></a>
+  <a class="idx" href="#admin"><b>11</b><span><strong>The Admin center</strong><small>In the app and the web app; devices, spend, approvals, each behind the second check · phases 8 and 18</small></span></a>
+  <a class="idx" href="#failure"><b>12</b><span><strong>When something fails</strong><small>Retries, dead-letter queues, replay, offline · phases 1, 8 and 18</small></span></a>
+  <a class="idx" href="#ladder"><b>13</b><span><strong>The spend ladder in practice</strong><small>70, 85, 95 and 100% · phases 1 and 11</small></span></a>
+  <a class="idx" href="#monthly"><b>14</b><span><strong>The first of the month</strong><small>The contribution prompt · phases 5 and 17</small></span></a>
+  <a class="idx" href="#currency"><b>15</b><span><strong>Money in any currency</strong><small>"I put ₹20,000 into Balanced" gets put right · phase 2, MA-156</small></span></a>
+  <a class="idx" href="#india-import"><b>16</b><span><strong>Importing the Indian portfolio once</strong><small>CAS statements and a broker export, one Confirm · phase 19, MA-152</small></span></a>
+  <a class="idx" href="#inr"><b>17</b><span><strong>The household in INR and GBP</strong><small>Rupees with pounds beside, the tax flag · phase 19, MA-153</small></span></a>
+  <a class="idx" href="#india-day"><b>18</b><span><strong>India in the daily rhythm</strong><small>NSE and BSE closes, AMFI's NAVs, the 07:15 brief · phase 19</small></span></a>
 </div>
 
 <!-- ============ 1. Joining by invite ============ -->
@@ -785,13 +785,13 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app posts it to <b>API Gateway</b>, <code>POST /v1/chat/messages</code>, with a client id and your access token</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">authorizer</span> checks the token, your status and your session epoch. <b>api λ</b> puts the message on the <b>SQS FIFO updates</b> queue in your lane (the client id dedupes) and answers <code>202</code> at once</span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> knows you from the token, checks you are the owner, and writes an <b>Invite</b> to <b>DynamoDB</b>: single use, 24-hour expiry, this household, this role. Its <span class="sg">audit row</span> goes in the same transaction</span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The reply goes on the <b>SQS outbox</b>; <b>sender λ</b> delivers it over your live connection: a card with the link <code>https://console.mypaisapp.com/join/&lt;token&gt;</code> and <b>Share</b></span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The reply goes on the <b>SQS outbox</b>; <b>sender λ</b> delivers it over the stream: a card with the link <code>https://dashboard.mypaisapp.com/join/&lt;token&gt;</code> and <b>Share</b></span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <b>Share</b>; iOS's share sheet sends the link to Asha in Messages, WhatsApp or Mail</span><span class="ln"></span></li>
-      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">Asha taps it on her iPhone. iOS opens MyPaisa through the universal link (the <code>apple-app-site-association</code> file the web app's site serves on <code>console.mypaisapp.com</code>); a phone without the app gets the site's static join page, which names nothing</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">Asha taps it on her iPhone. iOS opens MyPaisa through the universal link (the <code>apple-app-site-association</code> file the web app's site serves on <code>dashboard.mypaisapp.com</code>); a phone without the app gets the site's static join page, which names nothing</span><span class="ln"></span></li>
       <li class="st mv fp toE" data-lanes="App to External (Apple)"><span class="lb">She taps <b>Sign in with Apple</b> and passes Face ID; Apple returns its identity token with the api's one-time nonce inside it</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app sends the token and the invite to <code>/auth/apple</code></span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Cognito</b>'s custom-auth Lambdas check Apple's token against Apple's published keys, then the invite: unused, under 24 hours old, this household. It is marked used; Asha's <b>Member</b> row and her Cognito user in <code>mypaisa-prod-users</code> are created, linked to her Apple account's stable id, each with an <span class="sg">audit row</span></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Her tokens go to the <span class="sg">Keychain</span>; the welcome and the first of three setup questions arrive over her live connection</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Her tokens go to the <span class="sg">Keychain</span>; the welcome and the first of three setup questions arrive over her stream</span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">Asha answers with the cards' buttons: base currency, what she holds, how often to be told things; then iOS asks to allow notifications</span><span class="ln"></span></li>
     </ol></div>
   </div></div>
@@ -809,7 +809,7 @@ footer.foot b { color: var(--mp-ink); }
             <p>Here is a one-time link for your household. Share it with the person joining. It works once, for 24 hours, and makes them a <b>member</b>.</p>
             <div class="mcard">
               <h5>Invite · member</h5>
-              <p class="mono">console.mypaisapp.com/join/&lt;token&gt;</p>
+              <p class="mono">dashboard.mypaisapp.com/join/&lt;token&gt;</p>
               <small>Single use · until 18:02 tomorrow · for a read-only member, type <code>/invite viewer</code></small>
               <div class="cbs c2"><span class="cb p"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>Share link</span><span class="cb">Copy</span></div>
             </div>
@@ -864,7 +864,7 @@ footer.foot b { color: var(--mp-ink); }
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><div><b>A one-time link</b><span>Single use, a 24-hour expiry, bound to one household and one role. Shared outside MyPaisa, it is worth nothing once used or expired.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>The join page names nothing</b><span><code>console.mypaisapp.com</code> serves the file that lets iOS open the app and a static join page; nothing before sign-in names the household or a member, and every figure is behind the api.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>The join page names nothing</b><span><code>dashboard.mypaisapp.com</code> serves the file that lets iOS open the app and a static join page; nothing before sign-in names the household or a member, and every figure is behind the api.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Only signed-in members</b><span>The chat API refuses any message without a valid token; the client id drops a duplicate.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Strangers are refused</b><span>An Apple or Google account linked to nobody, and carrying no valid invite, is refused at sign-in.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>The invite, the new member and her Cognito user each leave a row in the same transaction as the change.</span></div></div>
@@ -876,7 +876,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-32"><b>MA-32</b><span>The first person to sign in owns the household and invites and removes members with one-time links</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-168"><b>MA-168</b><span>Signing in takes one tap with Apple or Google, the session stays in the Keychain, and an invite link opens the app to join</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>Each environment hosts the console at console(-dev).mypaisapp.com on S3 and CloudFront: the web app (a PWA) and the iOS app's association file and invite page</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>Each environment hosts the web app at dashboard(-dev).mypaisapp.com on S3 and CloudFront, with the iOS app's association file and the invite page</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-162"><b>MA-162</b><span>The Apple Developer Program, and the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-35"><b>MA-35</b><span>The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-33"><b>MA-33</b><span>Each member has their own accounts, and a joint account can have two owners</span></a>
@@ -891,7 +891,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">02</span>
     <h2 id="h-signin">Signing in with Apple, Google or a passkey</h2>
     <p class="lede">There are no passwords. In the app, Apple or Google vouches for the member, natively, and the environment's Cognito user pool turns that into a short-lived session kept in the Keychain. In the web app it is Apple, Google or a passkey, and the session is a cookie the api sets. An import, a rollback, leaving the household and every admin action, from the Admin center or the admin's chat, need a second check, bound to that one action: a fresh Sign in with Apple or a passkey under Face ID in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on a device that is not signed in, opening <code>console.mypaisapp.com</code> in a browser, or an action that needs the second check</span><span class="chip">Phase 1 (the app's sign-in)</span><span class="chip">Phase 5 (the web app, the second check)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on a device that is not signed in, opening <code>dashboard.mypaisapp.com</code> in a browser, or an action that needs the second check</span><span class="chip">Phase 1 (sign-in, in the app and the browser)</span><span class="chip">Phase 8 (the second check)</span></div>
   </div>
 
   <h3 class="blk">The paths</h3>
@@ -908,8 +908,8 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app sends it to <code>/auth/apple</code>; the api starts Cognito's custom auth for the member that Apple account is linked to</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">The verify trigger checks the token against Apple's published keys: issuer, audience (the app's bundle id), expiry, an issue time under five minutes, the nonce, and <span class="sg">no replay</span>. An account linked to nobody is refused, unless it carries a valid invite (flow 1)</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Cognito's tokens: a five-minute access token and a refresh token that rotates on use, kept in the <span class="sg">Keychain</span>, this device only, after first unlock</span><span class="ln"></span></li>
-      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app registers the device and its push token (<code>POST /v1/devices</code>) and opens the live connection to <code>live.mypaisapp.com</code></span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">On every <code>/v1</code> call and every live connection the <span class="sg">authorizer</span> checks the token, Asha's status and her session epoch; the data routes are GET only. Each sign-in is an <span class="sg">audit row</span></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app registers the device and its push token (<code>POST /v1/devices</code>) and opens the stream, <code>/v1/stream</code> on <code>api.mypaisapp.com</code></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">On every <code>/v1</code> call and on the stream the <span class="sg">authorizer</span> checks the token, Asha's status and her session epoch; the data routes accept a correction only to a figure its kind marks editable. Each sign-in is an <span class="sg">audit row</span></span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">A new device: Asha's chat asks <i>Was this you?</i>, and the owner gets a message with <b>Open Admin center</b></span><span class="ln"></span></li>
     </ol></div></div>
   </div>
@@ -933,12 +933,12 @@ footer.foot b { color: var(--mp-ink); }
     <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
     <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
     <ol class="seq">
-      <li class="st mv fm toP" data-lanes="Member to Web app"><span class="lb">Asha opens <code>console.mypaisapp.com</code> on a laptop: <b>CloudFront</b> serves the static shell and its sign-in page, with no data in it</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to Web app"><span class="lb">Asha opens <code>dashboard.mypaisapp.com</code> on a laptop: <b>CloudFront</b> serves the static shell and its sign-in page, with no data in it</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="Web app to AWS"><span class="lb">The page asks the api for a <span class="sg">one-time nonce</span>, as the app does</span><span class="ln"></span></li>
       <li class="st mv fp toE" data-lanes="Web app to External (Apple or Google)"><span class="lb"><b>Sign in with Apple</b> through Apple's JS (this environment's Services ID as the audience), or <b>Google</b> through Google Identity Services (this environment's Google web client id), with the nonce</span><span class="ln"></span></li>
       <li class="st mv fe toP rev" data-lanes="External (Apple or Google) to Web app"><span class="lb">Apple's identity token or Google's ID token, back to the page</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="Web app to AWS"><span class="lb">The page posts it to <code>/auth/apple</code> or <code>/auth/google</code>, the same exchange as the app, with <span class="sg">no client secret</span>. Or a <b>passkey</b>: a one-time challenge from <code>/auth/passkey/options</code>, signed under Face ID or Touch ID, sent to <code>/auth/passkey</code></span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">The api starts Cognito's custom auth for the linked member, and the verify trigger checks the token against Apple's or Google's published keys (audience, expiry, issue time, nonce, <span class="sg">no replay</span>), or the passkey's signature against its stored public key, the challenge, the origin and the relying party, the console's own domain. The account's stable id maps to the member, <span class="sg">never the address</span>; an account linked to nobody is refused</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The api starts Cognito's custom auth for the linked member, and the verify trigger checks the token against Apple's or Google's published keys (audience, expiry, issue time, nonce, <span class="sg">no replay</span>), or the passkey's signature against its stored public key, the challenge, the origin and the relying party, the web app's own domain. The account's stable id maps to the member, <span class="sg">never the address</span>; an account linked to nobody is refused</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to Web app"><span class="lb">The api sets the session: an <span class="sg">HttpOnly, Secure, SameSite=Strict cookie</span> for its own host, 30 days on a laptop; the five-minute access tokens behind it are never seen by page scripts</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Every <code>/v1</code> call from the page carries the cookie; the authorizer checks the session, status and epoch, and <span class="sg">CORS</span> admits only this environment's site. Each web sign-in is an <span class="sg">audit row</span>, and a new browser gets <i>Was this you?</i> in her app's chat</span></li>
     </ol></div></div>
@@ -963,7 +963,7 @@ footer.foot b { color: var(--mp-ink); }
   <dl class="facts">
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Access tokens</dt><dd>Five minutes, refreshed silently with the refresh token, which rotates each time it is used.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>The Keychain</dt><dd>The tokens live in the Keychain, this device only, available after first unlock: never in the app's files and never in a backup.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>Every call</dt><dd>Token, member status and session epoch checked on every HTTP call and every live connection, so removing or pausing a member locks them out at once.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>Every call</dt><dd>Token, member status and session epoch checked on every HTTP call and on the stream, so removing or pausing a member locks them out at once.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>The cookie, in the web app</dt><dd><code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>, set by <code>api.mypaisapp.com</code> for its own host; 30 days on a laptop. Page scripts never see a token.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Two environments</dt><dd>MyPaisa Dev and MyPaisa are separate apps, with their own bundle ids, sign-in settings and user pools, and each has its own web app. Tokens from dev are refused by prod; CORS admits only that environment's site.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>A second sign-in</dt><dd>From You, Sign-in methods, a member adds Apple or Google, or a passkey, to their own identity while signed in, so the person who proves it is the member. Every link and unlink is an audit row.</dd></div>
@@ -1011,7 +1011,7 @@ footer.foot b { color: var(--mp-ink); }
     </figure>
     <figure class="mock mid">
       <div class="browser">
-        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com</span></div>
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com</span></div>
         <div class="bpage">
           <div><p class="over">MyPaisa · the web app</p><p class="ptitle">Sign in</p><p style="margin-top:4px" class="muted">No passwords. Use the account you joined with.</p></div>
           <span class="sib apple"><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>Sign in with Apple</span>
@@ -1082,7 +1082,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-109"><b>MA-109</b><span>Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys, verified in custom-auth Lambdas</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-185"><b>MA-185</b><span>In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-143"><b>MA-143</b><span>Each environment has its own Google iOS and web clients and Sign in with Apple's ids, with their ids in SSM, before Cognito is built</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-75"><b>MA-75</b><span>The api's authorizer checks the access token, the member's status and session epoch on every call and live connection</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-75"><b>MA-75</b><span>The api's authorizer checks the access token or the session cookie, the member's status and session epoch on every call and on the stream</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-77"><b>MA-77</b><span>A member adds a second sign-in, Apple or Google, or a passkey, to their identity from You</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-72"><b>MA-72</b><span>Each member's Apple Account and Google account use two-factor authentication, and each device has a passcode and Face ID</span></a>
@@ -1098,7 +1098,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">03</span>
     <h2 id="h-holding">Adding a holding from a factsheet or a screenshot</h2>
     <p class="lede">Attach the fund's factsheet PDF from Files, then a screenshot of its value in the Monzo app from Photos (or take either with the camera or a document scan). Claude reads them; code checks them; nothing is saved until the member taps Confirm. Anything Claude is unsure of comes back in amber.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> a PDF or a picture attached in the chat, or <code>/add</code></span><span class="chip">Phase 1</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a PDF or a picture attached in the chat, or <code>/add</code></span><span class="chip">Phase 2 (reading a file)</span><span class="chip">Phase 5 (a fund)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -1222,7 +1222,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">04</span>
     <h2 id="h-money">Logging money in plain words</h2>
     <p class="lede">Type it the way you would say it, in any currency. When the sentence has everything and its currency matches the holding's, it goes straight to a Confirm card; with no currency named, the holding's own is assumed and said on the card. When something is missing, MyPaisa asks for that one thing on a card with buttons, edited in place so the chat stays tidy. Rupees typed for a pound holding take the currency check of flow 15.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put £200 into Balanced today", "1.5 lakh into my Nifty 50 index fund", "I want to log a transaction", or the <b>Log money</b> chip</span><span class="chip">Phase 1</span><span class="chip">Phase 13 (rupee holdings)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put £200 into Balanced today", "1.5 lakh into my Nifty 50 index fund", "I want to log a transaction", or the <b>Log money</b> chip</span><span class="chip">Phase 5 (pound and rupee holdings)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -1345,13 +1345,13 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">05</span>
     <h2 id="h-brief">The 07:15 morning brief, end to end</h2>
     <p class="lede">At 07:00 the prices come in from free sources; by 07:10 the engine has scored every holding; at 07:15 each member's brief arrives: in the chat if the app is open, and as a notification if it is not. If a price is late, the brief still goes, and says so.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> EventBridge Scheduler, Europe/London, each weekday</span><span class="chip">Phase 2 (prices, engine)</span><span class="chip">Phase 3 (the brief)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> EventBridge Scheduler, Europe/London, each weekday</span><span class="chip">Phase 10 (prices, engine)</span><span class="chip">Phase 11 (the brief)</span></div>
   </div>
 
   <h3 class="blk">The morning, by the clock</h3>
   <div class="timeline">
     <div class="tl"><b>07:00</b><span>Ingest. The Scheduler queues one job per holding; free sources first.</span></div>
-    <div class="tl"><b>07:10</b><span>Signals. The engine has scored every holding; stances stay in shadow until phase 8.</span></div>
+    <div class="tl"><b>07:10</b><span>Signals. The engine has scored every holding; stances stay in shadow until phase 15.</span></div>
     <div class="tl"><b>07:15</b><span>Brief. Once for the household and once for each member who wants one, in their own preferences: in the chat, and pushed to a closed app.</span></div>
     <div class="tl"><b>07:45</b><span>Dead man's switch. If the brief has not gone out, an alarm tells the owner, in the app and by push.</span></div>
   </div>
@@ -1370,13 +1370,13 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The engine's numbers and the cached card rubric go to Sonnet, after the <span class="sg">spend meter</span> is read</span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Claude writes the words. A validator checks every figure against the engine's; on a refusal or an error the plain template goes instead</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">The card (its words, the engine's figures, the chart's series and a plain line for the notification) goes on the <b>SQS outbox</b>, one lane per member, so its parts arrive in order</span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb"><b>sender λ</b> delivers it to each live connection; the app draws the chart in Swift Charts from the series</span><span class="ln"></span></li>
-      <li class="st mv fa toE" data-lanes="AWS to External (APNs)"><span class="lb">To each device with no live connection, a push through <b>APNs</b>: an ordinary notification, its plain line with <span class="sg">no amount on the lock screen</span> unless the member chose amounts</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb"><b>sender λ</b> delivers it to each open stream; the app draws the chart in Swift Charts from the series</span><span class="ln"></span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External (APNs)"><span class="lb">To each device with no open stream, a push through <b>APNs</b>: an ordinary notification, its plain line with <span class="sg">no amount on the lock screen</span> unless the member chose amounts</span><span class="ln"></span></li>
       <li class="st mv fe toP rev" data-lanes="External (APNs) to App"><span class="lb">iOS shows it; a tap opens the chat at the brief, and the app catches up on every turn after the last one it has</span><span class="ln"></span></li>
       <li class="st mv fp toM rev" data-lanes="App to Member"><span class="lb">You read the top; the technical detail is one tap away</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">07:45 <b>CloudWatch</b>: if the brief has not gone out, the dead man's switch alarm reaches the owner</span></li>
-      <li class="st note" data-lanes="Note"><span class="box">From phase 12 one <b>Step Functions</b> state machine drives the same jobs (ingest, engine, Forecaster, grade, calibrate, brief) with retries and backoff on every step, and the ops warden repairs what it safely can.</span></li>
-      <li class="st note" data-lanes="Note"><span class="box">From phase 13 the brief also carries <b>India's previous day</b>. NSE and BSE close at 15:30 IST and AMFI's fund prices arrive by the UK evening, so the Indian jobs have run long before 07:00; flow 18 follows them.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">From phase 18 one <b>Step Functions</b> state machine drives the same jobs (ingest, engine, Forecaster, grade, calibrate, brief) with retries and backoff on every step, and the ops warden repairs what it safely can.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">From phase 19 the brief also carries <b>India's previous day</b>. NSE and BSE close at 15:30 IST and AMFI's fund prices arrive by the UK evening, so the Indian jobs have run long before 07:00; flow 18 follows them.</span></li>
     </ol></div>
   </div></div>
 
@@ -1479,12 +1479,12 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-57"><b>MA-57</b><span>The morning brief and evening wrap arrive as cards, with a Technical section and glossary</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-56"><b>MA-56</b><span>Design the chart house style shared by the chat's cards and the dashboard, in Swift Charts</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-58"><b>MA-58</b><span>Charts in the house style are drawn in each card from the engine's series</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies reach the open app over a signed-in live connection, in order and never twice, and the app catches up when it opens</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-170"><b>MA-170</b><span>Apple push reaches each member's devices when the app is closed, with no amounts on the lock screen unless they choose</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-61"><b>MA-61</b><span>A dead man's switch and the error alarms tell the owner, in the app and by push, when a job did not run</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries and a dead-letter queue</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-139"><b>MA-139</b><span>Messages travel through ordered queues, in and out, and are never lost</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-135"><b>MA-135</b><span>E7: an ops warden runs the daily pipeline and repairs what it safely can (phase 12)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-135"><b>MA-135</b><span>E7: an ops warden runs the daily pipeline and repairs what it safely can (phase 18)</span></a>
   </div>
 </section>
 
@@ -1494,7 +1494,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">06</span>
     <h2 id="h-alert">A red alert after the US close</h2>
     <p class="lede">After the US close the engine sees the NASDAQ 100 ETF is 8.4% below its high, just past Asha's 8% alert. Code decides whether it rings, and how loudly: a red alert is a time-sensitive notification with sound. Claude only words it.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> the 21:00 run after the US close</span><span class="chip">Phase 3</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the 21:00 run after the US close</span><span class="chip">Phase 11</span></div>
   </div>
 
   <h3 class="blk">The gates, all in code</h3>
@@ -1518,7 +1518,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>agent λ</b> runs the gates in code: the tier, the <span class="sg">cooldown</span>, Asha's <span class="sg">quiet hours</span> and her <span class="sg">weekly red budget</span></span></li>
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Haiku's <span class="sg">repeat filter</span>: has Asha already been told this?</span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Not a repeat. Sonnet writes the words around the engine's numbers</span><span class="ln"></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Outbox, then sender λ: the alert card to Asha, whose account it is (and to you, if you asked for her alerts), over each live connection</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Outbox, then sender λ: the alert card to Asha, whose account it is (and to you, if you asked for her alerts), over each open stream</span><span class="ln"></span></li>
       <li class="st mv fa toE" data-lanes="AWS to External (APNs)"><span class="lb">To each of her devices with the app closed: <b>APNs</b>, interruption level <span class="sg">time-sensitive</span>, with sound</span><span class="ln"></span></li>
       <li class="st mv fe toP rev" data-lanes="External (APNs) to App"><span class="lb">iOS shows it on the lock screen, through a Focus; a tap opens the chat at the alert</span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">Asha reads it and later taps <b>I acted</b></span><span class="ln"></span></li>
@@ -1564,7 +1564,7 @@ footer.foot b { color: var(--mp-ink); }
         </div>
         <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>
-      <figcaption><b>Asha's red alert.</b> Crimson is kept for this tier only. The stance chip appears once stances go live in phase 8.</figcaption>
+      <figcaption><b>Asha's red alert.</b> Crimson is kept for this tier only. The stance chip appears once stances go live in phase 15.</figcaption>
     </figure>
   </div>
 
@@ -1586,7 +1586,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-60"><b>MA-60</b><span>Tapping "I acted" records a decision the Saturday review can check</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-53"><b>MA-53</b><span>The ingest and engine jobs write signals and shadow stances every weekday</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-58"><b>MA-58</b><span>Charts in the house style are drawn in each card from the engine's series</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-91"><b>MA-91</b><span>Stance chips appear on the Portfolio card and in the brief, and /calls lists them (phase 8)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-91"><b>MA-91</b><span>Stance chips appear on the Portfolio card and in the brief, and /calls lists them (phase 15)</span></a>
   </div>
 </section>
 
@@ -1596,7 +1596,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">07</span>
     <h2 id="h-ask">Asking a question in chat</h2>
     <p class="lede">Ask in plain words. The agent looks up what it needs with its tools, sends Claude only the current conversation, and answers with a card; its words stream into the chat as they are written. <b>Why?</b> goes to the web for today's reasons, with the sources cited.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> a typed question, the <b>Ask</b> chip, or a screen's Ask</span><span class="chip">Phase 4</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a typed question, the <b>Ask</b> chip, or a screen's Ask</span><span class="chip">Phase 1 (memory, streaming)</span><span class="chip">Phase 12 (tools, cards)</span></div>
   </div>
 
   <h3 class="blk">Chat memory: keep it all, send little</h3>
@@ -1626,9 +1626,9 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Results from <b>DynamoDB</b>: every number comes from code</span><span class="ln"></span></li>
       <li class="st act inC" data-lanes="Claude"><span class="box">Above 70% confidence: a bull, a bear and a judge, bounded to one round</span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The stance card's words, streamed as they are written</span><span class="ln"></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb"><b>agent λ</b> streams the words to your open app over the live connection; the figures stay the engine's</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb"><b>agent λ</b> streams the words to your open app over the stream; the figures stay the engine's</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Each turn is a <b>ChatTurn</b> row; the call's cost is added to the meter and the <b>RunRecord</b></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The finished card goes through the outbox; sender λ delivers it whole to every live connection you have, your iPad's too, with <b>Why?</b>, <b>What if?</b>, <b>Technical</b> and <b>I acted</b></span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The finished card goes through the outbox; sender λ delivers it whole to every open stream you have, your iPad's too, with <b>Why?</b>, <b>What if?</b>, <b>Technical</b> and <b>I acted</b></span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <b>Why?</b></span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The tap, through <code>/v1/chat/actions</code> and your lane</span><span class="ln"></span></li>
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The question goes to Claude with web search and fetch on</span><span class="ln"></span></li>
@@ -1712,7 +1712,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-62"><b>MA-62</b><span>You can ask MyPaisa anything about your holdings and it answers from its tools</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-115"><b>MA-115</b><span>The chat sends Claude only the current conversation, kept short, with notes on recent ones</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-169"><b>MA-169</b><span>The chat in the app shows the conversation, renders every card natively, streams replies and sends text, photos, scans and files</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies reach the open app over a signed-in live connection, in order and never twice</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-63"><b>MA-63</b><span>Design the research cards: stance, holding profile, overlap, fund vs benchmark, bear vs bull, scenario</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-64"><b>MA-64</b><span>The stance and holding-profile cards explain each holding and what would change the view</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-66"><b>MA-66</b><span>Bear vs bull argues both sides in two calls and a judge, bounded to one round</span></a>
@@ -1726,8 +1726,8 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">08</span>
     <h2 id="h-dashboard">The dashboard in the app</h2>
-    <p class="lede">Home, a holding, Overlap and Scorecard, the audit log of every change, and what the agent did and spent: the same screens on iPhone and iPad, one tab away from the chat, and in the web app on a laptop (flow 10). Nothing on them can change a record; in the app a screen's Update and Ask open the chat.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> the Home or Activity tab, a card's <b>Open</b>, or pulling the chat's household strip down</span><span class="chip">Phase 5</span></div>
+    <p class="lede">Home, a holding, Overlap and Scorecard, the audit log of every change, and what the agent did and spent: the same screens on iPhone and iPad, one tab away from the chat, and in the web app on a laptop (flow 10). Nothing new is created on them, and an existing figure can be corrected in place (rule 4); a screen's Update and Ask open the chat.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the Home or Activity tab, a card's <b>Open</b>, or pulling the chat's household strip down</span><span class="chip">Phases 2 to 9</span><span class="chip">Phase 13 (Overlap, Scorecard)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -1737,14 +1737,14 @@ footer.foot b { color: var(--mp-ink); }
     <ol class="seq">
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <b>Home</b>, or pull the chat's household strip down, which opens Home as a sheet over the chat</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>GET /v1/home</code> to <code>api.mypaisapp.com</code>, with the access token from the Keychain</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">authorizer</span> checks token, status, epoch and role; <b>api λ</b> reads <b>DynamoDB</b> through GET routes only and returns just what this member may see</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">authorizer</span> checks token, status, epoch and role; <b>api λ</b> reads <b>DynamoDB</b> and returns just what this member may see</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The household or your own total, the day's move, the month's series and the holdings, with the Household and Me switch; Swift Charts draws the line</span><span class="ln"></span></li>
       <li class="st act inP" data-lanes="App"><span class="box">The last fetch is kept on the device, encrypted, and shown <span class="sg">with its time</span> when the network is gone</span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You open a holding: its chart, its stance, then Overlap and Scorecard</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Audit</b> reads the <b>AuditEvent</b> rows. <b>Activity</b> reads the <b>RunRecord</b> rows, the schedule board, the spend meter and seven days of <b>CloudWatch</b> alarms</span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">A file behind an audit row opens through a <span class="sg">five-minute link</span>, for its member and the owner only; the opening is itself an audit row</span><span class="ln"></span></li>
-      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">To change anything, the screen's <b>Update</b> opens the chat with the right guided flow started: a card, <span class="sg">Confirm</span>, an <span class="sg">audit row</span></span><span class="ln"></span></li>
-      <li class="st note" data-lanes="Note"><span class="box">On the iPad the same screens sit between the sidebar and the chat, so a member reads and asks at once (flow 9); in a browser they are the web app, read-only and without the chat (flow 10). Every card carries <b>Open</b> to its screen, and every screen's <b>Ask</b> opens the chat about it.</span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">To add anything, the screen's <b>Update</b> opens the chat with the right guided flow started: a card, <span class="sg">Confirm</span>, an <span class="sg">audit row</span>; an existing figure can be corrected in place, with its audit row</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box">On the iPad the same screens sit between the sidebar and the chat, so a member reads and asks at once (flow 9); in a browser they are the web app, with the same chat beside them (flow 10). Every card carries <b>Open</b> to its screen, and every screen's <b>Ask</b> opens the chat about it.</span></li>
     </ol></div>
   </div></div>
 
@@ -1860,7 +1860,7 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only by construction</b><span>The data routes are GET only and no screen, in the app or the web app, has a form that saves a record. Every change to the records goes through the chat. The one write path outside it is the owner's Admin center, for admin settings and operations only, each behind the second check; none changes a record.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Create in the chat, correct in place</b><span>No screen, in the app or the web app, has a form that creates a record: anything new goes through the chat. An existing figure its kind marks editable can be corrected in place, and the data routes accept nothing else; both go through one write service, with an audit row. The one write path outside it is the owner's Admin center, for admin settings and operations only, each behind the second check; none changes a record.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Checked on every call</b><span>Token, status, epoch and role on every call; the token never leaves the Keychain except to the api.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds and rupees hidden on every screen and chart axis, with placeholders that stay visible in dark; the app switcher shows only the mark.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Roles</b><span>A member sees the household totals and their own detail; a viewer reads Home and what members share.</span></div></div>
@@ -1870,9 +1870,10 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit and Activity screens show every change and every run, with what it cost</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>A read-only api Lambda serves each member only what they may see</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Overlap and Scorecard work at every door: iPhone, iPad, the foldable and the browser</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit screen shows every change with who, when and the file behind it, at every door</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-196"><b>MA-196</b><span>Activity shows each run of the agent at every door: what it read, which tools it called, what it proposed, and what it cost</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>The api serves each member only what they may see, and accepts in-place corrections only to the figures a kind marks editable</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-80"><b>MA-80</b><span>Each card opens its dashboard screen, and each screen's Ask opens the chat about it</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-71"><b>MA-71</b><span>Design the Audit and Activity screens on iPhone and iPad</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</span></a>
@@ -1891,7 +1892,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">09</span>
     <h2 id="h-ipad">On the iPad: reading Home while asking about it</h2>
     <p class="lede">On an iPad in landscape, or any window wider than about 900 points, the chat sits beside every screen; from about 600 to 900 points it is a sheet away, and in a compact window (every iPhone, a folded foldable, Slide Over) it is the Chat tab. You read Home and ask about it at once: the question carries the screen as its context, the answer streams in beside the figures, and Home stays where it was. The same conversation is on your iPhone.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on an iPad, a Stage Manager window or an open foldable</span><span class="chip">Phase 1 (the shell)</span><span class="chip">Phase 5 (the screens)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on an iPad, a Stage Manager window or an open foldable</span><span class="chip">Phase 1 (the shell)</span><span class="chip">Phases 2 to 9 (the screens)</span></div>
   </div>
 
   <h3 class="blk">The layout follows the width, never the device</h3>
@@ -1908,8 +1909,8 @@ footer.foot b { color: var(--mp-ink); }
     <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
     <ol class="seq">
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You open MyPaisa on the iPad in landscape: the sidebar, Home, and the chat as a column beside it</span><span class="ln"></span></li>
-      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>GET /v1/home</code> for the screen, <code>GET /v1/chat/turns</code> for the conversation and one live connection, all with the iPad's own tokens</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">authorizer</span> checks each; <b>api λ</b> reads <b>DynamoDB</b> through GET routes only</span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>GET /v1/home</code> for the screen, <code>GET /v1/chat/turns</code> for the conversation and the stream, all with the iPad's own tokens</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">authorizer</span> checks each; <b>api λ</b> reads <b>DynamoDB</b></span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Home's figures, and the same conversation you had on your iPhone this morning</span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">Reading Home, you type in the column beside it: <i>Why is Balanced up this month?</i> The composer carries the screen: <b>About Home · Household</b></span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>POST /v1/chat/messages</code> with the client id and the context: which screen, which holding. <span class="sg">A pointer, never a figure</span></span><span class="ln"></span></li>
@@ -1917,10 +1918,10 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The current conversation and the screen's context, with the strict tools</span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb"><code>get_holding</code> and <code>get_signals</code>, then the words around the engine's numbers</span><span class="ln"></span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The words stream into the chat column while Home stays where it was; the card arrives whole, with <b>Open Balanced</b></span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box"><b>sender λ</b> delivers the finished card to every live connection you have, so the iPhone in your pocket shows it too; a device with the app closed catches up when it opens</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>sender λ</b> delivers the finished card to every open stream you have, so the iPhone in your pocket shows it too; a device with the app closed catches up when it opens</span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <b>Open Balanced</b>: the holding opens in the middle, and the chat stays beside it</span><span class="ln"></span></li>
       <li class="st act inP" data-lanes="App"><span class="box">You turn the iPad to portrait: the chat becomes a sheet, and the conversation, the scroll position and any guided flow <span class="sg">stay where they were</span></span></li>
-      <li class="st note" data-lanes="Note"><span class="box">To change anything, the screen's <b>Update</b> starts the guided flow in the chat column: a card, Confirm, an audit row, as on the iPhone. The screen itself never saves.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">To add anything, the screen's <b>Update</b> starts the guided flow in the chat column: a card, Confirm, an audit row, as on the iPhone. The screen itself creates nothing; an existing figure can be corrected in place.</span></li>
     </ol></div>
   </div></div>
 
@@ -1997,8 +1998,8 @@ footer.foot b { color: var(--mp-ink); }
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>A pointer, never a figure</b><span>The screen's context tells the agent where you are; the answer's numbers come from the engine, as everywhere else.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>One conversation, every device</b><span>Each finished message reaches every live connection of the member; a device with the app closed catches up on opening, so nothing depends on a socket staying up.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only beside the chat</b><span>The screen never saves. A change from it starts the guided flow in the chat column: a card, Confirm, an audit row.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>One conversation, every device</b><span>Each finished message reaches every open stream of the member; a device with the app closed catches up on opening, so nothing depends on a stream staying up.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Created in the chat beside it</b><span>The screen creates nothing: anything new starts the guided flow in the chat column, a card, Confirm, an audit row. An existing figure can be corrected in place, through the same write service.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Nothing lost on a turn or a fold</b><span>Scene state restoration keeps the conversation, the scroll position and any guided flow through a rotation, a fold or a window resize.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy in both columns</b><span>Privacy mode hides amounts in the screen and in the chat at once, and in the strip and the sidebar.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Readable at every size</b><span>Dynamic Type from xSmall to AX5 (figures stack under their labels from AX1), a spoken label on every figure, 44 pt targets, glass made opaque under Reduce Transparency.</span></div></div>
@@ -2008,10 +2009,10 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell, 1a Chat first: tabs on iPhone, the chat beside every screen over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-70"><b>MA-70</b><span>Design the iPad and open-foldable layouts: Home, a holding, Overlap, Scorecard and sign-in at regular width</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Overlap and Scorecard work at every door: iPhone, iPad, the foldable and the browser</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-80"><b>MA-80</b><span>Each card opens its dashboard screen, and each screen's Ask opens the chat about it</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-169"><b>MA-169</b><span>The chat in the app shows the conversation, renders every card natively, streams replies and sends text, photos, scans and files</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies reach the open app over a signed-in live connection, in order and never twice, and the app catches up when it opens</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-180"><b>MA-180</b><span>Search finds a holding, a change, a file or a past answer from anywhere in the app</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-181"><b>MA-181</b><span>Every screen works with VoiceOver, Dynamic Type up to AX5, Increase Contrast, Reduce Transparency and Reduce Motion, and stays legible in light and dark at 25% brightness</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-182"><b>MA-182</b><span>Every component, card and chart moves with one motion system, in the iOS app and the web app, and lands at once under Reduce Motion</span></a>
@@ -2023,8 +2024,8 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">10</span>
     <h2 id="h-web">The web app on a laptop</h2>
-    <p class="lede">The dashboard and the owner's Admin center also live in a browser: <code>console.mypaisapp.com</code>, a read-only web app that installs like an app on a laptop, an iPad or a phone. The same figures, the audit log of every change, and what the agent did and spent. It has no chat, and nothing on it can change a record: every change goes through a card and Confirm in the app's chat.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> <code>console.mypaisapp.com</code> in a browser, or the installed web app</span><span class="chip">Phase 5</span></div>
+    <p class="lede">The chat, the dashboard and the owner's Admin center also live in a browser: <code>dashboard.mypaisapp.com</code>, the web app, a SvelteKit 3 progressive web app that installs like an app on a laptop, an iPad or a phone. The same conversation, the same figures, the audit log of every change, and what the agent did and spent. Anything new is created in its chat, as in the app, with a card and Confirm; an existing figure can be corrected in place.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> <code>dashboard.mypaisapp.com</code> in a browser, or the installed web app</span><span class="chip">Phases 1 to 9</span><span class="chip">Phase 13 (Overlap, Scorecard)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -2032,15 +2033,15 @@ footer.foot b { color: var(--mp-ink); }
     <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
     <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
     <ol class="seq">
-      <li class="st mv fm toP" data-lanes="Member to Web app"><span class="lb">You open <code>console.mypaisapp.com</code> on your laptop, or the web app you installed from it</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to Web app"><span class="lb">You open <code>dashboard.mypaisapp.com</code> on your laptop, or the web app you installed from it</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="Web app to AWS"><span class="lb"><b>CloudFront</b> and <b>S3</b> serve the static shell: public, with <span class="sg">no data in it</span></span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Signed in as in flow 2, route 3: Apple, Google or a passkey. The api keeps the session behind an <span class="sg">HttpOnly cookie</span> for its own host</span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">Every call to <code>api.mypaisapp.com/v1</code> carries the cookie. The <span class="sg">authorizer</span> checks session, status, epoch and role; CORS admits only this environment's site; <b>api λ</b> reads <b>DynamoDB</b> through GET routes only</span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to Web app"><span class="lb">Home, a holding, Overlap and Scorecard, with the Household and Me switch; Audit and Files; Activity: the app's screens, laid out for a wide window</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Every call to <code>api.mypaisapp.com/v1</code>, and the stream from <code>/v1/stream</code>, carries the cookie. The <span class="sg">authorizer</span> checks session, status, epoch and role; CORS admits only this environment's site; <b>api λ</b> reads <b>DynamoDB</b> and returns just what this member may see</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to Web app"><span class="lb">The same chat, beside Home, a holding, Overlap and Scorecard, with the Household and Me switch; Audit and Files; Activity: the app's screens, laid out for a wide window</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Audit</b> reads the <b>AuditEvent</b> rows. <b>Activity</b> reads the <b>RunRecord</b> rows, the schedule board, the spend meter and seven days of <b>CloudWatch</b> alarms. A file opens through a <span class="sg">five-minute link</span>, for its member and the owner only</span></li>
       <li class="st mv fm toP" data-lanes="Member (owner) to Web app"><span class="lb">The owner opens the <b>Admin center</b>: every action asks for the <span class="sg">second check</span> in the browser, a passkey or a fresh sign-in (flow 11)</span><span class="ln"></span></li>
-      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">To change a record, the member goes to the app's chat: a card, <span class="sg">Confirm</span>, an <span class="sg">audit row</span>. On a phone, a screen's <b>Update</b> opens the app at the right guided flow</span><span class="ln"></span></li>
-      <li class="st note" data-lanes="Note"><span class="box">Installable as a progressive web app on a laptop, an iPad or a phone: its own window and icon, the same read-only screens. The chat, push and the cards' buttons belong to the iOS app.</span></li>
+      <li class="st mv fm toP" data-lanes="Member to Web app"><span class="lb">To add anything, the member asks in the web app's chat: a card, <span class="sg">Confirm</span>, an <span class="sg">audit row</span>, through the same write service as the app. An existing figure can be corrected in place where it shows</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box">Installable as a progressive web app on a laptop, an iPad or a phone: its own window and icon, the same chat and screens. When it is closed, a reply arrives by Web Push (MA-200), on a device with no open stream.</span></li>
     </ol></div>
   </div></div>
 
@@ -2048,9 +2049,9 @@ footer.foot b { color: var(--mp-ink); }
   <div class="mocks">
     <figure class="mock wide">
       <div class="browser">
-        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com</span></div>
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com</span></div>
         <div class="bpage">
-          <div class="ptop"><div><p class="over">Read-only</p><p class="ptitle">Home</p></div><div class="filters"><div class="seg" style="min-width:220px"><span class="on">Household</span><span>Me</span></div></div></div>
+          <div class="ptop"><div><p class="over">Dashboard</p><p class="ptitle">Home</p></div><div class="filters"><div class="seg" style="min-width:220px"><span class="on">Household</span><span>Me</span></div></div></div>
           <div class="cols">
             <div class="dshero">
               <p class="lbl">Household · illustrative</p>
@@ -2069,16 +2070,16 @@ footer.foot b { color: var(--mp-ink); }
               </div>
             </div>
           </div>
-          <p class="fresh"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>To change anything, use the chat in the MyPaisa app: a card, Confirm, an audit row.</p>
+          <p class="fresh"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>To add anything, ask in the chat: a card, Confirm, an audit row. A figure can be corrected in place.</p>
         </div>
       </div>
-      <figcaption><b>Browser · Home.</b> The same household as the app, read-only; changes are made in the app's chat.</figcaption>
+      <figcaption><b>Browser · Home.</b> The same household as the app; anything new is made in the chat, and a figure is corrected in place.</figcaption>
     </figure>
     <figure class="mock wide">
       <div class="browser">
-        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com/audit</span></div>
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com/audit</span></div>
         <div class="bpage">
-          <div class="ptop"><div><p class="over">Read-only</p><p class="ptitle">Audit and Files</p></div><div class="filters"><span class="chip">All members</span><span class="chip">All records</span><span class="chip">This week</span></div></div>
+          <div class="ptop"><div><p class="over">Dashboard</p><p class="ptitle">Audit and Files</p></div><div class="filters"><span class="chip">All members</span><span class="chip">All records</span><span class="chip">This week</span></div></div>
           <div class="group">
             <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Valuation · update · via screenshot</b><small>You · Fri 23 Oct 20:35 · Balanced: £22,710 → £22,925, source user_screenshot · run 1188 · file: monzo-valuation.png, <span class="acc">Open</span></small></span></div>
             <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg></span><span class="grow"><b>Transaction · create · via typed</b><small>You · Fri 23 Oct 08:14 · none → bought £200 of Balanced, about 10.8 units · run 1171</small></span></div>
@@ -2094,7 +2095,7 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Read-only by construction</b><span>The data routes are GET only and the web app has no form that posts a record and no chat. Its one write path is the owner's Admin center, for admin settings and operations only, each behind the second check; none changes a record.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Create in the chat, correct in place</b><span>The web app has no form that creates a record: anything new goes through its chat, a card and Confirm, and an existing figure its kind marks editable is corrected in place, both through the one write service with an audit row. The owner's Admin center acts on admin settings and operations only, each behind the second check; none changes a record.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Checked on every call</b><span>Session, status, epoch and role; tokens never visible to page scripts; CORS for this environment's site only; a strict Content-Security-Policy.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>A shell with nothing in it</b><span>The site on CloudFront and S3 is public and holds no figures; everything a member sees comes from the api after sign-in.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds and rupees hidden here too, with placeholders that stay visible in dark.</span></div></div>
@@ -2104,12 +2105,14 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-183"><b>MA-183</b><span>The web app shows Home, a holding, Overlap and Scorecard read-only in a browser, installable as a PWA</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-184"><b>MA-184</b><span>The web app's Audit, Files, Activity and Admin center pages work in a browser, with the second check for the owner's actions</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-183"><b>MA-183</b><span>A holding's market view, its stance, signals and Technical section, shows at every door</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-199"><b>MA-199</b><span>The web app's chat shows the conversation, renders every card, streams replies and sends text and files, at desktop and phone width</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-184"><b>MA-184</b><span>The web app's Audit, Files and Admin center pages work in a browser, with the second check for the owner's actions</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-185"><b>MA-185</b><span>In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit and Activity screens show every change and every run, with what it cost</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>A read-only api Lambda serves each member only what they may see</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>Each environment hosts the console at console(-dev).mypaisapp.com on S3 and CloudFront: the web app (a PWA) and the iOS app's association file and invite page</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit screen shows every change with who, when and the file behind it, at every door</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-196"><b>MA-196</b><span>Activity shows each run of the agent at every door: what it read, which tools it called, what it proposed, and what it cost</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>The api serves each member only what they may see, and accepts in-place corrections only to the figures a kind marks editable</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>Each environment hosts the web app at dashboard(-dev).mypaisapp.com on S3 and CloudFront, with the iOS app's association file and the invite page</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-75"><b>MA-75</b><span>The api's authorizer checks the session, the member's status and session epoch on every call</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-109"><b>MA-109</b><span>Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</span></a>
@@ -2124,7 +2127,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">11</span>
     <h2 id="h-admin">The Admin center, owner only</h2>
     <p class="lede">The owner's room, in the app (in You on the iPhone, in the iPad's sidebar) and in the web app on a laptop, for the owner alone. People first: each member's signed-in devices with the actions that end them. Spend: the Claude ceilings, the AWS cap and where alerts go. Later, the agents' requests for approval. Every action needs the second check: in the app a fresh Sign in with Apple or a passkey under Face ID (Google again for a Google-only member), in the browser a passkey or a fresh sign-in.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> the owner opens You, then Admin center, or the Admin center in the web app</span><span class="chip">Phase 5 (devices, spend, alerts)</span><span class="chip">Phase 12 (approvals)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the owner opens You, then Admin center, or the Admin center in the web app</span><span class="chip">Phase 8 (devices, spend, alerts)</span><span class="chip">Phase 18 (approvals)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -2138,13 +2141,13 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fp toE" data-lanes="App to External (Apple or Google)"><span class="lb">The <span class="sg">second check</span> (flow 2, route 4): a challenge bound to this action, then a fresh Sign in with Apple under Face ID, or a passkey (Google again for a Google-only member); in the browser, a passkey or a fresh sign-in</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The action, with the fresh assertion</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> checks the assertion, calls Cognito's <code>AdminUserGlobalSignOut</code>, raises Asha's session epoch and deletes her devices' push tokens; an <span class="sg">audit row</span> records who, when and why</span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box">Her next call or live connection, from any device, fails the epoch check</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Her next call from any device fails the epoch check, and an open stream closes within 60 s</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Asha's app returns to the welcome screen with one line: she was signed out</span><span class="ln"></span></li>
       <li class="st note" data-lanes="Note"><span class="box"><b>Pause</b> goes further: <code>AdminDisableUser</code> and the epoch end every session, in the app and in the browser, Apple, Google and passkey alike, and block signing back in. Her app and the web app show one line; only the owner restores it. The owner may pause their own account, after a warning.</span></li>
       <li class="st mv fm toP" data-lanes="Member (owner) to App"><span class="lb"><b>Spend</b>: you move the prod Claude ceiling, behind the same second check</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>BudgetSettings</b> in <b>DynamoDB</b> updated with an audit row; the next model call reads it. Lowering it below what is spent moves MyPaisa straight to that step, said before Confirm</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">A message in your chat confirms the change; alerts follow your routing to the Alerts page (in the app and the web app), push and email through <b>SNS</b></span><span class="ln"></span></li>
-      <li class="st note" data-lanes="Note"><span class="box"><b>Phase 12, approvals.</b> An agent's request reaches the admin desk and shows in your chat and on the Admin center's Approvals screen, in the app and the web app. Approving needs the <span class="sg">second check</span>, wherever you tap it. Deciding in one place updates the other.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Phase 18, approvals.</b> An agent's request reaches the admin desk and shows in your chat and on the Admin center's Approvals screen, in the app and the web app. Approving needs the <span class="sg">second check</span>, wherever you tap it. Deciding in one place updates the other.</span></li>
     </ol></div>
   </div></div>
 
@@ -2171,7 +2174,7 @@ footer.foot b { color: var(--mp-ink); }
     </figure>
     <figure class="mock wide">
       <div class="browser">
-        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">console.mypaisapp.com/admin/spend</span></div>
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com/admin/spend</span></div>
         <div class="bpage">
           <div class="ptop"><div><p class="over">Owner only · the web app</p><p class="ptitle">Spend</p></div><div class="seg" style="min-width:240px"><span>People</span><span class="on">Spend</span><span>Alerts</span></div></div>
           <p class="fresh"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Checked with your passkey · this action only, 4 minutes left</p>
@@ -2219,7 +2222,7 @@ footer.foot b { color: var(--mp-ink); }
         <div class="sbar" aria-hidden="true"><span>9:30</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
         <div class="nav"><span class="gcap glass strip"><small>Household</small><b>£24,110</b><span class="up">▲ 0.4%</span><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
         <div class="chat">
-          <span class="day">Phase 12 · your chat</span>
+          <span class="day">Phase 18 · your chat</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
             <div class="mcard">
               <small>Data steward asks</small>
@@ -2266,12 +2269,12 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>The owner can sign out or pause any member's devices from the Admin center, behind the second check</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-184"><b>MA-184</b><span>The web app's Audit, Files, Activity and Admin center pages work in a browser, with the second check for the owner's actions</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-184"><b>MA-184</b><span>The web app's Audit, Files and Admin center pages work in a browser, with the second check for the owner's actions</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-116"><b>MA-116</b><span>The owner moves the Claude ceiling up or down in the Admin center</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app and the web app, push and email</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-113"><b>MA-113</b><span>Every Claude call is metered and nothing runs past the monthly ceiling</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-130"><b>MA-130</b><span>E2: an admin desk in the owner's chat and the Admin center where agents ask questions and seek approval (phase 12)</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-136"><b>MA-136</b><span>E8: each agent has its share of the $200 Claude credit (phase 12)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-130"><b>MA-130</b><span>E2: an admin desk in the owner's chat and the Admin center where agents ask questions and seek approval (phase 18)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-136"><b>MA-136</b><span>E8: each agent has its share of the $200 Claude credit (phase 18)</span></a>
   </div>
 </section>
 
@@ -2281,13 +2284,13 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">12</span>
     <h2 id="h-failure">When something fails</h2>
     <p class="lede">Every hand-off goes through an SQS queue. A bad minute at Apple's push service, at the Anthropic API or at a data source costs a delay, never a message or a day's work. What keeps failing waits in a dead-letter queue until someone, or later the ops warden, replays it. A lost signal on the member's side costs nothing either: the app keeps what is typed and catches up when it is back.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> a timeout, an error or a bad deploy anywhere on a path, or no signal on the phone</span><span class="chip">Phase 1 (queues, offline)</span><span class="chip">Phase 5 (Replay)</span><span class="chip">Phase 12 (ops warden)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a timeout, an error or a bad deploy anywhere on a path, or no signal on the phone</span><span class="chip">Phase 1 (queues, offline)</span><span class="chip">Phase 8 (Replay)</span><span class="chip">Phase 18 (ops warden)</span></div>
   </div>
 
   <h3 class="blk">The three queues</h3>
   <div class="queues">
     <div class="queue"><h4><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg>mypaisa-&lt;env&gt;-updates.fifo</h4><dl><dt>Carries</dt><dd>Every message and tap the chat API accepts</dd><dt>Lanes</dt><dd>One per member; the app's client id dedupes</dd><dt>Consumer</dt><dd>agent λ</dd><dt>Tries</dt><dd>3 within about a minute, then its dead-letter queue, and the member is told it was kept</dd></dl></div>
-    <div class="queue"><h4><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg>mypaisa-&lt;env&gt;-outbox.fifo</h4><dl><dt>Carries</dt><dd>Every message, card and edit MyPaisa sends</dd><dt>Lanes</dt><dd>One per member, so a brief's parts arrive in order</dd><dt>Consumer</dt><dd>sender λ, to each live connection, or by push</dd><dt>Tries</dt><dd>5 with backoff, honouring APNs' limits; a push token APNs calls dead is removed</dd></dl></div>
+    <div class="queue"><h4><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg>mypaisa-&lt;env&gt;-outbox.fifo</h4><dl><dt>Carries</dt><dd>Every message, card and edit MyPaisa sends</dd><dt>Lanes</dt><dd>One per member, so a brief's parts arrive in order</dd><dt>Consumer</dt><dd>sender λ, to each open stream, or by push</dd><dt>Tries</dt><dd>5 with backoff, honouring APNs' limits; a push token APNs calls dead is removed</dd></dl></div>
     <div class="queue"><h4><svg class="ic" aria-hidden="true"><use href="#i-queue"/></svg>mypaisa-&lt;env&gt;-work</h4><dl><dt>Carries</dt><dd>Each ingest, news feed, document read, the engine, each brief, scoring</dd><dt>Lanes</dt><dd>None needed</dd><dt>Consumer</dt><dd>worker λ, running each job by its type</dd><dt>Tries</dt><dd>5, backoff from 30 seconds to 30 minutes, then its dead-letter queue</dd></dl></div>
   </div>
   <div class="retry" style="margin-top:12px">
@@ -2310,7 +2313,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Your chat and the Admin center's Alerts page, in the app and the web app, show it with <b>Replay</b>; a push if the app is closed</span><span class="ln"></span></li>
       <li class="st mv fm toA" data-lanes="Member (owner) to AWS"><span class="lb">You tap <b>Replay</b> once the cause is fixed, and pass the <span class="sg">second check</span></span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">The messages move back to their queue. Handlers are <span class="sg">idempotent</span>, keyed by the client id, the message id, or the job id and date, so nothing runs twice</span></li>
-      <li class="st note" data-lanes="Note"><span class="box"><b>Replay, by phase.</b> Phase 1: <code>scripts/redrive.sh &lt;queue&gt;</code>. Phase 5: the Replay button on the alert and in the Admin center. Phase 12: the ops warden replays on its own once the cause is healthy, at most three times per message with growing gaps; failing the same way again opens an incident.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Replay, by phase.</b> Phase 1: <code>scripts/redrive.sh &lt;queue&gt;</code>. Phase 8: the Replay button on the alert and in the Admin center. Phase 18: the ops warden replays on its own once the cause is healthy, at most three times per message with growing gaps; failing the same way again opens an incident.</span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">A member's message that fails three times within about a minute goes to the updates dead-letter queue, and the member is told it was kept</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Replayed after more than an hour, a message is answered <i>still want this?</i> rather than acted on</span><span class="ln"></span></li>
       <li class="st mv fm toA" data-lanes="Member to AWS"><span class="lb">A Confirm tap whose PendingAction has expired is <span class="sg">refused</span>, so an old tap never saves a change by surprise</span><span class="ln"></span></li>
@@ -2342,7 +2345,7 @@ footer.foot b { color: var(--mp-ink); }
         </div>
         <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>
-      <figcaption><b>The owner's failed-work alert.</b> Phase 5 adds the Replay button; replaying is an owner action, behind the second check.</figcaption>
+      <figcaption><b>The owner's failed-work alert.</b> Phase 8 adds the Replay button; replaying is an owner action, behind the second check.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
@@ -2392,7 +2395,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Fail fast on the hopeless</b><span>A malformed message, an unknown member or an instrument with no source goes straight to the dead-letter queue with its reason.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>Never silent</b><span>An alarm the moment a dead-letter queue holds anything; the brief, the wrap and alerts are always attempted.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><div><b>Old taps are not trusted</b><span>Over an hour old: "still want this?". An expired Confirm: refused. A Confirm without a connection: refused on the device.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg><div><b>Nothing depends on a socket</b><span>On opening, the app asks for every turn after the last one it has; what was typed offline is kept with its client id and sent once.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg><div><b>Nothing depends on the stream</b><span>On opening, the app asks for every turn after the last one it has; what was typed offline is kept with its client id and sent once.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Bounded self-repair</b><span>The ops warden replays at most three times, then raises an incident with the errors attached.</span></div></div>
   </div>
 
@@ -2402,8 +2405,8 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue that alerts and can be replayed</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>Alerts reach the app and the web app, push and email; "failed work" carries a Replay button</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-173"><b>MA-173</b><span>Offline, the app shows the last figures with their time, keeps what is typed and sends it once back online</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies reach the open app over a signed-in live connection, in order and never twice, and the app catches up when it opens</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-135"><b>MA-135</b><span>E7: an ops warden repairs what it safely can and opens an incident when it cannot (phase 12)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-135"><b>MA-135</b><span>E7: an ops warden repairs what it safely can and opens an incident when it cannot (phase 18)</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-61"><b>MA-61</b><span>A dead man's switch and the error alarms tell the owner, in the app and by push, when a job did not run</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-29"><b>MA-29</b><span>Every Lambda run leaves a RunRecord, logs, traces and an error alarm</span></a>
   </div>
@@ -2415,7 +2418,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">13</span>
     <h2 id="h-ladder">The Claude spend ladder in practice</h2>
     <p class="lede">The agents' allowance is the Max 20x plan's $200 monthly credit: $160 for prod and $40 for dev, each a ceiling the owner moves. As the month's spend climbs, MyPaisa steps down to cheaper ways of working before it stops. Alerts always go out.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> every model call reads the meter first</span><span class="chip">Phase 1 (meter, 100% stop)</span><span class="chip">Phase 3 (the lower steps)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> every model call reads the meter first</span><span class="chip">Phase 1 (meter, 100% stop)</span><span class="chip">Phase 11 (the lower steps)</span></div>
   </div>
 
   <h3 class="blk">The steps</h3>
@@ -2453,7 +2456,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Per member</dt><dd>No member spends more than 60% of the ceiling; past it, that member's chat runs at the 95% step for the rest of the cycle.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>Per day</dt><dd>No day spends more than three times the cycle's daily average, about $16 at a $160 ceiling; past it, the rest of the day runs at the 95% step.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg>Per run</dt><dd>At most eight model calls in one run; a loop that reaches it stops and says so.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Per agent (phase 12)</dt><dd>Each agent has its share of the ceiling, the concierge 55%; past it, that agent drops to its 95% step and the reserve covers the chat first.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Per agent (phase 18)</dt><dd>Each agent has its share of the ceiling, the concierge 55%; past it, that agent drops to its 95% step and the reserve covers the chat first.</dd></div>
   </dl>
 
   <h3 class="blk">What the members see</h3>
@@ -2520,7 +2523,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-114"><b>MA-114</b><span>As spend nears the ceiling, MyPaisa steps down to cheaper ways of working before it stops</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-116"><b>MA-116</b><span>The owner moves the Claude ceiling up or down in the Admin center</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>The admin sets the caps and their alert thresholds; alerts reach the app and the web app, push and email</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-136"><b>MA-136</b><span>E8: each agent has its share of the $200 Claude credit (phase 12)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-136"><b>MA-136</b><span>E8: each agent has its share of the $200 Claude credit (phase 18)</span></a>
   </div>
 </section>
 
@@ -2530,7 +2533,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">14</span>
     <h2 id="h-monthly">The first-of-the-month contribution prompt</h2>
     <p class="lede">On the first of the month MyPaisa asks, on its own account, whether the usual contribution went in. Later, the Forecaster's risk-steered split sits beside the rules engine's on the same prompt.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> the first of the month</span><span class="chip">Phase 1 (the prompt)</span><span class="chip">Phase 11 (the steered split)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the first of the month</span><span class="chip">Phase 5 (the prompt)</span><span class="chip">Phase 17 (the steered split)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -2546,7 +2549,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The Confirm card</span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb"><span class="sg">Confirm</span></span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> saved with its <span class="sg">audit row</span>; the card edits in place</span></li>
-      <li class="st note" data-lanes="Note"><span class="box"><b>Later, phase 11 (F7).</b> The prompt carries two suggested splits: the rules engine's, from each holding's stance, and the Forecaster's, steered by risk. Contributions always continue; new money tilts away from holdings in a stressed or falling mood or with a high chance of a deep fall; rebalancing stays within bands and a drawdown budget the owner sets. It never says sell everything, stays ISA-safe, and only suggests.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Later, phase 17 (F7).</b> The prompt carries two suggested splits: the rules engine's, from each holding's stance, and the Forecaster's, steered by risk. Contributions always continue; new money tilts away from holdings in a stressed or falling mood or with a high chance of a deep fall; rebalancing stays within bands and a drawdown budget the owner sets. It never says sell everything, stays ISA-safe, and only suggests.</span></li>
       <li class="st note" data-lanes="Note"><span class="box">The Forecaster's split appears here only after 8 live weeks beating both the base rate and the rules engine; until then it is in the Saturday review, labelled "in practice". It switches itself off when its record slips.</span></li>
     </ol></div>
   </div></div>
@@ -2577,7 +2580,7 @@ footer.foot b { color: var(--mp-ink); }
         <div class="sbar" aria-hidden="true"><span>9:01</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
         <div class="nav"><span class="gcap glass strip"><small>Household</small><b>£24,110</b><span class="up">▲ 0.4%</span><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
         <div class="chat">
-          <span class="day">Later: phase 11 · Asha's chat</span>
+          <span class="day">Later: phase 17 · Asha's chat</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
             <div class="mcard">
               <p>It is the 1st. Your usual <b>£200</b> goes £100 to Balanced and £100 to the NASDAQ 100 ETF. This month:</p>
@@ -2622,7 +2625,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Two new kinds</dt><dd><code>in_mutual_fund</code>: one NAV a day and no candles, like a UK OEIC. <code>in_listed</code>: an NSE or BSE share or ETF with daily candles.</dd></div>
   <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Indian accounts</dt><dd><code>demat</code>, <code>mf_folio</code>, <code>nre</code> and <code>nro</code>, and <code>ppf</code>, <code>nps</code> or <code>elss</code> if one is held; each with country IN and currency INR.</dd></div>
   <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Every figure twice</dt><dd>Rupees with pounds beside them. The stored value is always both: the native amount and its GBP equivalent on the day, at the ECB reference rate, with the RBI/FBIL rate behind it.</dd></div>
-  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>When</dt><dd>Money in any currency is phase 1 (MA-156). The rest is phase 13, epic MA-147: prices (IN1, MA-151), the import (IN2, MA-152), accounts and views (IN3, MA-153), the engine and the Forecaster (IN4, MA-154). £0 on the free path.</dd></div>
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>When</dt><dd>Money in any currency is phase 2 (MA-156), and Indian mutual funds are priced from AMFI's NAV file from phase 5 (MA-207). The rest is phase 19, epic MA-147: prices (IN1, MA-151), the import (IN2, MA-152), accounts and views (IN3, MA-153), the engine and the Forecaster (IN4, MA-154). £0 on the free path.</dd></div>
 </dl>
 
 <!-- ============ 15. Money in any currency ============ -->
@@ -2631,15 +2634,15 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">15</span>
     <h2 id="h-currency">Money in any currency, checked against the holding</h2>
     <p class="lede">Every holding has one currency: the one it is bought and valued in, as the platform shows it, confirmed once on the card that added it. Type money in any currency and MyPaisa looks up that holding's currency and checks the amount against it. Rupees typed for a pound holding are never saved as typed: MyPaisa says why and asks again, in pounds.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put ₹20,000 into Balanced"</span><span class="chip">Phase 1 (the check)</span><span class="chip">Phase 2 (the ECB-rate estimate)</span><span class="chip">Phase 13 (rupee holdings)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> "I put ₹20,000 into Balanced"</span><span class="chip">Phase 2 (the check)</span><span class="chip">Phase 3 (the ECB-rate estimate)</span><span class="chip">Phase 5 (rupee holdings)</span></div>
   </div>
 
   <h3 class="blk">What the member types, and what MyPaisa does</h3>
   <dl class="facts">
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put 200 into Balanced"</dt><dd>No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is".</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put £200 into Balanced"</dt><dd>The same currency: the usual Confirm card of flow 4.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put ₹20,000 into Balanced"</dt><dd>Saves nothing yet. Balanced is held in pounds, so MyPaisa asks <b>How many pounds arrived?</b> Type them or attach the platform's screenshot; or tap the estimate, its figure on the button (<b>About £177.78 · ECB estimate</b>); or put it in a rupee holding by name (<b>Nifty 50 instead</b>, phase 13); or <b>Cancel</b>.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"1.5 lakh into my Nifty 50 index fund"</dt><dd>Phase 13: an INR holding, so ₹1,50,000 with no question. Pounds typed against it get the same correction the other way.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"I put ₹20,000 into Balanced"</dt><dd>Saves nothing yet. Balanced is held in pounds, so MyPaisa asks <b>How many pounds arrived?</b> Type them or attach the platform's screenshot; or tap the estimate, its figure on the button (<b>About £177.78 · ECB estimate</b>); or put it in a rupee holding by name (<b>Nifty 50 instead</b>, phase 5); or <b>Cancel</b>.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"1.5 lakh into my Nifty 50 index fund"</dt><dd>Phase 5: an INR holding, so ₹1,50,000 with no question. Pounds typed against it get the same correction the other way.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>"Which currency is Balanced in?"</dt><dd>"Pounds (GBP), from the factsheet you sent on 3 March."</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>A "$" on its own</dt><dd>US dollars, unless the member holds another dollar; then MyPaisa asks which.</dd></div>
   </dl>
@@ -2660,7 +2663,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The Confirm card with two currencies: the pounds, the rupees, the rate and its date</span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb"><span class="sg">Confirm</span></span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> saved in the position's currency (<code>amount</code>, <code>ccy</code> GBP), with <code>orig_amount</code>, <code>orig_ccy</code>, <code>fx_rate</code>, <code>fx_source</code> and <code>fx_date</code> beside it. The <span class="sg">audit row</span> shows both amounts</span></li>
-      <li class="st note" data-lanes="Note"><span class="box">The ECB-rate figure stays marked an estimate until a statement, a screenshot or the next valuation confirms it. Before the daily rates are loaded (phase 2), the estimate button is left out and nothing else changes. The same check runs on the guided flow, a screenshot, and a CAS or broker line (flow 16): every pair, both ways.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">The ECB-rate figure stays marked an estimate until a statement, a screenshot or the next valuation confirms it. Before the daily rates are loaded (phase 3), the estimate button is left out and nothing else changes. The same check runs on the guided flow, a screenshot, and a CAS or broker line (flow 16): every pair, both ways.</span></li>
     </ol></div>
   </div></div>
 
@@ -2744,7 +2747,7 @@ footer.foot b { color: var(--mp-ink); }
         <div class="sbar" aria-hidden="true"><span>20:05</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
         <div class="nav"><span class="gcap glass strip"><small>Household</small><b>£39,110</b><span class="up">▲ 0.4%</span><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
         <div class="chat">
-          <span class="day">Phase 13: a rupee holding</span>
+          <span class="day">Phase 5: a rupee holding</span>
           <div class="me">1.5 lakh into my Nifty 50 index fund</div>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
             <div class="mcard"><p>Bought <b>₹1,50,000</b> of Nifty 50 index fund on 23 Oct, in rupees as the fund is · about £1,333 at the ECB rate</p><div class="cbs"><span class="cb p">Confirm</span><span class="cb">Edit</span><span class="cb">Cancel</span></div></div>
@@ -2776,8 +2779,8 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-156"><b>MA-156</b><span>A transaction can be typed in any currency, and the chat checks it against the holding's own currency and puts a mismatch right before Confirm</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-38"><b>MA-38</b><span>"I put £200 into Balanced" becomes a transaction after Confirm</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-44"><b>MA-44</b><span>ECB FX rates and market calendars are loaded daily (the ECB-rate button, phase 2)</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-153"><b>MA-153</b><span>IN3: Indian accounts show in INR and GBP; rupees and pounds checked both ways (phase 13)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-44"><b>MA-44</b><span>ECB FX rates and market calendars are loaded daily (the ECB-rate button, phase 3)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-153"><b>MA-153</b><span>IN3: Indian accounts show in INR and GBP; rupees and pounds checked both ways (phase 19)</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-169"><b>MA-169</b><span>The chat in the app renders every card natively; its buttons post to /v1/chat/actions</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
   </div>
@@ -2789,7 +2792,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">16</span>
     <h2 id="h-india-import">Importing the existing Indian portfolio, once</h2>
     <p class="lede">The household's Indian mutual funds, shares and ETFs arrive once, with their whole history, from the statements India already produces. Each file is kept first; code parses it; every holding is matched by ISIN; a dry run shows everything; one Confirm, with the second check, writes it all. Anything that does not match is listed, never guessed.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> you attach a CAS statement or a broker export in the chat</span><span class="chip">Phase 13 (IN2)</span><span class="chip">Needs IN1, the Excel importer and file keeping</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> you attach a CAS statement or a broker export in the chat</span><span class="chip">Phase 19 (IN2)</span><span class="chip">Needs IN1, the Excel importer and file keeping</span></div>
   </div>
 
   <h3 class="blk">The files to send</h3>
@@ -2815,7 +2818,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">One summary card, with <b>Confirm</b></span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb"><span class="sg">Confirm</span>, then the <span class="sg">second check</span>: an import is one of the actions that need it</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Written in batches under <b>one import id</b>: the <code>mf_folio</code> and <code>demat</code> Accounts, the <code>in_mutual_fund</code> and <code>in_listed</code> Instruments, Positions in INR and every past Transaction, each with an <span class="sg">audit row</span> that names the file it came from</span></li>
-      <li class="st note" data-lanes="Note"><span class="box">Any import can be <b>rolled back by its id</b>, behind the second check. The files stay in S3 for good and open from the Audit screen, in the app or the web app; a change card's Source button opens the original. Prices follow from the Indian chains (flow 18), and a CAS or broker line in another currency than its holding's takes the check of flow 15. Later (phase 14), a Live Activity follows a long import on the Lock Screen.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">Any import can be <b>rolled back by its id</b>, behind the second check. The files stay in S3 for good and open from the Audit screen, in the app or the web app; a change card's Source button opens the original. Prices follow from the Indian chains (flow 18), and a CAS or broker line in another currency than its holding's takes the check of flow 15. Later (phase 20), a Live Activity follows a long import on the Lock Screen.</span></li>
     </ol></div>
   </div></div>
 
@@ -2917,8 +2920,8 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-148"><b>MA-148</b><span>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-179"><b>MA-179</b><span>A Live Activity follows a long job, such as an import, on the Lock Screen and in the Dynamic Island (phase 14, later)</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 13)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-179"><b>MA-179</b><span>A Live Activity follows a long job, such as an import, on the Lock Screen and in the Dynamic Island (phase 20, later)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 19)</span></a>
   </div>
 </section>
 
@@ -2928,7 +2931,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">17</span>
     <h2 id="h-inr">The household in INR and GBP</h2>
     <p class="lede">Indian holdings sit in Indian accounts, in rupees, with the pound value beside every figure. The household total stays in the base currency, pounds, with the rupee view one tap away. Privacy mode hides rupees as it hides pounds; a suggestion names only what suits its account; and a holding the UK may tax differently is flagged in plain words.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> Home in the app or the web app, a holding's card or its screen, once Indian accounts exist</span><span class="chip">Phase 13 (IN3)</span><span class="chip">Designed first</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> Home in the app or the web app, a holding's card or its screen, once Indian accounts exist</span><span class="chip">Phase 19 (IN3)</span><span class="chip">Designed first</span></div>
   </div>
 
   <h3 class="blk">The accounts, and how a figure is kept</h3>
@@ -2946,7 +2949,7 @@ footer.foot b { color: var(--mp-ink); }
     <ol class="seq">
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <b>Home</b>, or <b>Open</b> on the Portfolio card</span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>GET /v1/home</code>, signed in as in flow 2</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> reads your Accounts, Positions and Valuations from <b>DynamoDB</b> through GET routes only. Each Indian valuation already holds both figures, rupees and pounds on the day</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> reads your Accounts, Positions and Valuations from <b>DynamoDB</b>. Each Indian valuation already holds both figures, rupees and pounds on the day</span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">The household total in pounds, the base currency. Each Indian line in rupees with its pounds beside it; the ECB rate and its date with them</span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Per holding: <span class="sg">wrapper-aware</span> suggestions that name only actions suiting the account, and the <span class="sg">reporting-fund flag</span> in plain words where the UK may tax gains differently</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Home: UK lines in pounds, Indian lines in rupees with pounds beside, the total in pounds</span><span class="ln"></span></li>
@@ -3074,17 +3077,17 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Hides rupees as it hides pounds, both on a two-currency line, on every screen and in every notification.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Wrapper-aware, never a trade</b><span>"ISA-safe" becomes "wrapper-aware": a suggestion names only actions that suit the account it is about, and the app still never trades.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Plain words, never tax advice</b><span>A possible non-reporting fund is flagged, with "check with a tax adviser".</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>One write path</b><span>The screens are read-only; a change goes through the chat, the currency check, Confirm and an audit row.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>One write service</b><span>The screens create nothing: anything new goes through the chat, the currency check, Confirm and an audit row, and a figure corrected in place goes through the same service.</span></div></div>
   </div>
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-153"><b>MA-153</b><span>IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-156"><b>MA-156</b><span>A transaction can be typed in any currency and is checked against the holding's own currency</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-94"><b>MA-94</b><span>Wealth maths and a daily net worth, with the household's INR view one tap away (phase 9)</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-183"><b>MA-183</b><span>The web app shows Home, a holding, Overlap and Scorecard read-only in a browser, installable as a PWA</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 13)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-94"><b>MA-94</b><span>Wealth maths and a daily net worth, with the household's INR view one tap away (phase 3)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Overlap and Scorecard work at every door: iPhone, iPad, the foldable and the browser</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-183"><b>MA-183</b><span>A holding's market view, its stance, signals and Technical section, shows at every door</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 19)</span></a>
   </div>
 </section>
 
@@ -3094,7 +3097,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">18</span>
     <h2 id="h-india-day">India in the daily rhythm</h2>
     <p class="lede">India closes while the UK is at work, and its fund prices arrive in the UK evening. Every schedule stays in <code>Europe/London</code>: the Indian jobs run on the work queue after those times, and the 07:15 brief carries India's previous day beside the UK's.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> EventBridge Scheduler, Europe/London, after the Indian close and after AMFI's NAVs</span><span class="chip">Phase 13 (IN1 prices, IN4 engine)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> EventBridge Scheduler, Europe/London, after the Indian close and after AMFI's NAVs</span><span class="chip">Phase 19 (IN1 prices, IN4 engine)</span></div>
   </div>
 
   <h3 class="blk">The Indian day, on the UK clock</h3>
@@ -3122,7 +3125,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The tags. <span class="sg">Code</span> matches each story to the holdings through exposure maps from the fund houses' monthly disclosures</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">07:10 the <b>engine</b> scores every holding. For Indian holdings the macro pillar reads the <b>India basket</b>: the Nifty 50 against Indian government bonds, India VIX, the rupee against the dollar, foreign portfolio investor flows and the RBI's policy rate</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">07:15 the brief, India's previous day included, through the outbox and sender λ; a push to a closed app, with no amount on the lock screen</span><span class="ln"></span></li>
-      <li class="st note" data-lanes="Note"><span class="box">A source that answers nothing is skipped and the chain falls through to <code>stale</code>: labelled, left out of scoring, as in flow 5. The calendars add the RBI's policy dates, India's inflation releases, NSE holidays and results season. The Forecaster (phase 11) takes the Indian holdings on the same terms: nothing is shown until its gates are passed.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">A source that answers nothing is skipped and the chain falls through to <code>stale</code>: labelled, left out of scoring, as in flow 5. The calendars add the RBI's policy dates, India's inflation releases, NSE holidays and results season. The Forecaster (phase 17) takes the Indian holdings on the same terms: nothing is shown until its gates are passed.</span></li>
     </ol></div>
   </div></div>
 
@@ -3200,7 +3203,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-53"><b>MA-53</b><span>The ingest and engine jobs write signals and shadow stances every weekday by 07:10</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-57"><b>MA-57</b><span>The morning brief and evening wrap arrive as cards, with a Technical section and glossary</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries and a dead-letter queue</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 13)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 19)</span></a>
   </div>
 </section>
 
@@ -3208,7 +3211,7 @@ footer.foot b { color: var(--mp-ink); }
 </main>
 
 <footer class="foot">
-  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.1, §4.2, §4.5, §4.6, §4.7, §5.1, §5.3, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20, §21 and §22; <code>PLAN.md</code> phases 0 to 14 and phase 1's MA-156; <code>TECH_STACK.md</code>'s Indian sources; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center; <code>docs/design/reviews/MA-161/decision.md</code> and its stories, MA-162 to MA-185, with Arun's correction that the read-only web app stays.</p>
+  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.1, §4.2, §4.5, §4.6, §4.7, §5.1, §5.3, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20, §21 and §22; <code>PLAN.md</code> phases 0 to 20 and phase 2's MA-156; <code>TECH_STACK.md</code>'s Indian sources; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center; <code>docs/design/reviews/MA-161/decision.md</code> and its stories, MA-162 to MA-185, with Arun's correction that the read-only web app stays; and MA-186 (26 Oct 2026), which made the web app a full door with the chat and renumbered the phases.</p>
   <p><b>Look.</b> MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102. The web app keeps the system's web components. The iOS app adds Apple's Liquid Glass (MA-161): glass only on the controls (the tab bar and its search circle, toolbar buttons, the composer and its chips, menus and partial-height sheets), content solid, never glass on glass, and the glass made opaque under Reduce Transparency. The member's words sit in navy bubbles; MyPaisa's sit unbubbled beside its mark, the 1c Watcher (MA-103); cards are Warm ledger cards with their own buttons. Every mock is drawn in shell 1a, Chat first. Legible at 25% brightness (MA-181), as Arun asked: "the text and component should be clearly visible even in 25% mobile brightness". Every colour pair in light and dark, text on glass included, passes <code>scripts/contrast_check.py</code> at full brightness and at 25%, a gate on every PR (<code>ARCHITECTURE.md</code> §9.1). One motion system (MA-182), in the app and the web app: springs, glass that morphs, figures that roll, charts that draw in and scrub, haptics in the app, and Reduce Motion honoured: every movement then becomes a short cross-fade or lands at once.</p>
   <p><b>Status.</b> Design only; nothing is built. Every figure, rate, fund name, file name, device, date, time and wording in the mocks is illustrative. In the MyPaisa iOS v1 Claude Design project the shell is picked (1a, Chat first, Arun, 26 Oct 2026); the other iOS boards are planned until each story's pick, in its options round when the story starts; the Indian cards and screens are still to be designed. MyPaisa never gives tax advice.</p>
 </footer>

@@ -23,13 +23,14 @@
   {
     "id": "o2",
     "round": 0,
-    "finding": "Owner decision (Arun, 25 Oct 2026): the web app stays as a read-only PWA for the dashboard and the Admin center",
+    "finding": "Owner decision (Arun, 25 Oct 2026): the web app stays as a PWA for the dashboard and the Admin center; widened on MA-186 (26 Oct 2026) with the chat",
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "### 9\\.4 The web app: the dashboard and the Admin center in a browser\\n(?:(?!\\n### )[\\s\\S])*?installable as a\\s+Progressive Web App(?:(?!\\n### )[\\s\\S])*?the same read-only screens",
+      "pattern": "### 9\\.4 The web app: the dashboard and the Admin center in a browser\\n(?:(?!\\n### )[\\s\\S])*?installable as a\\s+Progressive Web App(?:(?!\\n### )[\\s\\S])*?\\*\\*The chat\\*\\*",
       "present": true
-    }
+    },
+    "amended": "MA-186, 26 Oct 2026: superseded only 'read-only, with no chat'; the PWA, the dashboard and the Admin center in a browser stay, and the check now also needs the chat in 9.4"
   },
   {
     "id": "o3",
@@ -55,8 +56,9 @@
     "finding": "Owner decision (Arun, 25 Oct 2026): the read-only dashboard shows on the iPad and the foldable too",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; n=lambda k:{b.get('board') for b in t[k].get('boards',[])}; sys.exit(0 if 'iPad · Home with the chat beside it' in n('MA-78') and 'Foldable · Open' in n('MA-70') else 1)\""
-    }
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; n=lambda k:{b.get('board') for b in t[k].get('boards',[])}; sys.exit(0 if 'iPad · Home with the chat beside it' in n('MA-208') and 'Foldable · Open' in n('MA-70') else 1)\""
+    },
+    "amended": "MA-186, 26 Oct 2026: the Home boards moved from MA-78 (now Overlap and Scorecard) to MA-208, the first dashboard; the iPad and foldable decision stands"
   },
   {
     "id": "r1-a1",
@@ -163,8 +165,9 @@
     "finding": "MA-109's description gives the settled answer on Google's client secret",
     "check": {
       "type": "manual",
-      "what": "Jira MA-109: no paragraph says the Google client-secret question is open; passkeys through custom auth, relying party the console's domain"
-    }
+      "what": "Jira MA-109: no paragraph says the Google client-secret question is open; passkeys through custom auth, relying party the dashboard's domain (the console's until MA-186)"
+    },
+    "amended": "MA-186, 26 Oct 2026: the web app's host is dashboard, not console"
   },
   {
     "id": "r1-b4",
@@ -181,8 +184,9 @@
     "finding": "The invite page a device without the app sees is listed to draw on MA-32, or drawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (any('the invite page at console' in x for x in t['MA-32'].get('undrawn',[])) or 'Drawn: the invite page at console' in t['MA-32'].get('notes','')) else 1)\""
-    }
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (any('the invite page at dashboard' in x for x in t['MA-32'].get('undrawn',[])) or 'Drawn: the invite page at dashboard' in t['MA-32'].get('notes','')) else 1)\""
+    },
+    "amended": "MA-186, 26 Oct 2026: the invite page's host is dashboard, not console"
   },
   {
     "id": "r1-b5-167",
@@ -270,8 +274,9 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "^\\| A passkey \\|[^\\n]*`/auth/passkey`[^\\n]*relying-party id is the environment's console domain"
-    }
+      "pattern": "^\\| A passkey \\|[^\\n]*`/auth/passkey`[^\\n]*relying-party id is the environment's dashboard domain"
+    },
+    "amended": "MA-186, 26 Oct 2026: the relying party is the dashboard host"
   },
   {
     "id": "r1-c6",
@@ -324,8 +329,9 @@
     "finding": "MA-175's Jira summary carries its Phase 14 prefix like the other epics",
     "check": {
       "type": "manual",
-      "what": "Jira MA-175 summary"
-    }
+      "what": "Jira MA-175 summary carries its phase prefix like the other epics (Phase 20 since MA-186)"
+    },
+    "amended": "MA-186, 26 Oct 2026: phases renumbered in build order"
   },
   {
     "id": "r1-e3",
