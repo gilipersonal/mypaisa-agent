@@ -55,6 +55,7 @@ hand.
 | `notes` | Anything a reader needs: why a UI item has no board yet, which option was picked, what supersedes what |
 | `open` | Optional list of questions that must be settled before the work starts, such as a board that disagrees with the docs. `start` refuses while it is not empty; settle it with Arun, change the boards, docs and Jira together, then clear it, and say in the notes `Settled: <the question's words up to its first colon>` with the answer (the review ledgers look for it) |
 | `undrawn` | Optional list of screens the story needs that have no board yet, when some of its screens are drawn, or board fixes made but not yet in Claude Design (each naming the issue that lands them, such as MA-160). `start` refuses while it is not empty; draw them (MA-158, `/design-first`), add their boards, then clear each item, and say in the notes `Drawn: <the item, as it was listed>` with the board that draws it (the review ledgers look for it) |
+| `code` | Optional list of the repo paths that build the story, globs allowed (`web/src/lib/chat/**`, `ios/MyPaisa/Chat/`, `src/mypaisa/agent/tools.py`). Required once a Story is In Review or Done; every path must match something. A file under `web/`, `ios/`, `src/` or `infra/` that no story claims is reported (MA-228) |
 | `others[]` | Issues with no phase epic (repo tooling such as MA-1 to MA-8, a superseded task): `key`, `type`, `summary`, `status`, `notes`. Listed so the docs may cite them; they carry no sections or boards |
 
 ## The mirror: `docs/design/claude-design.json`
@@ -70,3 +71,19 @@ with the etag Claude Design reported when it was copied:
 
 A file whose Claude Design etag differs from the recorded one has changed
 there and must be copied again (and its boards checked against the trace).
+
+## The roadmap: `docs/roadmap.json`
+
+Every traced story's estimate in build days (`estimates`, keyed by Jira key; `0` for work already done), the
+calendar's settings (`start`, `buffer`, `parallel`, `bank_holidays`, `breaks`, and per-phase rules: `not_before`,
+`on_demand`), and the `schedule` worked out from them by `python3 scripts/roadmap.py write`: per phase its build days,
+Arun's days (tasks labelled `manual`), working days, start and target end. PLAN.md's Timeline table between
+`<!-- roadmap:start -->` and `<!-- roadmap:end -->` is rendered from the schedule, and each phase epic's due date in
+Jira is its target end (MA-228).
+
+## Confluence: `docs/confluence.json` and `docs/confluence/`
+
+`docs/confluence/<page>.html` is each page exactly as published, rendered by `python3 scripts/confluence_docs.py write`.
+`docs/confluence.json` records the space, then per page its Confluence `id`, the `version` last published and the
+`sha256` of the HTML published (empty until the page is first published), and per board preview its owning `page`, its
+`media` id and `collection`, and the `source` hash of the boards and layout it was composed from (MA-228).

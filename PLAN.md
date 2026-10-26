@@ -231,6 +231,12 @@ Claude's:
 - **The boards still to draw (MA-227):** Budget and Assets and Debts on iPad,
   the check-in cards in the web chat, and the new-kind card behind the second
   check, which Arun settled on 26 Oct 2026.
+- **The plan in Confluence (MA-228):** the whole plan as a page tree in the
+  mypaisaa-agent space, phase by phase and screen by screen, with the board
+  previews, the design decisions, the explainers and the roadmap, generated
+  from the repo; every story estimated in `docs/roadmap.json`, each phase
+  epic's due date set from it; and the plan-sync check widened to Confluence
+  and the code, with this repo's hooks.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -1355,34 +1361,63 @@ What is ported from where, so the work can be checked against the original.
 
 ---
 
-## Timeline (indicative)
+## Timeline (estimated)
 
-Phases 0 to 9 are built in order, each at both doors, and each is sized as it
-starts. Phases 10 to 20 keep their earlier estimates and follow phase 9.
+Every story is estimated in `docs/roadmap.json` (MA-228), and the dates below
+are worked out from those estimates by `python3 scripts/roadmap.py write`. The
+same dates are in Confluence (the Roadmap page) and on each phase epic in
+Jira. To change a date, change an estimate or a setting there and run that
+command; never edit this table by hand.
 
-| Phase | Effort | Calendar |
-| --- | --- | --- |
-| 0 Foundations at every door | Sized at its start; your part is the accounts and keys | First |
-| 1 Talk: sign in and chat with the agent at every door | Sized at its start | After phase 0 |
-| 2 The first record: one dynamic structure, one write path | Sized at its start | After phase 1 |
-| 3 Deposits, policies and two currencies | Sized at its start | After phase 2 |
-| 4 Debts and check-ins | Sized at its start | After phase 3 |
-| 5 Investments, priced | Sized at its start | After phase 4 |
-| 6 Budget: statements and monthly check-ins | Sized at its start | After phase 5 |
-| 7 Projection | Sized at its start | After phase 6 |
-| 8 Audit, search and the Admin center | Sized at its start | After phase 7 |
-| 9 The whole dashboard; the old tracker retired | Sized at its start | After phase 8 |
-| 10 Prices and engine | 5 days | After phase 9 |
-| 11 Briefs, alerts, charts, technical mode | 3 days | After phase 10 |
-| 12 Ask anything: research cards, scenarios | 4 days | After phase 11 |
-| 13 Track record | 2 days, then runs on its own | After phase 12 |
-| 14 News and sentiment | 3 days | After phase 13 |
-| 15 Stances live | after 8 weeks of shadow | 8 weeks after phase 10's shadow stances begin |
-| 16 New kinds of holding | a day or two each | When a new kind is added |
-| 17 The Forecaster | 8–12 weeks | F1 and F2 any time after phase 10; the rest after phase 14, when wanted |
-| 18 The agent team | 6–8 weeks | E1 and E2 after phase 8; the rest with phases 13 and 17, when wanted |
-| 19 Indian markets and the Indian portfolio | 3–4 weeks | IN1 after phase 10; IN2 after phase 9's importer (MA-111); IN4's forecasts with phase 17, when wanted |
-| 20 The app beyond the chat | 1–2 weeks | After phase 9, when wanted |
+How the dates are worked out:
+
+- **Build days.** A story's estimate is in build days, covering every door it
+  touches. Claude builds and you review and test.
+- **Buffer.** Each phase adds 20% for review rounds, its demo and fixes.
+- **Side by side.** The web app and the iOS app are built in parallel, as you
+  asked. So a phase's working days are its build days with the buffer,
+  divided by 1.5.
+- **Days off.** English bank holidays and a Christmas break are skipped.
+- **Order.** The phases run in build order from Mon 2 Nov 2026, and phase 15
+  waits for 8 weeks of shadow stances after phase 10.
+- **Your tasks.** Tasks labelled `manual` are yours (the accounts and keys).
+  They run beside the build and are due before their phase starts.
+
+<!-- roadmap:start -->
+| Phase | Build days | Working days | Starts | Target end |
+| --- | --- | --- | --- | --- |
+| 0 Foundations at every door | 31 (and 3 of yours) | 25 | Mon 2 Nov 2026 | Fri 4 Dec 2026 |
+| 1 Talk: sign in and chat with the agent at every door | 81 (and 0.5 of yours) | 65 | Mon 7 Dec 2026 | Tue 16 Mar 2027 |
+| 2 The first record: one dynamic structure, one write path | 45 | 36 | Wed 17 Mar 2027 | Mon 10 May 2027 |
+| 3 Deposits, policies and two currencies | 18 | 15 | Tue 11 May 2027 | Tue 1 Jun 2027 |
+| 4 Debts and check-ins | 19 | 16 | Wed 2 Jun 2027 | Wed 23 Jun 2027 |
+| 5 Investments, priced | 23 | 19 | Thu 24 Jun 2027 | Tue 20 Jul 2027 |
+| 6 Budget: statements and monthly check-ins | 12 | 10 | Wed 21 Jul 2027 | Tue 3 Aug 2027 |
+| 7 Projection | 18 | 15 | Wed 4 Aug 2027 | Tue 24 Aug 2027 |
+| 8 Audit, search and the Admin center at every door | 24 | 20 | Wed 25 Aug 2027 | Wed 22 Sep 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 23 Sep 2027 | Fri 8 Oct 2027 |
+| 10 Prices and the engine | 22 | 18 | Mon 11 Oct 2027 | Wed 3 Nov 2027 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Thu 4 Nov 2027 | Tue 23 Nov 2027 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Wed 24 Nov 2027 | Wed 15 Dec 2027 |
+| 13 Track record and calibration | 13 | 11 | Thu 16 Dec 2027 | Mon 10 Jan 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 11 Jan 2028 | Wed 19 Jan 2028 |
+| 15 Stances go live | 5 | 4 | Thu 20 Jan 2028 | Tue 25 Jan 2028 |
+| 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
+| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Wed 26 Jan 2028 | Wed 1 Mar 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 23 | 19 | Thu 2 Mar 2028 | Tue 28 Mar 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Wed 29 Mar 2028 | Thu 13 Apr 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 18 Apr 2028 | Thu 27 Apr 2028 |
+<!-- roadmap:end -->
+
+**Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you
+want them:
+
+- F1 and F2 any time after phase 10;
+- E1 and E2 after phase 8;
+- IN1 after phase 10, and IN2 after phase 9's importer (MA-111);
+- phase 20 after phase 9.
+
+The table dates them in build order.
 
 ---
 

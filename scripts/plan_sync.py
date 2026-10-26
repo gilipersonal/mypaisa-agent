@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Keep the plan, the designs and Jira in step (MA-155).
+"""Keep the plan, the designs, Jira, Confluence and the code in step (MA-155, MA-228).
 
 The repo-side half of the plan-sync check. It reads docs/trace.json (the
 schema is in .claude/skills/plan-sync/reference/trace-schema.md) against
-ARCHITECTURE.md, PLAN.md, the other docs and the Claude Design mirror. The
-Jira and Claude Design halves need their MCP tools and live in /plan-sync.
+ARCHITECTURE.md, PLAN.md, the other docs, the Claude Design mirror, the
+roadmap (scripts/roadmap.py), the Confluence pages rendered from them
+(scripts/confluence_docs.py) and the code each story names. The Jira, Claude
+Design and live Confluence halves need their MCP tools and live in /plan-sync.
 
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
@@ -25,6 +27,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
 TRACE = ROOT / "docs" / "trace.json"
 TRACE_MD = ROOT / "docs" / "TRACE.md"
 MIRROR = ROOT / "docs" / "design" / "claude-design.json"
@@ -33,6 +36,7 @@ PLAN = ROOT / "PLAN.md"
 CITING = [ARCH, PLAN, ROOT / "TECH_STACK.md", ROOT / "README.md", ROOT / "docs" / "design" / "README.md"]
 KEY = re.compile(r"\bMA-(\d+)\b")
 DESIGN_STATES = {"none", "planned", "picked", "todo"}
+CODE_DIRS = ("web", "ios", "src", "infra")  # where product code lives; a file there should belong to a story's code
 
 
 def load(path: Path) -> dict:
@@ -188,7 +192,7 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
     if it.get("notes") is not None and not isinstance(it.get("notes"), str):
         errors.append(f"{k}: notes must be text")
         return errors, warnings
-    for field, kind in (("arch", str), ("labels", str), ("boards", dict), ("open", str), ("undrawn", str)):
+    for field, kind in (("arch", str), ("labels", str), ("boards", dict), ("open", str), ("undrawn", str), ("code", str)):
         val = it.get(field, [])
         if not isinstance(val, list) or not all(isinstance(x, kind) for x in val):
             errors.append(f"{k}: {field} must be a list of {kind.__name__}s")
@@ -226,6 +230,12 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
             warnings.append(f"{k}: {what}: {'; '.join(it[field])}")
     if it.get("undrawn") and not ui:
         errors.append(f"{k}: lists undrawn screens but has no UI")
+    # The code: a story that reached review names the repo paths that build it, and each one exists (MA-228).
+    for c in it.get("code", []):
+        if not c or c.startswith("/") or ".." in c or not any(ROOT.glob(c.rstrip("/"))):
+            errors.append(f"{k}: code path {c!r} matches nothing in the repo")
+    if it.get("type") == "Story" and status in ("In Review", "Done") and "manual" not in it.get("labels", []) and not it.get("code"):
+        errors.append(f"{k}: a Story {status} names no code; list the paths that build it in its code field")
     if it.get("open") and status in ("In Review", "Done"):
         errors.append(f"{k}: {status} with open questions ({'; '.join(it['open'])}); settle them, clear open and say Settled: in the notes first")
     if it.get("undrawn") and status in ("In Review", "Done"):
@@ -501,6 +511,24 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
         errors.append("docs/TRACE.md is out of date: run `python3 scripts/plan_sync.py render`")
+
+    # The roadmap, and the Confluence pages rendered from all of it (MA-228).
+    try:
+        import confluence_docs  # noqa: PLC0415
+        import roadmap  # noqa: PLC0415
+    except ImportError as e:  # fails closed: a check that cannot run is a failure, never a skip
+        errors.append(f"the roadmap and Confluence checks cannot run: {e}")
+    else:
+        errors += [f"roadmap: {e}" for e in roadmap.errors(trace=trace)]
+        errors += confluence_docs.errors()
+
+    # Product code that no story claims.
+    claimed = [c.rstrip("/") for it in trace.get("items", []) for c in it.get("code", []) if isinstance(c, str)]
+    for d in CODE_DIRS:
+        for f in sorted((ROOT / d).rglob("*")) if (ROOT / d).is_dir() else []:
+            rel = f.relative_to(ROOT).as_posix()
+            if f.is_file() and not any(f.match(c) or rel == c or rel.startswith(c + "/") for c in claimed):
+                warnings.append(f"code: {rel} belongs to no story's code paths")
     return errors, warnings
 
 
@@ -674,6 +702,63 @@ BOARD_CASES = [
 ]
 
 
+def _row(t: dict, key: str) -> dict:
+    return next(i for i in t["items"] if i["key"] == key)
+
+
+def _set(t: dict, key: str, **kw: object) -> dict:
+    _row(t, key).update(kw)
+    return t
+
+
+# MA-228: the roadmap, the Confluence pages and the code paths, each mutated in a copy of the repo and refused by check.
+# (what the case breaks, the file it changes, how, and the words check must print)
+RECORD_CASES = [
+    ("a Story Done with no code", "docs/trace.json", lambda t: _set(t, "MA-36", status="Done"), r"MA-36: a Story Done names no code"),
+    ("a code path that does not exist", "docs/trace.json", lambda t: _set(t, "MA-36", code=["web/src/no-such-file.ts"]),
+     r"MA-36: code path 'web/src/no-such-file.ts' matches nothing"),
+    ("a story with no estimate", "docs/roadmap.json", lambda r: (r["estimates"].pop("MA-36"), r)[1], r"MA-36 has no estimate"),
+    ("an estimate changed without the schedule", "docs/roadmap.json", lambda r: (r["estimates"].update({"MA-36": 40}), r)[1],
+     r"roadmap: docs/roadmap.json's schedule is stale"),
+    ("a Confluence page edited by hand in the repo", "docs/confluence/phase-05.html", lambda h: h.replace("</table>", "<p>x</p></table>", 1),
+     r"docs/confluence/phase-05\.html is stale"),
+    ("a page changed but not published", "docs/confluence.json", lambda m: (m["pages"]["phase-05"].update({"sha256": "0"}), m)[1],
+     r"'Phase 5 · Investments, priced' changed in the repo but is not published"),
+    ("a preview older than its boards", "docs/confluence.json",
+     lambda m: (next(v for k, v in m["images"].items() if k.startswith("phase-05")).update({"source": "0"}), m)[1],
+     r"preview phase-05-\S+ is older than its boards"),
+]
+
+
+def record_cases() -> int:
+    bad = 0
+    for what, rel, mutate, words in RECORD_CASES:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "scripts").mkdir()
+            for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py"):
+                if (Path(__file__).parent / script).exists():
+                    shutil.copy(Path(__file__).parent / script, root / "scripts" / script)
+            for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
+                if (ROOT / f).exists():
+                    shutil.copy(ROOT / f, root / f)
+            shutil.copytree(ROOT / "docs", root / "docs")
+            target = root / rel
+            if not target.exists():
+                bad += 1
+                print(f"FAIL: the case {what!r} needs {rel}")
+                continue
+            if rel.endswith(".json"):
+                target.write_text(json.dumps(mutate(json.loads(target.read_text())), indent=1, ensure_ascii=False) + "\n")
+            else:
+                target.write_text(mutate(target.read_text()))
+            r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
+            if r.returncode == 0 or not re.search(words, r.stdout):
+                bad += 1
+                print(f"FAIL: check passed {what} (exit {r.returncode}; wanted {words!r})")
+    return bad
+
+
 def selftest(trace: dict) -> int:
     if bad_shape := shape_errors(trace):
         for e in bad_shape:
@@ -715,7 +800,9 @@ def selftest(trace: dict) -> int:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "scripts").mkdir()
-        shutil.copy(Path(__file__), root / "scripts" / "plan_sync.py")
+        for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py"):
+            if (Path(__file__).parent / script).exists():  # a lone copy of this file still runs its board cases
+                shutil.copy(Path(__file__).parent / script, root / "scripts" / script)
         for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
             if (ROOT / f).exists():
                 shutil.copy(ROOT / f, root / f)
@@ -746,7 +833,9 @@ def selftest(trace: dict) -> int:
                 if r.returncode == 0 or what not in r.stdout:
                     bad += 1
                     print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")
-    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles, {len(TOOL_CASES)} tool names and one mutated board, {bad} wrong")
+    bad += record_cases()
+    # The review ledgers read this line: keep "tool names and one mutated board, <n> wrong" as it is.
+    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles, {len(TOOL_CASES)} tool names and one mutated board, {bad} wrong, counting {len(RECORD_CASES)} mutated records")
     return 1 if bad else 0
 
 

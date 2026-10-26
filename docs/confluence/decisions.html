@@ -1,0 +1,297 @@
+<div data-type="panel-custom" data-icon=":dart:" data-color="#FFEBE6"><p>Every design round ends in a decision record in the repo: the request in Arun's words, the options drawn, the one recommended and why, and the pick. Picked boards are the spec (plan-sync rule 4); the options not picked stay drawn as the record. Each tab holds a record's request, options, boards and pick; the full record is linked.</p>
+</div>
+<div data-type="multi-bodied-extension" data-extension-key="native-tabs" data-extension-type="com.atlassian.confluence.native" data-parameters='{&quot;tabs&quot;: [{&quot;id&quot;: &quot;tab1&quot;, &quot;title&quot;: &quot;MA-193&quot;}, {&quot;id&quot;: &quot;tab2&quot;, &quot;title&quot;: &quot;MA-161&quot;}, {&quot;id&quot;: &quot;tab3&quot;, &quot;title&quot;: &quot;MA-156&quot;}, {&quot;id&quot;: &quot;tab4&quot;, &quot;title&quot;: &quot;MA-102&quot;}, {&quot;id&quot;: &quot;tab5&quot;, &quot;title&quot;: &quot;MA-103&quot;}, {&quot;id&quot;: &quot;tab6&quot;, &quot;title&quot;: &quot;MA-101&quot;}]}'><div data-type="extension-frame"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-193" data-card-appearance="inline"></a> · <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/reviews/MA-193/decision.md">the full record</a></p>
+<h2>MA-193: the whole-wealth screens at every door, and a clickable prototype</h2>
+<h3>The request, in Arun&#x27;s words (26 Oct 2026)</h3>
+<blockquote><p>&quot;Primary goal is to have a dashboard where I can see all my assests across counytries currently UK and India&quot;</p>
+<p>&quot;they will be driven via chatbot, with me asking and registering by asking the agents or providing agents with the information. For EMIs/Loans, the agent will ask me if the month&#x27;s payment is done or if the user says its paid up full then it will close it. There will be no forms for me to fill.&quot;</p>
+<p>&quot;The Forecast screen we have in Wealth Tracker should be renamed as Projection&quot;</p>
+<p>&quot;The UI should only allow editing existing figures by hand, no creation.&quot;</p>
+<p>&quot;Performance is key and apps should be silky smooth like Monzo App.&quot;</p>
+<p>&quot;For now just design and create JIRA stories and break into and clean phases, dont build anything&quot;</p>
+</blockquote>
+<p>The re-plan behind it is MA-186 (PR #37): the decisions D1 to D12, the phases renumbered, and 32 new stories.</p>
+<h3>The boards (Claude Design)</h3>
+<p><strong>MyPaisa app v1</strong> (browser, desktop 1440 and phone web 390, light and dark):</p>
+<ul><li><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Web+v4+%C2%B7+Shell+and+chat.dc.html">Web v4 · Shell and chat</a> (MA-199, MA-208, MA-200, MA-185, MA-196)</li>
+<li><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Web+v4+%C2%B7+Dashboard.dc.html">Web v4 · Dashboard</a> (MA-208, MA-213, MA-95, MA-201)</li>
+<li><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Web+v4+%C2%B7+Assets+and+debts.dc.html">Web v4 · Assets and debts</a> (MA-217, MA-212, MA-215, MA-214, MA-204, MA-209, MA-210, MA-201)</li>
+<li><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Web+v4+%C2%B7+Budget.dc.html">Web v4 · Budget</a> (MA-96, MA-218, MA-220)</li>
+<li><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Web+v4+%C2%B7+Projection.dc.html">Web v4 · Projection</a> (MA-224, MA-222, MA-223, MA-221, MA-219)</li>
+<li><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Prototype+v4.dc.html">Prototype v4</a>: the clickable walk-through.<ul><li><strong>The top bar:</strong><ul><li>the door switch (desktop at 1440, phone web at 390, iPhone);</li>
+<li>light and dark;</li>
+<li>privacy;</li>
+<li>who is viewing (Arun or Asha);</li>
+<li>Restart;</li>
+<li>the ten steps, each one a jump target.</li>
+</ul>
+</li>
+<li><strong>The journey:</strong><ol><li>sign in;</li>
+<li>register £5,000 of savings, with net worth moving live;</li>
+<li>replay how the SBI FD was registered;</li>
+<li>the valuation check-in, then the Home value corrected in place to £428,000;</li>
+<li>Activity;</li>
+<li>Sunday&#x27;s statements and the month close;</li>
+<li>Thursday&#x27;s HDFC EMI check-in, with a &quot;paid off in full&quot; side branch;</li>
+<li>the Projection;</li>
+<li>a what-if and the plan items;</li>
+<li>Asha&#x27;s view.</li>
+</ol>
+</li>
+<li><strong>Typing:</strong> steps 2, 4 and 8 ask for a typed value, and &quot;Type it for me&quot; fills each one in.</li>
+<li><strong>Built from:</strong> the recommended options below (1a, 1a, 1b, 1a).</li>
+</ul>
+</li>
+</ul>
+<p><strong>MyPaisa iOS v1</strong> (iPhone, and iPad where drawn; light and dark):</p>
+<ul><li><a href="https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8?file=iPhone+v4+%C2%B7+Home.dc.html">iPhone v4 · Home</a></li>
+<li><a href="https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8?file=iPhone+v4+%C2%B7+Register.dc.html">iPhone v4 · Register</a></li>
+<li><a href="https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8?file=iPhone+v4+%C2%B7+Check-ins.dc.html">iPhone v4 · Check-ins</a></li>
+<li><a href="https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8?file=iPhone+v4+%C2%B7+Assets+and+debts.dc.html">iPhone v4 · Assets and debts</a></li>
+<li><a href="https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8?file=iPhone+v4+%C2%B7+Budget.dc.html">iPhone v4 · Budget</a></li>
+<li><a href="https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8?file=iPhone+v4+%C2%B7+Projection.dc.html">iPhone v4 · Projection</a></li>
+</ul>
+<h3>The options</h3>
+<table><thead><tr><th>Question</th><th>Options</th><th>Recommended, and why</th></tr>
+</thead>
+<tbody><tr><td>The web shell with the chat</td><td>1a Chat beside · 1b Chat first · 1c Ask bar</td><td><strong>1a</strong>: it is the iPad&#x27;s 1a at the laptop. A Confirm in the chat column moves the page beside it, and at 390 it uses the iPhone&#x27;s tab bar. 1b shrinks the dashboard to a strip; 1c&#x27;s drawer covers the figures a Confirm changes.</td></tr>
+<tr><td>The dashboard (Overview)</td><td>1a Net worth first · 1b Two countries · 1c What&#x27;s next</td><td><strong>1a</strong>: it reads the same at every width (the total, what it is made of, what is due). Each country keeps its own currency inside one card. The due list stays short because check-ins arrive in the chat.</td></tr>
+<tr><td>The check-in card</td><td>1a chips in one row · 1b Paid as the Confirm · 1c a compact row</td><td><strong>1b</strong>: Paid looks like every other Confirm button. &quot;Paid off in full&quot;, which closes a loan, cannot be hit by accident. It fits at any text size, and 1c&#x27;s rows are reused for several check-ins due at once.</td></tr>
+<tr><td>The Projection</td><td>1a the fan first · 1b a story first · 1c decades</td><td><strong>1a</strong>: it is the screen ARCHITECTURE §6.6 lists: the fan, milestones on the line, assumptions with sources, scenario chips and Ask.</td></tr>
+</tbody>
+</table>
+<p>The other screens (registration, correction, check-in outcomes, statements, the month close, Budget, Assets, Debts, plan items, what-ifs, Activity) are drawn once each, in the recommended styles.</p>
+<h3>Points to settle</h3>
+<ul><li><strong>MA-197 (open on the trace and the story):</strong> does approving a new kind need the second check? ARCHITECTURE §4.5&#x27;s list does not name it.</li>
+<li><strong>Not drawn this round:</strong><ul><li>iPad boards for Budget and for Assets and Debts (the dashboard has its iPad board);</li>
+<li>the phone-web keyboard;</li>
+<li>a rupee mark and country colours in <code>tokens.css</code>. Countries show as text chips, &quot;UK · £&quot; and &quot;India · ₹&quot;.</li>
+</ul>
+</li>
+</ul>
+<h3>The pick</h3>
+<p>Arun, 26 Oct 2026, picked the recommended option each time:</p>
+<table><thead><tr><th>Question</th><th>Pick</th><th>Stories now <code>picked</code></th></tr>
+</thead>
+<tbody><tr><td>The web shell with the chat</td><td><strong>1a Chat beside</strong></td><td>MA-199</td></tr>
+<tr><td>The dashboard</td><td><strong>1a Net worth first</strong></td><td>MA-208, MA-95, MA-213</td></tr>
+<tr><td>The check-in card</td><td><strong>1b Paid as the Confirm</strong></td><td>MA-205</td></tr>
+<tr><td>The Projection</td><td><strong>1a the fan first</strong></td><td>MA-224</td></tr>
+</tbody>
+</table>
+<p><strong>The rows:</strong></p>
+<ul><li>Each picked row lists only the picked option and the states drawn in its style.</li>
+<li>The options not picked stay on MA-193&#x27;s row as the record.</li>
+<li>Every other story drawn this round stays <code>planned</code>, drawn in the picked styles. Its own options round runs when it starts (plan-sync rule 3).</li>
+</ul>
+<p><strong>What the pick supersedes:</strong></p>
+<ul><li>On the trace rows:<ul><li><code>Wealth.dc.html</code>&#x27;s Household overview, Assets, An asset, Debts, A loan, Budget and Forecast;</li>
+<li>the investment-only Home boards drawn for MA-78 before MA-186.</li>
+</ul>
+</li>
+<li>The iPad and foldable layouts stay on MA-70.</li>
+<li>MA-161&#x27;s ledger entry o5 now accepts the v4 iPad board for MA-208.</li>
+</ul>
+<p>The prototype is built from these picks.</p>
+</div>
+<div data-type="extension-frame"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-161" data-card-appearance="inline"></a> · <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/reviews/MA-161/decision.md">the full record</a></p>
+<h2>MA-161: MyPaisa becomes one native iOS app</h2>
+<h3>The request</h3>
+<p>Arun, 25 Oct 2026:</p>
+<blockquote><p>Now I need you to redesign everything from Telegram to iOS app. No more telegram login, on Google SSO or iOS login. And all make the app into a cool mobile chatbot where they can maintain everything and even see the dashboard of the holdings in the household.</p>
+<p>Only iOS app is needed and nothing else for now. I need end to end detailed design and UX, all necessary documents and html artifacts update them as needed.</p>
+<p>The UI design of the iOS app should be placed on claude design and should follow Apple guidelines and liquid glass UI.. https://developer.apple.com/design/human-interface-guidelines scalable enough to open in any Apple IOS mobile, iPAD OS or Duo. It should closely follow the design styling we are doing for the webapp which has Monzo like look and feel.</p>
+</blockquote>
+<p>And, the same evening, in this order:</p>
+<blockquote><p>as usual create detailed Jira stories and tasks, epics and phases for me to implement it</p>
+<p>Make sure all the components and elements (including graphs and charts) have really good animation and motion effects all over the app (webapp and iOS)</p>
+<p>No we have webapp for the dashboard and admin portal pwa rigjt ? That will still be there for the read only dashboard we discussed</p>
+<p>The ready only dahsboard should also be shown on the ios tablet duo</p>
+<p>Take special care of dark mode and light mode in ios and ipad, the text and compoennt should be clearly visible even in 25% mobile brightness</p>
+</blockquote>
+<p>So the iOS app replaces the Telegram bot, not the web app: the web app stays as a read-only PWA for the dashboard and the Admin center (below), the iOS app shows the dashboard on every iPhone, iPad and foldable, one motion system runs through both (MA-182), and both stay legible in light and dark at 25% brightness (MA-181).</p>
+<h3>What changes, in one table</h3>
+<table><thead><tr><th>Before (to 25 Oct 2026)</th><th>From MA-161</th></tr>
+</thead>
+<tbody><tr><td>A Telegram bot per environment (BotFather, a token in SSM, a webhook)</td><td>No bot. One SwiftUI app, <strong>MyPaisa</strong>, for iPhone and iPad; a <strong>MyPaisa Dev</strong> build points at dev</td></tr>
+<tr><td>Sign in with Telegram (<code>initData</code>, the Login Widget), Google on a laptop, passkeys in a browser</td><td><strong>Sign in with Apple</strong> and <strong>Sign in with Google</strong>, native, verified in Cognito&#x27;s custom-auth Lambdas; a passkey optional; no passwords, still</td></tr>
+<tr><td>The chat in Telegram: rich messages, PNG charts, reply keyboard, <code>/commands</code></td><td>The chat in the app: native cards (SwiftUI) from the agent&#x27;s JSON, Swift Charts from the engine&#x27;s series, a composer with attachments and shortcut chips; the <code>/commands</code> stay as typed shortcuts</td></tr>
+<tr><td>A read-only web app at <code>console(-dev).mypaisapp.com</code>: a Mini App inside Telegram and a laptop browser</td><td>The same screens inside the iOS app (Home, a holding, Overlap, Scorecard, Audit and Files, Activity, the Admin center) on every iPhone, iPad and foldable; and the web app kept as a read-only PWA at <code>console(-dev)</code> for the dashboard and the Admin center in any browser. No Mini App</td></tr>
+<tr><td>The second check: Face ID or a PIN in Telegram, a fresh passkey or Google sign-in in the browser</td><td>One second check: a fresh Sign in with Apple (a Face ID sheet) or a passkey assertion (Face ID), bound to the action and verified by the server; Google members re-sign in. Never a local-only Face ID</td></tr>
+<tr><td>Replies through <code>outbox.fifo</code> and a <code>sender</code> that honours Telegram&#x27;s limits</td><td>The same queue and <code>sender</code>, now delivering to the app&#x27;s live connection (API Gateway WebSocket at <code>live(-dev).mypaisapp.com</code>) and, when the app is closed, by Apple push (APNs)</td></tr>
+<tr><td>Alerts to the web app&#x27;s Alerts page, Telegram and email</td><td>Alerts to the app&#x27;s Alerts page (Admin center), push and email</td></tr>
+<tr><td>The Mini App and browser boards; the Telegram kit</td><td>The iOS kit in MyPaisa DS v1 and the boards in a new Claude Design project, <strong>MyPaisa iOS v1</strong></td></tr>
+</tbody>
+</table>
+<p>Everything behind the front door stays: the registry, the audit log, the queues, the engine, the cards&#x27; content, the Claude ceiling and its ladder, the Forecaster, the agent team, India. &quot;Only iOS app is needed and nothing else for now&quot; is read with Arun&#x27;s correction: no bot, no Mac app and no Android app; the web app stays for reading and for the Admin center. The iOS app runs on Apple silicon Macs as &quot;Designed for iPad&quot; only if that is switched on later; it is off.</p>
+<h3>Three shells for Arun&#x27;s pick (<code>Shell options.dc.html</code>)</h3>
+<p>Every option has the same screens; they differ in what the app opens to and how the chat and the dashboard meet.</p>
+<table><thead><tr><th></th><th>1a Chat first (picked, 26 Oct 2026)</th><th>1b Ask from anywhere</th><th>1c One timeline</th></tr>
+</thead>
+<tbody><tr><td>Opens to</td><td>The chat, with the household&#x27;s total and day&#x27;s move in a glass strip at the top</td><td>Home, the dashboard</td><td>The chat; there is nothing else</td></tr>
+<tr><td>Tabs (iPhone)</td><td>Chat · Home · Activity · You (Search as the system&#x27;s separate search tab)</td><td>Home · Holdings · Activity · You, with the composer as the tab bar&#x27;s bottom accessory on every tab</td><td>None: a glass rail of pinned live cards (Portfolio, Today, Alerts, Spend) above the conversation</td></tr>
+<tr><td>The dashboard</td><td>Its own tab; pulling the strip down opens it as a sheet over the chat</td><td>The app itself</td><td>Each pinned card opens its screen as a sheet</td></tr>
+<tr><td>The chat</td><td>Its own tab; every screen&#x27;s Ask opens it about that screen</td><td>The bottom accessory expands to the full chat, carrying the screen&#x27;s context (&quot;Ask about Balanced&quot;)</td><td>Always on screen</td></tr>
+<tr><td>iPad and an open foldable</td><td>Sidebar · the screen · the chat beside it over about 900 pt, a sheet away from about 600 to 900 pt, a tab in a compact window (every iPhone, a folded foldable, Slide Over)</td><td>Sidebar · the screen · the chat beside it</td><td>The conversation with the pinned cards as a column beside it</td></tr>
+<tr><td>Why</td><td>Arun asked for &quot;a cool mobile chatbot ... and even see the dashboard&quot;: the chat is the front door and the figures are one swipe away; every change starts where it is made</td><td>The most native iOS 26 pattern (Music&#x27;s mini player); best when the household mostly reads</td><td>The purest chatbot; Audit, Activity and the Admin center become sheets, which is cramped for the owner</td></tr>
+</tbody>
+</table>
+<p>The recommendation is <strong>1a</strong>. The flow boards are drawn in 1a&#x27;s shell; every screen on them is shared by the three options, so a different pick changes the frame around the screens, not the screens.</p>
+<h3>The boards (Claude Design)</h3>
+<p>MyPaisa DS v1 gains <strong><code>iOS kit.dc.html</code></strong> (the Liquid Glass layers, colour assets, Dynamic Type, the tab bar and sidebar, toolbars and the composer, messages and cards, buttons and chips, sheets and menus, charts, the app icon, accessibility, motion) and <strong><code>ios.css</code></strong>, the kit&#x27;s classes over <code>tokens.css</code>. The screens are in the new project <strong>MyPaisa iOS v1</strong>, mirrored into <code>docs/design/ios-v1/</code>:</p>
+<table><thead><tr><th>File</th><th>Boards (each drawn in light and dark)</th></tr>
+</thead>
+<tbody><tr><td><code>Shell options.dc.html</code></td><td>1a Chat first, 1b Ask from anywhere, 1c One timeline: iPhone and iPad each</td></tr>
+<tr><td><code>iPhone sign-in.dc.html</code></td><td>Welcome; Sign in with Apple; Sign in with Google; Joining from an invite; First-run setup; Notifications and Face ID; Sign-in refused</td></tr>
+<tr><td><code>iPhone chat.dc.html</code></td><td>Chat home; Portfolio card; Stance card, technical open; Guided flow: log a transaction; Confirm card; Attach a file; Reading a factsheet; Factsheet card with amber fields; Screenshot valuations, before and after; Currency check; What changed this week; Red alert card; Preference card; Streaming reply; Offline and retry; Ceiling reached: templates only; Privacy mode in the chat</td></tr>
+<tr><td><code>iPhone dashboard.dc.html</code></td><td>Home, household; Home, me; Holding; Holding, technical; Why? sheet; What if? sheet; Overlap; Scorecard; Today&#x27;s brief; Home, privacy on; Home, empty; Home, loading; Home, stale prices</td></tr>
+<tr><td><code>iPhone audit and activity.dc.html</code></td><td>Audit; Audit, a change from a file; Files; File preview; Activity; A run</td></tr>
+<tr><td><code>iPhone admin.dc.html</code></td><td>Admin center; Members and devices; A member: sign out, pause, restore; Invite a member; Second check; Spend and the ceiling; Move the ceiling; Caps and alerts; Alert routing; Failed work and Replay</td></tr>
+<tr><td><code>iPhone settings.dc.html</code></td><td>You; Privacy and Face ID lock; Notifications and quiet hours; Sign-in methods; Pause and resume; Leave the household; Lock screen: the morning brief; Lock screen: a red alert; App switcher</td></tr>
+<tr><td><code>iPad and foldable.dc.html</code></td><td>iPad · Home with the chat beside it; iPad · Holding, portrait; iPad · Overlap and Scorecard; iPad · Audit and Activity; iPad · Admin center; iPad · Split View, one third; iPad · Stage Manager window; Foldable · Open; Foldable · Open, Audit; Foldable · Folded; iPad · Keyboard shortcuts; iPhone · Landscape</td></tr>
+<tr><td>MyPaisa app v1 (the web app)</td><td>the browser boards kept as the web app&#x27;s spec (Browser, Browser 2 with the sign-in page redrawn, Responsive, Audit and files, Admin center 1 to 3, Forecast, Wealth, India), now with the shared motion</td></tr>
+</tbody>
+</table>
+<p>The boards are <strong>planned</strong> (<code>.claude/rules/plan-sync.md</code>): drawn ahead of their stories, put through <code>/design-first</code> when each story starts. The Telegram kit, the Mini App, Browser and Telegram boards, and the Prototype in MyPaisa app v1 are kept as the record and are superseded; nothing is built from them. Where Arun already picked a flow (MA-156&#x27;s 1b currency check, the Portfolio and Confirm cards of MA-34, the brief and alert cards of MA-55, the chart house style of MA-56), the iOS boards carry that pick&#x27;s content and order into the app; the row&#x27;s notes say so, and its design is <code>planned</code> again until Arun has seen the iOS rendering.</p>
+<p>All figures, names and holdings on the boards are illustrative.</p>
+<h3>Open questions for Arun</h3>
+<ul><li>Joining the Apple Developer Program at $99 a year (MA-162).</li>
+<li>&quot;Duo&quot;: read as a foldable or two-panel Apple device; the layouts follow width, so any such device is covered. Say if it meant something else.</li>
+</ul>
+<h3>The pick</h3>
+<p>Arun picked <strong>1a, Chat first</strong>, on 26 Oct 2026, when asked for the pick with the PR (#36) up. 1b and 1c stay on <code>Shell options.dc.html</code> as the record, marked not picked. MA-163&#x27;s design is <code>picked</code> with 1a&#x27;s boards and the iPad and foldable shell boards. The flow boards, drawn in 1a&#x27;s shell, stay <code>planned</code>: each goes through its own story&#x27;s options round when that story starts (<code>.claude/rules/plan-sync.md</code> rule 3).</p>
+</div>
+<div data-type="extension-frame"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-156" data-card-appearance="inline"></a> · <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/reviews/MA-156/decision.md">the full record</a></p>
+<h2>MA-156: money in any currency, checked against the holding&#x27;s currency</h2>
+<h3>The request, in Arun&#x27;s words (24 Oct 2026)</h3>
+<blockquote><p>&quot;On the telegram App, I should be able to add transactions using Any currency for any fund and chatbot to figure what the base currency of the holdings, If the holdings are in GBP and I try to invest INR to GBP holding, chat should be able to correct me.&quot;</p>
+</blockquote>
+<p>The spec is <code>ARCHITECTURE.md</code> §4.7, with §4.1 (the Position and Transaction rows), §5.3 and §22.3. Designed in MyPaisa DS v1, &quot;Warm ledger&quot; (MA-101). Every figure is illustrative: ₹20,000, £176.10, Balanced&#x27;s NAV of £18.57 and the Nifty 50 index fund are made up, and £1 = ₹112.50 is the ECB reference rate of Friday 23 Oct, the one illustrative rate every MyPaisa board uses.</p>
+<h3>Where the designs are</h3>
+<table><thead><tr><th>Page</th><th>What</th></tr>
+</thead>
+<tbody><tr><td><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Currency+check+options.dc.html">Currency check options</a></td><td>This round: the three options side by side, then each option&#x27;s cards in Telegram light and dark</td></tr>
+<tr><td><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Currency+check.dc.html">Currency check</a></td><td>The six boards drawn ahead of the story on 24 Oct 2026 (MA-155), kept as the starting point (boards 1 to 3 and 6 now marked superseded; 4 and 5 marked picked, part of the spec with 1b)</td></tr>
+<tr><td><a href="https://claude.ai/artifact/GfNnLMaQ1WsyC2vypvCJGe">MA-156 design review</a></td><td>The review page (<code>board.html</code> here): the question, the three first cards, the comparison and every step with its notes</td></tr>
+</tbody>
+</table>
+<p>Both Claude Design files are in the MyPaisa app v1 project; the options file is mirrored at <code>docs/design/app-v1/Currency check options.dc.html</code> with its etag in <code>docs/design/claude-design.json</code>.</p>
+<p><strong>How it looks now.</strong> No app exists yet, so the current screens are the planned boards, captured from Claude Design into <code>current/</code> (<code>b0</code> the notes, <code>b1</code> to <code>b6</code> the six boards).</p>
+<h3>The options</h3>
+<table><thead><tr><th>Id</th><th>Name</th><th>In one line</th><th>Privacy and the rate</th></tr>
+</thead>
+<tbody><tr><td>1a</td><td>Four ways on</td><td>The planned flow: the bot stops, says why and asks how to record it, a button for each way (pounds that arrived, the ECB rate, a rupee holding, cancel); each way leads to its own Confirm card</td><td>Hide what is yours, keep what is public: a rate worked out from the member&#x27;s figures is hidden; the ECB rate stays with its date</td></tr>
+<tr><td>1b</td><td>Ask again, in pounds (recommended)</td><td>The correction is the guided flow&#x27;s amount question asked again in the holding&#x27;s currency, &quot;How many pounds arrived?&quot;; type them or send the screenshot, the ECB estimate is one tap with its figure on the button, a rupee holding is named, then Confirm</td><td>No amount and no rate on the card: only words, currencies and dates; Show amounts reveals one card</td></tr>
+<tr><td>1c</td><td>Correct inside Confirm</td><td>Straight to the Confirm card, the correction as its first line, the ECB estimate filled in, Recorded and You typed one under the other; Exact pounds, a rupee holding and Cancel as buttons</td><td>Tidy the message away: with privacy on the bot deletes the member&#x27;s message with the amount once read (a bot may delete incoming messages in its private chat within 48 hours) and says so; the rate stays</td></tr>
+</tbody>
+</table>
+<p><strong>Why 1b.</strong> It is one pattern, not a new card: the guided flow&#x27;s own &quot;How much, in pounds?&quot; (§9.2) asked again in the holding&#x27;s currency. The exact figure leads, the estimate is one tap with its figure in view before it is chosen, and Confirm stays a separate, deliberate tap. It works unchanged before the daily ECB rates load (MA-44): the estimate button is simply left out. Its privacy rule is one line to build and to test, and it holds when the card is seen without the member&#x27;s messages (a forwarded card, a screenshot of one card).</p>
+<p><strong>Trade-offs.</strong></p>
+<ul><li><strong>1a</strong> is the least to redraw and puts every way on a button, but adds a card and a tap, and its privacy rule depends on the reader knowing which rates are public: with the typed ₹20,000 in view, the public ECB rate gives the pounds away.</li>
+<li><strong>1b</strong> leaves typing the pounds as a way on without a button (the card says so), hides even the public ECB rate, and cannot hide what the member typed.</li>
+<li><strong>1c</strong> has the fewest taps and is the only option where nothing on screen gives the amount away, but the estimate is the default, so a reflex Confirm saves an estimate; before MA-44 it needs 1b&#x27;s question as a second design; and deleting a member&#x27;s messages is new behaviour in MyPaisa that reaches every device.</li>
+</ul>
+<p><strong>Shown for each option</strong> (Telegram light and dark): the correction card, the Confirm card with two currencies, and privacy on. 1b, the recommended one, also shows the ECB estimate, privacy on for the question and for Confirm, and technical mode with its fold open. No currency named (planned board 4) and a rupee holding instead (planned board 5) are the same in every option and stay as drawn. The picked option gets its remaining states before the build: the HTML fallback, a long holding name, two or more rupee holdings, the &quot;$&quot; that needs asking, pounds typed against a rupee holding (phase 13), and the screenshot path.</p>
+<p><strong>The product&#x27;s rules hold in all three.</strong> Nothing is saved before Confirm and the second check (MA-102). The converted figure and the implied rate are the engine&#x27;s, at the ECB rate with its date, and the copy says &quot;worked out by MyPaisa&#x27;s engine&quot;. No button buys or sells. The summary comes first. Telegram text carries no colour, so the words carry the correction.</p>
+<h3>The pick</h3>
+<ul><li>Pick: <strong>1b, Ask again, in pounds</strong>, as drawn, with its own privacy rule (no amount and no rate on the card).</li>
+<li>Date: 25 Oct 2026.</li>
+<li>In Arun&#x27;s words: asked &quot;Which option for MA-156&#x27;s currency correction should be built?&quot;, he chose &quot;1b Ask again, in pounds (Recommended)&quot;.</li>
+</ul>
+<p>Before the build, 1b gets its remaining states drawn: the HTML fallback, a long holding name, two or more rupee holdings, the &quot;$&quot; that needs asking, pounds typed against a rupee holding, the screenshot path; and, found in the review of PR #34, the ECB estimate&#x27;s Confirm card with privacy on, the question card before the daily rates load (no estimate button), privacy on for boards 4 and 5, the Technical details fold with privacy on, what Cancel leaves on screen, the answer to &quot;Which currency is Balanced in?&quot; and the audit row with both amounts. They are the trace row&#x27;s <code>undrawn</code> list, so <code>start MA-156</code> refuses until they are. The HTML fallback is to be drawn for 1b only, after the pick, rather than for every option. The Prototype&#x27;s currency chats are relinked to 1b with MA-160, also on the <code>undrawn</code> list. When one is drawn, its board goes on the row and the notes say <code>Drawn: &lt;the state&gt;</code>.</p>
+<p>The build waits for MA-24&#x27;s skeleton and MA-38&#x27;s typed transactions (phase 0 and 1). The estimate button joins when MA-44 loads the daily ECB rates (phase 2); until then it is left out and the question is the same.</p>
+<p>Boards 1 to 3 and 6 of <code>Currency check.dc.html</code> are the superseded starting point (their notes say so); its boards 4 and 5 stay part of the spec.</p>
+</div>
+<div data-type="extension-frame"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-102" data-card-appearance="inline"></a> · <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/reviews/MA-102/decision.md">the full record</a></p>
+<h2>MA-102: the Admin center, and a second check on Telegram sessions</h2>
+<h3>The request, in Arun&#x27;s words (24 Oct 2026)</h3>
+<blockquote><p>&quot;I should be able to invalidate any user/telegram session from Dashboard Admin center if needed (in case mobile or telegram session is hacked). Telegram session must be validated and secured somehow using some form of authentication.&quot;</p>
+<p>&quot;I will go with Concept design 1, make the update in Claude Design and then also make the new screens for Admin and Authentication of Telegram as discussed.&quot;</p>
+</blockquote>
+<p>Designed in MyPaisa DS v1, &quot;Warm ledger&quot;, the system picked on MA-101.</p>
+<h3>Where the designs are</h3>
+<table><thead><tr><th>Page</th><th>What</th></tr>
+</thead>
+<tbody><tr><td><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Admin+center.dc.html">Admin center</a></td><td>Two options for the page; the fresh check, pause and &quot;this browser&quot; flows; the Mini App&#x27;s More list</td></tr>
+<tr><td><a href="https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Telegram+second+check.dc.html">Telegram second check</a></td><td>Setup, the lock screen, the PIN, the check after Confirm, a new device, signed out and paused</td></tr>
+</tbody>
+</table>
+<p>Both are in the MyPaisa app v1 project. Every frame is drawn in light and dark.</p>
+<h3>The Admin center: two options</h3>
+<table><thead><tr><th>Id</th><th>Name</th><th>In one line</th></tr>
+</thead>
+<tbody><tr><td>A</td><td>People first (recommended)</td><td>Members as cards on the left; the chosen member&#x27;s live sessions and actions on the right, each action with its consequence; the security log under the members</td></tr>
+<tr><td>B</td><td>Sessions first</td><td>One table of every live session in the household, the unconfirmed one on top; an &quot;If a phone is lost&quot; panel of three steps; the log as a timeline</td></tr>
+</tbody>
+</table>
+<p><strong>Why A.</strong> Signing out everywhere, pausing and unlinking all act on a person, so the person comes first. A keeps B&#x27;s best idea, putting the unconfirmed device at the top of the member&#x27;s sessions. B is quicker to scan when a household has many sessions. A two-person household doesn&#x27;t.</p>
+<p>Both options are owner only and browser only. Neither opens from the Mini App: the More list shows &quot;Admin center · Owner only · opens in your browser&quot;. Every action needs a <strong>fresh check</strong> (a passkey, or Google again) that lasts 5 minutes. Destructive actions use the alert colour on its tint, never the coral primary. Your own browser is marked &quot;This browser&quot; and is signed out from the account menu, not from the list.</p>
+<h3>Decisions (Arun, 24 Oct 2026)</h3>
+<ol><li><strong>Pausing ends every session.</strong> Pausing a member&#x27;s Telegram account also signs them out everywhere: the Mini App, a browser signed in with Telegram, and a browser signed in with Google. The bot answers one line and the Mini App locks until the owner restores it. (Recommended was Telegram-based sessions only; Arun chose the safer rule.) A paused member cannot sign back in anywhere: signing in with Google shows the paused screen and no figures. Only the owner lifts a pause.</li>
+<li><strong>The owner can pause their own account, with a warning.</strong> After a fresh check and a warning that it signs out this browser too. Restoring it means signing in with Google or the passkey. For when the owner&#x27;s own phone or Telegram may be in someone else&#x27;s hands.</li>
+<li><strong>Alert becomes a truer red.</strong> <code>--mp-alert</code> moves from #B42318 to #B5123F (light, 6.7:1 on white) and from #FF7B6B to #FF6B8B (dark, 6.3:1 on the surface), with tints #FCE4EA and #3A1724. It is a crimson, kept apart from the coral accent, so a destructive action never looks like the primary one. <code>tokens.css</code> in <code>docs/design/reviews/MA-101/</code> and both Claude Design projects carry it, and every page&#x27;s hard-coded old red was replaced.</li>
+</ol>
+<h3>The pick</h3>
+<p><strong>A, People first.</strong> Arun, 24 Oct 2026, with the three decisions above. B stays on the page, marked &quot;Not picked&quot;. The build follows A once MA-32 and MA-74 to MA-77 are in.</p>
+<p>Before the build, the picked option still needs its remaining states (design-first): the owner&#x27;s Restore after signing back in, its log row, a failed fresh check, and a household with only the owner.</p>
+</div>
+<div data-type="extension-frame"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-103" data-card-appearance="inline"></a> · <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/reviews/MA-103/decision.md">the full record</a></p>
+<h2>MA-103: a new MyPaisa mark that animates once when the app opens</h2>
+<h3>The request, in Arun&#x27;s words (24 Oct 2026)</h3>
+<blockquote><p>&quot;I need you to create really good motion animated log of the app&quot;</p>
+</blockquote>
+<p>Read as <strong>logo</strong>. Today&#x27;s <code>docs/mark.svg</code> is the Nocturne-era violet mark (a pound coin with a market line breaking out of it, watched from an orbit). It no longer fits MyPaisa DS v1, &quot;Warm ledger&quot;, picked on MA-101.</p>
+<h3>Where the designs are</h3>
+<p><a href="https://claude.ai/design/p/2f7310cd-e56a-4d13-8339-8fc637249c9a?file=Logo.dc.html">Logo</a>, in the MyPaisa DS v1 project in Claude Design. Every option shows:</p>
+<ul><li>the mark from 512 to 16 px, in light and dark;</li>
+<li>the app icon and Telegram&#x27;s circle crop at 160, 64 and 32 px;</li>
+<li>horizontal and stacked lockups with a clear-space rule;</li>
+<li>the live intro with Replay, and a six-frame storyboard;</li>
+<li>the mark at work: the Mini App opening in Telegram, the sign-in page, the chat list, the chat header and a browser tab.</li>
+</ul>
+<p><code>logo-intros.mp4</code> and <code>logo-intros.gif</code> in this folder record the three intros side by side, light and dark.</p>
+<h3>The options</h3>
+<table><thead><tr><th>Id</th><th>Name</th><th>The idea</th><th>The motion</th></tr>
+</thead>
+<tbody><tr><td>1a</td><td>Stance line (recommended)</td><td>The navy coin is the hero card; the coral line every chart draws crosses it and ends in the ringed stance dot on the rim</td><td>The coin settles, the line draws left to right from the coin&#x27;s edge, the stance lands with one small overshoot; done by 1180 ms</td></tr>
+<tr><td>1b</td><td>Ruled pound</td><td>A drawn £ over a coral rule: the bookkeeper&#x27;s &quot;total, checked&quot;</td><td>The stem is written, the crossbar and foot rise, the rule is drawn last; done by 1160 ms</td></tr>
+<tr><td>1c</td><td>Watcher</td><td>Today&#x27;s coin and £ with a thin orbit, the old mark&#x27;s idea in the new colours</td><td>One coral dot travels two thirds of the orbit, slows, and rests at half past one; done by 1180 ms</td></tr>
+</tbody>
+</table>
+<p><strong>Why 1a.</strong> It is built only from what MyPaisa already shows, so the brand and the product say the same thing, and the intro is the product in one second: a line drawn calmly, then one view placed. It needs no £, so it stays right if the household ever holds more than sterling. 1c is the safe evolution of today&#x27;s coin, but its dot can read as an unread badge on an avatar. 1b is the sharpest at 16 px, but a bare £ beside the wordmark reads like a price, so its lockups need a tile.</p>
+<p>All three animate with transform, opacity and line drawing only, on the system&#x27;s easing (cubic-bezier(0.22, 1, 0.36, 1)). They play once, never loop, and show the final frame at once under Reduce Motion. 32 and 16 px use a separate small cut with heavier strokes and fewer parts.</p>
+<h3>The pick</h3>
+<p><strong>1c, Watcher.</strong> Arun, 24 Oct 2026: &quot;1c&quot;. Today&#x27;s coin and £, with a thin orbit and one coral dot that travels two thirds of it once and comes to rest at half past one: the agent keeping watch. 1a and 1b stay on the Logo page, marked &quot;Not picked&quot;.</p>
+<p>The pick replaces <code>docs/mark.svg</code> and its PNGs, and the coin in every Claude Design screen (the sidebar, the sign-in page, the bot&#x27;s avatar in Telegram&#x27;s chat list and header). The note against 1c, that its dot can read as an unread badge on a small round avatar, is checked again on the chat list once the new mark is in place.</p>
+</div>
+<div data-type="extension-frame"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-101" data-card-appearance="inline"></a> · <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/reviews/MA-101/decision.md">the full record</a></p>
+<h2>MA-101: a new MyPaisa design system, and the screens</h2>
+<h3>The request, in Arun&#x27;s words (23 Oct 2026)</h3>
+<blockquote><p>&quot;I need designs now for the dashboard and miniapp, a new design system based on Monzo app (https://monzo.com) and https://developer.apple.com/design/human-interface-guidelines. Based on the plan and research, come up with the best screen design prototype (light and dark mode) and also components that will come up on telegram app.&quot;</p>
+<p>&quot;The designs needs to be all done on claude design, including the design system and the screens.&quot;</p>
+<p>&quot;Make sure the designs are reviewed properly for any kind of glitches, this app will be adaptive and responsive.&quot;</p>
+</blockquote>
+<h3>Where the designs are</h3>
+<p>Claude Design is the home for these designs (Arun&#x27;s instruction). This folder keeps the record and the design system&#x27;s single source of truth, <code>tokens.css</code>, a copy of the one in both projects.</p>
+<table><thead><tr><th>Project</th><th>What</th><th>Link</th></tr>
+</thead>
+<tbody><tr><td>MyPaisa DS v1</td><td>The three directions side by side; Foundations; Components; the Telegram kit; <code>tokens.css</code></td><td>&lt;https://claude.ai/design/p/2f7310cd-e56a-4d13-8339-8fc637249c9a&gt;</td></tr>
+<tr><td>MyPaisa app v1</td><td>Mini App screens (light, dark); Browser pages; Responsive (390, 768, 1024, 1440); clickable Prototype with motion; Telegram chat journeys</td><td>&lt;https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7&gt;</td></tr>
+</tbody>
+</table>
+<h3>The options</h3>
+<table><thead><tr><th>Id</th><th>Name</th><th>In one line</th></tr>
+</thead>
+<tbody><tr><td>1a</td><td>Warm ledger (recommended)</td><td>Monzo&#x27;s warmth on Apple&#x27;s bones: a navy hero card, one coral accent, rounded figures, grouped inset lists, Apple&#x27;s type sizes and tab bar</td></tr>
+<tr><td>1b</td><td>Native clarity</td><td>Apple&#x27;s Wallet and Stocks: system colours, a large-title number, no hero card, blue as the only accent</td></tr>
+<tr><td>1c</td><td>Pot wall</td><td>Monzo turned up: a coral block, every holding a coloured pot tile</td></tr>
+</tbody>
+</table>
+<p><strong>Why 1a:</strong> the summary reads in one glance (one number, one line, one chart, then &quot;Nothing to do this week&quot;); falls are quiet ink with ▼ and red is kept for alerts that ask for action; it feels native inside Telegram on an iPhone; it carries enough MyPaisa character without copying Monzo. 1b reads like a settings screen and hides stances; 1c spends colour on decoration and sits closest to Monzo&#x27;s own look.</p>
+<h3>The pick</h3>
+<p><strong>1a, Warm ledger.</strong> Arun, 24 Oct 2026: &quot;I will go with Concept design 1, make the update in Claude Design and then also make the new screens for Admin and Authentication of Telegram as discussed.&quot;</p>
+<p>MyPaisa DS v1 is now the design system in force (<code>.claude/skills/design-first/SKILL.md</code>). The screens in the MyPaisa app v1 project are the web app&#x27;s spec; the Nocturne artboards in <code>docs/design/dashboard/</code> are superseded (<code>docs/design/README.md</code>). 1b and 1c stay on the directions page as the record. The Admin center and the Telegram sign-in screens are designed in this system under MA-102.</p>
+<p>Screenshots of the three directions as they were when picked: <code>options/</code>.</p>
+</div>
+</div>
+<hr><p style="font-size: 14px"><em>Generated from the repo by scripts/confluence_docs.py (MA-228) from docs/trace.json, PLAN.md, docs/roadmap.json, the design decision records and the Claude Design mirror. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

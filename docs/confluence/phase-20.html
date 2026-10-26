@@ -1,0 +1,42 @@
+<div data-type="panel-custom" data-icon=":chart_with_upwards_trend:" data-color="#DEEBFF"><p><strong>📱 The market side</strong> · epic <a href="https://duttaarun2015.atlassian.net/browse/MA-175" data-card-appearance="inline"></a> · <span data-type="status" data-color="neutral">Not started</span> · <time datetime="2028-04-18">Tue 18 Apr 2028</time> to <time datetime="2028-04-27">Thu 27 Apr 2028</time></p>
+<p>10 build days, 8 working days · 4 stories, 4 with screens</p>
+</div>
+<div data-type="panel-success"><p><strong>Exit demo.</strong> the widget on your Lock Screen shows the household&#x27;s day without opening the app, and hides it when privacy mode is on.</p>
+</div>
+<div data-type="multi-bodied-extension" data-extension-key="native-tabs" data-extension-type="com.atlassian.confluence.native" data-parameters='{&quot;tabs&quot;: [{&quot;id&quot;: &quot;tab1&quot;, &quot;title&quot;: &quot;Stories&quot;}, {&quot;id&quot;: &quot;tab2&quot;, &quot;title&quot;: &quot;Screens&quot;}, {&quot;id&quot;: &quot;tab3&quot;, &quot;title&quot;: &quot;At every door&quot;}, {&quot;id&quot;: &quot;tab4&quot;, &quot;title&quot;: &quot;The plan&quot;}, {&quot;id&quot;: &quot;tab5&quot;, &quot;title&quot;: &quot;Architecture&quot;}, {&quot;id&quot;: &quot;tab6&quot;, &quot;title&quot;: &quot;Live in Jira&quot;}]}'><div data-type="extension-frame"><table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
+</thead>
+<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-176" data-card-appearance="inline"></a></td><td>A Home Screen and Lock Screen widget shows the household&#x27;s total and the day&#x27;s move, hidden in privacy mode</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§9</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-177" data-card-appearance="inline"></a></td><td>A factsheet or screenshot shared from Mail, Files or Photos goes to MyPaisa through the share sheet</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§4.2, §9</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-178" data-card-appearance="inline"></a></td><td>Siri and Shortcuts answer &quot;How is the portfolio today?&quot; and start a guided flow through App Intents</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§9</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-179" data-card-appearance="inline"></a></td><td>A Live Activity follows a long job, such as an import, on the Lock Screen and in the Dynamic Island</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§9, §18.5</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="extension-frame"><p>This phase has no screens.</p>
+</div>
+<div data-type="extension-frame"><table><thead><tr><th>Where</th><th>Stories</th></tr>
+</thead>
+<tbody><tr><td>Back end, agent and infrastructure (no screen)</td><td><a href="https://duttaarun2015.atlassian.net/browse/MA-176">MA-176</a>, <a href="https://duttaarun2015.atlassian.net/browse/MA-177">MA-177</a>, <a href="https://duttaarun2015.atlassian.net/browse/MA-178">MA-178</a>, <a href="https://duttaarun2015.atlassian.net/browse/MA-179">MA-179</a></td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="extension-frame"><p>MyPaisa reaches the household outside the app where iOS allows it (MA-175). Each story is designed first; privacy mode holds everywhere.</p>
+<ul><li><strong>A widget (MA-176):</strong> the household&#x27;s total and the day&#x27;s move on the Home Screen and the Lock Screen, from the last fetch with its time; privacy mode shows the mark and &quot;Hidden&quot;.</li>
+<li><strong>The share sheet (MA-177):</strong> a factsheet or a screenshot shared from Mail, Files or Photos goes to MyPaisa and opens the chat on the reading card; nothing is saved before Confirm.</li>
+<li><strong>Siri and Shortcuts (MA-178):</strong> &quot;How is the portfolio today?&quot; answered with the total and the day&#x27;s move; &quot;Log money into MyPaisa&quot; opens the guided flow; never a write without Confirm in the app.</li>
+<li><strong>A Live Activity (MA-179):</strong> an import (MA-111, MA-152) followed on the Lock Screen and in the Dynamic Island, with no amounts.</li>
+</ul>
+<p><strong>Tests:</strong> each widget, intent and the share extension from fixtures, in light, dark, tinted and clear, with privacy on; the extension signs in through the shared Keychain group and refuses when signed out.</p>
+<p><strong>Exit:</strong> the widget on your Lock Screen shows the household&#x27;s day without opening the app, and hides it when privacy mode is on.</p>
+<p><strong>Cost:</strong> £0.</p>
+</div>
+<div data-type="extension-frame"><ul><li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#42-adding-a-holding-from-the-chat">§4.2</a> Adding a holding, from the chat</li>
+<li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#9-the-ios-app">§9</a> The iOS app</li>
+<li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#185-hydrating-prod-the-excel-importer">§18.5</a> Hydrating prod: the Excel importer</li>
+</ul>
+</div>
+<div data-type="extension-frame"><div data-type="extension" data-extension-key="jira" data-extension-type="com.atlassian.confluence.macro.core" data-layout="wide" data-parameters='{&quot;macroParams&quot;: {&quot;jqlQuery&quot;: {&quot;value&quot;: &quot;parent = MA-175 ORDER BY key&quot;}, &quot;showSummary&quot;: {&quot;value&quot;: &quot;true&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Jira&quot;}}'></div>
+<p><a href="https://duttaarun2015.atlassian.net/issues/?jql=parent%20%3D%20MA-175%20ORDER%20BY%20key">Open the epic in Jira</a></p>
+</div>
+</div>
+<hr><p style="font-size: 14px"><em>Generated from the repo by scripts/confluence_docs.py (MA-228) from docs/trace.json, PLAN.md, docs/roadmap.json, the design decision records and the Claude Design mirror. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

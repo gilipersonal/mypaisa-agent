@@ -2301,7 +2301,11 @@
      "board": "I3 · Portfolio summary tile"
     }
    ],
-   "notes": "Warm ledger (1a) picked by Arun on 24 Oct 2026; 1b Native clarity and 1c Pot wall stay on the directions page as the record. The app screens drawn in it are traced to the stories that build them (MA-34, MA-55, MA-70, MA-71, MA-78, MA-79)."
+   "notes": "Warm ledger (1a) picked by Arun on 24 Oct 2026; 1b Native clarity and 1c Pot wall stay on the directions page as the record. The app screens drawn in it are traced to the stories that build them (MA-34, MA-55, MA-70, MA-71, MA-78, MA-79).",
+   "code": [
+    "docs/design/reviews/MA-101/tokens.css",
+    "docs/design/ds-v1/tokens.css"
+   ]
   },
   {
    "key": "MA-102",
@@ -2415,7 +2419,12 @@
      "board": "1c Telegram avatar"
     }
    ],
-   "notes": "Picked 1c Watcher (Arun, 24 Oct 2026); 1a Stance line and 1b Ruled pound stay as the record."
+   "notes": "Picked 1c Watcher (Arun, 24 Oct 2026); 1a Stance line and 1b Ruled pound stay as the record.",
+   "code": [
+    "docs/mark.svg",
+    "docs/mark-animated.svg",
+    "docs/mark-icon.svg"
+   ]
   },
   {
    "key": "MA-104",
@@ -4512,7 +4521,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "Design the whole-wealth screens at every door, with a clickable prototype Arun walks through before anything is built",
-   "status": "To Do",
+   "status": "Done",
    "labels": [
     "design"
    ],
@@ -4629,7 +4638,12 @@
      "board": "iPhone · Projection, decades"
     }
    ],
-   "notes": "The design round itself (MA-186): the option boards are listed here; each story lists its own boards. The decision record is docs/design/reviews/MA-193/decision.md. Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. The options not picked stay listed here as the record."
+   "notes": "The design round itself (MA-186): the option boards are listed here; each story lists its own boards. The decision record is docs/design/reviews/MA-193/decision.md. Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. The options not picked stay listed here as the record.",
+   "code": [
+    "docs/design/figures/",
+    "docs/design/reviews/MA-193/decision.md",
+    "docs/design/app-v1/Prototype v4.dc.html"
+   ]
   },
   {
    "key": "MA-194",
@@ -5978,7 +5992,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "Re-plan: the household's whole wealth comes first, at every door, in clean renumbered phases",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "16"
@@ -5994,7 +6008,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The Lucid architecture pages show SSE on the api host, the dashboard host, the web chat and the dynamic structure",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "3",
@@ -6012,7 +6026,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The explainer pages walk the v4 flows: registering anything, check-ins, statements, in-place correction and the Projection",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "4.8",
@@ -6031,7 +6045,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The v4 boards still to draw are drawn: Budget and Assets and Debts on iPad, the check-in cards in the web chat, and the new-kind card's second check",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "4.5",
@@ -6042,6 +6056,30 @@
    "design": "none",
    "boards": [],
    "notes": "Filed on 26 Oct 2026 from MA-193's follow-ups; it draws the undrawn items of MA-96, MA-205, MA-214 and MA-217 and settles MA-197's question on the board."
+  },
+  {
+   "key": "MA-228",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "16"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "code": [
+    "scripts/roadmap.py",
+    "scripts/confluence_docs.py",
+    "scripts/confluence_images.py",
+    "docs/roadmap.json",
+    "docs/confluence.json",
+    "docs/confluence/"
+   ],
+   "notes": "Arun, 26 Oct 2026: detailed documentation in Confluence phase by phase and screen by screen, with the boards, the artifacts and the design choices linked, a roadmap with estimates and dates, colourful and interactive, and a repo-only check that Confluence, Jira, the designs and the code do not drift; a new design or feature gets its Jira issue and its Confluence page in the same change."
   }
  ],
  "others": [
