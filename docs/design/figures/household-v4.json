@@ -1,0 +1,1426 @@
+{
+ "about": "Illustrative household for the v4 boards and prototype (MA-186). Every name and figure is illustrative.",
+ "clock": {
+  "today": "2026-10-26",
+  "today_label": "Mon 26 Oct",
+  "prices_as_of": "2026-10-23",
+  "prices_label": "Fri 23 Oct close",
+  "fx": {
+   "gbp_inr": 112.5,
+   "source": "ECB reference cross-rate, Fri 23 Oct"
+  }
+ },
+ "members": [
+  {
+   "id": "arun",
+   "name": "Arun",
+   "role": "owner",
+   "admin": true,
+   "born": 1991,
+   "retire_at": 60,
+   "salary_net_month_gbp": {
+    "2022": 3600,
+    "2023": 3850,
+    "2024": 4100,
+    "2025": 4350,
+    "2026": 4350
+   },
+   "salary_growth_measured": 0.0484
+  },
+  {
+   "id": "asha",
+   "name": "Asha",
+   "role": "member",
+   "admin": false,
+   "born": 1993,
+   "retire_at": 60,
+   "salary_net_month_gbp": {
+    "2023": 2750,
+    "2024": 2900,
+    "2025": 3050,
+    "2026": 3050
+   },
+   "salary_growth_measured": 0.0351
+  }
+ ],
+ "assets": [
+  {
+   "id": "balanced",
+   "kind": "oeic",
+   "name": "Balanced (BlackRock MyMap 5)",
+   "account": "ISA · Monzo",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "value": 22925,
+   "liquidity": "liquid"
+  },
+  {
+   "id": "nasdaq",
+   "kind": "etf",
+   "name": "NASDAQ 100 ETF",
+   "account": "ISA",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "asha",
+     100
+    ]
+   ],
+   "value": 512,
+   "liquidity": "liquid"
+  },
+  {
+   "id": "robotics",
+   "kind": "etf",
+   "name": "Robotics ETF",
+   "account": "GIA",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "value": 304,
+   "liquidity": "liquid"
+  },
+  {
+   "id": "silver",
+   "kind": "commodity_etc",
+   "name": "Silver ETC",
+   "account": "GIA",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "value": 188,
+   "liquidity": "liquid"
+  },
+  {
+   "id": "pot",
+   "kind": "cash",
+   "name": "Monzo pot",
+   "account": "Cash · Monzo",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     50
+    ],
+    [
+     "asha",
+     50
+    ]
+   ],
+   "value": 181,
+   "liquidity": "liquid"
+  },
+  {
+   "id": "home",
+   "kind": "property",
+   "name": "Home, Reading",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     50
+    ],
+    [
+     "asha",
+     50
+    ]
+   ],
+   "value": 415000,
+   "valued": "2026-04-30",
+   "valuation_due": "2026-10-30",
+   "bought": [
+    "2021-06-18",
+    330000
+   ],
+   "liquidity": "locked"
+  },
+  {
+   "id": "saver",
+   "kind": "fixed_saver",
+   "name": "Fixed-rate saver · Nationwide",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "asha",
+     100
+    ]
+   ],
+   "value": 10000,
+   "rate": 0.046,
+   "opened": "2025-12-14",
+   "matures": "2026-12-14",
+   "at_maturity": 10460,
+   "on_maturity": "ask",
+   "liquidity": "locked until 14 Dec 2026"
+  },
+  {
+   "id": "pension_arun",
+   "kind": "workplace_pension",
+   "name": "Workplace pension · Aviva",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "value": 86400,
+   "valued": "2026-09-30",
+   "unlocks_at": 57,
+   "liquidity": "locked until 57"
+  },
+  {
+   "id": "sipp_asha",
+   "kind": "sipp",
+   "name": "SIPP · Vanguard",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "asha",
+     100
+    ]
+   ],
+   "value": 31250,
+   "valued": "2026-09-30",
+   "unlocks_at": 57,
+   "liquidity": "locked until 57"
+  },
+  {
+   "id": "pune",
+   "kind": "property",
+   "name": "Flat, Pune",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "arun",
+     50
+    ],
+    [
+     "asha",
+     50
+    ]
+   ],
+   "value": 11000000,
+   "valued": "2026-01-15",
+   "valuation_due": "2026-07-15",
+   "bought": [
+    "2015-07-01",
+    6500000
+   ],
+   "rent_month": 18000,
+   "liquidity": "locked"
+  },
+  {
+   "id": "sbi_fd",
+   "kind": "fixed_deposit",
+   "name": "Fixed deposit · SBI",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "principal": 500000,
+   "value": 517908,
+   "rate": 0.071,
+   "compounding": "quarterly",
+   "opened": "2026-03-10",
+   "matures": "2029-03-10",
+   "at_maturity": 617538,
+   "on_maturity": "ask",
+   "liquidity": "locked until 10 Mar 2029"
+  },
+  {
+   "id": "ppf",
+   "kind": "ppf",
+   "name": "PPF · SBI",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "value": 680000,
+   "rate": 0.071,
+   "credited": "2026-03-31",
+   "matures": "2031-03-31",
+   "liquidity": "locked until 31 Mar 2031"
+  },
+  {
+   "id": "lic",
+   "kind": "endowment",
+   "name": "LIC Jeevan Anand",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "asha",
+     100
+    ]
+   ],
+   "value": 340000,
+   "value_note": "surrender value",
+   "premium_year": 42000,
+   "premium_due": "2027-03-28",
+   "matures": "2031-03-28",
+   "sum_assured": 1000000,
+   "liquidity": "locked until 28 Mar 2031"
+  },
+  {
+   "id": "ppfas",
+   "kind": "mutual_fund",
+   "name": "Parag Parikh Flexi Cap · Direct Growth",
+   "account": "MF folio · CAMS",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "asha",
+     100
+    ]
+   ],
+   "units": 6437.512,
+   "nav": 87.3,
+   "value": 561995,
+   "sip": [
+    10000,
+    10
+   ],
+   "invested": 460000,
+   "xirr": 0.1069,
+   "liquidity": "liquid"
+  },
+  {
+   "id": "infosys",
+   "kind": "share",
+   "name": "Infosys",
+   "account": "Demat · Zerodha",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "units": 120,
+   "price": 1480.5,
+   "value": 177660,
+   "xirr": null,
+   "xirr_note": "no history yet: the agent asks for past buys or an estimate",
+   "liquidity": "liquid"
+  },
+  {
+   "id": "nre",
+   "kind": "savings_account",
+   "name": "NRE savings · HDFC",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "value": 215000,
+   "liquidity": "liquid"
+  }
+ ],
+ "debts": [
+  {
+   "id": "mortgage",
+   "kind": "mortgage",
+   "name": "Mortgage · Nationwide",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     50
+    ],
+    [
+     "asha",
+     50
+    ]
+   ],
+   "principal": 265000,
+   "rate": 0.0439,
+   "rate_note": "fixed to 30 Jun 2028, then the lender's variable rate",
+   "term_months": 300,
+   "first_payment": "2021-07-01",
+   "payment_day": 1,
+   "payment": 1456.46,
+   "overpaid": [
+    [
+     "2024-03-01",
+     5000,
+     "shortens the term"
+    ]
+   ],
+   "balance": 224353.48,
+   "balance_after": "2026-10-01",
+   "payments_made": 64,
+   "ends": "2045-10-01",
+   "autopay": true
+  },
+  {
+   "id": "car",
+   "kind": "car_loan",
+   "name": "Car loan · Close Brothers",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "principal": 14500,
+   "rate": 0.069,
+   "term_months": 48,
+   "first_payment": "2025-03-20",
+   "payment_day": 20,
+   "payment": 346.55,
+   "balance": 8938.81,
+   "balance_after": "2026-10-20",
+   "payments_made": 20,
+   "ends": "2029-02-20",
+   "autopay": true
+  },
+  {
+   "id": "hdfc",
+   "kind": "home_loan",
+   "name": "Home loan · HDFC (Pune flat)",
+   "country": "IN",
+   "ccy": "INR",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "principal": 4000000,
+   "rate": 0.085,
+   "term_months": 180,
+   "first_payment": "2015-08-05",
+   "payment_day": 5,
+   "payment": 39389.58,
+   "balance": 1513257.4,
+   "balance_after": "2026-10-05",
+   "payments_made": 135,
+   "ends": "2030-08-05",
+   "autopay": false,
+   "linked": "pune"
+  },
+  {
+   "id": "card",
+   "kind": "credit_card",
+   "name": "Barclaycard",
+   "country": "UK",
+   "ccy": "GBP",
+   "owners": [
+    [
+     "arun",
+     100
+    ]
+   ],
+   "statement": {
+    "date": "2026-10-01",
+    "balance": 1240.0,
+    "minimum": 25.0,
+    "due": "2026-10-20",
+    "paid": "in full"
+   },
+   "next_statement": {
+    "date": "2026-11-01",
+    "due": "2026-11-20"
+   },
+   "balance": 0.0,
+   "balance_note": "the 1 Oct statement's £1,240 was paid in full on Tue 20 Oct; the next statement comes on Sun 1 Nov",
+   "autopay": false
+  }
+ ],
+ "new_record_in_prototype": {
+  "id": "monzo_savings",
+  "kind": "savings_account",
+  "name": "Instant access savings · Monzo",
+  "country": "UK",
+  "ccy": "GBP",
+  "owners": [
+   [
+    "arun",
+    100
+   ]
+  ],
+  "value": 5000,
+  "liquidity": "liquid",
+  "registered": "2026-10-26T09:41"
+ },
+ "totals_before_new_record": {
+  "own_gbp": 686694,
+  "owe_gbp": 246743,
+  "net_gbp": 439951,
+  "net_inr": 49494488,
+  "by_country_gbp": {
+   "UK": 333468,
+   "IN": 106483
+  },
+  "by_member_gbp": {
+   "arun": 245868,
+   "asha": 194083
+  },
+  "liquid_gbp": 32596
+ },
+ "totals_after_new_record": {
+  "own_gbp": 691694,
+  "owe_gbp": 246743,
+  "net_gbp": 444951,
+  "net_inr": 50056988,
+  "by_country_gbp": {
+   "UK": 338468,
+   "IN": 106483
+  },
+  "by_member_gbp": {
+   "arun": 250868,
+   "asha": 194083
+  },
+  "liquid_gbp": 37596
+ },
+ "budget_oct": {
+  "month": "2026-10",
+  "income_gbp": 7560,
+  "emis_gbp": 2153,
+  "sip_gbp": 89,
+  "plan": [
+   {
+    "category": "Bills and council tax",
+    "plan": 420,
+    "actual": 431
+   },
+   {
+    "category": "Groceries",
+    "plan": 650,
+    "actual": 702
+   },
+   {
+    "category": "Transport",
+    "plan": 220,
+    "actual": 198
+   },
+   {
+    "category": "Insurance",
+    "plan": 85,
+    "actual": 85
+   },
+   {
+    "category": "Eating out",
+    "plan": 180,
+    "actual": 236
+   },
+   {
+    "category": "Shopping",
+    "plan": 250,
+    "actual": 189
+   },
+   {
+    "category": "Holidays",
+    "plan": 400,
+    "actual": 0
+   },
+   {
+    "category": "Health",
+    "plan": 60,
+    "actual": 24
+   },
+   {
+    "category": "Subscriptions",
+    "plan": 45,
+    "actual": 45
+   },
+   {
+    "category": "Giving",
+    "plan": 50,
+    "actual": 50
+   },
+   {
+    "category": "Family support, India",
+    "plan": 222,
+    "actual": 222
+   },
+   {
+    "category": "Other",
+    "plan": 100,
+    "actual": 64
+   }
+  ],
+  "spend_plan": 2682,
+  "spend_actual": 2246,
+  "surplus_plan": 2636,
+  "surplus_actual": 3072,
+  "savings_rate_actual": 0.406
+ },
+ "statements_oct": {
+  "barclaycard_nov": {
+   "statement": "2026-11-01",
+   "due": "2026-11-20",
+   "balance": 1458,
+   "minimum": 25,
+   "lines": [
+    {
+     "date": "2026-10-03",
+     "merchant": "Netflix",
+     "amount_gbp": 41,
+     "category": "Subscriptions",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-06",
+     "merchant": "Pret",
+     "amount_gbp": 188,
+     "category": "Eating out",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-07",
+     "merchant": "Sainsbury's",
+     "amount_gbp": 58,
+     "category": "Groceries",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-08",
+     "merchant": "Tesco",
+     "amount_gbp": 463,
+     "category": "Groceries",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-11",
+     "merchant": "Pizza Express",
+     "amount_gbp": 23,
+     "category": "Eating out",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-16",
+     "merchant": "Dishoom",
+     "amount_gbp": 25,
+     "category": "Eating out",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-18",
+     "merchant": "Lidl",
+     "amount_gbp": 100,
+     "category": "Groceries",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-19",
+     "merchant": "John Lewis",
+     "amount_gbp": 24,
+     "category": "Shopping",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-21",
+     "merchant": "GWR",
+     "amount_gbp": 76,
+     "category": "Transport",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-21",
+     "merchant": "Spotify",
+     "amount_gbp": 4,
+     "category": "Subscriptions",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-21",
+     "merchant": "Post Office",
+     "amount_gbp": 22,
+     "category": "Other",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-22",
+     "merchant": "Shell",
+     "amount_gbp": 122,
+     "category": "Transport",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-25",
+     "merchant": "PAYPAL *EBAY",
+     "amount_gbp": 42,
+     "category": "Other",
+     "source": "card",
+     "sure": false
+    },
+    {
+     "date": "2026-10-27",
+     "merchant": "Waitrose",
+     "amount_gbp": 81,
+     "category": "Groceries",
+     "source": "card",
+     "sure": true
+    },
+    {
+     "date": "2026-10-27",
+     "merchant": "AMZN Mktp",
+     "amount_gbp": 165,
+     "category": "Shopping",
+     "source": "card",
+     "sure": false
+    },
+    {
+     "date": "2026-10-30",
+     "merchant": "Boots",
+     "amount_gbp": 24,
+     "category": "Health",
+     "source": "card",
+     "sure": true
+    }
+   ]
+  },
+  "monzo_current_oct": {
+   "period": "2026-10",
+   "spend_lines": [
+    {
+     "date": "2026-10-14",
+     "merchant": "Oxfam",
+     "amount_gbp": 50,
+     "category": "Giving",
+     "source": "monzo",
+     "sure": true
+    },
+    {
+     "date": "2026-10-16",
+     "merchant": "Thames Water",
+     "amount_gbp": 144,
+     "category": "Bills and council tax",
+     "source": "monzo",
+     "sure": true
+    },
+    {
+     "date": "2026-10-16",
+     "merchant": "Wise · to Pune",
+     "amount_gbp": 222,
+     "category": "Family support, India",
+     "source": "monzo",
+     "sure": true
+    },
+    {
+     "date": "2026-10-26",
+     "merchant": "Octopus Energy",
+     "amount_gbp": 55,
+     "category": "Bills and council tax",
+     "source": "monzo",
+     "sure": true
+    },
+    {
+     "date": "2026-10-27",
+     "merchant": "Aviva home insurance",
+     "amount_gbp": 85,
+     "category": "Insurance",
+     "source": "monzo",
+     "sure": true
+    },
+    {
+     "date": "2026-10-29",
+     "merchant": "Reading Borough Council",
+     "amount_gbp": 232,
+     "category": "Bills and council tax",
+     "source": "monzo",
+     "sure": true
+    }
+   ],
+   "spend": 788,
+   "recognised": [
+    {
+     "date": "2026-10-01",
+     "what": "Mortgage · Nationwide",
+     "amount_gbp": 1456.46,
+     "as": "EMI, matched to its commitment"
+    },
+    {
+     "date": "2026-10-20",
+     "what": "Car loan · Close Brothers",
+     "amount_gbp": 346.55,
+     "as": "EMI, matched to its commitment"
+    },
+    {
+     "date": "2026-10-20",
+     "what": "Barclaycard payment",
+     "amount_gbp": 1240.0,
+     "as": "card payment: a transfer, not spending"
+    },
+    {
+     "date": "2026-10-28",
+     "what": "Salary · Arun",
+     "amount_gbp": 4350,
+     "as": "income"
+    },
+    {
+     "date": "2026-10-26",
+     "what": "To Instant access savings · Monzo",
+     "amount_gbp": 5000,
+     "as": "a move between your own accounts"
+    }
+   ]
+  }
+ },
+ "what_if": {
+  "asked": "What if we put £60,000 down on a second flat in June 2028?",
+  "override": {
+   "what": "Second flat deposit",
+   "ccy": "GBP",
+   "amount": -60000,
+   "when": "2028-06",
+   "repeat": null
+  },
+  "fan": [
+   {
+    "year": 2027,
+    "p10": 439000,
+    "p50": 486000,
+    "p90": 532000,
+    "deterministic": 487000
+   },
+   {
+    "year": 2028,
+    "p10": 429000,
+    "p50": 508000,
+    "p90": 583000,
+    "deterministic": 505000
+   },
+   {
+    "year": 2029,
+    "p10": 493000,
+    "p50": 585000,
+    "p90": 675000,
+    "deterministic": 584000
+   },
+   {
+    "year": 2030,
+    "p10": 562000,
+    "p50": 662000,
+    "p90": 769000,
+    "deterministic": 667000
+   },
+   {
+    "year": 2031,
+    "p10": 621000,
+    "p50": 725000,
+    "p90": 848000,
+    "deterministic": 730000
+   },
+   {
+    "year": 2032,
+    "p10": 685000,
+    "p50": 819000,
+    "p90": 971000,
+    "deterministic": 820000
+   },
+   {
+    "year": 2033,
+    "p10": 744000,
+    "p50": 906000,
+    "p90": 1092000,
+    "deterministic": 916000
+   },
+   {
+    "year": 2034,
+    "p10": 816000,
+    "p50": 1018000,
+    "p90": 1222000,
+    "deterministic": 1016000
+   },
+   {
+    "year": 2035,
+    "p10": 901000,
+    "p50": 1115000,
+    "p90": 1349000,
+    "deterministic": 1121000
+   },
+   {
+    "year": 2036,
+    "p10": 987000,
+    "p50": 1215000,
+    "p90": 1491000,
+    "deterministic": 1232000
+   },
+   {
+    "year": 2037,
+    "p10": 1069000,
+    "p50": 1326000,
+    "p90": 1687000,
+    "deterministic": 1349000
+   },
+   {
+    "year": 2038,
+    "p10": 1151000,
+    "p50": 1465000,
+    "p90": 1867000,
+    "deterministic": 1472000
+   },
+   {
+    "year": 2039,
+    "p10": 1231000,
+    "p50": 1594000,
+    "p90": 2033000,
+    "deterministic": 1602000
+   },
+   {
+    "year": 2040,
+    "p10": 1325000,
+    "p50": 1725000,
+    "p90": 2229000,
+    "deterministic": 1738000
+   },
+   {
+    "year": 2041,
+    "p10": 1421000,
+    "p50": 1846000,
+    "p90": 2438000,
+    "deterministic": 1882000
+   },
+   {
+    "year": 2042,
+    "p10": 1518000,
+    "p50": 1979000,
+    "p90": 2654000,
+    "deterministic": 2025000
+   },
+   {
+    "year": 2043,
+    "p10": 1592000,
+    "p50": 2129000,
+    "p90": 2892000,
+    "deterministic": 2169000
+   },
+   {
+    "year": 2044,
+    "p10": 1695000,
+    "p50": 2261000,
+    "p90": 3104000,
+    "deterministic": 2321000
+   },
+   {
+    "year": 2045,
+    "p10": 1741000,
+    "p50": 2473000,
+    "p90": 3302000,
+    "deterministic": 2483000
+   },
+   {
+    "year": 2046,
+    "p10": 1914000,
+    "p50": 2589000,
+    "p90": 3587000,
+    "deterministic": 2655000
+   },
+   {
+    "year": 2047,
+    "p10": 2014000,
+    "p50": 2793000,
+    "p90": 3807000,
+    "deterministic": 2836000
+   },
+   {
+    "year": 2048,
+    "p10": 2161000,
+    "p50": 2988000,
+    "p90": 4064000,
+    "deterministic": 3029000
+   },
+   {
+    "year": 2049,
+    "p10": 2227000,
+    "p50": 3134000,
+    "p90": 4376000,
+    "deterministic": 3233000
+   },
+   {
+    "year": 2050,
+    "p10": 2401000,
+    "p50": 3314000,
+    "p90": 4806000,
+    "deterministic": 3450000
+   },
+   {
+    "year": 2051,
+    "p10": 2566000,
+    "p50": 3532000,
+    "p90": 5109000,
+    "deterministic": 3679000
+   },
+   {
+    "year": 2052,
+    "p10": 2540000,
+    "p50": 3688000,
+    "p90": 5430000,
+    "deterministic": 3853000
+   },
+   {
+    "year": 2053,
+    "p10": 2651000,
+    "p50": 3877000,
+    "p90": 5713000,
+    "deterministic": 4033000
+   },
+   {
+    "year": 2054,
+    "p10": 2777000,
+    "p50": 4027000,
+    "p90": 6030000,
+    "deterministic": 4222000
+   },
+   {
+    "year": 2055,
+    "p10": 2813000,
+    "p50": 4159000,
+    "p90": 6349000,
+    "deterministic": 4420000
+   },
+   {
+    "year": 2056,
+    "p10": 3004000,
+    "p50": 4384000,
+    "p90": 6672000,
+    "deterministic": 4627000
+   }
+  ],
+  "delta_p50_2036": -83000
+ },
+ "check_ins": [
+  {
+   "when": "2026-10-26T09:00",
+   "what": "Valuation due: Home, Reading",
+   "record": "home",
+   "asks": "Is £415,000 still about right?"
+  },
+  {
+   "when": "2026-11-01T09:00",
+   "what": "Close October's budget",
+   "asks": "Anything not on a statement?"
+  },
+  {
+   "when": "2026-11-05T09:00",
+   "what": "HDFC home loan EMI",
+   "record": "hdfc",
+   "amount": "₹39,390",
+   "asks": "Was November's EMI paid?"
+  },
+  {
+   "when": "2026-11-10T09:00",
+   "what": "Parag Parikh SIP",
+   "record": "ppfas",
+   "amount": "₹10,000",
+   "asks": "Did November's SIP go through?"
+  },
+  {
+   "when": "2026-11-20T09:00",
+   "what": "Barclaycard bill",
+   "record": "card",
+   "asks": "Paid in full, the minimum, or part?"
+  },
+  {
+   "when": "2026-12-14T09:00",
+   "what": "Fixed-rate saver matures",
+   "record": "saver",
+   "amount": "£10,460",
+   "asks": "Renewed, paid out or moved?"
+  }
+ ],
+ "autopay_digest_week": {
+  "week_of": "2026-10-19",
+  "assumed_paid": [
+   [
+    "Mortgage · Nationwide",
+    "£1,456",
+    "1 Oct"
+   ],
+   [
+    "Car loan · Close Brothers",
+    "£347",
+    "20 Oct"
+   ]
+  ]
+ },
+ "projection": {
+  "start_net_gbp": 444951,
+  "horizon_years": 30,
+  "assumptions": {
+   "equity_in (Parag Parikh)": 0.0906,
+   "equity_uk (Balanced and ETFs)": 0.06,
+   "property_uk": 0.03,
+   "property_in": 0.05,
+   "fixed deposit (contract)": 0.071,
+   "PPF (contract)": 0.071,
+   "salary growth Arun": 0.0417,
+   "salary growth Asha": 0.035
+  },
+  "inflation": {
+   "UK": 0.025,
+   "IN": 0.05
+  },
+  "priors": {
+   "equity_uk": {
+    "return": 0.06,
+    "volatility": 0.16
+   },
+   "equity_in": {
+    "return": 0.09,
+    "volatility": 0.2
+   },
+   "bond": {
+    "return": 0.035,
+    "volatility": 0.06
+   },
+   "property_uk": {
+    "return": 0.03,
+    "volatility": 0.08
+   },
+   "property_in": {
+    "return": 0.05,
+    "volatility": 0.1
+   },
+   "cash": {
+    "return": 0.03,
+    "volatility": 0.01
+   }
+  },
+  "plan_items": [
+   {
+    "id": "extension",
+    "what": "Home extension",
+    "ccy": "GBP",
+    "amount": -35000,
+    "when": "2027-06",
+    "repeat": null
+   },
+   {
+    "id": "bonus",
+    "what": "Asha's annual bonus",
+    "ccy": "GBP",
+    "amount": 3000,
+    "when": "2027-03",
+    "repeat": "yearly",
+    "until": "2052-03"
+   },
+   {
+    "id": "car2",
+    "what": "Replace the car",
+    "ccy": "GBP",
+    "amount": -25000,
+    "when": "2031-06",
+    "repeat": null
+   }
+  ],
+  "fan": [
+   {
+    "year": 2027,
+    "p10": 439000,
+    "p50": 486000,
+    "p90": 532000,
+    "deterministic": 487000
+   },
+   {
+    "year": 2028,
+    "p10": 489000,
+    "p50": 568000,
+    "p90": 643000,
+    "deterministic": 565000
+   },
+   {
+    "year": 2029,
+    "p10": 550000,
+    "p50": 645000,
+    "p90": 741000,
+    "deterministic": 647000
+   },
+   {
+    "year": 2030,
+    "p10": 614000,
+    "p50": 732000,
+    "p90": 846000,
+    "deterministic": 734000
+   },
+   {
+    "year": 2031,
+    "p10": 674000,
+    "p50": 796000,
+    "p90": 928000,
+    "deterministic": 800000
+   },
+   {
+    "year": 2032,
+    "p10": 744000,
+    "p50": 891000,
+    "p90": 1064000,
+    "deterministic": 895000
+   },
+   {
+    "year": 2033,
+    "p10": 800000,
+    "p50": 984000,
+    "p90": 1190000,
+    "deterministic": 994000
+   },
+   {
+    "year": 2034,
+    "p10": 870000,
+    "p50": 1105000,
+    "p90": 1323000,
+    "deterministic": 1098000
+   },
+   {
+    "year": 2035,
+    "p10": 966000,
+    "p50": 1197000,
+    "p90": 1472000,
+    "deterministic": 1208000
+   },
+   {
+    "year": 2036,
+    "p10": 1047000,
+    "p50": 1298000,
+    "p90": 1619000,
+    "deterministic": 1324000
+   },
+   {
+    "year": 2037,
+    "p10": 1131000,
+    "p50": 1428000,
+    "p90": 1820000,
+    "deterministic": 1446000
+   },
+   {
+    "year": 2038,
+    "p10": 1214000,
+    "p50": 1566000,
+    "p90": 2017000,
+    "deterministic": 1575000
+   },
+   {
+    "year": 2039,
+    "p10": 1299000,
+    "p50": 1698000,
+    "p90": 2209000,
+    "deterministic": 1710000
+   },
+   {
+    "year": 2040,
+    "p10": 1407000,
+    "p50": 1831000,
+    "p90": 2415000,
+    "deterministic": 1853000
+   },
+   {
+    "year": 2041,
+    "p10": 1498000,
+    "p50": 1961000,
+    "p90": 2630000,
+    "deterministic": 2003000
+   },
+   {
+    "year": 2042,
+    "p10": 1588000,
+    "p50": 2084000,
+    "p90": 2855000,
+    "deterministic": 2152000
+   },
+   {
+    "year": 2043,
+    "p10": 1667000,
+    "p50": 2253000,
+    "p90": 3104000,
+    "deterministic": 2303000
+   },
+   {
+    "year": 2044,
+    "p10": 1765000,
+    "p50": 2403000,
+    "p90": 3295000,
+    "deterministic": 2463000
+   },
+   {
+    "year": 2045,
+    "p10": 1801000,
+    "p50": 2611000,
+    "p90": 3569000,
+    "deterministic": 2632000
+   },
+   {
+    "year": 2046,
+    "p10": 1988000,
+    "p50": 2742000,
+    "p90": 3847000,
+    "deterministic": 2812000
+   },
+   {
+    "year": 2047,
+    "p10": 2089000,
+    "p50": 2935000,
+    "p90": 4070000,
+    "deterministic": 3002000
+   },
+   {
+    "year": 2048,
+    "p10": 2249000,
+    "p50": 3167000,
+    "p90": 4372000,
+    "deterministic": 3204000
+   },
+   {
+    "year": 2049,
+    "p10": 2304000,
+    "p50": 3317000,
+    "p90": 4703000,
+    "deterministic": 3418000
+   },
+   {
+    "year": 2050,
+    "p10": 2482000,
+    "p50": 3505000,
+    "p90": 5115000,
+    "deterministic": 3644000
+   },
+   {
+    "year": 2051,
+    "p10": 2659000,
+    "p50": 3702000,
+    "p90": 5491000,
+    "deterministic": 3884000
+   },
+   {
+    "year": 2052,
+    "p10": 2643000,
+    "p50": 3892000,
+    "p90": 5820000,
+    "deterministic": 4070000
+   },
+   {
+    "year": 2053,
+    "p10": 2742000,
+    "p50": 4094000,
+    "p90": 6069000,
+    "deterministic": 4262000
+   },
+   {
+    "year": 2054,
+    "p10": 2872000,
+    "p50": 4261000,
+    "p90": 6503000,
+    "deterministic": 4463000
+   },
+   {
+    "year": 2055,
+    "p10": 2926000,
+    "p50": 4387000,
+    "p90": 6791000,
+    "deterministic": 4674000
+   },
+   {
+    "year": 2056,
+    "p10": 3130000,
+    "p50": 4598000,
+    "p90": 7097000,
+    "deterministic": 4896000
+   }
+  ],
+  "milestones": [
+   {
+    "when": "2026-12-14",
+    "what": "Asha's fixed-rate saver matures",
+    "amount": "£10,460"
+   },
+   {
+    "when": "2028-06-30",
+    "what": "Mortgage fixed rate ends"
+   },
+   {
+    "when": "2029-02-20",
+    "what": "Car loan paid off",
+    "frees": "£347 a month"
+   },
+   {
+    "when": "2029-03-10",
+    "what": "SBI FD matures",
+    "amount": "₹6,17,538"
+   },
+   {
+    "when": "2030-08-05",
+    "what": "HDFC home loan paid off",
+    "frees": "₹39,390 a month"
+   },
+   {
+    "when": "2031-03-28",
+    "what": "LIC policy matures"
+   },
+   {
+    "when": "2045-10-01",
+    "what": "Mortgage paid off",
+    "frees": "£1,456 a month"
+   },
+   {
+    "when": "2051-01-01",
+    "what": "Arun retires at 60"
+   }
+  ],
+  "engine_note": "illustrative run for the boards; the product's engine is MA-191's"
+ },
+ "formatted": {
+  "net_before": "£439,951",
+  "net_after": "£444,951",
+  "net_after_inr": "₹5,00,56,988",
+  "mortgage_payment": "£1,456",
+  "car_payment": "£347",
+  "hdfc_emi": "₹39,390",
+  "fd_maturity": "₹6,17,538",
+  "fd_value": "₹5,17,908",
+  "mf_value": "₹5,61,995",
+  "infosys_value": "₹1,77,660"
+ }
+}
