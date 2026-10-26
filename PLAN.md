@@ -228,6 +228,9 @@ Claude's:
   talking, correcting a figure in place, a check-in, a statement, the month
   close and the Projection with a what-if, in the figures and the look picked
   on MA-193.
+- **The boards still to draw (MA-227):** Budget and Assets and Debts on iPad,
+  the check-in cards in the web chat, and the new-kind card behind the second
+  check, which Arun settled on 26 Oct 2026.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -480,7 +483,8 @@ maths arrives.
   time, with chips, and never asks what it can look up. With `propose_kind`
   (the admin only, enforced in code) the agent proposes a new kind from the
   templates ("Sukanya Samriddhi: accrual at its rate to 21 years"); the admin
-  approves it, and it is versioned. No screen, form or tool is added.
+  approves it behind the second check (Arun, 26 Oct 2026), and it is
+  versioned. No screen, form or tool is added.
 - **One write service, and correction in place (MA-201, `ARCHITECTURE.md`
   §1, §9.3).** The chat's Confirm and an in-place correction go through one
   service: validated against the kind, written as an event, with its audit
@@ -1416,7 +1420,7 @@ handler writes its `RunRecord`, both covered by tests.
 | Factsheet extraction misreads a figure | Per-field confidence, citations, amber fields, Confirm before save |
 | The ported engine drifts from the original | Golden tests from the desk's own self-tests |
 | The wealth maths drifts from the old tracker's | Its tested cases as golden fixtures with a parity check (MA-105); XIRR, schedules and accrual to the penny |
-| A kind spec writes something the code cannot value | Specs only combine a fixed, tested library of valuation methods and event handlers; a new kind is approved by the admin and versioned; views rebuild from events with no migration (MA-197) |
+| A kind spec writes something the code cannot value | Specs only combine a fixed, tested library of valuation methods and event handlers; a new kind is approved by the admin behind the second check and versioned; views rebuild from events with no migration (MA-197) |
 | An in-place correction changes what it should not | Only the figures a kind marks editable, by the record's owner or the admin; one write service; a correction is a new event with its audit row, never an edit (MA-201, MA-74) |
 | A Projection read as a promise | Every figure from the engine, never the model; estimates marked; every assumption with its source; the fan, not one line (MA-219, MA-223) |
 | A holder's cascade that is too eager to ADD | PAUSE on exhaustion or elevated risk; top-ups capped; shadow mode first |
