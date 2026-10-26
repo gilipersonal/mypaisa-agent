@@ -473,5 +473,62 @@
       "pattern": "<b>Instrument</b> and <b>Document</b> saved",
       "present": false
     }
+  },
+  {
+    "id": "r1-e1-e4",
+    "round": 1,
+    "finding": "The iOS boards share one figure set, ledger, timeline and sign-ins: none of the old disagreeing values is left",
+    "check": {
+      "type": "grep",
+      "files": [
+        "docs/design/ios-v1/*.dc.html",
+        "docs/design/ds-v1/iOS kit.dc.html"
+      ],
+      "pattern": "▼ 3\\.3%|about two thirds|1\\.3312|6 of the last 8 weeks|Tue 20 Oct 19:30|since Tue 20 Oct|joined Sun 4 Oct|Safari on a Mac",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-e1-e4-gate",
+    "round": 1,
+    "finding": "Every weekday and date on the mirrored boards agree (the check reads them)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py check"
+    }
+  },
+  {
+    "id": "r1-e5",
+    "round": 1,
+    "finding": "The red alert on iPhone · Lock screen is the one C12's card describes, not a later one it rules out",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/ios-v1/iPhone settings.dc.html",
+      "pattern": "Wed 28 Oct",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-e6-d7",
+    "round": 1,
+    "finding": "Every board note says an alert pulses once, as the motion spec does",
+    "check": {
+      "type": "grep",
+      "files": [
+        "docs/design/ios-v1/*.dc.html",
+        "docs/design/ds-v1/iOS kit.dc.html"
+      ],
+      "pattern": "pulses twice",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-e7",
+    "round": 1,
+    "finding": "C17's Confirm card keeps Cancel with privacy on",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import re,sys; t=open('docs/design/ios-v1/iPhone chat.dc.html').read(); i=t.find('<span class=\\\"bd-id\\\">C17</span>'); j=t.find('<section class=\\\"bd\\\"',i); b=re.findall(r'class=\\\"cbtn[^\\\"]*\\\">([^<]*)<',t[i:j]); sys.exit(0 if i>0 and {'Confirm','Cancel'}<=set(b) else 1)\""
+    }
   }
 ]

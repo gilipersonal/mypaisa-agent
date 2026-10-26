@@ -144,7 +144,7 @@
           </sc-for>
           <div class="bd-note">
             <p><b>One place for me.</b> The member's name, role and household on top, then grouped inset lists: Privacy and Face ID, Notifications, Sign-in methods, Devices, Simple or Technical, Pause MyPaisa and Leave the household.</p>
-            <p><b>The owner's row.</b> Admin center, with its badge (one request waiting), shows for Arun only: the owner is the household's one admin. On iPad it sits in the sidebar instead.</p>
+            <p><b>The owner's row.</b> Admin center, with its badge (one failed job waiting for Replay), shows for Arun only: the owner is the household's one admin. On iPad it sits in the sidebar instead.</p>
             <p><b>Rows open screens; changes keep to their paths.</b> A preference that changes what MyPaisa sends opens the chat with its card to Confirm (rule 4). Privacy mode, Simple or Technical and Pause act at once, as /privacy, /technical and /pause do, each with an audit row.</p>
             <p><b>Leave the household</b> is the one red row: it is destructive, and it asks for the second check (Y6). Keys MA-172, MA-35.</p>
             <p><b>Motion.</b> The large title, the name card and each group rise in turn and the Admin center badge pops; the glass tab bar stays put.</p>
@@ -266,8 +266,8 @@
                     <div class="grp" style="margin-top:6px">
                       <span class="mp-section mp-over mp-ink2">Ways in</span>
                       <div class="mp-group">
-                        <div class="mp-row"><span class="mp-icontile atile"><span class="alogo">&#xF8FF;</span></span><span class="fx col f1"><span class="mp-body">Apple</span><span class="mp-foot mp-ink2">This iPhone · since Tue 20 Oct</span></span><span class="rv"><span class="ms">check</span></span></div>
-                        <div class="mp-row"><span class="mp-icontile gtile"><span class="glogo">G</span></span><span class="fx col f1"><span class="mp-body">Google</span><span class="mp-foot mp-ink2">Not added</span></span><span class="mp-body acc">Add</span></div>
+                        <div class="mp-row"><span class="mp-icontile atile"><span class="alogo">&#xF8FF;</span></span><span class="fx col f1"><span class="mp-body">Apple</span><span class="mp-foot mp-ink2">This iPhone · since Fri 4 Sep</span></span><span class="rv"><span class="ms">check</span></span></div>
+                        <div class="mp-row"><span class="mp-icontile gtile"><span class="glogo">G</span></span><span class="fx col f1"><span class="mp-body">Google</span><span class="mp-foot mp-ink2">Linked · since Mon 12 Oct</span></span><span class="rv"><span class="ms">check</span></span></div>
                         <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">passkey</span></span><span class="fx col f1"><span class="mp-body">Passkey with Face ID</span><span class="mp-foot mp-ink2">Not added</span></span><span class="mp-body acc">Add</span></div>
                       </div>
                       <span class="gft">Add runs a fresh sign-in with that account and links it, with an audit row. The same ways in open the web app.</span>
@@ -276,9 +276,9 @@
                       <span class="mp-section mp-over mp-ink2">Devices</span>
                       <div class="mp-group">
                         <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">smartphone</span></span><span class="fx col f1"><span class="mp-body">Arun's iPhone</span><span class="mp-foot mp-ink2">iPhone 17 Pro · this iPhone · now</span></span></div>
-                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">tablet_mac</span></span><span class="fx col f1"><span class="mp-body">Arun's iPad</span><span class="mp-foot mp-ink2">iPad Air · last seen today 08:42</span></span><span class="mp-body red mp-w6">Sign out</span></div>
-                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">laptop_mac</span></span><span class="fx col f1"><span class="mp-body">Safari on a Mac</span><span class="mp-foot mp-ink2">The web app · yesterday 21:10</span></span><span class="mp-body red mp-w6">Sign out</span></div>
-                      </div>
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">tablet_mac</span></span><span class="fx col f1"><span class="mp-body">Arun's iPad</span><span class="mp-foot mp-ink2">iPad Air · last seen today 07:20</span></span><span class="mp-body red mp-w6">Sign out</span></div>
+                        </div>
+                      <span class="gft">Also signed in to the web app: Chrome on a MacBook Air, with Google, yesterday 21:10.</span>
                     </div>
                     <div class="grp">
                       <div class="mp-group"><div class="mp-row" style="justify-content:center"><span class="mp-body red mp-w6">Sign out of all other devices</span></div></div>
@@ -295,7 +295,7 @@
           <div class="bd-note">
             <p><b>Ways in, one person.</b> Apple (used on this iPhone), Google and a passkey with Face ID can all sit on the same Cognito user (MA-109); there is still no password. The same sign-in opens the read-only web app at console.mypaisapp.com.</p>
             <p><b>Add is a fresh sign-in</b> with that account, in Apple's or Google's own sheet or iOS's passkey sheet; the api links its id to you, with an audit row (MA-77). An added passkey can also answer the second check (MA-76).</p>
-            <p><b>Devices</b> lists each signed-in iPhone or iPad, and each browser on the web app, with when it was last seen. Sign out ends that session at once and deletes a device's push token: it only takes access away, so it needs no second check (MA-172).</p>
+            <p><b>Devices</b> lists each signed-in iPhone or iPad, with when it was last seen; a browser on the web app is not a device, so it is one line under the list. Sign out ends that session at once and deletes a device's push token: it only takes access away, so it needs no second check (MA-172).</p>
             <p><b>Red for Sign out,</b> the destructive action here. Keys MA-77, MA-76, MA-172.</p>
             <p><b>Motion.</b> The two groups and their rows rise in turn; Sign out and Add answer the finger with a press.</p>
           </div>
@@ -533,11 +533,11 @@
                 <div class="island"></div>
                 <div class="scrn lock">
                   <div class="sbar"><span></span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="lock-top"><span class="ms">lock</span><span class="lock-date">Wednesday 28 October</span><span class="lock-time">21:32</span></div>
+                  <div class="lock-top"><span class="ms">lock</span><span class="lock-date">Monday 26 October</span><span class="lock-time">21:16</span></div>
                   <div class="f1"></div>
                   <div class="nwrap">
                     <span class="anno"><span class="ms">volume_up</span>plays the alert sound</span>
-                    <div class="notif lg lg-strong" data-mo="attn"><span class="notif-ic"><span class="nmark"></span></span><div class="notif-b"><span class="tsens"><span class="ms">schedule</span>Time Sensitive</span><div class="notif-t"><span>Balanced fell 5.2% from its high</span><span>now</span></div><span>Tap to see why.</span></div></div>
+                    <div class="notif lg lg-strong" data-mo="attn"><span class="notif-ic"><span class="nmark"></span></span><div class="notif-b"><span class="tsens"><span class="ms">schedule</span>Time Sensitive</span><div class="notif-t"><span>Balanced is 5.2% below its high</span><span>now</span></div><span>Tap to see why.</span></div></div>
                   </div>
                   <div class="lockbtns"><span class="lkb lg"><span class="ms z1">flashlight_on</span></span><span class="lkb lg"><span class="ms z1">photo_camera</span></span></div>
                   <div class="homebar"></div>
@@ -550,7 +550,7 @@
             <p><b>No amount:</b> the fall from its high is a percentage, enough to decide to look; the pounds wait inside the app.</p>
             <p><b>Quiet hours hold</b> for it too, unless it is critical (MA-170). iOS draws the platter in its own neutral glass: no red on the lock screen, and every word in full ink.</p>
             <p><b>Tap to see why</b> opens the chat at the alert card, with Why? and Technical one tap away. Keys MA-170, MA-59.</p>
-            <p><b>Motion.</b> The date and time rise; the alert pulses twice to draw the eye (attn), with its sound; then it rests.</p>
+            <p><b>Motion.</b> The date and time rise; the alert pulses once to draw the eye (attn), with its sound; then it rests.</p>
           </div>
         </div>
       </section>
@@ -592,8 +592,8 @@
             youRows: [
               { icon: 'visibility_off', label: 'Privacy and Face ID', value: 'Off', chev: 'chevron_right' },
               { icon: 'notifications', label: 'Notifications', value: '07:15', chev: 'chevron_right' },
-              { icon: 'key', label: 'Sign-in methods', value: 'Apple', chev: 'chevron_right' },
-              { icon: 'devices', label: 'Devices', value: '3', chev: 'chevron_right' }
+              { icon: 'key', label: 'Sign-in methods', value: 'Apple, Google', chev: 'chevron_right' },
+              { icon: 'devices', label: 'Devices', value: '2', chev: 'chevron_right' }
             ],
             youRows2: [
               { icon: 'tune', label: 'Simple or Technical', value: 'Simple', chev: 'unfold_more' },
