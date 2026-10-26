@@ -53,7 +53,7 @@ Arun is the owner and admin; Asha is a member. Their five UK holdings are the iO
 | --- | --- | --- | --- |
 | Mortgage | £224,353 | £1,456 a month | Oct 2045 (fixed to 30 Jun 2028; £5,000 overpaid on 1 Mar 2024) |
 | Car loan | £8,939 | £347 a month | Feb 2029 |
-| HDFC home loan | ₹15,13,257 | EMI ₹39,390 | Aug 2030 |
+| HDFC home loan | ₹15,13,257 | EMI ₹39,390 | Jul 2030 (the 180th EMI) |
 | Barclaycard | £0 after the 1 Oct statement's £1,240 was paid in full on Tue 20 Oct | | |
 
 **Net worth**

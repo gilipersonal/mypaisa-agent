@@ -30,7 +30,7 @@ def amortise(p: float, annual: float, n: int, start: date, until: date, extra: d
     pay = round(pay or emi(p, annual, n), 2)
     bal, k, interest_paid, last = p, 0, 0.0, None
     y, m = start.year, start.month
-    while bal > 0.005:
+    while bal > 1.0:  # a residue under one unit is rounding, cleared with the last payment
         d = date(y, m, start.day)
         if d > until:
             break
