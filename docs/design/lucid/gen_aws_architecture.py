@@ -14,7 +14,7 @@ importer (the Standard Import format has no sequence diagrams).
 A change after the first import is made in the Lucid documents in place, so their ids and links stay: a shape's text
 and box by its id (the ids here are the ids in Lucid), and view 8 by replacing its sequence generator's markup.
 """
-import json, sys
+import json, re, sys
 
 NAVY = "#13213A"; CORAL = "#C2381F"; CRIMSON = "#B5123F"; BLUE = "#2453C9"; AMBER = "#8A5300"
 GREY = "#646A78"; GREEN = "#1D7A3E"; PURPLE = "#6B3FB8"
@@ -104,7 +104,7 @@ WEB_Y, WEB_H = 880, 220
 p.cont("home", 40, 200, 360, 1280, "Household", F_HOME, NAVY)
 p.box("h_app", 70, APP_Y, 300, APP_H,
       "<b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>"
-      "iOS 26 · MyPaisa Dev → dev<br>push · live connection<br>files: presigned upload<br><br>Apple · Google · passkey<br>tokens in the Keychain")
+      "iOS 26 · MyPaisa Dev → dev<br>push · live connection<br>files: presigned upload<br><br>sign in: Apple · Google<br>a passkey (added from You)<br>answers the second check<br>tokens in the Keychain")
 p.box("h_web", 70, WEB_Y, 300, WEB_H,
       "<b>Web app</b> (PWA, read-only)<br>the dashboard, the Admin center<br>no chat<br>console.mypaisapp.com<br>Apple · Google · passkey<br>HttpOnly session cookie")
 p.box("h_mem", 70, 1360, 300, 100, "<b>Members</b><br>owner, member, viewer<br>joined by an invite link")
@@ -178,6 +178,8 @@ p.line("qwork", "worker", "", pa=R, pb=Lf)
 p.line("dlq", "cw", "", color=CRIMSON, dashed=True, pa=Lf, pb=R)
 p.line("cw", "sns", "", color=CRIMSON, dashed=True, pa=Lf, pb=R)
 p.line("sns", "h_mail", "", color=CRIMSON, dashed=True, pa=Lf, pb=(1, (YD + 45 - 1230) / 110))
+# The api's /auth/* routes call Cognito's API (custom auth); added last, so the earlier line ids stay.
+p.line("api", "cog", "", color=BLUE, pa=(1, 0.75), pb=T)  # clears the api's and the queue's labels
 pages.append(p)
 
 
@@ -242,13 +244,29 @@ p = Page("p3", "3 Identity and sign-in", "Identity and sign-in",
          "one Cognito user pool per environment, no hosted domain · one user per member · Apple, Google or a passkey, no passwords · "
          "MA-109, MA-75, MA-76, MA-77, MA-102, MA-161, MA-168")
 p.cont("doors", 40, 180, 380, 1290, "Doors in: the iOS app and the web app", F_HOME, NAVY)
-p.box("d_sign", 60, 200, 340, 190, "<b>MyPaisa app</b> (iPhone, iPad, foldable):<br>the chat, the dashboard, the Admin center<br>Apple native · Google SDK, PKCE<br>the token carries the api's nonce")
-p.box("d_web", 60, 410, 340, 180, "<b>Web app</b> (PWA, read-only):<br>the dashboard, the Admin center<br>console.mypaisapp.com<br>Apple, Google or a passkey, same custom auth<br>an HttpOnly cookie set by the api")
-p.box("d_passkey", 60, 610, 340, 120, "<b>Passkey</b> (optional), app or web<br>added from You (MA-77)<br>challenge: /auth/passkey/options<br>assertion: /auth/passkey")
-p.box("d_invite", 60, 750, 340, 110, "<b>Invite link</b> (MA-73)<br>console.mypaisapp.com<br>/join/&lt;token&gt; opens the app")
-p.box("d_keychain", 60, 880, 340, 180, "<b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection")
-p.box("d_second", 60, 1080, 340, 200, "<b>Second check</b> (MA-76)<br>a challenge bound to the action<br>app: fresh Sign in with Apple<br>or a passkey (Face ID)<br>web: passkey or a fresh sign-in<br>under 5 minutes, never a<br>local-only Face ID")
-p.box("d_paused", 60, 1300, 340, 150, "<b>Refused</b><br>a paused member: one line<br>a removed member<br>linked to nobody, no valid invite")
+# The doors column, top to bottom: (y, height), 16 apart inside the container (180 to 1470). The second check names what
+# it guards and every way it is answered (ARCHITECTURE 4.5, MA-161 review round 2), so it is the tallest box.
+DY = {"d_sign": (196, 164), "d_web": (376, 168), "d_passkey": (560, 140), "d_invite": (716, 96),
+      "d_keychain": (828, 144), "d_second": (988, 316), "d_paused": (1320, 130)}
+
+
+def door(sid, txt):
+    p.box(sid, 60, DY[sid][0], 340, DY[sid][1], txt)
+
+
+def door_at(sid, y):  # a point on a door box's right edge at canvas height y
+    return (1, (y - DY[sid][0]) / DY[sid][1])
+
+
+door("d_sign", "<b>MyPaisa app</b> (iPhone, iPad, foldable):<br>the chat, the dashboard, the Admin center<br>Apple native · Google SDK, PKCE<br>the token carries the api's nonce")
+door("d_web", "<b>Web app</b> (PWA, read-only):<br>the dashboard, the Admin center<br>console.mypaisapp.com<br>Apple, Google or a passkey, same custom auth<br>an HttpOnly cookie set by the api")
+# A passkey signs in to the web app only; in the app it answers the second check, never the sign-in screen (4.5).
+door("d_passkey", "<b>Passkey</b> (optional): web sign-in;<br>in the app, the second check<br>added from You (MA-77)<br>challenge: /auth/passkey/options<br>assertion: /auth/passkey")
+door("d_invite", "<b>Invite link</b> (MA-73)<br>console.mypaisapp.com<br>/join/&lt;token&gt; opens the app")
+door("d_keychain", "<b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection")
+door("d_second", "<b>Second check</b> (MA-76, MA-102)<br>the owner's admin actions, from<br>the Admin center or admin's chat;<br>an import's Confirm and rolling<br>it back; leaving the household<br>"
+     "a challenge bound to the action<br>app: Sign in with Apple again or<br>a passkey (Face ID); a member on<br>Google only: Google again<br>web: passkey or a fresh sign-in<br>under 5 minutes, never a<br>local-only Face ID")
+door("d_paused", "<b>Refused</b><br>a paused member: one line<br>a removed member<br>linked to nobody, no valid invite")
 p.box("o_idp", 560, 180, 420, 110, "<b>Apple · Google</b><br>sign the identity token (app and web)<br>publish their keys (JWKS)", F_OUT, AMBER)
 p.group("cl3", "cloud", 480, 340, 1560, 1100, "AWS · prod (dev the same)")
 p.icon("i_api", "apigw", 580, 420, "HTTP API<br>api.mypaisapp.com")
@@ -265,9 +283,9 @@ p.box("i_admin", 560, 1090, 660, 250,
       "<b>Admin center (owner only)</b><br>every action behind the second check<br>Sign out a device or everywhere →<br>AdminUserGlobalSignOut + epoch + 1<br>Pause → AdminDisableUser; every session ends<br>every action: audit row + a message in the app<br>and a push to the member and the owner",
       F_FAIL, CRIMSON)
 p.icon("i_out", "sqs", 1440, 1150, "SQS outbox → sender<br>the app and push")
-p.line("d_sign", "o_idp", "identity token", color=AMBER, both=True, pa=(1, 0.2), pb=(0, 70 / 110), lpos=0.5)
-p.line("d_sign", "i_api", "token", color=BLUE, pa=(1, 0.8), pb=(0, 0.35), lpos=0.5)
-p.line("d_web", "i_api", "sign in", color=BLUE, pa=(1, 0.15), pb=(0, 0.75), lpos=0.5)
+p.line("d_sign", "o_idp", "identity token", color=AMBER, both=True, pa=door_at("d_sign", 250), pb=(0, 70 / 110), lpos=0.5)  # level
+p.line("d_sign", "i_api", "token", color=BLUE, pa=(1, 0.8), pb=(0, 0.3), lpos=0.5)
+p.line("d_web", "i_api", "sign in", color=BLUE, pa=(1, 0.15), pb=(0, 0.6), lpos=0.5)
 p.line("i_api", "i_apil", "", color=BLUE, pa=R, pb=Lf)
 p.line("i_apil", "i_cog", "custom auth", color=BLUE, pa=R, pb=Lf)
 p.line("i_cog", "i_trig", "", color=BLUE, pa=R, pb=Lf)
@@ -275,13 +293,16 @@ p.line("i_trig", "i_idp", "", color=BLUE, pa=R, pb=(0, 0.225))
 p.line("i_trig", "o_idp", "published keys", color=AMBER, dashed=True, pa=T, pb=R, lpos=0.55)
 p.line("d_web", "i_v1", "cookie", color=BLUE, pa=(1, 0.85), pb=(0, 0.3))
 p.line("d_keychain", "i_v1", "token", color=BLUE, pa=(1, 0.1), pb=(0, 0.7))
-p.line("d_keychain", "i_ws", "on connect", color=BLUE, pa=(1, (945 - 880) / 180), pb=Lf)  # level with the socket
+p.line("d_keychain", "i_ws", "on connect", color=BLUE, pa=door_at("d_keychain", 945), pb=Lf)  # level with the socket
 p.line("i_v1", "i_authz", "", color=BLUE, pa=R, pb=(0, 0.25))
 p.line("i_ws", "i_authz", "", color=BLUE, pa=R, pb=(0, 0.75))
 p.line("i_authz", "i_ddb", "", color=BLUE, pa=R, pb=Lf)
-p.line("d_second", "i_admin", "fresh assertion", color=CRIMSON, pa=(1, 0.3), pb=(0, 0.2))
+p.line("d_second", "i_admin", "fresh assertion", color=CRIMSON, pa=door_at("d_second", 1090 + 0.2 * 250), pb=(0, 0.2))  # level
 p.line("i_admin", "i_cog", "", color=CRIMSON, pa=(1, 0.15), pb=(1, 0.8), kind="elbow")  # the box says what it does
 p.line("i_admin", "i_out", "", color=CRIMSON, pa=(1, 0.6), pb=Lf)
+# The passkey's challenge and assertion go to the api's /auth/passkey routes (added last, so the earlier line ids stay).
+# No label: the box names both routes, and a label here crowds the HTTP API's own.
+p.line("d_passkey", "i_api", "", color=BLUE, pa=(1, 0.3), pb=(0, 0.9))
 pages.append(p)
 
 
@@ -575,19 +596,22 @@ note over worker, ws : No live connection: the sender pushes by APNs, and the ap
 
 
 doc = {"version": 1, "pages": [pg.out() for pg in pages]}
-json.dump(doc, open(sys.argv[1], "w"), indent=1)
-print("pages", len(pages), "shapes", sum(len(pg.shapes) for pg in pages), "lines", sum(len(pg.lines) for pg in pages))
 # ARCHITECTURE 4.6 and MA-148: a file's Document row (with its audit row) is written when it arrives, before its docs
-# job reads it, and nothing at Confirm writes a Document (MA-161 review, round 1, c5). Refuse a sequence that breaks it.
+# job reads it, and only there: a Document written anywhere else (at Confirm) is refused, whatever the spelling, and so
+# is a docs job with no Document row before it. Checked before anything is written (MA-161 review, rounds 1 and 2).
 _seq, _last = SEQUENCE.splitlines(), -1
 for _i, _l in enumerate(_seq):
-    if "-> work : docs job" in _l:
-        if not any("-> ddb" in x and "Document" in x for x in _seq[_last + 1:_i]):
+    if re.search(r"->\s*ddb\s*:", _l) and re.search(r"\bDocument\b", _l) and "file received" not in _l:
+        sys.exit(f"sequence: line {_i + 1} writes a Document row somewhere other than when the file arrives")
+    if re.search(r"->\s*work\s*:\s*docs job", _l):
+        if not any(re.search(r"->\s*ddb\s*:", x) and "file received" in x and re.search(r"\bDocument\b", x) for x in _seq[_last + 1:_i]):
             sys.exit(f"sequence: the docs job at line {_i + 1} reads a file with no Document row written before it")
         _last = _i
-if _last < 0 or any("-> ddb" in x and "+ Document" in x for x in _seq):
-    sys.exit("sequence: no docs job, or a Confirm writes the Document row")
+if _last < 0:
+    sys.exit("sequence: no docs job")
 
+json.dump(doc, open(sys.argv[1], "w"), indent=1)
+print("pages", len(pages), "shapes", sum(len(pg.shapes) for pg in pages), "lines", sum(len(pg.lines) for pg in pages))
 if len(sys.argv) > 2:
     open(sys.argv[2], "w").write(SEQUENCE)
     print("sequence", sys.argv[2])

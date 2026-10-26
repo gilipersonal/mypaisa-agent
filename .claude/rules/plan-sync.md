@@ -68,6 +68,7 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 - `ui` and the `design` label disagreeing: the label marks exactly the stories with UI (`.claude/jira/taxonomy.md`).
 - A board file missing from the repo mirror or from `claude-design.json`; a board name that is not exactly one of its canvas's titles (a caption, or a numbered board as `<number> · <name>` with its own number), optionally after the door the whole file draws; a mirrored file whose size or hash no longer matches; a file in the mirror that `claude-design.json` does not record.
 - A key in both `items` and `others`; a row, phase or entry that is not an object; a row with no key, summary, status or type; a phase with no epic or title; a field of the wrong type.
+- A board element given the `label` or `dot` motion role without the class whose transform that role's keyframe ends on (`mp-chartlbl`, `mp-chartdot`): once the arrival settles it is moved off its place (MA-161 review, round 2); use `fade`.
 - A weekday and date on a mirrored board that do not agree ("Thu 23 Oct"); the boards are set in October 2026, and a date with no year may fall in 2027 from January to September (MA-161 review, round 1).
 - `docs/TRACE.md` not rendered from the current trace.
 
@@ -81,7 +82,8 @@ may not reach In Review until they are drawn and the row says so.
 
 `python3 scripts/plan_sync.py selftest` runs the board-name check against
 names it must accept and names it must refuse (every case the reviews of PR
-#32 raised), and the date check against dates it must accept and refuse; the jira-flow gate and CI run it before the check. `start` also runs every check
+#32 raised), the date check against dates it must accept and refuse, and `check`
+itself on a copy of the repo whose board says "Thu 23 Oct", which it must refuse; the jira-flow gate and CI run it before the check. `start` also runs every check
 above on the story's own row, so a missing section or board stops it too.
 
 Jira-side drift (a key, parent, label or status that differs from the trace)

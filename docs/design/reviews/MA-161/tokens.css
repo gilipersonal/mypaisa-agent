@@ -24,6 +24,7 @@
   --mp-hero-2: #1C2E4D;      /* hero inner fills */
   --mp-hero-ink: #FFFFFF;
   --mp-hero-ink-2: #B7C2D6;  /* 9.0:1 on hero */
+  --mp-hero-up: #8BE8AC;     /* a gain on the hero: 10.9:1, 4.0:1 at 25% */
   /* accent */
   --mp-coral: #FF6B4F;       /* fills, lines and marks on the hero; never small text on light */
   --mp-accent: #C2381F;      /* text, links and filled buttons on light: 5.4:1 */
@@ -54,10 +55,11 @@
   --mp-hero-area: rgba(255, 107, 79, 0.18);   /* the area under the coral line on the hero */
   /* fixed encodings, the same on every page (green stays for gains only) */
   --mp-pillar-for: #2453C9;  --mp-pillar-against: #8A5300;   /* technical pillars: blue supports, amber weighs against */
-  --mp-ccy-usd: #2453C9; --mp-ccy-gbp: #4E5462; --mp-ccy-eur: #6B3FB8; --mp-ccy-jpy: #8A5300; --mp-ccy-other: #878177;   /* every mark 3:1+ on surface and on .mp-track */
+  --mp-ccy-usd: #2453C9; --mp-ccy-gbp: #4E5462; --mp-ccy-eur: #6B3FB8; --mp-ccy-jpy: #8A5300; --mp-ccy-other: #6E695F;   /* every mark 3:1+ on surface and on the track, at 25% too (MA-181) */
   --mp-asset-shares: #2453C9; --mp-asset-bonds: #6B3FB8; --mp-asset-silver: #646A78; --mp-asset-cash: #8A5300;
   --mp-meter: #2453C9;       /* spend and budget meters */
-  --mp-mask: #DCD7CF; --mp-mask-hero: #2C4068;   /* privacy placeholders: plainly there, never mistaken for text */
+  --mp-track: #CDCFD4;       /* the empty part of a bar or meter: plainly there at 25% brightness (MA-181) */
+  --mp-mask: #D0C9BE; --mp-mask-hero: #3A5284;   /* privacy placeholders: plainly there, never mistaken for text */
   --mp-shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
   color-scheme: light;
 }
@@ -69,12 +71,13 @@
   --mp-line: #283141;
   --mp-material: rgba(21, 28, 39, 0.78);
   --mp-ink: #F3F5F8;
-  --mp-ink-2: #C5CCD7;       /* raised for 25% brightness (MA-181): 3.6:1 dimmed on surface */
+  --mp-ink-2: #C5CCD7;       /* raised for 25% brightness (MA-181): 3.8:1 dimmed on surface */
   --mp-ink-3: #ADB6C4;       /* raised for 25% brightness (MA-181): 3.1:1 dimmed on surface */
   --mp-hero: #1A2944;
   --mp-hero-2: #233558;
   --mp-hero-ink: #FFFFFF;
   --mp-hero-ink-2: #B7C2D6;
+  --mp-hero-up: #A6F0C2;     /* 11.0:1, 4.2:1 at 25% */
   --mp-coral: #FF7A5E;
   --mp-accent: #FF9A82;      /* lighter than the coral marks, so links and labels hold at 25% brightness (MA-181) */
   --mp-on-accent: #1A0B06;   /* 7.5:1 */
@@ -100,10 +103,11 @@
   --mp-seg-on: #3A4456;      /* lighter than the track, as iOS dark does: ink 9.0:1 */
   --mp-hero-area: rgba(255, 122, 94, 0.18);
   --mp-pillar-for: #8FB2FF;  --mp-pillar-against: #F6BC4F;
-  --mp-ccy-usd: #8FB2FF; --mp-ccy-gbp: #AEB6C4; --mp-ccy-eur: #B79CFF; --mp-ccy-jpy: #F6BC4F; --mp-ccy-other: #6B7587;
-  --mp-asset-shares: #8FB2FF; --mp-asset-bonds: #B79CFF; --mp-asset-silver: #8D96A6; --mp-asset-cash: #F6BC4F;
+  --mp-ccy-usd: #8FB2FF; --mp-ccy-gbp: #AEB6C4; --mp-ccy-eur: #B79CFF; --mp-ccy-jpy: #F6BC4F; --mp-ccy-other: #A3ACBA;
+  --mp-asset-shares: #8FB2FF; --mp-asset-bonds: #B79CFF; --mp-asset-silver: #969FAE; --mp-asset-cash: #F6BC4F;
   --mp-meter: #8FB2FF;
-  --mp-mask: #323D50; --mp-mask-hero: #334A75;
+  --mp-track: #454E5C;
+  --mp-mask: #414D64; --mp-mask-hero: #40598A;
   --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
 }
@@ -263,11 +267,11 @@
 .mp-seg .seg-s { min-height: 40px; font-size: 12px; }   /* 40 in a 2 px track = 44 pt */
 .iconbtn { width: 44px; height: 44px; border-radius: 12px; border: 0; display: grid; place-items: center; background: var(--mp-surface-2); color: var(--mp-ink); cursor: pointer; flex: none; }
 .coin { width: 32px; height: 32px; border-radius: 50%; background: var(--mp-hero); color: var(--mp-coral); display: grid; place-items: center; font: 800 16px/1 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; flex: none; }
-.upchip { color: #8BE8AC; background: rgba(68, 209, 122, 0.16); }   /* a rising month on the hero: 7.9:1 / 7.1:1 */
+.upchip { color: var(--mp-hero-up); background: rgba(68, 209, 122, 0.16); }   /* a rising month on the hero: 7.9:1 / 7.1:1 */
 .dnchip { color: var(--mp-hero-ink-2); background: var(--mp-hero-2); } /* a falling month on the hero, never red: 7.6:1 / 6.8:1 */
 .mp-scrim { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.42); }
 .mp-disabled, [aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
-.mp-track { background: var(--mp-surface-2); box-shadow: inset 0 0 0 1px var(--mp-line); border-radius: 999px; overflow: hidden; }  /* empty part of a bar or meter stays visible */
+.mp-track { background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); border-radius: 999px; overflow: hidden; }  /* empty part of a bar or meter stays visible */
 
 /* ---------- charts: SVG draws lines and areas; every label and marker is HTML on top ----------
    An SVG <text> filled from a template never renders, and an SVG scaled with its column shrinks its

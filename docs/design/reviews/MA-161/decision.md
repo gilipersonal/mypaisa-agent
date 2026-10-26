@@ -70,7 +70,7 @@ on a phone that has it and the web page anywhere else.
 
 "The read only dashboard should also be shown on the ios tablet duo": every dashboard screen (Home, a holding,
 Overlap, Scorecard, Audit and Files, Activity, the Admin center) is drawn at regular width on iPad and on an open
-foldable, with the chat beside it; folded, the same screens fall back to the compact layout without losing their
+foldable, with the chat beside it in a window over about 900 pt and a sheet away in a narrower one; folded, the same screens fall back to the compact layout without losing their
 place.
 
 ## Motion (MA-182)
@@ -88,7 +88,8 @@ replay chip; `?static=1` stops it for still captures. The iOS kit's `12 · Motio
 
 `scripts/contrast_check.py` measures every colour pair the screens use, in light and dark, at full brightness and
 at a simulated 25% (each luminance times 0.25, plus 0.05 of room glare): body text 7:1 and 4.5:1 dimmed, other
-text 4.5:1 and 3:1, meaningful non-text 3:1 and 1.8:1. It runs in the plan-sync gate and in CI. Light mode passed
+text 4.5:1 and 3:1, meaningful non-text 3:1 and 1.8:1, and what must only be seen (a privacy mask, an empty track)
+1.5:1 and 1.25:1. It runs in the plan-sync gate and in CI. Light mode passed
 already; dark mode's secondary and tertiary text, the accent, the alert crimson and the Hold, Rebalance and Watch
 chips were lifted to pass (`tokens.css`), and glass got a denser fill (`ios.css`). Rules on every board: no
 tertiary grey for anything a member must read and never on glass; nothing under 12 pt; no light or thin weights;
@@ -151,7 +152,7 @@ Every option has the same screens; they differ in what the app opens to and how 
 | Tabs (iPhone) | Chat · Home · Activity · You (Search as the system's separate search tab) | Home · Holdings · Activity · You, with the composer as the tab bar's bottom accessory on every tab | None: a glass rail of pinned live cards (Portfolio, Today, Alerts, Spend) above the conversation |
 | The dashboard | Its own tab; pulling the strip down opens it as a sheet over the chat | The app itself | Each pinned card opens its screen as a sheet |
 | The chat | Its own tab; every screen's Ask opens it about that screen | The bottom accessory expands to the full chat, carrying the screen's context ("Ask about Balanced") | Always on screen |
-| iPad and an open foldable | Sidebar · the screen · the chat beside it | Sidebar · the screen · the chat beside it | The conversation with the pinned cards as a column beside it |
+| iPad and an open foldable | Sidebar · the screen · the chat beside it over about 900 pt, a sheet below | Sidebar · the screen · the chat beside it | The conversation with the pinned cards as a column beside it |
 | Why | Arun asked for "a cool mobile chatbot ... and even see the dashboard": the chat is the front door and the figures are one swipe away; every change starts where it is made | The most native iOS 26 pattern (Music's mini player); best when the household mostly reads | The purest chatbot; Audit, Activity and the Admin center become sheets, which is cramped for the owner |
 
 The recommendation is **1a**. The flow boards are drawn in 1a's shell; every screen on them is shared by the
@@ -200,7 +201,7 @@ this device only, after first unlock. The api's authorizer checks the token, the
 epoch on every HTTP call and on every live connection. Each signed-in device is a `Device` row (name, model,
 last seen, push token), so the owner signs out one device or all of them (MA-102).
 
-**The second check** (MA-76, MA-102). A Confirm that needs it (an Admin center action, an import, rolling back)
+**The second check** (MA-76, MA-102). A Confirm that needs it (an admin action, from the Admin center or the admin's chat; an import, and rolling it back; leaving the household)
 asks the server for a challenge bound to that action, then gets a fresh assertion: Sign in with Apple again (iOS
 shows a Face ID sheet) or, where the member added one, a passkey (Face ID); a Google-only member signs in with
 Google again. The server accepts the action only with an assertion under five minutes old whose nonce is that

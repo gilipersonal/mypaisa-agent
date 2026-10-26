@@ -24,6 +24,12 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   (`ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `README.md`, the explainer
   pages); the rules and skills; the boards and the design mirror when they
   change. All in one message, each blind to the making.
+- **Scope of each round** (Arun, 26 Oct 2026: "make sure for each review round
+  you are only reviewing the fixes made in previous round, MAX 5 rounds"):
+  round 1 reviews everything; every later round reviews only the fixes made
+  since the previous round, `git diff <previous reviewed_sha>..HEAD`, and their
+  direct joins, never the whole PR again. Five rounds at most; the range of
+  each is recorded in `state.json`.
 - **The ledger** is per story: `review/MA-<n>/fixed.json` (each fixed blocking
   finding, and any owner decision the review must keep, with a check that tests
   the behaviour, not the code's text; a story with no ledger yet has nothing to
@@ -93,14 +99,21 @@ Added the day each was learned; reviewers check every item.
     reset the transform that centres chart dots, labels and axis rows; the
     figure roll flattened privacy masks; white badge text failed on the dark
     crimson). A colour a board adds goes into `tokens.css` as a token, and its
-    pair into `scripts/contrast_check.py`'s `PAIRS`, before the board uses it.
+    pair into `scripts/contrast_check.py`'s `PAIRS`, before the board uses it;
+    a label colour on glass goes into `ios.css` as an `--lg-*` value and into
+    `GLASS_TEXT`. A motion role sits only on the element its keyframe was made for
+    (`label` on `.mp-chartlbl`, `dot` on `.mp-chartdot`); `plan_sync.py check`
+    refuses any other (MA-161 round 2: chart axes moved off their cards once
+    the arrival settled).
 12. **A gate fails closed, and its selftest proves it bites:** a file it cannot
     find, a block or selector it cannot parse, or a value in a form it does not
     read is a failure, never a skip; and every fault a review found in it is a
     selftest case that mutates a copy and expects the refusal (MA-161 round 1:
     `contrast_check.py` skipped the glass when `ios.css` was missing or its
     dark selector reordered, read an 8-digit hex as opaque, never compared the
-    board projects' copies, and measured no chart, bar or mask colour;
+    board projects' copies, and measured only three chart colours and the
+    meter: never chart-4 or chart-5, the marks on a bar's track, the track,
+    the masks or the hero's gain;
     `--selftest` now holds those cases).
 13. **One figure set and one ledger behind every set of boards:** before
     boards are drawn, the illustrative household is written once (holdings,
@@ -112,7 +125,7 @@ Added the day each was learned; reviewers check every item.
     files it made; `plan_sync.py check` now refuses a wrong weekday).
 14. **"Superseded" names exactly what is superseded:** when an owner keeps part
     of the old plan, every note, summary and description that retires the rest
-    says which part stays (MA-161 round 1: forty trace notes called the browser
+    says which part stays (MA-161 round 1: forty-nine trace notes called the browser
     boards superseded after Arun kept the web app; MA-161's own summary said
     the plan moved "from the web").
 15. **Every record of a flow writes the same rows at the same step:** the
@@ -121,5 +134,22 @@ Added the day each was learned; reviewers check every item.
     wrote the `Document` row only at Confirm, against §4.6's "before anything
     reads it"); and a domain, relying party or secret a doc names is checked
     against what the platform allows (a passkey's relying party must be the
-    page's own domain or a parent of it, so `auth.` could never serve the
-    `console.` page).
+    page's own domain or a parent of it, so `auth.` could not serve the
+    `console.` page without a related-origins file).
+16. **A selftest proves the gate, not its harness:** each case names the
+    failure it expects, and the harness makes no failure of its own (MA-161
+    round 2: the contrast selftest copied the files before mutating them, so
+    every case failed on "copies differ", and a gate with round 1's fixes
+    reverted still passed all eleven).
+17. **A fix's check searches every phrasing of the fault,** in every record
+    (lesson 2), not only the sentence the reviewer quoted (MA-161 round 2:
+    r1-c2's search matched three phrasings of the old width rule; seven more
+    sentences in ARCHITECTURE, PLAN and decision.md said the same).
+18. **A closed list is closed only after every record that grants the
+    thing is read, and an open question is recorded on every story it
+    decides** (MA-161 round 2: "and nothing else" left out the admin's chat;
+    MA-35's and MA-77's questions also decide MA-171 and MA-76).
+19. **A record drawn at a time changes every frame drawn after it:** a
+    figure set has a clock, and a change at 08:41 shows in every later frame
+    or comes after the last one (MA-161 round 2: the £200 buy at 08:41 beside
+    Home at 9:41 still showing the total before it).

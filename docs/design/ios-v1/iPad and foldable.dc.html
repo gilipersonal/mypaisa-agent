@@ -46,7 +46,7 @@
           .onecol { display: flex; flex-direction: column; gap: 16px; padding: 4px 16px 24px; }
           .onecol.wide { padding: 6px 28px 24px; }
           .segc { display: grid; place-items: center; }
-          .upc { color: #8BE8AC; }
+          .upc { color: var(--mp-hero-up); }
           .spark { height: 40px; }
           .spark svg { width: 100%; height: 40px; display: block; }
           .hl-line { fill: none; stroke: var(--mp-coral); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
@@ -672,9 +672,9 @@
                     <div class="plot" data-chart="line">
                       <svg viewBox="0 0 750 200" preserveAspectRatio="none"><path class="carea" d="M0,100 L50,90.8 L100,95.4 L150,83.1 L200,73.8 L250,78.5 L300,86.2 L350,76.9 L400,64.6 L450,58.5 L500,69.2 L550,61.5 L600,49.2 L650,52.3 L700,47.7 L750,26.9 L750,200 L0,200 Z"></path><path class="cline" d="M0,100 L50,90.8 L100,95.4 L150,83.1 L200,73.8 L250,78.5 L300,86.2 L350,76.9 L400,64.6 L450,58.5 L500,69.2 L550,61.5 L600,49.2 L650,52.3 L700,47.7 L750,26.9"></path></svg>
                       <div class="gl" style="top:23.1%"></div><div class="gl" style="top:46.2%"></div><div class="gl" style="top:69.2%"></div>
-                      <span class="edot" data-mo="dot" style="top:13.45%"></span>
+                      <span class="edot" data-mo="fade" style="top:13.45%"></span>
                     </div>
-                    <div class="gut" data-mo="label"><span class="nowtag" style="top:13.45%">£22,925</span><span style="top:23.1%">£22,800</span><span style="top:46.2%">£22,500</span><span style="top:69.2%">£22,200</span></div>
+                    <div class="gut" data-mo="fade"><span class="nowtag" style="top:13.45%">£22,925</span><span style="top:23.1%">£22,800</span><span style="top:46.2%">£22,500</span><span style="top:69.2%">£22,200</span></div>
                   </div>
                   <div class="mp-chartaxis lax"><span class="ax0">23 Sep</span><span style="left:26.7%">1 Oct</span><span style="left:50%">8 Oct</span><span style="left:73.3%">15 Oct</span><span class="ax1">23 Oct</span></div>
                 </div>
@@ -799,7 +799,7 @@
                         <div class="kv"><span>Tokens, cost</span><span>3.1k · $0.01</span></div>
                         <div class="kv"><span>Tools</span><span>read_image, propose_change</span></div>
                       </div>
-                      <div class="fx col gap6"><span class="mp-over mp-ink2 sech">Activity today · showing 3 of 14</span><div class="mp-group"><sc-for list="{{ runs }}" as="r"><div class="mp-row"><span class="mp-foot mp-ink2 rtime">{{ r.time }}</span><span class="fx col f1"><span class="mp-sub mp-w6">{{ r.job }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span><span class="fx ac gap4 mp-foot {{ r.ocls }}"><span class="ms ms-s">{{ r.icon }}</span>{{ r.out }}</span></div></sc-for></div></div>
+                      <div class="fx col gap6"><span class="mp-over mp-ink2 sech">Activity today · showing 3 of 13</span><div class="mp-group"><sc-for list="{{ runs }}" as="r"><div class="mp-row"><span class="mp-foot mp-ink2 rtime">{{ r.time }}</span><span class="fx col f1"><span class="mp-sub mp-w6">{{ r.job }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span><span class="fx ac gap4 mp-foot {{ r.ocls }}"><span class="ms ms-s">{{ r.icon }}</span>{{ r.out }}</span></div></sc-for></div></div>
                       <div class="mp-card fx col gap8"><div class="fx ac jb"><span class="mp-sub mp-w6">Claude this cycle</span><span class="mp-foot mp-ink2">$18 of $160 · Normal</span></div><div class="mp-track mtrack"><i class="mfill" style="width:11.25%"></i></div></div>
                     </div>
                   </div>
@@ -907,17 +907,17 @@
               { h: 'Find and close', rows: kr([['Search', '⌘F'], ['Close a sheet', 'Esc']]) }
             ],
             navHold: nav('Holdings'), navAudit: nav('Audit'),
-            pairs: [['Balanced · NASDAQ 100', 'Apple, Nvidia, Microsoft, Amazon, Alphabet', '10%', 'of Balanced'], ['Robotics · NASDAQ 100', 'Nvidia, Intuitive Surgical', '3%', 'of Robotics'], ['Silver · the rest', 'Nothing shared', '0%', 'none']].map((p) => ({ a: p[0], cos: p[1], v: p[2], of: p[3] })),
+            pairs: [['NASDAQ 100 · Balanced', 'Apple, Nvidia, Microsoft, Amazon, Alphabet', '37%', 'of NASDAQ 100'], ['Robotics · Balanced', 'Nvidia and others', '9%', 'of Robotics'], ['Robotics · NASDAQ 100', 'Nvidia, Intuitive Surgical', '3%', 'of Robotics'], ['Silver · the rest', 'Nothing shared', '0%', 'none']].map((p) => ({ a: p[0], cos: p[1], v: p[2], of: p[3] })),
             ccy: [['US dollar', '59%', 'cc-usd'], ['Pound', '20%', 'cc-gbp'], ['Euro', '9%', 'cc-eur'], ['Yen', '5%', 'cc-jpy'], ['Other', '7%', 'cc-oth']].map((m) => ({ l: m[0], p: m[1], cls: m[2] })),
             score: [['Silver ETC', 'Pause · 58%', '14 Oct', 'Open', 'schedule', 'mp-ink2'], ['Balanced', 'Hold · 71%', '6 Oct', 'Held up', 'check_circle', 'mp-ink2'], ['NASDAQ 100 ETF', 'Add · 64%', '29 Sep', 'Held up', 'check_circle', 'mp-ink2'], ['Robotics ETF', 'Add · 61%', '22 Sep', 'Missed', 'cancel', 'mp-ink2']].map((s) => ({ h: s[0], st: s[1], date: s[2], verdict: s[3], icon: s[4], vcls: s[5] })),
             filters: [['Member', 'Everyone'], ['Record', 'All records'], ['Date', 'This week']].map((f) => ({ k: f[0], v: f[1] })),
             audit: [
-              { day: 'Today', rows: [aud('Y', 'av-y', 'Bought £200 of Balanced', 'You · transaction · 08:41', false, ''), aud('Y', 'av-y', 'Opened monzo-pot.png', 'You · file opened · 07:58', true, '')] },
+              { day: 'Today', rows: [aud('Y', 'av-y', 'Opened monzo-pot.png', 'You · file opened · 07:58', true, '')] },
               { day: 'Thu 22 Oct', rows: [aud('A', 'av-a', 'Cash pot valuation', 'Asha · valuation · 19:02', true, 'sel')] },
               { day: 'Wed 21 Oct', rows: [aud('Y', 'av-y', "Silver ETC's fee", 'You · factsheet · 21:15', true, ''), aud('A', 'av-a', 'Quiet hours set', 'Asha · preference · 20:05', false, '')] },
               { day: 'Tue 20 Oct', rows: [aud('Y', 'av-y', 'Balanced valuation', 'You · valuation · 18:24', true, '')] }
             ],
-            runs: [['07:15', 'Morning brief', 'Sonnet, Haiku · 3 calls · $0.03', 'Done', 'check_circle', 'mp-ink2'], ['08:40', 'Chat · a buy', 'Sonnet · 2 calls · $0.02', 'Done', 'check_circle', 'mp-ink2'], ['21:15', 'Evening wrap', 'Scheduled', 'Due', 'schedule', 'mp-ink2']].map((r) => ({ time: r[0], job: r[1], sub: r[2], out: r[3], icon: r[4], ocls: r[5] })),
+            runs: [['07:15', 'Morning brief', 'Sonnet, Haiku · 3 calls · $0.03', 'Done', 'check_circle', 'mp-ink2'], ['08:56', 'Chat · a factsheet', 'Sonnet · 3 calls · $0.06', 'Done', 'check_circle', 'mp-ink2'], ['21:15', 'Evening wrap', 'Scheduled', 'Due', 'schedule', 'mp-ink2']].map((r) => ({ time: r[0], job: r[1], sub: r[2], out: r[3], icon: r[4], ocls: r[5] })),
             files: [['description', 'Robotics-ETF-factsheet.pdf', 'You · 23 Oct · 1.2 MB'], ['image', 'monzo-pot.png', 'Asha · 22 Oct · 142 KB'], ['description', 'silver-etc-factsheet.pdf', 'You · 21 Oct · 1.1 MB'], ['image', 'monzo-valuations.png', 'You · 20 Oct · 196 KB']].map((f) => ({ icon: f[0], fname: f[1], meta: f[2] }))
           };
         }

@@ -124,7 +124,7 @@ whole household's wealth later are the same records, not a migration.
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
 | Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so MyPaisa says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with chips: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
-| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable with the chat beside it), plus the audit log of every change and what the agent did and spent; read-only |
+| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it in a window over about 900 pt and a sheet away in a narrower one), plus the audit log of every change and what the agent did and spent; read-only |
 | Open `console.mypaisapp.com` on your laptop, or the web app you installed | Sign in with Apple, Google or a passkey; the same dashboard, Audit and Activity, and for the owner the Admin center; read-only, and every change still made in the app's chat |
 | Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
 | Tap **Today** | The morning brief: what moved, why, anything to do |
@@ -305,16 +305,18 @@ off, and a user is created only when someone joins through an invite.
 | Step | How |
 | --- | --- |
 | The buttons | The app shows Apple's and Google's own buttons, Apple's first, and nothing else. Sign in with Apple runs natively (`ASAuthorizationAppleIDProvider`, no name or email asked for); Google runs through Google's iOS SDK in the system's web sheet, with PKCE. |
-| The token | Before either sheet opens, the app asks the api for a one-time nonce; Apple's identity token (carrying the nonce's SHA-256) or Google's ID token (carrying the nonce) comes back. |
+| The token | Before either sheet opens, the app asks the api for a one-time nonce (`/auth/nonce`); Apple's identity token (carrying the nonce's SHA-256) or Google's ID token (carrying the nonce) comes back. |
 | The exchange | The app posts the token to `/auth/apple` or `/auth/google`. The api finds the member that provider account (`sub`) is linked to and starts Cognito's custom auth for them; the verify trigger checks the token against Apple's or Google's published keys: issuer, audience (the app's bundle id for Apple, the environment's Google iOS client id for Google), expiry, an issue time under five minutes, the nonce, and no replay. Cognito then issues that member's tokens. |
 | An unknown account | An Apple or Google account linked to no member is refused, whatever its address, unless the request carries a valid invite token, which creates the member (Joining, below). A paused member gets one line and nothing else (MA-102). |
 | In a browser | The web app (§9.4) shows the same two buttons, through Sign in with Apple's JS (the environment's Services ID as the audience) and Google Identity Services (the environment's Google web client id), and a passkey. The same `/auth/apple` and `/auth/google` exchange runs; no client secret is used. The api then sets an `HttpOnly`, `Secure`, `SameSite=Strict` session cookie for its own host, with five-minute access tokens behind it that page scripts never see. |
-| A passkey | A member adds one from You (MA-77), in the app or the web app. To sign in with it, the app or the page asks `/auth/passkey/options` for a one-time WebAuthn challenge, the device signs it under Face ID or Touch ID, and the assertion goes to `/auth/passkey`; the api starts Cognito's custom auth for the member whose credential it is, and the verify trigger checks the signature against that credential's stored public key, the challenge, the origin and the relying-party id. The relying-party id is the environment's console domain (`console.mypaisapp.com`, `console-dev.mypaisapp.com`): it is the web app's origin and serves the iOS app's association file, whose `webcredentials` entry lets one passkey work in both. MA-109 confirms it before anyone registers a passkey; changing it later strands every passkey made. In a browser the api then sets the same session cookie. |
+| A passkey | A member adds one from You in the app (MA-77). In the app it answers the second check (below), never the sign-in screen, which shows Apple and Google only; in a browser it signs in to the web app. To sign in with it, the page asks `/auth/passkey/options` for a one-time WebAuthn challenge, the device signs it under Face ID or Touch ID, and the assertion goes to `/auth/passkey`; the api starts Cognito's custom auth for the member whose credential it is, and the verify trigger checks the signature against that credential's stored public key, the challenge, the origin and the relying-party id. The relying-party id is the environment's console domain (`console.mypaisapp.com`, `console-dev.mypaisapp.com`): it is the web app's origin and serves the iOS app's association file, whose `webcredentials` entry lets one passkey work in both. MA-109 confirms it before anyone registers a passkey; changing it later strands every passkey made. In a browser the api then sets the same session cookie. |
+| A new device | Signing in on a device or a browser the member has not used before sends a push to their other devices and a card in their chat: "Signed in on Asha's iPad, 09:12. Was this you?", with Sign out that device; the owner sees it in Members and devices (MA-102, MA-76). |
 | On the device | Tokens live in the Keychain, this device only, readable after first unlock. Access tokens last five minutes and are refreshed in the background with the refresh token, which rotates on use. Each signed-in iPhone or iPad is a `Device` row with its name, model, last seen and push token. |
 | Every call | The api's authorizer checks the access token, the member's status and session epoch on every HTTP call and every live connection (§21). Sign out everywhere and pause use Cognito's own calls (`AdminUserGlobalSignOut`, `AdminDisableUser`) together with the member's session epoch, so they take effect on the next request (MA-102); signing out one device deletes its `Device` row and revokes its refresh token. |
 
 **The second check** (MA-76, MA-102). Some actions need proof that the member
-is holding the device now: the owner's Admin center actions (§9.3), an
+is holding the device now: the owner's admin actions (§9.3), from the Admin
+center or the admin's chat (§20.3), an
 import's Confirm and rolling an import back (§18.5, §22.2), leaving the
 household (MA-172), and nothing else. The app asks
 the api for a challenge bound to that action, then gets a fresh assertion:
@@ -967,7 +969,8 @@ The screens, all read-only:
 - **Home, a holding, Overlap, Scorecard**: as the boards, with the Household /
   Me / member switch from §4.5. A holding's screen has Why?, What if?, Ask about
   it, and Update value, which opens the chat with the guided flow already
-  started (MA-80). On iPad the chat sits beside them.
+  started (MA-80). On an iPad or a foldable the chat sits beside them in a
+  window over about 900 pt, and is a sheet away in a narrower one (§9.1).
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
   and date; each row shows before and after and links to the run that made it,
   and a row made from a file opens that file in Quick Look; **Files** lists
@@ -1033,7 +1036,8 @@ chat: every change is still a card and a Confirm tap in the iOS app.
   display, and an install prompt only after a second visit. Privacy mode hides
   pounds here too.
 - **One site, two jobs:** the console also serves the iOS app's
-  `apple-app-site-association` file, so an invite link
+  `apple-app-site-association` file (its `applinks` for the links, and its
+  `webcredentials`, so a passkey made in the app signs in to the web app; §4.5), so an invite link
   (`https://console.mypaisapp.com/join/<token>`) or a link to a holding opens
   the iOS app on a phone that has it, and the web page anywhere else (MA-73).
 - **Hosting:** S3 and CloudFront per environment, with the existing wildcard
@@ -1427,7 +1431,7 @@ a daily digest instead.
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
-| Front end | One native SwiftUI app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger): the chat with native cards and Swift Charts, and the read-only dashboard, Audit, Activity and the Admin center beside it on every size of iPhone, iPad and foldable; and the web app, a read-only PWA for the same dashboard and the Admin center in a browser; no Telegram (MA-161, 25 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "we have webapp for the dashboard and admin portal pwa"; native sign-in, push and Face ID for the chat, any browser for reading |
+| Front end | One native SwiftUI app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger): the chat with native cards and Swift Charts, and the read-only dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them over about 900 pt and a sheet away below; and the web app, a read-only PWA for the same dashboard and the Admin center in a browser; no Telegram (MA-161, 25 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "we have webapp for the dashboard and admin portal pwa"; native sign-in, push and Face ID for the chat, any browser for reading |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 | The kill switch's name | `/pause` and `/resume`, kept though PAUSE is also a stance; the stance only appears on a holding's card with its confidence, never as a command (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Three different things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §8); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5); the PAUSE stance is a view on one holding |
@@ -1530,7 +1534,7 @@ apex keeps serving the old tracker until MA-97 hands the zone over.
 
 | Name | What | dev | prod |
 | --- | --- | --- | --- |
-| API | API Gateway HTTP API custom domain: `/auth/apple`, `/auth/google`, `/auth/passkey/options`, `/auth/passkey`, `/v1/chat/...`, `/v1/...` (read-only data), `/v1/admin/...`, `/v1/devices`, `/v1/uploads` | `api-dev.mypaisapp.com` | `api.mypaisapp.com` |
+| API | API Gateway HTTP API custom domain: `/auth/nonce`, `/auth/apple`, `/auth/google`, `/auth/passkey/options`, `/auth/passkey`, `/v1/chat/...`, `/v1/...` (read-only data), `/v1/admin/...`, `/v1/devices`, `/v1/uploads` | `api-dev.mypaisapp.com` | `api.mypaisapp.com` |
 | Live | API Gateway WebSocket API custom domain: the app's live connection (§21) | `live-dev.mypaisapp.com` | `live.mypaisapp.com` |
 | Sign-in | No domain of its own: the app and the web app sign in through the api's `/auth/*` routes, which call Cognito's API; the passkeys' relying party is the console's domain (§4.5) | (`console-dev.mypaisapp.com`) | (`console.mypaisapp.com`) |
 | Console | S3 + CloudFront: the web app (a PWA), the iOS app's `apple-app-site-association` file and the invite page; no data | `console-dev.mypaisapp.com` | `console.mypaisapp.com` |

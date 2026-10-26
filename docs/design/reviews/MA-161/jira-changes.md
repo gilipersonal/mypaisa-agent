@@ -42,7 +42,7 @@ MA-155, MA-157, MA-159; MA-6 and the other tooling issues outside the phases).
 | MA-71 | 5 | Design the Audit and Activity screens on iPhone and iPad | Was both sets of web boards |
 | MA-72 | 5 | Each member's Apple Account and Google account use two-factor authentication, and each device has a passcode and Face ID | Was the Google web client, the bot's web domain and Telegram's two-step |
 | MA-74 | 5 | A read-only api Lambda serves each member only what they may see | Unchanged summary; the description drops the cookie and CORS, adds the Bearer token |
-| MA-76 | 5 | The second check: a fresh Sign in with Apple or passkey under Face ID, bound to the action and verified by the server | Was the browser sign-in with Telegram, Google or a passkey |
+| MA-76 | 5 | The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server | Was the browser sign-in with Telegram, Google or a passkey |
 | MA-77 | 5 | A member adds a second sign-in, Apple or Google, or a passkey, to their identity from You | Was the six-digit code linking Google from Telegram |
 | MA-78 | 5 | Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad | Was the Mini App and the browser |
 | MA-79 | 5 | The Audit and Activity screens show every change and every run, with what it cost | "pages" |

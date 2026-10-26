@@ -12,6 +12,7 @@
   --lg-fill-strong: rgba(255, 255, 255, 0.94);
   --lg-accent: #8C2410;                       /* the selected tab and an accent label on glass */
   --lg-up: #125529;                           /* a gain on glass (the household strip) */
+  --lg-mask: #BCB4A7;                         /* a privacy mask on glass: plainly there at 25% (MA-181) */
   --lg-edge: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 1px rgba(255, 255, 255, 0.35), 0 0 0 0.5px rgba(20, 23, 31, 0.10);
   --lg-lift: 0 10px 30px rgba(20, 23, 31, 0.12), 0 2px 6px rgba(20, 23, 31, 0.06);
   --lg-lens: rgba(20, 23, 31, 0.06);          /* the selected tab's lens */
@@ -26,6 +27,7 @@
   --lg-fill-strong: rgba(24, 30, 40, 0.94);
   --lg-accent: #FFC2B3;
   --lg-up: #8BEFB0;
+  --lg-mask: #4E5B76;
   --lg-edge: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 1px rgba(255, 255, 255, 0.06), 0 0 0 0.5px rgba(255, 255, 255, 0.10);
   --lg-lift: 0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
   --lg-lens: rgba(255, 255, 255, 0.12);
@@ -83,6 +85,7 @@
 .tab .ms { font-size: 24px; }
 .tab.on { color: var(--lg-accent); background: var(--lg-lens); }
 .lg .mp-up, .strip .mp-up { color: var(--lg-up); }
+.lg .mp-mask, .strip .mp-mask { background: var(--lg-mask); }
 .tab.on .ms { font-variation-settings: "FILL" 1, "wght" 500, "opsz" 24; }
 .tabsearch { width: 64px; height: 64px; border-radius: 999px; display: grid; place-items: center; flex: none; }
 .tabsearch .ms { font-size: 26px; }

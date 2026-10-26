@@ -215,7 +215,7 @@
                         <div class="mp-row arow">
                           <sc-if value="{{ f.img }}" hint-placeholder-val="{{ true }}"><span class="thumb"></span></sc-if><sc-if value="{{ f.doc }}" hint-placeholder-val="{{ false }}"><span class="ktile" style="background:var(--mp-surface-2)"><span class="ms">{{ f.icon }}</span></span></sc-if>
                           <span class="grow">
-                            <span class="mp-hl ell">{{ f.name }}</span>
+                            <span class="mp-hl" style="overflow-wrap:anywhere">{{ f.name }}</span>
                             <span class="mp-foot mp-ink2 ell">{{ f.meta }} · {{ f.by }}</span>
                             <span class="mp-foot mp-ink2">{{ f.fed }}</span>
                           </span>
@@ -305,7 +305,7 @@
                           <div class="fx jb ac"><span class="mp-sub">AWS and others</span><span class="mp-sub mp-w6">£3 of £50 · 6%</span></div>
                           <div class="meter mp-track"><span class="meter-f" style="width:6%"></span></div>
                         </div>
-                        <div class="sech"><span class="mp-over mp-ink2">Today's runs</span><span class="mp-foot mp-ink2">showing 7 of 14 · $0.27 so far</span></div>
+                        <div class="sech"><span class="mp-over mp-ink2">Today's runs</span><span class="mp-foot mp-ink2">showing 7 of 13 · $0.25 so far</span></div>
                         <div class="mp-group">
                           <sc-for list="{{ runsA }}" as="r" hint-placeholder-count="4">
                             <div class="mp-row runr"><span class="mp-sub mp-w6">{{ r.time }}</span><span class="mc"><span class="mp-hl ell">{{ r.job }}</span><span class="mp-foot mp-ink2">{{ r.line }}</span><span class="tline ell">{{ r.tools }}</span></span><span class="fx col" style="align-items:flex-end;gap:4px"><span class="mp-sub mp-w6">{{ r.cost }}</span><span class="ms okc">{{ r.icon }}</span></span></div>
@@ -417,14 +417,14 @@
           };
           const E = (o) => Object.assign({ hasFile: false, file: F.pot, change: o.note || (o.before + ' → ' + o.after) }, o);
           const arun = { who: 'Arun', init: 'Ar' }, asha = { who: 'Asha', init: 'As' };
-          // run ids rise with time: 07:15 brief r-1184, 07:58 file r-1186, 08:02 Asha r-1187, Arun's chats 08:05 to 08:20 r-1188 to r-1191, 08:40 buy r-1192 (Confirm 08:41), 08:50 to 08:56 r-1193 to r-1195, 09:41 file r-1196
+          // run ids rise with time (a gap is an action no board draws): 07:15 brief r-1184, 07:58 file r-1186, 08:02 Asha r-1187, Arun's chats 08:05 to 08:56 r-1188 to r-1194, 09:41 file r-1196; the £200 buy is logged at 20:41, after every board here
           const runs = [
             { time: '02:00', job: 'News scoring', line: 'Haiku, batched · 1 call · 38.2k tokens', tools: '64 headlines scored', cost: '$0.02', icon: 'check_circle' },
             { time: '07:00', job: 'Ingest prices', line: 'No model · 5 of 5 priced · 12 s', tools: 'yfinance, iShares NAV, ECB', cost: '$0.00', icon: 'check_circle' },
             { time: '07:04', job: 'Engine', line: 'No model · self-test passed · 8 s', tools: 'signals for 5 holdings', cost: '$0.00', icon: 'check_circle' },
             { time: '07:15', job: 'Morning brief', line: 'Sonnet, Haiku · 3 calls · 5.4k tokens', tools: 'get_portfolio, get_signals, +2', cost: '$0.03', icon: 'check_circle' },
             { time: '08:02', job: 'Chat · Asha', line: 'Sonnet · 3 calls · 7.8k tokens · 2 web searches', tools: 'get_signals, web_search', cost: '$0.06', icon: 'check_circle' },
-            { time: '08:40', job: 'Chat · Arun', line: 'Sonnet · 2 calls · 4.1k tokens', tools: 'get_holding, propose_change', cost: '$0.02', icon: 'check_circle' },
+            { time: '08:56', job: 'Chat · Arun', line: 'Sonnet · 3 calls · 14.0k tokens', tools: 'read_file, propose_change', cost: '$0.06', icon: 'check_circle' },
             { time: '21:15', job: 'Evening wrap', line: 'Scheduled, not run yet', tools: '', cost: '—', icon: 'schedule' }
           ];
           return {
@@ -432,7 +432,6 @@
             tabsAct: tabs('Activity'),
             days: [
               { day: 'Today · Fri 23 Oct', ents: [
-                E(Object.assign({ time: '08:41', rec: 'Transaction', what: 'Bought £200 of Balanced', before: 'units 1,234.5', after: '1,245.3', via: 'typed, then Confirm', run: 'r-1192' }, arun)),
                 E(Object.assign({ time: '07:58', rec: 'File opened', what: 'Opened monzo-pot.png', note: 'a five-minute link, until 08:03', via: 'Quick Look, from Audit', run: 'r-1186' }, arun)) ] },
               { day: 'Thu 22 Oct', ents: [
                 E(Object.assign({ time: '19:02', rec: 'Valuation', what: 'Cash pot, from a screenshot', before: '£120', after: '£181', via: 'screenshot, then Confirm', run: 'r-1170', hasFile: true, file: F.pot }, asha)) ] },

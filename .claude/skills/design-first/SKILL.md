@@ -80,7 +80,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
      app v1 for the web app; each door's one spec.
   3. The design system in force: **MyPaisa DS v1** ("Warm ledger", picked by Arun on 24 Oct 2026, MA-101): `tokens.css`,
      the shared motion (`motion.css`, `motion.js`) and the iOS kit (`iOS kit.dc.html`, `ios.css`) in the MyPaisa DS v1
-     Claude Design project, copied into `docs/design/ds-v1/` (the source; `docs/design/reviews/MA-101/tokens.css` is the record of the first pick, before MA-181 tuned dark mode);
+     Claude Design project, copied into `docs/design/ds-v1/` (the only source; `docs/design/reviews/MA-101/tokens.css` is the record of the first pick, before MA-181 tuned both themes for 25% brightness, and a `tokens.css` in any other `reviews/` folder is a snapshot of its round, never a source);
      then Apple's Human Interface Guidelines, which the kit follows. The Mini App and Telegram boards in MyPaisa app
      v1, the Telegram kit and the Nocturne artboards in `docs/design/dashboard/` are superseded (MA-161).
   4. impeccable.
@@ -195,9 +195,12 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   the superseded record (MA-161). A significant revision is a new file or a new vN, never an overwrite of what Arun
   picked from.
 - **`tokens.css` and the motion files are copied** from the DS project into the iOS and app projects, and `ios.css`
-  into the iOS project, after every change (`copy_files`); `tokens.css` also into `docs/design/reviews/MA-<n>/` in the repo, so the repo always has the system's
-  source; once `ios/` exists, its colour assets are generated from `tokens.css` (MA-165). A token change runs
-  `python3 scripts/contrast_check.py` before it is copied.
+  into the iOS project, after every change (`copy_files`), then all of them are mirrored into the repo; a snapshot of
+  `tokens.css` goes into `docs/design/reviews/MA-<n>/` at the end of the round, as its record. `docs/design/ds-v1/`
+  is the source; once `ios/` exists, its colour assets are generated from it (MA-165). A token change is measured
+  before it is copied: mirror the DS change and run `python3 scripts/contrast_check.py --report`, where every pair
+  must pass and only the copies not yet made may fail; after `copy_files` and a re-mirror the whole gate
+  (`--selftest`, then the plain run) passes.
 - **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in
   Arun's words, the Claude Design links, the options with rationale and trade-offs, what the build would touch, the
   glitches found and fixed, the pick and its date) and `tokens.css`.

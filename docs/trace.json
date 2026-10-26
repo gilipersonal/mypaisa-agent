@@ -597,7 +597,8 @@
    "undrawn": [
     "adding a holding",
     "updating a valuation",
-    "changing a setting"
+    "changing a setting",
+    "the long-list question in a guided flow: a short list, More, and Type the name (iPhone · Guided flow shows only the step already answered)"
    ]
   },
   {
@@ -1336,7 +1337,8 @@
    ],
    "notes": "Drawn in Warm ledger under MA-101 (picked 24 Oct 2026); Scorecard is drawn as Track record. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look. Drawn: Overlap, Scorecard and sign-in at regular width, in part: Overlap and Scorecard are drawn on iPad · Overlap and Scorecard; sign-in at regular width stays listed.",
    "undrawn": [
-    "sign-in at regular width"
+    "sign-in at regular width",
+    "Foldable · Open redrawn to the width rule: at 880 pt the chat is a sheet over the screen and the sidebar a tab bar at the top; the board draws a column beside it (ARCHITECTURE 9.1)"
    ]
   },
   {
@@ -1454,7 +1456,7 @@
    "type": "Story",
    "epic": "MA-14",
    "phase": 5,
-   "summary": "The second check: a fresh Sign in with Apple or passkey under Face ID, bound to the action and verified by the server",
+   "summary": "The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server",
    "status": "To Do",
    "labels": [
     "design"
@@ -1479,7 +1481,11 @@
    ],
    "notes": "Browser · Login has Apple, Google and a passkey (ARCHITECTURE.md §4.5, §9.4); redrawn for MA-185 in MA-161. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look.",
    "undrawn": [
-    "the second check for a member who signs in only with Google: Google's sheet again, bound to the action (ARCHITECTURE 4.5)"
+    "the second check for a member who signs in only with Google: Google's sheet again, bound to the action (ARCHITECTURE 4.5)",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
+   ],
+   "open": [
+    "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account) (asked on MA-77; it decides this story's exact list and its test that no other action asks)"
    ]
   },
   {
@@ -1507,7 +1513,8 @@
    "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts.",
    "undrawn": [
     "the message Asha gets when the owner unlinks one of her sign-ins (a change to her sign-in is never silent; the owner can only unlink, ARCHITECTURE 4.5)",
-    "the Link a Google account page's refusal after a code, on the web's Telegram-era flow (Wealth): taken out with that flow, or redrawn for adding a second sign-in, as MA-185 lists it (fix made, waiting on MA-160)"
+    "the Link a Google account page's refusal after a code, on the web's Telegram-era flow (Wealth): taken out with that flow, or redrawn for adding a second sign-in, as MA-185 lists it (fix made, waiting on MA-160)",
+    "iPhone · Sign-in methods' Remove control, its Confirm, and the refusals: removing the last method, and a method already linked to someone else"
    ],
    "open": [
     "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account)"
@@ -2306,7 +2313,9 @@
     "Signing back in after a pause: this story's acceptance says signing in with Google or the passkey restores the account, while the picked Flow 5.3 (and Admin center 3's boards) add a Restore tap after signing in. Neither can happen as drawn: ARCHITECTURE 4.5 pauses with Cognito's AdminDisableUser, and a disabled user cannot sign in at all, with Apple, Google or a passkey (one Cognito user per member, 16). Settle how a paused member, the owner included, gets back: the owner restores them from the Admin center, or pause uses the session epoch alone and leaves the Cognito user enabled."
    ],
    "undrawn": [
-    "the web Admin center's People boards redrawn for Apple, Google and passkeys: no Telegram account to pause or restore, no Telegram handle, chip or desktop session, and Flow 5.3's sign-in page (Admin center, Admin center 3; MA-161)"
+    "the web Admin center's People boards redrawn for Apple, Google and passkeys: no Telegram account to pause or restore, no Telegram handle, chip or desktop session, and Flow 5.3's sign-in page (Admin center, Admin center 3; MA-161)",
+    "iPhone · A member's Unlink a sign-in method action, behind the second check, and the message the member gets",
+    "the new-device message: a push to the member's other devices and a chat card, \"Was this you?\", with Sign out that device (ARCHITECTURE 4.5)"
    ]
   },
   {
@@ -2670,7 +2679,8 @@
    "undrawn": [
     "the ceiling moved below what is already spent, so Claude stops at once",
     "Admin center 3 · Telegram · Ceiling moved, its intro saying the new $50 ceiling is above the $41.20 already spent (fix made, waiting on MA-160)",
-    "iPhone · Spend's Type the hard limit control, which iPhone · Move the ceiling relies on, with the hard limit agreeing with 15.1 (prod starts at $160)"
+    "iPhone · Spend's Type the hard limit control, which iPhone · Move the ceiling relies on, with the hard limit agreeing with 15.1 (prod starts at $160)",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
    ]
   },
   {
@@ -3357,9 +3367,10 @@
      "board": "Browser · Admin · Alerts · Replayed, and failed again"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Replay asks for the second check (Face ID), as MA-145's acceptance requires, in the app and the web app. The screens in its undrawn list were drawn in MA-158 (25 Oct 2026). MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first).",
+   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Replay asks for the second check, as MA-145's acceptance requires: in the app a fresh Sign in with Apple or a passkey under Face ID (Google again for a Google-only member), in the web app a passkey or a fresh sign-in. The screens in its undrawn list were drawn in MA-158 (25 Oct 2026). MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first).",
    "undrawn": [
-    "the \"still want this?\" reply to an old message, and the refusal of an expired Confirm, in the chat"
+    "the \"still want this?\" reply to an old message, and the refusal of an expired Confirm, in the chat",
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
    ]
   },
   {
@@ -3445,7 +3456,10 @@
      "board": "Browser · Files"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards."
+   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
+   "undrawn": [
+    "the browser boards (Browser, Audit and files) redrawn to the iOS boards' household, figures and audit ledger, so the web app shows the same figures and the same rows and runs as the app (lesson 13; MA-161)"
+   ]
   },
   {
    "key": "MA-150",
@@ -4012,7 +4026,10 @@
      "board": "iPhone · App switcher"
     }
    ],
-   "notes": ""
+   "notes": "",
+   "open": [
+    "Pause and privacy from You: iPhone · You and iPhone · Pause and resume let Pause (which stops every brief and alert) and privacy mode act at once, with no card or Confirm, while iPhone · You's own rule sends any preference that changes what MyPaisa sends to a chat card and Confirm (ARCHITECTURE 1, rule 4). Either both act at once and the rule names them as exceptions, or both go through a card and Confirm. (asked on MA-35; MA-171's privacy toggle is drawn acting at once, so this story waits for the same answer)"
+   ]
   },
   {
    "key": "MA-172",
@@ -4291,7 +4308,8 @@
     "the installed PWA: its standalone window and its install prompt",
     "a holding's Update saying the change is made in the MyPaisa app's chat",
     "Browser · Overview's Open chat and the holding page's Ask in the chat, taken out or made to say the change is made in the app: the web app has no chat (ARCHITECTURE 9.4)",
-    "Responsive's frames as a browser window and the installed PWA, without Telegram Desktop or the Mini App's header (MA-161)"
+    "Responsive's frames as a browser window and the installed PWA, without Telegram Desktop or the Mini App's header (MA-161)",
+    "the browser boards (Browser, Audit and files) redrawn to the iOS boards' household, figures and audit ledger, so the web app shows the same figures and the same rows and runs as the app (lesson 13; MA-161)"
    ]
   },
   {
@@ -4344,7 +4362,10 @@
      "board": "Browser · Admin · Alerts"
     }
    ],
-   "notes": "Audit and Activity's browser boards were picked on MA-71 and MA-79; the Admin center's are planned. The web app stays (MA-161)."
+   "notes": "Audit and Activity's browser boards were picked on MA-71 and MA-79; the Admin center's are planned. The web app stays (MA-161).",
+   "undrawn": [
+    "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)"
+   ]
   },
   {
    "key": "MA-185",
@@ -4372,7 +4393,8 @@
    ],
    "notes": "The login board was picked with Telegram's button on it; MA-161 redrew it (Browser · Login in Browser 2.dc.html), so it is planned again until Arun looks at it in this story's options round. Drawn: the sign-in page with Sign in with Apple, Google and a passkey, without Telegram.",
    "undrawn": [
-    "the Prototype's Login link to the Telegram-era Link a Google account flow, removed or redrawn for adding a second sign-in (Prototype, Wealth; MA-161)"
+    "the Prototype's Login link to the Telegram-era Link a Google account flow, removed or redrawn for adding a second sign-in (Prototype, Wealth; MA-161)",
+    "Browser · Login's refusals: an account linked to nobody, a member removed or paused, and an invite link opened in a browser (it says to open it on the iPhone, ARCHITECTURE 4.5)"
    ]
   }
  ],

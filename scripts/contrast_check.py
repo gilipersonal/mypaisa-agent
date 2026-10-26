@@ -73,7 +73,7 @@ PAIRS = [
 # glass dark and its labels light); in dark it is the brightest, the accent button. The backdrop is read from the
 # tokens, so a new accent moves it. Foregrounds named lg-* come from ios.css, the rest from tokens.css.
 GLASS_BACKDROP = "accent"
-GLASS_TEXT = [("body", "ink"), ("text", "ink-2"), ("text", "lg-accent"), ("text", "lg-up")]
+GLASS_TEXT = [("body", "ink"), ("text", "ink-2"), ("text", "lg-accent"), ("text", "lg-up"), ("presence", "lg-mask")]
 
 
 def parse(css: str) -> dict[str, dict[str, str]]:
@@ -137,6 +137,26 @@ def ios_glass(theme: str) -> dict[str, str]:
     return vals
 
 
+def strays() -> list[str]:
+    """A colour token declared outside the blocks the gate reads would change what the screens show without being
+    measured: any --mp-* colour in tokens.css outside the light root and .t-dark blocks, and any --lg-* colour in
+    ios.css outside the .mp and dark .mp blocks."""
+    bad = []
+    colour = r"(#[0-9A-Fa-f]{3,8}\b|rgba?\()"
+    for name, prefix, read in (("tokens.css", "mp", lambda sel: sel in (":root, .t-light", ".t-dark")),
+                               ("ios.css", "lg", lambda sel: sel == ".mp" or (".t-dark" in sel and sel.replace(" ", "") in (".t-dark.mp,.t-dark.mp",)))):
+        p = DESIGN / "ds-v1" / name
+        if not p.exists():
+            continue
+        css = re.sub(r"/\*.*?\*/", "", p.read_text(), flags=re.S)
+        for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", css):
+            sel = " ".join(m.group(1).split(";")[-1].split())  # a selector, without any @import before it
+            for tok, val in re.findall(r"--(" + prefix + r"-[\w-]+)\s*:\s*([^;]+);", m.group(2)):
+                if re.search(colour, val) and not read(sel):
+                    bad.append(f"--{tok} is set in {name} under '{sel}', outside the blocks the gate measures")
+    return bad
+
+
 def copies() -> list[str]:
     """Each mirrored copy of a shared file that is missing or differs from ds-v1's."""
     bad = []
@@ -151,18 +171,52 @@ def copies() -> list[str]:
 
 # Faults the gate must refuse, each made on a copy of the files (MA-161 review, round 1, findings a1 to a3). The copy
 # first gets ds-v1's shared files in every board project, so a case tests the gate, not the mirror's state today.
-SELFTEST = {
-    "dark-glass-thin-reordered": ("ds-v1/ios.css", r"\.t-dark\.mp, \.t-dark \.mp \{\n  --lg-fill: [^;]+;", ".t-dark .mp, .t-dark.mp {\n  --lg-fill: rgba(24, 30, 40, 0.05);"),
-    "light-glass-thin": ("ds-v1/ios.css", r"(\.mp \{\n(?:.*\n)*?  --lg-fill: )[^;]+;", r"\1rgba(255, 255, 255, 0.30);"),
-    "hex8-alpha": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-ink-3: #[0-9A-Fa-f]{6})", r"\g<1>40"),
-    "ios-css-missing": ("ds-v1/ios.css", None, None),
-    "glass-accent-low": ("ds-v1/ios.css", r"--lg-accent: #[0-9A-Fa-f]{6};", "--lg-accent: #E0806C;"),
-    "copy-differs": ("ios-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-ink-2: )#[0-9A-Fa-f]{6}", r"\1#3A4250"),
-    "mark-lost-on-track": ("ds-v1/tokens.css", r"--mp-ccy-other: #[0-9A-Fa-f]{6};", "--mp-ccy-other: #B4B6BC;"),
-    "track-vanishes": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#F4F4F6"),
-    "mask-vanishes": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-mask: )#[0-9A-Fa-f]{6}", r"\1#1A222F"),
-    "hero-gain-dim": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-hero-up: )#[0-9A-Fa-f]{6}", r"\1#2E8F52"),
+SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce; a None pattern deletes the file)
+    "dark-glass-thin-reordered": ("ds-v1/ios.css", r"\.t-dark\.mp, \.t-dark \.mp \{\n  --lg-fill: [^;]+;", ".t-dark .mp, .t-dark.mp {\n  --lg-fill: rgba(24, 30, 40, 0.05);", r"t-dark .* on glass"),
+    "light-glass-thin": ("ds-v1/ios.css", r"(\.mp \{\n(?:.*\n)*?  --lg-fill: )[^;]+;", r"\1rgba(255, 255, 255, 0.30);", r"t-light .* on glass"),
+    "hex8-alpha": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-ink-3: #[0-9A-Fa-f]{6})", r"\g<1>40", r"t-dark .* ink-3 on"),
+    "ios-css-missing": ("ds-v1/ios.css", None, None, r"ios\.css is missing"),
+    "glass-accent-low": ("ds-v1/ios.css", r"--lg-accent: #[0-9A-Fa-f]{6};", "--lg-accent: #E0806C;", r"lg-accent on glass"),
+    "glass-mask-vanishes": ("ds-v1/ios.css", r"--lg-mask: #[0-9A-Fa-f]{6};", "--lg-mask: #F2F0EC;", r"t-light .* lg-mask on glass"),
+    "copy-differs": ("ios-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-ink-2: )#[0-9A-Fa-f]{6}", r"\1#3A4250", r"ios-v1/tokens\.css differs"),
+    "mark-lost-on-track": ("ds-v1/tokens.css", r"--mp-ccy-other: #[0-9A-Fa-f]{6};", "--mp-ccy-other: #B4B6BC;", r"ccy-other on track"),
+    "track-vanishes": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#F4F4F6", r"t-light .* track on surface"),
+    "mask-vanishes": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-mask: )#[0-9A-Fa-f]{6}", r"\1#1A222F", r"t-dark .* mask on surface"),
+    "hero-gain-dim": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-hero-up: )#[0-9A-Fa-f]{6}", r"\1#2E8F52", r"t-light .* hero-up on hero"),
+    "stray-glass-block": ("ds-v1/ios.css", r"\Z", "\n.t-light .mp { --lg-fill: rgba(255, 255, 255, 0.30); }\n", r"--lg-fill .* outside"),
+    "stray-token-block": ("ds-v1/tokens.css", r"\Z", "\n.t-dark .mp { --mp-ink-3: #5A6372; }\n", r"--mp-ink-3 .* outside"),
 }
+
+
+def mutate(root: Path, rel: str | None, pat: str | None, rep: str | None, before_copy: bool) -> bool:
+    """Make one fault in the copy under root. A DS v1 file is changed first and then copied into every board project,
+    as Claude Design's copy_files would, so the copies agree and only the fault itself can fail the gate; a board
+    project's own copy is changed after the copy, so it differs."""
+    design = root / "docs" / "design"
+    ok = True
+    if rel and before_copy:
+        ok = _apply(design / rel, pat, rep)
+    for f, projects in COPIES.items():
+        src = design / "ds-v1" / f
+        for proj in projects:
+            (design / proj).mkdir(parents=True, exist_ok=True)
+            dst = design / proj / f
+            if src.exists():
+                shutil.copy(src, dst)
+            elif dst.exists():
+                dst.unlink()
+    if rel and not before_copy:
+        ok = _apply(design / rel, pat, rep)
+    return ok
+
+
+def _apply(target: Path, pat: str | None, rep: str | None) -> bool:
+    if pat is None:
+        target.unlink()
+        return True
+    new, n = re.subn(pat, rep, target.read_text(), count=1)
+    target.write_text(new)
+    return n == 1
 
 
 def selftest(cases: list[str]) -> int:
@@ -173,32 +227,33 @@ def selftest(cases: list[str]) -> int:
             (root / "scripts").mkdir()
             shutil.copy(__file__, root / "scripts" / "contrast_check.py")
             for f in COPIES:
-                for proj in ("ds-v1",) + COPIES[f]:
-                    (root / "docs" / "design" / proj).mkdir(parents=True, exist_ok=True)
-                    shutil.copy(DESIGN / "ds-v1" / f, root / "docs" / "design" / proj / f)
+                (root / "docs" / "design" / "ds-v1").mkdir(parents=True, exist_ok=True)
+                shutil.copy(DESIGN / "ds-v1" / f, root / "docs" / "design" / "ds-v1" / f)
+            expect = None
             if name != "baseline":
                 if name not in SELFTEST:
                     print(f"selftest: no case {name!r}")
                     bad += 1
                     continue
-                rel, pat, rep = SELFTEST[name]
-                target = root / "docs" / "design" / rel
-                if pat is None:
-                    target.unlink()
-                else:
-                    text = target.read_text()
-                    new, n = re.subn(pat, rep, text, count=1)
-                    if n != 1:
-                        print(f"FAIL selftest {name}: the mutation found nothing to change in {rel}")
-                        bad += 1
-                        continue
-                    target.write_text(new)
+                rel, pat, rep, expect = SELFTEST[name]
+                if not mutate(root, rel, pat, rep, before_copy=rel.startswith("ds-v1/")):
+                    print(f"FAIL selftest {name}: the mutation found nothing to change in {rel}")
+                    bad += 1
+                    continue
+            else:
+                mutate(root, None, None, None, before_copy=True)
             r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "contrast_check.py")], capture_output=True, text=True)
-            want = 0 if name == "baseline" else 1
-            ok = r.returncode == want
+            fails = [line for line in (r.stdout + r.stderr).splitlines() if "FAIL" in line]
+            if expect is None:
+                ok, why = r.returncode == 0, f"exit {r.returncode}"
+            else:
+                # refused for the right reason: the expected FAIL line, and no stray copy failure from the harness
+                hit = any(re.search(expect, line) for line in fails)
+                stray = name != "copy-differs" and any("differs from docs/design/ds-v1/" in line for line in fails)
+                ok, why = r.returncode == 1 and hit and not stray, f"exit {r.returncode}, expected /{expect}/ {'found' if hit else 'not found'}{', copies out of step' if stray else ''}"
             bad += not ok
-            print(f"{'ok  ' if ok else 'FAIL'} selftest {name}: {'passes' if want == 0 else 'refused'} as it should" if ok
-                  else f"FAIL selftest {name}: exit {r.returncode}, wanted {want}\n{r.stdout[-400:]}")
+            print(f"{'ok  ' if ok else 'FAIL'} selftest {name}: {'passes' if expect is None else 'refused for the right reason'}" if ok
+                  else f"FAIL selftest {name}: {why}\n{(r.stdout + r.stderr)[-400:]}")
     print(f"contrast selftest: {bad} case{'s' if bad != 1 else ''} wrong")
     return 1 if bad else 0
 
@@ -236,6 +291,9 @@ def main(argv: list[str]) -> int:
             if report or not ok:
                 figs = "" if full is None else f"{full:5.2f}:1, {dim:4.2f}:1 at 25%"
                 print(f"{'ok  ' if ok else 'FAIL'} {theme:7} {tier:4} {name:34} {figs} (needs {lo_full}, {lo_dim}){' ' + why if why else ''}")
+    for why in strays():
+        bad += 1
+        print(f"FAIL {why}")
     for path in copies():
         bad += 1
         print(f"FAIL {path} differs from docs/design/ds-v1/ (copy it from DS v1 in Claude Design, then re-mirror)")

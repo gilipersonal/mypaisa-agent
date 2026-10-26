@@ -371,11 +371,15 @@ uv run pytest --cov --cov-fail-under=90
 terraform fmt -check -recursive infra
 for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
-python3 scripts/contrast_check.py
+python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check
+python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py
 ```
 
-`contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css` and the glass fills, in light and
-dark, at full brightness and with the screen at 25%, so text and controls stay clear on a dimmed phone (MA-181).
+`plan_sync.py` keeps the plan, the trace, Jira's keys and the Claude Design mirror in step (MA-155), and refuses a
+board date with a wrong weekday. `contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css`
+and the glass fills, in light and dark, at full brightness and with the screen at 25%, so text and controls stay
+clear on a dimmed phone (MA-181); it fails closed, and fails when a board project's copy differs from DS v1's. Each
+`selftest` breaks copies on purpose and expects the refusal.
 
 A pull request that touches `web/` also takes Playwright screenshots of every page at phone and laptop widths, in
 light and dark, and checks the sign-in cookie's refusals (MA-183, MA-185):
@@ -417,7 +421,7 @@ environment, is the one outside AWS); anything that adds cost is asked about fir
 | Names | `mypaisa-<env>-<part>`, every resource tagged `env` |
 | SQS | `mypaisa-<env>-updates.fifo`, `-outbox.fifo` and `-work`, each with a dead-letter queue and an alarm; replay with `scripts/redrive.sh` (`ARCHITECTURE.md` §21) |
 | Lambda | `api` (the chat API and the dashboard's reads, for the app and the web app), `live` (the WebSocket connections), `agent`, `sender` (to the open app and by Apple push), `worker` (ingest, news, score, docs, engine and briefs by job type), the authorizer and the Cognito auth triggers, one arm64 container image in ECR, a `live` alias per function |
-| API Gateway | per environment, an HTTP API on `api-dev.mypaisapp.com` and `api.mypaisapp.com` (`/auth/apple`, `/auth/google`, `/auth/passkey`, `/v1/chat/...`, the read-only `/v1/...`, `/v1/admin/...` for the owner) and a WebSocket API on `live-dev.mypaisapp.com` and `live.mypaisapp.com` for the open app; the authorizer checks every call and connection (MA-75) |
+| API Gateway | per environment, an HTTP API on `api-dev.mypaisapp.com` and `api.mypaisapp.com` (`/auth/nonce`, `/auth/apple`, `/auth/google`, `/auth/passkey/options`, `/auth/passkey`, `/v1/chat/...`, the read-only `/v1/...`, `/v1/admin/...` for the owner) and a WebSocket API on `live-dev.mypaisapp.com` and `live.mypaisapp.com` for the open app; the authorizer checks every call and connection (MA-75) |
 | Cognito | a user pool per environment, reached only through the api's `/auth/*` routes (no hosted domain): Sign in with Apple and Google, from the app and from a browser, and passkeys with the console's domain as their relying party, all verified in custom-auth triggers (MA-109) |
 | CloudFront + S3 | the console on `console-dev.mypaisapp.com` and `console.mypaisapp.com`: the web app (a PWA), the iOS app's `apple-app-site-association` file and the invite page; the static shell holds no data (MA-73, MA-183) |
 | DNS | the `mypaisapp.com` zone and wildcard certificate belong to the wealth tracker's Terraform; MyPaisa adds six records (`api`, `live` and `console` for each environment) |

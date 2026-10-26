@@ -59,7 +59,7 @@ below is a story or task under it.
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
 the gates run on every PR, the iOS gates on every PR that touches `ios/`; the
 budget exists; dev's Claude key, Twelve Data key, Google iOS and web client
-ids, Sign in with Apple key, Apple team id, the app's bundle id (the audience
+ids, Sign in with Apple key and its key id, Apple team id, the app's bundle id (the audience
 phase 1's sign-in checks), the Services ID for the web app, and the APNs key
 and its key id are in SSM, over the placeholders dev's apply made; MyPaisa Dev
 builds in CI and installs from TestFlight. Prod's go in after prod's first apply (the
@@ -106,8 +106,9 @@ through them (`ARCHITECTURE.md` §9).
   the chat: the conversation, native cards from the agent's JSON (MA-174), the
   composer with the camera, a document scan, Photos and Files, shortcut chips,
   the typed `/commands`, replies streamed word by word.
-- The api at `api(-dev).mypaisapp.com` (MA-31, MA-75, MA-144): `/auth/apple`,
-  `/auth/google`, `/v1/chat/messages` and `/v1/chat/actions` (each with the
+- The api at `api(-dev).mypaisapp.com` (MA-31, MA-75, MA-144): `/auth/nonce`, `/auth/apple`,
+  `/auth/google`, `/auth/passkey/options` and `/auth/passkey` (the web app's
+  passkey sign-in, MA-109), `/v1/chat/messages` and `/v1/chat/actions` (each with the
   app's client id), `/v1/chat/turns`, `/v1/uploads` (a presigned upload into
   the documents bucket), `/v1/devices`; the authorizer checks the token, the
   member's status and session epoch on every call. The live connection at
@@ -335,8 +336,9 @@ your two funds shows the shared holdings and currency exposure.
 
 ## Phase 5 — The dashboard and the Admin center, in the app and the web app (read-only, behind sign-in)
 
-The dashboard screens of the iOS app, beside the chat on every size of
-iPhone, iPad and foldable (`ARCHITECTURE.md` §9.3), and the web app, a
+The dashboard screens of the iOS app on every size of iPhone, iPad and
+foldable, with the chat beside them over about 900 pt and a sheet away below
+(`ARCHITECTURE.md` §9.1, §9.3), and the web app, a
 read-only PWA for the same dashboard and the Admin center in a browser (§9.4).
 
 - Built from the one spec in the MyPaisa iOS v1 Claude Design project
@@ -409,7 +411,8 @@ sign out everywhere), CORS from another origin, the service worker caching no
 figure, and Playwright screenshots at phone and laptop widths in both themes.
 
 **Exit:** you open Home on your iPhone, on your iPad and on a foldable and see
-the same numbers as the chat, beside the chat on the larger screens; you open
+the same numbers as the chat, with the chat beside them on the iPad in
+landscape and a sheet away on narrower windows; you open
 `console.mypaisapp.com` on your laptop, sign in with Apple, then Google, then a
 passkey, install it, and see the same numbers again; the Audit screen
 shows the change you just made in the chat, with who and when; the Activity

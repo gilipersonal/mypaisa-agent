@@ -9,12 +9,15 @@ Jira and Claude Design halves need their MCP tools and live in /plan-sync.
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
     python3 scripts/plan_sync.py start MA-149  # what a story needs before work starts
-    python3 scripts/plan_sync.py selftest      # the board-name check against known good and bad names (CI)
+    python3 scripts/plan_sync.py selftest      # the board-name and board-date checks against known good and bad cases, and a mutated board (CI)
 """
 from __future__ import annotations
 
 import datetime
 import hashlib
+import shutil
+import subprocess
+import tempfile
 import html
 import json
 import re
@@ -305,7 +308,7 @@ def mirror_errors(mirror: object) -> list[str]:
 
 _MONTHS = {m: i + 1 for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split())}
 _DAYS = "Mon Tue Wed Thu Fri Sat Sun".split()
-_DATE = re.compile(r"\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,? (\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?: (\d{4}))?\b")
+_DATE = re.compile(r"\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,?\s+(\d{1,2})(?:st|nd|rd|th)?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?:\s+(\d{4}))?\b")
 
 
 def date_errors(text: str) -> list[str]:
@@ -313,7 +316,8 @@ def date_errors(text: str) -> list[str]:
     The boards are set in October 2026: a date with no year is right if its weekday fits 2026, or 2027 for January
     to September (a date ahead, such as the next results day)."""
     bad = []
-    for m in _DATE.finditer(html.unescape(text)):
+    plain = re.sub(r"<[^>]+>", "", html.unescape(text)).replace("\xa0", " ")  # "Thu&nbsp;<b>23 Oct</b>" reads as a date
+    for m in _DATE.finditer(plain):
         day, num, mon, year = m.group(1), int(m.group(2)), _MONTHS[m.group(3)], m.group(4)
         years = [int(year)] if year else ([2026, 2027] if mon < 10 else [2026])
         fits = False
@@ -324,6 +328,21 @@ def date_errors(text: str) -> list[str]:
                 pass
         if not fits:
             bad.append(m.group(0))
+    return sorted(set(bad))
+
+
+_MOTION_NEEDS = {"label": "mp-chartlbl", "dot": "mp-chartdot"}
+
+
+def motion_errors(text: str) -> list[str]:
+    """Each element a board gives the label or dot motion role without the class whose transform that role's keyframe
+    ends on: the arrival would leave it moved by half its size or more (MA-161 review, round 2: chart axes and a dot
+    shifted off their cards once the motion settled, correct only with ?static=1)."""
+    bad = []
+    for m in re.finditer(r"<[a-z][\w-]*\b[^>]*\bdata-mo=\"(label|dot)\"[^>]*>", text):
+        cls = re.search(r'\bclass="([^"]*)"', m.group(0))
+        if _MOTION_NEEDS[m.group(1)] not in (cls.group(1).split() if cls else []):
+            bad.append(f'data-mo="{m.group(1)}" on class "{cls.group(1) if cls else ""}"')
     return sorted(set(bad))
 
 
@@ -404,6 +423,8 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             if path.is_file() and name.endswith(".html"):
                 for d in date_errors(path.read_text()):
                     errors.append(f"board date: {proj['dir']}/{name} says {d!r}, a wrong weekday")
+                for d in motion_errors(path.read_text()):
+                    errors.append(f"board motion: {proj['dir']}/{name} puts {d}, which the settled arrival moves (use fade)")
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -497,12 +518,20 @@ def start(trace: dict, key: str) -> int:
 
 
 # Board names the check must accept (True) or refuse (False), from the reviews of PR #32.
+# Motion roles the check must accept and refuse (MA-161 review, round 2, e3).
+MOTION_CASES = [
+    ('<span class="mp-chartlbl" data-mo="label">', True), ('<div class="mp-chartdot x" data-mo="dot">', True),
+    ('<div class="hax" data-mo="label">', False), ('<div data-mo="dot" class="edot">', False),
+    ('<div class="gut" data-mo="fade">', True), ('<p data-mo="label">', False),
+]
+
 # Board dates the check must accept and refuse (MA-161 review, round 1: e3's timeline and lesson 10).
 DATE_CASES = [
     ("Fri 23 Oct", True), ("Fri, 2 Oct", True), ("Sun 4 Oct", True), ("Mon 26 Oct 21:16", True),
     ("Thu 29 Apr", True),            # next April's results day, 2027
     ("Thu 23 Oct", False), ("Tue 20 Oct 2025", False), ("Wed 28 Oct", True), ("Sat 31 Oct", True),
     ("Fri 31 Sep", False), ("Thursday 22 October", True), ("Thursday 23 October", False),
+    ("Thu&nbsp;23 Oct", False), ("Fri&nbsp;23 Oct", True), ("Thu <b>23 Oct</b>", False), ("Thu 23rd Oct", False),
 ]
 
 BOARD_CASES = [
@@ -571,7 +600,38 @@ def selftest(trace: dict) -> int:
         if got != want:
             bad += 1
             print(f"FAIL: date {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    print(f"plan-sync selftest: {len(BOARD_CASES)} board names and {len(DATE_CASES)} dates, {bad} wrong")
+    for text, want in MOTION_CASES:
+        got = not motion_errors(text)
+        if got != want:
+            bad += 1
+            print(f"FAIL: motion {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
+    # The date check bites inside `check` itself: a copy of the repo with one mirrored board given a wrong weekday
+    # (its bytes and sha256 recorded, so only the date is wrong) must be refused, naming the board date.
+    board = "docs/design/ios-v1/iPhone chat.dc.html"
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "scripts").mkdir()
+        shutil.copy(Path(__file__), root / "scripts" / "plan_sync.py")
+        for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
+            if (ROOT / f).exists():
+                shutil.copy(ROOT / f, root / f)
+        shutil.copytree(ROOT / "docs", root / "docs")
+        target = root / board
+        text = target.read_text() if target.exists() else ""
+        if "Fri 23 Oct" not in text:
+            bad += 1
+            print(f"FAIL: date selftest needs 'Fri 23 Oct' in {board}")
+        else:
+            target.write_text(text.replace("Fri 23 Oct", "Thu 23 Oct", 1))
+            m = json.loads((root / "docs/design/claude-design.json").read_text())
+            rec = m["ios"]["files"][Path(board).name]
+            rec["bytes"], rec["sha256"] = target.stat().st_size, sha256(target)
+            (root / "docs/design/claude-design.json").write_text(json.dumps(m, indent=2) + "\n")
+            r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
+            if r.returncode == 0 or "board date" not in r.stdout:
+                bad += 1
+                print(f"FAIL: check passed a board saying 'Thu 23 Oct' (exit {r.returncode})")
+    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles and one mutated board, {bad} wrong")
     return 1 if bad else 0
 
 

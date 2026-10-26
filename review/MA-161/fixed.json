@@ -413,7 +413,8 @@
         ".claude/rules/independent-review.md",
         ".claude/rules/ship-autopilot.md",
         ".claude/jira-flow.json",
-        ".github/workflows/plan-sync.yml"
+        ".github/workflows/plan-sync.yml",
+        "README.md"
       ],
       "pattern": "contrast_check\\.py --selftest"
     }
@@ -451,7 +452,7 @@
     "check": {
       "type": "grep",
       "file": ".claude/skills/design-first/SKILL.md",
-      "pattern": "copied into `docs/design/ds-v1/` \\(the source;"
+      "pattern": "copied into `docs/design/ds-v1/` \\(the (only )?source;"
     }
   },
   {
@@ -529,6 +530,226 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import re,sys; t=open('docs/design/ios-v1/iPhone chat.dc.html').read(); i=t.find('<span class=\\\"bd-id\\\">C17</span>'); j=t.find('<section class=\\\"bd\\\"',i); b=re.findall(r'class=\\\"cbtn[^\\\"]*\\\">([^<]*)<',t[i:j]); sys.exit(0 if i>0 and {'Confirm','Cancel'}<=set(b) else 1)\""
+    }
+  },
+  {
+    "id": "r2-a1",
+    "round": 2,
+    "finding": "Each contrast selftest case is refused for its own reason, with the board projects' copies in step, so a reverted fix fails its case",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest"
+    }
+  },
+  {
+    "id": "r2-a2",
+    "round": 2,
+    "finding": "plan-sync's selftest runs check on a copy whose board says Thu 23 Oct and expects the refusal",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest | grep -q 'one mutated board, 0 wrong'"
+    }
+  },
+  {
+    "id": "r2-a3",
+    "round": 2,
+    "finding": "A colour token set outside the blocks the gate measures is refused",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest stray-glass-block stray-token-block"
+    }
+  },
+  {
+    "id": "r2-a4",
+    "round": 2,
+    "finding": "The privacy mask on glass is measured and holds at 25%",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest glass-mask-vanishes && grep -q '\\.lg \\.mp-mask, \\.strip \\.mp-mask { background: var(--lg-mask); }' docs/design/ds-v1/ios.css"
+    }
+  },
+  {
+    "id": "r2-a9",
+    "round": 2,
+    "finding": "Lucid's generator refuses a Document row written anywhere but on arrival, before it writes a file",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/lucid/gen_aws_architecture.py",
+      "pattern": "writes a Document row somewhere other than when the file arrives[\\s\\S]*json\\.dump\\(doc"
+    }
+  },
+  {
+    "id": "r2-b1",
+    "round": 2,
+    "finding": "Foldable · Open is listed to redraw to the width rule, or drawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (any('Foldable · Open redrawn to the width rule' in x for x in t['MA-70'].get('undrawn',[])) or 'Drawn: Foldable · Open redrawn' in t['MA-70'].get('notes','')) else 1)\""
+    }
+  },
+  {
+    "id": "r2-b2-c3",
+    "round": 2,
+    "finding": "Every record that lists the api's sign-in routes names the nonce and both passkey routes",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "README.md",
+        "TECH_STACK.md",
+        "PLAN.md"
+      ],
+      "pattern": "/auth/nonce`?[\\s\\S]{0,200}/auth/passkey/options"
+    }
+  },
+  {
+    "id": "r2-b2-jira",
+    "round": 2,
+    "finding": "MA-75, MA-144 and MA-185 name the five sign-in routes",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-75 (public routes), MA-144 and MA-185 (Where): /auth/nonce, /auth/apple, /auth/google, /auth/passkey/options, /auth/passkey"
+    }
+  },
+  {
+    "id": "r2-b3",
+    "round": 2,
+    "finding": "MA-35's and MA-77's questions block every story they decide (MA-171 and MA-76 too)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ((any(x.startswith('Pause and privacy from You') for x in t['MA-171'].get('open',[])) or 'Settled: Pause and privacy from You' in t['MA-171'].get('notes','')) and (any(x.startswith('Second check to add a sign-in') for x in t['MA-76'].get('open',[])) or 'Settled: Second check to add a sign-in' in t['MA-76'].get('notes',''))) else 1)\""
+    }
+  },
+  {
+    "id": "r2-b4",
+    "round": 2,
+    "finding": "The web Admin center's old check and Telegram messages are listed on every story built from those boards, or drawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (all(any(x.startswith(\\\"the web Admin center's second check\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: the web Admin center's second check\\\" in t[k].get('notes','') for k in ('MA-184','MA-116','MA-145','MA-76'))) else 1)\""
+    }
+  },
+  {
+    "id": "r2-b5",
+    "round": 2,
+    "finding": "The sign-in methods' Remove, the owner's Unlink, the new-device message and the web login's refusals are listed, or drawn; 4.5 has the new-device row",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ((any(x.startswith(\\\"iPhone · Sign-in methods' Remove\\\") for x in t['MA-77'].get('undrawn',[])) or \\\"Drawn: iPhone · Sign-in methods' Remove\\\" in t['MA-77'].get('notes','')) and (any(x.startswith('the new-device message') for x in t['MA-102'].get('undrawn',[])) or 'Drawn: the new-device message' in t['MA-102'].get('notes','')) and (any(x.startswith(\\\"Browser · Login's refusals\\\") for x in t['MA-185'].get('undrawn',[])) or \\\"Drawn: Browser · Login's refusals\\\" in t['MA-185'].get('notes',''))) else 1)\" && grep -q '^| A new device |' ARCHITECTURE.md"
+    }
+  },
+  {
+    "id": "r2-c1",
+    "round": 2,
+    "finding": "No record puts the chat beside the screen on every iPad or foldable width",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "PLAN.md",
+        "README.md",
+        "docs/design/reviews/MA-161/decision.md",
+        "docs/design/README.md",
+        "docs/design/agent-journey.html"
+      ],
+      "pattern": "on the iPad and the foldable with the chat beside it\\)|On iPad the chat sits beside them\\.|beside it on every size of iPhone|beside the chat on every size of|beside the chat on the larger screens|open foldable, with the chat beside it;|\\| Sidebar · the screen · the chat beside it \\| Sidebar",
+      "present": false
+    }
+  },
+  {
+    "id": "r2-c2",
+    "round": 2,
+    "finding": "In the app a passkey answers the second check, never the sign-in screen; it signs in only on the web",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "In the app it answers the second check \\(below\\), never the sign-in screen"
+    }
+  },
+  {
+    "id": "r2-c4",
+    "round": 2,
+    "finding": "The second check covers the owner's admin actions from the Admin center or the admin's chat",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "the owner's admin actions \\(§9\\.3\\), from the Admin\\s+center or the admin's chat \\(§20\\.3\\)"
+    }
+  },
+  {
+    "id": "r2-c5",
+    "round": 2,
+    "finding": "The journey and Lucid page 3 give a Google-only member Google again for the second check",
+    "check": {
+      "type": "grep",
+      "files": [
+        "docs/design/agent-journey.html",
+        "docs/design/lucid/gen_aws_architecture.py"
+      ],
+      "pattern": "Google again"
+    }
+  },
+  {
+    "id": "r2-d1-d2",
+    "round": 2,
+    "finding": "design-first measures a token change before the copies, and names ds-v1 as the only source",
+    "check": {
+      "type": "grep",
+      "file": ".claude/skills/design-first/SKILL.md",
+      "pattern": "only the copies not yet made may fail[\\s\\S]*|the only source;"
+    }
+  },
+  {
+    "id": "r2-e1",
+    "round": 2,
+    "finding": "The £200 buy comes after the last frame showing the total before it (Fri 20:41): no board puts it at 08:40 or 08:41",
+    "check": {
+      "type": "grep",
+      "files": [
+        "docs/design/ios-v1/*.dc.html",
+        "docs/design/ds-v1/iOS kit.dc.html"
+      ],
+      "pattern": "£200[^\\n]{0,200}08:4[01]|08:4[01][^\\n]{0,200}£200|units: '1,234\\.5 → 1,245\\.3'[^\\n]{0,80}08:41",
+      "present": false
+    }
+  },
+  {
+    "id": "r2-e2",
+    "round": 2,
+    "finding": "The web boards' redraw to the iOS household and ledger is listed on MA-183 and MA-149, or drawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if all(any(x.startswith('the browser boards (Browser, Audit and files) redrawn') for x in t[k].get('undrawn',[])) or 'Drawn: the browser boards (Browser, Audit and files) redrawn' in t[k].get('notes','') for k in ('MA-183','MA-149')) else 1)\""
+    }
+  },
+  {
+    "id": "r2-e3",
+    "round": 2,
+    "finding": "A motion role sits only on the element its keyframe was made for, and check refuses any other",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest | grep -q 'motion roles and one mutated board, 0 wrong' && python3 scripts/plan_sync.py check"
+    }
+  },
+  {
+    "id": "r2-a5",
+    "round": 2,
+    "finding": "The DS v1 Foundations board shows today's token values, with rows for the track, the hero's gain and the glass",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/ds-v1/Foundations.dc.html",
+      "pattern": "#DCD7CF|#878177|#6B7587|#2C4068|#334A75|#323D50",
+      "present": false
+    }
+  },
+  {
+    "id": "r2-a5-rows",
+    "round": 2,
+    "finding": "The Foundations board has rows for --mp-track, --mp-hero-up and --lg-mask",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/ds-v1/Foundations.dc.html",
+      "pattern": "mp-track[\\s\\S]*mp-hero-up|mp-hero-up[\\s\\S]*mp-track"
     }
   }
 ]

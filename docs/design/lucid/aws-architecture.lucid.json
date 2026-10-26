@@ -50,7 +50,7 @@
       "w": 300,
       "h": 600
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>iOS 26 \u00b7 MyPaisa Dev \u2192 dev<br>push \u00b7 live connection<br>files: presigned upload<br><br>Apple \u00b7 Google \u00b7 passkey<br>tokens in the Keychain</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>iOS 26 \u00b7 MyPaisa Dev \u2192 dev<br>push \u00b7 live connection<br>files: presigned upload<br><br>sign in: Apple \u00b7 Google<br>a passkey (added from You)<br>answers the second check<br>tokens in the Keychain</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1241,6 +1241,33 @@
       "width": 2,
       "style": "dashed"
      }
+    },
+    {
+     "id": "p1_l21",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "api",
+      "position": {
+       "x": 1,
+       "y": 0.75
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "cog",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
     }
    ]
   },
@@ -2170,9 +2197,9 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 200,
+      "y": 196,
       "w": 340,
-      "h": 190
+      "h": 164
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b> (iPhone, iPad, foldable):<br>the chat, the dashboard, the Admin center<br>Apple native \u00b7 Google SDK, PKCE<br>the token carries the api's nonce</p>",
      "style": {
@@ -2192,9 +2219,9 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 410,
+      "y": 376,
       "w": 340,
-      "h": 180
+      "h": 168
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>Web app</b> (PWA, read-only):<br>the dashboard, the Admin center<br>console.mypaisapp.com<br>Apple, Google or a passkey, same custom auth<br>an HttpOnly cookie set by the api</p>",
      "style": {
@@ -2214,11 +2241,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 610,
+      "y": 560,
       "w": 340,
-      "h": 120
+      "h": 140
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Passkey</b> (optional), app or web<br>added from You (MA-77)<br>challenge: /auth/passkey/options<br>assertion: /auth/passkey</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Passkey</b> (optional): web sign-in;<br>in the app, the second check<br>added from You (MA-77)<br>challenge: /auth/passkey/options<br>assertion: /auth/passkey</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2236,9 +2263,9 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 750,
+      "y": 716,
       "w": 340,
-      "h": 110
+      "h": 96
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>Invite link</b> (MA-73)<br>console.mypaisapp.com<br>/join/&lt;token&gt; opens the app</p>",
      "style": {
@@ -2258,9 +2285,9 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 880,
+      "y": 828,
       "w": 340,
-      "h": 180
+      "h": 144
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection</p>",
      "style": {
@@ -2280,11 +2307,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 1080,
+      "y": 988,
       "w": 340,
-      "h": 200
+      "h": 316
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Second check</b> (MA-76)<br>a challenge bound to the action<br>app: fresh Sign in with Apple<br>or a passkey (Face ID)<br>web: passkey or a fresh sign-in<br>under 5 minutes, never a<br>local-only Face ID</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Second check</b> (MA-76, MA-102)<br>the owner's admin actions, from<br>the Admin center or admin's chat;<br>an import's Confirm and rolling<br>it back; leaving the household<br>a challenge bound to the action<br>app: Sign in with Apple again or<br>a passkey (Face ID); a member on<br>Google only: Google again<br>web: passkey or a fresh sign-in<br>under 5 minutes, never a<br>local-only Face ID</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2302,9 +2329,9 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 1300,
+      "y": 1320,
       "w": 340,
-      "h": 150
+      "h": 130
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>Refused</b><br>a paused member: one line<br>a removed member<br>linked to nobody, no valid invite</p>",
      "style": {
@@ -2528,7 +2555,7 @@
       "shapeId": "d_sign",
       "position": {
        "x": 1,
-       "y": 0.2
+       "y": 0.32926829268292684
       }
      },
      "endpoint2": {
@@ -2571,7 +2598,7 @@
       "shapeId": "i_api",
       "position": {
        "x": 0,
-       "y": 0.35
+       "y": 0.3
       }
      },
      "stroke": {
@@ -2605,7 +2632,7 @@
       "shapeId": "i_api",
       "position": {
        "x": 0,
-       "y": 0.75
+       "y": 0.6
       }
      },
      "stroke": {
@@ -2847,7 +2874,7 @@
       "shapeId": "d_keychain",
       "position": {
        "x": 1,
-       "y": 0.3611111111111111
+       "y": 0.8125
       }
      },
      "endpoint2": {
@@ -2962,7 +2989,7 @@
       "shapeId": "d_second",
       "position": {
        "x": 1,
-       "y": 0.3
+       "y": 0.4810126582278481
       }
      },
      "endpoint2": {
@@ -3037,6 +3064,33 @@
      },
      "stroke": {
       "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l18",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_passkey",
+      "position": {
+       "x": 1,
+       "y": 0.3
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_api",
+      "position": {
+       "x": 0,
+       "y": 0.9
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
       "width": 2,
       "style": "solid"
      }

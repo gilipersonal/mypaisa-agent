@@ -487,43 +487,44 @@
               { name: 'Ground and surfaces', hint: 'Where everything sits', tokens: [
                 T('--mp-bg', 'Grouped background: the page behind cards and lists', txt('ink', 'bg'), ['#F6F4F1', '16.3:1', 'ink on it'], ['#0A0F18', '17.6:1', 'ink on it']),
                 T('--mp-surface', 'Cards, grouped rows, sheets', txt('ink', 'surface'), ['#FFFFFF', '17.9:1', 'ink on it'], ['#151C27', '15.7:1', 'ink on it']),
-                T('--mp-surface-2', 'Fills: segmented track, neutral chips, pressed rows, skeletons', txt('ink-3', 'surface-2'), ['#F0EDE8', '4.6:1', 'ink-3 on it, the lowest text pair'], ['#1E2633', '5.1:1', 'ink-3 on it, the lowest text pair']),
+                T('--mp-surface-2', 'Fills: segmented track, neutral chips, pressed rows, skeletons', txt('ink-3', 'surface-2'), ['#F0EDE8', '4.6:1', 'ink-3 on it, the lowest text pair'], ['#1E2633', '7.4:1', 'ink-3 on it, the lowest text pair']),
                 T('--mp-seg-on', 'The selected segment, lifted above its track', txt('ink', 'seg-on'), ['#FFFFFF', '17.9:1', 'ink on it'], ['#3A4456', '9.0:1', 'ink on it']),
                 T('--mp-line', 'Hairlines between rows; never text', bar('line', '1px'), ['#E4E0DA', '1.3:1', 'vs surface, decorative'], ['#283141', '1.3:1', 'vs surface, decorative']),
-                T('--mp-material', 'Tab bar and sticky headers, over a 20 px blur', txt('ink-3', 'material'), ['#FFFFFF at 78%', '5.3:1', 'tab label (ink-3) on it'], ['#151C27 at 78%', '5.9:1', 'tab label (ink-3) on it'])
+                T('--mp-material', 'Tab bar and sticky headers, over a 20 px blur', txt('ink-3', 'material'), ['#FFFFFF at 78%', '5.3:1', 'tab label (ink-3) on it'], ['#151C27 at 78%', '8.6:1', 'tab label (ink-3) on it'])
               ] },
               { name: 'Text', hint: 'Three inks, AA on every surface', tokens: [
                 T('--mp-ink', 'Primary text and figures', txt('ink'), ['#14171F', '17.9:1', 'on surface'], ['#F3F5F8', '15.7:1', 'on surface']),
-                T('--mp-ink-2', 'Secondary text, sub-lines, unselected segments', txt('ink-2'), ['#4E5462', '7.6:1', 'on surface'], ['#AEB6C4', '8.4:1', 'on surface']),
-                T('--mp-ink-3', 'Footnotes, captions, unselected tabs', txt('ink-3'), ['#646A78', '5.4:1', 'on surface; 4.6:1 on surface-2'], ['#8D96A6', '5.7:1', 'on surface; 5.1:1 on surface-2'])
+                T('--mp-ink-2', 'Secondary text, sub-lines, unselected segments', txt('ink-2'), ['#4E5462', '7.6:1', 'on surface'], ['#C5CCD7', '10.6:1', 'on surface']),
+                T('--mp-ink-3', 'Footnotes, captions, unselected tabs', txt('ink-3'), ['#646A78', '5.4:1', 'on surface; 4.6:1 on surface-2'], ['#ADB6C4', '8.4:1', 'on surface; 7.4:1 on surface-2'])
               ] },
               { name: 'Hero', hint: 'The navy card: one number, one line, one chart', tokens: [
                 T('--mp-hero', 'Hero card ground; the chart PNGs sent in Telegram', txt('hero-ink', 'hero'), ['#13213A', '16.1:1', 'hero-ink on it'], ['#1A2944', '14.5:1', 'hero-ink on it']),
                 T('--mp-hero-2', 'Fills inside the hero: segmented track, masks', txt('hero-ink-2', 'hero-2'), ['#1C2E4D', '7.6:1', 'hero-ink-2 on it'], ['#233558', '6.8:1', 'hero-ink-2 on it']),
                 T('--mp-hero-ink', 'The hero figure and its labels', txt('hero-ink', 'hero'), ['#FFFFFF', '16.1:1', 'on hero'], ['#FFFFFF', '14.5:1', 'on hero']),
-                T('--mp-hero-ink-2', 'Hero secondary text and overline', txt('hero-ink-2', 'hero'), ['#B7C2D6', '9.0:1', 'on hero'], ['#B7C2D6', '8.1:1', 'on hero'])
+                T('--mp-hero-ink-2', 'Hero secondary text and overline', txt('hero-ink-2', 'hero'), ['#B7C2D6', '9.0:1', 'on hero'], ['#B7C2D6', '8.1:1', 'on hero']),
+                T('--mp-hero-up', 'A gain on the hero: the day\'s ▲ and the month; never on a light surface', txt('hero-up', 'hero'), ['#8BE8AC', '10.9:1', 'on hero; 9.2:1 on hero-2'], ['#A6F0C2', '11.0:1', 'on hero; 9.2:1 on hero-2'])
               ] },
               { name: 'Accent', hint: 'One accent: coral draws, brick writes', tokens: [
                 T('--mp-coral', 'Lines and marks on the hero; never small text on light', bar('coral', '3px', 'hero'), ['#FF6B4F', '5.7:1', 'on hero, a graphic (3:1 needed)'], ['#FF7A5E', '5.7:1', 'on hero, a graphic (3:1 needed)']),
-                T('--mp-accent', 'Links, the selected tab, filled buttons', txt('accent'), ['#C2381F', '5.4:1', 'on surface'], ['#FF7A5E', '6.7:1', 'on surface']),
-                T('--mp-on-accent', 'The label on a filled button', txt('on-accent', 'accent'), ['#FFFFFF', '5.4:1', 'on accent'], ['#1A0B06', '7.5:1', 'on accent']),
+                T('--mp-accent', 'Links, the selected tab, filled buttons', txt('accent'), ['#C2381F', '5.4:1', 'on surface'], ['#FF9A82', '8.3:1', 'on surface']),
+                T('--mp-on-accent', 'The label on a filled button', txt('on-accent', 'accent'), ['#FFFFFF', '5.4:1', 'on accent'], ['#1A0B06', '9.3:1', 'on accent']),
                 T('--mp-focus', 'Keyboard focus ring, 3 px, offset 2', bar('focus', '3px'), ['#2453C9', '6.7:1', 'vs surface (3:1 needed)'], ['#8FB2FF', '8.1:1', 'vs surface (3:1 needed)'])
               ] }
             ] },
             { groups: [
               { name: 'Meaning', hint: 'Gains green with ▲, falls quiet with ▼, red only to act', tokens: [
                 T('--mp-up', 'Good: gains with ▲, and status-OK marks (done, verified, nothing to do)', txt('up'), ['#1D7A3E', '5.4:1', 'on surface'], ['#44D17A', '8.7:1', 'on surface']),
-                T('--mp-down-quiet', 'Everyday falls, always with ▼; never alarm red', txt('down-quiet'), ['#4E5462', '7.6:1', 'on surface'], ['#AEB6C4', '8.4:1', 'on surface']),
-                T('--mp-alert', 'Red-tier alerts that ask for action; rare. A crimson, kept apart from the coral accent so a destructive action never looks like the primary one', txt('alert'), ['#B5123F', '6.7:1', 'on surface; 6.1:1 on bg'], ['#FF6B8B', '6.3:1', 'on surface; 7.1:1 on bg, 5.4:1 on hero']),
-                T('--mp-alert-bg', 'Ground of the alert chip and banner', txt('alert', 'alert-bg'), ['#FCE4EA', '5.6:1', 'alert on it'], ['#3A1724', '5.8:1', 'alert on it'])
+                T('--mp-down-quiet', 'Everyday falls, always with ▼; never alarm red', txt('down-quiet'), ['#4E5462', '7.6:1', 'on surface'], ['#C5CCD7', '10.6:1', 'on surface']),
+                T('--mp-alert', 'Red-tier alerts that ask for action; rare. A crimson, kept apart from the coral accent so a destructive action never looks like the primary one', txt('alert'), ['#B5123F', '6.7:1', 'on surface; 6.1:1 on bg'], ['#FF9AAE', '8.5:1', 'on surface; 9.6:1 on bg, 7.3:1 on hero']),
+                T('--mp-alert-bg', 'Ground of the alert chip and banner', txt('alert', 'alert-bg'), ['#FCE4EA', '5.6:1', 'alert on it'], ['#3A1724', '7.9:1', 'alert on it'])
               ] },
               { name: 'Stances', hint: 'Text on its own tint; the word is the signal', tokens: [
                 T('--mp-add · -bg', 'ADD: room to add at your usual pace', txt('add', 'add-bg'), ['#1D7A3E', '4.6:1', 'on #E2F2E7'], ['#5BDB8B', '8.1:1', 'on #16301F']),
-                T('--mp-hold · -bg', 'HOLD: keep going as you are', txt('hold', 'hold-bg'), ['#2453C9', '5.6:1', 'on #E5ECFB'], ['#8FB2FF', '7.0:1', 'on #1A2747']),
+                T('--mp-hold · -bg', 'HOLD: keep going as you are', txt('hold', 'hold-bg'), ['#2453C9', '5.6:1', 'on #E5ECFB'], ['#A8C3FF', '8.4:1', 'on #1A2747']),
                 T('--mp-pause · -bg', 'PAUSE: keep what you have, hold new money', txt('pause', 'pause-bg'), ['#8A5300', '5.5:1', 'on #FCEED6'], ['#F6BC4F', '8.5:1', 'on #33270E']),
-                T('--mp-trim · -bg', 'TRIM: it has grown past its share', txt('trim', 'trim-bg'), ['#B13A22', '5.0:1', 'on #FBE5DF'], ['#FF9A80', '7.4:1', 'on #3A1D16']),
-                T('--mp-reb · -bg', 'REBALANCE: the mix has drifted from your plan', txt('reb', 'reb-bg'), ['#6B3FB8', '5.8:1', 'on #EEE7FA'], ['#B79CFF', '6.6:1', 'on #2A2142']),
-                T('--mp-watch · -bg', 'WATCH: nothing to do, worth an eye', txt('watch', 'watch-bg'), ['#4E5462', '6.4:1', 'on #EDEBE7'], ['#AEB6C4', '7.0:1', 'on #232B38'])
+                T('--mp-trim · -bg', 'TRIM: it has grown past its share', txt('trim', 'trim-bg'), ['#B13A22', '5.0:1', 'on #FBE5DF'], ['#FF9A80', '7.5:1', 'on #3A1D16']),
+                T('--mp-reb · -bg', 'REBALANCE: the mix has drifted from your plan', txt('reb', 'reb-bg'), ['#6B3FB8', '5.8:1', 'on #EEE7FA'], ['#C8B4FF', '8.2:1', 'on #2A2142']),
+                T('--mp-watch · -bg', 'WATCH: nothing to do, worth an eye', txt('watch', 'watch-bg'), ['#4E5462', '6.4:1', 'on #EDEBE7'], ['#C5CCD7', '8.8:1', 'on #232B38'])
               ] },
               { name: 'Data', hint: 'One line, one area, a quiet grid, extra series hues', tokens: [
                 T('--mp-chart-line', 'Value and price lines on surfaces (coral on the hero)', bar('chart-line', '3px'), ['#C2381F', '5.4:1', 'vs surface'], ['#FF7A5E', '6.7:1', 'vs surface']),
@@ -543,15 +544,21 @@
                 T('--mp-ccy-gbp', 'Pound', bar('ccy-gbp', '10px'), ['#4E5462', '7.6:1', 'vs surface'], ['#AEB6C4', '8.4:1', 'vs surface']),
                 T('--mp-ccy-eur', 'Euro', bar('ccy-eur', '10px'), ['#6B3FB8', '6.9:1', 'vs surface'], ['#B79CFF', '7.5:1', 'vs surface']),
                 T('--mp-ccy-jpy', 'Yen', bar('ccy-jpy', '10px'), ['#8A5300', '6.3:1', 'vs surface'], ['#F6BC4F', '10.0:1', 'vs surface']),
-                T('--mp-ccy-other', 'Every other currency; quiet on purpose and always labelled', bar('ccy-other', '10px'), ['#878177', '3.9:1', 'vs surface; 3.3:1 on .mp-track'], ['#6B7587', '3.7:1', 'vs surface; 3.3:1 on .mp-track']),
+                T('--mp-ccy-other', 'Every other currency; quiet on purpose and always labelled', bar('ccy-other', '10px'), ['#6E695F', '5.5:1', 'vs surface; 3.5:1 on .mp-track'], ['#A3ACBA', '7.5:1', 'vs surface; 3.7:1 on .mp-track']),
                 T('--mp-asset-shares', 'Shares, in every asset mix', bar('asset-shares', '10px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
                 T('--mp-asset-bonds', 'Bonds', bar('asset-bonds', '10px'), ['#6B3FB8', '6.9:1', 'vs surface'], ['#B79CFF', '7.5:1', 'vs surface']),
-                T('--mp-asset-silver', 'Silver', bar('asset-silver', '10px'), ['#646A78', '5.4:1', 'vs surface'], ['#8D96A6', '5.7:1', 'vs surface']),
+                T('--mp-asset-silver', 'Silver', bar('asset-silver', '10px'), ['#646A78', '5.4:1', 'vs surface'], ['#969FAE', '6.4:1', 'vs surface']),
                 T('--mp-asset-cash', 'Cash', bar('asset-cash', '10px'), ['#8A5300', '6.3:1', 'vs surface'], ['#F6BC4F', '10.0:1', 'vs surface']),
                 T('--mp-meter', 'Spend, budget and progress meters, on .mp-track', bar('meter', '10px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
-                T('--mp-mask', 'Privacy placeholder on surfaces: a shape where pounds were, never text', bar('mask', '14px'), ['#DCD7CF', '1.4:1', 'vs surface; a placeholder, not text'], ['#323D50', '1.6:1', 'vs surface; a placeholder, not text']),
-                T('--mp-mask-hero', 'Privacy placeholder on the hero card, never text', bar('mask-hero', '14px', 'hero'), ['#2C4068', '1.6:1', 'vs hero; a placeholder, not text'], ['#334A75', '1.6:1', 'vs hero; a placeholder, not text']),
+                T('--mp-track', 'The empty part of a bar or meter: plainly there at 25% brightness, never read', bar('track', '10px'), ['#CDCFD4', '1.6:1', 'vs surface; 1.5:1 needed'], ['#454E5C', '2.0:1', 'vs surface; 1.5:1 needed']),
+                T('--mp-mask', 'Privacy placeholder on surfaces: a shape where pounds were, never text', bar('mask', '14px'), ['#D0C9BE', '1.6:1', 'vs surface; a placeholder, not text'], ['#414D64', '2.0:1', 'vs surface; a placeholder, not text']),
+                T('--mp-mask-hero', 'Privacy placeholder on the hero card, never text', bar('mask-hero', '14px', 'hero'), ['#3A5284', '2.1:1', 'vs hero; a placeholder, not text'], ['#40598A', '2.1:1', 'vs hero; a placeholder, not text']),
                 T('--mp-hero-area', 'Area under the coral line on the hero', bar('hero-area', '22px', 'hero'), ['#FF6B4F at 18%', 'fill', 'on hero, under the line'], ['#FF7A5E at 18%', 'fill', 'on hero, under the line'])
+              ] },
+              { name: 'On Liquid Glass', hint: 'ios.css: labels on the glass, measured over the accent behind it', tokens: [
+                { name: '--lg-accent', use: 'The selected tab and an accent label on glass', cells: [cell('mp t-light', ['#8C2410', '7.2:1', 'on glass over the accent'], { g: '#F6E3E0', fg: '#8C2410' }), cell('mp t-dark', ['#FFC2B3', '8.3:1', 'on glass over the accent'], { g: '#382F35', fg: '#FFC2B3' })] },
+                { name: '--lg-up', use: 'A gain on glass: the household strip', cells: [cell('mp t-light', ['#125529', '7.2:1', 'on glass over the accent'], { g: '#F6E3E0', fg: '#125529' }), cell('mp t-dark', ['#8BEFB0', '9.2:1', 'on glass over the accent'], { g: '#382F35', fg: '#8BEFB0' })] },
+                { name: '--lg-mask', use: 'A privacy mask on glass, never text', cells: [cell('mp t-light', ['#BCB4A7', '1.7:1', 'vs the glass; a placeholder, not text'], { g: '#F6E3E0', bar: '#BCB4A7', h: '14px' }), cell('mp t-dark', ['#4E5B76', '1.9:1', 'vs the glass; a placeholder, not text'], { g: '#382F35', bar: '#4E5B76', h: '14px' })] }
               ] }
             ] }
           ];
