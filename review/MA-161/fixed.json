@@ -9,7 +9,12 @@
         "ARCHITECTURE.md",
         "PLAN.md",
         "TECH_STACK.md",
-        "README.md"
+        "README.md",
+        "docs/trace.json",
+        "docs/TRACE.md",
+        "docs/design/README.md",
+        "docs/design/agent-journey.html",
+        "docs/design/market-agent.html"
       ],
       "pattern": "BotFather|/telegram/webhook|/auth/telegram|initData|Login Widget",
       "present": false
@@ -22,7 +27,7 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "### 9\\.4 The web app: the dashboard and the Admin center in a browser",
+      "pattern": "### 9\\.4 The web app: the dashboard and the Admin center in a browser\\n(?:(?!\\n### )[\\s\\S])*?installable as a\\s+Progressive Web App(?:(?!\\n### )[\\s\\S])*?the same read-only screens",
       "present": true
     }
   },
@@ -31,10 +36,8 @@
     "round": 0,
     "finding": "Owner decision (Arun, 26 Oct 2026): the shell is 1a, Chat first",
     "check": {
-      "type": "trace",
-      "key": "MA-163",
-      "field": "design",
-      "value": "picked"
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-163'][0]; sys.exit(0 if r.get('design')=='picked' and any(b.get('board')=='1a · Chat first' for b in r.get('boards',[])) else 1)\""
     }
   },
   {
@@ -51,10 +54,424 @@
     "round": 0,
     "finding": "Owner decision (Arun, 25 Oct 2026): the read-only dashboard shows on the iPad and the foldable too",
     "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; n=lambda k:{b.get('board') for b in t[k].get('boards',[])}; sys.exit(0 if 'iPad · Home with the chat beside it' in n('MA-78') and 'Foldable · Open' in n('MA-70') else 1)\""
+    }
+  },
+  {
+    "id": "r1-a1",
+    "round": 1,
+    "finding": "Text and gains on Liquid Glass hold at 25% brightness in light and dark (lg-accent, lg-up, the denser fills)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest light-glass-thin dark-glass-thin-reordered glass-accent-low"
+    }
+  },
+  {
+    "id": "r1-a2",
+    "round": 1,
+    "finding": "The contrast gate fails closed: a missing ios.css, an 8-digit hex, a reordered dark selector and a board project's copy out of step are refused",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest ios-css-missing hex8-alpha dark-glass-thin-reordered copy-differs baseline"
+    }
+  },
+  {
+    "id": "r1-a3",
+    "round": 1,
+    "finding": "Chart, bar, currency and asset marks, the hero's gain, the empty track and the privacy masks are measured, and hold at 25%",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest mark-lost-on-track track-vanishes mask-vanishes hero-gain-dim"
+    }
+  },
+  {
+    "id": "r1-a4",
+    "round": 1,
+    "finding": "MA-145 keeps the web Admin center's replay-that-fails-again board beside the iOS one",
+    "check": {
       "type": "trace",
-      "key": "MA-78",
-      "field": "boards",
-      "contains": "iPad · Home with the chat beside it"
+      "key": "MA-145",
+      "board": "Browser · Admin · Alerts · Replayed, and failed again"
+    }
+  },
+  {
+    "id": "r1-a9",
+    "round": 1,
+    "finding": "No trace note calls the browser boards superseded: they stay the web app's spec",
+    "check": {
+      "type": "grep",
+      "files": [
+        "docs/trace.json",
+        "docs/TRACE.md"
+      ],
+      "pattern": "Mini App and browser boards are superseded|browser boards (are|were) superseded",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-b1",
+    "round": 1,
+    "finding": "MA-161's summary says the web app stays as a read-only PWA",
+    "check": {
+      "type": "trace",
+      "key": "MA-161",
+      "field": "summary",
+      "contains": "the web app stays as a read-only PWA"
+    }
+  },
+  {
+    "id": "r1-b1-jira",
+    "round": 1,
+    "finding": "MA-130 names web/ under Where, and MA-130, MA-117 and MA-127 say the dashboard and Admin center are in the app and the web app",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-130 (Where lists web/, MA-184), MA-117 and MA-127 (no 'the web dashboard is now the iOS app')"
+    }
+  },
+  {
+    "id": "r1-b2",
+    "round": 1,
+    "finding": "The second check covers an Admin center action, an import's Confirm and its rollback, and leaving, and nothing else",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "import's Confirm and rolling an import back \\(§18\\.5, §22\\.2\\), leaving the\\s+household \\(MA-172\\), and nothing else"
+    }
+  },
+  {
+    "id": "r1-b2-jira",
+    "round": 1,
+    "finding": "MA-76 and MA-102 list the same four actions as ARCHITECTURE 4.5",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-76 and MA-102: an Admin center action, an import's Confirm and rolling an import back, leaving the household, and nothing else"
+    }
+  },
+  {
+    "id": "r1-b2-open",
+    "round": 1,
+    "finding": "Whether adding a sign-in needs the second check is MA-77's open question until Arun settles it",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (any('Second check to add a sign-in' in x for x in t['MA-77'].get('open',[])) or 'Settled: Second check to add a sign-in' in t['MA-77'].get('notes','')) else 1)\""
+    }
+  },
+  {
+    "id": "r1-b3",
+    "round": 1,
+    "finding": "MA-109's description gives the settled answer on Google's client secret",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-109: no paragraph says the Google client-secret question is open; passkeys through custom auth, relying party the console's domain"
+    }
+  },
+  {
+    "id": "r1-b4",
+    "round": 1,
+    "finding": "MA-160's question on the Telegram-era boards is open on its row until settled",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (any('Telegram-era boards' in x for x in t['MA-160'].get('open',[])) or 'Settled: Telegram-era boards' in t['MA-160'].get('notes','')) else 1)\""
+    }
+  },
+  {
+    "id": "r1-b5",
+    "round": 1,
+    "finding": "The invite page a device without the app sees is listed to draw on MA-32, or drawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (any('the invite page at console' in x for x in t['MA-32'].get('undrawn',[])) or 'Drawn: the invite page at console' in t['MA-32'].get('notes','')) else 1)\""
+    }
+  },
+  {
+    "id": "r1-b5-167",
+    "round": 1,
+    "finding": "MA-167's update prompt is UI and is drawn before it starts",
+    "check": {
+      "type": "trace",
+      "key": "MA-167",
+      "field": "ui",
+      "value": true
+    }
+  },
+  {
+    "id": "r1-b6-b8",
+    "round": 1,
+    "finding": "MA-36 is a native card with no HTML fallback; MA-72 has an iOS and a web Google client and a Services ID; MA-162 puts nothing into SSM",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-36, MA-72 and MA-162 descriptions"
+    }
+  },
+  {
+    "id": "r1-b9",
+    "round": 1,
+    "finding": "MA-77 no longer lists the owner linking an address; the code page's refusal is listed only as the web's Telegram-era flow to take out or redraw (MA-185)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; u=t['MA-77'].get('undrawn',[]); n=t['MA-77'].get('notes',''); sys.exit(0 if not any('links an address' in x for x in u) and (any('owner unlinks' in x for x in u) or 'Drawn: the message Asha gets when the owner unlinks' in n) and all('MA-185' in x for x in u if 'refusal after a code' in x) else 1)\""
+    }
+  },
+  {
+    "id": "r1-c1",
+    "round": 1,
+    "finding": "ARCHITECTURE 4.7 names the iOS board as MA-156's spec and the Telegram boards only as the record",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "Since\\s+MA-161 the spec is the iOS board `iPhone · Currency check`"
+    }
+  },
+  {
+    "id": "r1-c2",
+    "round": 1,
+    "finding": "One width rule: the chat is a sheet under about 900 pt and beside every screen over it",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "PLAN.md",
+        "README.md",
+        "docs/trace.json",
+        "docs/TRACE.md",
+        "docs/design/README.md",
+        "docs/design/reviews/MA-161/decision.md"
+      ],
+      "pattern": "chat beside every screen on iPad|every one of these screens has the chat beside it|sidebar with the chat beside every screen",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-c3-c4",
+    "round": 1,
+    "finding": "No record names an auth.mypaisapp.com sign-in domain or relying party",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "README.md",
+        "TECH_STACK.md",
+        "PLAN.md",
+        "docs/design/agent-journey.html",
+        "docs/design/market-agent.html",
+        "docs/design/lucid/gen_aws_architecture.py",
+        "docs/design/lucid/aws-architecture.lucid.json",
+        "docs/design/reviews/MA-161/decision.md"
+      ],
+      "pattern": "auth(-dev)?\\.mypaisapp\\.com",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-c4",
+    "round": 1,
+    "finding": "ARCHITECTURE 4.5 has the passkey's sign-in path and its relying party",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "^\\| A passkey \\|[^\\n]*`/auth/passkey`[^\\n]*relying-party id is the environment's console domain"
+    }
+  },
+  {
+    "id": "r1-c6",
+    "round": 1,
+    "finding": "decision.md's build list names web/ and the console site, not an app site",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/reviews/MA-161/decision.md",
+      "pattern": "the `app` site",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-c7",
+    "round": 1,
+    "finding": "The 25%-brightness rule is in ARCHITECTURE 9.1 and PLAN's phase 1",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "PLAN.md"
+      ],
+      "pattern": "25% brightness[\\s\\S]{0,800}contrast_check\\.py|contrast_check\\.py[\\s\\S]{0,800}25% brightness"
+    }
+  },
+  {
+    "id": "r1-c10",
+    "round": 1,
+    "finding": "PLAN's phase 0 exit names the Apple and Google ids phase 1's sign-in needs",
+    "check": {
+      "type": "grep",
+      "file": "PLAN.md",
+      "pattern": "\\*\\*Exit:\\*\\* `terraform plan` runs clean[^*]*Services ID[^*]*APNs key"
+    }
+  },
+  {
+    "id": "r1-c11",
+    "round": 1,
+    "finding": "The design README counts the journey's eighteen flows",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/README.md",
+      "pattern": "sixteen flows",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-d12",
+    "round": 1,
+    "finding": "MA-175's Jira summary carries its Phase 14 prefix like the other epics",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-175 summary"
+    }
+  },
+  {
+    "id": "r1-e3",
+    "round": 1,
+    "finding": "Every weekday and date on a board agree (the timeline gate)",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/plan_sync.py selftest"
+    }
+  },
+  {
+    "id": "r1-e8",
+    "round": 1,
+    "finding": "MA-163's strip-to-Home sheet and MA-169's long-list question are listed to draw, or drawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ((any('household strip tapped' in x for x in t['MA-163'].get('undrawn',[])) or 'Drawn: the glass household strip' in t['MA-163'].get('notes','')) and (any('long-list question' in x for x in t['MA-169'].get('undrawn',[])) or 'Drawn: the long-list question' in t['MA-169'].get('notes',''))) else 1)\""
+    }
+  },
+  {
+    "id": "r1-e9",
+    "round": 1,
+    "finding": "Pause and privacy acting at once from You is MA-35's open question until settled",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (any('Pause and privacy from You' in x for x in t['MA-35'].get('open',[])) or 'Settled: Pause and privacy from You' in t['MA-35'].get('notes','')) else 1)\""
+    }
+  },
+  {
+    "id": "r1-e10",
+    "round": 1,
+    "finding": "The iPad Audit, Activity, Overlap and Scorecard boards are on MA-71 and MA-70",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ({'iPad · Audit and Activity','Foldable · Open, Audit'} <= {b['board'] for b in t['MA-71']['boards']} and 'iPad · Overlap and Scorecard' in {b['board'] for b in t['MA-70']['boards']}) else 1)\""
+    }
+  },
+  {
+    "id": "r1-e11",
+    "round": 1,
+    "finding": "MA-183 lists the web boards' chat buttons and Telegram frames to redraw, or they are drawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ((any('Open chat' in x for x in t['MA-183'].get('undrawn',[])) or 'Drawn: Browser · Overview' in t['MA-183'].get('notes','')) and (any('Telegram Desktop' in x for x in t['MA-183'].get('undrawn',[])) or 'Drawn: Responsive' in t['MA-183'].get('notes',''))) else 1)\""
+    }
+  },
+  {
+    "id": "r1-d1",
+    "round": 1,
+    "finding": "plan-sync calls MyPaisa app v1's browser boards the web app's spec, not superseded",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/rules/plan-sync.md",
+        ".claude/skills/plan-sync/SKILL.md"
+      ],
+      "pattern": "superseded Telegram and web boards",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-d2",
+    "round": 1,
+    "finding": "plan-sync lists every Claude Design project under claude_design (three), not two",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/rules/plan-sync.md",
+        ".claude/skills/plan-sync/SKILL.md",
+        ".claude/skills/plan-sync/reference/trace-schema.md"
+      ],
+      "pattern": "both Claude Design projects|List both projects",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-d3",
+    "round": 1,
+    "finding": "Every record that lists the gates runs the contrast gate",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/rules/plan-sync.md",
+        ".claude/skills/autoship/SKILL.md",
+        ".claude/rules/independent-review.md",
+        ".claude/rules/ship-autopilot.md",
+        ".claude/jira-flow.json",
+        ".github/workflows/plan-sync.yml"
+      ],
+      "pattern": "contrast_check\\.py --selftest"
+    }
+  },
+  {
+    "id": "r1-d4",
+    "round": 1,
+    "finding": "design-first states the boards' width rule: a sheet under about 900 pt",
+    "check": {
+      "type": "grep",
+      "file": ".claude/skills/design-first/SKILL.md",
+      "pattern": "wide enough, otherwise a sheet",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-d5",
+    "round": 1,
+    "finding": "The shell's pick is stated, not awaited",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/skills/design-first/SKILL.md",
+        "docs/design/README.md",
+        "PLAN.md"
+      ],
+      "pattern": "awaiting Arun.s pick|the shell Arun picks from three",
+      "present": false
+    }
+  },
+  {
+    "id": "r1-d6",
+    "round": 1,
+    "finding": "design-first names ds-v1's tokens.css as the source of the tokens",
+    "check": {
+      "type": "grep",
+      "file": ".claude/skills/design-first/SKILL.md",
+      "pattern": "copied into `docs/design/ds-v1/` \\(the source;"
+    }
+  },
+  {
+    "id": "r1-c5",
+    "round": 1,
+    "finding": "Lucid's sequence writes each file's Document and audit rows when it arrives, before the docs job reads it, and nothing at Confirm writes a Document",
+    "check": {
+      "type": "cmd",
+      "run": "T=$(mktemp -d) && cd docs/design/lucid && python3 gen_aws_architecture.py $T/a.json $T/s.puml >/dev/null && cmp -s $T/s.puml 08-add-holding-sequence.puml && cmp -s $T/a.json aws-architecture.lucid.json"
+    }
+  },
+  {
+    "id": "r1-c5-journey",
+    "round": 1,
+    "finding": "The journey's flow 3 writes no Document row at Confirm",
+    "check": {
+      "type": "grep",
+      "file": "docs/design/agent-journey.html",
+      "pattern": "<b>Instrument</b> and <b>Document</b> saved",
+      "present": false
     }
   }
 ]

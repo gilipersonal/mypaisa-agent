@@ -104,7 +104,7 @@ width**, so it fits every iPhone, every iPad in every multitasking size, and a t
 | Width | Where | Layout |
 | --- | --- | --- |
 | Compact (under about 600 pt) | iPhone in portrait; iPhone landscape on the smaller models; iPad Slide Over and one-third Split View; a foldable when folded | Tab bar at the bottom (Liquid Glass); one column; sheets for detail; the chat is a tab |
-| Regular, narrow (about 600 to 900 pt) | iPad portrait; two-thirds Split View; a foldable open; a Stage Manager window | Sidebar that collapses to a tab bar at the top (`sidebarAdaptable`); the screen and the chat side by side when the window is wide enough, otherwise the chat as a sheet |
+| Regular, narrow (about 600 to 900 pt) | iPad portrait; two-thirds Split View; a foldable open; a Stage Manager window | Sidebar that collapses to a tab bar at the top (`sidebarAdaptable`); the chat as a sheet, beside the screen only over about 900 pt |
 | Regular, wide (over about 900 pt) | iPad landscape; a large Stage Manager window | Sidebar, the screen, and the chat as a trailing column beside every screen (an inspector), so a member reads Home and talks to MyPaisa at once |
 
 A fold, a rotation or a window resize keeps the conversation, the scroll position and any guided flow in place
@@ -225,9 +225,8 @@ never does.
 opens the chat with the right guided flow already started; the only writes outside the chat are the owner's
 Admin center actions, each behind the second check and an audit row.
 
-**Domains** (§18.2). `api(-dev)` (HTTP API), `live(-dev)` (WebSocket API), `auth(-dev)` (Cognito, the passkey
-relying party's home until MA-109 fixes the id), and `console(-dev).mypaisapp.com`, S3 and CloudFront: the web
-app, and the `apple-app-site-association` file for the invite links (`https://console.mypaisapp.com/join/<token>`);
+**Domains** (§18.2). `api(-dev)` (HTTP API), `live(-dev)` (WebSocket API), and `console(-dev).mypaisapp.com`, S3
+and CloudFront: the web app, the passkeys' relying party (MA-109 confirms it), and the `apple-app-site-association` file for the invite links (`https://console.mypaisapp.com/join/<token>`);
 it holds no data.
 
 ## Delivery and cost
@@ -257,9 +256,10 @@ it holds no data.
 ## What the build will touch
 
 `ios/` (new: the Xcode project, the `MyPaisaKit` and `MyPaisaUI` packages, the app and its tests),
-`src/mypaisa_agent/handlers/{api,sender}` and the Cognito triggers, `infra/` (the WebSocket API, the `app` site,
-APNs and Apple parameters; the console's bucket and the Telegram parameters never made), `.github/workflows/`
-(the iOS gates and the TestFlight lanes).
+`src/mypaisa_agent/handlers/{api,sender}` and the Cognito triggers, `web/` (the read-only web app, its sign-in and
+its PWA files, MA-183 to MA-185), `infra/` (the WebSocket API, the console site with the association file and the
+invite page, APNs and Apple parameters; the Telegram parameters never made), `.github/workflows/` (the iOS gates and
+the TestFlight lanes).
 
 ## Glitches found and fixed
 

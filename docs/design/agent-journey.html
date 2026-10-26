@@ -755,7 +755,7 @@ footer.foot b { color: var(--mp-ink); }
   <a class="idx" href="#alert"><b>6</b><span><strong>A red alert after the US close</strong><small>Tiers, cooldowns, quiet hours, two reds a week, a time-sensitive push · phase 3</small></span></a>
   <a class="idx" href="#ask"><b>7</b><span><strong>Asking a question</strong><small>Chat memory, tools, a reply streamed as it is written, Why? with sources · phase 4</small></span></a>
   <a class="idx" href="#dashboard"><b>8</b><span><strong>The dashboard in the app</strong><small>Home, a holding, Audit, Activity, on iPhone and iPad · phase 5</small></span></a>
-  <a class="idx" href="#ipad"><b>9</b><span><strong>On the iPad: reading Home while asking about it</strong><small>The chat beside every screen · phases 1 and 5</small></span></a>
+  <a class="idx" href="#ipad"><b>9</b><span><strong>On the iPad: reading Home while asking about it</strong><small>The chat beside every screen in a window over about 900 pt, a sheet in a narrower one · phases 1 and 5</small></span></a>
   <a class="idx" href="#web"><b>10</b><span><strong>The web app on a laptop</strong><small>The dashboard and the Admin center in a browser, installable · phase 5</small></span></a>
   <a class="idx" href="#admin"><b>11</b><span><strong>The Admin center</strong><small>In the app and the web app; devices, spend, approvals, each behind the second check · phases 5 and 12</small></span></a>
   <a class="idx" href="#failure"><b>12</b><span><strong>When something fails</strong><small>Retries, dead-letter queues, replay, offline · phases 1, 5 and 12</small></span></a>
@@ -876,7 +876,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-32"><b>MA-32</b><span>The first person to sign in owns the household and invites and removes members with one-time links</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-168"><b>MA-168</b><span>Signing in takes one tap with Apple or Google, the session stays in the Keychain, and an invite link opens the app to join</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>The web app is hosted on its own S3 and CloudFront per environment, with security headers, and serves the invite links' association file from console(-dev).mypaisapp.com</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>Each environment hosts the console at console(-dev).mypaisapp.com on S3 and CloudFront: the web app (a PWA) and the iOS app's association file and invite page</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-162"><b>MA-162</b><span>The Apple Developer Program, and the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-35"><b>MA-35</b><span>The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-33"><b>MA-33</b><span>Each member has their own accounts, and a joint account can have two owners</span></a>
@@ -928,14 +928,17 @@ footer.foot b { color: var(--mp-ink); }
     </ol></div></div>
   </div>
   <div class="seq-card">
-    <p class="route">Route 3: the web app in a browser<small>Apple, Google or a passkey; the session is an HttpOnly cookie set by the api</small></p>
+    <p class="route">Route 3: the web app in a browser<small>Apple, Google or a passkey, through the same <code>/auth</code> exchange as the app; the session is an HttpOnly cookie set by the api</small></p>
     <div class="seq-wrap">
     <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
     <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
     <ol class="seq">
       <li class="st mv fm toP" data-lanes="Member to Web app"><span class="lb">Asha opens <code>console.mypaisapp.com</code> on a laptop: <b>CloudFront</b> serves the static shell and its sign-in page, with no data in it</span><span class="ln"></span></li>
-      <li class="st mv fp toE" data-lanes="Web app to External (Apple or Google)"><span class="lb"><b>Sign in with Apple</b> or <b>Google</b> in the browser, through Cognito's sign-in domain <code>auth.mypaisapp.com</code>; or a <b>passkey</b> (WebAuthn, its relying party fixed per environment)</span><span class="ln"></span></li>
-      <li class="st mv fe toA rev" data-lanes="External (Apple or Google) to AWS"><span class="lb">Cognito maps the account's stable id to the member it was linked to, <span class="sg">never the address</span>. An account linked to nobody is refused</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="Web app to AWS"><span class="lb">The page asks the api for a <span class="sg">one-time nonce</span>, as the app does</span><span class="ln"></span></li>
+      <li class="st mv fp toE" data-lanes="Web app to External (Apple or Google)"><span class="lb"><b>Sign in with Apple</b> through Apple's JS (this environment's Services ID as the audience), or <b>Google</b> through Google Identity Services (this environment's Google web client id), with the nonce</span><span class="ln"></span></li>
+      <li class="st mv fe toP rev" data-lanes="External (Apple or Google) to Web app"><span class="lb">Apple's identity token or Google's ID token, back to the page</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="Web app to AWS"><span class="lb">The page posts it to <code>/auth/apple</code> or <code>/auth/google</code>, the same exchange as the app, with <span class="sg">no client secret</span>. Or a <b>passkey</b>: a one-time challenge from <code>/auth/passkey/options</code>, signed under Face ID or Touch ID, sent to <code>/auth/passkey</code></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The api starts Cognito's custom auth for the linked member, and the verify trigger checks the token against Apple's or Google's published keys (audience, expiry, issue time, nonce, <span class="sg">no replay</span>), or the passkey's signature against its stored public key, the challenge, the origin and the relying party, the console's own domain. The account's stable id maps to the member, <span class="sg">never the address</span>; an account linked to nobody is refused</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to Web app"><span class="lb">The api sets the session: an <span class="sg">HttpOnly, Secure, SameSite=Strict cookie</span> for its own host, 30 days on a laptop; the five-minute access tokens behind it are never seen by page scripts</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Every <code>/v1</code> call from the page carries the cookie; the authorizer checks the session, status and epoch, and <span class="sg">CORS</span> admits only this environment's site. Each web sign-in is an <span class="sg">audit row</span>, and a new browser gets <i>Was this you?</i> in her app's chat</span></li>
     </ol></div></div>
@@ -1022,7 +1025,7 @@ footer.foot b { color: var(--mp-ink); }
     <figure class="mock">
       <div class="phone">
         <div class="sbar" aria-hidden="true"><span>19:44</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
-        <div class="nav"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></span><span class="navt">Asha<small>Member · 3 devices</small></span><span class="gbtn" aria-hidden="true"></span></div>
+        <div class="nav"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></span><span class="navt">Asha<small>Member · 2 devices, 1 browser</small></span><span class="gbtn" aria-hidden="true"></span></div>
         <div class="screen">
           <div class="group">
             <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-tablet"/></svg></span><span class="grow"><b>iPad · Google</b><small>Today 19:41</small></span><span class="st-chip c-pause">Not confirmed</span></div>
@@ -1077,7 +1080,8 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-168"><b>MA-168</b><span>Signing in takes one tap with Apple or Google, the session stays in the Keychain, and an invite link opens the app to join</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-109"><b>MA-109</b><span>Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys, verified in custom-auth Lambdas</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-143"><b>MA-143</b><span>Each environment has its own Google iOS client and Sign in with Apple settings, with their ids in SSM, before Cognito is built</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-185"><b>MA-185</b><span>In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-143"><b>MA-143</b><span>Each environment has its own Google iOS and web clients and Sign in with Apple's ids, with their ids in SSM, before Cognito is built</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-75"><b>MA-75</b><span>The api's authorizer checks the access token, the member's status and session epoch on every call and live connection</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>The second check: a fresh Sign in with Apple or passkey under Face ID, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-77"><b>MA-77</b><span>A member adds a second sign-in, Apple or Google, or a passkey, to their identity from You</span></a>
@@ -1109,7 +1113,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Structured JSON, a citation for each figure and a confidence for each field</span><span class="ln"></span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">A card of what was read, from the agent's JSON, low-confidence fields in amber, with <b>Confirm</b>, <b>Edit</b> and <b>Cancel</b></span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <span class="sg">Confirm</span>; the tap is posted to <code>/v1/chat/actions</code> and acknowledged at once</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Instrument</b> and <b>Document</b> saved in <b>DynamoDB</b>, each with an <span class="sg">audit row</span>; price sources resolved from the ISIN (the Yahoo id, the BlackRock page)</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Instrument</b> saved in <b>DynamoDB</b> with an <span class="sg">audit row</span> carrying the factsheet's <code>document_id</code> (its <b>Document</b> row was written when it arrived); price sources resolved from the ISIN (the Yahoo id, the BlackRock page)</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb"><i>Added. How much do you hold? Send a screenshot or type it.</i></span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You attach a screenshot of the Monzo valuation from Photos; it uploads the same way and the same docs job reads it with Claude</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">After Confirm: <b>Position</b>, <b>Valuation</b> (source <code>user_screenshot</code>) and <b>Transaction</b>, each with an audit row that names the screenshot it came from. The Position keeps the currency this card showed, confirmed once (flow 15). The screenshot stays in S3 and opens from the Audit screen</span></li>
@@ -1866,16 +1870,18 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad, and in the web app</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit and Activity screens show every change and every run, with what it cost</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>A read-only api Lambda serves each member only what they may see</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-80"><b>MA-80</b><span>Each card opens its dashboard screen, and each screen's Ask opens the chat about it</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-71"><b>MA-71</b><span>Design the Audit and Activity screens on iPhone and iPad</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-56"><b>MA-56</b><span>Design the chart house style shared by the chat's cards and the dashboard, in Swift Charts</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell: tabs on iPhone, a sidebar with the chat beside every screen on iPad and an open foldable, picked from three options</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell, 1a Chat first: tabs on iPhone, a sidebar on iPad and an open foldable, with the chat beside every screen in a wide window and a sheet in a narrower one</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-171"><b>MA-171</b><span>Privacy in the app: privacy mode hides amounts everywhere, the app switcher shows nothing, and Face ID can lock the app</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-173"><b>MA-173</b><span>Offline, the app shows the last figures with their time, keeps what is typed and sends it once back online</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-181"><b>MA-181</b><span>Every screen works with VoiceOver, Dynamic Type up to AX5, Increase Contrast, Reduce Transparency and Reduce Motion, and stays legible in light and dark at 25% brightness</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-182"><b>MA-182</b><span>Every component, card and chart moves with one motion system, in the iOS app and the web app, and lands at once under Reduce Motion</span></a>
   </div>
 </section>
 
@@ -1884,14 +1890,14 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">09</span>
     <h2 id="h-ipad">On the iPad: reading Home while asking about it</h2>
-    <p class="lede">On an iPad in landscape, or any window wider than about 900 points, the chat sits beside every screen. You read Home and ask about it at once: the question carries the screen as its context, the answer streams in beside the figures, and Home stays where it was. The same conversation is on your iPhone.</p>
+    <p class="lede">On an iPad in landscape, or any window wider than about 900 points, the chat sits beside every screen; in a narrower window it opens as a sheet. You read Home and ask about it at once: the question carries the screen as its context, the answer streams in beside the figures, and Home stays where it was. The same conversation is on your iPhone.</p>
     <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on an iPad, a Stage Manager window or an open foldable</span><span class="chip">Phase 1 (the shell)</span><span class="chip">Phase 5 (the screens)</span></div>
   </div>
 
   <h3 class="blk">The layout follows the width, never the device</h3>
   <dl class="facts">
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg>Compact, under about 600 pt</dt><dd>iPhone; iPad in Slide Over or one-third Split View; a foldable, folded. The glass tab bar, one column; each screen's Ask opens the chat about it.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-tablet"/></svg>Regular, about 600 to 900 pt</dt><dd>iPad portrait, two-thirds Split View, a foldable open, a Stage Manager window. The sidebar (or its tab bar at the top); the chat beside the screen when there is room, otherwise as a sheet.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-tablet"/></svg>Regular, about 600 to 900 pt</dt><dd>iPad portrait, two-thirds Split View, a foldable open, a Stage Manager window. The sidebar (or its tab bar at the top); the chat as a sheet over the screen, from its Ask or ⌘K.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Regular, over about 900 pt</dt><dd>iPad landscape, a large window. The sidebar, the screen, and the chat as a column beside every screen.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>A hardware keyboard</dt><dd>Return sends, Shift-Return breaks a line, ⌘K the composer, ⌘1 to ⌘5 the sections, ⌘F search, Esc closes a sheet; the pointer hovers rows and buttons.</dd></div>
   </dl>
@@ -2007,14 +2013,15 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell: tabs on iPhone, a sidebar with the chat beside every screen on iPad and an open foldable, picked from three options</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-163"><b>MA-163</b><span>The app's shell, 1a Chat first: tabs on iPhone, a sidebar on iPad and an open foldable, with the chat beside every screen in a wide window and a sheet in a narrower one</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-70"><b>MA-70</b><span>Design the iPad and open-foldable layouts: Home, a holding, Overlap, Scorecard and sign-in at regular width</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-80"><b>MA-80</b><span>Each card opens its dashboard screen, and each screen's Ask opens the chat about it</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-169"><b>MA-169</b><span>The chat in the app shows the conversation, renders every card natively, streams replies and sends text, photos, scans and files</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies reach the open app over a signed-in live connection, in order and never twice, and the app catches up when it opens</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-180"><b>MA-180</b><span>Search finds a holding, a change, a file or a past answer from anywhere in the app</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-181"><b>MA-181</b><span>Every screen works with VoiceOver, Dynamic Type up to AX5, Increase Contrast, Reduce Transparency and Reduce Motion</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-181"><b>MA-181</b><span>Every screen works with VoiceOver, Dynamic Type up to AX5, Increase Contrast, Reduce Transparency and Reduce Motion, and stays legible in light and dark at 25% brightness</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-182"><b>MA-182</b><span>Every component, card and chart moves with one motion system, in the iOS app and the web app, and lands at once under Reduce Motion</span></a>
   </div>
 </section>
 
@@ -2104,14 +2111,17 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad, and in the web app</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-183"><b>MA-183</b><span>The web app shows Home, a holding, Overlap and Scorecard read-only in a browser, installable as a PWA</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-184"><b>MA-184</b><span>The web app's Audit, Files, Activity and Admin center pages work in a browser, with the second check for the owner's actions</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-185"><b>MA-185</b><span>In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit and Activity screens show every change and every run, with what it cost</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>A read-only api Lambda serves each member only what they may see</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>The web app is hosted on its own S3 and CloudFront per environment, with security headers</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>Each environment hosts the console at console(-dev).mypaisapp.com on S3 and CloudFront: the web app (a PWA) and the iOS app's association file and invite page</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-75"><b>MA-75</b><span>The api's authorizer checks the session, the member's status and session epoch on every call</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-109"><b>MA-109</b><span>Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-101"><b>MA-101</b><span>MyPaisa DS v1, Warm ledger: the design system the web app's screens are drawn in</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-182"><b>MA-182</b><span>Every component, card and chart moves with one motion system, in the iOS app and the web app, and lands at once under Reduce Motion</span></a>
   </div>
 </section>
 
@@ -2263,6 +2273,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-102"><b>MA-102</b><span>The owner can sign out or pause any member's devices from the Admin center, behind the second check</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>The second check: a fresh Sign in with Apple or passkey under Face ID, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-184"><b>MA-184</b><span>The web app's Audit, Files, Activity and Admin center pages work in a browser, with the second check for the owner's actions</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-116"><b>MA-116</b><span>The owner moves the Claude ceiling up or down in the Admin center</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app and the web app, push and email</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-113"><b>MA-113</b><span>Every Claude call is metered and nothing runs past the monthly ceiling</span></a>
@@ -3078,7 +3089,8 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-153"><b>MA-153</b><span>IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-156"><b>MA-156</b><span>A transaction can be typed in any currency and is checked against the holding's own currency</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-94"><b>MA-94</b><span>Wealth maths and a daily net worth, with the household's INR view one tap away (phase 9)</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad, and in the web app</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-78"><b>MA-78</b><span>Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-183"><b>MA-183</b><span>The web app shows Home, a holding, Overlap and Scorecard read-only in a browser, installable as a PWA</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-147"><b>MA-147</b><span>Epic: Indian markets and the existing Indian portfolio (phase 13)</span></a>
   </div>
 </section>
@@ -3203,9 +3215,9 @@ footer.foot b { color: var(--mp-ink); }
 </main>
 
 <footer class="foot">
-  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.1, §4.2, §4.5, §4.6, §4.7, §5.1, §5.3, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20, §21 and §22; <code>PLAN.md</code> phases 0 to 14 and phase 1's MA-156; <code>TECH_STACK.md</code>'s Indian sources; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center; <code>docs/design/reviews/MA-161/decision.md</code> and its stories, MA-162 to MA-181, with Arun's correction that the read-only web app stays.</p>
-  <p><b>Look.</b> MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102. The web app keeps the system's web components. The iOS app adds Apple's Liquid Glass (MA-161): glass only on the controls (the tab bar and its search circle, toolbar buttons, the composer and its chips, menus and partial-height sheets), content solid, never glass on glass, and the glass made opaque under Reduce Transparency. The member's words sit in navy bubbles; MyPaisa's sit unbubbled beside its mark, the 1c Watcher (MA-103); cards are Warm ledger cards with their own buttons. Every mock is drawn in shell 1a, Chat first.</p>
-  <p><b>Status.</b> Design only; nothing is built. Every figure, rate, fund name, file name, device, date, time and wording in the mocks is illustrative. The iOS boards in the MyPaisa iOS v1 Claude Design project are planned, and each goes through its options round when its story starts; the Indian cards and screens are still to be designed. MyPaisa never gives tax advice.</p>
+  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.1, §4.2, §4.5, §4.6, §4.7, §5.1, §5.3, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20, §21 and §22; <code>PLAN.md</code> phases 0 to 14 and phase 1's MA-156; <code>TECH_STACK.md</code>'s Indian sources; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center; <code>docs/design/reviews/MA-161/decision.md</code> and its stories, MA-162 to MA-185, with Arun's correction that the read-only web app stays.</p>
+  <p><b>Look.</b> MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102. The web app keeps the system's web components. The iOS app adds Apple's Liquid Glass (MA-161): glass only on the controls (the tab bar and its search circle, toolbar buttons, the composer and its chips, menus and partial-height sheets), content solid, never glass on glass, and the glass made opaque under Reduce Transparency. The member's words sit in navy bubbles; MyPaisa's sit unbubbled beside its mark, the 1c Watcher (MA-103); cards are Warm ledger cards with their own buttons. Every mock is drawn in shell 1a, Chat first. Legible at 25% brightness (MA-181), as Arun asked: "the text and component should be clearly visible even in 25% mobile brightness". Every colour pair in light and dark, text on glass included, passes <code>scripts/contrast_check.py</code> at full brightness and at 25%, a gate on every PR (<code>ARCHITECTURE.md</code> §9.1). One motion system (MA-182), in the app and the web app: springs, glass that morphs, figures that roll, charts that draw in and scrub, haptics in the app, and Reduce Motion honoured: every movement then becomes a short cross-fade or lands at once.</p>
+  <p><b>Status.</b> Design only; nothing is built. Every figure, rate, fund name, file name, device, date, time and wording in the mocks is illustrative. In the MyPaisa iOS v1 Claude Design project the shell is picked (1a, Chat first, Arun, 26 Oct 2026); the other iOS boards are planned until each story's pick, in its options round when the story starts; the Indian cards and screens are still to be designed. MyPaisa never gives tax advice.</p>
 </footer>
 
 </div>

@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks for a change to how MyPaisa looks or flows, in the iOS app (ios/, one spec in the MyPaisa iOS v1 Claude Design project, with boards for iPhone and for iPad and the foldable), the read-only web app (web/, a PWA for the dashboard and the Admin center, from the browser boards in the MyPaisa app v1 project), the chat's cards, buttons and guided flows, the charts (Swift Charts and lightweight-charts in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; such as a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy hierarchy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps) in Claude Design (the MyPaisa DS, MyPaisa iOS and MyPaisa app projects), keeping the record in docs/design/reviews/MA-<n>/; review every page for glitches in light and dark at every size class, legible at 25% brightness; and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, one spec in the MyPaisa iOS v1 Claude Design project, boards for iPhone, iPad and the foldable), the read-only web app (web/, a PWA for the dashboard and the Admin center, from the browser boards in the MyPaisa app v1 project), the chat's cards, buttons and guided flows, the charts (Swift Charts and lightweight-charts in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps) in Claude Design (the MyPaisa DS, MyPaisa iOS and MyPaisa app projects), keeping the record in docs/design/reviews/MA-<n>/; review every page for glitches in light and dark at every size class, legible at 25% brightness; and build only the option Arun picks.
 ---
 
 # Design first
@@ -80,7 +80,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
      app v1 for the web app; each door's one spec.
   3. The design system in force: **MyPaisa DS v1** ("Warm ledger", picked by Arun on 24 Oct 2026, MA-101): `tokens.css`,
      the shared motion (`motion.css`, `motion.js`) and the iOS kit (`iOS kit.dc.html`, `ios.css`) in the MyPaisa DS v1
-     Claude Design project, copied into `docs/design/ds-v1/`, with the tokens also in `docs/design/reviews/MA-101/`;
+     Claude Design project, copied into `docs/design/ds-v1/` (the source; `docs/design/reviews/MA-101/tokens.css` is the record of the first pick, before MA-181 tuned dark mode);
      then Apple's Human Interface Guidelines, which the kit follows. The Mini App and Telegram boards in MyPaisa app
      v1, the Telegram kit and the Nocturne artboards in `docs/design/dashboard/` are superseded (MA-161).
   4. impeccable.
@@ -128,7 +128,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
     treatment. Never the same idea in two colours.
   - Mark one as recommended, and say why.
   - App options show the main screen on iPhone (compact) and on iPad (regular, wide), in dark and light, in the shell
-    Arun picked (1a's until he picks, MA-163): the iPhone board in the Liquid Glass tab bar with the safe areas, the
+    Arun picked, 1a Chat first (26 Oct 2026, MA-163): the iPhone board in the Liquid Glass tab bar with the safe areas, the
     iPad board with the sidebar and the chat beside the screen. A screen changed at one size class is changed at the
     others in the same round, so they never drift; a change that only fits one says why on the board. One spec, never
     a design doc per device (`docs/design/README.md`, MA-161).
@@ -174,8 +174,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **Adaptive.**
   - In the app, every screen lays itself out by size class and window width, never by device: compact under about
     600 pt (the tab bar, one column, sheets for detail, the chat a tab), regular narrow about 600 to 900 pt (a sidebar
-    that collapses to a tab bar at the top; the chat beside the screen when the window is wide enough, otherwise a
-    sheet), regular wide over about 900 pt (the sidebar, the screen, and the chat as a column beside it). That covers
+    that collapses to a tab bar at the top; the chat as a sheet, beside the screen only over about 900 pt), regular wide over about 900 pt (the sidebar, the screen, and the chat as a column beside it). That covers
     every iPhone, every iPad window (Split View, Slide Over, Stage Manager) and a foldable, folded or open. Dynamic
     Type from xSmall to AX5 reflows every card (figures stack under labels from AX1); a fold, a rotation or a resize
     keeps the conversation, the scroll and any guided flow. Show at least one screen at all three size classes
@@ -195,8 +194,8 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   browser boards are in the **MyPaisa app v1** project, whose Mini App and Telegram boards, with the Telegram kit, are
   the superseded record (MA-161). A significant revision is a new file or a new vN, never an overwrite of what Arun
   picked from.
-- **`tokens.css`, `ios.css` and the motion files are copied** from the DS project into the iOS and app projects after
-  every change (`copy_files`), and into `docs/design/reviews/MA-<n>/` in the repo, so the repo always has the system's
+- **`tokens.css` and the motion files are copied** from the DS project into the iOS and app projects, and `ios.css`
+  into the iOS project, after every change (`copy_files`); `tokens.css` also into `docs/design/reviews/MA-<n>/` in the repo, so the repo always has the system's
   source; once `ios/` exists, its colour assets are generated from `tokens.css` (MA-165). A token change runs
   `python3 scripts/contrast_check.py` before it is copied.
 - **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in

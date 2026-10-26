@@ -22,8 +22,8 @@ this repo on any change just before you merge the PR. just for this Repo".
   "Independent review"), in parallel lanes on the delta. Arun, 25 Oct 2026,
   after PR #32's seven one-reviewer rounds: "always use that approach for
   this repo and make it a global rule".
-  1. **Gates first:** `python3 scripts/plan_sync.py selftest`, `check`, the
-     story's other gates, and `python3 scripts/review_regress.py MA-<n>` once
+  1. **Gates first:** `python3 scripts/plan_sync.py selftest`, `check`,
+     `python3 scripts/contrast_check.py --selftest` and `python3 scripts/contrast_check.py`, the story's other gates, and `python3 scripts/review_regress.py MA-<n>` once
      the story has a ledger. Reviewers spend time only on what no gate measures.
   2. **Lanes, in parallel:** one fresh sub-agent per lane, every Agent call in
      one message, each blind to the making (the requirements, the rules and

@@ -16,8 +16,8 @@ default), `--jira` or `--design` (one side only).
 Ids: Jira cloudId `81c51173-bbea-4905-bbc5-1a880fa348bb`, project `MA`,
 transitions in `.claude/jira-flow.json`. Claude Design projects in
 `docs/trace.json` under `claude_design` (`ios`: MyPaisa iOS v1, the app's
-screens since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the superseded
-Telegram and web boards). Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
+screens since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the web app's
+browser boards, its spec, beside the superseded Mini App and Telegram boards). Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
 `mcp__atlassian__editJiraIssue`, `mcp__atlassian__createJiraIssue`,
 `mcp__atlassian__addOrEditJiraIssueComment`, `mcp__claude-design__list_files`,
 `mcp__claude-design__read_file`.
@@ -49,7 +49,7 @@ asking in this repo (`.claude/rules/ship-autopilot.md`).
 
 ## 2. Claude Design against the mirror
 
-List both projects with depth -1 and compare with
+List every project under `claude_design` with depth -1 and compare with
 `docs/design/claude-design.json`.
 
 | Found | Do |

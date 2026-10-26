@@ -13,6 +13,7 @@ Jira and Claude Design halves need their MCP tools and live in /plan-sync.
 """
 from __future__ import annotations
 
+import datetime
 import hashlib
 import html
 import json
@@ -302,6 +303,30 @@ def mirror_errors(mirror: object) -> list[str]:
     return errors
 
 
+_MONTHS = {m: i + 1 for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split())}
+_DAYS = "Mon Tue Wed Thu Fri Sat Sun".split()
+_DATE = re.compile(r"\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,? (\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?: (\d{4}))?\b")
+
+
+def date_errors(text: str) -> list[str]:
+    """Each weekday-and-date on a board ("Fri 23 Oct") whose weekday is wrong (MA-161 review: lesson 10, dates agree).
+    The boards are set in October 2026: a date with no year is right if its weekday fits 2026, or 2027 for January
+    to September (a date ahead, such as the next results day)."""
+    bad = []
+    for m in _DATE.finditer(html.unescape(text)):
+        day, num, mon, year = m.group(1), int(m.group(2)), _MONTHS[m.group(3)], m.group(4)
+        years = [int(year)] if year else ([2026, 2027] if mon < 10 else [2026])
+        fits = False
+        for y in years:
+            try:
+                fits = fits or _DAYS[datetime.date(y, mon, num).weekday()] == day
+            except ValueError:
+                pass
+        if not fits:
+            bad.append(m.group(0))
+    return sorted(set(bad))
+
+
 def check(trace: dict) -> tuple[list[str], list[str]]:
     errors, warnings = shape_errors(trace) or mirror_errors(load(MIRROR) if MIRROR.exists() else {}), []
     if errors:
@@ -376,6 +401,9 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
                 errors.append(f"mirror: {proj['dir']}/{name} is {path.stat().st_size} bytes, recorded {meta['bytes']}; copy it again")
             elif meta.get("sha256") and sha256(path) != meta["sha256"]:
                 errors.append(f"mirror: {proj['dir']}/{name} differs from the copy recorded in claude-design.json; copy it again")
+            if path.is_file() and name.endswith(".html"):
+                for d in date_errors(path.read_text()):
+                    errors.append(f"board date: {proj['dir']}/{name} says {d!r}, a wrong weekday")
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -469,6 +497,14 @@ def start(trace: dict, key: str) -> int:
 
 
 # Board names the check must accept (True) or refuse (False), from the reviews of PR #32.
+# Board dates the check must accept and refuse (MA-161 review, round 1: e3's timeline and lesson 10).
+DATE_CASES = [
+    ("Fri 23 Oct", True), ("Fri, 2 Oct", True), ("Sun 4 Oct", True), ("Mon 26 Oct 21:16", True),
+    ("Thu 29 Apr", True),            # next April's results day, 2027
+    ("Thu 23 Oct", False), ("Tue 20 Oct 2025", False), ("Wed 28 Oct", True), ("Sat 31 Oct", True),
+    ("Fri 31 Sep", False), ("Thursday 22 October", True), ("Thursday 23 October", False),
+]
+
 BOARD_CASES = [
     ("ds", "Telegram kit.dc.html", "1 · Portfolio card", True), ("ds", "Telegram kit.dc.html", "2 · Stance card", True),
     ("ds", "Telegram kit.dc.html", "4 · Portfolio card", False), ("ds", "Telegram kit.dc.html", "1 · Stance card", False),
@@ -530,7 +566,12 @@ def selftest(trace: dict) -> int:
         if got != want:
             bad += 1
             print(f"FAIL: {board!r} in {file}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {bad} wrong")
+    for text, want in DATE_CASES:
+        got = not date_errors(text)
+        if got != want:
+            bad += 1
+            print(f"FAIL: date {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
+    print(f"plan-sync selftest: {len(BOARD_CASES)} board names and {len(DATE_CASES)} dates, {bad} wrong")
     return 1 if bad else 0
 
 

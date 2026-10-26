@@ -35,12 +35,12 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-158 | The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts | In Review |  | none |  |
 | MA-159 | Secret values never reach Terraform state: the SSM parameters use write-only values, not a placeholder with ignore_changes | Done | §14, §18.1, §18.4 | none |  |
 | MA-160 | Board fixes found in the reviews of MA-158 and MA-156 are applied in Claude Design and copied into the repo | To Do |  | none |  |
-| MA-161 | MyPaisa becomes one native iOS app: the plan, the designs and Jira move from Telegram and the web to iPhone and iPad | In Progress | §9, §16 | none |  |
+| MA-161 | MyPaisa's chat moves from Telegram to one native iOS app for iPhone and iPad, and the web app stays as a read-only PWA: the plan, the designs and Jira follow | In Progress | §9, §16 | none |  |
 | MA-162 | Arun joins the Apple Developer Program ($99 a year) and registers the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains | To Do | §15, §18.1 | none |  |
 | MA-164 | An APNs key per environment is in SSM, and the App Store Connect app records, TestFlight testers and API key exist | To Do | §14, §18.4 | none |  |
 | MA-165 | The iOS project builds: one SwiftUI app for iPhone and iPad on iOS 26, its packages, the Warm ledger assets and its tests | To Do | §9, §13 | none |  |
 | MA-166 | CI builds and tests the iOS app on every pull request that touches it, with snapshot and accessibility checks | To Do | §18.4 | none |  |
-| MA-167 | A merge to main sends MyPaisa Dev to TestFlight, and MyPaisa after Arun approves, with an alert before a build expires | To Do | §18.4 | none |  |
+| MA-167 | A merge to main sends MyPaisa Dev to TestFlight, and MyPaisa after Arun approves, with an alert before a build expires | To Do | §18.4 | todo |  |
 
 ## Phase 1: Registry, sign-in and the app's chat (MA-10)
 
@@ -60,7 +60,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-38 | "I put £200 into Balanced" becomes a transaction after Confirm | To Do | §4.1, §4.2 | planned | iPhone chat.dc.html: iPhone · Confirm card |
 | MA-39 | Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting | To Do | §9.1 | planned | iPhone chat.dc.html: iPhone · Guided flow: log a transaction |
 | MA-40 | "What changed this week?" lists every change with who and when | To Do | §4.6 | planned | iPhone chat.dc.html: iPhone · What changed this week; iPhone audit and activity.dc.html: iPhone · Audit |
-| MA-73 | Each environment hosts the console at console(-dev).mypaisapp.com on S3 and CloudFront: the web app (a PWA) and the iOS app's association file and invite page | To Do | §9.3, §18.2 | none |  |
+| MA-73 | Each environment hosts the console at console(-dev).mypaisapp.com on S3 and CloudFront: the web app (a PWA) and the iOS app's association file and invite page | To Do | §9.4, §18.2 | none |  |
 | MA-75 | The api's authorizer checks the access token, the member's status and session epoch on every call and live connection | To Do | §4.5, §9.3 | none |  |
 | MA-109 | Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys, verified in custom-auth Lambdas | To Do | §4.5, §17, §18.3 | none |  |
 | MA-110 | Dev is seeded with a synthetic household built around the real Monzo OEICs | To Do | §18.1 | none |  |
@@ -70,7 +70,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-144 | The app reaches each environment through api(-dev) and live(-dev).mypaisapp.com, and the dev build runs from Xcode against dev | To Do | §18.1, §18.2 | none |  |
 | MA-148 | Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it | To Do | §4.1, §4.6, §14 | none |  |
 | MA-156 | A transaction can be typed in any currency, and the chat checks it against the holding's own currency and puts a mismatch right before Confirm | To Do | §4.1, §4.7, §5.3, §22.3 | planned | iPhone chat.dc.html: iPhone · Currency check |
-| MA-163 | The app's shell, 1a Chat first: tabs on iPhone, a sidebar with the chat beside every screen on iPad and an open foldable | To Do | §9, §9.1 | picked | Shell options.dc.html: 1a · Chat first; iPad and foldable.dc.html: iPad · Split View, one third; iPad and foldable.dc.html: iPad · Stage Manager window; iPad and foldable.dc.html: Foldable · Folded; iPad and foldable.dc.html: iPad · Keyboard shortcuts; iOS kit.dc.html: 4 · Tab bar and sidebar |
+| MA-163 | The app's shell, 1a Chat first: tabs on iPhone, a sidebar on iPad and an open foldable, with the chat beside every screen in a wide window and a sheet in a narrower one | To Do | §9, §9.1 | picked | Shell options.dc.html: 1a · Chat first; iPad and foldable.dc.html: iPad · Split View, one third; iPad and foldable.dc.html: iPad · Stage Manager window; iPad and foldable.dc.html: Foldable · Folded; iPad and foldable.dc.html: iPad · Keyboard shortcuts; iOS kit.dc.html: 4 · Tab bar and sidebar |
 | MA-168 | Signing in takes one tap with Apple or Google, the session stays in the Keychain, and an invite link opens the app to join | To Do | §4.5 | planned | iPhone sign-in.dc.html: iPhone · Welcome; iPhone sign-in.dc.html: iPhone · Sign in with Apple; iPhone sign-in.dc.html: iPhone · Sign in with Google; iPhone sign-in.dc.html: iPhone · Joining from an invite; iPhone sign-in.dc.html: iPhone · Sign-in refused |
 | MA-169 | The chat in the app shows the conversation, renders every card natively, streams replies and sends text, photos, scans and files | To Do | §8, §9.1, §9.2 | planned | iPhone chat.dc.html: iPhone · Chat home; iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Streaming reply; iOS kit.dc.html: 5 · Toolbars and the composer; iOS kit.dc.html: 6 · Messages and cards |
 | MA-170 | Apple push reaches each member's devices when the app is closed, with no amounts on the lock screen unless they choose | To Do | §9.1, §11, §21 | planned | iPhone settings.dc.html: iPhone · Notifications and quiet hours; iPhone settings.dc.html: iPhone · Lock screen: the morning brief; iPhone settings.dc.html: iPhone · Lock screen: a red alert; iPhone sign-in.dc.html: iPhone · Notifications and Face ID |
@@ -131,8 +131,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
-| MA-70 | Design the iPad and open-foldable layouts: Home, a holding, Overlap, Scorecard and sign-in at regular width | To Do | §9.3 | planned | iPad and foldable.dc.html: iPad · Home with the chat beside it; iPad and foldable.dc.html: iPad · Holding, portrait; iPad and foldable.dc.html: Foldable · Open; iPad and foldable.dc.html: iPhone · Landscape |
-| MA-71 | Design the Audit and Activity screens on iPhone and iPad | To Do | §9.3, §10 | planned | iPhone audit and activity.dc.html: iPhone · Audit; iPhone audit and activity.dc.html: iPhone · Activity |
+| MA-70 | Design the iPad and open-foldable layouts: Home, a holding, Overlap, Scorecard and sign-in at regular width | To Do | §9.3 | planned | iPad and foldable.dc.html: iPad · Home with the chat beside it; iPad and foldable.dc.html: iPad · Holding, portrait; iPad and foldable.dc.html: Foldable · Open; iPad and foldable.dc.html: iPhone · Landscape; iPad and foldable.dc.html: iPad · Overlap and Scorecard |
+| MA-71 | Design the Audit and Activity screens on iPhone and iPad | To Do | §9.3, §10 | planned | iPhone audit and activity.dc.html: iPhone · Audit; iPhone audit and activity.dc.html: iPhone · Activity; iPad and foldable.dc.html: iPad · Audit and Activity; iPad and foldable.dc.html: Foldable · Open, Audit |
 | MA-72 | Each member's Apple Account and Google account use two-factor authentication, and each device has a passcode and Face ID | To Do | §4.5, §18.3 | none |  |
 | MA-74 | A read-only api Lambda serves each member only what they may see | To Do | §4.5, §9.3 | none |  |
 | MA-76 | The second check: a fresh Sign in with Apple or passkey under Face ID, bound to the action and verified by the server | To Do | §4.5, §9.3 | planned | iPhone admin.dc.html: iPhone · Second check; iPhone settings.dc.html: iPhone · Sign-in methods |

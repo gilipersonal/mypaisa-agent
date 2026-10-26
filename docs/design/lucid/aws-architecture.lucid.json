@@ -50,7 +50,7 @@
       "w": 300,
       "h": 600
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>iOS 26 \u00b7 MyPaisa Dev \u2192 dev<br>push \u00b7 live connection<br>files: presigned upload<br><br>Sign in with Apple or Google<br>tokens in the Keychain</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>iOS 26 \u00b7 MyPaisa Dev \u2192 dev<br>push \u00b7 live connection<br>files: presigned upload<br><br>Apple \u00b7 Google \u00b7 passkey<br>tokens in the Keychain</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -399,7 +399,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "Cognito (Essentials)\nauth.mypaisapp.com"
+     "text": "Cognito (Essentials)\nno hosted domain\ncalled by api /auth/*"
     },
     {
      "id": "trig",
@@ -411,7 +411,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "Cognito triggers \u03bb\nApple \u00b7 Google tokens"
+     "text": "Cognito triggers \u03bb\nApple \u00b7 Google tokens\npasskey assertions"
     },
     {
      "id": "docs",
@@ -1721,7 +1721,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "Cognito\nauth-dev"
+     "text": "Cognito\nuser pool\nno domain"
     },
     {
      "id": "dev_ssm",
@@ -1898,7 +1898,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "Cognito\nauth"
+     "text": "Cognito\nuser pool\nno domain"
     },
     {
      "id": "prod_ssm",
@@ -2138,7 +2138,7 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Identity and sign-in</b></span></p><p style=\"text-align:left\">one Cognito user pool per environment \u00b7 one user per member \u00b7 Apple, Google or a passkey, no passwords \u00b7 MA-109, MA-75, MA-76, MA-77, MA-102, MA-161, MA-168</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Identity and sign-in</b></span></p><p style=\"text-align:left\">one Cognito user pool per environment, no hosted domain \u00b7 one user per member \u00b7 Apple, Google or a passkey, no passwords \u00b7 MA-109, MA-75, MA-76, MA-77, MA-102, MA-161, MA-168</p></div>"
     },
     {
      "id": "doors",
@@ -2216,9 +2216,9 @@
       "x": 60,
       "y": 610,
       "w": 340,
-      "h": 70
+      "h": 120
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Passkey</b> (optional), app or web<br>added from You (MA-77)</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Passkey</b> (optional), app or web<br>added from You (MA-77)<br>challenge: /auth/passkey/options<br>assertion: /auth/passkey</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2236,7 +2236,7 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 700,
+      "y": 750,
       "w": 340,
       "h": 110
      },
@@ -2258,9 +2258,9 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 60,
-      "y": 840,
+      "y": 880,
       "w": 340,
-      "h": 210
+      "h": 180
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection</p>",
      "style": {
@@ -2375,7 +2375,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "api \u03bb\n/auth/apple \u00b7 /auth/google\nnonce \u00b7 custom auth\nsets the web's cookie"
+     "text": "api \u03bb\n/auth/apple \u00b7 /auth/google\n/auth/passkey/options\n/auth/passkey \u00b7 nonce\ncustom auth \u00b7 web's cookie"
     },
     {
      "id": "i_cog",
@@ -2387,7 +2387,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "Cognito user pool\nno passwords \u00b7 no sign-up"
+     "text": "Cognito user pool\nno passwords \u00b7 no sign-up\nno hosted domain:\nthe api calls its API"
     },
     {
      "id": "i_trig",
@@ -2399,7 +2399,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "verify trigger \u03bb\nissuer \u00b7 audience \u00b7 expiry\nissued under 5 min\nnonce \u00b7 no replay"
+     "text": "custom-auth triggers \u03bb\nApple \u00b7 Google token:\nissuer \u00b7 audience \u00b7 expiry\nissued under 5 min\nnonce \u00b7 no replay\npasskey assertion:\nsignature \u00b7 challenge\norigin \u00b7 relying-party id"
     },
     {
      "id": "i_idp",
@@ -2408,9 +2408,9 @@
       "x": 1560,
       "y": 400,
       "w": 440,
-      "h": 200
+      "h": 220
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Linked to one Cognito user</b><br>Apple (sub) \u00b7 Google (sub)<br>passkeys (WebAuthn)<br>relying party: auth.mypaisapp.com<br>linked to nobody: refused,<br>unless a valid invite creates the member</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Linked to one Cognito user</b><br>Apple (sub) \u00b7 Google (sub)<br>passkeys (WebAuthn)<br>relying party: console.mypaisapp.com<br>(console-dev in dev), whose site serves<br>the app's association file<br>linked to nobody: refused,<br>unless a valid invite creates the member</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2847,7 +2847,7 @@
       "shapeId": "d_keychain",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.3611111111111111
       }
      },
      "endpoint2": {

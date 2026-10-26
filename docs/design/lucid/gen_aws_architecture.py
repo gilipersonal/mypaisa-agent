@@ -10,6 +10,9 @@ Usage:
 
 The optional second argument writes view 8, the adding-a-holding sequence, as PlantUML for Lucid's sequence
 importer (the Standard Import format has no sequence diagrams).
+
+A change after the first import is made in the Lucid documents in place, so their ids and links stay: a shape's text
+and box by its id (the ids here are the ids in Lucid), and view 8 by replacing its sequence generator's markup.
 """
 import json, sys
 
@@ -101,7 +104,7 @@ WEB_Y, WEB_H = 880, 220
 p.cont("home", 40, 200, 360, 1280, "Household", F_HOME, NAVY)
 p.box("h_app", 70, APP_Y, 300, APP_H,
       "<b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>"
-      "iOS 26 · MyPaisa Dev → dev<br>push · live connection<br>files: presigned upload<br><br>Sign in with Apple or Google<br>tokens in the Keychain")
+      "iOS 26 · MyPaisa Dev → dev<br>push · live connection<br>files: presigned upload<br><br>Apple · Google · passkey<br>tokens in the Keychain")
 p.box("h_web", 70, WEB_Y, 300, WEB_H,
       "<b>Web app</b> (PWA, read-only)<br>the dashboard, the Admin center<br>no chat<br>console.mypaisapp.com<br>Apple · Google · passkey<br>HttpOnly session cookie")
 p.box("h_mem", 70, 1360, 300, 100, "<b>Members</b><br>owner, member, viewer<br>joined by an invite link")
@@ -130,8 +133,8 @@ p.icon("ecr", "ecr", c[6], YB, "ECR<br>one arm64 image")
 # row C: the web app's site, sign-in, files, phase 12
 p.icon("cf", "cf", c[0], YC, "CloudFront<br>console.mypaisapp.com")
 p.icon("s3web", "s3", c[1], YC, "S3 console site<br>PWA · AASA · /join")
-p.icon("cog", "cognito", c[2], YC, "Cognito (Essentials)<br>auth.mypaisapp.com")
-p.icon("trig", "lambda", c[3], YC, "Cognito triggers λ<br>Apple · Google tokens")
+p.icon("cog", "cognito", c[2], YC, "Cognito (Essentials)<br>no hosted domain<br>called by api /auth/*")
+p.icon("trig", "lambda", c[3], YC, "Cognito triggers λ<br>Apple · Google tokens<br>passkey assertions")
 p.icon("docs", "s3", c[4], YC, "S3 documents<br>presigned uploads<br>kept for good")
 p.icon("sfn", "sfn", c[5], YC, "Step Functions<br>daily run (phase 12)")
 p.icon("bus", "bus", c[6], YC, "EventBridge bus<br>agent team (phase 12)")
@@ -211,7 +214,7 @@ for env, x0, fill, label in (("dev", 500, "#F2F5FB", "dev · mypaisa-dev-* · *-
     p.icon(f"{env}_cf", "cf", cx[0], 650, f"CloudFront + S3<br>console{sfx}")
     p.icon(f"{env}_api", "apigw", cx[1], 650, f"API Gateway<br>HTTP · api{sfx}")
     p.icon(f"{env}_ws", "apigw", cx[2], 650, f"API Gateway<br>WebSocket · live{sfx}")
-    p.icon(f"{env}_cog", "cognito", cx[3], 650, f"Cognito<br>auth{sfx}")
+    p.icon(f"{env}_cog", "cognito", cx[3], 650, "Cognito<br>user pool<br>no domain")
     p.icon(f"{env}_ssm", "ssm", cx[4], 650, f"SSM<br>/mypaisa-agent/{env}/")
     rx = [x0 + 60, x0 + 260, x0 + 460, x0 + 660]
     p.icon(f"{env}_lam", "lambda", rx[0], 860, "Lambdas<br>live alias · rollback")
@@ -236,23 +239,23 @@ pages.append(p)
 
 # ---------------------------------------------------------------- 3 identity
 p = Page("p3", "3 Identity and sign-in", "Identity and sign-in",
-         "one Cognito user pool per environment · one user per member · Apple, Google or a passkey, no passwords · "
+         "one Cognito user pool per environment, no hosted domain · one user per member · Apple, Google or a passkey, no passwords · "
          "MA-109, MA-75, MA-76, MA-77, MA-102, MA-161, MA-168")
 p.cont("doors", 40, 180, 380, 1290, "Doors in: the iOS app and the web app", F_HOME, NAVY)
 p.box("d_sign", 60, 200, 340, 190, "<b>MyPaisa app</b> (iPhone, iPad, foldable):<br>the chat, the dashboard, the Admin center<br>Apple native · Google SDK, PKCE<br>the token carries the api's nonce")
 p.box("d_web", 60, 410, 340, 180, "<b>Web app</b> (PWA, read-only):<br>the dashboard, the Admin center<br>console.mypaisapp.com<br>Apple, Google or a passkey, same custom auth<br>an HttpOnly cookie set by the api")
-p.box("d_passkey", 60, 610, 340, 70, "<b>Passkey</b> (optional), app or web<br>added from You (MA-77)")
-p.box("d_invite", 60, 700, 340, 110, "<b>Invite link</b> (MA-73)<br>console.mypaisapp.com<br>/join/&lt;token&gt; opens the app")
-p.box("d_keychain", 60, 840, 340, 210, "<b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection")
+p.box("d_passkey", 60, 610, 340, 120, "<b>Passkey</b> (optional), app or web<br>added from You (MA-77)<br>challenge: /auth/passkey/options<br>assertion: /auth/passkey")
+p.box("d_invite", 60, 750, 340, 110, "<b>Invite link</b> (MA-73)<br>console.mypaisapp.com<br>/join/&lt;token&gt; opens the app")
+p.box("d_keychain", 60, 880, 340, 180, "<b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection")
 p.box("d_second", 60, 1080, 340, 200, "<b>Second check</b> (MA-76)<br>a challenge bound to the action<br>app: fresh Sign in with Apple<br>or a passkey (Face ID)<br>web: passkey or a fresh sign-in<br>under 5 minutes, never a<br>local-only Face ID")
 p.box("d_paused", 60, 1300, 340, 150, "<b>Refused</b><br>a paused member: one line<br>a removed member<br>linked to nobody, no valid invite")
 p.box("o_idp", 560, 180, 420, 110, "<b>Apple · Google</b><br>sign the identity token (app and web)<br>publish their keys (JWKS)", F_OUT, AMBER)
 p.group("cl3", "cloud", 480, 340, 1560, 1100, "AWS · prod (dev the same)")
 p.icon("i_api", "apigw", 580, 420, "HTTP API<br>api.mypaisapp.com")
-p.icon("i_apil", "lambda", 820, 420, "api λ<br>/auth/apple · /auth/google<br>nonce · custom auth<br>sets the web's cookie")
-p.icon("i_cog", "cognito", 1080, 420, "Cognito user pool<br>no passwords · no sign-up")
-p.icon("i_trig", "lambda", 1340, 420, "verify trigger λ<br>issuer · audience · expiry<br>issued under 5 min<br>nonce · no replay")
-p.box("i_idp", 1560, 400, 440, 200, "<b>Linked to one Cognito user</b><br>Apple (sub) · Google (sub)<br>passkeys (WebAuthn)<br>relying party: auth.mypaisapp.com<br>linked to nobody: refused,<br>unless a valid invite creates the member")
+p.icon("i_apil", "lambda", 820, 420, "api λ<br>/auth/apple · /auth/google<br>/auth/passkey/options<br>/auth/passkey · nonce<br>custom auth · web's cookie")
+p.icon("i_cog", "cognito", 1080, 420, "Cognito user pool<br>no passwords · no sign-up<br>no hosted domain:<br>the api calls its API")
+p.icon("i_trig", "lambda", 1340, 420, "custom-auth triggers λ<br>Apple · Google token:<br>issuer · audience · expiry<br>issued under 5 min<br>nonce · no replay<br>passkey assertion:<br>signature · challenge<br>origin · relying-party id")
+p.box("i_idp", 1560, 400, 440, 220, "<b>Linked to one Cognito user</b><br>Apple (sub) · Google (sub)<br>passkeys (WebAuthn)<br>relying party: console.mypaisapp.com<br>(console-dev in dev), whose site serves<br>the app's association file<br>linked to nobody: refused,<br>unless a valid invite creates the member")
 p.icon("i_v1", "apigw", 580, 680, "HTTP API · /v1<br>(the same API)")
 p.icon("i_ws", "apigw", 580, 900, "WebSocket API<br>live.mypaisapp.com<br>$connect")
 p.icon("i_authz", "lambda", 820, 790, "authorizer λ<br>token or cookie<br>status · epoch")
@@ -272,7 +275,7 @@ p.line("i_trig", "i_idp", "", color=BLUE, pa=R, pb=(0, 0.225))
 p.line("i_trig", "o_idp", "published keys", color=AMBER, dashed=True, pa=T, pb=R, lpos=0.55)
 p.line("d_web", "i_v1", "cookie", color=BLUE, pa=(1, 0.85), pb=(0, 0.3))
 p.line("d_keychain", "i_v1", "token", color=BLUE, pa=(1, 0.1), pb=(0, 0.7))
-p.line("d_keychain", "i_ws", "on connect", color=BLUE, pa=(1, 0.5), pb=Lf)
+p.line("d_keychain", "i_ws", "on connect", color=BLUE, pa=(1, (945 - 880) / 180), pb=Lf)  # level with the socket
 p.line("i_v1", "i_authz", "", color=BLUE, pa=R, pb=(0, 0.25))
 p.line("i_ws", "i_authz", "", color=BLUE, pa=R, pb=(0, 0.75))
 p.line("i_authz", "i_ddb", "", color=BLUE, pa=R, pb=Lf)
@@ -512,16 +515,17 @@ api -> qin : lane = member, dedupe = client id
 api --> app : 202 at once
 qin -> agent : next message, in order
 activate agent
+agent -> ddb : file received: Document (factsheet, S3 key, sha256) + AuditEvent, one transaction
 agent -> out : "Reading it now"
 out -> ws : to every live connection
 ws --> app : "Reading it now"
-agent -> work : docs job (S3 key)
+agent -> work : docs job (document_id)
 deactivate agent
 work -> worker : job, 5 tries, then DLQ
 activate worker
 worker -> claude : PDF + schema: ISIN, OCF, holdings
 claude --> worker : JSON, a source line per field
-worker -> ddb : PendingAction add_holding (what was read, expires in 24 h)
+worker -> ddb : PendingAction add_holding (what was read, document_id, expires in 24 h)
 worker -> out : Confirm card: what I read, unsure fields in amber, [Confirm] [Edit] [Cancel]
 deactivate worker
 out -> ws : to every live connection
@@ -533,7 +537,7 @@ api -> qin : queue the tap
 api --> app : acknowledged at once
 qin -> agent : the tap, in order
 activate agent
-agent -> ddb : Instrument + Document + AuditEvent in one transaction, price sources resolved (ISIN to listing)
+agent -> ddb : Instrument + AuditEvent (document_id) in one transaction, price sources resolved (ISIN to listing)
 agent -> out : "Added. How much do you hold? Send a screenshot or type it."
 deactivate agent
 out -> ws : to every live connection
@@ -546,15 +550,25 @@ app -> s3 : PUT the screenshot
 app -> api : POST /v1/chat/messages (names the screenshot)
 api -> qin : queue
 qin -> agent : the message
-agent -> work : docs job (screenshot)
+agent -> ddb : file received: Document (screenshot) + AuditEvent, one transaction
+agent -> work : docs job (document_id)
 work -> worker : job
 worker -> claude : image + schema: value, units, date
 claude --> worker : JSON with sources
+worker -> ddb : PendingAction update_valuation (what was read, document_id)
 worker -> out : Confirm card: Balanced, £22,925 on 23 Oct, 1,234.5 units at 18.57
 out -> ws : to every live connection
 ws --> app : the Confirm card
+Member -> app : taps Confirm
+app -> api : POST /v1/chat/actions
+api -> qin : queue the tap
+qin -> agent : the tap, in order
+agent -> ddb : Position + Valuation (user_screenshot, document_id) + Transaction, each with an AuditEvent (document_id), one transaction
+agent -> out : "Saved: Balanced, £22,925"
+out -> ws : to every live connection
+ws --> app : the confirmation
 end
-note over agent, out : Confirm saves Position + Valuation (source user_screenshot) + Transaction + AuditEvent. Nothing is saved without the tap; an expired PendingAction is refused.
+note over agent, out : A file's Document and audit rows are written when it arrives, before the docs job reads it, and stay whatever happens next (Cancel, an expired PendingAction, a failed read); the file opens from the Audit screen. Nothing else is saved without the tap.
 note over worker, ws : No live connection: the sender pushes by APNs, and the app asks for everything after its last turn when it opens.
 @enduml
 """
@@ -563,6 +577,17 @@ note over worker, ws : No live connection: the sender pushes by APNs, and the ap
 doc = {"version": 1, "pages": [pg.out() for pg in pages]}
 json.dump(doc, open(sys.argv[1], "w"), indent=1)
 print("pages", len(pages), "shapes", sum(len(pg.shapes) for pg in pages), "lines", sum(len(pg.lines) for pg in pages))
+# ARCHITECTURE 4.6 and MA-148: a file's Document row (with its audit row) is written when it arrives, before its docs
+# job reads it, and nothing at Confirm writes a Document (MA-161 review, round 1, c5). Refuse a sequence that breaks it.
+_seq, _last = SEQUENCE.splitlines(), -1
+for _i, _l in enumerate(_seq):
+    if "-> work : docs job" in _l:
+        if not any("-> ddb" in x and "Document" in x for x in _seq[_last + 1:_i]):
+            sys.exit(f"sequence: the docs job at line {_i + 1} reads a file with no Document row written before it")
+        _last = _i
+if _last < 0 or any("-> ddb" in x and "+ Document" in x for x in _seq):
+    sys.exit("sequence: no docs job, or a Confirm writes the Document row")
+
 if len(sys.argv) > 2:
     open(sys.argv[2], "w").write(SEQUENCE)
     print("sequence", sys.argv[2])

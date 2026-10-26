@@ -18,8 +18,8 @@ Arun can also ask for a reviewer at any other time.
 
 As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
 
-- **Gates:** `python3 scripts/plan_sync.py selftest`, `check`, the story's
-  other gates, and `python3 scripts/review_regress.py MA-<n>`.
+- **Gates:** `python3 scripts/plan_sync.py selftest`, `check`,
+  `python3 scripts/contrast_check.py --selftest` and `python3 scripts/contrast_check.py`, the story's other gates, and `python3 scripts/review_regress.py MA-<n>`.
 - **Lanes:** scripts and checks; the trace against Jira; the spec docs
   (`ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `README.md`, the explainer
   pages); the rules and skills; the boards and the design mirror when they
@@ -92,5 +92,34 @@ Added the day each was learned; reviewers check every item.
     motion files lands on every board at once (MA-161: the arrival keyframes
     reset the transform that centres chart dots, labels and axis rows; the
     figure roll flattened privacy masks; white badge text failed on the dark
-    crimson). Every colour pair a board adds goes into
-    `scripts/contrast_check.py` first.
+    crimson). A colour a board adds goes into `tokens.css` as a token, and its
+    pair into `scripts/contrast_check.py`'s `PAIRS`, before the board uses it.
+12. **A gate fails closed, and its selftest proves it bites:** a file it cannot
+    find, a block or selector it cannot parse, or a value in a form it does not
+    read is a failure, never a skip; and every fault a review found in it is a
+    selftest case that mutates a copy and expects the refusal (MA-161 round 1:
+    `contrast_check.py` skipped the glass when `ios.css` was missing or its
+    dark selector reordered, read an 8-digit hex as opaque, never compared the
+    board projects' copies, and measured no chart, bar or mask colour;
+    `--selftest` now holds those cases).
+13. **One figure set and one ledger behind every set of boards:** before
+    boards are drawn, the illustrative household is written once (holdings,
+    owners, accounts, day moves, mix, the audit rows with their times, members,
+    files and runs, who signs in with what, which devices, the dates people
+    joined), and every board takes its figures from it. A board that shows a
+    record shows the same record (MA-161 round 1: one £200 buy at three times,
+    one cash change by two members on two days, a first sign-in after the
+    files it made; `plan_sync.py check` now refuses a wrong weekday).
+14. **"Superseded" names exactly what is superseded:** when an owner keeps part
+    of the old plan, every note, summary and description that retires the rest
+    says which part stays (MA-161 round 1: forty trace notes called the browser
+    boards superseded after Arun kept the web app; MA-161's own summary said
+    the plan moved "from the web").
+15. **Every record of a flow writes the same rows at the same step:** the
+    sequence diagrams, the journey page and ARCHITECTURE agree on when each
+    row is written and what a cancel leaves (MA-161 round 1: Lucid's sequence
+    wrote the `Document` row only at Confirm, against §4.6's "before anything
+    reads it"); and a domain, relying party or secret a doc names is checked
+    against what the platform allows (a passkey's relying party must be the
+    page's own domain or a parent of it, so `auth.` could never serve the
+    `console.` page).

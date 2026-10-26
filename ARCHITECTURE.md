@@ -309,12 +309,14 @@ off, and a user is created only when someone joins through an invite.
 | The exchange | The app posts the token to `/auth/apple` or `/auth/google`. The api finds the member that provider account (`sub`) is linked to and starts Cognito's custom auth for them; the verify trigger checks the token against Apple's or Google's published keys: issuer, audience (the app's bundle id for Apple, the environment's Google iOS client id for Google), expiry, an issue time under five minutes, the nonce, and no replay. Cognito then issues that member's tokens. |
 | An unknown account | An Apple or Google account linked to no member is refused, whatever its address, unless the request carries a valid invite token, which creates the member (Joining, below). A paused member gets one line and nothing else (MA-102). |
 | In a browser | The web app (§9.4) shows the same two buttons, through Sign in with Apple's JS (the environment's Services ID as the audience) and Google Identity Services (the environment's Google web client id), and a passkey. The same `/auth/apple` and `/auth/google` exchange runs; no client secret is used. The api then sets an `HttpOnly`, `Secure`, `SameSite=Strict` session cookie for its own host, with five-minute access tokens behind it that page scripts never see. |
+| A passkey | A member adds one from You (MA-77), in the app or the web app. To sign in with it, the app or the page asks `/auth/passkey/options` for a one-time WebAuthn challenge, the device signs it under Face ID or Touch ID, and the assertion goes to `/auth/passkey`; the api starts Cognito's custom auth for the member whose credential it is, and the verify trigger checks the signature against that credential's stored public key, the challenge, the origin and the relying-party id. The relying-party id is the environment's console domain (`console.mypaisapp.com`, `console-dev.mypaisapp.com`): it is the web app's origin and serves the iOS app's association file, whose `webcredentials` entry lets one passkey work in both. MA-109 confirms it before anyone registers a passkey; changing it later strands every passkey made. In a browser the api then sets the same session cookie. |
 | On the device | Tokens live in the Keychain, this device only, readable after first unlock. Access tokens last five minutes and are refreshed in the background with the refresh token, which rotates on use. Each signed-in iPhone or iPad is a `Device` row with its name, model, last seen and push token. |
 | Every call | The api's authorizer checks the access token, the member's status and session epoch on every HTTP call and every live connection (§21). Sign out everywhere and pause use Cognito's own calls (`AdminUserGlobalSignOut`, `AdminDisableUser`) together with the member's session epoch, so they take effect on the next request (MA-102); signing out one device deletes its `Device` row and revokes its refresh token. |
 
 **The second check** (MA-76, MA-102). Some actions need proof that the member
 is holding the device now: the owner's Admin center actions (§9.3), an
-import's Confirm (§18.5, §22.2), leaving the household (MA-172). The app asks
+import's Confirm and rolling an import back (§18.5, §22.2), leaving the
+household (MA-172), and nothing else. The app asks
 the api for a challenge bound to that action, then gets a fresh assertion:
 Sign in with Apple again (iOS shows a Face ID sheet), or, where the member has
 added one, a passkey (Face ID); a member who signs in only with Google signs in
@@ -465,12 +467,16 @@ holds (GBP); the position's currency is the one that counts here.
   whose currency differs from the holding's. Privacy mode shows no amount and
   no rate on the card, only words, currencies and dates (the rate with one
   amount would give the other away); Show amounts reveals one card.
-- **Designed first.** Three options were drawn in Claude Design
-  (`Currency check options.dc.html`) and Arun picked 1b on 25 Oct 2026
-  (`docs/design/reviews/MA-156/decision.md`). The spec is 1b's boards there,
-  with boards 4 and 5 of `Currency check.dc.html`; its boards 1 to 3 and 6
-  are the superseded starting point. The states still to draw before the
-  build are MA-156's `undrawn` list in `docs/trace.json`.
+- **Designed first.** Three options were drawn in Claude Design for the
+  Telegram chat (`Currency check options.dc.html`, MyPaisa app v1) and Arun
+  picked 1b on 25 Oct 2026 (`docs/design/reviews/MA-156/decision.md`). Since
+  MA-161 the spec is the iOS board `iPhone · Currency check` in MyPaisa iOS v1
+  (planned): it carries 1b's content and order (the amount asked again in the
+  holding's currency, the ECB estimate one tap, Confirm a separate tap, no
+  amount or rate with privacy on) into the app's guided flow. The Telegram
+  boards stay only as the record of the pick; nothing is built from them. The
+  states still to draw before the build are MA-156's `undrawn` list in
+  `docs/trace.json`.
 
 ---
 
@@ -838,14 +844,29 @@ foldable or two-panel device (Arun's "Duo"), folded or open:
 | Width | Where | Layout |
 | --- | --- | --- |
 | Compact, under about 600 pt | iPhone in portrait; the smaller iPhones in landscape; Slide Over and one-third Split View; a foldable when folded | The tab bar; one column; sheets for detail; the chat is a tab |
-| Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet |
+| Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet over the screen, from its Ask or ⌘K |
 | Regular, over about 900 pt | iPad in landscape; a large Stage Manager window | The sidebar, the screen, and the chat beside every screen as a trailing column |
 
-A fold, a rotation or a resize keeps the conversation, the scroll position and
+The rule is the window's width, never the device: widen past about 900 pt and
+the sheet becomes the trailing column, narrow below it and the column becomes
+the sheet, with matched geometry and no reload (the boards of
+`iPad and foldable.dc.html`). A fold, a rotation or a resize keeps the conversation, the scroll position and
 any guided flow. With a hardware keyboard, Return sends, ⌘K focuses the
 composer, ⌘1 to ⌘5 open the sections and ⌘F searches. Every screen works from
 xSmall to AX5 Dynamic Type, with VoiceOver, Increase Contrast, Reduce
 Transparency and Reduce Motion (MA-181).
+
+**Legible at 25% brightness** (MA-181). Arun, 25 Oct 2026: "the text and
+component should be clearly visible even in 25% mobile brightness". Every
+colour pair in light and dark, text on glass included, meets two limits, one
+at full brightness and one with the screen at 25%: primary text 7:1 and 4.5:1,
+secondary and coloured text 4.5:1 and 3:1, meaningful marks (chart lines,
+bars on their track, a switch's ring) 3:1 and 1.8:1, and what must only be
+seen (a privacy mask, an empty track) 1.5:1 and 1.25:1. `scripts/contrast_check.py`
+measures every pair in MyPaisa DS v1's `tokens.css` and the glass fills of
+`ios.css`, fails closed, and is a gate on every PR; the app's snapshot tests
+render every screen in both themes. Glass carries labels only, never body
+copy, at a fill dense enough to hold them over the brightest content.
 
 **Motion** (MA-182). One motion system for every component and chart, in the
 app and the web app, drawn on the iOS kit's `12 · Motion` board and shared by
@@ -935,8 +956,10 @@ Home, a holding, Overlap, Scorecard, Audit and Files, Activity, Search and, for
 the owner, the Admin center are screens of the same app (MA-78, MA-79), built
 from the boards in MyPaisa iOS v1: one spec, drawn for iPhone and for iPad and
 the foldable, in light and dark (`docs/design/README.md`). Arun, 25 Oct 2026:
-"The read only dashboard should also be shown on the ios tablet duo": on an
-iPad or an open foldable every one of these screens has the chat beside it.
+"The read only dashboard should also be shown on the ios tablet duo": every
+one of these screens is laid out for the iPad and the open foldable too, with
+the chat beside it in a window over about 900 pt and a sheet away in a
+narrower one (§9.1).
 The web app shows the same screens in a browser (§9.4).
 
 The screens, all read-only:
@@ -1186,8 +1209,9 @@ and Google's identity tokens are verified in Cognito's custom-auth Lambdas
 against the providers' published keys (issuer, audience, expiry, an issue time
 under five minutes, the api's one-time nonce, replay refused) and mapped to a
 member through the `sub` linked to their Cognito user, never by address;
-passkeys are WebAuthn with a relying-party id fixed per environment before
-anyone registers. Tokens live in the Keychain, this device only; access tokens
+passkeys are WebAuthn, checked in the same custom auth, with the
+environment's console domain as the relying-party id, fixed before anyone
+registers (§4.5). Tokens live in the Keychain, this device only; access tokens
 last five minutes; refresh tokens rotate; the api's authorizer checks the
 token, the member's status and session epoch on every call and every live
 connection; tokens from one environment are refused by the other. The second
@@ -1438,7 +1462,8 @@ a daily digest instead.
 - A Google iOS client per environment, created in the Google Cloud Console for the app's bundle id (an iOS client has no secret); the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its id goes into that environment's SSM path after the apply that made the parameter (MA-143, MA-109).
 - The Apple Developer Program at $99 a year (MA-162): needed for Sign in with Apple, push and TestFlight.
 - "Duo" in Arun's request is read as a foldable or two-panel Apple device; the layouts follow width, so any such device is covered (§9.1).
-- The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
+- The passkey relying-party id for each environment: the console's domain is the plan (§4.5); MA-109 confirms it before anyone registers a passkey.
+- The oldest device the household uses: iOS and iPadOS 26 need an iPhone 11 or later (an iPhone XS or XR cannot run the app); a household device older than that needs a decision before MA-165 sets the deployment target.
 - For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
 - Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card).
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $200 credit covers with dev's share taken out (§15.1).
@@ -1500,14 +1525,14 @@ importer (§18.5). No script writes to prod tables.
 `mypaisapp.com` is registered in Route 53. The zone, the registration and the
 certificate (the apex and `*.mypaisapp.com`, in `us-east-1`) belong to the
 wealth tracker's Terraform (`wealth-tracker/infra/terraform/dns/`, its own
-state). MyPaisa looks them up by name and creates only its own eight records; the
+state). MyPaisa looks them up by name and creates only its own six records (`api`, `live` and `console`, each for dev and prod); the
 apex keeps serving the old tracker until MA-97 hands the zone over.
 
 | Name | What | dev | prod |
 | --- | --- | --- | --- |
-| API | API Gateway HTTP API custom domain: `/auth/apple`, `/auth/google`, `/v1/chat/...`, `/v1/...` (read-only data), `/v1/admin/...`, `/v1/devices`, `/v1/uploads` | `api-dev.mypaisapp.com` | `api.mypaisapp.com` |
+| API | API Gateway HTTP API custom domain: `/auth/apple`, `/auth/google`, `/auth/passkey/options`, `/auth/passkey`, `/v1/chat/...`, `/v1/...` (read-only data), `/v1/admin/...`, `/v1/devices`, `/v1/uploads` | `api-dev.mypaisapp.com` | `api.mypaisapp.com` |
 | Live | API Gateway WebSocket API custom domain: the app's live connection (§21) | `live-dev.mypaisapp.com` | `live.mypaisapp.com` |
-| Sign-in | Cognito custom domain: the pool's hosted endpoints and the passkeys' relying party until MA-109 fixes its id | `auth-dev.mypaisapp.com` | `auth.mypaisapp.com` |
+| Sign-in | No domain of its own: the app and the web app sign in through the api's `/auth/*` routes, which call Cognito's API; the passkeys' relying party is the console's domain (§4.5) | (`console-dev.mypaisapp.com`) | (`console.mypaisapp.com`) |
 | Console | S3 + CloudFront: the web app (a PWA), the iOS app's `apple-app-site-association` file and the invite page; no data | `console-dev.mypaisapp.com` | `console.mypaisapp.com` |
 
 The scheduled Lambdas (the brief, the wrap, the refreshers) have no public
@@ -1851,7 +1876,8 @@ The admin is the owner, the household's one admin (Arun, 25 Oct 2026:
   screens (designed first).
 
 Approving needs the second check (§4.5, MA-76): a fresh Sign in with Apple or
-passkey under Face ID. Deciding in one place updates the other. Each
+passkey under Face ID, or for a member who signs in only with Google, Google
+again. Deciding in one place updates the other. Each
 request says what changes, from and to, why with its evidence, the cost and
 the budget left, the risk and the undo, and when it expires. Agents also ask
 plain questions ("Which fund is the Monzo Balanced fund's ISIN?") with

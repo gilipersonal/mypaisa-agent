@@ -58,8 +58,10 @@ below is a story or task under it.
 
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
 the gates run on every PR, the iOS gates on every PR that touches `ios/`; the
-budget exists; dev's Claude key, Twelve Data key, Google iOS client id and
-APNs key are in SSM, over the placeholders dev's apply made; MyPaisa Dev
+budget exists; dev's Claude key, Twelve Data key, Google iOS and web client
+ids, Sign in with Apple key, Apple team id, the app's bundle id (the audience
+phase 1's sign-in checks), the Services ID for the web app, and the APNs key
+and its key id are in SSM, over the placeholders dev's apply made; MyPaisa Dev
 builds in CI and installs from TestFlight. Prod's go in after prod's first apply (the
 release workflow, MA-107; which phase holds it is open on MA-107, MA-108 and
 MA-142), by the identity MA-21, MA-26, MA-142 and MA-143 name.
@@ -97,9 +99,10 @@ through them (`ARCHITECTURE.md` §9).
   member's detail unless shared.
 - Accounts per member (ISA, GIA, SIPP, cash; joint accounts with two
   owners); every holding added lands in the adding member's account.
-- The app (MA-163, MA-168, MA-169): the shell Arun picks from three options
-  (tabs on iPhone; the sidebar with the chat beside every screen on iPad and
-  an open foldable), the sign-in screen with Apple's and Google's buttons, and
+- The app (MA-163, MA-168, MA-169): the shell Arun picked, 1a Chat first
+  (tabs on iPhone; on iPad and an open foldable the sidebar, with the chat
+  beside every screen in a window over about 900 pt and a sheet in a narrower
+  one), the sign-in screen with Apple's and Google's buttons, and
   the chat: the conversation, native cards from the agent's JSON (MA-174), the
   composer with the camera, a document scan, Photos and Files, shortcut chips,
   the typed `/commands`, replies streamed word by word.
@@ -150,7 +153,9 @@ through them (`ARCHITECTURE.md` §9).
   privacy mode everywhere, the app switcher's blank card and an optional Face
   ID lock; signing out a device and leaving the household; the last figures
   offline with their time and messages sent once back online; VoiceOver,
-  Dynamic Type to AX5 and the other accessibility settings on every screen.
+  Dynamic Type to AX5 and the other accessibility settings on every screen;
+  every text and control legible in light and dark at 25% brightness, which
+  `scripts/contrast_check.py` measures on every PR (ARCHITECTURE §9.1).
 - Observability from the first Lambda: a `RunRecord` per run with model
   calls, tokens, cost and tool calls; Powertools Logger, Tracer and Metrics
   wired in the handler base; the error alarm per function to the owner.
@@ -338,7 +343,7 @@ read-only PWA for the same dashboard and the Admin center in a browser (§9.4).
   (`docs/design/README.md`): the iPhone boards (Home, a holding, Overlap,
   Scorecard, Audit and Files, Activity, the Admin center) and the iPad and
   foldable boards (the same screens at regular width, with the chat beside
-  them; MA-70, MA-78); Warm ledger (MA-101) on Liquid Glass; Swift Charts.
+  them in a wide window and a sheet in a narrower one; MA-70, MA-78); Warm ledger (MA-101) on Liquid Glass; Swift Charts.
 - Two screens of record: **Audit** (the §4.6 log, filtered by member, record
   and date, before and after, a link to the run, and the file behind a change
   opened in Quick Look through a five-minute link, with a Files view, MA-149)

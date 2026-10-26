@@ -29,4 +29,4 @@ jobs:
         run: python3 scripts/plan_sync.py check
 
       - name: Every text and control is legible in light and dark, at 25% brightness too (MA-181)
-        run: python3 scripts/contrast_check.py
+        run: python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py

@@ -393,6 +393,17 @@
     "note": "MA-161 (25 Oct 2026): the Telegram board this named is superseded; the iOS board iPhone · Failed work and Replay draws the replay that fails again, so it is the evidence now (the web's Browser · Admin · Alerts · Replayed, and failed again stays on MA-145 too)."
   },
   {
+    "id": "r8-b3-web",
+    "round": 8,
+    "finding": "MA-145 lists the replay that fails again: the web Admin center draws it too (the web app stays, MA-161)",
+    "check": {
+      "type": "trace",
+      "key": "MA-145",
+      "board": "Browser · Admin · Alerts · Replayed, and failed again"
+    },
+    "note": "MA-161 round 1 (26 Oct 2026, finding a4): r8-b3 follows the iOS board since the pivot; this entry keeps the web Admin center's board for the same outcome, so dropping either fails."
+  },
+  {
     "id": "r8-a1",
     "round": 8,
     "finding": "the fixed list's behaviour checks catch their fix being undone (r2-B1, r2-B3, r3-B4 fail against mutants)",
