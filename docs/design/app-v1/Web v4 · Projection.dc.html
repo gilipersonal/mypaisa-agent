@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Web v4 · Projection</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          /* canvas */
+          .dv-turn { padding: 44px 48px 36px; }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 24px/30px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 14px; text-wrap: pretty; }
+          .plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 1100px; box-sizing: border-box; margin: 0; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+          .plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; text-decoration: none; }
+          .dv-opt { display: flex; flex-direction: column; gap: 12px; margin: 0 0 80px; }
+          .turnh { margin-top: 12px; }
+          .dv-olabel { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+          .dv-oid { font: 600 10.5px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+          .dv-oname { font: 700 19px/24px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.01em; }
+          .dv-keys { font: 600 12px/16px ui-monospace, Menlo, monospace; color: #5A606C; }
+          .recb { font: 700 12px/16px -apple-system, system-ui, sans-serif; color: #FFFFFF; background: #1D7A3E; padding: 3px 10px; border-radius: 999px; }
+          .dv-lead { max-width: 1100px; margin: 0 0 8px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .dv-row { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+          .dv-col { display: flex; flex-direction: column; }
+          .dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; }
+          .bnotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 8px 32px; max-width: 1480px; margin: 18px 0 0; font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .bnotes p { margin: 0; }
+          .bnotes b { color: #14171F; }
+          /* the browser board: sidebar, page, the chat beside it */
+          .board { width: 1440px; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
+          .side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+          .brand { padding: 4px 8px 18px; }
+          .side-ft { padding: 0 12px 4px; }
+          .pmain { background: var(--mp-bg); }
+          .pp { margin: 0; text-wrap: pretty; }
+          .grow1 { flex: 1; }
+          .rtx { flex: 1; min-width: 0; }
+          .nowrap { white-space: nowrap; }
+          .hctl { display: flex; align-items: center; gap: 12px; flex: none; }
+          .mp-pagehead > div:first-child { min-width: 0; }
+          .ccyseg { width: 150px; }
+          .tmw { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+          .pcols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+          .pstack { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+          .cpad { padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+          .ch { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+          .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+          .crow { flex-wrap: nowrap; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
+          .crow .cbtn { flex: none; white-space: nowrap; }
+          /* the hero and its fan */
+          .heroP { padding: 24px 24px 20px; display: flex; flex-direction: column; gap: 14px; }
+          .fanw { position: relative; margin: 26px 112px 0 0; }
+          .fanw.sm { margin: 18px 0 0; }
+          .fanbox > svg { height: 260px; }
+          .fanw.sm .fanbox > svg { height: 120px; }
+          .fanw.mid .fanbox > svg { height: 220px; }
+          .fband { stroke: none; }
+          .onhero .fband { fill: var(--mp-hero-area); }
+          .oncard .fband { fill: var(--mp-chart-area); }
+          .fline { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+          .onhero .fline { stroke: var(--mp-coral); }
+          .oncard .fline { stroke: var(--mp-chart-line); }
+          .fbase { fill: none; stroke-width: 2; stroke-dasharray: 5 4; stroke: var(--mp-ink-2); }
+          .fgrid { stroke-width: 1; }
+          .onhero .fgrid { stroke: var(--mp-hero-ink-2); stroke-opacity: 0.3; }
+          .oncard .fgrid { stroke: var(--mp-chart-grid); }
+          .gy { position: absolute; left: 0; transform: translateY(-100%); padding-bottom: 2px; font: 500 12px/16px var(--mp-font); white-space: nowrap; }
+          .onhero .gy, .onhero .mp-chartaxis, .onhero .lgd { color: var(--mp-hero-ink-2); }
+          .oncard .gy, .oncard .mp-chartaxis, .oncard .lgd { color: var(--mp-ink-2); }
+          .mp-chartaxis { margin-top: 8px; }
+          .mp-chartaxis > .ax0 { transform: none; }
+          .mp-chartaxis > .ax1 { transform: translateX(-100%); }
+          .oncard .mp-chartdot { background: var(--mp-surface); box-shadow: 0 0 0 2.5px var(--mp-chart-line); }
+          .mp-chartdot.pdot { border-radius: 3px; background: var(--mp-hero); box-shadow: 0 0 0 2px var(--mp-hero-ink); }
+          .oncard .mp-chartdot.pdot { background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-ink); }
+          .mp-chartdot.bdot { background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-ink-2); }
+          .mp-chartdot.sdot { width: 8px; height: 8px; }
+          .mp-chartlbl.le { transform: translate(12px, -50%) !important; margin-top: 0; font-weight: 600; }
+          .mp-chartlbl.pill { padding: 1px 6px; border-radius: 6px; font-weight: 600; }
+          .onhero .mp-chartlbl.pill { background: var(--mp-hero); }
+          .lbl-2 { color: var(--mp-hero-ink-2); }
+          .mtk { position: absolute; bottom: 0; width: 2px; height: 12px; margin-left: -1px; border-radius: 1px; }
+          .onhero .mtk { background: var(--mp-hero-ink); }
+          .oncard .mtk { background: var(--mp-ink); }
+          .scl { position: absolute; top: -10px; bottom: 0; width: 0; border-left: 1.5px dashed var(--mp-hero-ink-2); }
+          .sct { position: absolute; top: -12px; margin-left: 10px; padding: 8px 12px; border-radius: 12px; background: var(--mp-hero-2); color: var(--mp-hero-ink); display: flex; flex-direction: column; gap: 2px; font: 400 13px/18px var(--mp-font); white-space: nowrap; }
+          .lgd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; font: 400 13px/18px var(--mp-font); }
+          .lgd > span { display: inline-flex; align-items: center; gap: 7px; }
+          .sw-line { width: 18px; height: 3px; border-radius: 2px; background: var(--mp-coral); }
+          .oncard .sw-line { background: var(--mp-chart-line); }
+          .sw-dash { width: 18px; height: 0; border-top: 2px dashed var(--mp-ink-2); }
+          .sw-band { width: 18px; height: 12px; border-radius: 3px; background: var(--mp-hero-area); box-shadow: inset 0 0 0 1px rgba(255, 107, 79, 0.45); }
+          .oncard .sw-band { background: var(--mp-chart-area); }
+          .sw-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--mp-hero-ink); box-shadow: 0 0 0 2px var(--mp-coral); }
+          .sw-sq { width: 9px; height: 9px; border-radius: 2px; background: var(--mp-hero); box-shadow: 0 0 0 2px var(--mp-hero-ink); }
+          .sw-tk { width: 2px; height: 12px; border-radius: 1px; background: var(--mp-hero-ink); }
+          .oncard .sw-dot { background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-chart-line); }
+          .oncard .sw-sq { background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-ink); }
+          .oncard .sw-tk { background: var(--mp-ink); }
+          /* markers in lists, the same shapes as on the line */
+          .mk { width: 14px; display: inline-flex; justify-content: center; flex: none; }
+          .mk-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-chart-line); }
+          .mk-sq { width: 8px; height: 8px; border-radius: 2px; background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-ink); }
+          .mk-tk { width: 2px; height: 12px; border-radius: 1px; background: var(--mp-ink); }
+          /* lists: milestones, plan items, assumptions */
+          .lrow { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 58px; padding: 8px 0; box-sizing: border-box; }
+          .lrow + .lrow, .as-row + .as-row, .grp + .grp { border-top: 1px solid var(--mp-line); }
+          .lrv { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
+          .lsub { display: flex; align-items: center; gap: 6px; }
+          .lsub > span:last-child { min-width: 0; }
+          .grp { padding-top: 10px; }
+          .as-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "n f" "s s"; gap: 4px 12px; align-items: center; padding: 10px 0; }
+          .as-n { grid-area: n; min-width: 0; }
+          .as-f { grid-area: f; }
+          .as-s { grid-area: s; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+          .src { display: inline-flex; align-items: center; gap: 4px; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 999px; padding: 2px 8px 2px 6px; white-space: nowrap; }
+          .src .ms { font-size: 14px; }
+          .fig { font: 600 17px/22px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; }
+          .fig.ed { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 12px; border-radius: 10px; background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; }
+          .fig.ed .ms { font-size: 16px; color: var(--mp-accent); }
+          .note { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); }
+          .note .ms { font-size: 18px; color: var(--mp-ink-2); margin-top: 1px; }
+          /* option 1b */
+          .heroS { padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 12px; }
+          .story { margin: 0; max-width: 680px; font: 700 26px/34px var(--mp-font); letter-spacing: -0.015em; text-wrap: pretty; }
+          .story b { font-family: var(--mp-font-round); font-weight: 800; color: var(--mp-hero-ink); }
+          .drv { display: grid; grid-template-columns: 36px minmax(0, 1fr) 20px; gap: 12px; align-items: center; min-height: 60px; padding: 8px 0; }
+          .drv + .drv { border-top: 1px solid var(--mp-line); }
+          .chev { color: var(--mp-ink-2); font-size: 20px; }
+          /* option 1c */
+          .heroC { padding: 22px 24px; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 24px; align-items: end; }
+          .decs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+          .dec { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+          .rng { position: relative; height: 12px; margin: 6px 0 2px; }
+          .rng-t { position: absolute; inset: 0; }
+          .rng-b { display: block; height: 100%; background: var(--mp-meter); }
+          .rng-m { position: absolute; top: -5px; bottom: -5px; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--mp-ink); box-shadow: 0 0 0 2px var(--mp-surface); }
+          .dl { display: grid; grid-template-columns: 14px 92px minmax(0, 1fr); gap: 8px; align-items: center; min-height: 26px; }
+          .dl > span:nth-child(2) { white-space: nowrap; }
+          /* the chat beside the page */
+          .chatcol { width: 392px; flex: none; box-sizing: border-box; background: var(--mp-bg); border-left: 1px solid var(--mp-line); display: flex; flex-direction: column; }
+          .chhd { display: flex; align-items: center; justify-content: space-between; padding: 22px 20px 10px; }
+          .chat { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 8px 20px 16px; }
+          .daysep { align-self: center; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); padding: 4px 0; }
+          .me { align-self: flex-end; max-width: 82%; background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 22px 22px 6px 22px; padding: 10px 14px; font: 400 16px/22px var(--mp-font); }
+          .me-time { align-self: flex-end; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); margin-top: -10px; }
+          .ai { display: flex; gap: 10px; align-items: flex-start; }
+          .ai-mark { width: 28px; height: 28px; border-radius: 50%; background: var(--mp-hero); display: grid; place-items: center; flex: none; margin-top: 2px; }
+          .ai-mark i { width: 12px; height: 12px; border-radius: 50%; background: var(--mp-coral); box-shadow: 0 0 0 3px var(--mp-hero), 0 0 0 4.5px var(--mp-coral); display: block; }
+          .ai-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+          .ai-text { font: 400 16px/23px var(--mp-font); color: var(--mp-ink); text-wrap: pretty; }
+          .ccard { background: var(--mp-surface); border-radius: var(--mp-r-card); box-shadow: var(--mp-shadow); overflow: hidden; }
+          .ccard-h { padding: 14px 16px 10px; display: flex; flex-direction: column; gap: 4px; }
+          .ccard-b { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+          .ccard-acts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px; }
+          .ccard-fold { border-top: 1px solid var(--mp-line); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; font: 600 15px/20px var(--mp-font); color: var(--mp-accent); min-height: 44px; }
+          .ccard-tech { background: var(--mp-surface-2); padding: 12px 16px; font: 400 13px/19px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); }
+          .kv { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; font: 400 15px/20px var(--mp-font); }
+          .kv > :first-child { color: var(--mp-ink-2); }
+          .kv > :last-child { font-weight: 600; text-align: right; }
+          .cbtn { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); }
+          .cbtn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
+          .cbtn-ghost { background: transparent; color: var(--mp-accent); padding: 0 8px; }
+          .cbtn .ms { font-size: 18px; }
+          .wifbox { padding: 2px 0 4px; }
+          .wifbox .fanbox > svg { height: 130px; }
+          .wcomp { padding: 12px 16px 18px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--mp-line); }
+          .wfield { min-height: 48px; border-radius: 24px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; gap: 8px; padding: 0 6px 0 18px; }
+          .wsend { width: 36px; height: 36px; border-radius: 50%; background: var(--mp-accent); color: var(--mp-on-accent); display: grid; place-items: center; flex: none; }
+          .wsend .ms { font-size: 20px; }
+          .down { color: var(--mp-down-quiet); }
+          /* edits in place */
+          .crop { width: 420px; border-radius: 22px; padding: 20px; box-sizing: border-box; background: var(--mp-bg); box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.12); display: flex; flex-direction: column; gap: 12px; }
+          .edrow { display: flex; flex-direction: column; gap: 10px; padding: 12px; margin: 4px -12px; border-radius: 14px; background: var(--mp-surface-2); }
+          .edin { display: flex; align-items: center; gap: 2px; min-height: 48px; padding: 0 14px; border-radius: 12px; background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-focus); font: 600 20px/24px var(--mp-font); }
+          .mp-num-hero.mp-mask { align-self: flex-start; min-width: 300px; }
+          .cancel { background: var(--mp-surface); }
+          .caret { display: inline-block; width: 2px; height: 22px; background: var(--mp-accent); margin: 0 3px 0 1px; }
+          .ba { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font: 400 15px/20px var(--mp-font); }
+          .ba .old { color: var(--mp-ink-2); text-decoration: line-through; }
+          .audit { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .audit .ms { font-size: 16px; margin-top: 1px; }
+          .saved { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; background: var(--mp-add-bg); color: var(--mp-add); font: 600 15px/20px var(--mp-font); }
+          /* the phone door at 390 */
+          .pframe { width: 390px; height: 844px; border-radius: 44px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+          .psb { height: 50px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 30px 0 36px; font: 600 16px/20px var(--mp-font); }
+          .phd { display: flex; align-items: center; justify-content: space-between; padding: 4px 16px 6px 20px; }
+          .pchat { overflow: hidden; padding: 8px 16px 12px; }
+          .pcomp { padding: 8px 12px 92px; display: flex; flex-direction: column; gap: 8px; }
+          .ptabs { position: absolute; left: 0; right: 0; bottom: 0; }
+          /* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey */
+          .t-dark .mp-ink3, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t0" data-screen-label="Web v4 · Projection: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#t0">P</a><span class="dv-tname">Projection: where the household's net worth is heading, at the laptop and phone-web doors</span></div>
+        <p class="dv-intro">The old wealth tracker's Forecast, renamed: Forecast stays the market's word. Three options for the screen at 1440 with the chat beside it, then the recommended option's states: a what-if in the chat, the member's view, rupees at 2026 prices, privacy, the admin's corrections in place, and a plan item added in the chat at 390. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, from the v4 figure set, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start); the model writes words around them and never a number. Supersedes Wealth.dc.html's Browser · Forecast. The iPhone boards are iPhone v4 · Projection in MyPaisa iOS v1.</p>
+        <div class="plan"><span class="plan-s"><b>Jira</b></span><span class="plan-k">MA-224</span><span>the screen</span><span class="plan-k">MA-222</span><span>plan items</span><span class="plan-k">MA-223</span><span>what-ifs and the story</span><span class="plan-k">MA-221</span><span>priors and sources</span><span class="plan-k">MA-219</span><span>the engine, its fan</span></div>
+      </section>
+
+      <section class="dv-turn" id="t1" data-screen-label="Projection boards">
+        <sc-for list="{{ boards }}" as="b" hint-placeholder-count="10">
+          <div class="dv-opt" id="{{ b.anchor }}">
+            <sc-if value="{{ b.head }}"><div class="dv-thd turnh"><a class="dv-tid" href="#{{ b.anchor }}">{{ b.head.n }}</a><span class="dv-tname">{{ b.head.t }}</span></div><p class="dv-intro">{{ b.head.p }}</p></sc-if>
+            <div class="dv-olabel"><a class="dv-oid" href="#{{ b.anchor }}">{{ b.id }}</a><span class="dv-oname">{{ b.name }}</span><sc-if value="{{ b.rec }}"><span class="recb">Recommended</span></sc-if><span class="dv-keys">{{ b.keys }}</span></div>
+            <p class="dv-lead">{{ b.lead }}</p>
+            <div class="dv-row">
+              <sc-for list="{{ b.frames }}" as="f" hint-placeholder-count="2">
+                <div class="dv-col">
+                  <p class="dv-cap">{{ f.cap }}</p>
+
+                  <!-- ============ a page at 1440, the chat beside it ============ -->
+                  <sc-if value="{{ f.page }}">
+                    <div class="board mp mp-app {{ f.cls }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
+                      <div class="mp-shell">
+                        <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
+                          <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path fill="var(--mp-hero)" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle fill="var(--mp-coral)" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+                          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}">{{ n.i }}</span>{{ n.l }}</a></sc-for>
+                          <div class="grow1"></div>
+                          <div class="mp-foot mp-ink2 side-ft">{{ f.who }}</div>
+                        </aside>
+                        <main class="mp-shell-main pmain">
+                          <div class="mp-pagepad">
+                            <header class="mp-pagehead">
+                              <div><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ f.d.meta }}</div></div>
+                              <div class="hctl">
+                                <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i {{ f.d.cG }}">£ GBP</button><button class="mp-seg-i {{ f.d.cI }}">₹ INR</button></div>
+                                <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.d.tm }}" role="switch" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+                                <button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.d.pr }}"><span class="ms">{{ f.d.eye }}</span></button>
+                              </div>
+                            </header>
+
+                            <!-- 1a: the fan first -->
+                            <sc-if value="{{ f.oa }}">
+                              <div class="mp-hero heroP">
+                                <div class="fx col gap2"><span class="mp-sub mp-hero-2">{{ f.d.over }}</span><span class="mp-num-hero {{ f.d.big.m }}">{{ f.d.big.v }}</span></div>
+                                <p class="pp mp-sub mp-hero-2">From <span class="{{ f.d.from.m }}">{{ f.d.from.v }}</span> today. 8 in 10 of the engine's runs end between <span class="{{ f.d.lo.m }}">{{ f.d.lo.v }}</span> and <span class="{{ f.d.hi.m }}">{{ f.d.hi.v }}</span>.</p>
+                                <div class="fanw onhero">
+                                  <div class="mp-chartbox fanbox" role="img" aria-label="{{ f.d.ch.aria }}">
+                                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ f.d.ch.grid }}" as="g" hint-placeholder-count="3"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><path class="fband" sc-camel-d="{{ f.d.ch.band }}"></path><path class="fline" sc-camel-d="{{ f.d.ch.line }}"></path></svg>
+                                    <sc-for list="{{ f.d.ch.grid }}" as="g" hint-placeholder-count="3"><span class="gy" style="top: {{ g.top }}" data-mo="fade"><span class="{{ g.m }}">{{ g.l }}</span></span></sc-for>
+                                    <sc-for list="{{ f.d.ch.ticks }}" as="k" hint-placeholder-count="4"><span class="mtk" style="left: {{ k.left }}" data-mo="fade"></span></sc-for>
+                                    <sc-for list="{{ f.d.ch.dots }}" as="p" hint-placeholder-count="4"><span class="mp-chartdot" style="left: {{ p.left }}; top: {{ p.top }}"></span></sc-for>
+                                    <sc-for list="{{ f.d.ch.sq }}" as="p" hint-placeholder-count="2"><span class="mp-chartdot pdot" style="left: {{ p.left }}; top: {{ p.top }}"></span></sc-for>
+                                    <sc-for list="{{ f.d.ch.lbls }}" as="p" hint-placeholder-count="2"><span class="mp-chartlbl pill" style="left: {{ p.left }}; top: {{ p.top }}">{{ p.l }}</span></sc-for>
+                                    <sc-for list="{{ f.d.ch.ends }}" as="p" hint-placeholder-count="3"><span class="mp-chartlbl le" style="left: 100%; top: {{ p.top }}"><span class="{{ p.c }}"><span class="{{ p.m }}">{{ p.l }}</span></span></span></sc-for>
+                                    <sc-if value="{{ f.d.scrub }}"><span class="scl" style="left: {{ f.d.scrub.left }}" data-mo="fade"></span><span class="mp-chartdot sdot" style="left: {{ f.d.scrub.left }}; top: {{ f.d.scrub.t90 }}"></span><span class="mp-chartdot sdot" style="left: {{ f.d.scrub.left }}; top: {{ f.d.scrub.t10 }}"></span><span class="sct" style="left: {{ f.d.scrub.left }}" data-mo="fade"><b>{{ f.d.scrub.y }}</b><span>Middle path <b>{{ f.d.scrub.m }}</b></span><span class="mp-hero-2">8 in 10: {{ f.d.scrub.r }}</span></span></sc-if>
+                                  </div>
+                                  <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ f.d.ch.axis }}" as="x" hint-placeholder-count="7"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
+                                </div>
+                                <div class="lgd onhero"><span><i class="sw-line"></i>Middle path</span><span><i class="sw-band"></i>8 in 10 runs</span><span><i class="sw-dot"></i>A loan ends, Arun retires</span><span><i class="sw-sq"></i>A plan item</span><span><i class="sw-tk"></i>A maturity or rate change</span></div>
+                              </div>
+                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>{{ c }}</button></sc-for></div>
+                              <div class="pcols">
+                                <div class="pstack">
+                                  <div class="mp-card cpad">
+                                    <div class="ch"><span class="mp-hl">Milestones</span><span class="mp-foot mp-ink2">from the records, on the line above</span></div>
+                                    <sc-for list="{{ f.d.ms }}" as="m" hint-placeholder-count="8"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}<sc-if value="{{ m.x.v }}"><span>·</span><span class="{{ m.x.m }}">{{ m.x.v }}</span></sc-if></span></div><span class="mp-foot mp-ink2 lrv"><span class="{{ m.a.m }}">{{ m.a.v }}</span></span></div></sc-for>
+                                  </div>
+                                  <div class="mp-card cpad">
+                                    <div class="ch"><span class="mp-hl">Plan items</span><span class="mp-foot mp-ink2">{{ f.d.piSub }}</span></div>
+                                    <sc-for list="{{ f.d.pi }}" as="p" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ p.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ p.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="mk-sq"></i></span>{{ p.s }}</span></div><span class="fig {{ p.ed }}"><span class="{{ p.a.m }}">{{ p.a.v }}</span><sc-if value="{{ f.adm }}"><span class="ms">edit</span></sc-if></span></div></sc-for>
+                                    <sc-if value="{{ f.adm }}"><button class="mp-btn mp-btn-tinted mp-btn-small" style="align-self: flex-start; margin-top: 8px"><span class="ms ms-s">chat_bubble</span>Add a plan item in the chat</button></sc-if>
+                                    <sc-if value="{{ f.mem }}"><div class="note" style="margin-top: 8px"><span class="ms">lock</span><span class="mp-foot mp-ink2">Plan items are Arun's, the admin's. You see them on the line; ask a what-if in the chat to try your own.</span></div></sc-if>
+                                  </div>
+                                </div>
+                                <div class="mp-card cpad">
+                                  <div class="ch"><span class="mp-hl">Assumptions</span><span class="mp-foot mp-ink2">each with its source</span></div>
+                                  <div class="note"><span class="ms">{{ f.d.asmI }}</span><span class="mp-foot mp-ink2">{{ f.d.asmNote }}</span></div>
+                                  <sc-for list="{{ asm }}" as="g" hint-placeholder-count="3"><div class="grp"><span class="mp-over mp-ink2">{{ g.h }}</span>
+                                    <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3"><div class="as-row"><span class="as-n mp-sub mp-w6">{{ r.n }}</span><span class="as-f fig {{ f.d.ed }}">{{ r.v }}<sc-if value="{{ f.adm }}"><span class="ms">edit</span></sc-if></span><span class="as-s"><span class="src"><span class="ms">{{ r.si }}</span>{{ r.src }}</span><span class="mp-foot mp-ink2">{{ r.why }}</span></span></div></sc-for>
+                                  </div></sc-for>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <!-- 1b: a story first -->
+                            <sc-if value="{{ f.ob }}">
+                              <div class="mp-hero heroS">
+                                <span class="mp-over mp-hero-2">Where you're heading</span>
+                                <p class="story">On today's plan, the middle path takes the household from <b>£457,951</b> today to <b>£1,316,000</b> by 2036, and <b>£4,635,000</b> by 2056.</p>
+                                <p class="pp mp-callout mp-hero-2">8 in 10 of the engine's runs end 2056 between £3,156,000 and £7,141,000. The car loan ends in Feb 2029, the HDFC loan in Jul 2030 and the mortgage in Oct 2045, and each frees its payment.</p>
+                                <span class="mp-foot mp-hero-2">The figures are the engine's run of Mon 26 Oct, 09:53; the sentences are fixed wording around them.</span>
+                              </div>
+                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>{{ c }}</button></sc-for></div>
+                              <div class="mp-card cpad oncard">
+                                <div class="ch"><span class="mp-hl">The next 30 years</span><span class="mp-foot mp-ink2">the middle path, and where 8 in 10 runs land</span></div>
+                                <div class="fanw mid oncard" style="margin-right: 0">
+                                  <div class="mp-chartbox fanbox" role="img" aria-label="{{ f.d.ch.aria }}">
+                                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ f.d.ch.grid }}" as="g" hint-placeholder-count="3"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><path class="fband" sc-camel-d="{{ f.d.ch.band }}"></path><path class="fline" sc-camel-d="{{ f.d.ch.line }}"></path></svg>
+                                    <sc-for list="{{ f.d.ch.grid }}" as="g" hint-placeholder-count="3"><span class="gy" style="top: {{ g.top }}" data-mo="fade">{{ g.l }}</span></sc-for>
+                                    <sc-for list="{{ f.d.ch.ticks }}" as="k" hint-placeholder-count="4"><span class="mtk" style="left: {{ k.left }}" data-mo="fade"></span></sc-for>
+                                    <sc-for list="{{ f.d.ch.dots }}" as="p" hint-placeholder-count="4"><span class="mp-chartdot" style="left: {{ p.left }}; top: {{ p.top }}"></span></sc-for>
+                                    <sc-for list="{{ f.d.ch.sq }}" as="p" hint-placeholder-count="2"><span class="mp-chartdot pdot" style="left: {{ p.left }}; top: {{ p.top }}"></span></sc-for>
+                                  </div>
+                                  <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ f.d.ch.axis }}" as="x" hint-placeholder-count="7"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
+                                </div>
+                                <div class="lgd oncard" style="margin-top: 12px"><span><i class="sw-line"></i>Middle path</span><span><i class="sw-band"></i>8 in 10 runs</span><span><i class="sw-dot"></i>A loan ends, Arun retires</span><span><i class="sw-sq"></i>A plan item</span><span><i class="sw-tk"></i>A maturity or rate change</span></div>
+                              </div>
+                              <div class="pcols">
+                                <div class="mp-card cpad">
+                                  <div class="ch"><span class="mp-hl">What drives it</span><span class="mp-foot mp-ink2">the engine's inputs</span></div>
+                                  <sc-for list="{{ drivers }}" as="r" hint-placeholder-count="5"><div class="drv"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev">chevron_right</span></div></sc-for>
+                                </div>
+                                <div class="mp-card cpad">
+                                  <div class="ch"><span class="mp-hl">The detail</span><span class="mp-foot mp-ink2">one click away</span></div>
+                                  <sc-for list="{{ more }}" as="r" hint-placeholder-count="3"><div class="drv"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev">chevron_right</span></div></sc-for>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <!-- 1c: decades -->
+                            <sc-if value="{{ f.oc }}">
+                              <div class="mp-hero heroC">
+                                <div class="fx col gap8"><span class="mp-sub mp-hero-2">Middle path in 2056</span><span class="mp-num-hero">£4,635,000</span><span class="mp-sub mp-hero-2">From £457,951 today. 8 in 10 runs end between £3,156,000 and £7,141,000.</span></div>
+                                <div class="fanw sm onhero"><div class="mp-chartbox fanbox" role="img" aria-label="{{ f.d.ch.aria }}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="fband" sc-camel-d="{{ f.d.ch.band }}"></path><path class="fline" sc-camel-d="{{ f.d.ch.line }}"></path></svg></div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 33.33%">2036</span><span style="left: 66.67%">2046</span><span class="ax1" style="left: 100%">2056</span></div></div>
+                              </div>
+                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>{{ c }}</button></sc-for></div>
+                              <div class="decs">
+                                <sc-for list="{{ decades }}" as="c" hint-placeholder-count="4"><div class="mp-card dec">
+                                  <div class="ch" style="margin: 0"><span class="mp-t3">{{ c.t }}</span><span class="mp-foot mp-ink2">{{ c.by }}</span></div>
+                                  <div class="fx col"><span class="mp-foot mp-ink2">Middle path</span><span class="mp-num-l">{{ c.m }}</span></div>
+                                  <div class="rng"><div class="rng-t mp-track"><span class="rng-b"></span></div><span class="rng-m" style="left: {{ c.x }}"></span></div>
+                                  <span class="mp-foot mp-ink2">8 in 10 runs: {{ c.r }}</span>
+                                  <div class="fx col gap2" style="border-top: 1px solid var(--mp-line); padding-top: 10px"><sc-for list="{{ c.ev }}" as="e" hint-placeholder-count="3"><div class="dl"><span class="mk"><i class="{{ e.k }}"></i></span><span class="mp-foot mp-ink2">{{ e.d }}</span><span class="mp-foot">{{ e.w }}</span></div></sc-for></div>
+                                </div></sc-for>
+                              </div>
+                              <div class="mp-card cpad">
+                                <sc-for list="{{ more }}" as="r" hint-placeholder-count="3"><div class="drv"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev">chevron_right</span></div></sc-for>
+                              </div>
+                            </sc-if>
+                            <p class="pp mp-foot mp-ink2">Illustrative figures from the v4 figure set. A projection, not a promise: the engine's middle path is no more likely than the band around it.</p>
+                          </div>
+                        </main>
+
+                        <aside class="chatcol" aria-label="Chat">
+                          <div class="chhd"><span class="mp-t3">Chat</span><span class="iconbtn"><span class="ms">edit_square</span></span></div>
+                          <div class="chat">
+                            <div class="daysep">Today</div>
+                            <sc-for list="{{ f.c.msgs }}" as="msg" hint-placeholder-count="1"><div class="me">{{ msg.q }}</div><div class="me-time">{{ msg.qt }}</div><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{{ msg.a }}</div>
+                              <sc-if value="{{ msg.wif }}"><div class="ccard">
+                                <div class="ccard-h"><span class="mp-over mp-ink2">What-if · Jun 2028 · not saved</span><span class="mp-hl">£60,000 down on a second flat</span></div>
+                                <div class="ccard-b">
+                                  <div class="fanw sm oncard wifbox" style="margin: 14px 0 0">
+                                    <div class="mp-chartbox fanbox" role="img" aria-label="{{ wif.aria }}">
+                                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ wif.grid }}" as="g" hint-placeholder-count="3"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><path class="fband" sc-camel-d="{{ wif.band }}"></path><path class="fbase" sc-camel-d="{{ wif.base }}"></path><path class="fline" sc-camel-d="{{ wif.line }}"></path></svg>
+                                      <sc-for list="{{ wif.grid }}" as="g" hint-placeholder-count="3"><span class="gy" style="top: {{ g.top }}" data-mo="fade">{{ g.l }}</span></sc-for>
+                                      <span class="mp-chartdot pdot" style="left: {{ wif.sq.left }}; top: {{ wif.sq.top }}"></span><span class="mp-chartdot bdot" style="left: 100%; top: {{ wif.endB }}"></span><span class="mp-chartdot" style="left: 100%; top: {{ wif.endW }}"></span>
+                                    </div>
+                                    <div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 50%">2031</span><span class="ax1" style="left: 100%">2036</span></div>
+                                  </div>
+                                  <div class="lgd oncard"><span><i class="sw-line"></i>With the flat</span><span><i class="sw-dash"></i>Today's plan</span><span><i class="sw-sq"></i>The deposit, Jun 2028</span><span><i class="sw-band"></i>8 in 10 runs, with the flat</span></div>
+                                  <div class="kv"><span>2036, with the flat</span><span>£1,233,000</span></div>
+                                  <div class="kv"><span>2036, today's plan</span><span>£1,316,000</span></div>
+                                  <div class="kv"><span>Middle path</span><span class="down">▼ £83,000 lower</span></div>
+                                  <p class="pp mp-foot mp-ink2">The engine's figures, from a run nothing is saved from. £60,000 and June 2028 are your words.</p>
+                                </div>
+                                <div class="ccard-acts"><span class="cbtn cbtn-primary"><span class="ms">bookmark_add</span>Save as a plan item</span><span class="cbtn">Change it</span></div>
+                                <div class="ccard-fold"><span>Technical</span><span class="ms">expand_more</span></div>
+                              </div></sc-if>
+                            </div></div></sc-for>
+                          </div>
+                          <div class="wcomp">
+                            <div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><span class="cbtn"><span class="ms">{{ c.i }}</span>{{ c.l }}</span></sc-for></div>
+                            <div class="wfield"><span class="mp-body mp-ink2 rtx">Ask about the Projection</span><span class="wsend"><span class="ms">arrow_upward</span></span></div>
+                          </div>
+                        </aside>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <!-- ============ a correction in place, the card it happens in ============ -->
+                  <sc-if value="{{ f.crop }}">
+                    <div class="crop mp {{ f.cls }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
+                      <div class="mp-card cpad">
+                        <div class="ch"><span class="mp-hl">{{ f.e.title }}</span><span class="mp-foot mp-ink2">{{ f.e.sub }}</span></div>
+                        <sc-for list="{{ f.e.rows }}" as="r" hint-placeholder-count="3">
+                          <sc-if value="{{ r.plain }}"><div class="as-row"><span class="as-n fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></span><span class="as-f fig ed">{{ r.v }}<span class="ms">edit</span></span></div></sc-if>
+                          <sc-if value="{{ r.editing }}"><div class="edrow"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.field }}</span><span class="edin">{{ r.typed }}<span class="caret"></span><span class="mp-ink2">{{ r.unit }}</span></span><div class="ba"><span class="old">{{ r.before }}</span><span class="ms ms-s mp-ink2">arrow_forward</span><b>{{ r.after }}</b></div><span class="mp-foot mp-ink2">{{ r.hint }}</span><div class="fx gap8"><span class="mp-btn mp-btn-primary mp-btn-small">Save</span><span class="mp-btn mp-btn-tinted mp-btn-small cancel">Cancel</span></div></div></sc-if>
+                          <sc-if value="{{ r.done }}"><div class="as-row"><span class="as-n fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></span><span class="as-f fig ed">{{ r.v }}<span class="ms">edit</span></span><span class="as-s"><span class="src"><span class="ms">person</span>{{ r.src }}</span><span class="mp-foot mp-ink2">{{ r.was }}</span></span></div></sc-if>
+                        </sc-for>
+                      </div>
+                      <sc-if value="{{ f.e.saved }}"><div class="saved" data-mo="pop"><span class="ms ms-fill">check_circle</span>Saved. The Projection runs again with it.</div><div class="audit"><span class="ms">fact_check</span><span>{{ f.e.audit }}</span></div></sc-if>
+                    </div>
+                  </sc-if>
+
+                  <!-- ============ the phone-web door at 390: the chat tab ============ -->
+                  <sc-if value="{{ f.phone }}">
+                    <div class="pframe mp mp-app {{ f.cls }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
+                      <div class="psb"><span>{{ f.p.clock }}</span><span class="fx ac gap4"><span class="ms ms-s">signal_cellular_alt</span><span class="ms ms-s">wifi</span><span class="ms ms-s">battery_horiz_075</span></span></div>
+                      <div class="phd"><span class="mp-t1">Chat</span><span class="iconbtn"><span class="ms">edit_square</span></span></div>
+                      <div class="chat pchat">
+                        <div class="daysep">Sun 25 Oct</div>
+                        <div class="me">Add Asha's bonus to the plan: £3,000 every March from 2027 to 2052</div>
+                        <div class="me-time">20:14</div>
+                        <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{{ f.p.say }}</div>
+                          <sc-if value="{{ f.p.ask }}"><div class="ccard">
+                            <div class="ccard-h"><span class="mp-over mp-ink2">New plan item · check and confirm</span><span class="mp-hl">Asha's annual bonus</span></div>
+                            <div class="ccard-b"><div class="kv"><span>Amount</span><span>+£3,000</span></div><div class="kv"><span>When</span><span>Every March, 2027 to 2052</span></div><div class="kv"><span>Currency</span><span>GBP</span></div><div class="kv"><span>Grows</span><span>No growth</span></div><p class="pp mp-foot mp-ink2">Your words, as a plan item. The engine re-runs the Projection once you confirm; only you can change it later.</p></div>
+                            <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Change</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                          </div></sc-if>
+                          <sc-if value="{{ f.p.done }}"><div class="ccard">
+                            <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>Added to the plan</span><span class="mp-hl">Asha's annual bonus</span><span class="mp-sub mp-ink2">+£3,000 every March, 2027 to 2052</span></div>
+                            <div class="ccard-tech">Audit · Plan item added · Arun · Sun 25 Oct 20:15 · in the chat</div>
+                            <div class="ccard-acts" style="padding-top: 14px"><span class="cbtn"><span class="ms">show_chart</span>See the Projection</span></div>
+                          </div></sc-if>
+                        </div></div>
+                      </div>
+                      <div class="pcomp"><div class="chips crow"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><span class="cbtn"><span class="ms">{{ c.i }}</span>{{ c.l }}</span></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx">Message MyPaisa</span><span class="wsend"><span class="ms">arrow_upward</span></span></div></div>
+                      <nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div class="bnotes"><sc-for list="{{ b.notes }}" as="n" hint-placeholder-count="4"><p><b>{{ n.h }}</b> {{ n.t }}</p></sc-for></div>
+          </div>
+        </sc-for>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          // Every figure is the v4 figure set's (household-v4.json, projection and what_if): the engine's illustrative run.
+          const FAN = [[2027, 451000, 499000, 547000], [2028, 502000, 582000, 658000], [2029, 563000, 660000, 757000], [2030, 627000, 747000, 862000], [2031, 688000, 812000, 945000], [2032, 758000, 906000, 1082000], [2033, 813000, 1001000, 1210000], [2034, 884000, 1122000, 1343000], [2035, 980000, 1214000, 1492000], [2036, 1062000, 1316000, 1641000], [2037, 1146000, 1447000, 1845000], [2038, 1229000, 1586000, 2042000], [2039, 1315000, 1718000, 2234000], [2040, 1423000, 1851000, 2442000], [2041, 1515000, 1981000, 2658000], [2042, 1606000, 2107000, 2885000], [2043, 1685000, 2275000, 3134000], [2044, 1782000, 2426000, 3324000], [2045, 1820000, 2636000, 3603000], [2046, 2008000, 2769000, 3882000], [2047, 2108000, 2962000, 4106000], [2048, 2267000, 3193000, 4406000], [2049, 2324000, 3345000, 4742000], [2050, 2503000, 3539000, 5153000], [2051, 2685000, 3733000, 5531000], [2052, 2662000, 3922000, 5865000], [2053, 2766000, 4126000, 6115000], [2054, 2890000, 4297000, 6553000], [2055, 2954000, 4423000, 6841000], [2056, 3156000, 4635000, 7141000]];
+          const WIF = [[2027, 451000, 499000, 547000], [2028, 442000, 522000, 598000], [2029, 506000, 599000, 691000], [2030, 576000, 677000, 786000], [2031, 634000, 740000, 866000], [2032, 699000, 835000, 989000], [2033, 758000, 922000, 1111000], [2034, 830000, 1034000, 1242000], [2035, 915000, 1132000, 1371000], [2036, 1001000, 1233000, 1513000]];
+          const START = 457951;  // net worth after the Monzo savings record (09:41) and the home’s corrected value (09:52), Mon 26 Oct
+          const F0 = [[2026, START, START, START]].concat(FAN), W0 = [[2026, START, START, START]].concat(WIF);
+          const NOW = 2026 + 9 / 12 + 25 / 365;   // Mon 26 Oct 2026; the fan's year n sits n years on
+          const tOf = (y, m) => y + (m - 1) / 12 - NOW;
+          const gbp = (n) => (n < 0 ? '−' : '') + '£' + Math.abs(Math.round(n)).toLocaleString('en-GB');
+          const inr = (n) => { const s = String(Math.round(Math.abs(n))); const a = s.slice(-3), r = s.slice(0, -3); return '₹' + (r ? r.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' : '') + a; };
+          const pc = (v) => v.toFixed(2) + '%';
+          const chart = (rows, years, vmax, vmin) => {
+            const lo = vmin || 0, X = (t) => t / years * 100, Y = (v) => 100 - (v - lo) / (vmax - lo) * 100;
+            const pt = (r, i) => X(r[0] - 2026).toFixed(2) + ',' + Y(r[i]).toFixed(2);
+            const at = (t, i) => { for (let k = 1; k < rows.length; k++) { const a = rows[k - 1], b = rows[k], ta = a[0] - 2026, tb = b[0] - 2026; if (t <= tb) return a[i] + (b[i] - a[i]) * (t - ta) / (tb - ta); } return rows[rows.length - 1][i]; };
+            return { X, Y, at, P: (t, i) => ({ left: pc(X(t)), top: pc(Y(at(t, i))) }),
+              band: 'M' + rows.map((r) => pt(r, 3)).join(' L') + ' L' + rows.slice().reverse().map((r) => pt(r, 1)).join(' L') + ' Z',
+              line: 'M' + rows.map((r) => pt(r, 2)).join(' L') };
+          };
+          // Milestones from the figure set: dots on the line for loans ending and retirement, ticks for maturities and the rate change.
+          const MS = [['savings', 'Asha’s fixed-rate saver matures', '14 Dec 2026', '£10,460', 'mk-tk', 2026, 12, ''], ['percent', 'Mortgage fixed rate ends', '30 Jun 2028', '', 'mk-tk', 2028, 6, 'then a variable rate'], ['directions_car', 'Car loan paid off', '20 Feb 2029', '', 'mk-dot', 2029, 2, 'frees £347 a month'], ['account_balance', 'SBI FD matures', '10 Mar 2029', '₹6,17,538', 'mk-tk', 2029, 3, ''], ['real_estate_agent', 'HDFC home loan paid off', '5 Jul 2030', '', 'mk-dot', 2030, 7, 'frees ₹39,390 a month'], ['shield', 'LIC policy matures', '28 Mar 2031', '', 'mk-tk', 2031, 3, ''], ['home', 'Mortgage paid off', '1 Oct 2045', '', 'mk-dot', 2045, 10, 'frees £1,456 a month'], ['beach_access', 'Arun retires at 60', '1 Jan 2051', '', 'mk-dot', 2051, 1, '']];
+          const PI = [['construction', 'Home extension', 'Once, Jun 2027', -35000, '', 2027, 6], ['redeem', 'Asha’s annual bonus', 'Every March, 2027 to 2052', 3000, '', 0, 0], ['directions_car', 'Replace the car', 'Once, Jun 2031', -25000, '', 2031, 6]];
+          const view = (o) => {
+            const mk = (v) => ({ v, m: o.priv ? 'mp-mask' : '' });
+            const k = (v, y) => o.inr ? Math.round(v / Math.pow(1.025, y - 2026) * 112.5 / 1e5) * 1e5 : v;
+            const fmt = o.inr ? inr : gbp;
+            const rows = F0.map((r) => [r[0], k(r[1], r[0]), k(r[2], r[0]), k(r[3], r[0])]);
+            const vmax = o.inr ? 4e8 : 7.5e6, c = chart(rows, 30, vmax), end = rows[30], y36 = rows[10];
+            const grid = (o.inr ? [[1e8, '₹10 crore'], [2e8, '₹20 crore'], [3e8, '₹30 crore']] : [[2e6, '£2m'], [4e6, '£4m'], [6e6, '£6m']]).map((g) => ({ y: c.Y(g[0]).toFixed(2), top: pc(c.Y(g[0])), l: g[1], m: o.priv ? 'mp-mask' : '' }));
+            const axis = [[0, 'Today', 'ax0'], [5, '2031', ''], [10, '2036', ''], [15, '2041', ''], [20, '2046', ''], [25, '2051', ''], [30, '2056', 'ax1']].map((a) => ({ left: pc(c.X(a[0])), l: a[1], c: a[2] }));
+            return {
+              meta: (o.inr ? 'In rupees at 2026 prices: today’s money, at ₹112.50 to the pound (ECB, Fri 23 Oct)' : 'Net worth over the next 30 years, in the pounds of each year') + ' · the engine’s run, Mon 26 Oct 09:53',
+              cG: o.inr ? '' : 'on', cI: o.inr ? 'on' : '', tm: o.inr ? 'on' : '', pr: o.priv ? 'true' : 'false', eye: o.priv ? 'visibility_off' : 'visibility',
+              over: o.inr ? 'Middle path in 2056, in today’s money' : 'Middle path in 2056',
+              big: mk(fmt(end[2])), from: mk(o.inr ? '₹5,15,19,488' : gbp(START)), lo: mk(fmt(end[1])), hi: mk(fmt(end[3])),
+              ch: { band: c.band, line: c.line, grid, axis,
+                aria: 'Net worth to 2056: the middle path from ' + (o.inr ? '₹5,15,19,488' : gbp(START)) + ' to ' + fmt(end[2]) + ', with 8 in 10 runs between ' + fmt(end[1]) + ' and ' + fmt(end[3]) + '; milestones listed below.',
+                dots: MS.filter((m) => m[4] === 'mk-dot').map((m) => c.P(tOf(m[5], m[6]), 2)),
+                ticks: MS.filter((m) => m[4] === 'mk-tk').map((m) => ({ left: pc(c.X(tOf(m[5], m[6]))) })),
+                sq: PI.filter((p) => p[5]).map((p) => c.P(tOf(p[5], p[6]), 2)),
+                lbls: [['Mortgage paid off', 2045, 10], ['Arun retires', 2051, 1]].map((l) => Object.assign(c.P(tOf(l[1], l[2]), 2), { l: l[0] })),
+                ends: [[3, 'lbl-2'], [2, ''], [1, 'lbl-2']].map((e) => ({ top: pc(c.Y(end[e[0]])), l: fmt(end[e[0]]), c: e[1], m: o.priv ? 'mp-mask' : '' })) },
+              scrub: o.priv ? null : { left: pc(c.X(10)), t90: pc(c.Y(y36[3])), t10: pc(c.Y(y36[1])), y: '2036', m: fmt(y36[2]), r: fmt(y36[1]) + ' to ' + fmt(y36[3]) },
+              ms: MS.map((m) => ({ i: m[0], w: m[1], d: m[2], a: mk(m[3]), x: /[£₹]/.test(m[7]) ? mk(m[7]) : { v: m[7], m: '' }, k: m[4] })),
+              pi: PI.map((p) => ({ i: p[0], w: p[1], s: p[2], a: mk((p[3] > 0 ? '+' : '') + gbp(p[3]) + p[4]), ed: o.mem ? '' : 'ed' })),
+              piSub: o.mem ? 'Arun’s, the admin’s' : 'yours alone, as the admin',
+              ed: o.mem ? '' : 'ed', asmI: o.mem ? 'lock' : 'edit',
+              asmNote: o.mem ? 'Arun keeps these figures. Ask in the chat to see what other figures would do.' : 'Click a figure to correct it. Only you can, as the admin; each change is audited.'
+            };
+          };
+          // The what-if: the engine's run with the member's override (what_if in the figure set), against today's plan, to 2036.
+          const cw = chart(W0, 10, 1.7e6, 3e5), cb = chart(F0.slice(0, 11), 10, 1.7e6, 3e5);
+          const wif = { band: cw.band, line: cw.line, base: cb.line, sq: cw.P(tOf(2028, 6), 2), endW: pc(cw.Y(1233000)), endB: pc(cb.Y(1316000)),
+            grid: [[5e5, '£0.5m'], [1e6, '£1m'], [1.5e6, '£1.5m']].map((g) => ({ y: cw.Y(g[0]).toFixed(2), top: pc(cw.Y(g[0])), l: g[1] })),
+            aria: 'With £60,000 down on a second flat in June 2028, the middle path reaches £1,233,000 in 2036, against £1,316,000 on today’s plan.' };
+          const nav = [['home', 'Home'], ['account_balance_wallet', 'Assets'], ['credit_card', 'Debts'], ['event_note', 'Budget'], ['show_chart', 'Projection'], ['history', 'Activity'], ['fact_check', 'Audit'], ['person', 'You']].map((n) => ({ i: n[0], l: n[1], on: n[1] === 'Projection' ? 'on' : '', fill: n[1] === 'Projection' ? 'ms-fill' : '' }));
+          const ptabs = [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '', fill: t[1] === 'Chat' ? 'ms-fill' : '' }));
+          const T = [['Light', 't-light'], ['Dark', 't-dark']];
+          const mA = { q: 'Has the Projection caught up with this morning’s changes?', qt: '10:03', a: 'Yes. The engine ran it again at 09:53, after the Monzo savings and the home’s new value. Ask what moves the line, or try a what-if.', wif: false };
+          const chatArun = { msgs: [mA] };
+          const chatAsha = { msgs: [{ q: 'What is the shaded band?', qt: '10:08', a: 'It is where 8 in 10 of the engine’s runs land; the line through it is the middle one. Shares swing the most, so the band widens with the years.', wif: false }] };
+          const chatWif = { msgs: [mA, { q: 'What if we put £60,000 down on a second flat in June 2028?', qt: '10:20', a: 'Here’s the engine’s run with it.', wif: true }] };
+          const page = (b, o, chat, who) => T.map((t) => ({ cap: b + ' · ' + t[0], cls: t[1], page: true, oa: o.a, ob: o.b, oc: o.c, adm: !o.mem, mem: !!o.mem, who, c: chat, d: view(o) }));
+          const ARUN = 'Signed in with Apple · Arun, admin', ASHA = 'Signed in with Google · Asha, member';
+          // The admin's corrections in place: Mon 26 Oct 10:40 and 10:44, after every other frame here, so no later frame shows the old run.
+          const payRows = (state) => [
+            state === 'a' ? { editing: true, n: 'Arun’s salary growth', field: 'A year · now 4.17%, his history blended with a prior', typed: '4.8', unit: '%', before: '4.17%', after: '4.8%', hint: 'His own 4.8% a year since 2022, without the UK’s 3.5% blended in.' }
+              : { done: true, n: 'Arun’s salary growth', s: 'a year', v: '4.8%', src: 'Set by Arun', was: 'was 4.17%, his history and prior' },
+            { plain: true, n: 'Asha’s salary growth', s: 'Her 3.5% since 2023, blended with the UK’s 3.5%', v: '3.5%' }];
+          const planRows = (state) => [
+            { plain: true, n: 'Home extension', s: 'Once, Jun 2027', v: '−£35,000' },
+            state === 'a' ? { editing: true, n: 'Asha’s annual bonus · +£3,000 every March, 2027 to 2052', field: 'Grows each year', typed: '3.5', unit: '% a year', before: 'No growth', after: '3.5% a year', hint: 'Asha’s salary growth is 3.5% a year, from the assumptions.' }
+              : { done: true, n: 'Asha’s annual bonus', s: 'Every March, 2027 to 2052 · grows 3.5% a year', v: '+£3,000', src: 'Corrected by Arun', was: 'was no growth' },
+            { plain: true, n: 'Replace the car', s: 'Once, Jun 2031', v: '−£25,000' }];
+          const crops = (b, mk, title, sub, audit) => [['a', 'editing'], ['b', 'saved']].reduce((acc, s) => acc.concat(T.map((t) => ({ cap: b + ' · ' + t[0] + ' · ' + s[1], cls: t[1], crop: true, e: { title, sub: s[0] === 'a' ? sub : 'Mon 26 Oct', rows: mk(s[0]), saved: s[0] === 'b', audit } }))), []);
+          const phone = (b) => [['a', '20:14', 'Here it is as a plan item. Check it, then confirm.'], ['b', '20:15', 'Here it is as a plan item. Check it, then confirm.']].reduce((acc, s) => acc.concat(T.map((t) => ({ cap: b + ' · ' + t[0] + ' · ' + (s[0] === 'a' ? 'the card' : 'confirmed'), cls: t[1], phone: true, p: { clock: s[1], say: s[2], ask: s[0] === 'a', done: s[0] === 'b' } }))), []);
+          const boards = [
+            { anchor: 'o1a', id: '1a', name: 'Browser · Projection, the fan first', keys: 'MA-224 · MA-219 · MA-221 · MA-222', rec: true,
+              head: { n: '1', t: 'Three options for the Projection screen', p: 'Each is a complete page for the admin, Arun, at 1440 with the chat beside it, in light and dark. They differ in what comes first: the chart (1a), the words (1b) or the decades (1c). 1a is recommended; the second turn below draws its states.' },
+              lead: 'The fan on the navy hero, milestones and plan items marked on the line, a hover on 2036, the scenario chips, then the milestones, the plan items and the assumptions panel, each figure with its source and editable by the admin. Recommended: it is §6.6’s screen as listed (the fan, milestones on the line, the assumptions with sources, scenario chips, Ask), the chart a member reads and hovers comes first, and the summary still leads, as the hero’s one figure and its range.',
+              frames: page('Browser · Projection, the fan first', { a: true }, chatArun, ARUN),
+              notes: [{ h: 'Where it sits.', t: 'Projection is its own page in the sidebar (Home, Assets, Debts, Budget, Projection, Activity, Audit), with the chat beside it over about 1024 px. MA-224.' }, { h: 'The fan is the engine’s.', t: 'The middle path and the band where 8 in 10 runs land, from the stored run (MA-219); the hover reads 2036 off the same run. The labels and dots are HTML over the SVG.' }, { h: 'Three shapes, never colour alone.', t: 'A dot where a loan ends or Arun retires, a square for a plan item, a tick on the axis for a maturity or the fixed rate’s end; each is named in the lists, with the same shape.' }, { h: 'The switches.', t: '£ or ₹, and Today’s money, sit in the page head beside the eye; both only change the view. Board P3 draws them flipped.' }, { h: 'Sources.', t: 'Contract for the FD and PPF, a prior for prices and property, history shrunk toward a prior for Parag Parikh and pay (MA-221). Arun corrects any figure in place (P5); members cannot.' }, { h: 'Moves.', t: 'The hero rises and its figure rolls up, the band and line wipe in from the left, the dots and labels land after; the cards cascade.' }] },
+            { anchor: 'o1b', id: '1b', name: 'Browser · Projection, a story first', keys: 'MA-224 · MA-223 · MA-219',
+              lead: 'Where you’re heading, in plain words built around the engine’s figures, then the fan on a card, then what drives it. The assumptions, plan items and milestones are one click away.',
+              frames: page('Browser · Projection, a story first', { b: true }, chatArun, ARUN),
+              notes: [{ h: 'Words first.', t: 'Three sentences carry the start, 2036, 2056 and the range, and the loans ending. They are fixed wording filled from the run, so the model never states a figure of its own (MA-223).' }, { h: 'The cost.', t: 'Sentences go stale the moment a figure changes, and the assumptions sit a click away, so a correction in place is two steps further off.' }, { h: 'Drivers.', t: 'Saving, returns, pay, debts ending and plan items, each with the figures it rests on, each opening its detail.' }] },
+            { anchor: 'o1c', id: '1c', name: 'Browser · Projection, decades', keys: 'MA-224 · MA-219',
+              lead: 'A small fan in the hero, then the rest of the 2020s, the 2030s, the 2040s and the 2050s as cards, each with its range at the decade’s end and its milestones. The assumptions are one click away.',
+              frames: page('Browser · Projection, decades', { c: true }, chatArun, ARUN),
+              notes: [{ h: 'Decades.', t: 'Each card ends on the fan’s last year in it (2029, 2039, 2049, 2056): the middle path, the range as a bar with the middle marked, and what happens in it.' }, { h: 'The cost.', t: 'The curve’s shape shrinks to a thumbnail, and plan items that fall between cards read as separate events, not one line.' }] },
+            { anchor: 'p1', id: 'P1', name: 'Browser · Projection, a what-if in the chat', keys: 'MA-223 · MA-224 · MA-222',
+              head: { n: '2', t: 'In 1a: a what-if, the member, the switches, privacy and corrections in place', p: 'The recommended option’s states, in time order on Mon 26 Oct: 10:05 the page, 10:06 rupees, 10:08 Asha, 10:20 the what-if, 10:40 and 10:44 Arun’s corrections. The plan item added in the chat is Sun 25 Oct, the evening before.' },
+              lead: 'Arun asks, beside the page, what £60,000 down on a second flat in June 2028 would do. The answer is an unsaved scenario card: the fan with the deposit against today’s middle path, 2036’s figures, and Save as a plan item, which only the admin sees.',
+              frames: page('Browser · Projection, a what-if in the chat', { a: true }, chatWif, ARUN),
+              notes: [{ h: 'The engine’s figures.', t: 'The agent fills a typed override from Arun’s words (£60,000, June 2028) and calls run_projection; 2036’s middle path is £1,233,000 against £1,316,000, £83,000 lower. The card says the figures are the engine’s and the numbers his words (MA-223).' }, { h: 'Not saved.', t: 'Nothing changes on the page. Save as a plan item opens the same plan item card as P7, for the admin alone (MA-222); a member’s card has no Save.' }, { h: 'The chart.', t: 'The band and solid line are the run with the flat, the dashed line today’s middle path, the square the deposit in June 2028; both end dots sit on 2036.' }] },
+            { anchor: 'p2', id: 'P2', name: 'Browser · Projection, as Asha sees it', keys: 'MA-224 · MA-222 · MA-221',
+              lead: 'Asha, a member, sees the same Projection: the same fan, milestones, plan items and assumptions with their sources, with no edit controls, no plan item editing and no Add.',
+              frames: page('Browser · Projection, as Asha sees it', { a: true, mem: true }, chatAsha, ASHA),
+              notes: [{ h: 'Read, ask, never save.', t: 'Figures show plain, without the edit pill; plan items carry a lock note. She can still ask a what-if in the chat; her card has no Save (iPhone v4 · Projection draws it).' }, { h: 'One family.', t: 'No household switch: Asha sees the household’s whole Projection, as Arun does.' }] },
+            { anchor: 'p3', id: 'P3', name: 'Browser · Projection, in rupees at 2026 prices', keys: 'MA-224 · MA-219',
+              lead: '₹ INR and Today’s money switched on. Derived for the board from the engine’s run: each year’s figure divided by 1.025 a year from 2026 (UK inflation), times ₹112.50, rounded to the lakh. The engine drifts the rate by the inflation gap, so at 2026 prices the rupee figure is the pound figure at today’s rate.',
+              frames: page('Browser · Projection, in rupees at 2026 prices', { a: true, inr: true }, chatArun, ARUN),
+              notes: [{ h: 'Derived, and said so.', t: 'Only the hero, the axis, the end labels and the hover change. Milestones and plan items keep their own currency, as the records do.' }, { h: 'Lakh and crore.', t: '₹24,86,00,000 in 2056; the axis in crore. Today’s ₹5,15,19,488 is the figure set’s own.' }] },
+            { anchor: 'p4', id: 'P4', name: 'Browser · Projection, privacy on', keys: 'MA-224',
+              lead: 'The eye hides every amount: the hero, its range, the axis, the end labels, the milestones’ sums and the plan items. The shape of the fan stays; rates stay, since they are not money.',
+              frames: page('Browser · Projection, privacy on', { a: true, priv: true }, chatArun, ARUN),
+              notes: [{ h: 'Masks, not blanks.', t: 'Each amount keeps its place as a mask, so the page does not reflow when the eye is pressed; the hover is off while privacy is on.' }] },
+            { anchor: 'p5', id: 'P5', name: 'Browser · Projection, correcting an assumption', keys: 'MA-224 · MA-221',
+              lead: 'Arun clicks his salary growth, types 4.8, sees 4.17% → 4.8% and saves. The row then shows his figure and its source, and the audit line. Mon 26 Oct, 10:40.',
+              frames: crops('Browser · Projection, correcting an assumption', payRows, 'Assumptions · Pay', '10:40 · editing', 'Audit · Arun’s salary growth 4.17% → 4.8% · Arun · Mon 26 Oct 10:40 · edited in place'),
+              notes: [{ h: 'Correct in place, never create.', t: 'An existing figure only: click, type, before → after, Save. A correction event with its audit row, via inline_edit (MA-224).' }, { h: '4.8% is his own record,', t: 'the figure set’s measured 4.84% a year since 2022 as the board writes it, without the UK’s 3.5% prior; the source becomes Set by Arun (MA-221).' }, { h: 'Then the engine.', t: 'Saving starts a fresh run; no figure on the page is drawn from it here, since this is the last frame of the morning.' }] },
+            { anchor: 'p6', id: 'P6', name: 'Browser · Projection, correcting a plan item', keys: 'MA-222',
+              lead: 'Arun gives Asha’s bonus a growth rate: No growth → 3.5% a year, her salary growth from the assumptions. Admin only; Mon 26 Oct, 10:44.',
+              frames: crops('Browser · Projection, correcting a plan item', planRows, 'Plan items', '10:44 · editing', 'Audit · Plan item corrected · Asha’s annual bonus: growth none → 3.5% a year · Arun · Mon 26 Oct 10:44 · edited in place'),
+              notes: [{ h: 'A plan item has a start, an end, a currency and a growth rate;', t: 'any of them can be corrected in place by the admin, never created here (MA-222). Asha sees the row without the pill.' }] },
+            { anchor: 'p7', id: 'P7', name: 'Browser · Plan item in the chat, phone', keys: 'MA-222',
+              lead: 'The phone-web door at 390, where the chat is a tab: Arun adds Asha’s bonus in words on Sun 25 Oct; the card reads it back, he confirms, and the audit row follows. The page boards above, the next morning, already show it.',
+              frames: phone('Browser · Plan item in the chat, phone'),
+              notes: [{ h: 'Only through the chat.', t: 'A plan item is created by propose_plan_item and a Confirm tap, never by a form; no second check, since it changes a plan, not the records (§6.6).' }, { h: 'The same card everywhere.', t: 'The laptop’s chat column and the iPhone draw the same card; Save as a plan item on a what-if (P1) opens it too.' }] }
+          ];
+          return {
+            boards, nav, ptabs, wif,
+            cchips: [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((c) => ({ i: c[0], l: c[1] })),
+            chips: ['What if we buy a second flat?', 'What if the plan items fall away?', 'What moves the line most?'],
+            asm: [
+              { h: 'Returns', rows: [['Parag Parikh Flexi Cap', '9.06%', 'history', 'History, shrunk to a prior', 'Its own 10.7% XIRR, toward India shares’ 9%: 3.8 years of history moves the long-run prior only a little.'], ['Balanced and the ETFs', '6%', 'public', 'Prior', 'Long-run UK shares.'], ['Home, Reading', '3%', 'public', 'Prior', 'Long-run UK property.'], ['Flat, Pune', '5%', 'public', 'Prior', 'Long-run India property.'], ['SBI fixed deposit', '7.1%', 'description', 'Contract', 'Its own rate, to 10 Mar 2029.'], ['PPF', '7.1%', 'description', 'Contract', 'The account’s own rate.']] },
+              { h: 'Pay, a year', rows: [['Arun’s salary growth', '4.17%', 'history', 'History and prior', 'His 4.8% a year since 2022, blended with the UK’s 3.5%.'], ['Asha’s salary growth', '3.5%', 'history', 'History and prior', 'Her 3.5% a year since 2023, blended with the UK’s 3.5%.']] },
+              { h: 'Prices, a year', rows: [['UK inflation', '2.5%', 'public', 'Prior', 'Long-run UK consumer prices.'], ['India inflation', '5%', 'public', 'Prior', 'Long-run India prices; the gap also drifts the rupee.']] }
+            ].map((g) => ({ h: g.h, rows: g.rows.map((r) => ({ n: r[0], v: r[1], si: r[2], src: r[3], why: r[4] })) })),
+            drivers: [['savings', 'What you save', '£2,636 a month left over, the budget’s plan'], ['trending_up', 'What your money earns', '6% UK funds, 9.06% Parag Parikh, 3% and 5% property, 7.1% deposits'], ['work', 'Your pay', 'Arun’s grows 4.17% a year and Asha’s 3.5%'], ['credit_card_off', 'Debts ending', 'The car in Feb 2029, HDFC in Jul 2030, the mortgage in Oct 2045'], ['event', 'Plan items', 'The extension −£35,000, Asha’s bonus +£3,000 a year, a car −£25,000']].map((r) => ({ i: r[0], h: r[1], t: r[2] })),
+            more: [['tune', 'Assumptions', '10 figures, each with its source'], ['event', 'Plan items', '3, Arun’s'], ['flag', 'Milestones', '8, from the records']].map((r) => ({ i: r[0], h: r[1], t: r[2] })),
+            decades: [['The rest of the 2020s', 'In 2029', 2029, [['mk-tk', '14 Dec 2026', 'Asha’s saver matures, £10,460'], ['mk-sq', 'Jun 2027', 'Home extension, −£35,000'], ['mk-sq', 'From Mar 2027', 'Asha’s bonus, +£3,000 a year'], ['mk-tk', '30 Jun 2028', 'Mortgage fixed rate ends'], ['mk-dot', '20 Feb 2029', 'Car loan paid off'], ['mk-tk', '10 Mar 2029', 'SBI FD matures, ₹6,17,538']]], ['The 2030s', 'In 2039', 2039, [['mk-dot', '5 Jul 2030', 'HDFC home loan paid off'], ['mk-tk', '28 Mar 2031', 'LIC policy matures'], ['mk-sq', 'Jun 2031', 'Replace the car, −£25,000']]], ['The 2040s', 'In 2049', 2049, [['mk-dot', '1 Oct 2045', 'Mortgage paid off, frees £1,456 a month']]], ['The 2050s', 'In 2056', 2056, [['mk-dot', '1 Jan 2051', 'Arun retires at 60'], ['mk-sq', 'Mar 2052', 'Asha’s last bonus']]]].map((d) => { const r = FAN.find((x) => x[0] === d[2]); return { t: d[0], by: d[1], m: gbp(r[2]), r: gbp(r[1]) + ' to ' + gbp(r[3]), x: pc((r[2] - r[1]) / (r[3] - r[1]) * 100), ev: d[3].map((e) => ({ k: e[0], d: e[1], w: e[2] })) }; })
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

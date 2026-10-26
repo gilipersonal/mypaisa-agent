@@ -220,6 +220,14 @@ Claude's:
   outside the repo in `~/mypaisa-samples/` and shape the statement boards,
   anonymised; nothing personal is committed. You pick, and only then is
   anything in phases 1 to 9 built.
+- **The architecture drawings, redrawn (MA-225):** the Lucid pages and the
+  sequence show the SSE stream on the api host, the web app at `dashboard`
+  with the chat, Presence, kinds, records, events and views, and one write
+  service for the chat's Confirm and an in-place correction.
+- **The explainer pages walk the v4 flows (MA-226):** registering anything by
+  talking, correcting a figure in place, a check-in, a statement, the month
+  close and the Projection with a what-if, in the figures and the look picked
+  on MA-193.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<style>
+/* Prototype v4 · the iPhone door: shell 1a, Chat first, with the Liquid Glass tab bar (Chat · Home · Activity · You),
+   as the iPhone v4 boards draw it (ios.css). Content is never glass; the bars, the strip and the composer are. */
+.pi { position: absolute; inset: 0; overflow: hidden; display: flex; flex-direction: column; background: var(--mp-bg); color: var(--mp-ink); border-radius: inherit; }
+.pi .sbar { flex: none; }
+.pi .z1 { position: relative; z-index: 1; }
+.pi .pscroll { position: absolute; left: 0; right: 0; top: 0; bottom: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.pi .pscroll::-webkit-scrollbar { display: none; }
+.pi .body { flex: 1; min-height: 0; position: relative; }
+.pi .chatpad { padding: 6px 0 240px; }
+.pi .pagepad { padding: 0 0 20px; }
+.pi .strip { flex: none; border: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; width: calc(100% - 24px); box-sizing: border-box; }
+.pi .fadet { position: absolute; left: 0; right: 0; top: 0; height: 18px; z-index: 5; background: linear-gradient(180deg, var(--mp-bg), color-mix(in srgb, var(--mp-bg) 0%, transparent)); pointer-events: none; }
+.pi .composer { bottom: 102px; }
+.pi .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+.pi .gchip { border: 0; cursor: pointer; color: var(--mp-ink); }
+.pi .gchip.sug { background: var(--mp-hero); color: var(--mp-hero-ink); box-shadow: var(--lg-lift); }
+.pi .gchip.sug .ms { color: var(--mp-coral); }
+.pi .gchip.sug::before { display: none; }
+.pi .cplus, .pi .csend, .pi .gbtn, .pi .gtext { border: 0; cursor: pointer; color: var(--mp-ink); }
+.pi .cfield { padding-right: 6px; }
+.pi .cin { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 17px/22px var(--mp-font); color: var(--mp-ink); padding: 0; position: relative; z-index: 1; }
+.pi .cin::placeholder { color: var(--mp-ink-2); }
+.pi .csend { background: transparent; color: var(--mp-ink-2); }
+.pi .csend.on { background: var(--mp-accent); color: var(--mp-on-accent); }
+.pi .cfiles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 6px 0; position: relative; z-index: 1; }
+.pi .cfile { display: flex; align-items: center; gap: 8px; font: 600 14px/18px var(--mp-font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pi .cfile .ms { font-size: 18px; color: var(--mp-accent); }
+.pi .tabw { display: contents; }
+.pi .tab { border: 0; background: none; cursor: pointer; }
+.pi .tab.on { background: var(--lg-lens); }
+.pi .tabsearch { border: 0; cursor: pointer; color: var(--mp-ink); }
+.pi .nav { flex: none; }
+.pi .ggroup .gbtn { background: transparent; }
+.pi .navsp { flex: 1; }
+/* the system's number pad, drawn for the edit in place */
+.pi .kpad { position: absolute; left: 0; right: 0; bottom: 0; z-index: 60; padding: 8px 6px 34px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; background: var(--mp-surface-2); box-shadow: 0 -1px 0 var(--mp-line); }
+.pi .kk { min-height: 46px; border-radius: 8px; border: 0; background: var(--mp-surface); color: var(--mp-ink); font: 400 25px/1 var(--mp-font); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25); cursor: pointer; }
+.pi .kk.fn { background: transparent; box-shadow: none; }
+.pi .kk .ms { font-size: 24px; }
+/* the Welcome screen (S1), re-worded as Browser · Sign in now reads */
+.pi .wel { flex: 1; display: flex; flex-direction: column; padding: 0 24px 46px; }
+.pi .wel-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
+.pi .wel-line { max-width: 300px; color: var(--mp-ink-2); text-wrap: pretty; }
+.pi .wel-bot { display: flex; flex-direction: column; gap: 12px; }
+.pi .siwa { min-height: 52px; border-radius: 999px; border: 0; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; font: 600 19px/24px -apple-system, "SF Pro Text", system-ui, sans-serif; letter-spacing: -0.01em; cursor: pointer; }
+.pi.t-dark .siwa { background: #fff; color: #000; }
+.pi .siwa svg { width: 18px; height: 21px; fill: currentColor; margin-top: -3px; }
+.pi .gsi { min-height: 52px; border-radius: 999px; border: 0; background: #fff; color: #1F1F1F; box-shadow: inset 0 0 0 1.5px #747775; display: flex; align-items: center; justify-content: center; gap: 10px; font: 500 17px/22px "Roboto", system-ui, sans-serif; letter-spacing: 0.01em; cursor: pointer; }
+.pi.t-dark .gsi { background: #131314; color: #E3E3E3; box-shadow: inset 0 0 0 1.5px #8E918F; }
+.pi .glogo { width: fit-content; font: 700 22px/1 "Roboto", Arial, sans-serif; background: conic-gradient(from -80deg, #EA4335 0 130deg, #4285F4 130deg 215deg, #34A853 215deg 305deg, #FBBC05 305deg 360deg); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.pi .ctr { text-align: center; }
+</style>
+</helmet>
+<div class="pi mp {{ themeCls }} {{ privCls }}">
+<div class="island"></div>
+<div class="sbar"><span>{{ time }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<sc-if value="{{ isSignin }}" hint-placeholder-val="{{ false }}">
+<div class="wel">
+<div class="wel-mid">
+<div class="appicon appicon-default"><span class="mark"></span></div>
+<span class="mp-t1">MyPaisa</span>
+<span class="mp-body wel-line">Everything your household owns and owes, in one calm place.</span>
+</div>
+<div class="wel-bot">
+<button class="siwa {{ signinCls }}" type="button" onclick="{{ signinGo }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg><span>Sign in with Apple</span></button>
+<button class="gsi" type="button" onclick="{{ nopeGo }}"><span class="glogo">G</span><span>Sign in with Google</span></button>
+<span class="mp-foot mp-ink2 ctr">No password. Your household's records stay private.</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ isChat }}" hint-placeholder-val="{{ true }}">
+<button class="strip lg" type="button" onclick="{{ strip.go }}"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">{{ strip.lbl }}</span><sc-if value="{{ strip.hasN }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><span class="strip-n mny">{{ strip.n }}</span><sc-if value="{{ strip.hasUp }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-up mp-w6 mny">{{ strip.up }}</span></sc-if><sc-if value="{{ strip.noUp }}" hint-placeholder-val="{{ true }}"><span class="mp-foot mp-ink2">net worth</span></sc-if></span></sc-if><sc-if value="{{ strip.hasSub }}" hint-placeholder-val="{{ false }}"><span class="strip-n">{{ strip.sub }}</span></sc-if></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></button>
+<div class="body"><div class="fadet"></div><div class="pscroll" data-scroll="chat"><div class="chatpad"><dc-import name="PrototypeV4Chat" dc-props="{{ chatp }}" hint-size="100%,600px"></dc-import></div></div></div>
+<div class="edge-bot"></div>
+<div class="composer">
+<div class="chips">
+<sc-if value="{{ composer.hasSug }}" hint-placeholder-val="{{ false }}"><button class="gchip sug {{ composer.sugCls }}" type="button" onclick="{{ composer.sugGo }}"><span class="ms">north_east</span><span>{{ composer.sug }}</span></button></sc-if>
+<sc-for list="{{ composer.chips }}" as="c" hint-placeholder-count="4"><button class="gchip lg" type="button" onclick="{{ c.go }}"><span class="ms">{{ c.icon }}</span><span>{{ c.t }}</span></button></sc-for>
+</div>
+<div class="cbar">
+<button class="cplus lg {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms">add</span></button>
+<div class="cfield lg">
+<sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><span class="cfile"><span class="ms">picture_as_pdf</span>{{ f.name }}</span></sc-for></div></sc-if>
+<sc-if value="{{ composer.notFiles }}" hint-placeholder-val="{{ true }}"><input class="cin" type="text" autocomplete="off" aria-label="Message" placeholder="{{ composer.ph }}" value="{{ composer.typed }}" onchange="{{ composer.onType }}" onkeydown="{{ composer.onKey }}" /></sc-if>
+<button class="csend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms">{{ composer.sendIcon }}</span></button>
+</div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ isPage }}" hint-placeholder-val="{{ false }}">
+<div class="nav"><sc-if value="{{ hasBack }}" hint-placeholder-val="{{ false }}"><button class="gbtn lg" type="button" aria-label="Back" onclick="{{ backGo }}"><span class="ms z1">chevron_left</span></button></sc-if><span class="navsp"></span>
+<sc-if value="{{ isRoot }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><button class="gbtn lg" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1">{{ eyeIcon }}</span></button><button class="gtext lg" type="button" onclick="{{ askGo }}"><span class="ms z1">chat_bubble</span><span class="z1">Ask</span></button></span></sc-if>
+<sc-if value="{{ notRoot }}" hint-placeholder-val="{{ false }}"><span class="ggroup lg"><button class="gbtn" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1">{{ eyeIcon }}</span></button><button class="gbtn" type="button" aria-label="Ask" onclick="{{ askGo }}"><span class="ms z1">chat_bubble</span></button></span></sc-if>
+</div>
+<div class="body"><div class="pscroll" data-scroll="page"><div class="pagepad"><dc-import name="PrototypeV4Pages" dc-props="{{ pagep }}" hint-size="100%,900px"></dc-import></div></div></div>
+<div class="edge-bot"></div>
+</sc-if>
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="4"><span class="tabw"><button class="tab {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</button></span></sc-for></div><button class="tabsearch lg" type="button" aria-label="Search" onclick="{{ nopeGo }}"><span class="ms z1">search</span></button></div></sc-if>
+<sc-if value="{{ kp.has }}" hint-placeholder-val="{{ false }}"><div class="kpad" aria-label="Number pad"><sc-for list="{{ kp.keys }}" as="k" hint-placeholder-count="12"><button class="kk {{ k.cls }}" type="button" onclick="{{ k.go }}"><sc-if value="{{ k.isDel }}" hint-placeholder-val="{{ false }}"><span class="ms">backspace</span></sc-if>{{ k.t }}</button></sc-for></div></sc-if>
+<div class="homebar"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props || {}; }
+}
+</script>
+</body>
+</html>

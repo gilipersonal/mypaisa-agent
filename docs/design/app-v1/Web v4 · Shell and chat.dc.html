@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Web v4 · Shell and chat</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="motion.css" />
+<script src="motion.js"></script>
+<style>
+html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+/* canvas */
+.dv-turn { padding: 44px 48px 48px; border-bottom: 1px solid rgba(0,0,0,.08); }
+.dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+.dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+.dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+.dv-intro { max-width: 1040px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 24px; text-wrap: pretty; }
+.dv-idx { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 4px 24px; max-width: 1480px; font: 13px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
+.dv-idx a { color: #14171F; font-weight: 600; text-decoration: none; }
+.dv-idx a:hover { color: #C2381F; }
+.dv-opts { display: flex; flex-direction: column; gap: 72px; align-items: flex-start; }
+.dv-opt { display: flex; flex-direction: column; gap: 14px; }
+.dv-oid { font: 600 10.5px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+.dv-olabel { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; max-width: 1480px; font: 400 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+.dv-oname { font-weight: 700; color: #14171F; font-size: 17px; }
+.dv-rec { font: 700 11px/14px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; letter-spacing: 0.02em; }
+.dv-keys { margin: -6px 0 0; font: 600 12px/16px ui-monospace, Menlo, monospace; color: #3D424D; }
+.dv-rlbl { margin: 10px 0 -4px; font: 700 15px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+.dv-row { display: flex; gap: 40px; align-items: flex-start; }
+.dv-fr { display: flex; flex-direction: column; }
+.dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; }
+.dv-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 8px 32px; max-width: 1480px; margin-top: 6px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+.dv-notes p { margin: 0; text-wrap: pretty; }
+.dv-notes b { color: #14171F; }
+/* frames: desktop 1440 and the phone-web door 390 */
+.board { position: relative; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
+.sz-d { width: 1440px; height: 900px; border-radius: 12px; }
+.sz-p { width: 390px; height: 844px; border-radius: 48px; }
+.chrome { flex: none; height: 40px; display: flex; align-items: center; gap: 16px; padding: 0 16px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
+.dots { display: flex; gap: 8px; width: 60px; }
+.dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--mp-track); }
+.url { margin: 0 auto; width: 460px; height: 28px; border-radius: 8px; background: var(--mp-surface); display: flex; align-items: center; justify-content: center; gap: 6px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+.url .ms { font-size: 15px; }
+.chrome-r { width: 60px; }
+.sbar { flex: none; height: 54px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 30px 8px 38px; box-sizing: border-box; font: 600 16px/20px var(--mp-font); }
+.sbar .ms { font-size: 17px; }
+.f1 { flex: 1; min-width: 0; }
+.r { text-align: right; }
+.shl { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+.brand { padding: 4px 8px 18px; }
+.side-sep { height: 1px; background: var(--mp-line); margin: 8px 12px; }
+.side-ft { padding: 0 12px 4px; }
+.main { position: relative; overflow: hidden; background: var(--mp-bg); }
+.tabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; }
+.tabs .mp-tab:not(.on) { color: var(--mp-ink-2); }
+.mp-tab { font-size: 11px; line-height: 13px; }
+/* the mark, 1c Watcher (MA-103), as the other browser boards draw it */
+.mpm { display: block; flex: none; }
+.mpm-ring { fill: none; stroke: var(--mp-hero); }
+.t-dark .mpm-ring { stroke: var(--mp-hero-ink-2); }
+.mpm-coin { fill: var(--mp-hero); }
+.t-dark .mpm-coin { fill: var(--mp-hero-2); }
+.mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+.mpm-dot { fill: var(--mp-coral); }
+.mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
+.mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+/* the chat: a column beside the page (1a), the page itself (1b), a drawer (1c), a tab under 1024 */
+.chatcol { display: none; flex-direction: column; min-height: 0; background: var(--mp-bg); position: relative; }
+.grab { display: none; flex: none; width: 36px; height: 5px; border-radius: 3px; background: var(--mp-track); margin: 8px auto 0; }
+.chd { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 12px 10px 20px; border-bottom: 1px solid var(--mp-line); }
+.strip { display: none; flex: none; align-items: center; gap: 12px; margin: 6px 12px 0; padding: 9px 14px; border-radius: 18px; background: var(--mp-material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 0.5px var(--mp-line), var(--mp-shadow); }
+.strip-n { font: 800 22px/26px var(--mp-font-round); letter-spacing: -0.02em; white-space: nowrap; }
+.sfig { display: none; gap: 28px; align-items: center; }
+.ban { flex: none; display: flex; gap: 10px; align-items: flex-start; margin: 10px 12px 0; padding: 10px 14px; border-radius: 14px; font: 500 14px/19px var(--mp-font); }
+.ban-off { background: var(--mp-pause-bg); color: var(--mp-pause); }
+.ban-back { background: var(--mp-hold-bg); color: var(--mp-hold); }
+.msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 16px 16px 12px; -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 36px); mask-image: linear-gradient(180deg, transparent 0, #000 36px); }
+.daysep { align-self: center; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.me { align-self: flex-end; max-width: 84%; box-sizing: border-box; background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 20px 20px 6px 20px; padding: 10px 14px; font: 400 15px/20px var(--mp-font); }
+.mest { align-self: flex-end; display: flex; align-items: center; gap: 4px; margin-top: -6px; font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.mest .ms { font-size: 15px; }
+.me.mf { padding: 6px; display: flex; flex-direction: column; gap: 6px; }
+.mft { padding: 0 8px 4px; }
+.file { display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 14px; background: var(--mp-surface-2); color: var(--mp-ink); min-width: 0; }
+.me .file { background: var(--mp-hero-2); color: var(--mp-hero-ink); padding-right: 12px; }
+.ftile { width: 36px; height: 40px; border-radius: 8px; display: grid; place-items: center; flex: none; background: var(--mp-surface); color: var(--mp-accent); }
+.me .ftile { background: var(--mp-hero); color: var(--mp-coral); }
+.fname { font: 600 14px/19px var(--mp-font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fmeta { font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.me .fmeta { color: var(--mp-hero-ink-2); }
+.ai { display: flex; gap: 10px; align-items: flex-start; }
+.aim { width: 26px; height: 26px; flex: none; }
+.aib { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ait { font: 400 15px/21px var(--mp-font); text-wrap: pretty; }
+.aimeta { font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.caret { display: inline-block; width: 2px; height: 17px; margin-left: 2px; vertical-align: -3px; border-radius: 1px; background: var(--mp-accent); }
+.reading { display: flex; align-items: center; gap: 10px; font: 600 15px/20px var(--mp-font); }
+.typing { display: inline-flex; gap: 4px; align-items: center; }
+.typing i { display: block; width: 7px; height: 7px; border-radius: 50%; background: var(--mp-ink-2); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chipb { min-height: 44px; padding: 0 16px; border-radius: 999px; display: inline-flex; align-items: center; box-sizing: border-box; font: 600 15px/20px var(--mp-font); background: var(--mp-surface); color: var(--mp-ink-2); box-shadow: inset 0 0 0 1px var(--mp-line); }
+.chipb.sel { color: var(--mp-accent); box-shadow: inset 0 0 0 2px var(--mp-accent); }
+.cc { background: var(--mp-surface); border-radius: 20px; box-shadow: var(--mp-shadow); overflow: hidden; }
+.cc-h { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px 8px; }
+.cc-b { display: flex; flex-direction: column; padding: 0 16px 12px; }
+.kvr { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-top: 1px solid var(--mp-line); font: 400 14px/19px var(--mp-font); }
+.kvr > span:first-child { color: var(--mp-ink-2); flex: none; }
+.kvr > span:last-child { font-weight: 600; text-align: right; min-width: 0; }
+.cc-hint { padding-top: 6px; }
+.cc-a { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 16px 14px; }
+.cc-f { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; padding: 0 16px; border-top: 1px solid var(--mp-line); font: 400 14px/19px var(--mp-font); color: var(--mp-ink-2); }
+.cc-f .ms { font-size: 18px; color: var(--mp-accent); }
+.okk { font-size: 20px; color: var(--mp-accent); }
+.cc-fig { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; }
+.sugg { flex: none; display: flex; gap: 8px; padding: 0 12px 8px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); }
+.sg { flex: none; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; border-radius: 999px; box-sizing: border-box; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); font: 600 14px/18px var(--mp-font); color: var(--mp-ink); white-space: nowrap; }
+.sg .ms { font-size: 18px; color: var(--mp-accent); }
+.comp { flex: none; display: flex; align-items: flex-end; gap: 8px; padding: 2px 12px 14px; }
+.cplus { width: 44px; height: 44px; margin-bottom: 4px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); color: var(--mp-ink); }
+.cfield { flex: 1; min-width: 0; min-height: 52px; display: flex; align-items: center; gap: 8px; padding: 0 4px 0 16px; border-radius: 26px; box-sizing: border-box; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); }
+.cfield.att { flex-direction: column; align-items: stretch; gap: 2px; padding: 6px; }
+.attline { display: flex; align-items: center; gap: 8px; padding-left: 10px; }
+.ph { flex: 1; min-width: 0; font: 400 15px/20px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ph.typed { color: var(--mp-ink); }
+.send { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.send.on { background: var(--mp-accent); color: var(--mp-on-accent); }
+.xbtn { width: 44px; height: 44px; display: grid; place-items: center; flex: none; color: var(--mp-ink-2); }
+.askbar { display: none; }
+/* the page */
+.hctl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.whose { flex: 1 1 100%; min-width: 0; }
+.ccy { flex: none; width: 96px; }
+.hero { display: flex; flex-direction: column; gap: 10px; padding: 22px 24px; }
+.hero .mp-num-hero, .cc-fig > span { align-self: flex-start; }
+.fxl { display: flex; flex-wrap: wrap; gap: 0 6px; }
+.nwr { white-space: nowrap; }
+.hchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.hchip { color: var(--mp-hero-ink); background: var(--mp-hero-2); gap: 6px; }
+.hchip .k { color: var(--mp-hero-ink-2); font-weight: 500; }
+.hlive { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid var(--mp-hero-2); font: 400 14px/19px var(--mp-font); color: var(--mp-hero-ink-2); }
+.hlive .ms { color: var(--mp-coral); }
+.ttl { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+.split { display: flex; gap: 2px; height: 10px; margin: 4px 0 8px; }
+.split > span { display: block; height: 100%; }
+.lrow { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto 40px; gap: 10px; align-items: center; min-height: 38px; }
+.lrow + .lrow { border-top: 1px solid var(--mp-line); }
+.swa { width: 12px; height: 12px; border-radius: 3px; }
+.c-uk, .c-ar { background: var(--mp-chart-2); }
+.c-in { background: var(--mp-chart-4); }
+.c-as { background: var(--mp-chart-5); }
+.dtag { font: 600 12px/16px var(--mp-font); color: var(--mp-up); }
+.drow { display: flex; align-items: center; gap: 12px; min-height: 54px; border-top: 1px solid var(--mp-line); }
+.dtile { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.hnote { margin-top: 8px; }
+/* Activity and a run */
+.bl { align-items: baseline; flex-wrap: wrap; }
+.mwrap { position: relative; margin-top: 4px; }
+.meter { height: 10px; }
+.meter.thin { height: 8px; }
+.mfill { display: block; height: 100%; border-radius: 999px; background: var(--mp-meter); }
+.tick { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--mp-ink-2); }
+.ticks { position: relative; height: 16px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.ticks > span { position: absolute; transform: translateX(-50%); }
+.spend { display: flex; flex-direction: column; gap: 8px; }
+.runs { container: card / inline-size; }
+.run { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-areas: "tm mn cs" "tm mn ot"; gap: 2px 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--mp-line); color: inherit; text-decoration: none; }
+.r-tm { grid-area: tm; } .r-cs { grid-area: cs; text-align: right; } .r-ot { grid-area: ot; justify-self: end; }
+.r-mn { grid-area: mn; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.r-md, .r-tk, .rhd { display: none; }
+.tl { font: 400 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); overflow-wrap: anywhere; }
+.tl.ink { font-size: 13px; line-height: 18px; color: var(--mp-ink); }
+.out { display: inline-flex; align-items: center; gap: 4px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; }
+@container card (min-width: 640px) {
+.run { grid-template-columns: 48px minmax(0, 1fr) 124px 48px 52px 72px; grid-template-areas: "tm mn md tk cs ot"; align-items: center; min-height: 58px; padding: 8px 0; }
+.run.rhd { display: grid; min-height: 0; border-top: 0; padding: 0 0 8px; }
+.r-md { grid-area: md; display: block; } .r-tk { grid-area: tk; display: block; text-align: right; }
+.r-ot { justify-self: start; } .nw { display: none; }
+}
+.crumb { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -10px 0 -12px -6px; align-self: flex-start; color: var(--mp-accent); font: 600 15px/20px var(--mp-font); text-decoration: none; }
+.step { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-top: 1px solid var(--mp-line); }
+.call { display: flex; flex-direction: column; gap: 2px; padding: 9px 0; border-top: 1px solid var(--mp-line); }
+.trow { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 38px; border-top: 1px solid var(--mp-line); }
+/* Web Push */
+.osbar { flex: none; height: 30px; display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding: 0 16px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); font: 500 13px/18px var(--mp-font); }
+.desk { flex: 1; position: relative; background: repeating-linear-gradient(135deg, var(--mp-surface-2) 0 10px, var(--mp-bg) 10px 22px); }
+.dlabel { position: absolute; left: 0; right: 0; top: 46%; text-align: center; font: 500 13px/18px ui-monospace, Menlo, monospace; color: var(--mp-ink-2); }
+.notif { position: absolute; top: 14px; right: 14px; width: 380px; box-sizing: border-box; display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 18px; background: var(--mp-surface); color: var(--mp-ink); box-shadow: 0 0 0 0.5px var(--mp-line), 0 16px 40px rgba(20, 23, 31, 0.18); }
+.lock { flex: 1; display: flex; flex-direction: column; align-items: center; background: var(--mp-hero); color: var(--mp-hero-ink); padding: 0 12px; }
+.onhero { background: var(--mp-hero); color: var(--mp-hero-ink); }
+.lock-date { margin-top: 20px; font: 600 19px/24px var(--mp-font); color: var(--mp-hero-ink-2); }
+.lock-time { font: 800 88px/92px var(--mp-font-round); letter-spacing: -0.03em; }
+.lock .notif { position: static; width: 100%; margin-top: 36px; }
+/* sign-in (MA-185): Apple's and Google's own buttons, as Browser · Login draws them */
+.login { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+.lhero { background: var(--mp-hero); color: var(--mp-hero-ink); padding: 24px 24px 28px; display: flex; flex-direction: column; gap: 18px; }
+.tagline { font: 800 30px/36px var(--mp-font-round); letter-spacing: -0.03em; max-width: 480px; text-wrap: balance; margin: 0; }
+.lform { display: flex; align-items: flex-start; justify-content: center; padding: 28px 24px; background: var(--mp-bg); }
+.lbox { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 12px; }
+.lnote { display: flex; gap: 10px; align-items: flex-start; }
+.getapp { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.siwa { min-height: 50px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; font: 600 17px/22px var(--mp-font); text-decoration: none; background: #000000; color: #FFFFFF; }
+.t-dark .siwa { background: #FFFFFF; color: #000000; }
+.siwa svg { width: 17px; height: 20px; fill: currentColor; margin-top: -2px; flex: none; }
+.gsi { min-height: 50px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px; font: 500 16px/20px Roboto, var(--mp-font); letter-spacing: 0.01em; text-decoration: none; background: #FFFFFF; color: #1F1F1F; box-shadow: inset 0 0 0 1px #747775; }
+.t-dark .gsi { background: #131314; color: #E3E3E3; box-shadow: inset 0 0 0 1px #8E918F; }
+.gsi svg { width: 20px; height: 20px; flex: none; }
+.purl { flex: none; height: 36px; margin: 0 12px 8px; border-radius: 12px; background: var(--mp-surface-2); display: flex; align-items: center; justify-content: center; gap: 6px; font: 400 14px/18px var(--mp-font); color: var(--mp-ink-2); }
+.purl .ms { font-size: 15px; }
+/* size classes: the frame decides, never the device */
+@container app (min-width: 600px) {
+.hctl { flex-wrap: nowrap; }
+.whose { flex: none; width: 240px; }
+}
+@container app (min-width: 760px) {
+.login { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr; }
+.lhero { padding: 56px 64px; justify-content: space-between; }
+.tagline { font-size: 44px; line-height: 50px; }
+.lform { align-items: center; }
+}
+@container app (min-width: 1024px) {
+.sh-a .chatcol { display: flex; flex: none; width: clamp(340px, 28%, 420px); border-left: 1px solid var(--mp-line); }
+.sh-a.nochat .chatcol { display: none; }
+.sh-b .main { display: none; }
+.sh-b .chatcol { display: flex; flex: 1; min-width: 0; }
+.sh-b .chd { display: none; }
+.sh-b .strip { display: flex; width: calc(100% - 64px); max-width: 900px; box-sizing: border-box; margin: 16px auto 0; }
+.sh-b .sfig { display: flex; }
+.sh-b .msgs, .sh-b .comp, .sh-b .sugg, .sh-b .ban { width: 100%; max-width: 780px; box-sizing: border-box; margin-left: auto; margin-right: auto; }
+.sh-c.c-open .chatcol { display: flex; position: absolute; z-index: 4; left: 280px; right: 32px; bottom: 16px; height: 560px; max-width: 760px; margin: 0 auto; border-radius: 20px; overflow: hidden; box-shadow: 0 0 0 1px var(--mp-line), 0 24px 60px rgba(20, 23, 31, 0.22); }
+.sh-c.c-closed .askbar { left: 50%; width: 680px; transform: translateX(-50%); bottom: 24px; }
+}
+@container app (max-width: 1023px) {
+.v-chat .main { display: none; }
+.v-chat .chatcol { display: flex; flex: 1; min-width: 0; padding-bottom: 76px; }
+.v-chat .chd { display: none; }
+.v-chat .strip { display: flex; }
+.sh-c.c-open .chatcol { display: flex; position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; height: 82%; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.2); }
+.sh-c.c-open .grab { display: block; }
+.sh-c.c-closed .askbar { left: 12px; right: 12px; bottom: 86px; }
+}
+.sh-c.c-closed .askbar { display: flex; position: absolute; z-index: 4; align-items: center; gap: 6px; padding: 4px; border-radius: 28px; box-sizing: border-box; background: var(--mp-material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 0.5px var(--mp-line), 0 10px 30px rgba(20, 23, 31, 0.16); }
+.askbar .cplus { margin: 0; background: transparent; box-shadow: none; }
+</style>
+</helmet>
+
+<section class="dv-turn" id="t0" data-screen-label="Web v4 shell and chat: intro">
+<div class="dv-thd"><a class="dv-tid" href="#t0">W</a><span class="dv-tname">Web v4: the shell with the chat, its states, and Activity</span></div>
+<p class="dv-intro">MA-193's browser boards for the web app at dashboard.mypaisapp.com, now a full door with the chat (MA-186): the shell (MA-199, MA-208), the chat's states (MA-199), Web Push (MA-200), sign-in (MA-185) and Activity (MA-196), in MyPaisa DS v1, Warm ledger, at desktop (1440) and the phone-web door (390), light and dark. Anything new is made only in the chat, as a card, a Confirm and an audit row; Claude never produces a figure: they come from the engine or the registry. Every figure is the v4 figure set's: today is Mon 26 Oct, prices are at the Fri 23 Oct close, £1 = ₹112.50 (ECB). One family, Arun (admin) and Asha. Each frame plays its motion as it scrolls into view; add ?static=1 for still captures. Planned: Arun picks the shell in MA-193's round.</p>
+<nav class="dv-idx" aria-label="Boards">
+<a href="#1a">Browser · Shell 1a, Chat beside</a><a href="#1a">Browser · Shell 1a, Chat beside, phone</a>
+<a href="#1b">Browser · Shell 1b, Chat first</a><a href="#1b">Browser · Shell 1b, Chat first, phone</a>
+<a href="#1c">Browser · Shell 1c, Ask bar</a><a href="#1c">Browser · Shell 1c, Ask bar, phone</a>
+<a href="#2a">Browser · Chat, a reply streaming</a><a href="#2a">Browser · Chat, a reply streaming, phone</a>
+<a href="#2b">Browser · Chat, a Confirm card</a><a href="#2b">Browser · Chat, a Confirm card, phone</a>
+<a href="#2c">Browser · Chat, sending a statement</a><a href="#2c">Browser · Chat, sending a statement, phone</a>
+<a href="#2d">Browser · Chat, offline</a><a href="#2d">Browser · Chat, offline, phone</a>
+<a href="#2e">Browser · Home moves live</a><a href="#2e">Browser · Home moves live, phone</a>
+<a href="#2f">Browser · Web Push notification</a><a href="#2f">Browser · Web Push notification, phone</a>
+<a href="#2g">Browser · Sign in</a><a href="#2g">Browser · Sign in, phone</a>
+<a href="#3a">Browser · Activity</a><a href="#3a">Browser · Activity, phone</a>
+<a href="#3b">Browser · A run</a><a href="#3b">Browser · A run, phone</a>
+</nav>
+</section>
+
+<sc-for list="{{ turns }}" as="tu" hint-placeholder-count="3">
+<section class="dv-turn" id="{{ tu.anchor }}" data-screen-label="{{ tu.label }}">
+<div class="dv-thd"><a class="dv-tid" href="#{{ tu.anchor }}">{{ tu.tag }}</a><span class="dv-tname">{{ tu.name }}</span></div>
+<p class="dv-intro">{{ tu.intro }}</p>
+<div class="dv-opts">
+<sc-for list="{{ tu.boards }}" as="b" hint-placeholder-count="2">
+<div class="dv-opt" id="{{ b.anchor }}">
+<div class="dv-olabel"><a class="dv-oid" href="#{{ b.anchor }}">{{ b.tag }}</a><span class="dv-oname">{{ b.name }}</span><sc-if value="{{ b.rec }}" hint-placeholder-val="{{ false }}"><span class="dv-rec">Recommended</span></sc-if><span>{{ b.desc }}</span></div>
+<p class="dv-keys">{{ b.keys }}</p>
+<sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="2">
+<p class="dv-rlbl">{{ r.lbl }}</p>
+<div class="dv-row">
+<sc-for list="{{ r.frames }}" as="f" hint-placeholder-count="2">
+<div class="dv-fr">
+<p class="dv-cap">{{ f.cap }}</p>
+<div class="board mp mp-app {{ f.tcls }} {{ f.sz }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
+<sc-if value="{{ f.app }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"><span class="ms">lock</span>dashboard.mypaisapp.com</span><span class="chrome-r"></span></div></sc-if>
+<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="sbar"><span>{{ f.time }}</span><span class="fx ac gap4"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div></sc-if>
+<div class="mp-shell shl {{ f.shl }}">
+<aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
+<div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+<sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.cls }}" href="#{{ b.anchor }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
+<div class="side-sep"></div>
+<a class="mp-side-i" href="#{{ b.anchor }}"><span class="ms">admin_panel_settings</span>Admin center</a>
+<div class="f1"></div>
+<div class="mp-foot mp-ink2 side-ft">Arun · admin<br />Signed in with Apple</div>
+</aside>
+<main class="mp-shell-main main">
+<sc-if value="{{ f.pHome }}" hint-placeholder-val="{{ true }}">
+<div class="mp-pagepad">
+<header class="mp-pagehead">
+<div><div class="mp-large">Home</div><div class="mp-foot mp-ink2">{{ f.h.sub }}</div></div>
+<div class="hctl">
+<div class="mp-seg whose" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i">Arun</button><button class="mp-seg-i">Asha</button></div>
+<div class="mp-seg ccy" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true" aria-label="Pounds">£</button><button class="mp-seg-i" aria-label="Rupees">₹</button></div>
+<button class="iconbtn" aria-label="Privacy mode"><span class="ms">{{ f.h.eye }}</span></button>
+<sc-if value="{{ f.showChatBtn }}" hint-placeholder-val="{{ false }}"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms">chat_bubble</span>Chat</button></sc-if>
+</div>
+</header>
+<div class="mp-hero hero">
+<span class="mp-over mp-hero-2">Net worth · household</span>
+<span class="mp-num-hero {{ f.h.m }}">{{ f.h.nw }}</span>
+<span class="mp-sub mp-hero-2 fxl"><span class="{{ f.h.m }}">{{ f.h.inr }}</span><span class="nwr">{{ f.h.fx }}</span></span>
+<div class="hchips">
+<span class="mp-chip hchip"><span class="k">Own</span><span class="{{ f.h.m }}">{{ f.h.own }}</span></span>
+<span class="mp-chip hchip"><span class="k">Owe</span><span class="{{ f.h.m }}">{{ f.h.owe }}</span></span>
+<span class="mp-chip hchip"><span class="k">Liquid</span><span class="{{ f.h.m }}">{{ f.h.liq }}</span></span>
+<sc-if value="{{ f.h.live }}" hint-placeholder-val="{{ false }}"><span class="mp-chip upchip">▲ £5,000 at 09:41</span></sc-if>
+</div>
+<sc-if value="{{ f.h.live }}" hint-placeholder-val="{{ false }}"><div class="hlive"><span class="ms ms-s">bolt</span><span>{{ f.h.liveT }}</span></div></sc-if>
+</div>
+<div class="mp-cols">
+<div class="mp-col">
+<div class="mp-card">
+<div class="ttl"><span class="mp-hl">Where it is</span><span class="mp-foot mp-ink2">net, by country</span></div>
+<div class="split mp-track" role="img" aria-label="UK {{ f.h.ukP }}, India {{ f.h.inP }}"><span class="c-uk" style="flex: {{ f.h.ukF }}"></span><span class="c-in" style="flex: {{ f.h.inF }}"></span></div>
+<div class="lrow"><span class="swa c-uk"></span><span class="mp-sub">UK</span><span class="dtag">{{ f.h.dUK }}</span><span class="mp-sub mp-w6 {{ f.h.m }}">{{ f.h.uk }}</span><span class="mp-foot mp-ink2 r">{{ f.h.ukP }}</span></div>
+<div class="lrow"><span class="swa c-in"></span><span class="mp-sub">India</span><span class="dtag"></span><span class="mp-sub mp-w6 {{ f.h.m }}">{{ f.h.ind }}</span><span class="mp-foot mp-ink2 r">{{ f.h.inP }}</span></div>
+</div>
+<div class="mp-card">
+<div class="ttl"><span class="mp-hl">Whose it is</span><span class="mp-foot mp-ink2">net, by member</span></div>
+<div class="split mp-track" role="img" aria-label="Arun {{ f.h.arP }}, Asha {{ f.h.asP }}"><span class="c-ar" style="flex: {{ f.h.arF }}"></span><span class="c-as" style="flex: {{ f.h.asF }}"></span></div>
+<div class="lrow"><span class="swa c-ar"></span><span class="mp-sub">Arun</span><span class="dtag">{{ f.h.dAr }}</span><span class="mp-sub mp-w6 {{ f.h.m }}">{{ f.h.ar }}</span><span class="mp-foot mp-ink2 r">{{ f.h.arP }}</span></div>
+<div class="lrow"><span class="swa c-as"></span><span class="mp-sub">Asha</span><span class="dtag"></span><span class="mp-sub mp-w6 {{ f.h.m }}">{{ f.h.as }}</span><span class="mp-foot mp-ink2 r">{{ f.h.asP }}</span></div>
+</div>
+</div>
+<div class="mp-col">
+<div class="mp-card">
+<div class="ttl"><span class="mp-hl">What's due</span><span class="mp-foot mp-ink2">the check-ins ahead</span></div>
+<sc-for list="{{ f.h.due }}" as="d" hint-placeholder-count="4"><div class="drow"><span class="mp-icontile dtile"><span class="ms ms-s">{{ d.icon }}</span></span><span class="fx col f1"><span class="mp-sub mp-w6">{{ d.t }}</span><span class="mp-foot mp-ink2">{{ d.s }}</span></span><span class="mp-sub mp-w6 {{ d.ac }}">{{ d.a }}</span></div></sc-for>
+<div class="mp-foot mp-ink2 hnote">Each is asked in the chat on its day, with the answer one tap away.</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ f.pAct }}" hint-placeholder-val="{{ false }}">
+<div class="mp-pagepad">
+<header class="mp-pagehead">
+<div><div class="mp-large">Activity</div><div class="mp-foot mp-ink2">What MyPaisa did today, Mon 26 Oct, to 09:45 · UK time · costs from the API's own token counts</div></div>
+<div class="hctl"><div class="mp-seg whose" role="group" aria-label="Whose runs"><button class="mp-seg-i on" aria-pressed="true">Everyone's runs</button><button class="mp-seg-i">Mine</button></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#3a"><span class="ms">fact_check</span>Audit</a></div>
+</header>
+<div class="mp-card runs">
+<div class="ttl"><span class="mp-hl">Today's runs</span><span class="mp-foot mp-ink2">7 done · 1 due · $0.07 so far</span></div>
+<div class="run rhd mp-over mp-ink2" role="row"><span class="r-tm">Time</span><span class="r-mn">Run</span><span class="r-md">Model</span><span class="r-tk">Tokens</span><span class="r-cs">Cost</span><span class="r-ot">Outcome</span></div>
+<sc-for list="{{ runs }}" as="ru" hint-placeholder-count="8"><a class="run" href="#3b"><span class="r-tm mp-sub mp-w6">{{ ru.time }}</span><span class="r-mn"><span class="mp-sub mp-w6">{{ ru.name }}</span><span class="mp-foot mp-ink2">{{ ru.sub }}</span><span class="mp-foot mp-ink2 nw">{{ ru.line }}</span><sc-if value="{{ ru.hasTools }}" hint-placeholder-val="{{ true }}"><span class="tl">{{ ru.tools }}</span></sc-if></span><span class="r-md mp-foot">{{ ru.model }}</span><span class="r-tk mp-foot">{{ ru.tok }}</span><span class="r-cs mp-sub mp-w6">{{ ru.cost }}</span><span class="r-ot out"><span class="ms ms-s">{{ ru.icon }}</span>{{ ru.out }}</span></a></sc-for>
+</div>
+<div class="mp-card spend">
+<div class="ttl"><span class="mp-hl">Claude this cycle</span><span class="mp-foot mp-ink2">renews 3 Nov</span></div>
+<div class="fx gap8 bl"><span class="mp-num-l">$18</span><span class="mp-sub mp-ink2">of the $160 ceiling · 11%</span></div>
+<div class="mwrap"><div class="meter mp-track" role="img" aria-label="$18 of the $160 ceiling, 11%; steps at 70, 85 and 95%"><span class="mfill" style="width: 11.25%"></span></div><i class="tick" style="left: 70%"></i><i class="tick" style="left: 85%"></i><i class="tick" style="left: 95%"></i></div>
+<div class="ticks" aria-hidden="true"><span style="left: 70%">70%</span><span style="left: 85%">85%</span><span style="left: 95%">95%</span></div>
+<span class="mp-foot mp-ink2"><b>Step: Normal,</b> under 70%. Nothing is held back.</span>
+<div class="mp-hr"></div>
+<div class="fx jb ac"><span class="mp-sub">AWS and others</span><span class="mp-sub mp-w6">£3 of £50 · 6%</span></div>
+<div class="meter thin mp-track" role="img" aria-label="AWS and others: £3 of their £50 cap, 6%"><span class="mfill" style="width: 6%"></span></div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ f.pRun }}" hint-placeholder-val="{{ false }}">
+<div class="mp-pagepad">
+<a class="crumb" href="#3a"><span class="ms">chevron_left</span>Activity</a>
+<header class="mp-pagehead"><div><div class="mp-large">Chat · Arun, 09:40</div><div class="mp-foot mp-ink2">Mon 26 Oct · "£5,000 in Monzo savings" · run r-1235</div></div><span class="mp-chip mp-neutral">Saved 09:41</span></header>
+<div class="mp-cols">
+<div class="mp-col">
+<div class="mp-card"><sc-for list="{{ runSum }}" as="k" hint-placeholder-count="5"><div class="kvr"><span>{{ k.k }}</span><span>{{ k.v }}</span></div></sc-for></div>
+<div class="mp-card"><div class="ttl"><span class="mp-hl">Steps · 7</span><span class="mp-foot mp-ink2">UK time</span></div><sc-for list="{{ runSteps }}" as="s" hint-placeholder-count="7"><div class="step"><span class="mp-foot mp-w6">{{ s.time }}</span><span class="fx col gap2"><span class="{{ s.lc }}">{{ s.l }}</span><span class="mp-foot mp-ink2">{{ s.t }}</span></span></div></sc-for></div>
+</div>
+<div class="mp-col">
+<div class="mp-card"><div class="ttl"><span class="mp-hl">Model calls · 3</span><span class="mp-foot mp-ink2">$0.026 in all</span></div><sc-for list="{{ runCalls }}" as="c" hint-placeholder-count="3"><div class="call"><span class="fx jb ac"><span class="mp-sub mp-w6">{{ c.m }}</span><span class="mp-sub mp-w6">{{ c.cost }}</span></span><span class="mp-foot mp-ink2">{{ c.t }}</span></div></sc-for></div>
+<div class="mp-card"><div class="ttl"><span class="mp-hl">Tool calls · 3</span><span class="mp-foot mp-ink2">all code</span></div><sc-for list="{{ runTools }}" as="x" hint-placeholder-count="3"><div class="trow"><span class="tl ink">{{ x.n }}</span><span class="mp-foot mp-ink2 r">{{ x.ms }}</span></div></sc-for></div>
+<div class="mp-card"><div class="ttl"><span class="mp-hl">What it proposed</span><span class="mp-foot mp-ink2">1 card</span></div><sc-for list="{{ runProp }}" as="k" hint-placeholder-count="5"><div class="kvr"><span>{{ k.k }}</span><span>{{ k.v }}</span></div></sc-for><div class="mp-foot mp-ink2 hnote">Confirmed by Arun at 09:41:20. Nothing else was proposed.</div></div>
+</div>
+</div>
+</div>
+</sc-if>
+<div class="askbar" role="group" aria-label="Ask MyPaisa"><span class="cplus"><span class="ms">add</span></span><span class="ph">Ask MyPaisa, or tell it something new</span><span class="send"><span class="ms">arrow_upward</span></span></div>
+</main>
+<section class="chatcol" aria-label="Chat">
+<div class="grab"></div>
+<div class="chd"><div class="fx col"><span class="mp-hl">Chat</span><span class="mp-foot mp-ink2">One conversation at every door</span></div><button class="iconbtn" aria-label="{{ f.chdLbl }}"><span class="ms">{{ f.chdIcon }}</span></button></div>
+<div class="strip">
+<div class="fx col f1"><span class="mp-foot mp-ink2">{{ f.stripLbl }}</span><span class="fx ac gap8"><span class="strip-n {{ f.h.m }}">{{ f.h.nw }}</span><span class="mp-foot mp-ink2 {{ f.h.m }}">{{ f.h.inr }}</span></span></div>
+<div class="sfig"><span class="fx col"><span class="mp-foot mp-ink2">Own</span><span class="mp-hl {{ f.h.m }}">{{ f.h.own }}</span></span><span class="fx col"><span class="mp-foot mp-ink2">Owe</span><span class="mp-hl {{ f.h.m }}">{{ f.h.owe }}</span></span><span class="fx col"><span class="mp-foot mp-ink2">Liquid</span><span class="mp-hl {{ f.h.m }}">{{ f.h.liq }}</span></span></div>
+<span class="ms mp-ink2" aria-label="Open Home">chevron_right</span>
+</div>
+<sc-if value="{{ f.ban.has }}" hint-placeholder-val="{{ false }}"><div class="ban {{ f.ban.cls }}"><span class="ms ms-s">{{ f.ban.icon }}</span><span>{{ f.ban.t }}</span></div></sc-if>
+<div class="msgs chat">
+<sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="5">
+<sc-if value="{{ m.sep }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
+<sc-if value="{{ m.me }}" hint-placeholder-val="{{ false }}"><div class="me">{{ m.t }}</div></sc-if>
+<sc-if value="{{ m.hasSt }}" hint-placeholder-val="{{ false }}"><div class="mest"><span class="ms">{{ m.stIcon }}</span>{{ m.st }}</div></sc-if>
+<sc-if value="{{ m.mef }}" hint-placeholder-val="{{ false }}"><div class="me mf"><div class="file"><span class="ftile"><span class="ms">picture_as_pdf</span></span><span class="fx col f1"><span class="fname">{{ m.fname }}</span><span class="fmeta">{{ m.fmeta }}</span></span></div><span class="mft">{{ m.t }}</span></div></sc-if>
+<sc-if value="{{ m.ai }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="ait">{{ m.t }}</div><sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><span class="aimeta">{{ m.meta }}</span></sc-if></div></div></sc-if>
+<sc-if value="{{ m.ais }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="ait">{{ m.t }}<span class="caret"></span></div><span class="aimeta">Writing · the figures follow from the engine</span></div></div></sc-if>
+<sc-if value="{{ m.air }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="reading"><span class="typing"><i></i><i></i><i></i></span><span>{{ m.t }}</span></div><span class="aimeta">{{ m.s }}</span></div></div></sc-if>
+<sc-if value="{{ m.ask }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="ait">{{ m.t }}</div><div class="chips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><span class="chipb {{ c.cls }}">{{ c.l }}</span></sc-for></div></div></div></sc-if>
+<sc-if value="{{ m.card }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="cc">
+<div class="cc-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="fx ac gap8"><sc-if value="{{ m.saved }}" hint-placeholder-val="{{ false }}"><span class="ms ms-fill okk" data-mo="saved">check_circle</span></sc-if><span class="mp-hl">{{ m.title }}</span></span></div>
+<div class="cc-b"><sc-for list="{{ m.rows }}" as="kv" hint-placeholder-count="3"><div class="kvr"><span>{{ kv.k }}</span><span>{{ kv.v }}</span></div></sc-for><sc-if value="{{ m.hasHint }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2 cc-hint">{{ m.hint }}</span></sc-if></div>
+<sc-if value="{{ m.acts }}" hint-placeholder-val="{{ false }}"><div class="cc-a"><button class="mp-btn mp-btn-primary mp-btn-small">Confirm</button><button class="mp-btn mp-btn-tinted mp-btn-small">Edit</button><button class="mp-btn mp-btn-plain">Cancel</button></div></sc-if>
+<sc-if value="{{ m.saved }}" hint-placeholder-val="{{ false }}"><div class="cc-f"><span class="fx ac gap8"><span class="ms">history</span>Saved · in the audit log</span><span>{{ m.at }}</span></div></sc-if>
+</div></div></div></sc-if>
+<sc-if value="{{ m.fig }}" hint-placeholder-val="{{ false }}"><div class="ai"><span class="aim"></span><div class="aib"><div class="cc cc-fig"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-num-l {{ m.mcls }}">{{ m.v }}</span><span class="mp-foot mp-ink2 {{ m.mcls }}">{{ m.s }}</span></div><span class="aimeta">{{ m.meta }}</span></div></div></sc-if>
+</sc-for>
+</div>
+<sc-if value="{{ f.c.sugg }}" hint-placeholder-val="{{ true }}"><div class="sugg"><sc-for list="{{ sugg }}" as="s" hint-placeholder-count="4"><span class="sg"><span class="ms">{{ s.icon }}</span>{{ s.l }}</span></sc-for></div></sc-if>
+<div class="comp">
+<span class="cplus" aria-label="Attach a file"><span class="ms">add</span></span>
+<sc-if value="{{ f.c.isFile }}" hint-placeholder-val="{{ false }}"><div class="cfield att"><div class="file"><span class="ftile"><span class="ms">picture_as_pdf</span></span><span class="fx col f1"><span class="fname">{{ f.c.fname }}</span><span class="fmeta">{{ f.c.fmeta }}</span></span><span class="xbtn" aria-label="Remove the file"><span class="ms">close</span></span></div><div class="attline"><span class="ph typed">{{ f.c.text }}</span><span class="send on" aria-label="Send"><span class="ms">arrow_upward</span></span></div></div></sc-if>
+<sc-if value="{{ f.c.notFile }}" hint-placeholder-val="{{ true }}"><div class="cfield"><span class="ph">{{ f.c.ph }}</span><span class="{{ f.c.sendCls }}" aria-label="{{ f.c.sendLbl }}"><span class="ms ms-fill">{{ f.c.sendIcon }}</span></span></div></sc-if>
+</div>
+</section>
+<nav class="mp-tabbar mp-shell-tabs tabs" aria-label="Sections"><sc-for list="{{ f.tabs }}" as="n" hint-placeholder-count="4"><a class="mp-tab {{ n.cls }}" href="#{{ b.anchor }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for></nav>
+</div>
+</sc-if>
+<sc-if value="{{ f.push }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}">
+<div class="osbar"><span class="ms ms-s">wifi</span><span>Mon 26 Oct 09:00</span></div>
+<div class="desk">
+<span class="dlabel">the laptop's desktop, with MyPaisa closed</span>
+<div class="notif" role="alert"><svg class="mpm" width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="fx col gap2 f1"><span class="fx jb ac"><span class="mp-foot mp-w6">MyPaisa</span><span class="mp-foot mp-ink2">now</span></span><span class="mp-foot mp-ink2">dashboard.mypaisapp.com</span><span class="mp-sub mp-w6">{{ push.title }}</span><span class="mp-sub">{{ push.body }}</span></div></div>
+</div>
+</sc-if>
+<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}">
+<div class="sbar onhero"><span></span><span class="fx ac gap4"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="lock">
+<span class="ms">lock</span>
+<span class="lock-date">Monday 26 October</span>
+<span class="lock-time">09:00</span>
+<div class="notif" role="alert"><svg class="mpm" width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="fx col gap2 f1"><span class="fx jb ac"><span class="mp-foot mp-w6">MyPaisa</span><span class="mp-foot mp-ink2">now</span></span><span class="mp-sub mp-w6">{{ push.title }}</span><span class="mp-sub">{{ push.body }}</span></div></div>
+</div>
+</sc-if>
+</sc-if>
+<sc-if value="{{ f.signin }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"><span class="ms">lock</span>dashboard.mypaisapp.com</span><span class="chrome-r"></span></div></sc-if>
+<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="sbar"><span>{{ f.time }}</span><span class="fx ac gap4"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div><div class="purl"><span class="ms">lock</span>dashboard.mypaisapp.com</div></sc-if>
+<div class="login">
+<div class="lhero">
+<div class="fx ac gap12"><svg class="mpm mpm-hero" width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div>
+<div class="fx col gap16">
+<h1 class="tagline" data-mo="rise">Everything your household owns and owes, in one calm place.</h1>
+<p class="mp-callout mp-hero-2" style="margin: 0; max-width: 440px">The UK and India together, kept up to date by talking to MyPaisa. The chat is here too, beside every page.</p>
+</div>
+<div class="mp-foot mp-hero-2">Illustrative</div>
+</div>
+<div class="lform">
+<div class="lbox" data-mo="card">
+<div class="mp-t1">Sign in</div>
+<div class="mp-sub mp-ink2" style="margin-bottom: 12px">With the account you use in the MyPaisa app.</div>
+<a class="siwa" href="#2g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>Sign in with Apple</a>
+<a class="gsi" href="#2g"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>Sign in with Google</a>
+<a class="mp-btn mp-btn-plain" href="#2g"><span class="ms">passkey</span>Sign in with a passkey</a>
+<div class="lnote mp-foot mp-ink2" style="margin-top: 8px"><span class="ms ms-s">key</span><span>No password. A passkey works after your first sign-in with Apple or Google.</span></div>
+<a class="getapp mp-foot mp-w6 mp-link" href="#2g"><span class="ms ms-s">phone_iphone</span>Get MyPaisa for iPhone</a>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-for>
+<div class="dv-notes"><sc-for list="{{ b.notes }}" as="n" hint-placeholder-count="4"><p><b>{{ n.b }}</b> {{ n.t }}</p></sc-for></div>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+renderVals() {
+const T = [{ label: 'Light', cls: 't-light' }, { label: 'Dark', cls: 't-dark' }];
+const NAV = [['home', 'home', 'Home'], ['as', 'savings', 'Assets'], ['de', 'credit_card', 'Debts'], ['bu', 'account_balance_wallet', 'Budget'], ['pr', 'timeline', 'Projection'], ['ac', 'insights', 'Activity'], ['au', 'fact_check', 'Audit'], ['you', 'account_circle', 'You']];
+const item = (on) => (i) => ({ icon: i[1], label: i[2], cls: i[0] === on ? 'on' : '', fill: i[0] === on ? 'ms-fill' : '' });
+const nav = (on, chatFirst) => (chatFirst ? [['chat', 'chat_bubble', 'Chat']].concat(NAV) : NAV).map(item(on));
+const TABS = [['chat', 'chat_bubble', 'Chat'], ['home', 'home', 'Home'], ['ac', 'insights', 'Activity'], ['you', 'account_circle', 'You']];
+const tabs = (on, noChat) => TABS.filter((i) => !(noChat && i[0] === 'chat')).map(item(on));
+
+// The v4 figure set (household-v4.json): totals before and after the first record, Mon 26 Oct 09:41.
+// Net by country and by member each sum to net worth; the shares are rounded from those totals.
+const FIG = {
+before: { nw: '£439,951', inr: '₹4,94,94,488', own: '£686,694', owe: '£246,743', liq: '£32,596', uk: '£333,468', ind: '£106,483', ar: '£245,868', as: '£194,083', n: [439951, 333468, 106483, 245868, 194083] },
+after: { nw: '£444,951', inr: '₹5,00,56,988', own: '£691,694', owe: '£246,743', liq: '£37,596', uk: '£338,468', ind: '£106,483', ar: '£250,868', as: '£194,083', n: [444951, 338468, 106483, 250868, 194083] }
+};
+const pc = (a, b) => Math.round((a / b) * 100) + '%';
+const DUE_MON = [['home_work', 'Home, Reading', 'Valuation due Fri 30 Oct · asked today at 09:00'], ['receipt_long', "October's budget", 'Closes Sun 1 Nov'], ['account_balance', 'HDFC home loan EMI', 'Thu 5 Nov', '₹39,390'], ['savings', 'Parag Parikh SIP', 'Tue 10 Nov', '₹10,000']];
+const DUE_SUN = [['receipt_long', "October's budget", 'Closes today · asked at 09:00'], ['account_balance', 'HDFC home loan EMI', 'Thu 5 Nov', '₹39,390'], ['savings', 'Parag Parikh SIP', 'Tue 10 Nov', '₹10,000'], ['credit_card', 'Barclaycard bill', 'Fri 20 Nov']];
+const home = (which, o) => {
+const f = FIG[which], n = f.n, priv = !!o.priv;
+return Object.assign({}, f, {
+m: priv ? 'mp-mask' : '', eye: priv ? 'visibility_off' : 'visibility', live: !!o.live, sub: o.sub,
+fx: priv ? 'at the ECB rate of Fri 30 Oct' : 'at £1 = ₹112.50 · ECB, Fri 23 Oct',
+ukF: n[1], inF: n[2], arF: n[3], asF: n[4],
+ukP: pc(n[1], n[0]), inP: pc(n[2], n[0]), arP: pc(n[3], n[0]), asP: pc(n[4], n[0]),
+dUK: o.live ? '+£5,000' : '', dAr: o.live ? '+£5,000' : '',
+liveT: 'Updated live at 09:41: the change came over the stream, no reload. It was £439,951.',
+due: (o.due || DUE_MON).map((d) => ({ icon: d[0], t: d[1], s: d[2], a: d[3] || '', ac: priv && d[3] ? 'mp-mask' : '' }))
+});
+};
+const SUB = 'Mon 26 Oct · prices at the Fri 23 Oct close · illustrative figures';
+const H = {
+before: home('before', { sub: SUB }),
+after: home('after', { sub: SUB }),
+live: home('after', { sub: SUB, live: true }),
+off: home('after', { sub: 'Offline · the figures as last loaded at 18:17' }),
+priv: home('after', { priv: true, sub: 'Sun 1 Nov · prices at the Fri 30 Oct close · privacy mode', due: DUE_SUN })
+};
+
+// One conversation, Arun's, at every door.
+const sep = (t) => ({ sep: true, t });
+const me = (t, st, icon) => ({ me: true, t, hasSt: !!st, st: st || '', stIcon: icon || '' });
+const ai = (t, meta) => ({ ai: true, t, hasMeta: !!meta, meta: meta || '' });
+const kv = (rows) => rows.map((x) => ({ k: x[0], v: x[1] }));
+const q1 = me('£5,000 in Monzo savings');
+const whose = { ask: true, t: 'A savings account at Monzo. Whose is it?', chips: [['Arun', 'sel'], ['Asha', ''], ['Joint', '']].map((c) => ({ l: c[0], cls: c[1] })) };
+const cardOpen = { card: true, over: 'New savings account · check it', title: 'Instant access savings · Monzo', rows: kv([['Whose', 'Arun, all of it'], ['Balance', '£5,000, from your message'], ['Where', 'UK · pounds'], ['Get at it', 'any time, so it counts as liquid']]), hasHint: true, hint: 'Nothing is saved until you tap Confirm.', acts: true, saved: false };
+const cardSaved = { card: true, over: 'New savings account · saved', title: 'Instant access savings · Monzo', rows: kv([['Whose', 'Arun, all of it'], ['Balance', '£5,000']]), hasHint: false, acts: false, saved: true, at: '09:41' };
+const first = [sep('Today 09:40'), q1, whose, me('Arun'), cardSaved];
+const convA = first.concat([ai('Done. Tell me the next one the same way, or send a statement.')]);
+const convB1 = [sep('Today 09:40'), q1, whose, me('Arun'), cardOpen];
+const q2 = me('What can we get at quickly now?');
+const LIQ = "Money you could get at within days: the new Monzo savings, the Monzo pot, the NRE account in India, and the funds and shares if you sold them. Asha's fixed-rate saver unlocks on Mon 14 Dec; the pensions not until 57.";
+const fig = (mcls) => ({ fig: true, over: 'Liquid now · household', v: '£37,596', s: 'It was £32,596 before the new savings', meta: 'Figures: the engine', mcls });
+const convC = convA.concat([q2, { ais: true, t: 'Money you could get at within days: the new Monzo savings, the Monzo pot, the NRE account in India' }]);
+const convD = convA.concat([q2, ai(LIQ), fig('')]);
+const convE1 = [sep('Mon 26 Oct'), q2, ai(LIQ), fig('mp-mask')];
+const convE2 = convE1.concat([sep('Today 10:05'), { mef: true, fname: 'barclaycard-2026-11-01.pdf', fmeta: 'PDF · 4 pages · 486 KB', t: "October's card statement" }, { air: true, t: 'Reading it…', s: 'Kept for good before anything reads it. A card with every line sorted comes next.' }]);
+const tailD = [sep('Today 09:43'), q2, ai(LIQ), fig('')];
+const DUE_T = "Two things this week: the valuation of Home, Reading is due on Fri 30 Oct, and October's budget closes on Sun 1 Nov, the day the Barclaycard statement comes.";
+const convF1 = tailD.concat([sep('Today 18:20'), me("What's due this week?", "Waiting · sends when you're back online", 'schedule')]);
+const convF2 = tailD.concat([sep('Today 18:20'), me("What's due this week?", 'Sent at 18:24, when the connection came back', 'done_all'), ai(DUE_T, 'From the registry: what is due')]);
+
+const comp = (o) => Object.assign({ notFile: true, isFile: false, ph: 'Ask MyPaisa, or tell it something new', sendCls: 'send', sendIcon: 'arrow_upward', sendLbl: 'Send', sugg: true, text: '', fname: '', fmeta: '' }, o);
+const C = {
+norm: comp({}),
+home: comp({ ph: 'Ask about Home, or tell MyPaisa something new' }),
+act: comp({ ph: 'Ask about Activity' }),
+run: comp({ ph: 'Ask about this run' }),
+stop: comp({ ph: 'MyPaisa is writing…', sendCls: 'send on', sendIcon: 'stop', sendLbl: 'Stop', sugg: false }),
+file: comp({ notFile: false, isFile: true, text: "October's card statement", fname: 'barclaycard-2026-11-01.pdf', fmeta: 'PDF · 4 pages · 486 KB', sugg: false }),
+quiet: comp({ sugg: false }),
+off: comp({ ph: 'Offline · what you type waits here', sugg: false })
+};
+const BAN_OFF = { has: true, cls: 'ban-off', icon: 'cloud_off', t: "You're offline. What you type waits here and sends by itself when you're back." };
+const BAN_BACK = { has: true, cls: 'ban-back', icon: 'cloud_done', t: 'Back online at 18:24 · 1 message sent' };
+
+const BASE = { app: true, push: false, signin: false, desk: false, phone: false, sz: '', shl: '', nav: [], tabs: [], pHome: false, pAct: false, pRun: false, h: H.after, chdIcon: 'right_panel_close', chdLbl: 'Hide the chat', stripLbl: 'Household · Mon 26 Oct', ban: { has: false }, msgs: [], c: C.norm, showChatBtn: false, time: '09:42' };
+const two = (o, cap) => T.map((t) => Object.assign({}, BASE, o, { tcls: t.cls, cap: cap + ' · ' + t.label }));
+const D = (o, cap) => two(Object.assign({ desk: true, sz: 'sz-d' }, o), cap);
+const P = (o, cap) => two(Object.assign({ phone: true, sz: 'sz-p' }, o), cap);
+const row = (lbl, frames) => ({ lbl, frames });
+const A1 = { shl: 'sh-a', nav: nav('home'), pHome: true, c: C.home };
+const PC = { shl: 'sh-a v-chat', tabs: tabs('chat') };
+const PH = { shl: 'sh-a v-home', tabs: tabs('home'), pHome: true };
+const ACT = { shl: 'sh-a', nav: nav('ac'), msgs: convD };
+
+const b1a = { anchor: '1a', tag: '1a', keys: 'Jira: MA-199 · MA-208', name: 'Browser · Shell 1a, Chat beside', cap: 'Browser · Shell 1a, Chat beside, phone', rec: true,
+desc: "The sidebar, the page, and the chat as a column on the right over about 1024 px, as the iPad's 1a draws it. Under 1024 the chat is a tab, as on the iPhone.",
+rows: [
+row('Browser · Shell 1a, Chat beside', D(Object.assign({ msgs: convA }, A1), 'Browser · Shell 1a, Chat beside')),
+row('Browser · Shell 1a, Chat beside, phone', P(PH, 'Browser · Shell 1a, Chat beside, phone · Home tab').concat(P(Object.assign({ msgs: convA }, PC), 'Browser · Shell 1a, Chat beside, phone · Chat tab')))
+],
+notes: [
+{ b: 'Recommended.', t: "It is the iPad's 1a at the laptop, so the two doors feel the same: the page and the conversation side by side, and a Confirm in the column moves the page beside it at once. At 390 it is the iPhone's tab bar, Chat · Home · Activity · You." },
+{ b: 'Over about 1024 px:', t: 'the sidebar, the page and the chat column. The composer names the page ("Ask about Home"), and the column can be hidden for a wider page (Browser · Home moves live).' },
+{ b: 'Under 1024:', t: 'the tab bar, with the chat as a tab; a visit opens Home, a push or a link opens Chat at its card. The household strip tops the chat, as on the iPhone.' },
+{ b: 'Figures:', t: 'net worth £444,951 after the first record (own £691,694 less owe £246,743), ₹5,00,56,988 at £1 = ₹112.50. UK £338,468 and India £106,483, Arun £250,868 and Asha £194,083, each pair summing to it.' }
+] };
+const b1b = { anchor: '1b', tag: '1b', keys: 'Jira: MA-199 · MA-208', name: 'Browser · Shell 1b, Chat first', cap: 'Browser · Shell 1b, Chat first, phone', rec: false,
+desc: "The conversation is the page. The dashboard's key figures sit in a pinned strip above it, and Home is a sidebar item and a tab.",
+rows: [
+row('Browser · Shell 1b, Chat first', D({ shl: 'sh-b', nav: nav('chat', true), msgs: convA }, 'Browser · Shell 1b, Chat first')),
+row('Browser · Shell 1b, Chat first, phone', P({ shl: 'sh-b v-chat', tabs: tabs('chat'), msgs: convA }, 'Browser · Shell 1b, Chat first, phone · Chat').concat(P({ shl: 'sh-b v-home', tabs: tabs('home'), pHome: true }, 'Browser · Shell 1b, Chat first, phone · Home tab')))
+],
+notes: [
+{ b: 'Chat first everywhere:', t: 'the strip carries net worth, own, owe and liquid; its chevron opens Home. Closest to the iPhone, which opens to the chat.' },
+{ b: 'The cost at 1440:', t: 'the dashboard shrinks to a strip. Reading the figures means leaving the conversation, and a Confirm moves a strip, not the page the member was reading.' },
+{ b: 'At 390', t: 'it is the iPhone shell: the strip, the conversation, the tab bar; Home is one tap away.' }
+] };
+const b1c = { anchor: '1c', tag: '1c', keys: 'Jira: MA-199 · MA-208', name: 'Browser · Shell 1c, Ask bar', cap: 'Browser · Shell 1c, Ask bar, phone', rec: false,
+desc: 'The dashboard first, with an ask bar docked at the bottom of every page that grows into a chat drawer.',
+rows: [
+row('Browser · Shell 1c, Ask bar · the bar docked', D({ shl: 'sh-c c-closed', nav: nav('home'), pHome: true }, 'Browser · Shell 1c, Ask bar · docked')),
+row('Browser · Shell 1c, Ask bar · the drawer open', D({ shl: 'sh-c c-open', nav: nav('home'), pHome: true, msgs: convA, chdIcon: 'keyboard_arrow_down', chdLbl: 'Close the drawer' }, 'Browser · Shell 1c, Ask bar · drawer open')),
+row('Browser · Shell 1c, Ask bar, phone', P({ shl: 'sh-c c-closed', tabs: tabs('home', true), pHome: true }, 'Browser · Shell 1c, Ask bar, phone · docked').concat(P({ shl: 'sh-c c-open', tabs: tabs('home', true), pHome: true, msgs: convA, chdIcon: 'keyboard_arrow_down', chdLbl: 'Close the drawer' }, 'Browser · Shell 1c, Ask bar, phone · drawer open')))
+],
+notes: [
+{ b: 'Dashboard first:', t: 'Home fills the page; the ask bar floats over every page, the one glass control, and grows into a drawer when tapped or typed in.' },
+{ b: 'The cost:', t: 'the drawer covers the figures a Confirm changes, so the live move is half hidden, and the conversation is out of sight until asked for.' },
+{ b: 'At 390', t: 'the drawer is a sheet over Home and the tab bar loses Chat: a fourth layout the iPhone does not share.' }
+] };
+
+const b2a = { anchor: '2a', tag: '2a', keys: 'Jira: MA-199', name: 'Browser · Chat, a reply streaming', cap: 'Browser · Chat, a reply streaming, phone',
+desc: "Mon 26 Oct 09:43: Arun asks what the household can get at quickly, and the reply streams in as it is written.",
+rows: [row('Browser · Chat, a reply streaming', D(Object.assign({}, A1, { msgs: convC, c: C.stop }), 'Browser · Chat, a reply streaming')), row('Browser · Chat, a reply streaming, phone', P(Object.assign({}, PC, { msgs: convC, c: C.stop, time: '09:43' }), 'Browser · Chat, a reply streaming, phone'))],
+notes: [
+{ b: 'Words first, over the stream:', t: 'the reply arrives a few words at a time with a caret; Stop takes Send\'s place and keeps what was written.' },
+{ b: 'No figure from the model:', t: 'the words list what is liquid from the registry; the total comes after them as a card from the engine (get_networth), as Browser · Activity shows it settled.' },
+{ b: 'Home beside', t: 'already shows £444,951 from 09:41.' }
+] };
+const b2b = { anchor: '2b', tag: '2b', keys: 'Jira: MA-199', name: 'Browser · Chat, a Confirm card', cap: 'Browser · Chat, a Confirm card, phone',
+desc: 'The first record: "£5,000 in Monzo savings" for Arun, one question, the card with Confirm, Edit and Cancel, then Saved · in the audit log 09:41.',
+rows: [
+row('Browser · Chat, a Confirm card · 1 of 2, the card', D(Object.assign({}, A1, { h: H.before, msgs: convB1 }), 'Browser · Chat, a Confirm card · 1 of 2, the card')),
+row('Browser · Chat, a Confirm card · 2 of 2, saved', D(Object.assign({}, A1, { h: H.live, msgs: first }), 'Browser · Chat, a Confirm card · 2 of 2, saved')),
+row('Browser · Chat, a Confirm card, phone', P(Object.assign({}, PC, { h: H.before, msgs: convB1, time: '09:41' }), 'Browser · Chat, a Confirm card, phone · 1 of 2').concat(P(Object.assign({}, PC, { h: H.after, msgs: first, time: '09:41' }), 'Browser · Chat, a Confirm card, phone · 2 of 2')))
+],
+notes: [
+{ b: 'One question, then the card:', t: 'code drafted the record from the sentence (draft_record); the only gap was whose, asked once with three chips (ask_user); the card shows exactly what will be written (propose_change).' },
+{ b: 'Confirm', t: 'is a filled content button, never glass. Edit reopens the question it changes; Cancel leaves nothing saved. No form ever makes the record.' },
+{ b: 'Saved:', t: 'the card edits in place to Saved · in the audit log 09:41, and Home beside moves from £439,951 to £444,951 in the same second; the strip on the phone moves with it.' },
+{ b: 'Figures:', t: "£5,000 is Arun's own, from his message; before and after are the figure set's totals." }
+] };
+const b2c = { anchor: '2c', tag: '2c', keys: 'Jira: MA-199', name: 'Browser · Chat, sending a statement', cap: 'Browser · Chat, sending a statement, phone',
+desc: "Sun 1 Nov, the day the Barclaycard statement comes: a file chip in the composer, then the file sent and Reading it…. Drawn in privacy mode.",
+rows: [
+row('Browser · Chat, sending a statement · 1 of 2, the file chip', D(Object.assign({}, A1, { h: H.priv, msgs: convE1, c: C.file, stripLbl: 'Household · Sun 1 Nov' }), 'Browser · Chat, sending a statement · 1 of 2, the file chip')),
+row('Browser · Chat, sending a statement · 2 of 2, reading it', D(Object.assign({}, A1, { h: H.priv, msgs: convE2, c: C.quiet, stripLbl: 'Household · Sun 1 Nov' }), 'Browser · Chat, sending a statement · 2 of 2, reading it')),
+row('Browser · Chat, sending a statement, phone', P(Object.assign({}, PC, { h: H.priv, msgs: convE1, c: C.file, stripLbl: 'Household · Sun 1 Nov', time: '10:04' }), 'Browser · Chat, sending a statement, phone · 1 of 2').concat(P(Object.assign({}, PC, { h: H.priv, msgs: convE2, c: C.quiet, stripLbl: 'Household · Sun 1 Nov', time: '10:05' }), 'Browser · Chat, sending a statement, phone · 2 of 2')))
+],
+notes: [
+{ b: 'The file chip:', t: 'the statement waits in the composer with its name, pages and size, removable with ×, until Send, the one tinted control.' },
+{ b: 'Sent:', t: 'it shows as Arun\'s message, then Reading it… with the dots. The file is kept for good before anything reads it; the statement review card follows (drawn with Budget).' },
+{ b: 'Privacy mode,', t: "this file's privacy board: every amount on Home, the strip and the chat is hidden; the file chip carries none. Home's due list is Sun 1 Nov's." }
+] };
+const b2d = { anchor: '2d', tag: '2d', keys: 'Jira: MA-199', name: 'Browser · Chat, offline', cap: 'Browser · Chat, offline, phone',
+desc: 'Mon 26 Oct, 18:20 on a train: the connection drops, the typed question is kept, and it sends itself when the connection is back.',
+rows: [
+row('Browser · Chat, offline · 1 of 2, offline', D(Object.assign({}, A1, { h: H.off, msgs: convF1, c: C.off, ban: BAN_OFF }), 'Browser · Chat, offline · 1 of 2, offline')),
+row('Browser · Chat, offline · 2 of 2, back', D(Object.assign({}, A1, { msgs: convF2, c: C.quiet, ban: BAN_BACK }), 'Browser · Chat, offline · 2 of 2, back')),
+row('Browser · Chat, offline, phone', P(Object.assign({}, PC, { msgs: convF1, c: C.off, ban: BAN_OFF, time: '18:20' }), 'Browser · Chat, offline, phone · 1 of 2').concat(P(Object.assign({}, PC, { msgs: convF2, c: C.quiet, ban: BAN_BACK, time: '18:24' }), 'Browser · Chat, offline, phone · 2 of 2')))
+],
+notes: [
+{ b: 'Offline:', t: 'a banner says so; the page keeps the figures it last loaded and says when.' },
+{ b: 'Typed text is kept:', t: 'the question stays in the conversation as Waiting, and in this browser, so a reload loses nothing.' },
+{ b: 'Back:', t: 'it sends by itself, the banner says so, and the reply follows; its dates are the figure set\'s check-ins.' }
+] };
+const b2e = { anchor: '2e', tag: '2e', keys: 'Jira: MA-199 · MA-208', name: 'Browser · Home moves live', cap: 'Browser · Home moves live, phone',
+desc: 'After Confirm at 09:41, net worth goes from £439,951 to £444,951 at every door, with one line saying the change came over the stream.',
+rows: [row('Browser · Home moves live', D(Object.assign({}, A1, { shl: 'sh-a nochat', h: H.live, showChatBtn: true }), 'Browser · Home moves live')), row('Browser · Home moves live, phone', P(Object.assign({}, PH, { h: H.live, time: '09:41' }), 'Browser · Home moves live, phone'))],
+notes: [
+{ b: 'What moved:', t: 'the hero £439,951 → £444,951, own £686,694 → £691,694, liquid £32,596 → £37,596, the UK row and Arun\'s row each +£5,000; India and Asha stand still.' },
+{ b: 'One line says why:', t: 'updated live at 09:41 over the stream (records.changed), no reload, with the figure it was.' },
+{ b: 'The chat column hidden:', t: '1a lets a member close it for a wider page; Chat brings it back. The phone\'s Home tab moves the same way.' }
+] };
+const b2f = { anchor: '2f', tag: '2f', keys: 'Jira: MA-200', name: 'Browser · Web Push notification', cap: 'Browser · Web Push notification, phone',
+desc: "Web Push reaches the installed web app while it is closed. Mon 26 Oct 09:00: the daily check-in job's valuation question.",
+rows: [row('Browser · Web Push notification', D({ app: false, push: true }, 'Browser · Web Push notification')), row('Browser · Web Push notification, phone', P({ app: false, push: true }, 'Browser · Web Push notification, phone'))],
+notes: [
+{ b: 'No amount on it:', t: 'the default; a member can choose amounts in You (MA-200). Opening it goes to the chat with the check-in card.' },
+{ b: 'Only where nothing is open:', t: 'a door with the page open gets the card over the stream instead of a push.' },
+{ b: 'Drawn as the system draws it:', t: "the laptop's banner names the site; the phone's lock screen shows the installed app." }
+] };
+const b2g = { anchor: '2g', tag: '2g', keys: 'Jira: MA-185', name: 'Browser · Sign in', cap: 'Browser · Sign in, phone',
+desc: 'The sign-in page at dashboard.mypaisapp.com, re-skinned because the shell now has the chat.',
+rows: [row('Browser · Sign in', D({ app: false, signin: true }, 'Browser · Sign in')), row('Browser · Sign in, phone', P({ app: false, signin: true, time: '09:38' }, 'Browser · Sign in, phone'))],
+notes: [
+{ b: 'What changed from Browser · Login:', t: 'the copy. "The chat is in the MyPaisa app on your iPhone" goes; the page says the chat is here too, and the whole household, UK and India. The layout and the three ways in stay.' },
+{ b: 'No data, no name, no password:', t: "Apple's and Google's own buttons, and a passkey after the first sign-in (MA-185)." }
+] };
+
+const b3a = { anchor: '3a', tag: '3a', keys: 'Jira: MA-196', name: 'Browser · Activity', cap: 'Browser · Activity, phone',
+desc: "Today's runs, Mon 26 Oct to 09:45, in 1a's shell with the chat beside.",
+rows: [row('Browser · Activity', D(Object.assign({}, ACT, { pAct: true, c: C.act }), 'Browser · Activity')), row('Browser · Activity, phone', P({ shl: 'sh-a v-home', tabs: tabs('ac'), pAct: true, time: '09:45' }, 'Browser · Activity, phone'))],
+notes: [
+{ b: 'Every run today:', t: 'jobs with no model at $0.00, and each chat run with its model, calls, tokens, cost and tools; a tap opens the run.' },
+{ b: "Asha's run", t: 'shows its cost and tools, never her words. A member sees their own runs and the household\'s jobs.' },
+{ b: 'The sums:', t: '$0.07 today: Asha $0.02, the first record $0.03, the liquid question $0.02. Claude this cycle and AWS match iPhone · Activity ($18 of $160, 11%; £3 of £50).' }
+] };
+const b3b = { anchor: '3b', tag: '3b', keys: 'Jira: MA-196', name: 'Browser · A run', cap: 'Browser · A run, phone',
+desc: 'The first-record run opened: the trigger, the steps, the tools, what it proposed, the tokens and the cost.',
+rows: [row('Browser · A run', D(Object.assign({}, ACT, { pRun: true, c: C.run }), 'Browser · A run')), row('Browser · A run, phone', P({ shl: 'sh-a v-home', tabs: tabs('ac'), pRun: true, time: '09:46' }, 'Browser · A run, phone'))],
+notes: [
+{ b: 'r-1235,', t: 'from Arun\'s message at 09:40:12 to Confirm at 09:41:20: 68 s, of which 6.3 s model calls, 0.2 s tools and 61 s waiting for Arun.' },
+{ b: 'The sums agree with the row:', t: '3 calls, 4.3k tokens (in 3,780, out 526), 23.4k cached, $0.012 + $0.005 + $0.009 = $0.026, shown as $0.03; priced the way iPhone · A run prices its calls.' },
+{ b: 'Read only.', t: 'The tools are code: every value typed against the kind, the draft hashed, Confirm committing exactly that draft.' }
+] };
+
+return {
+turns: [
+{ anchor: 't1', tag: '1', label: 'Turn 1: the web shell with the chat', name: 'The web shell with the chat: three options', intro: "Each option at desktop (1440) and at the phone-web door (390), light and dark, showing Home with the household's net worth after the first record (£444,951) and the conversation that made it. One markup per option, reflowed by the adaptive shell in tokens.css: the sidebar from 1024, the tab bar below it.", boards: [b1a, b1b, b1c] },
+{ anchor: 't2', tag: '2', label: "Turn 2: 1a's states", name: "1a's states", intro: "The recommended option's states, desktop and phone, light and dark: the reply streaming, the Confirm card, a statement, offline, Home moving live, the push and the sign-in page. Mon 26 Oct unless a board says otherwise.", boards: [b2a, b2b, b2c, b2d, b2e, b2f, b2g] },
+{ anchor: 't3', tag: '3', label: 'Turn 3: Activity', name: 'Activity and a run', intro: "Activity in 1a's shell, matched to iPhone · Activity and iPhone · A run (iPhone audit and activity) in figures and style. Costs are illustrative, worked from the token counts at the same rates.", boards: [b3a, b3b] }
+],
+sugg: [['pie_chart', 'Net worth'], ['event', "What's due"], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((s) => ({ icon: s[0], l: s[1] })),
+push: { title: 'A check-in is waiting', body: 'Home, Reading: is its value still about right?' },
+runs: [
+{ time: '01:00', name: 'Nightly views', sub: 'Net worth, the budget month and what is due, rebuilt from the events', line: 'No model · 21 s', model: 'No model', tok: '0', cost: '$0.00', tools: '', hasTools: false, icon: 'check_circle', out: 'Done' },
+{ time: '07:00', name: 'Prices', sub: '6 of 6 priced at the Fri 23 Oct close, and the ECB rate', line: 'No model · 9 s', model: 'No model', tok: '0', cost: '$0.00', tools: '', hasTools: false, icon: 'check_circle', out: 'Done' },
+{ time: '08:12', name: 'Chat · Asha', sub: 'Her words stay hers; the cost and the tools show', line: 'Sonnet 5.5 · 2 calls · 3.0k tokens', model: 'Sonnet 5.5 · 2 calls', tok: '3.0k', cost: '$0.02', tools: 'get_commitments', hasTools: true, icon: 'check_circle', out: 'Done' },
+{ time: '09:00', name: 'Check-ins', sub: '1 card: Valuation due, Home, Reading · sent with push, no amount', line: 'No model · 2 s', model: 'No model', tok: '0', cost: '$0.00', tools: '', hasTools: false, icon: 'check_circle', out: 'Done' },
+{ time: '09:40', name: 'Chat · Arun', sub: '"£5,000 in Monzo savings" · saved 09:41 · run r-1235', line: 'Sonnet 5.5 · 3 calls · 4.3k tokens', model: 'Sonnet 5.5 · 3 calls', tok: '4.3k', cost: '$0.03', tools: 'draft_record, ask_user, propose_change', hasTools: true, icon: 'check_circle', out: 'Saved' },
+{ time: '09:41', name: 'Views', sub: 'Rebuilt after the new record; Home moved at every door', line: 'No model · 2 s', model: 'No model', tok: '0', cost: '$0.00', tools: '', hasTools: false, icon: 'check_circle', out: 'Done' },
+{ time: '09:43', name: 'Chat · Arun', sub: '"What can we get at quickly now?"', line: 'Sonnet 5.5 · 2 calls · 2.9k tokens', model: 'Sonnet 5.5 · 2 calls', tok: '2.9k', cost: '$0.02', tools: 'get_networth', hasTools: true, icon: 'check_circle', out: 'Done' },
+{ time: '21:00', name: 'Prices', sub: 'Scheduled, not run yet', line: 'Due at 21:00', model: 'Not run yet', tok: '', cost: '', tools: '', hasTools: false, icon: 'schedule', out: 'Due' }
+],
+runSum: kv([['Trigger', "Arun's message at 09:40:12"], ['Start → end', '09:40:12 → 09:41:20 · 68 s'], ['Where the time went', '6.3 s model, 0.2 s tools, 61 s for Arun'], ['Outcome', 'Saved · audit row 09:41 · nothing retried'], ['Cost', '$0.03 · 4.3k tokens, 23.4k cached']]),
+runSteps: [
+['09:40:12', 'Trigger', 'Arun wrote "£5,000 in Monzo savings".', false],
+['09:40:15', 'draft_record', 'Code typed the draft against the savings account kind: Monzo, £5,000 in pounds, UK, instant access. Missing: whose.', true],
+['09:40:16', 'ask_user', '"Whose is it?" with Arun, Asha and Joint.', true],
+['09:40:58', 'Answer', 'Arun tapped his own name.', false],
+['09:41:01', 'propose_change', 'The draft, hashed and held, owner Arun, all of it. The Confirm card went to the chat.', true],
+['09:41:20', 'Confirm', 'Arun tapped Confirm. The write service checked the hash, then saved the record, its first event and the audit row.', false],
+['09:41:20', 'Stream', 'records.changed went out; Home moved at every door.', false]
+].map((s) => ({ time: s[0], l: s[1], t: s[2], lc: s[3] ? 'tl ink' : 'mp-sub mp-w6' })),
+runCalls: [
+{ m: '1 · Sonnet 5.5 · drafted', cost: '$0.012', t: 'in 2,310 · cached 6,120 · out 196 · 2.5 s' },
+{ m: '2 · Sonnet 5.5 · asked whose', cost: '$0.005', t: 'in 410 · cached 8,430 · out 92 · 1.2 s' },
+{ m: '3 · Sonnet 5.5 · proposed', cost: '$0.009', t: 'in 1,060 · cached 8,840 · out 238 · 2.6 s' }
+],
+runTools: [['draft_record', '80 ms'], ['ask_user', '20 ms, then 42 s for Arun'], ['propose_change', '110 ms']].map((x) => ({ n: x[0], ms: x[1] })),
+runProp: kv([['Record', 'Instant access savings · Monzo'], ['Whose', 'Arun, all of it'], ['Balance', '£5,000, from his message'], ['Where', 'UK · pounds'], ['Get at it', 'any time']])
+};
+}
+}
+</script>
+</body>
+</html>

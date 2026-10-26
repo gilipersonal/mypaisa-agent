@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ios.css" />
+<link rel="stylesheet" href="motion.css" />
+<script src="motion.js"></script>
+<script src="prototype-v4.js"></script>
+<script src="prototype-v4-pages.js"></script>
+<style>
+/* MyPaisa · Prototype v4 (MA-193). A clickable walk-through of the v4 boards at three doors: the browser at 1440
+   (Web v4 · Shell and chat, 1a), the phone's browser at 390, and the iPhone (shell 1a, Chat first, 402 × 874 as the
+   iPhone v4 boards draw it). One journey, one clock, one figure set; the bar above the frame is the prototype's own. */
+html, body { margin: 0; height: 100%; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+.pv4 { min-height: 100vh; display: flex; flex-direction: column; }
+.ptop { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 10px 20px 10px; background: #F9F8F6; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #14171F; position: relative; z-index: 5; }
+.prow1 { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
+.pname { font: 700 15px/20px -apple-system, "SF Pro Display", system-ui, sans-serif; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; margin-right: 6px; }
+.pkey { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; border-radius: 5px; background: #13213A; color: #FFFFFF; }
+.pgrp { display: flex; align-items: center; gap: 6px; }
+.plbl { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; text-transform: uppercase; letter-spacing: 0.04em; }
+.pseg { display: flex; background: #E6E2DC; border-radius: 9px; padding: 2px; gap: 2px; }
+.pseg .segw { display: contents; }
+.pseg button { min-height: 32px; border: 0; background: transparent; border-radius: 7px; padding: 0 12px; font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #4E5462; cursor: pointer; position: relative; }
+.pseg button.on { background: #FFFFFF; color: #14171F; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.pbtn { min-height: 34px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border-radius: 9px; border: 0; background: #E6E2DC; color: #14171F; font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; cursor: pointer; position: relative; }
+.pbtn .ms { font-size: 18px; }
+.pbtn.on { background: #13213A; color: #FFFFFF; }
+.pbtn.go { background: #C2381F; color: #FFFFFF; }
+.pf1 { flex: 1; }
+.psteps { display: flex; gap: 6px; flex-wrap: wrap; }
+.pst { min-height: 30px; display: inline-flex; align-items: center; gap: 6px; padding: 0 10px 0 4px; border-radius: 999px; border: 0; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1); color: #3D424D; font: 500 12.5px/16px -apple-system, "SF Pro Text", system-ui, sans-serif; cursor: pointer; }
+.pst b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #E6E2DC; color: #14171F; font: 700 11px/1 ui-monospace, Menlo, monospace; }
+.pst.done b { background: #D5E7DA; color: #125529; }
+.pst.on { background: #13213A; color: #FFFFFF; box-shadow: none; }
+.pst.on b { background: #FF6B4F; color: #13213A; }
+.pguide { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; min-height: 34px; }
+.pgt { font: 700 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #14171F; white-space: nowrap; }
+.pgh { flex: 1 1 360px; min-width: 0; font: 400 13.5px/19px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+.pgh b { color: #14171F; }
+.pstage { flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center; padding: 18px 16px 24px; }
+.pframe-wrap { position: relative; flex: none; }
+.pframe { position: absolute; transform-origin: 0 0; overflow: hidden; background: var(--mp-bg); }
+.pframe > .sc-host { height: 100%; }
+.fr-desk { border-radius: 12px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 20px 50px rgba(0, 0, 0, 0.14); }
+.fr-pweb { border-radius: 44px; box-shadow: 0 0 0 10px #1B1D22, 0 0 0 11.5px #3A3D44, 0 30px 60px rgba(0, 0, 0, 0.22); }
+.fr-ios { border-radius: 56px; box-shadow: 0 0 0 11px #1B1D22, 0 0 0 12.5px #3A3D44, 0 30px 70px rgba(0, 0, 0, 0.25); }
+.pdate { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); z-index: 90; display: flex; align-items: center; gap: 10px; padding: 16px 24px; border-radius: 22px; background: var(--mp-hero); color: var(--mp-hero-ink); font: 800 26px/32px var(--mp-font-round); letter-spacing: -0.02em; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); pointer-events: none; white-space: nowrap; }
+.pdate .ms { color: var(--mp-coral); font-size: 28px; }
+.ptoast { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); z-index: 95; max-width: 340px; width: max-content; text-align: center; pointer-events: none; }
+.fr-desk .ptoast { bottom: 36px; max-width: 520px; }
+/* shared: the masks, the arrivals, the guide's ring, small utilities */
+.privon .mny { background: var(--mp-mask); color: transparent !important; border-radius: 6px; }
+.privon .mp-hero .mny, .privon .me .mny { background: var(--mp-mask-hero); }
+.privon .lg .mny { background: var(--lg-mask); }
+.f1 { flex: 1; min-width: 0; }
+.ae { align-items: flex-end; }
+.bl { align-items: baseline; }
+.pnext { position: relative; outline: 2px solid var(--mp-focus, #2453C9); outline-offset: 3px; }
+.ptop .pnext { outline-color: #2453C9; }
+@media (prefers-reduced-motion: no-preference) {
+  .pnext::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 2px solid var(--mp-focus, #2453C9); pointer-events: none; opacity: 0; animation: pnpulse 1.4s cubic-bezier(0.22, 1, 0.36, 1) 6; }
+  .pin { animation: mo-rise var(--mo-base, 340ms) var(--mo-smooth, ease-out) both; }
+  .pdate { animation: pdin 1.7s ease both; }
+}
+@keyframes pnpulse { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.12); } }
+@keyframes pdin { 0% { opacity: 0; transform: translate(-50%, -40%); } 15% { opacity: 1; transform: translate(-50%, -50%); } 80% { opacity: 1; } 100% { opacity: 0; } }
+</style>
+</helmet>
+<div class="pv4" data-screen-label="Prototype v4">
+<header class="ptop">
+<div class="prow1">
+<span class="pname"><span class="pkey">MA-193</span>MyPaisa · Prototype v4</span>
+<span class="pgrp"><span class="plbl">Door</span><span class="pseg" role="group" aria-label="Door"><sc-for list="{{ doors }}" as="d" hint-placeholder-count="3"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
+<span class="pgrp"><span class="plbl">Theme</span><span class="pseg" role="group" aria-label="Theme"><sc-for list="{{ themes }}" as="d" hint-placeholder-count="2"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
+<button class="pbtn {{ privCls }}" type="button" aria-pressed="{{ privP }}" onclick="{{ privGo }}"><span class="ms">{{ privIcon }}</span>Privacy</button>
+<span class="pgrp"><span class="plbl">Viewer</span><span class="pseg" role="group" aria-label="Viewer"><sc-for list="{{ viewers }}" as="d" hint-placeholder-count="2"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
+<span class="pf1"></span>
+<button class="pbtn" type="button" onclick="{{ restartGo }}"><span class="ms">restart_alt</span>Restart</button>
+</div>
+<nav class="psteps" aria-label="The journey"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="10"><button class="pst {{ s.cls }}" type="button" aria-current="{{ s.cur }}" onclick="{{ s.go }}"><b>{{ s.n }}</b>{{ s.t }}</button></sc-for></nav>
+<div class="pguide" aria-live="polite">
+<span class="pgt">{{ guideT }}</span>
+<span class="pgh">{{ guideH }}</span>
+<sc-if value="{{ hasFill }}" hint-placeholder-val="{{ false }}"><button class="pbtn" type="button" onclick="{{ fillGo }}"><span class="ms">keyboard</span>Type it for me</button></sc-if>
+<sc-if value="{{ hasBranch }}" hint-placeholder-val="{{ false }}"><button class="pbtn {{ branchCls }}" type="button" onclick="{{ branchGo }}"><span class="ms">{{ branchIcon }}</span>{{ branchT }}</button></sc-if>
+<sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}"><button class="pbtn go {{ nextCls }}" type="button" onclick="{{ nextGo }}">{{ nextT }}<span class="ms">arrow_forward</span></button></sc-if>
+</div>
+</header>
+<main class="pstage">
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+<div class="pframe-wrap" style="width: {{ wrapW }}; height: {{ wrapH }}">
+<div class="pframe mp {{ frameCls }} {{ themeCls }}" style="left: {{ frL }}; top: {{ frL }}; width: {{ frW }}; height: {{ frH }}; transform: scale({{ sc }})" data-screen-label="{{ frameLabel }}">
+<sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}"><dc-import name="PrototypeV4Web" dc-props="{{ webp }}" hint-size="100%,100%"></dc-import></sc-if>
+<sc-if value="{{ isIos }}" hint-placeholder-val="{{ false }}"><dc-import name="PrototypeV4Phone" dc-props="{{ iosp }}" hint-size="100%,100%"></dc-import></sc-if>
+<sc-if value="{{ hasDate }}" hint-placeholder-val="{{ false }}"><div class="pdate"><span class="ms">calendar_month</span>{{ dateT }}</div></sc-if>
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}"><div class="ptoast mp-toast">{{ toastT }}</div></sc-if>
+</div>
+</div>
+</sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { ready: false };
+    this._fns = {};
+    this._topH = 150;
+  }
+  componentDidMount() {
+    const boot = () => {
+      if (window.MP4 && window.MP4P) {
+        const st = window.MP4.fresh(null);
+        try { const d = localStorage.getItem('mp4-door'); if (d === 'desk' || d === 'pweb' || d === 'ios') st.door = d; if (localStorage.getItem('mp4-dark') === '1') st.dark = true; } catch (e) { }
+        this.setState(Object.assign(st, { ready: true }));
+      } else this._boot = setTimeout(boot, 40);
+    };
+    boot();
+    this._onResize = () => { clearTimeout(this._rt); this._rt = setTimeout(() => this.forceUpdate(), 80); };
+    window.addEventListener('resize', this._onResize);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    [this._boot, this._rt, this._auto, this._tick].forEach((t) => clearTimeout(t));
+    if (this._raf) cancelAnimationFrame(this._raf);
+  }
+  reduce() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  act(key) {
+    if (!window.MP4 || !this.state.ready) return;
+    if (key === 'theme:light' || key === 'theme:dark') { const dark = key === 'theme:dark'; try { localStorage.setItem('mp4-dark', dark ? '1' : '0'); } catch (e) { } this.setState({ dark: dark }); return; }
+    if (key.indexOf('door:') === 0) { try { localStorage.setItem('mp4-door', key.slice(5)); } catch (e) { } }
+    const patch = window.MP4.act(this.state, key, Date.now());
+    if (patch && Object.keys(patch).length) this.setState(patch);
+  }
+  fn(key) { return this._fns[key] || (this._fns[key] = () => this.act(key)); }
+  componentDidUpdate() {
+    const st = this.state, M = window.MP4;
+    if (!st.ready || !M) return;
+    const ps = this._prev || {};
+    this._prev = { bi: st.bi, br: st.br, door: st.door, v: st.v };
+    if (ps.bi !== st.bi || ps.br !== st.br) {
+      clearTimeout(this._auto);
+      const b = M.B[st.bi];
+      if (!st.br && b.auto) { const bi = st.bi; this._auto = setTimeout(() => { if (this.state.bi === bi) this.act('__auto'); }, this.reduce() ? 400 : b.auto); }
+    }
+    const target = M.nwTarget(st);
+    if (st.nw !== target && !this._rolling) {
+      if (this.reduce() || st.jump !== this._lastJump) { this._lastJump = st.jump; this.setState({ nw: target }); }
+      else {
+        this._rolling = true;
+        const from = st.nw, t0 = performance.now(), dur = 750;
+        const step = (now) => {
+          const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+          this.setState({ nw: k >= 1 ? target : Math.round(from + (target - from) * e) }, () => { if (k < 1) this._raf = requestAnimationFrame(step); else this._rolling = false; });
+        };
+        this._raf = requestAnimationFrame(step);
+      }
+    }
+    this._lastJump = st.jump;
+    this.schedule();
+    this.syncScroll(ps);
+    const top = document.querySelector('.ptop');
+    if (top && Math.abs(top.offsetHeight - this._topH) > 2) { this._topH = top.offsetHeight; this.forceUpdate(); }
+  }
+  schedule() {
+    const st = this.state, now = Date.now();
+    const ends = [st.banner && st.banner.until, st.toast && st.toast.until, st.undoAt && st.undoAt + 6000].filter((t) => t && t > now);
+    if (!ends.length) return;
+    const next = Math.min.apply(null, ends);
+    if (this._tickAt === next) return;
+    clearTimeout(this._tick); this._tickAt = next;
+    this._tick = setTimeout(() => { this._tickAt = 0; this.forceUpdate(); }, next - now + 30);
+  }
+  syncScroll(ps) {
+    const st = this.state, M = window.MP4;
+    const sig = [st.door, st.bi, st.br, st.asha, st.v.page, st.v.chat, st.dark].join('|');
+    if (sig === this._sig) return;
+    const pageChanged = !this._sig || ps.door !== st.door || (ps.v && (ps.v.page !== st.v.page || ps.v.chat !== st.v.chat));
+    this._sig = sig;
+    const reduce = this.reduce(), sc = this._scale || 1, b = M.B[st.bi];
+    setTimeout(() => {
+      const root = document.querySelector('.pframe');
+      if (!root) return;
+      const chat = root.querySelector('[data-scroll="chat"]'), page = root.querySelector('[data-scroll="page"]');
+      const rel = (box, el) => (el.getBoundingClientRect().top - box.getBoundingClientRect().top) / sc + box.scrollTop;
+      const go = (box, top) => { box.scrollTo({ top: Math.max(0, top), behavior: reduce || pageChanged ? 'auto' : 'smooth' }); };
+      if (page && pageChanged) page.scrollTop = 0;
+      if (chat) {
+        const a = (b.sc && !st.br) ? chat.querySelector('[data-anchor="' + b.sc + '"]') : null;
+        if (a) go(chat, rel(chat, a) - 12); else go(chat, chat.scrollHeight);
+      }
+      const t = root.querySelector('.pnext');
+      if (t) {
+        const box = t.closest('[data-scroll]');
+        if (box) {
+          const pad = st.door === 'ios' ? (box.getAttribute('data-scroll') === 'chat' ? 250 : 130) : 90;
+          const y = rel(box, t), h = t.getBoundingClientRect().height / sc, vis = box.clientHeight - pad;
+          const cur = (b.sc && !st.br && chat === box) ? Math.max(0, rel(chat, chat.querySelector('[data-anchor="' + b.sc + '"]') || t) - 12) : box.scrollTop;
+          if (y < cur + 8 || y + h > cur + vis) go(box, y - Math.max(16, (vis - h) / 2));
+        }
+      }
+      const f = root.querySelector('.pnext .efin, .efin');
+      if (f && (b.id === 's4d' || b.id === 's8c') && document.activeElement !== f) { try { f.focus({ preventScroll: true }); } catch (e) { } }
+    }, 60);
+  }
+  renderVals() {
+    const st = this.state, M = window.MP4;
+    const base = { ready: false, doors: [], themes: [], viewers: [], steps: [], privCls: '', privP: 'false', privIcon: 'visibility', privGo: null, restartGo: null, guideT: '', guideH: '', hasFill: false, fillGo: null, hasBranch: false, branchCls: '', branchGo: null, branchIcon: '', branchT: '', hasNext: false, nextCls: '', nextGo: null, nextT: '' };
+    if (!st.ready || !M) return base;
+    const now = Date.now(), door = st.door, f = (k) => this.fn(k);
+    const api = { act: f, now: () => now, type: (field) => (e) => { const o = {}; o[field] = e.target.value; this.setState(o); }, key: (k) => (e) => { if (e.key === 'Enter') { e.preventDefault(); this.act(k); } } };
+    const V = M.build(st, api), w = V.w, b = w.b, tgt = V.tgt, T = (k) => (k === tgt ? ' pnext' : '');
+    const br = st.br ? M.BR[st.br] : null;
+    /* the frame and its scale */
+    const dims = { desk: [1440, 900, 0], pweb: [390, 844, 12], ios: [402, 874, 13] }[door];
+    const availW = Math.max(320, window.innerWidth - 32), availH = Math.max(320, window.innerHeight - this._topH - 44);
+    const s = Math.max(0.3, Math.min(1, availW / (dims[0] + 2 * dims[2]), availH / (dims[1] + 2 * dims[2])));
+    this._scale = s;
+    const px = (n) => n.toFixed(2) + 'px';
+    /* the shells */
+    const page = st.v.page, signin = page === 'signin';
+    const sec = { homeval: 'assets', hdfc: 'debts', run: 'act' }[page] || page;
+    const NAV = [['home', 'home', 'Home'], ['assets', 'savings', 'Assets'], ['debts', 'credit_card', 'Debts'], ['budget', 'account_balance_wallet', 'Budget'], ['proj', 'timeline', 'Projection'], ['act', 'insights', 'Activity'], ['audit', 'fact_check', 'Audit'], ['you', 'account_circle', 'You']];
+    const nav = NAV.map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === sec ? 'on' : '') + T('nav:' + n[0]), fill: n[0] === sec ? 'ms-fill' : '', go: f('nav:' + n[0]) }));
+    const tsec = st.v.chat ? 'chat' : (sec === 'act' ? 'act' : sec === 'you' ? 'you' : 'home');
+    const tabs = [['chat', 'chat_bubble', 'Chat'], ['home', 'home', 'Home'], ['act', 'insights', 'Activity'], ['you', 'account_circle', 'You']].map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === tsec ? 'on' : '') + T('tab:' + n[0]), fill: n[0] === tsec ? 'ms-fill' : '', go: f('tab:' + n[0]) }));
+    const common = { themeCls: st.dark ? 't-dark' : 't-light', privCls: st.priv ? 'privon' : '', time: V.time, isSignin: signin, isApp: !signin, signinGo: f('signin'), signinCls: T('signin'), nopeGo: f('x'),
+      chatp: { list: V.chat, isWeb: door !== 'ios' }, pagep: { pg: V.page, isWeb: door !== 'ios' }, composer: Object.assign({}, V.composer, { sendIcon: (V.composer.typed || V.composer.hasFiles) ? 'arrow_upward' : 'mic' }), strip: Object.assign({}, V.strip, { noUp: !V.strip.hasUp }), tabs: tabs };
+    const webp = Object.assign({}, common, { isDesk: door === 'desk', isPweb: door === 'pweb', nav: nav, user: st.asha ? 'Asha · member' : 'Arun · admin', chdSub: st.asha ? 'Asha\'s own conversation' : 'One conversation at every door', shlCls: st.v.chat ? 'v-chat' : 'v-page' });
+    const PAR = { assets: 1, debts: 1, budget: 1, proj: 1, audit: 1, homeval: 1, hdfc: 1, run: 1 };
+    const editing = (b.id === 's4d' || (b.id === 's8c' && !st.asha)) && !st.br && !st.v.chat && (page === 'homeval' || page === 'proj');
+    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', b.id === 's8c' ? '.' : '', '0', 'del'].map((k) => ({ t: k === 'del' ? '' : k, isDel: k === 'del', cls: (k === '' || k === 'del') ? 'fn' : '', go: k ? f('kp:' + k) : null }));
+    const iosp = Object.assign({}, common, { isChat: !signin && st.v.chat, isPage: !signin && !st.v.chat, hasBack: !!PAR[page], backGo: f('pback'), isRoot: !PAR[page], notRoot: !!PAR[page], privGo: f('priv'), askGo: f('tab:chat'), eyeIcon: st.priv ? 'visibility_off' : 'visibility', kp: { has: door === 'ios' && editing, keys: keys } });
+    /* the bar above */
+    const seg = (items, on) => items.map((x) => ({ t: x[0], cls: (x[1] === on ? 'on' : '') + T(x[2]), p: x[1] === on ? 'true' : 'false', go: f(x[2]) }));
+    const stepOn = b.s;
+    const fillable = !br && ((b.msg && tgt === 'sugg') || b.id === 's4d' || (b.id === 's8c' && !st.asha));
+    const brOn = !!st.br, brAvail = b.s === 7 && !st.asha;
+    return {
+      ready: true,
+      doors: seg([['Desktop', 'desk', 'door:desk'], ['Phone web', 'pweb', 'door:pweb'], ['iPhone', 'ios', 'door:ios']], door),
+      themes: seg([['Light', false, 'theme:light'], ['Dark', true, 'theme:dark']], st.dark),
+      viewers: [['Arun', false], ['Asha', true]].map((x) => ({ t: x[0], cls: (x[1] === st.asha ? 'on' : (tgt === 'asha' ? ' pnext' : '')), p: x[1] === st.asha ? 'true' : 'false', go: x[1] === st.asha ? null : f('asha') })),
+      privCls: st.priv ? 'on' : '', privP: st.priv ? 'true' : 'false', privIcon: st.priv ? 'visibility_off' : 'visibility', privGo: f('priv'), restartGo: f('restart'),
+      steps: M.STEPS.map((t, i) => ({ n: String(i + 1), t: t, cls: i + 1 === stepOn ? 'on' : (i + 1 < stepOn ? 'done' : ''), cur: i + 1 === stepOn ? 'step' : 'false', go: f('step:' + (i + 1)) })),
+      guideT: 'Step ' + stepOn + ' of 10 · ' + M.STEP_T[stepOn - 1] + (br ? ' · side branch' : ''),
+      guideH: br ? br.hint : b.hint,
+      hasFill: !!fillable, fillGo: f('fill'),
+      hasBranch: brAvail, branchCls: (brOn && st.br === 5 ? 'go' : '') + T('back'), branchGo: f(brOn ? 'back' : 'branch'), branchIcon: brOn ? 'undo' : 'alt_route', branchT: brOn ? 'Back to the main path' : 'Side branch: Paid off in full',
+      hasNext: tgt === 'next', nextCls: T('next'), nextGo: f('next'), nextT: 'Continue',
+      isWeb: door !== 'ios', isIos: door === 'ios', webp: webp, iosp: iosp,
+      frameCls: 'fr-' + door, frameLabel: { desk: 'Desktop 1440', pweb: 'Phone web 390', ios: 'iPhone 402 × 874' }[door],
+      themeCls: st.dark ? 't-dark' : 't-light',
+      wrapW: px((dims[0] + 2 * dims[2]) * s), wrapH: px((dims[1] + 2 * dims[2]) * s), frL: px(dims[2] * s), frW: dims[0] + 'px', frH: dims[1] + 'px', sc: s.toFixed(4),
+      hasDate: !!(st.banner && st.banner.until > now), dateT: st.banner ? st.banner.t : '',
+      hasToast: !!(st.toast && st.toast.until > now), toastT: st.toast ? st.toast.t : ''
+    };
+  }
+}
+</script>
+</body>
+</html>

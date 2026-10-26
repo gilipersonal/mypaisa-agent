@@ -56,9 +56,9 @@
     "finding": "Owner decision (Arun, 25 Oct 2026): the read-only dashboard shows on the iPad and the foldable too",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; n=lambda k:{b.get('board') for b in t[k].get('boards',[])}; sys.exit(0 if 'iPad · Home with the chat beside it' in n('MA-208') and 'Foldable · Open' in n('MA-70') else 1)\""
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; n=lambda k:{b.get('board') for b in t[k].get('boards',[])}; sys.exit(0 if ({'iPad · Home with the chat beside it','iPad · Whole wealth with the chat beside it'} & n('MA-208')) and 'Foldable · Open' in n('MA-70') else 1)\""
     },
-    "amended": "MA-186, 26 Oct 2026: the Home boards moved from MA-78 (now Overlap and Scorecard) to MA-208, the first dashboard; the iPad and foldable decision stands"
+    "amended": "MA-186, 26 Oct 2026: the Home boards moved from MA-78 (now Overlap and Scorecard) to MA-208, the first dashboard; the iPad and foldable decision stands; MA-193 (26 Oct 2026): the v4 iPad board, iPad · Whole wealth with the chat beside it, supersedes the investment-only one on MA-208, and either keeps the decision"
   },
   {
     "id": "r1-a1",
