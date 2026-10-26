@@ -32,8 +32,12 @@ table, the labels and the issue templates. The skills are `/jira-flow:status`,
    gap found, a bug hit: create it at once (`/jira-flow:plan` for stories and
    tasks, `/jira-flow:bug` for bugs), link it to the current issue, and say the
    key in the report. Do not keep a to-do list in the conversation; keep it in
-   Jira. A planned story also gets its PLAN.md bullet and its `docs/trace.json`
-   row in the same change, so the plan, the designs and Jira never drift.
+   Jira. A planned story also gets its PLAN.md bullet, its `docs/trace.json`
+   row, its estimate in `docs/roadmap.json` and its place on its Confluence
+   phase page in the same change, so the plan, the designs, Jira and
+   Confluence never drift. A new design or feature discussed in a session is
+   new work: it gets its issue and its Confluence page then, not later
+   (`.claude/rules/plan-sync.md`, New work).
 
 5. **A PR is traced or it is not raised.** Branch `MA-<n>-<slug>`, every
    commit subject `MA-<n>: <what>`, PR title `[MA-<n>] <what>`, PR

@@ -1,6 +1,6 @@
 ---
 name: plan-sync
-description: Keep MyPaisa's plan, designs and Jira in step. Compare docs/trace.json with Jira (keys, parents, labels, status) and with the Claude Design projects MyPaisa iOS v1, MyPaisa DS v1 and MyPaisa app v1 (files, etags, boards), copy changed boards into the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
+description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates), with the Claude Design projects MyPaisa iOS v1, MyPaisa DS v1 and MyPaisa app v1 (files, etags, boards) and with the Confluence space mypaisaa-agent (pages, versions, board previews); copy changed boards into the repo, publish the pages rendered from the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
 ---
 
 # Plan sync
@@ -11,7 +11,7 @@ check that needs Jira and Claude Design; `scripts/plan_sync.py` is the
 repo-side half and runs as a gate.
 
 Arguments: `MA-<n>` (one story, before it starts), `--all` (everything; the
-default), `--jira` or `--design` (one side only).
+default), `--jira`, `--design` or `--confluence` (one side only).
 
 Ids: Jira cloudId `81c51173-bbea-4905-bbc5-1a880fa348bb`, project `MA`,
 transitions in `.claude/jira-flow.json`. Claude Design projects in
@@ -20,7 +20,11 @@ screens since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the web app's
 browser boards, its spec, beside the superseded Mini App and Telegram boards). Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
 `mcp__atlassian__editJiraIssue`, `mcp__atlassian__createJiraIssue`,
 `mcp__atlassian__addOrEditJiraIssueComment`, `mcp__claude-design__list_files`,
-`mcp__claude-design__read_file`.
+`mcp__claude-design__read_file`, and for Confluence (space `mypaisaaag`, id
+`196872`) `mcp__atlassian__getConfluenceContent`,
+`mcp__atlassian__createConfluenceContent`,
+`mcp__atlassian__updateConfluenceContent` and `mcp__atlassian__executeWrite`
+(`createConfluenceAttachment`).
 
 ## 0. Where you are
 
@@ -43,6 +47,7 @@ page.
 | Summary, status or labels changed in Jira | Copy them into the row |
 | `ui: true` without the `design` label, or the label on a `ui: false` row | Set the label in Jira to match the row; say which way in the report |
 | A phase epic missing, or an epic whose PLAN phase is gone | Create or report, never delete |
+| An epic's due date that differs from its phase's `end` in `docs/roadmap.json`'s schedule | Set the due date in Jira to the schedule's (an on-demand phase has none); the roadmap decides |
 
 Never delete or close an issue. Creating, editing and commenting need no
 asking in this repo (`.claude/rules/ship-autopilot.md`).
@@ -62,9 +67,67 @@ List every project under `claude_design` with depth -1 and compare with
 Copy only; never write to Claude Design from this skill. Designs change
 through `/design-first`.
 
+## 2b. Confluence against `docs/confluence.json`
+
+The pages are generated (rule 8); this side publishes them and catches edits
+made in Confluence.
+
+1. For each page in `docs/confluence.json`, read its version
+   (`getConfluenceContent`, `detail: summary`). A version above the one
+   recorded means someone edited it there: read it (`detail: full`, html),
+   say what changed, carry the change into the record it belongs to (the
+   trace, PLAN, ARCHITECTURE, a decision record, the roadmap), never into
+   `docs/confluence/` by hand; then it is republished below.
+2. `python3 scripts/confluence_docs.py pending` lists what to do:
+   - `create`: create the page under its parent's id (`contentWidth: wide`, a
+     one-line placeholder body), then
+     `python3 scripts/confluence_docs.py set-page <slug> <id> 1`.
+   - `images`: previews to upload. When a board changed, capture the boards
+     first: `node .claude/skills/plan-sync/scripts/capture_boards.js <repo> <want.json> <captures>`
+     (`PLAYWRIGHT_CORE` names a playwright-core install; want.json maps each
+     mirrored file to its boards), then
+     `python3 scripts/confluence_docs.py images <captures> <previews>`. Per
+     page, `createConfluenceAttachment` returns a short-lived media token;
+     upload each file with it to
+     `https://duttaarun2015.atlassian.net/wiki/api/v2/content/<page id>/attachment-upload`
+     (the `uploadCommand` it returns), and record each returned `fileId`:
+     `python3 scripts/confluence_docs.py set-image <name> <fileId> contentId-<page id>`.
+     Never write the token to a file or a log.
+   - `databases`: the story explorer (`docs/confluence/stories.csv`, a
+     create envelope). With no id, create it (`contentType: database`,
+     `format: csv`, the file exactly, under the hub) and
+     `set-database stories <id> published`. With an id, read its rows
+     (`content_format: csv`), send the edit envelope that turns them into
+     the file's rows (the database guide's edit workflow, `edit_entry` for
+     changed rows, `add_entry` and `delete_entry` for the rest), then
+     `set-database stories <id> published`.
+   - `apps`: the Maui apps (`roadmap-gantt` on the roadmap, `decision-cards`
+     on the decisions page), made with `createConfluenceMauiApp` (or
+     `editConfluenceMauiApp` once made) from
+     `python3 scripts/confluence_docs.py app-prompt <name>` exactly, then
+     `set-app <name> <maui id> <url>`. They cost Rovo credits and need
+     Confluence's AI features on; until they are made the pages show the
+     native cards and the still picture, and the check asks nothing.
+   - then `python3 scripts/confluence_docs.py write`, and `pending` again.
+   - `publish`: for each page, read it (`getConfluenceContent`, `detail: full`)
+     for its snapshot token, send `docs/confluence/<slug>.html` exactly as
+     the body (`format: html`, `versionMessage` naming the story), and
+     record what is live:
+     `python3 scripts/confluence_docs.py set-page <slug> <id> <new version> published`.
+     Big pages are best sent by sub-agents, a few pages each, each given the
+     file paths and ids; check afterwards that every page in `pending` is
+     gone.
+3. `python3 scripts/confluence_docs.py check` is clean.
+
+Never delete a page or an attachment. A page the generator no longer makes
+is reported and archived by Arun.
+
 ## 3. The repo side
 
-- Run `python3 scripts/plan_sync.py render`, then `check` again.
+- Run `python3 scripts/roadmap.py write` when an estimate, a phase or a story
+  changed (every traced story needs an estimate in `docs/roadmap.json`), then
+  `python3 scripts/plan_sync.py render`, `python3 scripts/confluence_docs.py write`,
+  and `check` again.
 - Fix what the check reports: a missing section (fix the row, or the
   ARCHITECTURE heading if the doc changed), a cited key not traced (add the
   row), a UI row with no board (`todo` plus a note saying which design round
@@ -94,7 +157,7 @@ key, and say what it printed:
 
 ## 5. Report
 
-One block: what drifted (Jira, Claude Design, repo), what was fixed, what was
+One block: what drifted (Jira, Claude Design, Confluence, repo), what was fixed, what was
 filed (keys), what needs Arun (a missing issue to confirm, a deleted file).
 Commit the trace, `TRACE.md` and mirror changes on the story branch as
 `MA-<n>: Sync the trace with Jira and Claude Design`; they ship with that
