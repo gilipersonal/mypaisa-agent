@@ -1,9 +1,10 @@
 @startuml
-title Adding a holding from the app (figures illustrative)
+title Adding a record through the chat, and correcting a figure in place (figures illustrative)
 actor Member
-participant "MyPaisa app" as app
+participant "iOS app (React Native shell, SwiftUI core)" as app
+participant "web app (SvelteKit PWA)" as web
 participant "S3 documents (kept for good)" as s3
-participant "HTTP API + api λ" as api
+participant "API Gateway + api λ (api host)" as api
 participant "SQS updates.fifo" as qin
 participant "agent λ" as agent
 participant "SQS work" as work
@@ -11,9 +12,9 @@ participant "worker λ (docs job)" as worker
 participant "Claude (Anthropic API)" as claude #FCEED6
 database "DynamoDB registry" as ddb
 participant "SQS outbox.fifo + sender λ" as out
-participant "WebSocket API (live)" as ws
+participant "stream log + stream λ (SSE on the api host)" as stream
 autonumber
-Member -> app : attaches factsheet.pdf
+Member -> app : attaches factsheet.pdf in the chat
 app -> api : asks for an upload link
 api --> app : presigned PUT URL
 app -> s3 : PUT factsheet.pdf
@@ -24,57 +25,71 @@ qin -> agent : next message, in order
 activate agent
 agent -> ddb : file received: Document (factsheet, S3 key, sha256) + AuditEvent, one transaction
 agent -> out : "Reading it now"
-out -> ws : to every live connection
-ws --> app : "Reading it now"
+out -> stream : appended to the member's stream log
+stream --> app : SSE to every open door
 agent -> work : docs job (document_id)
 deactivate agent
 work -> worker : job, 5 tries, then DLQ
 activate worker
-worker -> claude : PDF + schema: ISIN, OCF, holdings
+worker -> claude : PDF + schema: name, ISIN, currency, charge, holdings
 claude --> worker : JSON, a source line per field
-worker -> ddb : PendingAction add_holding (what was read, document_id, expires in 24 h)
-worker -> out : Confirm card: what I read, unsure fields in amber, [Confirm] [Edit] [Cancel]
+worker -> ddb : PendingAction register_record (what was read, document_id, expires in 24 h)
+worker -> out : what I read, unsure fields in amber; which account is it in? [ISA · Monzo] [GIA] [Cancel]
 deactivate worker
-out -> ws : to every live connection
-ws --> app : the Confirm card
-app --> Member : the card
+out -> stream : appended to the stream log
+stream --> app : SSE: the card and its chips
+Member -> app : taps ISA · Monzo
+app -> api : POST /v1/chat/actions (the chip, the flow id)
+api -> qin : queue the tap
+api --> app : acknowledged at once
+qin -> agent : the tap, in order: the flow resumes
+activate agent
+agent -> agent : draft_record(oeic, fields): code types each value against the kind, says what is missing: the units
+agent -> out : ask_user: "How many units do you hold? Type them, or send a screenshot of the valuation"
+deactivate agent
+out -> stream : appended to the stream log
+stream --> app : SSE: the question
+Member -> app : types "1,234.5 units"
+app -> api : POST /v1/chat/messages
+api -> qin : queue
+qin -> agent : the answer, in order
+activate agent
+agent -> agent : draft_record again: complete; code values it at Fri 23 Oct's NAV, 1,234.5 × 18.57 = £22,925; the draft hashed in PendingAction
+agent -> out : Confirm card: Balanced, in ISA · Monzo, Arun's, £22,925, the figures code computed [Confirm] [Edit] [Cancel]
+deactivate agent
+out -> stream : appended to the stream log
+stream --> app : SSE: the Confirm card
 Member -> app : taps Confirm
-app -> api : POST /v1/chat/actions (Confirm, the PendingAction)
+app -> api : POST /v1/chat/actions (Confirm, the draft's hash)
 api -> qin : queue the tap
 api --> app : acknowledged at once
 qin -> agent : the tap, in order
 activate agent
-agent -> ddb : Instrument + AuditEvent (document_id) in one transaction, price sources resolved (ISIN to listing)
-agent -> out : "Added. How much do you hold? Send a screenshot or type it."
+agent -> ddb : Instrument + AuditEvent (document_id) in one transaction with the Record, its opening Event and their AuditEvents: the write service commits exactly the hashed draft
+agent -> out : "Saved: Balanced, £22,925" and records.changed
 deactivate agent
-out -> ws : to every live connection
-ws --> app : the question
-Member -> app : a valuation screenshot
-group The value takes the same path
-app -> api : asks for an upload link
-api --> app : presigned PUT URL
-app -> s3 : PUT the screenshot
-app -> api : POST /v1/chat/messages (names the screenshot)
-api -> qin : queue
-qin -> agent : the message
-agent -> ddb : file received: Document (screenshot) + AuditEvent, one transaction
-agent -> work : docs job (document_id)
-work -> worker : job
-worker -> claude : image + schema: value, units, date
-claude --> worker : JSON with sources
-worker -> ddb : PendingAction update_valuation (what was read, document_id)
-worker -> out : Confirm card: Balanced, £22,925 on 23 Oct, 1,234.5 units at 18.57
-out -> ws : to every live connection
-ws --> app : the Confirm card
-Member -> app : taps Confirm
-app -> api : POST /v1/chat/actions
-api -> qin : queue the tap
-qin -> agent : the tap, in order
-agent -> ddb : Position + Valuation (user_screenshot, document_id) + Transaction, each with an AuditEvent (document_id), one transaction
-agent -> out : "Saved: Balanced, £22,925"
-out -> ws : to every live connection
-ws --> app : the confirmation
+out -> stream : appended to the stream log
+stream --> app : SSE: the confirmation
+stream --> web : SSE: records.changed, the laptop's dashboard moves
+group Correction in place
+Member -> web : taps Home, Reading's value, types 428,000
+web --> Member : £415,000 → £428,000 [Save]
+Member -> web : Save
+web -> api : PATCH /v1/records/{id} (value 428,000; the figure shown, 415,000), the session cookie
+activate api
+api -> ddb : write service: value is editable on the property kind, a number in range; has the record moved since 415,000?
+alt the record moved since the screen showed it
+api --> web : refused, nothing written; the new figure is shown
+else unchanged since the screen showed it
+api -> ddb : correction Event + AuditEvent (via inline_edit, 415,000 → 428,000) in one transaction
+api --> web : saved
+api -> out : records.changed
+out -> stream : appended to the stream log
+stream --> app : SSE: records.changed, the phone's dashboard moves
 end
-note over agent, out : A file's Document and audit rows are written when it arrives, before the docs job reads it, and stay whatever happens next (Cancel, an expired PendingAction, a failed read); the file opens from the Audit screen. Nothing else is saved without the tap.
-note over worker, ws : No live connection: the sender pushes by APNs, and the app asks for everything after its last turn when it opens.
+deactivate api
+end
+note over agent, out : The Document and audit rows of a file are written when it arrives, before the docs job reads it, and stay whatever happens next (Cancel, an expired PendingAction, a failed read); the file opens from the Audit screen. A draft writes nothing: only Confirm, the tap on a check-in or a Save in place commits.
+note over api, ddb : One write service, the same code behind Confirm in the agent and the PATCH in the api: it checks the change against the kind spec and writes the event with its audit row in one transaction.
+note over out, stream : A device with no fresh Presence gets Apple push or Web Push instead; on opening, a door resumes from its last event (Last-Event-ID).
 @enduml

@@ -56,14 +56,12 @@ discipline, the toolbelt's card shapes and portfolio review, and the layman's
 front end both of them lack. v1 (prices, briefs, alerts, chat, news, calls on
 Lambda) stands underneath; sections that have not changed are kept short.
 
-The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161):
+The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161; the Lucid views redrawn for v4 on 26 Oct 2026, MA-225):
 
 - **The architecture, in Lucid**, on AWS 2024 shapes, one Lucid document per
   view. They are private to the account; share them from each document's
   menu. The PNG exports embedded below, the Lucid Standard Import JSON and the
-  script that generates it are in `docs/design/lucid/`. Pages 1 to 4 still
-  show the WebSocket `live` path and the console host, and are redrawn after
-  this re-plan (MA-186).
+  script that generates it are in `docs/design/lucid/`.
 
   | View | Lucid document | Drawn in |
   | --- | --- | --- |
@@ -74,7 +72,7 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   | 5 Where the data lives | [open](https://lucid.app/lucidchart/674e3574-9c79-403c-9157-72769a8d5fce/edit) | §20.6 |
   | 6 The market agent and the learning loop | [open](https://lucid.app/lucidchart/6f1b4c75-353c-49e5-b6e7-29fd2c18d356/edit) | §19, §22 |
   | 7 The agent team, settings, caps and alerts | [open](https://lucid.app/lucidchart/3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4/edit) | §15.2, §20 |
-  | Adding a holding (sequence) | [open](https://lucid.app/lucidchart/b50d49fd-c941-44a0-b623-7d3e99b57fd8/edit) | §4.2 |
+  | Adding a record (sequence) | [open](https://lucid.app/lucidchart/b50d49fd-c941-44a0-b623-7d3e99b57fd8/edit) | §4.2, §4.10 |
 
 - **The iOS app, in Claude Design** (MA-161): the screens in
   [MyPaisa iOS v1](https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8)
@@ -196,12 +194,10 @@ Silence is a feature: about ten notifications a week, two with sound at most.
 
 Page 1 of the Lucid architecture ([open](https://lucid.app/lucidchart/4ae817c6-847f-45f8-a10c-4509971c9c09/edit)): the household's doors on
 the left (the iOS app and the web app), the chat path along the top (API Gateway, the chat api, the updates
-queue, the agent, the outbox, the sender, the way back to the doors and Apple push),
-sign-in below it, the background jobs, the stores, and the failure path to the
+queue, the agent, the outbox, the sender, the SSE stream on the api host back to both doors, and Apple push and
+Web Push), sign-in below it, the background jobs, the stores, and the failure path to the
 admin's email.
 The other six pages zoom into one part each and are drawn in their sections.
-Page 1 was drawn before v4: it still shows the WebSocket `live` path and the
-console host, and is redrawn after this re-plan (MA-186).
 
 ![System overview, Lucid page 1](docs/design/lucid/01-overview.png)
 
@@ -302,10 +298,12 @@ queue run by the worker, and every reply goes out through the outbox to the
 member's stream at every open door (§21.5), or by push when none is open. The
 sequence in Lucid:
 [open](https://lucid.app/lucidchart/b50d49fd-c941-44a0-b623-7d3e99b57fd8/edit).
-It was drawn before v4 and still shows the live connection; it is redrawn
-after this re-plan (MA-186).
+It adds a fund from its factsheet as a record (`draft_record`, `ask_user` and
+the Confirm card, §4.8), then corrects a figure in place at the other door;
+both go through the one write service, each change with its audit row in one
+transaction (§4.10).
 
-![Adding a holding from the chat, Lucid sequence](docs/design/lucid/08-add-holding-sequence.png)
+![Adding a record through the chat, Lucid sequence](docs/design/lucid/08-add-holding-sequence.png)
 
 Any field Claude is unsure of is shown in amber and asked about. A holding is
 never saved without the Confirm tap. The same path handles an ETF (ISIN and
@@ -372,8 +370,6 @@ year), set once per account.
 ![Identity and sign-in, Lucid page 3](docs/design/lucid/03-identity.png)
 
 Page 3: the two doors (the iOS app and the web app), Sign in with Apple, Google and a passkey, the custom auth, Cognito, the Keychain and the session cookie, the authorizer, and the owner's sign-out and pause. [Open it in Lucid](https://lucid.app/lucidchart/c23040ec-b253-47e2-a614-612dab962292/edit).
-Page 3 was drawn before v4: it still shows the WebSocket `live` path and the
-console host, and is redrawn after this re-plan (MA-186).
 **There are no passwords.** Apple or Google vouches for the person: Sign in
 with Apple on any iPhone or iPad, or Sign in with Google for a member who
 prefers it (Arun, 25 Oct 2026, MA-161: "No more telegram login, on Google SSO
@@ -2065,8 +2061,6 @@ a daily digest instead.
 ![Environments, domains and delivery, Lucid page 2](docs/design/lucid/02-environments.png)
 
 Page 2: one account, what is shared in it, dev and prod side by side with their own keys, and how a change reaches each. [Open it in Lucid](https://lucid.app/lucidchart/350c6593-a915-495f-88f1-a781b3ed1c5b/edit).
-Page 2 was drawn before v4: it still shows the WebSocket `live` path and the
-console host, and is redrawn after this re-plan (MA-186).
 Arun's decisions, 24 Oct 2026 (MA-106): "I will be developing local, from day 1
 I need the auth to be fixed using AWS tech"; one AWS account with every
 component twice; dev seeded with synthetic data, prod a clean slate; everything
@@ -2554,7 +2548,7 @@ man's switch, the nightly drift check (MA-108) and the Lambda rollback
 
 ![Where the data lives, Lucid page 5](docs/design/lucid/05-data.png)
 
-Page 5: the one DynamoDB table and its entity groups, the S3 lake and its prefixes, DuckDB, the documents bucket and the web app's site (drawn as the console, before v4), and SSM. [Open it in Lucid](https://lucid.app/lucidchart/674e3574-9c79-403c-9157-72769a8d5fce/edit).
+Page 5: the one DynamoDB table, with the dynamic structure (kinds, records, events and views, §4.8) and the commitments and check-ins (§4.9) beside its other entity groups, the S3 lake and its prefixes, DuckDB, the stream's items, the documents bucket, the web app's site and SSM. [Open it in Lucid](https://lucid.app/lucidchart/674e3574-9c79-403c-9157-72769a8d5fce/edit).
 **S3**, the record, in the `mypaisa-<env>-lake` bucket, versioned, in
 Parquet, queried with DuckDB:
 
@@ -2618,9 +2612,7 @@ one admin, and nothing shared: the bounds of §4.5 stand.
 ![Queues, retries and replay, Lucid page 4](docs/design/lucid/04-queues.png)
 
 Page 4: the three queues and their consumers, the idempotency records, the retry rules, and the failure path from the dead-letter queues to replay. [Open it in Lucid](https://lucid.app/lucidchart/ddc9bde5-18d4-468b-af6e-c1f86d7d7647/edit).
-Page 4 was drawn before v4: it still shows the WebSocket `live` path and the
-console host, and is redrawn after this re-plan (MA-186); the stream that
-replaces the WebSocket is §21.5.
+The SSE stream the sender delivers through is §21.5.
 Arun, 24 Oct 2026: "Add SQS, the system should be resilient and self heal
 with retries from Queues."
 
