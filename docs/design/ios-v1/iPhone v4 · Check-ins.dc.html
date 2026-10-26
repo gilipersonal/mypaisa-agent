@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone v4 · Check-ins</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 32px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 10px; text-wrap: pretty; }
+          .dv-opts { display: flex; flex-direction: column; gap: 44px; margin-top: 26px; }
+          .dv-opt { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px; }
+          .dv-olabel { display: flex; align-items: baseline; gap: 10px; }
+          .dv-oid { font: 600 11px ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+          .dv-opt:target .dv-oid { background: #2a78d6; color: #fff; }
+          .dv-oname { font: 700 20px/26px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.01em; }
+          .rec { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 3px 8px; border-radius: 5px; background: #1D7A3E; color: #fff; }
+          .dv-orow { display: flex; flex-wrap: wrap; gap: 56px; align-items: flex-start; }
+          .dv-next { margin: 26px 0 0; font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #5A606C; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.06); }
+          .bd-note p { margin: 0; }
+          .dv-col { display: flex; flex-direction: column; }
+          .pair { display: flex; gap: 48px; align-items: flex-start; }
+          .lg > * { position: relative; z-index: 1; }
+          .z1 { position: relative; z-index: 1; }
+          .f1 { flex: 1; min-width: 0; }
+          .g0 { gap: 0; }
+          .cmp { bottom: 102px; }
+          .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+          .cb { position: absolute; left: 0; right: 0; bottom: 208px; }
+          .fadet { position: absolute; left: 0; right: 0; top: 0; height: 20px; z-index: 5; background: linear-gradient(180deg, var(--mp-bg), color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+          .striprow { display: flex; gap: 8px; align-items: center; margin: 0 12px; position: relative; z-index: 15; }
+          .striprow .strip { margin: 0; flex: 1; min-width: 0; }
+          .t15 { font: 400 15px/20px var(--mp-font); text-wrap: pretty; }
+          .t15 b, .done b { font-weight: 600; }
+          .nm { font: 600 15px/20px var(--mp-font); }
+          .sub { font: 400 13px/18px var(--mp-font); }
+          .rv { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: none; }
+          .tile { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none; font: 700 13px/1 var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink-2); }
+          .hrow { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 0; box-sizing: border-box; border-top: 1px solid var(--mp-line); }
+          .hdr { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; margin: -8px -8px -4px 0; }
+          .done { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); }
+          .done > :first-child { color: var(--mp-ink-2); }
+          .done .ms { font-size: 18px; color: var(--mp-accent); }
+          .done.nb { border-top: 0; min-height: 26px; }
+          .one { padding-bottom: 10px; gap: 2px; }
+          .qblk { border-top: 1px solid var(--mp-line); padding-top: 10px; }
+          .wrap8 { display: flex; flex-wrap: wrap; gap: 8px; }
+          .cbtn.tight { padding: 0 12px; }
+          .cbtn.sel { box-shadow: inset 0 0 0 2px var(--mp-accent); }
+          .cbtn.full { width: 100%; box-sizing: border-box; }
+          .ccard-fold.quiet { color: var(--mp-ink-2); }
+          .mp-chip .ms { font-size: 16px; }
+          .fref { display: inline-flex; align-items: center; gap: 4px; font: 600 13px/18px var(--mp-font); color: var(--mp-accent); }
+          .fref .ms { font-size: 16px; }
+          /* the check-in card */
+          .rowx { flex-wrap: nowrap; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+          .rowx .cbtn { flex: none; }
+          .opts { border-top: 1px solid var(--mp-line); }
+          .opt { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 16px; box-sizing: border-box; }
+          .opt + .opt { border-top: 1px solid var(--mp-line); }
+          .opt .chev { color: var(--mp-ink-2); font-size: 20px; }
+          .crow { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 6px 0; box-sizing: border-box; border-top: 1px solid var(--mp-line); }
+          .morebtn { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; flex: none; background: var(--mp-surface-2); color: var(--mp-ink); }
+          .morebtn .ms { font-size: 20px; }
+          .chk { font-size: 20px; color: var(--mp-accent); }
+          .undone { display: flex; gap: 8px; align-items: flex-start; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .undone .ms { font-size: 18px; color: var(--mp-accent); }
+          .total { display: flex; justify-content: space-between; align-items: center; min-height: 36px; border-top: 1px solid var(--mp-line); font: 600 15px/20px var(--mp-font); }
+          .total > :first-child { color: var(--mp-ink-2); font-weight: 400; }
+          /* the lock screen, as iPhone settings draws it */
+          .lock-top { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 2px; }
+          .lock-top > .ms { font-size: 20px; }
+          .nwrap { position: relative; margin: 0 12px 150px; }
+          .nwrap .notif-t span { color: var(--mp-ink); }
+          .nmark { width: 13px; height: 13px; border-radius: 50%; background: var(--mp-coral); box-shadow: 0 0 0 3px var(--mp-hero), 0 0 0 4.5px var(--mp-coral); display: block; }
+          .lockbtns { position: absolute; left: 46px; right: 46px; bottom: 44px; display: flex; justify-content: space-between; z-index: 5; }
+          .lkb { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; }
+          .lkb .ms { font-size: 22px; }
+          .lock .homebar { background: #fff; }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t1" data-screen-label="iPhone v4 check-ins: the card's options">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">The check-in card: three options</span></div>
+        <p class="dv-intro">MA-205: when a payment, a maturity or a valuation is due, the daily job (code, no model) puts a check-in card in the member's chat and one tap records the answer. Each option answers the HDFC home loan's EMI, due Thu 5 Nov: "Was November's EMI of ₹39,390 paid?" In every option the card shows exactly what Paid writes, so the Paid tap is the Confirm, and Undo follows it (K2). Shell 1a, light and dark. The strip shows the day only: the figure set holds no net worth after Mon 26 Oct, and a board never makes one up.</p>
+        <div class="dv-opts">
+
+          <div class="dv-opt" id="1a">
+            <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span class="dv-oname">Chips in one row</span></div>
+            <div class="dv-orow">
+              <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+                <div class="dv-col" data-screen-label="iPhone · Check-in card 1a, chips in one row · {{ t.label }}">
+                  <div class="bd-theme">iPhone · {{ t.label }}</div>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                    <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                      <div class="daysep">Today 09:00</div>
+                      <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                        <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Was November's EMI of ₹39,390 paid?</span></div>
+                        <div class="ccard-b"><div class="kv"><span>Loan</span><span>HDFC home loan · Pune flat</span></div><div class="kv"><span>Due</span><span>Thu 5 Nov</span></div></div>
+                        <div class="ccard-acts rowx"><span class="cbtn tight">Paid</span><span class="cbtn tight">Not yet</span><span class="cbtn tight">Different amount</span><span class="cbtn tight">Paid off in full</span></div>
+                      </div></div></div>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                    <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  </div></div>
+                </div>
+              </sc-for>
+              <div class="bd-note">
+                <p><b>All four answers, side by side,</b> as the plan's example writes them. One tap for any answer, and no second screen.</p>
+                <p><b>But the row does not fit:</b> at the default text size Paid off in full runs off the card's edge, and the row scrolls sideways; at larger text sizes two answers hide.</p>
+                <p><b>Paid looks like the others,</b> so the one tap that saves is not marked as the Confirm, and Paid off in full, which closes the loan, sits a thumb's width from it.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1b">
+            <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span class="dv-oname">Paid as the Confirm, the rest behind Something else</span><span class="rec">Recommended</span></div>
+            <div class="dv-orow">
+              <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+                <div class="dv-col" data-screen-label="iPhone · Check-in card 1b, Paid as the Confirm · {{ t.label }}">
+                  <div class="pair">
+                    <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · as it arrives</div>
+                    <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                      <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                      <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                        <div class="daysep">Today 09:00</div>
+                        <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                          <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Was November's EMI of ₹39,390 paid?</span></div>
+                          <div class="ccard-b"><div class="kv"><span>Loan</span><span>HDFC home loan · Pune flat</span></div><div class="kv"><span>Paid saves</span><span>₹39,390 on Thu 5 Nov</span></div><span class="mp-foot mp-ink2">One tap on Paid saves exactly this, with Undo.</span></div>
+                          <div class="ccard-acts"><span class="cbtn cbtn-primary">Paid</span><span class="cbtn">Something else<span class="ms">expand_more</span></span></div>
+                        </div></div></div>
+                      </div></div>
+                      <div class="edge-bot"></div>
+                      <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                      <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                    </div></div></div>
+                    <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · Something else, open</div>
+                    <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                      <div class="sbar"><span>09:04</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                      <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                        <div class="daysep">Today 09:00</div>
+                        <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                          <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Was November's EMI of ₹39,390 paid?</span></div>
+                          <div class="ccard-b"><div class="kv"><span>Loan</span><span>HDFC home loan · Pune flat</span></div><div class="kv"><span>Paid saves</span><span>₹39,390 on Thu 5 Nov</span></div></div>
+                          <div class="ccard-acts"><span class="cbtn cbtn-primary">Paid</span><span class="cbtn sel">Something else<span class="ms">expand_less</span></span></div>
+                          <div class="opts">
+                            <div class="opt"><span class="fx col f1"><span class="nm">Not yet</span><span class="sub mp-ink2">I'll ask again on Mon 9 Nov</span></span><span class="ms chev">chevron_right</span></div>
+                            <div class="opt"><span class="fx col f1"><span class="nm">Different amount</span><span class="sub mp-ink2">Tell me what was paid</span></span><span class="ms chev">chevron_right</span></div>
+                            <div class="opt"><span class="fx col f1"><span class="nm">Paid off in full</span><span class="sub mp-ink2">Closes the loan, after a Confirm</span></span><span class="ms chev">chevron_right</span></div>
+                          </div>
+                        </div></div></div>
+                      </div></div>
+                      <div class="edge-bot"></div>
+                      <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                      <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                    </div></div></div>
+                  </div>
+                </div>
+              </sc-for>
+              <div class="bd-note">
+                <p><b>Paid is the Confirm, and looks it:</b> the filled coral content button every Confirm card uses (C5), under a line that says exactly what it saves. One tap saves, then Undo.</p>
+                <p><b>The rarer answers wait one tap away.</b> Something else opens them in place under the buttons, each saying what happens next; Paid off in full, which closes the loan, is never beside the thumb's first tap.</p>
+                <p><b>Fits a compact iPhone</b> at every text size: two buttons on one line, three rows that stack.</p>
+                <p><b>Why recommended:</b> the commonest answer is one tap and reads as the Confirm it is; the answer that closes a loan cannot be hit by accident; and 1c's compact row is kept for several due at once (K5).</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1c">
+            <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span class="dv-oname">A compact row that check-ins stack into</span></div>
+            <div class="dv-orow">
+              <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+                <div class="dv-col" data-screen-label="iPhone · Check-in card 1c, a compact row · {{ t.label }}">
+                  <div class="bd-theme">iPhone · {{ t.label }}</div>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                    <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                      <div class="daysep">Today 09:00</div>
+                      <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                        <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-ins</span><span class="mp-foot mp-ink2">1 due today</span></span></div>
+                        <div class="ccard-b g0">
+                          <div class="crow"><span class="tile">₹</span><span class="fx col f1"><span class="nm">HDFC home loan</span><span class="sub mp-ink2">Was November's EMI of ₹39,390 paid?</span></span><span class="cbtn cbtn-primary tight">Paid</span><span class="morebtn"><span class="ms">more_horiz</span></span></div>
+                          <div class="crow"><span class="tile">£</span><span class="fx col f1"><span class="nm">Barclaycard bill</span><span class="sub mp-ink2">£1,458 · due Fri 20 Nov</span></span><span class="sub mp-ink2">coming up</span></div>
+                        </div>
+                      </div></div></div>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                    <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  </div></div>
+                </div>
+              </sc-for>
+              <div class="bd-note">
+                <p><b>One list of what is due,</b> a row each: the question, Paid, and ⋯ for Not yet, Different amount and Paid off in full in a menu. What is coming up waits under it without buttons.</p>
+                <p><b>Dense and calm</b> when several are due, but a single EMI gets a cramped row: the question wraps in a narrow column and the row cannot say what Paid saves beyond the amount.</p>
+                <p><b>The other answers hide in a menu,</b> a step further than 1b's rows, and the menu's labels have no room to say what happens next.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="dv-next">Try next: "<a class="dv-oid" href="#1b">1b</a> as drawn" · "<a class="dv-oid" href="#1b">1b</a>, with <a class="dv-oid" href="#1c">1c</a>'s rows for one check-in too" · "<a class="dv-oid" href="#1a">1a</a>, wrapped to two lines"</p>
+      </section>
+
+      <section class="dv-turn" id="intro" data-screen-label="iPhone v4 check-ins: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#intro">K</a><span class="dv-tname">Check-ins in 1b's style: every answer, every kind</span></div>
+        <p class="dv-intro">The check-ins of MA-205, MA-202, MA-210, MA-211 and MA-216 in the recommended style, planned until Arun picks. A primary button for the expected answer, which saves exactly what the card shows; Something else for the rest, each opening a short flow; Undo after a save. A maturity has no expected answer, so it has no primary. Each board in light and dark, each step side by side. The clock: today is Mon 26 Oct 2026, so the weekly digest and the two valuations are this morning, with the figure set's net worth in the strip; November and December frames show the day only, as the set holds no total for them. Illustrative figures, from the household-v4 figure set.</p>
+      </section>
+
+      <section class="bd" id="k1">
+        <div class="bd-h"><span class="bd-id">K1</span><span class="bd-name">Check-in: a valuation due</span><span class="bd-keys">MA-205 · MA-203</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-in: a valuation due · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, two due at once</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-ins</span><span class="mp-foot mp-ink2">2 valuations</span></span><span class="mp-hl">Are these still about right?</span></div>
+                      <div class="ccard-b g0">
+                        <div class="crow"><span class="tile">£</span><span class="fx col f1"><span class="nm">Home, Reading</span><span class="sub mp-ink2">Due Fri 30 Oct</span></span><span class="rv"><span class="nm">£415,000</span></span></div>
+                        <div class="crow"><span class="tile">₹</span><span class="fx col f1"><span class="nm">Flat, Pune</span><span class="sub mp-ink2">Due since 15 Jul</span></span><span class="rv"><span class="nm">₹1,10,00,000</span><span class="mp-chip mp-pause chip-s">Overdue</span></span></div>
+                        <span class="mp-foot mp-ink2" style="padding-top:10px">Both still right saves each figure as today's valuation, exactly as shown.</span>
+                      </div>
+                      <div class="ccard-acts" style="padding-top:12px"><span class="cbtn cbtn-primary">Both still right</span><span class="cbtn">One by one</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, one by one: Home</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:02</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">valuation due</span></span><span class="mp-hl">Is £415,000 still about right for Home, Reading?</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Last valued</span><span>Thu 30 Apr, your figure</span></div><div class="kv"><span>Still right saves</span><span>£415,000 as at today</span></div></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Still right</span><span class="cbtn sel">Something else<span class="ms">expand_less</span></span></div>
+                      <div class="opts">
+                        <div class="opt"><span class="fx col f1"><span class="nm">New value</span><span class="sub mp-ink2">Tell me today's figure; saved after a Confirm</span></span><span class="ms chev">chevron_right</span></div>
+                        <div class="opt"><span class="fx col f1"><span class="nm">Not now</span><span class="sub mp-ink2">I'll ask again on Fri 30 Oct, when it's due</span></span><span class="ms chev">chevron_right</span></div>
+                      </div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>A property asks every six months,</b> and two are due this morning, so they come as one card (MA-205's rule for several at once): Home, Reading, last valued Thu 30 Apr and due Fri 30 Oct, and the Flat, Pune, overdue since 15 Jul. Overdue is amber, never red.</p>
+            <p><b>Both still right is the Confirm</b> for both rows, each saved as today's valuation exactly as shown, with Undo; the two currencies are never added. One by one opens each row's own card; Still right is that card's Confirm.</p>
+            <p><b>New value</b> asks today's figure in the chat and saves a valuation dated today after its Confirm card, as R1 does. That is a new event, unlike a correction in place (Register file, R8), which says a figure shown was wrong.</p>
+            <p><b>Motion:</b> the card rises; Something else opens its rows in place under the buttons, and nothing above them moves.</p>
+            <p><b>Builds:</b> MA-205 (check-ins), MA-203 (a property's value). Strip £439,951: the figure set's net worth before the 09:41 Monzo savings. Both stay open here: the figure set answers neither.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k2">
+        <div class="bd-h"><span class="bd-id">K2</span><span class="bd-name">Check-in: EMI paid, then Undo</span><span class="bd-keys">MA-205 · MA-209</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-in: EMI paid, then Undo · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, Paid: saved, with Undo</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:12</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">answered 09:12</span></span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" data-mo="saved">check_circle</span><span class="mp-hl">Paid · November's EMI</span></span></div>
+                      <div class="ccard-b"><div class="kv"><span>Paid</span><span>₹39,390 on Thu 5 Nov</span></div><div class="kv"><span>Loan</span><span>HDFC home loan · Pune flat</span></div><div class="kv"><span>Left to pay</span><span>₹14,84,587</span></div><span class="mp-foot mp-ink2">Left to pay is the engine's schedule after this EMI.</span></div>
+                      <div class="ccard-acts"><span class="cbtn"><span class="ms">undo</span>Undo</span></div>
+                      <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Saved · in the audit log</span><span class="mp-foot mp-ink2">09:12</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, Undo: open again</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:13</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">open again</span></span><span class="mp-hl">Was November's EMI of ₹39,390 paid?</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Loan</span><span>HDFC home loan · Pune flat</span></div><div class="kv"><span>Paid saves</span><span>₹39,390 on Thu 5 Nov</span></div><div class="undone"><span class="ms">undo</span><span>Undone at 09:13. The payment is reversed by a new event; both stay in the audit log.</span></div></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Paid</span><span class="cbtn">Something else<span class="ms">expand_more</span></span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>One tap, saved:</b> the card edits in place to its check, what was saved, and the balance the engine's schedule leaves, ₹14,84,587, as the figure set has it (₹15,13,257.40 plus November's interest of ₹10,718.91, less the EMI of ₹39,389.58).</p>
+            <p><b>Undo sits on the saved card.</b> It writes a reversal, never a delete: the check-in opens again with Paid and Something else, and both events stay in the audit log.</p>
+            <p><b>One transaction</b> answers the check-in, writes the payment and its audit row (<code>via: checkin</code>) and moves the commitment on to Sat 5 Dec.</p>
+            <p><b>Motion:</b> the check lands with the one success bounce; Undo answers the tap and the card turns back without a bounce.</p>
+            <p><b>Builds:</b> MA-205 (the tap as the Confirm, with Undo), MA-209 (the EMI on the loan's schedule).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k3">
+        <div class="bd-h"><span class="bd-id">K3</span><span class="bd-name">Check-in: not yet, or a different amount</span><span class="bd-keys">MA-205 · MA-209</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-in: not yet, or a different amount · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · Not yet</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:05</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">answered 09:05</span></span><span class="mp-hl">Not yet · November's EMI</span></div>
+                      <div class="ccard-b"><span class="t15">I'll ask again on Mon 9 Nov. If it's still open then, it shows as overdue on Home.</span><div class="kv"><span>Loan</span><span>HDFC home loan · Pune flat</span></div><div class="kv"><span>Due</span><span>Thu 5 Nov · ₹39,390</span></div></div>
+                      <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">schedule</span>Noted · nothing saved to the loan</span><span class="mp-foot mp-ink2">09:05</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · Different amount</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:06</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">Check-in · November's EMI</span><div class="done nb"><span>Answer</span><span class="fx ac gap6"><b>Different amount</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">Different amount · one question</span><span class="cbtn cbtn-ghost">Cancel</span></div><span class="mp-hl">How much went to HDFC on Thu 5 Nov?</span></div>
+                        <div class="ccard-b"><span class="t15 mp-ink2">More than ₹39,390: I'll ask whether the extra shortens the term or lowers the EMI. Less: the rest stays due.</span><span class="mp-foot mp-ink2">Then a Confirm card shows what will be saved.</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Amount paid, in ₹</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Not yet saves nothing to the loan.</b> The card says when it will ask again, Mon 9 Nov, and what happens after: overdue on Home, never red.</p>
+            <p><b>Different amount opens a short flow:</b> the answer folds to its line and one question asks how much. Over the EMI, it asks whether the extra shortens the term (India's default) or lowers the EMI; under it, the rest stays due.</p>
+            <p><b>No figure is assumed:</b> the amount is the member's own, typed in the composer, then a Confirm card as R3's shows what is saved.</p>
+            <p><b>Motion:</b> each answer folds into its line as the next question rises in its place.</p>
+            <p><b>Builds:</b> MA-205 (the answers), MA-209 (prepayment, shortening the term or lowering the EMI).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k4">
+        <div class="bd-h"><span class="bd-id">K4</span><span class="bd-name">Check-in: paid off in full</span><span class="bd-keys">MA-205 · MA-209</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-in: paid off in full · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 3, the final amount</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:20</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">Check-in · November's EMI</span><div class="done nb"><span>Answer</span><span class="fx ac gap6"><b>Paid off in full</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">Paid off in full · 1 of 2</span><span class="cbtn cbtn-ghost">Cancel</span></div><span class="mp-hl">What was the final amount?</span></div>
+                        <div class="ccard-b"><span class="t15 mp-ink2">Use HDFC's closing figure, or the engine's for Thu 5 Nov.</span><div class="wrap8"><span class="cbtn full">₹15,23,976 · the engine's figure</span><span class="cbtn cbtn-ghost">Type HDFC's figure</span></div><span class="mp-foot mp-ink2">The engine's figure: the balance after October's EMI, with November's interest.</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Final amount, in ₹</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 3, the date, then Confirm</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:21</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">Paid off in full</span><div class="done nb"><span>Final amount</span><span class="fx ac gap6"><b>₹15,23,976</b><span class="ms">check</span></span></div><div class="done"><span>Paid on</span><span class="fx ac gap6"><b>Thu 5 Nov</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">Close the loan · check it</span><span class="mp-hl">HDFC home loan, paid off in full</span></div>
+                        <div class="ccard-b"><div class="kv"><span>Final payment</span><span>₹15,23,976</span></div><div class="kv"><span>Paid on</span><span>Thu 5 Nov</span></div><div class="kv"><span>The loan</span><span>closes; kept in the history</span></div><div class="kv"><span>Its check-ins</span><span>end with this one</span></div><div class="kv"><span>Then</span><span>the projection runs again</span></div><span class="mp-foot mp-ink2">Nothing is saved until you tap Confirm.</span></div>
+                        <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 3 of 3, closed</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:22</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">Loan closed · saved</span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" data-mo="saved">check_circle</span><span class="mp-hl">HDFC home loan · closed</span></span></div>
+                        <div class="ccard-b"><div class="kv"><span>Paid off</span><span>₹15,23,976, Thu 5 Nov</span></div><div class="kv"><span>Its check-ins</span><span>ended</span></div></div>
+                        <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Saved · in the audit log</span><span class="mp-foot mp-ink2">09:22</span></div>
+                      </div>
+                      <div class="ai-text">The Pune flat has no loan on it now. The projection ran again, with ₹39,390 a month freed from December.</div>
+                      <span class="ai-meta"><span class="ms ms-s">functions</span><span>Figures: the engine's schedule and projection</span></span>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Two questions, then a Confirm.</b> The final amount (HDFC's figure, or the engine's in one tap, labelled as the engine's), then the date (Today, Thu 5 Nov, or Pick a date, as C4).</p>
+            <p><b>The engine's figure:</b> ₹15,13,257.40 left after October's EMI, plus November's interest at 8.5% (₹10,718.91), is ₹15,23,976.</p>
+            <p><b>A Confirm card, not a tap:</b> closing a loan is not the expected answer, so it gets C5's full card: what is paid, that the loan closes and is kept, that its check-ins end, that the projection runs again.</p>
+            <p><b>Closed, never deleted:</b> the record's status becomes closed, the commitment ends, and the projection frees the EMI from December.</p>
+            <p><b>Builds:</b> MA-205 (Paid off in full), MA-209 (closure). An alternative ending to K2: the figure set keeps the loan open.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k5">
+        <div class="bd-h"><span class="bd-id">K5</span><span class="bd-name">Check-ins: several due at once</span><span class="bd-keys">MA-205 · MA-210</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-ins: several due at once · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, one card, All paid</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Fri 20 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-ins</span><span class="mp-foot mp-ink2">2 due</span></span><span class="mp-hl">Two payments to tick off</span></div>
+                      <div class="ccard-b g0">
+                        <div class="crow"><span class="tile">₹</span><span class="fx col f1"><span class="nm">HDFC home loan</span><span class="sub mp-ink2">EMI due Thu 5 Nov</span></span><span class="rv"><span class="nm">₹39,390</span><span class="mp-chip mp-pause chip-s">Overdue</span></span></div>
+                        <div class="crow"><span class="tile">£</span><span class="fx col f1"><span class="nm">Barclaycard</span><span class="sub mp-ink2">The bill in full · due today</span></span><span class="rv"><span class="nm">£1,458</span></span></div>
+                        <span class="mp-foot mp-ink2" style="padding-top:10px">All paid saves both, exactly as shown, each with its audit row.</span>
+                      </div>
+                      <div class="ccard-acts" style="padding-top:12px"><span class="cbtn cbtn-primary">All paid</span><span class="cbtn">One by one</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, both saved</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:06</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Fri 20 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-ins</span><span class="mp-foot mp-ink2">answered 09:06</span></span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" data-mo="saved">check_circle</span><span class="mp-hl">Both paid</span></span></div>
+                      <div class="ccard-b g0">
+                        <div class="crow"><span class="tile">₹</span><span class="fx col f1"><span class="nm">HDFC home loan</span><span class="sub mp-ink2">November's EMI</span></span><span class="nm">₹39,390</span><span class="ms chk">check</span></div>
+                        <div class="crow"><span class="tile">£</span><span class="fx col f1"><span class="nm">Barclaycard</span><span class="sub mp-ink2">The bill in full</span></span><span class="nm">£1,458</span><span class="ms chk">check</span></div>
+                      </div>
+                      <div class="ccard-acts" style="padding-top:12px"><span class="cbtn"><span class="ms">undo</span>Undo both</span></div>
+                      <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Saved · in the audit log</span><span class="mp-foot mp-ink2">09:06</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>One card, not two pings.</b> Arun left November's EMI open after Not yet (K3), so on Fri 20 Nov it is overdue (in amber, never red) beside the Barclaycard bill due today. 1c's compact rows carry them.</p>
+            <p><b>All paid is the Confirm</b> for every row, each saved exactly as shown: the EMI of ₹39,390 and the bill in full, £1,458. Two currencies, no total: they are never added together.</p>
+            <p><b>One by one</b> opens each row's own card (K2, K6), with its Something else.</p>
+            <p><b>Saved together, undone together:</b> Undo both reverses both, each with its own audit row; a single one is undone from its row.</p>
+            <p><b>Builds:</b> MA-205 (several due at once), MA-210 (the card bill). An alternative path to K2: the figure set does not say which answer Arun gave.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k6">
+        <div class="bd-h"><span class="bd-id">K6</span><span class="bd-name">Check-in: the card bill</span><span class="bd-keys">MA-210 · MA-205</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-in: the card bill · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, as it arrives</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Fri 20 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Was the £1,458 Barclaycard bill paid in full?</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Statement</span><span>Sun 1 Nov</span></div><div class="kv"><span>Minimum</span><span>£25</span></div><div class="kv"><span>Paid in full saves</span><span>£1,458 on Fri 20 Nov</span></div><span class="mp-foot mp-ink2">A payment to the card is a transfer, not spending; the spending was the statement's lines.</span></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Paid in full</span><span class="cbtn">Something else<span class="ms">expand_more</span></span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, the minimum or part</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:04</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Fri 20 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Was the £1,458 Barclaycard bill paid in full?</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Paid in full saves</span><span>£1,458 on Fri 20 Nov</span></div></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Paid in full</span><span class="cbtn sel">Something else<span class="ms">expand_less</span></span></div>
+                      <div class="opts">
+                        <div class="opt"><span class="fx col f1"><span class="nm">The minimum, £25</span><span class="sub mp-ink2">£1,433 carries over; its interest counts as spending</span></span><span class="ms chev">chevron_right</span></div>
+                        <div class="opt"><span class="fx col f1"><span class="nm">Part of it</span><span class="sub mp-ink2">Tell me how much</span></span><span class="ms chev">chevron_right</span></div>
+                        <div class="opt"><span class="fx col f1"><span class="nm">Not yet</span><span class="sub mp-ink2">I'll ask again on Mon 23 Nov</span></span><span class="ms chev">chevron_right</span></div>
+                      </div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The bill is the statement's:</b> £1,458 from the Barclaycard statement of Sun 1 Nov, minimum £25, due Fri 20 Nov. Paid in full is the expected answer and the Confirm.</p>
+            <p><b>A card is revolving debt:</b> the payment is a transfer, not spending (the statement's lines were the spending), so nothing counts twice.</p>
+            <p><b>The minimum or part</b> leave a balance to carry (£1,458 − £25 = £1,433 for the minimum); its interest, when the next statement shows it, counts as spending. Part asks how much, then a Confirm card.</p>
+            <p><b>Motion:</b> Something else opens its rows in place; nothing above them moves.</p>
+            <p><b>Builds:</b> MA-210 (cards from their statements), MA-205 (the check-in). A statement that shows the payment answers it by itself.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k7">
+        <div class="bd-h"><span class="bd-id">K7</span><span class="bd-name">Check-in: the SIP</span><span class="bd-keys">MA-216 · MA-205</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-in: the SIP · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }} · Asha's chat, Something else open</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>09:02</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Tue 10 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 09:00</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Did November's SIP of ₹10,000 go through?</span></div>
+                    <div class="ccard-b"><div class="kv"><span>Fund</span><span>Parag Parikh Flexi Cap</span></div><div class="kv"><span>Went through saves</span><span>a ₹10,000 buy, Tue 10 Nov</span></div><span class="mp-foot mp-ink2">Its units come at that day's NAV, from AMFI, once it is published.</span></div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Went through</span><span class="cbtn sel">Something else<span class="ms">expand_less</span></span></div>
+                    <div class="opts">
+                      <div class="opt"><span class="fx col f1"><span class="nm">Skipped this month</span><span class="sub mp-ink2">The SIP carries on in December</span></span><span class="ms chev">chevron_right</span></div>
+                      <div class="opt"><span class="fx col f1"><span class="nm">Stopped</span><span class="sub mp-ink2">Ends the SIP and its check-ins</span></span><span class="ms chev">chevron_right</span></div>
+                    </div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Asha's fund, so Asha is asked.</b> Her SIP of ₹10,000 on the 10th is a commitment (registered for her in R5); the check-in comes to her chat on Tue 10 Nov.</p>
+            <p><b>Went through is the Confirm:</b> it saves a ₹10,000 buy dated Tue 10 Nov. The units are the engine's, at AMFI's NAV for that day, filled in when it is published; no figure is guessed.</p>
+            <p><b>Skipped</b> keeps the SIP for December; <b>Stopped</b> ends it and its check-ins, after a Confirm card.</p>
+            <p><b>Motion:</b> Something else opens its rows in place under the buttons.</p>
+            <p><b>Builds:</b> MA-216 (SIPs as commitments), MA-205 (the check-in).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k8">
+        <div class="bd-h"><span class="bd-id">K8</span><span class="bd-name">Check-in: the saver matures</span><span class="bd-keys">MA-202 · MA-205</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Check-in: the saver matures · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, Asha's chat, what happened?</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Mon 14 Dec</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">matures today</span></span><span class="mp-hl">Your fixed-rate saver matured today with £10,460. What happened to it?</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Saver</span><span>Nationwide, 4.6% fixed</span></div><div class="kv"><span>Opened</span><span>Sun 14 Dec 2025, £10,000</span></div><div class="kv"><span>At maturity</span><span>£10,460</span></div><span class="mp-foot mp-ink2">Nothing is assumed: pick what happened.</span></div>
+                      <div class="ccard-acts"><span class="cbtn">Renewed</span><span class="cbtn">Paid out</span><span class="cbtn">Moved</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, renewed: a successor</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:03</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Mon 14 Dec</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:00</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">Check-in · the saver</span><div class="done nb"><span>What happened?</span><span class="fx ac gap6"><b>Renewed</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">Renewed · 1 of 2</span><span class="cbtn cbtn-ghost">Cancel</span></div><span class="mp-hl">How long is the new one fixed for?</span></div>
+                        <div class="ccard-b"><div class="wrap8"><span class="cbtn tight">1 year</span><span class="cbtn tight">2 years</span><span class="cbtn tight">Another term</span></div><span class="t15 mp-ink2">Next, its rate. Then a Confirm card starts a new saver from today with £10,460; this one closes as matured and links to it.</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>No expected answer, so no primary.</b> The saver's maturity is set to ask, so Renewed, Paid out and Moved sit side by side, each opening a short flow; none saves on its own.</p>
+            <p><b>The figure is the engine's:</b> £10,000 at 4.6% fixed for a year, opened Sun 14 Dec 2025, is £10,460 today.</p>
+            <p><b>Renewed starts a successor:</b> it asks the term, then the rate, then a Confirm card makes a new saver with £10,460 from today, linked to this one, which closes as matured. Paid out asks where the money went; Moved asks which record it joined.</p>
+            <p><b>Asha's saver, so Asha is asked.</b> Motion: the answer folds to its line and the next question rises.</p>
+            <p><b>Builds:</b> MA-202 (the maturity outcome and its successor record), MA-205 (the check-in). The rate is not drawn: the figure set holds none for a renewal.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k9">
+        <div class="bd-h"><span class="bd-id">K9</span><span class="bd-name">Weekly digest: autopay assumed paid</span><span class="bd-keys">MA-211</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Weekly digest: autopay assumed paid · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:31</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 08:30</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                    <div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">summarize</span>Weekly digest</span><span class="mp-foot mp-ink2">week of Mon 19 Oct</span></span><span class="mp-hl">Autopay: 2 payments assumed paid</span></div>
+                      <div class="ccard-b g0">
+                        <div class="hrow"><span class="tile">£</span><span class="fx col f1"><span class="nm">Mortgage · Nationwide</span><span class="sub mp-ink2">Thu 1 Oct · joint</span></span><span class="rv"><span class="nm">£1,456</span></span></div>
+                        <div class="hrow"><span class="tile">£</span><span class="fx col f1"><span class="nm">Car loan · Close Brothers</span><span class="sub mp-ink2">Tue 20 Oct</span></span><span class="rv"><span class="nm">£347</span></span></div>
+                        <div class="total"><span>In all</span><span>£1,803</span></div>
+                        <span class="mp-foot mp-ink2" style="padding-top:8px">Both are on autopay, so each was saved as paid once its grace passed. Nothing to do unless one didn't go.</span>
+                      </div>
+                      <div class="ccard-acts" style="padding-top:12px"><span class="cbtn">One didn't go</span></div>
+                      <div class="ccard-fold"><span>Open Debts</span><span class="ms">chevron_right</span></div>
+                    </div>
+                    <span class="ai-meta"><span class="ms ms-s">notifications_paused</span><span>One quiet notification for the week, no sound</span></span>
+                  </div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Autopay never asks.</b> The mortgage and the car loan are paid by direct debit, so each is assumed paid once its grace passes, and both are listed here once a week instead of two check-ins: the way MyPaisa keeps to about ten notifications a week.</p>
+            <p><b>The first digest since setup</b> carries October's autopay so far, as the figure set lists it for the week of Mon 19 Oct: £1,456 on Thu 1 Oct and £347 on Tue 20 Oct, £1,803 in all (£1,456.46 + £346.55).</p>
+            <p><b>One didn't go</b> opens a short flow for that row, and a statement that shows the payment confirms it by itself. The mortgage is joint: Asha's digest lists it too.</p>
+            <p><b>Quiet:</b> one notification, no sound, never at quiet hours. Motion: the card rises with its rows in turn.</p>
+            <p><b>Builds:</b> MA-211. Strip £439,951: the figure set's net worth before the 09:41 Monzo savings.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k10">
+        <div class="bd-h"><span class="bd-id">K10</span><span class="bd-name">Lock screen: a check-in</span><span class="bd-keys">MA-205</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Lock screen: a check-in · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn lock">
+                  <div class="sbar"><span></span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="lock-top"><span class="ms">lock</span><span class="lock-date">Thursday 5 November</span><span class="lock-time">9:00</span></div>
+                  <div class="f1"></div>
+                  <div class="nwrap">
+                    <div class="notif lg lg-strong"><span class="notif-ic"><span class="nmark"></span></span><div class="notif-b"><div class="notif-t"><span>HDFC home loan</span><span>now</span></div><span>Was November's EMI paid? Tap to answer.</span></div></div>
+                  </div>
+                  <div class="lockbtns"><span class="lkb lg"><span class="ms z1">flashlight_on</span></span><span class="lkb lg"><span class="ms z1">photo_camera</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>No amount on the lock screen:</b> the loan and the question, in the card's plain line with its figure left out. The ₹39,390 waits inside the app (the rule MA-170 sets for every push).</p>
+            <p><b>No answer from the lock screen.</b> A tap opens the chat at the card, where Paid shows exactly what it saves; a lock-screen Paid would save an amount the member never saw.</p>
+            <p><b>An ordinary notification,</b> not time-sensitive; quiet hours hold. Several due at once arrive as one.</p>
+            <p><b>Motion:</b> the date and time rise, then the notification slides in.</p>
+            <p><b>Builds:</b> MA-205 (the check-in's push).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="k11">
+        <div class="bd-h"><span class="bd-id">K11</span><span class="bd-name">Privacy mode: a check-in</span><span class="bd-keys">MA-205 · MA-171</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Privacy mode: a check-in · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="striprow"><div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Thu 5 Nov</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div><span class="gbtn lg lg-tint"><span class="ms z1">visibility_off</span></span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 09:00</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Was November's EMI of <span class="mp-mask">₹39,390</span> paid?</span></div>
+                    <div class="ccard-b"><div class="kv"><span>Loan</span><span>HDFC home loan · Pune flat</span></div><div class="kv"><span>Paid saves</span><span><span class="mp-mask">₹39,390</span> on Thu 5 Nov</span></div><span class="mp-foot mp-ink2">Privacy is on: amounts hidden.</span><span class="fref"><span class="ms">visibility</span>Show amounts on this card</span></div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Paid</span><span class="cbtn">Something else<span class="ms">expand_more</span></span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Privacy on:</b> the EMI is masked in the question and in what Paid saves; dates and names stay.</p>
+            <p><b>Paid still saves exactly what the card holds,</b> behind the mask; Show amounts on this card reveals this card only, for a member who wants to see before tapping.</p>
+            <p><b>The glass eye beside the strip is on,</b> tinted; a tap shows amounts everywhere again.</p>
+            <p><b>Motion:</b> masks fade in as blocks and never roll.</p>
+            <p><b>Builds:</b> MA-205 (the card), MA-171 (privacy mode).</p>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          return {
+            themes: [{ label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' }]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

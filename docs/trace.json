@@ -1907,8 +1907,29 @@
     "12"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Register a fixed deposit: SBI"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A deposit"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A deposit, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · A deposit"
+    }
+   ],
    "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. Interest, an EMI, a rate change and a preclosure use the same check-and-confirm card as the drawn prepayment, rent and maturity cards; listed on the loan's update menu. Its Telegram and Mini App boards are superseded by the iOS app (MA-161), and any browser boards stay as the web app's spec (ARCHITECTURE 9.4); its iOS boards are drawn in MyPaisa iOS v1 with /design-first before it starts."
   },
   {
@@ -1948,6 +1969,36 @@
      "project": "app",
      "file": "Wealth.dc.html",
      "board": "Browser · Household overview"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, net worth first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, net worth first, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, two countries"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, what's next"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, net worth first"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPad · Whole wealth with the chat beside it"
     }
    ],
    "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. Options round: the Mini App tabs become Overview, Assets, Debts, Plan, More, and the browser sidebar gains Wealth, Investing and Records groups. Options round: the browser sidebar has no Admin entry for the owner (the picked Admin center and Audit and files show one; the Prototype adds one); the Undo buttons on saved cards (a8, u4, f2) each go through their own card, Confirm and the second check. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
@@ -1978,13 +2029,43 @@
      "project": "app",
      "file": "Wealth.dc.html",
      "board": "Browser · Budget"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Budget"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Budget, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Budget, correct a plan amount"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Budget, correct a plan amount, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Budget.dc.html",
+     "board": "iPhone · Budget"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Budget.dc.html",
+     "board": "iPhone · Budget, correct a plan amount"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
+   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. Drawn: plan against actual filled from statements and the monthly check-in (MA-186) on Web v4 · Budget and iPhone v4 · Budget (MA-193).",
    "undrawn": [
     "privacy on for Budget and Forecast, at both doors",
     "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)",
-    "plan against actual filled from statements and the monthly check-in (MA-186)"
+    "the budget screens on iPad (MA-193 drew iPhone, desktop and 390)"
    ]
   },
   {
@@ -4041,6 +4122,21 @@
      "project": "ios",
      "file": "iPhone settings.dc.html",
      "board": "iPhone · App switcher"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, privacy on"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, privacy on, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, privacy on"
     }
    ],
    "notes": "",
@@ -4408,6 +4504,16 @@
      "project": "app",
      "file": "Browser 2.dc.html",
      "board": "Browser · Login"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Sign in"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Sign in, phone"
     }
    ],
    "notes": "The login board was picked with Telegram's button on it; MA-161 redrew it (Browser · Login in Browser 2.dc.html), so it is planned again until Arun looks at it in this story's options round. Drawn: the sign-in page with Sign in with Apple, Google and a passkey, without Telegram.",
@@ -4431,9 +4537,115 @@
     "9.4"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
-   "notes": "The design round itself (MA-186): its boards are listed here as they are drawn."
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1a, Chat beside"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1a, Chat beside, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1b, Chat first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1b, Chat first, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1c, Ask bar"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1c, Ask bar, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, net worth first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, two countries"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, what's next"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, net worth first"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, two countries"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, what's next"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in card 1a, chips in one row"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in card 1b, Paid as the Confirm"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in card 1c, a compact row"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, the fan first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, a story first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, decades"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, the fan first"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, a story first"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, decades"
+    }
+   ],
+   "notes": "The design round itself (MA-186): the option boards are listed here; each story lists its own boards. The decision record is docs/design/reviews/MA-193/decision.md."
   },
   {
    "key": "MA-194",
@@ -4501,8 +4713,89 @@
     "21.5"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1a, Chat beside"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1a, Chat beside, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1b, Chat first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1b, Chat first, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1c, Ask bar"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Shell 1c, Ask bar, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, a reply streaming"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, a reply streaming, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, a Confirm card"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, a Confirm card, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, sending a statement"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, sending a statement, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, offline"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, offline, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Home moves live"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Home moves live, phone"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4530,12 +4823,29 @@
      "project": "ios",
      "file": "iPhone audit and activity.dc.html",
      "board": "iPhone · A run"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Activity"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Activity, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · A run"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · A run, phone"
     }
    ],
-   "notes": "Starts from boards drawn for MA-79 before MA-186; the rest is drawn on MA-193.",
-   "undrawn": [
-    "the Activity page and one run at desktop and phone width (MA-186)"
-   ]
+   "notes": "Starts from boards drawn for MA-79 before MA-186; the rest is drawn on MA-193. Drawn: the Activity page and one run at desktop and phone width (MA-186) on Web v4 · Shell and chat (MA-193)."
   },
   {
    "key": "MA-200",
@@ -4551,8 +4861,19 @@
     "11"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Web Push notification"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Web Push notification, phone"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4562,15 +4883,31 @@
    "phase": 2,
    "summary": "Kind specs and the generic draft tools let the agent register any kind of asset or debt, asking only what is missing",
    "status": "To Do",
-   "labels": [],
+   "labels": [
+    "design"
+   ],
    "arch": [
     "4.8",
     "8"
    ],
-   "ui": false,
-   "design": "none",
-   "boards": [],
-   "notes": ""
+   "ui": true,
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · A new kind for the admin: Premium Bonds"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Register a record: Monzo savings"
+    }
+   ],
+   "notes": "",
+   "open": [
+    "Does approving a new kind need the second check: ARCHITECTURE 4.5's list does not name it; a kind changes what every member can register, like an admin setting (the iPhone Register board's Premium Bonds card asks the question; MA-193)"
+   ]
   },
   {
    "key": "MA-201",
@@ -4587,8 +4924,59 @@
     "4.10"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Correct a figure in place"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Correct a figure in place, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Correct a figure in place"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Correct a figure in place: Home's value"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Correct a value"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Correct a value, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · Correct a value"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Budget, correct a plan amount"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Budget, correct a plan amount, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Budget.dc.html",
+     "board": "iPhone · Budget, correct a plan amount"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4606,8 +4994,39 @@
     "4.10"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Register a record: Monzo savings"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Register a property: the Pune flat"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Privacy mode: a Confirm card"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, a Confirm card"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, a Confirm card, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: a valuation due"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4640,12 +5059,104 @@
      "project": "ios",
      "file": "iPad and foldable.dc.html",
      "board": "iPad · Home with the chat beside it"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, net worth first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, net worth first, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, first record"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, first record, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, empty"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, empty, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, privacy on"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, privacy on, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, two countries"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, what's next"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Home moves live"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Home moves live, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, net worth first"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, two countries"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, what's next"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, first record"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, empty"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, privacy on"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPad · Whole wealth with the chat beside it"
     }
    ],
-   "notes": "Starts from the Home boards drawn for MA-78 before MA-186; the wealth dashboard is drawn on MA-193.",
-   "undrawn": [
-    "the net worth hero across the UK and India, with the records by class and by member (MA-186)"
-   ]
+   "notes": "Starts from the Home boards drawn for MA-78 before MA-186; the wealth dashboard is drawn on MA-193. Drawn: the net worth hero across the UK and India, with the records by class and by member (MA-186) on Web v4 · Dashboard and iPhone v4 · Home (MA-193)."
   },
   {
    "key": "MA-213",
@@ -4662,8 +5173,34 @@
     "5.3"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, in rupees"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Dashboard.dc.html",
+     "board": "Browser · Dashboard, in rupees, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Home.dc.html",
+     "board": "iPhone · Home, in rupees"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, in rupees at 2026 prices"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, in rupees at 2026 prices"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4680,8 +5217,14 @@
     "4.9"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: the saver matures"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4714,8 +5257,49 @@
     "4.8"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Register a loan part-way through: HDFC"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A loan"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A loan, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Mortgage and car loan"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Mortgage and car loan, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · A loan"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · Mortgage and car loan"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: paid off in full"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4733,9 +5317,63 @@
     "8"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
-   "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in card 1a, chips in one row"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in card 1b, Paid as the Confirm"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in card 1c, a compact row"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: EMI paid, then Undo"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: not yet, or a different amount"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: paid off in full"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-ins: several due at once"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Lock screen: a check-in"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Privacy mode: a check-in"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: a valuation due"
+    }
+   ],
+   "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts.",
+   "undrawn": [
+    "the check-in cards in the web chat at desktop and 390 (MA-193 drew them on iPhone; the card JSON is the same)"
+   ]
   },
   {
    "key": "MA-210",
@@ -4752,8 +5390,29 @@
     "4.9"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: the card bill"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Debts"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Debts, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · Debts"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4771,8 +5430,14 @@
     "11"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Weekly digest: autopay assumed paid"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4801,11 +5466,56 @@
      "project": "app",
      "file": "Wealth.dc.html",
      "board": "Browser · A loan"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Debts"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Debts, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A loan"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A loan, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Mortgage and car loan"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Mortgage and car loan, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · Debts"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · A loan"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · Mortgage and car loan"
     }
    ],
-   "notes": "Starts from boards drawn for MA-95 before MA-186; the rest is drawn on MA-193.",
+   "notes": "Starts from boards drawn for MA-95 before MA-186; the rest is drawn on MA-193. Drawn: Debts and one loan on iPhone, iPad and at phone width (MA-186), except the iPad, on MA-193.",
    "undrawn": [
-    "Debts and one loan on iPhone, iPad and at phone width (MA-186)"
+    "Debts and one loan on iPad (MA-193 drew iPhone and 390)"
    ]
   },
   {
@@ -4822,8 +5532,14 @@
     "4.8"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Register for another member: Asha's fund"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4873,8 +5589,29 @@
     "8"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · No history yet: past buys or your estimate"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · An asset, no history"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · An asset, no history, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · An asset, no history"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4891,8 +5628,19 @@
     "4.9"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Check-ins.dc.html",
+     "board": "iPhone · Check-in: the SIP"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Register.dc.html",
+     "board": "iPhone · Register for another member: Asha's fund"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4921,11 +5669,71 @@
      "project": "app",
      "file": "Wealth.dc.html",
      "board": "Browser · An asset"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Assets"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Assets, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · An asset"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · An asset, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A deposit"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · A deposit, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Correct a value"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Assets and debts.dc.html",
+     "board": "Browser · Correct a value, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · Assets"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · An asset"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · A deposit"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Assets and debts.dc.html",
+     "board": "iPhone · Correct a value"
     }
    ],
-   "notes": "Starts from boards drawn for MA-95 before MA-186; the rest is drawn on MA-193.",
+   "notes": "Starts from boards drawn for MA-95 before MA-186; the rest is drawn on MA-193. Drawn: Assets and one asset on iPhone, iPad and at phone width, with XIRR's working (MA-186), except the iPad, on MA-193.",
    "undrawn": [
-    "Assets and one asset on iPhone, iPad and at phone width, with XIRR's working (MA-186)"
+    "Assets and one asset on iPad (MA-193 drew iPhone and 390)"
    ]
   },
   {
@@ -4943,8 +5751,49 @@
     "12"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Statement review"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Statement review, phone"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Statement answers a check-in"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Statement answers a check-in, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Budget.dc.html",
+     "board": "iPhone · Statement review"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Budget.dc.html",
+     "board": "iPhone · Statement answers a check-in"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, sending a statement"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Shell and chat.dc.html",
+     "board": "Browser · Chat, sending a statement, phone"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -4962,8 +5811,24 @@
     "12"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Month-end check-in"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Budget.dc.html",
+     "board": "Browser · Month-end check-in, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Budget.dc.html",
+     "board": "iPhone · Month-end check-in"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -5015,8 +5880,34 @@
     "6.6"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, correcting a plan item"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Plan item in the chat, phone"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, correcting a plan item"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Chat, adding a plan item"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, milestones and plan items"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -5034,8 +5925,24 @@
     "8"
    ],
    "ui": true,
-   "design": "todo",
-   "boards": [],
+   "design": "planned",
+   "boards": [
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, a what-if in the chat"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Chat, a what-if"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Chat, a what-if as Asha asks it"
+    }
+   ],
    "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts."
   },
   {
@@ -5059,12 +5966,89 @@
      "project": "app",
      "file": "Wealth.dc.html",
      "board": "Browser · Forecast"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, the fan first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, a story first"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, decades"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, in rupees at 2026 prices"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, privacy on"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, correcting an assumption"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Projection.dc.html",
+     "board": "Browser · Projection, as Asha sees it"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, the fan first"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, a story first"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, decades"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, milestones and plan items"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, the assumptions"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, as Asha sees it"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, in rupees at 2026 prices"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, privacy on"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Projection.dc.html",
+     "board": "iPhone · Projection, correcting an assumption"
     }
    ],
-   "notes": "Starts from boards drawn for MA-96 before MA-186; the rest is drawn on MA-193.",
-   "undrawn": [
-    "the Projection's fan, milestones and editable assumptions, renamed from Forecast (MA-186)"
-   ]
+   "notes": "Starts from boards drawn for MA-96 before MA-186; the rest is drawn on MA-193. Drawn: the Projection's fan, milestones and editable assumptions, renamed from Forecast (MA-186) on Web v4 · Projection and iPhone v4 · Projection (MA-193)."
   },
   {
    "key": "MA-186",

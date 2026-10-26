@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>iPhone v4 · Budget</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ios.css" />
+<link rel="stylesheet" href="motion.css" />
+<script src="motion.js"></script>
+<style>
+html, body { margin: 0; background: #ECEAE6; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+.dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
+.dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+.dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+.dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+.dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 12px; text-wrap: pretty; }
+.plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 1100px; box-sizing: border-box; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+.plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; text-decoration: none; }
+.plan-s { font-weight: 700; color: #14171F; }
+.idx { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 6px 24px; max-width: 1100px; margin-top: 14px; font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+.idx a { color: #14171F; font-weight: 600; text-decoration: none; }
+.bd { border-bottom: 1px solid rgba(0,0,0,.06); }
+.bd-row { gap: 40px; }
+.bd-wide { width: 100%; max-width: 1300px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px 32px; }
+.bd-note p { margin: 0; }
+.dv-col { display: flex; flex-direction: column; }
+.z1 { position: relative; z-index: 1; }
+.f1 { flex: 1; min-width: 0; }
+.lg > * { position: relative; z-index: 1; }
+.chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+.cmp { bottom: 102px; }
+.cb { position: absolute; left: 0; right: 0; }
+.fadet { position: absolute; left: 0; right: 0; top: 0; height: 20px; z-index: 5; background: linear-gradient(180deg, var(--mp-bg), color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+.navc { position: absolute; left: 60px; right: 60px; text-align: center; font: 600 17px/22px var(--mp-font); pointer-events: none; }
+.under { position: absolute; inset: 0; overflow: hidden; }
+.pg { display: flex; flex-direction: column; gap: 14px; padding: 106px 16px 120px; }
+.subt { margin: -10px 4px 0; }
+.pg .mp-cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.pg .mp-col { gap: 14px; }
+.sg-w { flex: 1 1 200px; }
+.ctls .mp-seg.sg-m { flex: 1 1 100%; max-width: none; }
+.me .file { background: var(--mp-hero-2); color: var(--mp-hero-ink); }
+.kbd { position: absolute; left: 0; right: 0; bottom: 0; z-index: 45; background: var(--mp-surface-2); border-top: 1px solid var(--mp-line); padding: 8px 6px 34px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.key { min-height: 48px; border-radius: 9px; background: var(--mp-surface); color: var(--mp-ink); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 400 25px/1 var(--mp-font); box-shadow: 0 1px 0 var(--mp-line); }
+.key.fn { background: transparent; box-shadow: none; }
+.key small { display: block; font: 600 9px/10px var(--mp-font); letter-spacing: 0.12em; color: var(--mp-ink-2); text-align: center; }
+.pg .ctls .iconbtn { display: none; }
+.pg .ctd { padding: 6px 0; }
+.ccard-fold.quiet { color: var(--mp-ink-2); }
+.edgeB { position: absolute; left: 0; right: 0; bottom: 0; height: 214px; z-index: 10; pointer-events: none; background: linear-gradient(0deg, var(--mp-bg) 74%, color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+.pg .ctls .sg-w { flex: 1 1 180px; max-width: none; }
+.edgeT { position: absolute; left: 0; right: 0; top: 0; height: 140px; z-index: 10; pointer-events: none; background: linear-gradient(180deg, var(--mp-bg) 70%, color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+.frame .mp-mask { color: transparent; }
+.ctls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sg-m { flex: 1 1 180px; max-width: 220px; } .sg-w { flex: 1 1 240px; max-width: 300px; } .sg-c { flex: none; }
+.sg-c .mp-seg-i { padding: 0 12px; white-space: nowrap; }
+.eyeon { background: var(--mp-hold-bg); color: var(--mp-hold); }
+.banner { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.grow1 { flex: 1; min-width: 0; }
+.nowrap { white-space: nowrap; }
+.tr { text-align: right; }
+.mt4 { margin-top: 4px; } .mt6 { margin-top: 6px; }
+.cpad { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; }
+.hsplit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--mp-hero-2); }
+.hlab { margin-left: 2px; }
+/* plan against actual */
+.ctab { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; }
+.cth { font: 600 12px/16px var(--mp-font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-ink-2); padding: 4px 0 8px; border-bottom: 1px solid var(--mp-line); }
+.ctd { padding: 8px 0; border-bottom: 1px solid var(--mp-line); align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+.cnum { padding-left: 14px; align-items: flex-end; }
+.cmeter { display: block; height: 8px; margin: 6px 0 2px; }
+.cmeter > span { display: block; height: 100%; border-radius: 999px; background: var(--mp-meter); }
+.edf { min-height: 44px; min-width: 72px; border: 0; background: transparent; padding: 0; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); text-align: right; text-decoration: underline dotted var(--mp-ink-2); text-underline-offset: 4px; cursor: pointer; }
+.edin { min-height: 40px; min-width: 72px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: flex-end; padding: 0 8px; border-radius: 10px; background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-focus); font: 600 15px/20px var(--mp-font); color: var(--mp-ink); }
+.caret { display: inline-block; width: 2px; height: 18px; background: var(--mp-accent); margin-left: 2px; }
+.edrow { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px; margin: 8px 0; border-radius: 12px; background: var(--mp-surface-2); }
+.audl { grid-column: 1 / -1; display: flex; gap: 8px; align-items: flex-start; padding: 8px 0 10px; border-bottom: 1px solid var(--mp-line); color: var(--mp-ink-2); }
+.list { display: flex; flex-direction: column; }
+.li { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 0; box-sizing: border-box; }
+.li + .li { border-top: 1px solid var(--mp-line); }
+.subh { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-top: 6px; }
+.salm { display: flex; flex-direction: column; gap: 8px; }
+.salm + .salm { border-top: 1px solid var(--mp-line); padding-top: 12px; }
+.bars { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; align-items: end; height: 108px; }
+.bcol { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; height: 100%; }
+.bv { font: 600 12px/16px var(--mp-font); color: var(--mp-ink); white-space: nowrap; }
+.bb { width: 100%; max-width: 40px; border-radius: 6px 6px 2px 2px; background: var(--mp-meter); }
+.bv.mp-mask { min-width: 0; width: 100%; max-width: 48px; }
+.by { font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.me.mf { padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+.mft { padding: 2px 8px 4px; }
+.file { display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 14px; background: var(--mp-hero-2); min-width: 0; }
+.ftile { width: 36px; height: 40px; border-radius: 8px; display: grid; place-items: center; flex: none; background: var(--mp-hero); color: var(--mp-coral); }
+.fmeta { display: flex; flex-direction: column; min-width: 0; }
+.fname { font: 600 15px/20px var(--mp-font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.csec { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-top: 6px; }
+.crow { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 0; border-top: 1px solid var(--mp-line); box-sizing: border-box; }
+.crow + .crow { border-top: 1px solid var(--mp-line); }
+.amb { display: flex; flex-direction: column; gap: 6px; padding: 8px 0 10px; border-top: 1px solid var(--mp-line); }
+.cnote { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); color: var(--mp-ink); }
+.ctiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ctile { border-radius: 12px; background: var(--mp-surface-2); padding: 8px 10px; min-height: 44px; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px; }
+.mtab { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 14px; }
+.mt { font: 400 13px/18px var(--mp-font); padding: 4px 0; border-top: 1px solid var(--mp-line); }
+.mth { font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); padding: 0 0 4px; }
+.cfiles { display: flex; flex-direction: column; gap: 6px; }
+.cfile { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 10px; border-radius: 12px; background: var(--mp-surface-2); }
+.mp-foot .mp-mask { margin-top: 2px; }
+
+</style>
+</helmet>
+
+<section class="dv-turn" id="i0" data-screen-label="iPhone v4 · Budget: intro">
+<div class="dv-thd"><a class="dv-tid" href="#i0">I</a><span class="dv-tname">Budget, statements and the month-end check-in, on iPhone</span></div>
+<p class="dv-intro">{{ intro1 }}</p>
+<p class="dv-intro">{{ intro2 }}</p>
+<div class="plan"><sc-for list="{{ allKeys }}" as="kk" hint-placeholder-count="3"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>ARCHITECTURE.md §4.9, §4.10, §12</span><span class="plan-s">Planned.</span><span>Illustrative figures from the v4 figure set.</span></div>
+<div class="idx"><sc-for list="{{ index }}" as="ix" hint-placeholder-count="5"><span><a href="#{{ ix.id }}">{{ ix.name }}</a> · {{ ix.keys }}</span></sc-for></div>
+</section>
+
+<sc-for list="{{ boards }}" as="bd" hint-placeholder-count="2">
+<section class="bd" id="{{ bd.id }}">
+<div class="dv-thd"><span class="dv-tid">{{ bd.tag }}</span><span class="dv-tname">{{ bd.name }}</span><span class="bd-keys">{{ bd.keyline }}</span></div>
+<p class="dv-intro">{{ bd.intro }}</p>
+<div class="plan"><sc-for list="{{ bd.keys }}" as="kk" hint-placeholder-count="1"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>{{ bd.arch }}</span><span class="plan-s">Planned.</span><span>Illustrative figures from the v4 figure set.</span></div>
+<div class="bd-row">
+<sc-for list="{{ bd.frames }}" as="f" hint-placeholder-count="2">
+<div class="dv-col">
+<div class="bd-theme">{{ f.cap }}</div>
+<div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ f.cap }}"><div class="island"></div><div class="scrn">
+<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<sc-if value="{{ f.isPage }}" hint-placeholder-val="{{ true }}">
+<div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Budget</span></sc-if><span class="fx gap8"><span class="gbtn lg {{ f.eyeT }}"><span class="ms {{ f.eyeF }}">{{ f.pg.eye }}</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+<div class="under"><div class="pg" style="margin-top: {{ f.pg.off }}">
+<div class="largetitle" style="padding: 0 4px">Budget</div>
+<div class="mp-foot mp-ink2 subt">{{ f.pg.meta }}</div>
+<div class="ctls">
+<div class="mp-seg sg-m" role="group" aria-label="Month"><sc-for list="{{ f.pg.months }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
+<div class="mp-seg sg-w" role="group" aria-label="Whose budget"><sc-for list="{{ f.pg.whose }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
+<div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s {{ f.pg.gOn }}" aria-pressed="{{ f.pg.gP }}">£ GBP</button><button class="mp-seg-i seg-s {{ f.pg.iOn }}" aria-pressed="{{ f.pg.iP }}">₹ INR</button></div>
+<button class="iconbtn {{ f.pg.eyeC }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.pg.eyeP }}"><span class="ms">{{ f.pg.eye }}</span></button>
+</div>
+<sc-if value="{{ f.pg.hasBanner }}" hint-placeholder-val="{{ false }}"><div class="banner"><span class="ms ms-s" aria-hidden="true">receipt_long</span><div class="mp-foot grow1"><span class="mp-w6">Two statements are waiting for your Confirm in the chat.</span> October’s actuals fill in when you confirm them.</div></div></sc-if>
+<div class="mp-cols">
+<div class="mp-col">
+<div class="mp-hero">
+<div class="fx jb ac gap8"><span class="mp-over mp-hero-2">{{ f.pg.hero.over }}</span><sc-if value="{{ f.pg.hero.hasChip }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s upchip"><sc-for list="{{ f.pg.hero.chip }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></sc-if></div>
+<div class="fx ac gap8 wrap mt6"><span class="mp-num-hero {{ f.pg.hero.a.c }}" role="{{ f.pg.hero.a.r }}" aria-label="{{ f.pg.hero.a.l }}">{{ f.pg.hero.a.v }}</span><span class="mp-sub mp-hero-2 hlab">{{ f.pg.hero.lab }}</span></div>
+<div class="mp-sub mp-hero-2 mt4"><sc-for list="{{ f.pg.hero.sub }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></div>
+<div class="hsplit"><sc-for list="{{ f.pg.hero.split }}" as="s" hint-placeholder-count="4"><div><div class="mp-foot mp-hero-2">{{ s.l }}</div><div class="mp-t3 nowrap"><span class="{{ s.a.c }}" role="{{ s.a.r }}" aria-label="{{ s.a.l }}">{{ s.a.v }}</span></div><div class="mp-foot mp-hero-2"><sc-for list="{{ s.n }}" as="x" hint-placeholder-count="2"><span class="{{ x.c }}" role="{{ x.r }}" aria-label="{{ x.l }}">{{ x.v }}</span></sc-for></div></div></sc-for></div>
+</div>
+<div class="mp-card cpad">
+<div class="fx jb ac gap8"><span class="mp-hl">{{ f.pg.cats.title }}</span><span class="mp-foot mp-ink2 tr nowrap"><sc-for list="{{ f.pg.cats.right }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div>
+<div class="mp-foot mp-ink2">{{ f.pg.cats.hint }}</div>
+<div class="ctab">
+<div class="cth">Category</div><div class="cth tr cnum">Actual</div><div class="cth tr cnum">Plan</div>
+<sc-for list="{{ f.pg.cats.rows }}" as="r" hint-placeholder-count="12">
+<div class="ctd"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-track cmeter" role="img" aria-label="{{ r.aria }}"><span style="width: {{ r.w }}"></span></span></div>
+<div class="ctd cnum"><span class="mp-sub mp-w6 nowrap {{ r.act.c }}" role="{{ r.act.r }}" aria-label="{{ r.act.l }}">{{ r.act.v }}</span><span class="mp-foot mp-ink2 nowrap"><sc-for list="{{ r.d }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div>
+<div class="ctd cnum"><sc-if value="{{ r.notEd }}" hint-placeholder-val="{{ true }}"><button class="edf" type="button" aria-label="Correct the {{ r.name }} plan"><span class="{{ r.plan.c }}" role="{{ r.plan.r }}" aria-label="{{ r.plan.l }}">{{ r.plan.v }}</span></button></sc-if><sc-if value="{{ r.isEd }}" hint-placeholder-val="{{ false }}"><span class="edin" role="textbox" aria-label="Groceries plan, a month">£700<span class="caret"></span></span></sc-if></div>
+<sc-if value="{{ r.isEd }}" hint-placeholder-val="{{ false }}"><div class="edrow"><span class="mp-sub mp-w6" style="flex-basis: 100%"><sc-for list="{{ f.pg.edLine }}" as="s" hint-placeholder-count="1"><span>{{ s.v }}</span></sc-for></span><button class="mp-btn mp-btn-primary mp-btn-small" type="button">Save</button><button class="mp-btn mp-btn-plain mp-btn-small" type="button">Cancel</button><span class="mp-foot mp-ink2" style="flex-basis: 100%">October is closed and keeps £650. Save writes a correction with its audit row.</span></div></sc-if>
+<sc-if value="{{ r.isSaved }}" hint-placeholder-val="{{ false }}"><div class="audl"><span class="ms ms-s" aria-hidden="true">history</span><span class="mp-foot"><sc-for list="{{ f.pg.audLine }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-if>
+</sc-for>
+</div>
+<div class="mp-foot mp-ink2">{{ f.pg.cats.foot }}</div>
+<div class="banner"><span class="ms ms-s" aria-hidden="true">add_comment</span><div class="mp-foot grow1"><span class="mp-w6">New categories are made in the chat,</span> never on this page: ask “add a category for …” and confirm its card.</div></div>
+</div>
+</div>
+<div class="mp-col">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8"><span class="mp-hl">Income · October</span><span class="mp-hl nowrap {{ f.pg.income.right.c }}" role="{{ f.pg.income.right.r }}" aria-label="{{ f.pg.income.right.l }}">{{ f.pg.income.right.v }}</span></div>
+<div class="list"><sc-for list="{{ f.pg.income.rows }}" as="it" hint-placeholder-count="3"><div class="li"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="grow1"><div class="mp-sub mp-w6">{{ it.name }}</div><div class="mp-foot mp-ink2">{{ it.sub }}</div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><sc-if value="{{ it.hasB }}" hint-placeholder-val="{{ true }}"><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></sc-if></div></div></sc-for></div>
+<div class="mp-foot mp-ink2">From the income commitments. Tap a figure to correct it.</div>
+</div>
+<div class="mp-card cpad">
+<div class="mp-hl">EMIs and SIP · October</div>
+<div class="subh"><span class="mp-over mp-ink2">EMIs</span><span class="mp-sub mp-w6 nowrap {{ f.pg.commit.emi.c }}" role="{{ f.pg.commit.emi.r }}" aria-label="{{ f.pg.commit.emi.l }}">{{ f.pg.commit.emi.v }}</span></div>
+<div class="list"><sc-for list="{{ f.pg.commit.emis }}" as="it" hint-placeholder-count="3"><div class="li"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="grow1"><div class="mp-sub mp-w6">{{ it.name }}</div><div class="mp-foot mp-ink2">{{ it.sub }}</div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><sc-if value="{{ it.hasB }}" hint-placeholder-val="{{ true }}"><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></sc-if></div></div></sc-for></div>
+<div class="subh"><span class="mp-over mp-ink2">SIP</span><span class="mp-sub mp-w6 nowrap {{ f.pg.commit.sip.c }}" role="{{ f.pg.commit.sip.r }}" aria-label="{{ f.pg.commit.sip.l }}">{{ f.pg.commit.sip.v }}</span></div>
+<div class="list"><sc-for list="{{ f.pg.commit.sips }}" as="it" hint-placeholder-count="1"><div class="li"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="grow1"><div class="mp-sub mp-w6">{{ it.name }}</div><div class="mp-foot mp-ink2">{{ it.sub }}</div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><sc-if value="{{ it.hasB }}" hint-placeholder-val="{{ true }}"><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></sc-if></div></div></sc-for></div>
+<div class="mp-foot mp-ink2">From the loans and the SIP, so nobody types them twice.</div>
+</div>
+<div class="mp-card cpad">
+<div class="fx jb ac gap8"><span class="mp-hl">Salary history</span><span class="mp-foot mp-ink2">net, a month</span></div>
+<sc-for list="{{ f.pg.salary }}" as="m" hint-placeholder-count="2"><div class="salm"><div class="fx jb ac gap8"><span class="mp-sub mp-w6">{{ m.name }}</span><span class="mp-chip chip-s mp-add">{{ m.chip }}</span></div><div class="bars" role="img" aria-label="{{ m.name }}’s net salary by year"><sc-for list="{{ m.bars }}" as="b" hint-placeholder-count="5"><div class="bcol"><span class="bv {{ b.a.c }}" role="{{ b.a.r }}" aria-label="{{ b.a.l }}">{{ b.a.v }}</span><span class="bb" data-mo="bary" style="height: {{ b.h }}"></span><span class="by">{{ b.y }}</span></div></sc-for></div></div></sc-for>
+<div class="mp-foot mp-ink2">Growth is measured by the engine from the years each of you gave. Tap a year to correct it.</div>
+</div>
+</div>
+</div>
+</div></div>
+<sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edgeT"></div></sc-if>
+<div class="edge-bot"></div>
+</sc-if>
+<sc-if value="{{ f.isChat }}" hint-placeholder-val="{{ false }}">
+<div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · prices to Fri 23 Oct</span><span class="strip-n {{ f.nw.c }}" role="{{ f.nw.r }}" aria-label="{{ f.nw.l }}">{{ f.nw.v }}</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+<div class="scroll"><div class="fadet"></div><div class="chat cb" style="{{ f.cpos }}">
+<sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
+<sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
+<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me">{{ m.t }}</div></sc-if>
+<sc-if value="{{ m.isFiles }}" hint-placeholder-val="{{ false }}"><div class="me mf"><sc-for list="{{ m.files }}" as="x" hint-placeholder-count="2"><div class="file"><span class="ftile"><span class="ms ms-s" aria-hidden="true">description</span></span><span class="fmeta"><span class="fname">{{ x.n }}</span><span class="mp-foot mp-hero-2">{{ x.s }}</span></span></div></sc-for><div class="mft">{{ m.t }}</div></div></sc-if>
+<sc-if value="{{ m.isAi }}" hint-placeholder-val="{{ true }}"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><sc-if value="{{ m.hasText }}" hint-placeholder-val="{{ true }}"><div class="ai-text">{{ m.t }}</div></sc-if><sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ true }}">
+<div class="ccard">
+<div class="ccard-h"><span class="fx ac gap6 mp-over mp-ink2"><sc-if value="{{ m.card.hasOverI }}" hint-placeholder-val="{{ true }}"><span class="ms ms-s ms-fill {{ m.card.overIC }}" aria-hidden="true">{{ m.card.overI }}</span></sc-if>{{ m.card.over }}</span><span class="mp-hl"><sc-for list="{{ m.card.title }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span><sc-if value="{{ m.card.hasChip }}" hint-placeholder-val="{{ false }}"><span><span class="mp-chip chip-s {{ m.card.chipC }}">{{ m.card.chip }}</span></span></sc-if></div>
+<div class="ccard-b">
+<sc-for list="{{ m.card.parts }}" as="q" hint-placeholder-count="6">
+<sc-if value="{{ q.is_kv }}" hint-placeholder-val="{{ true }}"><div class="kv"><span>{{ q.k }}</span><span><sc-for list="{{ q.v }}" as="s" hint-placeholder-count="2"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-if>
+<sc-if value="{{ q.is_p }}" hint-placeholder-val="{{ false }}"><div class="mp-sub {{ q.c }}"><sc-for list="{{ q.t }}" as="s" hint-placeholder-count="2"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></div></sc-if>
+<sc-if value="{{ q.is_sec }}" hint-placeholder-val="{{ false }}"><div class="csec"><span class="mp-over mp-ink2">{{ q.t }}</span><span class="mp-foot mp-ink2"><sc-for list="{{ q.r }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-if>
+<sc-if value="{{ q.is_row }}" hint-placeholder-val="{{ false }}"><div class="crow"><sc-if value="{{ q.hasI }}" hint-placeholder-val="{{ false }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ q.i }}</span></span></sc-if><div class="grow1"><div class="mp-sub mp-w6">{{ q.name }}</div><div class="fx ac gap6"><span class="mp-foot mp-ink2">{{ q.sub }}</span><sc-if value="{{ q.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-pause">{{ q.chip }}</span></sc-if></div></div><span class="mp-sub mp-w6 nowrap {{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></div></sc-if>
+<sc-if value="{{ q.is_amb }}" hint-placeholder-val="{{ false }}"><div class="amb"><div class="fx ac gap10"><div class="grow1"><div class="mp-sub mp-w6">{{ q.name }}</div><div class="mp-foot mp-ink2">{{ q.sub }}</div></div><span class="mp-sub mp-w6 nowrap {{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></div><div class="fx ac jb gap8"><span class="mp-sub amber">{{ q.guess }}?</span><button class="cbtn cbtn-ghost" type="button">Change</button></div><span class="mp-foot c-pause">{{ q.q }}</span></div></sc-if>
+<sc-if value="{{ q.is_meter }}" hint-placeholder-val="{{ false }}"><div class="fx col gap6"><span class="mp-track cmeter" role="img" aria-label="{{ q.aria }}"><span style="width: {{ q.w }}"></span></span><span class="mp-foot mp-ink2"><sc-for list="{{ q.l }}" as="s" hint-placeholder-count="2"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-if>
+<sc-if value="{{ q.is_tiles }}" hint-placeholder-val="{{ false }}"><div class="ctiles"><sc-for list="{{ q.items }}" as="x" hint-placeholder-count="6"><div class="ctile"><span class="mp-foot mp-ink2">{{ x.name }}</span><span class="fx ac jb gap6"><span class="mp-sub mp-w6 nowrap {{ x.a.c }}" role="{{ x.a.r }}" aria-label="{{ x.a.l }}">{{ x.a.v }}</span><span class="mp-foot mp-ink2 nowrap">{{ x.n }}</span></span><sc-if value="{{ x.hasChip }}" hint-placeholder-val="{{ false }}"><span><span class="mp-chip chip-s mp-pause">1 to check</span></span></sc-if></div></sc-for></div></sc-if>
+<sc-if value="{{ q.is_tab }}" hint-placeholder-val="{{ false }}"><div class="mtab" role="table" aria-label="October, plan against actual by category"><span class="mth">Category</span><span class="mth tr">Actual</span><span class="mth tr">Plan</span><sc-for list="{{ q.rows }}" as="x" hint-placeholder-count="12"><span class="mt">{{ x.name }}</span><span class="mt tr mp-w6 nowrap"><span>{{ x.mk }}</span><span class="{{ x.a.c }}" role="{{ x.a.r }}" aria-label="{{ x.a.l }}">{{ x.a.v }}</span></span><span class="mt tr mp-ink2 nowrap"><span class="{{ x.p.c }}" role="{{ x.p.r }}" aria-label="{{ x.p.l }}">{{ x.p.v }}</span></span></sc-for></div></sc-if>
+<sc-if value="{{ q.is_files }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><span class="mp-over mp-ink2">{{ q.cap }}</span><sc-for list="{{ q.items }}" as="x" hint-placeholder-count="2"><div class="cfile"><span class="ms ms-s mp-ink2" aria-hidden="true">description</span><span class="mp-foot mp-w6 grow1">{{ x.n }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.is_note }}" hint-placeholder-val="{{ false }}"><div class="cnote"><span class="ms ms-s mp-ink2" aria-hidden="true">{{ q.i }}</span><span class="mp-foot"><sc-for list="{{ q.t }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-if>
+</sc-for>
+</div>
+<sc-if value="{{ m.card.hasActs }}" hint-placeholder-val="{{ true }}"><div class="ccard-acts"><sc-for list="{{ m.card.acts }}" as="b" hint-placeholder-count="3"><button class="cbtn {{ b.c }}" type="button">{{ b.t }}</button></sc-for></div></sc-if>
+<sc-if value="{{ m.card.hasFold }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">{{ m.card.fold.i }}</span>{{ m.card.fold.t }}</span><span class="mp-foot mp-ink2">{{ m.card.fold.r }}</span></div></sc-if>
+</div>
+</sc-if></div></div></sc-if>
+</sc-for>
+</div></div>
+<div class="edgeB"></div>
+<div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">event_note</span><span>Budget</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+</sc-if>
+<sc-if value="{{ f.hasTabs }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><span class="tab {{ tb.on }}"><span class="ms">{{ tb.icon }}</span>{{ tb.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div></sc-if>
+<sc-if value="{{ f.hasKbd }}" hint-placeholder-val="{{ false }}"><div class="kbd" role="group" aria-label="Number pad, drawn by iOS"><sc-for list="{{ kpad }}" as="k" hint-placeholder-count="12"><span class="key {{ k.c }}"><span>{{ k.t }}</span><small>{{ k.s }}</small></span></sc-for></div></sc-if>
+<div class="homebar"></div>
+</div></div>
+</div>
+</sc-for>
+<div class="bd-note bd-wide"><sc-for list="{{ bd.notes }}" as="n" hint-placeholder-count="4"><p><b>{{ n.b }}</b> {{ n.t }}</p></sc-for></div>
+</div>
+</section>
+</sc-for>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{}'>
+class Component extends DCLogic {
+renderVals() {
+/* ======================= helpers ======================= */
+const R = 112.5;
+const gbp = (n, dp) => '£' + Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0 });
+const inr = (n) => { const s = String(Math.round(Math.abs(n))); let h = s.length > 3 ? s.slice(0, -3) : '', o = s.slice(-3); while (h.length > 2) { o = h.slice(-2) + ',' + o; h = h.slice(0, -2); } if (h) o = h + ',' + o; return '₹' + o; };
+const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: String(s), c: '', r: null, l: null });
+const T = (s) => ({ v: s, c: '', r: null, l: null });
+const rt = function () { return Array.prototype.slice.call(arguments).map((x) => (typeof x === 'string' ? T(x) : x)); };
+const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
+const N2 = (a) => a.map((n) => ({ b: n[0], t: n[1] }));
+const segs = (arr, sel) => arr.map((t) => ({ t: t, on: t === sel ? 'on' : '', p: t === sel ? 'true' : 'false' }));
+const pc1 = (x) => (Math.round(x * 1000) / 10).toFixed(1) + '%';
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const oct = (d) => WD[new Date(Date.UTC(2026, 9, d)).getUTCDay()] + ' ' + d + ' Oct';
+
+/* ======================= the figure set (household-v4.json): budget_oct, statements_oct, members ======================= */
+const CATS = [['Bills and council tax', 420, 431], ['Groceries', 650, 702], ['Transport', 220, 198], ['Insurance', 85, 85], ['Eating out', 180, 236], ['Shopping', 250, 189], ['Holidays', 400, 0], ['Health', 60, 24], ['Subscriptions', 45, 45], ['Giving', 50, 50], ['Family support, India', 222, 222], ['Other', 100, 64]];
+/* the 16 lines of the Barclaycard statement of Sun 1 Nov, then the 6 spending lines of Monzo's October: [day, merchant, £, category, sure] */
+const LINES = [[3, 'Netflix', 41, 'Subscriptions', 1], [6, 'Pret', 188, 'Eating out', 1], [7, 'Sainsbury’s', 58, 'Groceries', 1], [8, 'Tesco', 463, 'Groceries', 1], [11, 'Pizza Express', 23, 'Eating out', 1], [16, 'Dishoom', 25, 'Eating out', 1], [18, 'Lidl', 100, 'Groceries', 1], [19, 'John Lewis', 24, 'Shopping', 1], [21, 'GWR', 76, 'Transport', 1], [21, 'Spotify', 4, 'Subscriptions', 1], [21, 'Post Office', 22, 'Other', 1], [22, 'Shell', 122, 'Transport', 1], [25, 'PAYPAL *EBAY', 42, 'Other', 0], [27, 'Waitrose', 81, 'Groceries', 1], [27, 'AMZN Mktp', 165, 'Shopping', 0], [30, 'Boots', 24, 'Health', 1],
+  [14, 'Oxfam', 50, 'Giving', 1], [16, 'Thames Water', 144, 'Bills and council tax', 1], [16, 'Wise · to Pune', 222, 'Family support, India', 1], [26, 'Octopus Energy', 55, 'Bills and council tax', 1], [27, 'Aviva home insurance', 85, 'Insurance', 1], [29, 'Reading Borough Council', 232, 'Bills and council tax', 1]];
+const CARD_BAL = sum(LINES.slice(0, 16).map((l) => l[2]));   /* £1,458, the statement's balance */
+/* recognised on the Monzo statement, not spending: [day, what, £, as, icon] */
+const RECOG = [[1, 'Mortgage · Nationwide', 1456.46, 'EMI, matched to its commitment', 'home'], [20, 'Car loan · Close Brothers', 346.55, 'EMI, matched to its commitment', 'directions_car'], [20, 'Barclaycard payment', 1240, 'Card payment: a transfer', 'credit_card'], [26, 'To Instant access savings · Monzo', 5000, 'A move between your own accounts', 'savings'], [28, 'Salary · Arun', 4350, 'Income', 'payments']];
+const SAL = { Arun: [[2022, 3600], [2023, 3850], [2024, 4100], [2025, 4350], [2026, 4350]], Asha: [[2023, 2750], [2024, 2900], [2025, 3050], [2026, 3050]] };
+const cagr = (h) => Math.pow(h[h.length - 1][1] / h[0][1], 1 / (h.length - 1)) - 1;   /* 4.84% and 3.51%, as the set measures */
+const salA = 4350, salS = 3050, rentI = 18000, mortG = 1456.46, carG = 346.55, hdfcI = 39389.58, sipI = 10000;
+const P2 = (g, i) => ({ g: g, i: i });
+const planG = sum(CATS.map((c) => c[1])), actG = sum(CATS.map((c) => c[2]));   /* £2,682 and £2,246 */
+const INC = P2(salA + salS + rentI / R, (salA + salS) * R + rentI);              /* £7,560 · ₹8,50,500 */
+const EMI = P2(mortG + carG + hdfcI / R, (mortG + carG) * R + hdfcI);            /* £2,153 · ₹2,42,228 */
+const SIP = P2(sipI / R, sipI);                                                  /* £89 · ₹10,000 */
+const PLAN = P2(planG, planG * R), ACT = P2(actG, actG * R);
+const SUR_P = P2(INC.g - EMI.g - SIP.g - PLAN.g, INC.i - EMI.i - SIP.i - PLAN.i); /* £2,636 */
+const SUR_A = P2(INC.g - EMI.g - SIP.g - ACT.g, INC.i - EMI.i - SIP.i - ACT.i);   /* £3,072, 40.6% */
+const UNDER = P2(planG - actG, (planG - actG) * R);                              /* £436 */
+const rateA = SUR_A.g / INC.g, rateP = SUR_P.g / INC.g;
+const catOf = (c) => LINES.filter((l) => l[3] === c);
+
+/* ======================= the Budget page: state 'pre' (statements waiting), 'open' (in, not closed), 'closed' ======================= */
+const page = (o) => {
+  const pv = !!o.priv, done = o.state !== 'pre';
+  const M = (p) => V(o.inr ? inr(p.i) : gbp(p.g), pv);
+  const L = (g) => V(gbp(g), pv);
+  const LI = (i) => V(inr(i), pv);
+  const over = o.state === 'closed' ? 'October · closed' : 'October · open';
+  const hero = done
+    ? { over: over, hasChip: true, chip: rt('▲ ', M(UNDER), ' over plan'), a: M(SUR_A), lab: 'surplus', sub: rt('Plan ', M(SUR_P), ' · savings rate ' + pc1(rateA) + ', plan ' + pc1(rateP)),
+      split: [{ l: 'Income', a: M(INC), n: rt('salaries and rent') }, { l: 'EMIs', a: M(EMI), n: rt('3 loans') }, { l: 'SIP', a: M(SIP), n: rt('1 fund') }, { l: 'Spending', a: M(ACT), n: rt('of ', M(PLAN), ' planned') }] }
+    : { over: over, hasChip: false, chip: [], a: M(SUR_P), lab: 'planned surplus', sub: rt('Spending comes from your statements: two are waiting for your Confirm in the chat.'),
+      split: [{ l: 'Income', a: M(INC), n: rt('expected') }, { l: 'EMIs', a: M(EMI), n: rt('3 loans') }, { l: 'SIP', a: M(SIP), n: rt('1 fund') }, { l: 'Spending', a: T('not yet'), n: rt('plan ', M(PLAN)) }] };
+  const rows = CATS.map((c) => {
+    const ed = c[0] === 'Groceries';
+    const d = !done ? [] : pv ? rt(c[2] > c[1] ? '▲ over' : c[2] < c[1] ? '▼ under' : 'on plan') : c[2] > c[1] ? rt('▲ ', L(c[2] - c[1]), ' over') : c[2] < c[1] ? rt('▼ ', L(c[1] - c[2]), ' under') : rt('on plan');
+    return { name: c[0], act: done ? L(c[2]) : T('not yet'), plan: L(c[1]), w: done ? Math.round(Math.min(c[2] / c[1], 1) * 1000) / 10 + '%' : '0%', d: d, aria: done ? c[0] + ': ' + Math.round((c[2] / c[1]) * 100) + ' per cent of plan' : c[0] + ': no actual yet',
+      isEd: o.edit === 'editing' && ed, notEd: !(o.edit === 'editing' && ed), isSaved: o.edit === 'saved' && ed };
+  });
+  const cats = { title: 'Plan against actual', right: done ? rt(M(ACT), ' of ', M(PLAN)) : rt('plan ', M(PLAN)),
+    hint: o.inr ? 'Totals in rupees; each line in pounds, as it was spent. Tap a plan figure to correct it.' : 'Tap a plan figure to correct it.',
+    rows: rows,
+    foot: done ? 'From the Barclaycard statement of Sun 1 Nov and Monzo’s for October: 22 lines.' : 'Actuals come in when you confirm October’s statements in the chat.' };
+  const income = { right: M(INC), rows: [
+    { i: 'person', name: 'Arun', sub: 'net salary', a: L(salA), hasB: !!o.inr, b: LI(salA * R) },
+    { i: 'person', name: 'Asha', sub: 'net salary', a: L(salS), hasB: !!o.inr, b: LI(salS * R) },
+    { i: 'apartment', name: 'Flat, Pune', sub: 'rent · joint, half each', a: LI(rentI), hasB: !o.inr, b: L(rentI / R) }] };
+  const commit = { emi: M(EMI), sip: M(SIP), emis: [
+    { i: 'home', name: 'Mortgage · Nationwide', sub: 'joint · ' + oct(1), a: L(mortG), hasB: false, b: T('') },
+    { i: 'directions_car', name: 'Car loan · Close Brothers', sub: 'Arun · ' + oct(20), a: L(carG), hasB: false, b: T('') },
+    { i: 'apartment', name: 'Home loan · HDFC', sub: 'Arun · Pune flat · ' + oct(5), a: LI(hdfcI), hasB: !o.inr, b: L(hdfcI / R) }],
+    sips: [{ i: 'trending_up', name: 'Parag Parikh Flexi Cap', sub: 'Asha · ' + oct(10), a: LI(sipI), hasB: !o.inr, b: L(sipI / R) }] };
+  const salary = ['Arun', 'Asha'].map((m) => {
+    const h = SAL[m], mx = 4350;
+    return { name: m, chip: '▲ ' + pc1(cagr(h)) + ' a year since ' + h[0][0], bars: h.map((y) => ({ y: String(y[0]), a: L(y[1]), h: Math.round((y[1] / mx) * 64) + 'px' })) };
+  });
+  return {
+    meta: o.state === 'closed' ? 'October 2026 · closed Sun 1 Nov 09:02 · Illustrative figures' : o.state === 'open' ? 'October 2026 · open until the check-in on the 1st · Illustrative figures' : 'October 2026 · open · October’s statements not confirmed yet · Illustrative figures',
+    months: segs(['Sep', 'Oct', 'Nov'], 'Oct'), whose: segs(['Household', 'Me', 'Asha'], 'Household'),
+    gOn: o.inr ? '' : 'on', iOn: o.inr ? 'on' : '', gP: o.inr ? 'false' : 'true', iP: o.inr ? 'true' : 'false',
+    eye: pv ? 'visibility_off' : 'visibility', eyeP: pv ? 'true' : 'false', eyeC: pv ? 'eyeon' : '',
+    hasBanner: !done, hero: hero, cats: cats, income: income, commit: commit, salary: salary,
+    edLine: rt('£650 → £700 a month, from November'),
+    audLine: rt('Corrected in place · ', L(650), ' → ', L(700), ' a month from November · Arun · Sun 1 Nov 09:06'),
+    off: o.off || '0px'
+  };
+};
+
+/* ======================= the chat: messages and cards ======================= */
+const MSG = (o) => Object.assign({ isDay: false, isMe: false, isFiles: false, isAi: false, t: '', files: [], hasText: false, hasCard: false, card: null, hasMeta: false, meta: '' }, o);
+const DAY = (t) => MSG({ isDay: true, t: t });
+const FILES = () => MSG({ isFiles: true, t: 'October’s statements', files: [{ n: 'barclaycard-2026-11-01.pdf', s: 'PDF · Barclaycard' }, { n: 'monzo-2026-10.csv', s: 'CSV · Monzo' }] });
+const AI = (t, card, meta) => MSG({ isAi: true, hasText: !!t, t: t || '', hasCard: !!card, card: card || null, hasMeta: !!meta, meta: meta || '' });
+const PT = ['kv', 'p', 'sec', 'row', 'amb', 'meter', 'files', 'note', 'tiles', 'tab'];
+const part = (type, o) => { const b = {}; PT.forEach((x) => { b['is_' + x] = x === type; }); return Object.assign(b, o); };
+const card = (o) => Object.assign({ hasOverI: false, overI: '', overIC: '', over: '', hasChip: false, chip: '', chipC: '', title: [], parts: [], hasActs: false, acts: [], hasFold: false, fold: { i: '', t: '', r: '' } }, o);
+const row = (o) => part('row', Object.assign({ hasI: false, i: '', name: '', sub: '', a: T(''), hasChip: false, chip: '' }, o));
+const kv = (k, v) => part('kv', { k: k, v: typeof v === 'string' ? rt(v) : v });
+const para = (t, c) => part('p', { t: typeof t === 'string' ? rt(t) : t, c: c || '' });
+const sec = (t, r) => part('sec', { t: t, r: typeof r === 'string' ? rt(r) : r });
+const FILESP = part('files', { cap: 'Both files, kept for good', items: [{ n: 'barclaycard-2026-11-01.pdf' }, { n: 'monzo-2026-10.csv' }] });
+
+const reviewCard = (pv) => {
+  const L = (g, dp) => V(gbp(g, dp), pv);
+  const unsure = LINES.filter((l) => !l[4]);
+  const q = { 'AMZN Mktp': 'Amazon Marketplace sells most things.', 'PAYPAL *EBAY': 'A PayPal payment to eBay.' };
+  return card({ over: 'October’s statements · check them', title: rt('Spending ', L(actG), ' in 22 lines'),
+    parts: [row({ hasI: true, i: 'credit_card', name: 'Barclaycard', sub: 'statement of Sun 1 Nov · 16 lines', a: L(CARD_BAL) }), row({ hasI: true, i: 'account_balance', name: 'Monzo current account', sub: 'October · 11 lines: 6 spending, 5 not', a: T('') }),
+      sec('Two to check', ''),
+    ].concat(unsure.slice().reverse().map((l) => part('amb', { name: l[1], sub: 'Barclaycard · ' + oct(l[0]), a: L(l[2]), guess: l[3], q: q[l[1]] + ' ' + l[3] + ', unless you change it.' })),
+    [sec('By category', rt(L(actG)))],
+    [part('tiles', { items: CATS.filter((c) => catOf(c[0]).length).map((c) => { const ls = catOf(c[0]); return { name: c[0], n: ls.length + (ls.length === 1 ? ' line' : ' lines'), a: L(sum(ls.map((l) => l[2]))), hasChip: ls.some((l) => !l[4]) }; }) })],
+    [sec('Recognised, not spending', '5 lines')],
+    RECOG.map((r) => row({ hasI: true, i: r[4], name: r[1], sub: oct(r[0]) + ' · ' + r[3], a: L(r[2], 2) })),
+    [para('Both files are kept for good. Nothing is saved until you tap Confirm.', 'mp-ink2')]),
+    hasActs: true, acts: [{ t: 'Confirm', c: 'cbtn-primary' }, { t: 'Edit', c: '' }, { t: 'Cancel', c: 'cbtn-ghost' }] });
+};
+const savedCard = (pv) => {
+  const L = (g) => V(gbp(g), pv);
+  return card({ hasOverI: true, overI: 'check_circle', overIC: 'c-add', over: 'October’s statements · saved', title: rt('22 lines in October’s budget'),
+    parts: [kv('Spending', rt(L(actG), ' · 11 categories')), kv('Not counted', '5 lines, recognised'), kv('Remembered', 'AMZN Mktp is Shopping, PAYPAL *EBAY is Other'),
+      part('note', { i: 'task_alt', t: rt('It also confirmed two autopay EMIs the weekly digest had assumed paid: the car loan’s on Tue 20 Oct and the mortgage’s on Thu 1 Oct.') }), FILESP],
+    hasFold: true, fold: { i: 'history', t: 'Saved · in the audit log', r: '08:44' } });
+};
+const confirmedCard = (pv) => {
+  const L = (g) => V(gbp(g, 2), pv);
+  return card({ hasOverI: true, overI: 'directions_car', overIC: 'mp-ink2', over: 'Check-in · car loan EMI', hasChip: true, chip: 'Confirmed by the statement', chipC: 'mp-hold', title: rt('Close Brothers: October’s EMI paid'),
+    parts: [kv('EMI', rt(L(carG))), kv('Due', 'Tue 20 Oct · autopay'), kv('Before', 'Assumed paid'), kv('Now', 'Confirmed by the statement'), kv('Balance after it', rt(L(8938.81))),
+      part('note', { i: 'receipt_long', t: rt('Your Monzo statement shows ', L(carG), ' to Close Brothers on Tue 20 Oct, matched to this EMI. The weekly digest for the week of Mon 19 Oct had listed it as assumed paid; now it is confirmed. Nothing for you to do.') })],
+    hasFold: true, fold: { i: 'history', t: 'Confirmed · in the audit log', r: '08:44' } });
+};
+const checkinCard = (pv) => {
+  const L = (g) => V(gbp(g), pv);
+  const overs = CATS.filter((c) => c[2] > c[1]).sort((a, b) => (b[2] - b[1]) - (a[2] - a[1]));
+  const ov = ['Over plan: ']; overs.forEach((c, i) => { ov.push(c[0] + ' '); ov.push(L(c[2] - c[1])); ov.push(i < overs.length - 1 ? ', ' : '.'); });
+  return card({ hasOverI: true, overI: 'event_available', overIC: 'mp-ink2', over: 'Check-in · close October', title: rt('October: ', L(actG), ' spent of ', L(planG), ' planned'),
+    parts: [part('meter', { w: Math.round((actG / planG) * 1000) / 10 + '%', l: rt(L(planG - actG), ' under plan'), aria: 'Spent ' + Math.round((actG / planG) * 100) + ' per cent of the plan' }),
+      kv('Income', rt(L(INC.g))), kv('EMIs and SIP', rt(L(EMI.g), ' and ', L(SIP.g))), kv('Surplus', rt(L(SUR_A.g), ' · plan ', L(SUR_P.g))), kv('Savings rate', pc1(rateA)),
+      part('tab', { rows: CATS.map((c) => ({ name: c[0], mk: c[2] > c[1] ? '▲ ' : c[2] < c[1] ? '▼ ' : '', a: L(c[2]), p: L(c[1]) })) }),
+      para(rt.apply(null, ov), 'mp-ink2'), para('From the Barclaycard and Monzo statements, the loans and the SIP. ▲ over plan, ▼ under.', 'mp-ink2'),
+      para('Anything not on a statement? Cash, or another bank?', 'mp-w6')],
+    hasActs: true, acts: [{ t: 'Nothing else: close October', c: 'cbtn-primary' }, { t: 'Add cash spending', c: '' }, { t: 'Another bank’s statement', c: '' }] });
+};
+const closedCard = (pv) => {
+  const L = (g) => V(gbp(g), pv);
+  return card({ hasOverI: true, overI: 'check_circle', overIC: 'c-add', over: 'Check-in · October closed', title: rt('October closed'),
+    parts: [kv('Spent', rt(L(actG), ' of ', L(planG))), kv('Surplus', rt(L(SUR_A.g))), kv('Savings rate', pc1(rateA)), para('You tapped Nothing else at 09:02. Budget now shows October as closed.', 'mp-ink2')],
+    hasActs: true, acts: [{ t: 'Undo', c: 'cbtn-ghost' }],
+    hasFold: true, fold: { i: 'history', t: 'Closed · in the audit log', r: '09:02' } });
+};
+const T_READ = 'Both are read. Here is October from them, by category; the two lines I am not sure of are in amber.';
+const T_NOV = 'November is open, on the same plan. I’ll ask again on Tue 1 Dec.';
+const chatAt = (when, pv) => {
+  if (when === 'review') return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, reviewCard(pv))];
+  if (when === 'answered') return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, savedCard(pv)), AI('', confirmedCard(pv))];
+  if (when === 'checkin') return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, savedCard(pv)), DAY('09:00'), AI('', checkinCard(pv))];
+  return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, savedCard(pv)), DAY('09:00'), AI('', closedCard(pv)), AI(T_NOV)];
+};
+
+/* ======================= the iPhone: shell 1a, Chat first ======================= */
+const tabDefs = [['chat', 'chat_bubble', 'Chat'], ['home', 'home', 'Home'], ['act', 'insights', 'Activity'], ['you', 'account_circle', 'You']];
+const tabs = (sel) => tabDefs.map((d) => ({ label: d[2], icon: d[1], on: d[0] === sel ? 'on' : '' }));
+const kpad = ['1', '2 ABC', '3 DEF', '4 GHI', '5 JKL', '6 MNO', '7 PQRS', '8 TUV', '9 WXYZ', '.', '0', '⌫'].map((k) => ({ t: k.split(' ')[0], s: k.split(' ')[1] || '', c: k === '.' || k === '⌫' ? 'fn' : '' }));
+const TH = { Light: 't-light', Dark: 't-dark' };
+/* a frame: a page (state, privacy, rupees, edit, scroll) or the chat (when, scroll) */
+const FR = (cap, theme, o) => ({ cap: cap, cls: TH[theme], clock: o.clock || '09:05', isPage: !o.chat, isChat: !!o.chat, scrolled: !!o.off,
+  pg: page(Object.assign({}, o, { off: (o.off ? -o.off : 0) + 'px' })), eyeT: o.priv ? 'lg-tint' : '', eyeF: o.priv ? 'ms-fill' : '',
+  nw: V('£457,951', !!o.priv), msgs: chatAt(o.when || 'closed', !!o.priv), cpos: o.top != null ? 'top: ' + o.top + 'px' : 'bottom: 208px',
+  hasTabs: !o.kbd, hasKbd: !!o.kbd, tabs: tabs(o.chat ? 'chat' : 'home') });
+const both = (name, parts) => ['Light', 'Dark'].reduce((a, th) => a.concat(parts.map((p) => FR(name + ' · ' + th + ' · ' + p[0], th, p[1]))), []);
+const BUD_2 = 650, BUD_3 = 1277, BUD_4 = 1930, REV_2 = 500, REV_3 = 1000, CI_TOP = 747, I3_TOP = 250, ED_OFF = 500, SV_OFF = 500;
+
+const boards = [
+{ id: 'i1', tag: 'I1', name: 'iPhone · Budget', keyline: 'MA-96', arch: 'ARCHITECTURE.md §12 (Budget), §4.10, §9', intro: 'Budget on iPhone, pushed from Home in shell 1a, after October closed at 09:02 on Sun 1 Nov: the surplus and savings rate on the hero, plan against actual for each category, income by member with the Pune rent in rupees and pounds, the EMIs and the SIP, and each member’s salary history with its measured growth. Drawn as Arun scrolls, in light and dark, then the ₹ INR view and privacy on.', keys: [key('MA-96')],
+  frames: both('iPhone · Budget', [['as it opens', { state: 'closed' }], ['scrolled to plan against actual', { state: 'closed', off: BUD_2 }], ['scrolled to income', { state: 'closed', off: BUD_3 }], ['scrolled to the end', { state: 'closed', off: BUD_4 }]]).concat([FR('iPhone · Budget · Light · in rupees', 'Light', { state: 'closed', inr: true }), FR('iPhone · Budget · Dark · privacy on', 'Dark', { state: 'closed', priv: true })]),
+  notes: N2([['Jira: MA-96.', 'Budget at the iOS door; the web door is Web v4 · Budget in MyPaisa app v1, with the same figures and blocks.'], ['Superseded:', 'the old Budget board said “MyPaisa does not read your bank”. The member now sends statements in the chat; MyPaisa still never connects to the bank.'], ['Every figure is budget_oct’s:', 'plan £2,682, actual £2,246, income £7,560, EMIs £2,153, SIP £89, surplus £2,636 planned and £3,072 actual, savings rate 40.6%. Derived: £436 over plan (£3,072 − £2,636), the plan’s savings rate 34.9% (£2,636 ÷ £7,560), and each category’s over or under (actual − plan).'], ['Lines keep their own currency, totals follow £/₹:', 'the Pune rent ₹18,000 is £160, HDFC’s ₹39,389.58 EMI £350 (shown ₹39,390), the SIP’s ₹10,000 £89, at £1 = ₹112.50. In rupees: income ₹8,50,500, EMIs ₹2,42,228, spending ₹2,52,675 of ₹3,01,725, surplus ₹3,45,597.'], ['Salary history', 'is each member’s yearly net pay, from 0, with the engine’s measured growth: Arun 4.8% a year since 2022, Asha 3.5% a year since 2023.'], ['Correct in place, create in the chat:', 'a plan, income or salary figure is tapped and corrected (iPhone · Budget, correct a plan amount); a new category is made only in the chat, as the note under the list says.'], ['Glass is the controls only:', 'the back button, the eye, Ask and the tab bar float; the hero, the cards and the bars are solid Warm ledger. Privacy on tints the eye and masks every amount.'], ['Moves:', 'the surplus rolls up once, the meters grow from the left and the salary bars rise; under Reduce Motion they land at once.']]) },
+{ id: 'i2', tag: 'I2', name: 'iPhone · Statement review', keyline: 'MA-218', arch: 'ARCHITECTURE.md §4.9 (Statements), §4.6', intro: 'Sun 1 Nov, 08:41. Arun sends the Barclaycard statement of Sun 1 Nov and Monzo’s for October from the Chat tab. One review card follows: grouped by category, the two uncertain lines in amber, the five lines that are not spending recognised, and one Confirm. Drawn as he scrolls through it, in light and dark.', keys: [key('MA-218')],
+  frames: both('iPhone · Statement review', [['1, sent', { chat: true, when: 'review', clock: '08:41', top: 8 }], ['2, the amber lines', { chat: true, when: 'review', clock: '08:41', top: -REV_2 }], ['3, by category', { chat: true, when: 'review', clock: '08:41', top: -REV_3 }], ['4, recognised and Confirm', { chat: true, when: 'review', clock: '08:42' }]]),
+  notes: N2([['Jira: MA-218.', 'The statement review card at the iOS door; the web door is Browser · Statement review.'], ['statements_oct:', 'Barclaycard’s 16 lines come to its £1,458 balance; Monzo has 6 spending lines and 5 that are not spending. The 22 lines by category equal budget_oct’s actuals to the pound: £2,246.'], ['Amber, never red:', 'AMZN Mktp £165 (Shopping?) and PAYPAL *EBAY £42 (Other?). Confirm keeps the guess; Change sets another category first; the merchant memory learns either way.'], ['Recognised, so nothing counts twice:', 'the Barclaycard payment £1,240, the mortgage £1,456.46 and the car loan £346.55 (EMIs matched to their commitments), the move of £5,000 to savings, and Arun’s salary £4,350.'], ['One Confirm, no second check:', 'a statement is routine (§4.5). Both files are kept for good before anything reads them. Line counts (22, 11 categories, 11 Monzo lines) are derived; file names are illustrative.'], ['The household strip', 'shows the set’s net worth after Mon 26 Oct: £457,951 (totals_after_correction: the £5,000 savings record at 09:41 and the Home correction from £415,000 to £428,000 at 09:52), prices still at the Fri 23 Oct close; the set has no later prices.'], ['Context only:', 'the composer’s shortcut chips (Budget, Send a statement, Log money) stand in for whatever the chat’s own boards settle.']]) },
+{ id: 'i3', tag: 'I3', name: 'iPhone · Statement answers a check-in', keyline: 'MA-218', arch: 'ARCHITECTURE.md §4.9 (a statement answers its check-in)', intro: 'Sun 1 Nov, 08:44, after Confirm. The car loan’s October EMI, £346.55 on Tue 20 Oct, is an autopay commitment the weekly digest listed as assumed paid. The Monzo statement shows the payment, so its check-in moves by itself to confirmed by the statement: the saved card notes it, and the car loan’s card says so.', keys: [key('MA-218')],
+  frames: both('iPhone · Statement answers a check-in', [['the note', { chat: true, when: 'answered', clock: '08:44', top: -I3_TOP }], ['the check-in it confirmed', { chat: true, when: 'answered', clock: '08:44' }]]),
+  notes: N2([['Jira: MA-218', '(a statement’s payment answers its check-in, §4.9).'], ['The check-in it settles:', 'the car loan’s EMI due Tue 20 Oct, £346.55 by autopay, listed with the mortgage’s of Thu 1 Oct as assumed paid in the weekly digest for the week of Mon 19 Oct (autopay_digest_week). The statement’s matched line confirms it; the balance after it is the set’s £8,938.81.'], ['Nothing for Arun to do:', 'the confirmation, its event and its audit row are written in the statement’s Confirm. The Barclaycard bill is not this check-in: Arun answered it “paid in full” with a tap on Tue 20 Oct.']]) },
+{ id: 'i4', tag: 'I4', name: 'iPhone · Month-end check-in', keyline: 'MA-220', arch: 'ARCHITECTURE.md §4.9 (The month closes on the 1st)', intro: 'Sun 1 Nov, 09:00, the check-in on the 1st: October’s plan against actual, by category, then “Anything not on a statement? Cash, or another bank?” and one tap that closes the month. Then closed, at 09:02.', keys: [key('MA-220')],
+  frames: both('iPhone · Month-end check-in', [['1, plan against actual', { chat: true, when: 'checkin', clock: '09:00', top: -CI_TOP }], ['2, the question', { chat: true, when: 'checkin', clock: '09:01' }], ['3, closed', { chat: true, when: 'closed', clock: '09:02' }]]),
+  notes: N2([['Jira: MA-220.', 'The month-end check-in at the iOS door; the web door is Browser · Month-end check-in.'], ['Figures:', 'budget_oct’s plan £2,682 against actual £2,246, per category with ▲ over and ▼ under, income £7,560, EMIs £2,153 and SIP £89, surplus £3,072 against £2,636, savings rate 40.6%. Over plan, derived: Eating out £56, Groceries £52, Bills and council tax £11.'], ['The tap is the Confirm:', '“Nothing else: close October” writes exactly what the card shows, with Undo; the closed card says when, and its audit row. Add cash spending and Another bank’s statement open a short flow first.'], ['Push:', 'the 09:00 notification says only “October is ready to close”: no amounts on the lock screen (MA-170).']]) },
+{ id: 'i5', tag: 'I5', name: 'iPhone · Budget, correct a plan amount', keyline: 'MA-96', arch: 'ARCHITECTURE.md §4.10 (correct in place)', intro: 'Sun 1 Nov, 09:06. Arun taps October’s Groceries plan, £650, and types £700 on the number pad: the before → after line appears with Save. A plan is monthly, so the change runs from November; closed October keeps £650. After Save, the audit line sits under the row.', keys: [key('MA-96')],
+  frames: both('iPhone · Budget, correct a plan amount', [['typing', { state: 'closed', edit: 'editing', off: ED_OFF, kbd: true, clock: '09:06' }], ['saved', { state: 'closed', edit: 'saved', off: SV_OFF, clock: '09:06' }]]),
+  notes: N2([['Jira: MA-96.', 'Correcting a figure in place on Budget, at the iOS door; the web door is Browser · Budget, correct a plan amount.'], ['Only an existing figure:', 'tap, type, before → after, Save. Save writes a correction event with its audit row (via inline_edit); nothing here creates a category or a line.'], ['£700 is what Arun types', '(near October’s £702 actual); it is his input, not a figure of the set, and no October figure changes.'], ['The number pad', 'is iOS’s own, drawn for context; the tab bar sits under it while he types.']]) }
+];
+const index = boards.map((b) => ({ id: b.id, name: b.name, keys: b.keyline }));
+return {
+  intro1: 'Phase 6 (Budget: statements and monthly check-ins), drawn on MA-193 for the iPhone in shell 1a (Chat first, the Liquid Glass tab bar Chat · Home · Activity · You), in MyPaisa DS v1 “Warm ledger” and the iOS kit. Budget (MA-96), the statement review card (MA-218), a statement answering a check-in (MA-218) and the month-end check-in (MA-220), each in light and dark, with the ₹ INR view and privacy on for Budget. The web door is Web v4 · Budget in MyPaisa app v1, drawn from the same blocks and figures.',
+  intro2: 'Superseded: the old Budget board’s “MyPaisa does not read your bank”. The member now sends statements in the chat; MyPaisa still never connects to the bank. The boards run from the figure set’s clock (Mon 26 Oct) to Sun 1 Nov: 08:40 statements sent, 08:44 confirmed, 09:00 the check-in, 09:02 October closed, 09:06 a plan corrected. Every figure is the set’s (budget_oct, statements_oct, members) or derived from it, as each board’s notes say; Arun (admin) and Asha (member) are illustrative.',
+  allKeys: ['MA-96', 'MA-218', 'MA-220'].map(key), index: index, boards: boards, kpad: kpad
+};
+
+}
+}
+</script>
+</body>
+</html>

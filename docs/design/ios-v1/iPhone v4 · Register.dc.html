@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone v4 · Register</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 10px; text-wrap: pretty; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.06); }
+          .bd-note p { margin: 0; }
+          .dv-col { display: flex; flex-direction: column; }
+          .pair { display: flex; gap: 48px; align-items: flex-start; }
+          .lg > * { position: relative; z-index: 1; }
+          .z1 { position: relative; z-index: 1; }
+          .f1 { flex: 1; min-width: 0; }
+          .g0 { gap: 0; }
+          .cmp { bottom: 102px; }
+          .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+          .cb { position: absolute; left: 0; right: 0; bottom: 208px; }
+          .fadet { position: absolute; left: 0; right: 0; top: 0; height: 20px; z-index: 5; background: linear-gradient(180deg, var(--mp-bg), color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+          .striprow { display: flex; gap: 8px; align-items: center; margin: 0 12px; position: relative; z-index: 15; }
+          .striprow .strip { margin: 0; flex: 1; min-width: 0; }
+          .t15 { font: 400 15px/20px var(--mp-font); text-wrap: pretty; }
+          .t15 b, .done b { font-weight: 600; }
+          .nm { font: 600 15px/20px var(--mp-font); }
+          .sub { font: 400 13px/18px var(--mp-font); }
+          .hdr { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; margin: -8px -8px -4px 0; }
+          .done { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); }
+          .done > :first-child { color: var(--mp-ink-2); }
+          .done .ms { font-size: 18px; color: var(--mp-accent); }
+          .done.nb { border-top: 0; min-height: 26px; }
+          .one { padding-bottom: 10px; gap: 2px; }
+          .qblk { border-top: 1px solid var(--mp-line); padding-top: 10px; }
+          .wrap8 { display: flex; flex-wrap: wrap; gap: 8px; }
+          .cbtn.tight { padding: 0 12px; }
+          .cbtn.full { width: 100%; box-sizing: border-box; }
+          .ccard-fold.quiet { color: var(--mp-ink-2); }
+          .fld { display: flex; flex-direction: column; gap: 1px; padding: 6px 0 0; border-top: 1px solid var(--mp-line); }
+          .fv { font: 600 15px/20px var(--mp-font); }
+          .fs { font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .fs.q { color: var(--mp-pause); }
+          .amber { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+          .fref { display: inline-flex; align-items: center; gap: 4px; font: 600 13px/18px var(--mp-font); color: var(--mp-accent); }
+          .fref .ms { font-size: 16px; }
+          .mp-chip .ms { font-size: 16px; }
+          .ownr { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: var(--mp-surface-2); }
+          .ownr .ms { font-size: 20px; color: var(--mp-accent); }
+          .est { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+          /* the one-asset screen and the in-place correction (R8) */
+          .pg { display: flex; flex-direction: column; gap: 14px; padding: 4px 16px 0; }
+          .subt { padding: 0 20px 10px; margin-top: -8px; }
+          .sech { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 4px 0 16px; margin-bottom: -6px; }
+          .rowc { padding-top: 8px; padding-bottom: 8px; min-height: 52px; }
+          .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+          .rowv { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: none; }
+          .valc { padding: 14px 16px; }
+          .vline { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+          .tapme { border-bottom: 2px dotted var(--mp-accent); padding-bottom: 1px; }
+          .vline .ms { font-size: 20px; color: var(--mp-accent); }
+          .efield { display: flex; align-items: center; gap: 2px; min-height: 52px; padding: 0 14px; border-radius: 14px; background: var(--mp-surface-2); box-shadow: inset 0 0 0 2px var(--mp-focus); }
+          .efv { font-family: var(--mp-font-round); font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.02em; }
+          .ba { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font: 400 15px/20px var(--mp-font); }
+          .ba .ms { font-size: 18px; color: var(--mp-ink-2); }
+          .ba b { font-weight: 600; }
+          .audl { display: flex; gap: 8px; align-items: flex-start; padding-top: 8px; border-top: 1px solid var(--mp-line); font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .audl .ms { font-size: 18px; color: var(--mp-accent); }
+          .audl b { color: var(--mp-ink); font-weight: 600; }
+          .qnote { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: var(--mp-surface); }
+          .qnote .ms { font-size: 20px; }
+          .kbd { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; padding: 8px 6px 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; background: var(--mp-surface-2); box-shadow: 0 -1px 0 var(--mp-line); }
+          .key { height: 48px; border-radius: 9px; display: grid; place-items: center; background: var(--mp-surface); color: var(--mp-ink); font: 400 25px/1 var(--mp-font); box-shadow: 0 1px 0 var(--mp-line); }
+          .key.fn { background: transparent; box-shadow: none; }
+          .key .ms { font-size: 24px; }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="intro" data-screen-label="iPhone v4 register: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#intro">R</a><span class="dv-tname">Register anything by talking, and correct a figure in place</span></div>
+        <p class="dv-intro">The chat's cards for registering the household's records, one sentence at a time, in shell 1a with the iPhone chat's card anatomy (C4's guided flow, C5's Confirm, C8's amber fields). The agent drafts the record, asks only what is missing with chips, and a Confirm card shows the figures the engine worked out; nothing is saved until Confirm. An existing figure is corrected where it is shown: tap, type, before → after, Save. Every board is drawn in light and dark. Planned for MA-193; each goes through design-first when its story starts. Illustrative figures and names, from the household-v4 figure set.</p>
+        <p class="dv-intro"><b>The clock and the strip.</b> Today is Mon 26 Oct 2026; prices are at the Fri 23 Oct close; £1 = ₹112.50 (ECB). The Monzo savings and the correction happen this morning, so their strip shows the household's net worth from the figure set. The records the set already holds were registered on setup day, Sun 25 Oct, and Asha's Premium Bonds come on Sat 31 Oct; the set holds no total for those moments, so their strip shows the day only. The build shows that moment's net worth there; a board never makes one up.</p>
+      </section>
+
+      <section class="bd" id="r1">
+        <div class="bd-h"><span class="bd-id">R1</span><span class="bd-name">Register a record: Monzo savings</span><span class="bd-keys">MA-203 · MA-197</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Register a record: Monzo savings · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 3, whose is it?</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:40</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:40</div>
+                    <div class="me">£5,000 in Monzo savings</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New savings · one question</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                      <div class="ccard-b g0">
+                        <div class="done"><span>What is it?</span><span class="fx ac gap6"><b>Savings · Monzo</b><span class="ms">check</span></span></div>
+                        <div class="done"><span>How much?</span><span class="fx ac gap6"><b>£5,000</b><span class="ms">check</span></span></div>
+                        <div class="fx col gap8 qblk"><span class="mp-hl">Whose is it?</span><div class="wrap8"><span class="cbtn tight">Arun</span><span class="cbtn tight">Asha</span><span class="cbtn tight">Joint</span></div></div>
+                      </div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Or type whose</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 3, the Confirm card</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:40</div>
+                    <div class="me">£5,000 in Monzo savings</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">New record · check it</span><span class="mp-hl">Instant access savings · Monzo</span></div>
+                        <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Value</span><span>£5,000</span></div><div class="kv"><span>As of</span><span>Today, Mon 26 Oct</span></div><div class="kv"><span>Kind</span><span>Savings, UK, in pounds</span></div><div class="kv"><span>Counts as</span><span>Liquid</span></div><span class="mp-foot mp-ink2">Nothing is saved until you tap Confirm.</span></div>
+                        <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 3 of 3, saved</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£444,951</span><span class="mp-foot mp-up mp-w6">▲ £5,000 just now</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 09:40</div>
+                    <div class="me">£5,000 in Monzo savings</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">New record · saved</span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" data-mo="saved">check_circle</span><span class="mp-hl">Instant access savings · Monzo</span></span></div>
+                        <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Value</span><span>£5,000</span></div></div>
+                        <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Saved · in the audit log</span><span class="mp-foot mp-ink2">09:41</span></div>
+                      </div>
+                      <span class="ai-meta"><span class="ms ms-s">devices</span><span>Net worth £439,951 → £444,951, on every open door</span></span>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>One sentence, one question.</b> "£5,000 in Monzo savings" gives the kind, the bank and the amount; only the owner is missing, so the card asks it with chips: Arun, Asha, Joint. Joint asks the shares next, half each by default.</p>
+            <p><b>The Confirm card</b> says what will be saved: the owner, the value as of today, the kind and how it counts. Confirm is the filled content button, as on C5; Edit reopens a line; Cancel saves nothing.</p>
+            <p><b>Saved:</b> the card edits in place to its check and "Saved · in the audit log", and the strip moves from £439,951 to £444,951 at every open door (the laptop too), as the figure set has it.</p>
+            <p><b>Motion:</b> the question folds to its line as the Confirm card rises; the check lands with the one success bounce and the strip's figure rolls.</p>
+            <p><b>Builds:</b> MA-203 (savings by chat), MA-197 (<code>draft_record</code> and the kind spec that knew what to ask). This is Phase 2's exit demo; in the prototype it is the household's newest record.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r2">
+        <div class="bd-h"><span class="bd-id">R2</span><span class="bd-name">Register a fixed deposit: SBI</span><span class="bd-keys">MA-202 · MA-197</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Register a fixed deposit: SBI · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, paid out or cumulative?</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:02</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 10:01</div>
+                    <div class="me">SBI FD, 5 lakh at 7.1% for 3 years from 10 March</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New fixed deposit · 2 of 2</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                      <div class="ccard-b g0">
+                        <div class="done"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div>
+                        <div class="fx col gap8 qblk"><span class="mp-hl">Is the interest paid out, or added to the deposit?</span><div class="wrap8"><span class="cbtn tight">Added in, cumulative</span><span class="cbtn tight">Paid out</span></div></div>
+                      </div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, the maturity, computed</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:03</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="me">SBI FD, 5 lakh at 7.1% for 3 years from 10 March</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New fixed deposit</span><div class="done nb"><span>Interest?</span><span class="fx ac gap6"><b>Cumulative</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">New fixed deposit · check it</span><span class="mp-hl">SBI · ₹5,00,000 at 7.1%</span></div>
+                        <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>From</span><span>Tue 10 Mar 2026, 3 years</span></div><div class="kv"><span>Interest</span><span>Added in, quarterly</span></div><div class="kv"><span>Matures</span><span>Sat 10 Mar 2029</span></div><div class="kv"><span>At maturity</span><span>₹6,17,538</span></div><div class="kv"><span>On maturity</span><span>I'll ask you then</span></div><span class="mp-foot mp-ink2">MyPaisa's engine works out the maturity from the rate, the term and SBI's quarterly compounding. Nothing is saved until you tap Confirm.</span></div>
+                        <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Asked one at a time.</b> The sentence gave the bank, the amount, the rate, the term and the start; whose it is came first, then the one thing SBI's terms leave open: paid out, or added in. Quarterly compounding is SBI's default, so it is not asked.</p>
+            <p><b>The maturity is computed, and says so:</b> ₹6,17,538 on Sat 10 Mar 2029, from ₹5,00,000 at 7.1% compounded quarterly for twelve quarters. The words never work a figure out.</p>
+            <p><b>On maturity: I'll ask you then.</b> The maturity becomes a check-in on Sat 10 Mar 2029: renewed, paid out or moved, as the saver's check-in draws it (Check-ins file, K8).</p>
+            <p><b>Motion:</b> the question folds to its line and the Confirm card rises with its figures in place; nothing rolls until it is saved.</p>
+            <p><b>Builds:</b> MA-202 (the deposit's maturity outcome), MA-197 (<code>draft_record</code> deriving the maturity). Drawn on setup day; the strip shows the day only.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r3">
+        <div class="bd-h"><span class="bd-id">R3</span><span class="bd-name">Register a loan part-way through: HDFC</span><span class="bd-keys">MA-209 · MA-197</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Register a loan part-way through: HDFC · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, the rate</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:20</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="me">HDFC home loan on the Pune flat: ₹15,13,257 left after October's EMI. The EMI is ₹39,390 on the 5th, and it ends Jul 2030.</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New home loan · one question</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                      <div class="ccard-b g0">
+                        <div class="done"><span>Left to pay</span><span class="fx ac gap6"><b>₹15,13,257</b><span class="ms">check</span></span></div>
+                        <div class="done"><span>EMI</span><span class="fx ac gap6"><b>₹39,390 on the 5th</b><span class="ms">check</span></span></div>
+                        <div class="done"><span>Ends</span><span class="fx ac gap6"><b>Jul 2030</b><span class="ms">check</span></span></div>
+                        <div class="fx col gap8 qblk"><span class="mp-hl">What's the interest rate?</span><span class="t15 mp-ink2">I can't look up your loan's rate. Type it, or send HDFC's latest statement.</span></div>
+                      </div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="txt">8.5%<span class="caret"></span></span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, from a balance checkpoint</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:21</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New home loan</span><div class="done nb"><span>Rate?</span><span class="fx ac gap6"><b>8.5%</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">New home loan · check it</span><span class="mp-hl">HDFC · ₹15,13,257 left</span></div>
+                        <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Secured on</span><span>Flat, Pune</span></div><div class="kv"><span>Rate · EMI</span><span>8.5% · ₹39,390 on the 5th</span></div><div class="kv"><span>Ends</span><span>Jul 2030</span></div><div class="kv"><span>Starts from</span><span>after Mon 5 Oct's EMI</span></div><div class="kv"><span>Prepaying</span><span>shortens the term</span></div><span class="t15">The engine's schedule: of November's EMI, ₹10,719 is interest and ₹28,671 comes off the balance.</span><span class="mp-foot mp-ink2">No payments before October are needed. Nothing is saved until you tap Confirm.</span></div>
+                        <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>A loan started years ago starts here.</b> The balance after October's EMI is a checkpoint: no history from 2015 is needed, and the schedule runs on from ₹15,13,257.</p>
+            <p><b>One question:</b> the rate, which the agent cannot look up; it offers a statement as the other way to give it. The member types 8.5% in the composer.</p>
+            <p><b>The engine's figures:</b> November's EMI splits ₹10,719 interest and ₹28,671 off the balance (₹15,13,257.40 × 8.5% ÷ 12, the rest of ₹39,389.58). Prepaying shortens the term, India's default, editable later. The flat it is secured on was registered first (R4).</p>
+            <p><b>Motion:</b> the typed rate goes up from the composer, the question folds, the Confirm card rises.</p>
+            <p><b>Builds:</b> MA-209 (loans by chat, with a checkpoint), MA-197 (<code>draft_record</code>). The EMI's check-ins start Thu 5 Nov (Check-ins file).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r4">
+        <div class="bd-h"><span class="bd-id">R4</span><span class="bd-name">Register a property: the Pune flat</span><span class="bd-keys">MA-203 · MA-197</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Register a property: the Pune flat · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>10:15</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="me">Our flat in Pune, half each. Valued at 1.1 crore in January, bought July 2015 for 65 lakh, rented at 18k a month.</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">New property · check it</span><span class="mp-hl">Flat, Pune · ₹1,10,00,000</span></div>
+                    <div class="ccard-b g0">
+                      <div class="fx col gap10" style="padding-bottom:10px"><div class="kv"><span>Owners</span><span>Arun 50% · Asha 50%</span></div><div class="kv"><span>Valued</span><span>Jan 2026, your figure</span></div><div class="kv"><span>Bought</span><span>Jul 2015, ₹65,00,000</span></div><div class="kv"><span>In pounds</span><span>£97,778 at ₹112.50 per £</span></div><div class="kv"><span>Rent in</span><span>₹18,000 a month, shared</span></div></div>
+                      <div class="fld"><span class="fs">Day the rent arrives</span><span class="fv"><span class="amber">not given</span></span><span class="fs q">Which day of the month? You can confirm without it; the rent's check-in waits for it.</span></div>
+                      <span class="mp-foot mp-ink2" style="padding-top:10px">Nothing is saved until you tap Confirm.</span>
+                    </div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Or type the rent day</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Everything from one sentence:</b> joint, half each; the value and when; what it cost; the rent. "1.1 crore" and "65 lakh" come back in full, with lakh and crore grouping.</p>
+            <p><b>Two currencies:</b> the flat is held in rupees; the pounds line is the engine's, at the ECB rate of Fri 23 Oct (₹1,10,00,000 ÷ 112.50 = £97,778).</p>
+            <p><b>One field in amber,</b> as on C8: the day the rent arrives was not said and cannot be looked up. Confirm still works; the rent's monthly check-in waits for the day. Amber means unsure, never red.</p>
+            <p><b>Motion:</b> the sentence arrives from the right and the card rises whole.</p>
+            <p><b>Builds:</b> MA-203 (a property's value by chat), MA-197 (joint owners and the rent's commitment from the kind spec). The HDFC loan on it comes next (R3).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r5">
+        <div class="bd-h"><span class="bd-id">R5</span><span class="bd-name">Register for another member: Asha's fund</span><span class="bd-keys">MA-206 · MA-216 · MA-197</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Register for another member: Asha's fund · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }} · Arun's chat</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>10:30</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="me">Add Asha's Parag Parikh Flexi Cap, direct growth: 6,437.512 units, SIP ₹10,000 on the 10th</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New holding · check it</span><span class="mp-chip mp-neutral"><span class="ms">person</span>For Asha</span></span><span class="mp-hl">Parag Parikh Flexi Cap · Direct Growth</span></div>
+                    <div class="ccard-b">
+                      <div class="ownr"><span class="ms">badge</span><span class="t15"><b>Asha owns it.</b> You are adding it for her; it counts in her share.</span></div>
+                      <div class="kv"><span>Owner</span><span>Asha</span></div><div class="kv"><span>Folio</span><span>CAMS</span></div><div class="kv"><span>Units</span><span>6,437.512</span></div><div class="kv"><span>Value</span><span>₹5,61,995</span></div><div class="kv"><span>NAV</span><span>₹87.30, AMFI, Fri 23 Oct</span></div><div class="kv"><span>SIP</span><span>₹10,000 on the 10th</span></div>
+                      <span class="mp-foot mp-ink2">Her SIP check-ins go to her, from Tue 10 Nov. Nothing is saved until you tap Confirm.</span>
+                    </div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The admin registers for a member, and the card names the owner</b> twice: the For Asha tag beside the heading and the line under it, so no one confirms a record into the wrong share.</p>
+            <p><b>Looked up, not asked:</b> the NAV of ₹87.30 is AMFI's for Fri 23 Oct; the engine's value is 6,437.512 × ₹87.30 = ₹5,61,995.</p>
+            <p><b>The SIP is a commitment:</b> ₹10,000 on the 10th, monthly. Its check-ins go to Asha, the owner, from Tue 10 Nov; the admin sees them answered in Activity.</p>
+            <p><b>Motion:</b> the sentence arrives from the right and the card rises whole.</p>
+            <p><b>Builds:</b> MA-206 (an Indian mutual fund in its folio), MA-216 (the SIP as a commitment), MA-197 (the owner rule in <code>draft_record</code>).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r6">
+        <div class="bd-h"><span class="bd-id">R6</span><span class="bd-name">No history yet: past buys or your estimate</span><span class="bd-keys">MA-215 · MA-206</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · No history yet: past buys or your estimate · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, the ask</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="me">120 Infosys shares in my Zerodha demat</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">New holding · saved</span><span class="fx ac gap8"><span class="ms ms-fill mp-acc">check_circle</span><span class="mp-hl">Infosys · 120 shares</span></span></div>
+                        <div class="ccard-b"><div class="kv"><span>Value</span><span>₹1,77,660</span></div><span class="mp-foot mp-ink2">At ₹1,480.50 a share, the Fri 23 Oct close · saved 10:40, in the audit log</span></div>
+                      </div>
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="mp-over mp-ink2">Infosys · its return</span><span class="t15">It has no history yet, so the engine can't work out its return.</span><span class="mp-hl">Send past buys, or give an estimate</span></div>
+                        <div class="ccard-b"><span class="mp-foot mp-ink2">Past buys: Zerodha's tax P&amp;L or your contract notes.</span></div>
+                        <div class="ccard-acts"><span class="cbtn">Send past buys</span><span class="cbtn">Give an estimate</span><span class="cbtn cbtn-ghost">Later</span></div>
+                      </div>
+                    </div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, your estimate</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:43</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">Infosys · its return</span><div class="done nb"><span>Past buys or an estimate?</span><span class="fx ac gap6"><b>An estimate</b><span class="ms">check</span></span></div></div></div></div></div>
+                    <div class="me">About 9% a year</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="mp-over mp-ink2">Infosys · its return · check it</span><span class="est"><span class="mp-hl">9% a year</span><span class="mp-chip mp-watch">your estimate</span></span></div>
+                      <div class="ccard-b"><div class="kv"><span>Used in</span><span>the projection</span></div><div class="kv"><span>Shown as</span><span>your estimate, everywhere</span></div><div class="kv"><span>Replaced by</span><span>the engine's return, from past buys</span></div><span class="mp-foot mp-ink2">MyPaisa does not check an estimate; it only keeps it apart from the engine's figures. Nothing is saved until you tap Confirm.</span></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Registered first, then the gap:</b> 120 shares at the Fri 23 Oct close of ₹1,480.50 make ₹1,77,660 (the engine's). With no buys on record there is no return to compute, so the agent says so and offers two ways on.</p>
+            <p><b>Past buys</b> (a tax P&amp;L or contract notes, read like any file) let the engine compute the return. <b>An estimate</b> is the member's own figure.</p>
+            <p><b>Your estimate, always labelled:</b> a neutral tag on the card, and the same words wherever the 9% appears (the asset screen, the projection's assumptions). The engine's return replaces it once past buys arrive.</p>
+            <p><b>The figure:</b> 9% is Arun's typed estimate. The figure set has none for Infosys; 9% is its India equity prior, used here so no new figure enters the set.</p>
+            <p><b>Builds:</b> MA-215 (history or an estimate), MA-206 (a share in its demat account).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r7">
+        <div class="bd-h"><span class="bd-id">R7</span><span class="bd-name">A new kind for the admin: Premium Bonds</span><span class="bd-keys">MA-197</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · A new kind for the admin: Premium Bonds · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, Asha's chat</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:12</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 10:12</div>
+                    <div class="me">I have NS&amp;I Premium Bonds too</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Premium Bonds aren't a kind MyPaisa knows yet, so I can't add them today. I've asked Arun to approve one; I'll pick this up with you when he does.</div><span class="ai-meta"><span class="ms ms-s">hourglass_top</span><span>Nothing saved · waiting for Arun</span></span></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, Arun's chat, the admin's card</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:13</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 10:13</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New kind · to approve</span><span class="mp-chip mp-neutral"><span class="ms">shield_person</span>Admin</span></span><span class="mp-hl">NS&amp;I Premium Bonds isn't a kind yet: add it as cash, no interest, prizes as income?</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Built from</span><span>Cash: the last figure given</span></div><div class="kv"><span>Interest</span><span>none</span></div><div class="kv"><span>Prizes</span><span>income, in the budget</span></div><div class="kv"><span>Where</span><span>UK, in pounds, liquid</span></div><div class="kv"><span>Asked for by</span><span>Asha, 10:12</span></div><span class="mp-foot mp-ink2">A kind is data: no screen or form changes. Only you, the admin, can add one; Asha's own record still comes to her Confirm.</span></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Approve</span><span class="cbtn">Reject</span></div>
+                      <div class="ccard-fold"><span>Technical</span><span class="ms">expand_more</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The member hears why, in plain words,</b> and that the admin was asked; nothing is saved and no amount is taken yet.</p>
+            <p><b>Only the admin sees Approve and Reject.</b> The agent proposes the kind from the templates (<code>propose_kind</code>, admin only, enforced in code): cash at the last figure given, no interest, prizes as income. Technical opens the spec.</p>
+            <p><b>Approve adds data, not a screen;</b> Asha's registration then resumes in her chat like R1, with her own Confirm. Reject tells her plainly.</p>
+            <p><b>Open question:</b> ARCHITECTURE §4.5 does not say whether approving a kind is an admin action behind the second check. Drawn without it; if it is, Approve shows the Face ID sheet first.</p>
+            <p><b>Builds:</b> MA-197 (<code>propose_kind</code>). Drawn pending: the figure set holds no Premium Bonds, so no outcome or amount is drawn. Sat 31 Oct comes after the set's last close, so the strip shows the day only.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r8">
+        <div class="bd-h"><span class="bd-id">R8</span><span class="bd-name">Correct a figure in place: Home's value</span><span class="bd-keys">MA-201 · MA-203</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Correct a figure in place: Home's value · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 3, tap the figure</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:51</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="fx gap8"><span class="gbtn lg"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                  <div class="largetitle">Home, Reading</div>
+                  <div class="subt mp-foot mp-ink2">Property · UK · Arun and Asha, half each</div>
+                  <div class="scroll"><div class="pg">
+                    <div class="mp-card valc fx col gap4">
+                      <span class="mp-over mp-ink2">Value · your figure</span>
+                      <div class="vline"><span class="mp-num-l tapme">£415,000</span><span class="ms">edit</span></div>
+                      <span class="mp-foot mp-ink2">Valued Thu 30 Apr 2026. Tap the figure to correct it.</span>
+                    </div>
+                    <div class="mp-group">
+                      <div class="mp-row rowc"><span class="grow"><span class="mp-hl">Your share</span><span class="mp-foot mp-ink2">50%</span></span><span class="rowv"><span class="mp-hl">£207,500</span></span></div>
+                      <div class="mp-row rowc"><span class="grow"><span class="mp-hl">Valuation due</span><span class="mp-foot mp-ink2">every six months</span></span><span class="rowv"><span class="mp-hl">Fri 30 Oct</span></span></div>
+                    </div>
+                    <div class="sech"><span class="mp-over mp-ink2">History</span><span class="mp-foot mp-ink2">newest first</span></div>
+                    <div class="mp-group">
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">home_work</span></span><span class="grow"><span class="mp-hl">Valued at £415,000</span><span class="mp-foot mp-ink2">Thu 30 Apr 2026 · your figure</span></span></div>
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">key</span></span><span class="grow"><span class="mp-hl">Bought for £330,000</span><span class="mp-foot mp-ink2">Fri 18 Jun 2021</span></span></div>
+                    </div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 3, before → after, Save</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:52</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="fx gap8"><span class="gbtn lg"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                  <div class="largetitle">Home, Reading</div>
+                  <div class="subt mp-foot mp-ink2">Property · UK · Arun and Asha, half each</div>
+                  <div class="scroll"><div class="pg">
+                    <div class="mp-card valc fx col gap10">
+                      <span class="mp-over mp-ink2">Value · correcting</span>
+                      <div class="efield"><span class="efv">£428,000</span><span class="caret"></span></div>
+                      <div class="ba"><span>£415,000</span><span class="ms">arrow_forward</span><b>£428,000</b><span class="mp-up mp-w6">▲ £13,000</span></div>
+                      <span class="mp-foot mp-ink2">Saved as a correction, labelled your estimate, with its audit row; £415,000 stays in the history.</span>
+                      <div class="fx gap8"><span class="cbtn cbtn-primary">Save</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    </div>
+                  </div></div>
+                  <div class="kbd"><span class="key">1</span><span class="key">2</span><span class="key">3</span><span class="key">4</span><span class="key">5</span><span class="key">6</span><span class="key">7</span><span class="key">8</span><span class="key">9</span><span class="key fn"></span><span class="key">0</span><span class="key fn"><span class="ms">backspace</span></span></div>
+                  <div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 3 of 3, saved, with its audit line</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>09:52</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="fx gap8"><span class="gbtn lg"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                  <div class="largetitle">Home, Reading</div>
+                  <div class="subt mp-foot mp-ink2">Property · UK · Arun and Asha, half each</div>
+                  <div class="scroll"><div class="pg">
+                    <div class="mp-card valc fx col gap4">
+                      <span class="fx ac jb"><span class="mp-over mp-ink2">Value · corrected</span><span class="mp-chip mp-watch">your estimate</span></span>
+                      <div class="vline"><span class="mp-num-l">£428,000</span><span class="ms ms-fill" data-mo="saved">check_circle</span></div>
+                      <div class="audl"><span class="ms">history</span><span><b>In the audit log:</b> value £415,000 → £428,000 · your estimate · Arun · in place · Mon 26 Oct, 09:52</span></div>
+                    </div>
+                    <div class="qnote"><span class="ms mp-acc">info</span><span class="mp-foot">A correction is an event, never an overwrite: £415,000 stays in the history, under the correction.</span></div>
+                    <div class="mp-group">
+                      <div class="mp-row rowc"><span class="grow"><span class="mp-hl">Your share</span><span class="mp-foot mp-ink2">50%</span></span><span class="rowv"><span class="mp-hl">£214,000</span></span></div>
+                    </div>
+                    <div class="sech"><span class="mp-over mp-ink2">History</span><span class="mp-foot mp-ink2">newest first</span></div>
+                    <div class="mp-group">
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">edit</span></span><span class="grow"><span class="mp-hl">Corrected to £428,000</span><span class="mp-foot mp-ink2">Mon 26 Oct 2026 · your estimate · Arun, in place</span></span></div>
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">home_work</span></span><span class="grow"><span class="mp-hl">Valued at £415,000</span><span class="mp-foot mp-ink2">Thu 30 Apr 2026 · your figure</span></span></div>
+                    </div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Correct where it is shown.</b> On Home, Reading the value carries a dotted underline and a pencil: a tap opens it for typing with the number pad, the field ringed in the focus colour.</p>
+            <p><b>Before → after, then Save:</b> £415,000 → £428,000, ▲ £13,000. Save sends the figure the screen showed, so a change made meanwhile at another door is refused, not overwritten. Cancel leaves it as it was.</p>
+            <p><b>Saved with its audit line,</b> and the note that a correction is an event: the history keeps "Valued at £415,000" under "Corrected to £428,000" (<code>via: inline_edit</code>). The new figure is the member's, so it is labelled your estimate, as on R6. Arun's share follows: £214,000.</p>
+            <p><b>A correction, not a new valuation:</b> it says the April figure was wrong. A new valuation dated today is an event made in the chat, from the valuation check-in (Check-ins file, K1). Nothing can be created here.</p>
+            <p><b>Builds:</b> MA-201 (the write service and the correction route), MA-203 (a property's value corrected in place). As the figure set records it: £415,000 → £428,000 at 09:52 on Mon 26 Oct, so the household's net worth from then is £457,951 (₹5,15,19,488).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="r9">
+        <div class="bd-h"><span class="bd-id">R9</span><span class="bd-name">Privacy mode: a Confirm card</span><span class="bd-keys">MA-203 · MA-171</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Privacy mode: a Confirm card · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="striprow"><div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n mp-mask">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div><span class="gbtn lg lg-tint"><span class="ms z1">visibility_off</span></span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 09:40</div>
+                  <div class="me">£5,000 in Monzo savings</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                    <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div></div></div>
+                    <div class="ccard">
+                      <div class="ccard-h"><span class="mp-over mp-ink2">New record · check it</span><span class="mp-hl">Instant access savings · Monzo</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Value</span><span><span class="mp-mask">£5,000</span></span></div><div class="kv"><span>As of</span><span>Today, Mon 26 Oct</span></div><div class="kv"><span>Counts as</span><span>Liquid</span></div><span class="mp-foot mp-ink2">Privacy is on: amounts hidden.</span><span class="fref"><span class="ms">visibility</span>Show amounts on this card</span></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    </div>
+                  </div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Privacy on:</b> the strip's net worth and the card's value are masked; the member's own message stays as typed, as on C17.</p>
+            <p><b>Confirm still works:</b> what it saves is on the card, behind the mask; Show amounts on this card reveals this card only.</p>
+            <p><b>The glass eye beside the strip is on,</b> tinted; a tap shows amounts everywhere again.</p>
+            <p><b>Motion:</b> masks fade in as blocks and never roll, so no figure shows for a frame.</p>
+            <p><b>Builds:</b> MA-203 (the card), MA-171 (privacy mode).</p>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          return {
+            themes: [{ label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' }]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>
