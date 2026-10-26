@@ -50,13 +50,16 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-226 | The explainer pages walk the v4 flows: registering anything, check-ins, statements, in-place correction and the Projection | Done | §4.8, §4.9, §4.10, §6.6 | none |  |
 | MA-227 | The v4 boards still to draw are drawn: Budget and Assets and Debts on iPad, the check-in cards in the web chat, and the new-kind card's second check | Done | §4.5, §9.3, §9.4 | none |  |
 | MA-228 | The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree | Done | §16 | none |  |
-| MA-229 | The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled | In Progress | §9.4, §9.5, §16, §21.5 | none |  |
+| MA-229 | The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled | Done | §9.4, §9.5, §16, §21.5 | none |  |
+| MA-230 | The architecture records one trace from the door to the model, OpenTelemetry on every Lambda, and what each reader of the agent's work sees | In Progress | §10, §13, §16 | none |  |
+| MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | To Do | §10.3, §10.5, §10.6, §10.7, §10.9, §18.4 | none |  |
+| MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | To Do | §3, §10 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
-| MA-29 | Every Lambda run leaves a RunRecord, logs, traces and an error alarm | To Do | §10, §4.1 | none |  |
+| MA-29 | Every Lambda run leaves a RunRecord, logs, traces and an error alarm | To Do | §10, §10.1, §10.3, §10.6, §4.1 | none |  |
 | MA-30 | Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens | To Do | §9, §21.5 | none |  |
 | MA-31 | The chat API accepts only a signed-in member's messages and taps, and hands each off once | To Do | §3, §18.2, §21.1 | none |  |
 | MA-32 | The first person to sign in owns the household and invites and removes members with one-time links | To Do | §4.5 | planned | iPhone sign-in.dc.html: iPhone · Joining from an invite; iPhone admin.dc.html: iPhone · Members and devices; iPhone admin.dc.html: iPhone · Invite a member |
@@ -87,6 +90,9 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-196 | Activity shows each run of the agent at every door: what it read, which tools it called, what it proposed, and what it cost | To Do | §10 | planned | iPhone audit and activity.dc.html: iPhone · Activity; iPhone audit and activity.dc.html: iPhone · A run; Web v4 · Shell and chat.dc.html: Browser · Activity; Web v4 · Shell and chat.dc.html: Browser · Activity, phone; Web v4 · Shell and chat.dc.html: Browser · A run; Web v4 · Shell and chat.dc.html: Browser · A run, phone |
 | MA-199 | The web app's chat shows the conversation, renders every card, streams replies and sends text and files, at desktop and phone width | To Do | §8, §9.4, §21.5 | picked | Web v4 · Shell and chat.dc.html: Browser · Shell 1a, Chat beside; Web v4 · Shell and chat.dc.html: Browser · Shell 1a, Chat beside, phone; Web v4 · Shell and chat.dc.html: Browser · Chat, a reply streaming; Web v4 · Shell and chat.dc.html: Browser · Chat, a reply streaming, phone; Web v4 · Shell and chat.dc.html: Browser · Chat, a Confirm card; Web v4 · Shell and chat.dc.html: Browser · Chat, a Confirm card, phone; Web v4 · Shell and chat.dc.html: Browser · Chat, sending a statement; Web v4 · Shell and chat.dc.html: Browser · Chat, sending a statement, phone; Web v4 · Shell and chat.dc.html: Browser · Chat, offline; Web v4 · Shell and chat.dc.html: Browser · Chat, offline, phone; Web v4 · Shell and chat.dc.html: Browser · Home moves live; Web v4 · Shell and chat.dc.html: Browser · Home moves live, phone |
 | MA-200 | Web Push reaches the installed web app when it is closed, with no amounts unless the member chooses | To Do | §11 | planned | Web v4 · Shell and chat.dc.html: Browser · Web Push notification; Web v4 · Shell and chat.dc.html: Browser · Web Push notification, phone |
+| MA-232 | One trace follows a message from the door through the api, the queues and the agent to the model and back to every door, shared by every log line, span and RunRecord | To Do | §10.2, §10.3, §21, §21.5 | none |  |
+| MA-233 | Every model call and tool call is a span with its model, tokens, cache reads, cost, latency and outcome, shown on the model panel with its quality alarms | To Do | §10.4, §10.5, §8, §15.1 | none |  |
+| MA-234 | The doors report what they saw, with the trace id and no content: the time to the first word, a resume or resync, an api error, a crash or a hang | To Do | §10.2, §10.5, §9.4, §9.5 | none |  |
 
 ## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 
@@ -295,6 +301,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-135 | E7: an ops warden runs the daily pipeline, repairs what it safely can and opens an incident for the admin when it cannot | To Do | §20.5 | planned | Admin center 2.dc.html: Browser · Admin · Agents and incidents |
 | MA-136 | E8: each agent has its share of the $200 Claude credit, and AWS and other services stay inside their cap | To Do | §15.2, §20.7 | planned | Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Agents and incidents |
 | MA-146 | The ops warden replays dead-lettered work on its own once the cause is healthy, and opens an incident if it fails again | To Do | §20.5, §21.3 | none |  |
+| MA-235 | The daily run and every agent share one trace: Step Functions and the event bus carry it, a replay links to the run it repeats, an incident names its trace, and heartbeats are metrics | To Do | §10.8, §20.5, §21.3 | none |  |
 
 ## Phase 19: Indian markets and the existing Indian portfolio (MA-147)
 

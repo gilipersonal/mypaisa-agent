@@ -327,12 +327,15 @@
    "labels": [],
    "arch": [
     "10",
+    "10.1",
+    "10.3",
+    "10.6",
     "4.1"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Updated 26 Oct 2026 (MA-230): OpenTelemetry in place of Powertools Tracer; the RunRecord carries its trace id and build; the whole trace is MA-232 and the model spans MA-233."
   },
   {
    "key": "MA-30",
@@ -6087,7 +6090,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "9.4",
@@ -6099,6 +6102,137 @@
    "design": "none",
    "boards": [],
    "notes": "Arun, 26 Oct 2026: \"Go with the latest and greatest for this. For UI, I want the what we used for Smart Clearance and bong-panjika, Tanstack, shadecdn-ui, tailwind CSS all those.\" Records the web app on Smart Clearance's stack and the iOS shell on bong-panjika's, Swift Package Manager from day one, the association file behind a CloudFront Function, and the stream on the api's REST API in API Gateway's streaming mode."
+  },
+  {
+   "key": "MA-230",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The architecture records one trace from the door to the model, OpenTelemetry on every Lambda, and what each reader of the agent's work sees",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "10",
+    "13",
+    "16"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 26 Oct 2026: AWS monitoring, tracing and observability for LLMs and all components, end to end across apps and agents; the app keeps the audit. Docs only: ARCHITECTURE 10 rewritten, the stack, decisions and cost tables, PLAN's phases 0, 1 and 18, the trace and the roadmap."
+  },
+  {
+   "key": "MA-231",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "10.3",
+    "10.5",
+    "10.6",
+    "10.7",
+    "10.9",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Dev first: Transaction Search and Application Signals are switched on in dev, their first month measured and put to Arun before prod (aws-changes)."
+  },
+  {
+   "key": "MA-232",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "One trace follows a message from the door through the api, the queues and the agent to the model and back to every door, shared by every log line, span and RunRecord",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "10.2",
+    "10.3",
+    "21",
+    "21.5"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Carries the leak test and the dev smoke test's trace; measures the api's cold start with the OpenTelemetry layer (ARCHITECTURE 17)."
+  },
+  {
+   "key": "MA-233",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "Every model call and tool call is a span with its model, tokens, cache reads, cost, latency and outcome, shown on the model panel with its quality alarms",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "10.4",
+    "10.5",
+    "8",
+    "15.1"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-234",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "The doors report what they saw, with the trace id and no content: the time to the first word, a resume or resync, an api error, a crash or a hang",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "10.2",
+    "10.5",
+    "9.4",
+    "9.5"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "No screen changes: the doors send a batch to POST /v1/telemetry; nothing a member sees."
+  },
+  {
+   "key": "MA-235",
+   "type": "Story",
+   "epic": "MA-127",
+   "phase": 18,
+   "summary": "The daily run and every agent share one trace: Step Functions and the event bus carry it, a replay links to the run it repeats, an incident names its trace, and heartbeats are metrics",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "10.8",
+    "20.5",
+    "21.3"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-236",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "3",
+    "10"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
   }
  ],
  "others": [

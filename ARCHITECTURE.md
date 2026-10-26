@@ -278,7 +278,7 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **SentimentIndex**, **ArticleScore**, **MessageSeen** | per portfolio, global, or per member (the client ids already taken, §21.2) | |
 | **PendingAction** | `member_id`, `flow_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `register_record` · `record_event` · `checkin` · `statement` · `settings` · `confirm`), `step`, `collected` (the answers so far), `draft_hash?`, `message_id`, `expires_at` (24 h) | The state of the guided flows: what MyPaisa is waiting for from this member. Several can be open at once, keyed by flow id, so a check-in arriving mid-way does not wipe a half-registered FD. A draft (§4.8) is hashed here, and Confirm commits exactly that draft. The next message or tap resumes its flow; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `cas` · `broker_export` · `statement` · `checkin` · `inline_edit` · `agent_proposal` · `schedule` · `migration`), `document_id?` (the file a change came from), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
-| **RunRecord** | `run_id`, `function`, `trigger` (`message` · `action` · `schedule:<name>` · `alarm`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output and cached tokens, cost, ms), `tool_calls[]` (name, ms, ok, error), `messages_sent`, `outcome`, `error?` | What one run of any Lambda did and cost. 90-day TTL. Activity at every door and the cost guard rails read these. See §10. |
+| **RunRecord** | `run_id`, `trace_id`, `build`, `version`, `function`, `trigger` (`message` · `action` · `schedule:<name>` · `alarm` · `deploy`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output, cache-read and cache-write tokens, cost, ms, time to the first token, stop reason, refused or fell back), `tool_calls[]` (name, ms, ok, error class, input and output sizes, the truncated input and output), `messages_sent`, `outcome`, `error?` | What one run of any Lambda did and cost, and the trace it is on. 90-day TTL. Activity at every door and the cost guard rails read these; the only place a tool's input and output are kept outside `ChatTurn`. See §10. |
 
 Signals and macro regimes are per instrument and shared by everyone who holds
 it; stances are per position, because the horizon, the drift from target and
@@ -1565,7 +1565,15 @@ unchanged.
 
 ---
 
-## 10. Observability: what the agent did, and what it cost
+## 10. Observability: what the agent did, what it cost, and one trace from the door to the model
+
+Arun, 26 Oct 2026 (MA-230): "I need AWS monitoring, tracing and
+Observability for LLMs and all components. Do whatever is best and tell me
+what can be done for end to end traceability across apps and agents.
+Application will do audits, anyway." The audit of what changed stays the
+app's (§4.6); this section is how everything else is watched, from the first
+run: every Lambda, both doors, the queues, every model call, and from phase 18
+the agent team.
 
 Three readers, three surfaces, one source of truth. Activity is built in
 phase 1 at both doors (MA-196), before the first record, so each layer can be
@@ -1575,43 +1583,310 @@ called, what it proposed, its tokens and its cost.
 | Reader | Surface | What it answers |
 | --- | --- | --- |
 | You, at every door | the Activity screen in the app and the web app (§9.3, §9.4) and the Audit screen (§4.6) | What did MyPaisa do today, what did it read, which tools did it call, what did it propose, what did it cost, what changed and who changed it |
-| Whoever operates it, in AWS | one CloudWatch dashboard per environment, Logs Insights, X-Ray | Where did a run fail, which tool is slow, is a schedule late |
-| The chat | alarms delivered as messages to the owner | Something needs a person: a job did not run, Claude spend has reached a step of the ladder (§15.1), a feed is stale |
+| Whoever operates it, in AWS | one CloudWatch dashboard per environment, Logs Insights, Transaction Search and Application Signals (the traces, the service map), CloudWatch's generative AI views | Where did a message or a run slow down or fail, at which hop, in which tool, on which model; is a schedule late; what did a day of Claude cost, by feature |
+| The chat | alarms delivered as messages to the owner | Something needs a person: a job did not run, Claude spend has reached a step of the ladder (§15.1), a feed is stale, a door is crashing |
 
-**The source of truth is the `RunRecord`.** Every Lambda, not only the
-agent, writes one row per run when it finishes, success or failure: the
-trigger, start and end, every model call with its model, input, output and
-cached tokens and the cost computed from the price table, every tool call
-with its duration and outcome, what was sent to whom, the outcome, and the
-error if there was one. The agent also keeps the inputs and outputs of each
-tool call, truncated, so "why did it say that" has an answer. Token counts
-come from the API's own `usage` fields, so the cost shown is what will be
-billed, reconciled weekly against the Anthropic Console. Rows expire after
-ninety days.
+One rule joins the three surfaces: every run has one `run_id` and one trace
+id, and both are on every log line, every span, every metric line, the
+`RunRecord` and the envelope of everything the run sends to a door. Whichever
+surface you start from, the same id opens the others.
 
-**Logs, traces, metrics** come from Lambda Powertools, already in the stack:
+### 10.1 The source of truth: the `RunRecord`
 
-- Structured JSON logs with the `run_id`, the member and the client message
-  id on every line, kept fourteen days, with saved Logs Insights queries for
-  errors by function, slowest tool, tokens by day.
-- One X-Ray trace per run, from the chat api through the agent to the
-  Anthropic API, DynamoDB, S3, the stream, Apple push and Web Push, so a slow
-  brief shows which hop was slow. Within the free tier at this volume.
-- Ten custom metrics, the free allowance: runs, errors, model cost per day,
-  tokens per day, tool latency, delivery failures (stream and push), price freshness in
-  days, schedule lateness, audit chain check, pending flows. One dashboard
-  per environment shows them; the first three dashboards are free.
+Every Lambda, not only the agent, writes one row per run when it finishes,
+success or failure (§4.1): the trigger, start and end, the `trace_id`, the
+`build` and the alias version that ran, every model call with its model, its
+input, output, cache-read and cache-write tokens, the cost computed from the
+price table, its latency and time to the first token, its stop reason and
+whether it refused or fell back to the template; every tool call with its
+duration, outcome, error class and the sizes of its input and output; what was
+sent to whom; the outcome; and the error if there was one. The agent also
+keeps the inputs and outputs of each tool call, truncated, so "why did it say
+that" has an answer: the row in the household's own table is the only place
+that content is kept outside `ChatTurn`, read through the api by role, and
+never copied to CloudWatch (§10.9). Token counts come from the API's own
+`usage` fields, so the cost shown is what will be billed, reconciled weekly
+against the Anthropic Console (§15.1). Rows expire after ninety days. An
+alarm is a row of trigger `alarm` and a release a row of trigger `deploy`, so
+Activity lists both beside the runs.
 
-**Alarms**, each delivered to the owner's chat: an error in any function; the
-07:45 dead man's switch when the brief has not gone out; each step of the
-Claude ladder and the daily guard (§15.1); any holding's price older than two days; a burst of
-rejected api calls; the audit chain failing its weekly check. Alarms are
-also `RunRecord` rows of trigger `alarm`, so Activity lists them.
+### 10.2 One trace, end to end
 
-**Cost of watching** is inside the free tiers: fourteen-day logs, sampled
-traces, ten metrics, one dashboard, and `RunRecord` rows that are a few
-kilobytes each. Observability that costs more than the thing it watches has
-failed; the budget line for it in §15 is pennies.
+A message is one trace from the finger to the push, and a scheduled job one
+trace from its tick to the last thing it sent. Nothing in the path is allowed
+to start a fresh trace of its own.
+
+| Hop | Who carries it | How |
+| --- | --- | --- |
+| A tap or a sentence at a door | the iOS app, the web app | a new W3C `traceparent` per action, sent as a header on the call and kept beside the `client_message_id` in the door's own ring of events (MA-232, MA-234) |
+| API Gateway to `api` | API Gateway, the api | API Gateway's tracing on; the api adopts the door's trace, answers `202` with `x-mypaisa-trace-id`, and writes the trace id into its access log line |
+| `api` to `updates.fifo` to `agent` | SQS, Lambda | the header rides the message as its `AWSTraceHeader` system attribute, outside the size quota, and Lambda's SQS event source continues it with no code |
+| Inside the agent | the agent | one span per model call (§10.4), per tool call, per DynamoDB, S3 and SQS call and per push, each with `run_id`, the member's hash and the conversation id as attributes |
+| `agent` to `outbox.fifo` to `sender`, then the stream log, Apple push and Web Push | SQS, Lambda, the sender | the same header; the sender's append and each push are spans, and every `StreamEvent` and push payload carries the `run_id` and `trace_id` of the run that made it in its envelope, and nothing else of the trace (§21.5) |
+| The stream to the doors | the stream, the doors | the stream's send is a span on the message's trace; the door records when the event arrived against its own clock, so "I waited twenty seconds" has both ends (MA-234) |
+| A schedule tick to `work` to `worker`, and the chained jobs | EventBridge Scheduler, SQS | the tick is the root; the work queue carries it, and a job that queues the next (ingest, then engine, then brief) continues it [verify whether the Scheduler passes a header to its target; if not, the first job starts the trace and its `job_id` names the tick] |
+| The daily run (phase 18) | Step Functions, the event bus | tracing on for the state machine and the bus's events carry the header (§10.8) |
+| A replay (§21.3) | `scripts/redrive.sh`, later the ops warden | a new trace, linked to the original by its `run_id` and an OpenTelemetry span link, so a message that failed twice is two traces that point at each other |
+| A release (§18.4) | CI | every span and log line carries `build` (the git sha) and the alias version as resource attributes, and the release writes a `RunRecord` of trigger `deploy`, so a change in behaviour lines up with the deploy that made it |
+
+**The correlation keys**, the same names everywhere: `trace_id`, `span_id`,
+`run_id`, `member` (a hash of the member id; never the id, a name or an
+address), `client_message_id`, `conversation_id`, `job_id`, `env`, `build`,
+`version`, `door` and `app_version`.
+
+**What you ask, and where it is answered.** "Why was my 9:41 message slow":
+Activity shows the run, its `run_id` is a filter in Transaction Search, and
+the trace shows each hop's time. "What happened to one member today": the
+saved query on the member's hash. "Which deploy broke the brief": the brief's
+trace carries its `build`, beside the `deploy` rows. "Where does Claude's
+money go": the model panel, by feature and model (§10.5). "Did the push
+arrive": the sender's span and the door's event on the same trace.
+
+### 10.3 Instrumentation: OpenTelemetry on every Lambda
+
+- **One standard.** Traces are OpenTelemetry. The AWS Lambda Layer for
+  OpenTelemetry (the Application Signals build of the AWS Distro for
+  OpenTelemetry, Python) is unzipped into `/opt` in the container image,
+  because a container image cannot attach a layer, and every function runs
+  with `AWS_LAMBDA_EXEC_WRAPPER=/opt/otel-instrument`, active tracing on,
+  `OTEL_SERVICE_NAME` set to its handler (`mypaisa-<env>-api`, `-agent`,
+  `-sender`, `-worker`, `-stream`) and `OTEL_RESOURCE_ATTRIBUTES` carrying
+  `env`, `build` and `version`. Spans go to X-Ray's OTLP endpoint and, with
+  Transaction Search on, every span is kept in the `aws/spans` log group with
+  W3C ids. At this volume there is no reason to sample, so nothing is: the
+  one trace a month you need is never the one that was dropped.
+- **Powertools stays** for Logger, Metrics (the embedded metric format),
+  idempotency and parameters. Its Tracer is not used: it is a wrapper on the
+  X-Ray SDK, two tracers in one process trace twice, and the X-Ray SDK knows
+  nothing of the GenAI conventions. The log formatter adds the OpenTelemetry
+  `trace_id` and `span_id` to every line, so Transaction Search and
+  Application Signals join the logs to the trace.
+- **Cold start.** The layer enables only the AWS SDK and HTTP instrumentations
+  by default, which is all the handlers need (boto3; httpx to the Anthropic
+  API and to APNs). The `api` is the latency-sensitive function: MA-232
+  measures its cold start with the layer and keeps it under 300 ms [verify];
+  if it cannot, the api keeps those two instrumentations and nothing more.
+- **The doors carry no SDK.** A `traceparent` is sixteen random bytes and a
+  version byte; each door makes one per action and sends it. What the door
+  observed goes through `POST /v1/telemetry` (MA-234), a route of the api like
+  any other, authorised the same way: no CloudWatch RUM script, no identity
+  pool for it, no third party.
+- **The local stack** (§18.1) exports spans to the console, or into memory
+  for tests. **The leak test** (MA-232): a recorded conversation with figures,
+  names and a statement replays on the local stack, and no span attribute,
+  span name, log line or metric line holds a prompt, a reply, an amount, a
+  name, a token or an account number. It runs in CI with the other gates, and
+  the smoke test after each dev deploy asserts one trace from `api` to
+  `sender` through the X-Ray API (§18.4).
+
+### 10.4 Model and tool spans: what Claude did, in the open conventions
+
+Every call to the Anthropic API goes through one wrapper (MA-233) that opens a
+span named `chat <model>` and sets:
+
+- **the OpenTelemetry GenAI conventions** (Development status as of October
+  2026, with the Anthropic page's cache attributes): `gen_ai.provider.name`
+  `anthropic`, `gen_ai.operation.name`, `gen_ai.request.model`,
+  `gen_ai.response.model`, `gen_ai.request.max_tokens`,
+  `gen_ai.usage.input_tokens`, `gen_ai.usage.output_tokens`, the cache read
+  and cache write token counts, `gen_ai.response.finish_reasons`, and
+  `gen_ai.tool.name` on each tool span;
+- **MyPaisa's own:** `mypaisa.cost_usd` (from the price table, the same figure
+  the meter adds, §15.1), `mypaisa.feature` (chat, brief, wrap, review,
+  scoring, extraction, search, notes), `mypaisa.agent` (§20.1),
+  `mypaisa.step` (the ladder's step at the time), `mypaisa.cache_hit`,
+  `mypaisa.ttft_ms`, `mypaisa.refusal`, `mypaisa.fallback` (the plain template
+  went out instead), `mypaisa.batch` for Batches, and `run_id`, `member` and
+  `conversation_id`;
+- **never** the prompt, the reply, a figure, a name or a document. Dev alone
+  may capture the prompt and the reply on the span, behind a setting that prod
+  refuses, so CloudWatch's trace explorer shows the synthetic household's
+  conversations in full while nothing of the real one leaves DynamoDB.
+
+Each tool call is a span `tool <name>` with its duration, outcome, error class
+and the sizes of its input and output; the truncated input and output stay on
+the `RunRecord` (§10.1). The server-side web search and fetch appear as what
+the API reports of them: their count and their cost.
+
+With these attributes the spans appear as they are in CloudWatch's generative
+AI observability (generally available since October 2025, at no charge beyond
+the telemetry it reads: model invocations, tokens, tool calls, latency and
+errors, per agent) and in CloudWatch Omni's trace, session and topology views
+(September 2026): the same spans read through the newer console when it is
+wanted, and nothing is sent twice.
+
+**Quality is read from what members did**, not from the model's word for it:
+proposals confirmed against cancelled, a question asked twice, refusals,
+template fallbacks, tool errors, the per-run self-audit's repeats (§8) and,
+from phase 13, every stance graded (§20.4). They are metrics (§10.5), and the
+weekly review's first table.
+
+**Three counts of one thing.** The meter's weekly reconciliation against the
+Console (§15.1) also checks the spans' token totals against the `SpendMonth`
+row: the API's `usage`, the meter and the spans must agree to the token.
+
+### 10.5 Metrics, the dashboard and the saved queries
+
+Metrics are few on purpose. CloudWatch's first ten custom metrics and ten
+alarms are free and each further metric is $0.30 a month, so the fixed set
+below is the whole of it, fifteen names with no dimensions; everything finer
+(the model, the feature, the tool, the door, the schedule) is a field of the
+metric line itself, which is also a log line, and lives in the log lines and
+the span attributes, which cost nothing more to keep and are queried in Logs
+Insights and Transaction Search. Lambda, API Gateway, SQS, DynamoDB and
+Cognito publish their own metrics free (§10.7). Emitted through Powertools
+Metrics in the namespace `MyPaisa/<env>`; the names are variables of the
+Terraform module (MA-231), so code and the dashboard name them once.
+
+| Group | Metrics | Alarm (§10.6) |
+| --- | --- | --- |
+| Schedules | `ScheduleLateness` (seconds, the latest schedule; the schedule in the line) | over 10 minutes; the 07:45 dead man's switch |
+| The model (MA-233) | `ModelCostUSD`, `Tokens` (in, out and cache reads, each in the line), `CacheReadTokens`, `TimeToFirstToken`, `Refusals`, `TemplateFallbacks` | a day's cost past the daily guard (§15.1); refusals or fallbacks above 5% of calls in an hour |
+| Tools | `ToolErrors` (the tool in the line; latency from the spans) | errors above 5% of calls in an hour; a tool's p95 over 10 s, from the spans |
+| Quality | `ProposalsCancelled` (confirmed in the line) | cancelled above a third of proposals in a day |
+| Delivery | `StreamResyncs`, `PushFailures` | any resync; push failures over 5 in an hour |
+| Data | `PriceFreshnessDays` (the oldest; the instrument in the line), `AuditChainOk` | a price older than two days; the chain failing its weekly check |
+| The doors (MA-234) | `ClientFirstWord` (ms; the door and the version in the line), `ClientErrors`, `ClientCrashes` | first word p95 over 5 s for an hour; any crash in prod |
+
+**One dashboard per environment** (three are free), eight panels: *today*
+(Application Signals' service map and each function's errors and p95, the
+api's 5xx and latency, the composite alarm's state); *the chat* (the time to
+the first word as the server and the doors saw it, resumes and resyncs, push
+failures, the open streams from the stream function's concurrency); *the
+model* (cost by day against the ceiling and the ladder's step, tokens and the
+cache-read share, the time to the first token, refusals and fallbacks, and a
+Logs Insights table of today's cost by feature and model); *tools* (errors,
+and the slowest tools from the spans); *queues and schedules* (each queue's
+age and depth, the dead-letter queues, lateness); *data* (price freshness,
+the audit chain, the nightly views' run); *quality* (cancelled against
+confirmed, questions repeated, by week); *deploys and alarms* (the `deploy`
+and `alarm` rows, in order).
+
+**Saved queries**, in Terraform with the dashboard: errors by function in the
+last day; one run by `run_id`; one trace's lines by `trace_id`; a member's day
+by hash; the slowest tools; tokens and cost by feature and model by day;
+refusals and fallbacks with their run ids; the stream's resumes and resyncs by
+door; the doors' crashes by app version; deploys and alarms.
+
+### 10.6 Alarms, and who hears them
+
+- an error or a throttle in any function; the api's 5xx, or its p95 over 2 s
+  for fifteen minutes;
+- a queue's oldest message over five minutes; any dead-letter queue holding
+  anything (§21.3);
+- the 07:45 dead man's switch when the brief has not gone out, and any
+  schedule ten minutes late;
+- each step of the Claude ladder and the daily guard (§15.1), and a day's cost
+  past the guard;
+- refusals or template fallbacks above 5% of calls in an hour; a tool's p95
+  over 10 s; no model call in an hour that had messages;
+- any holding's price older than two days; the audit chain failing its weekly
+  check;
+- a burst of rejected api calls (401 and 403 over twenty in five minutes, with
+  the access log saying from where); refused sign-ins over ten in five minutes;
+- any stream resync; push failures over five in an hour; a door's first word
+  p95 over 5 s for an hour; any crash in prod;
+- the AWS cap's steps (§15.2) and the AWS Budgets backstop; and the watching
+  itself: the `aws/spans` log group's ingestion over 1 GB a day, so
+  observability can never run away;
+- from phase 18, a silent heartbeat (§10.8).
+
+**Routes.** Every alarm goes to `mypaisa-<env>-admin-alerts` (SNS, the admin's
+email) from phase 0 (MA-231). From phase 1 an alarm is also a `RunRecord` of
+trigger `alarm` and a message on the owner's outbox (MA-29), so it reaches the
+chat and push; phase 11 makes it a card with its own push rules (MA-61), and
+phase 8's alert router adds quiet hours, cooldowns, the digest and the Replay
+button on a dead-letter alarm (§15.2, MA-137, MA-145). The composite alarm
+`mypaisa-<env>-unhealthy` (any function error, any dead-letter depth, the
+api's 5xx) is what pages the owner when something large breaks, one message
+rather than ten; the money and data alarms page on their own. Every alarm has
+an OK action, so the chat also says when it is over.
+
+### 10.7 The rest of AWS
+
+Each component is watched through what AWS already publishes free, with the
+trace id joining it to the rest; nothing paid is switched on for it.
+
+| Component | Watched through | Where it shows |
+| --- | --- | --- |
+| API Gateway | an access log in JSON (request id, trace id, route, status, latency, the member's hash from the authorizer, never a body), 14 days; `5XXError`, `4XXError`, `Latency`, `Count`; the stream route's integration latency | the today panel; the rejected-calls alarm |
+| Lambda | `Errors`, `Throttles`, `Duration`, `ConcurrentExecutions` (the stream's reserved concurrency near its cap); Application Signals' latency and faults per operation | the today panel; the error alarms. Lambda Insights is not used |
+| SQS | the age of the oldest message, the visible count, each dead-letter queue's depth | the queues panel; the queue alarms |
+| DynamoDB | throttled requests, system errors, consumed capacity (the on-demand cost line), the TTL deletes; prod's point-in-time recovery in the nightly drift check (MA-108) | the data panel |
+| S3 | through the app: the `Document` rows and the nightly export's `RunRecord`; request metrics and access logs stay off (paid, and nothing in them the rows do not say) | Activity, the Files view (§4.6) |
+| CloudFront | the CloudFront Function's `FunctionExecutionErrors` and `FunctionThrottles`; the web app's own errors through `/v1/telemetry` (MA-234) | the doors panel |
+| Cognito | `SignInSuccesses` and the throttles; the custom-auth triggers log every refused token with its reason, never the token | the refused sign-ins alarm |
+| EventBridge Scheduler | each schedule's failed invocations and its dead-letter queue; the tick's `RunRecord` | the schedules panel; the lateness alarm |
+| Step Functions (phase 18) | `ExecutionsFailed`, `ExecutionsTimedOut`; tracing on | the daily run's trace (§10.8) |
+| SSM | a parameter read failing is that function's error; CloudTrail records every put (who, when; never the value) | the error alarms; the trail |
+| The account | CloudTrail, the audit of AWS itself and the nightly drift check's evidence (MA-108); AWS Health events to the admin's email through an EventBridge rule; AWS Budgets and Cost Explorer for the AWS meter (§15.2) | the admin's email; the Admin center's Spend |
+
+Everything above exists twice, once per environment (§18.1). Prod is read
+through the AWS MCP or the console, read-only: its dashboard, logs, traces and
+metrics, never a record or a secret (§18.4).
+
+### 10.8 The agent team (phase 18)
+
+The daily run is one Step Functions execution with tracing on; each state's
+Lambda continues its trace, and an event on `mypaisa-<env>-events` carries the
+header to its consumer, so one day's run is one trace from the tick to the
+brief's push, and each agent is a service of its own on the map
+(`OTEL_SERVICE_NAME` per agent, named as §20.1 names it) beside the
+concierge's chat traces. The ops warden's replay starts a new trace linked to
+the original; an `Incident` row carries the trace id and the run ids it
+covers; every agent's heartbeat is a metric, and a silent one is an alarm as
+well as an incident (§20.5). The grader's scores and the tuner's changes are
+already `RunRecord` and audit rows; the trace adds how long each step took and
+what it cost (MA-235).
+
+### 10.9 Privacy, retention and cost
+
+**Never in CloudWatch:** a prompt, a reply, a figure, a name, an account
+number, a token, a file, a push payload's plain line. Member ids are hashed on
+every line and span; API Gateway's access log has no bodies. Content lives in
+the household's own table (`ChatTurn`, `RunRecord`, §4.1) under the app's
+roles; dev's synthetic household may be captured in full behind a setting
+prod refuses (§10.4). The leak test holds the line in CI (§10.3).
+
+**Kept for:** logs 14 days; spans 30 days (`aws/spans`); metrics as CloudWatch
+keeps them, 15 months at no charge; `RunRecord` rows 90 days; the release's
+record for good in GitHub.
+
+**Cost, prod, a month** (dev is pennies while it sleeps; custom metrics are
+prorated by the hour they receive data):
+
+| Line | About | Notes |
+| --- | ---: | --- |
+| Logs, about 200 MB ingested, 14 days | £0.10 | $0.50 per GB |
+| Spans, about 6,000 runs of about 25 spans, 150 MB | £0.05 | $0.35 per GB in Transaction Search; indexing beyond the free 1% stays off |
+| Application Signals, about 100,000 signals | £0.15 | $1.50 per million after the three-month free allowance |
+| X-Ray traces | £0 | inside the free 100,000 a month |
+| Custom metrics, fifteen, ten free | £1.20 | $0.30 each |
+| Alarms, about twenty and one composite, ten free | £1 | $0.10 standard, $0.50 composite |
+| Dashboards (three free), saved queries, Logs Insights on the dashboard | £0 | the queries scan a few hundred MB |
+| **Total** | **about £2.50** | inside the £50 AWS cap (§15.2); the AWS line of §15 |
+
+**Rules.** Dev first: Transaction Search and Application Signals are switched
+on in dev, their first month is measured, and the figure is put to Arun before
+prod's apply (`.claude/rules/aws-changes.md`). An ingestion alarm on
+`aws/spans` (§10.6). Observability that costs more than the thing it watches
+has failed: about £2.50 of watching against £7 to £21 of Claude.
+
+### 10.10 The stories
+
+| Key | Phase | What |
+| --- | --- | --- |
+| MA-230 | 0 | This record |
+| MA-231 | 0 | The watch tower in Terraform: log groups, Transaction Search and Application Signals, the dashboard, the saved queries, the alarms that need no code |
+| MA-236 | 0 | The Lucid page that draws one trace from the door to the model |
+| MA-29 | 1 | The handler base: the `RunRecord`, Logger, Metrics, OpenTelemetry on every function, the error alarm to the owner |
+| MA-232 | 1 | One trace from the door to the model and back; the correlation keys; the leak test; the smoke test's trace |
+| MA-233 | 1 | Model and tool spans in the open conventions, the model panel and its alarms |
+| MA-234 | 1 | The doors' telemetry: the time to the first word, resumes, errors, crashes, through `/v1/telemetry` |
+| MA-196 | 1 | Activity at every door |
+| MA-137, MA-145 | 8 | The alert router; Replay on a dead-letter alarm |
+| MA-61 | 11 | The dead man's switch and the alarms as cards with push |
+| MA-235 | 18 | The daily run and every agent on one trace; replays and incidents linked; heartbeats |
 
 ---
 
@@ -1755,7 +2030,7 @@ pensions since 2024") are answered without a database running all month:
 | **The web app** | **A SvelteKit 3 PWA in `web/` (Svelte 5 runes, adapter-static; Tailwind CSS 4 over MyPaisa DS v1's tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, the shared motion in Motion 14; MA-229) with the chat, the dashboard and the Admin center at desktop and phone width; svelte-check, eslint, vitest and Playwright; on S3 + CloudFront at `dashboard(-dev).mypaisapp.com`, which also serves the iOS app's apple-app-site-association file (§9.4)** |
 | **Endpoints** | **API Gateway at `api(-dev).mypaisapp.com`, with the stream, `/v1/stream`, on the same host (§21.5); scheduled Lambdas have no public endpoint** |
 | **Local** | **The whole app on the laptop: a moto server for DynamoDB, S3 and SQS (no Docker), the handlers behind one local ASGI app with SSE, the SvelteKit dev server, the iOS simulator, and a scripted agent that replays recorded conversations (§18.1)** |
-| **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind Activity and Audit at every door** |
+| **Observability** | **OpenTelemetry on every Lambda (the AWS Lambda Layer for OpenTelemetry unzipped into the image), X-Ray with Transaction Search and Application Signals, CloudWatch's generative AI views for the model and tool spans; Powertools Logger and Metrics, not its Tracer; one trace from the door to the model and back, with the correlation keys on every line and span; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind Activity and Audit at every door (§10)** |
 | **Caps and alerts** | **The app's meters and steps (§15); Cost Explorer read once a day for the AWS meter; AWS Budgets at £75 as the backstop; SNS `mypaisa-<env>-admin-alerts` for the admin's email** |
 | **Orchestration (phase 18)** | **Step Functions for the daily run; an EventBridge custom bus, `mypaisa-<env>-events`, between the agents (§20)** |
 | **Design and diagrams** | **Lucidchart on the AWS 2024 shapes, generated by `docs/design/lucid/gen_aws_architecture.py`; explainer pages as claude.ai artifacts and the app's boards in Claude Design, in MyPaisa DS v1, "Warm ledger" (MA-101), on Liquid Glass (MA-161)** |
@@ -1828,17 +2103,17 @@ and that device are now the key to the app.
 
 | Line | Lean | Standard | Full |
 | --- | ---: | ---: | ---: |
-| AWS, both environments, including API Gateway, the stream (below), the web app's site, Cognito (free under 10,000 monthly users), X-Ray and the dashboards; Apple push and Web Push are free | £0.50 | £0.70 | £1 |
+| AWS, both environments, including API Gateway, the stream (below), the web app's site, Cognito (free under 10,000 monthly users), and the watching of §10.9 (the spans, Application Signals, the metrics and alarms past the free ten: about £2.50 in prod); Apple push and Web Push are free | £3 | £3.50 | £4 |
 | Apple Developer Program ($99 a year, for Sign in with Apple, push and TestFlight; MA-162) | £6.35 | £6.35 | £6.35 |
 | Claude: briefs, alerts, chat, cards, Saturday review | £7 | £12 | £21 |
 | Claude: sentiment scoring, via Batches | £1.50 | £2.50 | £2.50 |
 | Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Claude: web search (~60 a month at $10 per 1,000) | £0.50 | £0.50 | £1 |
 | Market data (EODHD Historian, £19.99 a month) | £0 | £20 | £20 |
-| **Total, one member** | **£16** | **£42** | **£52** |
+| **Total, one member** | **£19** | **£45** | **£55** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
-Two members on the standard setup: about £45, of which about £6 is Apple's developer membership. The Claude lines are paid by
+Two members on the standard setup: about £48, of which about £6 is Apple's developer membership and about £2.50 the watching of §10.9. The Claude lines are paid by
 the monthly API credit that comes with the Max 20x plan ($200 a month,
 about £154), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
@@ -2036,7 +2311,7 @@ a daily digest instead.
 | Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind a setting; yfinance and Twelve Data's free tier first, free websites where their terms allow, EODHD only as a last resort on the admin's approval | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row per open flow, keyed by flow id, with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
-| Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
+| Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; one OpenTelemetry trace from the door through the queues and the agent to the model and back, continued by every hop and never sampled; the AWS Lambda Layer for OpenTelemetry in the image, Transaction Search and Application Signals; model and tool spans in the open GenAI conventions, with no prompt, reply, figure or name in CloudWatch; Powertools for logs and metrics, not its Tracer; fifteen metrics, one dashboard per environment; alarms to the chat; an Activity page (§10; MA-230, 26 Oct 2026) | What the agent did and spent is visible without opening the AWS console, a message can be followed from the tap to the push, and the watching costs about £2.50 a month |
 | App sessions | In the web app, v2's `HttpOnly`, `SameSite=Strict` session cookie on the api's host. In the iOS app, Cognito tokens in the Keychain, this device only; five-minute access tokens, rotating refresh tokens; a `Device` row per signed-in device; the api's authorizer checks token, status and epoch on every call and when a stream opens, and the stream again every 60 seconds; the second check a fresh, server-verified assertion | Sign-out and pause take effect on the next request; nothing a lost phone holds outlives a sign-out |
 | Apple and Google sign-in | Native Sign in with Apple and Google's iOS SDK, one Google iOS client per environment; a second sign-in added from You while signed in | One identity per member across Apple, Google and passkeys; Apple's own button first, as its guidelines ask of an app that offers Google |
 | Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate app builds (MyPaisa Dev, MyPaisa), Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
@@ -2076,6 +2351,7 @@ a daily digest instead.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101). Settled 26 Oct 2026 (MA-186): the apex `mypaisapp.com` redirects to `dashboard.mypaisapp.com` at the cutover in phase 9 (MA-97).
 - Settled 26 Oct 2026 (MA-229): the stream is a route of the api's REST API in API Gateway's streaming mode (§21.5); the Lambda Web Adapter 1.1 runs it as its own build target; the association file is served by a CloudFront Function, with no fallback to swallow it (§9.4); the iOS project is on Swift Package Manager from day one (§9.5).
 - Checked when the build phases start: the Lambda concurrency quotas for the streams [verify].
+- Whether EventBridge Scheduler passes a trace header to its target, so a scheduled job's trace starts at the tick rather than at the first job (§10.2); and the `api` Lambda's cold start with the AWS Lambda Layer for OpenTelemetry, which MA-232 measures against 300 ms [verify both]. Settled when MA-231 and MA-232 run in dev.
 
 ## 18. Environments, domains and delivery
 
@@ -2195,7 +2471,7 @@ resource (`.claude/rules/aws-changes.md`).
 | iOS gates | every PR touching `ios/` | on a macOS runner: Jest and the TypeScript checks for the shell; swift-format, build, XCUITest on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); the performance benches of §9.5 on the phone before a release |
 | Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
 | Build | merge to `main` | the Lambda packages built once and stored by digest; the same build goes to both environments |
-| Dev | after the build | apply dev, deploy, smoke tests against `api-dev` |
+| Dev | after the build | apply dev, deploy, smoke tests against `api-dev`, which also assert one trace from `api` to `sender` through the X-Ray API (§10.3, MA-232) |
 | Dev app | after dev passes | the web app synced to dev's dashboard bucket and its CloudFront cache cleared; when `ios/` changed, MyPaisa Dev archived and uploaded to TestFlight (MA-167) |
 | Prod | after dev passes and Arun approves in the GitHub `prod` environment | apply prod, deploy behind each Lambda's `live` alias, smoke tests, automatic rollback to the previous version on failure; then the web app synced to prod's dashboard bucket and MyPaisa uploaded to TestFlight, so a new front end never meets an old api (MA-167) |
 | Drift | nightly | `terraform plan` for both environments; any difference is a message in the admin's chat (MA-108) |
@@ -2561,7 +2837,9 @@ gap filled on the next run; a missed schedule caught up; a model or a
 calibration map rolled back to its last good version; a step that still
 fails skipped, its output labelled stale. Everything else is an `Incident`
 on the admin desk with what happened, what was tried and the choices. Every
-agent reports a heartbeat, and a silent one is an incident. The 07:45 dead
+agent reports a heartbeat, and a silent one is an incident. The daily run is one trace
+and each agent a service on the map; a replay links to the run it repeats and
+an incident names its trace (§10.8, MA-235). The 07:45 dead
 man's switch, the nightly drift check (MA-108) and the Lambda rollback
 (MA-107) stay as they are.
 
@@ -2749,6 +3027,10 @@ the iOS app and Web Push the installed web app (§11). Built in phase 1
   minutes with a `retry`, and the door reconnects from its last event.
 - **Presence:** each open stream keeps a `Presence` row fresh, in place of
   v3's `Connection`; push goes only to a device with no fresh presence.
+- **Traceable:** every event in the log and every push payload carries, in
+  its envelope, the `run_id` and `trace_id` of the run that made it, so a
+  door's "it arrived at 9:41:03" and the server's spans are one trace (§10.2,
+  MA-232).
 - **The clients:** a fetch-based SSE client at both doors, not `EventSource`,
   so a 401 refreshes the token and reconnects. One leader tab per browser holds
   the stream for the others, and the stream closes 60 s after the page is
