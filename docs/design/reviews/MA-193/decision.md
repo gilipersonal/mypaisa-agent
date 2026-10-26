@@ -110,5 +110,26 @@ plan items, what-ifs, Activity) are drawn once each, in the recommended styles.
 
 ## The pick
 
-To be recorded after Arun picks, with the date. The trace's `design` then becomes `picked` on the picked boards and
-`planned` on the rest.
+Arun, 26 Oct 2026, picked the recommended option each time:
+
+| Question | Pick | Stories now `picked` |
+| --- | --- | --- |
+| The web shell with the chat | **1a Chat beside** | MA-199 |
+| The dashboard | **1a Net worth first** | MA-208, MA-95, MA-213 |
+| The check-in card | **1b Paid as the Confirm** | MA-205 |
+| The Projection | **1a the fan first** | MA-224 |
+
+**The rows:**
+- Each picked row lists only the picked option and the states drawn in its style.
+- The options not picked stay on MA-193's row as the record.
+- Every other story drawn this round stays `planned`, drawn in the picked styles. Its own options round runs when it
+  starts (plan-sync rule 3).
+
+**What the pick supersedes:**
+- On the trace rows:
+  - `Wealth.dc.html`'s Household overview, Assets, An asset, Debts, A loan, Budget and Forecast;
+  - the investment-only Home boards drawn for MA-78 before MA-186.
+- The iPad and foldable layouts stay on MA-70.
+- MA-161's ledger entry o5 now accepts the v4 iPad board for MA-208.
+
+The prototype is built from these picks.

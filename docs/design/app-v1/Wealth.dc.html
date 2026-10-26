@@ -856,7 +856,7 @@ const bOv = {
 id: 'w-b-ov', name: 'Browser · Household overview', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §9.3, §6.6',
 intro: 'The laptop door of the same page at 1280, on the adaptive shell of Browser · Overview: the sidebar grows a Wealth group (Overview, Assets, Debts, Budget, Forecast, Reports) above Investing (Holdings, Overlap, Track record) and Records (Activity, Audit). Left: net worth with the year, what matures next, by member and by country. Right: what you own and owe by kind, and the largest assets. Light, dark, and privacy on.',
 th: [{ cap: 'Browser · Household overview · Light', cls: 't-light', p: bOvPage(false) }, { cap: 'Browser · Household overview · Dark', cls: 't-dark', p: bOvPage(false) }, { cap: 'Browser · Household overview · Light · privacy on', cls: 't-light', p: bOvPage(true) }],
-notes: N2([['Read-only:', 'nothing on the page writes; Maturing next says “decide in the chat”, and each row opens its asset or loan.'], ['Privacy on', 'hides every amount and the chart’s scale; the line, shares and dates stay.'], ['One spec, two doors:', 'the same blocks as the Mini App, in two columns at 1.3 : 1.']])
+notes: N2([['Superseded on MA-193 (26 Oct 2026) by Web v4 · Dashboard, 1a Net worth first, which Arun picked.', ''], ['Read-only:', 'nothing on the page writes; Maturing next says “decide in the chat”, and each row opens its asset or loan.'], ['Privacy on', 'hides every amount and the chart’s scale; the line, shares and dates stay.'], ['One spec, two doors:', 'the same blocks as the Mini App, in two columns at 1.3 : 1.']])
 };
 
 /* ======================= Assets ======================= */
@@ -888,7 +888,7 @@ const bAs = {
 id: 'w-b-as', name: 'Browser · Assets', keys: [key('MA-95')], arch: 'ARCHITECTURE.md §12, §9.3',
 intro: 'Assets at 1280: the total and its split, the values that need updating, then every kind as a group across two columns. Light and dark.',
 th: [{ cap: 'Browser · Assets · Light', cls: 't-light', p: bAsPage() }, { cap: 'Browser · Assets · Dark', cls: 't-dark', p: bAsPage() }],
-notes: N2([['Values to update', 'is a list, not a button: the update itself is a guided flow in the chat (Telegram · Reminders and maturities).'], ['Investments', 'keep their daily move; property, pensions and policies show when they were last valued.']])
+notes: N2([['Superseded on MA-193 (26 Oct 2026) by Web v4 · Assets and debts (Assets, An asset).', ''], ['Values to update', 'is a list, not a button: the update itself is a guided flow in the chat (Telegram · Reminders and maturities).'], ['Investments', 'keep their daily move; property, pensions and policies show when they were last valued.']])
 };
 
 /* ======================= An asset: the flat in Pune ======================= */
@@ -944,7 +944,7 @@ const bAsset = {
 id: 'w-b-asset', name: 'Browser · An asset', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6, §4.6',
 intro: 'The same asset at 1280, the way Browser · Holding pages work: a crumb back to Assets, the value and its history on the left with the returns, the ledger and documents on the right. Light and dark.',
 th: [{ cap: 'Browser · An asset · Light', cls: 't-light', p: bAssetPage() }, { cap: 'Browser · An asset · Dark', cls: 't-dark', p: bAssetPage() }],
-notes: N2([['The value chart steps', 'at each valuation; nothing is drawn between valuations that was not recorded.'], ['Every figure is the engine’s', 'or the registry’s: XIRR, gain and the year’s rent and costs.']])
+notes: N2([['Superseded on MA-193 (26 Oct 2026) by Web v4 · Assets and debts (Assets, An asset).', ''], ['The value chart steps', 'at each valuation; nothing is drawn between valuations that was not recorded.'], ['Every figure is the engine’s', 'or the registry’s: XIRR, gain and the year’s rent and costs.']])
 };
 
 /* ======================= Debts and a loan ======================= */
@@ -981,7 +981,7 @@ const bDb = {
 id: 'w-b-db', name: 'Browser · Debts', keys: [key('MA-95')], arch: 'ARCHITECTURE.md §12, §6.6',
 intro: 'Debts at 1280: the total, its costs and the road to debt-free from the schedules on the left; the loans and the coming dates on the right. Light and dark.',
 th: [{ cap: 'Browser · Debts · Light', cls: 't-light', p: bDbPage() }, { cap: 'Browser · Debts · Dark', cls: 't-dark', p: bDbPage() }],
-notes: N2([['The curve is the schedules’,', 'not a forecast: today’s payments and rates, nothing assumed.'], ['A row opens its loan', '(Browser · A loan).']])
+notes: N2([['Superseded on MA-193 (26 Oct 2026) by Web v4 · Assets and debts (Debts, A loan).', ''], ['The curve is the schedules’,', 'not a forecast: today’s payments and rates, nothing assumed.'], ['A row opens its loan', '(Browser · A loan).']])
 };
 /* the mortgage page */
 const balPts = (s, step) => { const out = []; for (let m = 0; m <= 300; m += step) out.push(s.bal[Math.min(m, s.bal.length - 1)] || 0); return out; };
@@ -1029,7 +1029,7 @@ const bLoan = {
 id: 'w-b-loan', name: 'Browser · A loan', keys: [key('MA-95'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6',
 intro: 'The mortgage at 1280: the balance against the plan and the yearly split on the left; the terms, the what-ifs and the events on the right. Light and dark.',
 th: [{ cap: 'Browser · A loan · Light', cls: 't-light', p: bLoanPage() }, { cap: 'Browser · A loan · Dark', cls: 't-dark', p: bLoanPage() }],
-notes: N2([['Planned years are paler,', 'and the card’s note says which years are the schedule’s.'], ['The early repayment charge', 'is shown with its amount before anyone asks the chat to preclose.']])
+notes: N2([['Superseded on MA-193 (26 Oct 2026) by Web v4 · Assets and debts (Debts, A loan).', ''], ['Planned years are paler,', 'and the card’s note says which years are the schedule’s.'], ['The early repayment charge', 'is shown with its amount before anyone asks the chat to preclose.']])
 };
 
 /* ======================= Budget ======================= */
@@ -1060,7 +1060,7 @@ const bBu = {
 id: 'w-b-bu', name: 'Browser · Budget', keys: [key('MA-96')], arch: 'ARCHITECTURE.md §12, §6.6',
 intro: 'Budget at 1280, its own item in the sidebar: the plan and what is left over on the left, with the changes that made it; the lines on the right. Light and dark.',
 th: [{ cap: 'Browser · Budget · Light', cls: 't-light', p: bBuPage() }, { cap: 'Browser · Budget · Dark', cls: 't-dark', p: bBuPage() }],
-notes: N2([['Budget and Forecast are two items on the laptop', 'and one Plan tab in the Mini App, because the tab bar holds five.'], ['Changes', 'are the audit rows of the plan, with who, when and the words used.']])
+notes: N2([['Superseded on MA-193 (26 Oct 2026) by Web v4 · Budget.', ''], ['Budget and Forecast are two items on the laptop', 'and one Plan tab in the Mini App, because the tab bar holds five.'], ['Changes', 'are the audit rows of the plan, with who, when and the words used.']])
 };
 
 /* ======================= Forecast ======================= */
@@ -1115,7 +1115,7 @@ const bFc = {
 id: 'w-b-fc', name: 'Browser · Forecast', keys: [key('MA-96'), key('MA-94')], arch: 'ARCHITECTURE.md §12, §6.6',
 intro: 'The projection at 1280: the curve with its milestones named on it and the milestones list on the left; the assumptions, what one change does and the changes on the right. Light and dark.',
 th: [{ cap: 'Browser · Forecast · Light', cls: 't-light', p: bFcPage() }, { cap: 'Browser · Forecast · Dark', cls: 't-dark', p: bFcPage() }],
-notes: N2([['The dashed line is what you owe,', 'named in the legend; it reaches zero when the mortgage is paid.'], ['No range is drawn:', 'the projection is deterministic from its assumptions; the sensitivity card shows what one assumption does instead.']])
+notes: N2([['Superseded on MA-193 (26 Oct 2026) by Web v4 · Projection, 1a the fan first, which Arun picked.', "The old tracker's Forecast is now the Projection."], ['The dashed line is what you owe,', 'named in the legend; it reaches zero when the mortgage is paid.'], ['No range is drawn:', 'the projection is deterministic from its assumptions; the sensitivity card shows what one assumption does instead.']])
 };
 
 /* ======================= Reports ======================= */
@@ -1329,7 +1329,7 @@ const tBoards = [tPort, tAdd, tUpd, tRem, tFb, tTrk, tXl];
 const ks = (b) => b.keys.map((k) => k.k).join(', ');
 const index = [].concat(mBoards.map((b) => ({ id: b.id, name: b.name, keys: ks(b) })), bBoards.map((b) => ({ id: b.id, name: b.name, keys: ks(b) })), [{ id: 'w-link', name: 'Browser · Link a Google account', keys: 'MA-77' }], tBoards.map((b) => ({ id: b.id, name: b.name, keys: ks(b) })));
 return {
-intro1: 'Phase 9, epic MA-18 (ARCHITECTURE.md §12): the web app becomes the household’s whole wealth tracker. Property, deposits, policies, pensions and loans are added and updated in the chat (MA-93); the Overview, Assets and Debts show the household (MA-95); Budget and a thirty-year Forecast plan the month and the decades (MA-96); Reports and their exports replace the old tracker (MA-97); the old tracker’s records come in once (MA-105) through the Excel importer (MA-111). With them, the browser page that links a Google account with a six-digit code (MA-77, phase 5). Drawn in MyPaisa DS v1 “Warm ledger” on the shells of the Mini App, Browser, Browser 2 and India boards: Mini App frames at 390 under Telegram’s header, browser boards at 1280, chat flows in Telegram light and dark.',
+intro1: 'Phase 9, epic MA-18 (ARCHITECTURE.md §12): the web app becomes the household’s whole wealth tracker. Property, deposits, policies, pensions and loans are added and updated in the chat (MA-93); the Overview, Assets and Debts show the household (MA-95); Budget and a thirty-year Forecast plan the month and the decades (MA-96); Reports and their exports replace the old tracker (MA-97); the old tracker’s records come in once (MA-105) through the Excel importer (MA-111). With them, the browser page that links a Google account with a six-digit code (MA-77, phase 5). Drawn in MyPaisa DS v1 “Warm ledger” on the shells of the Mini App, Browser, Browser 2 and India boards: Mini App frames at 390 under Telegram’s header, browser boards at 1280, chat flows in Telegram light and dark. The browser boards here are superseded by the v4 boards of MA-193 (26 Oct 2026); the Mini App and Telegram boards are the superseded record of MA-161.',
 intro2: 'The web app stays read-only: no form, button or link writes the household’s records; every change is a card and a Confirm in the chat, with the second check of MA-102 and an audit row. Every figure is the engine’s (MA-94: XIRR, accrual, schedules, net worth, the projection), never Claude’s. Privacy mode hides pounds and rupees. Illustrative figures throughout, as at Friday 23 October 2026: “You” (the owner) and “Asha” (a member) are fictional, institutions are lettered, and rupees convert at one illustrative rate, ' + RATE + ' (the ECB’s, Fri 23 Oct). Net worth ' + gbp(NW) + ': own ' + gbp(OWN) + ', owe ' + gbp(OWE) + '. The tracker import and the add flows are two routes to the same records, each drawn on its own.',
 allKeys: ['MA-93', 'MA-95', 'MA-96', 'MA-97', 'MA-105', 'MA-111', 'MA-77'].map(key), index: index,
 mBoards: mBoards, bBoards: bBoards, link: link, tBoards: tBoards
