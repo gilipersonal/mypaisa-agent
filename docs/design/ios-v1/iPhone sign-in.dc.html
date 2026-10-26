@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone sign-in</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" />
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 36px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0; text-wrap: pretty; }
+          .dv-col { display: flex; flex-direction: column; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.08); }
+          .bd-note p { margin: 0; }
+          .stk { display: flex; flex-direction: column; gap: 40px; }
+          .sts { display: flex; gap: 34px; align-items: flex-start; }
+          .st { display: flex; flex-direction: column; gap: 16px; }
+          .st-cap { font: 600 12px/16px ui-monospace, Menlo, monospace; color: #3D424D; }
+          .z80 { zoom: 0.8; } .z72 { zoom: 0.72; } .z60 { zoom: 0.6; }
+          .anno { position: absolute; z-index: 60; font: 600 12px/15px ui-monospace, Menlo, monospace; color: #3D2E05; background: #FFF4D6; border: 1px dashed #8A6A1F; border-radius: 6px; padding: 3px 8px; letter-spacing: 0; white-space: nowrap; }
+          .sheet .anno, .sysalert .anno { position: absolute; top: -14px; right: 22px; z-index: 3; }
+          .z1 { position: relative; z-index: 1; }
+          .f1 { flex: 1; min-width: 0; }
+          .ctr { text-align: center; }
+          .dev .daysep { color: var(--mp-ink-2); }
+          .dev .ph { color: var(--mp-ink-2); }
+          .dev .mp-over { font-size: 13px; line-height: 18px; }
+          .t-dark .cbtn { box-shadow: inset 0 0 0 1.5px #3A4559; }
+          .t-dark .cbtn-primary, .t-dark .cbtn-ghost { box-shadow: none; }
+          .lg-solid { background: color-mix(in srgb, var(--mp-surface) 95%, transparent); }
+          .wel { position: absolute; left: 0; right: 0; top: 54px; bottom: 0; display: flex; flex-direction: column; padding: 0 24px 46px; }
+          .wel-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
+          .wel-line { max-width: 290px; color: var(--mp-ink-2); text-wrap: pretty; }
+          .wel-bot { display: flex; flex-direction: column; gap: 12px; }
+          .siwa { min-height: 52px; border-radius: 999px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; font: 600 19px/24px -apple-system, "SF Pro Text", system-ui, sans-serif; letter-spacing: -0.01em; }
+          .t-dark .siwa { background: #fff; color: #000; }
+          .alogo { font: 400 21px/1 -apple-system, "SF Pro Text", system-ui, sans-serif; position: relative; top: -1px; }
+          .gsi { min-height: 52px; border-radius: 999px; background: #fff; color: #1F1F1F; box-shadow: inset 0 0 0 1.5px #747775; display: flex; align-items: center; justify-content: center; gap: 10px; font: 500 17px/22px "Roboto", system-ui, sans-serif; letter-spacing: 0.01em; }
+          .t-dark .gsi { background: #131314; color: #E3E3E3; box-shadow: inset 0 0 0 1.5px #8E918F; }
+          .glogo { width: fit-content; font: 700 22px/1 "Roboto", Arial, sans-serif; background: conic-gradient(from -80deg, #EA4335 0 130deg, #4285F4 130deg 215deg, #34A853 215deg 305deg, #FBBC05 305deg 360deg); -webkit-background-clip: text; background-clip: text; color: transparent; }
+          .xbtn { width: 44px; height: 44px; border-radius: 50%; background: rgba(120,120,128,.16); display: grid; place-items: center; color: var(--mp-ink-2); flex: none; }
+          .xbtn .ms { font-size: 20px; }
+          .sab { flex: 1; min-height: 48px; border-radius: 999px; display: grid; place-items: center; font: 600 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; background: rgba(120,120,128,.18); color: var(--mp-ink); }
+          .iosbtn { min-height: 50px; border-radius: 999px; display: flex; align-items: center; justify-content: center; gap: 8px; font: 600 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; }
+          .iosb { background: #007AFF; color: #fff; }
+          .t-dark .iosb { background: #0A84FF; }
+          .ioslink { color: #007AFF; }
+          .t-dark .ioslink { color: #0A84FF; }
+          .ai64 { width: 64px; height: 64px; border-radius: 15px; }
+          .ai64 .mark { width: 24px; height: 24px; box-shadow: 0 0 0 5px currentColor, 0 0 0 8px var(--mp-coral); }
+          .sysalert > * { position: relative; z-index: 1; }
+          .gbar { height: 56px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; background: var(--mp-surface); border-bottom: 1px solid var(--mp-line); font: 400 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; }
+          .gurl { display: flex; align-items: center; gap: 4px; font: 600 15px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: var(--mp-ink-2); }
+          .gurl .ms { font-size: 15px; }
+          .gpage { flex: 1; background: #fff; color: #1F1F1F; padding: 26px 24px; display: flex; flex-direction: column; gap: 6px; font-family: "Roboto", system-ui, sans-serif; }
+          .t-dark .gpage { background: #1F1F1F; color: #E3E3E3; }
+          .gh1 { font: 400 26px/34px "Roboto", system-ui, sans-serif; margin-top: 12px; }
+          .gsub { font: 400 16px/24px "Roboto", system-ui, sans-serif; }
+          .gblue { color: #0B57D0; font-weight: 500; }
+          .t-dark .gblue { color: #A8C7FA; }
+          .glist { margin-top: 22px; border-top: 1px solid #E1E3E1; display: flex; flex-direction: column; }
+          .grow { display: flex; align-items: center; gap: 14px; min-height: 64px; border-bottom: 1px solid #E1E3E1; }
+          .t-dark .glist { border-color: #444746; }
+          .t-dark .grow { border-color: #444746; }
+          .gav { width: 32px; height: 32px; border-radius: 50%; background: #0B57D0; color: #fff; display: grid; place-items: center; font: 500 15px/1 "Roboto", system-ui, sans-serif; flex: none; }
+          .gav-o { background: transparent; color: #444746; }
+          .t-dark .gav-o { color: #C4C7C5; }
+          .gname { font: 500 15px/20px "Roboto", system-ui, sans-serif; }
+          .gmail { font: 400 13px/18px "Roboto", system-ui, sans-serif; color: #444746; }
+          .t-dark .gmail { color: #C4C7C5; }
+          .gfoot { font: 400 13px/19px "Roboto", system-ui, sans-serif; color: #444746; margin-top: 18px; }
+          .t-dark .gfoot { color: #C4C7C5; }
+          .crumb { display: inline-flex; align-items: center; font: 600 13px/18px var(--mp-font); margin-left: -16px; }
+          .crumb .ms { font-size: 18px; margin-right: -2px; }
+          .join { position: absolute; left: 0; right: 0; top: 54px; bottom: 0; padding: 12px 20px 44px; display: flex; flex-direction: column; gap: 14px; }
+          .scr-a { position: absolute; inset: 0; overflow: hidden; }
+          .chat-a { position: absolute; left: 0; right: 0; bottom: 172px; }
+          .done { display: flex; align-items: center; gap: 10px; background: var(--mp-surface); border-radius: 16px; padding: 4px 6px 4px 14px; box-shadow: var(--mp-shadow); min-height: 52px; box-sizing: border-box; }
+          .done > .ms { color: var(--mp-ink-2); font-size: 20px; }
+          .wide { width: 100%; justify-content: flex-start; box-sizing: border-box; }
+          .opt { min-height: 54px; border-radius: 14px; background: var(--mp-surface-2); display: flex; align-items: center; gap: 12px; padding: 8px 14px; box-sizing: border-box; }
+          .t-dark .opt { box-shadow: inset 0 0 0 1.5px #3A4559; }
+          .opt > .ms { color: var(--mp-accent); font-size: 22px; }
+          .cbtn .ms { color: var(--mp-accent); }
+          .cbtn-primary .ms { color: inherit; }
+          .ref { position: absolute; left: 0; right: 0; top: 54px; bottom: 0; display: flex; flex-direction: column; padding: 0 28px 46px; }
+          .ref-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; text-wrap: pretty; }
+          .ref-ic { width: 76px; height: 76px; border-radius: 50%; background: var(--mp-surface-2); display: grid; place-items: center; color: var(--mp-ink-2); }
+          .ref-ic .ms { font-size: 38px; }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t0" data-screen-label="iPhone sign-in: intro">
+        <div class="dv-thd"><span class="dv-tid">S</span><span class="dv-tname">Signing in, joining and the first run on iPhone</span></div>
+        <p class="dv-intro">How a member gets into MyPaisa on iPhone (MA-168): Apple's and Google's own buttons and nothing else, an invite link that opens the app to join, the three setup questions as the first conversation, then notifications and an optional Face ID lock. There are no passwords. Sheets and alerts that iOS or Google draw are labelled as theirs; everything else is Warm ledger content under option 1a's Liquid Glass controls. Each board is drawn in light and dark; a board with several steps shows them side by side, and each frame plays its motion as it scrolls into view (replay beside its label). Illustrative figures and names.</p>
+      </section>
+
+      <!-- S1 · Welcome -->
+      <section class="bd" id="s1">
+        <div class="bd-h"><span class="bd-id">S1</span><span class="bd-name">Welcome</span><span class="bd-keys">MA-168 · MA-109</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Welcome · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>19:29</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="wel">
+                    <div class="wel-mid">
+                      <div class="appicon appicon-default"><span class="mark"></span></div>
+                      <span class="mp-t1" data-mo="rise" style="--i:2">MyPaisa</span>
+                      <span class="mp-body wel-line" data-mo="rise" style="--i:3">Your household's investments, watched and explained in plain words.</span>
+                    </div>
+                    <div class="wel-bot">
+                      <div class="siwa" data-mo="rise" style="--i:5"><span class="alogo">&#xF8FF;</span><span>Sign in with Apple</span></div>
+                      <div class="gsi" data-mo="rise" style="--i:6"><span class="glogo">G</span><span>Sign in with Google</span></div>
+                      <span class="mp-foot mp-ink2 ctr" data-mo="fade" style="--mo-d:420ms">No password. Your household's records stay private.</span>
+                    </div>
+                  </div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Two doors, nothing else.</b> Apple's button first, black in light and white in dark as Apple's guidelines ask; Google's own button below it, in Google's light or dark style and the same size. No password, no form.</p>
+            <p><b>The mark</b> plays its one-time animation (MA-103) as the launch screen hands off, once per cold start, and lands at once under Reduce Motion. It is drawn here at rest.</p>
+            <p><b>Who gets in.</b> The first person ever to sign in owns the household (MA-32). After that, only an Apple or Google account linked to a member, or one carrying a valid invite (S4); anyone else gets a kind refusal (S7).</p>
+            <p><b>Built by</b> MA-168 (the screen, the token exchange and the Keychain) and MA-109 (Cognito's custom-auth Lambdas, which verify Apple's and Google's tokens).</p>
+            <p><b>Motion.</b> The icon settles in, the name and line rise, then the two buttons rise one after the other and the small line fades in.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- S2 · Sign in with Apple -->
+      <section class="bd" id="s2">
+        <div class="bd-h"><span class="bd-id">S2</span><span class="bd-name">Sign in with Apple</span><span class="bd-keys">MA-168 · MA-109</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Sign in with Apple · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>19:29</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="wel">
+                    <div class="wel-mid">
+                      <div class="appicon appicon-default"><span class="mark"></span></div>
+                      <span class="mp-t1">MyPaisa</span>
+                      <span class="mp-body wel-line">Your household's investments, watched and explained in plain words.</span>
+                    </div>
+                    <div class="wel-bot">
+                      <div class="siwa"><span class="alogo">&#xF8FF;</span><span>Sign in with Apple</span></div>
+                      <div class="gsi"><span class="glogo">G</span><span>Sign in with Google</span></div>
+                      <span class="mp-foot mp-ink2 ctr">No password. Your household's records stay private.</span>
+                    </div>
+                  </div>
+                  <div class="dim"></div>
+                  <div class="sheet lg lg-solid apple">
+                    <span class="anno">iOS draws this sheet</span>
+                    <div class="sheet-h"><span class="fx ac gap6 mp-hl"><span class="alogo">&#xF8FF;</span><span>Sign in with Apple</span></span><span class="xbtn"><span class="ms">close</span></span></div>
+                    <div class="fx col ac gap8 ctr">
+                      <div class="appicon appicon-default ai64"><span class="mark"></span></div>
+                      <span class="mp-t3">Sign in to MyPaisa</span>
+                      <span class="mp-sub mp-ink2">with your Apple Account, arun•••@icloud.com</span>
+                    </div>
+                    <div class="faceid" data-mo="face"><span class="ms">familiar_face_and_zone</span></div>
+                    <div class="iosbtn iosb">Continue</div>
+                  </div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>iOS draws this sheet.</b> MyPaisa calls ASAuthorizationAppleIDProvider with no scopes, so iOS asks for no name and no email: just the account, Face ID and Continue.</p>
+            <p><b>Bound to this sign-in.</b> The api hands the app a one-time nonce first; Apple's identity token carries its SHA-256, and the verify Lambda checks issuer, audience (the bundle id), expiry, an issue time under five minutes, the nonce and no replay (MA-109).</p>
+            <p><b>Then the Keychain.</b> The app exchanges the token at /auth/apple for the member's Cognito tokens, kept on this device only after first unlock; the five-minute access token refreshes quietly and the refresh token rotates (MA-168).</p>
+            <p><b>Close</b> leaves the welcome as it was; nothing is sent.</p>
+            <p><b>Motion.</b> The welcome dims, iOS's sheet slides up, and the Face ID glyph pulses as it looks (iOS's own motion, drawn).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- S3 · Sign in with Google -->
+      <section class="bd" id="s3">
+        <div class="bd-h"><span class="bd-id">S3</span><span class="bd-name">Sign in with Google</span><span class="bd-keys">MA-168 · MA-109</span></div>
+        <div class="bd-row">
+          <div class="stk">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="iPhone · Sign in with Google · {{ t.label }}">
+                <div class="bd-theme">iPhone · {{ t.label }}</div>
+                <div class="sts">
+                  <div class="st">
+                    <span class="st-cap dv-cap">a · iOS's alert names google.com</span>
+                    <div class="dev dev-iphone mp z80 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="sbar"><span>19:29</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="wel">
+                          <div class="wel-mid">
+                            <div class="appicon appicon-default"><span class="mark"></span></div>
+                            <span class="mp-t1">MyPaisa</span>
+                            <span class="mp-body wel-line">Your household's investments, watched and explained in plain words.</span>
+                          </div>
+                          <div class="wel-bot">
+                            <div class="siwa"><span class="alogo">&#xF8FF;</span><span>Sign in with Apple</span></div>
+                            <div class="gsi"><span class="glogo">G</span><span>Sign in with Google</span></div>
+                            <span class="mp-foot mp-ink2 ctr">No password. Your household's records stay private.</span>
+                          </div>
+                        </div>
+                        <div class="dim"></div>
+                        <div class="sysalert lg lg-strong apple">
+                          <span class="anno">iOS's alert</span>
+                          <span class="mp-hl">“MyPaisa” Wants to Use “google.com” to Sign In</span>
+                          <span class="mp-foot mp-ink2">This allows the app and website to share information about you.</span>
+                          <div class="fx gap8" style="margin-top:10px"><span class="sab">Cancel</span><span class="sab iosb">Continue</span></div>
+                        </div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">b · Google's account chooser, in iOS's web sheet</span>
+                    <div class="dev dev-iphone mp z80 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="sbar"><span>19:29</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="dim"></div>
+                        <div class="sheet full" style="padding:0;gap:0;overflow:visible">
+                          <span class="anno">iOS's web sheet · Google's page</span>
+                          <div class="gbar" style="border-radius:40px 40px 0 0"><span class="ioslink">Cancel</span><span class="gurl"><span class="ms">lock</span>accounts.google.com</span><span style="width:52px"></span></div>
+                          <div class="gpage">
+                            <span class="glogo" style="font-size:34px">G</span>
+                            <span class="gh1">Choose an account</span>
+                            <span class="gsub">to continue to <span class="gblue">MyPaisa</span></span>
+                            <div class="glist">
+                              <div class="grow"><span class="gav">A</span><span class="fx col f1"><span class="gname">Arun Dutta</span><span class="gmail">arun•••@gmail.com</span></span></div>
+                              <div class="grow"><span class="gav gav-o"><span class="ms">person_add</span></span><span class="gname">Use another account</span></div>
+                            </div>
+                            <span class="gfoot">To continue, Google will share your name, email address and profile picture with MyPaisa.</span>
+                          </div>
+                        </div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="bd-note">
+            <p><b>iOS asks first.</b> Google runs in ASWebAuthenticationSession, so iOS shows its own alert naming google.com; Cancel leaves the welcome as it was.</p>
+            <p><b>Google's page, in iOS's web sheet.</b> The account chooser is Google's own; MyPaisa cannot read it or style it. Google's iOS SDK runs it with PKCE and returns Google's ID token carrying the api's nonce.</p>
+            <p><b>The api checks it</b> against Google's keys: issuer, the environment's iOS client id (MA-143), expiry, an issue time under five minutes, the nonce and no replay, then exchanges it at /auth/google (MA-109).</p>
+            <p><b>A Google account linked to nobody</b>, with no invite, is refused whatever its address (S7). Keys MA-168, MA-109.</p>
+            <p><b>Motion.</b> a · the welcome dims and iOS's alert pops in; b · the web sheet slides up from the bottom.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- S4 · Joining from an invite -->
+      <section class="bd" id="s4">
+        <div class="bd-h"><span class="bd-id">S4</span><span class="bd-name">Joining from an invite</span><span class="bd-keys">MA-168 · MA-32 · MA-73</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Joining from an invite · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span class="crumb"><span class="ms">arrow_left</span>Messages</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="join">
+                    <div class="appicon appicon-default ai64"><span class="mark"></span></div>
+                    <div class="fx col gap6">
+                      <span class="mp-over mp-ink2" data-mo="rise" style="--i:1">Invite</span>
+                      <span class="mp-t1" data-mo="rise" style="--i:2">Arun invited you to the Dutta household</span>
+                      <span class="fx ac gap8"><span class="mp-chip mp-neutral">Member</span><span class="mp-foot mp-ink2">your role</span></span>
+                    </div>
+                    <div class="fx col">
+                      <span class="mp-section mp-over mp-ink2">What joining means</span>
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">account_balance_wallet</span></span><span class="fx col f1"><span class="mp-hl">Your own accounts</span><span class="mp-foot mp-ink2">You add and change them yourself, in the chat.</span></span></div>
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">groups</span></span><span class="fx col f1"><span class="mp-hl">The household's total</span><span class="mp-foot mp-ink2">You see it, beside your own detail.</span></span></div>
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility</span></span><span class="fx col f1"><span class="mp-hl">Who sees your detail</span><span class="mp-foot mp-ink2">Arun, as the owner. Other members only if you choose to share it.</span></span></div>
+                      </div>
+                    </div>
+                    <div class="f1"></div>
+                    <div class="wel-bot">
+                      <div class="siwa" data-mo="rise" style="--i:7"><span class="alogo">&#xF8FF;</span><span>Sign in with Apple</span></div>
+                      <div class="gsi" data-mo="rise" style="--i:8"><span class="glogo">G</span><span>Sign in with Google</span></div>
+                      <span class="fx ac jc gap6 mp-foot mp-ink2" data-mo="fade" style="--mo-d:480ms"><span class="ms ms-s">schedule</span>This invite works once, until Thu 22 Oct 18:03.</span>
+                    </div>
+                  </div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>A universal link.</b> console.mypaisapp.com (console-dev for dev) serves the apple-app-site-association file (MA-73), so console.mypaisapp.com/join/… opens MyPaisa straight on this screen. Opened on a phone without the app, the link shows the web page saying where to get MyPaisa.</p>
+            <p><b>Said before anything happens:</b> who invited you, to which household, as what, what joining means, and when the invite runs out. Nothing is made until you sign in.</p>
+            <p><b>The plan settles who sees your detail.</b> This board's brief said Arun sees it only if you share; ARCHITECTURE §4.5 says the owner sees every member's detail and sharing opens it to the other members, so the screen says that.</p>
+            <p><b>Signing in joins.</b> Either button checks the token (unused, under 24 hours old, this household), marks it used and makes the member and their sign-in (MA-32), each with an audit row; setup follows (S5). Keys MA-168, MA-32, MA-73.</p>
+            <p><b>Motion.</b> The heading rises, the role chip pops, the three meanings rise in turn, then the two buttons; the expiry line fades in last.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- S5 · First-run setup -->
+      <section class="bd" id="s5">
+        <div class="bd-h"><span class="bd-id">S5</span><span class="bd-name">First-run setup</span><span class="bd-keys">MA-35 · MA-168</span></div>
+        <div class="bd-row">
+          <div class="stk">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="iPhone · First-run setup · {{ t.label }}">
+                <div class="bd-theme">iPhone · {{ t.label }}</div>
+                <div class="sts">
+                  <div class="st">
+                    <span class="st-cap dv-cap">a · 19:30 · 1 of 3, base currency</span>
+                    <div class="dev dev-iphone mp z72 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="scr-a">
+                          <div class="chat chat-a">
+                            <div class="daysep">Tue 20 Oct 19:30</div>
+                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                              <div class="ai-text">Welcome, Arun. You're the first here, so you own the Dutta household.</div>
+                              <div class="ai-text">I keep your holdings, price them every weekday and tell you what moved and why. I never trade or move money, and every change is a card you confirm.</div>
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="mp-over mp-ink2">Setup · 1 of 3</span><span class="mp-hl">Which currency should totals be in?</span><span class="mp-sub mp-ink2">Each holding keeps its own currency.</span></div>
+                                <div class="ccard-acts"><span class="cbtn">£ GBP</span><span class="cbtn">₹ INR</span><span class="cbtn">Other…</span></div>
+                              </div>
+                            </div></div>
+                          </div>
+                        </div>
+                        <div class="edge-top"></div>
+                        <div class="sbar"><span>19:30</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">The Dutta household</span><span class="mp-hl">Setting up · 1 of 3</span></div></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer" style="bottom:102px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Or type your answer</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">b · 19:31 · 2 of 3, what you hold</span>
+                    <div class="dev dev-iphone mp z72 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="scr-a">
+                          <div class="chat chat-a">
+                            <div class="daysep">Tue 20 Oct 19:30</div>
+                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                              <div class="ai-text">Welcome, Arun. You're the first here, so you own the Dutta household.</div>
+                              <div class="ai-text">I keep your holdings, price them every weekday and tell you what moved and why. I never trade or move money, and every change is a card you confirm.</div>
+                              <div class="done"><span class="ms" data-mo="saved">check_circle</span><span class="fx col f1"><span class="mp-foot mp-ink2">1 · Base currency</span><span class="mp-hl">£ GBP</span></span><span class="cbtn cbtn-ghost">Change</span></div>
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="mp-over mp-ink2">Setup · 2 of 3</span><span class="mp-hl">What do you hold?</span><span class="mp-sub mp-ink2">Send a factsheet or a screenshot of your valuations, or type it, such as “Balanced (Monzo), £22,925”.</span></div>
+                                <div class="ccard-b"><span class="cbtn wide"><span class="ms">description</span>Send a factsheet</span><span class="cbtn wide"><span class="ms">screenshot</span>Send a screenshot</span><span class="cbtn wide"><span class="ms">keyboard</span>Type it</span></div>
+                                <div class="ccard-acts" style="padding-top:0"><span class="cbtn cbtn-ghost">Later</span></div>
+                              </div>
+                            </div></div>
+                          </div>
+                        </div>
+                        <div class="edge-top"></div>
+                        <div class="sbar"><span>19:31</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">The Dutta household</span><span class="mp-hl">Setting up · 2 of 3</span></div></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer" style="bottom:102px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Or type your answer</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">c · 19:31 · 3 of 3, how often</span>
+                    <div class="dev dev-iphone mp z72 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="scr-a">
+                          <div class="chat chat-a">
+                            <div class="daysep">Tue 20 Oct 19:30</div>
+                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                              <div class="ai-text">Welcome, Arun. You're the first here, so you own the Dutta household.</div>
+                              <div class="ai-text">I keep your holdings, price them every weekday and tell you what moved and why. I never trade or move money, and every change is a card you confirm.</div>
+                              <div class="done"><span class="ms">check_circle</span><span class="fx col f1"><span class="mp-foot mp-ink2">1 · Base currency</span><span class="mp-hl">£ GBP</span></span><span class="cbtn cbtn-ghost">Change</span></div>
+                              <div class="done"><span class="ms" data-mo="saved">check_circle</span><span class="fx col f1"><span class="mp-foot mp-ink2">2 · What you hold</span><span class="mp-hl">Later</span></span><span class="cbtn cbtn-ghost">Change</span></div>
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="mp-over mp-ink2">Setup · 3 of 3</span><span class="mp-hl">How often should I tell you things?</span></div>
+                                <div class="ccard-b">
+                                  <div class="opt"><span class="ms">wb_sunny</span><span class="fx col f1"><span class="mp-hl">Mornings and alerts</span><span class="mp-foot mp-ink2">The 07:15 brief on weekdays, and alerts</span></span></div>
+                                  <div class="opt"><span class="ms">notifications</span><span class="fx col f1"><span class="mp-hl">Only alerts</span><span class="mp-foot mp-ink2">When something needs a look</span></span></div>
+                                  <div class="opt"><span class="ms">calendar_month</span><span class="fx col f1"><span class="mp-hl">Weekly</span><span class="mp-foot mp-ink2">One round-up, on Saturdays</span></span></div>
+                                </div>
+                              </div>
+                            </div></div>
+                          </div>
+                        </div>
+                        <div class="edge-top"></div>
+                        <div class="sbar"><span>19:31</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">The Dutta household</span><span class="mp-hl">Setting up · 3 of 3</span></div></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer" style="bottom:102px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Or type your answer</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="bd-note">
+            <p><b>Setup is the first conversation.</b> Three questions as cards, one at a time, in option 1a's chat; each answered card folds to one line above, with Change.</p>
+            <p><b>1 · Base currency:</b> £ GBP, ₹ INR or Other (a list). Totals are shown in it; each holding keeps its own currency (§4.7). <b>2 · What you hold:</b> send a factsheet or a screenshot (the + gives the camera, a scan, Photos and Files) or type it; Later skips. Each holding then comes as a card to Confirm (rule 4).</p>
+            <p><b>3 · How often:</b> mornings and alerts (the 07:15 brief), only alerts, or weekly. It can be changed later in You › Notifications.</p>
+            <p><b>Still open for MA-35's options round:</b> the answers are saved as they are given, as on the Telegram board; whether setup needs a Confirm is that round's question. Keys MA-35, MA-168.</p>
+            <p><b>Motion.</b> The messages rise in order and the mark's dot springs in; an answered question folds to its line and its check springs (saved); the next card rises under it.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- S6 · Notifications and Face ID -->
+      <section class="bd" id="s6">
+        <div class="bd-h"><span class="bd-id">S6</span><span class="bd-name">Notifications and Face ID</span><span class="bd-keys">MA-170 · MA-171</span></div>
+        <div class="bd-row">
+          <div class="stk">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="iPhone · Notifications and Face ID · {{ t.label }}">
+                <div class="bd-theme">iPhone · {{ t.label }}</div>
+                <div class="sts">
+                  <div class="st">
+                    <span class="st-cap dv-cap">a · MyPaisa's own card first</span>
+                    <div class="dev dev-iphone mp z72 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="scr-a">
+                          <div class="chat chat-a">
+                            <div class="daysep">Tue 20 Oct 19:30</div>
+                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                              <div class="ai-text">Welcome, Arun. You're the first here, so you own the Dutta household.</div>
+                              <div class="done"><span class="ms" data-mo="saved">check_circle</span><span class="fx col f1"><span class="mp-foot mp-ink2">Setup · done</span><span class="mp-sub mp-w6">£ GBP · holdings later · mornings and alerts</span></span></div>
+                              <div class="ai-text">You're set up. Send a factsheet or a screenshot whenever you're ready.</div>
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="fx ac gap8"><span class="mp-icontile mp-neutral"><span class="ms ms-s">notifications</span></span><span class="mp-over mp-ink2">Notifications</span></span><span class="mp-hl">MyPaisa sends the 07:15 brief and alerts.</span><span class="mp-sub mp-ink2">Amounts never show on the lock screen unless you choose.</span></div>
+                                <div class="ccard-acts"><span class="cbtn cbtn-primary">Turn on notifications</span><span class="cbtn cbtn-ghost">Not now</span></div>
+                              </div>
+                            </div></div>
+                          </div>
+                        </div>
+                        <div class="edge-top"></div>
+                        <div class="sbar"><span>19:32</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">The Dutta household</span><span class="mp-hl">No holdings yet</span></div></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer" style="bottom:102px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">b · then iOS's permission alert</span>
+                    <div class="dev dev-iphone mp z72 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="scr-a">
+                          <div class="chat chat-a">
+                            <div class="daysep">Tue 20 Oct 19:30</div>
+                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                              <div class="ai-text">Welcome, Arun. You're the first here, so you own the Dutta household.</div>
+                              <div class="done"><span class="ms">check_circle</span><span class="fx col f1"><span class="mp-foot mp-ink2">Setup · done</span><span class="mp-sub mp-w6">£ GBP · holdings later · mornings and alerts</span></span></div>
+                              <div class="ai-text">You're set up. Send a factsheet or a screenshot whenever you're ready.</div>
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="fx ac gap8"><span class="mp-icontile mp-neutral"><span class="ms ms-s">notifications</span></span><span class="mp-over mp-ink2">Notifications</span></span><span class="mp-hl">MyPaisa sends the 07:15 brief and alerts.</span><span class="mp-sub mp-ink2">Amounts never show on the lock screen unless you choose.</span></div>
+                                <div class="ccard-acts"><span class="cbtn cbtn-primary">Turn on notifications</span><span class="cbtn cbtn-ghost">Not now</span></div>
+                              </div>
+                            </div></div>
+                          </div>
+                        </div>
+                        <div class="edge-top"></div>
+                        <div class="sbar"><span>19:32</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">The Dutta household</span><span class="mp-hl">No holdings yet</span></div></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer" style="bottom:102px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="dim"></div>
+                        <div class="sysalert lg lg-strong apple">
+                          <span class="anno">iOS's alert</span>
+                          <span class="mp-hl">“MyPaisa” Would Like to Send You Notifications</span>
+                          <span class="mp-foot mp-ink2">Notifications may include alerts, sounds and icon badges. These can be configured in Settings.</span>
+                          <div class="fx gap8" style="margin-top:10px"><span class="sab">Don’t Allow</span><span class="sab iosb">Allow</span></div>
+                        </div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">c · 19:33 · the offer of a Face ID lock</span>
+                    <div class="dev dev-iphone mp z72 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="scr-a">
+                          <div class="chat chat-a">
+                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                              <div class="ai-text">Welcome, Arun. You're the first here, so you own the Dutta household.</div>
+                              <div class="done"><span class="ms">check_circle</span><span class="fx col f1"><span class="mp-foot mp-ink2">Setup · done</span><span class="mp-sub mp-w6">£ GBP · holdings later · mornings and alerts</span></span></div>
+                              <div class="done"><span class="ms" data-mo="saved">check_circle</span><span class="fx col f1"><span class="mp-foot mp-ink2">Notifications</span><span class="mp-sub mp-w6">On · no amounts on the lock screen</span></span></div>
+                              <div class="ai-text">Notifications are on. The first brief comes at 07:15 tomorrow.</div>
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="fx ac gap8"><span class="mp-icontile mp-neutral"><span class="ms ms-s">familiar_face_and_zone</span></span><span class="mp-over mp-ink2">Face ID lock</span></span><span class="mp-hl">Lock MyPaisa with Face ID?</span><span class="mp-sub mp-ink2">Face ID asks when you open MyPaisa and after 5 minutes away. It is a comfort on this iPhone only: it never approves a change.</span></div>
+                                <div class="ccard-acts"><span class="cbtn cbtn-primary">Use Face ID</span><span class="cbtn cbtn-ghost">Not now</span></div>
+                              </div>
+                            </div></div>
+                          </div>
+                        </div>
+                        <div class="edge-top"></div>
+                        <div class="sbar"><span>19:33</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">The Dutta household</span><span class="mp-hl">No holdings yet</span></div></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer" style="bottom:102px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="bd-note">
+            <p><b>MyPaisa asks first, in its own words.</b> The card says what will arrive and that amounts stay off the lock screen. Only Turn on notifications brings iOS's alert, so Not now saves iOS's one question for later (You › Notifications).</p>
+            <p><b>iOS's alert is iOS's.</b> Allow registers this iPhone's push token with the api (POST /v1/devices). The 07:15 brief and the 21:15 wrap are ordinary notifications; a red alert is time-sensitive with sound (MA-170).</p>
+            <p><b>No amounts on the lock screen</b> unless the member turns on Show amounts in notifications, and never with privacy mode on.</p>
+            <p><b>The Face ID lock is a comfort, not a check.</b> Face ID or the passcode on opening and after five minutes away, on this iPhone only (MA-171); iOS asks once to allow Face ID. It never approves anything on the server: that is the second check (MA-76). Keys MA-170, MA-171.</p>
+            <p><b>Motion.</b> a · the setup check springs and the card rises; b · the chat dims and iOS's alert pops in; c · the Notifications check springs (saved) and the Face ID card rises.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- S7 · Sign-in refused -->
+      <section class="bd" id="s7">
+        <div class="bd-h"><span class="bd-id">S7</span><span class="bd-name">Sign-in refused</span><span class="bd-keys">MA-168 · MA-102</span></div>
+        <div class="bd-row">
+          <div class="stk">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="iPhone · Sign-in refused · {{ t.label }}">
+                <div class="bd-theme">iPhone · {{ t.label }}</div>
+                <div class="sts" style="gap:22px">
+                  <sc-for list="{{ refused }}" as="s" hint-placeholder-count="4">
+                    <div class="st">
+                      <span class="st-cap dv-cap">{{ s.cap }}</span>
+                      <div class="dev dev-iphone mp z60 {{ t.cls }}">
+                        <div class="island"></div>
+                        <div class="scrn">
+                          <div class="sbar"><span>{{ s.time }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                          <div class="ref">
+                            <div class="ref-mid">
+                              <span class="ref-ic" data-mo="pop" style="--mo-d:60ms"><span class="ms">{{ s.icon }}</span></span>
+                              <sc-if value="{{ s.hasTitle }}" hint-placeholder-val="{{ true }}"><span class="mp-t2" data-mo="rise" style="--i:2">{{ s.title }}</span></sc-if>
+                              <span class="{{ s.bodyCls }}" data-mo="rise" style="--i:3">{{ s.body }}</span>
+                            </div>
+                            <sc-if value="{{ s.btn }}" hint-placeholder-val="{{ true }}"><span class="mp-btn mp-btn-tinted" data-mo="rise" style="--i:5">Back to sign in</span></sc-if>
+                          </div>
+                          <div class="homebar"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="bd-note">
+            <p><b>Kind, plain, no codes.</b> Each screen says what happened and what to do next in a sentence or two; none names the check that failed. Nothing here is red: no action is asked for.</p>
+            <p><b>a · Linked to nobody, no invite.</b> Once a household exists MyPaisa is by invite only, so the way in is an invite from the household's owner.</p>
+            <p><b>b · Removed:</b> told once, with what is kept. <b>c · Paused:</b> one line and nothing else (MA-102), until the owner restores them from the Admin center.</p>
+            <p><b>d · The invite:</b> links last 24 hours and work once; a used one reads “This invite has already been used. Ask the person who sent it for a new one.” Keys MA-168, MA-102.</p>
+            <p><b>Motion.</b> Quiet on purpose: the icon pops gently, the words and the button rise in turn; no shake, since nothing is the member's fault.</p>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          return {
+            themes: [ { label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' } ],
+            refused: [
+              { cap: 'a · linked to nobody, no invite', time: '09:12', icon: 'no_accounts', hasTitle: true, title: 'No household for this account', bodyCls: 'mp-body mp-ink2', body: 'This Apple Account isn’t linked to anyone in MyPaisa. Ask the household’s owner for an invite, then open the link on this iPhone.', btn: true },
+              { cap: 'b · a removed member', time: '10:15', icon: 'group_remove', hasTitle: true, title: 'You’re no longer in the Dutta household', bodyCls: 'mp-body mp-ink2', body: 'Arun removed you today at 10:06. Your accounts and history stay with the household. If this is a mistake, ask Arun to invite you again.', btn: true },
+              { cap: 'c · a paused member, one line', time: '10:20', icon: 'pause_circle', hasTitle: false, title: '', bodyCls: 'mp-hl', body: 'The household’s owner has paused your access to MyPaisa.', btn: false },
+              { cap: 'd · an invite out of date', time: '18:41', icon: 'link_off', hasTitle: true, title: 'This invite is out of date', bodyCls: 'mp-body mp-ink2', body: 'Invite links last 24 hours and work once. Ask the person who sent it for a new one.', btn: true }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shell options</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 30px; text-wrap: pretty; }
+          .dv-opts { display: flex; flex-direction: column; gap: 64px; }
+          .dv-opt { display: flex; flex-direction: column; gap: 18px; }
+          .dv-olabel { display: flex; align-items: baseline; gap: 10px; }
+          .dv-oid { font: 600 12px ui-monospace, Menlo, monospace; padding: 3px 8px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+          .dv-oname { font: 700 22px/28px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-rec { font: 600 12px/16px -apple-system, system-ui; color: #1D7A3E; background: #E2F2E7; border-radius: 999px; padding: 3px 10px; }
+          .dv-row { display: flex; gap: 52px; align-items: flex-start; flex-wrap: wrap; }
+          .dv-col { display: flex; flex-direction: column; }
+          .dv-next { margin: 34px 0 0; font: 13px/1.5 -apple-system, system-ui; color: rgba(0,0,0,.55); }
+          .hero-mini { background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+          .spark { height: 40px; }
+          .spark svg { width: 100%; height: 40px; display: block; }
+          .hl-line { fill: none; stroke: var(--mp-coral); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+          .hl-area { fill: var(--mp-hero-area); stroke: none; }
+          .rowv { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+          .pin { width: 156px; flex: none; border-radius: 22px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+          .pin > * { position: relative; z-index: 1; }
+          .ipadmain { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; }
+          .inspector { width: 380px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); display: flex; flex-direction: column; position: relative; }
+          .twocol { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; padding: 0 20px; align-items: start; }
+          .onecol { display: flex; flex-direction: column; gap: 16px; padding: 0 20px; }
+          .sidebar.side240 { width: 240px; box-sizing: border-box; }
+          .bd-note p { margin: 0; }
+          .daysep { color: var(--mp-ink-2); font-size: 13px; line-height: 18px; }
+          .ai-meta { color: var(--mp-ink-2); font-size: 13px; line-height: 18px; }
+        </style>
+      </helmet>
+      <section class="dv-turn" id="t1" data-screen-label="Shell options: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">The app's shell: three ways the chat and the dashboard meet</span></div>
+        <p class="dv-intro">MyPaisa as one iOS app (MA-161, MA-163). Every option has the same screens (the chat and its cards, Home, a holding, Audit, Activity, the Admin center, You); they differ in what the app opens to and how the chat and the figures meet. Warm ledger (MA-101) is the content; Liquid Glass is only the layer of controls above it: the tab bar, the sidebar, toolbar buttons, the composer and its shortcut chips. iPhone in light and dark, then iPad in landscape. The flow boards in this project are drawn in <a class="dv-oid" href="#1a">1a</a>'s shell. Illustrative figures and names.</p>
+        <div class="dv-opts">
+
+          <div class="dv-opt" id="1a">
+            <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span class="dv-oname">Chat first</span><span class="dv-rec">Recommended</span></div>
+            <div class="dv-row">
+              <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+                <div class="dv-col" data-screen-label="1a Chat first · iPhone · {{ t.label }}">
+                  <div class="bd-theme">iPhone · {{ t.label }}</div>
+                  <div class="dev dev-iphone mp {{ t.cls }}">
+                    <div class="island"></div>
+                    <div class="scrn">
+                      <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="strip lg">
+                        <div class="ai-mark" style="position:relative;z-index:1"><i></i></div>
+                        <div style="flex:1;min-width:0;position:relative;z-index:1" class="fx col">
+                          <span class="mp-foot mp-ink2">Household · Fri 23 Oct</span>
+                          <span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span>
+                        </div>
+                        <span class="ms" style="position:relative;z-index:1;color:var(--mp-ink-2)">keyboard_arrow_down</span>
+                      </div>
+                      <div class="scroll">
+                        <div class="chat" style="padding-top:14px">
+                          <div class="daysep">Today 07:15</div>
+                          <div class="ai">
+                            <div class="ai-mark"><i></i></div>
+                            <div class="ai-body">
+                              <div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div>
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="mp-over mp-ink2">Portfolio</span><span class="mp-num-l">£24,110</span><span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today · ▲ 2.1% this month</span></div>
+                                <div class="ccard-fold"><span>Open Home</span><span class="ms">chevron_right</span></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="me">I put £200 into Balanced today</div>
+                          <div class="ai">
+                            <div class="ai-mark"><i></i></div>
+                            <div class="ai-body">
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="mp-over mp-ink2">Confirm</span><span class="mp-hl">Bought £200 of Balanced</span></div>
+                                <div class="ccard-b"><div class="kv"><span>When</span><span>Today, 23 Oct</span></div><div class="kv"><span>Units</span><span>about 10.8 at NAV 18.57</span></div></div>
+                                <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="edge-bot"></div>
+                      <div class="composer" style="bottom:102px">
+                        <div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add a holding</span></span></div>
+                        <div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div>
+                      </div>
+                      <div class="tabdock">
+                        <div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div>
+                        <span class="tabsearch lg"><span class="ms" style="position:relative;z-index:1">search</span></span>
+                      </div>
+                      <div class="homebar"></div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+              <div class="bd-note">
+                <p><b>Opens to the chat.</b> The conversation is the front door. The household's total and the day's move ride in a glass strip at the top; pull it down, or tap it, and Home opens as a sheet over the chat.</p>
+                <p><b>Tabs: Chat · Home · Activity · You,</b> with Search as iOS 26's separate search tab. As the conversation scrolls the tab bar shrinks to its selected tab, so the composer has the bottom to itself.</p>
+                <p><b>The composer is glass;</b> the shortcut chips above it change with the conversation (Portfolio, Today, Add a holding, Log money). The <b>+</b> opens the camera, a document scan, Photos and Files.</p>
+                <p><b>Cards are content,</b> solid Warm ledger with their own buttons. Confirm is a filled content button, never glass.</p>
+                <p><b>Why recommended:</b> Arun asked for "a cool mobile chatbot ... and even see the dashboard". Every change starts where it is made, in the chat, and the figures are one swipe away.</p>
+                <p><b>Motion.</b> Messages arrive in turn, the chips stagger in and the total rolls up. On iPad the chat column slides in from the trailing edge when the window widens past 900 pt, and a rotation morphs the layout with matched geometry, no reload.</p>
+              </div>
+            </div>
+            <div class="dv-col" data-screen-label="1a Chat first · iPad">
+              <div class="bd-theme">iPad · landscape · light</div>
+              <div class="dev dev-ipad-l mp t-light ipad">
+                <div class="scrn" style="flex-direction:row">
+                  <div class="sidebar lg side240">
+                    <div class="side-h" style="padding-top:4px">MyPaisa</div>
+                    <span class="side-i"><span class="ms">chat_bubble</span>Chat</span>
+                    <span class="side-i on"><span class="ms">home</span>Home</span>
+                    <span class="side-i"><span class="ms">pie_chart</span>Holdings</span>
+                    <span class="side-i"><span class="ms">insights</span>Activity</span>
+                    <span class="side-i"><span class="ms">history</span>Audit</span>
+                    <div class="side-h">Owner</div>
+                    <span class="side-i"><span class="ms">shield_person</span><span style="flex:1">Admin center</span><span class="badge">1</span></span>
+                    <span class="side-i"><span class="ms">account_circle</span>You</span>
+                  </div>
+                  <div class="ipadmain">
+                    <div class="sbar"><span>9:41 Fri 23 Oct</span><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="largetitle" style="padding:0 4px">Home</span><span class="fx gap8"><span class="gbtn lg"><span class="ms" style="position:relative;z-index:1">visibility_off</span></span></span></div>
+                    <div class="onecol" style="margin-top:8px">
+                      <div class="fx col gap16">
+                        <div class="mp-hero fx col gap12">
+                          <div class="mp-seg"><span class="mp-seg-i on" style="display:grid;place-items:center">Household</span><span class="mp-seg-i" style="display:grid;place-items:center">Me</span><span class="mp-seg-i" style="display:grid;place-items:center">Asha</span></div>
+                          <span class="mp-num-hero">£24,110</span>
+                          <span class="mp-sub" style="color:#8BE8AC">▲ £96 · 0.4% today</span>
+                          <div class="spark"><svg viewBox="0 0 300 60" preserveAspectRatio="none"><path class="hl-area" d="M0,44 C30,40 50,46 80,38 S130,30 160,34 S210,20 240,22 S280,12 300,10 L300,60 L0,60 Z"></path><path class="hl-line" d="M0,44 C30,40 50,46 80,38 S130,30 160,34 S210,20 240,22 S280,12 300,10"></path></svg></div>
+                        </div>
+                      </div>
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="mp-row-lead mp-hold">B</span><span class="fx col" style="flex:1;min-width:0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div>
+                        <div class="mp-row"><span class="mp-row-lead mp-neutral">£</span><span class="fx col" style="flex:1;min-width:0"><span class="mp-hl">Three ETFs and cash</span><span class="mp-foot mp-ink2">4 holdings</span></span><span class="rowv"><span class="mp-hl">£1,185</span><span class="mp-foot mp-ink2">—</span></span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="inspector">
+                    <div class="sbar" style="justify-content:flex-end"></div>
+                    <div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms" style="position:relative;z-index:1">edit_square</span></span></div>
+                    <div class="chat">
+                      <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">You're looking at the household. Ask about any holding, or tell me what you put in.</div></div></div>
+                      <div class="me">Why did Balanced rise?</div>
+                      <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Mostly the pound: it fell 0.5% against the dollar, and about two thirds of Balanced is in dollar assets.</div><span class="ai-meta">Why? · Technical</span></div></div>
+                    </div>
+                    <div class="composer" style="bottom:20px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask about Home</span></span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1b">
+            <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span class="dv-oname">Ask from anywhere</span></div>
+            <div class="dv-row">
+              <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+                <div class="dv-col" data-screen-label="1b Ask from anywhere · iPhone · {{ t.label }}">
+                  <div class="bd-theme">iPhone · {{ t.label }}</div>
+                  <div class="dev dev-iphone mp {{ t.cls }}">
+                    <div class="island"></div>
+                    <div class="scrn">
+                      <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg"><span class="ms" style="position:relative;z-index:1">notifications</span></span><span class="gbtn lg"><span class="ms" style="position:relative;z-index:1">visibility_off</span></span></span></div>
+                      <div class="largetitle">Home</div>
+                      <div class="scroll">
+                        <div class="fx col gap16" style="padding:4px 16px 0">
+                          <div class="mp-hero fx col gap10">
+                            <div class="mp-seg"><span class="mp-seg-i on" style="display:grid;place-items:center">Household</span><span class="mp-seg-i" style="display:grid;place-items:center">Me</span><span class="mp-seg-i" style="display:grid;place-items:center">Asha</span></div>
+                            <span class="mp-num-hero">£24,110</span>
+                            <span class="mp-sub" style="color:#8BE8AC">▲ £96 · 0.4% today</span>
+                            <div class="spark"><svg viewBox="0 0 300 60" preserveAspectRatio="none"><path class="hl-area" d="M0,44 C30,40 50,46 80,38 S130,30 160,34 S210,20 240,22 S280,12 300,10 L300,60 L0,60 Z"></path><path class="hl-line" d="M0,44 C30,40 50,46 80,38 S130,30 160,34 S210,20 240,22 S280,12 300,10"></path></svg></div>
+                          </div>
+                          <div class="mp-section mp-over mp-ink2" style="padding-bottom:0">Holdings</div>
+                          <div class="mp-group">
+                            <div class="mp-row"><span class="mp-row-lead mp-hold">B</span><span class="fx col" style="flex:1;min-width:0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div>
+                            <div class="mp-row"><span class="mp-row-lead mp-neutral">£</span><span class="fx col" style="flex:1;min-width:0"><span class="mp-hl">Three ETFs and cash</span><span class="mp-foot mp-ink2">4 holdings</span></span><span class="rowv"><span class="mp-hl">£1,185</span><span class="mp-foot mp-ink2">—</span></span></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="edge-bot"></div>
+                      <div class="composer" style="bottom:102px">
+                        <div class="cbar"><span class="cfield lg" style="padding-left:8px"><span class="ai-mark" style="position:relative;z-index:1;margin:0"><i></i></span><span class="ph">Ask MyPaisa about Home</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div>
+                      </div>
+                      <div class="tabdock">
+                        <div class="tabs lg"><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">pie_chart</span>Holdings</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div>
+                        <span class="tabsearch lg"><span class="ms" style="position:relative;z-index:1">search</span></span>
+                      </div>
+                      <div class="homebar"></div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+              <div class="bd-note">
+                <p><b>Opens to Home.</b> The dashboard is the app; the chat is the tab bar's bottom accessory, the way Music carries its mini player, on every tab.</p>
+                <p><b>It carries the screen's context:</b> on Home it reads "Ask MyPaisa about Home", on a holding "Ask about Balanced". A tap expands it into the full chat with that context already set.</p>
+                <p><b>Tabs: Home · Holdings · Activity · You,</b> with Search apart. The Admin center sits under You for the owner.</p>
+                <p><b>Best when the household mostly reads.</b> Adding money or a factsheet is a tap further away than in <a class="dv-oid" href="#1a">1a</a>: open the accessory, then type.</p>
+                <p><b>Motion.</b> The accessory grows into the full chat with a glass morph, and shrinks back on the way out. On iPad a rotation or a resize morphs the layout with matched geometry, no reload.</p>
+              </div>
+            </div>
+            <div class="dv-col" data-screen-label="1b Ask from anywhere · iPad">
+              <div class="bd-theme">iPad · landscape · light</div>
+              <div class="dev dev-ipad-l mp t-light ipad">
+                <div class="scrn" style="flex-direction:row">
+                  <div class="sidebar lg">
+                    <div class="side-h" style="padding-top:4px">MyPaisa</div>
+                    <span class="side-i on"><span class="ms">home</span>Home</span>
+                    <span class="side-i"><span class="ms">pie_chart</span>Holdings</span>
+                    <span class="side-i"><span class="ms">insights</span>Activity</span>
+                    <span class="side-i"><span class="ms">history</span>Audit</span>
+                    <div class="side-h">Owner</div>
+                    <span class="side-i"><span class="ms">shield_person</span><span style="flex:1">Admin center</span><span class="badge">1</span></span>
+                    <span class="side-i"><span class="ms">account_circle</span>You</span>
+                  </div>
+                  <div class="ipadmain">
+                    <div class="sbar"><span>9:41 Fri 23 Oct</span><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="largetitle" style="padding:0 4px">Home</span><span class="fx gap8"><span class="gbtn lg"><span class="ms" style="position:relative;z-index:1">visibility_off</span></span></span></div>
+                    <div class="twocol" style="margin-top:8px">
+                      <div class="mp-hero fx col gap12">
+                        <div class="mp-seg" style="width:280px"><span class="mp-seg-i on" style="display:grid;place-items:center">Household</span><span class="mp-seg-i" style="display:grid;place-items:center">Me</span><span class="mp-seg-i" style="display:grid;place-items:center">Asha</span></div>
+                        <span class="mp-num-hero">£24,110</span>
+                        <span class="mp-sub" style="color:#8BE8AC">▲ £96 · 0.4% today</span>
+                        <div class="spark"><svg viewBox="0 0 300 60" preserveAspectRatio="none"><path class="hl-area" d="M0,44 C30,40 50,46 80,38 S130,30 160,34 S210,20 240,22 S280,12 300,10 L300,60 L0,60 Z"></path><path class="hl-line" d="M0,44 C30,40 50,46 80,38 S130,30 160,34 S210,20 240,22 S280,12 300,10"></path></svg></div>
+                      </div>
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="mp-row-lead mp-hold">B</span><span class="fx col" style="flex:1;min-width:0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div>
+                        <div class="mp-row"><span class="mp-row-lead mp-neutral">£</span><span class="fx col" style="flex:1;min-width:0"><span class="mp-hl">Three ETFs and cash</span><span class="mp-foot mp-ink2">4 holdings</span></span><span class="rowv"><span class="mp-hl">£1,185</span><span class="mp-foot mp-ink2">—</span></span></div>
+                      </div>
+                    </div>
+                    <div class="composer" style="bottom:24px;left:120px;right:120px"><div class="cbar"><span class="cfield lg" style="padding-left:8px"><span class="ai-mark" style="position:relative;z-index:1;margin:0"><i></i></span><span class="ph">Ask MyPaisa about Home</span><span class="mp-foot mp-ink2" style="position:relative;z-index:1;padding-right:12px">⌘K</span></span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1c">
+            <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span class="dv-oname">One timeline</span></div>
+            <div class="dv-row">
+              <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+                <div class="dv-col" data-screen-label="1c One timeline · iPhone · {{ t.label }}">
+                  <div class="bd-theme">iPhone · {{ t.label }}</div>
+                  <div class="dev dev-iphone mp {{ t.cls }}">
+                    <div class="island"></div>
+                    <div class="scrn">
+                      <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="nav"><span class="mp-t2" style="padding-left:4px">MyPaisa</span><span class="fx gap8"><span class="gbtn lg"><span class="ms" style="position:relative;z-index:1">account_circle</span></span></span></div>
+                      <div class="fx gap10" style="padding:6px 12px 10px;overflow:hidden;position:relative;z-index:15">
+                        <div class="pin lg"><span class="mp-foot mp-ink2">Portfolio</span><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></div>
+                        <div class="pin lg"><span class="mp-foot mp-ink2">Today</span><span class="mp-hl">Nothing to do</span><span class="mp-foot mp-ink2">Brief at 07:15</span></div>
+                        <div class="pin lg"><span class="mp-foot mp-ink2">Spend</span><span class="mp-hl">$18 of $160</span><span class="mp-foot mp-ink2">11%</span></div>
+                      </div>
+                      <div class="scroll">
+                        <div class="chat">
+                          <div class="daysep">Today 07:15</div>
+                          <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div></div></div>
+                          <div class="me">What changed this week?</div>
+                          <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">This week</span><span class="mp-hl">3 changes</span></div><div class="ccard-b"><div class="kv"><span>Mon · You</span><span>£200 into Balanced</span></div><div class="kv"><span>Tue · Asha</span><span>Valuations from a screenshot</span></div><div class="kv"><span>Wed · You</span><span>Quiet hours 22:00 to 07:00</span></div></div></div></div></div>
+                        </div>
+                      </div>
+                      <div class="edge-bot"></div>
+                      <div class="composer" style="bottom:30px">
+                        <div class="chips"><span class="gchip lg"><span class="ms">add_circle</span><span>Add a holding</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span><span class="gchip lg"><span class="ms">history</span><span>Audit</span></span></div>
+                        <div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div>
+                      </div>
+                      <div class="homebar"></div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+              <div class="bd-note">
+                <p><b>No tabs: the chat is the app.</b> A glass rail of live cards rides above the conversation: Portfolio, Today, Alerts (when there are any), Spend for the owner. Each opens its screen as a sheet.</p>
+                <p><b>Everything else is a sheet or a chip:</b> Audit, Activity, the Admin center and You open from the chips or the account button.</p>
+                <p><b>The purest chatbot,</b> and the most cramped for the owner: the Admin center's settings and the Audit filters live in sheets over the conversation.</p>
+                <p><b>Motion.</b> The pinned cards rise in turn and the messages arrive one by one; a pinned card opens its sheet from where it sits. On iPad a rotation morphs the layout with matched geometry, no reload.</p>
+              </div>
+            </div>
+            <div class="dv-col" data-screen-label="1c One timeline · iPad">
+              <div class="bd-theme">iPad · landscape · light</div>
+              <div class="dev dev-ipad-l mp t-light ipad">
+                <div class="scrn" style="flex-direction:row">
+                  <div class="sidebar lg" style="width:330px;gap:10px">
+                    <div class="side-h" style="padding-top:4px">Pinned</div>
+                    <div class="mp-hero fx col gap6" style="position:relative;z-index:1"><span class="mp-foot mp-hero-2">Portfolio</span><span class="mp-num-l">£24,110</span><span class="mp-foot" style="color:#8BE8AC">▲ 0.4% today</span></div>
+                    <div class="mp-card fx col gap4" style="position:relative;z-index:1"><span class="mp-foot mp-ink2">Today</span><span class="mp-hl">Nothing to do this week</span></div>
+                    <div class="mp-card fx col gap4" style="position:relative;z-index:1"><span class="mp-foot mp-ink2">Spend</span><span class="mp-hl">$18 of $160 this cycle</span></div>
+                  </div>
+                  <div class="ipadmain">
+                    <div class="sbar"><span>9:41 Fri 23 Oct</span><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="mp-t2">MyPaisa</span><span class="gbtn lg"><span class="ms" style="position:relative;z-index:1">account_circle</span></span></div>
+                    <div class="chat" style="max-width:640px;margin:0 auto;width:100%;box-sizing:border-box">
+                      <div class="daysep">Today 07:15</div>
+                      <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div></div></div>
+                      <div class="me">Show me Balanced</div>
+                    </div>
+                    <div class="composer" style="bottom:24px;left:120px;right:120px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span></span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="dv-next">Try next: "<a class="dv-oid" href="#1a">1a</a> but with <a class="dv-oid" href="#1b">1b</a>'s context in the composer" · "<a class="dv-oid" href="#1c">1c</a>'s pinned rail on <a class="dv-oid" href="#1a">1a</a>'s Home tab" · "new directions"</p>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          return { themes: [ { label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' } ] };
+        }
+      }
+    </script>
+  </body>
+</html>

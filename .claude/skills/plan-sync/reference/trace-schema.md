@@ -12,7 +12,8 @@ hand.
   "updated": "2026-10-24",
   "claude_design": {
     "app": {"id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7", "name": "MyPaisa app v1", "dir": "docs/design/app-v1"},
-    "ds":  {"id": "2f7310cd-e56a-4d13-8339-8fc637249c9a", "name": "MyPaisa DS v1",  "dir": "docs/design/ds-v1"}
+    "ds":  {"id": "2f7310cd-e56a-4d13-8339-8fc637249c9a", "name": "MyPaisa DS v1",  "dir": "docs/design/ds-v1"},
+    "ios": {"id": "43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8", "name": "MyPaisa iOS v1", "dir": "docs/design/ios-v1"}
   },
   "phases": [
     {"phase": 0, "epic": "MA-9", "title": "Prerequisites", "plan_heading": "## Phase 0 — Prerequisites"}
@@ -30,7 +31,7 @@ hand.
       "ui": true,
       "design": "planned",
       "boards": [
-        {"project": "app", "file": "Audit and files.dc.html", "board": "Browser · Audit with files"}
+        {"project": "ios", "file": "iPhone audit and activity.dc.html", "board": "iPhone · Audit, a change from a file"}
       ],
       "notes": ""
     }

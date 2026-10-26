@@ -81,3 +81,16 @@ Added the day each was learned; reviewers check every item.
    is signed in to). A board fix that cannot reach Claude Design goes into
    each affected story's `undrawn` list, naming the issue that carries it
    (MA-160).
+10. **Illustrative figures add up, on every board and across boards:** a list
+    sums to the total above it, a holding shows the same value on every board
+    that shows it, and the dates and weekdays on a set of boards agree with
+    each other (and with the year, where one is shown) (MA-161: the brief for the iOS boards listed five holdings summing to
+    £25,914 under a £24,110 total; a drawing lane caught it before any board
+    shipped).
+11. **A shared stylesheet or script is checked on every board that uses it,
+    settled and with `?static=1`:** a change to `tokens.css`, `ios.css` or the
+    motion files lands on every board at once (MA-161: the arrival keyframes
+    reset the transform that centres chart dots, labels and axis rows; the
+    figure roll flattened privacy masks; white badge text failed on the dark
+    crimson). Every colour pair a board adds goes into
+    `scripts/contrast_check.py` first.

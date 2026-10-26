@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone admin</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 28px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0; text-wrap: pretty; }
+          .dv-col { display: flex; flex-direction: column; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.08); }
+          .bd-note p { margin: 0; }
+          .phones { display: flex; gap: 48px; align-items: flex-start; }
+          .ph { display: flex; flex-direction: column; gap: 18px; }
+          .stc { font: 600 12px/16px -apple-system, system-ui, sans-serif; color: #3D424D; }
+          .gbtn .ms, .tabsearch .ms, .gz { position: relative; z-index: 1; }
+          .pg { display: flex; flex-direction: column; gap: 14px; padding: 4px 16px 0; }
+          .pg > * { flex-shrink: 0; }
+          .m0 { margin: 0; }
+          .px4 { padding: 0 4px; }
+          .tc { text-align: center; }
+          .grow { flex: 1; min-width: 0; }
+          .sp44 { width: 44px; height: 44px; flex: none; }
+          .shh { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 12px; }
+          .tile { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none; background: var(--mp-surface-2); color: var(--mp-accent); }
+          .tile .ms { font-size: 20px; }
+          .tile-alert { background: var(--mp-alert-bg); color: var(--mp-alert); }
+          .chev { color: var(--mp-ink-2); font-size: 20px; flex: none; }
+          .ricon { color: var(--mp-ink-2); font-size: 22px; width: 32px; text-align: center; flex: none; }
+          .av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none; font: 800 14px/1 var(--mp-font-round); }
+          .av-l { width: 52px; height: 52px; font-size: 19px; }
+          .av-a { background: var(--mp-hero); color: #fff; }
+          .av-s { background: var(--mp-reb-bg); color: var(--mp-reb); }
+          .rbtn { min-height: 44px; display: inline-flex; align-items: center; padding: 0 2px; font: 600 15px/20px var(--mp-font); color: var(--mp-accent); flex: none; }
+          .meter { position: relative; height: 10px; border-radius: 999px; background: var(--mp-surface-2); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mp-ink-2) 45%, transparent); }
+          .meter > i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--mp-meter); }
+          .meter > b { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--mp-ink-2); }
+          .mlab { position: relative; height: 18px; font: 500 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .mlab > span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+          .panel { border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+          .panel > .ms { font-size: 20px; flex: none; margin-top: 1px; }
+          .panel-alert { background: var(--mp-alert-bg); }
+          .panel-pause { background: var(--mp-pause-bg); }
+          .panel-neu { background: var(--mp-surface-2); }
+          .steps { margin: 4px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font: 400 13px/18px var(--mp-font); }
+          .cons { display: flex; flex-direction: column; gap: 8px; padding: 0 4px; }
+          .con { display: flex; gap: 10px; align-items: flex-start; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .con .ms { font-size: 18px; color: var(--mp-ink-2); flex: none; }
+          .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
+          .tabmini { flex: none; width: 80px; }
+          .xbtn { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; background: color-mix(in srgb, var(--mp-ink) 12%, transparent); color: var(--mp-ink); }
+          .sbtn { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--mp-surface-2); color: var(--mp-accent); }
+          .appmini { width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(180deg, #1C2E4D, #13213A); display: grid; place-items: center; flex: none; }
+          .appmini i { width: 16px; height: 16px; border-radius: 50%; background: #FF6B4F; box-shadow: 0 0 0 4px #13213A, 0 0 0 6.5px #FF6B4F; display: block; }
+          .apptile { width: 60px; height: 60px; border-radius: 15px; display: grid; place-items: center; background: var(--mp-surface); color: var(--mp-ink); box-shadow: var(--mp-shadow); }
+          .apptile .ms { font-size: 28px; }
+          .sysbtn { min-height: 50px; border-radius: 14px; display: grid; place-items: center; font: 600 17px/22px var(--mp-font); background: var(--mp-hold); color: var(--mp-surface); }
+          .sysbtn-plain { background: transparent; color: var(--mp-hold); min-height: 44px; }
+          .okc { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-hold-bg); color: var(--mp-hold); }
+          .okc .ms { font-size: 36px; }
+          .sg { display: grid; place-items: center; }
+          .tile-off { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+          .btn-off { background: var(--mp-surface-2); color: var(--mp-ink-2); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--mp-ink-2) 40%, transparent); }
+          .sbtn-off { color: var(--mp-ink-2); }
+          .lad { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 16px; box-sizing: border-box; min-height: 44px; border-top: 1px solid var(--mp-line); }
+          .lad.first { border-top: 0; }
+          .lad.now { background: var(--mp-hold-bg); }
+          .awsp { width: 48px; flex: none; }
+          .mxr { display: grid; grid-template-columns: minmax(0, 1fr) 64px 56px 64px; border-top: 1px solid var(--mp-line); }
+          .mxr.hd { border-top: 0; }
+          .mxh { font: 600 13px/16px var(--mp-font); color: var(--mp-ink-2); padding: 10px 2px 8px; display: flex; align-items: flex-end; justify-content: center; text-align: center; }
+          .mxl { padding: 8px 4px 8px 14px; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+          .mxc { min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: 600 12px/15px var(--mp-font); color: var(--mp-ink); text-align: center; }
+          .mxc .ms { font-size: 17px; color: var(--mp-accent); }
+          .mxc.off, .mxc.fix { color: var(--mp-ink-2); }
+          .mxc.off .ms, .mxc.fix .ms { color: var(--mp-ink-2); }
+          .mxc.chg { background: var(--mp-hold-bg); color: var(--mp-hold); }
+          .mxc.chg .ms { color: var(--mp-hold); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="intro" data-screen-label="iPhone admin: intro">
+        <div class="dv-thd"><span class="dv-tid">A</span><span class="dv-tname">The owner's Admin center on iPhone</span></div>
+        <p class="dv-intro">MyPaisa as one iOS app (MA-161), in option 1a's shell: the Admin center opens from You, for the owner only, because Arun is the household's one admin. Everything on it is an admin setting or operation, never a household record, and each action asks for the second check (iOS's own Sign in with Apple sheet under Face ID, or a passkey), writes an audit row and sends Arun a message in the chat. The same Admin center is also in the web app, a PWA at console.mypaisapp.com, behind the same check in the browser (a passkey, or a fresh Apple or Google sign-in). Ported from Admin center 1 to 3 and Telegram second check, their content and states but not their chrome; the Telegram column of alert routing becomes Push. Fri 23 Oct 2026, light and dark. Illustrative figures and names.</p>
+      </section>
+
+      <section class="bd" id="a1">
+        <div class="bd-h"><span class="bd-id">A1</span><span class="bd-name">Admin center</span><span class="bd-keys">MA-102 · MA-116 · MA-137 · MA-145 · MA-61</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Admin center · {{ t.label }}">
+              <div class="bd-theme">iPhone · Admin center · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span></div>
+                <div class="largetitle">Admin center</div>
+                <div class="scroll"><div class="pg">
+                  <p class="mp-foot mp-ink2 m0 px4">Owner only · the Dutta household · Fri 23 Oct</p>
+                  <div class="mp-group"><div class="mp-row"><span class="tile"><span class="ms">group</span></span><span class="fx col grow"><span class="mp-hl">Members and devices</span><span class="mp-foot mp-ink2">Arun and Asha · 4 devices</span></span><span class="ms chev">chevron_right</span></div></div>
+                  <div class="mp-group"><div class="mp-row" style="align-items:flex-start"><span class="tile"><span class="ms">savings</span></span><span class="fx col gap6 grow"><span class="fx ac jb"><span class="mp-hl">Spend</span><span class="mp-sub mp-w6" data-count="1">$18 of $160</span></span><div class="meter"><i data-mo="barx" style="width:11.25%"></i><b style="left:70%"></b><b style="left:85%"></b><b style="left:95%"></b></div><span class="mp-foot mp-ink2">Claude · 11% · Normal, under 70% · renews Tue 3 Nov</span></span><span class="ms chev" style="align-self:center">chevron_right</span></div></div>
+                  <div class="mp-group"><div class="mp-row" style="align-items:flex-start"><span class="tile"><span class="ms">cloud</span></span><span class="fx col gap6 grow"><span class="fx ac jb"><span class="mp-hl">Caps and alerts</span><span class="mp-sub mp-w6" data-count="1">£3 of £50</span></span><div class="meter"><i data-mo="barx" style="width:6%"></i><b style="left:50%"></b><b style="left:80%"></b></div><span class="mp-foot mp-ink2">AWS and others · 6% · no step reached</span></span><span class="ms chev" style="align-self:center">chevron_right</span></div></div>
+                  <div class="mp-group">
+                    <div class="mp-row"><span class="tile tile-alert"><span class="ms">error</span></span><span class="fx col grow"><span class="mp-hl">Failed work</span><span class="mp-foot mp-ink2">The 07:00 ingest for Silver failed 5 times</span></span><span class="badge">1</span><span class="ms chev">chevron_right</span></div>
+                    <div class="mp-row"><span class="tile"><span class="ms">notifications</span></span><span class="fx col grow"><span class="mp-hl">Alerts inbox</span><span class="mp-foot mp-ink2">1 needs you · 3 this week</span></span><span class="ms chev">chevron_right</span></div>
+                    <div class="mp-row"><span class="tile"><span class="ms">alt_route</span></span><span class="fx col grow"><span class="mp-hl">Alert routing</span><span class="mp-foot mp-ink2">In the app, push and email</span></span><span class="ms chev">chevron_right</span></div>
+                  </div>
+                  <p class="mp-foot mp-ink2 m0 px4">Every action here asks for the second check, writes an audit row and sends you a message in the chat.</p>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                <div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Owner only, from You.</b> The row that opens it is in You for Arun alone, the household's one admin; Asha's You has no such row, and the api refuses her its routes too (MA-102). The web app at console.mypaisapp.com carries the same center for the owner.</p>
+            <p><b>Quiet by default.</b> Each row is a one-line summary with its figure from the meter or Cost Explorer: $18 of $160 on Normal, £3 of £50. Meters are the meter blue with ink marks at the steps, never green.</p>
+            <p><b>Red only where it asks for action.</b> Failed work carries the one badge, because a job waits for Replay (MA-145). The alerts inbox holds every system alert, the dead man's switch included when a job did not run (MA-61).</p>
+            <p><b>The one place that writes outside the chat.</b> Members, spend (MA-116), caps and routing (MA-137) are admin settings and operations; each action asks for the second check, writes an audit row and sends Arun a message in the chat.</p>
+            <p><b>Motion.</b> The groups rise in a cascade, the two meters grow from the left as $18 and £3 roll up, and the badge pops in last.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a2">
+        <div class="bd-h"><span class="bd-id">A2</span><span class="bd-name">Members and devices</span><span class="bd-keys">MA-102 · MA-32</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Members and devices · {{ t.label }}">
+              <div class="bd-theme">iPhone · Members and devices · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span></div>
+                <div class="largetitle">Members and devices</div>
+                <div class="scroll"><div class="pg">
+                  <div class="mp-group">
+                    <div class="mp-row"><span class="av av-a">Ar</span><span class="fx col grow"><span class="mp-hl">Arun</span><span class="mp-foot mp-ink2">Owner · you · Apple and a passkey</span></span><span class="mp-chip mp-neutral">Active</span></div>
+                    <div class="mp-row"><span class="ms ricon">phone_iphone</span><span class="fx col grow"><span class="mp-sub">Arun's iPhone</span><span class="mp-foot mp-ink2">iPhone 17 Pro · this iPhone · now</span></span></div>
+                    <div class="mp-row"><span class="ms ricon">tablet_mac</span><span class="fx col grow"><span class="mp-sub">Arun's iPad</span><span class="mp-foot mp-ink2">iPad Air · today 07:20</span></span></div>
+                  </div>
+                  <div class="mp-group">
+                    <div class="mp-row"><span class="av av-s">As</span><span class="fx col grow"><span class="mp-hl">Asha</span><span class="mp-foot mp-ink2">Member · signs in with Google</span></span><span class="mp-chip mp-neutral">Active</span><span class="ms chev">chevron_right</span></div>
+                    <div class="mp-row"><span class="ms ricon">phone_iphone</span><span class="fx col grow"><span class="mp-sub">Asha's iPhone</span><span class="mp-foot mp-ink2">iPhone 16 · today 08:02</span></span></div>
+                    <div class="mp-row"><span class="ms ricon">tablet_mac</span><span class="fx col grow"><span class="mp-sub">Asha's iPad</span><span class="mp-foot mp-ink2">iPad mini · Tue 20 Oct</span></span></div>
+                  </div>
+                  <div class="mp-group"><div class="mp-row"><span class="tile"><span class="ms">person_add</span></span><span class="mp-hl mp-acc grow">Invite a member</span><span class="ms chev">chevron_right</span></div></div>
+                  <p class="mp-foot mp-ink2 m0 px4">No invites pending. Tap a member to sign out a device, pause or remove them. Your own devices are in You.</p>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                <div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Each member with their devices.</b> Name, model and last seen come from the Device row each sign-in writes; status is a word, never colour alone. Two members, four devices, one glance (MA-102).</p>
+            <p><b>How each gets in.</b> Arun signs in with Apple and has a passkey; Asha signs in with Google. The owner's own devices are signed out from You, not here, so this page never ends the session in hand.</p>
+            <p><b>Invite a member</b> opens A4 (MA-32). A pending invite shows here with its role and expiry until it is used, cancelled or 24 hours pass.</p>
+            <p><b>Owner only.</b> Asha cannot open this page; the api refuses the member routes to anyone but the owner, whatever the app shows.</p>
+            <p><b>Motion.</b> The two member groups rise one after the other, their rows cascading, and the status chips pop in.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a3">
+        <div class="bd-h"><span class="bd-id">A3</span><span class="bd-name">A member: sign out, pause, restore</span><span class="bd-keys">MA-102</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · A member: sign out, pause, restore · {{ t.label }}">
+              <div class="bd-theme">iPhone · A member: sign out, pause, restore · {{ t.label }}</div>
+              <div class="phones">
+                <div class="ph"><span class="stc dv-cap">1 · Asha, active</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Asha</span><span class="sp44"></span></div>
+                    <div class="scroll"><div class="pg" style="padding-top:8px">
+                      <div class="mp-card fx ac gap12"><span class="av av-s av-l">As</span><span class="fx col grow"><span class="mp-t3">Asha</span><span class="mp-foot mp-ink2">Member · joined Sun 4 Oct</span><span class="mp-foot mp-ink2">Signs in with Google</span></span><span class="mp-chip mp-neutral">Active</span></div>
+                      <div class="mp-section mp-over mp-ink2">Devices</div>
+                      <div class="mp-group" style="margin-top:-8px">
+                        <div class="mp-row"><span class="ms ricon">phone_iphone</span><span class="fx col grow"><span class="mp-sub">Asha's iPhone</span><span class="mp-foot mp-ink2">iPhone 16 · today 08:02</span></span><span class="rbtn">Sign out</span></div>
+                        <div class="mp-row"><span class="ms ricon">tablet_mac</span><span class="fx col grow"><span class="mp-sub">Asha's iPad</span><span class="mp-foot mp-ink2">iPad mini · Tue 20 Oct</span></span><span class="rbtn">Sign out</span></div>
+                      </div>
+                      <div class="mp-group">
+                        <div class="mp-row" style="align-items:flex-start"><span class="tile"><span class="ms">logout</span></span><span class="fx col grow"><span class="mp-hl">Sign out everywhere</span><span class="mp-foot mp-ink2">Both devices sign in again. Her holdings and history are kept.</span></span></div>
+                        <div class="mp-row" style="align-items:flex-start"><span class="tile"><span class="ms">pause_circle</span></span><span class="fx col grow"><span class="mp-hl">Pause Asha</span><span class="mp-foot mp-ink2">Sign-in is refused and every device is signed out until you restore her.</span></span></div>
+                      </div>
+                      <div class="mp-group"><div class="mp-row" style="align-items:flex-start"><span class="tile tile-alert"><span class="ms">person_remove</span></span><span class="fx col grow"><span class="mp-hl c-alert">Remove from household</span><span class="mp-foot mp-ink2">Her sign-ins end for good. Her accounts and their history stay with the household.</span></span></div></div>
+                      <p class="mp-foot mp-ink2 m0 px4">Each asks for the second check, writes an audit row and sends you a message in the chat.</p>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">2 · Asha, paused</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Asha</span><span class="sp44"></span></div>
+                    <div class="scroll"><div class="pg" style="padding-top:8px">
+                      <div class="mp-card fx ac gap12"><span class="av av-s av-l">As</span><span class="fx col grow"><span class="mp-t3">Asha</span><span class="mp-foot mp-ink2">Member · joined Sun 4 Oct</span><span class="mp-foot mp-ink2">Signs in with Google</span></span><span class="mp-chip mp-pause"><span class="ms ms-s">pause_circle</span>Paused</span></div>
+                      <div class="panel panel-pause"><span class="ms c-pause">pause_circle</span><span class="fx col gap10 grow"><span class="mp-sub">Paused at 09:38 by you. Sign-in is refused; both devices were signed out.</span><span class="fx"><span class="cbtn cbtn-primary"><span class="ms">play_circle</span>Restore Asha</span></span></span></div>
+                      <div class="mp-section mp-over mp-ink2">Devices</div>
+                      <div class="mp-group" style="margin-top:-8px">
+                        <div class="mp-row"><span class="ms ricon">phone_iphone</span><span class="fx col grow"><span class="mp-sub">Asha's iPhone</span><span class="mp-foot mp-ink2">iPhone 16 · signed out at 09:38</span></span></div>
+                        <div class="mp-row"><span class="ms ricon">tablet_mac</span><span class="fx col grow"><span class="mp-sub">Asha's iPad</span><span class="mp-foot mp-ink2">iPad mini · signed out at 09:38</span></span></div>
+                      </div>
+                      <div class="mp-group"><div class="mp-row" style="align-items:flex-start"><span class="tile tile-off"><span class="ms">logout</span></span><span class="fx col grow"><span class="mp-hl mp-ink2">Sign out everywhere</span><span class="mp-foot mp-ink2">Nothing to sign out: the pause ended both.</span></span></div></div>
+                      <div class="mp-group"><div class="mp-row" style="align-items:flex-start"><span class="tile tile-alert"><span class="ms">person_remove</span></span><span class="fx col grow"><span class="mp-hl c-alert">Remove from household</span><span class="mp-foot mp-ink2">Her sign-ins end for good. Her accounts and their history stay with the household.</span></span></div></div>
+                      <p class="mp-foot mp-ink2 m0 px4">Restore asks for the second check too.</p>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Consequence first.</b> Each action says what happens before it is tapped: Pause refuses sign-in and signs out every device until she is restored; her holdings and history are kept.</p>
+            <p><b>Only Remove is red.</b> It is the one that ends her membership; a sign-out or a pause is undone by signing in again or by Restore, so those are plain rows.</p>
+            <p><b>Paused, Restore takes Pause's place,</b> at the top, so undoing is as close as doing. Her devices say when they were signed out, and Sign out everywhere is greyed with nothing left to end.</p>
+            <p><b>Each behind the second check,</b> with an audit row and a message to Arun in the chat. The server ends her sessions with Cognito's global sign-out and her session epoch, so it holds from her next call; while paused, Asha sees one line on sign-in (MA-102).</p>
+            <p><b>Motion.</b> The card and the groups cascade in; paused, the Paused chip pops. Each row and button gives under the finger.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a4">
+        <div class="bd-h"><span class="bd-id">A4</span><span class="bd-name">Invite a member</span><span class="bd-keys">MA-32</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Invite a member · {{ t.label }}">
+              <div class="bd-theme">iPhone · Invite a member · {{ t.label }}</div>
+              <div class="phones">
+                <div class="ph"><span class="stc dv-cap">1 · Choose the role</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Invite a member</span><span class="sp44"></span></div>
+                    <div class="scroll"><div class="pg" style="padding-top:8px">
+                      <p class="mp-sub mp-ink2 m0 px4">A one-time link to join the Dutta household. Choose what they can do first.</p>
+                      <div class="mp-section mp-over mp-ink2">Role</div>
+                      <div class="mp-group" style="margin-top:-8px">
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-hl">Member</span><span class="mp-foot mp-ink2">Adds and changes holdings in their own accounts; sees the household overview.</span></span><span class="ms mp-acc">check</span></div>
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-hl">Viewer</span><span class="mp-foot mp-ink2">Reads the household overview and whatever members share. Nothing else.</span></span><span class="sp44" style="width:22px"></span></div>
+                      </div>
+                      <div class="mp-section mp-over mp-ink2">The link</div>
+                      <div class="mp-group" style="margin-top:-8px">
+                        <div class="mp-row"><span class="ms ricon">link</span><span class="fx col grow"><span class="mp-sub">Single use</span><span class="mp-foot mp-ink2">For this household and this role only</span></span></div>
+                        <div class="mp-row"><span class="ms ricon">schedule</span><span class="fx col grow"><span class="mp-sub">Lasts 24 hours</span><span class="mp-foot mp-ink2">Until Sat 24 Oct, 09:40, if not used first</span></span></div>
+                        <div class="mp-row"><span class="ms ricon">phone_iphone</span><span class="fx col grow"><span class="mp-sub">Opens MyPaisa</span><span class="mp-foot mp-ink2">In the app, or in the web app in a browser</span></span></div>
+                      </div>
+                      <span class="mp-btn mp-btn-primary">Create the link</span>
+                      <span class="mp-foot mp-ink2 tc" style="margin-top:-6px">Asks for the second check first.</span>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">2 · iOS's share sheet</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Invite a member</span><span class="sp44"></span></div>
+                    <div class="scroll"><div class="pg" style="padding-top:8px">
+                      <p class="mp-sub mp-ink2 m0 px4">A one-time link to join the Dutta household. Choose what they can do first.</p>
+                      <div class="mp-group"><div class="mp-row"><span class="fx col grow"><span class="mp-hl">Member</span><span class="mp-foot mp-ink2">Adds and changes holdings in their own accounts.</span></span><span class="ms mp-acc">check</span></div></div>
+                    </div></div>
+                    <div class="dim"></div>
+                    <div class="sheet lg lg-strong" data-mo="menu" style="--mo-origin:50% 100%">
+                      <div class="sheet-grab"></div>
+                      <div class="fx ac gap12"><span class="appmini"><i></i></span><span class="fx col grow"><span class="mp-hl">Join the Dutta household on MyPaisa</span><span class="mp-foot mp-ink2">console.mypaisapp.com/join/…</span></span><span class="xbtn"><span class="ms">close</span></span></div>
+                      <span class="mp-foot mp-ink2">Member · single use · expires Sat 24 Oct, 09:40</span>
+                      <div class="fx jb" style="padding:4px 6px 0">
+                        <span class="fx col ac gap6"><span class="apptile"><span class="ms">sms</span></span><span class="mp-foot">Messages</span></span>
+                        <span class="fx col ac gap6"><span class="apptile"><span class="ms">mail</span></span><span class="mp-foot">Mail</span></span>
+                        <span class="fx col ac gap6"><span class="apptile"><span class="ms">sticky_note_2</span></span><span class="mp-foot">Notes</span></span>
+                        <span class="fx col ac gap6"><span class="apptile"><span class="ms">more_horiz</span></span><span class="mp-foot">More</span></span>
+                      </div>
+                      <div class="mp-group"><div class="mp-row"><span class="mp-body grow">Copy</span><span class="ms mp-ink2">content_copy</span></div></div>
+                    </div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">3 · The invite, pending</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Members and devices</span><span class="sp44"></span></div>
+                    <div class="scroll"><div class="pg" style="padding-top:8px">
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="av av-a">Ar</span><span class="fx col grow"><span class="mp-hl">Arun</span><span class="mp-foot mp-ink2">Owner · 2 devices</span></span><span class="mp-chip mp-neutral">Active</span></div>
+                        <div class="mp-row"><span class="av av-s">As</span><span class="fx col grow"><span class="mp-hl">Asha</span><span class="mp-foot mp-ink2">Member · 2 devices</span></span><span class="mp-chip mp-neutral">Active</span><span class="ms chev">chevron_right</span></div>
+                      </div>
+                      <div class="mp-section mp-over mp-ink2">Pending invite</div>
+                      <div class="ccard" style="margin-top:-8px">
+                        <div class="ccard-h"><span class="fx ac jb"><span class="mp-hl">Member invite</span><span class="mp-chip mp-pause"><span class="ms ms-s">hourglass_top</span>Not opened</span></span><span class="mp-foot mp-ink2">Made today at 09:40 by you</span></div>
+                        <div class="ccard-b"><div class="kv"><span>Link</span><span class="mono">console.mypaisapp.com/join/…</span></div><div class="kv"><span>Use</span><span>Once</span></div><div class="kv"><span>Expires</span><span>Sat 24 Oct, 09:40</span></div></div>
+                        <div class="ccard-acts"><span class="cbtn"><span class="ms">ios_share</span>Share again</span><span class="cbtn cbtn-alert"><span class="ms">link_off</span>Cancel this invite</span></div>
+                      </div>
+                      <p class="mp-foot mp-ink2 m0 px4">Cancelling asks for the second check; the link stops working at once and the audit log records it.</p>
+                      <div class="mp-group"><div class="mp-row"><span class="tile"><span class="ms">person_add</span></span><span class="mp-hl mp-acc grow">Invite a member</span><span class="ms chev">chevron_right</span></div></div>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The role first.</b> Member or Viewer, each with what it can do, as ARCHITECTURE §4.5's roles say. Owner is never offered: the household has one admin.</p>
+            <p><b>Create the link asks for the second check,</b> then hands the link to iOS's own share sheet: console.mypaisapp.com/join/…, single use, 24 hours, bound to this household and this role. It opens the iOS app, or the web app in a browser.</p>
+            <p><b>Pending until used.</b> The invite shows on Members and devices with its role, when it was made and when it expires; the invitee joins by signing in with Apple or Google from the link (MA-32).</p>
+            <p><b>Cancelling is a change too:</b> Cancel this invite asks for the second check, the link stops working at once, an audit row records it and Arun gets a message in the chat.</p>
+            <p><b>Motion.</b> The role list rises; iOS's share sheet pops up from the bottom edge; the pending invite card rises and its chip pops.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a5">
+        <div class="bd-h"><span class="bd-id">A5</span><span class="bd-name">Second check</span><span class="bd-keys">MA-76 · MA-102</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Second check · {{ t.label }}">
+              <div class="bd-theme">iPhone · Second check · {{ t.label }}</div>
+              <div class="phones">
+                <div class="ph"><span class="stc dv-cap">1 · The check: iOS's sheet over the change</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="dim"></div>
+                    <div class="sheet full" style="padding:8px 0 0;gap:12px">
+                      <div class="sheet-grab"></div>
+                      <div class="shh"><span class="gbtn lg"><span class="ms">close</span></span><span class="nav-title">Check it's you</span><span class="sp44"></span></div>
+                      <div class="pg" style="padding-top:0">
+                        <div class="mp-card fx col gap10"><span class="mp-over mp-ink2">Admin change</span><span class="mp-t3">Raise prod's ceiling from $160 to $180</span><div class="kv"><span>Past the credit</span><span>By $20 · you said yes</span></div><div class="kv"><span>Takes effect</span><span>At the next model call</span></div></div>
+                        <p class="mp-foot mp-ink2 m0 px4">The server binds a challenge to this change; Apple signs you in again to answer it.</p>
+                      </div>
+                    </div>
+                    <div class="dim" style="z-index:55;background:rgba(5,8,14,0.14)"></div>
+                    <div class="sheet lg lg-strong apple" style="z-index:60">
+                      <div class="sheet-grab"></div>
+                      <div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="xbtn"><span class="ms">close</span></span></div>
+                      <div class="fx ac gap12"><span class="appmini"><i></i></span><span class="fx col grow"><span class="mp-hl">MyPaisa</span><span class="mp-foot mp-ink2">Continue as Arun Dutta, ar•••@icloud.com</span></span></div>
+                      <div class="faceid" data-mo="face"><span class="ms">ar_on_you</span></div>
+                      <span class="mp-foot mp-ink2 tc">Face ID</span>
+                    </div>
+                    <div class="homebar" style="z-index:70"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">2 · Done</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="dim"></div>
+                    <div class="sheet full" style="padding:8px 0 0;gap:12px">
+                      <div class="sheet-grab"></div>
+                      <div class="shh"><span class="sp44"></span><span class="nav-title">Done</span><span class="sp44"></span></div>
+                      <div class="pg" style="padding-top:0">
+                        <div class="fx col ac gap8 tc" style="padding:12px 8px 4px"><span class="okc" data-mo="saved"><span class="ms ms-fill">check</span></span><span class="mp-t2">Prod's ceiling is $180</span><span class="mp-sub mp-ink2">From the next model call. Checked with Sign in with Apple and Face ID at 09:40.</span></div>
+                        <div class="mp-group">
+                          <div class="mp-row"><span class="tile"><span class="ms">history</span></span><span class="fx col grow"><span class="mp-hl">In the audit log</span><span class="mp-foot mp-ink2">09:40 · Arun · prod ceiling $160 → $180</span></span><span class="ms chev">chevron_right</span></div>
+                          <div class="mp-row"><span class="tile"><span class="ms">chat_bubble</span></span><span class="fx col grow"><span class="mp-hl">A message in your chat</span><span class="mp-foot mp-ink2">Says what changed, and when</span></span><span class="ms chev">chevron_right</span></div>
+                        </div>
+                        <span class="mp-btn mp-btn-primary">Done</span>
+                      </div>
+                    </div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">3 · Face ID failed: nothing changed</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="dim"></div>
+                    <div class="sheet full" style="padding:8px 0 0;gap:12px">
+                      <div class="sheet-grab"></div>
+                      <div class="shh"><span class="gbtn lg"><span class="ms">close</span></span><span class="nav-title">Check it's you</span><span class="sp44"></span></div>
+                      <div class="pg" style="padding-top:0">
+                        <div class="mp-card fx col gap10"><span class="mp-over mp-ink2">Admin change</span><span class="mp-t3">Raise prod's ceiling from $160 to $180</span><div class="panel panel-neu"><span class="ms mp-ink2">info</span><span class="mp-foot">Not confirmed. Nothing has changed: the ceiling is still $160.</span></div></div>
+                      </div>
+                    </div>
+                    <div class="dim" style="z-index:55;background:rgba(5,8,14,0.14)"></div>
+                    <div class="sheet lg lg-strong apple" style="z-index:60">
+                      <div class="sheet-grab"></div>
+                      <div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="xbtn"><span class="ms">close</span></span></div>
+                      <div class="faceid" data-mo="face" style="color:var(--mp-ink-2)"><span class="ms">ar_on_you</span></div>
+                      <span class="mp-hl tc">Face Not Recognised</span>
+                      <span class="sysbtn">Try Face ID Again</span>
+                      <span class="sysbtn sysbtn-plain">Cancel</span>
+                    </div>
+                    <div class="homebar" style="z-index:70"></div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The change in words, then the check.</b> The app shows what will change, asks the server for a challenge bound to that change, and opens iOS's own Sign in with Apple sheet; Face ID passes and the fresh assertion goes back with the challenge (MA-76).</p>
+            <p><b>Never a local check alone.</b> The server takes the action only with an assertion under five minutes old whose nonce is that challenge. A passkey under Face ID works too; a Google-only member signs in with Google again. In the web app the same check is a passkey or a fresh Apple or Google sign-in in the browser.</p>
+            <p><b>Done says where it is recorded:</b> the audit row with its time, who and how, and the message in Arun's chat. The same sheet guards every Admin center action, a pause included (MA-102).</p>
+            <p><b>A failed Face ID changes nothing.</b> Try Face ID Again, or Cancel; no assertion reached the server, so the challenge lapses after five minutes and the ceiling stays $160.</p>
+            <p><b>Motion.</b> The change slides up as a sheet, iOS's sheet slides over it and the Face ID glyph scans; Done's check lands with one bounce.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a6">
+        <div class="bd-h"><span class="bd-id">A6</span><span class="bd-name">Spend and the ceiling</span><span class="bd-keys">MA-116 · MA-114</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Spend and the ceiling · {{ t.label }}">
+              <div class="bd-theme">iPhone · Spend and the ceiling · {{ t.label }}</div>
+              <div class="phones">
+                <div class="ph"><span class="stc dv-cap">1 · The cycle and the ladder</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span></div>
+                    <div class="largetitle">Spend</div>
+                    <div class="scroll"><div class="pg">
+                      <div class="mp-card fx col gap8">
+                        <span class="mp-over mp-ink2">Claude · prod · this cycle</span>
+                        <span class="fx ac gap8"><span class="mp-num-l">$18</span><span class="mp-sub mp-ink2">of $160 · 11% · about £14 of £123</span></span>
+                        <div class="meter" style="margin-top:4px"><i data-mo="barx" style="width:11.25%"></i><b style="left:70%"></b><b style="left:85%"></b><b style="left:95%"></b></div>
+                        <div class="mlab"><span style="left:70%">70%</span><span style="left:85%">85%</span><span style="left:95%">95%</span></div>
+                        <span class="fx ac jb gap8"><span class="mp-chip mp-neutral">Normal, under 70%</span><span class="mp-foot mp-ink2">Renews 3 Nov, in 11 days</span></span>
+                      </div>
+                      <div class="fx gap8" style="flex-wrap:wrap"><span class="cbtn cbtn-primary"><span class="ms">tune</span>Move the ceiling</span><span class="cbtn"><span class="ms">event</span>Renews on the 3rd</span></div>
+                      <div class="mp-section mp-over mp-ink2">The ladder</div>
+                      <div class="mp-group" style="margin-top:-8px"><sc-for list="{{ ladder }}" as="l" hint-placeholder-count="5"><div class="lad {{ l.cls }}"><span class="fx col"><span class="mp-foot mp-w6">{{ l.p }}</span><span class="mp-foot mp-ink2">{{ l.at }}</span></span><span class="fx col"><span class="mp-sub mp-w6">{{ l.t }}</span><span class="mp-foot mp-ink2">{{ l.d }}</span></span></div></sc-for></div>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">2 · By member, and the guards</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Spend</span><span class="sp44"></span></div>
+                    <div class="scroll"><div class="pg" style="padding-top:8px">
+                      <div class="mp-seg"><span class="mp-seg-i sg on">Member</span><span class="mp-seg-i sg">Feature</span><span class="mp-seg-i sg">Agent</span><span class="mp-seg-i sg">Model</span></div>
+                      <div class="mp-group"><sc-for list="{{ byMember }}" as="m" hint-placeholder-count="3"><div class="mp-row" style="flex-direction:column;align-items:stretch;gap:6px"><span class="fx ac jb"><span class="fx col"><span class="mp-hl">{{ m.n }}</span><span class="mp-foot mp-ink2">{{ m.s }}</span></span><span class="mp-hl" data-count="1">{{ m.v }}</span></span><sc-if value="{{ m.bar }}" hint-placeholder-val="{{ true }}"><div class="meter" style="height:6px"><i data-mo="barx" style="width: {{ m.w }}"></i></div></sc-if></div></sc-for></div>
+                      <p class="mp-foot mp-ink2 m0 px4">$18.00 in all, from the meter's rows.</p>
+                      <div class="fx ac jb" style="margin:-14px 0 -14px"><span class="mp-section mp-over mp-ink2" style="padding-bottom:0">Guards under the ladder</span><span class="rbtn" style="padding-right:4px">Change</span></div>
+                      <div class="mp-group" style="margin-top:-8px"><sc-for list="{{ guards }}" as="g" hint-placeholder-count="3"><div class="mp-row" style="align-items:flex-start"><span class="ms ricon">{{ g.icon }}</span><span class="fx col grow"><span class="mp-foot mp-ink2">{{ g.k }}</span><span class="mp-hl">{{ g.v }}</span><span class="mp-foot mp-ink2">{{ g.d }}</span></span></div></sc-for></div>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Dollars, as the credit is,</b> with pounds beside them at the day's ECB rate. Every figure is the meter's (MA-113), never one Claude worked out.</p>
+            <p><b>The ladder in words.</b> Where the bot is now (Normal, under 70%), what each step does and the dollar figure it starts at, the days left and the renewal day. The marks on the meter are ink, labelled under the track; the meter is blue, never green (MA-114).</p>
+            <p><b>By member, feature, agent and model:</b> four segments over the same rows. Each member is drawn against their 60% share, $96; household jobs have no share.</p>
+            <p><b>The guards</b> sit under the ladder so one member, one day or one run cannot spend the month. Moving the ceiling, the renewal day or a guard asks for the second check, takes effect at the next model call and writes an audit row (MA-116).</p>
+            <p><b>Motion.</b> The card rises and $18 rolls up, the meter and each member's bar grow from the left, the ladder cascades; the segments slide their lens on tap.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a7">
+        <div class="bd-h"><span class="bd-id">A7</span><span class="bd-name">Move the ceiling</span><span class="bd-keys">MA-116 · MA-76</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Move the ceiling · {{ t.label }}">
+              <div class="bd-theme">iPhone · Move the ceiling · {{ t.label }}</div>
+              <div class="phones">
+                <div class="ph"><span class="stc dv-cap">1 · Past the $200 credit: the explicit yes</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="dim"></div>
+                    <div class="sheet full" style="padding:8px 0 0;gap:12px">
+                      <div class="sheet-grab"></div>
+                      <div class="shh"><span class="gbtn lg"><span class="ms">close</span></span><span class="nav-title">Move the ceiling</span><span class="sp44"></span></div>
+                      <div class="pg" style="padding-top:0;gap:12px">
+                        <div class="mp-seg"><span class="mp-seg-i sg on">Prod</span><span class="mp-seg-i sg">Dev</span></div>
+                        <div class="mp-card fx col gap8"><div class="fx ac jb"><span class="sbtn"><span class="ms">remove</span></span><span class="fx col ac"><span class="mp-num-hero">$180</span><span class="mp-foot mp-ink2">from $160 · about £138</span></span><span class="sbtn"><span class="ms">add</span></span></div><span class="mp-foot mp-ink2 tc">$10 to $200, the Console's limit for prod</span></div>
+                        <div class="panel panel-alert"><span class="ms c-alert">credit_card</span><span class="fx col gap4"><span class="mp-hl c-alert">Past the plan's $200 credit</span><span class="mp-foot">Prod $180 and dev $40 make $220: $20 past the credit, about £15. The extra goes on the card on the Console organisation; with no card there, Claude stops at $200.</span></span></div>
+                        <div class="mp-group"><div class="mp-row"><span class="mp-sub grow">Yes, take prod and dev past the $200 credit</span><span class="mp-switch on"><span class="mp-switch-k"></span></span></div></div>
+                        <div class="cons">
+                          <span class="con"><span class="ms">stairs</span><span>$18 is spent, 10% of $180: the bot stays on Normal.</span></span>
+                          <span class="con"><span class="ms">speed</span><span>Savers would start at $153, essentials at $171; Claude stops at $180.</span></span>
+                          <span class="con"><span class="ms">group</span><span>Each member's share becomes $108; the daily guard about $17.</span></span>
+                          <span class="con"><span class="ms">history</span><span>An audit row, and a message to you in the chat.</span></span>
+                        </div>
+                        <span class="mp-btn mp-btn-primary">Confirm $180</span>
+                        <span class="mp-foot mp-ink2 tc" style="margin-top:-4px">Then the second check: Sign in with Apple under Face ID</span>
+                      </div>
+                    </div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">2 · Above the hard limit: refused</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="dim"></div>
+                    <div class="sheet full" style="padding:8px 0 0;gap:12px">
+                      <div class="sheet-grab"></div>
+                      <div class="shh"><span class="gbtn lg"><span class="ms">close</span></span><span class="nav-title">Move the ceiling</span><span class="sp44"></span></div>
+                      <div class="pg" style="padding-top:0;gap:12px">
+                        <div class="mp-seg"><span class="mp-seg-i sg on">Prod</span><span class="mp-seg-i sg">Dev</span></div>
+                        <div class="mp-card fx col gap8"><div class="fx ac jb"><span class="sbtn"><span class="ms">remove</span></span><span class="fx col ac"><span class="mp-num-hero c-alert">$220</span><span class="mp-foot mp-ink2">typed · from $160</span></span><span class="sbtn sbtn-off"><span class="ms">add</span></span></div><span class="mp-foot c-alert mp-w6 tc">Above prod's hard limit, $200. Nothing has changed.</span><span class="mp-foot mp-ink2 tc">$10 to $200, the Console's limit for prod</span></div>
+                        <div class="panel panel-alert"><span class="ms c-alert">block</span><span class="fx col gap4"><span class="mp-hl c-alert">Refused: above the hard limit</span><span class="mp-foot">The Console would stop the key at $200 anyway. To go higher:</span><ol class="steps"><li>In the Claude Console, raise the prod workspace's spend limit.</li><li>Here, in Spend, choose Type the hard limit and type the new one to match.</li><li>Then move the ceiling again; past the credit it asks for your yes.</li></ol></span></div>
+                        <span class="mp-btn btn-off"><span class="ms">block</span>Confirm $220</span>
+                        <span class="mp-foot mp-ink2 tc" style="margin-top:-4px">The app holds no Console key, so it cannot raise the limit itself.</span>
+                      </div>
+                    </div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>From $10 to the hard limit.</b> The stepper stops at the Console's limit for that workspace, which the owner types into Spend after changing it in the Console; the app holds no Console admin key.</p>
+            <p><b>Past the credit needs a yes.</b> Prod $180 with dev $40 passes the plan's $200 credit, so the crimson panel says the extra needs a card, and Confirm stays off until the switch is on; the server checks the yes too (MA-116).</p>
+            <p><b>Consequences before Confirm,</b> from the settings and the meter: where the bot stands at $180, where the steps now start, each member's share and the daily guard.</p>
+            <p><b>Above the hard limit is refused,</b> with the reason and the three steps round it; nothing changes. Confirm opens the second check (A5, MA-76); the change takes effect at the next model call, with an audit row and a message in the chat.</p>
+            <p><b>Motion.</b> The sheet slides up with its content and the figure rolls to its value; the yes switch glides when tapped.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a8">
+        <div class="bd-h"><span class="bd-id">A8</span><span class="bd-name">Caps and alerts</span><span class="bd-keys">MA-137</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Caps and alerts · {{ t.label }}">
+              <div class="bd-theme">iPhone · Caps and alerts · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Caps and alerts</span><span class="gtext lg"><span class="gz">Change</span></span></div>
+                <div class="scroll"><div class="pg" style="padding-top:8px">
+                  <div class="mp-card fx col gap8">
+                    <span class="mp-over mp-ink2">AWS and others · October</span>
+                    <span class="fx ac gap8"><span class="mp-num-l">£3</span><span class="mp-sub mp-ink2">of £50 · 6%</span></span>
+                    <div class="meter" style="margin-top:4px"><i data-mo="barx" style="width:6%"></i><b style="left:50%"></b><b style="left:80%"></b></div>
+                    <div class="mlab"><span style="left:50%">50%</span><span style="left:80%">80%</span></div>
+                    <span class="mp-foot mp-ink2">Forecast £3.20. Read daily at 06:00; lags up to a day.</span>
+                  </div>
+                  <div class="mp-section mp-over mp-ink2">Steps, and what each does</div>
+                  <div class="mp-group" style="margin-top:-8px"><sc-for list="{{ aws }}" as="s" hint-placeholder-count="4"><div class="mp-row" style="align-items:flex-start"><span class="mp-sub mp-w6 awsp">{{ s.p }}</span><span class="mp-foot grow">{{ s.d }}</span><span class="mp-foot mp-ink2">{{ s.at }}</span><sc-if value="{{ s.lock }}" hint-placeholder-val="{{ false }}"><span class="ms mp-ink2" style="font-size:18px">lock</span></sc-if></div></sc-for></div>
+                  <div class="mp-group">
+                    <div class="mp-row" style="align-items:flex-start"><span class="tile"><span class="ms">flag</span></span><span class="fx col grow"><span class="mp-hl">Flags now: none set</span><span class="mp-foot mp-ink2">Each action is a flag the jobs read, never a change to AWS.</span></span></div>
+                    <div class="mp-row" style="align-items:flex-start"><span class="tile"><span class="ms">shield</span></span><span class="fx col grow"><span class="mp-hl">Backstop: AWS Budgets, £75</span><span class="mp-foot mp-ink2">Made by Terraform, not from here: changing it is a pull request.</span></span><span class="ms mp-ink2" style="font-size:18px">lock</span></div>
+                  </div>
+                  <p class="mp-foot mp-ink2 m0 px4">Change asks for the second check.</p>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                <div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>AWS has no true cap, so the app caps by acting.</b> Each step sets a flag the jobs read, as a pause does; Terraform stays the only thing that changes infrastructure.</p>
+            <p><b>The steps in words:</b> at 50% Arun is told, and again when the month's forecast passes the cap; at 80% dev's schedules pause; at 100% dev pauses and so do prod's back-fills, retraining and challengers.</p>
+            <p><b>Never is locked.</b> The brief, alerts and the chat never stop at any step, so that row has no control.</p>
+            <p><b>The £75 backstop is shown, not editable:</b> it is an AWS Budgets budget made by Terraform, and raising it is a pull request. Changing the cap or its steps asks for the second check and writes an audit row (MA-137).</p>
+            <p><b>Motion.</b> The card rises, £3 rolls up and the meter grows from the left; the steps cascade in after it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a9">
+        <div class="bd-h"><span class="bd-id">A9</span><span class="bd-name">Alert routing</span><span class="bd-keys">MA-137 · MA-170</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Alert routing · {{ t.label }}">
+              <div class="bd-theme">iPhone · Alert routing · {{ t.label }}</div>
+              <div class="phones">
+                <div class="ph"><span class="stc dv-cap">1 · Each alert, to each place</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span></div>
+                    <div class="largetitle">Alert routing</div>
+                    <div class="scroll"><div class="pg">
+                      <p class="mp-foot mp-ink2 m0 px4">In the app means the iOS app and the web app's Alerts page. A critical push is time-sensitive, with sound.</p>
+                      <div class="mp-group">
+                        <div class="mxr hd"><span class="mxh" style="justify-content:flex-start;padding-left:14px">Alert</span><span class="mxh">In the app</span><span class="mxh">Push</span><span class="mxh">Email</span></div>
+                        <sc-for list="{{ mx }}" as="r" hint-placeholder-count="7"><div class="mxr"><span class="mxl"><span class="mp-foot mp-w6">{{ r.t }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></span><span class="mxc {{ r.a.cls }}"><span class="ms">{{ r.a.icon }}</span><span>{{ r.a.t }}</span></span><span class="mxc {{ r.p.cls }}"><span class="ms">{{ r.p.icon }}</span><span>{{ r.p.t }}</span></span><span class="mxc {{ r.e.cls }}"><span class="ms">{{ r.e.icon }}</span><span>{{ r.e.t }}</span></span></div></sc-for>
+                      </div>
+                      <div class="fx ac gap12"><span class="cbtn cbtn-primary">Save 1 change</span><span class="mp-foot mp-ink2 grow">Email for Claude spend: All to Critical. Asks for the second check.</span></div>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">2 · Quiet hours, cooldowns, the digest</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Alert routing</span><span class="sp44"></span></div>
+                    <div class="scroll"><div class="pg" style="padding-top:8px">
+                      <div class="mp-section mp-over mp-ink2">Quiet hours</div>
+                      <div class="mp-group" style="margin-top:-8px">
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-sub">Push</span><span class="mp-foot mp-ink2">Delivered quietly, no sound</span></span><span class="mp-sub mp-ink2">22:00 to 07:00</span><span class="ms chev">unfold_more</span></div>
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-sub">Email</span><span class="mp-foot mp-ink2">Held, then sent at 07:00</span></span><span class="mp-sub mp-ink2">22:00 to 07:00</span><span class="ms chev">unfold_more</span></div>
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-sub">A critical alert breaks through</span><span class="mp-foot mp-ink2">Time-sensitive push, and email at once</span></span><span class="mp-switch on"><span class="mp-switch-k"></span></span></div>
+                      </div>
+                      <div class="mp-section mp-over mp-ink2">Cooldowns</div>
+                      <div class="mp-group" style="margin-top:-8px">
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-sub">The same alert</span><span class="mp-foot mp-ink2">Sent again at most once in</span></span><span class="mp-sub mp-ink2">6 hours</span><span class="ms chev">unfold_more</span></div>
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-sub">Failed work</span><span class="mp-foot mp-ink2">Once per queue until it is replayed</span></span><span class="mp-sub mp-ink2">Fixed</span><span class="ms mp-ink2" style="font-size:18px">lock</span></div>
+                      </div>
+                      <div class="mp-section mp-over mp-ink2">Daily digest</div>
+                      <div class="mp-group" style="margin-top:-8px">
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-sub">Non-urgent alerts wait for it</span><span class="mp-foot mp-ink2">Instead of arriving one by one</span></span><span class="mp-switch on"><span class="mp-switch-k"></span></span></div>
+                        <div class="mp-row"><span class="fx col grow"><span class="mp-sub">Sent at</span><span class="mp-foot mp-ink2">In your chat, with one quiet push</span></span><span class="mp-sub mp-ink2">19:00</span><span class="ms chev">unfold_more</span></div>
+                      </div>
+                      <p class="mp-foot mp-ink2 m0 px4">Email goes to ar•••@gmail.com through SNS, confirmed. Saving asks for the second check.</p>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Telegram's column becomes Push.</b> A critical alert is a time-sensitive push with sound and may break quiet hours; the rest arrive passive, as each device's notification settings allow (MA-170).</p>
+            <p><b>In the app is fixed:</b> it covers the iOS app's alerts inbox and the web app's Alerts page, and both keep every system alert. Holding alerts stay each member's own, and email carries system alerts only, never a holding's value.</p>
+            <p><b>Each cell is a word and an icon,</b> never a coloured dot. A changed cell is tinted until it is saved, and Save names the change; saving asks for the second check and writes an audit row (MA-137).</p>
+            <p><b>Quiet hours, cooldowns and the digest</b> sit under the matrix: the same alert at most once in six hours, failed work once per queue until replayed, and non-urgent alerts held for the 19:00 digest in the chat.</p>
+            <p><b>Motion.</b> The matrix rises as one card; the settings groups cascade in and their switches glide when tapped.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a10">
+        <div class="bd-h"><span class="bd-id">A10</span><span class="bd-name">Failed work and Replay</span><span class="bd-keys">MA-145</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Failed work and Replay · {{ t.label }}">
+              <div class="bd-theme">iPhone · Failed work and Replay · {{ t.label }}</div>
+              <div class="phones">
+                <div class="ph"><span class="stc dv-cap">1 · Dead-lettered</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span></div>
+                    <div class="largetitle">Failed work</div>
+                    <div class="scroll"><div class="pg">
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-alertchip"><span class="ms ms-s">error</span>Needs you</span><span class="mp-foot mp-ink2">Today 07:52</span></span><span class="mp-hl" style="margin-top:4px">The 07:00 ingest for Silver failed 5 times: Twelve Data timed out</span></div>
+                        <div class="ccard-b">
+                          <div class="kv"><span>Queue</span><span class="mono">mypaisa-prod-work</span></div>
+                          <div class="kv"><span>Job</span><span>Ingest, Silver ETC</span></div>
+                          <div class="kv"><span>Tried</span><span>5 times, 07:00 to 07:52</span></div>
+                          <div class="kv"><span>Reason</span><span>Twelve Data timed out</span></div>
+                          <div class="kv"><span>The source</span><span>Answering again since 09:10</span></div>
+                          <span class="mp-foot mp-ink2">Until it runs, Silver ETC shows Wednesday's close, marked stale.</span>
+                        </div>
+                        <div class="ccard-acts"><span class="cbtn cbtn-primary"><span class="ms">replay</span>Replay 1 job</span></div>
+                        <div class="ccard-b" style="padding-top:0"><span class="mp-foot mp-ink2">Moves it back to its queue. Handlers are idempotent, so nothing runs twice. Asks for the second check.</span></div>
+                      </div>
+                      <p class="mp-foot mp-ink2 m0 px4">Sent at 07:52 in the app and by push, quietly. Email is off for failed work.</p>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">2 · Replayed</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span></div>
+                    <div class="largetitle">Failed work</div>
+                    <div class="scroll"><div class="pg">
+                      <div class="ccard">
+                        <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms ms-s">check_circle</span>Replayed</span><span class="mp-foot mp-ink2">Today 09:31</span></span><span class="mp-hl" style="margin-top:4px">The 07:00 ingest for Silver ran on replay</span></div>
+                        <div class="ccard-b">
+                          <div class="panel panel-neu"><span class="ms mp-ink2">history</span><span class="mp-foot">Replayed 1 job at 09:30, by you, with Face ID. It ran at 09:31: Silver ETC is priced at Thursday's close.</span></div>
+                          <div class="kv"><span>Queue</span><span class="mono">mypaisa-prod-work</span></div>
+                          <div class="kv"><span>Dead-letter queue</span><span>Empty</span></div>
+                          <div class="kv"><span>Tried</span><span>5 times, then replayed once</span></div>
+                        </div>
+                      </div>
+                      <div class="mp-group"><div class="mp-row"><span class="tile"><span class="ms">history</span></span><span class="fx col grow"><span class="mp-hl">In the audit log</span><span class="mp-foot mp-ink2">09:30 · Arun · replayed 1 job</span></span><span class="ms chev">chevron_right</span></div></div>
+                      <p class="mp-foot mp-ink2 m0 px4">The badge on the Admin center has cleared, and a message in your chat says the same.</p>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+                <div class="ph"><span class="stc dv-cap">3 · Replayed, and failed again</span>
+                  <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                    <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                    <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span></div>
+                    <div class="largetitle">Failed work</div>
+                    <div class="scroll"><div class="pg">
+                      <div class="ccard" data-mo="attn">
+                        <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-alertchip"><span class="ms ms-s">error</span>Failed again</span><span class="mp-foot mp-ink2">Today 09:39</span></span><span class="mp-hl" style="margin-top:4px">Silver failed again after your replay: Twelve Data timed out</span></div>
+                        <div class="ccard-b">
+                          <div class="panel panel-neu"><span class="ms mp-ink2">history</span><span class="mp-foot">Replayed 1 job at 09:30, by you, with Face ID. It went back to its queue and failed 5 more times, 09:31 to 09:39.</span></div>
+                          <div class="kv"><span>Dead-letter queue</span><span>1 job, since 09:39</span></div>
+                          <div class="kv"><span>Reason</span><span>Twelve Data timed out again</span></div>
+                          <span class="mp-foot mp-ink2">Silver ETC keeps Wednesday's close, marked stale. Nothing replays on its own, so a replay can never loop.</span>
+                        </div>
+                        <div class="ccard-acts"><span class="cbtn"><span class="ms">replay</span>Replay 1 job</span></div>
+                        <div class="ccard-b" style="padding-top:0"><span class="mp-foot mp-ink2">Replay once Twelve Data answers; until then it would fail the same way.</span></div>
+                      </div>
+                      <p class="mp-foot mp-ink2 m0 px4">The alarm fired again at 09:39: in the app and by push, quietly.</p>
+                    </div></div>
+                    <div class="edge-bot"></div>
+                    <div class="tabdock" style="justify-content:space-between"><div class="tabs lg tabmini"><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                    <div class="homebar"></div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>What is stuck, and what it holds up.</b> The queue, the job, its tries, the reason, and that the source answers again, which is when to replay. Until it runs, Silver shows Wednesday's close, marked stale.</p>
+            <p><b>Replay is coral:</b> it moves the job back and stops nothing. Handlers are idempotent, and it asks for the second check like every action here (ARCHITECTURE §21.3).</p>
+            <p><b>The result, not just the act.</b> Replayed says the job ran and what it produced, with the audit row; the Admin center's badge clears and a message in the chat says the same.</p>
+            <p><b>Replayed and failed again</b> is back in the dead-letter queue and the alarm fires again. Nothing replays on its own, so a replay can never loop; Replay turns plain until the source answers (MA-145).</p>
+            <p><b>Motion.</b> The alert card rises and its chip pops; failed again, the card pulses twice to draw the eye, then stays still.</p>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          const C = {
+            fix: { t: 'Always', icon: 'lock', cls: 'fix' },
+            all: { t: 'All', icon: 'check', cls: '' },
+            crit: { t: 'Critical', icon: 'priority_high', cls: '' },
+            chg: { t: 'Critical', icon: 'priority_high', cls: 'chg' },
+            off: { t: 'Off', icon: 'remove', cls: 'off' },
+            own: { t: 'Own', icon: 'person', cls: 'fix' }
+          };
+          return {
+            themes: [{ label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' }],
+            ladder: [
+              { cls: 'first now', p: 'Under 70%', t: 'Normal', d: 'Sonnet for chat, Opus for the review.', at: 'Now' },
+              { cls: '', p: '70%', t: 'A heads-up', d: 'One message to you. Nothing changes.', at: '$112' },
+              { cls: '', p: '85%', t: 'Savers', d: 'No debate; three Why? searches a day.', at: '$136' },
+              { cls: '', p: '95%', t: 'Essentials only', d: 'Chat on Haiku; the rest as templates.', at: '$152' },
+              { cls: '', p: '100%', t: 'Templates only', d: 'Claude stops until Tue 3 Nov.', at: '$160' }
+            ],
+            byMember: [
+              { n: 'Arun', s: 'Share 60%: $96', v: '$9.40', w: '9.8%', bar: true },
+              { n: 'Asha', s: 'Share 60%: $96', v: '$4.10', w: '4.3%', bar: true },
+              { n: 'Household jobs', s: 'Scoring, reviews, agents; no share', v: '$4.50', w: '0%', bar: false }
+            ],
+            guards: [
+              { icon: 'person', k: 'A member', v: '60% of the ceiling, $96 each', d: 'Past it, their chat runs at the 95% step.' },
+              { icon: 'today', k: 'A day', v: '3 × the daily average, about $16', d: 'Today $0.70. Past it, the 95% step.' },
+              { icon: 'repeat', k: 'A run', v: '8 model calls', d: 'A loop that reaches it stops and says so.' }
+            ],
+            aws: [
+              { p: '50%', at: '£25', d: "You are told; again when the month's forecast passes the cap.", lock: false },
+              { p: '80%', at: '£40', d: "Dev's schedules pause.", lock: false },
+              { p: '100%', at: '£50', d: "Dev pauses; so do prod's back-fills, retraining and challengers.", lock: false },
+              { p: 'Never', at: '', d: 'The brief, alerts and the chat never stop, at any step.', lock: true }
+            ],
+            mx: [
+              { t: 'Claude spend', s: 'Critical at 100%', a: C.fix, p: C.all, e: C.chg },
+              { t: 'AWS spend and forecast', s: 'Critical at 100%', a: C.fix, p: C.all, e: C.all },
+              { t: 'An incident', s: 'Always critical', a: C.fix, p: C.all, e: C.crit },
+              { t: 'An approval waiting', s: 'Never critical', a: C.fix, p: C.all, e: C.crit },
+              { t: 'Failed or missed job', s: 'Never critical', a: C.fix, p: C.all, e: C.off },
+              { t: 'A data feed stale', s: 'Never critical', a: C.fix, p: C.all, e: C.off },
+              { t: 'Holding alerts', s: "Each member's own", a: C.own, p: C.own, e: C.off }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

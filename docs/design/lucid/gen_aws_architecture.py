@@ -1,4 +1,16 @@
-"""Build the MyPaisa Agent AWS architecture document (Lucid Standard Import JSON), one page per view."""
+"""Build the MyPaisa Agent AWS architecture document (Lucid Standard Import JSON), one page per view.
+
+MA-161, 25 Oct 2026: no Telegram. The member's doors are the native iOS app, MyPaisa, for iPhone, iPad and a
+foldable (the chat, the dashboard and the Admin center, with push and the live connection) and the read-only web app,
+a PWA at console(-dev).mypaisapp.com (the dashboard and the Admin center, no chat), whose site also serves the app's
+apple-app-site-association file and the /join invite page.
+Usage:
+
+    python3 gen_aws_architecture.py aws-architecture.lucid.json [08-add-holding-sequence.puml]
+
+The optional second argument writes view 8, the adding-a-holding sequence, as PlantUML for Lucid's sequence
+importer (the Standard Import format has no sequence diagrams).
+"""
 import json, sys
 
 NAVY = "#13213A"; CORAL = "#C2381F"; CRIMSON = "#B5123F"; BLUE = "#2453C9"; AMBER = "#8A5300"
@@ -76,87 +88,112 @@ B, R, T, Lf = (0.5, 1), (1, 0.5), (0.5, 0), (0, 0.5)   # bottom, right, top, lef
 pages = []
 
 # ---------------------------------------------------------------- 1 overview
+# The chat runs as a U: in along row B (HTTP API → api → updates.fifo), the agent at the turn, out along row A
+# (outbox.fifo → sender → WebSocket API), so both of the app's doors sit next to it. The sender pushes through
+# Apple (APNs) straight above it when the app has no live connection.
 p = Page("p1", "1 System overview", "MyPaisa Agent · system overview",
-         "prod in us-east-1; dev is the same shape with -dev names · design only, 24 Oct 2026 · coral = chat and data · blue = sign-in and the web app · crimson dashed = failure path")
-p.cont("home", 40, 200, 360, 1280, "Household", F_HOME, NAVY)
-p.box("h_tg", 70, 230, 300, 120, "<b>Telegram app</b><br>chat, buttons, files<br>second check: Face ID or PIN")
-p.box("h_mem", 70, 410, 300, 120, "<b>Members</b><br>owner (admin) · member · viewer<br>joined by a one-time invite")
-p.box("h_mini", 70, 640, 300, 110, "<b>Mini App</b> in Telegram<br>console.mypaisapp.com · read-only")
-p.box("h_web", 70, 800, 300, 130, "<b>Laptop browser</b><br>console.mypaisapp.com<br>signs in through Cognito:<br>Telegram · Google · passkey")
-p.box("h_mail", 70, 1230, 300, 120, "<b>Admin's email</b><br>system alerts through SNS<br>1,000 a month free")
-p.box("tgapi", 1000, 160, 420, 100, "<b>Telegram Bot API</b><br>webhook in · messages out", F_OUT, AMBER)
-p.box("o_claude", 1515, 160, 340, 100, "<b>Anthropic API</b> · Haiku · Sonnet<br>$200 credit: $160 prod · $40 dev", F_OUT, AMBER)
-p.group("cloud", "cloud", 440, 320, 1760, 1160, "AWS account 545595341442 · Terraform only · prod deployed by CI")
-p.group("region", "region", 480, 380, 1680, 1060, "us-east-1 · mypaisa-prod-* (dev: mypaisa-dev-*)")
+         "prod in us-east-1; dev is the same shape with -dev names · Terraform only, prod deployed by CI · design only, 25 Oct 2026 · "
+         "MA-161: the chat is in the iOS app, the web app is read-only · coral = chat and data · blue = sign-in and the web app · amber = outside services · crimson dashed = failure path")
+c = [540, 750, 960, 1170, 1380, 1590, 1800, 2010]
 YA, YB, YC, YD = 460, 720, 980, 1240
-p.icon("r53", "r53", 540, YA, "Route 53<br>mypaisapp.com zone")
-p.icon("acm", "acm", 740, YA, "ACM<br>*.mypaisapp.com")
-p.icon("apigw", "apigw", 1100, YA, "API Gateway<br>api.mypaisapp.com")
-p.icon("hook", "lambda", 1280, YA, "webhook λ<br>secret check")
-p.icon("qin", "sqs", 1460, YA, "SQS updates.fifo<br>lane per member")
-p.icon("agent", "lambda", 1640, YA, "agent λ<br>Claude tool loop")
-p.icon("qout", "sqs", 1820, YA, "SQS outbox.fifo<br>lane per chat")
-p.icon("send", "lambda", 2000, YA, "sender λ<br>Telegram limits")
-p.icon("cf", "cf", 560, YB, "CloudFront<br>console.mypaisapp.com")
-p.icon("s3web", "s3", 780, YB, "S3<br>static web app")
-p.icon("cog", "cognito", 1000, YB, "Cognito (Essentials)<br>auth.mypaisapp.com")
-p.icon("trig", "lambda", 1200, YB, "Cognito triggers λ<br>Telegram HMAC")
-p.icon("api", "lambda", 1420, YB, "api λ · /v1<br>read-only JSON<br>admin actions")
-p.icon("ecr", "ecr", 1640, YB, "ECR<br>one arm64 image")
-p.icon("iam", "iam", 1840, YB, "IAM<br>role per function")
-p.icon("sched", "sched", 560, YC, "EventBridge Scheduler<br>Europe/London")
-p.icon("qwork", "sqs", 780, YC, "SQS work<br>background jobs")
-p.icon("worker", "lambda", 1000, YC, "worker λ<br>ingest · news · docs<br>engine · briefs")
-p.icon("sfn", "sfn", 1220, YC, "Step Functions<br>daily run (phase 12)")
-p.icon("bus", "bus", 1440, YC, "EventBridge bus<br>agent team (phase 12)")
-p.icon("lake", "s3", 1660, YC, "S3 lake<br>Parquet · DuckDB")
-p.icon("ddb", "ddb", 1880, YC, "DynamoDB<br>registry · audit · state")
-p.icon("sns", "sns", 560, YD, "SNS admin-alerts<br>email · alert router")
-p.icon("cw", "cw", 780, YD, "CloudWatch + X-Ray<br>logs · alarms")
-p.icon("dlq", "queue", 1000, YD, "dead-letter queues<br>kept 14 days")
-p.icon("ssm", "ssm", 1440, YD, "SSM Parameter Store<br>keys, set by hand")
-p.icon("budg", "budgets", 1660, YD, "AWS Budgets<br>£75 backstop")
-p.icon("ce", "ce", 1880, YD, "Cost Explorer<br>daily AWS meter")
+APP_Y, APP_H = 230, 600
+WEB_Y, WEB_H = 880, 220
+p.cont("home", 40, 200, 360, 1280, "Household", F_HOME, NAVY)
+p.box("h_app", 70, APP_Y, 300, APP_H,
+      "<b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>"
+      "iOS 26 · MyPaisa Dev → dev<br>push · live connection<br>files: presigned upload<br><br>Sign in with Apple or Google<br>tokens in the Keychain")
+p.box("h_web", 70, WEB_Y, 300, WEB_H,
+      "<b>Web app</b> (PWA, read-only)<br>the dashboard, the Admin center<br>no chat<br>console.mypaisapp.com<br>Apple · Google · passkey<br>HttpOnly session cookie")
+p.box("h_mem", 70, 1360, 300, 100, "<b>Members</b><br>owner, member, viewer<br>joined by an invite link")
+p.box("h_mail", 70, 1230, 300, 110, "<b>Admin's email</b><br>system alerts through SNS<br>1,000 a month free")
+p.box("o_apple", 615, 150, 360, 110, "<b>Apple</b><br>Sign in with Apple · APNs push<br>TestFlight", F_OUT, AMBER)
+p.box("o_claude", 1045, 150, 340, 110, "<b>Anthropic API</b> · Haiku · Sonnet<br>$200 credit: $160 prod · $40 dev", F_OUT, AMBER)
+p.group("cloud", "cloud", 440, 320, 1760, 1160, "AWS account 545595341442")
+p.group("region", "region", 480, 380, 1680, 1060, "us-east-1")
+# row A: the way out
+p.icon("ws", "apigw", c[0], YA, "API Gateway<br>WebSocket + authorizer<br>live.mypaisapp.com")
+p.icon("send", "lambda", c[1], YA, "sender λ<br>live, else APNs push")
+p.icon("qout", "sqs", c[2], YA, "SQS outbox.fifo<br>lane per member")
+p.icon("r53", "r53", c[4], YA, "Route 53<br>mypaisapp.com zone")
+p.icon("acm", "acm", c[5], YA, "ACM<br>*.mypaisapp.com")
+p.icon("iam", "iam", c[6], YA, "IAM<br>role per function")
+p.icon("ssm", "ssm", c[7], YA, "SSM Parameter Store<br>keys, set by hand")
+# the turn
+p.icon("agent", "lambda", c[3], 590, "agent λ<br>Claude tool loop")
+# row B: the way in
+p.icon("apigw", "apigw", c[0], YB, "API Gateway<br>HTTP API + authorizer<br>api.mypaisapp.com")
+p.icon("api", "lambda", c[1], YB, "api λ · /v1<br>chat · data · admin<br>/auth/* for sign-in")
+p.icon("qin", "sqs", c[2], YB, "SQS updates.fifo<br>lane per member")
+p.icon("ddb", "ddb", c[4], YB, "DynamoDB<br>registry · audit<br>live connections")
+p.icon("lake", "s3", c[5], YB, "S3 lake<br>Parquet · DuckDB")
+p.icon("ecr", "ecr", c[6], YB, "ECR<br>one arm64 image")
+# row C: the web app's site, sign-in, files, phase 12
+p.icon("cf", "cf", c[0], YC, "CloudFront<br>console.mypaisapp.com")
+p.icon("s3web", "s3", c[1], YC, "S3 console site<br>PWA · AASA · /join")
+p.icon("cog", "cognito", c[2], YC, "Cognito (Essentials)<br>auth.mypaisapp.com")
+p.icon("trig", "lambda", c[3], YC, "Cognito triggers λ<br>Apple · Google tokens")
+p.icon("docs", "s3", c[4], YC, "S3 documents<br>presigned uploads<br>kept for good")
+p.icon("sfn", "sfn", c[5], YC, "Step Functions<br>daily run (phase 12)")
+p.icon("bus", "bus", c[6], YC, "EventBridge bus<br>agent team (phase 12)")
+# row D: background work, failure, cost
+p.icon("sns", "sns", c[0], YD, "SNS admin-alerts<br>email · alert router")
+p.icon("cw", "cw", c[1], YD, "CloudWatch + X-Ray<br>logs · alarms")
+p.icon("dlq", "queue", c[2], YD, "dead-letter queues<br>kept 14 days")
+p.icon("sched", "sched", c[3], YD, "EventBridge Scheduler<br>Europe/London")
+p.icon("qwork", "sqs", c[4], YD, "SQS work<br>background jobs")
+p.icon("worker", "lambda", c[5], YD, "worker λ<br>ingest · news · docs<br>engine · briefs")
+p.icon("budg", "budgets", c[6], YD, "AWS Budgets<br>£75 backstop")
+p.icon("ce", "ce", c[7], YD, "Cost Explorer<br>daily AWS meter")
 p.cont("out", 2240, 380, 360, 1000, "Outside AWS", F_OUT, AMBER)
 p.box("o_data", 2270, 440, 300, 170, "<b>Free data first</b><br>yfinance · Twelve Data free<br>FRED · BoE · ECB · EIA<br>GDELT · RSS<br>EODHD only on approval")
-p.box("o_google", 2270, 680, 300, 100, "<b>Google</b><br>OAuth client per environment")
-p.box("o_gh", 2270, 850, 300, 150, "<b>GitHub Actions</b><br>OIDC, no AWS keys<br>gates · plan · build once<br>dev, then prod on approval")
-p.box("o_jira", 2270, 1070, 300, 100, "<b>Jira MA</b><br>every change traced")
-p.line("h_tg", "tgapi", "chat", color=AMBER, both=True, pa=R, pb=Lf, lpos=0.5)
-p.line("tgapi", "apigw", "POST /telegram/webhook", pa=((1145 - 1000) / 420, 1), pb=T, lpos=0.15)
-p.line("apigw", "hook", "", pa=R, pb=Lf)
-p.line("hook", "qin", "", pa=R, pb=Lf)
-p.line("qin", "agent", "", pa=R, pb=Lf)
-p.line("agent", "qout", "", pa=R, pb=Lf)
-p.line("qout", "send", "", pa=R, pb=Lf)
-p.line("send", "tgapi", "sendMessage", pa=T, pb=(0.85, 0), kind="elbow", lpos=0.5)
-p.line("agent", "o_claude", "messages", color=AMBER, pa=T, pb=((1685 - 1515) / 340, 1), lpos=0.5)
-p.line("h_mini", "cf", "", color=BLUE, pa=R, pb=(0, 0.3))
-p.line("h_web", "cf", "", color=BLUE, pa=R, pb=(0, 0.8))
-p.line("cf", "s3web", "", color=BLUE, pa=R, pb=Lf)
+p.box("o_google", 2270, 670, 300, 110, "<b>Google</b><br>Sign in with Google<br>iOS and web clients")
+p.box("o_gh", 2270, 840, 300, 200, "<b>GitHub Actions</b><br>OIDC, no AWS keys<br>gates · plan · build once<br>dev, then prod on approval<br>macOS runner: the app<br>→ TestFlight")
+p.box("o_jira", 2270, 1100, 300, 100, "<b>Jira MA</b><br>every change traced")
+
+
+def app_at(y):  # a point on the app box's right edge at canvas height y
+    return (1, (y - APP_Y) / APP_H)
+
+
+p.line("h_app", "apigw", "messages · taps", pa=app_at(YB + 45), pb=Lf)
+p.line("ws", "h_app", "live replies", pa=Lf, pb=app_at(YA + 45))
+p.line("h_web", "cf", "pages", color=BLUE, pa=(1, (YC + 45 - WEB_Y) / WEB_H), pb=Lf)
+p.line("h_web", "apigw", "", color=BLUE, pa=(1, 10 / WEB_H), pb=(0, 0.9))  # /v1 with the cookie; a label lands on the api label
+p.line("o_apple", "h_app", "sign in · push", color=AMBER, both=True, pa=(0, 0.9), pb=app_at(249))
+p.line("apigw", "api", "", pa=R, pb=Lf)
+p.line("api", "qin", "", pa=R, pb=Lf)
+p.line("qin", "agent", "", pa=R, pb=(0, 0.7))
+p.line("agent", "qout", "", pa=(0, 0.3), pb=R)
+p.line("qout", "send", "", pa=Lf, pb=R)
+p.line("send", "ws", "", pa=Lf, pb=R)
+p.line("send", "o_apple", "APNs", pa=T, pb=B, lpos=0.3)
+p.line("agent", "o_claude", "messages", color=AMBER, pa=T, pb=B, lpos=0.5)
 p.line("cog", "trig", "", color=BLUE, pa=R, pb=Lf)
-p.line("apigw", "api", "/v1 · cookie", color=BLUE, pa=(1, 0.85), pb=T, lpos=0.75)
+p.line("cf", "s3web", "", color=BLUE, pa=R, pb=Lf)
 p.line("sched", "qwork", "", pa=R, pb=Lf)
 p.line("qwork", "worker", "", pa=R, pb=Lf)
 p.line("dlq", "cw", "", color=CRIMSON, dashed=True, pa=Lf, pb=R)
 p.line("cw", "sns", "", color=CRIMSON, dashed=True, pa=Lf, pb=R)
-p.line("sns", "h_mail", "", color=CRIMSON, dashed=True, pa=Lf, pb=R)
+p.line("sns", "h_mail", "", color=CRIMSON, dashed=True, pa=Lf, pb=(1, (YD + 45 - 1230) / 110))
 pages.append(p)
 
 
 # ---------------------------------------------------------------- 2 environments and delivery
 p = Page("p2", "2 Environments and delivery", "Environments, domains and delivery",
-         "one AWS account, every component twice · Terraform only, applied by CI · prod after Arun's approval · MA-26, MA-107, MA-108, MA-106")
+         "one AWS account, every component twice · Terraform only, applied by CI · prod after Arun's approval · "
+         "the iOS app through TestFlight · MA-26, MA-106, MA-107, MA-108, MA-161, MA-166, MA-167")
 p.cont("dev_laptop", 40, 170, 360, 520, "Developer laptop", F_HOME, NAVY)
-p.box("lap1", 70, 230, 300, 120, "<b>Local run against dev</b><br>dev bot by long polling<br>console on localhost → api-dev")
+p.box("lap1", 70, 230, 300, 130, "<b>Local run against dev</b><br>MyPaisa Dev from Xcode<br>web app on localhost<br>both point at dev")
 p.box("lap2", 70, 400, 300, 110, "<b>Developer role</b><br>works in dev · explicit deny<br>on anything tagged env=prod")
 p.box("lap3", 70, 560, 300, 100, "<b>AWS MCP</b><br>reads only · never changes")
-p.cont("gh", 40, 760, 360, 880, "GitHub · gilipersonal/mypaisa-agent", F_OUT, AMBER)
-p.box("g1", 70, 820, 300, 230, "<b>Every PR: gates</b><br>ruff · pyright · pytest + moto<br>terraform fmt/validate · tflint<br>security scan · gitleaks · pip-audit<br>jira-key")
-p.box("g2", 70, 1100, 300, 90, "<b>Plan for dev and prod</b><br>posted on the PR (ci-plan)")
-p.box("g3", 70, 1295, 300, 90, "<b>Merge to main</b><br>build once → ECR by digest")
-p.box("g4", 70, 1420, 300, 100, "<b>prod environment</b><br>Arun approves · main only")
-p.box("g5", 70, 1550, 300, 80, "<b>Nightly drift check</b> (MA-108)")
+p.cont("gh", 40, 760, 360, 1180, "GitHub · gilipersonal/mypaisa-agent", F_OUT, AMBER)
+p.box("g1", 70, 820, 300, 215, "<b>Every PR: gates</b><br>ruff · pyright · pytest + moto<br>terraform fmt/validate · tflint<br>security scan · gitleaks<br>pip-audit · jira-key · plan-sync")
+p.box("g1i", 70, 1050, 300, 150, "<b>PRs touching ios/</b><br>macOS runner: build · tests<br>snapshots · accessibility audit<br>swift-format")
+p.box("g2", 70, 1230, 300, 100, "<b>Plan for dev and prod</b><br>posted on the PR (ci-plan)")
+p.box("g3", 70, 1360, 300, 130, "<b>Merge to main</b><br>build once → ECR by digest<br>archive the app once per build")
+p.box("g4", 70, 1520, 300, 130, "<b>prod environment</b><br>Arun approves · main only<br>App Store Connect key here only")
+p.box("g6", 70, 1680, 300, 130, "<b>TestFlight lanes</b><br>MyPaisa Dev after dev's smoke tests<br>MyPaisa after the approval")
+p.box("g5", 70, 1840, 300, 80, "<b>Nightly drift check</b> (MA-108)")
 p.group("acct", "account", 460, 170, 1880, 1350, "AWS account 545595341442 · us-east-1")
 p.cont("shared", 500, 270, 1800, 240, "Shared in the account", F_AWS, GREY)
 p.icon("s_r53", "r53", 560, 320, "Route 53 zone<br>(wealth-tracker dns/ root)")
@@ -170,102 +207,131 @@ for env, x0, fill, label in (("dev", 500, "#F2F5FB", "dev · mypaisa-dev-* · *-
                              ("prod", 1420, "#FBF4F1", "prod · mypaisa-prod-* · *.mypaisapp.com · household data")):
     p.cont(f"{env}c", x0, 580, 880, 850, label, fill, NAVY)
     sfx = "-dev" if env == "dev" else ""
-    cx = [x0 + 60, x0 + 280, x0 + 500, x0 + 720]
+    cx = [x0 + 40, x0 + 210, x0 + 380, x0 + 550, x0 + 720]
     p.icon(f"{env}_cf", "cf", cx[0], 650, f"CloudFront + S3<br>console{sfx}")
-    p.icon(f"{env}_api", "apigw", cx[1], 650, f"API Gateway<br>api{sfx}")
-    p.icon(f"{env}_cog", "cognito", cx[2], 650, f"Cognito<br>auth{sfx}")
-    p.icon(f"{env}_ssm", "ssm", cx[3], 650, f"SSM<br>/mypaisa-agent/{env}/")
-    p.icon(f"{env}_lam", "lambda", cx[0], 860, "Lambdas<br>live alias · rollback")
-    p.icon(f"{env}_sqs", "sqs", cx[1], 860, "SQS<br>updates · outbox · work")
-    p.icon(f"{env}_ddb", "ddb", cx[2], 860, "DynamoDB<br>" + ("seeded" if env == "dev" else "prevent_destroy"))
-    p.icon(f"{env}_s3", "s3", cx[3], 860, "S3 lake + docs<br>" + ("synthetic" if env == "dev" else "versioned"))
-    p.box(f"{env}_keys", x0 + 60, 1110, 760, 110,
-          f"<b>Own keys</b>: Telegram bot · Claude workspace ({'$40' if env == 'dev' else '$160'} limit) · Google OAuth client · Cognito pool · Twelve Data key<br>values put in SSM by hand; Terraform ignores them")
-    p.box(f"{env}_apply", x0 + 60, 1280, 760, 120,
-          ("<b>Applied by</b> the developer (saved plan file) or CI (ci-dev-deploy)<br>smoke tests against api-dev after every deploy"
-           if env == "dev" else "<b>Applied only by CI</b> (ci-prod-deploy) after dev passes and Arun approves<br>live alias moves · failed smoke test rolls back on its own"))
-p.line("g3", "dev_apply", "deploy dev", color=CORAL, pa=R, pb=Lf, lpos=0.5)
+    p.icon(f"{env}_api", "apigw", cx[1], 650, f"API Gateway<br>HTTP · api{sfx}")
+    p.icon(f"{env}_ws", "apigw", cx[2], 650, f"API Gateway<br>WebSocket · live{sfx}")
+    p.icon(f"{env}_cog", "cognito", cx[3], 650, f"Cognito<br>auth{sfx}")
+    p.icon(f"{env}_ssm", "ssm", cx[4], 650, f"SSM<br>/mypaisa-agent/{env}/")
+    rx = [x0 + 60, x0 + 260, x0 + 460, x0 + 660]
+    p.icon(f"{env}_lam", "lambda", rx[0], 860, "Lambdas<br>live alias · rollback")
+    p.icon(f"{env}_sqs", "sqs", rx[1], 860, "SQS<br>updates · outbox<br>work · DLQs")
+    p.icon(f"{env}_ddb", "ddb", rx[2], 860, "DynamoDB<br>registry · connections<br>" + ("seeded" if env == "dev" else "prevent_destroy"))
+    p.icon(f"{env}_s3", "s3", rx[3], 860, "S3 lake + documents<br>" + ("synthetic" if env == "dev" else "versioned"))
+    p.box(f"{env}_keys", x0 + 60, 1090, 760, 140,
+          f"<b>Own keys and ids</b>: Sign in with Apple ids · Google clients (iOS, web) · APNs key · Claude workspace "
+          f"({'$40' if env == 'dev' else '$160'} limit) · Cognito pool · Twelve Data key<br>"
+          "secret values put in SSM by hand over write-only placeholders (MA-159), never in state")
+    p.box(f"{env}_apply", x0 + 60, 1260, 760, 140,
+          ("<b>Applied by</b> the developer (saved plan file) or CI (ci-dev-deploy)<br>smoke tests against api-dev after every deploy<br>then MyPaisa Dev goes to TestFlight"
+           if env == "dev" else "<b>Applied only by CI</b> (ci-prod-deploy) after dev passes and Arun approves<br>live alias moves · a failed smoke test rolls back on its own<br>then MyPaisa goes to TestFlight"))
+p.box("tf", 520, 1690, 1300, 110,
+      "<b>Apple · App Store Connect · TestFlight</b> (Developer Program, $99 a year, MA-162)<br>"
+      "internal testing for MyPaisa Dev and MyPaisa · Arun and his wife · no App Review · a build lasts 90 days, an alert at day 60",
+      F_OUT, AMBER)
+p.line("g3", "dev_apply", "", color=CORAL, pa=R, pb=Lf)  # no label: any label lands on the three borders it crosses
 p.line("g4", "prod_apply", "deploy prod after approval", color=CRIMSON, pa=R, pb=B, kind="elbow", lpos=0.35, side="bottom")
+p.line("g6", "tf", "uploads", color=AMBER, pa=R, pb=Lf, lpos=0.5)
 pages.append(p)
 
 # ---------------------------------------------------------------- 3 identity
 p = Page("p3", "3 Identity and sign-in", "Identity and sign-in",
-         "one Cognito user pool per environment · one user per member · Telegram, Google and passkeys · MA-109, MA-75, MA-76, MA-77, MA-102")
-p.cont("doors", 40, 200, 380, 1210, "Doors in", F_HOME, NAVY)
-p.box("d_mini", 70, 230, 320, 130, "<b>Mini App</b><br>Telegram signs initData<br>(HMAC with the bot token)<br>second check: Face ID or PIN")
-p.box("d_widget", 70, 400, 320, 110, "<b>Browser · Telegram Login Widget</b><br>one tap, confirmed in the app")
-p.box("d_google", 70, 560, 320, 100, "<b>Browser · Sign in with Google</b><br>linked by a code typed in the chat")
-p.box("d_passkey", 70, 720, 320, 100, "<b>Browser · passkey</b><br>WebAuthn, after the first sign-in")
-p.box("d_new", 70, 900, 320, 170, "<b>New device?</b><br>\"Was this you?\" to the member<br>and the owner<br>[Yes, it was me] [No, sign it out]")
-p.box("d_chat", 70, 1130, 320, 150, "<b>The chat itself</b><br>update.from.id → member<br>unknown id: silence<br>paused: one line, nothing else")
-p.group("cl3", "cloud", 480, 170, 1520, 1240, "AWS · prod (dev the same)")
-p.icon("i_api", "apigw", 600, 300, "API Gateway<br>/auth/telegram · /v1")
-p.icon("i_trig", "lambda", 840, 300, "auth challenge λ<br>HMAC · 5 min · no replay")
-p.box("i_idp", 1360, 230, 340, 170, "<b>Linked to one Cognito user</b><br>Telegram id<br>Google (provider, sub)<br>passkeys (WebAuthn)<br>relying party fixed per env")
-p.icon("i_cog", "cognito", 1080, 560, "Cognito user pool<br>no passwords · no sign-up")
-p.icon("i_apil", "lambda", 1360, 560, "api λ<br>sets the session cookie")
-p.box("i_cookie", 1580, 540, 360, 160, "<b>Session cookie</b> on api.mypaisapp.com<br>HttpOnly · Secure · SameSite=Strict<br>5-minute tokens behind it<br>never visible to page scripts")
-p.icon("i_ssm", "ssm", 1080, 840, "SSM<br>bot token = HMAC key")
-p.icon("i_ddb", "ddb", 1440, 840, "DynamoDB<br>Member: status, role, epoch")
-p.icon("i_authz", "lambda", 1715, 840, "authorizer λ<br>session · status · epoch<br>on every call")
-p.box("i_admin", 560, 1060, 700, 200,
-      "<b>Admin center (owner only, browser only)</b><br>fresh check within 5 minutes: passkey or Google<br>Sign out everywhere → AdminUserGlobalSignOut + epoch + 1<br>Pause → AdminDisableUser; every session ends<br>every action: audit row + Telegram to the member and the owner",
+         "one Cognito user pool per environment · one user per member · Apple, Google or a passkey, no passwords · "
+         "MA-109, MA-75, MA-76, MA-77, MA-102, MA-161, MA-168")
+p.cont("doors", 40, 180, 380, 1290, "Doors in: the iOS app and the web app", F_HOME, NAVY)
+p.box("d_sign", 60, 200, 340, 190, "<b>MyPaisa app</b> (iPhone, iPad, foldable):<br>the chat, the dashboard, the Admin center<br>Apple native · Google SDK, PKCE<br>the token carries the api's nonce")
+p.box("d_web", 60, 410, 340, 180, "<b>Web app</b> (PWA, read-only):<br>the dashboard, the Admin center<br>console.mypaisapp.com<br>Apple, Google or a passkey, same custom auth<br>an HttpOnly cookie set by the api")
+p.box("d_passkey", 60, 610, 340, 70, "<b>Passkey</b> (optional), app or web<br>added from You (MA-77)")
+p.box("d_invite", 60, 700, 340, 110, "<b>Invite link</b> (MA-73)<br>console.mypaisapp.com<br>/join/&lt;token&gt; opens the app")
+p.box("d_keychain", 60, 840, 340, 210, "<b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection")
+p.box("d_second", 60, 1080, 340, 200, "<b>Second check</b> (MA-76)<br>a challenge bound to the action<br>app: fresh Sign in with Apple<br>or a passkey (Face ID)<br>web: passkey or a fresh sign-in<br>under 5 minutes, never a<br>local-only Face ID")
+p.box("d_paused", 60, 1300, 340, 150, "<b>Refused</b><br>a paused member: one line<br>a removed member<br>linked to nobody, no valid invite")
+p.box("o_idp", 560, 180, 420, 110, "<b>Apple · Google</b><br>sign the identity token (app and web)<br>publish their keys (JWKS)", F_OUT, AMBER)
+p.group("cl3", "cloud", 480, 340, 1560, 1100, "AWS · prod (dev the same)")
+p.icon("i_api", "apigw", 580, 420, "HTTP API<br>api.mypaisapp.com")
+p.icon("i_apil", "lambda", 820, 420, "api λ<br>/auth/apple · /auth/google<br>nonce · custom auth<br>sets the web's cookie")
+p.icon("i_cog", "cognito", 1080, 420, "Cognito user pool<br>no passwords · no sign-up")
+p.icon("i_trig", "lambda", 1340, 420, "verify trigger λ<br>issuer · audience · expiry<br>issued under 5 min<br>nonce · no replay")
+p.box("i_idp", 1560, 400, 440, 200, "<b>Linked to one Cognito user</b><br>Apple (sub) · Google (sub)<br>passkeys (WebAuthn)<br>relying party: auth.mypaisapp.com<br>linked to nobody: refused,<br>unless a valid invite creates the member")
+p.icon("i_v1", "apigw", 580, 680, "HTTP API · /v1<br>(the same API)")
+p.icon("i_ws", "apigw", 580, 900, "WebSocket API<br>live.mypaisapp.com<br>$connect")
+p.icon("i_authz", "lambda", 820, 790, "authorizer λ<br>token or cookie<br>status · epoch")
+p.icon("i_ddb", "ddb", 1080, 790, "DynamoDB<br>Member: status, role, epoch<br>Device: push token")
+p.icon("i_ssm", "ssm", 1340, 790, "SSM<br>audiences: bundle id,<br>services id, Google clients")
+p.box("i_admin", 560, 1090, 660, 250,
+      "<b>Admin center (owner only)</b><br>every action behind the second check<br>Sign out a device or everywhere →<br>AdminUserGlobalSignOut + epoch + 1<br>Pause → AdminDisableUser; every session ends<br>every action: audit row + a message in the app<br>and a push to the member and the owner",
       F_FAIL, CRIMSON)
-p.icon("i_out", "sqs", 1440, 1115, "SQS outbox<br>notices to members")
-p.line("d_mini", "i_api", "initData", color=BLUE, pa=R, pb=(0, 0.35), lpos=0.5)
-p.line("d_widget", "i_api", "widget payload", color=BLUE, pa=R, pb=(0, 0.85), lpos=0.45, side="bottom")
-p.line("d_google", "i_cog", "Google via auth.mypaisapp.com", color=BLUE, pa=R, pb=(0, 0.5), lpos=0.45)
-p.line("d_passkey", "i_cog", "WebAuthn", color=BLUE, pa=R, pb=(0, 0.9), lpos=0.3)
-p.line("i_api", "i_trig", "", color=BLUE, pa=R, pb=Lf)
-p.line("i_trig", "i_cog", "tokens", color=BLUE, pa=R, pb=T, kind="elbow", lpos=0.3)
-p.line("i_cog", "i_idp", "", color=BLUE, pa=(1, 0.2), pb=(0.5, 1))
-p.line("i_cog", "i_apil", "code", color=BLUE, pa=R, pb=Lf)
-p.line("i_apil", "i_cookie", "", color=BLUE, pa=R, pb=Lf)
-p.line("i_cookie", "i_authz", "", color=BLUE, pa=((1760 - 1580) / 360, 1), pb=T)
-p.line("i_authz", "i_ddb", "", color=BLUE, pa=Lf, pb=R)
-p.line("i_admin", "i_cog", "sign out · disable", color=CRIMSON, pa=(1, 0.2), pb=(1, 0.8), kind="elbow", lpos=0.5)
-p.line("i_admin", "i_out", "", color=CRIMSON, pa=(1, 0.675), pb=Lf)
-p.line("d_new", "i_admin", "No, sign it out", color=CRIMSON, dashed=True, pa=R, pb=(0, 0.4), kind="elbow", lpos=0.6)
+p.icon("i_out", "sqs", 1440, 1150, "SQS outbox → sender<br>the app and push")
+p.line("d_sign", "o_idp", "identity token", color=AMBER, both=True, pa=(1, 0.2), pb=(0, 70 / 110), lpos=0.5)
+p.line("d_sign", "i_api", "token", color=BLUE, pa=(1, 0.8), pb=(0, 0.35), lpos=0.5)
+p.line("d_web", "i_api", "sign in", color=BLUE, pa=(1, 0.15), pb=(0, 0.75), lpos=0.5)
+p.line("i_api", "i_apil", "", color=BLUE, pa=R, pb=Lf)
+p.line("i_apil", "i_cog", "custom auth", color=BLUE, pa=R, pb=Lf)
+p.line("i_cog", "i_trig", "", color=BLUE, pa=R, pb=Lf)
+p.line("i_trig", "i_idp", "", color=BLUE, pa=R, pb=(0, 0.225))
+p.line("i_trig", "o_idp", "published keys", color=AMBER, dashed=True, pa=T, pb=R, lpos=0.55)
+p.line("d_web", "i_v1", "cookie", color=BLUE, pa=(1, 0.85), pb=(0, 0.3))
+p.line("d_keychain", "i_v1", "token", color=BLUE, pa=(1, 0.1), pb=(0, 0.7))
+p.line("d_keychain", "i_ws", "on connect", color=BLUE, pa=(1, 0.5), pb=Lf)
+p.line("i_v1", "i_authz", "", color=BLUE, pa=R, pb=(0, 0.25))
+p.line("i_ws", "i_authz", "", color=BLUE, pa=R, pb=(0, 0.75))
+p.line("i_authz", "i_ddb", "", color=BLUE, pa=R, pb=Lf)
+p.line("d_second", "i_admin", "fresh assertion", color=CRIMSON, pa=(1, 0.3), pb=(0, 0.2))
+p.line("i_admin", "i_cog", "", color=CRIMSON, pa=(1, 0.15), pb=(1, 0.8), kind="elbow")  # the box says what it does
+p.line("i_admin", "i_out", "", color=CRIMSON, pa=(1, 0.6), pb=Lf)
 pages.append(p)
 
 
 # ---------------------------------------------------------------- 4 queues
 p = Page("p4", "4 Queues and self-healing", "Queues, retries and replay",
-         "nothing is lost: every hand-off goes through SQS · idempotent handlers · a dead-letter queue behind each · MA-139, MA-140, MA-137, MA-135")
-p.box("q_tg", 40, 210, 220, 110, "<b>Telegram</b><br>a member's message", F_OUT, AMBER)
-p.group("cl4", "cloud", 320, 160, 1900, 1240, "AWS · us-east-1 · prod (dev has the same queues)")
-p.icon("q_apigw", "apigw", 380, 220, "API Gateway<br>/telegram/webhook")
-p.icon("q_hook", "lambda", 620, 220, "webhook λ<br>secret check · answers at once")
-p.icon("q_in", "sqs", 880, 220, "updates.fifo<br>group = member's chat<br>dedupe = update_id")
-p.icon("q_agent", "lambda", 1160, 220, "agent λ<br>lane per member")
-p.icon("q_out", "sqs", 1440, 220, "outbox.fifo<br>group = chat")
-p.icon("q_send", "lambda", 1700, 220, "sender λ<br>honours retry_after")
-p.box("q_tg2", 2280, 220, 230, 90, "<b>Telegram</b><br>replies in order", F_OUT, AMBER)
-p.icon("q_sched", "sched", 380, 560, "EventBridge Scheduler<br>retry policy + own DLQ")
-p.icon("q_work", "sqs", 880, 560, "work queue<br>ingest · news · docs<br>engine · briefs · scoring")
-p.icon("q_worker", "lambda", 1160, 560, "worker λ<br>capped concurrency")
-p.box("q_free", 1440, 560, 300, 120, "<b>Free data sources</b><br>yfinance · Twelve Data (8/min)<br>FRED · GDELT · RSS", F_OUT, AMBER)
-p.icon("q_idem", "ddb", 880, 820, "DynamoDB<br>idempotency records<br>(Powertools)")
-p.box("q_rules", 1440, 760, 700, 190,
-      "<b>Retry rules, all settings</b><br>updates: 3 tries within about a minute, so a lane never stays stuck<br>outbox: 5 tries, waiting as long as Telegram asks<br>work: 5 tries, backoff 30 seconds to 30 minutes<br>what can never succeed: straight to its dead-letter queue")
-p.cont("fail", 360, 1040, 1820, 320, "Failure path", F_FAIL, CRIMSON, dashed=True)
-p.icon("q_dlq", "queue", 440, 1130, "dead-letter queues<br>updates · outbox · work · scheduler<br>kept 14 days")
-p.icon("q_s3", "s3", 720, 1130, "S3 raw/dlq/<br>copy for good")
-p.icon("q_cw", "cw", 980, 1130, "CloudWatch alarm<br>depth over 0")
-p.icon("q_sns", "sns", 1240, 1130, "SNS admin-alerts<br>→ alert router")
-p.box("q_replay", 1500, 1095, 640, 160,
-      "<b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh · phase 5: [Replay] on the alert<br>phase 12: the ops warden, once the cause is healthy,<br>at most 3 times, then an incident<br>an update over an hour old asks \"still want this?\"",
+         "nothing is lost: every hand-off goes through SQS · idempotent handlers · a dead-letter queue behind each · "
+         "replies over the app's live connection, else Apple push · MA-139, MA-140, MA-137, MA-135, MA-30, MA-31, MA-170")
+p.box("q_app", 40, 360, 220, 130, "<b>MyPaisa app</b><br>a member's message<br>with its client id", F_HOME, NAVY)
+p.box("q_apns", 1595, 150, 300, 110, "<b>Apple push (APNs)</b><br>when the app has no<br>live connection", F_OUT, AMBER)
+p.box("q_app2", 2280, 150, 240, 340, "<b>MyPaisa app</b><br>replies in order<br>never twice<br>catches up<br>on opening", F_HOME, NAVY)
+p.group("cl4", "cloud", 320, 300, 1900, 1260, "AWS · us-east-1 · prod (dev has the same queues)")
+p.icon("q_apigw", "apigw", 380, 380, "HTTP API<br>/v1/chat/messages<br>authorizer")
+p.icon("q_hook", "lambda", 620, 380, "api λ<br>answers 202 at once")
+p.icon("q_in", "sqs", 880, 380, "updates.fifo<br>group = member<br>dedupe = client id")
+p.icon("q_agent", "lambda", 1160, 380, "agent λ<br>lane per member")
+p.icon("q_out", "sqs", 1440, 380, "outbox.fifo<br>group = member")
+p.icon("q_send", "lambda", 1700, 380, "sender λ<br>live, else push")
+p.icon("q_ws", "apigw", 1960, 380, "WebSocket API<br>live.mypaisapp.com")
+p.icon("q_conn", "ddb", 1960, 640, "DynamoDB connections<br>written on $connect<br>read by the sender")
+p.icon("q_sched", "sched", 380, 720, "EventBridge Scheduler<br>retry policy + own DLQ")
+p.icon("q_work", "sqs", 880, 720, "work queue<br>ingest · news · docs<br>engine · briefs · scoring")
+p.icon("q_worker", "lambda", 1160, 720, "worker λ<br>capped concurrency")
+p.box("q_free", 1440, 720, 300, 120, "<b>Free data sources</b><br>yfinance · Twelve Data (8/min)<br>FRED · GDELT · RSS", F_OUT, AMBER)
+p.icon("q_idem", "ddb", 880, 980, "DynamoDB<br>idempotency records<br>(Powertools)")
+p.box("q_rules", 1300, 920, 880, 230,
+      "<b>Retry rules, all settings</b><br>updates: 3 tries within about a minute, so a lane never stays stuck<br>"
+      "outbox: 5 tries; a gone connection is dropped and the message goes by push<br>"
+      "APNs: retry_after honoured; a dead push token is removed<br>work: 5 tries, backoff 30 seconds to 30 minutes<br>"
+      "what can never succeed: straight to its dead-letter queue")
+p.cont("fail", 360, 1210, 1820, 320, "Failure path", F_FAIL, CRIMSON, dashed=True)
+p.icon("q_dlq", "queue", 440, 1300, "dead-letter queues<br>updates · outbox · work · scheduler<br>kept 14 days")
+p.icon("q_s3", "s3", 720, 1300, "S3 raw/dlq/<br>copy for good")
+p.icon("q_cw", "cw", 980, 1300, "CloudWatch alarm<br>depth over 0")
+p.icon("q_sns", "sns", 1240, 1300, "SNS admin-alerts<br>→ alert router")
+p.box("q_replay", 1500, 1265, 640, 180,
+      "<b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh · phase 5: [Replay] on the alert<br>"
+      "in the Admin center · phase 12: the ops warden, once the cause<br>is healthy, at most 3 times, then an incident<br>"
+      "a message over an hour old asks \"still want this?\"",
       F_NOTE, CRIMSON)
-p.line("q_tg", "q_apigw", "", pa=R, pb=Lf)
+p.line("q_app", "q_apigw", "", pa=R, pb=Lf)
 p.line("q_apigw", "q_hook", "", pa=R, pb=Lf)
 p.line("q_hook", "q_in", "", pa=R, pb=Lf)
 p.line("q_in", "q_agent", "", pa=R, pb=Lf)
 p.line("q_agent", "q_out", "", pa=R, pb=Lf)
 p.line("q_out", "q_send", "", pa=R, pb=Lf)
-p.line("q_send", "q_tg2", "", pa=R, pb=Lf)
+p.line("q_send", "q_ws", "", pa=R, pb=Lf)
+p.line("q_ws", "q_app2", "live", pa=R, pb=(0, (425 - 150) / 340))
+p.line("q_send", "q_apns", "no live connection", pa=T, pb=B, lpos=0.35)
+p.line("q_apns", "q_app2", "push", color=AMBER, pa=(1, 0.5), pb=(0, 55 / 340))
+p.line("q_send", "q_conn", "", color=GREY, pa=(1, 0.8), pb=(0, 0.3))
 p.line("q_sched", "q_work", "jobs", pa=R, pb=Lf)
 p.line("q_work", "q_worker", "", pa=R, pb=Lf)
-p.line("q_worker", "q_free", "", color=AMBER, pa=R, pb=Lf)
+p.line("q_worker", "q_free", "", color=AMBER, pa=R, pb=(0, 0.375))
 p.line("q_worker", "q_out", "briefs", pa=(0.75, 0), pb=(0, 0.85))
 p.line("q_agent", "q_work", "documents", pa=(0, 0.75), pb=(1, 0), lpos=0.5)
 p.line("q_worker", "q_idem", "done?", color=GREY, pa=(0, 1), pb=T, lpos=0.72)
@@ -278,9 +344,10 @@ pages.append(p)
 
 # ---------------------------------------------------------------- 5 data
 p = Page("p5", "5 Data stores", "Where the data lives",
-         "DynamoDB for state, small and fast · S3 for the record, in Parquet, queried with DuckDB · every file sent kept for good · SSM for keys · MA-27, MA-104, MA-132, MA-148")
-p.group("cl5", "cloud", 40, 170, 2260, 1080, "AWS · one copy per environment (mypaisa-dev-*, mypaisa-prod-*)")
-p.cont("ddbc", 70, 270, 1210, 640, "DynamoDB · one table, on-demand", F_AWS, PURPLE)
+         "DynamoDB for state, small and fast · S3 for the record, in Parquet, queried with DuckDB · every file sent kept for good · SSM for keys · "
+         "MA-27, MA-104, MA-132, MA-148, MA-161")
+p.group("cl5", "cloud", 40, 170, 2260, 1100, "AWS · one copy per environment (mypaisa-dev-*, mypaisa-prod-*)")
+p.cont("ddbc", 70, 270, 1210, 640, "DynamoDB · the registry table, on-demand", F_AWS, PURPLE)
 p.icon("ddbi", "ddb", 110, 330, "DynamoDB<br>on-demand")
 p.box("k1", 260, 320, 990, 110, "<b>Keys</b> PK=HH#&lt;household&gt; · SK=TX#&lt;date&gt;#&lt;id&gt; · VAL#&lt;position&gt;#&lt;date&gt; · NW#&lt;date&gt; · AUD#&lt;ts&gt;#&lt;id&gt;<br>GSI1 MEMBER# · GSI2 POS# / LIAB# · the registry never scans", align="left")
 groups = [
@@ -291,7 +358,7 @@ groups = [
     ("Audit and runs", "AuditEvent (hash-chained)<br>RunRecord (90 days)<br>SentimentIndex · ArticleScore"),
     ("Settings and approvals", "Setting · ConfigVersion<br>ChangeRequest · AdminQuestion<br>Incident (phase 12)"),
     ("Budgets and alerts", "BudgetSettings · SpendMonth<br>AwsSpendMonth · AlertRule · Alert"),
-    ("Identity", "Cognito holds users;<br>Member holds role, status,<br>session epoch"),
+    ("Identity and devices", "Cognito holds users;<br>Member: role, status, epoch<br>Device: model, push token"),
 ]
 for i, (h, t) in enumerate(groups):
     x = 100 + (i % 4) * 290; y = 480 + (i // 4) * 200
@@ -311,12 +378,13 @@ prefixes = [
 for i, (k, v) in enumerate(prefixes):
     x = 1500 + (i % 2) * 380; y = 320 + (i // 2) * 140
     p.box(f"pf{i}", x, y, 350, 120, f"<b>{k}</b><br>{v}", "#F1F6EA", GREEN)
-p.icon("duck", "lambda", 1350, 990, "DuckDB in Lambda<br>reads Parquet (MA-104)")
-p.icon("docs", "s3", 1650, 990, "S3 documents<br>every file sent, kept<br>opened from Audit")
-p.icon("web", "s3", 1950, 990, "S3 web app<br>behind CloudFront")
-p.icon("ssm5", "ssm", 150, 990, "SSM /mypaisa-agent/&lt;env&gt;/<br>bot token · webhook secret<br>Claude key · Google secret")
-p.box("rule5", 380, 980, 870, 190, "<b>Rules</b><br>nothing is overwritten: corrections are new rows · secrets set by hand, never in Terraform state<br>every file a member sends is kept for good, linked from its audit row, opened through a 5-minute link (MA-148, MA-149)<br>prod tables: deletion protection and point-in-time recovery · the whole history is a few GB",
+p.icon("ssm5", "ssm", 150, 990, "SSM /mypaisa-agent/&lt;env&gt;/<br>Claude key · APNs key<br>Twelve Data key · ids")
+p.box("rule5", 380, 980, 680, 230, "<b>Rules</b><br>nothing is overwritten: corrections are new rows · secrets set by hand, never in Terraform state<br>every file a member sends is kept for good, linked from its audit row, opened through a 5-minute link (MA-148, MA-149)<br>prod tables: deletion protection and point-in-time recovery · the whole history is a few GB",
       F_NOTE, GREY)
+p.icon("conn5", "ddb", 1130, 990, "DynamoDB connections<br>live sockets · TTL")
+p.icon("duck", "lambda", 1350, 990, "DuckDB in Lambda<br>reads Parquet (MA-104)")
+p.icon("docs", "s3", 1650, 990, "S3 documents<br>every file sent, kept<br>presigned upload · Audit")
+p.icon("web5", "s3", 1950, 990, "S3 console site<br>behind CloudFront<br>PWA · AASA · /join")
 p.line("ddbi", "k1", "", color=GREY, pa=R, pb=Lf)
 p.line("duck", "lakec", "queries", color=GREEN, pa=T, pb=((1395 - 1320) / 950, 1))
 pages.append(p)
@@ -335,7 +403,7 @@ p.icon("m_fc", "lambda", 1260, 520, "Forecaster models<br>mood · risk · simila
 p.icon("m_cal", "lambda", 1540, 400, "calibrate and combine<br>CalibrationMap")
 p.icon("m_store", "ddb", 1800, 300, "DynamoDB<br>Stance · Forecast")
 p.icon("m_pred", "s3", 1800, 560, "S3 predictions/<br>every one as made")
-p.icon("m_card", "sqs", 2100, 400, "outbox → Telegram<br>side-by-side card")
+p.icon("m_card", "sqs", 2100, 400, "outbox → the app<br>side-by-side card")
 p.icon("m_news", "lambda", 500, 620, "news scout<br>Haiku through Batches")
 p.box("m_expo", 720, 610, 420, 150, "<b>Exposure map per holding</b> · news relevance<br>fund: holdings, countries, sectors, currencies<br>share: company, sector, markets, rivals<br>commodity: gold, silver, oil drivers", F_NOTE, GREY)
 p.cont("learn", 440, 900, 1540, 560, "Learning loop · daily, bounded, approved (phase 12, MA-132 to MA-134)", F_P12, PURPLE)
@@ -346,7 +414,7 @@ p.icon("m_grade", "lambda", 1760, 1040, "grader<br>after each close<br>Brier · 
 p.icon("m_chal", "lambda", 500, 1290, "tuner<br>challengers: retrain,<br>parameters, rule ranges")
 p.box("m_lab", 700, 1270, 420, 150, "<b>Backtest lab</b> (MA-120)<br>ten years, walk-forward with a gap<br>last two years held out<br>then 8 live weeks in shadow", F_NOTE, PURPLE)
 p.icon("m_cr", "ddb", 1270, 1290, "ChangeRequest<br>with scores side by side")
-p.box("m_desk", 1490, 1270, 440, 150, "<b>Admin desk</b><br>Telegram card or Admin center<br>approve with the second check<br>then ModelVersion goes live", F_FAIL, CRIMSON)
+p.box("m_desk", 1490, 1270, 440, 150, "<b>Admin desk</b><br>a card in the owner's chat in the app<br>or the Admin center<br>approve with the second check<br>then ModelVersion goes live", F_FAIL, CRIMSON)
 p.box("m_claude", 40, 580, 300, 140, "<b>Claude</b><br>Haiku tags news<br>Sonnet explains<br>never a number", F_OUT, AMBER)
 p.line("m_src", "m_steward", "", color=AMBER, pa=R, pb=Lf)
 p.line("m_steward", "m_lake", "", pa=R, pb=Lf)
@@ -372,10 +440,11 @@ pages.append(p)
 
 # ---------------------------------------------------------------- 7 agent team, caps and alerts
 p = Page("p7", "7 Agent team, caps and alerts", "The agent team, settings, spend caps and alerts",
-         "phase 5 caps and alerts (MA-137) · phase 12 agents and settings (MA-127) · everything configurable by the admin, nothing changed without asking")
+         "phase 5 caps and alerts (MA-137) · phase 12 agents and settings (MA-127) · alerts reach the app, push and email (MA-161) · "
+         "everything configurable by the admin, nothing changed without asking")
 p.cont("adm", 40, 170, 400, 1000, "Admins only", F_HOME, NAVY)
-p.box("a_tg", 70, 230, 340, 150, "<b>Admin's Telegram chat</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with Face ID or PIN")
-p.box("a_web", 70, 440, 340, 170, "<b>Admin center</b> (console)<br>Spend · Alerts · Approvals<br>Settings · Agents · Incidents<br>fresh check: passkey or Google")
+p.box("a_tg", 70, 230, 340, 150, "<b>Owner's chat in the app</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with the second check")
+p.box("a_web", 70, 440, 340, 170, "<b>Admin center</b><br>in the app and the web app<br>Spend · Alerts · Approvals<br>Settings · Agents · Incidents<br>second check: passkey or sign-in")
 p.box("a_mail", 70, 670, 340, 100, "<b>Email</b><br>system alerts only, via SNS")
 p.box("a_rule", 70, 830, 340, 300, "<b>Bands</b><br>inside a setting's automatic band: an agent may act, and says so in the daily digest<br>outside it: a request to an admin<br>never: trade, read a secret, delete data, apply infrastructure")
 p.group("cl7", "cloud", 500, 170, 1780, 1530, "AWS · prod")
@@ -400,8 +469,8 @@ p.box("c_aws", 1320, 1020, 480, 220, "<b>AWS and others: £50 a month</b><br>ste
 p.icon("c_budg", "budgets", 600, 1460, "AWS Budgets £75<br>Terraform backstop")
 p.icon("c_sns", "sns", 900, 1460, "SNS admin-alerts<br>→ admin's email<br>1,000 a month free")
 p.icon("c_rt", "lambda", 1200, 1460, "alert router<br>type × severity matrix<br>quiet hours · cooldown")
-p.icon("c_out", "sqs", 1500, 1460, "SQS outbox<br>→ admin's Telegram")
-p.box("c_web", 1780, 1450, 400, 110, "<b>Web Alerts page</b><br>Alert rows · badge · [Replay] on failed work")
+p.icon("c_out", "sqs", 1500, 1460, "SQS outbox → sender<br>the chat and push")
+p.box("c_web", 1780, 1450, 400, 110, "<b>Alerts in the Admin center</b><br>Alert rows · badge · [Replay] on failed work")
 p.line("a_tg", "agc", "", color=NAVY, both=True, pa=R, pb=(0, 0.2))
 p.line("a_web", "a_api", "", color=BLUE, pa=R, pb=Lf)
 p.line("a_api", "a_set", "change a setting", color=BLUE, pa=R, pb=T, kind="elbow", lpos=0.3)
@@ -413,11 +482,87 @@ p.line("a_setdb", "a_snap", "", color=PURPLE, pa=R, pb=Lf)
 p.line("c_ce", "c_aws", "", color=CRIMSON, pa=R, pb=Lf)
 p.line("c_budg", "c_sns", "over £75", color=CRIMSON, dashed=True, pa=R, pb=Lf)
 p.line("c_rt", "c_sns", "email", color=CRIMSON, pa=Lf, pb=R)
-p.line("c_rt", "c_out", "Telegram", color=CRIMSON, pa=R, pb=Lf)
-p.line("c_rt", "c_web", "web", color=CRIMSON, pa=T, pb=T, kind="elbow", lpos=0.5)
+p.line("c_rt", "c_out", "app · push", color=CRIMSON, pa=R, pb=Lf)
+p.line("c_rt", "c_web", "Alert row", color=CRIMSON, pa=T, pb=T, kind="elbow", lpos=0.5)
 pages.append(p)
+
+
+# ---------------------------------------------------------------- 8 adding a holding (sequence, PlantUML)
+SEQUENCE = """@startuml
+title Adding a holding from the app (figures illustrative)
+actor Member
+participant "MyPaisa app" as app
+participant "S3 documents (kept for good)" as s3
+participant "HTTP API + api λ" as api
+participant "SQS updates.fifo" as qin
+participant "agent λ" as agent
+participant "SQS work" as work
+participant "worker λ (docs job)" as worker
+participant "Claude (Anthropic API)" as claude #FCEED6
+database "DynamoDB registry" as ddb
+participant "SQS outbox.fifo + sender λ" as out
+participant "WebSocket API (live)" as ws
+autonumber
+Member -> app : attaches factsheet.pdf
+app -> api : asks for an upload link
+api --> app : presigned PUT URL
+app -> s3 : PUT factsheet.pdf
+app -> api : POST /v1/chat/messages (client id, names the file)
+api -> qin : lane = member, dedupe = client id
+api --> app : 202 at once
+qin -> agent : next message, in order
+activate agent
+agent -> out : "Reading it now"
+out -> ws : to every live connection
+ws --> app : "Reading it now"
+agent -> work : docs job (S3 key)
+deactivate agent
+work -> worker : job, 5 tries, then DLQ
+activate worker
+worker -> claude : PDF + schema: ISIN, OCF, holdings
+claude --> worker : JSON, a source line per field
+worker -> ddb : PendingAction add_holding (what was read, expires in 24 h)
+worker -> out : Confirm card: what I read, unsure fields in amber, [Confirm] [Edit] [Cancel]
+deactivate worker
+out -> ws : to every live connection
+ws --> app : the Confirm card
+app --> Member : the card
+Member -> app : taps Confirm
+app -> api : POST /v1/chat/actions (Confirm, the PendingAction)
+api -> qin : queue the tap
+api --> app : acknowledged at once
+qin -> agent : the tap, in order
+activate agent
+agent -> ddb : Instrument + Document + AuditEvent in one transaction, price sources resolved (ISIN to listing)
+agent -> out : "Added. How much do you hold? Send a screenshot or type it."
+deactivate agent
+out -> ws : to every live connection
+ws --> app : the question
+Member -> app : a valuation screenshot
+group The value takes the same path
+app -> api : asks for an upload link
+api --> app : presigned PUT URL
+app -> s3 : PUT the screenshot
+app -> api : POST /v1/chat/messages (names the screenshot)
+api -> qin : queue
+qin -> agent : the message
+agent -> work : docs job (screenshot)
+work -> worker : job
+worker -> claude : image + schema: value, units, date
+claude --> worker : JSON with sources
+worker -> out : Confirm card: Balanced, £22,925 on 23 Oct, 1,234.5 units at 18.57
+out -> ws : to every live connection
+ws --> app : the Confirm card
+end
+note over agent, out : Confirm saves Position + Valuation (source user_screenshot) + Transaction + AuditEvent. Nothing is saved without the tap; an expired PendingAction is refused.
+note over worker, ws : No live connection: the sender pushes by APNs, and the app asks for everything after its last turn when it opens.
+@enduml
+"""
 
 
 doc = {"version": 1, "pages": [pg.out() for pg in pages]}
 json.dump(doc, open(sys.argv[1], "w"), indent=1)
 print("pages", len(pages), "shapes", sum(len(pg.shapes) for pg in pages), "lines", sum(len(pg.lines) for pg in pages))
+if len(sys.argv) > 2:
+    open(sys.argv[2], "w").write(SEQUENCE)
+    print("sequence", sys.argv[2])

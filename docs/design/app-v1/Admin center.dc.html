@@ -11,6 +11,8 @@
       <helmet data-dc-atomics>
         <meta name="design_doc_mode" content="canvas" />
         <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
@@ -195,6 +197,10 @@
           .mpm-dot { fill: var(--mp-coral); }
           .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
           .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+          /* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey (25% brightness) */
+          .t-dark .mp-ink3:not(.mp-mask), .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
+          /* a disabled action keeps the tertiary grey on dark too, so it still reads as off (not text a member acts on) */
+          .t-dark .arow:disabled .mp-ink3 { color: var(--mp-ink-3); }
         </style>
       </helmet>
 
@@ -217,7 +223,7 @@
                 <sc-for list="{{ g.views }}" as="v" hint-placeholder-count="2">
                   <div class="dv-fr">
                     <p class="dv-cap">{{ v.cap }}</p>
-                    <div class="board mp mp-app {{ v.cls }}" style="width: {{ v.w }}; height: {{ v.h }}" data-screen-label="{{ v.cap }}">
+                    <div class="board mp mp-app {{ v.cls }}" style="width: {{ v.w }}; height: {{ v.h }}" data-mo-frame-root="1" data-screen-label="{{ v.cap }}">
                       <div class="mp-shell">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
@@ -381,7 +387,7 @@
               <sc-for list="{{ themesB }}" as="t" hint-placeholder-count="2">
                 <div class="dv-fr">
                   <p class="dv-cap">{{ t.cap }}</p>
-                  <div class="board mp mp-app {{ t.cls }}" data-screen-label="{{ t.cap }}">
+                  <div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="{{ t.cap }}">
                     <div class="mp-shell">
                       <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                         <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
@@ -477,7 +483,7 @@
               <sc-for list="{{ themesS }}" as="t" hint-placeholder-count="2">
                 <div class="dv-fr">
                   <p class="dv-cap">{{ t.cap }}</p>
-                  <div class="board mp mp-app {{ t.cls }}" style="width: 800px" data-screen-label="{{ t.cap }}">
+                  <div class="board mp mp-app {{ t.cls }}" style="width: 800px" data-mo-frame-root="1" data-screen-label="{{ t.cap }}">
                     <div class="login">
                       <div class="lhero">
                         <div class="fx ac gap12"><svg class="mpm mpm-hero" width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div>
@@ -508,7 +514,7 @@
             <div class="dv-row">
               <div class="dv-fr">
                 <p class="dv-cap">Phone browser · More · 390 · Light</p>
-                <div class="board mp mp-app t-light" style="width: 390px" data-screen-label="Phone browser · More · 390 · Light">
+                <div class="board mp mp-app t-light" style="width: 390px" data-mo-frame-root="1" data-screen-label="Phone browser · More · 390 · Light">
                   <div class="mp-shell">
                     <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                       <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
@@ -548,7 +554,7 @@
               <sc-for list="{{ miniThemes }}" as="t" hint-placeholder-count="2">
                 <div class="dv-fr">
                   <p class="dv-cap">Mini App · More · {{ t.label }}</p>
-                  <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="Mini App · More · {{ t.label }}">
+                  <div class="phone {{ t.cls }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="Mini App · More · {{ t.label }}">
                     <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
                     <div class="scr" style="gap: 14px">
                       <div><div class="mp-large">More</div><div class="mp-foot mp-ink3">The pages you need less often</div></div>
@@ -589,7 +595,7 @@
             iphone: { icon: 'phone_iphone', who: 'You', av: 'av-you', init: 'Y', device: 'Telegram for iPhone · iPhone 15', kind: 'Mini App', where: 'London, UK', first: '2 Oct', last: '09:12', isNew: false, thisB: false, canOut: true },
             lagos: { icon: 'desktop_windows', who: 'Asha', av: 'av-asha', init: 'A', device: 'Telegram Desktop · Windows', kind: 'Mini App', where: 'Lagos, NG', first: '30 Oct 21:14', last: '30 Oct 21:15', isNew: true, thisB: false, canOut: true },
             pixel: { icon: 'phone_android', who: 'Asha', av: 'av-asha', init: 'A', device: 'Telegram for Android · Pixel 8', kind: 'Mini App', where: 'Manchester, UK', first: '4 Oct', last: 'yesterday 21:30', isNew: false, thisB: false, canOut: true },
-            ipad: { icon: 'tablet_mac', who: 'Asha', av: 'av-asha', init: 'A', device: 'Safari on iPad', kind: 'Browser, signed in with Telegram', where: 'Manchester, UK', first: '20 Oct', last: '26 Oct', isNew: false, thisB: false, canOut: true }
+            ipad: { icon: 'tablet_mac', who: 'Asha', av: 'av-asha', init: 'A', device: 'Safari on iPad', kind: 'Browser, signed in with Apple', where: 'Manchester, UK', first: '20 Oct', last: '26 Oct', isNew: false, thisB: false, canOut: true }
           };
           Object.keys(ses).forEach((k) => { ses[k].outLabel = 'Sign out ' + ses[k].device; });
 
@@ -616,7 +622,7 @@
           const actAsha = [
             A(red, { icon: 'logout', t: 'Sign out everywhere', c: 'Her Pixel 8, her iPad and the Windows computer will need to sign in again. Her holdings and history are kept, and her chat with the bot carries on.' }),
             A(red, { icon: 'pause_circle', t: 'Pause Telegram account', c: 'The bot answers her with one line, the Mini App locks, and she is signed out everywhere, her iPad too. Her holdings and history are kept. You can restore it at any time.' }),
-            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'a•••@gmail.com stops signing her in. Telegram sign-in still works, and Google can be linked again.' })
+            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'a•••@gmail.com stops signing her in. Sign in with Apple still works, and Google can be linked again.' })
           ];
           const actAshaPaused = [
             { tile: 'mp-neutral', tcls: 'mp-ink3', dis: true, icon: 'logout', t: 'Sign out everywhere', c: 'Nothing to sign out: the pause ended all her sessions at 09:40.' },
@@ -626,7 +632,7 @@
           const actYou = [
             A(red, { icon: 'logout', t: 'Sign out everywhere', c: "Your iPhone's Mini App and this browser will need to sign in again. Your holdings and history are kept." }),
             A(red, { icon: 'pause_circle', t: 'Pause my Telegram account', c: 'You are signed out everywhere, this browser too, and the bot and the Mini App stop answering you. To restore it, sign in here with Google or your passkey.' }),
-            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'y•••@gmail.com stops signing you in, and this browser signs out too, because it signed in with Google. Telegram sign-in still works.' })
+            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'y•••@gmail.com stops signing you in, and this browser signs out too, because it signed in with Google. Sign in with Apple still works.' })
           ];
 
           const view = (o) => {

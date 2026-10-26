@@ -1,10 +1,14 @@
 # MyPaisa Agent — Build Plan (v2)
 
-How the hybrid in `ARCHITECTURE.md` gets built, in phases that each end with
-something you can see in Telegram and a test suite that proves it. v2 moves
-the holdings registry and the Telegram ingestion to the front, because the
-first thing you will do is feed the bot your Monzo funds, and adds the engine
-port, the research cards, the Mini App and the confidence calibration.
+How the design in `ARCHITECTURE.md` gets built, in phases that each end with
+something you can see in the app and a test suite that proves it. v2 moved
+the holdings registry and the ingestion through the chat to the front,
+because the first thing you will do is feed MyPaisa your Monzo funds, and
+added the engine port, the research cards, the dashboard and the confidence
+calibration. v3 (MA-161, 25 Oct 2026) moves the chat to one native iOS app
+for iPhone and iPad, the chat and the dashboard in one, signed in with Apple
+or Google, with no Telegram bot; the web app stays as a read-only PWA for the
+dashboard and the Admin center.
 
 Status: planning. Nothing is built. The architecture is drawn in Lucid (seven
 AWS views and a sequence, linked from `ARCHITECTURE.md`), and two pages walk
@@ -37,34 +41,40 @@ below is a story or task under it.
 
 | Task | Owner |
 | --- | --- |
-| Create two bots with BotFather, one for dev and the household's for prod; each token into its own SSM path (`/mypaisa-agent/dev/telegram/bot_token`, `/mypaisa-agent/prod/telegram/bot_token`); the picture with `/setuserpic` from `docs/mark-1024.png` on both | You |
+| Join the Apple Developer Program ($99 a year, about £76; your yes first) and register two app ids, `com.mypaisapp.agent.dev` (MyPaisa Dev) and `com.mypaisapp.agent` (MyPaisa), each with Sign in with Apple, push and associated domains (MA-162) | You |
+| An APNs key and a Sign in with Apple key per environment, put by hand into `/mypaisa-agent/<env>/apple/apns_key` and `.../apple/siwa_key` after the apply that made their parameters (the second signs the revocation of a leaving member's Apple token, MA-172); App Store Connect records for both apps with you and your wife as internal testers; an App Store Connect API key in the GitHub `prod` environment only (MA-164) | You |
+| The app icons from the 1c Watcher mark (`docs/mark-1024.png`, MA-103): MyPaisa, and MyPaisa Dev with its DEV band (MA-20, MA-142) | Claude |
+| The iOS project (MA-165): `ios/` with XcodeGen, one SwiftUI app for iPhone and iPad on iOS 26, the `MyPaisaKit` and `MyPaisaUI` packages, the Warm ledger colour assets generated from `tokens.css`, Dev and Prod configurations; its CI on a macOS runner (MA-166) and the TestFlight lanes (MA-167) | Claude |
 | Link a Claude Console organisation to your Max or Team plan (claude.ai Settings → Billing → API credits; 7 days on the plan first; the link cannot be moved later without support). In that organisation make two workspaces, `mypaisa-prod` and `mypaisa-dev`, with spend limits of $160 and $40 (together the Max 20x plan's $200 monthly credit, the agents' allowance; each limit is the hard cap behind that environment's Claude ceiling, `ARCHITECTURE.md` §15.1); no payment method and auto-reload off, so the credit is the last stop; and one API key in each; put each key into its own environment's SSM path, `/mypaisa-agent/dev/anthropic/api_key` and `/mypaisa-agent/prod/anthropic/api_key`. The Max 20x plan's monthly API credit ($200) then pays for every model call; it covers the Messages API and Batches, not Claude Code, and expires each cycle without rolling over | You |
-| Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send to the bot | You |
+| Export the factsheet (PDF) and a valuation screenshot for each Monzo fund from the app, ready to send in the app | You |
 | Data feed: decided, free sources first. yfinance (Yahoo Finance, unofficial, no key) for the LSE and Xetra closes and the funds' `0P…L` NAV, Twelve Data's free tier for the US lines and FX fallback, the issuer pages, FT and the screenshot behind them. EODHD is the last resort: switched on only with the admin's approval when no free source can serve a holding or its history (Historian £19.99 a month, `ARCHITECTURE.md` §19.2) | Decided |
 | Twelve Data API key (free tier) into SSM at `/mypaisa-agent/dev/twelvedata/api_key` and `/mypaisa-agent/prod/twelvedata/api_key`. It is in every chain from day one: first for the US lines, the US macro basket, the earnings calendar and the FX fallback; second, behind yfinance, for London and Frankfurt closes. The source-comparison report shows whether the free tier serves those exchanges; nothing to check by hand | You |
 | Terraform bootstrap (MA-26): `infra/modules/mypaisa` with the two roots `infra/dev` and `infra/prod`, each with its own state key in the existing state bucket; `infra/bootstrap`, applied once from the laptop, with the account's GitHub OIDC provider reused and three roles pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy`, `ci-prod-deploy`); `dev` and `prod` GitHub environments, prod needing your approval; the developer role with its explicit deny on `env=prod`; the zone and the certificate looked up by name (`ARCHITECTURE.md` §18.2); AWS Budgets at £75 as the backstop behind the app's £50 cap (`ARCHITECTURE.md` §15.2, MA-137) | Claude |
 | Secrets out of state (MA-159): every secret's SSM parameter made by Terraform with a write-only placeholder (`value_wo`, `value_wo_version`; Terraform 1.11 or later, `hashicorp/aws` 5.87 or later), then overwritten by hand; no secret ever in state (`ARCHITECTURE.md` §14). So every "into SSM" row in this phase waits for the apply that makes its parameter (MA-26's, and for prod the first release): a value put first makes that apply fail | Claude |
 | The PR gates in GitHub Actions (MA-25): ruff, pyright, pytest with moto, `terraform fmt` and `validate`, tflint, the Terraform security scan, gitleaks, pip-audit, `jira-key`, and a plan for both environments on every PR touching `infra/` | Claude |
-| A Google OAuth client per environment (MA-143, for MA-109's sign-in): any Gmail account can own the Google Cloud project, no billing account is needed, and it has no link to AWS. The consent screen is "External" (a personal Gmail cannot choose "Internal") with only the basic email and profile scopes, so it can be published without Google's review. Each client is a "Web application" whose authorised redirect is `https://auth-dev.mypaisapp.com/oauth2/idpresponse` or `https://auth.mypaisapp.com/oauth2/idpresponse`; the client id and secret go into that environment's SSM path | You |
+| A Google iOS client and a Google web client per environment, and a Sign in with Apple Services ID for the web app (MA-143, for MA-109's and MA-185's sign-in): any Gmail account can own the Google Cloud project, no billing account is needed, and it has no link to AWS. The consent screen is "External" (a personal Gmail cannot choose "Internal") with only the basic email and profile scopes, so it can be published without Google's review. The iOS client is for that environment's bundle id; the web client (Google Identity Services) has the console as its JavaScript origin; neither secret is used; the ids go into that environment's SSM paths after the apply that made the parameters. Sign in with Apple needs the app id in the app (MA-162) and a Services ID with the console as its domain on the web | You |
 | `CLAUDE.md` with the working rules; the repository skeleton (uv, ruff, pyright, pytest, pre-commit) | Claude |
-| Boards for every story with UI drawn ahead of it in Claude Design (MA-158), with the board fixes found by its review and MA-156's applied there and copied in (MA-160) | Claude |
+| Boards for every story with UI drawn ahead of it in Claude Design (MA-158), with the board fixes found by its review and MA-156's applied there and copied in (MA-160); since MA-161, the iOS app drawn end to end in the MyPaisa iOS v1 project, with the iOS kit in MyPaisa DS v1 | Claude |
 
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
-the gates run on every PR; the budget exists; dev's bot token, Claude key,
-Twelve Data key and Google client id and secret are in SSM, over the
-placeholders dev's apply made. Prod's go in after prod's first apply (the
+the gates run on every PR, the iOS gates on every PR that touches `ios/`; the
+budget exists; dev's Claude key, Twelve Data key, Google iOS client id and
+APNs key are in SSM, over the placeholders dev's apply made; MyPaisa Dev
+builds in CI and installs from TestFlight. Prod's go in after prod's first apply (the
 release workflow, MA-107; which phase holds it is open on MA-107, MA-108 and
 MA-142), by the identity MA-21, MA-26, MA-142 and MA-143 name.
 
-**Cost:** £0.
+**Cost:** £0 in AWS; the Apple Developer Program, $99 a year (MA-162).
 
 ---
 
-## Phase 1 — Registry and Telegram ingestion
+## Phase 1 — Registry, sign-in and the app's chat
 
-What you hold, recorded through the chat, with no analysis yet.
+What you hold, recorded through the chat in the app, with no analysis yet.
+The app's shell, sign-in and chat come first, because every later phase speaks
+through them (`ARCHITECTURE.md` §9).
 
-- Registry entities (Portfolio, Member, Invite, Account, Instrument,
+- Registry entities (Portfolio, Member, Device, Invite, Account, Instrument,
   Position, Valuation, Document, Transaction) with `schema_version`; every
   item keyed by the household; a seed command for the first holding. The
   fields phase 9 needs (`Account.category`, `ccy`, `institution`,
@@ -72,35 +82,44 @@ What you hold, recorded through the chat, with no analysis yet.
   `Transaction`) exist from day one, so no migration stands between the ISA
   and the rest of the household's wealth.
 - Identity on AWS from day one (MA-109, `ARCHITECTURE.md` §4.5): a Cognito
-  user pool per environment (Essentials) with the `auth(-dev).mypaisapp.com`
-  domain; Telegram through custom-auth Lambda triggers over `initData` and
-  the Login Widget (constant-time HMAC, five-minute freshness, replay
-  refused); Google as a provider; passkeys; five-minute access tokens behind
-  an `HttpOnly` cookie and the member's session epoch. The first person to
-  open the chat becomes the household's owner; `/invite` makes a one-time
-  deep link, and joining creates the member's Cognito user; `/members` lists
-  and removes; the webhook resolves `from.id` to a member and ignores
-  everyone else.
+  user pool per environment (Essentials); Sign in with Apple and Google, their
+  identity tokens verified by custom-auth Lambda triggers (the providers' keys,
+  audience, a five-minute issue time, the api's nonce, replay refused);
+  passkeys; five-minute access tokens and rotating refresh tokens in the
+  Keychain, and the member's session epoch. The first person to sign in
+  becomes the household's owner (MA-32); Invite makes a one-time link,
+  `https://console.mypaisapp.com/join/<token>`, sent with iOS's share sheet, and
+  joining creates the member's Cognito user; Members and devices lists and
+  removes. The console site, `console(-dev).mypaisapp.com`, serves the links'
+  association file and the invite page from this phase, and the web app from
+  phase 5 (MA-73).
   Isolation tests: a member cannot read another household, nor another
   member's detail unless shared.
 - Accounts per member (ISA, GIA, SIPP, cash; joint accounts with two
   owners); every holding added lands in the adding member's account.
-- Telegram client: `sendMessage` (HTML), rich messages with fallback,
-  `sendPhoto`, `editMessageText`, `getFile`, `setMyCommands`, reply keyboard,
-  menu button, callback queries.
-- API Gateway HTTP API at `api(-dev).mypaisapp.com`, with
-  `/telegram/webhook` and `/auth/telegram`. On the laptop the dev bot runs by
-  long polling against dev, so no webhook is needed to develop.
-- `webhook` Lambda (secret token, chat allowlist) that puts each update on
-  the `updates.fifo` queue, one lane per member, deduped by `update_id`, and
-  the first `agent` Lambda reading it: onboarding, `/add`, `/update`,
-  `Portfolio`, `/privacy`, `/pause`, `/resume`, `/help`.
+- The app (MA-163, MA-168, MA-169): the shell Arun picks from three options
+  (tabs on iPhone; the sidebar with the chat beside every screen on iPad and
+  an open foldable), the sign-in screen with Apple's and Google's buttons, and
+  the chat: the conversation, native cards from the agent's JSON (MA-174), the
+  composer with the camera, a document scan, Photos and Files, shortcut chips,
+  the typed `/commands`, replies streamed word by word.
+- The api at `api(-dev).mypaisapp.com` (MA-31, MA-75, MA-144): `/auth/apple`,
+  `/auth/google`, `/v1/chat/messages` and `/v1/chat/actions` (each with the
+  app's client id), `/v1/chat/turns`, `/v1/uploads` (a presigned upload into
+  the documents bucket), `/v1/devices`; the authorizer checks the token, the
+  member's status and session epoch on every call. The live connection at
+  `live(-dev).mypaisapp.com` (MA-30) carries streamed words and finished
+  messages; the dev build runs from Xcode against dev.
+- The chat api puts each message on the `updates.fifo` queue, one lane per
+  member, deduped by the client id, and the first `agent` Lambda reads it:
+  onboarding, add, update, Portfolio, privacy, pause, resume, help (MA-35).
 - Queues from day one (MA-139, MA-140, `ARCHITECTURE.md` §21): replies
-  through `outbox.fifo` and a `sender` Lambda that honours Telegram's limits;
-  background jobs (document reads now, ingest and news as they arrive)
-  through the `work` queue and a `worker` Lambda; retries with backoff,
-  idempotent handlers, a dead-letter queue behind each with an alarm to the
-  chat, and `scripts/redrive.sh` to replay.
+  through `outbox.fifo` and a `sender` Lambda that delivers to the member's
+  live connections and by Apple push to each device without one (MA-30,
+  MA-170); background jobs (document reads now, ingest and news as they
+  arrive) through the `work` queue and a `worker` Lambda; retries with
+  backoff, idempotent handlers, a dead-letter queue behind each with an alarm
+  to the owner, and `scripts/redrive.sh` to replay.
 - `docs` Lambda: factsheet PDF and screenshot extraction with Claude on
   the Anthropic API (structured outputs, citations, per-field confidence); the Confirm
   / Edit / Cancel card; nothing saved without Confirm.
@@ -109,12 +128,12 @@ What you hold, recorded through the chat, with no analysis yet.
 - Money in any currency (MA-156, `ARCHITECTURE.md` §4.7): every position
   keeps its currency from the Confirm card that added it; a parser in code
   reads £ $ € ₹, the codes, the words and lakh and crore; an amount in
-  another currency than the holding's is never saved as it is, and the bot
+  another currency than the holding's is never saved as it is, and MyPaisa
   asks for the amount that arrived (the ECB-rate estimate joins in phase 2,
   with MA-44); the original amount, rate and source stay on the transaction.
-- Guided flows with buttons for logging a transaction, adding a holding,
-  updating a valuation and changing a setting: one question per message,
-  the same message edited in place, fields already given skipped; the
+- Guided flows with chips for logging a transaction, adding a holding,
+  updating a valuation and changing a setting: one question per card, the
+  same card edited in place, fields already given skipped; the
   `ask_user` tool and the `PendingAction` row with a day's expiry.
 - The audit log from day one: an `AuditEvent` row in the same transaction
   as every record change, hash-chained; `get_audit` and "what changed this
@@ -122,12 +141,22 @@ What you hold, recorded through the chat, with no analysis yet.
 - Every file and image a member sends kept in S3 for good, before anything
   reads it, with a `Document` row and an audit row; every change made from a
   file names it (MA-148).
+- Motion (MA-182): one motion system for every component and chart, in the app
+  and the web app: springs, the glass morphs, figures that roll, charts that
+  draw in and scrub, haptics, and Reduce Motion honoured (`ARCHITECTURE.md`
+  §9.1).
+- Push, privacy and the rough edges of a phone (MA-170, MA-171, MA-172,
+  MA-173, MA-181): Apple push with no amounts on the lock screen unless asked;
+  privacy mode everywhere, the app switcher's blank card and an optional Face
+  ID lock; signing out a device and leaving the household; the last figures
+  offline with their time and messages sent once back online; VoiceOver,
+  Dynamic Type to AX5 and the other accessibility settings on every screen.
 - Observability from the first Lambda: a `RunRecord` per run with model
   calls, tokens, cost and tool calls; Powertools Logger, Tracer and Metrics
-  wired in the handler base; the error alarm per function to the chat.
-- Portfolio card as a table (rich message or HTML), valued from the last
-  user-supplied figures, with the Household / Me switch and, for the owner, a
-  tab per member.
+  wired in the handler base; the error alarm per function to the owner.
+- Portfolio card as a native card, valued from the last user-supplied
+  figures, with the Household / Me switch and, for the owner, a tab per
+  member.
 - The dev seed (MA-110): a synthetic household on Monzo-shaped funds (the
   names, ISINs and factsheets you supply, never your balances), with
   members, accounts, holdings, a year of transactions and valuations; one
@@ -141,37 +170,46 @@ What you hold, recorded through the chat, with no analysis yet.
   guards per member (60%), per day (three times the daily average) and per
   run (eight model calls); a message to the owner at 70% and 100%. Needed
   here because the `docs` and `agent` Lambdas call Claude from this phase.
-- The release pipeline (MA-107): a merge to `main` builds the Lambdas once,
-  deploys dev and runs the smoke tests, then deploys prod after your approval
-  behind each Lambda's `live` alias, rolling back on a failed smoke test. The
+- The release pipeline (MA-107, MA-167): a merge to `main` builds the Lambdas
+  once, deploys dev and runs the smoke tests, sends MyPaisa Dev to TestFlight,
+  then deploys prod after your approval behind each Lambda's `live` alias,
+  rolling back on a failed smoke test, and sends MyPaisa to TestFlight. The
   nightly drift check follows (MA-108).
 
 **Tests:** extraction against three real factsheets and three screenshots
-(fixtures with expected JSON); webhook security; one member's messages in
-order while two members run in parallel; a duplicate update ignored; a
-failure retried and then dead-lettered with an alarm; a replayed old update
-asking first; an expired Confirm refused; the invite flow (single
-use, expiry, wrong household); the isolation rules; the Confirm state
-machine; the guided flows (resume after a day, expiry, skipping fields
+(fixtures with expected JSON); the chat api's security (no token, an expired
+token, a token from the other environment, a paused member); one member's
+messages in order while two members run in parallel; a duplicate message
+(the same client id) ignored; a failure retried and then dead-lettered with
+an alarm; an old message asking first; an expired Confirm refused; the invite
+flow (single use, expiry, wrong household); the isolation rules; the Confirm
+state machine; the guided flows (resume after a day, expiry, skipping fields
 already given, two members mid-flow at once); the currency parser on every
 form (£ $ € ₹, codes, words, lakh and crore) and a rupee amount against a
-pound holding never saved as pounds; the custom-auth triggers
-(valid, expired, tampered, replayed, a removed member) and a dev token
-refused by prod; the meter costing recorded `usage` blocks to the cent, a
+pound holding never saved as pounds; the custom-auth triggers for Apple and
+Google (valid, expired, wrong audience, wrong nonce, tampered, replayed, a
+removed member) and a dev token refused by prod; delivery live and by push
+(a closed app gets a push, an open one does not, APNs' `retry-after`, a dead
+push token removed); the meter costing recorded `usage` blocks to the cent, a
 concurrent add, the 100% stop and each guard, and a cycle rolling over on the
-renewal day; a property test that every
-write produces exactly one audit row and the chain verifies; a `RunRecord`
-on success and on failure; schema migration on a v0 item.
+renewal day; a property test that every write produces exactly one audit row
+and the chain verifies; a `RunRecord` on success and on failure; schema
+migration on a v0 item; in the app, unit, UI and snapshot tests of every
+screen and card (iPhone and iPad, light and dark, Large and AX5, privacy on)
+and the accessibility audit (MA-166).
 
-**Exit:** you and your wife are members from your own phones; each of you
-has added holdings from the chat alone; each sees their own detail and the
-household overview, and you see hers; a screenshot updates a member's
-valuations and both views change; "what changed this week?" lists every
-change either of you made, with who and when; each of you is a Cognito user
-in prod; the dev bot runs from your laptop on seeded data; a merge reaches
-prod only after your approval.
+**Exit:** you and your wife are members, each signed in on your own iPhone
+with your own Apple or Google account; each of you has added holdings from
+the chat alone; each sees their own detail and the household overview, and
+you see hers; a screenshot updates a member's valuations and both views
+change; "what changed this week?" lists every change either of you made, with
+who and when; a reply that finishes while the app is closed arrives as a push
+with no amount on the lock screen; each of you is a Cognito user in prod;
+MyPaisa Dev runs on seeded data from Xcode and TestFlight; a merge reaches
+prod, and MyPaisa reaches your phones, only after your approval.
 
-**Cost:** about £0.50 (a few Claude calls).
+**Cost:** about £0.50 (a few Claude calls); the Apple Developer Program from
+phase 0.
 
 ---
 
@@ -232,13 +270,15 @@ Claude starts writing on top of numbers that already work.
 
 - Anthropic client with the key from SSM, model routing, caching, refusal
   fallback, number validator.
-- Morning brief and evening wrap as cards; the Technical section on every
-  card; `/technical` mode; glossary buttons.
-- Charts: one house style; holding history with stance horizon shaded;
-  portfolio curve; sent with the card.
+- Morning brief and evening wrap as cards, and by push; the Technical section
+  on every card; `/technical` mode; the glossary on a tap.
+- Charts: one house style in Swift Charts (MA-56); holding history with
+  stance horizon shaded; portfolio curve; drawn in the card from the
+  engine's series.
 - Alert tiers, cooldowns, weekly red budget, quiet hours, Haiku repeat
-  filter; `I acted` and the decision log; dead man's switch and error alarms
-  to the chat.
+  filter; alert tiers as push interruption levels (red time-sensitive with
+  sound, amber passive); `I acted` and the decision log; dead man's switch and
+  error alarms to the owner, in the app and by push.
 - The ladder's lower steps (MA-114): at 85% of the ceiling the debate is
   skipped, the Saturday review drops to Sonnet, "Why?" is limited to three
   searches a day and sentiment scoring pauses; at 95% chat runs on Haiku and
@@ -260,8 +300,8 @@ layman reads the top of a card and understands it without the bottom.
 
 You can ask anything about what you hold.
 
-- The tool loop with strict tools, `tool_choice` always `auto`; `Ask`
-  keyboard button.
+- The tool loop with strict tools, `tool_choice` always `auto`; the
+  composer's shortcut chips and each screen's Ask.
 - Chat memory (MA-115, `ARCHITECTURE.md` §8): every message a `ChatTurn` row
   kept ninety days and never edited; only the current conversation sent; a
   conversation ends after thirty minutes of silence unless a question is
@@ -288,79 +328,89 @@ your two funds shows the shared holdings and currency exposure.
 
 ---
 
-## Phase 5 — The web app: dashboard, audit log, activity (read-only, behind login)
+## Phase 5 — The dashboard and the Admin center, in the app and the web app (read-only, behind sign-in)
 
-One static app in `web/`, opened as a Mini App from the chat and in a laptop
-browser, as `ARCHITECTURE.md` §9.3.
+The dashboard screens of the iOS app, beside the chat on every size of
+iPhone, iPad and foldable (`ARCHITECTURE.md` §9.3), and the web app, a
+read-only PWA for the same dashboard and the Admin center in a browser (§9.4).
 
-- Built from the one design spec in `docs/design/dashboard/`: the Mini App
-  boards (the five phone artboards: Overview, a holding, Overlap, Scorecard,
-  the light theme) and the browser boards (the same pages in two columns at
-  laptop width, and the login page), as `docs/design/README.md` describes;
-  the MyPaisa DS v1 "Warm ledger" look (MA-101), lightweight-charts.
-- Two new pages: **Audit** (the §4.6 log, filtered by member, record and
-  date, before and after, a link to the run, and the file behind a change
-  opened through a five-minute link, with a Files view, MA-149) and **Activity** (the §10 runs
-  with their model calls, tokens, cost, tools and outcome; the schedule
-  board with last and next run and price freshness; this month's spend
-  against the ceiling and the step it is on; the last seven days of alarms).
+- Built from the one spec in the MyPaisa iOS v1 Claude Design project
+  (`docs/design/README.md`): the iPhone boards (Home, a holding, Overlap,
+  Scorecard, Audit and Files, Activity, the Admin center) and the iPad and
+  foldable boards (the same screens at regular width, with the chat beside
+  them; MA-70, MA-78); Warm ledger (MA-101) on Liquid Glass; Swift Charts.
+- Two screens of record: **Audit** (the §4.6 log, filtered by member, record
+  and date, before and after, a link to the run, and the file behind a change
+  opened in Quick Look through a five-minute link, with a Files view, MA-149)
+  and **Activity** (the §10 runs with their model calls, tokens, cost, tools
+  and outcome; the schedule board with last and next run and price
+  freshness; this month's spend against the ceiling and the step it is on;
+  the last seven days of alarms) (MA-71, MA-79).
+- Each card opens its screen, and each screen's Ask opens the chat about it;
+  a screen's Update opens the chat with the guided flow already started
+  (MA-80). Search finds a holding, a change, a file or a past answer (MA-180).
 - The Admin center's **Spend** section (MA-116), designed first like every
   screen: this cycle's spend by member, feature, agent and model against the
   ceiling, the step and the days left; the owner sets the ceiling (from $10
   to the hard limit), the member share, the renewal day and the hard limit,
-  each behind the fresh check (MA-102), each an audit row and a message to
-  the owner; a ceiling that takes prod and dev together past the plan's credit
-  warns that the extra needs a card and needs an explicit yes, and one
-  above the hard limit is refused with the steps to raise the Console limit
-  first.
+  each behind the second check (MA-76, MA-102), each an audit row and a
+  message to the owner; a ceiling that takes prod and dev together past the
+  plan's credit warns that the extra needs a card and needs an explicit yes,
+  and one above the hard limit is refused with the steps to raise the Console
+  limit first.
 - **Caps and alerts** (MA-137, `ARCHITECTURE.md` §15.2), in the same
   section: the Claude ladder's steps and guards; the AWS and others cap (£50),
   its steps (50%, 80%, 100%, forecast) and actions (dev pauses first; the
   brief, alerts and chat never stop), metered daily from Cost Explorer; the
-  AWS Budgets backstop at £75 in Terraform; one alert router to the web app's
-  Alerts page, the admin's Telegram chat and email through SNS (1,000 a month
-  free), with quiet hours, cooldowns and a digest; "failed work" alerts from
-  the dead-letter queues carry a [Replay] button (§21, MA-145).
-- The `api` Lambda behind `api(-dev).mypaisapp.com`: GET routes only for
-  the household's data, plus the Admin center's owner-only admin actions,
-  each behind a fresh check (`ARCHITECTURE.md` §9.3): the security actions
-  (MA-102), the ceiling and caps with their alert routing (MA-116, MA-137)
-  and replaying failed work (MA-145) in this phase; deciding agents' requests,
-  rolling a setting back and closing an incident (MA-130, MA-135) join in
-  phase 12; sign-in through the Cognito pool built in
-  phase 1 (Telegram, Google, passkey); the `HttpOnly`, `SameSite=Strict`
-  session cookie with five-minute access tokens behind it; session, status,
-  epoch and role checked on every call; CORS for that environment's console
-  only; JSON limited to what that member may see.
-- Linking a Google account: the six-digit code shown on the web, `/link
-  <code>` in the chat from the member's own phone, `google_sub` and
-  `google_email` on the Member; link and unlink from `/members` for the
-  owner; every link, unlink and web login an audit row.
-- Hosting in Terraform: the app's S3 bucket and CloudFront distribution per
-  environment at `console-dev.mypaisapp.com` and `console.mypaisapp.com`,
-  with their records in the existing zone and the existing wildcard
-  certificate; security headers. The shell is public and holds no data.
-- `web_app` button on the Portfolio card; a `/web` command that sends the
-  laptop address.
-- You: `/setdomain` in BotFather for the Login Widget, the dev bot with
-  `console-dev.mypaisapp.com` and the household's bot with
-  `console.mypaisapp.com`; two-step verification on each member's Telegram
-  and Google accounts. The Google clients exist from phase 0.
+  AWS Budgets backstop at £75 in Terraform; one alert router to the app's
+  Alerts screen, push to the admin's devices and email through SNS (1,000 a
+  month free), with quiet hours, cooldowns and a digest; "failed work" alerts
+  from the dead-letter queues carry a Replay button (§21, MA-145).
+- The `api` Lambda's data routes behind the authorizer of phase 1: GET routes
+  only for the household's data (MA-74), plus the Admin center's owner-only
+  admin actions, each behind the second check (`ARCHITECTURE.md` §9.3): the
+  security actions (MA-102), the ceiling and caps with their alert routing
+  (MA-116, MA-137) and replaying failed work (MA-145) in this phase; deciding
+  agents' requests, rolling a setting back and closing an incident (MA-130,
+  MA-135) join in phase 12; JSON limited to what that member may see.
+- The second check (MA-76): a fresh Sign in with Apple or passkey under Face
+  ID (Google members sign in with Google again), bound to the action by the
+  api's challenge and accepted only within five minutes.
+- More than one way in (MA-77): a member adds a second sign-in, Apple or
+  Google, or a passkey, from You; the owner can unlink one from the Admin
+  center; every link, unlink and sign-in an audit row.
+- You: two-factor authentication on each member's Apple Account and Google
+  account, and a passcode with Face ID on each device (MA-72).
+- The web app (MA-183, MA-184, MA-185), `web/`: Home, a holding, Overlap,
+  Scorecard, Audit and Files, Activity and the Admin center in a browser, from
+  the browser boards in MyPaisa app v1 (picked before MA-161), with
+  lightweight-charts and the shared motion; installable as a PWA whose service
+  worker caches the shell only; sign-in with Apple, Google or a passkey and the
+  `HttpOnly`, `SameSite=Strict` session cookie on the api's host; CORS for that
+  environment's console only; the second check a passkey or a fresh sign-in;
+  served from the console site of MA-73.
 
-**Tests:** sign-in by each door (a Google account linked to nobody, a
-member of another household, a removed member, a paused member); the link
-code (right code, wrong code, expired, used twice, sent from the wrong
-chat); the cookie (missing, expired, from the other environment, after sign
-out everywhere); CORS from another origin; every route against each role; JSON shape; the Audit page showing a change made in
-the chat within a minute; Playwright screenshots at phone and laptop widths
-in both themes.
+**Tests:** the second check (a fresh assertion, one six minutes old, one for
+another action, a replayed one, a Google member's re-sign-in); adding and
+unlinking a second sign-in (the right account, one linked to another member,
+unlinking the last one refused); every route against each role and each
+member status; a token from the other environment; JSON shape; the Audit
+screen showing a change made in the chat within a minute; snapshot tests of
+every screen on iPhone, iPad and the foldable sizes in both themes, at Large
+and AX5, with privacy on, and the accessibility audit; in the web app, sign-in
+by each door (an Apple or Google account linked to nobody, a removed member, a
+paused member), the cookie (missing, expired, from the other environment, after
+sign out everywhere), CORS from another origin, the service worker caching no
+figure, and Playwright screenshots at phone and laptop widths in both themes.
 
-**Exit:** you open `console.mypaisapp.com` on your laptop, log in with
-Telegram, then Google, then a passkey, and see the same numbers as the chat
-each way; the Audit page shows the change you just made from the
-chat, with who and when; the Activity page shows the run that made it, with
-what it cost; your wife sees her own view from her phone; a removed member
-cannot get in.
+**Exit:** you open Home on your iPhone, on your iPad and on a foldable and see
+the same numbers as the chat, beside the chat on the larger screens; you open
+`console.mypaisapp.com` on your laptop, sign in with Apple, then Google, then a
+passkey, install it, and see the same numbers again; the Audit screen
+shows the change you just made in the chat, with who and when; the Activity
+screen shows the run that made it, with what it cost; your wife sees her own
+view on her phone; moving the ceiling asks for Face ID and leaves an audit
+row; a removed member cannot get in.
 
 **Cost:** £0.
 
@@ -415,11 +465,11 @@ in the Saturday review.
 
 ## Phase 9 — MyPaisa: the whole wealth tracker on this backend (later, not a priority)
 
-The web app becomes the household's wealth tracker, as `ARCHITECTURE.md`
-§12: assets of every kind, debts, budget, forecast with XIRR, reports, in
-GBP or INR; read-only; every update through the bot. The current
+The app's dashboard becomes the household's wealth tracker, as
+`ARCHITECTURE.md` §12: assets of every kind, debts, budget, forecast with
+XIRR, reports, in GBP or INR; read-only; every update through the chat. The current
 wealth-tracker repository is the screen reference. In order, each step
-shipping read-only pages over data the bot already maintains:
+shipping read-only screens over data the chat already maintains:
 
 1. **Kinds and flows.** The `property`, `deposit`, `policy`, `pension` and
    `debt` kinds with their profiles; `Liability`; INR in the FX chain; the
@@ -428,7 +478,7 @@ shipping read-only pages over data the bot already maintains:
    change and a preclosure; valuation reminders when a figure is overdue;
    maturity announcements.
 2. **History import.** The Excel importer (MA-111, `ARCHITECTURE.md`
-   §18.5): one versioned template sent to the bot, a dry run, Confirm with
+   §18.5): one versioned template sent in the chat, a dry run, Confirm with
    the second check, batch writes with audit rows, a fingerprint so a file
    sent twice adds nothing, and rollback by import id. Tested on dev's
    synthetic data first, then used to hydrate prod with the past
@@ -437,14 +487,14 @@ shipping read-only pages over data the bot already maintains:
    fixtures to the penny, deposit accrual, the loan schedule and interest
    split, the daily `NetWorth` series, the maturity timeline.
 4. **Screens, redesigned.** Overview, Assets and one asset, Debts and one
-   loan, on the web app and in the Mini App, from a new design in the
+   loan, in the app on iPhone and iPad, from a new design in the
    MyPaisa DS v1 system; the Portfolio card grows into the overview.
 5. **Forecast and budget.** `ForecastAssumptions` and `Budget` with their
    flows ("assume 5% on property", "my salary is now …"); the thirty-year
    projection; the Budget and Forecast screens.
 6. **Reports, exports, retirement.** Composition by type and institution,
    exports as GET routes; the zone moves from the old tracker's Terraform to
-   this repository's and the apex `mypaisapp.com` redirects to the console
+   this repository's, and the apex `mypaisapp.com` says where to get the app
    (MA-97).
 7. **Any question about the money (MA-104, `ARCHITECTURE.md` §12.1).** A
    nightly export of the household's ledger to Parquet in S3, and a
@@ -461,7 +511,7 @@ INR and GBP views of the same household agreeing to the penny at the day's
 rate.
 
 **Exit:** the household's whole wealth is on the new app, every figure was
-entered through the bot, and the old tracker can be switched off.
+entered through the chat, and the old tracker can be switched off.
 
 **Cost:** about £1 a month more in Claude for the extra flows; nothing in
 AWS.
@@ -516,9 +566,9 @@ steady growth, so market mood and risk come first and direction last.
   likely range and its drivers, combined with F3 and F4 and calibrated;
   monthly retraining; model versions with their test scores; it switches
   itself off when its live record slips.
-- **F6, the side-by-side view (MA-124).** Designed first: the Telegram card
+- **F6, the side-by-side view (MA-124).** Designed first: the chat's card
   beside the rules engine's call, with disagreement flagged, and a Forecast
-  page per holding in the web app; shown for a holding only after 8 live
+  screen per holding in the app; shown for a holding only after 8 live
   weeks beating the base rate and the rules engine, in the Saturday review
   until then.
 - **F7, risk-steered money (MA-125).** Contributions continue, tilted away
@@ -534,13 +584,13 @@ phases 5 and 6; F7 needs F2 and F3.
 at tomorrow caught by the lab; walk-forward folds with a gap and the last two
 years held out; calibration curves; a known-answer backtest to the penny; the
 event study against a hand-worked example; the switch-off; the card and the
-page from fixtures, with Playwright screenshots.
+screen from fixtures, with snapshot tests.
 
 **Exit:** over ten years of walk-forward tests and 8 live weeks, the risk
 forecasts beat the base rate; the steered contributions cut the worst fall and
 the time underwater against buy-and-hold, within the growth trade-off you
-set; both engines' views and records sit side by side in Telegram and the web
-app.
+set; both engines' views and records sit side by side in the chat and on the
+dashboard.
 
 **Cost:** the data is free apart from EODHD Historian, £19.99 a month; compute
 a few dollars a month; Haiku filing the news under a dollar, inside the
@@ -550,9 +600,9 @@ Claude ceiling.
 
 ## Phase 12 — The agent team: configured, approved, self-healing, self-learning (later)
 
-The bot becomes a small team of agents with narrow jobs, every behaviour a
+MyPaisa becomes a small team of agents with narrow jobs, every behaviour a
 setting the admin controls, every change outside a setting's band the
-admin's approval in Telegram or the web, every prediction graded daily, and
+admin's approval in the chat or the Admin center, every prediction graded daily, and
 repairs made where they are safe, as `ARCHITECTURE.md` §20. Epic MA-127. For
 one household and its one admin, the owner.
 
@@ -561,7 +611,7 @@ one household and its one admin, the owner.
   `config/defaults.yaml`; one settings service; a minute's cache; a daily
   snapshot to S3.
 - **E2, the admin desk (MA-130).** Agents' requests and questions, and
-  the admin's instructions, in the admin's Telegram chat and the Admin center
+  the admin's instructions, in the admin's chat and the Admin center
   (Approvals, Settings, Agents, Incidents); approval with the second check;
   a daily digest, incidents at once; designed first.
 - **E3, the data steward (MA-131).** yfinance, Twelve Data's free tier and
@@ -584,7 +634,7 @@ one household and its one admin, the owner.
   $200 Claude credit, metered by agent; paid feeds recorded as subscriptions
   against the AWS and others cap of MA-137.
 
-**Order.** E1 and E2 can come forward once the web app and the second check
+**Order.** E1 and E2 can come forward once the dashboard and the second check
 exist (phase 5, MA-102); E3 after phase 2; E4 and E5 once stances are graded
 (phase 6); E6 with the Forecaster (phase 11); E7 and E8 alongside.
 
@@ -634,10 +684,38 @@ stale; INR and GBP views agree with the FX of the day; golden tests for the
 India basket.
 
 **Exit:** a member sends their CAS and broker export, taps Confirm once, and
-the Indian holdings with their history appear in the brief and the web app
+the Indian holdings with their history appear in the brief and on the dashboard
 in INR and GBP, with the files they came from open from the Audit page.
 
 **Cost:** £0 on the free path; a paid feed only on the admin's approval.
+
+---
+
+## Phase 14 — The app beyond the chat: widgets, Siri, the share sheet, Live Activities (later)
+
+MyPaisa reaches the household outside the app where iOS allows it (MA-175).
+Each story is designed first; privacy mode holds everywhere.
+
+- **A widget (MA-176):** the household's total and the day's move on the
+  Home Screen and the Lock Screen, from the last fetch with its time; privacy
+  mode shows the mark and "Hidden".
+- **The share sheet (MA-177):** a factsheet or a screenshot shared from Mail,
+  Files or Photos goes to MyPaisa and opens the chat on the reading card;
+  nothing is saved before Confirm.
+- **Siri and Shortcuts (MA-178):** "How is the portfolio today?" answered
+  with the total and the day's move; "Log money into MyPaisa" opens the
+  guided flow; never a write without Confirm in the app.
+- **A Live Activity (MA-179):** an import (MA-111, MA-152) followed on the
+  Lock Screen and in the Dynamic Island, with no amounts.
+
+**Tests:** each widget, intent and the share extension from fixtures, in
+light, dark, tinted and clear, with privacy on; the extension signs in
+through the shared Keychain group and refuses when signed out.
+
+**Exit:** the widget on your Lock Screen shows the household's day without
+opening the app, and hides it when privacy mode is on.
+
+**Cost:** £0.
 
 ---
 
@@ -666,11 +744,11 @@ What is ported from where, so the work can be checked against the original.
 | Phase | Effort | Calendar |
 | --- | --- | --- |
 | 0 Prerequisites | 1 day, half of it yours | Week 1 |
-| 1 Registry, ingestion, identity, both environments | 7 days | Weeks 1–3 |
+| 1 Registry, sign-in, the app's chat, both environments | 10 days | Weeks 1–3 |
 | 2 Prices and engine | 5 days | Weeks 2–3 |
 | 3 Briefs, alerts, charts, technical mode | 3 days | Week 4 |
 | 4 Chat, cards, scenarios | 4 days | Weeks 5–6 |
-| 5 Web app: dashboard, audit, activity | 5 days | Weeks 7–8 |
+| 5 The dashboard and Admin center, in the app and the web app | 9 days | Weeks 7–9 |
 | 6 Track record | 2 days, then runs on its own | Week 8 |
 | 7 News and sentiment | 3 days | Week 9 |
 | 8 Stances live | after 8 weeks of shadow | Week 17+ |
@@ -679,6 +757,7 @@ What is ported from where, so the work can be checked against the original.
 | 11 The Forecaster | 8–12 weeks | F1 and F2 any time after phase 2; the rest after phase 7, when wanted |
 | 12 The agent team | 6–8 weeks | E1 and E2 after phase 5; the rest with phases 6 and 11, when wanted |
 | 13 Indian markets and the Indian portfolio | 3–4 weeks | IN1 after phase 2; IN2 after phase 1's importer; IN4's forecasts with phase 11, when wanted |
+| 14 The app beyond the chat | 1–2 weeks | After phase 5, when wanted |
 
 ---
 
@@ -691,10 +770,15 @@ uv run pytest --cov --cov-fail-under=90
 terraform fmt -check -recursive infra
 for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
+# when ios/ changed (MA-166)
+swift-format lint --recursive --strict ios
+xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M3)'
 ```
 
 Plus: golden tests for any engine change; a card change ships with both its
-simple and technical rendering; no secret anywhere; cost stated when a paid
+simple and technical rendering, and a screen change its snapshot tests in
+both themes; no secret anywhere; cost stated when a paid
 API is touched; every new write path produces its audit row and every new
 handler writes its `RunRecord`, both covered by tests.
 
@@ -709,7 +793,8 @@ handler writes its `RunRecord`, both covered by tests.
 | The ported engine drifts from the original | Golden tests from the desk's own self-tests |
 | A holder's cascade that is too eager to ADD | PAUSE on exhaustion or elevated risk; top-ups capped; shadow mode first |
 | Confidence numbers that are not calibrated | Weekly reliability table; recalibration rule; "no clear view" below 55% |
-| Rich messages behave differently than the write-ups say | HTML fallback on day one |
+| A new app meets an old api, or a TestFlight build expires | The api states its minimum app version and an older app asks to update; prod's Lambdas go live before the prod app; an alert at day 60 of a build's 90 (MA-167) |
+| A card the app does not know yet | Every card carries a plain line; an unknown type or newer version shows it with "Update MyPaisa to see this card" (MA-174) |
 | Alert fatigue | Weekly red budget, cooldowns, repeat filter |
 | An agent changes something it should not | One settings service enforcing schema, range and band; approval with the second check for anything outside the band; every change a version and an audit row; secrets and infrastructure out of agents' reach |
 | Self-tuning chases noise | Calibration moves at most two points a day with a probation and rollback; rules and models change only on weeks of evidence and the admin's approval |
@@ -720,7 +805,7 @@ handler writes its `RunRecord`, both covered by tests.
 | A message or a job is lost when something fails | Every hand-off through an SQS queue with retries and backoff; idempotent handlers; a dead-letter queue behind each with an alarm, a copy in S3, and replay by script, button or the ops warden |
 | Cost overrun | The Claude ceiling's ladder steps down at 85% and 95% and stops at 100%; guards per member, per day and per run; the Console workspace limit as the hard backstop; AWS Budgets for AWS; `/pause` |
 | Prompt injection via news or a PDF | Untrusted text marked; no dangerous tools exist; Confirm on every write |
-| A session cookie stolen from a laptop | `HttpOnly`, `Secure`, `SameSite=Strict`, five-minute access tokens behind it; the data routes are read-only; status and epoch re-checked on every call; the owner signs the member out everywhere or pauses them (MA-102) |
+| A phone lost or stolen | Tokens in the Keychain on that device only; five-minute access tokens; the data routes are read-only; status and epoch re-checked on every call; the owner signs that device out or pauses the member (MA-102); the optional Face ID lock (MA-171); every admin action needs the second check |
 | A change meant for dev reaches prod | Separate state per environment; the developer role denied on `env=prod`; prod applied only by CI after your approval; the nightly drift check |
 | An import writes bad history into prod | Dry run first; fingerprints stop duplicates; Confirm with the second check; rollback by import id; tested on dev first |
 | Observability that costs more than the app | Ten metrics, one dashboard, sampled traces, fourteen-day logs, `RunRecord` rows that expire after ninety days |

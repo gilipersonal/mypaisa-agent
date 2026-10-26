@@ -11,6 +11,8 @@
       <helmet data-dc-atomics>
         <meta name="design_doc_mode" content="canvas" />
         <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
@@ -102,7 +104,7 @@
           .kvv { overflow-wrap: anywhere; }
           .res { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-add-bg); color: var(--mp-ink); }
           .l-when { text-align: right; }
-          .mx { display: grid; grid-template-columns: minmax(0, 1fr) 84px 84px 104px; }
+          .mx { display: grid; grid-template-columns: minmax(0, 1fr) 120px 120px 104px; }
           .mxr { display: contents; }
           .mxr > * { padding: 10px 8px 10px 0; border-top: 1px solid var(--mp-line); min-width: 0; }
           .mxr.hd > * { border-top: 0; padding-top: 4px; }
@@ -181,6 +183,8 @@
           .mpm-coin { fill: var(--mp-hero); }
           .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
           .mpm-dot { fill: var(--mp-coral); }
+          /* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey (25% brightness) */
+          .t-dark .mp-ink3:not(.mp-mask), .t-dark .tlabs > span, .t-dark .kk, .t-dark .cell.off, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
         </style>
       </helmet>
 
@@ -189,7 +193,7 @@
         <p class="dv-intro">The Admin center pages planned after MA-102, extending the picked option A, People first: the same sidebar with Admin selected, the same page head and fresh-check chip, and under it a row of the center's six pages (People is the page in Admin center). Owner only, browser only. Every action here needs the fresh check, says what it does before you confirm it, writes an audit row and sends you a Telegram message; destructive actions are crimson on its tint, never the coral primary. Drawn at 1280 on the adaptive shell from tokens.css, light and dark. Now is Saturday 31 Oct, 08:28; each flow starts with no fresh check. Illustrative figures; You and Asha are fictional. The same requests, alerts and incidents reach the owner's chat in Telegram admin.</p>
         <div class="dv-rules">
           <div class="dv-rule"><b>Still the one exception to read-only</b>These pages hold the owner's settings, so they act: move a ceiling, replay failed work, approve or reject an agent's request, roll a setting back, choose how an incident ends. Every other page stays read-only, and nothing here can touch a holding or the history.</div>
-          <div class="dv-rule"><b>One check for every action</b>The fresh check from MA-102: your passkey on this Mac, or a fresh Google sign-in, good for 5 minutes. Reading needs none. In Telegram the same act asks for the second check: Face ID or the PIN.</div>
+          <div class="dv-rule"><b>One check for every action</b>The fresh check from MA-102: your passkey on this Mac, or a fresh Google sign-in, good for 5 minutes. Reading needs none. In the MyPaisa app the same act asks for the second check: a fresh Sign in with Apple or a passkey, with Face ID.</div>
           <div class="dv-rule"><b>Two doors, one queue</b>Approvals, alerts and incidents also reach your Telegram chat. Deciding in one door updates the other: a request approved in Telegram shows here as decided, and a replay here edits the Telegram card.</div>
           <div class="dv-rule"><b>Code decides, Claude explains</b>Every figure comes from the meter, Cost Explorer, the scoreboards or the settings store. An agent acts alone only inside a setting's automatic band; anything else is a request to you.</div>
         </div>
@@ -202,7 +206,7 @@
                 <sc-for list="{{ g.views }}" as="v" hint-placeholder-count="2">
                   <div class="dv-fr">
                     <p class="dv-cap">{{ v.cap }}</p>
-                    <div class="board mp mp-app {{ v.cls }}" data-screen-label="{{ v.cap }}">
+                    <div class="board mp mp-app {{ v.cls }}" data-mo-frame-root="1" data-screen-label="{{ v.cap }}">
                       <div class="mp-shell">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
@@ -571,7 +575,7 @@
           const FOOT = {
             spend: 'Moving a ceiling, a step, a share or the cap needs a fresh check, takes effect on the next model call or job, writes an audit row and sends you a Telegram message. The chat can report spend but never change it.',
             alerts: 'Replay and every routing change need a fresh check, write an audit row and send you a Telegram message.',
-            appr: 'Approving needs the fresh check here and Face ID or the PIN in Telegram. Every decision is an audit row.',
+            appr: 'Approving needs the fresh check here and the second check in the MyPaisa app. Every decision is an audit row.',
             set: 'Every change, from you or an agent, goes through the one settings service: it checks the range, the band and the approval rule, then writes a version and an audit row.',
             agents: 'Each choice on an incident needs a fresh check, writes an audit row and closes or updates the card in your Telegram chat.'
           };
@@ -755,7 +759,7 @@
             { id: 'ap', tag: 'AP', name: 'Browser · Admin · Approvals', keys: 'MA-130', arch: 'ARCHITECTURE §20.3', desc: 'Requests as cards, waiting first, as members are in People; the chosen request in full on the right: what changes, why with its evidence, cost, risk, undo and expiry, then Approve, Reject and Why?.',
               views: both('appr', { cap: 'Browser · Admin · Approvals' }),
               notes: [n('Every request has the same seven parts', 'in the same order, so the owner learns where to look. Evidence is a small table, not a sentence of numbers.'), n('Decided in Telegram shows here:', 'cr-27, EODHD, approved at 08:05 with Face ID. A plain question from an agent waits here too, answered in the chat in the owner\'s own words.'), n('Approve is coral, Reject tinted:', 'neither is destructive. Why? opens the agent\'s reasons, written by Claude from the scoreboard\'s figures.')] },
-            { id: 'ap1', tag: 'AP.1', name: 'Browser · Admin · Approvals · Approve, the fresh check', keys: 'MA-130 · MA-102', arch: 'ARCHITECTURE §20.3', desc: 'Approving needs the fresh check here, as it needs Face ID or the PIN in Telegram.',
+            { id: 'ap1', tag: 'AP.1', name: 'Browser · Admin · Approvals · Approve, the fresh check', keys: 'MA-130 · MA-102', arch: 'ARCHITECTURE §20.3', desc: 'Approving needs the fresh check here, as it needs the second check in the MyPaisa app.',
               views: both('appr', { cap: 'Approvals · Approve 1, fresh check', ovl: 'fresh', freshFor: 'You are about to approve: Promote the risk model v8 over v7.' }),
               notes: [n('Approval without the check is refused', 'by the server too (PLAN phase 12\'s test), not just hidden here.')] },
             { id: 'ap2', tag: 'AP.2', name: 'Browser · Admin · Approvals · Approved', keys: 'MA-130', arch: 'ARCHITECTURE §20.3', desc: 'The request moves to Decided, the detail records who approved it, how and when, and the toast says the Telegram card is updated.',

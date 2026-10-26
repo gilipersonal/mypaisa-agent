@@ -1,5 +1,15 @@
 # Research: what to borrow, what to leave
 
+> **25 Oct 2026, MA-161.** The front end moved from a Telegram bot and its
+> Mini App to two doors: one native SwiftUI app for iPhone and iPad, with the
+> chat, signed in with Apple or Google (`docs/design/reviews/MA-161/decision.md`),
+> and the read-only web app in a browser, a PWA for the dashboard and the
+> Admin center.
+> The Telegram findings below (§3.4, the Delivery row in §4, the Telegram
+> sources) are kept as the record of what was learned on 23 Oct 2026; they no
+> longer drive the design. The sentences that state the current plan now say
+> the app.
+
 Reverse engineering of the two references, plus a survey of what is possible
 around them, done on 23 Oct 2026. `ARCHITECTURE.md` and `PLAN.md` are written
 from this. Nothing here is built.
@@ -9,7 +19,8 @@ short-term *trading* desk: deterministic indicators, a scored decision cascade,
 and an execution mandate with a hard guard. **Agent Toolbelt** is a *research*
 API: live fundamentals turned into structured, LLM-written verdict cards.
 MyPaisa Agent is neither a trader nor a public API; it is a long-term holder's
-analyst, driven from Telegram by a layman. So it borrows the desk's discipline
+analyst, driven from a chat by a layman (a Telegram bot when this was
+written; a native iOS app since MA-161). So it borrows the desk's discipline
 (code computes, the model explains, limits are enforced outside the model) and
 the toolbelt's card shapes (verdict, one-liner, evidence, data sources,
 generated-at), and drops execution and the SaaS plumbing.
@@ -50,7 +61,7 @@ Python stdlib, no network inside the maths.
 
 ### 1.3 What we leave
 
-- Execution, the mandate's dollar caps, order shapes and the hook. The bot
+- Execution, the mandate's dollar caps, order shapes and the hook. MyPaisa
   cannot trade and will not.
 - The short-term rotation philosophy ("accumulating is not the default").
   For an ISA the default *is* accumulating.
@@ -173,10 +184,16 @@ effort**. Not on Bedrock: Anthropic's server-side web search and web fetch
 is cheaper anyway), and Bedrock batch inference does not cover the 5.5
 models.
 
-That makes the layman's ingestion path possible: *send the bot the
+That makes the layman's ingestion path possible: *send MyPaisa the
 factsheet and a screenshot, it reads both and asks you to confirm*.
 
 ### 3.4 Telegram: what a bot can show in 2026
+
+Kept as the record (see the note at the top): since MA-161 the chat, its
+cards and charts and the dashboard are drawn natively in the iOS app, and
+none of the uses below is planned as written. The interactive dashboard with
+lightweight-charts on S3 and CloudFront lives on as the web app, in a browser
+rather than inside Telegram.
 
 | Capability | Use here |
 | --- | --- |
@@ -209,7 +226,7 @@ confidence turn out right. The method: the score is computed, not felt.
 
 Regulated investment advice in the UK is a matter for firms advising others.
 A tool a person builds and runs for their own household, holding no client
-money and placing no orders, is personal software. The bot still labels every
+money and placing no orders, is personal software. MyPaisa still labels every
 stance "a view, not advice", suggests only ISA-safe actions, and never says
 "sell everything".
 
@@ -224,7 +241,7 @@ stance "a view, not advice", suggests only ISA-safe actions, and never says
 | Decision | Flags and the holder/flat split | Verdict enums, buy-zone idea → "unusual price" | Bull/bear debate, risk limits in code | A holder's cascade (ADD / HOLD / PAUSE / TRIM / REBALANCE), confidence score, horizon, invalidation |
 | Words | Context never alters scores | Card skeleton: verdict, one-liner, evidence, sources | Two model tiers, reflection memory | Layman mode by default, technical on tap |
 | Guardrails | Fail-closed guard, circuit breakers, self-tests, self-audit | Caps on inputs, excluded lists | Kill switch, hash-chained ledger | No trading, no keys, protected positions, cost ceilings |
-| Delivery | Push per event, Friday review | Digest only when something changed | | Telegram rich messages, Mini App dashboard, PNG charts |
+| Delivery | Push per event, Friday review | Digest only when something changed | | The iOS app: the chat with native cards and Swift Charts, the dashboard beside it, Apple push; the same dashboard read-only in the web app, with lightweight-charts (Telegram rich messages, a Mini App dashboard and PNG charts until MA-161) |
 
 ---
 

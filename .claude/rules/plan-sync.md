@@ -10,7 +10,7 @@ check says so before any story starts and before any PR.
 | --- | --- | --- |
 | The plan | `PLAN.md` (phases), `ARCHITECTURE.md` (how), `TECH_STACK.md` (with what) | What is built, in which phase, to which design |
 | Jira | project MA: a phase epic per PLAN phase, a story or task per deliverable | Who does what, and its status |
-| The designs | Claude Design: MyPaisa app v1 (screens, Prototype) and MyPaisa DS v1 (the system); copied into `docs/design/app-v1/` and `docs/design/ds-v1/` with their etags in `docs/design/claude-design.json` | What a member sees |
+| The designs | Claude Design: MyPaisa iOS v1 (the app's screens, from MA-161), MyPaisa DS v1 (the system and its iOS kit) and MyPaisa app v1 (the superseded Telegram and web boards, kept as the record); copied into `docs/design/ios-v1/`, `docs/design/ds-v1/` and `docs/design/app-v1/` with their etags in `docs/design/claude-design.json` | What a member sees |
 | The trace | `docs/trace.json`, rendered to `docs/TRACE.md` | Which story follows which ARCHITECTURE section and which boards |
 
 The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.

@@ -103,7 +103,8 @@ def captions(path: Path) -> set[str]:
             if not (cls and "dv-turn" in cls.group(2).split()):  # a turn's label names the turn, not a board
                 caps.add(_caption(m.group(1)))
         # A numbered board heading: <a class="dv-tid">1</a><span class="dv-tname">Colour</span> (or dv-oid, dv-oname).
-        for m in re.finditer(r'class="dv-(t|o)id"[^>]*>(.*?)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
+        # The number is the chip's own text ([^<]*), so a chip quoted in prose earlier cannot swallow the page up to a label.
+        for m in re.finditer(r'class="dv-(t|o)id"[^>]*>([^<]*)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
             pair(_caption(m.group(2)), _caption(m.group(3)))
         # The canvas's own index of boards: <a href="#colour">1 · Colour</a>.
         for m in re.finditer(r'<nav class="dv-idx"[^>]*>(.*?)</nav>', t, re.S):
@@ -505,6 +506,11 @@ BOARD_CASES = [
     ("ds", "MyPaisa DS v1.dc.html", "Telegram draws the bubble and buttons; MyPaisa owns the PNG, the words and their order.", False),
     ("ds", "MyPaisa DS v1.dc.html", "1a · Warm ledger", True),
     ("app", "Browser.dc.html", "Browser · Browser boards 1 to 4", False), ("app", "Mini App.dc.html", "Mini App · Mini App screens", False),
+    # MA-161: the iOS boards. An option chip quoted in prose before its label must not hide the label.
+    ("ios", "Shell options.dc.html", "1a · Chat first", True), ("ios", "Shell options.dc.html", "1c · One timeline", True),
+    ("ios", "Shell options.dc.html", "1d · Chat first", False), ("ios", "iPhone chat.dc.html", "iPhone · Chat home", True),
+    ("ios", "iPhone chat.dc.html", "Chat home", False), ("ios", "iPhone chat.dc.html", "iPad · Chat home", False),
+    ("ios", "iPad and foldable.dc.html", "Foldable · Open", True), ("ds", "iOS kit.dc.html", "12 · Motion", True),
 ]
 
 

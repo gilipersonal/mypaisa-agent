@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iOS kit</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 22px; text-wrap: pretty; }
+          .dv-idx { display: flex; flex-wrap: wrap; gap: 8px; }
+          .dv-idx a { font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #14171F; background: rgba(0,0,0,.06); border-radius: 999px; padding: 9px 14px; text-decoration: none; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.08); }
+          .bd-note p { margin: 0; }
+          .bd-note code, .kode { font: 12px/17px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 0; }
+          /* the kit's own furniture: a themed pane per appearance */
+          .krow { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+          .kcol { display: flex; flex-direction: column; min-width: 0; }
+          .kp { background: var(--mp-bg); color: var(--mp-ink); border-radius: 28px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+          .kl { font: 500 11px/14px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-3); letter-spacing: 0; }
+          .ks { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+          .kh { display: flex; gap: 24px; align-items: flex-start; }
+          .kg { display: grid; gap: 16px; }
+          .lg > * { position: relative; z-index: 1; }
+          .kfloat { position: absolute; z-index: 5; }
+          .ktile { position: relative; height: 132px; border-radius: 20px; overflow: hidden; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line); }
+          .klist { display: flex; flex-direction: column; gap: 6px; }
+          .kli { display: flex; gap: 8px; align-items: flex-start; font: 400 15px/20px var(--mp-font); }
+          .kli .ms { font-size: 18px; line-height: 20px; color: var(--mp-ink-2); flex: none; }
+          .dev-s { width: 300px; height: 560px; border-radius: 46px; }
+          .dev-m { width: 280px; height: 540px; border-radius: 44px; }
+          .sb-s { padding: 0 26px 0 36px; }
+          .heroup { color: #8BE8AC; }
+          .rowv { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+          .lens { background: var(--lg-lens); }
+          .is-pressed { transform: scale(0.97); filter: brightness(0.9); }
+          .t-dark .is-pressed { filter: brightness(1.2); }
+          .g-pressed { transform: scale(1.05); background: var(--lg-fill-strong); }
+          /* 2 colour */
+          .crow { display: grid; grid-template-columns: minmax(0, 1fr) 210px 160px; gap: 12px; align-items: center; padding: 6px 0; border-top: 1px solid var(--mp-line); }
+          .crow.kl { border-top: 0; padding: 0; }
+          .cslot { display: flex; gap: 8px; align-items: center; }
+          .csw { width: 32px; height: 32px; border-radius: 9px; flex: none; box-shadow: inset 0 0 0 1px rgba(128,128,128,.45); }
+          .ctok { font: 600 12px/16px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 0; }
+          .cswift { font: 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-accent); letter-spacing: 0; }
+          .chex { font: 11px/14px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); letter-spacing: 0; }
+          .crat { font: 600 12px/16px var(--mp-font); letter-spacing: 0; }
+          .cwas { font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); letter-spacing: 0; }
+          .kp .mp-chartaxis, .kp .mp-chartlbl { font-size: 12px; }
+          .dimmed { filter: brightness(0.35); }
+          .brule { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 18px; }
+          /* 3 type */
+          .trow { display: grid; grid-template-columns: minmax(0, 1fr) 128px; gap: 12px; align-items: center; padding: 5px 0; border-top: 1px solid var(--mp-line); }
+          .tmeta { display: flex; flex-direction: column; font: 11px/14px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-3); letter-spacing: 0; }
+          .tmeta b { color: var(--mp-ink); font-weight: 600; }
+          .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .tabn { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+          .ax3-h { font: 600 40px/48px var(--mp-font); } .ax3-f { font: 400 33px/40px var(--mp-font); letter-spacing: 0; }
+          .ax3-l { font: 400 36px/43px var(--mp-font); color: var(--mp-ink-2); } .ax3-v { font: 600 40px/48px var(--mp-font); }
+          .ax5-h { font: 600 53px/62px var(--mp-font); letter-spacing: -0.02em; } .ax5-f { font: 400 44px/52px var(--mp-font); letter-spacing: -0.01em; }
+          /* 4 bars */
+          .tbfr { position: relative; width: 372px; height: 150px; border-radius: 28px; overflow: hidden; background: var(--mp-bg); box-shadow: 0 0 0 1px var(--mp-line); }
+          .tbbg { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+          .tabmin { width: 56px; height: 56px; border-radius: 999px; display: grid; place-items: center; flex: none; color: var(--mp-accent); }
+          .tabmin .ms { font-size: 24px; }
+          .sbfr { position: relative; width: 330px; height: 580px; border-radius: 28px; overflow: hidden; background: var(--mp-bg); box-shadow: 0 0 0 1px var(--mp-line); }
+          /* 5 toolbars and composer */
+          .navfr { position: relative; width: 372px; height: 236px; border-radius: 28px; overflow: hidden; background: var(--mp-bg); box-shadow: 0 0 0 1px var(--mp-line); }
+          .cpfr { position: relative; width: 372px; border-radius: 28px; background: var(--mp-bg); box-shadow: 0 0 0 1px var(--mp-line); padding: 14px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; }
+          .cfield-col { flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 6px 6px 8px; border-radius: 24px; }
+          .cf-row { display: flex; align-items: center; gap: 8px; padding-left: 10px; min-height: 38px; }
+          .att { display: flex; align-items: center; gap: 10px; padding: 6px 4px 6px 6px; border-radius: 16px; background: var(--lg-lens); }
+          .att-ic { width: 36px; height: 36px; border-radius: 10px; background: var(--mp-surface); color: var(--mp-accent); display: grid; place-items: center; flex: none; }
+          .bspec { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+          /* 6 cards */
+          .atag { width: 20px; height: 20px; border-radius: 50%; background: var(--mp-ink); color: var(--mp-bg); font: 700 11px/20px var(--mp-font); text-align: center; flex: none; letter-spacing: 0; }
+          .plainl { border: 1.5px dashed var(--mp-ink-3); border-radius: 14px; padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start; font: 400 15px/20px var(--mp-font); }
+          .legend { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px 10px; align-items: start; font: 400 14px/20px var(--mp-font); color: var(--mp-ink-2); }
+          .legend b { color: var(--mp-ink); font-weight: 600; }
+          /* 7 controls */
+          .ctl { display: grid; grid-template-columns: 96px repeat(3, 150px); gap: 14px; align-items: center; }
+          .segc { display: grid; place-items: center; }
+          .seg-pr { background: rgba(20, 23, 31, 0.08); }
+          .t-dark .seg-pr { background: rgba(255, 255, 255, 0.08); }
+          /* 8 sheets */
+          .dline { position: absolute; left: 0; right: 0; border-top: 1.5px dashed var(--mp-accent); z-index: 59; }
+          .detent { position: absolute; right: 12px; z-index: 60; font: 600 10px/14px ui-monospace, Menlo, monospace; color: var(--mp-accent); background: var(--mp-bg); padding: 1px 6px; border-radius: 6px; box-shadow: 0 0 0 1px var(--mp-accent); letter-spacing: 0; }
+          .abtns { display: flex; gap: 8px; margin-top: 10px; }
+          .abtn { flex: 1; min-height: 44px; border-radius: 999px; display: grid; place-items: center; font: 600 17px/22px var(--mp-font); background: var(--lg-lens); }
+          .lift { position: absolute; left: 14px; right: 14px; z-index: 48; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25); }
+          .ftoast { position: absolute; left: 22px; right: 22px; bottom: 34px; z-index: 50; display: flex; gap: 8px; align-items: center; }
+          /* 9 charts */
+          .chgrid { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; align-items: start; }
+          .spec { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+          .spec b { font: 600 13px/18px var(--mp-font); }
+          .spec span { font: 12px/17px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); letter-spacing: 0; }
+          .hc { height: 96px; margin-top: 12px; }
+          .hc > svg, .cc > svg, .vc > svg { height: 100%; }
+          .cc { height: 120px; }
+          .mp-chartbox rect { vector-effect: non-scaling-stroke; }
+          .cplot { position: relative; padding-right: 40px; margin-top: 12px; }
+          .ylab { position: absolute; right: 0; transform: translateY(-50%); font: 500 12px/14px var(--mp-font); color: var(--mp-ink-2); }
+          .hzl { position: absolute; bottom: 6px; transform: translateX(-50%); font: 700 12px/14px var(--mp-font); padding: 1px 6px; border-radius: 8px; }
+          .ax-s { transform: none !important; } .ax-e { transform: translateX(-100%) !important; }
+          .obar { display: flex; flex-direction: column; gap: 6px; }
+          .obar-t { display: flex; justify-content: space-between; gap: 12px; font: 400 15px/20px var(--mp-font); }
+          .obar-f { height: 100%; background: var(--mp-meter); border-radius: 999px; }
+          /* 10 icon */
+          .wall { border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+          .t-light .wall { background: linear-gradient(160deg, #E2CDB9, #AEBCD3); }
+          .t-dark .wall { background: linear-gradient(160deg, #1C2E4D, #2A1A22); }
+          .icrow { display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; }
+          .icc { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+          .icl { font: 600 12px/16px var(--mp-font); color: var(--mp-ink); letter-spacing: 0; }
+          .icm { display: block; width: 100%; height: 100%; }
+          .ic60 { width: 60px; height: 60px; border-radius: 13.5px; }
+          .ic60 .devband { height: 13px; font-size: 7px; line-height: 13px; letter-spacing: 0.1em; }
+          .ic-def { --w-ring: #B7C2D6; --w-coin: #233558; --w-pound: #FFFFFF; --w-dot: #FF6B4F; }
+          .ic-dark { --w-ring: #8D96A6; --w-coin: #1A2944; --w-pound: #FFFFFF; --w-dot: #FF7A5E; }
+          .ic-clear { --w-ring: rgba(255, 255, 255, 0.9); --w-coin: rgba(255, 255, 255, 0.26); --w-pound: #FFFFFF; --w-dot: #FFFFFF; }
+          .ic-tint { --w-ring: #E9E2D8; --w-coin: rgba(233, 226, 216, 0.24); --w-pound: #E9E2D8; --w-dot: #E9E2D8; }
+          .w-ring { stroke: var(--w-ring); } .w-coin { fill: var(--w-coin); } .w-pound { stroke: var(--w-pound); } .w-dot { fill: var(--w-dot); }
+          .homerow { display: grid; grid-template-columns: repeat(4, 76px); justify-content: space-between; padding: 4px 6px; }
+          .homerow .icc { gap: 6px; }
+          .phtile { width: 60px; height: 60px; border-radius: 13.5px; background: repeating-linear-gradient(135deg, rgba(255,255,255,.55) 0 6px, rgba(255,255,255,.28) 6px 12px); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+          .t-dark .phtile { background: repeating-linear-gradient(135deg, rgba(255,255,255,.16) 0 6px, rgba(255,255,255,.07) 6px 12px); }
+          .hlab { font: 500 12px/15px var(--mp-font); color: var(--mp-ink); text-align: center; white-space: nowrap; letter-spacing: 0; }
+          /* 11 accessibility */
+          .atile { background: var(--mp-surface); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--mp-shadow); }
+          .vo { outline: 3px solid var(--mp-ink); outline-offset: 3px; }
+          .vocap { background: #1F2329; color: #FFFFFF; border-radius: 12px; padding: 10px 12px; font: 400 14px/19px var(--mp-font); text-wrap: pretty; }
+          .t-dark .vocap { background: #2C323B; }
+          .hit { outline: 1.5px dashed var(--mp-accent); }
+          .icg { border-radius: 12px; background: var(--mp-bg); overflow: hidden; }
+          .icr { padding: 8px 10px; display: flex; flex-direction: column; }
+          .rmf { width: 44px; height: 60px; border-radius: 9px; background: var(--mp-bg); box-shadow: inset 0 0 0 1px var(--mp-line); position: relative; overflow: hidden; flex: none; }
+          .rms { position: absolute; left: 4px; right: 4px; bottom: 4px; height: 30px; border-radius: 7px; background: var(--mp-ink-3); }
+          .vc { height: 64px; border-radius: 10px; }
+          .kv > :last-child { white-space: nowrap; }
+          .icgrid { display: grid; grid-template-columns: repeat(4, 120px); gap: 16px; justify-items: center; align-items: end; }
+          .nw { white-space: nowrap; text-align: center; }
+          .t-dark .badge { color: #2A0710; }   /* the raised dark alert needs dark text (MA-181) */
+          /* motion on the kit: keep the chart's centring while its dot and label land */
+          @media (prefers-reduced-motion: no-preference) {
+            html.mo-ready [data-mo-frame="go"] .mp-chartdot[data-mo="dot"] { animation-name: kmo-dot; }
+            html.mo-ready [data-mo-frame="go"] .mp-chartlbl[data-mo="label"] { animation-name: kmo-lbl; }
+            html.mo-ready [data-mo-frame="go"] .mball { animation: kmo-slide var(--kmo-t) var(--kmo-e) both; animation-delay: 240ms; }
+          }
+          @keyframes kmo-dot { from { opacity: 0; transform: translate(-50%, -50%) scale(0.4); } to { opacity: 1; transform: translate(-50%, -50%); } }
+          @keyframes kmo-lbl { from { opacity: 0; transform: translate(-50%, -100%) translateY(8px); } to { opacity: 1; transform: translate(-50%, -100%); } }
+          @keyframes kmo-slide { from { transform: translateX(-120px); } to { transform: none; } }
+          /* 12 motion */
+          .mcurve { background: var(--mp-surface); border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--mp-shadow); }
+          .mcv { display: block; width: 100%; height: 84px; overflow: visible; }
+          .mcv line { stroke: var(--mp-line); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+          .mcv path { fill: none; stroke: var(--mp-accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+          .mtrack { position: relative; height: 16px; border-radius: 999px; background: var(--mp-surface-2); }
+          .mball { position: absolute; right: 34px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--mp-accent); }
+          .mstag { display: flex; gap: 8px; }
+          .mstag-i { width: 44px; height: 44px; border-radius: 12px; background: var(--mp-surface); box-shadow: var(--mp-shadow); display: grid; place-items: center; font: 600 15px/20px var(--mp-font); }
+          .mdemo { position: relative; height: 176px; border-radius: 20px; padding: 14px; box-sizing: border-box; overflow: hidden; box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+          .msaved { font-size: 30px; color: var(--mp-accent); }
+          .mtab { margin-top: 28px; max-width: 1340px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 8px 22px; }
+          .mtr { display: grid; grid-template-columns: 190px minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; padding: 10px 0; border-top: 1px solid rgba(0,0,0,.08); font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+          .mtr b { color: #14171F; }
+          .mth { border-top: 0; font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; }
+          .mcode { font: 12.5px/19px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 0; color: #14171F; }
+        </style>
+      </helmet>
+
+      <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+        <defs>
+          <g id="kw-pound"><path d="M31.6 15.2 C31.1 11.1 28.4 8.6 24.8 8.6 C20.7 8.6 18 11.5 18 15.6 L18 28.4 C18 31.5 16.9 33.5 14.4 35.2"></path><path d="M14.4 35.2 H33.6"></path><path d="M13.6 23.4 H26.6"></path></g>
+          <symbol id="kw1c" viewBox="0 0 48 48" overflow="visible"><path class="w-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke-width="1.6"></path><circle class="w-coin" cx="24" cy="24" r="14.6"></circle><use href="#kw-pound" class="w-pound" transform="translate(24.1 24) scale(.56) translate(-23.6 -21.9)" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"></use><circle class="w-dot" cx="38.14" cy="9.86" r="3.8"></circle></symbol>
+        </defs>
+      </svg>
+
+      <section class="dv-turn" id="top" data-screen-label="iOS kit: intro">
+        <div class="dv-thd"><span class="dv-tname">MyPaisa DS v1 · iOS kit</span></div>
+        <p class="dv-intro">The native app for iPhone and iPad (MA-161) in Warm ledger. The content stays solid (the navy hero, cards, lists, charts, messages) and Liquid Glass is only the layer of controls that floats above it, as Apple's HIG for iOS 26 says. Every class here is in <b>tokens.css</b> and <b>ios.css</b>; each board shows light and dark, and the screens built from them are in the MyPaisa iOS v1 project. Illustrative figures and names.</p>
+        <nav class="dv-idx" aria-label="Boards"><a href="#b1">1 · Liquid Glass layers</a><a href="#b2">2 · Colour in the app</a><a href="#b3">3 · Type and Dynamic Type</a><a href="#b4">4 · Tab bar and sidebar</a><a href="#b5">5 · Toolbars and the composer</a><a href="#b6">6 · Messages and cards</a><a href="#b7">7 · Buttons, chips and controls</a><a href="#b8">8 · Sheets, menus and alerts</a><a href="#b9">9 · Charts</a><a href="#b10">10 · App icon</a><a href="#b11">11 · Accessibility</a><a href="#b12">12 · Motion</a></nav>
+      </section>
+
+      <!-- 1 -->
+      <section class="bd" id="b1" data-screen-label="1 · Liquid Glass layers">
+        <div class="bd-h"><span class="bd-id">1</span><span class="bd-name">Liquid Glass layers</span><span class="bd-keys">MA-163 · MA-169</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" style="width: 640px">
+                <div class="kh">
+                  <div class="ks" style="gap: 20px"><span class="kl dv-cap">Home · content under the glass</span>
+                  <div class="dev dev-s">
+                    <div class="island"></div>
+                    <div class="scrn">
+                      <div class="sbar sb-s"><span>9:41</span><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                      <div class="largetitle">Home</div>
+                      <div class="scroll">
+                        <div class="fx col gap12" style="padding: 4px 14px 0">
+                          <div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">Household · Fri 23 Oct</span><span class="mp-num-l">£24,110</span><span class="mp-foot heroup">▲ £96 · 0.4% today</span></div>
+                          <div class="mp-group">
+                            <div class="mp-row"><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div>
+                            <div class="mp-row"><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-hl">Three ETFs and cash</span><span class="mp-foot mp-ink2">4 holdings</span></span><span class="rowv"><span class="mp-hl">£1,185</span></span></div>
+                          </div>
+                          <div class="mp-card fx col gap4"><span class="mp-over mp-ink2">Today</span><span class="mp-hl">Nothing to do this week</span></div>
+                        </div>
+                      </div>
+                      <div class="edge-bot" style="height: 120px"></div>
+                      <div class="tabdock" style="left: 10px; right: 10px; bottom: 18px; gap: 8px"><div class="tabs lg" style="height: 58px"><span class="tab on" style="height: 50px"><span class="ms">chat_bubble</span>Chat</span><span class="tab" style="height: 50px"><span class="ms">home</span>Home</span><span class="tab" style="height: 50px"><span class="ms">insights</span>Activity</span><span class="tab" style="height: 50px"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg" style="width: 58px; height: 58px"><span class="ms">search</span></span></div>
+                      <div class="homebar"></div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="ks" style="flex: 1; gap: 20px; padding-top: 34px">
+                    <div class="ks"><span class="kl">Layer 2 · Liquid Glass · the controls</span>
+                      <div class="klist"><span class="kli"><span class="ms">check</span><span>Tab bar and sidebar</span></span><span class="kli"><span class="ms">check</span><span>Toolbar buttons and groups</span></span><span class="kli"><span class="ms">check</span><span>The composer and its shortcut chips</span></span><span class="kli"><span class="ms">check</span><span>Menus, partial sheets, alerts</span></span><span class="kli"><span class="ms">check</span><span>Notification platters, the search field</span></span></div>
+                    </div>
+                    <div class="ks"><span class="kl">Layer 1 · Warm ledger · the content</span>
+                      <div class="klist"><span class="kli"><span class="ms">check</span><span>The navy hero and the cards</span></span><span class="kli"><span class="ms">check</span><span>Grouped lists and charts</span></span><span class="kli"><span class="ms">check</span><span>Messages, and Confirm on a card</span></span></div>
+                    </div>
+                    <div class="ks"><span class="kl">Never</span>
+                      <div class="klist"><span class="kli"><span class="ms">close</span><span>Content made of glass</span></span><span class="kli"><span class="ms">close</span><span>Glass on glass: a button in a glass group has none of its own</span></span><span class="kli"><span class="ms">close</span><span>More than one tinted control in a group</span></span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ks" style="gap: 14px"><span class="kl dv-cap">Glass on this ground, and the tinted primary</span>
+                <div class="ks" data-mo-frame-root="1" style="gap: 22px">
+                <div class="kg" style="grid-template-columns: repeat(3, minmax(0, 1fr))">
+                  <div class="ks"><span class="kl">Over a list</span>
+                    <div class="ktile">
+                      <div class="mp-row"><span class="mp-hl" style="flex: 1">Balanced</span><span class="mp-hl">£22,925</span></div>
+                      <div class="mp-row" style="border-top: 1px solid var(--mp-line)"><span class="mp-hl" style="flex: 1">Silver ETC</span><span class="mp-hl">£188</span></div>
+                      <div class="kfloat" style="right: 10px; bottom: 10px"><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                    </div>
+                  </div>
+                  <div class="ks"><span class="kl">Over the hero · dark glass</span>
+                    <div class="ktile"><div class="mp-hero fx col gap4" style="border-radius: 0; height: 100%; box-sizing: border-box; padding: 14px 16px"><span class="mp-foot mp-hero-2">Household</span><span class="mp-num-l">£24,110</span></div>
+                      <div class="kfloat t-dark mp" style="left: 10px; bottom: 10px; background: transparent"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span></div>
+                    </div>
+                  </div>
+                  <div class="ks"><span class="kl">Reduce Transparency</span>
+                    <div class="ktile rt"><div class="mp-hero fx col gap4" style="border-radius: 0; height: 100%; box-sizing: border-box; padding: 14px 16px"><span class="mp-foot mp-hero-2">Household</span><span class="mp-num-l">£24,110</span></div>
+                      <div class="kfloat t-dark mp" style="left: 10px; bottom: 10px; background: transparent"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ks"><span class="kl">The tinted primary · Send is the one coral control in its group</span>
+                  <div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="txt">£200 into Balanced</span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></div>
+                </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Two layers.</b> Content is solid Warm ledger: the navy hero, cards, grouped lists, charts and messages. Liquid Glass is only the layer of controls that floats above it, and content scrolls under it.</p>
+            <p><b>Where glass goes.</b> The tab bar, the sidebar, toolbar buttons, the composer and its chips, menus, partial sheets and notification platters. Glass carries labels only, in ink or ink-2; over dark content iOS turns it dark.</p>
+            <p><b>Tint with intent.</b> Only the primary control of a group is tinted coral: Send. Confirm on a card is a filled content button, never glass.</p>
+            <p><b>Reduce Transparency.</b> The system makes glass opaque, and the app's own glass follows: the surface colour, no blur (<code>.rt</code> on the boards).</p>
+            <p><b>Built with</b> the system bars and <code>.glassEffect()</code> in a <code>GlassEffectContainer</code>, so a group morphs as one: the shell in MA-163, the composer in MA-169.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="bd" id="b2" data-screen-label="2 · Colour in the app">
+        <div class="bd-h"><span class="bd-id">2</span><span class="bd-name">Colour in the app</span><span class="bd-keys">MA-165</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 700px; gap: 12px">
+                <div class="fx ac jb"><span class="mp-hl">{{ t.app }}</span><span class="kl">contrast_check.py --report</span></div>
+                <div class="ks" style="gap: 0">
+                  <div class="crow kl" style="padding-bottom: 6px"><span>Token · Swift name</span><span>Normal · full · at 25%</span><span>Increase Contrast</span></div>
+                  <sc-for list="{{ t.colors }}" as="c" hint-placeholder-count="15">
+                    <div class="crow"><span class="fx col"><span class="ctok">{{ c.tok }}</span><span class="cswift">{{ c.swift }}</span></span><span class="cslot"><span class="csw" style="background: {{ c.h }}"></span><span class="fx col"><span class="chex">{{ c.h }}</span><span class="crat">{{ c.r }}</span><sc-if value="{{ c.was }}" hint-placeholder-val="{{ false }}"><span class="cwas">{{ c.was }}</span></sc-if></span></span><span class="cslot"><span class="csw" style="background: {{ c.hi }}"></span><span class="fx col"><span class="chex">{{ c.hi }}</span><span class="crat">{{ c.ri }}</span></span></span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Tokens become assets.</b> Each <code>--mp-*</code> token is a colour set in MyPaisaUI's asset catalog with four slots: light, dark, and each with Increase Contrast. A script writes the catalog from tokens.css, so the two never drift (MA-165).</p>
+            <p><b>Swift names.</b> <code>--mp-ink</code> becomes <code>Color.mpInk</code>; views use the names, never a hex.</p>
+            <p><b>Two figures a pair.</b> WCAG's ratio at full brightness, then at a simulated 25% (each luminance a quarter, plus room glare), from <code>scripts/contrast_check.py --report</code>, against the card (the hero for hero ink and coral, its tint for a stance). Body text needs 7:1 and 4.5:1, other text 4.5:1 and 3:1, meaningful marks 3:1 and 1.8:1.</p>
+            <p><b>Dark raised for 25% (MA-181).</b> ink-2, ink-3, accent, down-quiet, alert and hold were lighter than they could hold dimmed; each row shows the old value and its figures. Rebalance and Watch rose too.</p>
+            <p><b>Drawn here first.</b> The Increase Contrast values are new on this board; tokens.css takes them in MA-165, before the catalog is generated.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="bd" id="b3" data-screen-label="3 · Type and Dynamic Type">
+        <div class="bd-h"><span class="bd-id">3</span><span class="bd-name">Type and Dynamic Type</span><span class="bd-keys">MA-165</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 646px">
+                <div class="kh">
+                  <div class="ks" style="width: 330px; gap: 0">
+                    <span class="kl" style="padding-bottom: 6px">Text styles at Large · SF Pro</span>
+                    <sc-for list="{{ types }}" as="y" hint-placeholder-count="10">
+                      <div class="trow"><span class="{{ y.cls }} clip">{{ y.w }}</span><span class="tmeta"><b>{{ y.s }}</b><span>{{ y.m }}</span></span></div>
+                    </sc-for>
+                  </div>
+                  <div class="ks" style="flex: 1; gap: 18px">
+                    <div class="ks"><span class="kl">Hero figures · SF Pro Rounded, heavy</span>
+                      <div class="mp-hero" style="padding: 14px 18px"><span class="mp-num-hero">£24,110</span></div>
+                      <span class="kode mp-ink2">.system(size: hero, weight: .heavy, design: .rounded), with @ScaledMetric(relativeTo: .largeTitle) var hero = 44</span>
+                    </div>
+                    <div class="ks"><span class="kl">Tabular numerals · .monospacedDigit()</span>
+                      <div class="mp-card tabn"><span class="mp-sub">£22,925</span><span class="mp-sub">£512</span><span class="mp-sub">£304</span><span class="mp-sub">£188</span><span class="mp-sub">£181</span><span class="mp-hl" style="border-top: 1px solid var(--mp-line); padding-top: 4px; margin-top: 2px; align-self: stretch; text-align: right">£24,110</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kh">
+                  <div class="ks"><span class="kl">One card at Large</span>
+                    <div class="ccard" style="width: 230px"><div class="ccard-h"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></div><div class="ccard-b"><div class="kv"><span>Value</span><span>£22,925</span></div><div class="kv"><span>Today</span><span class="mp-up">▲ 0.6%</span></div></div></div>
+                  </div>
+                  <div class="ks"><span class="kl">The same card at AX3 · figures under labels</span>
+                    <div class="ccard" style="width: 340px"><div class="ccard-h"><span class="ax3-h">Balanced</span><span class="ax3-f mp-ink2">Monzo · ISA</span></div><div class="ccard-b" style="gap: 14px"><div class="fx col"><span class="ax3-l">Value</span><span class="ax3-v">£22,925</span></div><div class="fx col"><span class="ax3-l">Today</span><span class="ax3-v mp-up">▲ 0.6%</span></div></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Dynamic Type, not fixed sizes.</b> The DS's scale is Apple's at the Large setting, so each class is one text style and follows the member's setting from xSmall to AX5.</p>
+            <p><b>Hero figures</b> use SF Pro Rounded, heavy, scaled with the large title. Every figure uses tabular numerals, so columns line up and a counting number never jitters.</p>
+            <p><b>From AX1, figures stack under their labels</b> instead of being cut; a card grows taller, never narrower, and a figure is never truncated.</p>
+            <p><b>SF Pro on the device.</b> The app uses the system font; the web's Inter and Nunito stand-ins are not shipped. MA-165 builds the styles in MyPaisaUI.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="bd" id="b4" data-screen-label="4 · Tab bar and sidebar">
+        <div class="bd-h"><span class="bd-id">4</span><span class="bd-name">Tab bar and sidebar</span><span class="bd-keys">MA-163 · MA-169</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 774px">
+                <div class="kh">
+                  <div class="ks" style="gap: 20px">
+                    <div class="ks"><span class="kl">iPhone · the tab bar at rest</span>
+                      <div class="tbfr">
+                        <div class="tbbg"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-text">Good morning. Balanced rose 0.6% yesterday. Nothing to do this week.</div></div></div>
+                        <div class="edge-bot" style="height: 96px"></div>
+                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                      </div>
+                    </div>
+                    <div class="ks"><span class="kl">Minimised on scroll · the selected tab and Search</span>
+                      <div class="tbfr" style="height: 140px">
+                        <div class="tbbg"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-text">Mostly the pound: it fell 0.5% against the dollar.</div></div></div>
+                        <div class="edge-bot" style="height: 90px"></div>
+                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px; align-items: center"><span class="tabmin lg"><span class="ms ms-fill">chat_bubble</span></span><span class="cfield lg" style="min-height: 52px"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">mic</span></span></span><span class="tabmin lg" style="color: var(--mp-ink)"><span class="ms">search</span></span></div>
+                      </div>
+                    </div>
+                    <div class="ks"><span class="kl">Search · the field takes the bar</span>
+                      <div class="tbfr" style="height: 140px">
+                        <div class="tbbg"><div class="mp-group"><div class="mp-row"><span class="ms mp-ink2">history</span><span class="mp-sub" style="flex: 1">Recent: NASDAQ 100 ETF</span></div></div></div>
+                        <div class="edge-bot" style="height: 90px"></div>
+                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px; align-items: center"><span class="tabmin lg" style="color: var(--mp-ink)"><span class="ms">chat_bubble</span></span><span class="cfield lg" style="min-height: 52px; padding-left: 14px"><span class="ms mp-ink2" style="font-size: 20px">search</span><span class="ph">Holdings, changes, files</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">close</span></span></span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ks"><span class="kl">iPad and an open foldable · the sidebar</span>
+                    <div class="sbfr">
+                      <div class="mp-hero" style="position: absolute; left: 170px; right: -40px; top: 70px; height: 150px"></div>
+                      <div class="sidebar lg" style="position: absolute; left: 0; top: 0; bottom: 0; width: 260px; margin: 10px"><div class="side-h" style="padding-top: 4px">MyPaisa</div><span class="side-i"><span class="ms">search</span>Search</span><span class="side-i"><span class="ms">chat_bubble</span>Chat</span><span class="side-i on"><span class="ms">home</span>Home</span><span class="side-i"><span class="ms">pie_chart</span>Holdings</span><span class="side-i"><span class="ms">insights</span>Activity</span><span class="side-i"><span class="ms">history</span>Audit</span><div class="side-h">Owner</div><span class="side-i"><span class="ms">shield_person</span><span style="flex: 1">Admin center</span><span class="badge">1</span></span><span class="side-i"><span class="ms">account_circle</span>You</span><div class="side-h" style="margin-top: auto">The Dutta household · Arun, owner</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>iPhone: one glass tab bar.</b> Chat · Home · Activity · You, with Search as iOS 26's separate search tab. The selected tab sits in a lens, in the accent, its symbol filled.</p>
+            <p><b>Minimised on scroll.</b> As the conversation scrolls, the bar shrinks to its selected tab and the composer takes the bottom; scrolling back or a tap brings it back.</p>
+            <p><b>Search takes the bar</b> when it opens, and finds a holding, a change, a file or a past answer (MA-180).</p>
+            <p><b>iPad and an open foldable: the sidebar.</b> The same sections in a glass sidebar (<code>.sidebarAdaptable</code>), with Owner apart. The Admin center's red badge counts only what asks for action; members never see Owner.</p>
+            <p><b>Motion.</b> The selected tab's lens glides to the tapped tab (<code>glassEffectID</code>) and the bar shrinks with <code>.smooth</code> as content scrolls; the sidebar stays put while content moves.</p>
+            <p><b>44 pt rows and tabs,</b> labels never truncated at Large. The shell is MA-163; the chat tab is MA-169.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="bd" id="b5" data-screen-label="5 · Toolbars and the composer">
+        <div class="bd-h"><span class="bd-id">5</span><span class="bd-name">Toolbars and the composer</span><span class="bd-keys">MA-163 · MA-169</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 816px">
+                <div class="kh">
+                  <div class="ks" style="gap: 20px">
+                    <div class="ks"><span class="kl">Large title, at rest</span>
+                      <div class="navfr" style="height: 266px">
+                        <div class="island"></div>
+                        <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                        <div class="largetitle">Balanced</div>
+                        <div style="padding: 0 16px"><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">Monzo · ISA</span><span class="mp-num-l">£22,925</span></div></div>
+                      </div>
+                    </div>
+                    <div class="ks"><span class="kl">Scrolled · the title goes inline</span>
+                      <div class="navfr" style="height: 232px">
+                        <div class="mp-group" style="position: absolute; left: 16px; right: 16px; top: 92px"><div class="mp-row"><span class="mp-sub" style="flex: 1">Units</span><span class="mp-hl">1,234.50</span></div><div class="mp-row"><span class="mp-sub" style="flex: 1">Price</span><span class="mp-hl">18.57</span></div><div class="mp-row"><span class="mp-sub" style="flex: 1">Today</span><span class="mp-hl mp-up">▲ 0.6%</span></div></div>
+                        <div class="edge-top"></div>
+                        <div class="island"></div>
+                        <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Balanced</span><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                      </div>
+                    </div>
+                    <div class="ks"><span class="kl">Toolbar buttons</span>
+                      <div class="fx" style="gap: 22px; align-items: flex-start">
+                        <div class="bspec"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="kl">one · 44 pt</span></div>
+                        <div class="bspec"><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span><span class="kl">a group</span></div>
+                        <div class="bspec"><span class="gtext lg"><span>Edit</span></span><span class="kl">a word</span></div>
+                        <div class="bspec"><span class="gbtn lg-tint"><span class="ms">check</span></span><span class="kl">the primary</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ks" style="gap: 20px">
+                    <div class="ks"><span class="kl">Composer · empty, with shortcut chips</span>
+                      <div class="cpfr">
+                        <div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">history</span><span>Audit</span></span></div>
+                        <div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">mic</span></span></span></div>
+                      </div>
+                    </div>
+                    <div class="ks"><span class="kl">Typing · Send appears, tinted</span>
+                      <div class="cpfr"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="txt">I put £200 into Bal<span class="caret"></span></span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></div></div>
+                    </div>
+                    <div class="ks"><span class="kl">With an attachment</span>
+                      <div class="cpfr"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg cfield-col"><span class="att"><span class="att-ic"><span class="ms">description</span></span><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-sub mp-w6 clip">Balanced factsheet.pdf</span><span class="mp-foot mp-ink2">PDF · 182 KB</span></span><span class="gbtn" style="width: 44px; height: 44px"><span class="ms" style="font-size: 20px">close</span></span></span><span class="cf-row"><span class="txt">This month's factsheet</span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></span></div></div>
+                    </div>
+                    <div class="ks"><span class="kl">The + menu</span>
+                      <div class="cpfr" style="height: 286px; justify-content: flex-end">
+                        <div class="menu lg" style="left: 12px; bottom: 78px; min-width: 0; width: 236px"><span class="menu-i"><span>Camera</span><span class="ms">photo_camera</span></span><span class="menu-i"><span>Scan a document</span><span class="ms">document_scanner</span></span><span class="menu-i"><span>Photos</span><span class="ms">photo_library</span></span><span class="menu-i"><span>Files</span><span class="ms">folder</span></span></div>
+                        <div class="cbar"><span class="cplus lg"><span class="ms">close</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">mic</span></span></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Toolbar buttons are glass.</b> 44 pt circles, grouped in one capsule when they belong together; a button in a group has no glass of its own. The primary of a toolbar, such as Done in a sheet, is the one tinted.</p>
+            <p><b>Large title, then the scroll edge.</b> A screen opens with its large title; as content scrolls under the bar it softens behind the system's scroll-edge effect and the title moves inline.</p>
+            <p><b>The composer floats in glass.</b> The + opens Camera, Scan a document, Photos and Files; the mic shows while it is empty; Send, tinted coral, appears once there is something to send. An attachment rides in the field until sent.</p>
+            <p><b>Motion.</b> The + morphs into its menu and back inside one <code>GlassEffectContainer</code>; Send arrives with <code>.snappy</code> and a light impact; the title moves inline with the scroll.</p>
+            <p><b>Shortcut chips</b> change with the conversation; a tap starts the request, and the old /commands still work typed. Toolbars are MA-163; the composer is MA-169.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="bd" id="b6" data-screen-label="6 · Messages and cards">
+        <div class="bd-h"><span class="bd-id">6</span><span class="bd-name">Messages and cards</span><span class="bd-keys">MA-34 · MA-169 · MA-174</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 800px">
+                <div class="kh">
+                  <div class="ks" style="width: 360px; gap: 18px">
+                    <span class="kl">The conversation</span>
+                    <div class="chat" style="padding: 0">
+                      <div class="daysep">Today 07:15</div>
+                      <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div></div></div>
+                      <div class="me">I put £200 into Balanced today</div>
+                      <span class="me-time">07:41</span>
+                      <div class="ai"><div class="ai-mark"><i></i></div><div class="typing"><i></i><i></i><i></i></div></div>
+                    </div>
+                    <div class="legend"><span class="ms" style="font-size: 18px">person</span><span><b>The member:</b> a navy bubble, on the right.</span><span class="ms" style="font-size: 18px">forum</span><span><b>MyPaisa:</b> its words beside the mark, no bubble.</span><span class="ms" style="font-size: 18px">more_horiz</span><span><b>Typing:</b> until the first word, then the words stream.</span></div>
+                    <span class="kl">The Confirm card</span>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="mp-over mp-ink2">Confirm</span><span class="mp-hl">Bought £200 of Balanced</span></div>
+                      <div class="ccard-b"><div class="kv"><span>When</span><span>Today, Fri 23 Oct</span></div><div class="kv"><span>Account</span><span>Monzo · ISA</span></div><div class="kv"><span>Units</span><span>10.77 at 18.57</span></div></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    </div></div></div>
+                  </div>
+                  <div class="ks" style="flex: 1; gap: 14px">
+                    <span class="kl">Card anatomy · the Portfolio card</span>
+                    <div class="ccard">
+                      <div class="ccard-h"><span class="fx ac gap8"><span class="atag">1</span><span class="mp-over mp-ink2">Portfolio · Household</span></span><span class="mp-foot mp-ink2">Prices to Thu 22 Oct close</span></div>
+                      <div class="ccard-b">
+                        <span class="fx ac gap8"><span class="atag">2</span><span class="mp-num-l">£24,110</span></span>
+                        <span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today · ▲ 2.1% this month</span>
+                        <div class="kv"><span>Balanced</span><span>£22,925</span></div>
+                        <div class="kv"><span>Three ETFs and cash</span><span>£1,185</span></div>
+                      </div>
+                      <div class="ccard-acts" style="align-items: center"><span class="atag">3</span><span class="cbtn">Open Home</span><span class="cbtn cbtn-ghost">Why?</span></div>
+                      <div class="ccard-fold"><span class="fx ac gap8"><span class="atag">4</span><span>Technical</span></span><span class="ms">expand_less</span></div>
+                      <div class="ccard-tech"><span>Balanced 1,234.50 u × 18.57 = £22,925</span><span>ETFs £512 + £304 + £188 = £1,004</span><span>Cash, Monzo pot = £181</span><span>Close Thu 22 Oct · GBP/USD 1.3312</span></div>
+                    </div>
+                    <div class="plainl"><span class="atag">5</span><span>Household £24,110, up £96, 0.4%, today.</span></div>
+                    <div class="legend"><span class="atag">1</span><span><b>Heading:</b> what the card is and as of when.</span><span class="atag">2</span><span><b>Figures:</b> typed numbers from the engine, never prose.</span><span class="atag">3</span><span><b>Actions:</b> content buttons with ids; some ask for the second check.</span><span class="atag">4</span><span><b>Technical:</b> the working, one tap away.</span><span class="atag">5</span><span><b>Plain line:</b> for push and VoiceOver.</span></div>
+                    <span class="kl">A card the app does not know yet</span>
+                    <div class="ccard"><div class="ccard-h"><span class="mp-body">Household £24,110, up £96, 0.4%, today.</span><span class="mp-foot mp-acc mp-w6">Update MyPaisa to see this card</span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Two voices.</b> The member writes in navy bubbles on the right; MyPaisa's words sit beside its mark with no bubble, so its cards read as part of what it says.</p>
+            <p><b>Typing, then streaming.</b> The typing mark shows until the first word; words stream in as MyPaisa writes; a card arrives whole.</p>
+            <p><b>One card, five parts.</b> Heading, figures, actions, the Technical fold and a plain line. Every figure is the engine's, a typed number in the card's JSON; the words never work one out (MA-174).</p>
+            <p><b>Summary first.</b> Technical opens in place, one tap away; Why? asks in the chat. A card type the app does not know shows its plain line and asks to update.</p>
+            <p><b>Motion.</b> The member's message pushes up from the composer, a card rises whole with <code>.smooth</code>, and Confirm turns into its saved check with <code>.bouncy</code> and a success haptic.</p>
+            <p><b>Confirm is content.</b> Confirm, Edit and Cancel are content buttons on the card, and nothing is saved until Confirm. The Portfolio and Confirm cards are MA-34's pick, drawn natively in MA-169.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="bd" id="b7" data-screen-label="7 · Buttons, chips and controls">
+        <div class="bd-h"><span class="bd-id">7</span><span class="bd-name">Buttons, chips and controls</span><span class="bd-keys">MA-165</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 640px">
+                <div class="ctl">
+                  <span></span><span class="kl">Default</span><span class="kl">Pressed</span><span class="kl">Disabled</span>
+                  <sc-for list="{{ btns }}" as="b" hint-placeholder-count="6">
+                    <span class="ks gap2"><span class="mp-foot mp-w6">{{ b.lab }}</span><span class="kl">{{ b.spec }}</span></span>
+                    <sc-for list="{{ b.cells }}" as="s" hint-placeholder-count="3"><span><span class="{{ s.cls }}" data-mo="{{ s.mo }}">{{ s.label }}</span></span></sc-for>
+                  </sc-for>
+                  <span class="ks gap2"><span class="mp-foot mp-w6">Shortcut chip</span><span class="kl">glass · 36</span></span>
+                  <span><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span></span>
+                  <span><span class="gchip lg g-pressed" data-mo="still"><span class="ms">pie_chart</span><span>Portfolio</span></span></span>
+                  <span><span class="gchip lg mp-disabled" data-mo="still"><span class="ms">pie_chart</span><span>Portfolio</span></span></span>
+                  <span class="ks gap2"><span class="mp-foot mp-w6">Segmented</span><span class="kl">system · 44</span></span>
+                  <span><span class="mp-seg"><span class="mp-seg-i segc on">Simple</span><span class="mp-seg-i segc">Technical</span></span></span>
+                  <span><span class="mp-seg"><span class="mp-seg-i segc on">Simple</span><span class="mp-seg-i segc seg-pr">Technical</span></span></span>
+                  <span><span class="mp-seg mp-disabled"><span class="mp-seg-i segc on">Simple</span><span class="mp-seg-i segc">Technical</span></span></span>
+                  <span class="ks gap2"><span class="mp-foot mp-w6">Switch</span><span class="kl">off · on</span></span>
+                  <span class="fx gap10"><span class="mp-switch"><span class="mp-switch-k"></span></span><span class="mp-switch on"><span class="mp-switch-k"></span></span></span>
+                  <span class="fx"><span class="mp-switch on"><span class="mp-switch-k" style="width: 33px; transform: translateX(14px)"></span></span></span>
+                  <span class="fx"><span class="mp-switch on mp-disabled"><span class="mp-switch-k"></span></span></span>
+                </div>
+                <div class="ks"><span class="kl">The six stances · a word and, on a holding's own card, its confidence</span>
+                  <div class="fx" style="gap: 8px; flex-wrap: wrap"><span class="mp-chip mp-add">Add</span><span class="mp-chip mp-hold">Hold</span><span class="mp-chip mp-pause">Pause</span><span class="mp-chip mp-trim">Trim</span><span class="mp-chip mp-reb">Rebalance</span><span class="mp-chip mp-watch">Watch</span></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Content buttons.</b> Primary (filled accent) for the one action that matters, tinted for the others, ghost for Cancel, alert red only for a destructive act. Never glass; at least 44 pt tall.</p>
+            <p><b>Pressed and disabled.</b> Pressed scales to 97% and darkens a step (lightens in dark); glass brightens and swells. Disabled is 40% and takes no tap, with the reason said nearby.</p>
+            <p><b>Chips.</b> Shortcut chips are glass, they live with the composer, and their tap area is 44 pt. Stance chips are content: always a word, and on a holding's own card its confidence and "a view, not advice".</p>
+            <p><b>Motion.</b> Every control answers the finger with <code>.snappy(extraBounce: 0.08)</code>: buttons dip to 95%, the segmented lens and the switch knob glide, a chip ticks with a selection haptic.</p>
+            <p><b>No Buy or Sell.</b> MyPaisa cannot trade, so no button anywhere offers to. The segmented control and switch are the system's, coloured by the tokens. MA-165 builds them in MyPaisaUI.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="bd" id="b8" data-screen-label="8 · Sheets, menus and alerts">
+        <div class="bd-h"><span class="bd-id">8</span><span class="bd-name">Sheets, menus and alerts</span><span class="bd-keys">MA-76 · MA-169</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" style="width: 960px; padding: 28px 32px">
+                <div class="kg" style="grid-template-columns: repeat(3, 280px); gap: 36px 32px">
+                  <sc-for list="{{ sheets }}" as="f" hint-placeholder-count="6">
+                    <div class="ks" style="gap: 18px"><span class="kl dv-cap">{{ f.cap }}</span>
+                      <div class="dev dev-m">
+                        <div class="island"></div>
+                        <div class="scrn">
+                          <div class="sbar sb-s"><span>9:41</span><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                          <sc-if value="{{ f.home }}" hint-placeholder-val="{{ true }}">
+                            <div class="largetitle" style="font-size: 30px; line-height: 36px">Home</div>
+                            <div class="fx col gap12" style="padding: 0 14px">
+                              <div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">Household · Fri 23 Oct</span><span class="mp-num-l">£24,110</span><span class="mp-foot heroup">▲ £96 · 0.4% today</span></div>
+                              <div class="mp-group">
+                                <div class="mp-row"><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div>
+                                <div class="mp-row"><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-hl">Three ETFs and cash</span><span class="mp-foot mp-ink2">4 holdings</span></span><span class="rowv"><span class="mp-hl">£1,185</span></span></div>
+                              </div>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ f.admin }}" hint-placeholder-val="{{ false }}">
+                            <div class="largetitle" style="font-size: 30px; line-height: 36px">Admin center</div>
+                            <div style="padding: 0 14px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Members</span><span class="mp-hl">Sign Asha out of every device</span><span class="mp-foot mp-ink2">iPhone and iPad · seen 08:12</span></div><div class="ccard-acts"><span class="cbtn cbtn-alert">Sign out</span><span class="cbtn cbtn-ghost">Cancel</span></div></div></div>
+                          </sc-if>
+                          <sc-if value="{{ f.dim }}" hint-placeholder-val="{{ false }}"><div class="dim"></div></sc-if>
+                          <sc-if value="{{ f.part }}" hint-placeholder-val="{{ false }}">
+                            <div class="dline" style="top: 66px"></div><span class="detent" style="top: 52px">large</span>
+                            <div class="dline" style="top: 262px"></div><span class="detent" style="top: 268px">medium</span>
+                            <div class="sheet lg" style="height: 270px; box-sizing: border-box; gap: 12px"><div class="sheet-grab"></div><div class="sheet-h"><span class="mp-hl">Why did Balanced rise?</span><span class="gbtn lens"><span class="ms">close</span></span></div><div class="mp-callout" style="text-wrap: pretty">Mostly the pound: it fell 0.5% against the dollar, and about two thirds of Balanced is in dollar assets.</div><div class="kv"><span>Balanced today</span><span class="mp-up">▲ 0.6%</span></div><div class="kv"><span>Pound to dollar</span><span class="mp-dq">▼ 0.5%</span></div></div>
+                          </sc-if>
+                          <sc-if value="{{ f.full }}" hint-placeholder-val="{{ false }}">
+                            <div class="sheet full" style="gap: 12px; padding: 10px 16px 30px"><div class="sheet-grab"></div><div class="sheet-h"><span class="gbtn lg"><span class="ms">close</span></span><span class="mp-hl">Balanced</span><span class="gbtn lg"><span class="ms">chat_bubble</span></span></div><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">BlackRock MyMap · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot heroup">▲ 0.6% today</span></div><div class="mp-group"><div class="mp-row"><span class="mp-sub" style="flex: 1">Units</span><span class="mp-hl">1,234.50</span></div><div class="mp-row"><span class="mp-sub" style="flex: 1">Price</span><span class="mp-hl">18.57</span></div></div><span class="cbtn cbtn-primary">Update in the chat</span></div>
+                          </sc-if>
+                          <sc-if value="{{ f.menu }}" hint-placeholder-val="{{ false }}">
+                            <div class="lift mp-group" style="top: 228px"><div class="mp-row"><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div></div>
+                            <div class="menu lg lg-strong" style="left: 14px; top: 304px; min-width: 0; width: 236px; --mo-origin: 30% 0"><span class="menu-i"><span>Open Balanced</span><span class="ms">chevron_right</span></span><span class="menu-i"><span>Ask about it</span><span class="ms">chat_bubble</span></span><span class="menu-i"><span>Update in the chat</span><span class="ms">edit</span></span><div class="menu-sep"></div><span class="menu-i"><span>Copy the value</span><span class="ms">content_copy</span></span></div>
+                          </sc-if>
+                          <sc-if value="{{ f.alert }}" hint-placeholder-val="{{ false }}">
+                            <div class="sysalert lg lg-strong" style="width: 244px; margin-left: -122px; box-sizing: border-box"><span class="mp-hl">Sign out of this iPhone?</span><span class="mp-foot mp-ink2">You will need Apple or Google to sign in again. Your records stay with the household.</span><div class="abtns"><span class="abtn">Cancel</span><span class="abtn c-alert">Sign out</span></div></div>
+                          </sc-if>
+                          <sc-if value="{{ f.face }}" hint-placeholder-val="{{ false }}">
+                            <div class="sheet lg lg-strong apple" style="gap: 10px"><div class="sheet-grab"></div><div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="gbtn lens"><span class="ms">close</span></span></div><div class="mp-sub mp-ink2" style="text-align: center">Use your Apple Account to sign in to MyPaisa.</div><div class="faceid"><span class="ms">familiar_face_and_zone</span></div><div class="mp-foot mp-ink2" style="text-align: center">Face ID</div></div>
+                          </sc-if>
+                          <sc-if value="{{ f.toast }}" hint-placeholder-val="{{ false }}">
+                            <div class="mp-toast ftoast" data-mo="rise"><span class="ms" style="font-size: 20px">check_circle</span><span>Back online. 1 message sent.</span></div>
+                          </sc-if>
+                          <div class="homebar"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Partial sheets float in glass,</b> inset from the edges with concentric corners, at the medium or large detent: Why?, What if? and the pickers. What they hold is solid content.</p>
+            <p><b>Full sheets are solid ground,</b> edge to edge, for a screen opened over the chat: close at the left, Ask at the right, Update opens the chat.</p>
+            <p><b>Menus and alerts are glass</b> and grow out of what opened them. A destructive choice is red and never the default.</p>
+            <p><b>The second check is iOS's own sheet:</b> a fresh Sign in with Apple under Face ID, or a passkey, bound to the action and verified by the server. A local Face ID alone never authorises anything (MA-76).</p>
+            <p><b>Motion.</b> Sheets rise on the system curve; menus and alerts grow out of what opened them; the Face ID glyph settles once; nothing here loops.</p>
+            <p><b>A toast confirms quietly,</b> never carries an amount, and leaves on its own. MA-169 builds these patterns.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="bd" id="b9" data-screen-label="9 · Charts">
+        <div class="bd-h"><span class="bd-id">9</span><span class="bd-name">Charts</span><span class="bd-keys">MA-56 · MA-58</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 708px">
+                <div class="chgrid">
+                  <div class="mp-hero" style="padding: 18px 18px 14px">
+                    <div class="fx ac jb"><span class="mp-foot mp-hero-2">Household · October</span><span class="mp-chip upchip">▲ 2.1% this month</span></div>
+                    <div class="mp-num-hero" style="margin-top: 4px">£24,110</div>
+                    <div class="mp-foot heroup">▲ £96 · 0.4% today</div>
+                    <div class="mp-chartbox hc"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="{{ hero.area }}" fill="var(--mp-hero-area)"></path><path d="{{ hero.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ hero.ex }}; top: {{ hero.ey }}"></span><span class="mp-chartlbl" style="left: {{ hero.ex }}; top: {{ hero.ey }}; color: var(--mp-hero-ink)">Today</span></div>
+                    <div class="mp-chartaxis mp-hero-2" style="margin-top: 6px"><span class="ax-s" style="left: 0">1 Oct</span><span style="left: 50%">12 Oct</span><span class="ax-e" style="left: 100%">23 Oct</span></div>
+                  </div>
+                  <div class="spec"><b>The hero line</b><span>LineMark · coral, 2.5 pt, .catmullRom</span><span>AreaMark · coral at 18%</span><span>PointMark · today, labelled in text</span><span>No grid and no y axis on the hero</span></div>
+
+                  <div class="mp-card" style="padding: 16px 16px 12px">
+                    <div class="fx ac jb"><span class="mp-hl">Balanced · 90 days</span><span class="mp-chip mp-hold">Hold · 71%</span></div>
+                    <div class="fx ac gap8" style="margin-top: 2px"><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span></div>
+                    <div class="cplot">
+                      <div class="mp-chartbox cc"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="8.33" y2="8.33" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="50" y2="50" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="91.67" y2="91.67" stroke="var(--mp-chart-grid)" stroke-width="1"></line><rect x="86.5" y="0" width="13.5" height="100" fill="var(--mp-hold-bg)" stroke="var(--mp-hold)" stroke-width="1" stroke-dasharray="3 3"></rect><path d="{{ bal.area }}" fill="var(--mp-chart-area)"></path><path d="{{ bal.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ bal.ex }}; top: {{ bal.ey }}"></span><span class="hzl mp-hold" style="left: 93.25%">Hold</span></div>
+                      <span class="ylab" style="top: 8.33%">£23k</span><span class="ylab" style="top: 50%">£22k</span><span class="ylab" style="top: 91.67%">£21k</span>
+                    </div>
+                    <div class="mp-chartaxis mp-ink2" style="margin: 6px 40px 0 0"><span style="left: 6.7%">Aug</span><span style="left: 36.5%">Sep</span><span style="left: 65.4%">Oct</span><span class="ax-e" style="left: 100%">6 Nov</span></div>
+                    <div class="mp-foot mp-ink2" style="margin-top: 10px">Hold for the next 2 weeks · a view, not advice</div>
+                  </div>
+                  <div class="spec"><b>A holding's history</b><span>LineMark and AreaMark · the chart line and area</span><span>RectangleMark · the stance horizon, in the stance's tint, dashed edge</span><span>AxisMarks · trailing, pounds masked in privacy mode</span><span>The stance only on the holding's own card</span></div>
+
+                  <div class="mp-card fx col gap12">
+                    <div class="fx col gap2"><span class="mp-hl">Overlap · what your funds share</span><span class="mp-foot mp-ink2">Share of the smaller fund that the other also holds</span></div>
+                    <sc-for list="{{ overlap }}" as="o" hint-placeholder-count="3">
+                      <div class="obar"><div class="obar-t"><span>{{ o.a }}</span><span class="mp-w6">{{ o.p }}</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: {{ o.p }}"></div></div></div>
+                    </sc-for>
+                  </div>
+                  <div class="spec"><b>The overlap bars</b><span>BarMark · one colour, the meter blue, never green</span><span>The value as text beside each bar</span><span>Largest first</span></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>One house style in Swift Charts.</b> The chat's cards and the dashboard draw the same charts from the engine's series; no chart is an image any more (MA-56, MA-58).</p>
+            <p><b>Lines and areas are marks; words are text.</b> Labels, values and the stance's word are SwiftUI text over the plot, as tokens.css's chart rule says: never a value baked into a drawing.</p>
+            <p><b>The coral line is the house's,</b> on the navy hero and on the card. A stance's horizon is shaded in its own tint, and the card says "a view, not advice".</p>
+            <p><b>Motion.</b> The line and its area draw in under an animated mask, dots and labels land after, bars grow from zero, and scrubbing moves a glass lollipop with a selection tick per point.</p>
+            <p><b>Never green for a bar.</b> Bars and meters are the meter blue; green stays for gains with ▲. Every chart has an audio graph (board 11).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="bd" id="b10" data-screen-label="10 · App icon">
+        <div class="bd-h"><span class="bd-id">10</span><span class="bd-name">App icon</span><span class="bd-keys">MA-20 · MA-142 · MA-165</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 628px">
+                <div class="wall">
+                  <span class="kl">The four appearances · 120 pt</span>
+                  <div class="icgrid">
+                    <sc-for list="{{ icons }}" as="i" hint-placeholder-count="4">
+                      <div class="icc"><div class="appicon {{ i.cls }}"><svg class="icm" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) scale(.74) translate(-24 -24)"><use href="#kw1c"></use></g></svg></div><span class="icl">{{ i.lab }}</span></div>
+                    </sc-for>
+                  </div>
+                  <span class="kl">60 pt</span>
+                  <div class="icgrid">
+                    <sc-for list="{{ icons }}" as="i" hint-placeholder-count="4">
+                      <div class="icc"><div class="appicon ic60 {{ i.cls }}"><svg class="icm" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) scale(.74) translate(-24 -24)"><use href="#kw1c"></use></g></svg></div></div>
+                    </sc-for>
+                  </div>
+                  <span class="kl">MyPaisa Dev · the DEV band at every size</span>
+                  <div class="icrow">
+                    <div class="icc"><div class="appicon appicon-default ic-def"><svg class="icm" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 21) scale(.64) translate(-24 -24)"><use href="#kw1c"></use></g></svg><span class="devband">DEV</span></div><span class="icl">Default</span></div>
+                    <div class="icc"><div class="appicon appicon-dark ic-dark"><svg class="icm" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 21) scale(.64) translate(-24 -24)"><use href="#kw1c"></use></g></svg><span class="devband">DEV</span></div><span class="icl">Dark</span></div>
+                    <div class="icc"><div class="appicon ic60 appicon-default ic-def"><svg class="icm" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 21) scale(.64) translate(-24 -24)"><use href="#kw1c"></use></g></svg><span class="devband">DEV</span></div><span class="icl">60 pt</span></div>
+                  </div>
+                  <span class="kl">On the Home Screen</span>
+                  <div class="homerow">
+                    <div class="icc"><span class="phtile"></span><span class="hlab">Another app</span></div>
+                    <div class="icc"><div class="appicon ic60 {{ t.home }}"><svg class="icm" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) scale(.74) translate(-24 -24)"><use href="#kw1c"></use></g></svg></div><span class="hlab">MyPaisa</span></div>
+                    <div class="icc"><div class="appicon ic60 {{ t.home }}"><svg class="icm" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 21) scale(.64) translate(-24 -24)"><use href="#kw1c"></use></g></svg><span class="devband">DEV</span></div><span class="hlab">MyPaisa Dev</span></div>
+                    <div class="icc"><span class="phtile"></span><span class="hlab">Another app</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The 1c Watcher mark</b> (MA-103, Logo.dc.html) on the navy tile, in Icon Composer's four appearances. The member's Home Screen setting picks one; the app never does.</p>
+            <p><b>Clear and tinted</b> drop the colour: the mark is one tone the system lights or tints, so it reads on any wallpaper.</p>
+            <p><b>Two apps, never confused.</b> MyPaisa Dev (MA-20) carries the coral DEV band at every size; MyPaisa, the household's app (MA-142), never does.</p>
+            <p><b>One layered source.</b> Icon Composer makes every size from one file per app, kept in the project's asset set (MA-165); 120 and 60 pt are shown.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="bd" id="b11" data-screen-label="11 · Accessibility">
+        <div class="bd-h"><span class="bd-id">11</span><span class="bd-name">Accessibility</span><span class="bd-keys">MA-181</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 720px">
+                <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start">
+                  <div class="atile" style="grid-column: 1 / -1"><span class="kl">25% brightness · the same card at full and at a simulated 25%</span>
+                    <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px"><div class="ks gap6"><span class="kl">Full brightness</span><div style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Why?</span></div></div></div></div><div class="ks gap6"><span class="kl">25%, drawn as brightness 0.35</span><div class="dimmed" style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Why?</span></div></div></div></div></div>
+                    <div class="brule"><span class="kli"><span class="ms">check</span><span>No tertiary grey for anything a member must read</span></span><span class="kli"><span class="ms">check</span><span>Nothing under 12 pt; secondary text 13 pt or more</span></span><span class="kli"><span class="ms">check</span><span>Regular weight or heavier, never light or thin</span></span><span class="kli"><span class="ms">check</span><span>No hairline as the only edge of a control</span></span><span class="kli"><span class="ms">check</span><span>Glass carries labels only, in ink or ink-2</span></span><span class="kli"><span class="ms">check</span><span>iOS turns glass dark over dark content</span></span></div>
+                  </div>
+                  <div class="ks" style="gap: 16px">
+                    <div class="atile"><span class="kl">VoiceOver · a figure</span>
+                      <div class="mp-group vo" style="background: var(--mp-bg)"><div class="mp-row"><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div></div>
+                      <div class="vocap">Balanced, twenty-two thousand nine hundred and twenty-five pounds, up 0.6 percent today. Button.</div>
+                      <span class="kl">.accessibilityLabel, written from the figures</span>
+                    </div>
+                    <div class="atile"><span class="kl">VoiceOver · a chart</span>
+                      <div class="mp-chartbox vc vo"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="{{ hero.area }}" fill="var(--mp-chart-area)"></path><path d="{{ hero.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round"></path></svg></div>
+                      <div class="vocap">Household value, 1 to 23 October. From twenty-three thousand six hundred and fourteen pounds to twenty-four thousand one hundred and ten, up 2.1 percent. Audio graph available.</div>
+                      <span class="kl">AXChartDescriptor · an audio graph</span>
+                    </div>
+                    <div class="atile"><span class="kl">Dynamic Type AX5 · a row</span>
+                      <div class="fx col"><span class="ax5-h">Balanced</span><span class="ax5-f mp-ink2">Monzo · ISA</span><span class="ax5-h">£22,925</span><span class="ax5-f mp-up">▲ 0.6%</span></div>
+                    </div>
+                  </div>
+                  <div class="ks" style="gap: 16px">
+                    <div class="atile"><span class="kl">Increase Contrast</span>
+                      <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+                        <div class="ks" style="gap: 8px"><span class="kl">Standard</span><div class="icg"><div class="icr"><span class="mp-sub mp-w6">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></div><div class="icr" style="border-top: 1px solid var(--mp-line)"><span class="mp-sub mp-w6">Cash</span><span class="mp-foot mp-ink2">Monzo pot</span></div></div><span class="gbtn lg"><span class="ms">more_horiz</span></span></div>
+                        <div class="ks" style="gap: 8px"><span class="kl">Increased</span><div class="icg" style="box-shadow: inset 0 0 0 1px {{ t.icLine }}"><div class="icr"><span class="mp-sub mp-w6">Balanced</span><span class="mp-foot" style="color: {{ t.ic3 }}">Monzo · ISA</span></div><div class="icr" style="border-top: 1px solid {{ t.icLine }}"><span class="mp-sub mp-w6">Cash</span><span class="mp-foot" style="color: {{ t.ic3 }}">Monzo pot</span></div></div><span class="gbtn lg lg-strong" style="box-shadow: 0 0 0 1.5px {{ t.icLine }}, var(--lg-lift)"><span class="ms">more_horiz</span></span></div>
+                      </div>
+                    </div>
+                    <div class="atile"><span class="kl">Reduce Motion</span>
+                      <div class="fx ac gap8"><span class="mp-foot" style="width: 92px">Standard: the sheet rises</span><span class="rmf"><span class="rms" style="transform: translateY(30px)"></span></span><span class="rmf"><span class="rms" style="transform: translateY(10px)"></span></span><span class="rmf"><span class="rms"></span></span></div>
+                      <div class="fx ac gap8"><span class="mp-foot" style="width: 92px">Reduce Motion: it fades in</span><span class="rmf"><span class="rms" style="opacity: 0.15"></span></span><span class="rmf"><span class="rms" style="opacity: 0.55"></span></span><span class="rmf"><span class="rms"></span></span></div>
+                      <span class="mp-foot mp-ink2">Figures land at their value; the mark's intro shows its last frame.</span>
+                    </div>
+                    <div class="atile"><span class="kl">44 pt targets</span>
+                      <div class="fx" style="gap: 30px; align-items: flex-start; padding: 6px 4px 0 6px">
+                        <div class="bspec"><span class="gbtn lg hit"><span class="ms">more_horiz</span></span><span class="kl nw">44 · 44</span></div>
+                        <div class="bspec"><span class="gchip lg hit" style="outline-offset: 4px"><span class="ms">wb_sunny</span><span>Today</span></span><span class="kl nw" style="margin-top: 4px">36 drawn<br />44 to tap</span></div>
+                        <div class="bspec"><span class="ms hit" style="font-size: 22px; outline-offset: 11px; margin: 11px">info</span><span class="kl nw">22 glyph<br />44 to tap</span></div>
+                      </div>
+                    </div>
+                    <div class="atile"><span class="kl">Colour is never the only signal</span>
+                      <div class="fx ac" style="gap: 14px; flex-wrap: wrap"><span class="mp-sub mp-up mp-w6">▲ 0.6%</span><span class="mp-sub mp-dq mp-w6">▼ 1.2%</span><span class="mp-chip mp-alertchip"><span class="ms" style="font-size: 16px">warning</span>Needs a look</span></div>
+                      <span class="mp-foot mp-ink2">Gains carry ▲, falls ▼; a stance is a word; an alert has an icon and a word; a chart labels its lines.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>VoiceOver reads what it shows.</b> Every figure has a spoken label in words, every chart an audio graph (<code>AXChartDescriptor</code>), and each card's plain line is its summary.</p>
+            <p><b>Dynamic Type to AX5.</b> Every row reflows; from AX1 figures stack under their labels, and nothing truncates a figure.</p>
+            <p><b>Increase Contrast and Reduce Transparency.</b> The colour sets switch to their high-contrast values (board 2) and glass gains an edge, or turns opaque (board 1).</p>
+            <p><b>Reduce Motion.</b> Sheets fade instead of rising, figures land at their value, and nothing loops.</p>
+            <p><b>25% brightness.</b> Every pair is measured at full and at a simulated 25% by <code>scripts/contrast_check.py</code>; dark mode's secondary text, accent and alert were raised to hold (board 2).</p>
+            <p><b>44 pt, and more than colour.</b> Every target is at least 44 pt, even a 36 pt chip. <code>performAccessibilityAudit()</code> runs in every screen's UI test (MA-181, with MA-166's gates).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="bd" id="b12" data-screen-label="12 · Motion">
+        <div class="bd-h"><span class="bd-id">12</span><span class="bd-name">Motion</span><span class="bd-keys">MA-182 · MA-56 · MA-169</span></div>
+        <div class="krow">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="kcol">
+              <div class="bd-theme">{{ t.label }}</div>
+              <div class="kp mp {{ t.cls }}" style="width: 900px">
+                <div class="ks" style="gap: 14px"><span class="kl dv-cap">The curves and their durations</span>
+                  <div class="kg" data-mo-frame-root="1" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
+                    <sc-for list="{{ curves }}" as="c" hint-placeholder-count="4">
+                      <div class="mcurve"><div class="fx ac jb"><span class="mp-hl">{{ c.n }}</span><span class="kl">{{ c.ms }}</span></div><svg class="mcv" viewBox="-4 -64 108 172" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="0" y2="0"></line><line x1="0" x2="100" y1="100" y2="100"></line><path d="{{ c.d }}"></path></svg><div class="mtrack"><span class="mball" style="--kmo-e: {{ c.e }}; --kmo-t: {{ c.t }}"></span></div><span class="mp-foot mp-ink2">{{ c.use }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div class="ks" style="gap: 14px"><span class="kl dv-cap">The stagger · 45 ms apart, at most eight</span>
+                  <div class="mstag" data-mo-frame-root="1"><sc-for list="{{ stag }}" as="s" hint-placeholder-count="8"><span class="mstag-i" data-mo="rise" style="--i: {{ s.i }}">{{ s.n }}</span></sc-for></div>
+                </div>
+                <div class="kg" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 20px">
+                  <div class="ks"><span class="kl dv-cap">Card arrives · .smooth</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Portfolio</span><span class="mp-num-l">£24,110</span><span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today</span></div></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Sent and received</span><div class="mdemo" data-mo-frame-root="1"><div class="chat" style="padding: 0; gap: 10px"><div class="me">£200 into Balanced</div><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Got it. Read it, then Confirm.</div></div></div></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Chips · 45 ms apart</span><div class="mdemo" data-mo-frame-root="1"><div class="chips" style="flex-wrap: wrap; overflow: visible"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">history</span><span>Audit</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Sheet rises</span><div class="mdemo" data-mo-frame-root="1" style="justify-content: flex-start"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span><div class="dim"></div><div class="sheet lg" style="border-radius: 26px; padding: 8px 16px 16px; gap: 6px"><div class="sheet-grab"></div><span class="mp-hl">What if?</span><span class="mp-foot mp-ink2">Drag up for the large detent</span></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Chart draws in</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-chartbox" style="height: 96px; margin-top: 16px"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="height: 100%"><path d="{{ hero.area }}" fill="var(--mp-chart-area)"></path><path d="{{ hero.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ hero.ex }}; top: {{ hero.ey }}"></span><span class="mp-chartlbl" style="left: {{ hero.ex }}; top: {{ hero.ey }}">Today</span></div><div class="mp-chartaxis mp-ink2"><span class="ax-s" style="left: 0">1 Oct</span><span class="ax-e" style="left: 100%">23 Oct</span></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Meters grow</span><div class="mdemo" data-mo-frame-root="1"><div class="obar"><div class="obar-t"><span>Claude this cycle</span><span class="mp-w6">$18 of $160</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: 11%"></div></div></div><div class="obar"><div class="obar-t"><span>AWS and others</span><span class="mp-w6">£3 of £50</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: 6%"></div></div></div><span class="mp-foot mp-ink2">Renews on the 3rd</span></div></div>
+                  <div class="ks"><span class="kl dv-cap">Figure rolls · numericText</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">Household · counts once</span><span class="mp-num-hero">£24,110</span></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Segmented lens · tap it</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-seg"><span class="mp-seg-i segc on">Household</span><span class="mp-seg-i segc">Me</span><span class="mp-seg-i segc">Asha</span></div><span class="mp-foot mp-ink2">The selection glides to the tapped segment with .snappy.</span></div></div>
+                  <div class="ks"><span class="kl dv-cap">Tab bar lens · tap it</span><div class="mdemo" data-mo-frame-root="1"><div class="tabs lg" style="flex: none"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="mp-foot mp-ink2">One glass lens, morphed with glassEffectID.</span></div></div>
+                  <div class="ks"><span class="kl dv-cap">Confirm, then Saved</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Confirm</span><span class="mp-hl">Bought £200 of Balanced</span></div><div class="ccard-acts" style="align-items: center"><span class="ms ms-fill msaved" data-mo="saved">check_circle</span><span class="mp-hl">Saved</span><span class="mp-foot mp-ink2">to the audit log</span></div></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Face ID</span><div class="mdemo" data-mo-frame-root="1" style="align-items: center"><div class="faceid" data-mo="face"><span class="ms">familiar_face_and_zone</span></div><span class="mp-foot mp-ink2">iOS's glyph settles, then the action runs</span></div></div>
+                  <div class="ks"><span class="kl dv-cap">Red alert · one pulse</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard" data-mo="attn" style="box-shadow: inset 0 0 0 1.5px var(--mp-alert), var(--mp-shadow)"><div class="ccard-h"><span class="fx ac gap6 c-alert mp-foot mp-w6"><span class="ms" style="font-size: 18px">warning</span>Act today</span><span class="mp-hl">NASDAQ 100 ETF passed your alert</span><span class="mp-foot mp-ink2">8.4% below its high, past the 8% you set.</span></div></div></div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Transform and opacity only.</b> Nothing animates layout, colour or blur. Content moves; the glass bars stay put.</p>
+            <p><b>Three curves and the sheet.</b> Smooth for content (340 to 520 ms), snappy with a small overshoot for controls, bouncy only for success, the system curve for sheets; siblings 45 ms apart, at most eight.</p>
+            <p><b>Nothing loops forever.</b> The typing mark and a skeleton stop on their own; a red alert pulses for attention and stops.</p>
+            <p><b>Figures count once.</b> A figure counts up on its first appearance; after that only its changed digits roll.</p>
+            <p><b>Reduce Motion.</b> Everything becomes a 150 ms cross-fade or lands at once; haptics stay.</p>
+            <p><b>Both apps, one choreography.</b> The iOS app ships it in SwiftUI; the web app (the read-only dashboard and Admin center, a PWA) plays the same keyframes in CSS and the Web Animations API (MA-182).</p>
+          </div>
+        </div>
+        <div class="mtab">
+          <div class="mtr mth"><span>Moment</span><span>iOS app · SwiftUI</span><span>Web app · CSS and the Web Animations API</span></div>
+          <sc-for list="{{ moTable }}" as="r" hint-placeholder-count="13"><div class="mtr"><span><b>{{ r.m }}</b></span><span class="mcode">{{ r.ios }}</span><span class="mcode">{{ r.web }}</span></div></sc-for>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          const C = (tok, swift, h, hi, r, ri, was) => ({ tok: '--mp-' + tok, swift: 'Color.' + swift, h: h, hi: hi, r: r, ri: ri, was: was || '' });
+          const light = [
+            C('bg', 'mpBg', '#F6F4F1', '#F6F4F1', 'the ground', 'same'),
+            C('surface', 'mpSurface', '#FFFFFF', '#FFFFFF', 'cards, rows', 'same'),
+            C('surface-2', 'mpSurface2', '#F0EDE8', '#E6E2DB', 'fills', 'a deeper fill'),
+            C('line', 'mpLine', '#E4E0DA', '#8E887F', 'hairline, never an only edge', '3.5:1 · 2.7:1'),
+            C('ink', 'mpInk', '#14171F', '#0B0D12', '17.9:1 · 5.8:1', '19.4:1 · 5.9:1'),
+            C('ink-2', 'mpInk2', '#4E5462', '#3A3F4A', '7.6:1 · 4.2:1', '10.6:1 · 4.8:1'),
+            C('ink-3', 'mpInk3', '#646A78', '#4E5462', '5.4:1 · 3.5:1 · captions', '7.6:1 · 4.2:1'),
+            C('hero', 'mpHero', '#13213A', '#13213A', 'the hero', 'same'),
+            C('hero-ink-2', 'mpHeroInk2', '#B7C2D6', '#D3DBE8', '9.0:1 · 3.4:1 on hero', '11.5:1 · 4.2:1'),
+            C('coral', 'mpCoral', '#FF6B4F', '#FF6B4F', '5.7:1 · 2.4:1 · marks', 'same'),
+            C('accent', 'mpAccent', '#C2381F', '#9E2A14', '5.4:1 · 3.5:1', '7.5:1 · 4.1:1'),
+            C('up', 'mpUp', '#1D7A3E', '#155F2F', '5.4:1 · 3.5:1 · ▲', '7.7:1 · 4.2:1'),
+            C('down-quiet', 'mpDownQuiet', '#4E5462', '#3A3F4A', '7.6:1 · 4.2:1 · ▼', '10.6:1 · 4.8:1'),
+            C('alert', 'mpAlert', '#B5123F', '#920C31', '6.7:1 · 3.9:1', '9.1:1 · 4.5:1'),
+            C('hold', 'mpHold', '#2453C9', '#1A3F9E', '5.6:1 · 3.4:1 on its tint', '7.9:1 · 3.9:1')
+          ];
+          const dark = [
+            C('bg', 'mpBg', '#0A0F18', '#0A0F18', 'the ground', 'same'),
+            C('surface', 'mpSurface', '#151C27', '#151C27', 'cards, rows', 'same'),
+            C('surface-2', 'mpSurface2', '#1E2633', '#2A3342', 'fills', 'a lighter fill'),
+            C('line', 'mpLine', '#283141', '#7A8496', 'hairline, never an only edge', '4.5:1 · 2.0:1'),
+            C('ink', 'mpInk', '#F3F5F8', '#FFFFFF', '15.7:1 · 5.3:1', '17.1:1 · 5.7:1'),
+            C('ink-2', 'mpInk2', '#C5CCD7', '#DCE1E8', '10.6:1 · 3.8:1', '13.0:1 · 4.5:1', 'was #AEB6C4 · 8.4:1 · 3.1:1'),
+            C('ink-3', 'mpInk3', '#ADB6C4', '#C5CCD7', '8.4:1 · 3.1:1 · captions', '10.6:1 · 3.8:1', 'was #8D96A6 · 5.7:1 · 2.4:1'),
+            C('hero', 'mpHero', '#1A2944', '#1A2944', 'the hero', 'same'),
+            C('hero-ink-2', 'mpHeroInk2', '#B7C2D6', '#D3DBE8', '8.1:1 · 3.3:1 on hero', '10.4:1 · 4.1:1'),
+            C('coral', 'mpCoral', '#FF7A5E', '#FF7A5E', '5.7:1 · 2.5:1 · marks', 'same'),
+            C('accent', 'mpAccent', '#FF9A82', '#FFB6A4', '8.3:1 · 3.1:1', '10.2:1 · 3.7:1', 'was #FF7A5E · 6.7:1 · 2.6:1'),
+            C('up', 'mpUp', '#44D17A', '#6FE39A', '8.7:1 · 3.2:1 · ▲', '10.7:1 · 3.8:1'),
+            C('down-quiet', 'mpDownQuiet', '#C5CCD7', '#DCE1E8', '10.6:1 · 3.8:1 · ▼', '13.0:1 · 4.5:1', 'was #AEB6C4 · 8.4:1 · 3.1:1'),
+            C('alert', 'mpAlert', '#FF9AAE', '#FFB8C6', '8.5:1 · 3.2:1', '10.5:1 · 3.8:1', 'was #FF6B8B · 6.3:1 · 2.5:1'),
+            C('hold', 'mpHold', '#A8C3FF', '#C2D5FF', '8.4:1 · 3.4:1 on its tint', '10.0:1 · 3.9:1', 'was #8FB2FF · 7.0:1 · 2.9:1')
+          ];
+          // a series in a 0..100 box (preserveAspectRatio="none"); the dot is HTML placed by %
+          const mk = (vals, x0, x1, lo, hi) => {
+            const n = vals.length;
+            const pts = vals.map((v, i) => [+(x0 + i * (x1 - x0) / (n - 1)).toFixed(2), +((1 - (v - lo) / (hi - lo)) * 100).toFixed(2)]);
+            const line = 'M' + pts.map((p) => p.join(',')).join(' L');
+            return { line: line, area: line + ' L' + pts[n - 1][0] + ',100 L' + pts[0][0] + ',100 Z', ex: pts[n - 1][0] + '%', ey: pts[n - 1][1] + '%' };
+          };
+          const T = (cls, s, m, w) => ({ cls: cls, s: s, m: m, w: w });
+          const B = (lab, spec, cls, label) => ({ lab: lab, spec: spec, cells: [{ cls: cls, label: label, mo: 'pop' }, { cls: cls + ' is-pressed', label: label, mo: 'still' }, { cls: cls + ' mp-disabled', label: label, mo: 'still' }] });
+          const cv = (x1, y1, x2, y2) => 'M0,100 C' + (x1 * 100).toFixed(1) + ',' + (100 - y1 * 100).toFixed(1) + ' ' + (x2 * 100).toFixed(1) + ',' + (100 - y2 * 100).toFixed(1) + ' 100,0';
+          const S = (cap, o) => Object.assign({ cap: cap, home: true, admin: false, dim: false, part: false, full: false, menu: false, alert: false, face: false, toast: false }, o);
+          return {
+            themes: [
+              { label: 'light', cls: 't-light', app: 'Colors.xcassets · Any Appearance', colors: light, ic3: '#4E5462', icLine: '#8E887F', home: 'appicon-default ic-def' },
+              { label: 'dark', cls: 't-dark', app: 'Colors.xcassets · Dark', colors: dark, ic3: '#C5CCD7', icLine: '#7A8496', home: 'appicon-dark ic-dark' }
+            ],
+            types: [
+              T('mp-large', 'largeTitle 34/41', '.mp-large · bold', 'Home'),
+              T('mp-t1', 'title1 28/34', '.mp-t1 · bold', 'Balanced'),
+              T('mp-t2', 'title2 22/28', '.mp-t2 · bold', 'This week'),
+              T('mp-t3', 'title3 20/25', '.mp-t3 · semibold', 'Your holdings'),
+              T('mp-hl', 'headline 17/22', '.mp-hl · semibold', '£200 into Balanced'),
+              T('mp-body', 'body 17/22', '.mp-body', 'Nothing to do this week.'),
+              T('mp-callout', 'callout 16/21', '.mp-callout', 'To Thursday’s close'),
+              T('mp-sub', 'subheadline 15/20', '.mp-sub', 'Monzo · ISA'),
+              T('mp-foot', 'footnote 13/18', '.mp-foot', 'Renews on the 3rd'),
+              T('mp-cap', 'caption 12/16', '.mp-cap', 'Fri 23 Oct · 07:15')
+            ],
+            hero: mk([23614, 23580, 23650, 23700, 23660, 23720, 23810, 23790, 23760, 23840, 23900, 23870, 23930, 23980, 23950, 23890, 23940, 24010, 23990, 24050, 24030, 24014, 24110], 0, 97, 23500, 24300),
+            bal: mk([21650, 21800, 21720, 21950, 22100, 22040, 22300, 22250, 22480, 22610, 22550, 22790, 22925], 0, 86.5, 20800, 23200),
+            overlap: [
+              { a: 'NASDAQ 100 ETF and Balanced', p: '38%' },
+              { a: 'Robotics ETF and NASDAQ 100 ETF', p: '22%' },
+              { a: 'Robotics ETF and Balanced', p: '9%' }
+            ],
+            btns: [
+              B('Primary', 'filled accent', 'cbtn cbtn-primary', 'Confirm'),
+              B('Tinted', 'surface-2', 'cbtn', 'Edit'),
+              B('Ghost', 'accent label', 'cbtn cbtn-ghost', 'Cancel'),
+              B('Alert', 'destructive only', 'cbtn cbtn-alert', 'Sign out'),
+              B('Large', 'sheets · 50', 'mp-btn mp-btn-primary', 'Continue'),
+              B('Stance chip', 'content', 'mp-chip mp-hold', 'Hold · 71%')
+            ],
+            icons: [
+              { lab: 'Default', cls: 'appicon-default ic-def' },
+              { lab: 'Dark', cls: 'appicon-dark ic-dark' },
+              { lab: 'Clear', cls: 'appicon-clear ic-clear' },
+              { lab: 'Tinted', cls: 'appicon-tinted ic-tint' }
+            ],
+            curves: [
+              { n: 'Smooth', ms: '340 to 520 ms', e: 'var(--mo-smooth)', t: '520ms', d: cv(0.22, 1, 0.36, 1), use: 'Content arriving: cards, messages, rows, charts.' },
+              { n: 'Snappy', ms: '180 to 340 ms', e: 'var(--mo-snappy)', t: '340ms', d: cv(0.3, 1.25, 0.5, 1), use: 'Controls answering a touch, with a small overshoot.' },
+              { n: 'Bouncy', ms: '520 ms', e: 'var(--mo-bouncy)', t: '520ms', d: cv(0.34, 1.56, 0.64, 1), use: 'Success only: Saved, Face ID passed.' },
+              { n: 'Sheet', ms: '520 ms', e: 'var(--mo-sheet)', t: '520ms', d: cv(0.32, 0.72, 0, 1), use: 'The system sheet, rising and settling.' }
+            ],
+            stag: [0, 1, 2, 3, 4, 5, 6, 7].map((i) => ({ i: i, n: String(i + 1) })),
+            moTable: [
+              { m: 'Content arriving', ios: '.smooth, 0.34 to 0.52 s', web: 'var(--mo-smooth), 340 to 520 ms' },
+              { m: 'Controls on a touch', ios: '.snappy(extraBounce: 0.08)', web: 'var(--mo-snappy); :active scales to 95%' },
+              { m: 'Success only', ios: '.bouncy', web: 'var(--mo-bouncy)' },
+              { m: 'Sheets', ios: 'the system sheet and its detents', web: 'var(--mo-sheet), 520 ms' },
+              { m: 'Stagger', ios: '.delay(Double(index) * 0.045), at most eight', web: 'animation-delay: calc(var(--i) * 45ms)' },
+              { m: 'Composer and lenses', ios: 'GlassEffectContainer with .glassEffectID(_:in:) for the composer and lens morphs', web: 'one lens element, moved with element.animate()' },
+              { m: 'Every figure', ios: '.contentTransition(.numericText()) with .monospacedDigit()', web: 'counts once with requestAnimationFrame; changed digits roll' },
+              { m: 'Messages', ios: '.transition(.push(from: .bottom))', web: 'the mo-me and mo-rise keyframes' },
+              { m: 'Charts', ios: 'Swift Charts drawn in under an animated mask, dots and labels after; .chartXSelection scrubbing with a glass lollipop and .sensoryFeedback(.selection) per point; series changes animated with .smooth', web: 'a clip-path wipe, then the dots and labels; pointer scrubbing' },
+              { m: 'Symbols', ios: '.symbolEffect(.bounce) on the saved check, .replace on the privacy eye, .pulse (not repeating) on an alert', web: 'the mo-saved and mo-attn keyframes' },
+              { m: 'Navigation', ios: '.navigationTransition(.zoom(sourceID:in:)) from a holding row to its screen', web: 'View Transitions between pages' },
+              { m: 'Haptics', ios: '.sensoryFeedback: .success on Saved, .warning on a refusal, .selection on chips and scrubbing, .impact(weight: .light) on Send', web: 'none: a browser gives no haptics' },
+              { m: 'Reduce Motion', ios: 'accessibilityReduceMotion: a 150 ms cross-fade, or it lands at once', web: 'prefers-reduced-motion: reduce' }
+            ],
+            sheets: [
+              S('Partial sheet · glass · two detents', { part: true }),
+              S('Full sheet · solid ground', { full: true, dim: true, home: false }),
+              S('Context menu · glass, from the row', { menu: true, dim: true }),
+              S('System alert · glass', { alert: true, dim: true }),
+              S('Second check · iOS draws this sheet', { face: true, dim: true, home: false, admin: true }),
+              S('Toast', { toast: true })
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

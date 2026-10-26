@@ -18,8 +18,8 @@ feature is filed as an Epic.
 
 ## Epics
 
-One epic per phase of `PLAN.md` (MA-100, then MA-117, MA-127 and MA-147 as
-phases 11 to 13 were planned). Every story under an epic is in
+One epic per phase of `PLAN.md` (MA-100, then MA-117, MA-127, MA-147 and
+MA-175 as phases 11 to 14 were planned). Every story under an epic is in
 `docs/trace.json` with its ARCHITECTURE sections and its boards
 (`.claude/rules/plan-sync.md`). MA-1 to MA-8 came before the epics and have
 none.
@@ -27,11 +27,11 @@ none.
 | Key | Phase | Summary |
 | --- | --- | --- |
 | MA-9 | 0 | Accounts, keys, CI and the repo skeleton; standalone docs and design tasks |
-| MA-10 | 1 | The household records what it holds through the chat |
+| MA-10 | 1 | The household signs in to the app and records what it holds through the chat |
 | MA-11 | 2 | Daily prices and the ported engine |
-| MA-12 | 3 | Brief, wrap, alerts and charts in Telegram |
+| MA-12 | 3 | Brief, wrap, alerts and charts in the app |
 | MA-13 | 4 | Chat and research cards |
-| MA-14 | 5 | The web app, Mini App and browser, the Admin center |
+| MA-14 | 5 | The dashboard and the Admin center, in the app and the web app |
 | MA-15 | 6 | Track record and calibration |
 | MA-16 | 7 | News, events and sentiment in shadow |
 | MA-17 | 8 | Stances go live |
@@ -40,6 +40,7 @@ none.
 | MA-117 | 11 | The Forecaster beside the rules engine (later) |
 | MA-127 | 12 | The agent team: configured, approved, self-healing, self-learning (later) |
 | MA-147 | 13 | Indian markets and the existing Indian portfolio (later) |
+| MA-175 | 14 | The app beyond the chat: widgets, Siri and Shortcuts, the share sheet and Live Activities (later) |
 
 Where a change goes, by path. A path that serves several phases goes to the
 epic of the story at hand; the table is the default.
@@ -48,18 +49,22 @@ epic of the story at hand; the table is the default.
 | --- | --- |
 | `pyproject.toml`, `.github/**`, `infra/bootstrap/`, `CLAUDE.md` | MA-9 |
 | `infra/modules/mypaisa/`, `infra/dev/`, `infra/prod/` | MA-9, then the story that adds the resource |
-| `src/mypaisa_agent/registry/`, `audit.py`, `runs.py`, `telegram.py`, `handlers/{webhook,agent,sender,worker}`, the docs job, the queues | MA-10 |
+| `ios/project.yml`, the app's skeleton and configurations (MA-165), `ios/Packages/MyPaisaUI/` (the design system), `ios/MyPaisaTests/`, `ios/MyPaisaUITests/`, `.swift-format`, the iOS CI and the TestFlight lanes in `.github/workflows/` | MA-9 |
+| `src/mypaisa_agent/registry/`, `audit.py`, `runs.py`, `handlers/{api,live,agent,sender,worker}` for the chat, the live connection and push, the Cognito triggers, the docs job, the queues; the console's hosting, the association file and the invite page (MA-73) | MA-10 |
+| `ios/MyPaisa/{App,SignIn,Chat,Notifications,You}/` (the shell, sign-in, the chat client, push, You), `ios/Packages/MyPaisaKit/` (auth, the api client, card decoding, the offline store), `ios/Packages/MyPaisaUI/{Cards,Privacy}/`, `src/mypaisa_agent/cards/schema/`; the shared motion (MA-182) and `scripts/contrast_check.py` (MA-181) | MA-10 |
 | `src/mypaisa_agent/prices/`, `data/`, `engine/` | MA-11 |
 | the Anthropic client and validator, `cards/{brief,wrap}`, `alerts/`, charts | MA-12 |
 | `tools/`, research `cards/` | MA-13 |
-| `web/`, `handlers/api`, the authorizer, web hosting, the Admin center | MA-14 |
+| the dashboard screens in `ios/MyPaisa/` (Home, a holding, Overlap, Scorecard, Audit and Files, Activity, Search), the Admin center, `web/` (the web app, its sign-in and session cookie, its PWA files), the read-only routes of `handlers/api` | MA-14 |
 | `calls/`, scoring | MA-15 |
 | `news/`, `events/` | MA-16 |
 | `wealth/` | MA-18 |
 | `forecaster/`, the backtest lab | MA-117 |
 | `agents/`, settings, the admin desk, Step Functions | MA-127 |
 | `importers/` for Indian statements, the Indian price plugins | MA-147 |
-| `docs/design/app-v1/`, `docs/design/ds-v1/`, `docs/trace.json` | the story whose boards they are; sync work under MA-9 |
+| `ios/Widgets/`, `ios/ShareExtension/`, `ios/MyPaisa/Intents/` | MA-175 |
+| `docs/design/ios-v1/`, the browser boards in `docs/design/app-v1/`, `docs/design/ds-v1/`, `docs/trace.json` | the story whose boards they are; sync work under MA-9 |
+| the Mini App and Telegram boards in `docs/design/app-v1/`, `docs/design/dashboard/` | the superseded record (MA-161); no new work |
 | `.claude/**`, repo docs outside a phase | MA-9 (a standalone Task) |
 
 ## Labels
