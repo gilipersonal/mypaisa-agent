@@ -109,6 +109,11 @@ made in Confluence.
      `set-app <name> <maui id> <url>`. They cost Rovo credits and need
      Confluence's AI features on; until they are made the pages show the
      native cards and the still picture, and the check asks nothing.
+     **Not made, by Arun's decision** (26 Oct 2026, MA-228): Confluence
+     stays on the Free plan, where AI is off, and the native decision cards
+     and the still roadmap picture stand in for the apps. Leave the `apps`
+     list in `pending` alone, and make them only if Arun moves Confluence to
+     a paid plan and asks for them.
    - then `python3 scripts/confluence_docs.py write`, and `pending` again.
    - `publish`: for each page, read it (`getConfluenceContent`, `detail: full`)
      for its snapshot token, send `docs/confluence/<slug>.html` exactly as
