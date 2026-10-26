@@ -18,51 +18,72 @@ feature is filed as an Epic.
 
 ## Epics
 
-One epic per phase of `PLAN.md` (MA-100, then MA-117, MA-127, MA-147 and
-MA-175 as phases 11 to 14 were planned). Every story under an epic is in
-`docs/trace.json` with its ARCHITECTURE sections and its boards
-(`.claude/rules/plan-sync.md`). MA-1 to MA-8 came before the epics and have
-none.
+One epic per phase of `PLAN.md` (MA-100), numbered in the order the phases
+are built since the re-plan of 26 Oct 2026 (MA-186): MA-9 to MA-19 from the
+first plan, MA-117, MA-127, MA-147 and MA-175 as the later market phases were
+planned, and MA-187, MA-188, MA-192, MA-189, MA-190 and MA-191 for the
+whole-wealth phases 2 to 7. Every phase ships at both doors, the web app and
+the iOS app. Every story under an epic is in `docs/trace.json` with its
+ARCHITECTURE sections and its boards (`.claude/rules/plan-sync.md`). MA-1 to
+MA-8 came before the epics and have none.
 
 | Key | Phase | Summary |
 | --- | --- | --- |
-| MA-9 | 0 | Accounts, keys, CI and the repo skeleton; standalone docs and design tasks |
-| MA-10 | 1 | The household signs in to the app and records what it holds through the chat |
-| MA-11 | 2 | Daily prices and the ported engine |
-| MA-12 | 3 | Brief, wrap, alerts and charts in the app |
-| MA-13 | 4 | Chat and research cards |
-| MA-14 | 5 | The dashboard and the Admin center, in the app and the web app |
-| MA-15 | 6 | Track record and calibration |
-| MA-16 | 7 | News, events and sentiment in shadow |
-| MA-17 | 8 | Stances go live |
-| MA-18 | 9 | MyPaisa, the whole wealth tracker (later) |
-| MA-19 | 10 | New kinds of holding (when one is added) |
-| MA-117 | 11 | The Forecaster beside the rules engine (later) |
-| MA-127 | 12 | The agent team: configured, approved, self-healing, self-learning (later) |
-| MA-147 | 13 | Indian markets and the existing Indian portfolio (later) |
-| MA-175 | 14 | The app beyond the chat: widgets, Siri and Shortcuts, the share sheet and Live Activities (later) |
+| MA-9 | 0 | Accounts, keys, CI, a local stack and both doors' skeletons; standalone docs and design tasks |
+| MA-10 | 1 | The household signs in and talks to the agent at every door, and every run is visible |
+| MA-187 | 2 | The first record: one dynamic structure (kinds, records, events, views) and one write path |
+| MA-188 | 3 | Deposits, policies and two currencies |
+| MA-192 | 4 | Debts and check-ins |
+| MA-189 | 5 | Investments, priced |
+| MA-190 | 6 | Budget: statements and monthly check-ins |
+| MA-191 | 7 | Projection: the household's net worth over the years |
+| MA-14 | 8 | Audit, Search and the Admin center at every door, behind the second check |
+| MA-18 | 9 | The whole wealth dashboard on prod; the old wealth tracker retired |
+| MA-11 | 10 | Daily prices and the ported engine |
+| MA-12 | 11 | Brief, wrap, alerts and charts |
+| MA-13 | 12 | Ask anything: research cards and scenarios |
+| MA-15 | 13 | Track record and calibration |
+| MA-16 | 14 | News, events and sentiment in shadow |
+| MA-17 | 15 | Stances go live |
+| MA-19 | 16 | New kinds of holding (when one is added) |
+| MA-117 | 17 | The Forecaster beside the rules engine |
+| MA-127 | 18 | The agent team: configured, approved, self-healing, self-learning |
+| MA-147 | 19 | Indian markets and the existing Indian portfolio |
+| MA-175 | 20 | The app beyond the chat: widgets, Siri and Shortcuts, the share sheet and Live Activities (later) |
 
 Where a change goes, by path. A path that serves several phases goes to the
-epic of the story at hand; the table is the default.
+epic of the story at hand; the table is the default. `ios/` is the React
+Native app: the Xcode workspace in `ios/`, the TypeScript shell in `ios/src/`,
+and the SwiftUI pieces, each hosted through a Fabric component, in
+`ios/<App>/`.
 
 | Path | Epic |
 | --- | --- |
 | `pyproject.toml`, `.github/**`, `infra/bootstrap/`, `CLAUDE.md` | MA-9 |
 | `infra/modules/mypaisa/`, `infra/dev/`, `infra/prod/` | MA-9, then the story that adds the resource |
-| `ios/project.yml`, the app's skeleton and configurations (MA-165), `ios/Packages/MyPaisaUI/` (the design system), `ios/MyPaisaTests/`, `ios/MyPaisaUITests/`, `.swift-format`, the iOS CI and the TestFlight lanes in `.github/workflows/` | MA-9 |
-| `src/mypaisa_agent/registry/`, `audit.py`, `runs.py`, `handlers/{api,live,agent,sender,worker}` for the chat, the live connection and push, the Cognito triggers, the docs job, the queues; the console's hosting, the association file and the invite page (MA-73) | MA-10 |
-| `ios/MyPaisa/{App,SignIn,Chat,Notifications,You}/` (the shell, sign-in, the chat client, push, You), `ios/Packages/MyPaisaKit/` (auth, the api client, card decoding, the offline store), `ios/Packages/MyPaisaUI/{Cards,Privacy}/`, `src/mypaisa_agent/cards/schema/`; the shared motion (MA-182) and `scripts/contrast_check.py` (MA-181) | MA-10 |
+| `ios/`: the app's skeleton and configurations, the shell's skeleton in `ios/src/`, the first SwiftUI piece and its Fabric host, `PERFORMANCE.md` and its benches (MA-165), the tests and lint config, the iOS CI and the TestFlight lanes in `.github/workflows/` | MA-9 |
+| `web/`: the SvelteKit skeleton and its CI, and the shared TypeScript in `web/src/lib/` | MA-9 |
+| `scripts/local/` (the local stack and its scripted agent), `scripts/seed.sh` and the seed from the design figure set (MA-110) | MA-9 |
+| `audit.py`, `runs.py`, `handlers/{api,agent,sender,worker}` for the chat and push, the stream handler (SSE), the Cognito triggers, the docs job, the queues; the web app's hosting at `dashboard(-dev)`, the association file and the invite page (MA-73) | MA-10 |
+| the chat at both doors: in `ios/src/` sign-in, the api and SSE client, push and You, and in `ios/<App>/` the chat's SwiftUI pieces (the timeline and its cards, the composer); in `web/` the chat, its sign-in and session cookie and its PWA files (Web Push); `src/mypaisa_agent/cards/schema/`; Activity at every door; the shared motion (MA-182) and `scripts/contrast_check.py` (MA-181) | MA-10 |
+| `src/mypaisa_agent/registry/` (kinds, records, events and views), the write service, the read and `PATCH` routes of `handlers/api` | MA-187 |
+| `wealth/` accrual | MA-188 |
+| `wealth/` schedules (loans and cards), the commitments and check-ins | MA-192 |
+| `wealth/` XIRR; the minimal price plugins (yfinance, AMFI's NAV file) | MA-189 |
+| `importers/statements/` (bank and card statements), the budget | MA-190 |
+| `wealth/` projection, its priors | MA-191 |
+| a dashboard screen or page at either door (a SwiftUI piece in `ios/`, a route in `web/`) | the story's phase: the first dashboard MA-187, assets MA-189, debts MA-192, Budget MA-190, Projection MA-191, the complete Overview MA-18, a holding's market view MA-13, Overlap and Scorecard MA-15 |
 | `src/mypaisa_agent/prices/`, `data/`, `engine/` | MA-11 |
 | the Anthropic client and validator, `cards/{brief,wrap}`, `alerts/`, charts | MA-12 |
 | `tools/`, research `cards/` | MA-13 |
-| the dashboard screens in `ios/MyPaisa/` (Home, a holding, Overlap, Scorecard, Audit and Files, Activity, Search), the Admin center, `web/` (the web app, its sign-in and session cookie, its PWA files), the read-only routes of `handlers/api` | MA-14 |
+| Audit and Files, Search and the Admin center at both doors | MA-14 |
 | `calls/`, scoring | MA-15 |
 | `news/`, `events/` | MA-16 |
-| `wealth/` | MA-18 |
+| reports and exports, the cutover from the old wealth tracker (MA-97), the Excel history importer (MA-111), the read-only SQL copy (MA-104) | MA-18 |
 | `forecaster/`, the backtest lab | MA-117 |
 | `agents/`, settings, the admin desk, Step Functions | MA-127 |
-| `importers/` for Indian statements, the Indian price plugins | MA-147 |
-| `ios/Widgets/`, `ios/ShareExtension/`, `ios/MyPaisa/Intents/` | MA-175 |
+| `importers/` for Indian portfolio statements (a CAS, a broker export), the Indian price plugins beyond the minimal NAV pricing | MA-147 |
+| the widgets, the share extension and the App Intents in `ios/` | MA-175 |
 | `docs/design/ios-v1/`, the browser boards in `docs/design/app-v1/`, `docs/design/ds-v1/`, `docs/trace.json` | the story whose boards they are; sync work under MA-9 |
 | the Mini App and Telegram boards in `docs/design/app-v1/`, `docs/design/dashboard/` | the superseded record (MA-161); no new work |
 | `.claude/**`, repo docs outside a phase | MA-9 (a standalone Task) |

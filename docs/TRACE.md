@@ -10,7 +10,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | todo | Has UI, not drawn yet |
 | none | No UI |
 
-## Phase 0: Prerequisites (MA-9)
+## Phase 0: Foundations at every door (MA-9)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -24,6 +24,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §9.3, §12, §13, §14, §15, §16 | none |  |
 | MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | To Do | §18.4, §20.5 | none |  |
 | MA-108 | A nightly check reports any prod change made outside Terraform | To Do | §18.4, §20.5 | none |  |
+| MA-110 | Dev and the laptop are seeded and hydrated with one illustrative household of every kind, from the design figure set | To Do | §18.1 | none |  |
 | MA-112 | The architecture records the $100 Claude budget for prod, its ceiling ladder and the chat-memory rules | Done | §4.5, §8, §9.3, §10, §12, §15, §16, §17, §18 | none |  |
 | MA-138 | The architecture records the queues, retries and replay that keep messages and jobs from being lost | Done | §13, §16, §20.5, §21 | none |  |
 | MA-141 | The architecture is drawn in Lucid with AWS shapes, the plan and stack documents agree with it, and two explainer pages walk through every flow | Done | §3, §4.2 | none |  |
@@ -38,41 +39,36 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-161 | MyPaisa's chat moves from Telegram to one native iOS app for iPhone and iPad, and the web app stays as a read-only PWA: the plan, the designs and Jira follow | In Progress | §9, §16 | none |  |
 | MA-162 | Arun joins the Apple Developer Program ($99 a year) and registers the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains | To Do | §15, §18.1 | none |  |
 | MA-164 | An APNs key per environment is in SSM, and the App Store Connect app records, TestFlight testers and API key exist | To Do | §14, §18.4 | none |  |
-| MA-165 | The iOS project builds: one SwiftUI app for iPhone and iPad on iOS 26, its packages, the Warm ledger assets and its tests | To Do | §9, §13 | none |  |
-| MA-166 | CI builds and tests the iOS app on every pull request that touches it, with snapshot and accessibility checks | To Do | §18.4 | none |  |
+| MA-165 | The iOS app builds as a React Native shell with a native SwiftUI core: its first SwiftUI piece, its performance bench and its tests | To Do | §9, §13, §9.5 | none |  |
+| MA-166 | CI builds and tests the iOS app on every pull request that touches it, with snapshot and accessibility checks | To Do | §18.4, §9.5 | none |  |
 | MA-167 | A merge to main sends MyPaisa Dev to TestFlight, and MyPaisa after Arun approves, with an alert before a build expires | To Do | §18.4 | todo |  |
+| MA-186 | Re-plan: the household's whole wealth comes first, at every door, in clean renumbered phases | In Progress | §16 | none |  |
+| MA-193 | Design the whole-wealth screens at every door, with a clickable prototype Arun walks through before anything is built | To Do | §9, §9.4 | todo |  |
+| MA-194 | The web app's SvelteKit 3 PWA skeleton and the shared TypeScript models build, lint and test in CI | To Do | §9.4, §13 | none |  |
+| MA-198 | A local stack runs the whole app on the laptop, with a scripted agent that replays recorded conversations | To Do | §13, §18.1 | none |  |
 
-## Phase 1: Registry, sign-in and the app's chat (MA-10)
+## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
-| MA-27 | The holdings registry stores members, accounts, holdings and valuations per household | To Do | §4 | none |  |
-| MA-28 | Every record change writes a hash-chained audit row in the same transaction | To Do | §4.6 | none |  |
 | MA-29 | Every Lambda run leaves a RunRecord, logs, traces and an error alarm | To Do | §10, §4.1 | none |  |
-| MA-30 | Replies reach the open app over a signed-in live connection, in order and never twice, and the app catches up when it opens | To Do | §9 | none |  |
+| MA-30 | Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens | To Do | §9, §21.5 | none |  |
 | MA-31 | The chat API accepts only a signed-in member's messages and taps, and hands each off once | To Do | §3, §18.2, §21.1 | none |  |
 | MA-32 | The first person to sign in owns the household and invites and removes members with one-time links | To Do | §4.5 | planned | iPhone sign-in.dc.html: iPhone · Joining from an invite; iPhone admin.dc.html: iPhone · Members and devices; iPhone admin.dc.html: iPhone · Invite a member |
-| MA-33 | Each member has their own accounts, and a joint account can have two owners | To Do | §4.1, §4.5 | none |  |
-| MA-34 | Design the Portfolio card and the Confirm card before they are built | To Do | §9.2 | planned | iOS kit.dc.html: 6 · Messages and cards; iPhone chat.dc.html: iPhone · Portfolio card; iPhone chat.dc.html: iPhone · Confirm card |
-| MA-35 | The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips | To Do | §2, §8, §9.1 | planned | iPhone sign-in.dc.html: iPhone · First-run setup; iPhone chat.dc.html: iPhone · Chat home; iPhone settings.dc.html: iPhone · You; iPhone settings.dc.html: iPhone · Pause and resume; iPhone dashboard.dc.html: iPhone · Home, empty |
-| MA-36 | The Portfolio card shows the household and each member's holdings | To Do | §9.2 | planned | iPhone chat.dc.html: iPhone · Portfolio card; iPhone dashboard.dc.html: iPhone · Home, household |
-| MA-37 | A factsheet or valuation screenshot sent from the camera, a scan, Photos or Files adds or updates a holding after Confirm | To Do | §4.2, §4.6 | planned | iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Reading a factsheet; iPhone chat.dc.html: iPhone · Factsheet card with amber fields; iPhone chat.dc.html: iPhone · Screenshot valuations, before and after |
-| MA-38 | "I put £200 into Balanced" becomes a transaction after Confirm | To Do | §4.1, §4.2 | planned | iPhone chat.dc.html: iPhone · Confirm card |
-| MA-39 | Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting | To Do | §9.1 | planned | iPhone chat.dc.html: iPhone · Guided flow: log a transaction |
-| MA-40 | "What changed this week?" lists every change with who and when | To Do | §4.6 | planned | iPhone chat.dc.html: iPhone · What changed this week; iPhone audit and activity.dc.html: iPhone · Audit |
-| MA-73 | Each environment hosts the console at console(-dev).mypaisapp.com on S3 and CloudFront: the web app (a PWA) and the iOS app's association file and invite page | To Do | §9.4, §18.2 | none |  |
-| MA-75 | The api's authorizer checks the access token, the member's status and session epoch on every call and live connection | To Do | §4.5, §9.3 | none |  |
+| MA-70 | Design the iPad and open-foldable layouts: Home, a holding, Overlap, Scorecard and sign-in at regular width | To Do | §9.3 | planned | iPad and foldable.dc.html: iPad · Home with the chat beside it; iPad and foldable.dc.html: iPad · Holding, portrait; iPad and foldable.dc.html: Foldable · Open; iPad and foldable.dc.html: iPhone · Landscape; iPad and foldable.dc.html: iPad · Overlap and Scorecard |
+| MA-72 | Each member's Apple Account and Google account use two-factor authentication, and each device has a passcode and Face ID | To Do | §4.5, §18.3 | none |  |
+| MA-73 | Each environment hosts the web app at dashboard(-dev).mypaisapp.com on S3 and CloudFront, with the iOS app's association file and the invite page | To Do | §9.4, §18.2 | none |  |
+| MA-75 | The api's authorizer checks the access token or the session cookie, the member's status and session epoch on every call and on the stream | To Do | §4.5, §9.3 | none |  |
 | MA-109 | Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys, verified in custom-auth Lambdas | To Do | §4.5, §17, §18.3 | none |  |
-| MA-110 | Dev is seeded with a synthetic household built around the real Monzo OEICs | To Do | §18.1 | none |  |
 | MA-113 | Every Claude call is metered and nothing runs past the monthly ceiling | To Do | §15.1, §15.2 | none |  |
+| MA-115 | The chat sends Claude only the current conversation, kept short, with notes on recent ones | To Do | §8 | none |  |
 | MA-139 | Each member's messages travel through ordered queues, in and out, are retried with backoff and are never lost | To Do | §21 | none |  |
 | MA-140 | Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue that alerts and can be replayed | To Do | §21 | none |  |
-| MA-144 | The app reaches each environment through api(-dev) and live(-dev).mypaisapp.com, and the dev build runs from Xcode against dev | To Do | §18.1, §18.2 | none |  |
+| MA-144 | The app and the web app reach each environment through api(-dev).mypaisapp.com, its stream included, and the dev build runs against dev or the laptop | To Do | §18.1, §18.2, §21.5 | none |  |
 | MA-148 | Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it | To Do | §4.1, §4.6, §14 | none |  |
-| MA-156 | A transaction can be typed in any currency, and the chat checks it against the holding's own currency and puts a mismatch right before Confirm | To Do | §4.1, §4.7, §5.3, §22.3 | planned | iPhone chat.dc.html: iPhone · Currency check |
 | MA-163 | The app's shell, 1a Chat first: tabs on iPhone, the chat beside every screen over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) | To Do | §9, §9.1 | picked | Shell options.dc.html: 1a · Chat first; iPad and foldable.dc.html: iPad · Split View, one third; iPad and foldable.dc.html: iPad · Stage Manager window; iPad and foldable.dc.html: Foldable · Folded; iPad and foldable.dc.html: iPad · Keyboard shortcuts; iOS kit.dc.html: 4 · Tab bar and sidebar |
 | MA-168 | Signing in takes one tap with Apple or Google, the session stays in the Keychain, and an invite link opens the app to join | To Do | §4.5 | planned | iPhone sign-in.dc.html: iPhone · Welcome; iPhone sign-in.dc.html: iPhone · Sign in with Apple; iPhone sign-in.dc.html: iPhone · Sign in with Google; iPhone sign-in.dc.html: iPhone · Joining from an invite; iPhone sign-in.dc.html: iPhone · Sign-in refused |
-| MA-169 | The chat in the app shows the conversation, renders every card natively, streams replies and sends text, photos, scans and files | To Do | §8, §9.1, §9.2 | planned | iPhone chat.dc.html: iPhone · Chat home; iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Streaming reply; iOS kit.dc.html: 5 · Toolbars and the composer; iOS kit.dc.html: 6 · Messages and cards |
+| MA-169 | The chat in the iOS app shows the conversation in a native SwiftUI timeline, renders every card natively, streams replies and sends text, photos, scans and files | To Do | §8, §9.1, §9.2, §9.5 | planned | iPhone chat.dc.html: iPhone · Chat home; iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Streaming reply; iOS kit.dc.html: 5 · Toolbars and the composer; iOS kit.dc.html: 6 · Messages and cards |
 | MA-170 | Apple push reaches each member's devices when the app is closed, with no amounts on the lock screen unless they choose | To Do | §9.1, §11, §21 | planned | iPhone settings.dc.html: iPhone · Notifications and quiet hours; iPhone settings.dc.html: iPhone · Lock screen: the morning brief; iPhone settings.dc.html: iPhone · Lock screen: a red alert; iPhone sign-in.dc.html: iPhone · Notifications and Face ID |
 | MA-171 | Privacy in the app: privacy mode hides amounts everywhere, the app switcher shows nothing, and Face ID can lock the app | To Do | §9.1, §14 | planned | iPhone chat.dc.html: iPhone · Privacy mode in the chat; iPhone dashboard.dc.html: iPhone · Home, privacy on; iPhone settings.dc.html: iPhone · Privacy and Face ID lock; iPhone settings.dc.html: iPhone · App switcher |
 | MA-172 | A member signs out of a device or leaves the household from You, and their sign-in is deleted and Apple's token revoked | To Do | §4.5 | planned | iPhone settings.dc.html: iPhone · You; iPhone settings.dc.html: iPhone · Leave the household; iPhone settings.dc.html: iPhone · Sign-in methods |
@@ -80,15 +76,119 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-174 | Every card is a versioned JSON document the app renders natively, with a plain line for notifications | To Do | §7, §9.2 | none |  |
 | MA-181 | Every screen works with VoiceOver, Dynamic Type up to AX5, Increase Contrast, Reduce Transparency and Reduce Motion, and stays legible in light and dark at 25% brightness | To Do | §9.1 | planned | iOS kit.dc.html: 11 · Accessibility |
 | MA-182 | Every component, card and chart moves with one motion system, in the iOS app and the web app, and lands at once under Reduce Motion | To Do | §9.1, §9.4 | planned | iOS kit.dc.html: 12 · Motion |
+| MA-185 | In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie | To Do | §4.5, §9.4, §14 | planned | Browser 2.dc.html: Browser · Login |
+| MA-195 | A spike proves SSE: a streamed reply reaches a browser and an iPhone in under a second, resumes after a kill, and its cost per open hour is measured | To Do | §21.5 | none |  |
+| MA-196 | Activity shows each run of the agent at every door: what it read, which tools it called, what it proposed, and what it cost | To Do | §10 | planned | iPhone audit and activity.dc.html: iPhone · Activity; iPhone audit and activity.dc.html: iPhone · A run |
+| MA-199 | The web app's chat shows the conversation, renders every card, streams replies and sends text and files, at desktop and phone width | To Do | §8, §9.4, §21.5 | todo |  |
+| MA-200 | Web Push reaches the installed web app when it is closed, with no amounts unless the member chooses | To Do | §11 | todo |  |
 
-## Phase 2: Prices and the engine (MA-11)
+## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
+| MA-27 | The household's records live in one dynamic structure: kinds as data, records as documents, history as events, figures as views | To Do | §4, §4.8 | none |  |
+| MA-28 | Every record change writes a hash-chained audit row in the same transaction | To Do | §4.6 | none |  |
+| MA-33 | Each member's records have their owners, and a joint record has two owners with their shares | To Do | §4.1, §4.5 | none |  |
+| MA-34 | Design the Portfolio card and the Confirm card before they are built | To Do | §9.2 | planned | iOS kit.dc.html: 6 · Messages and cards; iPhone chat.dc.html: iPhone · Portfolio card; iPhone chat.dc.html: iPhone · Confirm card |
+| MA-35 | The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips | To Do | §2, §8, §9.1 | planned | iPhone sign-in.dc.html: iPhone · First-run setup; iPhone chat.dc.html: iPhone · Chat home; iPhone settings.dc.html: iPhone · You; iPhone settings.dc.html: iPhone · Pause and resume; iPhone dashboard.dc.html: iPhone · Home, empty |
+| MA-37 | A factsheet or valuation screenshot sent from the camera, a scan, Photos or Files adds or updates a holding after Confirm | To Do | §4.2, §4.6 | planned | iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Reading a factsheet; iPhone chat.dc.html: iPhone · Factsheet card with amber fields; iPhone chat.dc.html: iPhone · Screenshot valuations, before and after |
+| MA-39 | Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting | To Do | §9.1 | planned | iPhone chat.dc.html: iPhone · Guided flow: log a transaction |
+| MA-40 | "What changed this week?" lists every change with who and when | To Do | §4.6 | planned | iPhone chat.dc.html: iPhone · What changed this week; iPhone audit and activity.dc.html: iPhone · Audit |
+| MA-74 | The api serves each member only what they may see, and accepts in-place corrections only to the figures a kind marks editable | To Do | §4.5, §9.3, §4.10 | none |  |
+| MA-80 | Each card opens its dashboard screen, and each screen's Ask opens the chat about it | To Do | §9.1, §9.3, §18.2 | planned | iPhone chat.dc.html: iPhone · Portfolio card; iPhone dashboard.dc.html: iPhone · Holding |
+| MA-156 | A transaction can be typed in any currency, and the chat checks it against the holding's own currency and puts a mismatch right before Confirm | To Do | §4.1, §4.7, §5.3, §22.3 | planned | iPhone chat.dc.html: iPhone · Currency check |
+| MA-197 | Kind specs and the generic draft tools let the agent register any kind of asset or debt, asking only what is missing | To Do | §4.8, §8 | none |  |
+| MA-201 | One write service takes the chat's Confirm and an in-place correction alike, checked against the kind and audited | To Do | §1, §4.10 | todo |  |
+| MA-203 | Savings, cash, a property's value and a pension's value are registered through the chat and corrected in place | To Do | §4.8, §4.10 | todo |  |
+| MA-208 | The first dashboard shows net worth and every record at every door, and moves live when a change is confirmed | To Do | §9.3 | planned | iPhone dashboard.dc.html: iPhone · Home, household; iPhone dashboard.dc.html: iPhone · Home, me; iPad and foldable.dc.html: iPad · Home with the chat beside it |
+
+## Phase 3: Deposits, policies and two currencies (MA-188)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
+| MA-44 | ECB FX rates and market calendars are loaded daily | To Do | §5.3 | none |  |
+| MA-93 | Fixed and recurring deposits, savers, PPF, EPF, NPS and policies in the UK and India accrue to maturity, registered through the chat | To Do | §12 | todo |  |
+| MA-94 | Wealth maths for what accrues: deposit and policy accrual, the maturity timeline and the daily net worth, to the penny | To Do | §6.6 | none |  |
+| MA-105 | The old wealth tracker's tested maths and its screen list are ported as golden fixtures and a parity check | To Do | §18.5 | none |  |
+| MA-202 | A maturing deposit asks whether it was renewed, paid out or moved, and a renewal starts its successor record | To Do | §4.9 | todo |  |
+| MA-213 | Net worth and every figure show in pounds or rupees at the day's ECB rate, at every door | To Do | §4.7, §5.3 | todo |  |
+
+## Phase 4: Debts and check-ins (MA-192)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
+| MA-204 | Loan maths: the EMI, the schedule, the interest split, prepayment by term or by EMI, and preclosure, to the penny | To Do | §6.6 | none |  |
+| MA-205 | Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it | To Do | §4.9, §8 | todo |  |
+| MA-209 | Loans, mortgages and EMIs are registered through the chat, with dated terms, rate changes, prepayments and closure | To Do | §4.8 | todo |  |
+| MA-210 | Credit cards are kept as revolving debt from their statements, and only interest and fees count as spending | To Do | §4.8, §4.9 | todo |  |
+| MA-211 | Autopay commitments and a weekly digest keep the agent to about ten notifications a week | To Do | §4.9, §11 | todo |  |
+| MA-214 | The Debts and one-loan screens show what is owed, how it runs off and when each loan ends, at every door | To Do | §9.3, §12 | planned | Wealth.dc.html: Browser · Debts; Wealth.dc.html: Browser · A loan |
+
+## Phase 5: Investments, priced (MA-189)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
+| MA-36 | The Portfolio card shows the household and each member's holdings | To Do | §9.2 | planned | iPhone chat.dc.html: iPhone · Portfolio card; iPhone dashboard.dc.html: iPhone · Home, household |
+| MA-38 | "I put £200 into Balanced" becomes a transaction after Confirm | To Do | §4.1, §4.2 | planned | iPhone chat.dc.html: iPhone · Confirm card |
 | MA-41 | One PriceSource contract lets each price feed plug in, chained per kind and per environment | To Do | §5.1 | none |  |
+| MA-206 | Shares, ETFs, OEICs, mutual funds, bonds and gold in the UK and India are registered through the chat as holdings in their accounts | To Do | §4.8 | todo |  |
+| MA-207 | Each holding is priced every day from free sources: yfinance for listed lines and AMFI's NAV file for Indian mutual funds | To Do | §5.1 | none |  |
+| MA-212 | XIRR to the penny for a holding, an account, a member and the household, from the dated ledger | To Do | §6.6 | none |  |
+| MA-215 | With no history, the agent asks for past transactions to compute the return, or an estimate it marks as one | To Do | §6.6, §8 | todo |  |
+| MA-216 | SIPs and regular contributions are commitments that record each buy, with an annual step-up | To Do | §4.9 | todo |  |
+| MA-217 | The Assets and one-asset screens show value, XIRR with its working, the event timeline and files, at every door | To Do | §9.3, §12 | planned | Wealth.dc.html: Browser · Assets; Wealth.dc.html: Browser · An asset |
+
+## Phase 6: Budget: statements and monthly check-ins (MA-190)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
+| MA-96 | Budget: each member's income with its history, a monthly plan per category, and plan against actual, set through the chat | To Do | §6.6, §12 | planned | Wealth.dc.html: Browser · Budget |
+| MA-218 | A bank or card statement sent in the chat is read, every line categorised and transfers recognised, for one Confirm | To Do | §4.9, §12 | todo |  |
+| MA-220 | On the 1st the agent closes last month's budget, asking only for what no statement covered | To Do | §4.9, §12 | todo |  |
+
+## Phase 7: Projection (MA-191)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
+| MA-219 | The Projection engine runs the household's net worth month by month to the horizon, deterministic first, then a Monte Carlo fan | To Do | §6.6 | none |  |
+| MA-221 | Projection priors per country: long-run returns, inflation and wage growth, versioned with their sources | To Do | §6.6, §20.2 | none |  |
+| MA-222 | Plan items: the admin adds future income and spends through the chat and corrects them in place | To Do | §4.5, §4.10, §6.6 | todo |  |
+| MA-223 | What-ifs and the Projection's story: the agent proposes assumptions, runs scenarios and explains the curve, every figure from the engine | To Do | §6.6, §8 | todo |  |
+| MA-224 | The Projection screen shows the fan, its milestones and the editable assumptions, at every door | To Do | §9.3, §12 | planned | Wealth.dc.html: Browser · Forecast |
+
+## Phase 8: Audit, search and the Admin center at every door (MA-14)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
+| MA-71 | Design the Audit and Activity screens on iPhone and iPad | To Do | §9.3, §10 | planned | iPhone audit and activity.dc.html: iPhone · Audit; iPhone audit and activity.dc.html: iPhone · Activity; iPad and foldable.dc.html: iPad · Audit and Activity; iPad and foldable.dc.html: Foldable · Open, Audit |
+| MA-76 | The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server | To Do | §4.5, §9.3 | planned | iPhone admin.dc.html: iPhone · Second check; iPhone settings.dc.html: iPhone · Sign-in methods |
+| MA-77 | A member adds a second sign-in, Apple or Google, or a passkey, to their identity from You | To Do | §4.5 | planned | iPhone settings.dc.html: iPhone · Sign-in methods |
+| MA-79 | The Audit screen shows every change with who, when and the file behind it, at every door | To Do | §4.6, §9.3, §10 | planned | iPhone audit and activity.dc.html: iPhone · Audit |
+| MA-101 | A new MyPaisa design system, after Monzo's warmth and Apple's HIG, with the dashboard, Mini App and Telegram components prototyped | Done | §9.3, §13, §17 | picked | MyPaisa DS v1.dc.html: 1a · Warm ledger; Foundations.dc.html: 1 · Colour; Foundations.dc.html: 2 · Type; Foundations.dc.html: 3 · Space, shape, elevation; Foundations.dc.html: 4 · Layout and size classes; Foundations.dc.html: 5 · Motion; Foundations.dc.html: 6 · Iconography; Foundations.dc.html: 7 · Voice; Components.dc.html: 1 · Buttons; Components.dc.html: 2 · Chips; Components.dc.html: 3 · Segmented control and switch; Components.dc.html: 4 · Grouped rows; Components.dc.html: 5 · Hero card; Components.dc.html: 6 · Summary and stat cards; Components.dc.html: 7 · Privacy mask; Components 2.dc.html: 8 · Navigation; Components 2.dc.html: 9 · Sheet and toast; Components 2.dc.html: 10 · List states; Components 2.dc.html: 11 · Charts and tracks; Telegram kit.dc.html: 0 · Telegram kit: the rules; Telegram kit.dc.html: 1 · Portfolio card; Telegram kit.dc.html: 2 · Stance card; Telegram kit.dc.html: 3 · Morning brief and evening wrap; Telegram kit.dc.html: 4 · Alerts; Telegram kit.dc.html: 5 · Confirm after a factsheet; Telegram kit controls.dc.html: 6 · Guided flow: one message, edited in place; Telegram kit controls.dc.html: 7 · Inline keyboard patterns; Telegram kit controls.dc.html: 8 · Reply keyboard and command menu; Telegram kit controls.dc.html: 9 · Glossary answer; Telegram kit controls.dc.html: 10 · Wide chat: Telegram Desktop, 720 wide; Telegram kit images.dc.html: I1 · Holding history chart; Telegram kit images.dc.html: I2 · Portfolio curve with past stances; Telegram kit images.dc.html: I3 · Portfolio summary tile |
+| MA-102 | The owner can sign out or pause any member's devices from the Admin center, behind the second check | In Progress | §1, §4.5 | planned | iPhone admin.dc.html: iPhone · Members and devices; iPhone admin.dc.html: iPhone · A member: sign out, pause, restore; iPhone admin.dc.html: iPhone · Second check; iPhone sign-in.dc.html: iPhone · Sign-in refused; iPad and foldable.dc.html: iPad · Admin center; Admin center 3.dc.html: Browser · Admin · People · Your account paused, after signing back in; Admin center 3.dc.html: Browser · Admin · People · Your account restored; Admin center 3.dc.html: Browser · Admin · People · Restore Asha, the confirmation; Admin center 3.dc.html: Browser · Admin · People · Asha restored; Admin center 3.dc.html: Browser · Admin · People · A failed fresh check; Admin center 3.dc.html: Browser · Admin · People · A household with only the owner |
+| MA-103 | MyPaisa has a new mark in Warm ledger that animates once when the app opens | Done | §9.3 | picked | Logo.dc.html: 1c · Watcher; Logo.dc.html: 1c Telegram avatar |
+| MA-116 | The owner moves the Claude ceiling up or down in the Admin center | To Do | §15.1, §15.2 | planned | iPhone admin.dc.html: iPhone · Spend and the ceiling; iPhone admin.dc.html: iPhone · Move the ceiling; iPhone admin.dc.html: iPhone · Second check; iPad and foldable.dc.html: iPad · Admin center; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2.dc.html: Browser · Admin · Spend · Move the ceiling, the consequences; Admin center 3.dc.html: Browser · Admin · Spend · Change the guards: member share, daily guard, calls per run; Admin center 3.dc.html: Browser · Admin · Spend · Change the renewal day; Admin center 3.dc.html: Browser · Admin · Spend · Type the hard limit; Admin center 3.dc.html: Browser · Admin · Spend · Move the ceiling past the credit, the explicit yes; Admin center 3.dc.html: Browser · Admin · Spend · Move the ceiling above the hard limit, refused |
+| MA-137 | The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app, push and email | To Do | §15.2 | planned | iPhone admin.dc.html: iPhone · Admin center; iPhone admin.dc.html: iPhone · Caps and alerts; iPhone admin.dc.html: iPhone · Alert routing; iPhone settings.dc.html: iPhone · Lock screen: a red alert; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Alerts; Admin center 2.dc.html: Browser · Admin · Alerts · Replayed; Admin center 3.dc.html: Browser · Admin · Spend · Change the guards: member share, daily guard, calls per run; Admin center 3.dc.html: Browser · Admin · Spend · Type the hard limit; Admin center 3.dc.html: Browser · Admin · Spend · Move the ceiling past the credit, the explicit yes; Admin center 3.dc.html: Browser · Admin · Spend · Change the ladder's steps; Admin center 3.dc.html: Browser · Admin · Spend · Change the AWS cap, its steps and actions; Admin center 3.dc.html: Browser · Admin · Alerts · Change the routing; Admin center 3.dc.html: Browser · Admin · Alerts · Change quiet hours, cooldowns and the digest; Admin center 3.dc.html: Browser · Admin · Alerts · Change the queues' retries and backoff; Admin center 3.dc.html: Browser · Admin · Alerts · The AWS cap's steps and the forecast, with their flags; Admin center 3.dc.html: Browser · Admin · Alerts · Replayed, and failed again |
+| MA-145 | A failed-work alert carries a Replay button that puts the dead-lettered work back on its queue | To Do | §15.2, §21.3 | planned | iPhone admin.dc.html: iPhone · Failed work and Replay; Admin center 2.dc.html: Browser · Admin · Alerts; Admin center 2.dc.html: Browser · Admin · Alerts · Replay, the fresh check; Admin center 2.dc.html: Browser · Admin · Alerts · Replayed; Admin center 3.dc.html: Browser · Admin · Alerts · Replayed, and failed again |
+| MA-149 | The Audit screen opens the original file behind each change, through a short-lived link only the right member can use | To Do | §4.6, §9.3 | planned | iPhone audit and activity.dc.html: iPhone · Audit, a change from a file; iPhone audit and activity.dc.html: iPhone · Files; iPhone audit and activity.dc.html: iPhone · File preview; Audit and files.dc.html: Browser · Audit with files; Audit and files.dc.html: Browser · File viewer; Audit and files.dc.html: Browser · Files |
+| MA-180 | Search finds a holding, a change, a file or a past answer from anywhere in the app | To Do | §9.3 | todo |  |
+| MA-184 | The web app's Audit, Files and Admin center pages work in a browser, with the second check for the owner's actions | To Do | §4.6, §9.4, §15.1, §15.2 | planned | Browser 2.dc.html: Browser · Activity; Browser 2.dc.html: Browser · Audit; Audit and files.dc.html: Browser · Audit with files; Audit and files.dc.html: Browser · Files; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Alerts |
+
+## Phase 9: The whole dashboard, and the old wealth tracker retired (MA-18)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
+| MA-95 | The Overview is complete at every door: liquid and locked, what is owed, this month's cash flow, by member and by country, maturing next and the largest assets | To Do | §12, §9.3 | planned | Wealth.dc.html: Browser · Household overview |
+| MA-97 | Reports and exports are in place, mypaisapp.com points to the dashboard, and the old wealth tracker is retired | To Do | §12 | planned | Wealth.dc.html: Browser · Reports |
+| MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §12.1, §8 | todo |  |
+| MA-111 | The owner fills prod's history from an Excel workbook sent in the chat | To Do | §12, §18.5, §22.2, §22.5 | todo |  |
+
+## Phase 10: Prices and the engine (MA-11)
+
+| Key | Summary | Status | Architecture | Design | Boards |
+| --- | --- | --- | --- | --- | --- |
 | MA-42 | yfinance, Twelve Data, screenshot and stale plugins price the holdings every day | To Do | §5.1 | none |  |
 | MA-43 | The BlackRock page, FT and EODHD plugins back up the free feeds | To Do | §5.1 | none |  |
-| MA-44 | ECB FX rates and market calendars are loaded daily | To Do | §5.3 | none |  |
 | MA-45 | Input hygiene drops bad bars before anything is scored | To Do | §5.1 | none |  |
 | MA-46 | A source-comparison report shows which feed actually serves the Monzo funds' NAV | To Do | §5.1 | none |  |
 | MA-47 | A proxy basket from each fund's top holdings estimates the day before the NAV lands | To Do | §5.1, §4.3 | none |  |
@@ -99,7 +199,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-52 | Forecast ranges by block bootstrap give each holding a likely range and P(fall greater than 5%) | To Do | §6.5 | none |  |
 | MA-53 | The ingest and engine jobs write signals and shadow stances every weekday by 07:10 | To Do | §5, §6.3 | none |  |
 
-## Phase 3: Briefs, alerts, charts, technical mode (MA-12)
+## Phase 11: Briefs, alerts, charts, technical mode (MA-12)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -113,7 +213,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-61 | A dead man's switch and the error alarms tell the owner, in the app and by push, when a job did not run | To Do | §10 | planned | iPhone admin.dc.html: iPhone · Admin center |
 | MA-114 | As spend nears the ceiling, the bot steps down to cheaper ways of working before it stops | To Do | §15.1 | planned | iPhone chat.dc.html: iPhone · Ceiling reached: templates only; iPhone admin.dc.html: iPhone · Spend and the ceiling; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Spend · Move the ceiling, the consequences |
 
-## Phase 4: Chat, research cards, scenarios (MA-13)
+## Phase 12: Ask anything: research cards and scenarios (MA-13)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -125,44 +225,20 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-67 | "What if the pound falls 10%?" gets a scenario card from the look-through exposure | To Do | §2, §9.2, §5.2 | planned | iPhone dashboard.dc.html: iPhone · What if? sheet |
 | MA-68 | The bot searches the web for sources and never follows instructions it finds there | To Do | §8, §14 | none |  |
 | MA-69 | "Stop pinging me under 2%" sets a preference after Confirm | To Do | §2, §4.6 | planned | iPhone chat.dc.html: iPhone · Preference card; iPhone settings.dc.html: iPhone · Notifications and quiet hours |
-| MA-115 | The chat sends Claude only the current conversation, kept short, with notes on recent ones | To Do | §8 | none |  |
+| MA-183 | A holding's market view, its stance, signals and Technical section, shows at every door | To Do | §9.3, §9.4 | planned | Browser.dc.html: Browser · Overview; Browser.dc.html: Browser · A holding (NASDAQ 100); Browser.dc.html: Browser · Overlap; Browser.dc.html: Browser · Track record; Responsive.dc.html: Responsive · one Overview, five widths |
 
-## Phase 5: The dashboard and the Admin center, in the app and the web app (read-only, behind sign-in) (MA-14)
-
-| Key | Summary | Status | Architecture | Design | Boards |
-| --- | --- | --- | --- | --- | --- |
-| MA-70 | Design the iPad and open-foldable layouts: Home, a holding, Overlap, Scorecard and sign-in at regular width | To Do | §9.3 | planned | iPad and foldable.dc.html: iPad · Home with the chat beside it; iPad and foldable.dc.html: iPad · Holding, portrait; iPad and foldable.dc.html: Foldable · Open; iPad and foldable.dc.html: iPhone · Landscape; iPad and foldable.dc.html: iPad · Overlap and Scorecard |
-| MA-71 | Design the Audit and Activity screens on iPhone and iPad | To Do | §9.3, §10 | planned | iPhone audit and activity.dc.html: iPhone · Audit; iPhone audit and activity.dc.html: iPhone · Activity; iPad and foldable.dc.html: iPad · Audit and Activity; iPad and foldable.dc.html: Foldable · Open, Audit |
-| MA-72 | Each member's Apple Account and Google account use two-factor authentication, and each device has a passcode and Face ID | To Do | §4.5, §18.3 | none |  |
-| MA-74 | A read-only api Lambda serves each member only what they may see | To Do | §4.5, §9.3 | none |  |
-| MA-76 | The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server | To Do | §4.5, §9.3 | planned | iPhone admin.dc.html: iPhone · Second check; iPhone settings.dc.html: iPhone · Sign-in methods |
-| MA-77 | A member adds a second sign-in, Apple or Google, or a passkey, to their identity from You | To Do | §4.5 | planned | iPhone settings.dc.html: iPhone · Sign-in methods |
-| MA-78 | Home, a holding, Overlap and Scorecard work in the app on iPhone and iPad | To Do | §9.3 | planned | iPhone dashboard.dc.html: iPhone · Home, household; iPhone dashboard.dc.html: iPhone · Home, me; iPhone dashboard.dc.html: iPhone · Holding; iPhone dashboard.dc.html: iPhone · Overlap; iPhone dashboard.dc.html: iPhone · Scorecard; iPad and foldable.dc.html: iPad · Home with the chat beside it |
-| MA-79 | The Audit and Activity screens show every change and every run, with what it cost | To Do | §4.6, §9.3, §10 | planned | iPhone audit and activity.dc.html: iPhone · Audit; iPhone audit and activity.dc.html: iPhone · Activity; iPhone audit and activity.dc.html: iPhone · A run |
-| MA-80 | Each card opens its dashboard screen, and each screen's Ask opens the chat about it | To Do | §9.1, §9.3, §18.2 | planned | iPhone chat.dc.html: iPhone · Portfolio card; iPhone dashboard.dc.html: iPhone · Holding |
-| MA-101 | A new MyPaisa design system, after Monzo's warmth and Apple's HIG, with the dashboard, Mini App and Telegram components prototyped | Done | §9.3, §13, §17 | picked | MyPaisa DS v1.dc.html: 1a · Warm ledger; Foundations.dc.html: 1 · Colour; Foundations.dc.html: 2 · Type; Foundations.dc.html: 3 · Space, shape, elevation; Foundations.dc.html: 4 · Layout and size classes; Foundations.dc.html: 5 · Motion; Foundations.dc.html: 6 · Iconography; Foundations.dc.html: 7 · Voice; Components.dc.html: 1 · Buttons; Components.dc.html: 2 · Chips; Components.dc.html: 3 · Segmented control and switch; Components.dc.html: 4 · Grouped rows; Components.dc.html: 5 · Hero card; Components.dc.html: 6 · Summary and stat cards; Components.dc.html: 7 · Privacy mask; Components 2.dc.html: 8 · Navigation; Components 2.dc.html: 9 · Sheet and toast; Components 2.dc.html: 10 · List states; Components 2.dc.html: 11 · Charts and tracks; Telegram kit.dc.html: 0 · Telegram kit: the rules; Telegram kit.dc.html: 1 · Portfolio card; Telegram kit.dc.html: 2 · Stance card; Telegram kit.dc.html: 3 · Morning brief and evening wrap; Telegram kit.dc.html: 4 · Alerts; Telegram kit.dc.html: 5 · Confirm after a factsheet; Telegram kit controls.dc.html: 6 · Guided flow: one message, edited in place; Telegram kit controls.dc.html: 7 · Inline keyboard patterns; Telegram kit controls.dc.html: 8 · Reply keyboard and command menu; Telegram kit controls.dc.html: 9 · Glossary answer; Telegram kit controls.dc.html: 10 · Wide chat: Telegram Desktop, 720 wide; Telegram kit images.dc.html: I1 · Holding history chart; Telegram kit images.dc.html: I2 · Portfolio curve with past stances; Telegram kit images.dc.html: I3 · Portfolio summary tile |
-| MA-102 | The owner can sign out or pause any member's devices from the Admin center, behind the second check | In Progress | §1, §4.5 | planned | iPhone admin.dc.html: iPhone · Members and devices; iPhone admin.dc.html: iPhone · A member: sign out, pause, restore; iPhone admin.dc.html: iPhone · Second check; iPhone sign-in.dc.html: iPhone · Sign-in refused; iPad and foldable.dc.html: iPad · Admin center; Admin center 3.dc.html: Browser · Admin · People · Your account paused, after signing back in; Admin center 3.dc.html: Browser · Admin · People · Your account restored; Admin center 3.dc.html: Browser · Admin · People · Restore Asha, the confirmation; Admin center 3.dc.html: Browser · Admin · People · Asha restored; Admin center 3.dc.html: Browser · Admin · People · A failed fresh check; Admin center 3.dc.html: Browser · Admin · People · A household with only the owner |
-| MA-103 | MyPaisa has a new mark in Warm ledger that animates once when the app opens | Done | §9.3 | picked | Logo.dc.html: 1c · Watcher; Logo.dc.html: 1c Telegram avatar |
-| MA-116 | The owner moves the Claude ceiling up or down in the Admin center | To Do | §15.1, §15.2 | planned | iPhone admin.dc.html: iPhone · Spend and the ceiling; iPhone admin.dc.html: iPhone · Move the ceiling; iPhone admin.dc.html: iPhone · Second check; iPad and foldable.dc.html: iPad · Admin center; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2.dc.html: Browser · Admin · Spend · Move the ceiling, the consequences; Admin center 3.dc.html: Browser · Admin · Spend · Change the guards: member share, daily guard, calls per run; Admin center 3.dc.html: Browser · Admin · Spend · Change the renewal day; Admin center 3.dc.html: Browser · Admin · Spend · Type the hard limit; Admin center 3.dc.html: Browser · Admin · Spend · Move the ceiling past the credit, the explicit yes; Admin center 3.dc.html: Browser · Admin · Spend · Move the ceiling above the hard limit, refused |
-| MA-137 | The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app, push and email | To Do | §15.2 | planned | iPhone admin.dc.html: iPhone · Admin center; iPhone admin.dc.html: iPhone · Caps and alerts; iPhone admin.dc.html: iPhone · Alert routing; iPhone settings.dc.html: iPhone · Lock screen: a red alert; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Alerts; Admin center 2.dc.html: Browser · Admin · Alerts · Replayed; Admin center 3.dc.html: Browser · Admin · Spend · Change the guards: member share, daily guard, calls per run; Admin center 3.dc.html: Browser · Admin · Spend · Type the hard limit; Admin center 3.dc.html: Browser · Admin · Spend · Move the ceiling past the credit, the explicit yes; Admin center 3.dc.html: Browser · Admin · Spend · Change the ladder's steps; Admin center 3.dc.html: Browser · Admin · Spend · Change the AWS cap, its steps and actions; Admin center 3.dc.html: Browser · Admin · Alerts · Change the routing; Admin center 3.dc.html: Browser · Admin · Alerts · Change quiet hours, cooldowns and the digest; Admin center 3.dc.html: Browser · Admin · Alerts · Change the queues' retries and backoff; Admin center 3.dc.html: Browser · Admin · Alerts · The AWS cap's steps and the forecast, with their flags; Admin center 3.dc.html: Browser · Admin · Alerts · Replayed, and failed again |
-| MA-145 | A failed-work alert carries a Replay button that puts the dead-lettered work back on its queue | To Do | §15.2, §21.3 | planned | iPhone admin.dc.html: iPhone · Failed work and Replay; Admin center 2.dc.html: Browser · Admin · Alerts; Admin center 2.dc.html: Browser · Admin · Alerts · Replay, the fresh check; Admin center 2.dc.html: Browser · Admin · Alerts · Replayed; Admin center 3.dc.html: Browser · Admin · Alerts · Replayed, and failed again |
-| MA-149 | The Audit screen opens the original file behind each change, through a short-lived link only the right member can use | To Do | §4.6, §9.3 | planned | iPhone audit and activity.dc.html: iPhone · Audit, a change from a file; iPhone audit and activity.dc.html: iPhone · Files; iPhone audit and activity.dc.html: iPhone · File preview; Audit and files.dc.html: Browser · Audit with files; Audit and files.dc.html: Browser · File viewer; Audit and files.dc.html: Browser · Files |
-| MA-180 | Search finds a holding, a change, a file or a past answer from anywhere in the app | To Do | §9.3 | todo |  |
-| MA-183 | The web app shows Home, a holding, Overlap and Scorecard read-only in a browser, installable as a PWA | To Do | §9.3, §9.4 | picked | Browser.dc.html: Browser · Overview; Browser.dc.html: Browser · A holding (NASDAQ 100); Browser.dc.html: Browser · Overlap; Browser.dc.html: Browser · Track record; Responsive.dc.html: Responsive · one Overview, five widths |
-| MA-184 | The web app's Audit, Files, Activity and Admin center pages work in a browser, with the second check for the owner's actions | To Do | §4.6, §9.4, §15.1, §15.2 | planned | Browser 2.dc.html: Browser · Activity; Browser 2.dc.html: Browser · Audit; Audit and files.dc.html: Browser · Audit with files; Audit and files.dc.html: Browser · Files; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Alerts |
-| MA-185 | In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie | To Do | §4.5, §9.4, §14 | planned | Browser 2.dc.html: Browser · Login |
-
-## Phase 6: Track record and calibration (MA-15)
+## Phase 13: Track record and calibration (MA-15)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
+| MA-78 | Overlap and Scorecard work at every door: iPhone, iPad, the foldable and the browser | To Do | §9.3 | planned | iPhone dashboard.dc.html: iPhone · Holding; iPhone dashboard.dc.html: iPhone · Overlap; iPhone dashboard.dc.html: iPhone · Scorecard |
 | MA-81 | The forecast grader checks whether the ranges and P(fall greater than 5%) came true | To Do | §6.5 | none |  |
 | MA-82 | The stance grader scores every call against doing nothing, with a reliability table | To Do | §6.4 | none |  |
 | MA-83 | Confidence learns from its own track record, recalibrated only after 8 weeks | To Do | §6.4 | none |  |
 | MA-84 | /scorecard shows the track record in the chat and on the dashboard | To Do | §6.4, §9.3 | planned | iPhone dashboard.dc.html: iPhone · Scorecard; Browser.dc.html: Browser · Track record |
 | MA-85 | The Saturday review on Opus reflects on the last four weeks | To Do | §8, §11 | todo |  |
 
-## Phase 7: News, events, sentiment (shadow) (MA-16)
+## Phase 14: News, events, sentiment (shadow) (MA-16)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -171,7 +247,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-88 | The event calendar and a sentiment line reach the brief and the chat | To Do | §11 | planned | iPhone dashboard.dc.html: iPhone · Today's brief |
 | MA-89 | Sentiment tilts the cascade by one notch, in shadow, only when the price pillars agree | To Do | §6.3, §11 | none |  |
 
-## Phase 8: Stances go live (MA-17)
+## Phase 15: Stances go live (MA-17)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -179,27 +255,14 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-91 | Stance chips appear on the Portfolio card and in the brief, and /calls lists them | To Do | §6.3, §9.2 | todo |  |
 | MA-92 | A guardrail review proves there is no path to "sell everything" | To Do | §1, §6.3 | none |  |
 
-## Phase 9: MyPaisa: the whole wealth tracker on this backend (later, not a priority) (MA-18)
-
-| Key | Summary | Status | Architecture | Design | Boards |
-| --- | --- | --- | --- | --- | --- |
-| MA-93 | Property, deposits, policies, pensions and loans can be added and updated through the chat | To Do | §12 | todo |  |
-| MA-94 | Wealth maths: XIRR to the penny, deposit accrual, loan schedules and a daily net worth | To Do | §6.6 | none |  |
-| MA-95 | Design and build the Overview, Assets and Debts screens for the whole household | To Do | §12, §9.3 | planned | Wealth.dc.html: Browser · Household overview; Wealth.dc.html: Browser · Assets; Wealth.dc.html: Browser · An asset; Wealth.dc.html: Browser · Debts; Wealth.dc.html: Browser · A loan |
-| MA-96 | Forecast and budget: a thirty-year projection and a monthly budget set by chat | To Do | §6.6, §12 | planned | Wealth.dc.html: Browser · Budget; Wealth.dc.html: Browser · Forecast |
-| MA-97 | Reports and exports replace the old wealth tracker, which is then retired | To Do | §12 | planned | Wealth.dc.html: Browser · Reports |
-| MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §12.1, §8 | todo |  |
-| MA-105 | The old wealth tracker's holdings and debts come into MyPaisa once, checked by the owner | To Do | §18.5 | todo |  |
-| MA-111 | The owner fills prod's history from an Excel workbook sent in the chat | To Do | §12, §18.5, §22.2, §22.5 | todo |  |
-
-## Phase 10: New kinds of holding (when you add one) (MA-19)
+## Phase 16: New kinds of holding (when you add one) (MA-19)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
 | MA-98 | An iShares ETF from Monzo's "Build your own" range is added and priced like the funds | To Do | §4.3, §5.1 | none |  |
 | MA-99 | A share gets valuation and earnings cards, with a fundamentals source chosen then | To Do | §4.3, §7, §17 | todo |  |
 
-## Phase 11: The Forecaster: a second engine beside the rules engine (later) (MA-117)
+## Phase 17: The Forecaster: a second engine beside the rules engine (MA-117)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -213,7 +276,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-125 | F7: monthly money and rebalancing are steered by risk to cut deep falls while growing steadily | To Do | §19.5 | todo |  |
 | MA-126 | The Forecaster's data sources, their prices and the news-to-holdings matching are written down | Done | §5.1, §15, §19, §19.2, §19.3 | none |  |
 
-## Phase 12: The agent team: configured, approved, self-healing, self-learning (later) (MA-127)
+## Phase 18: The agent team: configured, approved, self-healing, self-learning (MA-127)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -228,7 +291,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-136 | E8: each agent has its share of the $200 Claude credit, and AWS and other services stay inside their cap | To Do | §15.2, §20.7 | planned | Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Agents and incidents |
 | MA-146 | The ops warden replays dead-lettered work on its own once the cause is healthy, and opens an incident if it fails again | To Do | §20.5, §21.3 | none |  |
 
-## Phase 13: Indian markets and the existing Indian portfolio (later) (MA-147)
+## Phase 19: Indian markets and the existing Indian portfolio (MA-147)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -237,7 +300,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-153 | IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ | To Do | §4.1, §9, §22 | planned | India.dc.html: Browser · Overview with India; India.dc.html: Browser · Holding · Indian fund; India.dc.html: Browser · Holding · NSE share |
 | MA-154 | IN4: The engine and the Forecaster read Indian markets through an India basket, Indian news and the RBI's calendar | To Do | §6.2, §19.2, §19.3, §22 | none |  |
 
-## Phase 14: The app beyond the chat: widgets, Siri, the share sheet, Live Activities (later) (MA-175)
+## Phase 20: The app beyond the chat: widgets, Siri, the share sheet, Live Activities (MA-175)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
