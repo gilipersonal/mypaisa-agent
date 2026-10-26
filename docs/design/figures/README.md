@@ -67,6 +67,11 @@ Arun is the owner and admin; Asha is a member. Their five UK holdings are the iO
   Asha £200,583.
 - The Pune flat's valuation is overdue since 15 Jul, so it is a check-in on Mon 26 Oct.
 - The HDFC balance is ₹14,84,587 after the Thu 5 Nov EMI.
+- Sun 1 Nov at 08:44: the Barclaycard statement is confirmed, so its £1,458 is owed (due Fri 20 Nov). Net worth is
+  £456,493 (₹5,13,55,462).
+- Thu 5 Nov, after the HDFC EMI: £456,747 (₹5,13,84,038); India £106,737; Arun £256,164, Asha £200,583.
+- Splits round by largest remainder, so they always sum to the total shown. A frame that moves only one member's
+  records lets that member's figure absorb any rounding pound.
 
 **October's budget**
 - Income £7,560; EMIs £2,153; SIP £89.

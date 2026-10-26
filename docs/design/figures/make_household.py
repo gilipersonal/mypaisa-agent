@@ -176,19 +176,28 @@ def to_gbp(x: float, ccy: str) -> float:
     return x if ccy == "GBP" else x / FX
 
 
+def split(parts: dict, total: int) -> dict:
+    """Round each part so the parts sum to the total shown: largest remainder, each part within £1 of its exact value."""
+    floors = {k: math.floor(v) for k, v in parts.items()}
+    left = total - sum(floors.values())
+    for k in sorted(parts, key=lambda k: parts[k] - floors[k], reverse=True)[:max(left, 0)]:
+        floors[k] += 1
+    return floors
+
+
 def totals(include_new: bool):
     rows = assets + ([new_record] if include_new else [])
     own = sum(to_gbp(a["value"], a["ccy"]) for a in rows)
     owe = sum(to_gbp(d["balance"], d["ccy"]) for d in debts)
-    by_country = {c: round(sum(to_gbp(a["value"], a["ccy"]) for a in rows if a["country"] == c) - sum(to_gbp(d["balance"], d["ccy"]) for d in debts if d["country"] == c)) for c in ("UK", "IN")}
-    by_member = {}
+    net = round(own) - round(owe)
+    country = {c: sum(to_gbp(a["value"], a["ccy"]) for a in rows if a["country"] == c) - sum(to_gbp(d["balance"], d["ccy"]) for d in debts if d["country"] == c) for c in ("UK", "IN")}
+    member = {}
     for mm in ("arun", "asha"):
         a = sum(to_gbp(x["value"], x["ccy"]) * p / 100 for x in rows for o, p in x["owners"] if o == mm)
         d = sum(to_gbp(x["balance"], x["ccy"]) * p / 100 for x in debts for o, p in x["owners"] if o == mm)
-        by_member[mm] = round(a - d)
-    net = round(own) - round(owe)
-    by_country["IN"] = net - by_country["UK"]          # the split always sums to the total shown
-    by_member["asha"] = net - by_member["arun"]
+        member[mm] = a - d
+    by_country = split(country, net)
+    by_member = split(member, net)
     liquid = sum(to_gbp(a["value"], a["ccy"]) for a in rows if a["liquidity"] == "liquid")
     return {"own_gbp": round(own), "owe_gbp": round(owe), "net_gbp": net, "net_inr": round(net * FX),
             "by_country_gbp": by_country, "by_member_gbp": by_member, "liquid_gbp": round(liquid)}
@@ -203,6 +212,26 @@ correction = {"record": "home", "field": "value", "from": 415000, "to": 428000, 
 _home = next(a for a in assets if a["id"] == "home")
 _home["value"] = correction["to"]
 after_correction = totals(True)
+_home["value"] = correction["from"]
+
+# Later frames (lesson 19), with the Home correction kept:
+# Sun 1 Nov 08:44, the Barclaycard statement confirmed: its £1,458 is owed until the bill is paid.
+# Thu 5 Nov, the HDFC EMI paid: its balance falls to the post-November figure.
+_home["value"] = correction["to"]
+_card = next(d for d in debts if d["id"] == "card")
+_card["balance"] = 1458.0
+after_statement = totals(True)
+_hdfc = next(d for d in debts if d["id"] == "hdfc")
+_hdfc_before = _hdfc["balance"]
+_hdfc["balance"] = hl_bal_nov
+after_nov_emi = totals(True)
+# Only Arun's HDFC loan moved, so Asha's share keeps the rounding earlier frames show and Arun's absorbs the pound
+# (both stay within £1 of their exact values, and the split still sums to the total).
+_shift = after_statement["by_member_gbp"]["asha"] - after_nov_emi["by_member_gbp"]["asha"]
+after_nov_emi["by_member_gbp"]["asha"] += _shift
+after_nov_emi["by_member_gbp"]["arun"] -= _shift
+_hdfc["balance"] = _hdfc_before
+_card["balance"] = 0.0
 _home["value"] = correction["from"]
 
 # --- Budget (monthly plan, October actuals) ------------------------------------------------------------------------
@@ -356,6 +385,7 @@ out = {
     "members": members, "assets": assets, "debts": debts, "new_record_in_prototype": new_record,
     "totals_before_new_record": before, "totals_after_new_record": after,
     "correction_in_prototype": correction, "totals_after_correction": after_correction,
+    "totals_after_statement_sun_1_nov": after_statement, "totals_after_hdfc_emi_thu_5_nov": after_nov_emi,
     "budget_oct": budget,
     "statements_oct": statements,
     "what_if": what_if,
