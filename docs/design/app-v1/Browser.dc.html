@@ -11,6 +11,8 @@
       <helmet data-dc-atomics>
         <meta name="design_doc_mode" content="canvas" />
         <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
         <style>
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
           a { color: var(--mp-accent); } a:hover { opacity: 0.85; }
@@ -48,8 +50,8 @@
           .gy.mp-mask { min-width: 30px; color: transparent; }
           .lbl-h { color: var(--mp-hero-ink); }
           .lbl-c { color: var(--mp-ink-2); }
-          .mp-chartlbl.al { transform: translate(-100%, -100%); margin-top: -6px; margin-left: -6px; }
-          .mp-chartlbl.bl { transform: translate(-100%, 0); margin-top: 6px; margin-left: -8px; }
+          .mp-chartlbl.al { transform: translate(-100%, -100%) !important; margin-top: -6px; margin-left: -6px; }
+          .mp-chartlbl.bl { transform: translate(-100%, 0) !important; margin-top: 6px; margin-left: -8px; }
           .ax-h { color: var(--mp-hero-ink-2); margin-top: 6px; }
           .ax-c { color: var(--mp-ink-3); margin-top: 6px; }
           .alertlbl { position: absolute; left: 0; margin-top: 4px; font: 600 11px/14px var(--mp-font); color: var(--mp-ink-2); }
@@ -123,6 +125,8 @@
           .mpm-dot { fill: var(--mp-coral); }
           .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
           .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+          /* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey (25% brightness) */
+          .t-dark .mp-ink3, .t-dark .ax-c, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
         </style>
       </helmet>
 
@@ -138,13 +142,13 @@
               <sc-for list="{{ themesP }}" as="t" hint-placeholder-count="3">
                 <div>
                   <p class="dv-cap">Browser · Overview · {{ t.label }}</p>
-                  <div class="board mp mp-app {{ t.cls }}" data-screen-label="Browser · Overview · {{ t.label }}">
+                  <div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="Browser · Overview · {{ t.label }}">
                     <div class="mp-shell">
                       <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                         <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
                         <sc-for list="{{ navOv }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#b1"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
                         <div style="flex: 1"></div>
-                        <div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+                        <div class="mp-foot mp-ink3 side-ft">Signed in with Apple<br />You · owner</div>
                       </aside>
                       <main class="mp-shell-main main-rel">
                         <div class="mp-pagepad">
@@ -208,13 +212,13 @@
               <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
                 <div>
                   <p class="dv-cap">Browser · A holding · {{ t.label }}</p>
-                  <div class="board mp mp-app {{ t.cls }}" data-screen-label="Browser · A holding · {{ t.label }}">
+                  <div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="Browser · A holding · {{ t.label }}">
                     <div class="mp-shell">
                       <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                         <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
                         <sc-for list="{{ navHo }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#b2"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
                         <div style="flex: 1"></div>
-                        <div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+                        <div class="mp-foot mp-ink3 side-ft">Signed in with Apple<br />You · owner</div>
                       </aside>
                       <main class="mp-shell-main main-rel">
                         <div class="mp-pagepad">
@@ -302,13 +306,13 @@
               <sc-for list="{{ themesP }}" as="t" hint-placeholder-count="3">
                 <div>
                   <p class="dv-cap">Browser · Overlap · {{ t.label }}</p>
-                  <div class="board mp mp-app {{ t.cls }}" data-screen-label="Browser · Overlap · {{ t.label }}">
+                  <div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="Browser · Overlap · {{ t.label }}">
                     <div class="mp-shell">
                       <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                         <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
                         <sc-for list="{{ navOl }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#b3"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
                         <div style="flex: 1"></div>
-                        <div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+                        <div class="mp-foot mp-ink3 side-ft">Signed in with Apple<br />You · owner</div>
                       </aside>
                       <main class="mp-shell-main main-rel">
                         <div class="mp-pagepad">
@@ -346,7 +350,7 @@
                               <sc-for list="{{ t.mixes }}" as="m" hint-placeholder-count="2">
                                 <div class="mp-card pad">
                                   <div class="ttl"><span class="mp-hl">{{ m.title }}</span><span class="mp-foot mp-ink3">share · pounds</span></div>
-                                  <div class="stk" role="img" aria-label="{{ m.aria }}"><sc-for list="{{ m.segs }}" as="s" hint-placeholder-count="5"><span style="flex: {{ s.v }} 1 0; background: {{ s.fill }}"></span></sc-for></div>
+                                  <div class="stk" role="img" aria-label="{{ m.aria }}"><sc-for list="{{ m.segs }}" as="s" hint-placeholder-count="5"><span data-mo="barx" style="flex: {{ s.v }} 1 0; background: {{ s.fill }}"></span></sc-for></div>
                                   <div style="margin-top: 10px">
                                     <sc-for list="{{ m.segs }}" as="s" hint-placeholder-count="5"><div class="lg"><span class="swa" style="background: {{ s.fill }}"></span><span class="mp-sub">{{ s.l }}</span><span class="mp-sub mp-w6" style="text-align: right">{{ s.pct }}</span><span class="mp-sub mp-ink2" style="text-align: right"><span class="{{ s.gcls }}">{{ s.gbp }}</span></span></div></sc-for>
                                   </div>
@@ -372,13 +376,13 @@
               <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
                 <div>
                   <p class="dv-cap">Browser · Track record · {{ t.label }}</p>
-                  <div class="board mp mp-app {{ t.cls }}" data-screen-label="Browser · Track record · {{ t.label }}">
+                  <div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="Browser · Track record · {{ t.label }}">
                     <div class="mp-shell">
                       <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                         <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
                         <sc-for list="{{ navTr }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#b4"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
                         <div style="flex: 1"></div>
-                        <div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+                        <div class="mp-foot mp-ink3 side-ft">Signed in with Apple<br />You · owner</div>
                       </aside>
                       <main class="mp-shell-main main-rel">
                         <div class="mp-pagepad">
@@ -398,7 +402,7 @@
                                 <sc-for list="{{ rel }}" as="r" hint-placeholder-count="3">
                                   <div class="relrow" role="img" aria-label="{{ r.aria }}">
                                     <span class="rl mp-sub mp-w6">{{ r.l }}</span>
-                                    <div class="rb rbar"><span class="rmid"></span><span class="rband" style="left: {{ r.bx }}; width: {{ r.bw }}"></span><span class="rhap" style="width: {{ r.hw }}"></span></div>
+                                    <div class="rb rbar"><span class="rmid"></span><span class="rband" style="left: {{ r.bx }}; width: {{ r.bw }}"></span><span class="rhap" data-mo="barx" style="width: {{ r.hw }}"></span></div>
                                     <div class="rv"><div class="mp-sub mp-w6">{{ r.pct }}</div><div class="mp-foot mp-ink3 nowrap">{{ r.n }}</div></div>
                                   </div>
                                 </sc-for>
@@ -406,7 +410,7 @@
                               </div>
                               <div class="mp-card pad">
                                 <div class="ttl" style="margin-bottom: 0"><span class="mp-hl">Going live</span><span class="mp-sub mp-w6 nowrap">Week 6 of 8</span></div>
-                                <div class="segs" role="img" aria-label="6 of 8 weeks above doing nothing"><sc-for list="{{ weeks }}" as="w" hint-placeholder-count="8"><span class="sg mp-track {{ w }}"></span></sc-for></div>
+                                <div class="segs" role="img" aria-label="6 of 8 weeks above doing nothing"><sc-for list="{{ weeks }}" as="w" hint-placeholder-count="8"><span class="sg mp-track {{ w }}" data-mo="barx"></span></sc-for></div>
                                 <div class="mp-foot mp-ink3">Six weeks above doing nothing. Two more and stance chips go live on the weekday cards.</div>
                               </div>
                             </div>

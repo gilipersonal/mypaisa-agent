@@ -1,22 +1,36 @@
-# MyPaisa Agent — Architecture (v2, the hybrid)
+# MyPaisa Agent — Architecture (v3, the iOS app)
 
-A private analyst for one household's investments, run entirely from a
-Telegram chat by someone who is not a finance person. It keeps the record of
-what is held and what it is worth, computes what moved and why, takes a stance
-with a confidence score, explains it plainly, goes technical on request, asks
-before it acts, and grades itself. A read-only web app behind a login shows
-the same figures on a laptop, with the audit log of every change and a record
-of what the agent did and spent. It runs on AWS in account `545595341442`,
-`us-east-1`, with Claude through the Anthropic API. It never trades.
+A private analyst for one household's investments, run from one app on the
+household's iPhones and iPads by someone who is not a finance person. The app
+is a chat: it keeps the record of what is held and what it is worth, computes
+what moved and why, takes a stance with a confidence score, explains it
+plainly, goes technical on request, asks before it acts, and grades itself.
+Beside the chat the same app shows the household's dashboard, read-only: the
+holdings, the audit log of every change, and a record of what the agent did
+and spent. A web app, installable as a PWA, shows the same dashboard and the
+owner's Admin center in any browser, read-only too. Members sign in with Apple
+or Google, or a passkey on the web. It runs on AWS in account
+`545595341442`, `us-east-1`, with Claude through the Anthropic API. It never
+trades.
 
-v2 folds in what `docs/RESEARCH.md` found in the Agentic Trading Desk and
-Agent Toolbelt: the desk's deterministic indicator and pillar engine and its
+v3 (MA-161, 25 Oct 2026) moves the chat from a Telegram bot to one native
+SwiftUI app for iOS and iPadOS 26, in Warm ledger on Liquid Glass (§9), and
+keeps the web app for the read-only dashboard and the Admin center (§9.4). Arun: "redesign everything from Telegram to iOS app. No
+more telegram login ... make the app into a cool mobile chatbot where they can
+maintain everything and even see the dashboard of the holdings in the
+household. Only iOS app is needed and nothing else for now." And, the same
+evening: "we have webapp for the dashboard and admin portal pwa ... That will
+still be there for the read only dashboard"; "The read only dashboard should
+also be shown on the ios tablet duo." Everything behind
+the front door (the registry, the audit log, the queues, the engine, the cards,
+the budgets, the Forecaster, the agent team, India) stands as v2 drew it. v2
+folded in what `docs/RESEARCH.md` found in the Agentic Trading Desk and Agent
+Toolbelt: the desk's deterministic indicator and pillar engine and its
 discipline, the toolbelt's card shapes and portfolio review, and the layman's
-Telegram front end both of them lack. v1 (prices, briefs, alerts, chat, news,
-calls on Lambda) stands underneath; sections that have not changed are kept
-short.
+front end both of them lack. v1 (prices, briefs, alerts, chat, news, calls on
+Lambda) stands underneath; sections that have not changed are kept short.
 
-The design is drawn and explained in these places (24 Oct 2026, MA-141):
+The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161):
 
 - **The architecture, in Lucid**, on AWS 2024 shapes, one Lucid document per
   view. They are private to the account; share them from each document's
@@ -25,21 +39,29 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141):
 
   | View | Lucid document | Drawn in |
   | --- | --- | --- |
-  | 1 System overview | [open](https://lucid.app/lucidchart/c67e066b-141a-4b94-a860-b0501c6632ee/edit) | §3 |
-  | 2 Environments, domains and delivery | [open](https://lucid.app/lucidchart/60bffe0d-133b-489c-ae02-526a987252fc/edit) | §18 |
-  | 3 Identity and sign-in | [open](https://lucid.app/lucidchart/9376b624-efcc-4f56-96a9-9a00e9b8fa24/edit) | §4.5 |
-  | 4 Queues, retries and replay | [open](https://lucid.app/lucidchart/3077ebaa-b165-4936-933c-d68109de8544/edit) | §21 |
-  | 5 Where the data lives | [open](https://lucid.app/lucidchart/a86198f7-d101-4550-9402-3348f08c5eb5/edit) | §20.6 |
-  | 6 The market agent and the learning loop | [open](https://lucid.app/lucidchart/35e7ddc4-3aa4-46bf-b301-dadb0cde0b48/edit) | §19, §22 |
-  | 7 The agent team, settings, caps and alerts | [open](https://lucid.app/lucidchart/d8bc9ec7-ef1f-41fd-b372-7b8feea22b1a/edit) | §15.2, §20 |
-  | Adding a holding (sequence) | [open](https://lucid.app/lucidchart/06ed33f1-7704-4e57-9d91-baeb317ac271/edit) | §4.2 |
+  | 1 System overview | [open](https://lucid.app/lucidchart/4ae817c6-847f-45f8-a10c-4509971c9c09/edit) | §3 |
+  | 2 Environments, domains and delivery | [open](https://lucid.app/lucidchart/350c6593-a915-495f-88f1-a781b3ed1c5b/edit) | §18 |
+  | 3 Identity and sign-in | [open](https://lucid.app/lucidchart/c23040ec-b253-47e2-a614-612dab962292/edit) | §4.5 |
+  | 4 Queues, retries and replay | [open](https://lucid.app/lucidchart/ddc9bde5-18d4-468b-af6e-c1f86d7d7647/edit) | §21 |
+  | 5 Where the data lives | [open](https://lucid.app/lucidchart/674e3574-9c79-403c-9157-72769a8d5fce/edit) | §20.6 |
+  | 6 The market agent and the learning loop | [open](https://lucid.app/lucidchart/6f1b4c75-353c-49e5-b6e7-29fd2c18d356/edit) | §19, §22 |
+  | 7 The agent team, settings, caps and alerts | [open](https://lucid.app/lucidchart/3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4/edit) | §15.2, §20 |
+  | Adding a holding (sequence) | [open](https://lucid.app/lucidchart/b50d49fd-c941-44a0-b623-7d3e99b57fd8/edit) | §4.2 |
 
+- **The iOS app, in Claude Design** (MA-161): the screens in
+  [MyPaisa iOS v1](https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8)
+  (three shell options, sign-in and joining, the chat and its cards, the
+  dashboard, audit and activity, the Admin center, settings and notifications,
+  iPad and the foldable) and the iOS kit in
+  [MyPaisa DS v1](https://claude.ai/design/p/2f7310cd-e56a-4d13-8339-8fc637249c9a);
+  the decision record is `docs/design/reviews/MA-161/decision.md`.
 - **[MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7)**:
-  twelve flows end to end (invite, sign-in, adding a holding, logging money,
-  the morning brief, a red alert, a question, the web app, the Admin center,
-  failures and replay, the spend ladder, the first of the month), each across
-  the member, Telegram, AWS, Claude and data lanes, with what the member sees,
-  the safeguards and the Jira stories that build it.
+  the flows end to end (invite, sign-in, adding a holding, logging money, the
+  morning brief, a red alert, a question, the dashboard, the Admin center,
+  failures and replay, the spend ladder, the first of the month, money in any
+  currency, India), each across the member, the app, AWS, Claude and data
+  lanes, with what the member sees, the safeguards and the Jira stories that
+  build it.
 - **[MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)**:
   the market side end to end: free data, the rules engine, news matched to
   holdings, the Forecaster's five models, both engines side by side, the
@@ -48,18 +70,21 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141):
 - Earlier pages, kept for reference: the
   [animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx)
   (v3, before the queues and the agent team), the
-  [first user journeys](https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam)
-  and the [dashboard screens](https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp).
+  [first user journeys](https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam),
+  the [dashboard screens](https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp),
+  and the Telegram, Mini App and browser boards in
+  [MyPaisa app v1](https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7),
+  superseded by the iOS app (MA-161).
 
 Sources for the pages are in `docs/design/`; both new pages use MyPaisa DS v1,
 "Warm ledger" (MA-101), with the crimson alert of MA-102, in light and dark.
 
 Status: design only.
 
-**Destination.** The web app is the future MyPaisa, the household wealth
-tracker: assets of every kind (property, deposits, policies, pensions,
+**Destination.** The app's dashboard is the future MyPaisa, the household
+wealth tracker: assets of every kind (property, deposits, policies, pensions,
 equities), debts, budget, a thirty-year forecast with XIRR, reports, in GBP
-or INR. All of it read-only; every update comes through the bot. The current
+or INR. All of it read-only; every update comes through the chat. The current
 [wealth-tracker](https://github.com/gilipersonal/wealth-tracker) repository
 is the reference for those screens until they are rebuilt here with a new
 design, and §12 is the road. None of that is a priority before phase 8. The
@@ -72,68 +97,74 @@ whole household's wealth later are the same records, not a migration.
 
 1. **Claude never produces a number.** Every figure comes from code with
    tests. Claude chooses what to say and how to say it.
-2. **The bot cannot trade.** No broker login, no orders. It suggests only
+2. **The app cannot trade.** No broker login, no orders. It suggests only
    ISA-safe actions.
 3. **The layman sees the summary; the detail is one tap away.** Every message
    has a plain top and a technical underside. Nothing technical is shown
    unasked.
 4. **One write path.** Every change to the records, whatever the screen, goes
-   through the bot: a card, a Confirm tap, an audit row. The web app, today
-   and when it becomes the full MyPaisa, is read-only by construction for the
-   household's records. Arun, 24 Oct 2026: "Dashboard will be read only
+   through the chat: a card, a Confirm tap, an audit row. The dashboard
+   screens, today and when they become the full MyPaisa, are read-only by
+   construction for the household's records. Arun, 24 Oct 2026: "Dashboard will be read only
    (except for admin)". The one exception is the owner's Admin center, which
-   acts on admin settings and operations, never on a record, each behind a
-   fresh check and an audit row (§9.3).
+   acts on admin settings and operations, never on a record, each behind the
+   second check and an audit row (§4.5, §9.3).
 
 ---
 
 ## 2. What it does, as the user sees it
 
-| You | The bot |
+| You | MyPaisa |
 | --- | --- |
-| Open the chat for the first time | A three-step setup: base currency, what you hold (send a factsheet or a screenshot, or type it), how often to be told things. You become the household's owner. |
-| Send `/invite` | A one-time link. Your wife taps it on her phone; she is a member of the same household, with her own chat, her own accounts and her own preferences |
-| Tap **Household** or **Me** on the Portfolio card | The household overview across every member and account, or your own accounts in detail. As owner you can open any member's detail; a member sees their own and the household totals |
-| Send a factsheet PDF | Reads it, shows a card: name, ISIN, cost, what it holds, where it invests; you tap Confirm |
+| Open the app for the first time and sign in with Apple or Google | A three-step setup in the chat: base currency, what you hold (send a factsheet or a screenshot, or type it), how often to be told things. You become the household's owner. |
+| Tap **Invite** in the Admin center (or type `/invite`) | A one-time link, sent with iOS's share sheet. Your wife opens it on her iPhone and signs in with her own Apple or Google account; she is a member of the same household, with her own chat, her own accounts and her own preferences |
+| Tap **Household** or **Me** on Home or the Portfolio card | The household overview across every member and account, or your own accounts in detail. As owner you can open any member's detail; a member sees their own and the household totals |
+| Send a factsheet PDF (the camera, a scan, Photos or Files) | Reads it, shows a card: name, ISIN, cost, what it holds, where it invests; you tap Confirm |
 | Send a screenshot of your Monzo valuations | Reads the values, matches them to holdings, updates the records, shows a before/after card; you tap Confirm |
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
-| Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so the bot says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
-| Type "I want to log a transaction" | Asks one thing at a time, with buttons: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
-| Open the web app on your laptop | Log in with Telegram (a tap in the Telegram app) or with Google (the Gmail account linked to you), no password either way; the same dashboard, plus the audit log of every change and what the agent did and spent; read-only |
+| Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so MyPaisa says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
+| Type "I want to log a transaction" | Asks one thing at a time, with chips: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
+| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; read-only |
+| Open `console.mypaisapp.com` on your laptop, or the web app you installed | Sign in with Apple, Google or a passkey; the same dashboard, Audit and Activity, and for the owner the Admin center; read-only, and every change still made in the app's chat |
 | Tap **Portfolio** | One table: each holding, value, day and month change, a stance chip (Add · Hold · Pause · Trim), confidence; a total line in GBP |
 | Tap **Today** | The morning brief: what moved, why, anything to do |
-| Tap a holding | Its card: value and history chart, stance with confidence and horizon, "Why?", "Technical", "What if?" |
+| Tap a holding | Its screen: value and history chart, stance with confidence and horizon, "Why?", "Technical", "What if?", "Ask about it" |
 | Tap **Technical** | A collapsed section opens: pillars, indicators, flags, macro regime, data quality, as numbers |
 | Ask "should I add to Balanced this month?" | A stance card: ADD / HOLD / PAUSE with confidence, two reasons, what would change it, and the track record of that kind of call |
 | Ask "what if the pound falls 10%?" | A scenario card from the look-through currency exposure |
 | Tap **I acted** on a card | A decision record; the Saturday review compares it with what the signals said |
 | Say "stop pinging me under 2%" | A preference card to confirm; saved |
-| `/pause` | Everything stops until `/resume`; the kill switch |
+| Pause MyPaisa in You, or type `/pause` | Everything scheduled stops until Resume (`/resume`); the kill switch |
 
-Silence is a feature: about ten messages a week, two with sound at most.
+Silence is a feature: about ten notifications a week, two with sound at most.
 
 ---
 
 ## 3. System context
 
-Page 1 of the Lucid architecture ([open](https://lucid.app/lucidchart/c67e066b-141a-4b94-a860-b0501c6632ee/edit)): the household's doors on
-the left, the chat path along the top (API Gateway, the webhook, the updates
-queue, the agent, the outbox, the sender), the web app and sign-in below it,
-the background jobs, the stores, and the failure path to the admin's email.
+Page 1 of the Lucid architecture ([open](https://lucid.app/lucidchart/4ae817c6-847f-45f8-a10c-4509971c9c09/edit)): the household's app on
+the left (the iOS app and the web app), the chat path along the top (API Gateway, the chat api, the updates
+queue, the agent, the outbox, the sender, the live connection and Apple push),
+sign-in below it, the background jobs, the stores, and the failure path to the
+admin's email.
 The other six pages zoom into one part each and are drawn in their sections.
 
 ![System overview, Lucid page 1](docs/design/lucid/01-overview.png)
 
-One container image and a handful of handlers: `webhook`, `agent`, `sender`,
+One container image and a handful of handlers: `api` (the chat routes, the
+read-only data routes and the owner's admin routes), `agent`, `sender`,
 `worker` (which runs each background job by its type: ingest, engine, news,
-scoring, documents, briefs), `api`, the authorizer and the Cognito triggers.
+scoring, documents, briefs), `live` (the WebSocket connections), the
+authorizer and the Cognito triggers.
 Nothing waits on anything else directly:
-your messages, the bot's replies and every background job travel through SQS
+your messages, MyPaisa's replies and every background job travel through SQS
 queues that retry them and keep what still fails (§21). The agent Lambda is
-the only one that talks to you in the chat. The api Lambda is the only one the web app talks
-to, and apart from the owner's admin actions in the Admin center (§9.3: the
-security actions, the ceiling and caps, replays, agents' requests and
-settings, incidents), each behind a fresh check, it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
+the only one that talks to you in the chat, and the sender the only one that
+delivers to the app. The api Lambda is the only one the app calls: its chat
+routes put what you send on the updates queue, and apart from those and the
+owner's admin actions in the Admin center (§9.3: the security actions, the
+ceiling and caps, replays, agents' requests and settings, incidents), each
+behind the second check, it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and
 every one of them writes a `RunRecord` saying what it did (§10).
 
 ---
@@ -148,8 +179,10 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | Entity | Key fields | Notes |
 | --- | --- | --- |
 | **Portfolio** (household) | `id`, `name`, `base_ccy`, `created_by`, `budget_tokens_per_day` | The tenant. Every other item's partition key starts with the portfolio id. |
-| **Member** | `portfolio_id`, `tg_user_id`, `display_name`, `role` (`owner` · `member` · `viewer`), `share_detail` (let other members see my accounts), `prefs` (thresholds, quiet hours, ping budget, privacy mode, simple/technical), `joined_at`, `invited_by`, `google_sub?`, `google_email?`, `google_linked_at?` | A person, identified by their Telegram account, with a Google account linked to it for the laptop. One chat with the bot per member. |
-| **Invite** | `portfolio_id`, `token`, `role`, `created_by`, `expires_at`, `used_by?` | Single use, 24-hour expiry, bound to one portfolio and role. |
+| **Member** | `portfolio_id`, `member_id`, `cognito_sub`, `display_name`, `role` (`owner` · `member` · `viewer`), `share_detail` (let other members see my accounts), `prefs` (thresholds, quiet hours, ping budget, privacy mode, simple/technical), `joined_at`, `invited_by`, `apple_sub?`, `google_sub?`, `google_email?`, `linked_at{}`, `status` (`active` · `paused` · `left`), `session_epoch` | A person, identified by their Apple or Google account (one or both, and passkeys), linked to one Cognito user (§4.5). One conversation with MyPaisa per member. |
+| **Invite** | `portfolio_id`, `token`, `role`, `created_by`, `expires_at`, `used_by?` | Single use, 24-hour expiry, bound to one portfolio and role; opened as `https://console.mypaisapp.com/join/<token>`. |
+| **Device** | `member_id`, `device_id`, `name`, `model`, `os`, `push_token?`, `push_env` (`sandbox` · `production`), `signed_in_at`, `last_seen_at` | One per signed-in iPhone or iPad: the sender pushes to its token (MA-170); the owner signs it out (MA-102); the member signs it out from You (MA-172). |
+| **Connection** | `connection_id`, `member_id`, `device_id`, `opened_at`, `expires_at` | One per open live connection (§21): the sender posts each finished message to it; a TTL clears it. |
 | **Account** | `portfolio_id`, `id`, `name`, `category` (`investment` · `cash` · `deposit` · `policy` · `pension` · `property` · `debt`), `type` (`ISA` · `GIA` · `SIPP` · `cash` · `fixed_deposit` · `policy` · `pension` · `property` · `mortgage` · `loan` · `card`), `ccy`, `institution` (`Monzo`, `LIC`, a bank, …), `country`, `owners[]` (member ids; two for a joint account) | A tax wrapper, a pot, a property or a loan belonging to one or two members. Finances are managed here, per member. Phase 1 uses `investment` and `cash`; the other categories wait for §12 but the field exists from day one. |
 | **Instrument** | `id`, `kind` (`oeic` · `etf` · `stock` · `bond_etf` · `commodity_etc` · `cash` · later `property` · `deposit` · `policy` · `pension` · `debt`), `name`, `isin`, `sedol?`, `listing?` {MIC, ticker, ccy}, `yahoo_symbol?`, `base_ccy`, `exposure` {regions %, currencies %, asset classes %}, `benchmark?`, `ocf`, `price_sources[]` (ordered chain), `proxy?` (weighted basket), `country?`, `institution?`, `maturity_date?`, `rate?`, `schema_version` | The thing. Identifiers are optional because an OEIC has an ISIN and no ticker, a stock has both, cash has neither, a property has an address and a deposit has a maturity date. |
 | **Position** | `account_id`, `instrument_id`, `units`, `ccy` (the currency it is bought and valued in, as the platform shows it), `avg_cost_gbp`, `target_weight?`, `protected` (never suggested for trim), `opened_at` | What is held, inside one member's account. The same instrument may sit in two members' accounts; the household view adds them up. Money logged against it is checked against `ccy` (§4.7). |
@@ -163,7 +196,7 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **Stance** (call) | `instrument_id`, `made_at`, `action`, `horizon_days`, `confidence`, `reasons[]`, `invalidated_if[]`, `entry_px`, `state_bucket`, `graded` | Paper-traded and graded. |
 | **Forecast** | `instrument_id`, `date`, `horizon_days` (20), `p_up`, `p_fall_5`, `range` {p10, p50, p90}, `mood`, `analogs` {count, recovered}, `events[]`, `drivers[]`, `model_version`, `graded` | One per holding per day from the Forecaster (§19), later; graded like a stance. |
 | **Setting**, **ConfigVersion** | `key`, `value`, `schema` (type, range), `auto_band`, `approval` (`auto` · `admin`), `version`, `updated_by` (the admin or an agent), `reason`; one `ConfigVersion` row per change, never edited | Every behaviour the admin controls (§20.2). |
-| **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`telegram` · `web`), `expires_at` | An agent's request for the admin's approval (§20.3). |
+| **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`chat` · `admin_center`), `expires_at` | An agent's request for the admin's approval (§20.3). |
 | **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from the admin, and what they could not fix themselves (§20.3, §20.5). |
 | **ScoreDaily** | `model`, `instrument_id`, `mood`, `date`, the day's graded count, hit rate, Brier score, log loss, range coverage, rolling 30, 90 and 365-day values | The learning loop's daily scoreboard (§20.4); the full outcomes live in S3. |
 | **CalibrationMap** | `model`, `version`, `buckets[]` (said vs seen), `fitted_on`, `window`, `status` (`probation` · `live` · `rolled_back`) | The map from raw confidence to calibrated confidence (§20.4). |
@@ -171,12 +204,12 @@ registry is designed so that adding a new kind of thing adds data, not code.
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
 | **BudgetSettings** | `portfolio_id`, `ceiling_usd` (prod $160, dev $40: the Max 20x plan's $200 credit), `steps[]` (70, 85, 95, 100), `daily_guard_x` (3), `run_max_calls` (8), `hard_limit_usd` (the Console workspace limit, typed in to match it), `agent_shares{}` (§20.7), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
-| **AwsSpendMonth**, **AlertRule**, **Alert** | AWS and others: month to date by service and `env`, the forecast, `cap_gbp`, `steps[]`, `actions{}`, `step`; alert routing: type × severity → web, Telegram, email, quiet hours, cooldown; each alert sent, where and when | The AWS meter and caps, and the alert router (§15.2). |
+| **AwsSpendMonth**, **AlertRule**, **Alert** | AWS and others: month to date by service and `env`, the forecast, `cap_gbp`, `steps[]`, `actions{}`, `step`; alert routing: type × severity → app, push, email, quiet hours, cooldown; each alert sent, where and when | The AWS meter and caps, and the alert router (§15.2). |
 | **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
-| **SentimentIndex**, **ArticleScore**, **WebhookSeen** | per portfolio or global | |
-| **PendingAction** | `member_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `settings` · `confirm`), `step`, `collected` (the answers so far), `message_id`, `expires_at` (24 h) | The state of a guided flow: what the bot is waiting for from this member. The next message or tap resumes it; expiry clears it. |
+| **SentimentIndex**, **ArticleScore**, **MessageSeen** | per portfolio, global, or per member (the client ids already taken, §21.2) | |
+| **PendingAction** | `member_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `settings` · `confirm`), `step`, `collected` (the answers so far), `message_id`, `expires_at` (24 h) | The state of a guided flow: what MyPaisa is waiting for from this member. The next message or tap resumes it; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `cas` · `broker_export` · `agent_proposal` · `schedule` · `migration`), `document_id?` (the file a change came from), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
-| **RunRecord** | `run_id`, `function`, `trigger` (`message` · `callback` · `schedule:<name>` · `alarm`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output and cached tokens, cost, ms), `tool_calls[]` (name, ms, ok, error), `messages_sent`, `outcome`, `error?` | What one run of any Lambda did and cost. 90-day TTL. The web app's Activity page and the cost guard rails read these. See §10. |
+| **RunRecord** | `run_id`, `function`, `trigger` (`message` · `action` · `schedule:<name>` · `alarm`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output and cached tokens, cost, ms), `tool_calls[]` (name, ms, ok, error), `messages_sent`, `outcome`, `error?` | What one run of any Lambda did and cost. 90-day TTL. The app's Activity screen and the cost guard rails read these. See §10. |
 
 Signals and macro regimes are per instrument and shared by everyone who holds
 it; stances are per position, because the horizon, the drift from target and
@@ -185,14 +218,16 @@ the "holding" flag belong to one member's account.
 Every item carries `schema_version`; a migration is a Lambda that rewrites
 items of an older version, run once from a script, never by hand.
 
-### 4.2 Adding a holding, from Telegram
+### 4.2 Adding a holding, from the chat
 
-Every hop goes through a queue (§21): the update waits in the member's lane,
-the document read is a job on the work queue run by the worker, and every
-reply goes out through the outbox. The sequence in Lucid:
-[open](https://lucid.app/lucidchart/06ed33f1-7704-4e57-9d91-baeb317ac271/edit).
+The file goes straight from the phone to the documents bucket through a
+presigned upload, and every hop after that goes through a queue (§21): the
+message waits in the member's lane, the document read is a job on the work
+queue run by the worker, and every reply goes out through the outbox to the
+app's live connection, or by push when the app is closed. The sequence in Lucid:
+[open](https://lucid.app/lucidchart/b50d49fd-c941-44a0-b623-7d3e99b57fd8/edit).
 
-![Adding a holding from Telegram, Lucid sequence](docs/design/lucid/08-add-holding-sequence.png)
+![Adding a holding from the chat, Lucid sequence](docs/design/lucid/08-add-holding-sequence.png)
 
 Any field Claude is unsure of is shown in amber and asked about. A holding is
 never saved without the Confirm tap. The same path handles an ETF (ISIN and
@@ -211,8 +246,8 @@ code. The profiles live in configuration, versioned with the registry.
 | `bond_etf` | exchange close | duration, credit quality, currency from the holdings file | trend and momentum downweighted; risk pillar reads duration × rate moves | slow |
 | `commodity_etc` (a metal, oil, or a basket) | exchange close; spot price as check | the metal and its pricing currency (usually USD) | no valuation; risk pillar weighted ×2; macro from dollar strength and real yields, not the equity basket | slowest to ADD, quickest to PAUSE; drawdown alerts at a wider band (12%) because 8% is a normal week for silver |
 | `cash` | FX only | the currency | none | n/a; it is the thing contributions come from |
-| `property`, `deposit`, `policy`, `pension` (later, §12) | none; the last user figure, or a formula (a deposit accrues at its rate to maturity, a policy follows its schedule) | the asset itself: country, currency, institution | no pillars; XIRR from the ledger; maturity and growth-rate panels | n/a; the bot asks for a valuation when one is overdue and announces a maturity before it lands |
-| `debt` (`mortgage` · `loan` · `card`; later, §12) | none; the balance from the schedule and the logged events | the lender; currency | no pillars; interest split, payoff date, prepayment what-ifs | n/a; the bot asks when an EMI, a rate change or a preclosure is due |
+| `property`, `deposit`, `policy`, `pension` (later, §12) | none; the last user figure, or a formula (a deposit accrues at its rate to maturity, a policy follows its schedule) | the asset itself: country, currency, institution | no pillars; XIRR from the ledger; maturity and growth-rate panels | n/a; MyPaisa asks for a valuation when one is overdue and announces a maturity before it lands |
+| `debt` (`mortgage` · `loan` · `card`; later, §12) | none; the balance from the schedule and the logged events | the lender; currency | no pillars; interest split, payoff date, prepayment what-ifs | n/a; MyPaisa asks when an EMI, a rate change or a preclosure is due |
 
 Adding a kind that is not here (a bond, a gilt held directly, crypto) means
 writing a profile and, if needed, a price plugin. Nothing else changes.
@@ -220,7 +255,7 @@ writing a profile and, if needed, a price plugin. Nothing else changes.
 ### 4.4 Worked example: today's holdings
 
 Everything held through Monzo, in GBP, as it would sit in the registry. Rows
-are what the bot would record after the factsheet and screenshot path; figures
+are what MyPaisa would record after the factsheet and screenshot path; figures
 marked ~ are examples.
 
 | Instrument | Kind | ISIN | Listing recorded | Price chain | Exposure | Notes |
@@ -234,7 +269,7 @@ marked ~ are examples.
 Three things this example teaches the design:
 
 - **The ISIN is shared by the USD and GBP lines**; only the ticker differs.
-  The registry stores the listing separately, and the bot asks which line
+  The registry stores the listing separately, and MyPaisa asks which line
   when the factsheet does not say (Monzo most likely holds the GBP line).
 - **London GBP lines are often quoted in pence (GBX)** by Yahoo and some
   feeds. The price plugin normalises to pounds or every valuation is off by
@@ -253,57 +288,76 @@ year), set once per account.
 
 ![Identity and sign-in, Lucid page 3](docs/design/lucid/03-identity.png)
 
-Page 3: the doors in, the Telegram custom auth, Cognito, the session cookie, the authorizer, and the owner's sign-out and pause. [Open it in Lucid](https://lucid.app/lucidchart/9376b624-efcc-4f56-96a9-9a00e9b8fa24/edit).
-**There are no passwords.** Telegram authenticates every person who talks to
-the bot, and it signs the identity it hands to the Mini App. On a laptop,
-Google can vouch for the person instead, through a Google account linked to
-the member once, from the chat. "Login" is: which Telegram or Google account
-is this, which member is it linked to, and which household is that member in.
+Page 3: the two doors (the iOS app and the web app), Sign in with Apple, Google and a passkey, the custom auth, Cognito, the Keychain and the session cookie, the authorizer, and the owner's sign-out and pause. [Open it in Lucid](https://lucid.app/lucidchart/c23040ec-b253-47e2-a614-612dab962292/edit).
+**There are no passwords.** Apple or Google vouches for the person: Sign in
+with Apple on any iPhone or iPad, or Sign in with Google for a member who
+prefers it (Arun, 25 Oct 2026, MA-161: "No more telegram login, on Google SSO
+or iOS login"). "Signing in" is: which Apple or Google account is this, which
+member is it linked to, and which household is that member in.
 
 **One identity store, on AWS from day one** (Arun, 24 Oct 2026; MA-109). Each
 environment has its own Amazon Cognito user pool, `mypaisa-dev-users` and
 `mypaisa-prod-users` (Essentials plan, free under 10,000 monthly users), with
-one user per member: that member's Telegram id, Google account and passkeys
-are all linked to the same Cognito user. There are still no passwords:
-password sign-in and self sign-up are off, and a user is created only when
-someone joins through `/invite`.
+one user per member: that member's Apple account, Google account and passkeys
+are all linked to the same Cognito user. Password sign-in and self sign-up are
+off, and a user is created only when someone joins through an invite.
 
-| Where | How the member is identified |
+| Step | How |
 | --- | --- |
-| The chat | Every update carries `from.id`, a stable numeric Telegram user id. The webhook already accepts only updates signed by Telegram (secret token); the old single-chat allowlist becomes a `Member` lookup. A known id acts as the member whose Cognito user it is linked to; an unknown id gets silence, and a paused member gets one line and nothing else (MA-102). |
-| The Mini App | Telegram signs `initData` (an HMAC over the user and a timestamp, keyed by the bot token). The api's `/auth/telegram` route hands it to Cognito's custom-auth Lambdas, which check the signature in constant time, an age under five minutes and no replay, then issue that member's tokens. Inside Telegram the second check is Face ID or a PIN (MA-102); passkeys belong to browsers. |
-| The web app in a browser | Cognito, three ways: the Telegram Login Widget (verified by the same custom-auth Lambdas), Sign in with Google (Cognito's Google provider, through the environment's sign-in domain `auth(-dev).mypaisapp.com`), or a passkey (WebAuthn). A Google account that is not linked to any member is refused, whatever its address. |
-| Every door | Access tokens last five minutes and are refreshed by the api, never held by page scripts. Sign out everywhere and pause use Cognito's own calls (`AdminUserGlobalSignOut`, `AdminDisableUser`) together with the member's session epoch, so they take effect on the next request (MA-102). |
+| The buttons | The app shows Apple's and Google's own buttons, Apple's first, and nothing else. Sign in with Apple runs natively (`ASAuthorizationAppleIDProvider`, no name or email asked for); Google runs through Google's iOS SDK in the system's web sheet, with PKCE. |
+| The token | Before either sheet opens, the app asks the api for a one-time nonce (`/auth/nonce`); Apple's identity token (carrying the nonce's SHA-256) or Google's ID token (carrying the nonce) comes back. |
+| The exchange | The app posts the token to `/auth/apple` or `/auth/google`. The api finds the member that provider account (`sub`) is linked to and starts Cognito's custom auth for them; the verify trigger checks the token against Apple's or Google's published keys: issuer, audience (the app's bundle id for Apple, the environment's Google iOS client id for Google), expiry, an issue time under five minutes, the nonce, and no replay. Cognito then issues that member's tokens. |
+| An unknown account | An Apple or Google account linked to no member is refused, whatever its address, unless the request comes from the app with a valid invite token, which creates the member (Joining, below; a browser never joins). A paused member gets one line and nothing else (MA-102). |
+| In a browser | The web app (§9.4) shows the same two buttons, through Sign in with Apple's JS (the environment's Services ID as the audience) and Google Identity Services (the environment's Google web client id), and a passkey. The same `/auth/apple` and `/auth/google` exchange runs; no client secret is used. The api then sets an `HttpOnly`, `Secure`, `SameSite=Strict` session cookie for its own host, with five-minute access tokens behind it that page scripts never see. |
+| A passkey | A member adds one from You in the app (MA-77). In the app it answers the second check (below), never the sign-in screen, which shows Apple and Google only; in a browser it signs in to the web app. To sign in with it, the page asks `/auth/passkey/options` for a one-time WebAuthn challenge, the device signs it under Face ID or Touch ID, and the assertion goes to `/auth/passkey`; the api starts Cognito's custom auth for the member whose credential it is, and the verify trigger checks the signature against that credential's stored public key, the challenge, the origin and the relying-party id. The relying-party id is the environment's console domain (`console.mypaisapp.com`, `console-dev.mypaisapp.com`): it is the web app's origin and serves the iOS app's association file, whose `webcredentials` entry lets one passkey work in both. MA-109 confirms it before anyone registers a passkey; changing it later strands every passkey made. In a browser the api then sets the same session cookie. |
+| A new device | Signing in on a device or a browser the member has not used before sends a push to their other devices and a card in their chat: "New sign-in to MyPaisa: an iPad, with Google, today at 19:41. Was this you?", with Yes, it was me and No, sign it out (which signs that device out). Until the member answers, Members and devices shows it as not confirmed, and the owner's chat gets one line with Open Admin center (MA-102, MA-76). |
+| On the device | Tokens live in the Keychain, this device only, readable after first unlock. Access tokens last five minutes and are refreshed in the background with the refresh token, which rotates on use. Each signed-in iPhone or iPad is a `Device` row with its name, model, last seen and push token. |
+| Every call | The api's authorizer checks the access token, the member's status and session epoch on every HTTP call and every live connection (§21). Sign out everywhere and pause use Cognito's own calls (`AdminUserGlobalSignOut`, `AdminDisableUser`) together with the member's session epoch, so they take effect on the next request (MA-102); signing out one device deletes its `Device` row and revokes its refresh token. |
 
-**Joining.** The owner sends `/invite` (optionally `/invite viewer`). The bot
-replies with a one-time deep link, `t.me/<bot>?start=<token>`, single use,
-24-hour expiry, bound to this household and that role. The invitee opens it
-on their own phone, becomes a member, and gets the three setup questions. The
-owner removes a member with `/members`; a member who changes Telegram account
-is simply re-invited. Private chats only: the bot ignores groups.
+**The second check** (MA-76, MA-102). Some actions need proof that the member
+is holding the device now: the owner's admin actions (§9.3), from the Admin
+center or the admin's chat (§20.3), an
+import's Confirm and rolling an import back (§18.5, §22.2), leaving the
+household (MA-172), and nothing else. The app asks
+the api for a challenge bound to that action, then gets a fresh assertion:
+Sign in with Apple again (iOS shows a Face ID sheet), or, where the member has
+added one, a passkey (Face ID); a member who signs in only with Google signs in
+with Google again. In the web app it is a passkey or a fresh Apple or Google
+sign-in in the browser. The api accepts the action only with an assertion under
+five minutes old whose nonce is that challenge. The app's own Face ID lock
+(MA-171) is a local comfort and never authorises anything on the server.
 
-**Linking a Google account.** Each member links one Google account, from
-their own phone, so that both identities are proven by the person who owns
-them: on the web, Sign in with Google for an account not yet linked shows a
-six-digit code that lasts ten minutes; the member sends `/link <code>` to the
-bot from their own Telegram chat; the bot links that Google identity to the
-member's Cognito user and stores Google's stable account id (`sub`) and the
-address on that member and confirms in both places. The
-owner can also link on a member's behalf by address from `/members`, and
-unlink from the same place; unlinking logs that account out everywhere.
-`sub` is the key, the address is for display, so a renamed Gmail still works
-and an address handed to someone else does not. Every link, unlink and web
-login is an audit row.
+**Joining.** The owner taps Invite in the Admin center (or types `/invite`,
+optionally `/invite viewer`). The api makes a one-time link,
+`https://console.mypaisapp.com/join/<token>` (`console-dev` for dev), single use,
+24-hour expiry, bound to this household and that role, and the owner sends it
+with iOS's share sheet. The invitee opens it on their own iPhone: the link
+opens MyPaisa (or a page saying where to get it, MA-73), shows the invite
+("Arun invited you to the Dutta household"), and their Sign in with Apple or
+Google creates their member and Cognito user; then the three setup questions.
+The owner removes a member from Members and devices in the Admin center.
+
+**More than one way in** (MA-77). A member can add a second sign-in, Apple or
+Google, or a passkey, from You: already signed in, they complete the new
+provider's sign-in, and the api links that `sub` to their Cognito user. `sub`
+is the key and the address is for display, so a renamed account still works
+and an address handed to someone else does not. The owner can unlink a
+member's sign-in from the Admin center; unlinking signs that account out
+everywhere. Every link, unlink and sign-in is an audit row. Leaving the
+household (MA-172) deletes the member's Cognito user and revokes Apple's and
+Google's tokens (Apple's through its REST endpoint, signed with the
+environment's Sign in with Apple key from SSM); their accounts and history
+stay with the household.
 
 **Roles.**
 
 | Role | Can |
 | --- | --- |
-| owner | Invite and remove members, change any account or holding, set the household budget and settings, see every member's detail. The owner is the household's one admin (Arun, 25 Oct 2026: "there is only 1 admin"): the only person who sees the Admin center, the admin's Telegram chat and the admin desk |
+| owner | Invite and remove members, change any account or holding, set the household budget and settings, see every member's detail. The owner is the household's one admin (Arun, 25 Oct 2026: "there is only 1 admin"): the only person who sees the Admin center, the agents' requests in the chat and the admin desk |
 | member | Add, change and remove holdings in their own accounts; see the household overview; see their own detail; opt in to sharing their detail with the household |
 | viewer | Read the household overview and whatever members share; nothing else |
 
-**Views.** The Portfolio card and the dashboard have a switch: **Household**
+**Views.** The Portfolio card and Home have a switch: **Household**
 (every account, every member, one total) and **Me** (my accounts). The owner,
 and any member whose detail is shared, appear as further tabs. A member's
 brief covers their own accounts plus one household line; the owner's brief
@@ -321,7 +375,7 @@ member may spend more than their share of it (60% by default), so one chatty
 member cannot spend the household's allowance.
 
 **Scope.** Two members in one household is personal software. Several
-unrelated households using a bot that says "ADD, 64% confidence" starts to
+unrelated households using an app that says "ADD, 64% confidence" starts to
 look like investment advice to the public, which is regulated in the UK. The
 model supports more households; using it that way is a separate decision
 about wording and scope, not a technical one.
@@ -345,7 +399,7 @@ that matter.
 
 Who sees what follows the roles in §4.5: a member sees the rows for their own
 accounts and for the household-level records; the owner sees every row. The
-rows are readable in two places: the Audit page of the web app, with filters
+rows are readable in two places: the Audit screen in the app, with filters
 by member, record and date, and from the chat with a question such as "what
 changed this week?", which the agent answers through `get_audit`. Rows are
 never deleted; at a few hundred a year they cost nothing to keep.
@@ -358,13 +412,13 @@ a screenshot, a CAS statement, a broker export, a spreadsheet) is copied to
 anything reads it, whatever happens next, with a `Document` row and an audit
 row of its own; every change made from it carries its `document_id`
 (MA-148). Nothing is deleted after reading: the bucket has no expiry rule,
-and prod's is versioned and protected from destruction. On the Audit page a
+and prod's is versioned and protected from destruction. On the Audit screen a
 row made from a file shows its kind, name and size, a thumbnail for an
 image, and Open; a Files view lists every file with the changes it fed
 (MA-149). Open is a presigned link valid five minutes, given only after the
 authorizer checks the role: a member opens their own files, the owner any,
-a viewer none; each opening is itself an audit row. In the chat a change
-card's Source button sends the original back.
+a viewer none; each opening is itself an audit row, and the file opens in
+Quick Look. In the chat a change card's Source button opens the original.
 
 ### 4.7 Money in any currency, checked against the holding (MA-156)
 
@@ -380,7 +434,7 @@ confirmed once and never guessed again. A fund's own base currency
 (`Instrument.base_ccy`, often USD) can differ from the share class a member
 holds (GBP); the position's currency is the one that counts here.
 
-| The member types | The bot |
+| The member types | MyPaisa |
 | --- | --- |
 | "I put 200 into Balanced" | No currency named: the holding's is assumed, and the Confirm card says "£200, in pounds as Balanced is" |
 | "I put £200 into Balanced" | Same currency: the card as in §4.2, then Confirm |
@@ -393,7 +447,7 @@ holds (GBP); the position's currency is the one that counts here.
   dollars, euros, rupees, Rs) and Indian number words (lakh, crore). Claude
   only fills the fields when the wording is free; the figure is always the
   member's own, echoed back for Confirm. "$" means US dollars unless the
-  member holds another dollar, when the bot asks which.
+  member holds another dollar, when MyPaisa asks which.
 - **A converted figure is never Claude's.** The pounds typed in answer to
   "How many pounds arrived?" are the member's figure, recorded with the rupee
   amount and the rate the engine works out from them beside it. The ECB
@@ -415,12 +469,16 @@ holds (GBP); the position's currency is the one that counts here.
   whose currency differs from the holding's. Privacy mode shows no amount and
   no rate on the card, only words, currencies and dates (the rate with one
   amount would give the other away); Show amounts reveals one card.
-- **Designed first.** Three options were drawn in Claude Design
-  (`Currency check options.dc.html`) and Arun picked 1b on 25 Oct 2026
-  (`docs/design/reviews/MA-156/decision.md`). The spec is 1b's boards there,
-  with boards 4 and 5 of `Currency check.dc.html`; its boards 1 to 3 and 6
-  are the superseded starting point. The states still to draw before the
-  build are MA-156's `undrawn` list in `docs/trace.json`.
+- **Designed first.** Three options were drawn in Claude Design for the
+  Telegram chat (`Currency check options.dc.html`, MyPaisa app v1) and Arun
+  picked 1b on 25 Oct 2026 (`docs/design/reviews/MA-156/decision.md`). Since
+  MA-161 the spec is the iOS board `iPhone · Currency check` in MyPaisa iOS v1
+  (planned): it carries 1b's content and order (the amount asked again in the
+  holding's currency, the ECB estimate one tap, Confirm a separate tap, no
+  amount or rate with privacy on) into the app's guided flow. The Telegram
+  boards stay only as the record of the pick; nothing is built from them. The
+  states still to draw before the build are MA-156's `undrawn` list in
+  `docs/trace.json`.
 
 ---
 
@@ -667,14 +725,14 @@ It also asks on its own account: on the first of the month whether the usual
 contribution went in, after 35 days without a valuation whether a screenshot
 is due, and when two members hold the same instrument whether a joint account
 is meant. The mechanics are the `ask_user` tool, which ends the turn with a
-question and its buttons, and a `PendingAction` row that records what the
-bot is waiting for; the next message or tap from that member resumes the
+question and its buttons, and a `PendingAction` row that records what MyPaisa
+is waiting for; the next message or tap from that member resumes the
 flow, and a day of silence clears it.
 
 **Chat memory: keep it all, send little** (MA-115). Every message is kept,
 one `ChatTurn` row each, for ninety days; only the current conversation is
 sent to Claude. A conversation ends after thirty minutes of silence or when a
-guided flow finishes, but stays open while the bot waits on an `ask_user`
+guided flow finishes, but stays open while MyPaisa waits on an `ask_user`
 answer (up to the `PendingAction`'s day). A new conversation starts from the
 fixed part (system prompt, tools, card rubrics; cached with the one-hour TTL,
 since household messages often come more than five minutes apart) and a few
@@ -699,19 +757,19 @@ to use.
 **Borrowed patterns:** the bull/bear debate as two calls plus a judge for any
 stance above 70% confidence and for the weekly review; a reflection step that
 reads the last four weeks of stances and their grades before writing the
-review; a per-run self-audit that lists what the bot told you this week so it
+review; a per-run self-audit that lists what MyPaisa told you this week so it
 does not repeat itself.
 
 **Tools:** `get_portfolio`, `get_holding(id)`, `get_signals(id)`,
 `get_history(id, days)`, `get_macro`, `run_scenario`, `get_events`,
 `get_sentiment`, `get_stances`, `get_scorecard`, `web_search` and `web_fetch`
 (Anthropic's server tools), `extract_document(s3_key, schema)`, `propose_change(entity,
-patch)` (saved only after Confirm), `log_decision`, `render_chart(spec)`, `ask_user(question, options[])` (ends
+patch)` (saved only after Confirm), `log_decision`, `chart_series(id, days)` (the series a card's chart is drawn from), `ask_user(question, options[])` (ends
 the turn with a question; the answer resumes it through `PendingAction`) and
 `get_audit(filter)` (what changed, for "what did I change last week?").
 
 **Guardrails in code, not prompt:** no tool can trade, spend beyond a search
-query, delete data, or message anyone but your chat. Protected positions are
+query, delete data, or message anyone but the member it is answering. Protected positions are
 filtered before the cascade runs. The monthly Claude ceiling with its
 ladder and guards (§15.1), the weekly red budget and quiet hours are enforced
 by the agent Lambda. `/pause` sets a flag
@@ -719,49 +777,151 @@ every scheduled run checks first.
 
 ---
 
-## 9. Telegram front end
+## 9. The iOS app
 
-### 9.1 Navigation for a layman
+One SwiftUI app, **MyPaisa**, for iPhone and iPad on iOS and iPadOS 26 and
+later, with a **MyPaisa Dev** build that points at dev (MA-161, MA-165). It is
+the chat and the dashboard in one: the member talks to MyPaisa, and the
+household's figures are a tap away. Beside it, the web app (§9.4) shows the
+same read-only dashboard and the owner's Admin center in a browser, as a PWA.
+There is no bot, no Mac app and no Android app (Arun, 25 Oct 2026: "Only iOS app
+is needed and nothing else for now"; "we have webapp for the dashboard and
+admin portal pwa"). Its screens are drawn in Claude Design, in
+the MyPaisa iOS v1 project on the iOS kit of MyPaisa DS v1
+(`docs/design/README.md`); the decision record is
+`docs/design/reviews/MA-161/decision.md`.
 
-- **Reply keyboard**, always visible: `Portfolio` · `Today` · `Ask` · `Settings`.
-- **Menu button** with the commands: `/add`, `/update`, `/why`, `/whatif`,
-  `/calls`, `/scorecard`, `/technical`, `/privacy`, `/pause`, `/help`; for
-  the owner also `/invite` and `/members`.
-- **Household and Me** on the Portfolio card: one tap switches between the
-  household overview and your own accounts; the owner also gets a tab per
+### 9.1 The shell, the chat and the size classes
+
+**The shell** (MA-163) is 1a, **Chat first**, Arun's pick on 26 Oct 2026 from
+three options drawn on `Shell options.dc.html`: the app opens to the chat, the
+household's total rides in a glass strip at the top, and pulling it down opens
+Home. The other two stay on the board as the record: 1b **Ask from anywhere**
+(the app opens to Home, and the composer rides on every tab as the tab bar's
+bottom accessory) and 1c **One timeline** (the chat is the app, under a rail of
+pinned live cards).
+
+- **Tabs on iPhone:** Chat · Home · Activity · You, with Search as iOS 26's
+  separate search tab (MA-180); the owner opens the Admin center from You. The
+  tab bar is Liquid Glass and shrinks to its selected tab as content scrolls.
+- **The composer:** a glass field with a **+** for the camera, a document scan
+  (VisionKit), Photos and Files (PDFs, images, workbooks), and shortcut chips
+  above it that follow the conversation (Portfolio, Today, Add a holding, Log
+  money, Ask about Balanced). The commands still work when typed: `/add`,
+  `/update`, `/why`, `/whatif`, `/calls`, `/scorecard`, `/technical`,
+  `/privacy`, `/pause`, `/resume`, `/help`; for the owner `/invite` and
+  `/members` open their Admin center screens.
+- **The conversation:** the member's messages in navy bubbles; MyPaisa's words
+  unbubbled beside its mark, streamed word by word while it writes; **cards**
+  as Warm ledger cards with their own buttons, drawn natively from the agent's
+  JSON (MA-174), every figure in them from code. Every card has a plain top and
+  a **Technical** fold; any term in a technical section explains itself on a
+  tap.
+- **Household and Me** on the Portfolio card and on Home: one tap switches
+  between the household and your own accounts; the owner also gets a tab per
   member.
-- **Cards** are rich messages where supported (Bot API 10.1+): a heading, a
-  short table, buttons, and a collapsed **Technical details** section. Where
-  rich messages are unavailable, the same card is HTML with a `Technical`
-  button that edits the message in place.
-- **Charts** as PNG (matplotlib, one house style, GBP axis, the stance
-  horizon shaded), sent with the card; albums for the portfolio.
-- **Glossary on tap**: any term in a technical section (RSI, drawdown, EMA)
-  has a one-line explanation behind a button.
-- **Two modes**: `simple` (default) and `technical` (every card expanded).
-  Switch per message with the button or globally with `/technical`.
-- **Guided flows**: logging a transaction, adding a holding, updating a
-  valuation and changing a setting each run as a short series of questions
-  with buttons, one per message, editing the same message in place so the
-  chat stays tidy. Anything already said is skipped. Long lists (many
-  holdings) become a short list plus "More" and "Type the name". A flow that
-  gets no answer for a day is dropped quietly.
+- **Charts** in Swift Charts, one house style (MA-56): the GBP axis, the stance
+  horizon shaded, drawn from the series the card or the screen carries, with
+  an audio graph for VoiceOver.
+- **Two modes:** `simple` (default) and `technical` (every card expanded), per
+  card with its fold or everywhere from You or `/technical`.
+- **Guided flows:** logging a transaction, adding a holding, updating a
+  valuation and changing a setting each run as a short series of questions, one
+  card per question, edited in place so the conversation stays tidy; answers
+  are chips, Pick a date opens the system's date picker, and anything already
+  said is skipped. Long lists (many holdings) become a short list plus More and
+  Type the name. A flow that gets no answer for a day is dropped quietly.
+- **Push** (MA-170): the brief, the wrap, alerts, and replies that finish while
+  the app is closed arrive as notifications; a red alert is time-sensitive with
+  sound, amber is passive; no amount shows on the lock screen unless the member
+  turns that on, and never with privacy mode on.
+- **Offline** (MA-173): the last Home, holdings and conversation stay on the
+  device (file protection complete) and show their time; a message typed
+  offline waits and goes once the network is back; Confirm needs a connection.
+
+**Devices and size classes.** The app lays itself out by width, never by
+device, so it fits every iPhone, every iPad in every multitasking size, and a
+foldable or two-panel device (Arun's "Duo"), folded or open:
+
+| Width | Where | Layout |
+| --- | --- | --- |
+| Compact: under about 600 pt, and every iPhone | Every iPhone, in portrait or landscape; Slide Over and one-third Split View; a foldable when folded | The tab bar; one column; sheets for detail; the chat is a tab |
+| Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet over the screen, from its Ask or ⌘K |
+| Regular, over about 900 pt | iPad in landscape; a large Stage Manager window | The sidebar, the screen, and the chat beside every screen as a trailing column |
+
+The rule is the window's width, never the device, with one exception: an iPhone is always compact, its tab bar in
+either orientation, as option 1a draws it (`iPhone · Landscape`). Widen past about 900 pt and
+the sheet becomes the trailing column, narrow below it and the column becomes
+the sheet, with matched geometry and no reload (the boards of
+`iPad and foldable.dc.html`). A fold, a rotation or a resize keeps the conversation, the scroll position and
+any guided flow. With a hardware keyboard, Return sends, ⌘K focuses the
+composer, ⌘1 to ⌘5 open the sections and ⌘F searches. Every screen works from
+xSmall to AX5 Dynamic Type, with VoiceOver, Increase Contrast, Reduce
+Transparency and Reduce Motion (MA-181).
+
+**Legible at 25% brightness** (MA-181). Arun, 25 Oct 2026: "the text and
+component should be clearly visible even in 25% mobile brightness". Every
+colour pair in light and dark, text on glass included, meets two limits, one
+at full brightness and one with the screen at 25%: primary text 7:1 and 4.5:1,
+secondary and coloured text 4.5:1 and 3:1, meaningful marks (chart lines,
+bars on their track, a switch's ring) 3:1 and 1.8:1, and what must only be
+seen (a privacy mask, an empty track) 1.5:1 and 1.25:1. `scripts/contrast_check.py`
+measures every pair in MyPaisa DS v1's `tokens.css` and the glass fills of
+`ios.css`, fails closed, and is a gate on every PR; the app's snapshot tests
+render every screen in both themes. Glass carries labels only, never body
+copy, at a fill dense enough to hold them over the brightest content.
+
+**Motion** (MA-182). One motion system for every component and chart, in the
+app and the web app, drawn on the iOS kit's `12 · Motion` board and shared by
+every board through `motion.css` and `motion.js`. Content moves, the glass bars
+stay put: cards and rows arrive with SwiftUI's `.smooth` spring and a 45 ms
+stagger (at most eight); controls answer a touch with `.snappy`; only a success
+(Saved, Face ID passed) uses `.bouncy`. The composer, the tab bar's lens and the
+attachment menu morph through a `GlassEffectContainer`. Every figure is a
+`numericText` content transition: it counts up once when it first appears, and
+afterwards only its changed digits roll. Charts draw in under a mask, their dots
+and labels landing after, and scrub with a glass lollipop and a selection haptic
+at each point; a range change morphs the series. A holding row zooms into its
+screen (`navigationTransition(.zoom)`); messages push in from the bottom; the
+streamed words fade in as they arrive; a red alert's mark pulses once. Haptics:
+success on Saved, a warning on a refusal, selection on chips, segments and
+scrubbing, a light impact on Send. Nothing loops forever, and under Reduce
+Motion every movement becomes a short cross-fade or lands at once. The web app
+plays the same choreography in CSS, the Web Animations API and View
+Transitions.
+
+**The look: Warm ledger on Liquid Glass.** MyPaisa DS v1, Warm ledger (MA-101),
+stays the system: Monzo's warmth on Apple's HIG. Its tokens become the app's
+colour assets (light, dark, increased contrast), its type scale is Dynamic
+Type, SF Pro Rounded carries the hero figures and SF Symbols the icons. Liquid
+Glass is the layer of controls above the content, as Apple's guidelines say:
+the tab bar, the sidebar, toolbar buttons, the composer and its chips, menus
+and partial sheets. Content (the navy hero, the cards, lists, charts and
+messages) stays solid; glass never sits on glass; only a group's primary
+control is tinted coral; red stays for alerts that ask for action. The app icon
+is the 1c Watcher mark (MA-103) in Apple's layered format, with a DEV band on
+MyPaisa Dev.
 
 ### 9.2 Example cards
 
+The cards say what MyPaisa's cards said; the app draws them natively, with
+their buttons and the Technical fold (illustrative figures).
+
 ```
-📊 Portfolio · Thu 23 Oct · £24,110  ▲0.4% today  ▲2.1% month
-───────────────────────────────────────────
-Balanced (Monzo)    £22,925  ▲0.6%   HOLD   71%
-Cash (Monzo pot)     £1,185   —       —
-───────────────────────────────────────────
+Portfolio · Fri 23 Oct
+£24,110        ▲ £96 · 0.4% today   ▲ 2.1% this month
+Balanced (Monzo)        £22,925  ▲0.6%
+NASDAQ 100 ETF             £512  ▲0.9%
+Robotics ETF               £304  ▼0.3%
+Silver ETC                 £188  ▲1.2%
+Cash (Monzo pot)           £181   —
 Nothing to do this week. Next review Saturday.
-[Today] [Balanced ▸] [Technical ▾] [Ask]
+[Open Home] [Balanced ›] [Technical ▾]
 ```
 
 ```
 Balanced (BlackRock MyMap 5) · £22,925
-Stance: HOLD · 2 weeks · confidence 71%
+Stance: HOLD · 2 weeks · confidence 71% · a view, not advice
 Why: steady uptrend; volatility normal; pound moves explain most of
 this week's wobble.
 Would change if: a 5% fall from here, or UK inflation surprises on Wed.
@@ -776,81 +936,115 @@ Your track record on HOLD calls: 14 made, 11 held up.
    Data: yfinance 0P…L ✓ · ECB ✓ · BlackRock page ✓ (22 Oct)
 ```
 
-A guided flow, each reply editing the same message:
+A guided flow, each question a card edited in place:
 
 ```
-You:  I want to log a transaction
-Bot:  What kind?                      [Bought] [Sold] [Dividend] [Fee]
-You:  (Bought)
-Bot:  Into which holding?             [Balanced] [NASDAQ 100] [Robotics]
-                                      [Silver] [Something new]
-You:  (Balanced)
-Bot:  How much, in pounds?            [£100] [£200] [£500] [Type an amount]
-You:  (£200)
-Bot:  When?                           [Today] [Yesterday] [Pick a date]
-You:  (Today)
-Bot:  Bought £200 of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.57
-      [Confirm] [Edit] [Cancel]
+You:      I want to log a transaction
+MyPaisa:  What kind?                  (Bought) (Sold) (Dividend) (Fee)
+You:      Bought
+MyPaisa:  Into which holding?         (Balanced) (NASDAQ 100) (Robotics)
+                                      (Silver) (Something new)
+You:      Balanced
+MyPaisa:  How much, in pounds?        (£100) (£200) (£500) (Type an amount)
+You:      £200
+MyPaisa:  When?                       (Today) (Yesterday) (Pick a date)
+You:      Today
+MyPaisa:  Bought £200 of Balanced (Monzo) on 23 Oct · about 10.8 units at NAV 18.57
+          [Confirm] [Edit] [Cancel]
 ```
 
-### 9.3 The web app: on a laptop and inside Telegram
+### 9.3 The dashboard, inside the app
 
-One static app (MyPaisa DS v1, "Warm ledger", picked on MA-101; lightweight-charts),
-built from the one design spec in Claude Design (`docs/design/README.md`), which has a set
-of boards for each door (Mini App boards for the phone, browser boards for the
-laptop; `docs/design/README.md`). It has two front doors to the same pages:
+Home, a holding, Overlap, Scorecard, Audit and Files, Activity, Search and, for
+the owner, the Admin center are screens of the same app (MA-78, MA-79), built
+from the boards in MyPaisa iOS v1: one spec, drawn for iPhone and for iPad and
+the foldable, in light and dark (`docs/design/README.md`). Arun, 25 Oct 2026:
+"The read only dashboard should also be shown on the ios tablet duo": every
+one of these screens is laid out for the iPad and the open foldable too, with
+the chat beside it over about 900 pt, a sheet away from about 600 to 900 pt,
+and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
+The web app shows the same screens in a browser (§9.4).
 
-| Door | Who opens it | How the member is identified |
-| --- | --- | --- |
-| **Mini App**, from the `web_app` button on the Portfolio card, at `console.mypaisapp.com` | a member on their phone, inside Telegram | Telegram's signed `initData`, exchanged for Cognito tokens through the custom-auth Lambdas (§4.5) |
-| **Browser**, at `console.mypaisapp.com`, with Telegram | a member on a laptop | the Telegram Login Widget: one tap, confirmed in the Telegram app on their phone, no password; verified by the same custom-auth Lambdas (HMAC keyed by the bot token, five-minute freshness, no replay) |
-| **Browser**, the same address, with Google or a passkey | a member on a laptop, or anywhere Telegram is not to hand | Cognito's Google provider (the Google account linked to the member, §4.5), or a passkey registered after the first sign-in. Nothing else from Google is used or stored. |
+The screens, all read-only:
 
-Every door ends the same way: the api at `api.mypaisapp.com` sets a session
-cookie for its own host (thirty days on a laptop, a day inside Telegram;
-`HttpOnly`, `Secure`, `SameSite=Strict`), with the member's Cognito tokens
-behind it, access tokens of five minutes refreshed by the api. The console and
-the api are the same site, so the cookie travels with the console's calls and
-no token is ever visible to page scripts; CORS admits only that environment's
-console (and `localhost` in dev). The static shell is public and holds no
-data: every figure comes from the api, whose authorizer checks the session,
-the member's status and session epoch on every call, so removing or pausing a
-member locks them out at once.
-
-The pages, all read-only:
-
-- **Overview, a holding, Overlap, Scorecard**: as the boards, with the
-  Household / Me / member switch from §4.5. Two columns at laptop width.
+- **Home, a holding, Overlap, Scorecard**: as the boards, with the Household /
+  Me / member switch from §4.5. A holding's screen has Why?, What if?, Ask about
+  it, and Update value, which opens the chat with the guided flow already
+  started (MA-80). On an iPad or a foldable the chat sits beside them over
+  about 900 pt, is a sheet away from about 600 to 900 pt, and is a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
-  and date; each row shows before and after and links to the run that made
-  it, and a row made from a file opens that file; a **Files** view lists every
-  file sent (MA-149).
+  and date; each row shows before and after and links to the run that made it,
+  and a row made from a file opens that file in Quick Look; **Files** lists
+  every file sent (MA-149).
 - **Activity**: what the agent and the jobs did (§10). Each run with its
-  trigger, the model calls and their tokens and cost, the tools it called
-  and how long they took, what it sent, and any error; a board of the
-  scheduled jobs with their last and next run and the freshness of each
-  holding's price; this month's Claude spend against the ceiling and the step it is on; alarms from
-  the last seven days.
+  trigger, the model calls and their tokens and cost, the tools it called and
+  how long they took, what it sent, and any error; a board of the scheduled
+  jobs with their last and next run and the freshness of each holding's price;
+  this month's Claude spend against the ceiling and the step it is on; alarms
+  from the last seven days.
+- **Search** (MA-180): holdings, audit rows, files and the member's own past
+  answers, within the member's rights.
 
-There is no write path for the household's records. The api's data routes
-are GET only, the app has no form that posts a record (the CAS password of
-§22.2 is typed into the Mini App only to open a file in memory, and changes
-nothing), and every change still goes through a card and a Confirm tap in
-the chat, where it is audited. The
-exceptions are the owner's admin settings and operations in the Admin center
-(Arun, 24 Oct 2026: "Dashboard will be read only (except for admin)"): the
-security actions (sign out, pause, restore, unlink; MA-102); the Claude
-ceiling with its member share, renewal day and hard limit, the caps, their
-alert thresholds and the alert routing, quiet hours and cooldowns (§15.1,
-§15.2, MA-116, MA-137);
-replaying dead-lettered work (§21.3, MA-145); approving or rejecting an
-agent's request and rolling a setting back (§20.2, §20.3, MA-130); and
-choosing how an incident ends (§20.5, MA-135). Each is behind a fresh check
-with a passkey or Google, writes an audit row, and none changes the
-household's records.
-Privacy mode hides pounds here too. Each environment has its own S3 bucket and
-CloudFront distribution for the app (`console-dev` and `console`), and its own
-API Gateway HTTP API on a custom domain (`api-dev` and `api`), §18.
+Every figure comes from the api at `api.mypaisapp.com` (`api-dev` for MyPaisa
+Dev), whose authorizer checks the access token, the member's status and
+session epoch on every call, so removing or pausing a member locks them out at
+once. The app keeps the last figures for offline use, encrypted at rest by
+iOS's file protection, and shows their time.
+
+There is no write path for the household's records outside the chat, in the
+app or on the web. The
+api's data routes are GET only; no screen posts a record (the CAS password of
+§22.2 is typed only to open a file on the device, and changes nothing); every
+change still goes through a card and a Confirm tap in the chat, where it is
+audited. The exceptions are the owner's admin settings and operations in the
+Admin center (Arun, 24 Oct 2026: "Dashboard will be read only (except for
+admin)"): the security actions (sign out a device or everywhere, pause,
+restore, unlink; MA-102); the Claude ceiling with its member share, renewal
+day and hard limit, the caps, their alert thresholds and the alert routing,
+quiet hours and cooldowns (§15.1, §15.2, MA-116, MA-137); replaying
+dead-lettered work (§21.3, MA-145); approving or rejecting an agent's request
+and rolling a setting back (§20.2, §20.3, MA-130); and choosing how an
+incident ends (§20.5, MA-135). Each is behind the second check (§4.5), writes
+an audit row, and none changes the household's records. Privacy mode hides
+pounds here too. Each environment has its own API Gateway HTTP API (`api-dev`,
+`api`), WebSocket API (`live-dev`, `live`) and console site (`console-dev`,
+`console`), §18.
+
+### 9.4 The web app: the dashboard and the Admin center in a browser
+
+Arun, 25 Oct 2026: "we have webapp for the dashboard and admin portal pwa ...
+That will still be there for the read only dashboard". One static app in
+`web/`, at `console.mypaisapp.com` (`console-dev` for dev), installable as a
+Progressive Web App on a laptop, an iPad or a phone (MA-183, MA-73). It has no
+chat: every change is still a card and a Confirm tap in the iOS app.
+
+- **The pages:** Home, a holding, Overlap, Scorecard, Audit and Files,
+  Activity, and for the owner the Admin center: the same read-only screens as
+  §9.3, from the browser boards in the MyPaisa app v1 Claude Design project
+  (picked on MA-70 before MA-161, with the sign-in page redrawn for Apple,
+  Google and a passkey; MA-183, MA-184, MA-185), in Warm ledger with
+  lightweight-charts and the motion of §9.1. Two columns at laptop width; the
+  adaptive shell of MyPaisa DS v1 below it.
+- **Sign-in** (MA-185): Sign in with Apple, Google or a passkey, as §4.5's
+  browser row; the api sets the `HttpOnly`, `Secure`, `SameSite=Strict` session
+  cookie for its own host (thirty days on a laptop), with five-minute access
+  tokens behind it; the console and the api are the same site, so no token is
+  ever visible to page scripts; CORS admits only that environment's console
+  (and `localhost` in dev). The Admin center's actions need the second check
+  (§4.5): a passkey or a fresh sign-in.
+- **The PWA:** a manifest with the app icon, a service worker that caches the
+  shell and nothing else (no figure is kept on a shared laptop), standalone
+  display, and an install prompt only after a second visit. Privacy mode hides
+  pounds here too.
+- **One site, two jobs:** the console also serves the iOS app's
+  `apple-app-site-association` file (its `applinks` for the links, and its
+  `webcredentials`, so a passkey made in the app signs in to the web app; §4.5), so an invite link
+  (`https://console.mypaisapp.com/join/<token>`) or a link to a holding opens
+  the iOS app on a phone that has it, and the web page anywhere else (MA-73).
+- **Hosting:** S3 and CloudFront per environment, with the existing wildcard
+  certificate and strict security headers; the static shell is public and holds
+  no data; every figure comes from the api, whose authorizer checks the
+  session, the member's status and session epoch on every call.
 
 ---
 
@@ -860,7 +1054,7 @@ Three readers, three surfaces, one source of truth.
 
 | Reader | Surface | What it answers |
 | --- | --- | --- |
-| You, in the web app | the Activity page (§9.3) and the Audit page (§4.6) | What did the bot do today, what did it call, what did it cost, what changed and who changed it |
+| You, in the app | the Activity screen (§9.3) and the Audit screen (§4.6) | What did MyPaisa do today, what did it call, what did it cost, what changed and who changed it |
 | Whoever operates it, in AWS | one CloudWatch dashboard per environment, Logs Insights, X-Ray | Where did a run fail, which tool is slow, is a schedule late |
 | The chat | alarms delivered as messages to the owner | Something needs a person: a job did not run, Claude spend has reached a step of the ladder (§15.1), a feed is stale |
 
@@ -877,22 +1071,22 @@ ninety days.
 
 **Logs, traces, metrics** come from Lambda Powertools, already in the stack:
 
-- Structured JSON logs with the `run_id`, the member and the Telegram update
+- Structured JSON logs with the `run_id`, the member and the client message
   id on every line, kept fourteen days, with saved Logs Insights queries for
   errors by function, slowest tool, tokens by day.
-- One X-Ray trace per run, from the webhook through the agent to the
-  Anthropic API, DynamoDB, S3 and Telegram, so a slow brief shows which hop
-  was slow. Within the free tier at this volume.
+- One X-Ray trace per run, from the chat api through the agent to the
+  Anthropic API, DynamoDB, S3, the live connection and Apple push, so a slow
+  brief shows which hop was slow. Within the free tier at this volume.
 - Ten custom metrics, the free allowance: runs, errors, model cost per day,
-  tokens per day, tool latency, Telegram send failures, price freshness in
+  tokens per day, tool latency, delivery failures (live and push), price freshness in
   days, schedule lateness, audit chain check, pending flows. One dashboard
   per environment shows them; the first three dashboards are free.
 
 **Alarms**, each delivered to the owner's chat: an error in any function; the
 07:45 dead man's switch when the brief has not gone out; each step of the
 Claude ladder and the daily guard (§15.1); any holding's price older than two days; a burst of
-rejected webhook calls; the audit chain failing its weekly check. Alarms are
-also `RunRecord` rows of trigger `alarm`, so the Activity page lists them.
+rejected api calls; the audit chain failing its weekly check. Alarms are
+also `RunRecord` rows of trigger `alarm`, so the Activity screen lists them.
 
 **Cost of watching** is inside the free tiers: fourteen-day logs, sampled
 traces, ten metrics, one dashboard, and `RunRecord` rows that are a few
@@ -903,7 +1097,7 @@ failed; the budget line for it in §15 is pennies.
 
 ## 11. Notifications, news, calls
 
-As v1, now per member: the 07:15 brief is written once for the household and
+As v1, now per member and by push (§9.1, MA-170): the 07:15 brief is written once for the household and
 once for each member who wants one, each in their own preferences; the 21:15
 wrap goes to whoever's accounts moved; tiered alerts (red with sound, max two
 a week per member; amber silent; digest), cooldowns, quiet hours, Haiku
@@ -916,7 +1110,7 @@ record beats the baseline for 8 weeks, then in weekday cards.
 
 ## 12. The road to MyPaisa, the wealth tracker (later, not a priority)
 
-The web app of §9.3 grows into the household's whole wealth tracker. The
+The dashboard of §9.3 grows into the household's whole wealth tracker. The
 current wealth-tracker repository, a Next.js static export that resolves
 everything from fixtures and has no backend, is the reference for what that
 means; its screens are rebuilt here, on this backend, with a new design, and
@@ -924,15 +1118,15 @@ the old repository is retired when the new app covers it. What stays fixed:
 
 | | |
 | --- | --- |
-| **Read-only, everywhere** | No screen writes the household's records; the Admin center holds only the owner's admin settings and operations (§9.3): the security actions, the ceiling and caps, replays, agents' requests and settings, incidents, each behind a fresh check. Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the bot (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent to the bot (MA-111). The api's data routes stay GET only. |
+| **Read-only, everywhere** | No screen writes the household's records; the Admin center holds only the owner's admin settings and operations (§9.3): the security actions, the ceiling and caps, replays, agents' requests and settings, incidents, each behind a second check. Every property valuation, EMI, rent, maturity, prepayment and assumption change is a guided flow in the chat (§9.1), with a Confirm tap and an audit row; years of history come in through the Excel importer, sent in the chat (MA-111). The api's data routes stay GET only. |
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The ISA of phase 1 and the household's property, deposits, policies, pensions and loans are rows of the same shapes. |
-| **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Telegram, Google or a passkey to log in, through each environment's Cognito pool. |
+| **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Apple, Google or a passkey to sign in, through each environment's Cognito pool. |
 | **Two currencies** | GBP and INR side by side, from the ECB's daily rates, chosen per member; USD and EUR for the holdings that trade in them. |
 | **Numbers from code** | XIRR, schedules, net worth and the forecast from §6.6; Claude writes the words around them and answers "why is my net worth down this month?" from the same tools. |
 
 The screens, from the tracker's own list, and what each reads:
 
-| Screen | Reads | New in the bot |
+| Screen | Reads | New in the chat |
 | --- | --- | --- |
 | Overview | `NetWorth` by member, category, country; maturing next; largest assets | nothing new; the Portfolio card grows into it |
 | Assets, one asset | `Account`, `Position`, `Valuation`, the XIRR ledger from `Transaction`, documents | "add a property", "FD matured", "update the house valuation", "log the rent" |
@@ -942,10 +1136,10 @@ The screens, from the tracker's own list, and what each reads:
 | Reports | composition by type and institution; exports | nothing; exports are GET |
 | Access, Settings | `Member`, `Invite`, preferences | `/invite`, `/members`, `/settings`, already there |
 
-Order of work in `PLAN.md` phase 9: the kinds and their bot flows first
+Order of work in `PLAN.md` phase 9: the kinds and their chat flows first
 (assets and debts), then the wealth maths and the forecast, then the
 redesigned screens, then budget and reports, then retiring the old
-repository. Each step ships read-only pages over data that the bot already
+repository. Each step ships read-only pages over data that MyPaisa already
 maintains, so nothing is shown that cannot be changed from the chat.
 
 ### 12.1 Any question, answered from a read-only SQL copy of the ledger (MA-104)
@@ -983,45 +1177,56 @@ pensions since 2024") are answered without a database running all month:
 | **Engine** | **The desk's indicator and pillar logic ported to pandas with golden tests; macro baskets per region** |
 | Claude | **the `anthropic` SDK against the Anthropic API, key in SSM**; structured outputs; server-side web search and fetch; Message Batches; **PDF and image input for documents** |
 | **Documents** | **S3 + Claude extraction with citations; no OCR library** |
-| Charts | matplotlib (Agg) for PNG; **lightweight-charts in the web app** |
-| Telegram | Thin client on httpx; **rich messages with HTML fallback; `initData` and Login Widget verification in Cognito's custom-auth Lambdas** |
-| **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Telegram custom auth, Google, passkeys; five-minute access tokens** |
-| Runtime | Lambda container image, arm64; **handlers `webhook`, `agent`, `sender`, `worker` (each job by its type), `api`, the authorizer and the Cognito triggers** |
-| **Queues** | **SQS: a FIFO queue in (one lane per member), a FIFO queue out (one lane per chat), a work queue for background jobs, and a dead-letter queue behind each, with alarms and replay (§21)** |
+| **The app** | **One SwiftUI app for iOS and iPadOS 26 (Liquid Glass), Swift 6; Swift Charts; SwiftData for the offline copy; AuthenticationServices (Sign in with Apple, passkeys) and Google Sign-In for iOS; LocalAuthentication for the app lock; UserNotifications; VisionKit, PhotosUI and Quick Look for files; XcodeGen, swift-format, XCTest and snapshot tests; TestFlight (§9, §18.4)** |
+| Charts | **Swift Charts in the app and lightweight-charts in the web app, from the engine's series; no image is drawn on the server** |
+| **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Sign in with Apple and Google verified in custom-auth Lambdas, passkeys; five-minute access tokens in the Keychain** |
+| Runtime | Lambda container image, arm64; **handlers `api`, `agent`, `sender`, `worker` (each job by its type), `live`, the authorizer and the Cognito triggers** |
+| **Delivery to the app** | **The sender posts to the API Gateway WebSocket API's connections and sends Apple push over HTTP/2 with a token key (§21)** |
+| **Queues** | **SQS: a FIFO queue in (one lane per member), a FIFO queue out (one lane per member), a work queue for background jobs, and a dead-letter queue behind each, with alarms and replay (§21)** |
 | Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform only, GitHub Actions with OIDC; **dev and prod as two isolated copies in one account (§18)** |
-| **Web app hosting** | **S3 + CloudFront per environment at `console(-dev).mypaisapp.com`; API Gateway HTTP API at `api(-dev).mypaisapp.com`; scheduled Lambdas have no public endpoint** |
-| **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind the app's Activity and Audit pages** |
+| **The web app** | **A static PWA in `web/` (MyPaisa DS v1, lightweight-charts, the shared motion in CSS and the Web Animations API), on S3 + CloudFront at `console(-dev).mypaisapp.com`, which also serves the iOS app's apple-app-site-association file (§9.4)** |
+| **Endpoints** | **API Gateway HTTP API at `api(-dev).mypaisapp.com` and WebSocket API at `live(-dev).mypaisapp.com`; scheduled Lambdas have no public endpoint** |
+| **Observability** | **Powertools Logger, Tracer and Metrics; X-Ray; one CloudWatch dashboard and the alarms per environment; `RunRecord` and `AuditEvent` in DynamoDB behind the app's Activity and Audit screens** |
 | **Caps and alerts** | **The app's meters and steps (§15); Cost Explorer read once a day for the AWS meter; AWS Budgets at £75 as the backstop; SNS `mypaisa-<env>-admin-alerts` for the admin's email** |
 | **Orchestration (phase 12)** | **Step Functions for the daily run; an EventBridge custom bus, `mypaisa-<env>-events`, between the agents (§20)** |
-| **Design and diagrams** | **Lucidchart on the AWS 2024 shapes, generated by `docs/design/lucid/gen_aws_architecture.py`; explainer pages as claude.ai artifacts in MyPaisa DS v1, "Warm ledger" (MA-101)** |
+| **Design and diagrams** | **Lucidchart on the AWS 2024 shapes, generated by `docs/design/lucid/gen_aws_architecture.py`; explainer pages as claude.ai artifacts and the app's boards in Claude Design, in MyPaisa DS v1, "Warm ledger" (MA-101), on Liquid Glass (MA-161)** |
 
 ---
 
 ## 14. Security and privacy
 
 As v1 (no keys, IAM in Terraform, OIDC pinned to this repository's ids,
-webhook secret, chat allowlist, dedupe, untrusted text), plus: uploaded
-every file a member sends is kept for good in a private, encrypted bucket
+dedupe, untrusted text), plus: every file a member sends is kept for good in a
+private, encrypted bucket
 and opens only through five-minute links after a role check (§4.6, MA-148,
 MA-149); extracted figures carry their source line, and extracted records
 never keep a PAN, an address or an account number; a protected PDF's
-password is never stored; privacy mode hides pounds in every card and in the Mini App; the
-Mini App serves nothing without a valid, recent `initData` signature.
+password is never stored; privacy mode hides pounds in every card, every
+screen and every notification.
 
-The web app adds: identity is Cognito's, one pool per environment (§4.5). The
-Telegram Login payload and `initData` are verified in Cognito's custom-auth
-Lambdas (HMAC keyed by the bot token, compared in constant time, `auth_date`
-within five minutes, replay refused); Google comes through Cognito's Google
-provider and is mapped to a member through the identity linked to their
-Cognito user, never by address; passkeys are WebAuthn with a relying-party id
-fixed per environment before anyone registers. The session cookie is
-`HttpOnly`, `Secure`, `SameSite=Strict`, set by the api for its own host, with
-five-minute access tokens behind it; the api's authorizer checks the session,
-the member's status and session epoch on every call; tokens from one
-environment are refused by the other. CORS admits only that environment's
-console. The Admin center's owner actions need a fresh check within five
-minutes (MA-102). Responses carry a strict Content-Security-Policy; the audit
-log is append-only and hash-chained.
+The web app keeps v2's browser rules (§9.4): the session cookie is `HttpOnly`,
+`Secure`, `SameSite=Strict`, set by the api for its own host; CORS admits only
+that environment's console; responses carry a strict Content-Security-Policy;
+the service worker caches the shell only.
+
+The iOS app adds: identity is Cognito's, one pool per environment (§4.5). Apple's
+and Google's identity tokens are verified in Cognito's custom-auth Lambdas
+against the providers' published keys (issuer, audience, expiry, an issue time
+under five minutes, the api's one-time nonce, replay refused) and mapped to a
+member through the `sub` linked to their Cognito user, never by address;
+passkeys are WebAuthn, checked in the same custom auth, with the
+environment's console domain as the relying-party id, fixed before anyone
+registers (§4.5). Tokens live in the Keychain, this device only; access tokens
+last five minutes; refresh tokens rotate; the api's authorizer checks the
+token, the member's status and session epoch on every call and every live
+connection; tokens from one environment are refused by the other. The second
+check is a fresh, server-verified Sign in with Apple, passkey or Google
+assertion bound to the action (§4.5, MA-76); a local Face ID never authorises
+anything on the server. The app pins no certificates but trusts only HTTPS
+(App Transport Security), keeps its offline copy under complete file
+protection, hides its snapshot in the app switcher, and shows no amount in a
+notification unless the member asks. Push payloads carry no figures the lock
+screen would show. The audit log is append-only and hash-chained.
 
 The two environments share one AWS account and are kept apart by IAM: every
 Lambda role reaches only its own environment's resources; the developer's role
@@ -1030,9 +1235,10 @@ prod changes only through CI from `main`, after approval (§18). Secret values
 live only in SSM, set by hand; Terraform creates the parameters with a
 write-only placeholder (`value_wo`), so no secret ever reaches its state: with
 `value`, the AWS provider would store the decrypted value on every refresh,
-whatever `ignore_changes` says (MA-159). The
-family should turn on Telegram's two-step verification, since a Telegram
-account is now the key to both the chat and the web app.
+whatever `ignore_changes` says (MA-159). Each
+member should keep two-factor authentication on their Apple Account and Google
+account and a passcode with Face ID on each device (MA-72), since that account
+and that device are now the key to the app.
 
 ---
 
@@ -1040,16 +1246,17 @@ account is now the key to both the chat and the web app.
 
 | Line | Lean | Standard | Full |
 | --- | ---: | ---: | ---: |
-| AWS, both environments, including the web app, API Gateway, Cognito (free under 10,000 monthly users), X-Ray and the dashboards | £0.50 | £0.70 | £1 |
+| AWS, both environments, including API Gateway (HTTP and WebSocket), the web app's console, Cognito (free under 10,000 monthly users), X-Ray and the dashboards; Apple push is free | £0.50 | £0.70 | £1 |
+| Apple Developer Program ($99 a year, for Sign in with Apple, push and TestFlight; MA-162) | £6.35 | £6.35 | £6.35 |
 | Claude: briefs, alerts, chat, cards, Saturday review | £7 | £12 | £21 |
 | Claude: sentiment scoring, via Batches | £1.50 | £2.50 | £2.50 |
 | Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Claude: web search (~60 a month at $10 per 1,000) | £0.50 | £0.50 | £1 |
 | Market data (EODHD Historian, £19.99 a month) | £0 | £20 | £20 |
-| **Total, one member** | **£9.70** | **£36** | **£46** |
+| **Total, one member** | **£16** | **£42** | **£52** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
-Two members on the standard setup: about £39. The Claude lines are paid by
+Two members on the standard setup: about £45, of which about £6 is Apple's developer membership. The Claude lines are paid by
 the monthly API credit that comes with the Max 20x plan ($200 a month,
 about £154), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
@@ -1104,10 +1311,10 @@ ceiling ($160 in prod, $40 in dev), the steps of the ladder (70%, 85%, 95%,
 average), the calls per run (eight), each agent's
 share (§20.7), and the day the plan's credit renews, which starts each
 cycle. The admin moves the ceiling up or down in the Admin center (MA-116),
-or from phase 12 in the admin's Telegram chat (§20.3): the admin only, behind
-the fresh check (MA-102), with an audit row and a Telegram message to the
-admin; it takes effect on the next model call. Lowering it below what is already
-spent puts the bot straight onto the step that implies, and the Admin center
+or from phase 12 in the admin's chat (§20.3): the admin only, behind
+the second check (MA-76, MA-102), with an audit row and a message to the
+admin in the chat; it takes effect on the next model call. Lowering it below what is already
+spent puts MyPaisa straight onto the step that implies, and the Admin center
 says which before Confirm. The chat can report spend (`get_spend`) but not
 change it.
 
@@ -1130,7 +1337,7 @@ made. The meter is reconciled weekly against the Console (§10).
 | 100% | Claude stops until the cycle renews or the owner raises the ceiling. Every card goes out as its plain template, buttons and guided flows work as before, and a typed message gets one line saying free text is back on the renewal day. |
 
 Alerts are never dropped at any step: a template needs no model. Raising the
-ceiling moves the bot back up the ladder at the next call.
+ceiling moves MyPaisa back up the ladder at the next call.
 
 **Guards under the ladder**, so one bad hour cannot spend a month:
 
@@ -1158,10 +1365,10 @@ neither environment can eat the other's share.
 
 ![The agent team, settings, caps and alerts, Lucid page 7](docs/design/lucid/07-agents-caps.png)
 
-Page 7: the two caps, the meters, the alert router and where each alert goes; the agent team and the settings service of §20 sit above them. [Open it in Lucid](https://lucid.app/lucidchart/d8bc9ec7-ef1f-41fd-b372-7b8feea22b1a/edit).
+Page 7: the two caps, the meters, the alert router and where each alert goes; the agent team and the settings service of §20 sit above them. [Open it in Lucid](https://lucid.app/lucidchart/3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4/edit).
 Every threshold below is a setting the admin changes in the Admin center's
 Spend and Alerts pages (and, from phase 12, from the admin's chat, §20.3),
-behind the fresh check, each change an audit row and a Telegram message.
+behind the second check, each change an audit row and a message in the admin's chat.
 
 **Claude.** The ceiling per environment, the ladder's steps (any ascending
 list; 70%, 85%, 95% and 100% by default), what each step does (§15.1), the
@@ -1184,23 +1391,24 @@ The meter reads Cost Explorer once a day (month to date by service and by the
 so. The actions are flags the jobs read, as `/pause` is, never changes to AWS
 resources, so Terraform stays the only thing that changes infrastructure.
 Behind them sits one AWS Budgets cost budget at a hard limit (£75 by
-default, set in dollars), made by Terraform and not from the web: it alerts
+default, set in dollars), made by Terraform and not from the app: it alerts
 on actual and forecast spend, and its action stops dev's schedules.
 Monitoring is free, and so are the first two action-enabled budgets; raising
 the hard limit is a pull request.
 
 **Alerts.** One router sends every alert by a matrix the admin sets:
 
-| Alert | Web app | Telegram | Email |
+| Alert | App | Push | Email |
 | --- | --- | --- | --- |
 | Claude or AWS step reached, forecast over the cap | yes | yes | yes |
 | Incident, an approval waiting (§20.3) | yes | yes | critical only |
 | Data feed stale, a job failed | yes | yes | no |
 | Holding alerts (§11) | members' own, as today | members' own, as today | no |
 
-- **Web app:** an Alerts page in the Admin center and a badge, for the admin
-  only, for system alerts.
-- **Telegram:** the admin's own chat; critical with sound, the rest silent.
+- **App:** the Alerts screen in the Admin center and its badge, for the admin
+  only, for system alerts; members' holding alerts arrive in their own chat.
+- **Push:** to the admin's devices; critical alerts time-sensitive with sound,
+  the rest passive and silent; no amounts on the lock screen.
 - **Email:** through Amazon SNS, a topic `mypaisa-<env>-admin-alerts` with the
   admin's address subscribed (put in SSM by hand, the subscription made by
   Terraform, confirmed once by clicking the link AWS sends). The first 1,000
@@ -1224,13 +1432,13 @@ a daily digest instead.
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
-| Front end | Telegram rich messages + PNG charts + one read-only web app, as a Mini App in Telegram and in a laptop browser | Simple by default, technical on tap, interactive when wanted; the laptop gets the audit log and the agent's activity |
+| Front end | One native SwiftUI app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger): the chat with native cards and Swift Charts, and the read-only dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1); and the web app, a read-only PWA for the same dashboard and the Admin center in a browser; no Telegram (MA-161, 25 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "we have webapp for the dashboard and admin portal pwa"; native sign-in, push and Face ID for the chat, any browser for reading |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 | The kill switch's name | `/pause` and `/resume`, kept though PAUSE is also a stance; the stance only appears on a holding's card with its confidence, never as a command (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Three different things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §8); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5); the PAUSE stance is a view on one holding |
-| One admin | The owner is the household's only admin: the Admin center, the admin's Telegram chat, the admin desk, approvals and alerts are theirs alone; no role makes a second admin (Arun, 25 Oct 2026: "there is only 1 admin") | One person decides every change to the system; the second check and the audit row are enough without a second approver |
-| Money in any currency | Each position has one currency; an amount typed in another is never saved as it is: the bot names the holding's currency and asks for the amount that arrived, or offers the ECB rate as a marked estimate; the original amount, rate and source are kept on the transaction (MA-156, 24 Oct 2026) | Rupees are never recorded as pounds; the number stays the member's or the engine's, never Claude's |
-| Identity | Amazon Cognito from day one, one user pool per environment: Telegram (custom auth over `initData` and the Login Widget), Google and passkeys linked to one user per member; invites by one-time link; replaces the earlier "Cognito only later" (MA-106, 24 Oct 2026) | No passwords; one identity however you arrive; sign-out, pause and MFA come built in; free at this scale |
+| One admin | The owner is the household's only admin: the Admin center, the agents' requests in the chat, the admin desk, approvals and alerts are theirs alone; no role makes a second admin (Arun, 25 Oct 2026: "there is only 1 admin") | One person decides every change to the system; the second check and the audit row are enough without a second approver |
+| Money in any currency | Each position has one currency; an amount typed in another is never saved as it is: MyPaisa names the holding's currency and asks for the amount that arrived, or offers the ECB rate as a marked estimate; the original amount, rate and source are kept on the transaction (MA-156, 24 Oct 2026) | Rupees are never recorded as pounds; the number stays the member's or the engine's, never Claude's |
+| Identity | Amazon Cognito from day one, one user pool per environment: Sign in with Apple and Google (custom auth over their identity tokens) and passkeys linked to one user per member; invites by one-time link; replaces the earlier "Cognito only later" (MA-106, 24 Oct 2026) and Telegram's sign-in (MA-161, 25 Oct 2026) | No passwords; one identity however you arrive; sign-out, pause and MFA come built in; free at this scale |
 | Tenancy | Household as the tenant, accounts per member, isolation in code with tests | Finances are managed per member; the household view is a sum, not a shared pot |
 | Claude access | The Anthropic API, through a Console organisation linked to the Max or Team plan so its monthly API credit pays for the calls; one workspace per environment with its own spend limit; the key in SSM | Same per-token prices as Bedrock, no model-access form, the server tools and Batches come with it, and the plan's credit makes the model free at this volume |
 | Web search | Anthropic's server-side web search and fetch | Citations built in; one fewer key to manage |
@@ -1239,43 +1447,48 @@ a daily digest instead.
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; Powertools logs, X-Ray, ten metrics, one dashboard per environment; alarms to the chat; an Activity page | What the agent did and spent is visible without opening the AWS console, inside the free tiers |
-| Web app auth | An `HttpOnly`, `SameSite=Strict` session cookie on the api's host with five-minute Cognito access tokens behind it; the static shell is public and holds no data; the api's authorizer checks session, status and epoch on every call | No token in page scripts; sign-out and pause take effect on the next request |
-| Google sign-in | Cognito's Google provider, one OAuth client per environment; a Google account linked to a member by a code typed into the chat | One identity per member across Telegram, Google and passkeys; the link is proven from the member's own phone |
-| Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate bots, Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
-| Claude budget | The agents' allowance is the Max 20x plan's $200 monthly credit across prod and dev ($160 and $40 by default, each a ceiling the admin moves); AWS and others have their own cap (£50); every step, action and alert route set in the Admin center (§15.2); a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); the bot degrades to templates rather than going silent, and a runaway loop cannot spend a month |
+| App sessions | In the web app, v2's `HttpOnly`, `SameSite=Strict` session cookie on the api's host. In the iOS app, Cognito tokens in the Keychain, this device only; five-minute access tokens, rotating refresh tokens; a `Device` row per signed-in device; the api's authorizer checks token, status and epoch on every call and live connection; the second check a fresh, server-verified assertion | Sign-out and pause take effect on the next request; nothing a lost phone holds outlives a sign-out |
+| Apple and Google sign-in | Native Sign in with Apple and Google's iOS SDK, one Google iOS client per environment; a second sign-in added from You while signed in | One identity per member across Apple, Google and passkeys; Apple's own button first, as its guidelines ask of an app that offers Google |
+| Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate app builds (MyPaisa Dev, MyPaisa), Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
+| Claude budget | The agents' allowance is the Max 20x plan's $200 monthly credit across prod and dev ($160 and $40 by default, each a ceiling the admin moves); AWS and others have their own cap (£50); every step, action and alert route set in the Admin center (§15.2); a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); MyPaisa degrades to templates rather than going silent, and a runaway loop cannot spend a month |
 | Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
 | Forecaster | A second engine, phase 11, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
-| Queues | SQS between every part that could fail: updates in and replies out through FIFO queues with one lane per member or chat, background jobs through a work queue, retries with backoff, idempotent handlers, a dead-letter queue behind each with an alarm and replay (§21, MA-138) | Arun: "resilient and self heal with retries from Queues"; nothing a member sends, nothing the bot sends and no day's work is lost to a bad minute somewhere else |
-| Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on the admin's approval, in Telegram or the web; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
-| Destination | The web app becomes MyPaisa, the whole wealth tracker, read-only, with the bot as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
+| Queues | SQS between every part that could fail: messages in and replies out through FIFO queues with one lane per member, background jobs through a work queue, retries with backoff, idempotent handlers, a dead-letter queue behind each with an alarm and replay (§21, MA-138) | Arun: "resilient and self heal with retries from Queues"; nothing a member sends, nothing MyPaisa sends and no day's work is lost to a bad minute somewhere else |
+| Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on the admin's approval, in the chat or the Admin center; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
+| Destination | The app's dashboard becomes MyPaisa, the whole wealth tracker, read-only, with the chat as the only write path; the current tracker repository is the screen reference and is retired when covered; the data model carries the extra kinds, categories and cashflow types from phase 1 | One backend, one audit trail, one identity, one place to secure writes; a migration avoided by adding empty fields now |
 
 ## 17. Open questions
 
 - The Monzo fund's exact name and ISIN (factsheet in the app); whether the holdings sit in the Stocks & Shares ISA or a general account; the Monzo platform fee on your plan.
 - Whether yfinance returns history for the fund's `0P…L` id; otherwise which page becomes the daily source.
 - Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed); answered by the source-comparison report in the first weeks of phase 2, since it sits second in the London chain from day one.
-- Rich messages: confirm block types and limits against the official Bot API changelog before relying on tables.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
-- A Google OAuth client per environment, created in the Google Cloud Console with the redirect `https://auth(-dev).mypaisapp.com/oauth2/idpresponse`; the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its secret goes into that environment's SSM path by hand (MA-109).
-- The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).
+- A Google iOS client per environment, created in the Google Cloud Console for the app's bundle id (an iOS client has no secret); the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its id goes into that environment's SSM path after the apply that made the parameter (MA-143, MA-109).
+- The Apple Developer Program at $99 a year (MA-162): needed for Sign in with Apple, push and TestFlight.
+- "Duo" in Arun's request is read as a foldable or two-panel Apple device; the layouts follow width, so any such device is covered (§9.1).
+- The passkey relying-party id for each environment: the console's domain is the plan (§4.5); MA-109 confirms it before anyone registers a passkey.
+- The oldest device the household uses: iOS and iPadOS 26 need an iPhone 11 or later (an iPhone XS or XR cannot run the app); a household device older than that needs a decision before MA-165 sets the deployment target.
 - For the Forecaster (§19): the drawdown budget and how much yearly growth may be given up to cut the deepest falls (F7); whether share-level fundamentals are worth their cost; each data source's terms for personal use.
 - Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card).
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $200 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two consoles' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
-- For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and when the apex `mypaisapp.com` moves from the old tracker to a redirect to the console (MA-97). Decisions for phase 9, not now.
+- For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101); and what the apex `mypaisapp.com` shows once the old tracker is retired (MA-97). Decisions for phase 9, not now.
 
 ## 18. Environments, domains and delivery
 
 
 ![Environments, domains and delivery, Lucid page 2](docs/design/lucid/02-environments.png)
 
-Page 2: one account, what is shared in it, dev and prod side by side with their own keys, and how a change reaches each. [Open it in Lucid](https://lucid.app/lucidchart/60bffe0d-133b-489c-ae02-526a987252fc/edit).
+Page 2: one account, what is shared in it, dev and prod side by side with their own keys, and how a change reaches each. [Open it in Lucid](https://lucid.app/lucidchart/350c6593-a915-495f-88f1-a781b3ed1c5b/edit).
 Arun's decisions, 24 Oct 2026 (MA-106): "I will be developing local, from day 1
 I need the auth to be fixed using AWS tech"; one AWS account with every
 component twice; dev seeded with synthetic data, prod a clean slate; everything
 on AWS through Terraform, read with the AWS MCP; prod deployed only by GitHub
 CI; `console-dev.mypaisapp.com` and `console.mypaisapp.com` for the web app.
+On 25 Oct 2026 (MA-161) the Telegram bot gave way to the iOS app, which reaches
+each environment through `api` and `live`; the consoles stay, for the web app
+and the iOS app's links (§18.2).
 
 ### 18.1 Two environments, one account
 
@@ -1286,13 +1499,14 @@ shared between the two except the account, the DNS zone and the certificate.
 | Part | dev | prod |
 | --- | --- | --- |
 | DynamoDB (registry, transactions, audit) | `mypaisa-dev-*`, synthetic data | `mypaisa-prod-*`, empty at launch; deletion protection and point-in-time recovery |
-| S3 (console, exports, imports) | `mypaisa-dev-*` | `mypaisa-prod-*`, versioned |
+| S3 (documents, the console, exports, imports) | `mypaisa-dev-*` | `mypaisa-prod-*`, versioned |
 | Lambdas, API, schedules | `mypaisa-dev-*`; the schedules are off unless switched on | `mypaisa-prod-*` |
 | Cognito user pool | `mypaisa-dev-users` | `mypaisa-prod-users` |
 | Secrets, SSM | `/mypaisa-agent/dev/...` | `/mypaisa-agent/prod/...` |
-| Telegram bot | its own dev bot | the household's bot |
+| App build | MyPaisa Dev (`com.mypaisapp.agent.dev`), on TestFlight and from Xcode | MyPaisa (`com.mypaisapp.agent`), on TestFlight after Arun approves |
+| Apple push key | its own, sandbox and production | its own |
 | Claude API key and ceiling | its own workspace key; a $40 ceiling | its own workspace key; a $160 ceiling the admin moves, with the Console limit as the hard backstop (§15.1) |
-| Google OAuth client | its own | its own |
+| Google iOS client | its own | its own |
 
 **Kept apart by IAM, not by trust.** Each Lambda's role names only its own
 environment's resources. The developer's role works in dev; an explicit deny
@@ -1300,14 +1514,15 @@ keeps it out of anything tagged `env=prod`, so a slip on a laptop cannot touch
 the household's data. Tokens from one pool are refused by the other
 environment's api.
 
-**Local development** runs the code on the laptop against dev in AWS: the dev
-bot by long polling (no webhook needed), the console from `localhost` against
-`api-dev`, the dev Cognito pool for sign-in. There is no local copy of AWS.
+**Local development** runs the code on the laptop against dev in AWS: the
+MyPaisa Dev build from Xcode on the simulator or a device against `api-dev` and
+`live-dev`, the web app from `localhost` against `api-dev`, the dev Cognito
+pool for sign-in, and the Lambdas' handlers in tests with moto. There is no local copy of AWS.
 
 **Data.** Dev is seeded with synthetic data shaped on real Monzo funds (the
 names, ISINs and factsheets Arun supplies, never his balances) by a seed
 script that can wipe and reseed (MA-110). Prod starts empty and fills only
-through the app: the bot's guided flows, and for years of history the Excel
+through the app: the chat's guided flows, and for years of history the Excel
 importer (§18.5). No script writes to prod tables.
 
 ### 18.2 Domains
@@ -1315,28 +1530,30 @@ importer (§18.5). No script writes to prod tables.
 `mypaisapp.com` is registered in Route 53. The zone, the registration and the
 certificate (the apex and `*.mypaisapp.com`, in `us-east-1`) belong to the
 wealth tracker's Terraform (`wealth-tracker/infra/terraform/dns/`, its own
-state). MyPaisa looks them up by name and creates only its own six records; the
-apex keeps serving the old tracker until MA-97 hands the zone over and turns
-the apex into a redirect to the console.
+state). MyPaisa looks them up by name and creates only its own six records (`api`, `live` and `console`, each for dev and prod); the
+apex keeps serving the old tracker until MA-97 hands the zone over.
 
 | Name | What | dev | prod |
 | --- | --- | --- | --- |
-| Console | S3 + CloudFront, the web app and the Mini App | `console-dev.mypaisapp.com` | `console.mypaisapp.com` |
-| API | API Gateway HTTP API custom domain: `/v1/...`, `/v1/admin/...`, `/telegram/webhook`, `/auth/telegram` | `api-dev.mypaisapp.com` | `api.mypaisapp.com` |
-| Sign-in | Cognito custom domain: Google's redirect, the hosted endpoints | `auth-dev.mypaisapp.com` | `auth.mypaisapp.com` |
+| API | API Gateway HTTP API custom domain: `/auth/nonce`, `/auth/apple`, `/auth/google`, `/auth/passkey/options`, `/auth/passkey`, `/v1/chat/...`, `/v1/...` (read-only data), `/v1/admin/...`, `/v1/devices`, `/v1/uploads` | `api-dev.mypaisapp.com` | `api.mypaisapp.com` |
+| Live | API Gateway WebSocket API custom domain: the app's live connection (§21) | `live-dev.mypaisapp.com` | `live.mypaisapp.com` |
+| Sign-in | No domain of its own: the app and the web app sign in through the api's `/auth/*` routes, which call Cognito's API; the passkeys' relying party is the console's domain (§4.5) | (`console-dev.mypaisapp.com`) | (`console.mypaisapp.com`) |
+| Console | S3 + CloudFront: the web app (a PWA), the iOS app's `apple-app-site-association` file and the invite page; no data | `console-dev.mypaisapp.com` | `console.mypaisapp.com` |
 
 The scheduled Lambdas (the brief, the wrap, the refreshers) have no public
-address. The console and the api share the site `mypaisapp.com`, so the
-session cookie is `SameSite=Strict` and still travels with the console's calls.
+address. The iOS app talks only to `api` and `live` over HTTPS; the web app to
+`api`, whose site it shares, so its `SameSite=Strict` session cookie travels
+with its calls.
 
 ### 18.3 Identity
 
 §4.5 and §14 hold the detail. In short: one Cognito user pool per environment,
-Essentials plan; one user per member, with their Telegram id, Google account
-and passkeys linked to it; Telegram through custom-auth Lambda triggers that
-verify `initData` and the Login Widget; five-minute access tokens behind an
-`HttpOnly` cookie; sign-out everywhere and pause through Cognito and the
-member's session epoch (MA-102). Built in phase 1, so every later piece starts
+Essentials plan; one user per member, with their Apple account, Google account
+and passkeys linked to it; Apple's and Google's identity tokens verified by
+custom-auth Lambda triggers; five-minute access tokens and rotating refresh
+tokens in the Keychain; the second check a fresh, server-verified assertion;
+sign-out of a device or everywhere and pause through Cognito and the member's
+session epoch (MA-102). Built in phase 1, so every later piece starts
 signed in (MA-109).
 
 ### 18.4 Delivery
@@ -1356,11 +1573,14 @@ resource (`.claude/rules/aws-changes.md`).
 | Stage | When | What |
 | --- | --- | --- |
 | Gates | every PR | ruff, pyright, pytest (AWS faked with moto), `terraform fmt` and `validate`, tflint, a security scan of the Terraform, gitleaks, pip-audit, the `jira-key` check |
+| Web gates | every PR touching `web/` | Playwright at phone and laptop widths in both themes, with `prefers-reduced-motion` both ways; the contrast gate (`scripts/contrast_check.py`) on every PR |
+| iOS gates | every PR touching `ios/` | on a macOS runner: swift-format, build, unit and UI tests on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166) |
 | Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
 | Build | merge to `main` | the Lambda packages built once and stored by digest; the same build goes to both environments |
 | Dev | after the build | apply dev, deploy, smoke tests against `api-dev` |
-| Prod | after dev passes and Arun approves in the GitHub `prod` environment | apply prod, deploy behind each Lambda's `live` alias, smoke tests, automatic rollback to the previous version on failure |
-| Drift | nightly | `terraform plan` for both environments; any difference is a message in the chat (MA-108) |
+| Dev app | after dev passes | the web app synced to dev's console bucket and its CloudFront cache cleared; when `ios/` changed, MyPaisa Dev archived and uploaded to TestFlight (MA-167) |
+| Prod | after dev passes and Arun approves in the GitHub `prod` environment | apply prod, deploy behind each Lambda's `live` alias, smoke tests, automatic rollback to the previous version on failure; then the web app synced to prod's console and MyPaisa uploaded to TestFlight, so a new front end never meets an old api (MA-167) |
+| Drift | nightly | `terraform plan` for both environments; any difference is a message in the admin's chat (MA-108) |
 
 CI reaches AWS through the account's GitHub OIDC provider with three roles:
 `ci-plan` (read only, any branch), `ci-dev-deploy` (`main` only) and
@@ -1374,9 +1594,9 @@ runs of the same workflow on the same branch never overlap.
 ### 18.5 Hydrating prod: the Excel importer
 
 Prod starts empty, and years of past investments are needed for XIRR. They come
-in through one versioned Excel template (MA-111), sent to the bot as a file:
+in through one versioned Excel template (MA-111), sent in the chat as a file:
 
-1. The bot reads the workbook and checks it against the template's version:
+1. MyPaisa reads the workbook and checks it against the template's version:
    sheets, columns, types, dates, currencies, known holdings.
 2. A dry run shows what would be added, what is already there (matched by a
    fingerprint of each row, so sending the same file twice adds nothing) and
@@ -1396,7 +1616,7 @@ tracker's data is mapped (MA-105).
 
 ![The market agent and the learning loop, Lucid page 6](docs/design/lucid/06-market-agent.png)
 
-Page 6: free data in, the rules engine and the Forecaster side by side, calibration, the card, and the daily learning loop of §20.4 below them. [Open it in Lucid](https://lucid.app/lucidchart/35e7ddc4-3aa4-46bf-b301-dadb0cde0b48/edit).
+Page 6: free data in, the rules engine and the Forecaster side by side, calibration, the card, and the daily learning loop of §20.4 below them. [Open it in Lucid](https://lucid.app/lucidchart/6f1b4c75-353c-49e5-b6e7-29fd2c18d356/edit).
 Arun, 24 Oct 2026 (MA-117): "My target is to minimize loss and grow money
 over time steadily ... another agent which will give really predictive
 recommendation side by side with the one you are building ... I want this
@@ -1458,7 +1678,7 @@ short; EODHD itself, until a free source fails (above).
 **Shares come from another platform.** Monzo offers only BlackRock funds and
 ETFs, gold and silver among them, and no individual shares; a share would be
 held on another platform, in an `Account` with its own `institution`, and
-reaches the bot the same way (a statement, a screenshot or a typed line).
+reaches MyPaisa the same way (a statement, a screenshot or a typed line).
 
 Every row carries the date it became known, and revisions are added rather
 than overwritten, so a backtest of 2018 sees only what was known in 2018. A
@@ -1540,7 +1760,7 @@ the rules engine's.
 
 ### 19.7 How it is shown (F6, MA-124)
 
-In Telegram, beside the rules engine (illustrative figures):
+In the chat, beside the rules engine (illustrative figures):
 
 ```
 NASDAQ 100 ETF
@@ -1556,7 +1776,7 @@ Forecaster     next 4 weeks
 ```
 
 When the two engines disagree, the card says so; below the confidence floor
-it says "no clear view". In the web app, a Forecast page per holding: a fan
+it says "no clear view". On the dashboard, a Forecast screen per holding: a fan
 chart of the likely range, the mood timeline, the similar days drawn over
 today's chart, the event-impact table, the main drivers, candles for ETFs and
 shares, and both engines' track records side by side. Both are designed first
@@ -1577,7 +1797,7 @@ well under a dollar a month, inside the Claude ceiling of §15.1.
 
 F1 (data) and F2 (the lab) can start any time after phase 2, and F2's first
 report tests the rules engine. F3 and F4 follow, F5 after them, F6 once the
-web app and the track record exist (phases 5 and 6), F7 after F2 and F3. F2,
+dashboard and the track record exist (phases 5 and 6), F7 after F2 and F3. F2,
 F3 and F7 do most of the work for the goal; F5 is the least reliable piece.
 The bounds of §4.5 hold: this is software for one household; sharing its
 calls with other households would start to look like regulated advice.
@@ -1639,13 +1859,13 @@ setting directly. Lambdas read settings through a cache of a minute at
 most. Secrets stay in SSM and infrastructure in Terraform: a setting may
 name a secret, never hold one.
 
-### 20.3 The admin desk: Telegram and the web, the admin only (E2, MA-130)
+### 20.3 The admin desk: the owner's chat and the Admin center, the admin only (E2, MA-130)
 
 The admin is the owner, the household's one admin (Arun, 25 Oct 2026:
 "there is only 1 admin"); members and viewers never see the desk. Both doors show the same queue:
 
-- **In Telegram**, in the admin's own chat with the bot. A request arrives as
-  a card, for example:
+- **In the chat**, in the admin's own conversation with MyPaisa, and by push.
+  A request arrives as a card, for example:
 
   ```
   Data steward asks
@@ -1657,11 +1877,12 @@ The admin is the owner, the household's one admin (Arun, 25 Oct 2026:
   [Approve] [Reject] [Why?] [Later]
   ```
 
-- **In the web**, the Admin center's Approvals, Settings, Agents and
-  Incidents pages (designed first).
+- **In the Admin center**, its Approvals, Settings, Agents and Incidents
+  screens (designed first).
 
-Approving needs the second check: Face ID or the PIN in Telegram, the fresh
-check in the browser (MA-102). Deciding in one door updates the other. Each
+Approving needs the second check (§4.5, MA-76): a fresh Sign in with Apple or
+passkey under Face ID, or for a member who signs in only with Google, Google
+again. Deciding in one place updates the other. Each
 request says what changes, from and to, why with its evidence, the cost and
 the budget left, the risk and the undo, and when it expires. Agents also ask
 plain questions ("Which fund is the Monzo Balanced fund's ISIN?") with
@@ -1711,7 +1932,7 @@ accuracy and, above all, honest confidence grow over the years.
 The daily run (ingest, engine, Forecaster, grade, calibrate, brief) is one
 Step Functions state machine with retries and backoff on every step and
 idempotent writes, its jobs carried by the queues of §21. When a dead-letter
-queue fills, the ops warden finds the cause (Telegram, the Anthropic API, a
+queue fills, the ops warden finds the cause (Apple push, the Anthropic API, a
 data source, a deploy) and, once it is healthy again, replays the messages
 at most three times with growing gaps; a message that fails the same way
 again becomes an incident with its errors attached. What the system fixes on its own, and tells the admin in
@@ -1729,7 +1950,7 @@ man's switch, the nightly drift check (MA-108) and the Lambda rollback
 
 ![Where the data lives, Lucid page 5](docs/design/lucid/05-data.png)
 
-Page 5: the one DynamoDB table and its entity groups, the S3 lake and its prefixes, DuckDB, the documents and web buckets, and SSM. [Open it in Lucid](https://lucid.app/lucidchart/a86198f7-d101-4550-9402-3348f08c5eb5/edit).
+Page 5: the one DynamoDB table and its entity groups, the S3 lake and its prefixes, DuckDB, the documents bucket and the console site, and SSM. [Open it in Lucid](https://lucid.app/lucidchart/674e3574-9c79-403c-9157-72769a8d5fce/edit).
 **S3**, the record, in the `mypaisa-<env>-lake` bucket, versioned, in
 Parquet, queried with DuckDB:
 
@@ -1778,7 +1999,7 @@ volume.
 ### 20.8 Order
 
 The settings store (E1) and the admin desk (E2) are useful long before the
-rest and can come forward once the web app and the second check exist
+rest and can come forward once the dashboard and the second check exist
 (phases 5 and MA-102). The data steward (E3) follows phase 2's sources;
 grading and calibration (E4, E5) can start as soon as there are graded
 stances (phase 6); challengers (E6) need the Forecaster (phase 11); the ops
@@ -1792,29 +2013,32 @@ one admin, and nothing shared: the bounds of §4.5 stand.
 
 ![Queues, retries and replay, Lucid page 4](docs/design/lucid/04-queues.png)
 
-Page 4: the three queues and their consumers, the idempotency records, the retry rules, and the failure path from the dead-letter queues to replay. [Open it in Lucid](https://lucid.app/lucidchart/3077ebaa-b165-4936-933c-d68109de8544/edit).
+Page 4: the three queues and their consumers, the idempotency records, the retry rules, and the failure path from the dead-letter queues to replay. [Open it in Lucid](https://lucid.app/lucidchart/ddc9bde5-18d4-468b-af6e-c1f86d7d7647/edit).
 Arun, 24 Oct 2026: "Add SQS, the system should be resilient and self heal
 with retries from Queues."
 
 Every place where one part hands work to another goes through an SQS queue.
 A queue holds the work until it succeeds, retries it with backoff when it
 fails, and keeps it in a dead-letter queue when it has failed too often, so
-a bad minute at Telegram, at the Anthropic API or at a data source costs a
+a bad minute at Apple's push service, at the Anthropic API or at a data source costs a
 delay, never a message or a day's work.
 
 ### 21.1 The queues
 
 | Queue | Carries | Lanes | Consumer | Tries, then |
 | --- | --- | --- | --- | --- |
-| `mypaisa-<env>-updates.fifo` | Every Telegram update the webhook accepts | One per member's chat (message group); Telegram's `update_id` dedupes | `agent` | 3 within about a minute, then its dead-letter queue, and the member is told it was kept |
-| `mypaisa-<env>-outbox.fifo` | Every message, photo and edit the bot sends | One per chat, so a brief's messages arrive in order | `sender` | 5, honouring Telegram's `retry_after`, then its dead-letter queue |
+| `mypaisa-<env>-updates.fifo` | Every message and card tap the chat api accepts | One per member (message group); the app's client id dedupes | `agent` | 3 within about a minute, then its dead-letter queue, and the member is told it was kept |
+| `mypaisa-<env>-outbox.fifo` | Every message, card and card edit MyPaisa sends | One per member, so a brief's messages arrive in order | `sender`: to each of the member's live connections, and by Apple push to each device without one | 5, honouring APNs' `retry-after`, then its dead-letter queue |
 | `mypaisa-<env>-work` | Background jobs: each instrument's ingest, each news feed, each document read, the engine, each brief, scoring | None needed | `worker` (the same image, running each job by its type) | 5, backoff from 30 seconds to 30 minutes, then its dead-letter queue |
 
-The webhook only checks Telegram's secret, queues the update and answers at
-once, so Telegram never times out. Each member's messages are handled one
+The chat api checks the member's token, queues the message and answers `202`
+at once, so the app never waits on the agent; the agent streams its words to
+the open app over the live connection while it writes, and the finished
+message goes through the outbox, so nothing depends on a socket staying up: on
+opening, the app asks for everything after the last turn it has. Each member's messages are handled one
 at a time and in order, while members run in parallel; that keeps a guided
-flow and the append-only chat history (§8) in step. Answers to button taps
-are sent at once rather than queued, so the tap stops spinning. The
+flow and the append-only chat history (§8) in step. A card tap is
+acknowledged at once and its effect queued, so the button never spins. The
 scheduler puts jobs on the work queue (each schedule has its own retry
 policy and dead-letter queue), a finished job can queue the next (ingest,
 then engine, then brief), and from phase 12 the Step Functions run of §20.5
@@ -1823,14 +2047,14 @@ drives the same jobs.
 ### 21.2 Rules every consumer keeps
 
 - **Idempotent.** Every handler records what it has done (Powertools
-  idempotency, keyed by `update_id`, message id, or job id and date), so a
+  idempotency, keyed by the app's client id, the message id, or the job id and date), so a
   retry or a replay never does anything twice.
 - **Backoff, not hammering.** A failed message comes back after a growing
   wait; the work queue's maximum concurrency keeps yfinance, Twelve Data's
   free tier (8 calls a minute) and the other free sources inside their
   limits; reserved concurrency on the agent keeps Claude calls and spend in
   bounds (§15.1).
-- **Fail fast on what cannot succeed.** A malformed update, an unknown chat or
+- **Fail fast on what cannot succeed.** A malformed message, an unknown member or
   an instrument with no source goes straight to the dead-letter queue with its
   reason, instead of using up its tries.
 - **Never silent.** The brief, the wrap and alerts are always attempted; if
@@ -1850,10 +2074,10 @@ Replay moves dead-lettered messages back to their queue:
 | From | How |
 | --- | --- |
 | Phase 1 (MA-139, MA-140) | `scripts/redrive.sh <queue>` |
-| Phase 5 (MA-137, MA-145) | A [Replay] button on the alert, in the Admin center and the admin's Telegram chat |
+| Phase 5 (MA-137, MA-145) | A Replay button on the alert, in the Admin center and in the admin's chat, behind the second check |
 | Phase 12 (MA-135, MA-146) | The ops warden replays on its own once the cause is healthy again, at most three times per message with growing gaps; a message that fails the same way again becomes an incident |
 
-Replays are safe: handlers are idempotent; an update more than an hour old is
+Replays are safe: handlers are idempotent; a message more than an hour old is
 answered "still want this?" rather than acted on; and a Confirm tap whose
 `PendingAction` has expired is refused, so an old tap can never save a
 change by surprise.
@@ -1915,7 +2139,8 @@ summary card, fingerprints so the same statement never adds twice, Confirm
 with the second check, rollback by import id, and an audit row per change
 that names the file it came from. The file itself is kept in S3 like every
 other (§4.6, MA-148). A protected PDF's password is typed once into the
-Mini App, used in memory and never stored, logged or sent; or the member
+app, which opens the file on the device and sends the statement's lines with
+the original; the password is never stored, logged or sent; or the member
 sends an unlocked copy. The records never keep the PAN, the address or an
 account number, though the file is kept as sent.
 
@@ -1929,8 +2154,8 @@ Rupees typed against a pound holding, or pounds against an Indian one, get
 the correction of §4.7 (MA-156).
 Privacy mode hides rupees as it hides pounds. "ISA-safe" becomes
 "wrapper-aware": a suggestion names only actions that suit the account it is
-about, and the bot still never trades. For a UK resident many Indian funds
-are not UK "reporting funds", so gains may be taxed differently; the bot
+about, and MyPaisa still never trades. For a UK resident many Indian funds
+are not UK "reporting funds", so gains may be taxed differently; MyPaisa
 flags those holdings in plain words and says to check with a tax adviser.
 It never gives tax advice. The cards and pages are designed first.
 

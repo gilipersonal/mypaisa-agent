@@ -14,7 +14,7 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>MyPaisa Agent \u00b7 system overview</b></span></p><p style=\"text-align:left\">prod in us-east-1; dev is the same shape with -dev names \u00b7 design only, 24 Oct 2026 \u00b7 coral = chat and data \u00b7 blue = sign-in and the web app \u00b7 crimson dashed = failure path</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>MyPaisa Agent \u00b7 system overview</b></span></p><p style=\"text-align:left\">prod in us-east-1; dev is the same shape with -dev names \u00b7 Terraform only, prod deployed by CI \u00b7 design only, 25 Oct 2026 \u00b7 MA-161: the chat is in the iOS app, the web app is read-only \u00b7 coral = chat and data \u00b7 blue = sign-in and the web app \u00b7 amber = outside services \u00b7 crimson dashed = failure path</p></div>"
     },
     {
      "id": "home",
@@ -42,59 +42,15 @@
      }
     },
     {
-     "id": "h_tg",
+     "id": "h_app",
      "type": "rectangle",
      "boundingBox": {
       "x": 70,
       "y": 230,
       "w": 300,
-      "h": 120
+      "h": 600
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram app</b><br>chat, buttons, files<br>second check: Face ID or PIN</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#646A78",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "h_mem",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 70,
-      "y": 410,
-      "w": 300,
-      "h": 120
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Members</b><br>owner (admin) \u00b7 member \u00b7 viewer<br>joined by a one-time invite</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#646A78",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "h_mini",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 70,
-      "y": 640,
-      "w": 300,
-      "h": 110
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Mini App</b> in Telegram<br>console.mypaisapp.com \u00b7 read-only</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b> (iPhone, iPad, foldable)<br>the chat, the dashboard,<br>the Admin center<br><br>iOS 26 \u00b7 MyPaisa Dev \u2192 dev<br>push \u00b7 live connection<br>files: presigned upload<br><br>sign in: Apple \u00b7 Google<br>a passkey (added from You)<br>answers the second check<br>tokens in the Keychain</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -112,11 +68,33 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 70,
-      "y": 800,
+      "y": 880,
       "w": 300,
-      "h": 130
+      "h": 220
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Laptop browser</b><br>console.mypaisapp.com<br>signs in through Cognito:<br>Telegram \u00b7 Google \u00b7 passkey</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Web app</b> (PWA, read-only)<br>the dashboard, the Admin center<br>no chat<br>console.mypaisapp.com<br>Apple \u00b7 Google \u00b7 passkey<br>HttpOnly session cookie</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "h_mem",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1360,
+      "w": 300,
+      "h": 100
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Members</b><br>owner, member, viewer<br>joined by an invite link</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -136,7 +114,7 @@
       "x": 70,
       "y": 1230,
       "w": 300,
-      "h": 120
+      "h": 110
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin's email</b><br>system alerts through SNS<br>1,000 a month free</p>",
      "style": {
@@ -152,15 +130,15 @@
      }
     },
     {
-     "id": "tgapi",
+     "id": "o_apple",
      "type": "rectangle",
      "boundingBox": {
-      "x": 1000,
-      "y": 160,
-      "w": 420,
-      "h": 100
+      "x": 615,
+      "y": 150,
+      "w": 360,
+      "h": 110
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram Bot API</b><br>webhook in \u00b7 messages out</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Apple</b><br>Sign in with Apple \u00b7 APNs push<br>TestFlight</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -177,10 +155,10 @@
      "id": "o_claude",
      "type": "rectangle",
      "boundingBox": {
-      "x": 1515,
-      "y": 160,
+      "x": 1045,
+      "y": 150,
       "w": 340,
-      "h": 100
+      "h": 110
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>Anthropic API</b> \u00b7 Haiku \u00b7 Sonnet<br>$200 credit: $160 prod \u00b7 $40 dev</p>",
      "style": {
@@ -205,7 +183,7 @@
       "w": 1760,
       "h": 1160
      },
-     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS account 545595341442 \u00b7 Terraform only \u00b7 prod deployed by CI</b></p>"
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS account 545595341442</b></p>"
     },
     {
      "id": "region",
@@ -217,14 +195,50 @@
       "w": 1680,
       "h": 1060
      },
-     "text": "<p style=\"font-size:9pt;text-align:left\"><b>us-east-1 \u00b7 mypaisa-prod-* (dev: mypaisa-dev-*)</b></p>"
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>us-east-1</b></p>"
+    },
+    {
+     "id": "ws",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 540,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\nWebSocket + authorizer\nlive.mypaisapp.com"
+    },
+    {
+     "id": "send",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 750,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "sender \u03bb\nlive, else APNs push"
+    },
+    {
+     "id": "qout",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 960,
+      "y": 460,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS outbox.fifo\nlane per member"
     },
     {
      "id": "r53",
      "type": "namedShape",
      "className": "ArchAmazonRoute53AWS2024",
      "boundingBox": {
-      "x": 540,
+      "x": 1380,
       "y": 460,
       "w": 90,
       "h": 90
@@ -236,7 +250,7 @@
      "type": "namedShape",
      "className": "ArchAWSCertificateManagerAWS2024",
      "boundingBox": {
-      "x": 740,
+      "x": 1590,
       "y": 460,
       "w": 90,
       "h": 90
@@ -244,84 +258,120 @@
      "text": "ACM\n*.mypaisapp.com"
     },
     {
-     "id": "apigw",
+     "id": "iam",
      "type": "namedShape",
-     "className": "ArchAmazonAPIGatewayAWS2024",
+     "className": "ArchAWSIdentityandAccessManagementAWS2024",
      "boundingBox": {
-      "x": 1100,
+      "x": 1800,
       "y": 460,
       "w": 90,
       "h": 90
      },
-     "text": "API Gateway\napi.mypaisapp.com"
+     "text": "IAM\nrole per function"
     },
     {
-     "id": "hook",
+     "id": "ssm",
      "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
      "boundingBox": {
-      "x": 1280,
+      "x": 2010,
       "y": 460,
       "w": 90,
       "h": 90
      },
-     "text": "webhook \u03bb\nsecret check"
-    },
-    {
-     "id": "qin",
-     "type": "namedShape",
-     "className": "ArchAmazonSimpleQueueServiceAWS2024",
-     "boundingBox": {
-      "x": 1460,
-      "y": 460,
-      "w": 90,
-      "h": 90
-     },
-     "text": "SQS updates.fifo\nlane per member"
+     "text": "SSM Parameter Store\nkeys, set by hand"
     },
     {
      "id": "agent",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 1640,
-      "y": 460,
+      "x": 1170,
+      "y": 590,
       "w": 90,
       "h": 90
      },
      "text": "agent \u03bb\nClaude tool loop"
     },
     {
-     "id": "qout",
+     "id": "apigw",
      "type": "namedShape",
-     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
-      "x": 1820,
-      "y": 460,
+      "x": 540,
+      "y": 720,
       "w": 90,
       "h": 90
      },
-     "text": "SQS outbox.fifo\nlane per chat"
+     "text": "API Gateway\nHTTP API + authorizer\napi.mypaisapp.com"
     },
     {
-     "id": "send",
+     "id": "api",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 2000,
-      "y": 460,
+      "x": 750,
+      "y": 720,
       "w": 90,
       "h": 90
      },
-     "text": "sender \u03bb\nTelegram limits"
+     "text": "api \u03bb \u00b7 /v1\nchat \u00b7 data \u00b7 admin\n/auth/* for sign-in"
+    },
+    {
+     "id": "qin",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 960,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS updates.fifo\nlane per member"
+    },
+    {
+     "id": "ddb",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1380,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nregistry \u00b7 audit\nlive connections"
+    },
+    {
+     "id": "lake",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
+     "boundingBox": {
+      "x": 1590,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "S3 lake\nParquet \u00b7 DuckDB"
+    },
+    {
+     "id": "ecr",
+     "type": "namedShape",
+     "className": "ArchAmazonElasticContainerRegistryAWS2024",
+     "boundingBox": {
+      "x": 1800,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "ECR\none arm64 image"
     },
     {
      "id": "cf",
      "type": "namedShape",
      "className": "ArchAmazonCloudFrontAWS2024",
      "boundingBox": {
-      "x": 560,
-      "y": 720,
+      "x": 540,
+      "y": 980,
       "w": 90,
       "h": 90
      },
@@ -332,115 +382,55 @@
      "type": "namedShape",
      "className": "ArchAmazonSimpleStorageServiceAWS2024",
      "boundingBox": {
-      "x": 780,
-      "y": 720,
+      "x": 750,
+      "y": 980,
       "w": 90,
       "h": 90
      },
-     "text": "S3\nstatic web app"
+     "text": "S3 console site\nPWA \u00b7 AASA \u00b7 /join"
     },
     {
      "id": "cog",
      "type": "namedShape",
      "className": "ArchAmazonCognitoAWS2024",
      "boundingBox": {
-      "x": 1000,
-      "y": 720,
+      "x": 960,
+      "y": 980,
       "w": 90,
       "h": 90
      },
-     "text": "Cognito (Essentials)\nauth.mypaisapp.com"
+     "text": "Cognito (Essentials)\nno hosted domain\ncalled by api /auth/*"
     },
     {
      "id": "trig",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 1200,
-      "y": 720,
-      "w": 90,
-      "h": 90
-     },
-     "text": "Cognito triggers \u03bb\nTelegram HMAC"
-    },
-    {
-     "id": "api",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1420,
-      "y": 720,
-      "w": 90,
-      "h": 90
-     },
-     "text": "api \u03bb \u00b7 /v1\nread-only JSON\nadmin actions"
-    },
-    {
-     "id": "ecr",
-     "type": "namedShape",
-     "className": "ArchAmazonElasticContainerRegistryAWS2024",
-     "boundingBox": {
-      "x": 1640,
-      "y": 720,
-      "w": 90,
-      "h": 90
-     },
-     "text": "ECR\none arm64 image"
-    },
-    {
-     "id": "iam",
-     "type": "namedShape",
-     "className": "ArchAWSIdentityandAccessManagementAWS2024",
-     "boundingBox": {
-      "x": 1840,
-      "y": 720,
-      "w": 90,
-      "h": 90
-     },
-     "text": "IAM\nrole per function"
-    },
-    {
-     "id": "sched",
-     "type": "namedShape",
-     "className": "ResAmazonEventBridgeSchedulerAWS2024",
-     "boundingBox": {
-      "x": 560,
+      "x": 1170,
       "y": 980,
       "w": 90,
       "h": 90
      },
-     "text": "EventBridge Scheduler\nEurope/London"
+     "text": "Cognito triggers \u03bb\nApple \u00b7 Google tokens\npasskey assertions"
     },
     {
-     "id": "qwork",
+     "id": "docs",
      "type": "namedShape",
-     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "className": "ArchAmazonSimpleStorageServiceAWS2024",
      "boundingBox": {
-      "x": 780,
+      "x": 1380,
       "y": 980,
       "w": 90,
       "h": 90
      },
-     "text": "SQS work\nbackground jobs"
-    },
-    {
-     "id": "worker",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1000,
-      "y": 980,
-      "w": 90,
-      "h": 90
-     },
-     "text": "worker \u03bb\ningest \u00b7 news \u00b7 docs\nengine \u00b7 briefs"
+     "text": "S3 documents\npresigned uploads\nkept for good"
     },
     {
      "id": "sfn",
      "type": "namedShape",
      "className": "ArchAWSStepFunctionsAWS2024",
      "boundingBox": {
-      "x": 1220,
+      "x": 1590,
       "y": 980,
       "w": 90,
       "h": 90
@@ -452,7 +442,7 @@
      "type": "namedShape",
      "className": "ResAmazonEventBridgeCustomEventBusAWS2024",
      "boundingBox": {
-      "x": 1440,
+      "x": 1800,
       "y": 980,
       "w": 90,
       "h": 90
@@ -460,35 +450,11 @@
      "text": "EventBridge bus\nagent team (phase 12)"
     },
     {
-     "id": "lake",
-     "type": "namedShape",
-     "className": "ArchAmazonSimpleStorageServiceAWS2024",
-     "boundingBox": {
-      "x": 1660,
-      "y": 980,
-      "w": 90,
-      "h": 90
-     },
-     "text": "S3 lake\nParquet \u00b7 DuckDB"
-    },
-    {
-     "id": "ddb",
-     "type": "namedShape",
-     "className": "ArchAmazonDynamoDBAWS2024",
-     "boundingBox": {
-      "x": 1880,
-      "y": 980,
-      "w": 90,
-      "h": 90
-     },
-     "text": "DynamoDB\nregistry \u00b7 audit \u00b7 state"
-    },
-    {
      "id": "sns",
      "type": "namedShape",
      "className": "ArchAmazonSimpleNotificationServiceAWS2024",
      "boundingBox": {
-      "x": 560,
+      "x": 540,
       "y": 1240,
       "w": 90,
       "h": 90
@@ -500,7 +466,7 @@
      "type": "namedShape",
      "className": "ArchAmazonCloudWatchAWS2024",
      "boundingBox": {
-      "x": 780,
+      "x": 750,
       "y": 1240,
       "w": 90,
       "h": 90
@@ -512,7 +478,7 @@
      "type": "namedShape",
      "className": "ResAmazonSimpleQueueServiceQueueAWS2024",
      "boundingBox": {
-      "x": 1000,
+      "x": 960,
       "y": 1240,
       "w": 90,
       "h": 90
@@ -520,23 +486,47 @@
      "text": "dead-letter queues\nkept 14 days"
     },
     {
-     "id": "ssm",
+     "id": "sched",
      "type": "namedShape",
-     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "className": "ResAmazonEventBridgeSchedulerAWS2024",
      "boundingBox": {
-      "x": 1440,
+      "x": 1170,
       "y": 1240,
       "w": 90,
       "h": 90
      },
-     "text": "SSM Parameter Store\nkeys, set by hand"
+     "text": "EventBridge Scheduler\nEurope/London"
+    },
+    {
+     "id": "qwork",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1380,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SQS work\nbackground jobs"
+    },
+    {
+     "id": "worker",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1590,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "worker \u03bb\ningest \u00b7 news \u00b7 docs\nengine \u00b7 briefs"
     },
     {
      "id": "budg",
      "type": "namedShape",
      "className": "ArchAWSBudgetsAWS2024",
      "boundingBox": {
-      "x": 1660,
+      "x": 1800,
       "y": 1240,
       "w": 90,
       "h": 90
@@ -548,7 +538,7 @@
      "type": "namedShape",
      "className": "ArchAWSCostExplorerAWS2024",
      "boundingBox": {
-      "x": 1880,
+      "x": 2010,
       "y": 1240,
       "w": 90,
       "h": 90
@@ -607,11 +597,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 2270,
-      "y": 680,
+      "y": 670,
       "w": 300,
-      "h": 100
+      "h": 110
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Google</b><br>OAuth client per environment</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Google</b><br>Sign in with Google<br>iOS and web clients</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -629,11 +619,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 2270,
-      "y": 850,
+      "y": 840,
       "w": 300,
-      "h": 150
+      "h": 200
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>GitHub Actions</b><br>OIDC, no AWS keys<br>gates \u00b7 plan \u00b7 build once<br>dev, then prod on approval</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>GitHub Actions</b><br>OIDC, no AWS keys<br>gates \u00b7 plan \u00b7 build once<br>dev, then prod on approval<br>macOS runner: the app<br>\u2192 TestFlight</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -651,7 +641,7 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 2270,
-      "y": 1070,
+      "y": 1100,
       "w": 300,
       "h": 100
      },
@@ -675,30 +665,30 @@
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "h_tg",
+      "style": "none",
+      "shapeId": "h_app",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.8916666666666667
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "tgapi",
+      "shapeId": "apigw",
       "position": {
        "x": 0,
        "y": 0.5
       }
      },
      "stroke": {
-      "color": "#8A5300",
+      "color": "#C2381F",
       "width": 2,
       "style": "solid"
      },
      "text": [
       {
-       "text": "chat",
+       "text": "messages \u00b7 taps",
        "position": 0.5,
        "side": "top"
       }
@@ -710,19 +700,19 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "tgapi",
+      "shapeId": "ws",
       "position": {
-       "x": 0.34523809523809523,
-       "y": 1
+       "x": 0,
+       "y": 0.5
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "apigw",
+      "shapeId": "h_app",
       "position": {
-       "x": 0.5,
-       "y": 0
+       "x": 1,
+       "y": 0.4583333333333333
       }
      },
      "stroke": {
@@ -732,8 +722,8 @@
      },
      "text": [
       {
-       "text": "POST /telegram/webhook",
-       "position": 0.15,
+       "text": "live replies",
+       "position": 0.5,
        "side": "top"
       }
      ]
@@ -744,26 +734,33 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "apigw",
+      "shapeId": "h_web",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.6590909090909091
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "hook",
+      "shapeId": "cf",
       "position": {
        "x": 0,
        "y": 0.5
       }
      },
      "stroke": {
-      "color": "#C2381F",
+      "color": "#2453C9",
       "width": 2,
       "style": "solid"
-     }
+     },
+     "text": [
+      {
+       "text": "pages",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
     },
     {
      "id": "p1_l4",
@@ -771,23 +768,23 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "hook",
+      "shapeId": "h_web",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.045454545454545456
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "qin",
+      "shapeId": "apigw",
       "position": {
        "x": 0,
-       "y": 0.5
+       "y": 0.9
       }
      },
      "stroke": {
-      "color": "#C2381F",
+      "color": "#2453C9",
       "width": 2,
       "style": "solid"
      }
@@ -797,27 +794,34 @@
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "qin",
+      "style": "arrow",
+      "shapeId": "o_apple",
       "position": {
-       "x": 1,
-       "y": 0.5
+       "x": 0,
+       "y": 0.9
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "agent",
+      "shapeId": "h_app",
       "position": {
-       "x": 0,
-       "y": 0.5
+       "x": 1,
+       "y": 0.03166666666666667
       }
      },
      "stroke": {
-      "color": "#C2381F",
+      "color": "#8A5300",
       "width": 2,
       "style": "solid"
-     }
+     },
+     "text": [
+      {
+       "text": "sign in \u00b7 push",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
     },
     {
      "id": "p1_l6",
@@ -825,7 +829,7 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "agent",
+      "shapeId": "apigw",
       "position": {
        "x": 1,
        "y": 0.5
@@ -834,7 +838,7 @@
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "qout",
+      "shapeId": "api",
       "position": {
        "x": 0,
        "y": 0.5
@@ -852,7 +856,7 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "qout",
+      "shapeId": "api",
       "position": {
        "x": 1,
        "y": 0.5
@@ -861,7 +865,7 @@
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "send",
+      "shapeId": "qin",
       "position": {
        "x": 0,
        "y": 0.5
@@ -875,7 +879,115 @@
     },
     {
      "id": "p1_l8",
-     "lineType": "elbow",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "qin",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "agent",
+      "position": {
+       "x": 0,
+       "y": 0.7
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "agent",
+      "position": {
+       "x": 0,
+       "y": 0.3
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "qout",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "qout",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "send",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "send",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "ws",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p1_l12",
+     "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
@@ -888,10 +1000,10 @@
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "tgapi",
+      "shapeId": "o_apple",
       "position": {
-       "x": 0.85,
-       "y": 0
+       "x": 0.5,
+       "y": 1
       }
      },
      "stroke": {
@@ -901,14 +1013,14 @@
      },
      "text": [
       {
-       "text": "sendMessage",
-       "position": 0.5,
+       "text": "APNs",
+       "position": 0.3,
        "side": "top"
       }
      ]
     },
     {
-     "id": "p1_l9",
+     "id": "p1_l13",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -942,88 +1054,7 @@
      ]
     },
     {
-     "id": "p1_l10",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "h_mini",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "cf",
-      "position": {
-       "x": 0,
-       "y": 0.3
-      }
-     },
-     "stroke": {
-      "color": "#2453C9",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p1_l11",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "h_web",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "cf",
-      "position": {
-       "x": 0,
-       "y": 0.8
-      }
-     },
-     "stroke": {
-      "color": "#2453C9",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p1_l12",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "cf",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "s3web",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#2453C9",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p1_l13",
+     "id": "p1_l14",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -1050,41 +1081,34 @@
      }
     },
     {
-     "id": "p1_l14",
+     "id": "p1_l15",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "apigw",
+      "shapeId": "cf",
       "position": {
        "x": 1,
-       "y": 0.85
+       "y": 0.5
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "api",
+      "shapeId": "s3web",
       "position": {
-       "x": 0.5,
-       "y": 0
+       "x": 0,
+       "y": 0.5
       }
      },
      "stroke": {
       "color": "#2453C9",
       "width": 2,
       "style": "solid"
-     },
-     "text": [
-      {
-       "text": "/v1 \u00b7 cookie",
-       "position": 0.75,
-       "side": "top"
-      }
-     ]
+     }
     },
     {
-     "id": "p1_l15",
+     "id": "p1_l16",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -1111,7 +1135,7 @@
      }
     },
     {
-     "id": "p1_l16",
+     "id": "p1_l17",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -1138,7 +1162,7 @@
      }
     },
     {
-     "id": "p1_l17",
+     "id": "p1_l18",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -1165,7 +1189,7 @@
      }
     },
     {
-     "id": "p1_l18",
+     "id": "p1_l19",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -1192,7 +1216,7 @@
      }
     },
     {
-     "id": "p1_l19",
+     "id": "p1_l20",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -1217,6 +1241,33 @@
       "width": 2,
       "style": "dashed"
      }
+    },
+    {
+     "id": "p1_l21",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "api",
+      "position": {
+       "x": 1,
+       "y": 0.75
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "cog",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
     }
    ]
   },
@@ -1233,7 +1284,7 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Environments, domains and delivery</b></span></p><p style=\"text-align:left\">one AWS account, every component twice \u00b7 Terraform only, applied by CI \u00b7 prod after Arun's approval \u00b7 MA-26, MA-107, MA-108, MA-106</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Environments, domains and delivery</b></span></p><p style=\"text-align:left\">one AWS account, every component twice \u00b7 Terraform only, applied by CI \u00b7 prod after Arun's approval \u00b7 the iOS app through TestFlight \u00b7 MA-26, MA-106, MA-107, MA-108, MA-161, MA-166, MA-167</p></div>"
     },
     {
      "id": "dev_laptop",
@@ -1267,9 +1318,9 @@
       "x": 70,
       "y": 230,
       "w": 300,
-      "h": 120
+      "h": 130
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Local run against dev</b><br>dev bot by long polling<br>console on localhost \u2192 api-dev</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Local run against dev</b><br>MyPaisa Dev from Xcode<br>web app on localhost<br>both point at dev</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1333,7 +1384,7 @@
       "x": 40,
       "y": 760,
       "w": 360,
-      "h": 880
+      "h": 1180
      },
      "containerTitle": {
       "text": "GitHub \u00b7 gilipersonal/mypaisa-agent"
@@ -1358,9 +1409,31 @@
       "x": 70,
       "y": 820,
       "w": 300,
-      "h": 230
+      "h": 215
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Every PR: gates</b><br>ruff \u00b7 pyright \u00b7 pytest + moto<br>terraform fmt/validate \u00b7 tflint<br>security scan \u00b7 gitleaks \u00b7 pip-audit<br>jira-key</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Every PR: gates</b><br>ruff \u00b7 pyright \u00b7 pytest + moto<br>terraform fmt/validate \u00b7 tflint<br>security scan \u00b7 gitleaks<br>pip-audit \u00b7 jira-key \u00b7 plan-sync</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "g1i",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1050,
+      "w": 300,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>PRs touching ios/</b><br>macOS runner: build \u00b7 tests<br>snapshots \u00b7 accessibility audit<br>swift-format</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1378,9 +1451,9 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 70,
-      "y": 1100,
+      "y": 1230,
       "w": 300,
-      "h": 90
+      "h": 100
      },
      "text": "<p style=\"font-size:9pt;text-align:center\"><b>Plan for dev and prod</b><br>posted on the PR (ci-plan)</p>",
      "style": {
@@ -1400,11 +1473,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 70,
-      "y": 1295,
+      "y": 1360,
       "w": 300,
-      "h": 90
+      "h": 130
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Merge to main</b><br>build once \u2192 ECR by digest</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Merge to main</b><br>build once \u2192 ECR by digest<br>archive the app once per build</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1422,11 +1495,33 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 70,
-      "y": 1420,
+      "y": 1520,
       "w": 300,
-      "h": 100
+      "h": 130
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>prod environment</b><br>Arun approves \u00b7 main only</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>prod environment</b><br>Arun approves \u00b7 main only<br>App Store Connect key here only</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "g6",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 70,
+      "y": 1680,
+      "w": 300,
+      "h": 130
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>TestFlight lanes</b><br>MyPaisa Dev after dev's smoke tests<br>MyPaisa after the approval</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1444,7 +1539,7 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 70,
-      "y": 1550,
+      "y": 1840,
       "w": 300,
       "h": 80
      },
@@ -1612,7 +1707,7 @@
      "type": "namedShape",
      "className": "ArchAmazonCloudFrontAWS2024",
      "boundingBox": {
-      "x": 560,
+      "x": 540,
       "y": 650,
       "w": 90,
       "h": 90
@@ -1624,24 +1719,36 @@
      "type": "namedShape",
      "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
-      "x": 780,
+      "x": 710,
       "y": 650,
       "w": 90,
       "h": 90
      },
-     "text": "API Gateway\napi-dev"
+     "text": "API Gateway\nHTTP \u00b7 api-dev"
+    },
+    {
+     "id": "dev_ws",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 880,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\nWebSocket \u00b7 live-dev"
     },
     {
      "id": "dev_cog",
      "type": "namedShape",
      "className": "ArchAmazonCognitoAWS2024",
      "boundingBox": {
-      "x": 1000,
+      "x": 1050,
       "y": 650,
       "w": 90,
       "h": 90
      },
-     "text": "Cognito\nauth-dev"
+     "text": "Cognito\nuser pool\nno domain"
     },
     {
      "id": "dev_ssm",
@@ -1672,47 +1779,47 @@
      "type": "namedShape",
      "className": "ArchAmazonSimpleQueueServiceAWS2024",
      "boundingBox": {
-      "x": 780,
+      "x": 760,
       "y": 860,
       "w": 90,
       "h": 90
      },
-     "text": "SQS\nupdates \u00b7 outbox \u00b7 work"
+     "text": "SQS\nupdates \u00b7 outbox\nwork \u00b7 DLQs"
     },
     {
      "id": "dev_ddb",
      "type": "namedShape",
      "className": "ArchAmazonDynamoDBAWS2024",
      "boundingBox": {
-      "x": 1000,
+      "x": 960,
       "y": 860,
       "w": 90,
       "h": 90
      },
-     "text": "DynamoDB\nseeded"
+     "text": "DynamoDB\nregistry \u00b7 connections\nseeded"
     },
     {
      "id": "dev_s3",
      "type": "namedShape",
      "className": "ArchAmazonSimpleStorageServiceAWS2024",
      "boundingBox": {
-      "x": 1220,
+      "x": 1160,
       "y": 860,
       "w": 90,
       "h": 90
      },
-     "text": "S3 lake + docs\nsynthetic"
+     "text": "S3 lake + documents\nsynthetic"
     },
     {
      "id": "dev_keys",
      "type": "rectangle",
      "boundingBox": {
       "x": 560,
-      "y": 1110,
+      "y": 1090,
       "w": 760,
-      "h": 110
+      "h": 140
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Own keys</b>: Telegram bot \u00b7 Claude workspace ($40 limit) \u00b7 Google OAuth client \u00b7 Cognito pool \u00b7 Twelve Data key<br>values put in SSM by hand; Terraform ignores them</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Own keys and ids</b>: Sign in with Apple ids \u00b7 Google clients (iOS, web) \u00b7 APNs key \u00b7 Claude workspace ($40 limit) \u00b7 Cognito pool \u00b7 Twelve Data key<br>secret values put in SSM by hand over write-only placeholders (MA-159), never in state</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1730,11 +1837,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 560,
-      "y": 1280,
+      "y": 1260,
       "w": 760,
-      "h": 120
+      "h": 140
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Applied by</b> the developer (saved plan file) or CI (ci-dev-deploy)<br>smoke tests against api-dev after every deploy</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Applied by</b> the developer (saved plan file) or CI (ci-dev-deploy)<br>smoke tests against api-dev after every deploy<br>then MyPaisa Dev goes to TestFlight</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1777,7 +1884,7 @@
      "type": "namedShape",
      "className": "ArchAmazonCloudFrontAWS2024",
      "boundingBox": {
-      "x": 1480,
+      "x": 1460,
       "y": 650,
       "w": 90,
       "h": 90
@@ -1789,24 +1896,36 @@
      "type": "namedShape",
      "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
-      "x": 1700,
+      "x": 1630,
       "y": 650,
       "w": 90,
       "h": 90
      },
-     "text": "API Gateway\napi"
+     "text": "API Gateway\nHTTP \u00b7 api"
+    },
+    {
+     "id": "prod_ws",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 1800,
+      "y": 650,
+      "w": 90,
+      "h": 90
+     },
+     "text": "API Gateway\nWebSocket \u00b7 live"
     },
     {
      "id": "prod_cog",
      "type": "namedShape",
      "className": "ArchAmazonCognitoAWS2024",
      "boundingBox": {
-      "x": 1920,
+      "x": 1970,
       "y": 650,
       "w": 90,
       "h": 90
      },
-     "text": "Cognito\nauth"
+     "text": "Cognito\nuser pool\nno domain"
     },
     {
      "id": "prod_ssm",
@@ -1837,47 +1956,47 @@
      "type": "namedShape",
      "className": "ArchAmazonSimpleQueueServiceAWS2024",
      "boundingBox": {
-      "x": 1700,
+      "x": 1680,
       "y": 860,
       "w": 90,
       "h": 90
      },
-     "text": "SQS\nupdates \u00b7 outbox \u00b7 work"
+     "text": "SQS\nupdates \u00b7 outbox\nwork \u00b7 DLQs"
     },
     {
      "id": "prod_ddb",
      "type": "namedShape",
      "className": "ArchAmazonDynamoDBAWS2024",
      "boundingBox": {
-      "x": 1920,
+      "x": 1880,
       "y": 860,
       "w": 90,
       "h": 90
      },
-     "text": "DynamoDB\nprevent_destroy"
+     "text": "DynamoDB\nregistry \u00b7 connections\nprevent_destroy"
     },
     {
      "id": "prod_s3",
      "type": "namedShape",
      "className": "ArchAmazonSimpleStorageServiceAWS2024",
      "boundingBox": {
-      "x": 2140,
+      "x": 2080,
       "y": 860,
       "w": 90,
       "h": 90
      },
-     "text": "S3 lake + docs\nversioned"
+     "text": "S3 lake + documents\nversioned"
     },
     {
      "id": "prod_keys",
      "type": "rectangle",
      "boundingBox": {
       "x": 1480,
-      "y": 1110,
+      "y": 1090,
       "w": 760,
-      "h": 110
+      "h": 140
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Own keys</b>: Telegram bot \u00b7 Claude workspace ($160 limit) \u00b7 Google OAuth client \u00b7 Cognito pool \u00b7 Twelve Data key<br>values put in SSM by hand; Terraform ignores them</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Own keys and ids</b>: Sign in with Apple ids \u00b7 Google clients (iOS, web) \u00b7 APNs key \u00b7 Claude workspace ($160 limit) \u00b7 Cognito pool \u00b7 Twelve Data key<br>secret values put in SSM by hand over write-only placeholders (MA-159), never in state</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1895,11 +2014,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 1480,
-      "y": 1280,
+      "y": 1260,
       "w": 760,
-      "h": 120
+      "h": 140
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Applied only by CI</b> (ci-prod-deploy) after dev passes and Arun approves<br>live alias moves \u00b7 failed smoke test rolls back on its own</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Applied only by CI</b> (ci-prod-deploy) after dev passes and Arun approves<br>live alias moves \u00b7 a failed smoke test rolls back on its own<br>then MyPaisa goes to TestFlight</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -1907,6 +2026,28 @@
       },
       "stroke": {
        "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "tf",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 520,
+      "y": 1690,
+      "w": 1300,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Apple \u00b7 App Store Connect \u00b7 TestFlight</b> (Developer Program, $99 a year, MA-162)<br>internal testing for MyPaisa Dev and MyPaisa \u00b7 Arun and his wife \u00b7 no App Review \u00b7 a build lasts 90 days, an alert at day 60</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
        "width": 2,
        "style": "solid"
       }
@@ -1939,14 +2080,7 @@
       "color": "#C2381F",
       "width": 2,
       "style": "solid"
-     },
-     "text": [
-      {
-       "text": "deploy dev",
-       "position": 0.5,
-       "side": "top"
-      }
-     ]
+     }
     },
     {
      "id": "p2_l2",
@@ -1981,6 +2115,40 @@
        "side": "bottom"
       }
      ]
+    },
+    {
+     "id": "p2_l3",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "g6",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "tf",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "uploads",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
     }
    ]
   },
@@ -1997,19 +2165,19 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Identity and sign-in</b></span></p><p style=\"text-align:left\">one Cognito user pool per environment \u00b7 one user per member \u00b7 Telegram, Google and passkeys \u00b7 MA-109, MA-75, MA-76, MA-77, MA-102</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Identity and sign-in</b></span></p><p style=\"text-align:left\">one Cognito user pool per environment, no hosted domain \u00b7 one user per member \u00b7 Apple, Google or a passkey, no passwords \u00b7 MA-109, MA-75, MA-76, MA-77, MA-102, MA-161, MA-168</p></div>"
     },
     {
      "id": "doors",
      "type": "rectangleContainer",
      "boundingBox": {
       "x": 40,
-      "y": 200,
+      "y": 180,
       "w": 380,
-      "h": 1210
+      "h": 1290
      },
      "containerTitle": {
-      "text": "Doors in"
+      "text": "Doors in: the iOS app and the web app"
      },
      "assistedLayout": false,
      "style": {
@@ -2025,15 +2193,15 @@
      }
     },
     {
-     "id": "d_mini",
+     "id": "d_sign",
      "type": "rectangle",
      "boundingBox": {
-      "x": 70,
-      "y": 230,
-      "w": 320,
-      "h": 130
+      "x": 60,
+      "y": 196,
+      "w": 340,
+      "h": 164
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Mini App</b><br>Telegram signs initData<br>(HMAC with the bot token)<br>second check: Face ID or PIN</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b> (iPhone, iPad, foldable):<br>the chat, the dashboard, the Admin center<br>Apple native \u00b7 Google SDK, PKCE<br>the token carries the api's nonce</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2047,37 +2215,15 @@
      }
     },
     {
-     "id": "d_widget",
+     "id": "d_web",
      "type": "rectangle",
      "boundingBox": {
-      "x": 70,
-      "y": 400,
-      "w": 320,
-      "h": 110
+      "x": 60,
+      "y": 376,
+      "w": 340,
+      "h": 168
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Browser \u00b7 Telegram Login Widget</b><br>one tap, confirmed in the app</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#646A78",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "d_google",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 70,
-      "y": 560,
-      "w": 320,
-      "h": 100
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Browser \u00b7 Sign in with Google</b><br>linked by a code typed in the chat</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Web app</b> (PWA, read-only):<br>the dashboard, the Admin center<br>console.mypaisapp.com<br>Apple, Google or a passkey, same custom auth<br>an HttpOnly cookie set by the api</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2094,12 +2240,12 @@
      "id": "d_passkey",
      "type": "rectangle",
      "boundingBox": {
-      "x": 70,
-      "y": 720,
-      "w": 320,
-      "h": 100
+      "x": 60,
+      "y": 560,
+      "w": 340,
+      "h": 140
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Browser \u00b7 passkey</b><br>WebAuthn, after the first sign-in</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Passkey</b> (optional): web sign-in;<br>in the app, the second check<br>added from You (MA-77)<br>challenge: /auth/passkey/options<br>assertion: /auth/passkey</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2113,15 +2259,15 @@
      }
     },
     {
-     "id": "d_new",
+     "id": "d_invite",
      "type": "rectangle",
      "boundingBox": {
-      "x": 70,
-      "y": 900,
-      "w": 320,
-      "h": 170
+      "x": 60,
+      "y": 716,
+      "w": 340,
+      "h": 96
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>New device?</b><br>\"Was this you?\" to the member<br>and the owner<br>[Yes, it was me] [No, sign it out]</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Invite link</b> (MA-73)<br>console.mypaisapp.com<br>/join/&lt;token&gt; opens the app</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2135,15 +2281,15 @@
      }
     },
     {
-     "id": "d_chat",
+     "id": "d_keychain",
      "type": "rectangle",
      "boundingBox": {
-      "x": 70,
-      "y": 1130,
-      "w": 320,
-      "h": 150
+      "x": 60,
+      "y": 828,
+      "w": 340,
+      "h": 144
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>The chat itself</b><br>update.from.id \u2192 member<br>unknown id: silence<br>paused: one line, nothing else</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>App: Keychain</b>, this device only<br>refresh token, rotated on use<br>5-minute access token<br>on every call and<br>every live connection</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2151,6 +2297,72 @@
       },
       "stroke": {
        "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_second",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 60,
+      "y": 988,
+      "w": 340,
+      "h": 316
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Second check</b> (MA-76, MA-102)<br>the owner's admin actions, from<br>the Admin center or admin's chat;<br>an import's Confirm and rolling<br>it back; leaving the household<br>a challenge bound to the action<br>app: Sign in with Apple again or<br>a passkey (Face ID); a member on<br>Google only: Google again<br>web: passkey or a fresh sign-in<br>under 5 minutes, never a<br>local-only Face ID</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "d_paused",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 60,
+      "y": 1320,
+      "w": 340,
+      "h": 130
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Refused</b><br>a paused member: one line<br>a removed member<br>linked to nobody, no valid invite</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "o_idp",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 560,
+      "y": 180,
+      "w": 420,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Apple \u00b7 Google</b><br>sign the identity token (app and web)<br>publish their keys (JWKS)</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
        "width": 2,
        "style": "solid"
       }
@@ -2162,9 +2374,9 @@
      "className": "AWSCloudAWS2024",
      "boundingBox": {
       "x": 480,
-      "y": 170,
-      "w": 1520,
-      "h": 1240
+      "y": 340,
+      "w": 1560,
+      "h": 1100
      },
      "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 prod (dev the same)</b></p>"
     },
@@ -2173,46 +2385,24 @@
      "type": "namedShape",
      "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
-      "x": 600,
-      "y": 300,
+      "x": 580,
+      "y": 420,
       "w": 90,
       "h": 90
      },
-     "text": "API Gateway\n/auth/telegram \u00b7 /v1"
+     "text": "HTTP API\napi.mypaisapp.com"
     },
     {
-     "id": "i_trig",
+     "id": "i_apil",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 840,
-      "y": 300,
+      "x": 820,
+      "y": 420,
       "w": 90,
       "h": 90
      },
-     "text": "auth challenge \u03bb\nHMAC \u00b7 5 min \u00b7 no replay"
-    },
-    {
-     "id": "i_idp",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 1360,
-      "y": 230,
-      "w": 340,
-      "h": 170
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Linked to one Cognito user</b><br>Telegram id<br>Google (provider, sub)<br>passkeys (WebAuthn)<br>relying party fixed per env</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#646A78",
-       "width": 2,
-       "style": "solid"
-      }
-     }
+     "text": "api \u03bb\n/auth/apple \u00b7 /auth/google\n/auth/passkey/options\n/auth/passkey \u00b7 nonce\ncustom auth \u00b7 web's cookie"
     },
     {
      "id": "i_cog",
@@ -2220,34 +2410,34 @@
      "className": "ArchAmazonCognitoAWS2024",
      "boundingBox": {
       "x": 1080,
-      "y": 560,
+      "y": 420,
       "w": 90,
       "h": 90
      },
-     "text": "Cognito user pool\nno passwords \u00b7 no sign-up"
+     "text": "Cognito user pool\nno passwords \u00b7 no sign-up\nno hosted domain:\nthe api calls its API"
     },
     {
-     "id": "i_apil",
+     "id": "i_trig",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 1360,
-      "y": 560,
+      "x": 1340,
+      "y": 420,
       "w": 90,
       "h": 90
      },
-     "text": "api \u03bb\nsets the session cookie"
+     "text": "custom-auth triggers \u03bb\nApple \u00b7 Google token:\nissuer \u00b7 audience \u00b7 expiry\nissued under 5 min\nnonce \u00b7 no replay\npasskey assertion:\nsignature \u00b7 challenge\norigin \u00b7 relying-party id"
     },
     {
-     "id": "i_cookie",
+     "id": "i_idp",
      "type": "rectangle",
      "boundingBox": {
-      "x": 1580,
-      "y": 540,
-      "w": 360,
-      "h": 160
+      "x": 1560,
+      "y": 400,
+      "w": 440,
+      "h": 220
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Session cookie</b> on api.mypaisapp.com<br>HttpOnly \u00b7 Secure \u00b7 SameSite=Strict<br>5-minute tokens behind it<br>never visible to page scripts</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Linked to one Cognito user</b><br>Apple (sub) \u00b7 Google (sub)<br>passkeys (WebAuthn)<br>relying party: console.mypaisapp.com<br>(console-dev in dev), whose site serves<br>the app's association file<br>linked to nobody: refused,<br>unless a valid invite creates the member</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2261,51 +2451,75 @@
      }
     },
     {
-     "id": "i_ssm",
+     "id": "i_v1",
      "type": "namedShape",
-     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
-      "x": 1080,
-      "y": 840,
+      "x": 580,
+      "y": 680,
       "w": 90,
       "h": 90
      },
-     "text": "SSM\nbot token = HMAC key"
+     "text": "HTTP API \u00b7 /v1\n(the same API)"
     },
     {
-     "id": "i_ddb",
+     "id": "i_ws",
      "type": "namedShape",
-     "className": "ArchAmazonDynamoDBAWS2024",
+     "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
-      "x": 1440,
-      "y": 840,
+      "x": 580,
+      "y": 900,
       "w": 90,
       "h": 90
      },
-     "text": "DynamoDB\nMember: status, role, epoch"
+     "text": "WebSocket API\nlive.mypaisapp.com\n$connect"
     },
     {
      "id": "i_authz",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 1715,
-      "y": 840,
+      "x": 820,
+      "y": 790,
       "w": 90,
       "h": 90
      },
-     "text": "authorizer \u03bb\nsession \u00b7 status \u00b7 epoch\non every call"
+     "text": "authorizer \u03bb\ntoken or cookie\nstatus \u00b7 epoch"
+    },
+    {
+     "id": "i_ddb",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1080,
+      "y": 790,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB\nMember: status, role, epoch\nDevice: push token"
+    },
+    {
+     "id": "i_ssm",
+     "type": "namedShape",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "boundingBox": {
+      "x": 1340,
+      "y": 790,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSM\naudiences: bundle id,\nservices id, Google clients"
     },
     {
      "id": "i_admin",
      "type": "rectangle",
      "boundingBox": {
       "x": 560,
-      "y": 1060,
-      "w": 700,
-      "h": 200
+      "y": 1090,
+      "w": 660,
+      "h": 250
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin center (owner only, browser only)</b><br>fresh check within 5 minutes: passkey or Google<br>Sign out everywhere \u2192 AdminUserGlobalSignOut + epoch + 1<br>Pause \u2192 AdminDisableUser; every session ends<br>every action: audit row + Telegram to the member and the owner</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin center (owner only)</b><br>every action behind the second check<br>Sign out a device or everywhere \u2192<br>AdminUserGlobalSignOut + epoch + 1<br>Pause \u2192 AdminDisableUser; every session ends<br>every action: audit row + a message in the app<br>and a push to the member and the owner</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2324,11 +2538,11 @@
      "className": "ArchAmazonSimpleQueueServiceAWS2024",
      "boundingBox": {
       "x": 1440,
-      "y": 1115,
+      "y": 1150,
       "w": 90,
       "h": 90
      },
-     "text": "SQS outbox\nnotices to members"
+     "text": "SQS outbox \u2192 sender\nthe app and push"
     }
    ],
    "lines": [
@@ -2337,30 +2551,30 @@
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "d_mini",
+      "style": "arrow",
+      "shapeId": "d_sign",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.32926829268292684
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "i_api",
+      "shapeId": "o_idp",
       "position": {
        "x": 0,
-       "y": 0.35
+       "y": 0.6363636363636364
       }
      },
      "stroke": {
-      "color": "#2453C9",
+      "color": "#8A5300",
       "width": 2,
       "style": "solid"
      },
      "text": [
       {
-       "text": "initData",
+       "text": "identity token",
        "position": 0.5,
        "side": "top"
       }
@@ -2372,10 +2586,10 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "d_widget",
+      "shapeId": "d_sign",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.8
       }
      },
      "endpoint2": {
@@ -2384,7 +2598,7 @@
       "shapeId": "i_api",
       "position": {
        "x": 0,
-       "y": 0.85
+       "y": 0.3
       }
      },
      "stroke": {
@@ -2394,9 +2608,9 @@
      },
      "text": [
       {
-       "text": "widget payload",
-       "position": 0.45,
-       "side": "bottom"
+       "text": "token",
+       "position": 0.5,
+       "side": "top"
       }
      ]
     },
@@ -2406,19 +2620,19 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "d_google",
+      "shapeId": "d_web",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.15
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "i_cog",
+      "shapeId": "i_api",
       "position": {
        "x": 0,
-       "y": 0.5
+       "y": 0.6
       }
      },
      "stroke": {
@@ -2428,8 +2642,8 @@
      },
      "text": [
       {
-       "text": "Google via auth.mypaisapp.com",
-       "position": 0.45,
+       "text": "sign in",
+       "position": 0.5,
        "side": "top"
       }
      ]
@@ -2440,7 +2654,34 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "d_passkey",
+      "shapeId": "i_api",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_apil",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p3_l5",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "i_apil",
       "position": {
        "x": 1,
        "y": 0.5
@@ -2452,7 +2693,7 @@
       "shapeId": "i_cog",
       "position": {
        "x": 0,
-       "y": 0.9
+       "y": 0.5
       }
      },
      "stroke": {
@@ -2462,19 +2703,19 @@
      },
      "text": [
       {
-       "text": "WebAuthn",
-       "position": 0.3,
+       "text": "custom auth",
+       "position": 0.5,
        "side": "top"
       }
      ]
     },
     {
-     "id": "p3_l5",
+     "id": "p3_l6",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "i_api",
+      "shapeId": "i_cog",
       "position": {
        "x": 1,
        "y": 0.5
@@ -2496,8 +2737,8 @@
      }
     },
     {
-     "id": "p3_l6",
-     "lineType": "elbow",
+     "id": "p3_l7",
+     "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
@@ -2510,44 +2751,10 @@
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "i_cog",
-      "position": {
-       "x": 0.5,
-       "y": 0
-      }
-     },
-     "stroke": {
-      "color": "#2453C9",
-      "width": 2,
-      "style": "solid"
-     },
-     "text": [
-      {
-       "text": "tokens",
-       "position": 0.3,
-       "side": "top"
-      }
-     ]
-    },
-    {
-     "id": "p3_l7",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "i_cog",
-      "position": {
-       "x": 1,
-       "y": 0.2
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
       "shapeId": "i_idp",
       "position": {
-       "x": 0.5,
-       "y": 1
+       "x": 0,
+       "y": 0.225
       }
      },
      "stroke": {
@@ -2562,16 +2769,118 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "i_cog",
+      "shapeId": "i_trig",
       "position": {
-       "x": 1,
-       "y": 0.5
+       "x": 0.5,
+       "y": 0
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "i_apil",
+      "shapeId": "o_idp",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "dashed"
+     },
+     "text": [
+      {
+       "text": "published keys",
+       "position": 0.55,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_web",
+      "position": {
+       "x": 1,
+       "y": 0.85
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_v1",
+      "position": {
+       "x": 0,
+       "y": 0.3
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "cookie",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_keychain",
+      "position": {
+       "x": 1,
+       "y": 0.1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_v1",
+      "position": {
+       "x": 0,
+       "y": 0.7
+      }
+     },
+     "stroke": {
+      "color": "#2453C9",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "token",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_keychain",
+      "position": {
+       "x": 1,
+       "y": 0.8125
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_ws",
       "position": {
        "x": 0,
        "y": 0.5
@@ -2584,19 +2893,19 @@
      },
      "text": [
       {
-       "text": "code",
+       "text": "on connect",
        "position": 0.5,
        "side": "top"
       }
      ]
     },
     {
-     "id": "p3_l9",
+     "id": "p3_l12",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "i_apil",
+      "shapeId": "i_v1",
       "position": {
        "x": 1,
        "y": 0.5
@@ -2605,10 +2914,10 @@
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "i_cookie",
+      "shapeId": "i_authz",
       "position": {
        "x": 0,
-       "y": 0.5
+       "y": 0.25
       }
      },
      "stroke": {
@@ -2618,15 +2927,15 @@
      }
     },
     {
-     "id": "p3_l10",
+     "id": "p3_l13",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "i_cookie",
+      "shapeId": "i_ws",
       "position": {
-       "x": 0.5,
-       "y": 1
+       "x": 1,
+       "y": 0.5
       }
      },
      "endpoint2": {
@@ -2634,8 +2943,8 @@
       "style": "arrow",
       "shapeId": "i_authz",
       "position": {
-       "x": 0.5,
-       "y": 0
+       "x": 0,
+       "y": 0.75
       }
      },
      "stroke": {
@@ -2645,14 +2954,14 @@
      }
     },
     {
-     "id": "p3_l11",
+     "id": "p3_l14",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
       "shapeId": "i_authz",
       "position": {
-       "x": 0,
+       "x": 1,
        "y": 0.5
       }
      },
@@ -2661,7 +2970,7 @@
       "style": "arrow",
       "shapeId": "i_ddb",
       "position": {
-       "x": 1,
+       "x": 0,
        "y": 0.5
       }
      },
@@ -2672,7 +2981,41 @@
      }
     },
     {
-     "id": "p3_l12",
+     "id": "p3_l15",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "d_second",
+      "position": {
+       "x": 1,
+       "y": 0.4810126582278481
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "i_admin",
+      "position": {
+       "x": 0,
+       "y": 0.2
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "fresh assertion",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p3_l16",
      "lineType": "elbow",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -2680,7 +3023,7 @@
       "shapeId": "i_admin",
       "position": {
        "x": 1,
-       "y": 0.2
+       "y": 0.15
       }
      },
      "endpoint2": {
@@ -2696,17 +3039,10 @@
       "color": "#B5123F",
       "width": 2,
       "style": "solid"
-     },
-     "text": [
-      {
-       "text": "sign out \u00b7 disable",
-       "position": 0.5,
-       "side": "top"
-      }
-     ]
+     }
     },
     {
-     "id": "p3_l13",
+     "id": "p3_l17",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -2714,7 +3050,7 @@
       "shapeId": "i_admin",
       "position": {
        "x": 1,
-       "y": 0.675
+       "y": 0.6
       }
      },
      "endpoint2": {
@@ -2733,38 +3069,31 @@
      }
     },
     {
-     "id": "p3_l14",
-     "lineType": "elbow",
+     "id": "p3_l18",
+     "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "d_new",
+      "shapeId": "d_passkey",
       "position": {
        "x": 1,
-       "y": 0.5
+       "y": 0.3
       }
      },
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "i_admin",
+      "shapeId": "i_api",
       "position": {
        "x": 0,
-       "y": 0.4
+       "y": 0.9
       }
      },
      "stroke": {
-      "color": "#B5123F",
+      "color": "#2453C9",
       "width": 2,
-      "style": "dashed"
-     },
-     "text": [
-      {
-       "text": "No, sign it out",
-       "position": 0.6,
-       "side": "top"
-      }
-     ]
+      "style": "solid"
+     }
     }
    ]
   },
@@ -2781,18 +3110,40 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Queues, retries and replay</b></span></p><p style=\"text-align:left\">nothing is lost: every hand-off goes through SQS \u00b7 idempotent handlers \u00b7 a dead-letter queue behind each \u00b7 MA-139, MA-140, MA-137, MA-135</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Queues, retries and replay</b></span></p><p style=\"text-align:left\">nothing is lost: every hand-off goes through SQS \u00b7 idempotent handlers \u00b7 a dead-letter queue behind each \u00b7 replies over the app's live connection, else Apple push \u00b7 MA-139, MA-140, MA-137, MA-135, MA-30, MA-31, MA-170</p></div>"
     },
     {
-     "id": "q_tg",
+     "id": "q_app",
      "type": "rectangle",
      "boundingBox": {
       "x": 40,
-      "y": 210,
+      "y": 360,
       "w": 220,
+      "h": 130
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b><br>a member's message<br>with its client id</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "q_apns",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1595,
+      "y": 150,
+      "w": 300,
       "h": 110
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram</b><br>a member's message</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Apple push (APNs)</b><br>when the app has no<br>live connection</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -2800,6 +3151,28 @@
       },
       "stroke": {
        "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "q_app2",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 2280,
+      "y": 150,
+      "w": 240,
+      "h": 340
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>MyPaisa app</b><br>replies in order<br>never twice<br>catches up<br>on opening</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
        "width": 2,
        "style": "solid"
       }
@@ -2811,9 +3184,9 @@
      "className": "AWSCloudAWS2024",
      "boundingBox": {
       "x": 320,
-      "y": 160,
+      "y": 300,
       "w": 1900,
-      "h": 1240
+      "h": 1260
      },
      "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 us-east-1 \u00b7 prod (dev has the same queues)</b></p>"
     },
@@ -2823,11 +3196,11 @@
      "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
       "x": 380,
-      "y": 220,
+      "y": 380,
       "w": 90,
       "h": 90
      },
-     "text": "API Gateway\n/telegram/webhook"
+     "text": "HTTP API\n/v1/chat/messages\nauthorizer"
     },
     {
      "id": "q_hook",
@@ -2835,11 +3208,11 @@
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
       "x": 620,
-      "y": 220,
+      "y": 380,
       "w": 90,
       "h": 90
      },
-     "text": "webhook \u03bb\nsecret check \u00b7 answers at once"
+     "text": "api \u03bb\nanswers 202 at once"
     },
     {
      "id": "q_in",
@@ -2847,11 +3220,11 @@
      "className": "ArchAmazonSimpleQueueServiceAWS2024",
      "boundingBox": {
       "x": 880,
-      "y": 220,
+      "y": 380,
       "w": 90,
       "h": 90
      },
-     "text": "updates.fifo\ngroup = member's chat\ndedupe = update_id"
+     "text": "updates.fifo\ngroup = member\ndedupe = client id"
     },
     {
      "id": "q_agent",
@@ -2859,7 +3232,7 @@
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
       "x": 1160,
-      "y": 220,
+      "y": 380,
       "w": 90,
       "h": 90
      },
@@ -2871,11 +3244,11 @@
      "className": "ArchAmazonSimpleQueueServiceAWS2024",
      "boundingBox": {
       "x": 1440,
-      "y": 220,
+      "y": 380,
       "w": 90,
       "h": 90
      },
-     "text": "outbox.fifo\ngroup = chat"
+     "text": "outbox.fifo\ngroup = member"
     },
     {
      "id": "q_send",
@@ -2883,33 +3256,35 @@
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
       "x": 1700,
-      "y": 220,
+      "y": 380,
       "w": 90,
       "h": 90
      },
-     "text": "sender \u03bb\nhonours retry_after"
+     "text": "sender \u03bb\nlive, else push"
     },
     {
-     "id": "q_tg2",
-     "type": "rectangle",
+     "id": "q_ws",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
      "boundingBox": {
-      "x": 2280,
-      "y": 220,
-      "w": 230,
+      "x": 1960,
+      "y": 380,
+      "w": 90,
       "h": 90
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Telegram</b><br>replies in order</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FCEED6"
-      },
-      "stroke": {
-       "color": "#8A5300",
-       "width": 2,
-       "style": "solid"
-      }
-     }
+     "text": "WebSocket API\nlive.mypaisapp.com"
+    },
+    {
+     "id": "q_conn",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1960,
+      "y": 640,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB connections\nwritten on $connect\nread by the sender"
     },
     {
      "id": "q_sched",
@@ -2917,7 +3292,7 @@
      "className": "ResAmazonEventBridgeSchedulerAWS2024",
      "boundingBox": {
       "x": 380,
-      "y": 560,
+      "y": 720,
       "w": 90,
       "h": 90
      },
@@ -2929,7 +3304,7 @@
      "className": "ArchAmazonSimpleQueueServiceAWS2024",
      "boundingBox": {
       "x": 880,
-      "y": 560,
+      "y": 720,
       "w": 90,
       "h": 90
      },
@@ -2941,7 +3316,7 @@
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
       "x": 1160,
-      "y": 560,
+      "y": 720,
       "w": 90,
       "h": 90
      },
@@ -2952,7 +3327,7 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 1440,
-      "y": 560,
+      "y": 720,
       "w": 300,
       "h": 120
      },
@@ -2975,7 +3350,7 @@
      "className": "ArchAmazonDynamoDBAWS2024",
      "boundingBox": {
       "x": 880,
-      "y": 820,
+      "y": 980,
       "w": 90,
       "h": 90
      },
@@ -2985,12 +3360,12 @@
      "id": "q_rules",
      "type": "rectangle",
      "boundingBox": {
-      "x": 1440,
-      "y": 760,
-      "w": 700,
-      "h": 190
+      "x": 1300,
+      "y": 920,
+      "w": 880,
+      "h": 230
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Retry rules, all settings</b><br>updates: 3 tries within about a minute, so a lane never stays stuck<br>outbox: 5 tries, waiting as long as Telegram asks<br>work: 5 tries, backoff 30 seconds to 30 minutes<br>what can never succeed: straight to its dead-letter queue</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Retry rules, all settings</b><br>updates: 3 tries within about a minute, so a lane never stays stuck<br>outbox: 5 tries; a gone connection is dropped and the message goes by push<br>APNs: retry_after honoured; a dead push token is removed<br>work: 5 tries, backoff 30 seconds to 30 minutes<br>what can never succeed: straight to its dead-letter queue</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -3008,7 +3383,7 @@
      "type": "rectangleContainer",
      "boundingBox": {
       "x": 360,
-      "y": 1040,
+      "y": 1210,
       "w": 1820,
       "h": 320
      },
@@ -3034,7 +3409,7 @@
      "className": "ResAmazonSimpleQueueServiceQueueAWS2024",
      "boundingBox": {
       "x": 440,
-      "y": 1130,
+      "y": 1300,
       "w": 90,
       "h": 90
      },
@@ -3046,7 +3421,7 @@
      "className": "ArchAmazonSimpleStorageServiceAWS2024",
      "boundingBox": {
       "x": 720,
-      "y": 1130,
+      "y": 1300,
       "w": 90,
       "h": 90
      },
@@ -3058,7 +3433,7 @@
      "className": "ArchAmazonCloudWatchAWS2024",
      "boundingBox": {
       "x": 980,
-      "y": 1130,
+      "y": 1300,
       "w": 90,
       "h": 90
      },
@@ -3070,7 +3445,7 @@
      "className": "ArchAmazonSimpleNotificationServiceAWS2024",
      "boundingBox": {
       "x": 1240,
-      "y": 1130,
+      "y": 1300,
       "w": 90,
       "h": 90
      },
@@ -3081,11 +3456,11 @@
      "type": "rectangle",
      "boundingBox": {
       "x": 1500,
-      "y": 1095,
+      "y": 1265,
       "w": 640,
-      "h": 160
+      "h": 180
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh \u00b7 phase 5: [Replay] on the alert<br>phase 12: the ops warden, once the cause is healthy,<br>at most 3 times, then an incident<br>an update over an hour old asks \"still want this?\"</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh \u00b7 phase 5: [Replay] on the alert<br>in the Admin center \u00b7 phase 12: the ops warden, once the cause<br>is healthy, at most 3 times, then an incident<br>a message over an hour old asks \"still want this?\"</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -3106,7 +3481,7 @@
      "endpoint1": {
       "type": "shapeEndpoint",
       "style": "none",
-      "shapeId": "q_tg",
+      "shapeId": "q_app",
       "position": {
        "x": 1,
        "y": 0.5
@@ -3277,7 +3652,7 @@
      "endpoint2": {
       "type": "shapeEndpoint",
       "style": "arrow",
-      "shapeId": "q_tg2",
+      "shapeId": "q_ws",
       "position": {
        "x": 0,
        "y": 0.5
@@ -3291,6 +3666,135 @@
     },
     {
      "id": "p4_l8",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_ws",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_app2",
+      "position": {
+       "x": 0,
+       "y": 0.8088235294117647
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "live",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_send",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_apns",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "no live connection",
+       "position": 0.35,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_apns",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_app2",
+      "position": {
+       "x": 0,
+       "y": 0.16176470588235295
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "push",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p4_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "q_send",
+      "position": {
+       "x": 1,
+       "y": 0.8
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "q_conn",
+      "position": {
+       "x": 0,
+       "y": 0.3
+      }
+     },
+     "stroke": {
+      "color": "#646A78",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p4_l12",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3324,7 +3828,7 @@
      ]
     },
     {
-     "id": "p4_l9",
+     "id": "p4_l13",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3351,7 +3855,7 @@
      }
     },
     {
-     "id": "p4_l10",
+     "id": "p4_l14",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3368,7 +3872,7 @@
       "shapeId": "q_free",
       "position": {
        "x": 0,
-       "y": 0.5
+       "y": 0.375
       }
      },
      "stroke": {
@@ -3378,7 +3882,7 @@
      }
     },
     {
-     "id": "p4_l11",
+     "id": "p4_l15",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3412,7 +3916,7 @@
      ]
     },
     {
-     "id": "p4_l12",
+     "id": "p4_l16",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3446,7 +3950,7 @@
      ]
     },
     {
-     "id": "p4_l13",
+     "id": "p4_l17",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3480,7 +3984,7 @@
      ]
     },
     {
-     "id": "p4_l14",
+     "id": "p4_l18",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3514,7 +4018,7 @@
      ]
     },
     {
-     "id": "p4_l15",
+     "id": "p4_l19",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3541,7 +4045,7 @@
      }
     },
     {
-     "id": "p4_l16",
+     "id": "p4_l20",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3568,7 +4072,7 @@
      }
     },
     {
-     "id": "p4_l17",
+     "id": "p4_l21",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3595,7 +4099,7 @@
      }
     },
     {
-     "id": "p4_l18",
+     "id": "p4_l22",
      "lineType": "straight",
      "endpoint1": {
       "type": "shapeEndpoint",
@@ -3636,7 +4140,7 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Where the data lives</b></span></p><p style=\"text-align:left\">DynamoDB for state, small and fast \u00b7 S3 for the record, in Parquet, queried with DuckDB \u00b7 every file sent kept for good \u00b7 SSM for keys \u00b7 MA-27, MA-104, MA-132, MA-148</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>Where the data lives</b></span></p><p style=\"text-align:left\">DynamoDB for state, small and fast \u00b7 S3 for the record, in Parquet, queried with DuckDB \u00b7 every file sent kept for good \u00b7 SSM for keys \u00b7 MA-27, MA-104, MA-132, MA-148, MA-161</p></div>"
     },
     {
      "id": "cl5",
@@ -3646,7 +4150,7 @@
       "x": 40,
       "y": 170,
       "w": 2260,
-      "h": 1080
+      "h": 1100
      },
      "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 one copy per environment (mypaisa-dev-*, mypaisa-prod-*)</b></p>"
     },
@@ -3660,7 +4164,7 @@
       "h": 640
      },
      "containerTitle": {
-      "text": "DynamoDB \u00b7 one table, on-demand"
+      "text": "DynamoDB \u00b7 the registry table, on-demand"
      },
      "assistedLayout": false,
      "style": {
@@ -3872,7 +4376,7 @@
       "w": 270,
       "h": 170
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Identity</b><br>Cognito holds users;<br>Member holds role, status,<br>session epoch</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Identity and devices</b><br>Cognito holds users;<br>Member: role, status, epoch<br>Device: model, push token</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -4099,6 +4603,52 @@
      }
     },
     {
+     "id": "ssm5",
+     "type": "namedShape",
+     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
+     "boundingBox": {
+      "x": 150,
+      "y": 990,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSM /mypaisa-agent/\u2039env\u203a/\nClaude key \u00b7 APNs key\nTwelve Data key \u00b7 ids"
+    },
+    {
+     "id": "rule5",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 380,
+      "y": 980,
+      "w": 680,
+      "h": 230
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Rules</b><br>nothing is overwritten: corrections are new rows \u00b7 secrets set by hand, never in Terraform state<br>every file a member sends is kept for good, linked from its audit row, opened through a 5-minute link (MA-148, MA-149)<br>prod tables: deletion protection and point-in-time recovery \u00b7 the whole history is a few GB</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "conn5",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1130,
+      "y": 990,
+      "w": 90,
+      "h": 90
+     },
+     "text": "DynamoDB connections\nlive sockets \u00b7 TTL"
+    },
+    {
      "id": "duck",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
@@ -4120,10 +4670,10 @@
       "w": 90,
       "h": 90
      },
-     "text": "S3 documents\nevery file sent, kept\nopened from Audit"
+     "text": "S3 documents\nevery file sent, kept\npresigned upload \u00b7 Audit"
     },
     {
-     "id": "web",
+     "id": "web5",
      "type": "namedShape",
      "className": "ArchAmazonSimpleStorageServiceAWS2024",
      "boundingBox": {
@@ -4132,41 +4682,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "S3 web app\nbehind CloudFront"
-    },
-    {
-     "id": "ssm5",
-     "type": "namedShape",
-     "className": "ResAWSSystemsManagerParameterStoreAWS2024",
-     "boundingBox": {
-      "x": 150,
-      "y": 990,
-      "w": 90,
-      "h": 90
-     },
-     "text": "SSM /mypaisa-agent/\u2039env\u203a/\nbot token \u00b7 webhook secret\nClaude key \u00b7 Google secret"
-    },
-    {
-     "id": "rule5",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 380,
-      "y": 980,
-      "w": 870,
-      "h": 190
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Rules</b><br>nothing is overwritten: corrections are new rows \u00b7 secrets set by hand, never in Terraform state<br>every file a member sends is kept for good, linked from its audit row, opened through a 5-minute link (MA-148, MA-149)<br>prod tables: deletion protection and point-in-time recovery \u00b7 the whole history is a few GB</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#646A78",
-       "width": 2,
-       "style": "solid"
-      }
-     }
+     "text": "S3 console site\nbehind CloudFront\nPWA \u00b7 AASA \u00b7 /join"
     }
    ],
    "lines": [
@@ -4400,7 +4916,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "outbox \u2192 Telegram\nside-by-side card"
+     "text": "outbox \u2192 the app\nside-by-side card"
     },
     {
      "id": "m_news",
@@ -4574,7 +5090,7 @@
       "w": 440,
       "h": 150
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin desk</b><br>Telegram card or Admin center<br>approve with the second check<br>then ModelVersion goes live</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin desk</b><br>a card in the owner's chat in the app<br>or the Admin center<br>approve with the second check<br>then ModelVersion goes live</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -5194,7 +5710,7 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The agent team, settings, spend caps and alerts</b></span></p><p style=\"text-align:left\">phase 5 caps and alerts (MA-137) \u00b7 phase 12 agents and settings (MA-127) \u00b7 everything configurable by the admin, nothing changed without asking</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The agent team, settings, spend caps and alerts</b></span></p><p style=\"text-align:left\">phase 5 caps and alerts (MA-137) \u00b7 phase 12 agents and settings (MA-127) \u00b7 alerts reach the app, push and email (MA-161) \u00b7 everything configurable by the admin, nothing changed without asking</p></div>"
     },
     {
      "id": "adm",
@@ -5230,7 +5746,7 @@
       "w": 340,
       "h": 150
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin's Telegram chat</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with Face ID or PIN</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Owner's chat in the app</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with the second check</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -5252,7 +5768,7 @@
       "w": 340,
       "h": 170
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin center</b> (console)<br>Spend \u00b7 Alerts \u00b7 Approvals<br>Settings \u00b7 Agents \u00b7 Incidents<br>fresh check: passkey or Google</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin center</b><br>in the app and the web app<br>Spend \u00b7 Alerts \u00b7 Approvals<br>Settings \u00b7 Agents \u00b7 Incidents<br>second check: passkey or sign-in</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -5653,7 +6169,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "SQS outbox\n\u2192 admin's Telegram"
+     "text": "SQS outbox \u2192 sender\nthe chat and push"
     },
     {
      "id": "c_web",
@@ -5664,7 +6180,7 @@
       "w": 400,
       "h": 110
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Web Alerts page</b><br>Alert rows \u00b7 badge \u00b7 [Replay] on failed work</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Alerts in the Admin center</b><br>Alert rows \u00b7 badge \u00b7 [Replay] on failed work</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -6039,7 +6555,7 @@
      },
      "text": [
       {
-       "text": "Telegram",
+       "text": "app \u00b7 push",
        "position": 0.5,
        "side": "top"
       }
@@ -6073,7 +6589,7 @@
      },
      "text": [
       {
-       "text": "web",
+       "text": "Alert row",
        "position": 0.5,
        "side": "top"
       }

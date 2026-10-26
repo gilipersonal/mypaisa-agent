@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone chat</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0; text-wrap: pretty; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.06); }
+          .bd-note p { margin: 0; }
+          .daysep, .ai-meta, .me-time { font-size: 13px; line-height: 18px; color: var(--mp-ink-2); }
+          .tab { font-size: 12px; line-height: 14px; }
+          .cbtn.mp-disabled { opacity: .55; }
+          .dv-col { display: flex; flex-direction: column; }
+          .pair { display: flex; gap: 48px; align-items: flex-start; }
+          .z1 { position: relative; z-index: 1; }
+          .f1 { flex: 1; min-width: 0; }
+          .mt4 { margin-top: 4px; }
+          .g0 { gap: 0; }
+          .csend { position: relative; }
+          .cmp { bottom: 102px; }
+          .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+          .cb { position: absolute; left: 0; right: 0; bottom: 208px; }
+          .cb.cs { bottom: 414px; }
+          .fadet { position: absolute; left: 0; right: 0; top: 0; height: 20px; z-index: 5; background: linear-gradient(180deg, var(--mp-bg), color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+          .striprow { display: flex; gap: 8px; align-items: center; margin: 0 12px; position: relative; z-index: 15; }
+          .striprow .strip { margin: 0; flex: 1; min-width: 0; }
+          .offm { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-surface-2); color: var(--mp-ink-2); flex: none; }
+          .offm .ms { font-size: 18px; }
+          .t15 { font: 400 15px/20px var(--mp-font); text-wrap: pretty; }
+          .t15 b, .done b { font-weight: 600; }
+          .nm { font: 600 15px/20px var(--mp-font); }
+          .sub { font: 400 13px/18px var(--mp-font); }
+          .rv { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex: none; }
+          .hrow { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 0; box-sizing: border-box; border-top: 1px solid var(--mp-line); }
+          .tile { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none; font: 700 13px/1 var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink-2); }
+          .sg { display: grid; place-items: center; }
+          .hdr { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; margin: -8px -8px -4px 0; }
+          .tech { font: 400 13px/18px var(--mp-font); gap: 3px; padding: 10px 16px; }
+          .done { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); }
+          .done > :first-child { color: var(--mp-ink-2); }
+          .done .ms { font-size: 18px; color: var(--mp-accent); }
+          .wrap8 { display: flex; flex-wrap: wrap; gap: 8px; }
+          .cbtn.tight { padding: 0 12px; }
+          .cbtn.sel { box-shadow: inset 0 0 0 2px var(--mp-accent); }
+          .cbtn.full { width: 100%; box-sizing: border-box; }
+          .calsheet { gap: 8px; padding: 10px 16px 30px; }
+          .cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; }
+          .wd { height: 22px; font: 600 13px/22px var(--mp-font); color: var(--mp-ink-2); }
+          .dc { height: 44px; display: grid; place-items: center; font: 400 19px/1 var(--mp-font); }
+          .dc i { font-style: normal; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; }
+          .dc.now i { color: var(--mp-accent); font-weight: 700; }
+          .dc.sel i { background: var(--mp-accent); color: var(--mp-on-accent); font-weight: 700; }
+          .dc.off i { color: var(--mp-ink-2); opacity: .55; }
+          .mon { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
+          .navb { width: 44px; height: 44px; display: grid; place-items: center; color: var(--mp-accent); }
+          .plusmenu { left: 12px; bottom: 160px; }
+          .file { display: flex; align-items: center; gap: 10px; padding: 6px 4px 6px 6px; border-radius: 14px; background: var(--mp-surface); color: var(--mp-ink); min-width: 0; }
+          .ftile { width: 36px; height: 40px; border-radius: 8px; display: grid; place-items: center; flex: none; background: var(--mp-surface-2); color: var(--mp-accent); }
+          .fname { font: 600 15px/20px var(--mp-font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .me.mf { padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+          .me .file { background: var(--mp-hero-2); color: var(--mp-hero-ink); padding-right: 12px; }
+          .me .ftile { background: rgba(255,255,255,.1); color: var(--mp-coral); }
+          .cfield.att { flex-direction: column; align-items: stretch; padding: 6px; gap: 2px; border-radius: 24px; }
+          .attline { display: flex; align-items: center; gap: 8px; padding-left: 12px; min-height: 38px; position: relative; z-index: 1; }
+          .xbtn { width: 44px; height: 44px; display: grid; place-items: center; flex: none; color: var(--mp-ink-2); margin: -2px 0; }
+          .prog { display: flex; align-items: center; gap: 10px; min-height: 32px; font: 400 15px/20px var(--mp-font); }
+          .prog .ms { font-size: 20px; }
+          .fld { display: flex; flex-direction: column; gap: 1px; padding: 6px 0; border-top: 1px solid var(--mp-line); }
+          .ccard-fold.quiet { color: var(--mp-ink-2); }
+          .fv { font: 600 15px/20px var(--mp-font); }
+          .fs { font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .fs.q { color: var(--mp-pause); }
+          .amber { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+          .mp-num-l.mp-mask { align-self: flex-start; }
+          .shot { align-self: flex-end; width: 100px; height: 176px; border-radius: 16px; display: grid; place-items: center; font: 600 13px/18px ui-monospace, Menlo, monospace; color: var(--mp-ink-2); background: repeating-linear-gradient(135deg, var(--mp-surface-2) 0 7px, var(--mp-surface) 7px 14px); box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .shotcap { align-self: flex-end; margin-top: -8px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .aud { display: flex; flex-direction: column; gap: 1px; padding: 7px 0; border-top: 1px solid var(--mp-line); }
+          .fref { display: inline-flex; align-items: center; gap: 4px; font: 600 13px/18px var(--mp-font); color: var(--mp-accent); }
+          .fref .ms { font-size: 16px; }
+          .mp-chip .ms { font-size: 16px; }
+          .refuse { display: flex; gap: 8px; align-items: flex-start; padding: 0 16px 14px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .refuse .ms { font-size: 18px; }
+          .fail { align-self: flex-end; display: flex; align-items: center; gap: 8px; margin-top: -6px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .fail .ms { font-size: 18px; }
+          .sk { display: block; }
+          .sk-a { width: 44%; height: 12px; } .sk-b { width: 56%; height: 28px; } .sk-c { width: 62%; height: 26px; border-radius: 999px; }
+          .sk-l { width: 100%; height: 14px; } .sk-s { width: 64%; height: 14px; } .sk-btn { width: 76px; height: 44px; border-radius: 999px; }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t1" data-screen-label="iPhone chat: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#t1">C</a><span class="dv-tname">The chat in the app: seventeen boards in 1a's shell</span></div>
+        <p class="dv-intro">The conversation on iPhone (MA-169), in option 1a's shell: the household strip at the top, the composer and its shortcut chips, the tab bar with Chat selected. MyPaisa's words sit beside its mark, the member's messages are navy, and every card is drawn natively as solid Warm ledger with its own buttons; Liquid Glass is only the layer of controls. The content is carried over from the Telegram-era boards and ARCHITECTURE §9.2, and each board is drawn in light and dark. Illustrative figures and names.</p>
+      </section>
+
+      <section class="bd" id="c1">
+        <div class="bd-h"><span class="bd-id">C1</span><span class="bd-name">Chat home</span><span class="bd-keys">MA-169 · MA-163 · MA-35</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Chat home · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:12</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 07:15</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                    <div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div>
+                    <div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Portfolio · 23 Oct</span><span class="mp-num-l">£24,110</span><span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today · ▲ 2.1% this month</span></div>
+                      <div class="ccard-b g0"><div class="hrow"><span class="f1 nm">Balanced</span><span class="rv"><span class="nm">£22,925</span><span class="sub mp-up">▲ 0.6%</span></span></div><div class="hrow"><span class="f1 nm">Three ETFs and cash</span><span class="rv"><span class="nm">£1,185</span><span class="sub mp-dq">▼ 2.5%</span></span></div></div></div>
+                  </div></div>
+                  <div class="me">Why did Balanced rise?</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Mostly the pound: it fell 0.5% against the dollar, and 58% of Balanced is in dollars underneath.</div><span class="ai-meta">Figures: ECB · the look-through of the 30 Sep factsheet</span></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add a holding</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Opens to the chat.</b> The 07:15 brief arrives as words with the Portfolio card under it; a question gets its answer in plain words, with where its figures came from.</p>
+            <p><b>Glass is the controls only.</b> The household strip floats at the top (tap or pull it down for Home); the messages and the card are solid Warm ledger.</p>
+            <p><b>Shortcut chips:</b> Portfolio, Today, Add a holding and, a swipe along, Log money. The row scrolls sideways and changes with the conversation; a typed /command still works.</p>
+            <p><b>Motion:</b> the brief and its card rise in turn with the total rolling up to its value; the question arrives from the right; the chips stagger in.</p>
+            <p><b>No stance on the brief's card.</b> Stances stay in shadow until phase 8. Builds: MA-169 (the chat), MA-163 (the shell), MA-35 (what the chips start).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c2">
+        <div class="bd-h"><span class="bd-id">C2</span><span class="bd-name">Portfolio card</span><span class="bd-keys">MA-36 · MA-34</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Portfolio card · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:13</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="me">Portfolio</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h gap6"><div class="mp-seg"><span class="mp-seg-i on sg">Household</span><span class="mp-seg-i sg">Me</span><span class="mp-seg-i sg">Asha</span></div><span class="mp-over mp-ink2 mt4">Household · 23 Oct</span><span class="mp-num-l">£24,110</span><span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today · ▲ 2.1% this month</span></div>
+                    <div class="ccard-b g0">
+                      <div class="hrow"><span class="tile">B</span><span class="fx col f1"><span class="nm">Balanced</span><span class="sub mp-ink2">You · Monzo ISA</span></span><span class="rv"><span class="nm">£22,925</span><span class="sub mp-up">▲ 0.6%</span></span></div>
+                      <div class="hrow"><span class="tile">N</span><span class="fx col f1"><span class="nm">NASDAQ 100 ETF</span><span class="sub mp-ink2">Asha · ISA</span></span><span class="rv"><span class="nm">£512</span><span class="sub mp-dq">▼ 3.1%</span></span></div>
+                      <div class="hrow"><span class="tile">R</span><span class="fx col f1"><span class="nm">Robotics ETF</span><span class="sub mp-ink2">You · GIA</span></span><span class="rv"><span class="nm">£304</span><span class="sub mp-dq">▼ 3.4%</span></span></div>
+                      <div class="hrow"><span class="tile">S</span><span class="fx col f1"><span class="nm">Silver ETC</span><span class="sub mp-ink2">You · GIA</span></span><span class="rv"><span class="nm">£188</span><span class="sub mp-dq">▼ 2.0%</span></span></div>
+                      <div class="hrow"><span class="tile">£</span><span class="fx col f1"><span class="nm">Cash</span><span class="sub mp-ink2">Joint · Monzo pot</span></span><span class="rv"><span class="nm">£181</span><span class="sub mp-ink2">no change</span></span></div>
+                    </div>
+                    <div class="ccard-fold"><span>Open Home</span><span class="ms">chevron_right</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The card in full:</b> the household's total, today and this month, then a row per holding with its value and today's move. The five rows add up to the £24,110 above them.</p>
+            <p><b>Household · Me · Asha</b> sits inside the card. The owner can open each member; a member sees Household and Me.</p>
+            <p><b>No stance on any row.</b> Stances stay in shadow until phase 8; a holding's stance shows only on its own card, with its confidence.</p>
+            <p><b>Falls are quiet ink with ▼;</b> green is for the gain alone, with ▲. Open Home shows the same figures as a screen.</p>
+            <p><b>Motion:</b> the card rises with the total rolling up; a tap on Me or Asha slides the segment's lens across.</p>
+            <p><b>Builds:</b> MA-36 (the views), MA-34 (the card Arun picked in Warm ledger, carried into the app).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c3">
+        <div class="bd-h"><span class="bd-id">C3</span><span class="bd-name">Stance card, technical open</span><span class="bd-keys">MA-64 · MA-63 · MA-60</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Stance card, technical open · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:20</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">Balanced · BlackRock MyMap 5</span><span class="fx ac jb"><span class="mp-num-l">£22,925</span><span class="mp-chip mp-hold">HOLD · 2 weeks · 71%</span></span><span class="fx ac jb"><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-foot mp-ink2">a view, not advice</span></span></div>
+                    <div class="ccard-b" style="gap:8px"><span class="t15"><b>Why:</b> steady uptrend; normal volatility; the pound explains this week's wobble.</span><span class="t15"><b>Would change if:</b> a 5% fall (to £21,779), or the Bank of England surprises on Thu 5 Nov.</span><span class="mp-foot mp-ink2">HOLD on Balanced: 9 calls, 7 held up.</span></div>
+                    <div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">What if?</span><span class="cbtn">I acted</span></div>
+                    <div class="ccard-fold"><span>Technical</span><span class="ms">expand_less</span></div>
+                    <div class="ccard-tech tech"><span>Trend +2 (price&gt;EMA20, EMA20&gt;50&gt;200, EMA200↑)</span><span>Momentum +1 (RSI 58, MACD hist&gt;0, TRIX mixed)</span><span>Macro US +1 Broadening · UK 0 Transitional</span><span>Risk 0 (vol 48th pct, drawdown −1.9%, NAV 1 day old, proxy gap 0.3%)</span><span>Range 1m: −4.8% … +4.1% · P(fall&gt;5%) 8%</span><span>Data: yfinance 0P…L ✓ · ECB ✓ · BlackRock page ✓ (22 Oct)</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask about Balanced</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Summary first:</b> HOLD · 2 weeks · 71%, a view, not advice; then why, what would change it, and how HOLD calls have held up.</p>
+            <p><b>Technical, opened with one tap:</b> pillars, indicators, macro, risk, the one-month range and the data sources, as ARCHITECTURE §9.2 has them. Closed by default.</p>
+            <p><b>Every figure is the engine's;</b> Claude only puts them into words. No button buys or sells.</p>
+            <p><b>Why? · What if? · I acted.</b> The first two answer as new cards; I acted records a decision the Saturday review checks.</p>
+            <p><b>Motion:</b> the card rises and its figure rolls up; Technical opens in place under the buttons, and nothing above it moves.</p>
+            <p><b>Builds:</b> MA-64 and MA-63 (the card), MA-60 (I acted).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c4">
+        <div class="bd-h"><span class="bd-id">C4</span><span class="bd-name">Guided flow: log a transaction</span><span class="bd-keys">MA-39</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Guided flow: log a transaction · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>20:31</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb cs">
+                  <div class="me">I want to log a transaction</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">Log a transaction · 4 of 4</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                    <div class="ccard-b g0">
+                      <div class="done"><span>What kind?</span><span class="fx ac gap6"><b>Bought</b><span class="ms">check</span></span></div>
+                      <div class="done"><span>Which holding?</span><span class="fx ac gap6"><b>Balanced</b><span class="ms">check</span></span></div>
+                      <div class="done"><span>How much?</span><span class="fx ac gap6"><b>£200</b><span class="ms">check</span></span></div>
+                      <div class="fx col gap8" style="border-top:1px solid var(--mp-line);padding-top:10px"><span class="mp-hl">When?</span><div class="wrap8"><span class="cbtn tight">Today</span><span class="cbtn tight">Yesterday</span><span class="cbtn tight sel">Pick a date</span></div></div>
+                    </div>
+                  </div></div></div>
+                </div></div>
+                <div class="sheet lg lg-strong calsheet">
+                  <div class="sheet-grab"></div>
+                  <div class="sheet-h"><span class="cbtn cbtn-ghost">Cancel</span><span class="mp-hl">Pick a date</span><span class="cbtn cbtn-ghost mp-w7">Done</span></div>
+                  <div class="mon"><span class="mp-hl" style="padding-left:6px">October 2026</span><span class="fx"><span class="navb"><span class="ms">chevron_left</span></span><span class="navb"><span class="ms">chevron_right</span></span></span></div>
+                  <div class="cal"><sc-for list="{{ wd }}" as="w" hint-placeholder-count="7"><span class="wd">{{ w.t }}</span></sc-for><sc-for list="{{ cal }}" as="d" hint-placeholder-count="35"><span class="{{ d.c }}"><i>{{ d.t }}</i></span></sc-for></div>
+                </div>
+                <div class="homebar" style="z-index:60"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>One card, edited in place.</b> "I want to log a transaction" starts it; each answer collapses to one line and the next question takes its place, so the chat stays tidy.</p>
+            <p><b>The steps and their chips:</b> what kind (Bought, Sold, Dividend, Fee); which holding (a short list, More, Type the name); how much (£100, £200, £500, Type an amount); when (Today, Yesterday, Pick a date). Anything already said is skipped.</p>
+            <p><b>Pick a date</b> opens iOS's own date picker as a partial glass sheet over the chat and its tab bar; days after today are not offered.</p>
+            <p><b>Motion:</b> each answer folds into its line as the next question rises in its place; the date sheet slides up from the bottom.</p>
+            <p><b>Nothing is saved</b> until the Confirm card that ends the flow (C5); a day without an answer drops the flow quietly. Builds: MA-39.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c5">
+        <div class="bd-h"><span class="bd-id">C5</span><span class="bd-name">Confirm card</span><span class="bd-keys">MA-38 · MA-34</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Confirm card · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, the card</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>20:40</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 07:15</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div></div></div>
+                    <div class="daysep">Today 20:40</div>
+                    <div class="me">I put £200 into Balanced today</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="mp-over mp-ink2">New transaction · check it</span><span class="mp-hl">Bought £200 of Balanced</span></div>
+                      <div class="ccard-b"><div class="kv"><span>When</span><span>Today, 23 Oct</span></div><div class="kv"><span>Units</span><span>about 10.8 at NAV £18.57</span></div><div class="kv"><span>Currency</span><span>pounds, as Balanced is</span></div><div class="kv"><span>Account</span><span>Monzo ISA</span></div><span class="mp-foot mp-ink2">Nothing is saved until you tap Confirm.</span></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, confirmed</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>20:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,310</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 07:15</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div></div></div>
+                    <div class="daysep">Today 20:40</div>
+                    <div class="me">I put £200 into Balanced today</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="mp-over mp-ink2">New transaction · saved</span><span class="fx ac gap8"><span class="ms ms-fill" data-mo="saved">check_circle</span><span class="mp-hl">Bought £200 of Balanced</span></span></div>
+                      <div class="ccard-b"><div class="kv"><span>When</span><span>Today, 23 Oct</span></div><div class="kv"><span>Units</span><span>about 10.8 at NAV £18.57</span></div></div>
+                      <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Saved · in the audit log</span><span class="mp-foot mp-ink2">20:41</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The sentence said it all,</b> so there are no questions: "I put £200 into Balanced today" goes straight to the Confirm card.</p>
+            <p><b>The card says what will be saved:</b> £200 bought on 23 Oct, about 10.8 units at the engine's NAV of £18.57, in pounds as Balanced is.</p>
+            <p><b>Confirm is a content button,</b> filled coral and never glass. Edit reopens the flow at the right step; Cancel leaves nothing saved.</p>
+            <p><b>Confirmed:</b> the card edits in place to a check and "Saved · in the audit log". Undo is not offered; a correction is a new change with its own card.</p>
+            <p><b>Motion:</b> the card rises under the sentence; on Confirm it edits in place and the check lands with a small bounce, the one success moment.</p>
+            <p><b>Builds:</b> MA-38 (typed transactions), MA-34 (the card Arun picked, carried into the app).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c6">
+        <div class="bd-h"><span class="bd-id">C6</span><span class="bd-name">Attach a file</span><span class="bd-keys">MA-37 · MA-169</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Attach a file · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, the + menu</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>08:55</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb" style="bottom:370px">
+                    <div class="daysep">Today 07:15</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div></div></div>
+                    <div class="daysep">Today 08:54</div>
+                    <div class="me">Update the Robotics ETF</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Send its factsheet or a screenshot from your platform, or tell me what changed.</div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="menu lg plusmenu"><span class="menu-i"><span>Camera</span><span class="ms">photo_camera</span></span><span class="menu-i"><span>Scan a document</span><span class="ms">document_scanner</span></span><span class="menu-i"><span>Photos</span><span class="ms">photo_library</span></span><span class="menu-i"><span>Files</span><span class="ms">folder</span></span></div>
+                  <div class="composer cmp"><div class="cbar"><span class="cplus lg"><span class="ms">close</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, a PDF attached</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>08:56</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb" style="bottom:218px">
+                    <div class="daysep">Today 07:15</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Good morning. Balanced rose 0.6% yesterday, mostly the pound slipping against the dollar. Nothing to do this week.</div></div></div>
+                    <div class="daysep">Today 08:54</div>
+                    <div class="me">Update the Robotics ETF</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Send its factsheet or a screenshot from your platform, or tell me what changed.</div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg att"><span class="file z1"><span class="ftile"><span class="ms">picture_as_pdf</span></span><span class="fx col f1"><span class="fname">Robotics-ETF-factsheet.pdf</span><span class="sub mp-ink2">PDF · 1.2 MB · from Files</span></span><span class="xbtn"><span class="ms">close</span></span></span><span class="attline"><span class="ph">Add a note, or just send</span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The + opens a glass menu:</b> Camera, Scan a document (VisionKit), Photos and Files. The chips step aside while it is open, so glass never sits on glass.</p>
+            <p><b>A file waits in the composer</b> as a solid chip with its name and size, removable with ×, until Send. Send is the one tinted control.</p>
+            <p><b>PDFs, images, xlsx and csv</b> are accepted. Each goes first to a private upload and is kept for good; nothing changes until a card is confirmed.</p>
+            <p><b>Motion:</b> the menu pops out of the + it belongs to; the file settles into the composer and Send takes its tint.</p>
+            <p><b>Builds:</b> MA-37 (adding or updating from a file), MA-169 (the composer).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c7">
+        <div class="bd-h"><span class="bd-id">C7</span><span class="bd-name">Reading a factsheet</span><span class="bd-keys">MA-37 · MA-148</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Reading a factsheet · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:57</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 08:54</div>
+                  <div class="me">Update the Robotics ETF</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Send its factsheet or a screenshot from your platform, or tell me what changed.</div></div></div>
+                  <div class="me mf"><span class="file"><span class="ftile"><span class="ms">picture_as_pdf</span></span><span class="fx col f1"><span class="fname">Robotics-ETF-factsheet.pdf</span><span class="sub">PDF · 1.2 MB</span></span></span></div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                    <div class="ai-text">Reading it…</div>
+                    <div class="ccard"><div class="ccard-b" style="padding-top:12px;gap:4px">
+                      <div class="prog"><span class="ms ms-fill mp-acc">check_circle</span><span class="f1">Kept safely, in your files</span></div>
+                      <div class="prog"><span class="ms mp-acc">progress_activity</span><span class="f1"><b>Reading</b> its 4 pages</span></div>
+                      <div class="prog mp-ink2"><span class="ms">radio_button_unchecked</span><span class="f1">Matching it to your holdings</span></div>
+                    </div></div>
+                    <span class="ai-meta"><span class="ms ms-s">lock</span><span>The file is kept for good and opens from Audit, beside the change it makes.</span></span>
+                  </div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The file is the member's message,</b> with its name and size, in a navy bubble like any other.</p>
+            <p><b>Reading it…</b> shows three steps: kept safely, reading, matching to the holdings. The card follows when they finish (C8).</p>
+            <p><b>Kept for good:</b> the file is stored before it is read, never deleted after, and opens from Audit beside the change it made.</p>
+            <p><b>Motion:</b> the file arrives from the right; each step ticks over as it finishes, and nothing loops.</p>
+            <p><b>Builds:</b> MA-37 (reading and the card), MA-148 (every file kept, with its Document row and audit entry).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c8">
+        <div class="bd-h"><span class="bd-id">C8</span><span class="bd-name">Factsheet card with amber fields</span><span class="bd-keys">MA-37</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Factsheet card with amber fields · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:58</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">From your factsheet · check it</span></div>
+                    <div class="ccard-b g0">
+                      <div class="fld"><span class="fs">Name · page 1, the title</span><span class="fv">iShares Automation &amp; Robotics UCITS ETF</span></div>
+                      <div class="fld"><span class="fs">ISIN · page 1, key facts</span><span class="fv">IE00BYZK4552</span></div>
+                      <div class="fld"><span class="fs">Charge · page 1, key facts</span><span class="fv">0.40% a year (OCF)</span></div>
+                      <div class="fld"><span class="fs">What it holds · page 2, holdings</span><span class="fv">About 140 robotics and automation firms</span></div>
+                      <div class="fld"><span class="fs">Where it invests · page 2, a chart</span><span class="fv"><span class="amber">US 52% · Japan 19% · other 29%</span></span><span class="fs q">Read from a chart, not a table: are these right?</span></div>
+                      <div class="fld"><span class="fs">Currency · page 1, listings</span><span class="fv"><span class="amber">GBP</span></span><span class="fs q">It lists a USD and a GBP line: is yours the GBP one?</span></div>
+                    </div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    <div class="ccard-fold"><span class="fx ac gap8"><span class="ms ms-s">picture_as_pdf</span>Source: open the PDF</span><span class="ms">chevron_right</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>What was read, field by field,</b> each with the page it came from: name, ISIN, charge, what it holds, where it invests, currency. Source opens the PDF.</p>
+            <p><b>Two fields in amber,</b> each asking its question: the country split read from a chart, and which currency line is held. Amber means unsure, never red.</p>
+            <p><b>The currency is confirmed here once</b> and is the holding's currency from then on, which the currency check reads (MA-156).</p>
+            <p><b>Motion:</b> the card rises whole once every field is read; nothing on it moves after that.</p>
+            <p><b>Confirm · Edit · Cancel:</b> Edit puts right a field before saving; nothing is saved until Confirm. Builds: MA-37.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c9">
+        <div class="bd-h"><span class="bd-id">C9</span><span class="bd-name">Screenshot valuations, before and after</span><span class="bd-keys">MA-37</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Screenshot valuations, before and after · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>10:12</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="shot" data-mo="me">screenshot</div>
+                  <span class="shotcap" data-mo="fade">Monzo · Investments · 486 KB</span>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">Valuations · from your screenshot</span><span class="t15">Here is what I read, matched to your Monzo holdings:</span></div>
+                    <div class="ccard-b g0">
+                      <div class="hrow"><span class="fx col f1"><span class="nm">Balanced</span><span class="sub mp-ink2">Before → after</span></span><span class="rv"><span class="nm">£22,925 → £22,962</span><span class="sub mp-up">▲ £37</span></span></div>
+                      <div class="hrow"><span class="fx col f1"><span class="nm">Cash (Monzo pot)</span><span class="sub mp-ink2">Kept at £181, its value from Thu 22 Oct</span></span><span class="mp-chip mp-pause">Not read</span></div>
+                      <span class="t15 c-pause" style="padding-top:6px">A gap: the pot wasn't on this screenshot. Send the pots screen, or leave it as it is.</span>
+                    </div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The screenshot is the member's message,</b> drawn here as a placeholder; in the app it is the image itself, kept for good.</p>
+            <p><b>Before and after, per holding:</b> Balanced from the engine's £22,925 to £22,962 as Monzo showed it, ▲ £37.</p>
+            <p><b>A gap is flagged in amber:</b> the Cash pot was not on the screenshot, so it keeps its last value and says from when.</p>
+            <p><b>Motion:</b> the screenshot arrives from the right, then the before-and-after card rises under it.</p>
+            <p><b>Nothing is saved until Confirm;</b> Edit puts right a value read wrongly. Builds: MA-37.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c10">
+        <div class="bd-h"><span class="bd-id">C10</span><span class="bd-name">Currency check</span><span class="bd-keys">MA-156</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Currency check · {{ t.label }}">
+              <div class="pair">
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, the question in pounds</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>12:10</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 24 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,310</span><span class="mp-foot mp-ink2 mp-w6">no change on Friday</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 12:10</div>
+                    <div class="me">I put ₹20,000 into Balanced</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="mp-over mp-ink2">₹20,000 into Balanced</span><span class="t15"><b>Balanced is held in pounds (GBP),</b> so it can't take rupees. The rupees were changed to pounds on the way in.</span></div>
+                      <div class="ccard-b"><span class="mp-hl">How many pounds arrived?</span><span class="t15 mp-ink2">Type them, or send a screenshot of the platform's confirmation.</span><span class="mp-foot mp-ink2">Or use the estimate: ₹112.50 per £, the ECB rate of Fri 23 Oct, worked out by MyPaisa's engine. Nothing is saved yet.</span>
+                        <div class="wrap8"><span class="cbtn full">About £177.78 · ECB estimate</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Pounds that arrived</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, Confirm with two currencies</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>12:12</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 24 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,310</span><span class="mp-foot mp-ink2 mp-w6">no change on Friday</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="me">I put ₹20,000 into Balanced</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard"><div class="ccard-h" style="padding-bottom:14px"><span class="mp-over mp-ink2">₹20,000 into Balanced</span><span class="t15"><b>Balanced is held in pounds (GBP).</b> How many pounds arrived?</span></div></div></div></div>
+                    <div class="me">176.10</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="mp-over mp-ink2">New transaction · check it</span><span class="mp-hl">Bought £176.10 of Balanced</span></div>
+                      <div class="ccard-b"><div class="kv"><span>When</span><span>Today, 24 Oct</span></div><div class="kv"><span>From</span><span>₹20,000</span></div><div class="kv"><span>Rate</span><span>₹113.57 per £</span></div><div class="kv"><span>Units</span><span>about 9.5 at NAV £18.57</span></div><span class="mp-foot mp-ink2">The rate is worked out by MyPaisa's engine from your two figures. Nothing is saved until you tap Confirm.</span></div>
+                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Option 1b, as Arun picked it (25 Oct 2026).</b> Nothing is saved; MyPaisa says why in plain words, then asks the guided flow's own question again, in the holding's currency.</p>
+            <p><b>The exact figure leads.</b> The estimate is one tap with its figure on the button, marked an estimate. Nifty 50 instead is offered only when a rupee holding exists (India, phase 13); otherwise that button is left out, as here: the household holds no rupees.</p>
+            <p><b>Confirm stays a separate tap.</b> Once answered the question drops its buttons; the Confirm card shows both amounts and the rate the engine works out from them.</p>
+            <p><b>Privacy on:</b> no amount and no rate on either card (1b·4). Before the daily ECB rates load (MA-44) the estimate button is left out.</p>
+            <p><b>Motion:</b> the question card rises; once answered it shrinks to its line, and the Confirm card rises below.</p>
+            <p><b>Builds:</b> MA-156. Illustrative: ₹112.50 per £, the ECB rate of Fri 23 Oct; £176.10 arrived.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c11">
+        <div class="bd-h"><span class="bd-id">C11</span><span class="bd-name">What changed this week</span><span class="bd-keys">MA-40</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · What changed this week · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:05</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="me">What changed this week?</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">From the audit log</span><span class="mp-hl">This week · 4 changes, newest first</span></div>
+                    <div class="ccard-b g0">
+                      <div class="aud"><span class="sub mp-ink2">Thu 22 Oct, 19:02 · Asha</span><span class="t15">Cash (Monzo pot), £120 → £181</span><span class="fref"><span class="ms">image</span>monzo-pot.png, a Monzo screenshot</span></div>
+                      <div class="aud"><span class="sub mp-ink2">Wed 21 Oct, 21:15 · You</span><span class="t15">Silver ETC's fee, 0.20% a year</span><span class="fref"><span class="ms">picture_as_pdf</span>silver-etc-factsheet.pdf</span></div>
+                      <div class="aud"><span class="sub mp-ink2">Wed 21 Oct, 20:05 · Asha</span><span class="t15">Her quiet hours, 22:00 to 07:00</span><span class="sub mp-ink2">A button, then Confirm</span></div>
+                      <div class="aud"><span class="sub mp-ink2">Tue 20 Oct, 18:24 · You</span><span class="t15">Balanced, £22,410 → £22,612</span><span class="fref"><span class="ms">image</span>monzo-valuations.png, a Monzo screenshot</span></div>
+                    </div>
+                    <div class="ccard-acts"><span class="cbtn"><span class="ms">history</span>Open Audit</span><span class="cbtn">Only mine</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The audit log, asked in words:</b> every change this week, newest first, with who made it, when, what changed and the file it came from. Asked at 08:05 on Fri 23 Oct, so the day's alert line (12:41) and buy (20:41) come after it.</p>
+            <p><b>A file opens:</b> its name opens the original, kept for good (MA-148, MA-149).</p>
+            <p><b>The owner sees every row;</b> a member sees their own changes and the household's records.</p>
+            <p><b>Motion:</b> the question arrives from the right and the card rises with its rows; nothing else moves.</p>
+            <p><b>Open Audit</b> opens the Audit screen at this week; Only mine narrows this card. Builds: MA-40.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c12">
+        <div class="bd-h"><span class="bd-id">C12</span><span class="bd-name">Red alert card</span><span class="bd-keys">MA-59 · MA-55</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Red alert card · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>21:16</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£23,524</span><span class="mp-foot mp-dq mp-w6">▼ 3.2% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 21:15</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Evening wrap. The household closed at £23,524, ▼ £786 today: Balanced fell 3.4%, the rest held still.</div>
+                    <div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-alertchip" data-mo="attn"><span class="ms">error</span>Red alert</span><span class="mp-foot mp-ink2">21:16</span></span><span class="mp-hl">Balanced is 5.2% below its high</span></div>
+                      <div class="ccard-b"><span class="t15"><b>Why:</b> it fell 3.4% today, its shares and its bonds together, as UK gilt yields jumped.</span><span class="t15"><b>What would help:</b> decide whether the top-up due on 1 Nov goes in as usual. Nothing here says sell.</span><span class="mp-foot mp-ink2">Red alert 1 of your 2 this week. No more on Balanced for 3 days unless it falls another 3%.</span></div>
+                      <div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">I acted</span><span class="cbtn">Mute for a week</span></div>
+                    </div>
+                  </div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Red marks the tier only.</b> The Red alert mark is the one red thing on screen; the words and buttons are ordinary content, and the fall is quiet ink with ▼.</p>
+            <p><b>What crossed, why in one line, what would help.</b> Nothing here says sell, and the app cannot trade. No stance line: stances stay in shadow until phase 8.</p>
+            <p><b>Why? · I acted · Mute for a week.</b> I acted records what was done (MA-60); Mute stops alerts on Balanced for seven days.</p>
+            <p><b>By push it is time-sensitive, with sound,</b> two a week at most; the last line says when the next can come.</p>
+            <p><b>Motion:</b> the wrap and the card rise in turn; the Red alert mark pulses once to catch the eye, then stays still.</p>
+            <p><b>Drawn on Mon 26 Oct,</b> after Balanced fell 3.4%, from £23,125 with Friday's £200 to £22,338: 1.9% below its high on Thursday, 5.2% now. Builds: MA-59 (tiers), MA-55 (the card).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c13">
+        <div class="bd-h"><span class="bd-id">C13</span><span class="bd-name">Preference card</span><span class="bd-keys">MA-69</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Preference card · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>12:40</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Worth a look: Silver ETC fell 1.4% yesterday, past your 1% line. Nothing to do.</div><span class="ai-meta">Amber · no sound · 22 Oct, 14:20</span></div></div>
+                  <div class="me">stop pinging me under 2%</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">New preference · check it</span><span class="mp-hl">No alerts for moves under 2% in a day</span></div>
+                    <div class="ccard-b"><div class="kv"><span>Your alert line</span><span>from 1% to 2% in a day</span></div><span class="t15"><b>What it changes:</b> a move under 2% in a day sends nothing; at 2% or more, the amber note comes as before.</span><span class="t15"><b>Still comes:</b> every red alert, and your 07:15 brief.</span><span class="mp-foot mp-ink2">For your holdings only; Asha's alerts are hers. Nothing changes until you tap Confirm.</span></div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>A sentence becomes a setting:</b> "stop pinging me under 2%" comes back as a preference card, not a silent change.</p>
+            <p><b>It says what changes:</b> the alert line from 1% to 2% in a day, what still comes, and whose alerts it covers.</p>
+            <p><b>Confirm · Cancel.</b> Nothing changes before Confirm; the change is an audit row, and You shows the new line.</p>
+            <p><b>Motion:</b> the sentence arrives from the right and the card rises under it.</p>
+            <p><b>Builds:</b> MA-69.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c14">
+        <div class="bd-h"><span class="bd-id">C14</span><span class="bd-name">Streaming reply</span><span class="bd-keys">MA-62 · MA-169</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Streaming reply · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>08:50</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="me">Should I add to Balanced this month?</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                    <div class="ai-text">Balanced looks steady, and nothing in the engine's signals says to add more than your usual £200 or to hold it back. The stance card has the reasons and what would<span class="caret"></span></div>
+                    <div class="ccard">
+                      <div class="ccard-h gap8"><span class="mp-skel sk sk-a"></span><span class="mp-skel sk sk-b"></span><span class="mp-skel sk sk-c"></span></div>
+                      <div class="ccard-b"><span class="mp-skel sk sk-l"></span><span class="mp-skel sk sk-l"></span><span class="mp-skel sk sk-s"></span><span class="mp-foot mp-ink2">Stance card · waiting for the engine's figures</span></div>
+                      <div class="ccard-acts"><span class="mp-skel sk sk-btn"></span><span class="mp-skel sk sk-btn"></span><span class="mp-skel sk sk-btn"></span></div>
+                    </div>
+                  </div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend lg-tint"><span class="ms ms-fill">stop</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Words stream, cards arrive whole.</b> The answer appears word by word behind a caret; before the first word, a typing mark.</p>
+            <p><b>The stance card waits as a skeleton</b> until its figures arrive together from the engine: never half a card, never half a number.</p>
+            <p><b>Stop</b> takes the microphone's place while MyPaisa writes, and is the one tinted control.</p>
+            <p><b>Motion:</b> the words arrive behind a blinking caret that stops when they finish; the skeleton shimmers three times at most, then the card swaps in whole.</p>
+            <p><b>Builds:</b> MA-62 (answers from the tools), MA-169 (streaming in the chat).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c15">
+        <div class="bd-h"><span class="bd-id">C15</span><span class="bd-name">Offline and retry</span><span class="bd-keys">MA-173</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Offline and retry · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>21:12</span><span class="sbar-ic"><span class="ms">signal_cellular_off</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><span class="offm z1"><span class="ms">cloud_off</span></span><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Offline · figures as of 21:10</span><span class="fx ac gap8"><span class="strip-n">£24,310</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 21:10</div>
+                  <div class="me">The cash pot is £231 now</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">New value · check it</span><span class="mp-hl">Cash pot to £231</span></div>
+                    <div class="ccard-b"><div class="kv"><span>When</span><span>Today, 23 Oct</span></div><div class="kv"><span>Value</span><span>£231, was £181</span></div></div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary mp-disabled">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    <div class="refuse"><span class="ms">wifi_off</span><span><b>Confirm needs a connection.</b> Nothing was saved; tap it again once you are back online.</span></div>
+                  </div></div></div>
+                  <div class="me">What's the Silver ETC worth now?</div>
+                  <div class="fail" data-mo="fade"><span class="ms">error</span><span>Not sent</span><span class="cbtn"><span class="ms">refresh</span>Retry</span></div>
+                  <div class="me">And the Robotics ETF?</div>
+                  <span class="me-time fx ac gap4"><span class="ms ms-s">schedule</span>Will send when you're back online</span>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The strip says so:</b> offline, figures as of 21:10. Every figure on screen is the last one fetched, kept on the device.</p>
+            <p><b>Typed offline,</b> a message waits with a clock mark and its client id, and is sent once back online; the api's dedupe makes a resend harmless.</p>
+            <p><b>A send that failed</b> as the signal dropped says Not sent, with Retry.</p>
+            <p><b>Motion:</b> the waiting message arrives with its clock mark and Retry answers the tap; nothing loops while offline.</p>
+            <p><b>Confirm is refused offline:</b> "Confirm needs a connection", so nothing is saved by surprise. Builds: MA-173.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c16">
+        <div class="bd-h"><span class="bd-id">C16</span><span class="bd-name">Ceiling reached: templates only</span><span class="bd-keys">MA-114 · MA-113</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Ceiling reached: templates only · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>09:05</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="daysep">Today 07:15</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">Morning brief · 23 Oct · plain</span><span class="mp-num-l">£24,110</span><span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today · ▲ 2.1% this month</span></div>
+                    <div class="ccard-b g0"><div class="hrow"><span class="f1 nm">Balanced</span><span class="rv"><span class="nm">£22,925</span><span class="sub mp-up">▲ 0.6%</span></span></div><div class="hrow"><span class="f1 nm">Three ETFs and cash</span><span class="rv"><span class="nm">£1,185</span><span class="sub mp-dq">▼ 2.5%</span></span></div><span class="mp-foot mp-ink2" style="padding-top:8px">No alerts. The plain brief: the engine's figures, without words, until 3 Nov.</span></div>
+                  </div></div></div>
+                  <div class="me">Why did the ETFs fall?</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Free text is back on 3 Nov, when the allowance renews; buttons and flows still work.</div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>At 100% of the Claude ceiling</b> ($160 of $160 this cycle) Claude stops until the allowance renews on 3 Nov, or the owner raises the ceiling.</p>
+            <p><b>The brief comes as its plain template</b> with the engine's figures; alerts are never dropped, since a template needs no model.</p>
+            <p><b>A typed question gets one line.</b> The chips, every card's buttons and the guided flows work as before.</p>
+            <p><b>Motion:</b> the plain brief rises with its figures rolling up; the one-line reply arrives like any other.</p>
+            <p><b>Builds:</b> MA-114 (the ladder and its messages), MA-113 (the meter behind it).</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="c17">
+        <div class="bd-h"><span class="bd-id">C17</span><span class="bd-name">Privacy mode in the chat</span><span class="bd-keys">MA-171</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Privacy mode in the chat · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                <div class="sbar"><span>20:40</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                <div class="striprow"><div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · 23 Oct</span><span class="fx ac gap8"><span class="strip-n mp-mask">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div><span class="gbtn lg lg-tint"><span class="ms z1">visibility_off</span></span></div>
+                <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                    <div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Portfolio · the 07:15 brief</span><span class="mp-num-l mp-mask">£24,110</span><span class="mp-foot mp-up mp-w6">▲ <span class="mp-mask">£96</span> · 0.4% today · ▲ 2.1% this month</span></div>
+                      <div class="ccard-b g0"><div class="hrow"><span class="f1 nm">Balanced</span><span class="rv"><span class="nm"><span class="mp-mask">£22,925</span></span><span class="sub mp-up">▲ 0.6%</span></span></div><div class="hrow"><span class="f1 nm">Three ETFs and cash</span><span class="rv"><span class="nm"><span class="mp-mask">£1,185</span></span><span class="sub mp-dq">▼ 2.5%</span></span></div></div></div>
+                  </div></div>
+                  <div class="me">I put £200 into Balanced today</div>
+                  <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                    <div class="ccard-h"><span class="mp-over mp-ink2">New transaction · check it</span><span class="mp-hl">Bought <span class="mp-mask">£200</span> of Balanced</span></div>
+                    <div class="ccard-b"><div class="kv"><span>When</span><span>Today, 23 Oct</span></div><div class="kv"><span>Units</span><span><span class="mp-mask">10.8</span></span></div><span class="mp-foot mp-ink2">Privacy is on: amounts and units hidden.</span><span class="fref"><span class="ms">visibility</span>Show amounts on this card</span></div>
+                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                  </div></div></div>
+                </div></div>
+                <div class="edge-bot"></div>
+                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+              </div></div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Privacy on:</b> every amount is masked in the strip, the 07:15 brief's card and the Confirm card; the percentages stay.</p>
+            <p><b>The member's own message is theirs</b> and stays as typed; MyPaisa's echo of it is masked, units too, since they would give the amount away.</p>
+            <p><b>The glass eye beside the strip is on,</b> tinted; a tap shows amounts again. Show amounts on a card shows that card only; Confirm, Edit and Cancel stay as on every Confirm card.</p>
+            <p><b>Motion:</b> masked amounts fade in as blocks and never roll, so no figure shows even for a frame.</p>
+            <p><b>Builds:</b> MA-171.</p>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          /* October 2026, weeks from Monday: the 1st is a Thursday; today is the 23rd, the 21st is picked, later days are not offered */
+          const cal = [{ t: '', c: 'dc' }, { t: '', c: 'dc' }, { t: '', c: 'dc' }];
+          for (let d = 1; d <= 31; d++) cal.push({ t: String(d), c: 'dc' + (d === 21 ? ' sel' : d === 23 ? ' now' : d > 23 ? ' off' : '') });
+          cal.push({ t: '', c: 'dc' });
+          return {
+            themes: [{ label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' }],
+            wd: ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((t) => ({ t: t })),
+            cal: cal
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

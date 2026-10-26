@@ -1,0 +1,91 @@
+{
+  "deliverable": "PR #36 [MA-161]",
+  "rounds": 5,
+  "reviewed_sha": "58030c2",
+  "history": [
+    {
+      "round": 1,
+      "sha": "c87f466",
+      "blocking": 43,
+      "by_lane": {
+        "a scripts and checks": 5,
+        "b trace and Jira": 9,
+        "c spec docs and pages": 11,
+        "d rules and skills": 7,
+        "e boards and mirror": 11
+      },
+      "non_blocking": 30,
+      "fixed_in": "780af1b, b006e3e"
+    },
+    {
+      "round": 2,
+      "sha": "930592c",
+      "delta_from": "c87f466",
+      "blocking": 22,
+      "arun": "26 Oct 2026: run review round 2 on the delta, fix what it finds, then merge on a clean round",
+      "by_lane": {
+        "a scripts and checks": 5,
+        "b trace and Jira": 5,
+        "c spec docs and pages": 5,
+        "d rules and skills": 4,
+        "e boards and mirror": 3
+      },
+      "non_blocking": 27,
+      "fixed_in": "689726a",
+      "range": "c87f466..930592c (round 1's fixes)"
+    },
+    {
+      "round": 3,
+      "sha": "689726a",
+      "range": "930592c..689726a (round 2's fixes only)",
+      "blocking": 22,
+      "arun": "26 Oct 2026: run review round 3 on round 2's fixes only, fix what it finds, then merge on a clean round",
+      "by_lane": {
+        "a scripts and checks": 4,
+        "b trace and Jira": 8,
+        "c spec docs and pages": 4,
+        "d rules and skills": 4,
+        "e boards and mirror": 2
+      },
+      "non_blocking": 17,
+      "fixed_in": "67b6fd6"
+    },
+    {
+      "round": 4,
+      "sha": "67b6fd6",
+      "range": "689726a..67b6fd6 (round 3's fixes only)",
+      "blocking": 14,
+      "arun": "26 Oct 2026: run review round 4 on round 3's fixes only, fix what it finds, then merge on a clean round",
+      "by_lane": {
+        "a scripts and checks": 4,
+        "b trace and Jira": 4,
+        "c spec docs and pages": 3,
+        "d rules and skills": 2,
+        "e boards and mirror": 1
+      },
+      "non_blocking": 17,
+      "fixed_in": "58030c2"
+    },
+    {
+      "round": 5,
+      "sha": "58030c2",
+      "range": "67b6fd6..58030c2 (round 4's fixes only)",
+      "blocking": 16,
+      "arun": "26 Oct 2026: run review round 5 on round 4's fixes only, fix what it finds, then merge on a clean round",
+      "by_lane": {
+        "a scripts and checks": 6,
+        "b trace and Jira": 2,
+        "c spec docs and pages": 3,
+        "d rules and skills": 5,
+        "e boards and mirror": 0
+      },
+      "non_blocking": 17,
+      "fixed_in": "8edb82d"
+    }
+  ],
+  "next": {
+    "round": 6,
+    "range": "58030c2..8edb82d (round 5's fixes only)",
+    "waits_for": "Arun's word: five rounds are done; a sixth runs only if he asks for it"
+  }
+}

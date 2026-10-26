@@ -22,8 +22,8 @@ this repo on any change just before you merge the PR. just for this Repo".
   "Independent review"), in parallel lanes on the delta. Arun, 25 Oct 2026,
   after PR #32's seven one-reviewer rounds: "always use that approach for
   this repo and make it a global rule".
-  1. **Gates first:** `python3 scripts/plan_sync.py selftest`, `check`, the
-     story's other gates, and `python3 scripts/review_regress.py MA-<n>` once
+  1. **Gates first:** `python3 scripts/plan_sync.py selftest`, `check`,
+     `python3 scripts/contrast_check.py --selftest` and `python3 scripts/contrast_check.py`, the story's other gates, and `python3 scripts/review_regress.py MA-<n>` once
      the story has a ledger. Reviewers spend time only on what no gate measures.
   2. **Lanes, in parallel:** one fresh sub-agent per lane, every Agent call in
      one message, each blind to the making (the requirements, the rules and
@@ -34,14 +34,18 @@ this repo on any change just before you merge the PR. just for this Repo".
      changes them. Each reports on its part and the joins into it; their
      findings are merged into one list.
   3. **Round 1 covers everything; later rounds cover the delta**
-     (`git diff <reviewed_sha>..HEAD` and its joins), with the gates on the
+     (the previous round's fixes only: `git diff <previous round's reviewed_sha>..HEAD` and its joins; Arun, 26 Oct 2026), with the gates on the
      whole. A lane with nothing changed sits the round out.
   4. **Fixed stays fixed:** every fixed blocking finding (and any owner decision the review must keep) goes into
      `review/MA-<n>/fixed.json` with a check that passes while the fix holds;
      `scripts/review_regress.py` runs them before each round, and reviewers get
      the list and must not undo any of it. Rounds and the reviewed sha are in
      `review/MA-<n>/state.json`.
-  5. **At most five rounds;** if blocking findings remain after the fifth,
+  5. **Each round needs its own yes** (Arun, 25 Oct 2026: "ask me before the
+     reviews please"): after fixing a round, report it and ask "Run round N on
+     round N-1's fixes, then merge on a clean round, or merge now?"; his yes
+     covers that one round and the merge after it if it is clean.
+  6. **At most five rounds;** if blocking findings remain after the fifth,
      stop and ask Arun whether to go on, listing them and what each fix costs.
      The question names the merge ("Fix them, run round 6, then merge on a
      clean round?"), so his yes covers both, as the merge question's does.
@@ -109,7 +113,7 @@ PR, move the issue to In Review, wait for the checks. Then ask exactly once,
 naming the PR and its checks:
 
 > MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key, plan-sync). Review it
-> first (lanes: scripts, trace, docs, rules; up to five rounds), then merge,
+> first (lanes: scripts, trace, docs, rules; one round, each later round asked first), then merge,
 > or merge it into main now? (MA-7 goes to Done after the merge.)
 
 Either yes merges (after a clean review, for the first), closes the issue and

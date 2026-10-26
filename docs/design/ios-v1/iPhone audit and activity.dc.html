@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone audit and activity</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0; text-wrap: pretty; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.06); }
+          .bd-note p { margin: 0; }
+          .dv-col { display: flex; flex-direction: column; }
+          .dv-pair { display: flex; gap: 40px; align-items: flex-start; }
+          .lg > * { position: relative; z-index: 1; }
+          .pg { display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 0; }
+          .under { position: absolute; inset: 0; overflow: hidden; }
+          .under > .pg { padding-top: 100px; }
+          .subt { padding: 0 20px 10px; margin-top: -8px; }
+          .navc { position: absolute; left: 60px; right: 60px; text-align: center; font: 600 17px/22px var(--mp-font); pointer-events: none; }
+          .sech { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 4px 0 16px; margin-bottom: -4px; }
+          .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+          .ell { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .chev { color: var(--mp-ink-2); font-size: 20px; flex: none; }
+          .tabs-min { flex: none; width: 64px; }
+          .segc { display: grid; place-items: center; }
+          .filters { display: flex; gap: 8px; }
+          .filt { padding: 0 10px 0 14px; white-space: nowrap; gap: 2px; }
+          .chain { display: flex; align-items: center; gap: 6px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); padding: 0 4px; }
+          .chain .ms { font-size: 18px; color: var(--mp-hold); }
+          .av { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; flex: none; font: 700 13px/1 var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink-2); }
+          .arow { align-items: flex-start; padding-top: 12px; padding-bottom: 12px; }
+          .fline { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 6px 6px 6px 8px; border-radius: 12px; background: var(--mp-surface-2); }
+          .thumb { width: 30px; height: 44px; border-radius: 6px; flex: none; background: repeating-linear-gradient(135deg, var(--mp-surface) 0 5px, var(--mp-line) 5px 7px); box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .ktile { width: 32px; height: 32px; border-radius: 8px; flex: none; display: grid; place-items: center; background: var(--mp-surface); color: var(--mp-ink-2); }
+          .ktile .ms { font-size: 18px; }
+          .openb { background: var(--mp-surface); padding: 0 14px; }
+          .stripe { background: repeating-linear-gradient(135deg, var(--mp-surface-2) 0 9px, var(--mp-line) 9px 11px); display: grid; place-items: center; text-align: center; padding: 10px; box-sizing: border-box; font: 500 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); }
+          .bigthumb { width: 104px; height: 186px; border-radius: 12px; flex: none; box-shadow: inset 0 0 0 1px var(--mp-line); }
+          .note { display: flex; gap: 10px; align-items: flex-start; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); padding: 0 4px; }
+          .note .ms { font-size: 18px; color: var(--mp-ink-2); }
+          .meter { position: relative; height: 10px; }
+          .meter-f { display: block; height: 100%; border-radius: 999px; background: var(--mp-meter); }
+          .tick { position: absolute; top: -3px; bottom: -3px; width: 1.5px; background: var(--mp-ink-2); }
+          .ticks { position: relative; height: 14px; font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); }
+          .ticks > span { position: absolute; transform: translateX(-50%); }
+          .runr { display: grid; grid-template-columns: 42px minmax(0, 1fr) 52px; gap: 10px; align-items: flex-start; }
+          .tline { font: 400 13px/18px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); }
+          .okc { color: var(--mp-ink-2); font-size: 20px; }
+          .sched { display: grid; grid-template-columns: minmax(0, 1fr) 80px 80px; gap: 0 8px; align-items: center; }
+          .sched > span { min-height: 34px; display: flex; align-items: center; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); }
+          .sched > span.h { border-top: 0; min-height: 20px; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+          .sched > span.r { justify-content: flex-end; text-align: right; }
+          .tools > span { min-height: 30px; }
+          .tools > span.h { min-height: 18px; }
+          .fresh { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; }
+          .fresh > span { display: flex; align-items: center; gap: 6px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .fresh .ms { font-size: 16px; color: var(--mp-ink-2); }
+          .qn { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; }
+          .qn-amber { background: var(--mp-pause-bg); }
+          .mc { display: flex; flex-direction: column; gap: 2px; }
+          .qlbg { background: var(--mp-surface-2); }
+          .page { margin: 0 auto; width: 340px; height: 480px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18); padding: 22px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; color: #14171F; }
+          .page .stripe { background: repeating-linear-gradient(135deg, #F0EDE8 0 9px, #E4E0DA 9px 11px); color: #4E5462; border-radius: 4px; }
+          .qlt { display: flex; flex-direction: column; align-items: center; position: absolute; left: 70px; right: 70px; pointer-events: none; }
+          .cap { position: absolute; left: 16px; right: 16px; bottom: 30px; border-radius: 22px; padding: 10px 14px; display: flex; gap: 10px; align-items: flex-start; z-index: 25; font: 400 13px/18px var(--mp-font); }
+          .cap .ms { font-size: 18px; }
+          .mp .mp-track { background: color-mix(in srgb, var(--mp-ink-3) 26%, var(--mp-surface)); box-shadow: none; }
+        </style>
+      </helmet>
+      <section class="dv-turn" id="intro" data-screen-label="iPhone audit and activity: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#intro">A</a><span class="dv-tname">iPhone audit and activity: every change, every file, every run</span></div>
+        <p class="dv-intro">The two screens of record in the app (MA-161, MA-71, MA-79), in option 1a's shell with the Activity tab selected: Activity says what MyPaisa did today and what it cost; Audit, opened from Activity's toolbar or from the chat, lists every change with who made it, when, through what and the run behind it, and opens the file behind a change in Quick Look through a five-minute link (MA-149). Both are read-only: the filters only narrow, Open only reads, and every change still starts as a card and a Confirm tap in the chat. The same screens, with the same rows and runs, are also on the web app (a PWA at console(-dev).mypaisapp.com). Each frame plays its motion as it scrolls into view (replay beside its label). Warm ledger content under Liquid Glass bars, light and dark. Planned: each goes through design-first when its story starts. Illustrative figures and names.</p>
+      </section>
+
+      <section class="bd" id="a1">
+        <div class="bd-h"><span class="bd-id">A1</span><span class="bd-name">Audit</span><span class="bd-keys">MA-79 · MA-71 · MA-40</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Audit · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span></span></div>
+                  <div class="largetitle">Audit</div>
+                  <div class="scroll"><div class="pg">
+                    <div class="mp-seg"><span class="mp-seg-i segc on">Changes</span><span class="mp-seg-i segc">Files</span></div>
+                    <div class="filters"><span class="cbtn filt">Everyone<span class="ms">expand_more</span></span><span class="cbtn filt">All records<span class="ms">expand_more</span></span><span class="cbtn filt">This week<span class="ms">expand_more</span></span></div>
+                    <div class="chain"><span class="ms">verified</span><span>Hash chain verified · checked today 07:00</span></div>
+                    <sc-for list="{{ days }}" as="d" hint-placeholder-count="3">
+                      <div class="sech"><span class="mp-over mp-ink2">{{ d.day }}</span><span></span></div>
+                      <div class="mp-group">
+                        <sc-for list="{{ d.ents }}" as="e" hint-placeholder-count="2">
+                          <div class="mp-row arow">
+                            <span class="av">{{ e.init }}</span>
+                            <span class="grow">
+                              <span class="mp-foot mp-ink2 ell">{{ e.who }} · {{ e.time }} · {{ e.rec }}</span>
+                              <span class="mp-hl ell">{{ e.what }}</span>
+                              <span class="mp-sub ell">{{ e.change }}</span>
+                              <span class="mp-foot mp-ink2 ell">via {{ e.via }} · {{ e.run }}</span>
+                              <sc-if value="{{ e.hasFile }}" hint-placeholder-val="{{ false }}">
+                                <span class="fline"><sc-if value="{{ e.file.img }}" hint-placeholder-val="{{ true }}"><span class="thumb"></span></sc-if><sc-if value="{{ e.file.doc }}" hint-placeholder-val="{{ false }}"><span class="ktile"><span class="ms">description</span></span></sc-if><span class="grow"><span class="mp-foot mp-w6 ell">{{ e.file.name }}</span><span class="mp-foot mp-ink2 ell">{{ e.file.meta }}</span></span><span class="cbtn openb">Open</span></span>
+                              </sc-if>
+                            </span>
+                            <span class="ms chev">chevron_right</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </sc-for>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsAct }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Pushed from Activity's Audit button,</b> or opened from the chat after "what changed this week?" (MA-40). Activity stays selected (MA-79, MA-71).</p>
+            <p><b>Newest first, one group per day:</b> who, when and which record; what changed, before → after; and through what (a typed message, a button, a screenshot or a factsheet) with the run that made it. The chevron opens the row.</p>
+            <p><b>The filters only narrow.</b> Member, record and date are menus; nothing here writes. The hash-chain line says no row has been edited or removed since it was written.</p>
+            <p><b>A row made from a file</b> carries a file line with Open; opening a file is itself a row, as at 07:58.</p>
+            <p><b>Who sees what:</b> the owner every row; Asha the rows for her own accounts and the household's records.</p>
+            <p><b>Moves:</b> the day groups rise and their rows cascade newest first; a filter change re-cascades the list; the chain line stays still.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a2">
+        <div class="bd-h"><span class="bd-id">A2</span><span class="bd-name">Audit, a change from a file</span><span class="bd-keys">MA-149 · MA-148</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Audit, a change from a file · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span></span></div>
+                  <div class="largetitle">Cash pot</div>
+                  <div class="subt mp-foot mp-ink2">Valuation · Thu 22 Oct, 19:02</div>
+                  <div class="scroll"><div class="pg">
+                    <div class="mp-card fx col gap10">
+                      <div class="kv"><span>Who</span><span>Asha · member</span></div>
+                      <div class="kv"><span>Through</span><span>a screenshot, then Confirm</span></div>
+                      <div class="kv"><span>Before → after</span><span>£120 → £181</span></div>
+                      <div class="kv"><span>Record</span><span>Cash · Monzo pot, joint</span></div>
+                      <div class="kv"><span>Run</span><span class="mp-acc">r-1170 ›</span></div>
+                      <div class="kv"><span>Hash chain</span><span>linked · verified 07:00</span></div>
+                    </div>
+                    <div class="sech"><span class="mp-over mp-ink2">The file behind it</span><span></span></div>
+                    <div class="mp-card fx gap12">
+                      <div class="stripe bigthumb">screenshot as sent: the Monzo pot, £181</div>
+                      <div class="fx col gap4" style="flex:1;min-width:0">
+                        <span class="mp-hl" style="overflow-wrap:anywhere">monzo-pot.png</span>
+                        <span class="mp-foot mp-ink2">Screenshot · PNG · 142 KB</span>
+                        <span class="mp-foot mp-ink2">Sent by Asha in the chat, Thu 19:01</span>
+                        <span class="mp-foot mp-ink2">Fed 1 change: this one</span>
+                        <span class="mp-btn mp-btn-primary mp-btn-small" style="margin-top:auto"><span class="ms">visibility</span>Open</span>
+                      </div>
+                    </div>
+                    <div class="note"><span class="ms">timer</span><span>Open checks the role first: Asha, who sent it, and the owner may open it. It then makes a link that works for five minutes, and the opening is a row of its own.</span></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsAct }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The row opened:</b> who, when, through what, before → after, the record, the run and the row's place in the hash chain (MA-149).</p>
+            <p><b>The file behind it:</b> a thumbnail for an image (a striped placeholder here), its name, kind and size, who sent it and when, and Open. A PDF shows its kind tile instead.</p>
+            <p><b>Open checks the role first,</b> then makes a five-minute link: the member who sent the file and the owner may open it, a viewer may not. The file itself is kept for good (MA-148).</p>
+            <p><b>Read-only.</b> No delete, rename or replace; to correct a figure, send a new file in the chat, which makes a new card and a new row.</p>
+            <p><b>Moves:</b> the detail card and the file card rise in turn; Open zooms the thumbnail into Quick Look.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a3">
+        <div class="bd-h"><span class="bd-id">A3</span><span class="bd-name">Files</span><span class="bd-keys">MA-149</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Files · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span></span></div>
+                  <div class="largetitle">Audit</div>
+                  <div class="scroll"><div class="pg">
+                    <div class="mp-seg"><span class="mp-seg-i segc">Changes</span><span class="mp-seg-i segc on">Files</span></div>
+                    <div class="filters"><span class="cbtn filt">Everyone<span class="ms">expand_more</span></span><span class="cbtn filt">All kinds<span class="ms">expand_more</span></span><span class="cbtn filt">Last 30 days<span class="ms">expand_more</span></span></div>
+                    <div class="sech"><span class="mp-over mp-ink2">Every file sent · newest first</span><span class="mp-foot mp-ink2">5 · 3.8 MB</span></div>
+                    <div class="mp-group">
+                      <sc-for list="{{ files }}" as="f" hint-placeholder-count="5">
+                        <div class="mp-row arow">
+                          <sc-if value="{{ f.img }}" hint-placeholder-val="{{ true }}"><span class="thumb"></span></sc-if><sc-if value="{{ f.doc }}" hint-placeholder-val="{{ false }}"><span class="ktile" style="background:var(--mp-surface-2)"><span class="ms">{{ f.icon }}</span></span></sc-if>
+                          <span class="grow">
+                            <span class="mp-hl" style="overflow-wrap:anywhere">{{ f.name }}</span>
+                            <span class="mp-foot mp-ink2 ell">{{ f.meta }} · {{ f.by }}</span>
+                            <span class="mp-foot mp-ink2">{{ f.fed }}</span>
+                          </span>
+                          <span class="cbtn" style="padding:0 14px">Open</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <span class="mp-foot mp-ink2" style="padding:0 4px">Kept for good, in a private store, before anything read them. Asha sees her own one; a viewer sees none.</span>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsAct }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Audit's second view:</b> every file sent, newest first, with who sent it, its kind and size, and the changes it fed (MA-149).</p>
+            <p><b>Filters by member, kind and date;</b> the count and the size are the registry's, and every file is kept for good.</p>
+            <p><b>Who sees what follows the roles:</b> the owner every file, Asha her own (one in these 30 days), a viewer none, with a plain empty state that says why.</p>
+            <p><b>Open</b> on any row goes to Quick Look through the same five-minute link, after the role check.</p>
+            <p><b>Moves:</b> the rows cascade newest first; switching Changes and Files slides the segment's lens.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a4">
+        <div class="bd-h"><span class="bd-id">A4</span><span class="bd-name">File preview</span><span class="bd-keys">MA-149</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · File preview · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn qlbg">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gtext lg"><span>Done</span></span><span class="qlt"><span class="mp-hl ell" style="max-width:100%">silver-etc-factsheet.pdf</span><span class="mp-foot mp-ink2">Page 2 of 4</span></span><span class="gbtn lg"><span class="ms">ios_share</span></span></div>
+                  <div style="padding-top:22px">
+                    <div class="page" data-mo="card">
+                      <span style="font:700 15px/20px var(--mp-font)">iShares Physical Silver ETC</span>
+                      <span style="font:400 12px/16px var(--mp-font);color:#4E5462">Factsheet · 30 September · page 2 of 4</span>
+                      <div class="stripe" style="height:120px">charges and costs table</div>
+                      <div class="stripe" style="height:150px">asset mix and price chart</div>
+                      <div class="stripe" style="flex:1">notes and risks</div>
+                    </div>
+                    <div class="page" style="margin-top:14px"><span style="font:700 15px/20px var(--mp-font)">Top holdings and fees</span><div class="stripe" style="height:120px">page 3 of 4</div></div>
+                  </div>
+                  <div class="cap lg" data-mo="fade" style="--mo-d:700ms"><span class="ms">timer</span><span>Opened through a link that works for five minutes, until 09:46. This opening is a row in the Audit log.</span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Quick Look, iOS's own viewer,</b> full screen over Files: Done, the title, the page count, paging and Share are the system's; editing is turned off (MA-149). The web app opens the same file in the browser's viewer.</p>
+            <p><b>The file loads through a link that works for five minutes,</b> made after the role check; after that, Open asks for a new one, after the same check.</p>
+            <p><b>The glass caption is MyPaisa's:</b> it says when the link ends and that this opening is itself a row in the Audit log (You, 09:41, r-1196).</p>
+            <p><b>The page is the file as sent,</b> drawn here as striped placeholders.</p>
+            <p><b>Moves:</b> the page zooms up from the row it was opened from (Quick Look's own transition) and the caption fades in after it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a5">
+        <div class="bd-h"><span class="bd-id">A5</span><span class="bd-name">Activity</span><span class="bd-keys">MA-79 · MA-71 · MA-113</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Activity · {{ t.label }}">
+              <div class="dv-pair">
+                <div class="dv-col">
+                  <div class="bd-theme">iPhone · {{ t.label }} · as it opens</div>
+                  <div class="dev dev-iphone mp {{ t.cls }}">
+                    <div class="island"></div>
+                    <div class="scrn">
+                      <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="nav"><span></span><span class="gtext lg"><span class="ms">history</span><span>Audit</span></span></div>
+                      <div class="largetitle">Activity</div>
+                      <div class="scroll"><div class="pg">
+                        <div class="mp-seg"><span class="mp-seg-i segc on">Everyone's runs</span><span class="mp-seg-i segc">Mine</span></div>
+                        <div class="mp-card fx col gap8">
+                          <div class="fx jb ac"><span class="mp-over mp-ink2">Claude this cycle</span><span class="mp-foot mp-ink2">renews on the 3rd</span></div>
+                          <div class="fx ac gap8" style="align-items:baseline"><span class="mp-num-l">$18</span><span class="mp-sub mp-ink2">of $160 · 11% · about £14 of £124</span></div>
+                          <div class="meter mp-track"><span class="meter-f" style="width:11.25%"></span><span class="tick" data-mo="fade" style="left:70%"></span><span class="tick" data-mo="fade" style="left:85%"></span><span class="tick" data-mo="fade" style="left:95%"></span></div>
+                          <div class="ticks"><span style="left:70%">70%</span><span style="left:85%">85%</span><span style="left:95%">95%</span></div>
+                          <span class="mp-foot mp-ink2"><b>Step: Normal,</b> under 70%. Nothing is held back.</span>
+                          <div class="mp-hr" style="margin:4px 0"></div>
+                          <div class="fx jb ac"><span class="mp-sub">AWS and others</span><span class="mp-sub mp-w6">£3 of £50 · 6%</span></div>
+                          <div class="meter mp-track"><span class="meter-f" style="width:6%"></span></div>
+                        </div>
+                        <div class="sech"><span class="mp-over mp-ink2">Today's runs</span><span class="mp-foot mp-ink2">showing 7 of 13 · $0.25 so far</span></div>
+                        <div class="mp-group">
+                          <sc-for list="{{ runsA }}" as="r" hint-placeholder-count="4">
+                            <div class="mp-row runr"><span class="mp-sub mp-w6">{{ r.time }}</span><span class="mc"><span class="mp-hl ell">{{ r.job }}</span><span class="mp-foot mp-ink2">{{ r.line }}</span><span class="tline ell">{{ r.tools }}</span></span><span class="fx col" style="align-items:flex-end;gap:4px"><span class="mp-sub mp-w6">{{ r.cost }}</span><span class="ms okc">{{ r.icon }}</span></span></div>
+                          </sc-for>
+                        </div>
+                      </div></div>
+                      <div class="edge-bot"></div>
+                      <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsAct }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                      <div class="homebar"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="dv-col">
+                  <div class="bd-theme">iPhone · {{ t.label }} · scrolled to the end</div>
+                  <div class="dev dev-iphone mp {{ t.cls }}">
+                    <div class="island"></div>
+                    <div class="scrn">
+                      <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="nav"><span class="navc">Activity</span><span></span><span class="gtext lg"><span class="ms">history</span><span>Audit</span></span></div>
+                      <div class="under"><div class="pg" style="padding-top:98px">
+                        <div class="mp-group">
+                          <sc-for list="{{ runsB }}" as="r" hint-placeholder-count="3">
+                            <div class="mp-row runr"><span class="mp-sub mp-w6">{{ r.time }}</span><span class="mc"><span class="mp-hl ell">{{ r.job }}</span><span class="mp-foot mp-ink2">{{ r.line }}</span><span class="tline ell">{{ r.tools }}</span></span><span class="fx col" style="align-items:flex-end;gap:4px"><span class="mp-sub mp-w6">{{ r.cost }}</span><span class="ms okc">{{ r.icon }}</span></span></div>
+                          </sc-for>
+                        </div>
+                        <div class="sech"><span class="mp-over mp-ink2">Schedule and price freshness</span><span class="mp-foot mp-ink2">UK time</span></div>
+                        <div class="mp-card" style="padding:10px 16px 12px">
+                          <div class="sched"><span class="h">Job</span><span class="h r">Last</span><span class="h r">Next</span><sc-for list="{{ sched }}" as="s" hint-placeholder-count="5"><span class="ell">{{ s.job }}</span><span class="r mp-ink2">{{ s.last }}</span><span class="r mp-ink2">{{ s.next }}</span></sc-for></div>
+                          <div class="mp-hr" style="margin:4px 0 6px"></div>
+                          <div class="fresh"><sc-for list="{{ fresh }}" as="f" hint-placeholder-count="5"><span><span class="ms">{{ f.icon }}</span>{{ f.t }}</span></sc-for></div>
+                        </div>
+                        <div class="sech"><span class="mp-over mp-ink2">Alarms, last 7 days</span><span class="mp-foot mp-ink2">0 red · 2 amber</span></div>
+                        <div class="qn qn-amber" data-mo="card"><span class="ms c-pause">warning</span><span class="fx col gap2" style="flex:1;min-width:0"><span class="mp-hl">Amber · Thu 22 Oct</span><span class="mp-foot">Silver's 21:00 ingest failed 5 times; waiting in Failed work.</span></span></div>
+                        <div class="qn qn-amber" data-mo="card"><span class="ms c-pause">warning</span><span class="fx col gap2" style="flex:1;min-width:0"><span class="mp-hl">Amber · Wed 21 Oct</span><span class="mp-foot">iShares NAV page slow; prices from yfinance.</span></span></div>
+                      </div></div>
+                      <div class="edge-top"></div>
+                      <div class="tabdock"><div class="tabs lg tabs-min"><span class="tab on"><span class="ms">insights</span></span></div><span style="flex:1"></span><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                      <div class="homebar"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>The Activity tab:</b> what MyPaisa did today, what each run called and what it cost. The Audit button in the toolbar opens the log (MA-79, MA-71).</p>
+            <p><b>Claude this cycle against the ceiling:</b> $18 of $160 on the Normal step, with the 70, 85 and 95% steps marked and the pounds beside; AWS and others against their own £50 cap (MA-113).</p>
+            <p><b>Each run in a row:</b> when, what it was, the model calls, tokens and cost, and the tools; a tap opens the run. Scrolled: the schedule with last and next run, price freshness, and the week's alarms.</p>
+            <p><b>The owner sees every run; a member sees their own and the household's.</b> Asha's chat run shows its cost and tools, never her words.</p>
+            <p><b>Costs come from the API's own token counts,</b> in dollars as the credit is. Meters are blue, never green.</p>
+            <p><b>Moves:</b> the spend rolls up to $18 and both meters grow from the left, the step marks fading in after; the runs cascade.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bd" id="a6">
+        <div class="bd-h"><span class="bd-id">A6</span><span class="bd-name">A run</span><span class="bd-keys">MA-79</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · A run · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="navc">Morning brief</span><span></span></div>
+                  <div class="scroll"><div class="pg" style="padding-top:8px">
+                    <div class="mp-card fx col gap8">
+                      <div class="kv"><span>Trigger</span><span>Schedule, 07:15</span></div>
+                      <div class="kv"><span>Start → end</span><span>07:15:02 → 07:15:31 · 29 s</span></div>
+                      <div class="kv"><span>Outcome</span><span>Done · nothing retried</span></div>
+                      <div class="kv"><span>Cost</span><span>$0.03 · 5.4k tokens, 12.5k cached</span></div>
+                    </div>
+                    <div class="sech"><span class="mp-over mp-ink2">Model calls · 3</span><span class="mp-foot mp-ink2">r-1184</span></div>
+                    <div class="mp-group">
+                      <sc-for list="{{ calls }}" as="c" hint-placeholder-count="3">
+                        <div class="mp-row" style="flex-direction:column;align-items:stretch;gap:2px;padding-top:7px;padding-bottom:7px"><span class="fx jb ac"><span class="mp-sub mp-w6">{{ c.m }}</span><span class="mp-sub mp-w6">{{ c.cost }}</span></span><span class="mp-foot mp-ink2">{{ c.t }}</span></div>
+                      </sc-for>
+                    </div>
+                    <div class="sech"><span class="mp-over mp-ink2">Tool calls · 4</span><span></span></div>
+                    <div class="mp-card" style="padding:8px 16px"><div class="sched tools" style="grid-template-columns:minmax(0,1fr) 70px 28px"><span class="h">Tool</span><span class="h r">Time</span><span class="h r"></span><sc-for list="{{ tools }}" as="x" hint-placeholder-count="4"><span class="tline" style="color:var(--mp-ink)">{{ x.n }}</span><span class="r mp-ink2">{{ x.ms }}</span><span class="r"><span class="ms okc">check_circle</span></span></sc-for></div></div>
+                    <div class="mp-card fx col gap4"><span class="mp-over mp-ink2">What was sent</span><span class="mp-sub">The brief to Arun and Asha in the chat, and by push to 4 devices, with no amount on a lock screen.</span></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsAct }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>One run, opened from Activity:</b> the morning brief's trigger, start and end, each model call with its model, input, cached and output tokens, cost and time, each tool call, what was sent and the outcome (MA-79).</p>
+            <p><b>The sums agree with Activity's row:</b> 3 calls, 5.4k tokens, $0.03. Every cost is worked out from the API's own counts and the price table.</p>
+            <p><b>What was sent</b> names who and how, and that no amount reached a lock screen.</p>
+            <p><b>Read-only.</b> A failed run says why here; replaying it is the owner's, in the Admin center.</p>
+            <p><b>Moves:</b> the summary card rises, then the model calls and the tool calls cascade in order.</p>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          const tabs = (sel) => [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((d) => ({ icon: d[0], label: d[1], on: d[1] === sel ? 'on' : '' }));
+          const F = {
+            pot: { name: 'monzo-pot.png', meta: 'Screenshot · 142 KB', img: true, doc: false },
+            ag: { name: 'silver-etc-factsheet.pdf', meta: 'Factsheet · 1.1 MB', img: false, doc: true },
+            vals: { name: 'monzo-valuations.png', meta: 'Screenshot · 196 KB', img: true, doc: false }
+          };
+          const E = (o) => Object.assign({ hasFile: false, file: F.pot, change: o.note || (o.before + ' → ' + o.after) }, o);
+          const arun = { who: 'Arun', init: 'Ar' }, asha = { who: 'Asha', init: 'As' };
+          // run ids rise with time (a gap is an action no board draws): 07:15 brief r-1184, 07:58 file r-1186, 08:02 Asha r-1187, Arun's chats 08:05 to 08:56 r-1188 to r-1194, 09:41 file r-1196; the £200 buy is logged at 20:41, after every board here
+          const runs = [
+            { time: '02:00', job: 'News scoring', line: 'Haiku, batched · 1 call · 38.2k tokens', tools: '64 headlines scored', cost: '$0.02', icon: 'check_circle' },
+            { time: '07:00', job: 'Ingest prices', line: 'No model · 5 of 5 priced · 12 s', tools: 'yfinance, iShares NAV, ECB', cost: '$0.00', icon: 'check_circle' },
+            { time: '07:04', job: 'Engine', line: 'No model · self-test passed · 8 s', tools: 'signals for 5 holdings', cost: '$0.00', icon: 'check_circle' },
+            { time: '07:15', job: 'Morning brief', line: 'Sonnet, Haiku · 3 calls · 5.4k tokens', tools: 'get_portfolio, get_signals, +2', cost: '$0.03', icon: 'check_circle' },
+            { time: '08:02', job: 'Chat · Asha', line: 'Sonnet · 3 calls · 7.8k tokens · 2 web searches', tools: 'get_signals, web_search', cost: '$0.06', icon: 'check_circle' },
+            { time: '08:56', job: 'Chat · Arun', line: 'Sonnet · 3 calls · 14.0k tokens', tools: 'extract_document, propose_change', cost: '$0.06', icon: 'check_circle' },
+            { time: '21:15', job: 'Evening wrap', line: 'Scheduled, not run yet', tools: '', cost: '—', icon: 'schedule' }
+          ];
+          return {
+            themes: [{ label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' }],
+            tabsAct: tabs('Activity'),
+            days: [
+              { day: 'Today · Fri 23 Oct', ents: [
+                E(Object.assign({ time: '07:58', rec: 'File opened', what: 'Opened monzo-pot.png', note: 'a five-minute link, until 08:03', via: 'Quick Look, from Audit', run: 'r-1186' }, arun)) ] },
+              { day: 'Thu 22 Oct', ents: [
+                E(Object.assign({ time: '19:02', rec: 'Valuation', what: 'Cash pot, from a screenshot', before: '£120', after: '£181', via: 'screenshot, then Confirm', run: 'r-1170', hasFile: true, file: F.pot }, asha)) ] },
+              { day: 'Wed 21 Oct', ents: [
+                E(Object.assign({ time: '21:15', rec: 'Factsheet', what: "Silver ETC's fee, from its factsheet", before: 'not known', after: '0.20% a year', via: 'factsheet, then Confirm', run: 'r-1139', hasFile: true, file: F.ag }, arun)),
+                E(Object.assign({ time: '20:05', rec: 'Preference', what: 'Quiet hours 22:00 to 07:00', before: 'off', after: 'on', via: 'button, then Confirm', run: 'r-1133' }, asha)) ] },
+              { day: 'Tue 20 Oct', ents: [
+                E(Object.assign({ time: '18:24', rec: 'Valuation', what: 'Balanced, from a screenshot', before: '£22,410', after: '£22,612', via: 'screenshot, then Confirm', run: 'r-1124', hasFile: true, file: F.vals }, arun)) ] }
+            ],
+            files: [
+              { name: 'Robotics-ETF-factsheet.pdf', meta: 'PDF · 1.2 MB', by: 'Arun, Fri 23 Oct', fed: 'Fed no change yet: its card waits for Confirm', img: false, doc: true, icon: 'description' },
+              { name: 'monzo-pot.png', meta: 'PNG · 142 KB', by: 'Asha, Thu 22 Oct', fed: 'Fed 1 change: Cash pot £120 → £181', img: true, doc: false, icon: 'image' },
+              { name: 'silver-etc-factsheet.pdf', meta: 'PDF · 1.1 MB', by: 'Arun, Wed 21 Oct', fed: "Fed 1 change: Silver ETC's fee", img: false, doc: true, icon: 'description' },
+              { name: 'monzo-valuations.png', meta: 'PNG · 196 KB', by: 'Arun, Tue 20 Oct', fed: 'Fed 1 change: Balanced £22,410 → £22,612', img: true, doc: false, icon: 'image' },
+              { name: 'balanced-factsheet.pdf', meta: 'PDF · 1.2 MB', by: 'Arun, Sun 18 Oct', fed: 'Fed 2 changes: its fee, its top ten', img: false, doc: true, icon: 'description' }
+            ],
+            runsA: runs.slice(0, 4),
+            runsB: runs.slice(4),
+            sched: [['Ingest prices', '07:00', '21:00'], ['Morning brief', '07:15', 'Mon 07:15'], ['Evening wrap', 'Thu 21:15', '21:15'], ['Saturday review', 'Sat 17 Oct', 'Sat 09:00']].map((s) => ({ job: s[0], last: s[1], next: s[2] })),
+            fresh: [['check', 'Balanced · Thu NAV'], ['check', 'NASDAQ 100 · Thu'], ['check', 'Robotics · Thu'], ['check', 'Silver · Thu'], ['remove', 'Cash · no price']].map((f) => ({ icon: f[0], t: f[1] })),
+            calls: [
+              { m: '1 · Sonnet 5.5 · the brief', cost: '$0.014', t: 'in 2,140 · cached 5,880 · out 412 · 3,420 ms' },
+              { m: '2 · Sonnet 5.5 · its Technical part', cost: '$0.016', t: 'in 1,310 · cached 6,600 · out 690 · 5,110 ms' },
+              { m: '3 · Haiku 5.5 · repeat filter', cost: '$0.001', t: 'in 820 · cached 0 · out 40 · 410 ms' }
+            ],
+            tools: [['get_portfolio', '140 ms'], ['get_signals × 5', '620 ms'], ['get_events', '90 ms'], ['chart_series', '380 ms']].map((x) => ({ n: x[0], ms: x[1] }))
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

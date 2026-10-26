@@ -11,6 +11,8 @@
       <helmet data-dc-atomics>
         <meta name="design_doc_mode" content="canvas" />
         <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
@@ -248,6 +250,8 @@
           .mpm-coin { fill: var(--mp-hero); }
           .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
           .mpm-dot { fill: var(--mp-coral); }
+          /* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey (25% brightness) */
+          .t-dark .mp-ink3:not(.mp-mask), .t-dark .ax-c, .t-dark .yl > span, .t-dark .eh, .t-dark .wk:not(.on), .t-dark .shy, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
         </style>
       </helmet>
 
@@ -278,13 +282,13 @@
                 <sc-for list="{{ h.th }}" as="t" hint-placeholder-count="2">
                   <div>
                     <p class="dv-cap">{{ t.lab }}</p>
-                    <div class="board mp mp-app {{ t.cls }}" data-screen-label="{{ t.lab }}">
+                    <div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="{{ t.lab }}">
                       <div class="mp-shell">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
                           <sc-for list="{{ navHo }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#{{ h.id }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
                           <div style="flex: 1"></div>
-                          <div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+                          <div class="mp-foot mp-ink3 side-ft">Signed in with Apple<br />You · owner</div>
                         </aside>
                         <main class="mp-shell-main main-rel">
                           <div class="mp-pagepad">
@@ -334,11 +338,11 @@
                                 <div class="mp-card pad">
                                   <div class="ttl"><span class="mp-hl">Market mood</span><span class="mp-foot mp-ink3">{{ h.mood.scope }}</span></div>
                                   <div class="fx ac gap8" style="flex-wrap: wrap"><span class="mp-chip {{ h.mood.nowCls }}">{{ h.mood.now }}</span><span class="mp-foot mp-ink2">the last 120 trading days, smoothed so it does not flip daily</span></div>
-                                  <div class="mstrip" role="img" aria-label="{{ h.mood.aria }}"><sc-for list="{{ h.mood.segs }}" as="s" hint-placeholder-count="5"><span style="flex: {{ s.n }} 1 0; background: {{ s.c }}"></span></sc-for></div>
+                                  <div class="mstrip" role="img" aria-label="{{ h.mood.aria }}"><sc-for list="{{ h.mood.segs }}" as="s" hint-placeholder-count="5"><span data-mo="barx" style="flex: {{ s.n }} 1 0; background: {{ s.c }}"></span></sc-for></div>
                                   <div class="mlab" aria-hidden="true"><sc-for list="{{ h.mood.segs }}" as="s" hint-placeholder-count="5"><span style="left: {{ s.left }}">{{ s.l }}</span></sc-for></div>
                                   <div class="mp-chartaxis ax-c" aria-hidden="true"><sc-for list="{{ h.mood.months }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
                                   <div class="mp-over mp-ink3" style="margin: 18px 0 8px">Next 4 weeks</div>
-                                  <div class="stk" role="img" aria-label="{{ h.mood.nextAria }}"><sc-for list="{{ h.mood.next }}" as="q" hint-placeholder-count="4"><span style="flex: {{ q.v }} 1 0; background: {{ q.c }}"></span></sc-for></div>
+                                  <div class="stk" role="img" aria-label="{{ h.mood.nextAria }}"><sc-for list="{{ h.mood.next }}" as="q" hint-placeholder-count="4"><span data-mo="barx" style="flex: {{ q.v }} 1 0; background: {{ q.c }}"></span></sc-for></div>
                                   <div class="mt8"><sc-for list="{{ h.mood.next }}" as="q" hint-placeholder-count="4"><div class="lgm"><span class="swa" style="background: {{ q.c }}"></span><span class="mp-sub">{{ q.l }}</span><span class="mp-sub mp-w6" style="text-align: right">{{ q.pct }}</span></div></sc-for></div>
                                 </div>
                                 <div class="mp-card pad">
@@ -372,7 +376,7 @@
                                       <div class="tr" role="row">
                                         <div class="ec" role="cell"><span class="mp-sub mp-w6">{{ e.l }}</span><sc-if value="{{ e.low }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-watch">low confidence</span></sc-if></div>
                                         <div class="ec r" role="cell"><span class="mp-sub">{{ e.n }}</span></div>
-                                        <div class="ec" role="cell"><sc-if value="{{ e.bar }}" hint-placeholder-val="{{ true }}"><div class="ebar" role="img" aria-label="{{ e.aria }}"><span class="ez"></span><span class="eb {{ e.bcls }}" style="left: {{ e.bx }}; width: {{ e.bw }}"></span><span class="ea" style="left: {{ e.ax }}"></span></div></sc-if><sc-if value="{{ e.nobar }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink3">{{ e.note }}</span></sc-if></div>
+                                        <div class="ec" role="cell"><sc-if value="{{ e.bar }}" hint-placeholder-val="{{ true }}"><div class="ebar" role="img" aria-label="{{ e.aria }}"><span class="ez"></span><span class="eb {{ e.bcls }}" data-mo="barx" style="left: {{ e.bx }}; width: {{ e.bw }}"></span><span class="ea" style="left: {{ e.ax }}"></span></div></sc-if><sc-if value="{{ e.nobar }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink3">{{ e.note }}</span></sc-if></div>
                                         <div class="ec r" role="cell"><span class="mp-sub mp-w6">{{ e.v }}</span></div>
                                       </div>
                                     </sc-for>
@@ -429,7 +433,7 @@
               <sc-for list="{{ mini }}" as="v" hint-placeholder-count="3">
                 <div class="kcol">
                   <p class="dv-cap">{{ v.cap }} · {{ t.label }}</p>
-                  <div class="phone app mp {{ t.mp }} {{ t.tg }}" data-screen-label="Mini App · Holding · Forecast · {{ v.cap }} · {{ t.label }}">
+                  <div class="phone app mp {{ t.mp }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="Mini App · Holding · Forecast · {{ v.cap }} · {{ t.label }}">
                     <div class="island" aria-hidden="true"></div>
                     <div class="sbar"><span>09:12</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
                     <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>{{ v.back }}</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
@@ -464,7 +468,7 @@
                         </div>
                         <div class="mp-card mcard">
                           <div class="fx jb ac gap8"><span class="mp-hl">Market mood</span><span class="mp-chip chip-s mp-pause">Stressed · since 3 Oct</span></div>
-                          <div class="mstrip" style="margin-top: 12px" role="img" aria-label="{{ nq.mood.aria }}"><sc-for list="{{ nq.mood.segs }}" as="s" hint-placeholder-count="5"><span style="flex: {{ s.n }} 1 0; background: {{ s.c }}"></span></sc-for></div>
+                          <div class="mstrip" style="margin-top: 12px" role="img" aria-label="{{ nq.mood.aria }}"><sc-for list="{{ nq.mood.segs }}" as="s" hint-placeholder-count="5"><span data-mo="barx" style="flex: {{ s.n }} 1 0; background: {{ s.c }}"></span></sc-for></div>
                           <div class="mp-chartaxis ax-c" aria-hidden="true"><sc-for list="{{ nq.mood.months }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
                           <div class="mkeys mp-cap mp-ink2"><sc-for list="{{ moodKeys }}" as="q" hint-placeholder-count="4"><span><span class="swa" style="background: {{ q.c }}"></span>{{ q.l }}</span></sc-for></div>
                           <div class="mp-foot mp-ink2 mt8">Since June: calm and rising, then choppy, calm, choppy; stressed since 3 Oct. Next 4 weeks: stressed 71%, choppy 18%, falling 7%, calm and rising 4%.</div>
@@ -516,7 +520,7 @@
                             <div class="mev">
                               <span class="fx ac gap6" style="flex-wrap: wrap"><span class="mp-sub mp-w6">{{ e.l }}</span><span class="mp-foot mp-ink3">{{ e.n }} cases</span><sc-if value="{{ e.low }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-watch">low confidence</span></sc-if></span>
                               <span class="mp-sub mp-w6">{{ e.v }}</span>
-                              <sc-if value="{{ e.bar }}" hint-placeholder-val="{{ true }}"><div class="ebar full" role="img" aria-label="{{ e.aria }}"><span class="ez"></span><span class="eb {{ e.bcls }}" style="left: {{ e.bx }}; width: {{ e.bw }}"></span><span class="ea" style="left: {{ e.ax }}"></span></div></sc-if>
+                              <sc-if value="{{ e.bar }}" hint-placeholder-val="{{ true }}"><div class="ebar full" role="img" aria-label="{{ e.aria }}"><span class="ez"></span><span class="eb {{ e.bcls }}" data-mo="barx" style="left: {{ e.bx }}; width: {{ e.bw }}"></span><span class="ea" style="left: {{ e.ax }}"></span></div></sc-if>
                               <sc-if value="{{ e.nobar }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink3 full">{{ e.note }}</span></sc-if>
                             </div>
                           </sc-for>
@@ -548,7 +552,7 @@
                 <sc-for list="{{ t.steps }}" as="st" hint-placeholder-count="3">
                   <div class="kcol">
                     <p class="dv-cap">{{ st.cap }} · {{ t.label }}</p>
-                    <div class="phone tg {{ t.tg }}" data-screen-label="{{ st.lab }}">
+                    <div class="phone tg {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ st.lab }}">
                       <div class="island {{ st.isl }}" aria-hidden="true"><sc-if value="{{ st.fid }}" hint-placeholder-val="{{ false }}"><span class="ms fidg">ar_on_you</span></sc-if></div>
                       <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
                       <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
@@ -600,13 +604,13 @@
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div>
               <p class="dv-cap">Browser · Forecaster · Proof · {{ t.label }}</p>
-              <div class="board mp mp-app {{ t.cls }}" data-screen-label="Browser · Forecaster · Proof · {{ t.label }}">
+              <div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="Browser · Forecaster · Proof · {{ t.label }}">
                 <div class="mp-shell">
                   <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                     <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
                     <sc-for list="{{ navTr }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.cls }}" href="#f6"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
                     <div style="flex: 1"></div>
-                    <div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+                    <div class="mp-foot mp-ink3 side-ft">Signed in with Apple<br />You · owner</div>
                   </aside>
                   <main class="mp-shell-main main-rel">
                     <div class="mp-pagepad">
@@ -649,7 +653,7 @@
                           <div class="mp-card pad">
                             <div class="ttl"><span class="mp-hl">Calibration of its calls</span><span class="mp-foot mp-ink3">said against seen</span></div>
                             <div class="calg">
-                              <div class="calbox" role="img" aria-label="An empty calibration chart with the diagonal where said equals seen: not run yet">
+                              <div class="calbox" data-chart="1" role="img" aria-label="An empty calibration chart with the diagonal where said equals seen: not run yet">
                                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="100" x2="100" y2="0" stroke="var(--mp-ink-3)" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></line></svg>
                                 <span class="nry">not run yet</span>
                               </div>
@@ -662,7 +666,7 @@
                           <div class="mp-card pad">
                             <div class="ttl"><span class="mp-hl">Walk-forward folds</span><span class="mp-foot mp-ink3">train, gap, test</span></div>
                             <div class="mp-foot mp-ink2" style="margin-bottom: 10px">Train on the past, test on the year after, with a gap so no window overlaps. The last two years are held back for one final test; a model that does not beat the base rate there is not used.</div>
-                            <sc-for list="{{ folds }}" as="f" hint-placeholder-count="6"><div class="fold"><span class="mp-foot mp-w6">{{ f.l }}</span><div class="ftrack" role="img" aria-label="{{ f.aria }}"><span class="s-train" style="left: 0; width: {{ f.tw }}"></span><span class="s-gap" style="left: {{ f.gx }}; width: {{ f.gw }}"></span><span class="{{ f.sc }}" style="left: {{ f.sx }}; width: {{ f.sw }}"></span></div><span class="mp-foot mp-ink2">{{ f.t }}</span></div></sc-for>
+                            <sc-for list="{{ folds }}" as="f" hint-placeholder-count="6"><div class="fold"><span class="mp-foot mp-w6">{{ f.l }}</span><div class="ftrack" role="img" aria-label="{{ f.aria }}"><span class="s-train" data-mo="barx" style="left: 0; width: {{ f.tw }}"></span><span class="s-gap" data-mo="barx" style="left: {{ f.gx }}; width: {{ f.gw }}"></span><span class="{{ f.sc }}" data-mo="barx" style="left: {{ f.sx }}; width: {{ f.sw }}"></span></div><span class="mp-foot mp-ink2">{{ f.t }}</span></div></sc-for>
                             <div class="fold" aria-hidden="true"><span></span><div class="mp-chartaxis ax-c" style="margin-top: 0"><sc-for list="{{ foldYears }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span></span></div>
                             <div class="fleg mp-foot mp-ink2"><span><span class="fkey s-train"></span>train</span><span><span class="fkey s-gap"></span>gap</span><span><span class="fkey s-test"></span>test</span><span><span class="fkey s-hold"></span>last two years, held out</span></div>
                           </div>
@@ -952,7 +956,7 @@
             ddGrid: [[0, 'zero'], [-10, ''], [-20, ''], [-30, '']].map((g) => ({ top: pc((-g[0] / 32) * 100 + 2), l: g[0] === 0 ? '0%' : g[0] + '%', c: g[1] })).map((g) => Object.assign(g, { l: g.l.replace('-', '−') })),
             ddYears: [2015, 2017, 2019, 2021, 2023, 2025].map((y, i) => ({ l: String(y), left: pc(((y - 2015) / 11) * 100), c: i === 0 ? 'edge0' : '' })),
             folds: folds,
-            foldYears: [2015, 2018, 2021, 2024, 2026].map((y, i) => ({ l: String(y), left: yr(y), c: i === 0 ? 'edge0' : '' })),
+            foldYears: [2015, 2019, 2023, 2026].map((y, i, a) => ({ l: String(y), left: yr(y), c: i === 0 ? 'edge0' : (i === a.length - 1 ? 'edge1' : '') })),
             gate: [{ w: '1 to 5', a: '✓ beat', b: '✓ beat', c: 'mp-w6' }, { w: '6 to 8', a: 'to come', b: 'to come', c: 'mp-ink3' }],
             flow: [
               { icon: 'visibility_off', cls: 'mp-neutral', h: 'Shadow', b: 'Graded every week; shown only on the Forecast tab and in the Saturday review, labelled in practice.', now: true },

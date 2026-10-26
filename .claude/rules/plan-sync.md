@@ -10,7 +10,7 @@ check says so before any story starts and before any PR.
 | --- | --- | --- |
 | The plan | `PLAN.md` (phases), `ARCHITECTURE.md` (how), `TECH_STACK.md` (with what) | What is built, in which phase, to which design |
 | Jira | project MA: a phase epic per PLAN phase, a story or task per deliverable | Who does what, and its status |
-| The designs | Claude Design: MyPaisa app v1 (screens, Prototype) and MyPaisa DS v1 (the system); copied into `docs/design/app-v1/` and `docs/design/ds-v1/` with their etags in `docs/design/claude-design.json` | What a member sees |
+| The designs | Claude Design: MyPaisa iOS v1 (the app's screens, from MA-161), MyPaisa DS v1 (the system and its iOS kit) and MyPaisa app v1 (the web app's browser boards, its spec; its Mini App and Telegram boards are the superseded record); copied into `docs/design/ios-v1/`, `docs/design/ds-v1/` and `docs/design/app-v1/` with their etags in `docs/design/claude-design.json` | What a member sees |
 | The trace | `docs/trace.json`, rendered to `docs/TRACE.md` | Which story follows which ARCHITECTURE section and which boards |
 
 The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
@@ -52,10 +52,10 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 | When | Run | What must be true |
 | --- | --- | --- |
 | Starting a story (`/jira-flow:work`, or by hand) | `/plan-sync MA-<n>` (refreshes the row and the story's boards), then `python3 scripts/plan_sync.py start MA-<n>` | The story is traced, its sections exist, its boards exist and are current; a UI story's design is `planned` (run `/design-first`) or `picked`; no `open` question |
-| Before every PR (`/autoship` step 1) | `/plan-sync --design`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`) | Every Claude Design etag matches `claude-design.json` (a file edited there is copied here first); no drift; `docs/TRACE.md` is rendered |
+| Before every PR (`/autoship` step 1) | `/plan-sync --design`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) | Every Claude Design etag matches `claude-design.json` (a file edited there is copied here first); no drift; `docs/TRACE.md` is rendered |
 | On every PR, in CI | `.github/workflows/plan-sync.yml` | The same check |
 | After planning (a new phase, a new story, a design round) | `/plan-sync` | Jira, Claude Design and the trace agree; drift is fixed or filed |
-| Weekly, or when unsure | `/plan-sync --all` | The whole backlog and both Claude Design projects agree with the trace |
+| Weekly, or when unsure | `/plan-sync --all` | The whole backlog and every Claude Design project under `claude_design` agree with the trace |
 
 ## What the check fails on
 
@@ -68,6 +68,9 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 - `ui` and the `design` label disagreeing: the label marks exactly the stories with UI (`.claude/jira/taxonomy.md`).
 - A board file missing from the repo mirror or from `claude-design.json`; a board name that is not exactly one of its canvas's titles (a caption, or a numbered board as `<number> · <name>` with its own number), optionally after the door the whole file draws; a mirrored file whose size or hash no longer matches; a file in the mirror that `claude-design.json` does not record.
 - A key in both `items` and `others`; a row, phase or entry that is not an object; a row with no key, summary, status or type; a phase with no epic or title; a field of the wrong type.
+- A board element given the `label` or `dot` motion role without the class whose transform that role's keyframe ends on (`mp-chartlbl`, `mp-chartdot`): once the arrival settles it is moved off its place; use `fade`. And a board rule giving a `.mp-chartlbl` or `.mp-chartdot` variant its own transform without `!important`: motion.js gives every chart label and dot the board leaves unmarked its role at run time, so the arrival overrides the variant's transform; add `!important` to it (MA-161 review, rounds 2 and 3).
+- A tool a board's run or Activity row names that ARCHITECTURE §8's **Tools** list does not define (`render_chart`, `read_file`; MA-161 review, rounds 3 and 4). Fix the board through `/design-first` if the name is wrong; if the tool is new, add it to §8 (and PLAN and the trace) first.
+- A weekday and date on a mirrored board that do not agree ("Thu 23 Oct"); the boards are set in October 2026, and a date with no year may fall in 2027 from January to September (MA-161 review, round 1).
 - `docs/TRACE.md` not rendered from the current trace.
 
 A UI story with no board, or with screens still to draw (`undrawn`), may sit
@@ -80,8 +83,11 @@ may not reach In Review until they are drawn and the row says so.
 
 `python3 scripts/plan_sync.py selftest` runs the board-name check against
 names it must accept and names it must refuse (every case the reviews of PR
-#32 raised); the jira-flow gate and CI run it before the check. `start` also runs every check
-above on the story's own row, so a missing section or board stops it too.
+#32 raised), the date, motion-role and tool checks against cases they must
+accept and refuse, and `check` itself on a copy of the repo whose board says
+"Thu 23 Oct", puts a `label` role on a non-label element and names `render_chart`,
+all of which it must refuse; the jira-flow gate and CI run it before the check. `start` also runs every row check
+above on the story's own row (the board-wide date, motion and tool checks run in `check`), so a missing section or board stops it too.
 
 Jira-side drift (a key, parent, label or status that differs from the trace)
 and Claude Design drift (an etag that moved) need their MCP tools, so

@@ -9,11 +9,15 @@ Jira and Claude Design halves need their MCP tools and live in /plan-sync.
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
     python3 scripts/plan_sync.py start MA-149  # what a story needs before work starts
-    python3 scripts/plan_sync.py selftest      # the board-name check against known good and bad names (CI)
+    python3 scripts/plan_sync.py selftest      # board names, dates and motion roles against known cases, and check on a mutated board (CI)
 """
 from __future__ import annotations
 
+import datetime
 import hashlib
+import shutil
+import subprocess
+import tempfile
 import html
 import json
 import re
@@ -103,7 +107,8 @@ def captions(path: Path) -> set[str]:
             if not (cls and "dv-turn" in cls.group(2).split()):  # a turn's label names the turn, not a board
                 caps.add(_caption(m.group(1)))
         # A numbered board heading: <a class="dv-tid">1</a><span class="dv-tname">Colour</span> (or dv-oid, dv-oname).
-        for m in re.finditer(r'class="dv-(t|o)id"[^>]*>(.*?)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
+        # The number is the chip's own text ([^<]*), so a chip quoted in prose earlier cannot swallow the page up to a label.
+        for m in re.finditer(r'class="dv-(t|o)id"[^>]*>([^<]*)</(?:a|span)>\s*<span class="dv-\1name"[^>]*>(.*?)</span>', t, re.S):
             pair(_caption(m.group(2)), _caption(m.group(3)))
         # The canvas's own index of boards: <a href="#colour">1 · Colour</a>.
         for m in re.finditer(r'<nav class="dv-idx"[^>]*>(.*?)</nav>', t, re.S):
@@ -301,6 +306,116 @@ def mirror_errors(mirror: object) -> list[str]:
     return errors
 
 
+_MONTHS = {m: i + 1 for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split())}
+_DAYS = "Mon Tue Wed Thu Fri Sat Sun".split()
+_DATE = re.compile(r"\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,?\s+(\d{1,2})(?:st|nd|rd|th)?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?:\s+(\d{4}))?\b")
+
+
+def _plain(text: str) -> str:
+    """A board's text as dates are read in it: a tag becomes a space (so "Thu&nbsp;<b>23 Oct</b>" reads as a date and
+    "23 Oct</span>wifi" keeps its word end), and a script's or style's body is read as raw text, never as tags, so a
+    comparison such as "i<n" or "a < b" cannot swallow the text after it."""
+    out, pos = [], 0
+    for m in re.finditer(r"<(script|style)\b[^>]*>(.*?)</\1\s*>", text, re.S | re.I):
+        out.append(re.sub(r"<[A-Za-z/!][^>]*>", " ", text[pos:m.start()]))
+        out.append(" " + m.group(2) + " ")
+        pos = m.end()
+    out.append(re.sub(r"<[A-Za-z/!][^>]*>", " ", text[pos:]))
+    return html.unescape("".join(out)).replace("\xa0", " ")
+
+
+def date_errors(text: str) -> list[str]:
+    """Each weekday-and-date on a board ("Fri 23 Oct") whose weekday is wrong (MA-161 review: lesson 10, dates agree).
+    The boards are set in October 2026: a date with no year is right if its weekday fits 2026, or 2027 for January
+    to September (a date ahead, such as the next results day)."""
+    bad = []
+    plain = _plain(text)
+    for m in _DATE.finditer(plain):
+        day, num, mon, year = m.group(1), int(m.group(2)), _MONTHS[m.group(3)], m.group(4)
+        years = [int(year)] if year else ([2026, 2027] if mon < 10 else [2026])
+        fits = False
+        for y in years:
+            try:
+                fits = fits or _DAYS[datetime.date(y, mon, num).weekday()] == day
+            except ValueError:
+                pass
+        if not fits:
+            bad.append(m.group(0))
+    return sorted(set(bad))
+
+
+def agent_tools() -> set[str]:
+    """The agent's tools as ARCHITECTURE 8 lists them (its **Tools:** paragraph)."""
+    m = re.search(r"\*\*Tools:\*\*(.*?)\n\n", ARCH.read_text(), re.S) if ARCH.exists() else None
+    return set(re.findall(r"`([a-z]+(?:_[a-z]+)+)", m.group(1))) if m else set()
+
+
+def tool_errors(text: str, tools: set[str]) -> list[str]:
+    """Each tool a board's run or Activity row names that ARCHITECTURE 8 does not define (MA-161 review, rounds 3 and
+    4: read_file, read_image and render_chart survived from the Telegram era beside extract_document and chart_series)."""
+    found = set(re.findall(r"\b(?:" + "|".join(_RETIRED_TOOLS) + r")\b", text))  # retired names, refused anywhere
+    for ctx in re.findall(r"tools\w*:\s*(\[\[.*?\]\]|'[^']*')|<span>Tools</span><span>([^<]*)", text, re.S):
+        found |= set(re.findall(r"\b[a-z]+(?:_[a-z]+)+\b", " ".join(ctx)))
+    return sorted(found - tools)
+
+
+_RETIRED_TOOLS = ("read_file", "read_image", "render_chart")  # Telegram-era names, never the app's
+
+
+_MOTION_NEEDS = {"label": "mp-chartlbl", "dot": "mp-chartdot"}
+
+
+def motion_errors(text: str) -> list[str]:
+    """Each element a board gives the label or dot motion role without the class whose transform that role's keyframe
+    ends on: the arrival would leave it moved by half its size or more (MA-161 review, round 2: chart axes and a dot
+    shifted off their cards once the motion settled, correct only with ?static=1)."""
+    bad = []
+    for m in re.finditer(r"<[a-z][\w-]*\b[^>]*\sdata-mo\s*=\s*[\"']?(label|dot)\b[^>]*>", text):
+        cls = re.search(r"""\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""", m.group(0))
+        names = (cls.group(1) or cls.group(2) or cls.group(3) or "").split() if cls else []
+        if _MOTION_NEEDS[m.group(1)] not in names:
+            bad.append(f'data-mo="{m.group(1)}" on class "{" ".join(names)}" (use data-mo="fade")')
+    # motion.js gives every .mp-chartlbl and .mp-chartdot its role at run time, and the arrival's keyframe overrides
+    # any transform that is not !important. So on a board that loads motion.js, refuse a transform that reaches a chart
+    # label or dot other than the one its keyframe ends on: through a rule naming the class in any order or position,
+    # a rule for another class the element carries, or an inline style.
+    if "motion.js" not in text:
+        return sorted(set(bad))
+    ends = {"mp-chartlbl": "translate(-50%,-100%)", "mp-chartdot": "translate(-50%,-50%)"}
+    carried, static, templated = {}, set(), set()
+    for m in re.finditer(r"<[a-z][\w-]*\b[^>]*>", text):
+        cls = re.search(r"""\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""", m.group(0))
+        raw = (cls.group(1) or cls.group(2) or cls.group(3) or "") if cls else ""
+        names = [n for n in re.sub(r"\{\{.*?\}\}", " ", raw).split()]
+        static |= set(names)
+        for base in ends:
+            if base in names and "{{" in raw:
+                templated.add(base)  # a class given by the template (Browser's {{ m.pos }}) cannot be read here
+            if base in names:
+                for n in names:
+                    if n != base:
+                        carried.setdefault(n, base)
+                st = re.search(r"""\sstyle\s*=\s*["']([^"']*)""", m.group(0))
+                if st and re.search(r"(?<![\w-])transform\s*:", st.group(1)) and "!important" not in st.group(1):
+                    bad.append(f"an inline transform on a .{base} (add !important to that transform)")
+    for m in re.finditer(r"([^{}]*)\{([^{}]*)\}", "\n".join(re.findall(r"<style\b[^>]*>(.*?)</style>", text, re.S | re.I))):
+        sel = " ".join(m.group(1).split(";")[-1].split())
+        decl = re.search(r"(?<![\w-])transform\s*:\s*([^;}]*)", m.group(2))
+        if not decl or "!important" in decl.group(1):
+            continue
+        val = decl.group(1).replace(" ", "")
+        for part in sel.split(","):
+            last = part.strip().split()[-1] if part.strip() else ""
+            classes = set(re.findall(r"\.([\w-]+)", last))
+            hit = [b for b in ends if b in part] + [carried[c] for c in classes if c in carried]
+            if not hit and templated and re.fullmatch(r"(?:\.[\w-]+)+", part.strip()) and not classes & static:
+                hit = sorted(templated)  # a class-only rule for a class no element carries in the markup: the template's
+            for base in hit:
+                if val != ends[base]:
+                    bad.append(f"its own transform on '{part.strip()}', which reaches a .{base} (add !important to that transform)")
+    return sorted(set(bad))
+
+
 def check(trace: dict) -> tuple[list[str], list[str]]:
     errors, warnings = shape_errors(trace) or mirror_errors(load(MIRROR) if MIRROR.exists() else {}), []
     if errors:
@@ -375,6 +490,13 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
                 errors.append(f"mirror: {proj['dir']}/{name} is {path.stat().st_size} bytes, recorded {meta['bytes']}; copy it again")
             elif meta.get("sha256") and sha256(path) != meta["sha256"]:
                 errors.append(f"mirror: {proj['dir']}/{name} differs from the copy recorded in claude-design.json; copy it again")
+            if path.is_file() and name.endswith(".html"):
+                for d in date_errors(path.read_text()):
+                    errors.append(f"board date: {proj['dir']}/{name} says {d!r}, a wrong weekday")
+                for d in tool_errors(path.read_text(), ctx.setdefault("tools", agent_tools())):
+                    errors.append(f"board tool: {proj['dir']}/{name} names {d!r}, which ARCHITECTURE 8's Tools do not define")
+                for d in motion_errors(path.read_text()):
+                    errors.append(f"board motion: {proj['dir']}/{name} has {d}: the settled arrival would move it")
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -468,6 +590,45 @@ def start(trace: dict, key: str) -> int:
 
 
 # Board names the check must accept (True) or refuse (False), from the reviews of PR #32.
+# Tool names the check must accept and refuse against a stand-in list (MA-161 review, round 4, e1).
+TOOL_CASES = [
+    ("tools: [['get_portfolio', '140 ms'], ['chart_series', '80 ms']]", True), ("tools: 'extract_document, propose_change'", True),
+    ("tools: [['render_chart', '80 ms']]", False), ("<span>Tools</span><span>read_image, propose_change</span>", False),
+    ("toolsW: 'get_signals, render_chart'", False), ("line: 'Sonnet · 2 calls · read_image'", False),
+]
+
+# Motion roles the check must accept and refuse (MA-161 review, round 2, e3).
+MOTION_CASES = [
+    ('<span class="mp-chartlbl" data-mo="label">', True), ('<div class="mp-chartdot x" data-mo="dot">', True),
+    ('<div class="hax" data-mo="label">', False), ('<div data-mo="dot" class="edot">', False),
+    ('<div class="gut" data-mo="fade">', True), ('<p data-mo="label">', False),
+    ("<div class='hax' data-mo='label'>", False), ('<div class=hax data-mo=label>', False),
+    ('<div data-class="mp-chartlbl" class="hax" data-mo="label">', False),
+    ('<script src="motion.js"></script><style>.mp-chartlbl.al { transform: translate(-100%, -100%); }</style>', False),
+    ('<script src="motion.js"></script><style>.mp-chartlbl.al { transform: translate(-100%, -100%) !important; }</style>', True),
+    ('<script src="motion.js"></script><style>.al.mp-chartlbl { transform: translate(-100%, 0); }</style>', False),
+    ('<script src="motion.js"></script><style>.pbox .mp-chartdot { transform: scale(2); }</style>', False),
+    ('<script src="motion.js"></script><style>.mp-chartlbl:last-child { transform: none; }</style>', False),
+    ('<script src="motion.js"></script><style>.lbl-ul { transform: translate(0, 0); }</style><span class="mp-chartlbl lbl-ul">', False),
+    ('<script src="motion.js"></script><span class="mp-chartdot" style="transform: scale(2)">', False),
+    ('<script src="motion.js"></script><style>.mp-chartlbl { transform: translate(-50%, -100%); }</style>', True),
+    ('<script src="motion.js"></script><span class="mp-chartlbl lbl-h {{ l.cls }}">', True),
+    ('<script src="motion.js"></script><style>.al { transform: translate(-100%, -100%); }</style><span class="mp-chartlbl {{ m.pos }}">', False),
+    ('<script src="motion.js"></script><style>.al { transform: translate(-100%, -100%) !important; }</style><span class="mp-chartlbl {{ m.pos }}">', True),
+    ('<style>.mp-chartlbl.al { transform: translate(-100%, -100%); }</style>', True),  # no motion.js: nothing animates, so nothing moves it
+]
+
+# Board dates the check must accept and refuse (MA-161 review, round 1: e3's timeline and lesson 10).
+DATE_CASES = [
+    ("Fri 23 Oct", True), ("Fri, 2 Oct", True), ("Sun 4 Oct", True), ("Mon 26 Oct 21:16", True),
+    ("Thu 29 Apr", True),            # next April's results day, 2027
+    ("Thu 23 Oct", False), ("Tue 20 Oct 2025", False), ("Wed 28 Oct", True), ("Sat 31 Oct", True),
+    ("Fri 31 Sep", False), ("Thursday 22 October", True), ("Thursday 23 October", False),
+    ("Thu&nbsp;23 Oct", False), ("Fri&nbsp;23 Oct", True), ("Thu <b>23 Oct</b>", False), ("Thu 23rd Oct", False),
+    ('<span>9:41 Thu 23 Oct</span><span class="ms">wifi</span>', False), ("a < b; 'Thu 23 Oct'; c > d", False),
+    ("<script>for(i=0;i<days.length;i++){s='Thu 23 Oct'} if(a>b){}</script>", False),
+]
+
 BOARD_CASES = [
     ("ds", "Telegram kit.dc.html", "1 · Portfolio card", True), ("ds", "Telegram kit.dc.html", "2 · Stance card", True),
     ("ds", "Telegram kit.dc.html", "4 · Portfolio card", False), ("ds", "Telegram kit.dc.html", "1 · Stance card", False),
@@ -505,6 +666,11 @@ BOARD_CASES = [
     ("ds", "MyPaisa DS v1.dc.html", "Telegram draws the bubble and buttons; MyPaisa owns the PNG, the words and their order.", False),
     ("ds", "MyPaisa DS v1.dc.html", "1a · Warm ledger", True),
     ("app", "Browser.dc.html", "Browser · Browser boards 1 to 4", False), ("app", "Mini App.dc.html", "Mini App · Mini App screens", False),
+    # MA-161: the iOS boards. An option chip quoted in prose before its label must not hide the label.
+    ("ios", "Shell options.dc.html", "1a · Chat first", True), ("ios", "Shell options.dc.html", "1c · One timeline", True),
+    ("ios", "Shell options.dc.html", "1d · Chat first", False), ("ios", "iPhone chat.dc.html", "iPhone · Chat home", True),
+    ("ios", "iPhone chat.dc.html", "Chat home", False), ("ios", "iPhone chat.dc.html", "iPad · Chat home", False),
+    ("ios", "iPad and foldable.dc.html", "Foldable · Open", True), ("ds", "iOS kit.dc.html", "12 · Motion", True),
 ]
 
 
@@ -524,7 +690,63 @@ def selftest(trace: dict) -> int:
         if got != want:
             bad += 1
             print(f"FAIL: {board!r} in {file}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {bad} wrong")
+    for text, want in DATE_CASES:
+        got = not date_errors(text)
+        if got != want:
+            bad += 1
+            print(f"FAIL: date {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
+    stand_in = {"get_portfolio", "chart_series", "extract_document", "propose_change"}
+    for text, want in TOOL_CASES:
+        got = not tool_errors(text, stand_in)
+        if got != want:
+            bad += 1
+            print(f"FAIL: tools {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
+    if not {"extract_document", "chart_series", "propose_change"} <= agent_tools():
+        bad += 1
+        print("FAIL: ARCHITECTURE 8's Tools paragraph could not be read")
+    for text, want in MOTION_CASES:
+        got = not motion_errors(text)
+        if got != want:
+            bad += 1
+            print(f"FAIL: motion {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
+    # The date check bites inside `check` itself: a copy of the repo with one mirrored board given a wrong weekday
+    # (its bytes and sha256 recorded, so only the date is wrong) must be refused, naming the board date.
+    board = "docs/design/ios-v1/iPhone chat.dc.html"
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "scripts").mkdir()
+        shutil.copy(Path(__file__), root / "scripts" / "plan_sync.py")
+        for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
+            if (ROOT / f).exists():
+                shutil.copy(ROOT / f, root / f)
+        shutil.copytree(ROOT / "docs", root / "docs")
+        target = root / board
+        text = target.read_text() if target.exists() else ""
+        if "Fri 23 Oct" not in text or 'data-mo="fade"' not in text:
+            bad += 1
+            print(f"FAIL: the mutated-board selftest needs 'Fri 23 Oct' and a data-mo=\"fade\" in {board}")
+        else:
+            text = text.replace("Fri 23 Oct", "Thu 23 Oct", 1)
+            text = re.sub(r'data-mo="fade"', 'data-mo="label"', text, count=1)  # a label role on a non-label element
+            target.write_text(text)
+            m = json.loads((root / "docs/design/claude-design.json").read_text())
+            rec = m["ios"]["files"][Path(board).name]
+            rec["bytes"], rec["sha256"] = target.stat().st_size, sha256(target)
+            tools_board = root / "docs/design/ios-v1/iPhone audit and activity.dc.html"
+            if tools_board.exists() and "chart_series" in tools_board.read_text():
+                tools_board.write_text(tools_board.read_text().replace("chart_series", "render_chart", 1))  # a tool §8 lacks
+                rec = m["ios"]["files"][tools_board.name]
+                rec["bytes"], rec["sha256"] = tools_board.stat().st_size, sha256(tools_board)
+            else:
+                bad += 1
+                print("FAIL: the mutated-board selftest needs 'chart_series' in iPhone audit and activity.dc.html")
+            (root / "docs/design/claude-design.json").write_text(json.dumps(m, indent=2) + "\n")
+            r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
+            for what in ("board date", "board motion", "board tool"):
+                if r.returncode == 0 or what not in r.stdout:
+                    bad += 1
+                    print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")
+    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles, {len(TOOL_CASES)} tool names and one mutated board, {bad} wrong")
     return 1 if bad else 0
 
 

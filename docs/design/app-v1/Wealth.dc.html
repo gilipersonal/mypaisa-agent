@@ -11,6 +11,8 @@
 <helmet data-dc-atomics>
 <meta name="design_doc_mode" content="canvas" />
 <link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="motion.css" />
+<script src="motion.js"></script>
 <style>
 html { background: #ECEAE6; }
 body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
@@ -247,6 +249,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .shc { flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 22px 16px 42px; text-wrap: pretty; }
 .fidtile { width: 56px; height: 56px; border-radius: 16px; background: var(--mp-surface); color: var(--mp-ink); display: grid; place-items: center; box-shadow: var(--mp-shadow); }
 .fidtile .ms { font-size: 34px; }
+/* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey (25% brightness) */
+.t-dark .mp-ink3:not(.mp-mask), .t-dark .tbl > .th, .t-dark .gy-c:not(.mp-mask), .t-dark .ax-c, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
 </style>
 </helmet>
 
@@ -270,7 +274,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ v.th }}" as="t" hint-placeholder-count="2">
 <div>
 <p class="dv-cap">{{ t.cap }}</p>
-<div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="{{ t.cap }}">
+<div class="phone {{ t.cls }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ t.cap }}">
 <div class="tgh"><span class="tgh-a"><sc-if value="{{ v.hasBack }}" hint-placeholder-val="{{ false }}"><span class="ms ms-s">arrow_back_ios_new</span></sc-if>{{ v.back }}</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
 <div class="scr {{ v.scr }}">
 <sc-for list="{{ v.blocks }}" as="k" hint-placeholder-count="4">
@@ -332,8 +336,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-if value="{{ q.isBars }}" hint-placeholder-val="{{ false }}"><div class="bars"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.name }}</span><span class="mp-sub mp-w6 nowrap">{{ it.pct }}</span></div><div class="mp-track cbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span><sc-if value="{{ it.hasB }}" hint-placeholder-val="{{ false }}"><span class="mp-ink3"> · </span><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></sc-if></div><sc-if value="{{ it.hasN }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3">{{ it.n }}</div></sc-if></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="list"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="li"><sc-if value="{{ it.hasI }}" hint-placeholder-val="{{ false }}"><span class="mp-icontile {{ it.ic }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span></sc-if><div class="rtx"><div class="mp-sub {{ it.nc }}">{{ it.name }}</div><div class="mp-foot mp-ink3">{{ it.sub }}</div></div><div class="tr"><div class="mp-sub mp-w6 nowrap {{ it.ac }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kv"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><div class="mp-foot mp-ink3">{{ it.k }}</div><div class="mp-hl {{ it.c }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3">{{ it.s }}</div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stack" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span class="lgk"><span class="swa" style="background: {{ it.col }}"></span>{{ it.name }} {{ it.pct }}</span></sc-for></div></div></sc-if>
-<sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="colw"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><div class="mp-cap mp-ink3">{{ it.l }}</div></div></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stack" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span data-mo="barx" style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span class="lgk"><span class="swa" style="background: {{ it.col }}"></span>{{ it.name }} {{ it.pct }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="colw"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span data-mo="bary" style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><div class="mp-cap mp-ink3">{{ it.l }}</div></div></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ q.isChart }}" hint-placeholder-val="{{ false }}">
 <div class="chart {{ q.ch.cv }}">
 <div class="mp-chartbox" role="img" aria-label="{{ q.ch.aria }}">
@@ -380,13 +384,13 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ bd.th }}" as="t" hint-placeholder-count="2">
 <div>
 <p class="dv-cap">{{ t.cap }}</p>
-<div class="board mp mp-app {{ t.cls }}" data-screen-label="{{ t.cap }}">
+<div class="board mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="{{ t.cap }}">
 <div class="mp-shell">
 <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
 <sc-for list="{{ t.p.nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#{{ n.href }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink3">{{ n.label }}</div></sc-if></sc-for>
 <div style="flex: 1"></div>
-<div class="mp-foot mp-ink3 side-ft">Signed in with Telegram<br />You · owner</div>
+<div class="mp-foot mp-ink3 side-ft">Signed in with Apple<br />You · owner</div>
 </aside>
 <main class="mp-shell-main main-rel">
 <div class="mp-pagepad">
@@ -452,8 +456,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-if value="{{ q.isBars }}" hint-placeholder-val="{{ false }}"><div class="bars"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.name }}</span><span class="mp-sub nowrap"><span class="mp-w6">{{ it.pct }}</span><span class="mp-ink3"> · </span><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span><sc-if value="{{ it.hasB }}" hint-placeholder-val="{{ false }}"><span class="mp-ink3"> · </span><span class="mp-ink2 {{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></sc-if></span></div><div class="mp-track cbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><sc-if value="{{ it.hasN }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3">{{ it.n }}</div></sc-if></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="list"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="li"><sc-if value="{{ it.hasI }}" hint-placeholder-val="{{ false }}"><span class="mp-icontile {{ it.ic }}"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span></sc-if><div class="rtx"><div class="mp-sub {{ it.nc }}">{{ it.name }}</div><div class="mp-foot mp-ink3">{{ it.sub }}</div></div><div class="tr"><div class="mp-sub mp-w6 nowrap {{ it.ac }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kv"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><div class="mp-foot mp-ink3">{{ it.k }}</div><div class="mp-hl {{ it.c }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink3">{{ it.s }}</div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stack" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span class="lgk"><span class="swa" style="background: {{ it.col }}"></span>{{ it.name }} {{ it.pct }}</span></sc-for></div></div></sc-if>
-<sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="colw"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><div class="mp-cap mp-ink3">{{ it.l }}</div></div></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stack" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span data-mo="barx" style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><span class="lgk"><span class="swa" style="background: {{ it.col }}"></span>{{ it.name }} {{ it.pct }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="colw"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span data-mo="bary" style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><div class="mp-cap mp-ink3">{{ it.l }}</div></div></sc-for></div><div class="lgd mp-foot mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ q.isChart }}" hint-placeholder-val="{{ false }}">
 <div class="chart {{ q.ch.cv }}">
 <div class="mp-chartbox" role="img" aria-label="{{ q.ch.aria }}">
@@ -505,7 +509,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ ls.th }}" as="t" hint-placeholder-count="2">
 <div>
 <p class="dv-cap">{{ t.cap }}</p>
-<div class="board login-b mp mp-app {{ t.cls }}" data-screen-label="{{ t.cap }}">
+<div class="board login-b mp mp-app {{ t.cls }}" data-mo-frame-root="1" data-screen-label="{{ t.cap }}">
 <div class="login">
 <div class="lhero">
 <div class="fx ac gap12"><svg class="mpm mpm-hero" width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div>
@@ -559,7 +563,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ st.th }}" as="t" hint-placeholder-count="2">
 <div class="kcol">
 <p class="dv-cap">{{ t.lab }}</p>
-<div class="phone tg {{ t.tg }}" data-screen-label="{{ t.lab }}">
+<div class="phone tg {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ t.lab }}">
 <div class="island {{ st.isl }}" aria-hidden="true"><sc-if value="{{ st.fid }}" hint-placeholder-val="{{ false }}"><span class="ms fidg">ar_on_you</span></sc-if></div>
 <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
 <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.950 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>

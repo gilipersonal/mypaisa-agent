@@ -11,6 +11,8 @@
       <helmet data-dc-atomics>
         <meta name="design_doc_mode" content="canvas" />
         <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
@@ -107,7 +109,7 @@
           .flr.first { border-top: 0; }
           .flr .ms { align-self: start; margin-top: 1px; }
           .l-when { text-align: right; }
-          .mx { display: grid; grid-template-columns: minmax(0, 1fr) 84px 84px 104px; }
+          .mx { display: grid; grid-template-columns: minmax(0, 1fr) 120px 120px 104px; }
           .mxr { display: contents; }
           .mxr > * { padding: 10px 8px 10px 0; border-top: 1px solid var(--mp-line); min-width: 0; }
           .mxr.hd > * { border-top: 0; padding-top: 4px; }
@@ -322,6 +324,10 @@
           .mlink { margin: 0; font: 15px/21px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: var(--tg-link); text-decoration: underline; overflow-wrap: anywhere; }
           .mfoot { margin-top: 4px; padding-top: 12px; border-top: 0.5px solid var(--tg-line); font: 12px/17px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: var(--tg-sub); display: flex; flex-direction: column; gap: 6px; }
           .mfoot u { color: var(--tg-link); }
+          /* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey (25% brightness) */
+          .t-dark .mp-ink3:not(.mp-mask), .t-dark .tlabs > span, .t-dark .kk, .t-dark .cell.off, .t-dark .flab, .t-dark .inp .pre, .t-dark .lockv, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
+          /* a disabled action keeps the tertiary grey on dark too, so it still reads as off (not text a member acts on) */
+          .t-dark .arow:disabled .mp-ink3 { color: var(--mp-ink-3); }
         </style>
       </helmet>
 
@@ -332,7 +338,7 @@
           <div class="dv-rule"><b>The one exception to read-only</b>The web app never writes the household's records. These dialogs change only the owner's admin settings and operations, each behind the fresh check (a passkey or Google again, good for 5 minutes), and none of them touches a holding or the history.</div>
           <div class="dv-rule"><b>Consequence first, then a record</b>Each dialog says what the change does before its button, with the meter's and the settings' own figures. Saving writes an audit row and sends you a Telegram message; it takes effect at the next model call or job.</div>
           <div class="dv-rule"><b>Refused, with the way round</b>A value out of range, above the hard limit or out of order is refused with the reason and the next step. A ceiling that takes prod and dev past the plan's $200 credit needs a ticked yes, and the server checks it too.</div>
-          <div class="dv-rule"><b>Two doors, the owner's alone</b>From phase 12 the same changes come from your Telegram chat through the admin desk: a Confirm card, then Face ID or the PIN. Members can ask the chat what has been spent; they can never change it.</div>
+          <div class="dv-rule"><b>Two doors, the owner's alone</b>From phase 12 the same changes come from your chat in the MyPaisa app through the admin desk: a Confirm card, then the second check (a fresh Sign in with Apple or a passkey, with Face ID). Members can ask the chat what has been spent; they can never change it.</div>
         </div>
 
         <div class="dv-opts">
@@ -343,7 +349,7 @@
                 <sc-for list="{{ g.views }}" as="v" hint-placeholder-count="2">
                   <div class="dv-fr">
                     <p class="dv-cap">{{ v.cap }}</p>
-                    <div class="board mp mp-app {{ v.cls }}" data-screen-label="{{ v.cap }}">
+                    <div class="board mp mp-app {{ v.cls }}" data-mo-frame-root="1" data-screen-label="{{ v.cap }}">
                       <div class="mp-shell">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
@@ -725,7 +731,7 @@
                 <sc-for list="{{ t.steps }}" as="st" hint-placeholder-count="3">
                   <div class="tcol">
                     <p class="t-cap">{{ st.cap }} · {{ t.label }}</p>
-                    <div class="phone tg {{ t.tg }}" data-screen-label="{{ st.lab }}">
+                    <div class="phone tg {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ st.lab }}">
                       <div class="island {{ st.isl }}" aria-hidden="true"><sc-if value="{{ st.fid }}" hint-placeholder-val="{{ false }}"><span class="ms fidg">ar_on_you</span></sc-if></div>
                       <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
                       <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">{{ st.who }}</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
@@ -783,7 +789,7 @@
               <sc-for list="{{ t.mails }}" as="e" hint-placeholder-count="2">
                 <div class="tcol">
                   <p class="t-cap">{{ e.cap }} · {{ t.label }}</p>
-                  <div class="phone mail {{ t.cls }}" data-screen-label="{{ e.lab }}">
+                  <div class="phone mail {{ t.cls }}" data-mo-frame-root="1" data-screen-label="{{ e.lab }}">
                     <div class="island" aria-hidden="true"></div>
                     <div class="sbar"><span>{{ e.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
                     <div class="mtop"><span class="back"><span class="ms">chevron_left</span>Inbox</span><span class="micons" aria-hidden="true"><span class="ms">archive</span><span class="ms">delete</span><span class="ms">more_horiz</span></span></div>
@@ -1053,7 +1059,7 @@
             iphone: { icon: 'phone_iphone', device: 'Telegram for iPhone · iPhone 15', kind: 'Mini App', where: 'London, UK', first: '2 Oct', last: '09:12', thisB: false, canOut: true },
             lagos: { icon: 'desktop_windows', device: 'Telegram Desktop · Windows', kind: 'Mini App', where: 'Lagos, NG', first: '30 Oct 21:14', last: '30 Oct 21:15', thisB: false, canOut: true },
             pixel: { icon: 'phone_android', device: 'Telegram for Android · Pixel 8', kind: 'Mini App', where: 'Manchester, UK', first: '4 Oct', last: 'yesterday 21:30', thisB: false, canOut: true },
-            ipad: { icon: 'tablet_mac', device: 'Safari on iPad', kind: 'Browser, signed in with Telegram', where: 'Manchester, UK', first: '20 Oct', last: '26 Oct', thisB: false, canOut: true }
+            ipad: { icon: 'tablet_mac', device: 'Safari on iPad', kind: 'Browser, signed in with Apple', where: 'Manchester, UK', first: '20 Oct', last: '26 Oct', thisB: false, canOut: true }
           };
           Object.keys(ses).forEach((k) => { ses[k].outLabel = 'Sign out ' + ses[k].device; });
           const lg = (o) => A({ cls: '', detail: '', hasDetail: !!o.detail, masked: false, run: '', hasRun: !!o.run, outCls: 'mp-ink2', date: '31 Oct' }, o);
@@ -1086,7 +1092,7 @@
           const actYou = [
             A(red, { icon: 'logout', t: 'Sign out everywhere', c: 'Your iPhone\'s Mini App and this browser will need to sign in again. Your holdings and history are kept.' }),
             A(red, { icon: 'pause_circle', t: 'Pause my Telegram account', c: 'You are signed out everywhere, this browser too, and the bot and the Mini App stop answering you. To restore it, sign in here with Google or your passkey.' }),
-            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'y•••@gmail.com stops signing you in, and this browser signs out too, because it signed in with Google. Telegram sign-in still works.' }) ];
+            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'y•••@gmail.com stops signing you in, and this browser signs out too, because it signed in with Google. Sign in with Apple still works.' }) ];
           const actYouPaused = [
             A(red, { icon: 'logout', t: 'Sign out everywhere', c: 'This browser is your only session now; it would sign out too.' }),
             A(neu, { icon: 'play_circle', t: 'Restore my Telegram account', c: 'The bot and the Mini App answer you again. Your iPhone signs in again with Face ID first.' }),
@@ -1094,7 +1100,7 @@
           const actAsha = [
             A(red, { icon: 'logout', t: 'Sign out everywhere', c: 'Her Pixel 8, her iPad and the Windows computer will need to sign in again. Her holdings and history are kept, and her chat with the bot carries on.' }),
             A(red, { icon: 'pause_circle', t: 'Pause Telegram account', c: 'The bot answers her with one line, the Mini App locks, and she is signed out everywhere, her iPad too. Her holdings and history are kept. You can restore it at any time.' }),
-            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'a•••@gmail.com stops signing her in. Telegram sign-in still works, and Google can be linked again.' }) ];
+            A(red, { icon: 'link_off', t: 'Unlink Google', c: 'a•••@gmail.com stops signing her in. Sign in with Apple still works, and Google can be linked again.' }) ];
           const actAshaPaused = [
             A(off, { icon: 'logout', t: 'Sign out everywhere', c: 'Nothing to sign out: the pause ended all her sessions at 09:40.' }),
             A(neu, { icon: 'play_circle', t: 'Restore Telegram account', c: 'The bot and the Mini App work for her again, and she can sign in as before.' }),

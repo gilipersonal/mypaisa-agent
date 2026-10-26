@@ -22,8 +22,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: The board-name check knows a board from a stray string
+      - name: The board-name, board-date and motion-role checks know a board, a weekday and a role from their faults
         run: python3 scripts/plan_sync.py selftest
 
       - name: Trace, docs and design mirror agree
         run: python3 scripts/plan_sync.py check
+
+      - name: Every text and control is legible in light and dark, at 25% brightness too (MA-181)
+        run: python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py

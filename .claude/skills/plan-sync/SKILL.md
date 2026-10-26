@@ -1,6 +1,6 @@
 ---
 name: plan-sync
-description: Keep MyPaisa's plan, designs and Jira in step. Compare docs/trace.json with Jira (keys, parents, labels, status) and with the Claude Design projects MyPaisa app v1 and MyPaisa DS v1 (files, etags, boards), copy changed boards into the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
+description: Keep MyPaisa's plan, designs and Jira in step. Compare docs/trace.json with Jira (keys, parents, labels, status) and with the Claude Design projects MyPaisa iOS v1, MyPaisa DS v1 and MyPaisa app v1 (files, etags, boards), copy changed boards into the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
 ---
 
 # Plan sync
@@ -15,8 +15,9 @@ default), `--jira` or `--design` (one side only).
 
 Ids: Jira cloudId `81c51173-bbea-4905-bbc5-1a880fa348bb`, project `MA`,
 transitions in `.claude/jira-flow.json`. Claude Design projects in
-`docs/trace.json` under `claude_design` (`app`: MyPaisa app v1, `ds`: MyPaisa
-DS v1). Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
+`docs/trace.json` under `claude_design` (`ios`: MyPaisa iOS v1, the app's
+screens since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the web app's
+browser boards, its spec, beside the superseded Mini App and Telegram boards). Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
 `mcp__atlassian__editJiraIssue`, `mcp__atlassian__createJiraIssue`,
 `mcp__atlassian__addOrEditJiraIssueComment`, `mcp__claude-design__list_files`,
 `mcp__claude-design__read_file`.
@@ -48,7 +49,7 @@ asking in this repo (`.claude/rules/ship-autopilot.md`).
 
 ## 2. Claude Design against the mirror
 
-List both projects with depth -1 and compare with
+List every project under `claude_design` with depth -1 and compare with
 `docs/design/claude-design.json`.
 
 | Found | Do |
@@ -67,7 +68,12 @@ through `/design-first`.
 - Fix what the check reports: a missing section (fix the row, or the
   ARCHITECTURE heading if the doc changed), a cited key not traced (add the
   row), a UI row with no board (`todo` plus a note saying which design round
-  will draw it).
+  will draw it), a board date with a wrong weekday or a board motion role on
+  the wrong element (`fade` in place of `label` or `dot`, or `!important` on a
+  chart label's or dot's own transform), or a tool ARCHITECTURE §8 does not
+  define (the right name, or the tool added to §8 first); fix the board in
+  Claude Design, through `/design-first`, then copy it again; never edit the
+  mirrored copy, whose bytes and sha256 must match Claude Design's).
 
 ## 4. For one story about to start (`MA-<n>`)
 

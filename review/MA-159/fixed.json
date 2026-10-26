@@ -98,8 +98,9 @@
     "finding": "the README puts dev's Twelve Data key and Google client secret after the apply, and the phase of the first prod release is open on MA-107 and MA-142",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; r=open('README.md').read(); d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; a=r.find('terraform -chdir=infra/dev apply'); ok=0<=a<r.find('/mypaisa-agent/dev/twelvedata/api_key --type') and a<r.find('/mypaisa-agent/dev/google/client_secret --type') and all(any(q.startswith('Which phase holds the first prod release') for q in d[k].get('open',[])) or 'Settled: Which phase holds the first prod release' in d[k]['notes'] for k in ('MA-107','MA-108','MA-142')); sys.exit(0 if ok else 1)\""
-    }
+      "run": "python3 -c \"import json,sys; r=open('README.md').read(); d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; a=r.find('terraform -chdir=infra/dev apply'); ok=0<=a<r.find('/mypaisa-agent/dev/twelvedata/api_key --type') and a<r.find('/mypaisa-agent/dev/apple/apns_key --type') and all(any(q.startswith('Which phase holds the first prod release') for q in d[k].get('open',[])) or 'Settled: Which phase holds the first prod release' in d[k]['notes'] for k in ('MA-107','MA-108','MA-142')); sys.exit(0 if ok else 1)\""
+    },
+    "note": "MA-161 (25 Oct 2026): an iOS Google client has no secret, so the secret this check followed is gone; it now follows dev's APNs key, the secret the iOS app adds, put after the apply the same way."
   },
   {
     "id": "r4-B1",

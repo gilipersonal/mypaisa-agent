@@ -1,0 +1,80 @@
+@startuml
+title Adding a holding from the app (figures illustrative)
+actor Member
+participant "MyPaisa app" as app
+participant "S3 documents (kept for good)" as s3
+participant "HTTP API + api λ" as api
+participant "SQS updates.fifo" as qin
+participant "agent λ" as agent
+participant "SQS work" as work
+participant "worker λ (docs job)" as worker
+participant "Claude (Anthropic API)" as claude #FCEED6
+database "DynamoDB registry" as ddb
+participant "SQS outbox.fifo + sender λ" as out
+participant "WebSocket API (live)" as ws
+autonumber
+Member -> app : attaches factsheet.pdf
+app -> api : asks for an upload link
+api --> app : presigned PUT URL
+app -> s3 : PUT factsheet.pdf
+app -> api : POST /v1/chat/messages (client id, names the file)
+api -> qin : lane = member, dedupe = client id
+api --> app : 202 at once
+qin -> agent : next message, in order
+activate agent
+agent -> ddb : file received: Document (factsheet, S3 key, sha256) + AuditEvent, one transaction
+agent -> out : "Reading it now"
+out -> ws : to every live connection
+ws --> app : "Reading it now"
+agent -> work : docs job (document_id)
+deactivate agent
+work -> worker : job, 5 tries, then DLQ
+activate worker
+worker -> claude : PDF + schema: ISIN, OCF, holdings
+claude --> worker : JSON, a source line per field
+worker -> ddb : PendingAction add_holding (what was read, document_id, expires in 24 h)
+worker -> out : Confirm card: what I read, unsure fields in amber, [Confirm] [Edit] [Cancel]
+deactivate worker
+out -> ws : to every live connection
+ws --> app : the Confirm card
+app --> Member : the card
+Member -> app : taps Confirm
+app -> api : POST /v1/chat/actions (Confirm, the PendingAction)
+api -> qin : queue the tap
+api --> app : acknowledged at once
+qin -> agent : the tap, in order
+activate agent
+agent -> ddb : Instrument + AuditEvent (document_id) in one transaction, price sources resolved (ISIN to listing)
+agent -> out : "Added. How much do you hold? Send a screenshot or type it."
+deactivate agent
+out -> ws : to every live connection
+ws --> app : the question
+Member -> app : a valuation screenshot
+group The value takes the same path
+app -> api : asks for an upload link
+api --> app : presigned PUT URL
+app -> s3 : PUT the screenshot
+app -> api : POST /v1/chat/messages (names the screenshot)
+api -> qin : queue
+qin -> agent : the message
+agent -> ddb : file received: Document (screenshot) + AuditEvent, one transaction
+agent -> work : docs job (document_id)
+work -> worker : job
+worker -> claude : image + schema: value, units, date
+claude --> worker : JSON with sources
+worker -> ddb : PendingAction update_valuation (what was read, document_id)
+worker -> out : Confirm card: Balanced, £22,925 on 23 Oct, 1,234.5 units at 18.57
+out -> ws : to every live connection
+ws --> app : the Confirm card
+Member -> app : taps Confirm
+app -> api : POST /v1/chat/actions
+api -> qin : queue the tap
+qin -> agent : the tap, in order
+agent -> ddb : Position + Valuation (user_screenshot, document_id) + Transaction, each with an AuditEvent (document_id), one transaction
+agent -> out : "Saved: Balanced, £22,925"
+out -> ws : to every live connection
+ws --> app : the confirmation
+end
+note over agent, out : A file's Document and audit rows are written when it arrives, before the docs job reads it, and stay whatever happens next (Cancel, an expired PendingAction, a failed read); the file opens from the Audit screen. Nothing else is saved without the tap.
+note over worker, ws : No live connection: the sender pushes by APNs, and the app asks for everything after its last turn when it opens.
+@enduml

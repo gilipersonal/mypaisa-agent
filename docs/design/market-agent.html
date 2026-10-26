@@ -1,4 +1,5 @@
-<title>MyPaisa Market Agents</title>
+<meta charset="utf-8">
+<title>MyPaisa Market Agent</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap");
@@ -383,7 +384,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; line-height
 .model dt { color: var(--mp-ink-3); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1px; }
 .model dd { margin: 0; }
 
-/* Telegram (Telegram draws the bubble and buttons; MyPaisa owns the words) */
+/* The chat in the app (the app draws each card natively from its JSON; MyPaisa owns the words) */
 .tgchat { background: var(--tg-bg); color: var(--tg-text); border-radius: 22px; padding: 14px 12px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; max-width: 400px; width: 100%; font-family: var(--mp-font); }
 .tg-head { display: flex; align-items: center; gap: 10px; margin: -14px -12px 10px; padding: 10px 14px; background: var(--tg-head); font: 600 15px/20px var(--mp-font); }
 .tg-head small { display: block; font: 400 12px/16px var(--mp-font); color: var(--tg-sub); }
@@ -401,7 +402,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; line-height
 .tg-sub { color: var(--tg-sub); }
 .tgwrap { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); margin-top: 16px; align-items: start; justify-items: center; }
 
-/* the web Forecast page mock */
+/* the web app's Forecast page mock */
 .web { margin-top: 16px; border-radius: 20px; overflow: hidden; background: var(--mp-bg); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
 .webbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); min-width: 0; }
 .webbar .dots { display: flex; gap: 6px; flex: none; }
@@ -520,7 +521,7 @@ footer p { max-width: 90ch; }
 <div class="frame">
 
 <header class="hero">
-  <p class="over">MyPaisa · design explainer · the market side</p>
+  <p class="over">MyPaisa · design explainer · the market side · in the iOS app and the web app since MA-161</p>
   <h1>MyPaisa <i>Market</i> Agent</h1>
   <p class="lede">How MyPaisa reads the market for one household, end to end: a rules engine anyone can check by hand, a Forecaster that learns from ten years of history and sits beside it, and a small team of agents that grade, calibrate and repair both every day. The UK holdings come first; from phase 13 the household's Indian mutual funds, shares and ETFs are read the same way, in rupees with pounds beside them.</p>
   <div class="goal">
@@ -562,8 +563,8 @@ footer p { max-width: 90ch; }
 
 <section class="sec" id="map" aria-labelledby="map-h">
   <header class="sh"><span class="num">0</span><div><p class="over">The whole market side in one drawing</p><h2 id="map-h">From free sources to a card the household reads</h2></div></header>
-  <p class="intro">After each close (London, New York and, from phase 13, India's NSE and BSE, with AMFI's fund prices in the UK evening) a schedule in <code>Europe/London</code> queues the day's jobs. One worker Lambda runs each job by its type: ingest, news, the rules engine, the Forecaster, grading and calibration, the brief. The record lives in an S3 lake, the state in DynamoDB, and the result reaches Telegram and the web app. Claude only tags news and explains; code makes every number.</p>
-  <div class="scrollx" role="img" aria-label="Architecture of the market side: free sources, Indian ones from phase 13, feed the worker Lambda; EventBridge Scheduler, and from phase 12 Step Functions, put jobs on the SQS work queue, which has a dead-letter queue; the worker runs ingest, news, engine, Forecaster, grade and calibrate, challengers and brief jobs, reading and writing the S3 lake and DynamoDB items; DynamoDB feeds the Telegram card, the web Forecast page and the admin desk; Claude Haiku tags news and Claude Sonnet explains; agents publish on the EventBridge bus.">
+  <p class="intro">After each close (London, New York and, from phase 13, India's NSE and BSE, with AMFI's fund prices in the UK evening) a schedule in <code>Europe/London</code> queues the day's jobs. One worker Lambda runs each job by its type: ingest, news, the rules engine, the Forecaster, grading and calibration, the brief. The record lives in an S3 lake, the state in DynamoDB, and the result reaches the iOS app (its chat, its dashboard and push) and the web app. Claude only tags news and explains; code makes every number.</p>
+  <div class="scrollx" role="img" aria-label="Architecture of the market side: free sources, Indian ones from phase 13, feed the worker Lambda; EventBridge Scheduler, and from phase 12 Step Functions, put jobs on the SQS work queue, which has a dead-letter queue; the worker runs ingest, news, engine, Forecaster, grade and calibrate, challengers and brief jobs, reading and writing the S3 lake and DynamoDB items; DynamoDB feeds the card in the app's chat, the Forecast screen in the app and the web app, and the admin desk; Claude Haiku tags news and Claude Sonnet explains; agents publish on the EventBridge bus.">
     <svg class="dg" viewBox="0 0 1180 650" style="min-width:940px" aria-hidden="true" focusable="false">
       <!-- A: sources -->
       <rect class="box" x="16" y="40" width="196" height="520" rx="16"/>
@@ -675,11 +676,11 @@ footer p { max-width: 90ch; }
 
       <!-- E: out -->
       <rect class="box" x="1002" y="40" width="162" height="60" rx="12"/>
-      <text class="t" x="1018" y="65">Telegram card</text>
+      <text class="t" x="1018" y="65">Card in the chat</text>
       <text class="s" x="1018" y="84">outbox.fifo, sender λ</text>
       <rect class="box" x="1002" y="112" width="162" height="60" rx="12"/>
-      <text class="t" x="1018" y="137">Web Forecast page</text>
-      <text class="s" x="1018" y="156">api λ, CloudFront</text>
+      <text class="t" x="1018" y="137">Forecast screen</text>
+      <text class="s" x="1018" y="156">api λ, app and web</text>
       <rect class="box" x="1002" y="184" width="162" height="70" rx="12"/>
       <text class="t" x="1018" y="209">Admin desk</text>
       <text class="s" x="1018" y="227">the admin approves,</text>
@@ -693,7 +694,7 @@ footer p { max-width: 90ch; }
       <rect class="boxc" x="1002" y="354" width="162" height="80" rx="12"/>
       <text class="t" x="1018" y="380">The household</text>
       <text class="t" x="1018" y="398">decides</text>
-      <text class="s" x="1018" y="418">the bot cannot trade</text>
+      <text class="s" x="1018" y="418">the app cannot trade</text>
 
       <!-- bus -->
       <rect class="box2" x="248" y="604" width="916" height="34" rx="10"/>
@@ -786,7 +787,7 @@ footer p { max-width: 90ch; }
         <li>India's paid options follow the same rule: Twelve Data's Grow plan ($79 a month; its free tier has no NSE or BSE), or Zerodha Kite Connect (₹500 a month, with history) if the member has a Zerodha account.</li>
       </ul>
     </div>
-    <div class="tgchat" aria-label="Illustrative admin request in Telegram from the data steward">
+    <div class="tgchat" aria-label="Illustrative admin request in the app's chat from the data steward">
       <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>admin chat · illustrative</small></div></div>
       <div class="tg-bub"><b>Data steward asks</b><br>yfinance has not returned Balanced for 3 days; Twelve Data does not list it. EODHD's free key returns its history back to 2019.<br><b>Switch on EODHD Historian at £19.99 a month?</b><br><span class="tg-sub">AWS and others: £3 of £50 used this month.<br>Undo: switch it off; nothing else changes.</span><div class="tg-time">08:02</div></div>
       <div class="tg-btns two"><span class="tg-btn">Approve</span><span class="tg-btn">Reject</span><span class="tg-btn">Why?</span><span class="tg-btn">Later</span></div>
@@ -1123,8 +1124,8 @@ footer p { max-width: 90ch; }
   <header class="sh"><span class="num">6</span><div><p class="over">Side by side</p><h2 id="s6-h">Both engines in one card, and one page per holding</h2><div class="keys"><span class="key">F6 MA-124</span><span class="ph">needs phases 5 and 6</span></div></div></header>
   <p class="intro">The rules engine's call and the Forecaster's view sit together, each with its own track record. When the two disagree, the card says so; below the confidence floor it says "no clear view". The Forecaster appears in weekday cards for a holding only after 8 live weeks beating both the base rate and the rules engine; until then, only in the Saturday review, labelled "in practice". Both views are designed first, with privacy mode and both themes. From phase 13 an Indian holding gets the same card, its figures in rupees with pounds beside them.</p>
   <div class="tgwrap">
-    <div class="tgchat" aria-label="Telegram card, illustrative figures from ARCHITECTURE section 19.7">
-      <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>bot · illustrative figures, §19.7</small></div></div>
+    <div class="tgchat" aria-label="Card in the app's chat, illustrative figures from ARCHITECTURE section 19.7">
+      <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>chat · illustrative figures, §19.7</small></div></div>
       <div class="tg-bub">
         <b>NASDAQ 100 ETF</b>
         <div class="tg-tab">
@@ -1141,8 +1142,8 @@ footer p { max-width: 90ch; }
       </div>
       <div class="tg-btns"><span class="tg-btn">Why?</span><span class="tg-btn">Chart</span><span class="tg-btn">Track record</span></div>
     </div>
-    <div class="tgchat" aria-label="Telegram card where the two engines disagree, illustrative">
-      <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>bot · illustrative</small></div></div>
+    <div class="tgchat" aria-label="Card in the app's chat where the two engines disagree, illustrative">
+      <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>chat · illustrative</small></div></div>
       <div class="tg-bub">
         <b>Physical Silver</b>
         <div class="tg-tab">
@@ -1159,9 +1160,9 @@ footer p { max-width: 90ch; }
       <div class="tg-btns"><span class="tg-btn">Why?</span><span class="tg-btn">Chart</span><span class="tg-btn">Track record</span></div>
     </div>
   </div>
-  <p class="cap" style="text-align:center;margin-inline:auto">Telegram draws the bubble and the buttons; MyPaisa owns the words and their order. No pound figures: privacy mode shows the same card.</p>
+  <p class="cap" style="text-align:center;margin-inline:auto">The app draws the card and its buttons natively from the card's JSON (MA-174); MyPaisa owns the words and their order. No pound figures: privacy mode shows the same card.</p>
 
-  <div class="web" aria-label="Mock of the web Forecast page for the NASDAQ 100 ETF, illustrative figures">
+  <div class="web" aria-label="Mock of the web app's Forecast page for the NASDAQ 100 ETF, illustrative figures">
     <div class="webbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="url">console.mypaisapp.com · Holdings · NASDAQ 100 ETF · Forecast</span></div>
     <div class="webpage">
       <div class="wp-head">
@@ -1227,7 +1228,8 @@ footer p { max-width: 90ch; }
       </div>
     </div>
   </div>
-  <p class="cap"><span class="illus">Illustrative</span>The web app is <code>console.mypaisapp.com</code>, served by <span class="aws">CloudFront</span> and read through the read-only <span class="aws">api λ</span> from the <code>Forecast</code> and <code>ScoreDaily</code> items.</p>
+  <p class="cap"><span class="illus">Illustrative</span>The web app is <code>console.mypaisapp.com</code>, served by <span class="aws">CloudFront</span>; it and the iOS app, on iPhone and iPad, read through the read-only <span class="aws">api λ</span> from the <code>Forecast</code> and <code>ScoreDaily</code> items.</p>
+  <p class="cap">In both, the charts and cards move with one motion system (MA-182): springs, glass that morphs, figures that roll, charts that draw in and scrub, haptics in the app, and Reduce Motion honoured. They stay legible at 25% brightness (MA-181): every colour pair in light and dark, text on glass included, passes <code>scripts/contrast_check.py</code> at full brightness and at 25%, a gate on every PR (ARCHITECTURE §9.1).</p>
 </section>
 
 <!-- 7 -->
@@ -1269,9 +1271,9 @@ footer p { max-width: 90ch; }
     <div class="card">
       <h3>Challengers: tested over 10 years and 8 live weeks</h3>
       <p class="small">The monthly retrain, other parameters and rule thresholds within their ranges are challengers. Each is tested over the ten years and runs live in shadow. One that beats the current version in the held-out years and over 8 live weeks, by more than a margin, becomes a <code>ChangeRequest</code> to the admin, with the scores side by side.</p>
-      <p class="small">The admin approves in their Telegram chat or the Admin center's Approvals page, with the second check: Face ID or the PIN in Telegram, the fresh check in the browser (MA-102). Deciding in one door updates the other. After a promotion the old version stays ready and is restored on its own if the new one slips.</p>
+      <p class="small">The admin approves in the owner's chat in the app or on the Admin center's Approvals page, in the app or the web app, with the second check, bound to the action and verified by the server: a fresh Sign in with Apple or passkey under Face ID in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser (MA-76, MA-102). Deciding in one place updates the others. After a promotion the old version stays ready and is restored on its own if the new one slips.</p>
     </div>
-    <div class="tgchat" aria-label="Illustrative change request from the grader and tuner in the admin's Telegram chat">
+    <div class="tgchat" aria-label="Illustrative change request from the grader and tuner in the owner's chat in the app">
       <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>admin chat · illustrative</small></div></div>
       <div class="tg-bub"><b>Grader and tuner asks</b><br>Promote the risk model v8 over v7?<br><span class="tg-sub">Held-out years, Brier: v8 0.162, v7 0.171<br>8 live weeks, Brier: v8 0.158, v7 0.169<br>Cost: none. Risk: low.<br>Undo: v7 stays ready and comes back on its own if v8 slips.<br>Expires in 7 days.</span><div class="tg-time">09:30</div></div>
       <div class="tg-btns two"><span class="tg-btn">Approve</span><span class="tg-btn">Reject</span><span class="tg-btn">Why?</span><span class="tg-btn">Later</span></div>
@@ -1289,7 +1291,7 @@ footer p { max-width: 90ch; }
 <!-- 8 -->
 <section class="sec" id="s8" aria-labelledby="s8-h">
   <header class="sh"><span class="num">8</span><div><p class="over">The strategy layer · where the goal is won</p><h2 id="s8-h">Steer the money the household already moves</h2><div class="keys"><span class="key">F7 MA-125</span><span class="ph">after F2 and F3</span></div></div></header>
-  <p class="intro">Forecasts become suggestions about the monthly contributions. It shows as the suggested split on the first-of-the-month contribution prompt, beside the rules engine's. The bot cannot trade: the household reads the suggestion and makes any move itself.</p>
+  <p class="intro">Forecasts become suggestions about the monthly contributions. It shows as the suggested split on the first-of-the-month contribution prompt, beside the rules engine's. The app cannot trade: the household reads the suggestion and makes any move itself.</p>
   <div class="g2">
     <div class="card">
       <h3>The rules it keeps</h3>
@@ -1338,7 +1340,7 @@ footer p { max-width: 90ch; }
       <div class="band-l" aria-hidden="true"><span style="left:0;transform:none">0%</span><span style="left:24%">now ▼ 6%</span><span style="left:60%">budget 15%</span><span style="left:100%;transform:translateX(-100%)">25%</span></div>
     </div>
   </div>
-  <div class="callout"><div><p>F2, F3 and F7 do most of the work for the goal: proof, risk, and the steering of new money. F5, direction, is the least reliable piece and does the least.</p><p class="sub">Suggestions only. The bot cannot trade, and every decision stays with the household.</p></div></div>
+  <div class="callout"><div><p>F2, F3 and F7 do most of the work for the goal: proof, risk, and the steering of new money. F5, direction, is the least reliable piece and does the least.</p><p class="sub">Suggestions only. The app cannot trade, and every decision stays with the household.</p></div></div>
 </section>
 
 <!-- 9 -->
@@ -1412,7 +1414,7 @@ footer p { max-width: 90ch; }
 <!-- 10 -->
 <section class="sec" id="s10" aria-labelledby="s10-h">
   <header class="sh"><span class="num">10</span><div><p class="over">Self-healing on the market pipeline</p><h2 id="s10-h">Nothing lost, everything retried, the rest raised</h2><div class="keys"><span class="key">MA-138</span><span class="key">MA-139</span><span class="key">MA-140</span><span class="key">E7 MA-135</span><span class="key">MA-137</span></div></div></header>
-  <p class="intro">A bad minute at a data source, the Anthropic API or Telegram costs a delay, never a day's work. From phase 12 the daily run is one <span class="aws">Step Functions</span> state machine with retries and backoff on every step and idempotent writes, its jobs carried by the <span class="aws">SQS work queue</span>.</p>
+  <p class="intro">A bad minute at a data source, the Anthropic API or Apple's push service costs a delay, never a day's work. From phase 12 the daily run is one <span class="aws">Step Functions</span> state machine with retries and backoff on every step and idempotent writes, its jobs carried by the <span class="aws">SQS work queue</span>.</p>
   <ol class="flow" style="--n:6">
     <li><h4>Ingest</h4><p>Prices, the economy, events, through each chain.</p></li>
     <li><h4>Engine</h4><p>The rules: signals and stances.</p></li>
@@ -1537,7 +1539,7 @@ footer p { max-width: 90ch; }
         <li><strong>50%</strong>: the admin is told, also when the month's forecast passes the cap.</li>
         <li><strong>80%</strong>: dev's schedules pause.</li>
         <li><strong>100%</strong>: dev pauses; prod's back-fills, retraining and challengers pause. The brief, alerts and the chat never stop.</li>
-        <li>Behind it: one <span class="aws">AWS Budgets</span> hard limit at £75, made by Terraform; alerts by Telegram, the web app and <span class="aws">SNS</span> email.</li>
+        <li>Behind it: one <span class="aws">AWS Budgets</span> hard limit at £75, made by Terraform; alerts in the app and the web app, by push and by <span class="aws">SNS</span> email.</li>
         <li>A paid feed is a subscription against this cap: EODHD's £19.99, or for India Twelve Data's Grow plan ($79) or Kite Connect (₹500), each only if approved.</li>
       </ul>
       <p class="cap"><span class="illus">Illustrative</span>The £3 used is the figure from the data steward's example request.</p>
@@ -1679,14 +1681,14 @@ footer p { max-width: 90ch; }
       </div>
       <p class="cap"><span class="illus">Illustrative</span>₹3,37,500 of the ETF on 23 Oct, kept with its £3,000 at that day's ECB rate. INR and GBP views must agree with the FX of the day; a test checks it.</p>
     </div>
-    <div class="tgchat" aria-label="Illustrative currency check in Telegram: rupees typed against a pound holding">
-      <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>bot · illustrative · MA-156</small></div></div>
+    <div class="tgchat" aria-label="Illustrative currency check in the app's chat: rupees typed against a pound holding">
+      <div class="tg-head"><span class="tg-av">£</span><div>MyPaisa<small>chat · illustrative · MA-156</small></div></div>
       <div class="tg-bub"><span class="tg-sub">You: I put ₹20,000 into Balanced</span><br>Balanced is held in pounds (GBP), so it can't take rupees. The rupees were changed to pounds on the way in.<br><b>How many pounds arrived?</b> Type them, or send a screenshot of the platform's confirmation.<br><span class="tg-sub">Or use the estimate: ₹112.50 per £, the ECB rate of Fri 23 Oct, worked out by MyPaisa's engine. Nothing is saved yet.</span><div class="tg-time">19:10</div></div>
       <div class="tg-btns" style="grid-template-columns:1fr"><span class="tg-btn">About £177.78 · ECB estimate</span></div>
       <div class="tg-btns two"><span class="tg-btn">Nifty 50 instead</span><span class="tg-btn">Cancel</span></div>
     </div>
   </div>
-  <p class="cap">The currency check (MA-156, phase 1): every holding keeps the currency it is bought and valued in; money typed in another is never saved as typed. The bot asks again in the holding's currency (Arun's pick, 1b): the pounds typed in answer are recorded, with the rate the engine works out from them beside it; the <i>ECB estimate</i> button, its figure in view, is the engine's conversion at that day's reference rate, with its date, marked an estimate; Confirm is always a separate tap. With privacy on, no amount and no rate on the card. The original amount, rate and source stay on the transaction. Every pair, both ways, on a typed line, a guided flow, a screenshot, a CAS or broker line.</p>
+  <p class="cap">The currency check (MA-156, phase 1): every holding keeps the currency it is bought and valued in; money typed in another is never saved as typed. MyPaisa asks again in the holding's currency (Arun's pick, 1b): the pounds typed in answer are recorded, with the rate the engine works out from them beside it; the <i>ECB estimate</i> button, its figure in view, is the engine's conversion at that day's reference rate, with its date, marked an estimate; Confirm is always a separate tap. With privacy on, no amount and no rate on the card. The original amount, rate and source stay on the transaction. Every pair, both ways, on a typed line, a guided flow, a screenshot, a CAS or broker line.</p>
 
   <div class="g2">
     <div class="card">
@@ -1714,8 +1716,8 @@ footer p { max-width: 90ch; }
       <p class="over">IN3 · MA-153</p>
       <h3>Accounts, suggestions and the tax flag</h3>
       <div class="chips"><span class="chip mp-neutral">demat</span><span class="chip mp-neutral">mf_folio</span><span class="chip mp-neutral">nre</span><span class="chip mp-neutral">nro</span><span class="chip mp-neutral">ppf, nps, elss if held</span></div>
-      <p class="small">Each account has country IN and currency INR. "ISA-safe" becomes "wrapper-aware": a suggestion names only actions that suit the account it is about, and the bot still never trades.</p>
-      <p class="small">For a UK resident many Indian funds are not UK "reporting funds", so gains may be taxed differently. The bot flags those holdings in plain words and says to check with a tax adviser. It never gives tax advice.</p>
+      <p class="small">Each account has country IN and currency INR. "ISA-safe" becomes "wrapper-aware": a suggestion names only actions that suit the account it is about, and the app still never trades.</p>
+      <p class="small">For a UK resident many Indian funds are not UK "reporting funds", so gains may be taxed differently. MyPaisa flags those holdings in plain words and says to check with a tax adviser. It never gives tax advice.</p>
       <p class="small ink2">Privacy mode hides rupees as it hides pounds. The cards and pages are designed first, in Claude Design, before any is built.</p>
     </div>
   </div>
@@ -1771,7 +1773,7 @@ footer p { max-width: 90ch; }
     </div>
     <div class="gate"><h4>After phase 5 and MA-102</h4>
       <div class="story e"><b>E1 · Settings</b><small>Every behaviour a versioned setting</small><span class="key">MA-129</span></div>
-      <div class="story e"><b>E2 · The admin desk</b><small>Telegram and the Admin center</small><span class="key">MA-130</span></div>
+      <div class="story e"><b>E2 · The admin desk</b><small>The owner's chat and the Admin center</small><span class="key">MA-130</span></div>
     </div>
     <div class="gate"><h4>After phase 6</h4>
       <div class="story e"><b>E4 · Store and daily grading</b><small>Once stances are graded</small><span class="key">MA-132</span></div>
@@ -1803,11 +1805,11 @@ footer p { max-width: 90ch; }
       <div class="story i"><b>IN4 · Engine and Forecaster</b><small>The India basket, Indian news, the RBI's calendar</small><span class="key">MA-154</span></div>
     </div>
   </div>
-  <p class="cap">The exit for phase 11: over ten years of walk-forward tests and 8 live weeks, the risk forecasts beat the base rate, and the steered contributions cut the worst fall and the time underwater against buy-and-hold, within the growth trade-off the household sets. For phase 12: a month in which every change was inside its band or approved, every prediction was graded, and spend stayed inside both budgets. For phase 13: a member sends their CAS and broker export, taps Confirm once, and the Indian holdings with their history appear in the brief and the web app in INR and GBP, with the files they came from open from the Audit page.</p>
+  <p class="cap">The exit for phase 11: over ten years of walk-forward tests and 8 live weeks, the risk forecasts beat the base rate, and the steered contributions cut the worst fall and the time underwater against buy-and-hold, within the growth trade-off the household sets. For phase 12: a month in which every change was inside its band or approved, every prediction was graded, and spend stayed inside both budgets. For phase 13: a member sends their CAS and broker export, taps Confirm once, and the Indian holdings with their history appear in the brief and on the dashboard in INR and GBP, with the files they came from open from the Audit page.</p>
 </section>
 
 <footer>
-  <p><strong>Sources.</strong> ARCHITECTURE.md §4.1 and §4.7 (holdings, money in any currency), §5 (data layer, price chains, FX), §6 (the engine), §11, §15.1, §15.2, §19 (the Forecaster), §20 (the agent team), §21 (queues), §22 (Indian markets); PLAN.md phases 1 (MA-156), 2, 6, 7, 8, 11, 12 and 13; TECH_STACK.md's Indian sources. Where this page and those documents differ, the documents win.</p>
+  <p><strong>Sources.</strong> ARCHITECTURE.md §4.1 and §4.7 (holdings, money in any currency), §5 (data layer, price chains, FX), §6 (the engine), §9.1 and §9.4 (the app's and the web app's look, legibility and motion), §11, §15.1, §15.2, §19 (the Forecaster), §20 (the agent team), §21 (queues), §22 (Indian markets); PLAN.md phases 1 (MA-156), 2, 6, 7, 8, 11, 12 and 13; TECH_STACK.md's Indian sources. Where this page and those documents differ, the documents win.</p>
   <p>MyPaisa is software for one household, not regulated advice. It suggests and explains; it never trades, and every decision stays with the household. Sharing its calls with other households would start to look like regulated advice, so it is not shared. Every figure on this page is illustrative: no real balance, price, rate or result is shown, and nothing here promises accuracy. It never gives tax advice: where UK rules may treat an Indian fund differently, it says so in plain words and says to check with a tax adviser.</p>
 </footer>
 

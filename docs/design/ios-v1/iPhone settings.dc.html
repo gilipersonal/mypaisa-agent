@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone settings</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&amp;display=swap" />
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          .dv-turn { padding: 44px 48px 36px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0; text-wrap: pretty; }
+          .dv-col { display: flex; flex-direction: column; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.08); }
+          .bd-note p { margin: 0; }
+          .stk { display: flex; flex-direction: column; gap: 40px; }
+          .sts { display: flex; gap: 34px; align-items: flex-start; }
+          .st { display: flex; flex-direction: column; gap: 16px; width: min-content; }
+          .st-cap { font: 600 12px/16px ui-monospace, Menlo, monospace; color: #3D424D; }
+          .z80 { zoom: 0.8; } .z60 { zoom: 0.6; }
+          .anno { position: absolute; z-index: 60; font: 600 12px/15px ui-monospace, Menlo, monospace; color: #3D2E05; background: #FFF4D6; border: 1px dashed #8A6A1F; border-radius: 6px; padding: 3px 8px; letter-spacing: 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+          .anno .ms { font-size: 14px; }
+          .sheet .anno, .nwrap .anno { position: absolute; top: -14px; right: 22px; z-index: 3; }
+          .z1 { position: relative; z-index: 1; }
+          .f1 { flex: 1; min-width: 0; }
+          .dev .daysep { color: var(--mp-ink-2); }
+          .dev .ph { color: var(--mp-ink-2); }
+          .dev .mp-over { font-size: 13px; line-height: 18px; }
+          .sub-in { padding: 0 16px; display: flex; flex-direction: column; }
+          .grp { display: flex; flex-direction: column; margin-top: 18px; }
+          .gft { padding: 6px 16px 0; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); text-wrap: pretty; }
+          .rv { display: flex; align-items: center; gap: 2px; color: var(--mp-ink-2); font: 400 17px/22px var(--mp-font); flex: none; }
+          .rv .ms { font-size: 20px; }
+          .red { color: var(--mp-alert); }
+          .acc { color: var(--mp-accent); font-weight: 600; }
+          .av { width: 56px; height: 56px; border-radius: 50%; background: var(--mp-hero); color: var(--mp-hero-ink); display: grid; place-items: center; font: 800 24px/1 var(--mp-font-round); flex: none; }
+          .callout { display: flex; gap: 12px; align-items: flex-start; background: var(--mp-surface); border-radius: 14px; padding: 12px 14px; margin-top: 4px; }
+          .callout > .ms { color: var(--mp-accent); font-size: 22px; margin-top: 1px; }
+          .pv { display: flex; align-items: center; gap: 14px; padding: 4px 16px 14px; }
+          .pvh { padding: 10px 14px; border-radius: 16px; display: flex; flex-direction: column; gap: 4px; width: 150px; flex: none; box-sizing: border-box; }
+          .hero-up { color: var(--mp-hero-up); }
+          .btn-destr { background: var(--mp-alert-bg); color: var(--mp-alert); }
+          .wbtn { width: 100%; box-sizing: border-box; }
+          .atile { background: #000; color: #fff; }
+          .t-dark .atile { background: #fff; color: #000; }
+          .gtile { background: #fff; box-shadow: inset 0 0 0 1px #DADCE0; }
+          .alogo { font: 400 19px/1 -apple-system, "SF Pro Text", system-ui, sans-serif; position: relative; top: -1px; }
+          .glogo { width: fit-content; font: 700 19px/1 "Roboto", Arial, sans-serif; background: conic-gradient(from -80deg, #EA4335 0 130deg, #4285F4 130deg 215deg, #34A853 215deg 305deg, #FBBC05 305deg 360deg); -webkit-background-clip: text; background-clip: text; color: transparent; }
+          .lg-solid { background: color-mix(in srgb, var(--mp-surface) 95%, transparent); }
+          .xbtn { width: 44px; height: 44px; border-radius: 50%; background: rgba(120,120,128,.16); display: grid; place-items: center; color: var(--mp-ink-2); flex: none; }
+          .xbtn .ms { font-size: 20px; }
+          .iosbtn { min-height: 50px; border-radius: 999px; display: flex; align-items: center; justify-content: center; gap: 8px; font: 600 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; }
+          .iosb { background: #007AFF; color: #fff; }
+          .t-dark .iosb { background: #0A84FF; }
+          .ai64 { width: 64px; height: 64px; border-radius: 15px; }
+          .ai64 .mark { width: 24px; height: 24px; box-shadow: 0 0 0 5px currentColor, 0 0 0 8px var(--mp-coral); }
+          .ai28 { width: 28px; height: 28px; border-radius: 7px; }
+          .ai28 .mark { width: 10px; height: 10px; box-shadow: 0 0 0 2px currentColor, 0 0 0 3.5px var(--mp-coral); }
+          .scr-a { position: absolute; inset: 0; overflow: hidden; }
+          .chat-a { position: absolute; left: 0; right: 0; bottom: 172px; }
+          .lock-top { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 2px; }
+          .lock-top > .ms { font-size: 20px; }
+          .nwrap { position: relative; margin: 0 12px 150px; }
+          .nwrap .notif-t span { color: var(--mp-ink); }
+          .nmark { width: 13px; height: 13px; border-radius: 50%; background: var(--mp-coral); box-shadow: 0 0 0 3px var(--mp-hero), 0 0 0 4.5px var(--mp-coral); display: block; }
+          .tsens { display: flex; align-items: center; gap: 4px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink); letter-spacing: 0.04em; text-transform: uppercase; }
+          .tsens .ms { font-size: 15px; }
+          .lockbtns { position: absolute; left: 46px; right: 46px; bottom: 44px; display: flex; justify-content: space-between; z-index: 5; }
+          .lkb { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; }
+          .lkb .ms { font-size: 22px; }
+          .lock .homebar { background: #fff; }
+          .sw { background: linear-gradient(160deg, #5B6475 0%, #3A4252 100%); color: #fff; }
+          .t-dark .sw { background: linear-gradient(160deg, #161D2B 0%, #070A10 100%); }
+          .swc { position: absolute; top: 150px; width: 250px; display: flex; flex-direction: column; gap: 10px; }
+          .swh { display: flex; align-items: center; gap: 8px; font: 600 15px/20px var(--mp-font); color: #fff; padding-left: 4px; min-height: 28px; }
+          .swi { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,.32); flex: none; }
+          .swcard { height: 540px; border-radius: 38px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+          .phc { background: repeating-linear-gradient(135deg, var(--mp-surface) 0 10px, var(--mp-surface-2) 10px 20px); display: grid; place-items: center; font: 600 13px/18px ui-monospace, Menlo, monospace; color: var(--mp-ink-2); }
+          .cover { background: var(--mp-hero); display: grid; place-items: center; }
+          .cmark { width: 44px; height: 44px; border-radius: 50%; background: var(--mp-coral); box-shadow: 0 0 0 9px var(--mp-hero), 0 0 0 14px var(--mp-coral); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="t0" data-screen-label="iPhone settings: intro">
+        <div class="dv-thd"><span class="dv-tid">Y</span><span class="dv-tname">You, privacy, notifications and leaving, on iPhone</span></div>
+        <p class="dv-intro">The You tab and what hangs off it (MA-172), then what MyPaisa shows outside the app: the lock screen and the app switcher (MA-170, MA-171). Settings are grouped inset lists of Warm ledger content under option 1a's glass tab bar. A preference that changes what MyPaisa sends is a card to Confirm in the chat (rule 4); privacy mode, the mode and Pause act at once, as their commands do; leaving asks for the second check. Each board is drawn in light and dark; a board with several steps shows them side by side, and each frame plays its motion as it scrolls into view (replay beside its label). Illustrative figures and names.</p>
+      </section>
+
+      <!-- Y1 · You -->
+      <section class="bd" id="y1">
+        <div class="bd-h"><span class="bd-id">Y1</span><span class="bd-name">You</span><span class="bd-keys">MA-172 · MA-35</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · You · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="largetitle" style="padding-top:8px">You</div>
+                  <div class="sub-in">
+                    <div class="mp-card fx ac gap12"><span class="av">A</span><span class="fx col f1"><span class="mp-t3">Arun Dutta</span><span class="mp-sub mp-ink2">Owner · the Dutta household</span></span></div>
+                    <div class="grp">
+                      <div class="mp-group"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">shield_person</span></span><span class="mp-body f1">Admin center</span><span class="badge">1</span><span class="rv"><span class="ms">chevron_right</span></span></div></div>
+                      <span class="gft">Only the owner sees this row.</span>
+                    </div>
+                    <div class="grp">
+                      <div class="mp-group">
+                        <sc-for list="{{ youRows }}" as="r" hint-placeholder-count="4">
+                          <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="mp-body f1">{{ r.label }}</span><span class="rv">{{ r.value }}<span class="ms">{{ r.chev }}</span></span></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <div class="grp">
+                      <div class="mp-group">
+                        <sc-for list="{{ youRows2 }}" as="r" hint-placeholder-count="2">
+                          <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="mp-body f1">{{ r.label }}</span><span class="rv">{{ r.value }}<span class="ms">{{ r.chev }}</span></span></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <div class="grp">
+                      <div class="mp-group"><div class="mp-row"><span class="mp-icontile mp-alertchip"><span class="ms ms-s">logout</span></span><span class="mp-body f1 red">Leave the household</span><span class="rv"><span class="ms">chevron_right</span></span></div></div>
+                    </div>
+                  </div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>One place for me.</b> The member's name, role and household on top, then grouped inset lists: Privacy and Face ID, Notifications, Sign-in methods, Devices, Simple or Technical, Pause MyPaisa and Leave the household.</p>
+            <p><b>The owner's row.</b> Admin center, with its badge (one failed job waiting for Replay), shows for Arun only: the owner is the household's one admin. On iPad it sits in the sidebar instead.</p>
+            <p><b>Rows open screens; changes keep to their paths.</b> A preference that changes what MyPaisa sends opens the chat with its card to Confirm (rule 4). Privacy mode, Simple or Technical and Pause act at once, as /privacy, /technical and /pause do, each with an audit row.</p>
+            <p><b>Leave the household</b> is the one red row: it is destructive, and it asks for the second check (Y6). Keys MA-172, MA-35.</p>
+            <p><b>Motion.</b> The large title, the name card and each group rise in turn and the Admin center badge pops; the glass tab bar stays put.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y2 · Privacy and Face ID lock -->
+      <section class="bd" id="y2">
+        <div class="bd-h"><span class="bd-id">Y2</span><span class="bd-name">Privacy and Face ID lock</span><span class="bd-keys">MA-171</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Privacy and Face ID lock · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span></span></div>
+                  <div class="largetitle">Privacy and Face ID</div>
+                  <div class="sub-in">
+                    <div class="grp" style="margin-top:6px">
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility_off</span></span><span class="mp-body f1">Privacy mode</span><span class="mp-switch"><span class="mp-switch-k"></span></span></div>
+                        <div class="pv">
+                          <span class="fx col f1"><span class="mp-sub mp-w6">Preview</span><span class="mp-foot mp-ink2">Home with it on: the amount hidden, the move kept.</span></span>
+                          <span class="mp-hero pvh"><span class="mp-foot mp-hero-2">Household</span><span class="mp-num-l mp-mask">£24,110</span><span class="mp-foot hero-up mp-w6">▲ 0.4% today</span></span>
+                        </div>
+                      </div>
+                      <span class="gft">Hides every amount in cards, screens, charts and notifications; percentages stay. It acts at once, as /privacy does.</span>
+                    </div>
+                    <div class="grp">
+                      <div class="mp-group"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">notifications</span></span><span class="mp-body f1">Show amounts in notifications</span><span class="mp-switch"><span class="mp-switch-k"></span></span></div></div>
+                      <span class="gft">Off: the lock screen says what happened, never how much. Privacy mode keeps it off.</span>
+                    </div>
+                    <div class="grp">
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">familiar_face_and_zone</span></span><span class="mp-body f1">Lock with Face ID</span><span class="mp-switch on"><span class="mp-switch-k"></span></span></div>
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">timer</span></span><span class="mp-body f1">Ask again</span><span class="rv">After 5 minutes<span class="ms">unfold_more</span></span></div>
+                      </div>
+                      <span class="gft">Face ID or your passcode when MyPaisa opens. A comfort on this iPhone only: it never approves a change.</span>
+                    </div>
+                    <div class="callout" style="margin-top:18px"><span class="ms">layers</span><span class="mp-sub mp-ink2 f1">In the app switcher MyPaisa shows only its mark, never a figure.</span></div>
+                  </div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Privacy mode</b> masks every amount in every card, screen, chart axis and notification, as the DS masks money; percentages stay. The preview shows Home's figure with it on. It acts at once, as /privacy does.</p>
+            <p><b>Show amounts in notifications</b> is off by default: the lock screen says what happened, never how much (MA-170). Turning it on opens the chat with its preference card to Confirm; privacy mode keeps it off whatever it says.</p>
+            <p><b>Lock with Face ID:</b> Face ID or the passcode on opening and after five minutes away. A comfort on this iPhone only, so it changes at once; it never approves anything on the server (MA-76).</p>
+            <p><b>The app switcher</b> shows only the mark (Y9). Keys MA-171.</p>
+            <p><b>Motion.</b> The groups rise in turn and the preview's mask fades in over the figure; a switch's knob slides when tapped.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y3 · Notifications and quiet hours -->
+      <section class="bd" id="y3">
+        <div class="bd-h"><span class="bd-id">Y3</span><span class="bd-name">Notifications and quiet hours</span><span class="bd-keys">MA-170 · MA-59 · MA-69</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Notifications and quiet hours · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span></span></div>
+                  <div class="largetitle">Notifications</div>
+                  <div class="sub-in">
+                    <div class="callout" data-mo="card"><span class="ms">chat_bubble</span><span class="mp-sub mp-ink2 f1"><b class="mp-w6" style="color:var(--mp-ink)">Changes are made in the chat.</b> A switch or a time opens its preference card there, to Confirm.</span></div>
+                    <sc-for list="{{ notifGroups }}" as="g" hint-placeholder-count="3">
+                      <div class="grp">
+                        <span class="mp-section mp-over mp-ink2">{{ g.head }}</span>
+                        <div class="mp-group">
+                          <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+                            <div class="mp-row"><span class="mp-icontile {{ r.tile }}"><span class="ms ms-s">{{ r.icon }}</span></span><span class="fx col f1"><span class="mp-body">{{ r.label }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span><sc-if value="{{ r.sw }}" hint-placeholder-val="{{ true }}"><span class="mp-switch on"><span class="mp-switch-k"></span></span></sc-if><sc-if value="{{ r.nav }}" hint-placeholder-val="{{ false }}"><span class="rv"><span class="ms">chevron_right</span></span></sc-if></div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>What arrives, and how.</b> The 07:15 brief and the 21:15 wrap are ordinary notifications; a red alert is time-sensitive with sound, at most two a week (MA-59); amber is silent; the weekly digest comes on Saturdays.</p>
+            <p><b>Quiet hours,</b> 22:00 to 07:00, hold for everything but a critical alert (MA-170).</p>
+            <p><b>Rule 4 holds here.</b> These are preferences, so a switch or a time does not save itself: it opens the chat with the preference card ready (“New preference · check it”), and nothing changes until Confirm, with an audit row (MA-69). The banner on top says so.</p>
+            <p><b>Amounts on the lock screen</b> live with privacy (Y2). Keys MA-170, MA-59, MA-69.</p>
+            <p><b>Motion.</b> The banner rises first, then each group's header and rows in turn; the switches stay still until tapped.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y4 · Sign-in methods -->
+      <section class="bd" id="y4">
+        <div class="bd-h"><span class="bd-id">Y4</span><span class="bd-name">Sign-in methods</span><span class="bd-keys">MA-77 · MA-76 · MA-172</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Sign-in methods · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span></span></div>
+                  <div class="largetitle">Sign-in methods</div>
+                  <div class="sub-in">
+                    <div class="grp" style="margin-top:6px">
+                      <span class="mp-section mp-over mp-ink2">Ways in</span>
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="mp-icontile atile"><span class="alogo">&#xF8FF;</span></span><span class="fx col f1"><span class="mp-body">Apple</span><span class="mp-foot mp-ink2">This iPhone · since Fri 4 Sep</span></span><span class="rv"><span class="ms">check</span></span></div>
+                        <div class="mp-row"><span class="mp-icontile gtile"><span class="glogo">G</span></span><span class="fx col f1"><span class="mp-body">Google</span><span class="mp-foot mp-ink2">Linked · since Mon 12 Oct</span></span><span class="rv"><span class="ms">check</span></span></div>
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">passkey</span></span><span class="fx col f1"><span class="mp-body">Passkey with Face ID</span><span class="mp-foot mp-ink2">Not added</span></span><span class="mp-body acc">Add</span></div>
+                      </div>
+                      <span class="gft">Add runs a fresh sign-in with that account and links it, with an audit row. The same ways in open the web app.</span>
+                    </div>
+                    <div class="grp">
+                      <span class="mp-section mp-over mp-ink2">Devices</span>
+                      <div class="mp-group">
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">smartphone</span></span><span class="fx col f1"><span class="mp-body">Arun's iPhone</span><span class="mp-foot mp-ink2">iPhone 17 Pro · this iPhone · now</span></span></div>
+                        <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">tablet_mac</span></span><span class="fx col f1"><span class="mp-body">Arun's iPad</span><span class="mp-foot mp-ink2">iPad Air · last seen today 07:20</span></span><span class="mp-body red mp-w6">Sign out</span></div>
+                        </div>
+                      <span class="gft">Also signed in to the web app: Chrome on a MacBook Air, with Google, yesterday 21:10.</span>
+                    </div>
+                    <div class="grp">
+                      <div class="mp-group"><div class="mp-row" style="justify-content:center"><span class="mp-body red mp-w6">Sign out of all other devices</span></div></div>
+                      <span class="gft">Sign out ends that session at once.</span>
+                    </div>
+                  </div>
+                  <div class="edge-bot"></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Ways in, one person.</b> Apple (used on this iPhone), Google and a passkey with Face ID can all sit on the same Cognito user (MA-109); there is still no password. The same sign-in opens the read-only web app at console.mypaisapp.com.</p>
+            <p><b>Add is a fresh sign-in</b> with that account, in Apple's or Google's own sheet or iOS's passkey sheet; the api links its id to you, with an audit row (MA-77). An added passkey can also answer the second check (MA-76).</p>
+            <p><b>Devices</b> lists each signed-in iPhone or iPad, with when it was last seen; a browser on the web app is not a device, so it is one line under the list. Sign out ends that session at once and deletes a device's push token: it only takes access away, so it needs no second check (MA-172).</p>
+            <p><b>Red for Sign out,</b> the destructive action here. Keys MA-77, MA-76, MA-172.</p>
+            <p><b>Motion.</b> The two groups and their rows rise in turn; Sign out and Add answer the finger with a press.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y5 · Pause and resume -->
+      <section class="bd" id="y5">
+        <div class="bd-h"><span class="bd-id">Y5</span><span class="bd-name">Pause and resume</span><span class="bd-keys">MA-35</span></div>
+        <div class="bd-row">
+          <div class="stk">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="iPhone · Pause and resume · {{ t.label }}">
+                <div class="bd-theme">iPhone · {{ t.label }}</div>
+                <div class="sts">
+                  <sc-for list="{{ pauses }}" as="p" hint-placeholder-count="2">
+                    <div class="st">
+                      <span class="st-cap dv-cap">{{ p.cap }}</span>
+                      <div class="dev dev-iphone mp z80 {{ t.cls }}">
+                        <div class="island"></div>
+                        <div class="scrn">
+                          <div class="sbar"><span>{{ p.time }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                          <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span></span></div>
+                          <div class="largetitle">Pause MyPaisa</div>
+                          <div class="sub-in">
+                            <div class="mp-card fx ac gap12"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ p.icon }}</span></span><span class="fx col f1"><span class="mp-hl">{{ p.title }}</span><span class="mp-foot mp-ink2">{{ p.sub }}</span></span></div>
+                            <div class="grp">
+                              <span class="mp-section mp-over mp-ink2">{{ p.h1 }}</span>
+                              <div class="mp-group"><sc-for list="{{ stops }}" as="r" hint-placeholder-count="3"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="mp-sub f1">{{ r.label }}</span></div></sc-for></div>
+                            </div>
+                            <div class="grp">
+                              <span class="mp-section mp-over mp-ink2">{{ p.h2 }}</span>
+                              <div class="mp-group"><sc-for list="{{ keeps }}" as="r" hint-placeholder-count="2"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="mp-sub f1">{{ r.label }}</span></div></sc-for></div>
+                            </div>
+                            <div class="grp">
+                              <span class="mp-btn mp-btn-primary wbtn" data-mo="rise" style="--i:8"><span class="ms ms-fill">{{ p.btnIcon }}</span>{{ p.btn }}</span>
+                              <span class="gft">{{ p.foot }}</span>
+                            </div>
+                          </div>
+                          <div class="edge-bot"></div>
+                          <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                          <div class="homebar"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="bd-note">
+            <p><b>The household's kill switch.</b> Pause MyPaisa is /pause: every scheduled run stops, so no brief, wrap or alert (red ones too) and no price or engine runs. Records, the chat and Home stay, with the last prices.</p>
+            <p><b>It acts at once,</b> with no Confirm, because a kill switch must never wait; it is audited and every member is told. Resume is /resume.</p>
+            <p><b>Who can:</b> only Arun, the owner, pauses or resumes the household; a member sees the paused state and who paused it. The Telegram board let anyone resume; MA-35's options round settles that.</p>
+            <p><b>Not the other pauses:</b> the PAUSE stance is a view on one holding, and pausing a member is the Admin center's (MA-102). Keys MA-35.</p>
+            <p><b>Motion.</b> The status card rises, then what stops and what keeps going, row by row; the button rises last.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y6 · Leave the household -->
+      <section class="bd" id="y6">
+        <div class="bd-h"><span class="bd-id">Y6</span><span class="bd-name">Leave the household</span><span class="bd-keys">MA-172 · MA-76</span></div>
+        <div class="bd-row">
+          <div class="stk">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="iPhone · Leave the household · {{ t.label }}">
+                <div class="bd-theme">iPhone · {{ t.label }}</div>
+                <div class="sts" style="gap:18px">
+                  <div class="st">
+                    <span class="st-cap dv-cap">a · Asha · what leaving does</span>
+                    <div class="dev dev-iphone mp z60 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="sbar"><span>19:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span></span></div>
+                        <div class="largetitle">Leave the household</div>
+                        <div class="sub-in">
+                          <span class="mp-body mp-ink2" style="padding:0 4px">Asha, this is what leaving the Dutta household does.</span>
+                          <div class="grp"><div class="mp-group"><sc-for list="{{ leaves }}" as="r" hint-placeholder-count="5"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="mp-sub f1">{{ r.label }}</span></div></sc-for></div></div>
+                          <div class="grp fx col gap8">
+                            <span class="mp-btn btn-destr wbtn" data-mo="rise" style="--i:7"><span class="ms">logout</span>Leave the household</span>
+                            <span class="mp-btn mp-btn-plain wbtn" data-mo="rise" style="--i:8">Cancel</span>
+                            <span class="gft" style="text-align:center">Leave asks you to sign in with Apple again, to check it is you.</span>
+                          </div>
+                        </div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">b · Asha · the second check</span>
+                    <div class="dev dev-iphone mp z60 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="sbar"><span>19:42</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span></span></div>
+                        <div class="largetitle">Leave the household</div>
+                        <div class="sub-in">
+                          <span class="mp-body mp-ink2" style="padding:0 4px">Asha, this is what leaving the Dutta household does.</span>
+                          <div class="grp"><div class="mp-group"><sc-for list="{{ leaves }}" as="r" hint-placeholder-count="5"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.icon }}</span></span><span class="mp-sub f1">{{ r.label }}</span></div></sc-for></div></div>
+                        </div>
+                        <div class="dim"></div>
+                        <div class="sheet lg lg-solid apple">
+                          <span class="anno">iOS draws this sheet · the second check</span>
+                          <div class="sheet-h"><span class="fx ac gap6 mp-hl"><span class="alogo">&#xF8FF;</span><span>Sign in with Apple</span></span><span class="xbtn"><span class="ms">close</span></span></div>
+                          <div class="fx col ac gap8" style="text-align:center">
+                            <div class="appicon appicon-default ai64"><span class="mark"></span></div>
+                            <span class="mp-t3">Sign in to MyPaisa</span>
+                            <span class="mp-sub mp-ink2">with your Apple Account, asha•••@icloud.com</span>
+                          </div>
+                          <div class="faceid" data-mo="face"><span class="ms">familiar_face_and_zone</span></div>
+                          <div class="iosbtn iosb">Continue</div>
+                        </div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">c · Arun is told, audit row</span>
+                    <div class="dev dev-iphone mp z60 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="scr-a">
+                          <div class="chat chat-a">
+                            <div class="daysep">Today 19:42</div>
+                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                              <div class="ccard">
+                                <div class="ccard-h"><span class="mp-over mp-ink2">Members</span><span class="mp-hl">Asha left the household</span></div>
+                                <div class="ccard-b">
+                                  <div class="kv"><span>When</span><span>Fri 23 Oct, 19:42</span></div>
+                                  <div class="kv"><span>Checked</span><span>Sign in with Apple</span></div>
+                                  <div class="kv"><span>Her sign-in</span><span>Deleted</span></div>
+                                  <div class="kv"><span>Her accounts</span><span>Kept with the household</span></div>
+                                </div>
+                                <div class="ccard-tech">Audit: Member left · Asha · 23 Oct 19:42</div>
+                              </div>
+                            </div></div>
+                          </div>
+                        </div>
+                        <div class="edge-top"></div>
+                        <div class="sbar"><span>19:42</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Fri 23 Oct</span><span class="fx ac gap8"><span class="strip-n">£24,110</span><span class="mp-foot mp-up mp-w6">▲ 0.4% today</span></span></div><span class="ms z1" style="color:var(--mp-ink-2)">keyboard_arrow_down</span></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer" style="bottom:102px"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color:var(--mp-ink-2)"><span class="ms">mic</span></span></span></div></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st">
+                    <span class="st-cap dv-cap">d · Arun · the only owner</span>
+                    <div class="dev dev-iphone mp z60 {{ t.cls }}">
+                      <div class="island"></div>
+                      <div class="scrn">
+                        <div class="sbar"><span>19:50</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span></span></div>
+                        <div class="largetitle">Leave the household</div>
+                        <div class="sub-in">
+                          <div class="callout" data-mo="card"><span class="ms">shield_person</span><span class="fx col gap4 f1"><span class="mp-hl">You are the only owner</span><span class="mp-sub mp-ink2">The Dutta household needs its owner, so you can’t leave it.</span></span></div>
+                          <div class="grp fx col gap8">
+                            <span class="mp-btn btn-destr wbtn mp-disabled" aria-disabled="true"><span class="ms">logout</span>Leave the household</span>
+                            <span class="gft" style="text-align:center">Members can leave from here. To stop every scheduled message instead, use Pause MyPaisa.</span>
+                          </div>
+                        </div>
+                        <div class="edge-bot"></div>
+                        <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab on"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                        <div class="homebar"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="bd-note">
+            <p><b>What leaving does, said first:</b> the sign-in is deleted, Apple's refresh token revoked through Apple's endpoint (Google's grant too), the accounts and history stay with the household, the audit rows keep the member's id and the day they left, and Arun is told (MA-172).</p>
+            <p><b>Red, and behind the second check.</b> Leave is destructive, so it is alert red. It opens iOS's Sign in with Apple sheet under Face ID, bound to this action and checked by the server (MA-76); a Google-only member signs in with Google again. Cancel and the sheet's close change nothing.</p>
+            <p><b>The record.</b> Arun's chat gets the card with its audit row; Asha's iPhone goes back to the welcome. A what-if: Asha leaving shows the flow; the other boards keep her.</p>
+            <p><b>The owner cannot leave</b> while they are the only owner: the screen says so and Leave is off. Keys MA-172, MA-76.</p>
+            <p><b>Motion.</b> a · rows then buttons rise; b · the screen dims, iOS's sheet slides up and the Face ID glyph pulses; c · Arun's card rises and the total rolls; d · the owner's note rises.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y7 · Lock screen: the morning brief -->
+      <section class="bd" id="y7">
+        <div class="bd-h"><span class="bd-id">Y7</span><span class="bd-name">Lock screen: the morning brief</span><span class="bd-keys">MA-170 · MA-57</span></div>
+        <div class="bd-row">
+          <div class="stk">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="iPhone · Lock screen: the morning brief · {{ t.label }}">
+                <div class="bd-theme">iPhone · {{ t.label }}</div>
+                <div class="sts">
+                  <sc-for list="{{ briefs }}" as="b" hint-placeholder-count="2">
+                    <div class="st">
+                      <span class="st-cap dv-cap">{{ b.cap }}</span>
+                      <div class="dev dev-iphone mp z80 {{ t.cls }}">
+                        <div class="island"></div>
+                        <div class="scrn lock">
+                          <div class="sbar"><span></span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                          <div class="lock-top"><span class="ms">lock</span><span class="lock-date">Friday 23 October</span><span class="lock-time">7:15</span></div>
+                          <div class="f1"></div>
+                          <div class="nwrap">
+                            <div class="notif lg lg-strong" style="--mo-d:380ms"><span class="notif-ic"><span class="nmark"></span></span><div class="notif-b"><div class="notif-t"><span>Morning brief</span><span>now</span></div><span data-count="1">{{ b.body }}</span></div></div>
+                          </div>
+                          <div class="lockbtns"><span class="lkb lg"><span class="ms z1">flashlight_on</span></span><span class="lkb lg"><span class="ms z1">photo_camera</span></span></div>
+                          <div class="homebar"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="bd-note">
+            <p><b>No amounts by default.</b> The brief's notification says what happened in words; amounts reach the lock screen only if the member turns on Show amounts in notifications (b), and never with privacy mode on (MA-170).</p>
+            <p><b>An ordinary notification:</b> the 07:15 brief is not time-sensitive; a tap opens the chat at the brief's card (MA-57).</p>
+            <p><b>The words are the card's plain line</b> (MA-174), every figure in it the engine's; Claude writes no number. Every word on the platter is in full ink, so it holds at low brightness.</p>
+            <p><b>Glass only on the platter</b> and the lock screen's own buttons; the wallpaper is the member's. Keys MA-170, MA-57.</p>
+            <p><b>Motion.</b> The date and time rise, then the notification slides in; in b its total rolls up to its value.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y8 · Lock screen: a red alert -->
+      <section class="bd" id="y8">
+        <div class="bd-h"><span class="bd-id">Y8</span><span class="bd-name">Lock screen: a red alert</span><span class="bd-keys">MA-170 · MA-59</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · Lock screen: a red alert · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn lock">
+                  <div class="sbar"><span></span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="lock-top"><span class="ms">lock</span><span class="lock-date">Monday 26 October</span><span class="lock-time">21:16</span></div>
+                  <div class="f1"></div>
+                  <div class="nwrap">
+                    <span class="anno"><span class="ms">volume_up</span>plays the alert sound</span>
+                    <div class="notif lg lg-strong" data-mo="attn"><span class="notif-ic"><span class="nmark"></span></span><div class="notif-b"><span class="tsens"><span class="ms">schedule</span>Time Sensitive</span><div class="notif-t"><span>Balanced is 5.2% below its high</span><span>now</span></div><span>Tap to see why.</span></div></div>
+                  </div>
+                  <div class="lockbtns"><span class="lkb lg"><span class="ms z1">flashlight_on</span></span><span class="lkb lg"><span class="ms z1">photo_camera</span></span></div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Time-sensitive, with sound.</b> A red alert breaks through Focus as Time Sensitive and plays its sound; at most two a week per member (MA-59).</p>
+            <p><b>No amount:</b> the fall from its high is a percentage, enough to decide to look; the pounds wait inside the app.</p>
+            <p><b>Quiet hours hold</b> for it too, unless it is critical (MA-170). iOS draws the platter in its own neutral glass: no red on the lock screen, and every word in full ink.</p>
+            <p><b>Tap to see why</b> opens the chat at the alert card, with Why? and Technical one tap away. Keys MA-170, MA-59.</p>
+            <p><b>Motion.</b> The date and time rise; the alert pulses once to draw the eye (attn), with its sound; then it rests.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Y9 · App switcher -->
+      <section class="bd" id="y9">
+        <div class="bd-h"><span class="bd-id">Y9</span><span class="bd-name">App switcher</span><span class="bd-keys">MA-171</span></div>
+        <div class="bd-row">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+            <div class="dv-col" data-screen-label="iPhone · App switcher · {{ t.label }}">
+              <div class="bd-theme">iPhone · {{ t.label }}</div>
+              <div class="dev dev-iphone mp {{ t.cls }}">
+                <div class="island"></div>
+                <div class="scrn sw">
+                  <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="swc" style="left:-196px"><div class="swh"></div><div class="swcard phc" data-mo="card" style="--i:0"><span>another app</span></div></div>
+                  <div class="swc" style="left:76px"><div class="swh"><span class="appicon appicon-default ai28"><span class="mark"></span></span><span>MyPaisa</span></div><div class="swcard cover" data-mo="card" style="--i:1"><span class="cmark"></span></div></div>
+                  <div class="swc" style="left:348px"><div class="swh"><span class="swi"></span></div><div class="swcard phc" data-mo="card" style="--i:2"><span>another app</span></div></div>
+                  <div class="homebar" style="background:#fff"></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+          <div class="bd-note">
+            <p><b>Nothing to read here.</b> As MyPaisa leaves the screen it covers itself with its mark on the hero navy, so the snapshot iOS keeps for the app switcher never holds a figure (MA-171).</p>
+            <p><b>Always,</b> with privacy mode on or off, on iPhone and on iPad's switcher and Stage Manager alike.</p>
+            <p><b>With the Face ID lock on,</b> coming back after five minutes away asks for Face ID before the cover lifts (Y2).</p>
+            <p><b>The other cards</b> are other apps, drawn as plain placeholders. Keys MA-171.</p>
+            <p><b>Motion.</b> The cards rise into place left to right; MyPaisa's card shows its mark from the first frame, never a figure in between.</p>
+          </div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          return {
+            themes: [ { label: 'light', cls: 't-light' }, { label: 'dark', cls: 't-dark' } ],
+            youRows: [
+              { icon: 'visibility_off', label: 'Privacy and Face ID', value: 'Off', chev: 'chevron_right' },
+              { icon: 'notifications', label: 'Notifications', value: '07:15', chev: 'chevron_right' },
+              { icon: 'key', label: 'Sign-in methods', value: 'Apple, Google', chev: 'chevron_right' },
+              { icon: 'devices', label: 'Devices', value: '2', chev: 'chevron_right' }
+            ],
+            youRows2: [
+              { icon: 'tune', label: 'Simple or Technical', value: 'Simple', chev: 'unfold_more' },
+              { icon: 'pause_circle', label: 'Pause MyPaisa', value: 'Running', chev: 'chevron_right' }
+            ],
+            notifGroups: [
+              { head: 'Messages', rows: [
+                { tile: 'mp-neutral', icon: 'wb_sunny', label: 'Morning brief', sub: '07:15 on weekdays', sw: true, nav: false },
+                { tile: 'mp-neutral', icon: 'nights_stay', label: 'Evening wrap', sub: '21:15, when your accounts move', sw: true, nav: false },
+                { tile: 'mp-neutral', icon: 'calendar_month', label: 'Weekly digest', sub: 'Saturdays', sw: true, nav: false }
+              ] },
+              { head: 'Alerts', rows: [
+                { tile: 'mp-alertchip', icon: 'notification_important', label: 'Red alerts', sub: 'Time sensitive, with sound', sw: true, nav: false },
+                { tile: 'mp-pause', icon: 'notifications', label: 'Amber alerts', sub: 'Silent', sw: true, nav: false }
+              ] },
+              { head: 'Quiet hours', rows: [
+                { tile: 'mp-neutral', icon: 'bedtime', label: 'Quiet hours', sub: '22:00 to 07:00 · only a critical alert rings', sw: false, nav: true }
+              ] }
+            ],
+            pauses: [
+              { cap: 'a · 22:39 · running', time: '22:39', icon: 'play_circle', title: 'MyPaisa is running', sub: 'Next: the morning brief, 07:15 on Monday', h1: 'Stops for the whole household', h2: 'Keeps going', btnIcon: 'pause', btn: 'Pause MyPaisa', foot: 'Only Arun, the owner, can pause or resume the household. It acts at once, as /pause does, and everyone is told.' },
+              { cap: 'b · 22:41 · paused', time: '22:41', icon: 'pause_circle', title: 'Paused since 22:40', sub: 'By you, Fri 23 Oct. Nothing scheduled runs until you resume. Asha has been told.', h1: 'Stopped', h2: 'Still works', btnIcon: 'play_arrow', btn: 'Resume MyPaisa', foot: 'Resume acts at once, as /resume does. The brief comes back the next weekday morning.' }
+            ],
+            stops: [
+              { icon: 'wb_sunny', label: 'The morning brief and the evening wrap' },
+              { icon: 'notifications_off', label: 'Every alert, red ones too' },
+              { icon: 'update_disabled', label: 'The price and engine runs' }
+            ],
+            keeps: [
+              { icon: 'inventory_2', label: 'Your records, holdings and history' },
+              { icon: 'chat_bubble', label: 'The chat and Home, with the last prices' }
+            ],
+            leaves: [
+              { icon: 'person_remove', label: 'Your MyPaisa sign-in is deleted' },
+              { icon: 'key_off', label: 'Apple’s token for MyPaisa is revoked, and Google’s if you added it' },
+              { icon: 'inventory_2', label: 'Your accounts and their history stay with the household' },
+              { icon: 'history', label: 'The audit log keeps your name and the day you left' },
+              { icon: 'campaign', label: 'Arun is told' }
+            ],
+            briefs: [
+              { cap: 'a · 07:15 · amounts off, the default', body: 'Nothing to do this week. Balanced is steady.' },
+              { cap: 'b · 07:15 · Show amounts in notifications on', body: 'Household £24,110, ▲ £96 · 0.4% today. Nothing to do this week. Balanced is steady.' }
+            ]
+          };
+        }
+      }
+    </script>
+  </body>
+</html>
