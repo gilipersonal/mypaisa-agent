@@ -33,10 +33,10 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-150 | The architecture and plan record Indian markets as phase 13 and keep every file a member sends, viewable from the audit log | Done | §4.1, §4.6, §9.3, §14, §16, §22 | none |  |
 | MA-155 | Design, plan and Jira stay in sync: every planned screen is drawn, traced to its story, and checked before work starts | Done |  | none |  |
 | MA-157 | The independent review is offered before every merge in this repo, and runs only when Arun says yes | Done |  | none |  |
-| MA-158 | The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts | In Review |  | none |  |
+| MA-158 | The stories with UI that have no board yet, or only some of their screens, are drawn in Claude Design before any of them starts | Done |  | none |  |
 | MA-159 | Secret values never reach Terraform state: the SSM parameters use write-only values, not a placeholder with ignore_changes | Done | §14, §18.1, §18.4 | none |  |
 | MA-160 | Board fixes found in the reviews of MA-158 and MA-156 are applied in Claude Design and copied into the repo | To Do |  | none |  |
-| MA-161 | MyPaisa's chat moves from Telegram to one native iOS app for iPhone and iPad, and the web app stays as a read-only PWA: the plan, the designs and Jira follow | In Progress | §9, §16 | none |  |
+| MA-161 | MyPaisa's chat moves from Telegram to one native iOS app for iPhone and iPad, and the web app stays as a read-only PWA: the plan, the designs and Jira follow | Done | §9, §16 | none |  |
 | MA-162 | Arun joins the Apple Developer Program ($99 a year) and registers the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains | To Do | §15, §18.1 | none |  |
 | MA-164 | An APNs key per environment is in SSM, and the App Store Connect app records, TestFlight testers and API key exist | To Do | §14, §18.4 | none |  |
 | MA-165 | The iOS app builds as a React Native shell with a native SwiftUI core: its first SwiftUI piece, its performance bench and its tests | To Do | §9, §13, §9.5 | none |  |
@@ -91,7 +91,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-33 | Each member's records have their owners, and a joint record has two owners with their shares | To Do | §4.1, §4.5 | none |  |
 | MA-34 | Design the Portfolio card and the Confirm card before they are built | To Do | §9.2 | planned | iOS kit.dc.html: 6 · Messages and cards; iPhone chat.dc.html: iPhone · Portfolio card; iPhone chat.dc.html: iPhone · Confirm card |
 | MA-35 | The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips | To Do | §2, §8, §9.1 | planned | iPhone sign-in.dc.html: iPhone · First-run setup; iPhone chat.dc.html: iPhone · Chat home; iPhone settings.dc.html: iPhone · You; iPhone settings.dc.html: iPhone · Pause and resume; iPhone dashboard.dc.html: iPhone · Home, empty |
-| MA-37 | A factsheet or valuation screenshot sent from the camera, a scan, Photos or Files adds or updates a holding after Confirm | To Do | §4.2, §4.6 | planned | iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Reading a factsheet; iPhone chat.dc.html: iPhone · Factsheet card with amber fields; iPhone chat.dc.html: iPhone · Screenshot valuations, before and after |
+| MA-37 | A factsheet or valuation screenshot sent from the camera, a scan, Photos or Files adds or updates a record after Confirm | To Do | §4.2, §4.6 | planned | iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Reading a factsheet; iPhone chat.dc.html: iPhone · Factsheet card with amber fields; iPhone chat.dc.html: iPhone · Screenshot valuations, before and after |
 | MA-39 | Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting | To Do | §9.1 | planned | iPhone chat.dc.html: iPhone · Guided flow: log a transaction |
 | MA-40 | "What changed this week?" lists every change with who and when | To Do | §4.6 | planned | iPhone chat.dc.html: iPhone · What changed this week; iPhone audit and activity.dc.html: iPhone · Audit |
 | MA-74 | The api serves each member only what they may see, and accepts in-place corrections only to the figures a kind marks editable | To Do | §4.5, §9.3, §4.10 | none |  |
