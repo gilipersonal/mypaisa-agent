@@ -134,12 +134,13 @@
   {
     "id": "r1-b2",
     "round": 1,
-    "finding": "The second check covers the owner's admin actions from the Admin center or the admin's chat, an import's Confirm and its rollback, and leaving, and nothing else (ARCHITECTURE 4.5; widened in round 2, r2-c4)",
+    "finding": "The second check covers the owner's admin actions from the Admin center or the admin's chat, an import's Confirm and its rollback, and leaving, and nothing else (ARCHITECTURE 4.5; widened in round 2, r2-c4); widened on MA-227 (26 Oct 2026) with approving a new kind, which Arun settled on MA-197",
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "import's Confirm and rolling an import back \\(§18\\.5, §22\\.2\\), leaving the\\s+household \\(MA-172\\), and nothing else"
-    }
+      "pattern": "import's Confirm and rolling an import back \\(§18\\.5, §22\\.2\\), leaving the\\s+household \\(MA-172\\), approving a new kind \\(`propose_kind`, §4\\.8; Arun, 26 Oct\\s+2026, MA-197: a kind changes what every member can register\\), and nothing else"
+    },
+    "amended": "MA-227, 26 Oct 2026: Arun settled MA-197's question (approving a new kind needs the second check), so the closed list gains that item and stays closed"
   },
   {
     "id": "r1-b2-jira",
