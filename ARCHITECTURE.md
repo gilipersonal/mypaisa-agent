@@ -1286,8 +1286,8 @@ streamed words fade in as they arrive; a red alert's mark pulses once. Haptics:
 success on Saved, a warning on a refusal, selection on chips, segments and
 scrubbing, a light impact on Send. Nothing loops forever, and under Reduce
 Motion every movement becomes a short cross-fade or lands at once. The web app
-plays the same choreography in CSS, the Web Animations API and View
-Transitions.
+plays the same choreography with Motion 14 (springs tuned to the same curves),
+Svelte transitions, CSS transitions and View Transitions (MA-229).
 
 **The look: Warm ledger on Liquid Glass.** MyPaisa DS v1, Warm ledger (MA-101),
 stays the system: Monzo's warmth on Apple's HIG. Its tokens become the app's
