@@ -403,7 +403,8 @@ off, and a user is created only when someone joins through an invite.
 is holding the device now: the owner's admin actions (§9.3), from the Admin
 center or the admin's chat (§20.3), an
 import's Confirm and rolling an import back (§18.5, §22.2), leaving the
-household (MA-172), and nothing else. A bank or card statement sent for the
+household (MA-172), approving a new kind (`propose_kind`, §4.8; Arun, 26 Oct
+2026, MA-197: a kind changes what every member can register), and nothing else. A bank or card statement sent for the
 budget is routine, not an import, so it needs no second check (§4.9); the Excel
 history importer keeps it. Plan items and saved Projection assumptions change
 a plan, not the records, and need none either (§6.6). The app asks
@@ -590,7 +591,8 @@ phase 2 (MA-27, MA-28, MA-197) and every wealth phase after it adds only kinds.
    EPF, NPS, SGB and LIC schedules (§6.6). A spec only combines them. A new
    kind, or a new field on a kind, is data: the agent can propose one from the
    templates ("Sukanya Samriddhi: accrual at its rate to 21 years"), the admin
-   approves it (`propose_kind`, §8), and it is versioned. No screen, form or
+   approves it behind the second check (`propose_kind`, §4.5, §8), and it is
+   versioned. No screen, form or
    tool is added.
 2. **Records are documents.** `Record {kind, kind_version, owners[{member,
    share_pct}], country, ccy, liquidity, status, parent_id?, instrument_id?,
@@ -1155,7 +1157,7 @@ that draft); `get_networth(view)`, `get_commitments(window)` and
 `get_budget(month)` (reading the views); `run_projection(overrides)` (a
 what-if through a typed override, never saved, §6.6); and, for the admin only,
 enforced in code, not in the prompt, `propose_kind` (a new kind, or a new field
-on one, from the templates, approved and versioned) and `propose_plan_item` (a
+on one, from the templates, approved behind the second check and versioned) and `propose_plan_item` (a
 future income or spend for the Projection, saved only after the admin's
 Confirm).
 
