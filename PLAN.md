@@ -296,6 +296,13 @@ arrives from phase 2.
   on the api's host; CORS for that environment's dashboard only. The cookie
   is never widened to `.mypaisapp.com` while the apex still serves the old
   tracker.
+- **The second check (MA-76):** a fresh Sign in with Apple or passkey under
+  Face ID (a member who signs in only with Google signs in with Google again;
+  in a browser a passkey or a fresh sign-in), bound to the action by the
+  api's challenge and accepted only within five minutes. It comes with
+  sign-in in this phase (Arun, 26 Oct 2026), so approving a new kind can sit
+  behind it from phase 2 (MA-197); the Admin center (phase 8) and the imports
+  (phase 9) reuse it.
 - **The api at `api(-dev).mypaisapp.com` (MA-31, MA-75, MA-144):** `/auth/nonce`, `/auth/apple`,
   `/auth/google`, `/auth/passkey/options` and `/auth/passkey` (the web app's
   passkey sign-in, MA-109), `/v1/chat/messages` and `/v1/chat/actions` (each
@@ -890,9 +897,6 @@ built with their records in phases 2 to 9.
   what that member may see.
 - **The owner's security actions (MA-102):** signing out or pausing any
   member's devices from the Admin center.
-- The second check (MA-76): a fresh Sign in with Apple or passkey under Face
-  ID (a member who signs in only with Google signs in with Google again), bound to the action by the
-  api's challenge and accepted only within five minutes.
 - More than one way in (MA-77): a member adds a second sign-in, Apple or
   Google, or a passkey, from You; the owner can unlink one from the Admin
   center; every link, unlink and sign-in an audit row.
