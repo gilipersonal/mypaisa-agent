@@ -568,6 +568,20 @@ code { font: 500 0.86em/1.3 var(--mono); background: var(--mp-surface-2); color:
 .split .eng b { display: block; font: 600 13px/18px var(--font); }
 .split .eng small { display: block; color: var(--mp-ink); }
 
+/* the v4 flows (MA-226): a figure corrected in place, the number pad, a what-if's chart, the web app's chat beside the page */
+.efig { border-bottom: 1.5px dotted currentColor; }
+.efig.on { border-bottom: 0; border-radius: 8px; padding: 0 4px; box-shadow: 0 0 0 2px var(--mp-focus); }
+.kpad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.kpad span { min-height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--mp-surface); border: 1px solid var(--mp-line); font: 500 18px/1 var(--font); color: var(--mp-ink); }
+.wif svg { display: block; width: 100%; height: 96px; }
+.wif path, .wif line { vector-effect: non-scaling-stroke; }
+.dshero svg.fan { height: 112px; }
+.wlegend { display: flex; flex-wrap: wrap; gap: 4px 12px; font: 500 12px/16px var(--font); color: var(--mp-ink-2); }
+.wlegend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 5px; vertical-align: 3px; }
+.browser.beside { container-name: br pad; }
+.browser .glass { background: var(--mp-surface); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+.browser .side { background: var(--mp-surface); }
+
 footer.foot { margin-top: 80px; padding-top: 20px; border-top: 1px solid var(--mp-line); font: 400 14px/20px var(--font); color: var(--mp-ink-2); display: grid; gap: 8px; }
 footer.foot b { color: var(--mp-ink); }
 
@@ -598,6 +612,7 @@ footer.foot b { color: var(--mp-ink); }
   .js .mock.in :is(.big, .p2, .lk-time) { opacity: 1; transform: none; }
   .js .mock .dshero:has(svg)::after, .js .mock .hchart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 66px; background: var(--mp-hero); transform-origin: right center; transition: transform 950ms var(--ease) 560ms; z-index: 1; pointer-events: none; }
   .js .mock .chartbox::after { content: ""; position: absolute; inset: -16px 0 0 0; background: var(--mp-bg); transform-origin: right center; transition: transform 1050ms var(--ease) 520ms; z-index: 2; pointer-events: none; }
+  .js .mock .dshero:has(svg.fan)::after { height: 122px; }
   .js .mock.in :is(.dshero:has(svg), .hchart, .chartbox)::after { transform: scaleX(0); }
   .js :is(.mock, .spendbar) .meter i { transform: scaleX(0); transform-origin: left center; transition: transform 950ms var(--ease) 600ms; }
   .js :is(.mock, .spendbar).in .meter i { transform: none; }
@@ -653,6 +668,7 @@ footer.foot b { color: var(--mp-ink); }
   <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></symbol>
   <symbol id="i-tablet" viewBox="0 0 24 24"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M10.5 18h3"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19.5 8.5l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
   <symbol id="i-flash" viewBox="0 0 24 24"><path d="M9 3h6l-1 5h3l-7 13 1.5-8H8z"/></symbol>
   <symbol id="i-sb" viewBox="0 0 64 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="6" width="3" height="6" rx="1"/><rect x="9" y="3.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="1" width="3" height="11" rx="1"/><path d="M29 11.6l2.4-2.6a3.4 3.4 0 0 0-4.8 0zM24.8 7.2l1.2 1.3a4.3 4.3 0 0 1 6 0l1.2-1.3a6 6 0 0 0-8.4 0zM22.4 4.6l1.2 1.3a7.7 7.7 0 0 1 10.8 0l1.2-1.3a9.4 9.4 0 0 0-13.2 0z"/><rect x="40.5" y="1.5" width="20" height="9.5" rx="2.6" fill="none" stroke="currentColor" stroke-width="1" opacity="0.45"/><rect x="42.2" y="3.2" width="13.4" height="6.1" rx="1.4"/><rect x="61.3" y="4.4" width="1.5" height="3.6" rx="0.7" opacity="0.45"/></symbol>
   <symbol id="i-apple" viewBox="0 0 24 24"><path d="M16.4 12.7c0-2.4 2-3.5 2.1-3.6-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.3 1.2 9.7.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9zM14 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></symbol>
@@ -684,6 +700,12 @@ footer.foot b { color: var(--mp-ink); }
     <a href="#india-import"><b>16</b>Indian portfolio</a>
     <a href="#inr"><b>17</b>INR and GBP</a>
     <a href="#india-day"><b>18</b>India's day</a>
+    <a href="#register"><b>19</b>Register anything</a>
+    <a href="#correct"><b>20</b>Correct in place</a>
+    <a href="#checkin"><b>21</b>Check-in</a>
+    <a href="#statement"><b>22</b>Statement</a>
+    <a href="#month-close"><b>23</b>Month close</a>
+    <a href="#projection"><b>24</b>Projection</a>
   </nav>
   <button class="theme" id="themeBtn" type="button">Dark</button>
 </header>
@@ -691,7 +713,7 @@ footer.foot b { color: var(--mp-ink); }
 <main id="top">
 
 <section class="hero" aria-labelledby="h-title">
-  <p class="over">25 Oct 2026 · MA-141, India added in MA-155, the iOS app in MA-161, re-phased in MA-186 · design only, nothing is built yet</p>
+  <p class="over">26 Oct 2026 · MA-141, India added in MA-155, the iOS app in MA-161, re-phased in MA-186, the whole wealth's flows in MA-226 · design only, nothing is built yet</p>
   <h1 id="h-title">MyPaisa Agent Journey</h1>
   <p class="hero-sub">How a household uses MyPaisa, one flow at a time: what the member does in the MyPaisa app on an iPhone or an iPad, or in the web app in a browser, the path it takes through the app, AWS and Claude, what the member sees, and what keeps it safe. The app is a chat where the household keeps every record, with the dashboard of its holdings one tap away; the web app has the same chat and dashboard, and the owner's Admin center, in a browser on a laptop or a phone. The UK holdings come first; the household's Indian funds, shares and ETFs join them in rupees, with pounds beside every figure. Each flow names the Jira stories that build it.</p>
   <div class="hero-facts">
@@ -704,8 +726,8 @@ footer.foot b { color: var(--mp-ink); }
     <span>UK and Indian holdings, GBP and INR</span>
     <span>It never trades</span>
   </div>
-  <p class="hero-note">Every figure, rate and fund name on this page is illustrative. "You" are Arun, the household's owner; Asha is the second member. The facts come from <code>ARCHITECTURE.md</code> (identity in §4.5, the chat in §8 and §9, push in §11, the queues in §21, India in §4.7, §5.3 and §22), <code>PLAN.md</code> (phase 19 for India), the MA-101 and MA-102 design decisions and the MA-161 decision record (<code>docs/design/reviews/MA-161/decision.md</code>), with Arun's correction of the same day that the web app stays.</p>
-  <p class="hero-note">Until 25 Oct 2026 MyPaisa was planned as a Telegram bot with a web app beside it; MA-161 replaced the bot with the iOS app, and the web app stays as the read-only dashboard and the Admin center. On 26 Oct 2026 MA-186 widened the web app into a full door with the chat, a SvelteKit 3 PWA at <code>dashboard.mypaisapp.com</code>, built the iOS app as a React Native shell with a native SwiftUI core, and renumbered the phases in build order: the whole wealth tracker as phases 2 to 9, the market side as phases 10 to 20. The screens follow shell 1a, Chat first, which Arun picked on 26 Oct 2026.</p>
+  <p class="hero-note">Every figure, rate and fund name on this page is illustrative. "You" are Arun, the household's owner; Asha is the second member. The facts come from <code>ARCHITECTURE.md</code> (identity in §4.5, the chat in §8 and §9, push in §11, the queues in §21, India in §4.7, §5.3 and §22, the whole wealth in §4.8, §4.9, §4.10, §6.6 and §12), <code>PLAN.md</code> (phase 19 for India), the MA-101 and MA-102 design decisions and the MA-161 decision record (<code>docs/design/reviews/MA-161/decision.md</code>), with Arun's correction of the same day that the web app stays.</p>
+  <p class="hero-note">Until 25 Oct 2026 MyPaisa was planned as a Telegram bot with a web app beside it; MA-161 replaced the bot with the iOS app, and the web app stays as the read-only dashboard and the Admin center. On 26 Oct 2026 MA-186 widened the web app into a full door with the chat, a SvelteKit 3 PWA at <code>dashboard.mypaisapp.com</code>, built the iOS app as a React Native shell with a native SwiftUI core, and renumbered the phases in build order: the whole wealth tracker as phases 2 to 9, the market side as phases 10 to 20. The screens follow shell 1a, Chat first, which Arun picked on 26 Oct 2026. The same day he picked MA-193's designs for the whole wealth: the web app's shell 1a, Chat beside; the dashboard 1a, Net worth first; the check-in card 1b, Paid as the Confirm; the Projection 1a, the fan first. Flows 19 to 24 walk them (MA-226), with their figures from one illustrative household, <code>docs/design/figures/household-v4.json</code>.</p>
   <svg class="hero-line" viewBox="0 0 600 64" preserveAspectRatio="none" aria-hidden="true">
     <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6 L600 64 L0 64 Z" fill="var(--mp-hero-area)" stroke="none"/>
     <path d="M0 50 C40 48 60 40 100 42 S170 30 210 34 S280 20 320 26 S390 16 430 22 S500 10 540 14 S580 8 600 6" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/>
@@ -734,18 +756,18 @@ footer.foot b { color: var(--mp-ink); }
 <h2 class="sec-h">The safeguards, in one place</h2>
 <p class="sec-sub">They recur across the flows, so here is what each one means.</p>
 <div class="sgs" style="margin-top:16px">
-  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span>Every change is shown as a card first and saved only after the member taps Confirm on it. A change across several records is one plan with one Confirm.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span>Anything new is shown as a card first and saved only after the member taps Confirm on it; a check-in's Paid is the Confirm of a card that shows exactly what it saves. A correction in place shows its before and after, then Save. A change across several records is one plan with one Confirm.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>An <code>AuditEvent</code> in the same DynamoDB transaction as the change: who, when, through what, before and after, which run. Hash-chained, never deleted.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>The eye on Home and in You, or <code>/privacy</code>, hides pounds and rupees in every card, screen, chart axis and notification; percentages stay, and the app switcher shows only the mark (MA-171). On the currency check's cards (MA-156, ARCHITECTURE §4.7) it shows no amount and no rate, only words, currencies and dates.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>The currency check</b><span>Every holding keeps the one currency it is bought and valued in. An amount typed in another is never saved as it is: MyPaisa says why and asks for the amount that arrived (MA-156).</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Signed in, in the app or the browser</b><span>Sign in with Apple or Google (or, in the browser, a passkey), exchanged for Cognito tokens: in the app they live in the Keychain, this device only; in the web app behind an HttpOnly cookie page scripts never see. Five-minute access tokens; token, status and session epoch checked on every call and on the stream.</span></div></div>
-  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>In the app, a fresh Sign in with Apple or a passkey under Face ID (a Google-only member signs in with Google again); in the web app, a passkey or a fresh sign-in. Bound to one action and verified by the server: an import, a rollback, leaving the household, and every admin action, from the Admin center or the admin's chat. A local Face ID alone never authorises anything.</span></div></div>
+  <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><div><b>The second check</b><span>In the app, a fresh Sign in with Apple or a passkey under Face ID (a Google-only member signs in with Google again); in the web app, a passkey or a fresh sign-in. Bound to one action and verified by the server: an import, a rollback, leaving the household, and every admin action, from the Admin center or the admin's chat, approving a new kind among them (MA-197). A local Face ID alone never authorises anything.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>The spend ladder</b><span>The month's Claude spend is read before every call; at 70, 85, 95 and 100% of the ceiling MyPaisa steps down. Alerts are never dropped.</span></div></div>
   <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries and dead-letter queues</b><span>Every hand-off goes through SQS: retried with backoff, idempotent, and kept in a dead-letter queue with an alarm and a replay when it keeps failing. The app keeps what is typed offline and catches up when it opens.</span></div></div>
 </div>
 
-<h2 class="sec-h">The eighteen flows</h2>
-<p class="sec-sub">Flows 1 to 14 follow the UK holdings, flow 9 on the iPad and flow 10 in a browser. Flows 15 to 18 bring India into the picture: money in any currency (phase 2), then the Indian portfolio, the two-currency household and India's place in the day (phase 19).</p>
+<h2 class="sec-h">The twenty-four flows</h2>
+<p class="sec-sub">Flows 1 to 14 follow the UK holdings, flow 9 on the iPad and flow 10 in a browser. Flows 15 to 18 bring India into the picture: money in any currency (phase 2), then the Indian portfolio, the two-currency household and India's place in the day (phase 19). Flows 19 to 24 walk the household's whole wealth as MA-193 drew it: registering anything by talking and correcting a figure in place (phase 2), check-ins (phase 4), statements and the month close (phase 6), and the Projection (phase 7).</p>
 <div class="grid">
   <a class="idx" href="#invite"><b>1</b><span><strong>Joining by invite</strong><small>A one-time link, shared from the share sheet, opens the app · phase 1</small></span></a>
   <a class="idx" href="#signin"><b>2</b><span><strong>Signing in with Apple, Google or a passkey</strong><small>In the app and in a browser; a new device; the second check · phases 1 and 8</small></span></a>
@@ -760,11 +782,17 @@ footer.foot b { color: var(--mp-ink); }
   <a class="idx" href="#admin"><b>11</b><span><strong>The Admin center</strong><small>In the app and the web app; devices, spend, approvals, each behind the second check · phases 8 and 18</small></span></a>
   <a class="idx" href="#failure"><b>12</b><span><strong>When something fails</strong><small>Retries, dead-letter queues, replay, offline · phases 1, 8 and 18</small></span></a>
   <a class="idx" href="#ladder"><b>13</b><span><strong>The spend ladder in practice</strong><small>70, 85, 95 and 100% · phases 1 and 11</small></span></a>
-  <a class="idx" href="#monthly"><b>14</b><span><strong>The first of the month</strong><small>The contribution prompt · phases 5 and 17</small></span></a>
+  <a class="idx" href="#monthly"><b>14</b><span><strong>The first of the month</strong><small>A contribution's check-in, then the month close · phases 4, 5 and 17</small></span></a>
   <a class="idx" href="#currency"><b>15</b><span><strong>Money in any currency</strong><small>"I put ₹20,000 into Balanced" gets put right · phase 2, MA-156</small></span></a>
   <a class="idx" href="#india-import"><b>16</b><span><strong>Importing the Indian portfolio once</strong><small>CAS statements and a broker export, one Confirm · phase 19, MA-152</small></span></a>
   <a class="idx" href="#inr"><b>17</b><span><strong>The household in INR and GBP</strong><small>Rupees with pounds beside, the tax flag · phase 19, MA-153</small></span></a>
   <a class="idx" href="#india-day"><b>18</b><span><strong>India in the daily rhythm</strong><small>NSE and BSE closes, AMFI's NAVs, the 07:15 brief · phase 19</small></span></a>
+  <a class="idx" href="#register"><b>19</b><span><strong>Registering anything by talking</strong><small>"£5,000 in Monzo savings", live at every door; a new kind behind the second check · phases 1, 2 and 8</small></span></a>
+  <a class="idx" href="#correct"><b>20</b><span><strong>Correcting a figure in place</strong><small>Home £415,000 → £428,000: before and after, Save, the audit row · phase 2</small></span></a>
+  <a class="idx" href="#checkin"><b>21</b><span><strong>A check-in</strong><small>The HDFC EMI: Paid as the Confirm, Undo, paid off in full · phase 4</small></span></a>
+  <a class="idx" href="#statement"><b>22</b><span><strong>Sending a statement</strong><small>Barclaycard and Monzo, categorised, amber lines, one Confirm · phase 6</small></span></a>
+  <a class="idx" href="#month-close"><b>23</b><span><strong>Closing the month on the 1st</strong><small>Plan against actual, and what no statement covered · phase 6</small></span></a>
+  <a class="idx" href="#projection"><b>24</b><span><strong>The Projection, and a what-if</strong><small>The fan, assumptions with sources, an unsaved scenario · phase 7</small></span></a>
 </div>
 
 <!-- ============ 1. Joining by invite ============ -->
@@ -879,7 +907,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-73"><b>MA-73</b><span>Each environment hosts the web app at dashboard(-dev).mypaisapp.com on S3 and CloudFront, with the iOS app's association file and the invite page</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-162"><b>MA-162</b><span>The Apple Developer Program, and the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-35"><b>MA-35</b><span>The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-33"><b>MA-33</b><span>Each member has their own accounts, and a joint account can have two owners</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-33"><b>MA-33</b><span>Each member's records have their owners, and a joint record has two owners with their shares</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-31"><b>MA-31</b><span>The chat API accepts only a signed-in member's messages and taps, and hands each off once</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
   </div>
@@ -891,7 +919,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">02</span>
     <h2 id="h-signin">Signing in with Apple, Google or a passkey</h2>
     <p class="lede">There are no passwords. In the app, Apple or Google vouches for the member, natively, and the environment's Cognito user pool turns that into a short-lived session kept in the Keychain. In the web app it is Apple, Google or a passkey, and the session is a cookie the api sets. An import, a rollback, leaving the household and every admin action, from the Admin center or the admin's chat, need a second check, bound to that one action: a fresh Sign in with Apple or a passkey under Face ID in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on a device that is not signed in, opening <code>dashboard.mypaisapp.com</code> in a browser, or an action that needs the second check</span><span class="chip">Phase 1 (sign-in, in the app and the browser)</span><span class="chip">Phase 8 (the second check)</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> opening MyPaisa on a device that is not signed in, opening <code>dashboard.mypaisapp.com</code> in a browser, or an action that needs the second check</span><span class="chip">Phase 1 (sign-in and the second check, in the app and the browser)</span></div>
   </div>
 
   <h3 class="blk">The paths</h3>
@@ -1209,7 +1237,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-174"><b>MA-174</b><span>Every card is a versioned JSON document the app renders natively, with a plain line for notifications</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-34"><b>MA-34</b><span>Design the Portfolio card and the Confirm card before they are built</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-27"><b>MA-27</b><span>The holdings registry stores members, accounts, holdings and valuations per household</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-27"><b>MA-27</b><span>The household's records live in one dynamic structure: kinds as data, records as documents, history as events, figures as views</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-148"><b>MA-148</b><span>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-140"><b>MA-140</b><span>Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue</span></a>
@@ -2531,9 +2559,9 @@ footer.foot b { color: var(--mp-ink); }
 <section class="flow" id="monthly" aria-labelledby="h-monthly">
   <div class="flow-h">
     <span class="flow-n">14</span>
-    <h2 id="h-monthly">The first-of-the-month contribution prompt</h2>
-    <p class="lede">On the first of the month MyPaisa asks, on its own account, whether the usual contribution went in. Later, the Forecaster's risk-steered split sits beside the rules engine's on the same prompt.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> the first of the month</span><span class="chip">Phase 5 (the prompt)</span><span class="chip">Phase 17 (the steered split)</span></div>
+    <h2 id="h-monthly">The first of the month: a contribution's check-in</h2>
+    <p class="lede">The old first-of-the-month question is now a check-in (ARCHITECTURE §4.9). A usual contribution is a commitment, made when its record is confirmed, so on its day code puts a check-in card in its member's chat: did your usual £200 go into Balanced? The card shows exactly what Went through saves, so that tap is the Confirm, with Undo. The same morning the budget's own check-in closes last month (flow 23), and several due together fold into one card. Later, the Forecaster's risk-steered split sits beside the rules engine's on the same card.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the daily check-in job, on the day a usual contribution is due</span><span class="chip">Phase 4 (check-ins)</span><span class="chip">Phase 5 (contributions and SIPs as commitments)</span><span class="chip">Phase 17 (the steered split)</span></div>
   </div>
 
   <h3 class="blk">The path</h3>
@@ -2541,14 +2569,13 @@ footer.foot b { color: var(--mp-ink); }
     <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
     <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
     <ol class="seq">
-      <li class="st act inA" data-lanes="AWS"><span class="box"><b>EventBridge Scheduler</b> on the 1st puts the job on the <b>SQS work</b> queue; the agent asks each member whose usual contribution is due</span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb"><code>ask_user</code>: did your usual £200 go into Balanced? A card with buttons; a <b>PendingAction</b> waits up to a day</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>EventBridge Scheduler</b> puts the daily check-in job on the <b>SQS work</b> queue: code, <span class="sg">no LLM</span>. On the 1st it finds the <b>Commitment</b>s due, your usual £200 into Balanced among them; a <b>CheckIn</b> is created once, by a <span class="sg">conditional put</span>, and its card goes straight on the <b>SQS outbox</b></span></li>
       <li class="st mv fa toE" data-lanes="AWS to External (APNs)"><span class="lb">The app is closed, so a push: <i>It is the 1st. Did your usual contribution go in?</i>, <span class="sg">with no amount</span></span><span class="ln"></span></li>
-      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You open it and tap <i>Yes, £200 as usual</i></span><span class="ln"></span></li>
-      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The tap, through <code>/v1/chat/actions</code>, resumes the flow from the PendingAction; code works out the units</span><span class="ln"></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The Confirm card</span><span class="ln"></span></li>
-      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb"><span class="sg">Confirm</span></span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Transaction</b> saved with its <span class="sg">audit row</span>; the card edits in place</span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You open it: the check-in card says <b>Went through saves a £200 buy into Balanced, 1 Nov</b>, over <b>Went through</b> and <b>Something else</b></span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <span class="sg">Went through</span>: the card shows exactly what it writes, so the tap is the Confirm</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The tap, through <code>/v1/chat/actions</code>, queued in your lane</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">One transaction answers the check-in and writes the buy with its <span class="sg">audit row</span> (<code>via: checkin</code>); code works out the units. The card edits in place, with Undo</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Something else</b> holds Skipped this month (the commitment carries on) and A different amount (one question, then a Confirm card). Undo writes a reversal, never a delete. Several due the same morning come as one card; the budget's own check-in closes last month (flow 23). How every check-in works is flow 21.</span></li>
       <li class="st note" data-lanes="Note"><span class="box"><b>Later, phase 17 (F7).</b> The prompt carries two suggested splits: the rules engine's, from each holding's stance, and the Forecaster's, steered by risk. Contributions always continue; new money tilts away from holdings in a stressed or falling mood or with a high chance of a deep fall; rebalancing stays within bands and a drawdown budget the owner sets. It never says sell everything, stays ISA-safe, and only suggests.</span></li>
       <li class="st note" data-lanes="Note"><span class="box">The Forecaster's split appears here only after 8 live weeks beating both the base rate and the rules engine; until then it is in the Saturday review, labelled "in practice". It switches itself off when its record slips.</span></li>
     </ol></div>
@@ -2563,17 +2590,16 @@ footer.foot b { color: var(--mp-ink); }
         <div class="chat">
           <span class="day">1 November · 09:00</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
-            <div class="mcard"><p>It is the 1st. Did your usual <b>£200</b> go into Balanced?</p><div class="cbs c1"><span class="cb">Yes, £200 as usual</span></div><div class="cbs c2"><span class="cb">A different amount</span><span class="cb">Not this month</span></div></div>
+            <div class="mcard"><h5><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Check-in · due today</h5><p>It is the 1st. Did your usual <b>£200</b> go into Balanced?</p><div class="kv wrap"><span>Went through saves</span><span><b>a £200 buy, 1 Nov</b></span></div><small>One tap on Went through saves exactly this, with Undo.</small><div class="cbs c2"><span class="cb p">Went through</span><span class="cb">Something else <svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div></div>
           </div></div>
-          <div class="me">Yes, £200 as usual</div>
-          <span class="day">After Confirm, the card edited in place</span>
+          <span class="day">After Went through, the card edited in place</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
-            <div class="mcard"><p>Bought <b>£200</b> of Balanced (Monzo) on 1 Nov · about 10.8 units at NAV 18.57</p><div class="hr"></div><p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Saved · 09:42</p></div>
+            <div class="mcard"><p>Bought <b>£200</b> of Balanced (Monzo) on 1 Nov · about 10.8 units at NAV 18.57</p><div class="cbs c1"><span class="cb"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg>Undo</span></div><div class="hr"></div><p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Saved · 09:42</p></div>
           </div></div>
         </div>
         <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>
-      <figcaption><b>Today.</b> Asked, confirmed, saved.</figcaption>
+      <figcaption><b>Today.</b> A check-in card in 1b's style: Went through is the Confirm, saved with Undo.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
@@ -2601,8 +2627,8 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Asked, never assumed</b><span>Nothing is logged until the member answers; a day of silence clears the question.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm and audit</b><span>The same write path as every change: a card, Confirm, an audit row.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Asked by code, never assumed</b><span>The daily job is code with no LLM, and a check-in is made once. Nothing is logged until the member answers; an unanswered one shows as overdue, in amber.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>The tap is the Confirm</b><span>Went through saves exactly what the card shows, through the same write service as every change, with its audit row; Undo writes a reversal.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>No amount on the lock screen</b><span>The push asks about "your usual contribution"; the £200 is shown only inside the app, unless the member chose amounts in notifications.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Suggestions only</b><span>The app cannot trade. The split moves new money, never the holdings, and never says sell everything.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A forecaster that has to earn it</b><span>8 live weeks beating the base rate and the rules engine before it is shown; off again when its record slips.</span></div></div>
@@ -2610,7 +2636,8 @@ footer.foot b { color: var(--mp-ink); }
 
   <h3 class="blk">Built by</h3>
   <div class="keys">
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-39"><b>MA-39</b><span>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-205"><b>MA-205</b><span>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-216"><b>MA-216</b><span>SIPs and regular contributions are commitments that record each buy, with an annual step-up</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-38"><b>MA-38</b><span>"I put £200 into Balanced" becomes a transaction after Confirm</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-170"><b>MA-170</b><span>Apple push reaches each member's devices when the app is closed, with no amounts on the lock screen unless they choose</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-124"><b>MA-124</b><span>F6: the Forecaster's view appears beside the rules engine in the chat and on the dashboard</span></a>
@@ -3207,13 +3234,989 @@ footer.foot b { color: var(--mp-ink); }
   </div>
 </section>
 
+<!-- ============ The whole wealth, by talking (v4) ============ -->
+<h2 class="sec-h" id="wealth" style="margin-top:80px">The household's whole wealth, by talking</h2>
+<p class="sec-sub">MA-186 put the household's whole wealth first: property, savings, pensions, deposits, policies, loans and cards beside the investments, in the UK and India, at every door. There are no forms. Anything new is said in the chat and confirmed on a card, an existing figure is corrected where it is shown, and the agent asks when something is due. Flows 19 to 24 walk it as MA-193's boards and the clickable Prototype v4 draw it, in the looks Arun picked on 26 Oct 2026: the web app's shell 1a, Chat beside; the dashboard 1a, Net worth first; the check-in card 1b, Paid as the Confirm; the Projection 1a, the fan first. Their figures come from one illustrative household, <code>docs/design/figures/household-v4.json</code>, on its clock: today is Mon 26 Oct 2026, prices are at the Fri 23 Oct close, and £1 = ₹112.50.</p>
+<dl class="facts" style="margin-top:16px">
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Kinds are data</dt><dd>A versioned spec per kind: its fields, and which of them can be corrected in place; its valuation method; the events it accepts; its commitments and check-ins; where it sits on the dashboard. A new kind is data the admin approves, never a new screen or form.</dd></div>
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Records are documents</dt><dd>A <code>Record</code> has a kind, its owners with their shares, a country, a currency and its own fields. An ISA is a record, and its funds are child records.</dd></div>
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>History is events</dt><dd>Append-only <code>Event</code>s, hash-chained with the audit log. A correction or a reversal is a new event; nothing is overwritten or deleted.</dd></div>
+  <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Figures are views</dt><dd>Net worth, the budget month, what is due and the Projection's runs are worked out from the events by code, and rebuilt when a spec changes.</dd></div>
+</dl>
+<h3 class="blk">The figure set's clock</h3>
+<div class="timeline">
+  <div class="tl"><b>£439,951</b><span>Mon 26 Oct, before the first record; prices at the Fri 23 Oct close.</span></div>
+  <div class="tl"><b>£444,951</b><span>09:41: £5,000 of Monzo savings, registered in the chat (flow 19).</span></div>
+  <div class="tl"><b>£457,951</b><span>09:52: Home corrected in place, £415,000 → £428,000 (flow 20). The Projection starts here (flow 24).</span></div>
+  <div class="tl"><b>£456,493</b><span>Sun 1 Nov, 08:44: the Barclaycard statement confirmed, so its £1,458 is owed (flow 22).</span></div>
+  <div class="tl"><b>£456,747</b><span>Thu 5 Nov: the HDFC EMI of ₹39,390 paid, ₹14,84,587 left (flow 21).</span></div>
+</div>
+
+<!-- ============ 19. Registering anything by talking ============ -->
+<section class="flow" id="register" aria-labelledby="h-register">
+  <div class="flow-h">
+    <span class="flow-n">19</span>
+    <h2 id="h-register">Registering anything by talking</h2>
+    <p class="lede">There are no forms. Say what you own or owe in your own words, at either door: <i>£5,000 in Monzo savings</i>. The agent drafts the record against its kind, asks only what is missing (here, whose it is) with chips, and shows a Confirm card with the figures code worked out. Confirm saves it with its audit row, and at 09:41 on Mon 26 Oct the household's net worth moves from £439,951 to £444,951 at every open door: your iPhone, Asha's, and the laptop beside them. When nothing the household has fits, the agent proposes a new kind, and the admin approves it behind the second check.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> "£5,000 in Monzo savings", a screenshot or a statement, or the <b>Add anything</b> chip</span><span class="chip">Phase 1 (the stream)</span><span class="chip">Phase 2 (kinds, records, the write service)</span><span class="chip">Phase 1 (the second check)</span></div>
+  </div>
+
+  <h3 class="blk">The paths</h3>
+  <div class="seq-card">
+    <p class="route">Route 1: a new record<small>A sentence becomes a draft, one question, a Confirm card, and net worth moves at every door</small></p>
+    <div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You type <i>£5,000 in Monzo savings</i> in the chat at 09:40</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>POST /v1/chat/messages</code>, your lane on the <b>SQS FIFO updates</b> queue, then <b>agent λ</b>, which reads the <span class="sg">spend meter</span></span><span class="ln"></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The conversation and the strict tools to Sonnet. It finds what can be registered with <code>list_kinds</code>, and the savings kind's fields with <code>describe_kind</code></span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Claude calls <code>draft_record</code>: a savings account, each field a name and your own text (<i>£5,000</i>, <i>Monzo</i>). It never supplies a figure</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Code parses and types every field against the kind's spec: £5,000 in pounds, Monzo, UK, liquid, as of today. It returns what is missing, the owner, and the draft is hashed in a <b>PendingAction</b>, keyed by its flow id</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb"><code>ask_user</code>: <b>Whose is it?</b> with chips, Arun, Asha and Joint. Joint asks the shares next, half each unless said</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <b>Arun</b>; the tap goes to <code>/v1/chat/actions</code> and resumes the flow from its PendingAction</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The Confirm card, every figure from code: Instant access savings · Monzo, owner Arun, £5,000 as of today, savings in pounds, liquid. Nothing is saved yet</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <span class="sg">Confirm</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <b>write service</b> commits exactly the hashed draft: the <b>Record</b>, its opening <b>Event</b> and the <span class="sg">audit row</span>, in one DynamoDB transaction. The views move: net worth £439,951 → £444,951, the UK £338,468, Arun £250,868</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to every door"><span class="lb">The card edits in place to Saved, and <code>records.changed</code> goes down the <b>SSE</b> stream of every open door, <span class="sg">in order and never twice</span>: your strip, Asha's and Home on the laptop move with no reload</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Any kind, the same way.</b> <i>Our flat in Pune, half each, valued at 1.1 crore</i> becomes a property with two owners and its rent; <i>SBI FD, 5 lakh at 7.1% for 3 years</i> a deposit whose maturity, ₹6,17,538, code works out; <i>HDFC home loan, ₹15,13,257 left</i> a loan that starts from a balance checkpoint and asks only its rate. The admin can register a record for Asha, and the card names her as its owner. A screenshot or a statement starts the same draft.</span></li>
+    </ol></div></div>
+  </div>
+  <div class="seq-card">
+    <p class="route">Route 2: a new kind, approved by the admin<small>Sat 31 Oct: Asha's Premium Bonds fit no kind yet; Arun approves one behind the second check</small></p>
+    <div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toP" data-lanes="Member (Asha) to App"><span class="lb">Sat 31 Oct, 10:12: Asha types <i>I have NS&amp;I Premium Bonds too</i></span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">Her lane on the updates queue, then <b>agent λ</b></span><span class="ln"></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Sonnet checks <code>list_kinds</code>: no kind fits Premium Bonds</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The agent proposes one from the templates with <code>propose_kind</code>: built from cash at the last figure given, no interest, prizes as income, UK, in pounds, liquid</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Only the admin can approve a kind, <span class="sg">enforced in code</span>, not in the prompt. The proposal waits; nothing is saved and no amount is taken yet</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App (Asha)"><span class="lb">Asha hears why, in plain words: not a kind yet, Arun has been asked, nothing saved</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App (the admin)"><span class="lb">Arun's chat gets <b>New kind · to approve</b>: what it is built from and who asked, with Approve and Reject, shown to the admin only</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member (admin) to App"><span class="lb">Arun taps <b>Approve</b></span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app asks the server for a <span class="sg">challenge bound to this approval</span>: one use, five minutes</span><span class="ln"></span></li>
+      <li class="st mv fp toE" data-lanes="App to External (Apple or Google)"><span class="lb">The <span class="sg">second check</span>, as in flow 2, route 4: a fresh assertion under Face ID, with the challenge as its nonce</span><span class="ln"></span></li>
+      <li class="st mv fe toP rev" data-lanes="External (Apple or Google) to App"><span class="lb">The fresh assertion</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">Approve and the assertion together</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> accepts it only with an assertion under five minutes old whose nonce is that challenge. The <b>Kind</b> is saved as data, version 1, with its <span class="sg">audit row</span>; no screen, form or tool is added</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App (Asha)"><span class="lb">Asha's chat picks her registration up where it stopped, as route 1 runs; her own record still waits for her own Confirm</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box">Arun settled it on 26 Oct 2026 (MA-197): approving a new kind changes what every member can register, so it is one of the admin's actions and takes the second check. Reject tells the member plainly. A statement (flow 22) and a plan item (flow 24) take none.</span></li>
+    </ol></div></div>
+  </div>
+
+  <h3 class="blk">What the members see</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:40</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Mon 26 Oct</small><b>£439,951</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Today 09:40</span>
+          <div class="me">£5,000 in Monzo savings</div>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>New savings · one question</h5>
+              <div class="kv"><span>What is it?</span><span>Savings · Monzo <svg class="ic up" aria-hidden="true"><use href="#i-check"/></svg></span><span>How much?</span><span>£5,000 <svg class="ic up" aria-hidden="true"><use href="#i-check"/></svg></span></div>
+              <p><b>Whose is it?</b></p>
+              <div class="cbs"><span class="cb">Arun</span><span class="cb">Asha</span><span class="cb">Joint</span></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="chips" aria-hidden="true"><span class="gchip glass">Net worth</span><span class="gchip glass">What's due</span><span class="gchip glass p">Add anything</span><span class="gchip glass">Send a statement</span></div><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>One sentence, one question.</b> The kind, the bank and the amount were said; only the owner is missing, so the card asks it with chips. Joint asks the shares next.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:41</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>£444,951</b><span class="up">▲ £5,000</span><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Mon 26 Oct · 09:41</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>New record · check it</h5>
+              <p><b>Instant access savings · Monzo</b></p>
+              <div class="kv wrap"><span>Owner</span><span>Arun</span><span>Value</span><span><b>£5,000</b></span><span>As of</span><span>Today, Mon 26 Oct</span><span>Kind</span><span>Savings, UK, in pounds</span><span>Counts as</span><span>Liquid</span></div>
+              <small>Nothing is saved until you tap Confirm.</small>
+              <div class="cbs"><span class="cb p">Confirm</span><span class="cb">Edit</span><span class="cb">Cancel</span></div>
+            </div>
+          </div></div>
+          <span class="day">After Confirm, the card edited in place</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>New record · saved</h5>
+              <p>Instant access savings · Monzo · Arun · <b>£5,000</b></p>
+              <div class="hr"></div>
+              <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Saved · in the audit log · 09:41</p>
+              <small>Net worth £439,951 → £444,951, on every open door</small>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Confirm, then saved.</b> The card says what will be saved; Confirm saves it and the card edits in place. The strip's figure rolls to £444,951.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser beside">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com</span></div>
+        <div class="pad">
+          <div class="side" aria-hidden="true">
+            <span class="sh">MyPaisa</span>
+            <span class="si on"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span>
+            <span class="si"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Assets</span>
+            <span class="si"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg>Debts</span>
+            <span class="si"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>Budget</span>
+            <span class="si"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Projection</span>
+            <span class="si"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span>
+            <span class="si"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span>
+            <span class="sh">Admin</span>
+            <span class="si"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>Admin center</span>
+          </div>
+          <div class="pmain">
+            <div class="nav" style="padding:6px 0 0"><p class="ltitle" style="padding:0">Home</p><span class="sp"></span><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span></div>
+            <div class="dshero">
+              <p class="lbl">Net worth · household</p>
+              <p class="big">£444,951</p>
+              <p style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="upchip">▲ £5,000 at 09:41</span><span class="dnchip">₹5,00,56,988</span></p>
+              <div class="seg"><span class="on">Household</span><span>Me</span><span>Asha</span></div>
+              <div style="height:16px"></div>
+            </div>
+            <div class="group">
+              <div class="row"><span class="lead">£</span><span class="grow"><b>UK</b><small>in pounds</small></span><span class="num"><b>£338,468</b><small class="up">▲ £5,000</small></span></div>
+              <div class="row"><span class="lead">₹</span><span class="grow"><b>India</b><small>in rupees, here in pounds</small></span><span class="num"><b>£106,483</b><small>no change</small></span></div>
+              <div class="row"><span class="lead">A</span><span class="grow"><b>Arun</b><small>his records and shares</small></span><span class="num"><b>£250,868</b><small class="up">▲ £5,000</small></span></div>
+              <div class="row"><span class="lead">A</span><span class="grow"><b>Asha</b><small>her records and shares</small></span><span class="num"><b>£194,083</b><small>no change</small></span></div>
+            </div>
+            <div class="kv"><span>Own</span><span>£691,694</span><span>Owe</span><span>£246,743</span><span>Liquid</span><span>£37,596</span></div>
+            <p class="fresh"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Updated live at 09:41 over the stream; it was £439,951.</p>
+          </div>
+          <div class="pchat">
+            <div class="nav"><span class="navt">Chat<small>The same conversation as your iPhone</small></span></div>
+            <div class="chat">
+              <span class="ctx"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>About Home · Household</span>
+              <div class="me">£5,000 in Monzo savings</div>
+              <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+                <div class="mcard"><h5>New record · saved</h5><p>Instant access savings · Monzo · Arun · <b>£5,000</b></p><p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Saved · 09:41</p></div>
+              </div></div>
+            </div>
+            <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask about Home</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><p class="keyhint"><span><kbd>Return</kbd> sends</span><span><kbd>⌘K</kbd> composer</span></p></div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>The laptop, at the same moment.</b> The web app in 1a, Chat beside: the sidebar, Home in 1a, Net worth first, and the same conversation. The Confirm tapped on the iPhone moves Home here over the stream, with one line saying so; India and Asha stand still.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>10:12</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>Sat 31 Oct</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Asha's chat · today 10:12</span>
+          <div class="me">I have NS&amp;I Premium Bonds too</div>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <p>Premium Bonds aren't a kind MyPaisa knows yet, so I can't add them today. I've asked Arun to approve one; I'll pick this up with you when he does.</p>
+            <p><span class="st-chip c-neutral">Nothing saved · waiting for Arun</span></p>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Asha's chat, Sat 31 Oct.</b> She hears why, in plain words, and that the admin was asked. Nothing is saved and no amount is taken yet.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>10:13</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>Sat 31 Oct</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Arun's chat · today 10:13</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>New kind · to approve <span class="st-chip c-hold">Admin</span></h5>
+              <p>NS&amp;I Premium Bonds isn't a kind yet: add it as cash, no interest, prizes as income?</p>
+              <div class="kv wrap"><span>Built from</span><span>Cash: the last figure given</span><span>Interest</span><span>none</span><span>Prizes</span><span>income, in the budget</span><span>Where</span><span>UK, in pounds, liquid</span><span>Asked for by</span><span>Asha, 10:12</span></div>
+              <small>A kind is data: no screen or form changes. Asha's own record still comes to her Confirm.</small>
+              <div class="cbs c2"><span class="cb p">Approve</span><span class="cb">Reject</span></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <span class="grab"></span>
+          <svg class="ic acc" style="width:40px;height:40px" aria-hidden="true"><use href="#i-face"/></svg>
+          <p class="lt">Check it's you</p>
+          <p class="muted">Approving Premium Bonds adds a kind every member can register. Sign in with Apple again to approve this one kind.</p>
+          <span class="sib apple"><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>Sign in with Apple</span>
+          <span class="btn btn-plain">Use a passkey</span>
+          <p class="muted small">Good for this approval, for five minutes.</p>
+        </div>
+      </div>
+      <figcaption><b>Arun's chat, the admin's card.</b> Only the admin sees Approve and Reject. Approve asks for the second check first: a fresh sign-in bound to this one approval, checked by the server.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span><code>draft_record</code> writes nothing. Confirm commits exactly the draft hashed in the PendingAction, through the one write service.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Numbers from code</b><span>Claude passes your own words; code parses the amount, lakh and crore included, types every field and works out a maturity, an EMI or a schedule.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Only what is missing</b><span>One question at a time, with chips; never what it can look up, such as a NAV or a rate it already holds.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Owners, with their shares</b><span>Every record names its owners; a joint one has two, half each unless said. The admin can register for a member, and the card names her.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg><div><b>Live at every door</b><span><code>records.changed</code> on the stream of every open door, in order and never twice; a door that was closed catches up when it opens.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A new kind, behind the second check</b><span>Proposed from the templates, approved by the admin alone (enforced in code) after a fresh sign-in, versioned, with its audit row. No screen or form is added.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>The strip and the card's amounts are masked; Confirm still saves what the card holds, and Show amounts on this card reveals that card only.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>The record, its opening event and a new kind each leave a row in the same transaction, naming who and through what.</span></div></div>
+  </div>
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-197"><b>MA-197</b><span>Kind specs and the generic draft tools let the agent register any kind of asset or debt, asking only what is missing</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-203"><b>MA-203</b><span>Savings, cash, a property's value and a pension's value are registered through the chat and corrected in place</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-27"><b>MA-27</b><span>The household's records live in one dynamic structure: kinds as data, records as documents, history as events, figures as views</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-33"><b>MA-33</b><span>Each member's records have their owners, and a joint record has two owners with their shares</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-201"><b>MA-201</b><span>One write service takes the chat's Confirm and an in-place correction alike, checked against the kind and audited</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-209"><b>MA-209</b><span>Loans, mortgages and EMIs are registered through the chat, with dated terms, rate changes, prepayments and closure</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-206"><b>MA-206</b><span>Shares, ETFs, OEICs, mutual funds, bonds and gold in the UK and India are registered through the chat as holdings in their accounts</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-208"><b>MA-208</b><span>The first dashboard shows net worth and every record at every door, and moves live when a change is confirmed</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-199"><b>MA-199</b><span>The web app's chat shows the conversation, renders every card, streams replies and sends text and files, at desktop and phone width</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</span></a>
+  </div>
+</section>
+
+<!-- ============ 20. Correcting a figure in place ============ -->
+<section class="flow" id="correct" aria-labelledby="h-correct">
+  <div class="flow-h">
+    <span class="flow-n">20</span>
+    <h2 id="h-correct">Correcting a figure in place</h2>
+    <p class="lede">An existing figure that its kind marks editable is corrected where it is shown, on any screen, at either door: tap it, type the new value, see the before and after, Save. Home, Reading has shown £415,000 since its April valuation; at 09:52 on Mon 26 Oct Arun puts it right at £428,000. Save writes a correction event and its audit row through the same write service as the chat's Confirm, £415,000 stays in the history, and net worth moves from £444,951 to £457,951. Nothing is created in place: anything new is made only in the chat.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a tap on a figure marked with a pencil, on any screen</span><span class="chip">Phase 2 (the write service, the correction route)</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">On Home, Reading you tap the value, <b>£415,000</b>: a dotted underline and a pencil mark a figure its kind lets you correct</span><span class="ln"></span></li>
+      <li class="st act inP" data-lanes="App"><span class="box">The figure opens for typing with the number pad. You type 428000, and a <b>before → after</b> line appears, £415,000 → £428,000, ▲ £13,000, with Save and Cancel. Nothing has left the phone</span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <span class="sg">Save</span></span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>PATCH /v1/records/{id}</code>: the field, the new value and <span class="sg">the figure the screen showed</span></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The <span class="sg">authorizer</span> checks the session. The <b>write service</b> checks the change against the kind's spec: the field exists, is <code>editable</code>, has the right type and range, and Arun may change it (half of it is his, and the owner may correct anyone's). No model is called</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The record has not moved since £415,000 was shown, so Save is accepted; had another door changed it, <span class="sg">Save would be refused</span>, never overwrite it. A <b>correction</b> event, labelled <i>your estimate</i>, and its <span class="sg">audit row</span> (<code>via: inline_edit</code>), in one transaction</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The views move: net worth £444,951 → £457,951, the UK £351,468, Arun £257,368 and Asha £200,583, half each</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to every door"><span class="lb">The screen shows £428,000 with its audit line; <code>records.changed</code> moves every other open door over the stream</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box">A correction says a figure shown was wrong. A new valuation dated today is an event made in the chat, from the valuation check-in (flow 21). A derived figure (an EMI, a maturity value, net worth) cannot be corrected: its inputs can. Plan items and saved Projection assumptions are corrected in place by the admin only (flow 24).</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:51</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></span><span class="sp"></span><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="gcap glass"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Ask</span></div>
+        <p class="ltitle">Home, Reading<small>Property · UK · Arun and Asha, half each</small></p>
+        <div class="screen">
+          <div class="panel">
+            <p class="over">Value · your figure</p>
+            <p class="big"><span class="efig">£415,000</span> <svg class="ic acc" aria-hidden="true"><use href="#i-edit"/></svg></p>
+            <p class="small muted">Valued Thu 30 Apr 2026. Tap the figure to correct it.</p>
+          </div>
+          <div class="group">
+            <div class="row"><span class="grow"><b>Your share</b><small>50%</small></span><span class="num"><b>£207,500</b></span></div>
+            <div class="row"><span class="grow"><b>Valuation due</b><small>every six months</small></span><span class="num"><b>Fri 30 Oct</b></span></div>
+          </div>
+          <div class="group">
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg></span><span class="grow"><b>Valued at £415,000</b><small>Thu 30 Apr 2026 · your figure</small></span></div>
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg></span><span class="grow"><b>Bought for £330,000</b><small>Fri 18 Jun 2021</small></span></div>
+          </div>
+        </div>
+        <div class="dock"><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Tap the figure.</b> On Home, Reading the value carries a dotted underline and a pencil: a figure this kind lets you correct.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:52</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></span><span class="sp"></span><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="gcap glass"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Ask</span></div>
+        <p class="ltitle">Home, Reading<small>Property · UK · Arun and Asha, half each</small></p>
+        <div class="screen">
+          <div class="panel">
+            <p class="over">Value · correcting</p>
+            <p class="big"><span class="efig on">£428,000</span><span class="caret"></span></p>
+            <p>£415,000 → <b>£428,000</b> <span class="up">▲ £13,000</span></p>
+            <p class="small muted">Saved as a correction, labelled your estimate, with its audit row; £415,000 stays in the history.</p>
+            <div class="cbs c2"><span class="cb p">Save</span><span class="cb">Cancel</span></div>
+          </div>
+          <div class="kpad" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>.</span><span>0</span><span>⌫</span></div>
+        </div>
+        <div class="dock"><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Before → after, then Save.</b> The number pad, the change and its size; Save sends the figure the screen showed, so a change made meanwhile at another door is refused, not overwritten.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:52</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></span><span class="sp"></span><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="gcap glass"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Ask</span></div>
+        <p class="ltitle">Home, Reading<small>Property · UK · Arun and Asha, half each</small></p>
+        <div class="screen">
+          <div class="panel">
+            <p class="over">Value · corrected <span class="st-chip c-neutral">your estimate</span></p>
+            <p class="big">£428,000</p>
+            <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Saved · 09:52</p>
+            <p class="qt">In the audit log: value £415,000 → £428,000 · your estimate · Arun · in place · Mon 26 Oct, 09:52</p>
+          </div>
+          <div class="group">
+            <div class="row"><span class="grow"><b>Your share</b><small>50%</small></span><span class="num"><b>£214,000</b></span></div>
+          </div>
+          <div class="group">
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-edit"/></svg></span><span class="grow"><b>Corrected to £428,000</b><small>Mon 26 Oct 2026 · your estimate · Arun, in place</small></span></div>
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg></span><span class="grow"><b>Valued at £415,000</b><small>Thu 30 Apr 2026 · your figure</small></span></div>
+          </div>
+        </div>
+        <div class="dock"><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Saved, with its audit line.</b> A correction is an event, never an overwrite: the April figure stays in the history, under the correction. Arun's share follows.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com/audit</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Dashboard</p><p class="ptitle">Audit and Files</p></div><div class="filters"><span class="chip">All members</span><span class="chip">All records</span><span class="chip">Today</span></div></div>
+          <div class="group">
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-edit"/></svg></span><span class="grow"><b>Record · correction · via inline_edit</b><small>Arun · Mon 26 Oct 09:52 · Home, Reading: value £415,000 → £428,000, your estimate · net worth £444,951 → £457,951</small></span></div>
+            <div class="row"><span class="lead"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="grow"><b>Record · create · via typed</b><small>Arun · Mon 26 Oct 09:41 · none → Instant access savings · Monzo, £5,000, owner Arun · net worth £439,951 → £444,951</small></span></div>
+          </div>
+          <p class="muted small">Newest first. The record made in the chat and the figure corrected in place go through the same write service, and each leaves its row with before and after.</p>
+        </div>
+      </div>
+      <figcaption><b>Browser · Audit, the same morning.</b> The correction made in place, and the record made in the chat before it.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Correct, never create</b><span>Nothing new can be made in place. The api's data routes are GET, apart from <code>PATCH /v1/records/{id}</code>, for the fields a kind marks editable.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Checked against the kind</b><span>The field exists, is editable, and has the right type and range. A derived figure (an EMI, a maturity value, net worth) is not editable; its inputs are.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Two doors never overwrite each other</b><span>Save carries the figure the screen showed, and is refused if the record has moved since.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>An event, never an overwrite</b><span>The correction is a new event with its audit row (<code>via: inline_edit</code>); the old figure stays in the history beneath it.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Who may change what</b><span>A member corrects their own records' figures, the owner anyone's; plan items and saved Projection assumptions are the admin's alone.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>No model in the loop</b><span>Claude is not called. The figure is the member's own, labelled your estimate wherever it shows.</span></div></div>
+  </div>
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-201"><b>MA-201</b><span>One write service takes the chat's Confirm and an in-place correction alike, checked against the kind and audited</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-203"><b>MA-203</b><span>Savings, cash, a property's value and a pension's value are registered through the chat and corrected in place</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-74"><b>MA-74</b><span>The api serves each member only what they may see, and accepts in-place corrections only to the figures a kind marks editable</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-30"><b>MA-30</b><span>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-79"><b>MA-79</b><span>The Audit screen shows every change with who, when and the file behind it, at every door</span></a>
+  </div>
+</section>
+
+<!-- ============ 21. A check-in: the agent asks, one tap records it ============ -->
+<section class="flow" id="checkin" aria-labelledby="h-checkin">
+  <div class="flow-h">
+    <span class="flow-n">21</span>
+    <h2 id="h-checkin">A check-in: the agent asks, one tap records it</h2>
+    <p class="lede">When an EMI, a card bill, a SIP, rent, a premium, a salary, a maturity or a valuation is due, code (no model) puts a check-in card in the right member's chat. On Thu 5 Nov the HDFC home loan's EMI of ₹39,390 is due. The card says exactly what Paid saves, so the Paid tap is the Confirm, with Undo. The rarer answers wait behind Something else, among them Paid off in full, which closes the loan after its own Confirm. Several due at once fold into one card, and an autopay is assumed paid and listed once a week.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the daily check-in job finds a commitment due</span><span class="chip">Phase 4 (commitments and check-ins)</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>EventBridge Scheduler</b> puts the daily check-in job on the <b>SQS work</b> queue: code, <span class="sg">no LLM</span>. <b>worker λ</b> finds the <b>Commitment</b>s due: the HDFC EMI, ₹39,390 on the 5th, Arun's, not on autopay</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">A <b>CheckIn</b> with the id <code>commitment#due_date</code> is created once, by a <span class="sg">conditional put</span>, so a retry never asks twice. Its card, every figure from code, goes straight on the <b>SQS outbox</b></span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External (APNs)"><span class="lb">The app is closed, so a push: <i>HDFC home loan: was November's EMI paid? Tap to answer.</i>, <span class="sg">with no amount</span></span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap it; the chat opens at the card: <b>Paid saves ₹39,390 on Thu 5 Nov</b>, over <b>Paid</b> and <b>Something else</b></span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <span class="sg">Paid</span>. The card already shows exactly what it writes, so the tap is the Confirm</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The tap, through <code>/v1/chat/actions</code>, queued in your lane</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>One transaction</b>: the check-in moves to answered, the payment event on the loan is written with its <span class="sg">audit row</span> (<code>via: checkin</code>), and the commitment moves on to Sat 5 Dec. The engine's schedule: ₹10,719 of interest, ₹28,671 off the balance, ₹14,84,587 left</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to every door"><span class="lb">The card edits in place to <b>Paid</b>, with <b>Undo</b>; <code>records.changed</code> moves every open door: net worth £456,493 → £456,747</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Undo</b> writes a reversal event, never a delete: the check-in opens again and both events stay in the audit log. <b>Not yet</b> asks again on Mon 9 Nov, then shows as overdue on Home, in amber. <b>Different amount</b> asks how much and, over the EMI, whether the extra shortens the term or lowers the EMI, then a Confirm card. <b>Paid off in full</b> asks the final amount (HDFC's figure, or the engine's ₹15,23,976 in one tap) and the date, then a Confirm card: the loan closes and is kept in the history, its check-ins end, and the Projection runs again with ₹39,390 a month freed.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Several due at once</b> become one card with one Confirm for every row, as the two valuations of Mon 26 Oct do. A joint record asks the payer and tells the other owner. An <b>autopay</b> commitment, like the mortgage and the car loan, is assumed paid after its grace period and listed in a weekly digest, unless a statement (flow 22) or the member says otherwise. That keeps MyPaisa to about ten notifications a week.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone lock">
+        <div class="sbar" aria-hidden="true"><span></span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="lk">
+          <svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>
+          <p class="lk-date">Thursday 5 November</p>
+          <p class="lk-time">9:00</p>
+          <div class="notif"><span class="nicon"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#i-appicon"/></svg></span><span class="nhead">MyPaisa<span>now</span></span><span class="nbody"><b>HDFC home loan</b><br>Was November's EMI paid? Tap to answer.</span></div>
+          <div class="lk-foot" aria-hidden="true"><span><svg class="ic" aria-hidden="true"><use href="#i-flash"/></svg></span><span><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg></span></div>
+        </div>
+      </div>
+      <figcaption><b>The lock screen, Thu 5 Nov.</b> The loan and the question, no amount. There is no answer from the lock screen: a tap opens the card, where Paid shows what it saves.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:00</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Thu 5 Nov</small><b>£456,493</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Today 09:00</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Check-in · due today</h5>
+              <p>Was November's EMI of <b>₹39,390</b> paid?</p>
+              <div class="kv wrap"><span>Loan</span><span>HDFC home loan · Pune flat</span><span>Paid saves</span><span><b>₹39,390 on Thu 5 Nov</b></span></div>
+              <small>One tap on Paid saves exactly this, with Undo.</small>
+              <div class="cbs c2"><span class="cb p">Paid</span><span class="cb">Something else <svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+              <div class="group inset">
+                <div class="row"><span class="grow"><b>Not yet</b><small>I'll ask again on Mon 9 Nov</small></span><svg class="ic chev" aria-hidden="true"><use href="#i-right"/></svg></div>
+                <div class="row"><span class="grow"><b>Different amount</b><small>Tell me what was paid</small></span><svg class="ic chev" aria-hidden="true"><use href="#i-right"/></svg></div>
+                <div class="row"><span class="grow"><b>Paid off in full</b><small>Closes the loan, after a Confirm</small></span><svg class="ic chev" aria-hidden="true"><use href="#i-right"/></svg></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>As it arrives, Something else open.</b> Paid is the filled Confirm button, under the line that says what it saves. The rarer answers wait one tap away, and Paid off in full is never beside the first tap.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:12</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>£456,747</b><span class="up">▲ £254</span><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Thu 5 Nov · 09:00</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>Check-in · answered 09:12</h5>
+              <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Paid · November's EMI</p>
+              <div class="kv wrap"><span>Paid</span><span><b>₹39,390</b> on Thu 5 Nov</span><span>Loan</span><span>HDFC home loan · Pune flat</span><span>Left to pay</span><span><b>₹14,84,587</b></span></div>
+              <small>Left to pay is the engine's schedule after this EMI.</small>
+              <div class="cbs c1"><span class="cb"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg>Undo</span></div>
+              <div class="hr"></div>
+              <p class="small muted">Saved · in the audit log · 09:12</p>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Paid, at 09:12.</b> The card edits in place, with Undo, and net worth moves from £456,493 to £456,747 at every door. Undo writes a reversal, never a delete.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:22</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>Thu 5 Nov</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Another ending · today 09:20</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>Paid off in full</h5>
+              <div class="kv wrap"><span>Final amount</span><span>₹15,23,976 <svg class="ic up" aria-hidden="true"><use href="#i-check"/></svg></span><span>Paid on</span><span>Thu 5 Nov <svg class="ic up" aria-hidden="true"><use href="#i-check"/></svg></span></div>
+            </div>
+            <div class="mcard">
+              <h5>Close the loan · check it</h5>
+              <p><b>HDFC home loan, paid off in full</b></p>
+              <div class="kv wrap"><span>Final payment</span><span><b>₹15,23,976</b></span><span>Paid on</span><span>Thu 5 Nov</span><span>The loan</span><span>closes; kept in the history</span><span>Its check-ins</span><span>end with this one</span><span>Then</span><span>the Projection runs again</span></div>
+              <small>₹15,23,976 is the engine's: the balance after October's EMI, with November's interest. Nothing is saved until you tap Confirm.</small>
+              <div class="cbs"><span class="cb p">Confirm</span><span class="cb">Edit</span><span class="cb">Cancel</span></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Paid off in full, another ending.</b> The final amount and the date, then a full Confirm card: the loan closes, never deleted, and the Projection frees ₹39,390 a month. The figure set keeps the loan open, so the strip shows the day only.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:00</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Mon 26 Oct</small><b>£439,951</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Mon 26 Oct · 09:00</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Check-ins · 2 valuations</h5>
+              <p>Are these still about right?</p>
+              <div class="group inset">
+                <div class="row"><span class="lead">£</span><span class="grow"><b>Home, Reading</b><small>Due Fri 30 Oct</small></span><span class="num"><b>£415,000</b></span></div>
+                <div class="row"><span class="lead">₹</span><span class="grow"><b>Flat, Pune</b><small>Due since 15 Jul <span class="amb">Overdue</span></small></span><span class="num"><b>₹1,10,00,000</b></span></div>
+              </div>
+              <small>Both still right saves each figure as today's valuation, exactly as shown. The two currencies are never added.</small>
+              <div class="cbs c2"><span class="cb p">Both still right</span><span class="cb">One by one</span></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Several due at once, Mon 26 Oct.</b> Two valuations come as one card, and its Confirm saves both rows exactly as shown; One by one opens each row's own card. Overdue is amber, never red.</figcaption>
+    </figure>
+  </div>
+
+  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span><b>Picked.</b> Three check-in cards were drawn for MA-193 (<code>iPhone v4 · Check-ins.dc.html</code>): 1a, every answer as a chip in one row; 1b, Paid as the Confirm with the rest behind Something else; 1c, a compact row. On 26 Oct 2026 Arun picked <b>1b, Paid as the Confirm</b>; 1c's rows carry several check-ins due at once. Figures from the v4 figure set.</span></p>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Asked by code, not a model</b><span>The daily job is code with no LLM; Claude is not called to ask, or to record a payment.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>The tap is the Confirm</b><span>Paid saves exactly what the card shows, through the one write service, with its audit row (<code>via: checkin</code>).</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Undo, never a delete</b><span>Undo writes a reversal event; the check-in opens again, and both events stay in the audit log.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><div><b>Once, never twice</b><span>A check-in's id is its commitment and due date, created by a conditional put, so a retry never asks twice.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Closing a loan takes its own Confirm</b><span>Paid off in full sits behind Something else and ends on a full Confirm card; the loan is closed and kept, never deleted.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>No amount on the lock screen</b><span>The push names the loan and the question; the amount waits in the app. No answer is taken from the lock screen.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>About ten notifications a week</b><span>Several due at once come as one card; autopay is assumed paid and listed in a weekly digest; overdue shows in amber, never red.</span></div></div>
+  </div>
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-205"><b>MA-205</b><span>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-209"><b>MA-209</b><span>Loans, mortgages and EMIs are registered through the chat, with dated terms, rate changes, prepayments and closure</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-204"><b>MA-204</b><span>Loan maths: the EMI, the schedule, the interest split, prepayment by term or by EMI, and preclosure, to the penny</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-211"><b>MA-211</b><span>Autopay commitments and a weekly digest keep the agent to about ten notifications a week</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-202"><b>MA-202</b><span>A maturing deposit asks whether it was renewed, paid out or moved, and a renewal starts its successor record</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-216"><b>MA-216</b><span>SIPs and regular contributions are commitments that record each buy, with an annual step-up</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-170"><b>MA-170</b><span>Apple push reaches each member's devices when the app is closed, with no amounts on the lock screen unless they choose</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+  </div>
+</section>
+
+<!-- ============ 22. Sending a statement ============ -->
+<section class="flow" id="statement" aria-labelledby="h-statement">
+  <div class="flow-h">
+    <span class="flow-n">22</span>
+    <h2 id="h-statement">Sending a statement</h2>
+    <p class="lede">MyPaisa never connects to a bank. On Sun 1 Nov at 08:40 Arun sends October's statements in the chat: Barclaycard's of Sun 1 Nov and Monzo's for October. Both files are kept for good, then read. Every line is categorised, the merchant memory first and Haiku for the merchants it has not seen; transfers, the card payment and the EMIs are recognised by code, so nothing counts twice; the two lines it is unsure of come back in amber; and one review card takes one Confirm. The Monzo statement shows the car loan's EMI, so the autopay the weekly digest had assumed paid is confirmed by itself.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> a statement (PDF, CSV or XLSX) attached in the chat, or the <b>Send a statement</b> chip</span><span class="chip">Phase 6 (statements)</span><span class="chip">Phase 4 (the check-ins it answers)</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">At 08:40 you attach the two statements with <b>Send a statement</b></span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">Each file goes straight into the private <b>S3</b> documents bucket through a <span class="sg">presigned upload link</span>, then the message to <code>/v1/chat/messages</code></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Each file is <span class="sg">kept for good</span>, with its <b>Document</b> row and an audit row, before anything reads it. A statement job goes on the <b>SQS work</b> queue</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>worker λ</b> reads each file into dated lines: Barclaycard's 16 come to its £1,458 balance; Monzo has 6 spending lines and 5 that are not spending. Each merchant is looked up in the household's <b>merchant memory</b> first</span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The merchants the memory has not seen, to <b>Haiku</b></span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">A category for each, and how sure it is. Haiku names a category, never an amount</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Code recognises what is not spending: the Barclaycard payment of £1,240 (a transfer), the mortgage's £1,456.46 and the car loan's £346.55 (EMIs matched to their commitments), the £5,000 moved to savings (flow 19) and Arun's salary. On a card only interest and fees are spending; an EMI's principal is saving</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">One review card at 08:41: October by category, the two unsure lines in <span class="amb">amber</span> (AMZN Mktp £165, Shopping? and PAYPAL *EBAY £42, Other?), the five recognised lines, and one Confirm</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <span class="sg">Confirm</span> at 08:44; Change on an amber line would set another category first</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">In one transaction: 22 lines in October's budget, £2,246 across 11 categories, each pointing to its file; the Barclaycard's £1,458 owed, due Fri 20 Nov; the merchant memory taught AMZN Mktp and PAYPAL *EBAY; and the <span class="sg">audit rows</span></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><span class="sg">A payment a statement shows answers its check-in</span>: the car loan's EMI of Tue 20 Oct, on autopay and listed in the weekly digest as assumed paid, is now confirmed by the statement, and so is the mortgage's of Thu 1 Oct</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to every door"><span class="lb">The card edits in place to saved; <code>records.changed</code> moves every door: net worth £457,951 → £456,493, now that the card's £1,458 is owed</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box">A statement is routine, so it takes no second check; the Excel history importer, sent in the chat, keeps its own (MA-111). An Indian bank's statement is read the same way, in rupees.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>8:41</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Sun 1 Nov</small><b>£457,951</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Sun 1 Nov · 08:40</span>
+          <div class="me"><div class="ftile"><i>PDF</i><span><b>Barclaycard statement, 1 Nov</b><small>from Files</small></span></div></div>
+          <div class="me"><div class="ftile"><i>CSV</i><span><b>Monzo, October</b><small>from Files</small></span></div></div>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <p>Both are read. Here is October from them, by category; the two lines I am not sure of are in amber.</p>
+            <div class="mcard">
+              <h5>October's statements · check it</h5>
+              <p><b>£2,246</b> of spending in 22 lines</p>
+              <p class="small muted">Not sure · 2 lines</p>
+              <div class="group inset">
+                <div class="row"><span class="grow"><b>AMZN Mktp</b><small>Tue 27 Oct · <span class="amb">Shopping?</span></small></span><span class="num"><b>£165</b><small class="acc">Change</small></span></div>
+                <div class="row"><span class="grow"><b>PAYPAL *EBAY</b><small>Sun 25 Oct · <span class="amb">Other?</span></small></span><span class="num"><b>£42</b><small class="acc">Change</small></span></div>
+              </div>
+              <p class="small muted">By category</p>
+              <div class="kv"><span>Groceries</span><span>£702</span><span>Bills and council tax</span><span>£431</span><span>Eating out</span><span>£236</span><span>Family support, India</span><span>£222</span><span>Transport</span><span>£198</span><span>6 more categories</span><span>£457</span></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Sent at 08:40, read at 08:41.</b> One review card: the amber lines first, then October by category, £2,246 in all. Confirm keeps a guess; Change sets another first.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>8:44</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>£456,493</b><span class="dq">▼ £1,458</span><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Sun 1 Nov · 08:44</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>Not spending, recognised · 5 lines</h5>
+              <div class="kv wrap"><span>Barclaycard payment</span><span>£1,240 · a transfer</span><span>Mortgage · Nationwide</span><span>£1,456.46 · EMI</span><span>Car loan · Close Brothers</span><span>£346.55 · EMI</span><span>To Instant access savings</span><span>£5,000 · your own accounts</span><span>Salary · Arun</span><span>£4,350 · income</span></div>
+              <small>Both files are kept for good. Nothing is saved until you tap Confirm.</small>
+              <div class="cbs"><span class="cb p">Confirm</span><span class="cb">Edit</span><span class="cb">Cancel</span></div>
+            </div>
+          </div></div>
+          <span class="day">After Confirm, the card edited in place</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>October's statements · saved</h5>
+              <div class="kv wrap"><span>Spending</span><span>£2,246 · 11 categories</span><span>Not counted</span><span>5 lines, recognised</span><span>Remembered</span><span>AMZN Mktp is Shopping, PAYPAL *EBAY is Other</span></div>
+              <p class="small">It also confirmed two autopay EMIs the weekly digest had assumed paid: the car loan's on Tue 20 Oct and the mortgage's on Thu 1 Oct.</p>
+              <div class="hr"></div>
+              <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Saved · in the audit log · 08:44</p>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>One Confirm, at 08:44.</b> The lines that are not spending are recognised, so nothing counts twice. Once confirmed, the card's £1,458 is owed and net worth moves to £456,493.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>8:44</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Sun 1 Nov</small><b>£456,493</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Weekly digest · Mon 26 Oct, 08:30</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>Autopay · 2 payments assumed paid</h5>
+              <div class="kv"><span>Mortgage · Nationwide, Thu 1 Oct, joint</span><span>£1,456</span><span>Car loan · Close Brothers, Tue 20 Oct</span><span>£347</span><span>In all</span><span><b>£1,803</b></span></div>
+              <small>Both are on autopay, so each was saved as paid once its grace passed.</small>
+            </div>
+          </div></div>
+          <span class="day">Sun 1 Nov · 08:44</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>Check-in · car loan EMI <span class="st-chip c-hold">Confirmed by the statement</span></h5>
+              <p><b>Close Brothers: October's EMI paid</b></p>
+              <div class="kv wrap"><span>EMI</span><span>£346.55</span><span>Due</span><span>Tue 20 Oct · autopay</span><span>Before</span><span>Assumed paid</span><span>Now</span><span>Confirmed by the statement</span><span>Balance after it</span><span>£8,938.81</span></div>
+              <p class="small">Your Monzo statement shows £346.55 to Close Brothers on Tue 20 Oct, matched to this EMI. Nothing for you to do.</p>
+              <p class="small muted">Confirmed · in the audit log · 08:44</p>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>The autopay, confirmed.</b> Monday's weekly digest listed the car loan's EMI as assumed paid; Sunday's statement shows the payment, so its check-in is confirmed by itself, with nothing to answer.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>Kept for good, before anything reads it</b><span>Each statement is in S3 with its Document row and opens from the audit log; every line saved points to it.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Nothing counts twice</b><span>Transfers, card payments and EMIs are recognised by code. On a card only interest and fees are spending; an EMI's principal is saving.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Amber, never red</b><span>A line it is unsure of says so. Confirm keeps the guess, Change sets another, and the merchant memory learns either way.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>One Confirm</b><span>The whole statement is one review card; nothing is saved before Confirm.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Haiku names categories, never amounts</b><span>Every amount is the statement's own, and every total is summed by code.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>No bank connection, no second check</b><span>MyPaisa never connects to a bank. A statement is routine, so it takes no second check; the Excel history importer keeps its own.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>It answers its own check-ins</b><span>A payment the statement shows confirms its check-in, so nobody is asked about it.</span></div></div>
+  </div>
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-218"><b>MA-218</b><span>A bank or card statement sent in the chat is read, every line categorised and transfers recognised, for one Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-210"><b>MA-210</b><span>Credit cards are kept as revolving debt from their statements, and only interest and fees count as spending</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-211"><b>MA-211</b><span>Autopay commitments and a weekly digest keep the agent to about ten notifications a week</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-205"><b>MA-205</b><span>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-96"><b>MA-96</b><span>Budget: each member's income with its history, a monthly plan per category, and plan against actual, set through the chat</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-148"><b>MA-148</b><span>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+  </div>
+</section>
+
+<!-- ============ 23. Closing the month on the 1st ============ -->
+<section class="flow" id="month-close" aria-labelledby="h-month-close">
+  <div class="flow-h">
+    <span class="flow-n">23</span>
+    <h2 id="h-month-close">Closing the month on the 1st</h2>
+    <p class="lede">On the 1st the month closes with a check-in, in place of the old first-of-the-month question. At 09:00 on Sun 1 Nov, after the statements confirmed at 08:44, the card shows October's plan against actual for each category, with the income, the EMIs and the SIP, the surplus and the savings rate, then asks only for what no statement covered: cash, or another bank. One tap closes October, with Undo, and Budget reads the result at every door.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> the check-in on the 1st</span><span class="chip">Phase 6 (the month close)</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box">On the 1st the daily check-in job, code with <span class="sg">no LLM</span>, finds the month's own check-in: close October. It builds the card from the <b>Budget</b> view, which the statements of 08:44 filled</span></li>
+      <li class="st mv fa toE" data-lanes="AWS to External (APNs)"><span class="lb">Where no door is open, a push: <i>October is ready to close</i>, <span class="sg">with no amounts</span></span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The card: £2,246 spent of £2,682 planned, each category's plan against actual (▲ over, ▼ under), income £7,560, the EMIs £2,153 and the SIP £89, surplus £3,072 against £2,636, a savings rate of 40.6%. Then: <b>Anything not on a statement? Cash, or another bank?</b></span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">At 09:02 you tap <span class="sg">Nothing else: close October</span>. The card shows exactly what it writes, so the tap is the Confirm</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The tap, through <code>/v1/chat/actions</code></span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">One transaction answers the check-in and closes October with its <span class="sg">audit row</span>; November opens on the same plan</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to every door"><span class="lb">The card edits to <b>October closed</b>, with Undo; Budget shows October as closed at every door</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Add cash spending</b> asks the amount and the category, then a Confirm card; <b>Another bank's statement</b> runs flow 22 first. A plan amount is corrected in place on Budget, from the next month: Groceries £650 → £700 from November, while closed October keeps £650. A new category is made only in the chat.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:01</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Sun 1 Nov</small><b>£456,493</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Sun 1 Nov · 09:00</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Check-in · close October</h5>
+              <p><b>October: £2,246 spent of £2,682 planned</b></p>
+              <div class="meter" role="img" aria-label="Spent 84 per cent of the plan"><i style="width:83.7%"></i></div>
+              <small>£436 under plan</small>
+              <div class="kv"><span>Income</span><span>£7,560</span><span>EMIs and SIP</span><span>£2,153 and £89</span><span>Surplus</span><span>£3,072 · plan £2,636</span><span>Savings rate</span><span>40.6%</span></div>
+              <p class="small">Over plan: Eating out £56, Groceries £52, Bills and council tax £11.</p>
+              <small>From the Barclaycard and Monzo statements, the loans and the SIP.</small>
+              <p><b>Anything not on a statement? Cash, or another bank?</b></p>
+              <div class="cbs c1"><span class="cb p">Nothing else: close October</span></div>
+              <div class="cbs c2"><span class="cb">Add cash spending</span><span class="cb">Another bank's statement</span></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>The check-in on the 1st.</b> Plan against actual from the statements, the loans and the SIP; then the one question no statement can answer.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>9:02</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Sun 1 Nov</small><b>£456,493</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Sun 1 Nov · 09:02</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>Check-in · October closed</h5>
+              <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>October closed</p>
+              <div class="kv"><span>Spent</span><span>£2,246 of £2,682</span><span>Surplus</span><span>£3,072</span><span>Savings rate</span><span>40.6%</span></div>
+              <small>You tapped Nothing else at 09:02. Budget now shows October as closed.</small>
+              <div class="cbs c1"><span class="cb"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg>Undo</span></div>
+              <div class="hr"></div>
+              <p class="small muted">Closed · in the audit log · 09:02</p>
+            </div>
+            <p>November is open, on the same plan. I'll ask again on Tue 1 Dec.</p>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Closed, with Undo.</b> The tap was the Confirm; the closed card says when, and its audit row.</figcaption>
+    </figure>
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com/budget</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Budget · household</p><p class="ptitle">October 2026 · closed</p></div><div class="filters"><div class="seg" style="min-width:200px"><span class="on">£ GBP</span><span>₹ INR</span></div></div></div>
+          <div class="cols">
+            <div class="panel">
+              <p class="over">Surplus</p>
+              <p class="big">£3,072</p>
+              <p class="small muted">Plan £2,636 · savings rate 40.6%</p>
+              <div class="kv"><span>Income</span><span>£7,560</span><span>EMIs</span><span>£2,153</span><span>SIP</span><span>£89</span><span>Spending</span><span>£2,246 of £2,682</span></div>
+            </div>
+            <div class="panel">
+              <h4>Plan against actual</h4>
+              <div class="scroll"><table class="route-t">
+                <thead><tr><th>Category</th><th>Plan</th><th>Actual</th><th>Over or under</th></tr></thead>
+                <tbody>
+                <tr><td>Bills and council tax</td><td>£420</td><td>£431</td><td><span class="alert-t">▲ £11</span></td></tr>
+                <tr><td>Groceries</td><td>£650</td><td>£702</td><td><span class="alert-t">▲ £52</span></td></tr>
+                <tr><td>Transport</td><td>£220</td><td>£198</td><td>▼ £22</td></tr>
+                <tr><td>Insurance</td><td>£85</td><td>£85</td><td>on plan</td></tr>
+                <tr><td>Eating out</td><td>£180</td><td>£236</td><td><span class="alert-t">▲ £56</span></td></tr>
+                <tr><td>Shopping</td><td>£250</td><td>£189</td><td>▼ £61</td></tr>
+                <tr><td>Holidays</td><td>£400</td><td>£0</td><td>▼ £400</td></tr>
+                <tr><td>Health</td><td>£60</td><td>£24</td><td>▼ £36</td></tr>
+                <tr><td>Subscriptions</td><td>£45</td><td>£45</td><td>on plan</td></tr>
+                <tr><td>Giving</td><td>£50</td><td>£50</td><td>on plan</td></tr>
+                <tr><td>Family support, India</td><td>£222</td><td>£222</td><td>on plan</td></tr>
+                <tr><td>Other</td><td>£100</td><td>£64</td><td>▼ £36</td></tr>
+                <tr><td><b>In all</b></td><td><b>£2,682</b></td><td><b>£2,246</b></td><td><b>▼ £436</b></td></tr>
+                </tbody>
+              </table></div>
+            </div>
+          </div>
+          <p class="fresh"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>New categories are made in the chat, never on this page. A plan figure is corrected in place, from the next month.</p>
+        </div>
+      </div>
+      <figcaption><b>Browser · Budget, Sun 1 Nov.</b> October closed: plan against actual for every category, with the chat column hidden for a wider page. Every figure is the Budget view's.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Only what no statement covered</b><span>Cash, or a bank with no statement; everything else is already in, from the statements, the loans and the SIP.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>The tap is the Confirm, with Undo</b><span>Nothing else: close October writes exactly what the card shows; the closed card says when, with its audit row.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Figures from code</b><span>Plan against actual, the surplus and the savings rate are the Budget view's, worked out from the events.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Created in the chat, corrected in place</b><span>A category is made only in the chat. A plan amount is corrected in place from the next month, and a closed month keeps its plan.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>No amounts on the lock screen</b><span>The push says only that October is ready to close.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit row</b><span>The close, an Undo and every plan correction each leave their row.</span></div></div>
+  </div>
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-220"><b>MA-220</b><span>On the 1st the agent closes last month's budget, asking only for what no statement covered</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-96"><b>MA-96</b><span>Budget: each member's income with its history, a monthly plan per category, and plan against actual, set through the chat</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-218"><b>MA-218</b><span>A bank or card statement sent in the chat is read, every line categorised and transfers recognised, for one Confirm</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-205"><b>MA-205</b><span>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-170"><b>MA-170</b><span>Apple push reaches each member's devices when the app is closed, with no amounts on the lock screen unless they choose</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-28"><b>MA-28</b><span>Every record change writes a hash-chained audit row in the same transaction</span></a>
+  </div>
+</section>
+
+<!-- ============ 24. The Projection, and a what-if ============ -->
+<section class="flow" id="projection" aria-labelledby="h-projection">
+  <div class="flow-h">
+    <span class="flow-n">24</span>
+    <h2 id="h-projection">The Projection, and a what-if</h2>
+    <p class="lede">Projection, not forecast: Forecast stays the market's word for a holding's next four weeks, and the Projection is the household's net worth over the years. Code computes every figure, month by month to 2056; the agent explains. From £457,951 on Mon 26 Oct the middle path reaches £1,316,000 by 2036 and £4,635,000 by 2056, and every assumption shows its source. A what-if is a typed override the engine runs and nobody saves: <i>£60,000 down on a second flat in June 2028</i> puts 2036's middle path at £1,233,000 against £1,316,000. Plan items, and the saved assumptions, are the admin's alone.</p>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> Projection from Home, a question that starts <i>What if</i>, or a plan item in the admin's chat</span><span class="chip">Phase 7 (the Projection)</span></div>
+  </div>
+
+  <h3 class="blk">The path</h3>
+  <div class="seq-card"><div class="seq-wrap">
+    <div class="lanes" aria-hidden="true"><span class="lh"><i class="dot dm"></i>Member</span><span class="lh"><i class="dot dp"></i>App and web app</span><span class="lh lh-a"><i class="dot da"></i>AWS</span><span class="lh"><i class="dot dc"></i>Claude</span><span class="lh"><i class="dot de"></i>External data</span></div>
+    <div class="seq-body"><span class="life l1"></span><span class="life l2"></span><span class="life l3"></span><span class="life l4"></span><span class="life l5"></span>
+    <ol class="seq">
+      <li class="st act inA" data-lanes="AWS"><span class="box">The engine, <code>wealth/projection.py</code>, runs month by month from the views: every record's events, the commitments, the budget's spend inflating by country, the admin's plan items and the assumptions. It ran at 09:53, after the morning's correction; the fan (p10, p50, p90) is a Monte Carlo with its seed stored</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Each run is a <b>ProjectionRun</b>: the inputs hash, the seed, the engine version, the percentiles and the milestones, so <span class="sg">any curve can be reproduced</span></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">The assumptions, each with its source: Parag Parikh's 10.7% XIRR <span class="sg">shrunk toward a prior</span>, India shares' 9%, to 9.06%, since 3.8 years of history moves the prior only a little; the SBI FD and the PPF at their contract 7.1%; Arun's salary growth 4.17%, his own 4.8% blended with the UK's 3.5%, and Asha's 3.5%; inflation 2.5% in the UK and 5% in India, which also drifts the rupee</span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">At 10:05 you open <b>Projection</b> from Home</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The app reads the latest <b>ProjectionRun</b>, a <code>GET</code> like every data route</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The fan first, in GBP or INR: milestones on the line (the saver maturing, loans ending, plan items), the assumptions with their sources, scenario chips and Ask</span><span class="ln"></span></li>
+      <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">At 10:20 you ask: <i>What if we put £60,000 down on a second flat in June 2028?</i></span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb"><code>POST /v1/chat/messages</code>, your lane, then <b>agent λ</b> and the <span class="sg">spend meter</span></span><span class="ln"></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The conversation and the tools to Sonnet, <code>run_projection</code> among them</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">Claude fills a <span class="sg">typed override</span>: a one-off spend, −£60,000, in GBP, in Jun 2028. It supplies no result</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">A <span class="sg">validator</span> refuses any number not traceable to your words or a named preset; £60,000 and June 2028 are yours. The engine runs the scenario beside today's plan, and <span class="sg">nothing is saved</span></span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The engine's figures, for the words around them</span><span class="ln"></span></li>
+      <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">What the deposit costs by 2036, and why; every number in it is the engine's</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">An unsaved scenario card: 2036's middle path £1,233,000 with the flat, against £1,316,000 on today's plan, ▼ £83,000. <b>Save as a plan item</b> is shown to the admin only</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Plan items are the admin's alone:</b> future income and spends, made in the admin's chat with <code>propose_plan_item</code> and saved only after the admin's Confirm (a home extension, −£35,000 in Jun 2027; Asha's bonus, +£3,000 every March; a new car, −£25,000 in Jun 2031), then corrected in place by the admin, as the saved assumptions are. They change a plan, not the records, so they need no second check. Asha views the Projection and asks her own what-if at 10:26; she saves nothing.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">The agent also explains what drives the curve, raises the trouble flags code computes, and notices milestones: the car loan ends in Feb 2029 and frees £347 a month, the HDFC loan in Jul 2030, the mortgage in Oct 2045. A locked pension cannot cover a shortfall before it unlocks.</span></li>
+    </ol></div>
+  </div></div>
+
+  <h3 class="blk">What the member sees</h3>
+  <div class="mocks">
+    <figure class="mock wide">
+      <div class="browser">
+        <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com/projection</span></div>
+        <div class="bpage">
+          <div class="ptop"><div><p class="over">Projection · the engine's run of Mon 26 Oct, 09:53</p><p class="ptitle">Where the household is heading</p></div><div class="filters"><div class="seg" style="min-width:320px"><span class="on">£ GBP</span><span>₹ INR</span><span>Today's money</span></div></div></div>
+          <div class="cols">
+            <div class="panel">
+              <div class="dshero">
+                <p class="lbl">Middle path in 2056</p>
+                <p class="big">£4,635,000</p>
+                <p style="margin-top:4px;font:400 13px/18px var(--font);color:var(--mp-hero-ink-2)">From £457,951 today; £1,316,000 by 2036. 8 in 10 runs end 2056 between £3,156,000 and £7,141,000.</p>
+                <svg class="fan" viewBox="0 0 300 110" preserveAspectRatio="none" role="img" aria-label="Chart: the household's net worth to 2056, a widening band of 8 in 10 runs around the rising middle path"><path d="M0.0 99.7 L10.0 98.5 L20.0 97.0 L30.0 95.6 L40.0 94.2 L50.0 93.1 L60.0 91.2 L70.0 89.4 L80.0 87.6 L90.0 85.6 L100.0 83.5 L110.0 80.7 L120.0 78.0 L130.0 75.4 L140.0 72.5 L150.0 69.6 L160.0 66.5 L170.0 63.1 L180.0 60.5 L190.0 56.6 L200.0 52.8 L210.0 49.8 L220.0 45.6 L230.0 41.0 L240.0 35.4 L250.0 30.2 L260.0 25.7 L270.0 22.2 L280.0 16.2 L290.0 12.3 L300.0 8.2 L300.0 62.8 L290.0 65.5 L280.0 66.4 L270.0 68.1 L260.0 69.5 L250.0 69.2 L240.0 71.7 L230.0 74.2 L220.0 74.9 L210.0 77.1 L200.0 78.5 L190.0 81.1 L180.0 81.6 L170.0 82.9 L160.0 84.0 L150.0 85.2 L140.0 86.5 L130.0 88.0 L120.0 89.2 L110.0 90.3 L100.0 91.5 L90.0 92.6 L80.0 93.9 L70.0 94.9 L60.0 95.6 L50.0 96.6 L40.0 97.4 L30.0 98.3 L20.0 99.1 L10.0 99.8 L0.0 99.7 Z" fill="var(--mp-hero-area)"/><path d="M0.0 99.7 L10.0 99.2 L20.0 98.0 L30.0 97.0 L40.0 95.8 L50.0 94.9 L60.0 93.6 L70.0 92.3 L80.0 90.6 L90.0 89.4 L100.0 88.0 L110.0 86.2 L120.0 84.3 L130.0 82.5 L140.0 80.6 L150.0 78.9 L160.0 77.1 L170.0 74.8 L180.0 72.8 L190.0 69.9 L200.0 68.1 L210.0 65.4 L220.0 62.3 L230.0 60.2 L240.0 57.5 L250.0 54.9 L260.0 52.3 L270.0 49.5 L280.0 47.1 L290.0 45.4 L300.0 42.5" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/></svg>
+              </div>
+              <p class="small muted" style="display:flex;justify-content:space-between"><span>Today</span><span>2036</span><span>2046</span><span>2056</span></p>
+              <div class="filters"><span class="chip">What if we buy a second flat?</span><span class="chip">What moves the line most?</span></div>
+              <h4>Milestones</h4>
+              <div class="kv"><span>Asha's saver matures, £10,460</span><span>Dec 2026</span><span>The mortgage's fixed rate ends</span><span>Jun 2028</span><span>Car loan paid off, frees £347 a month</span><span>Feb 2029</span><span>SBI FD matures, ₹6,17,538</span><span>Mar 2029</span><span>HDFC loan paid off, frees ₹39,390 a month</span><span>Jul 2030</span><span>Mortgage paid off, frees £1,456 a month</span><span>Oct 2045</span></div>
+            </div>
+            <div class="panel">
+              <h4>Assumptions, each with its source</h4>
+              <div class="scroll"><table class="route-t">
+                <thead><tr><th>Figure</th><th>Source</th><th>A year</th></tr></thead>
+                <tbody>
+                <tr><td>Parag Parikh Flexi Cap</td><td>History, shrunk to a prior: its own 10.7% XIRR, toward India shares' 9%; 3.8 years of history moves the prior only a little</td><td><span class="efig">9.06%</span></td></tr>
+                <tr><td>Balanced and the ETFs</td><td>Prior · UK shares</td><td><span class="efig">6%</span></td></tr>
+                <tr><td>Home, Reading</td><td>Prior · UK property</td><td><span class="efig">3%</span></td></tr>
+                <tr><td>Flat, Pune</td><td>Prior · India property</td><td><span class="efig">5%</span></td></tr>
+                <tr><td>SBI fixed deposit and PPF</td><td>Contract</td><td>7.1%</td></tr>
+                <tr><td>Arun's salary growth</td><td>History and prior: his 4.8% a year since 2022, blended with the UK's 3.5%</td><td><span class="efig">4.17%</span></td></tr>
+                <tr><td>Asha's salary growth</td><td>History and prior: her 3.5% a year since 2023, with the UK's 3.5%</td><td><span class="efig">3.5%</span></td></tr>
+                <tr><td>UK inflation</td><td>Prior · UK consumer prices</td><td><span class="efig">2.5%</span></td></tr>
+                <tr><td>India inflation</td><td>Prior · it also drifts the rupee</td><td><span class="efig">5%</span></td></tr>
+                </tbody>
+              </table></div>
+              <p class="small muted">Priors are the household's settings, each with its source; Arun sets them. The engine runs again whenever a figure changes.</p>
+              <h4>Plan items · Arun's</h4>
+              <div class="kv"><span>Home extension · Jun 2027</span><span><span class="efig">−£35,000</span></span><span>Asha's annual bonus · every March, 2027 to 2052</span><span><span class="efig">+£3,000</span></span><span>Replace the car · Jun 2031</span><span><span class="efig">−£25,000</span></span></div>
+              <p class="small muted">Made in the admin's chat; corrected here in place by the admin only. Members ask what-ifs and save nothing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>Browser · Projection, 10:05, in 1a, the fan first.</b> The fan, the milestones on the line, and every assumption with its source. The figures the admin may correct in place carry the dotted line.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>10:20</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Mon 26 Oct</small><b>£457,951</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">Today 10:20</span>
+          <div class="me">What if we put £60,000 down on a second flat in June 2028?</div>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <p>Here's the engine's run with it.</p>
+            <div class="mcard">
+              <h5>What-if · Jun 2028 · not saved</h5>
+              <p><b>£60,000 down on a second flat</b></p>
+              <div class="wif"><svg viewBox="0 0 300 96" preserveAspectRatio="none" role="img" aria-label="Chart: the middle path to 2036, lower with the flat from June 2028"><line x1="72.6" y1="0" x2="72.6" y2="96" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="3 3"/><path d="M0.0 86.8 L30.0 83.1 L60.0 75.7 L90.0 68.7 L120.0 60.9 L150.0 55.1 L180.0 46.7 L210.0 38.2 L240.0 27.3 L270.0 19.1 L300.0 9.9" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5"/><path d="M0.0 86.8 L30.0 83.1 L60.0 81.1 L90.0 74.2 L120.0 67.2 L150.0 61.5 L180.0 53.0 L210.0 45.2 L240.0 35.2 L270.0 26.4 L300.0 17.4" fill="none" stroke="var(--mp-chart-2)" stroke-width="2.5"/></svg></div>
+              <p class="wlegend"><span><i style="background:var(--mp-chart-2)"></i>With the flat</span><span><i style="background:var(--mp-chart-line)"></i>Today's plan</span><span>Dashed: the deposit</span></p>
+              <div class="kv"><span>2036, with the flat</span><span><b>£1,233,000</b></span><span>2036, today's plan</span><span>£1,316,000</span><span>Middle path</span><span>▼ £83,000 lower</span></div>
+              <small>The engine's figures; nothing is saved. £60,000 and June 2028 are your words.</small>
+              <div class="cbs c2"><span class="cb">Save as a plan item</span><span class="cb">Change it</span></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>Arun's what-if, 10:20.</b> An unsaved scenario card, the engine's run beside today's plan. Save as a plan item is the admin's; Asha's own what-if at 10:26 shows no Save, only that Arun can save it as a plan item.</figcaption>
+    </figure>
+    <figure class="mock">
+      <div class="phone">
+        <div class="sbar" aria-hidden="true"><span>20:15</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>Sun 25 Oct</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="chat">
+          <span class="day">The admin's chat · Sun 25 Oct, 20:14</span>
+          <div class="me">Plan Asha's bonus: £3,000 every March, 2027 to 2052</div>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <h5>New plan item · check and confirm</h5>
+              <p><b>Asha's annual bonus</b></p>
+              <div class="kv wrap"><span>Amount</span><span>+£3,000</span><span>When</span><span>Every March, 2027 to 2052</span><span>Currency</span><span>GBP</span><span>Grows</span><span>No growth</span></div>
+              <small>Your words, as a plan item. The engine runs the Projection again once you confirm; only you can change it later.</small>
+              <div class="cbs"><span class="cb p">Confirm</span><span class="cb">Change</span><span class="cb">Cancel</span></div>
+            </div>
+          </div></div>
+          <span class="day">After Confirm, the card edited in place</span>
+          <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <div class="mcard">
+              <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Added to the plan</p>
+              <p>Asha's annual bonus · +£3,000 every March, 2027 to 2052</p>
+              <small>Audit · Plan item added · Arun · Sun 25 Oct 20:15 · in the chat</small>
+            </div>
+          </div></div>
+        </div>
+        <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
+      </div>
+      <figcaption><b>A plan item, in the admin's chat.</b> The evening before: made in the chat with a Confirm and an audit row, and no second check, since it changes a plan, not the records.</figcaption>
+    </figure>
+  </div>
+
+  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span><b>Picked.</b> Three Projection screens were drawn for MA-193 (<code>iPhone v4 · Projection.dc.html</code>, <code>Web v4 · Projection.dc.html</code>): 1a, the fan first; 1b, a story first; 1c, decades. On 26 Oct 2026 Arun picked <b>1a, the fan first</b>, the screen ARCHITECTURE §6.6 lists. The old wealth tracker's Forecast is renamed Projection. Every figure is an illustrative engine run from the v4 figure set.</span></p>
+
+  <h3 class="blk">Safeguards on this path</h3>
+  <div class="sgs">
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Code computes, the agent explains</b><span>Every figure on the screen and in the chat is the engine's. Claude proposes assumptions with their reasons, fills a what-if's override, explains the curve and raises the flags code computes.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A what-if is never saved</b><span>A typed override the validator checks against your words or a named preset; the result is an unsaved scenario card.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>Every assumption has a source</b><span>A contract; a prior, a versioned setting with its source; or history shrunk toward a prior, weighted by how many years there are.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>The admin's alone</b><span>Plan items and saved assumptions. Members view the Projection and ask what-ifs, but save nothing. A plan change takes no second check.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Reproducible</b><span>Each run keeps its inputs hash, seed and engine version; a record closing or an assumption changing runs it again.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Constraints kept</b><span>Debts amortise to their real end dates and free their payments; a locked pension cannot cover a shortfall before it unlocks.</span></div></div>
+  </div>
+  <h3 class="blk">Built by</h3>
+  <div class="keys">
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-219"><b>MA-219</b><span>The Projection engine runs the household's net worth month by month to the horizon, deterministic first, then a Monte Carlo fan</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-223"><b>MA-223</b><span>What-ifs and the Projection's story: the agent proposes assumptions, runs scenarios and explains the curve, every figure from the engine</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-224"><b>MA-224</b><span>The Projection screen shows the fan, its milestones and the editable assumptions, at every door</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-222"><b>MA-222</b><span>Plan items: the admin adds future income and spends through the chat and corrects them in place</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-221"><b>MA-221</b><span>Projection priors per country: long-run returns, inflation and wage growth, versioned with their sources</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-212"><b>MA-212</b><span>XIRR to the penny for a holding, an account, a member and the household, from the dated ledger</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-215"><b>MA-215</b><span>With no history, the agent asks for past transactions to compute the return, or an estimate it marks as one</span></a>
+  </div>
+</section>
+
 
 </main>
 
 <footer class="foot">
-  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.1, §4.2, §4.5, §4.6, §4.7, §5.1, §5.3, §8, §9, §10, §11, §14, §15.1, §15.2, §18, §19.5, §19.7, §20, §21 and §22; <code>PLAN.md</code> phases 0 to 20 and phase 2's MA-156; <code>TECH_STACK.md</code>'s Indian sources; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center; <code>docs/design/reviews/MA-161/decision.md</code> and its stories, MA-162 to MA-185, with Arun's correction that the read-only web app stays; and MA-186 (26 Oct 2026), which made the web app a full door with the chat and renumbered the phases.</p>
-  <p><b>Look.</b> MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102. The web app keeps the system's web components. The iOS app adds Apple's Liquid Glass (MA-161): glass only on the controls (the tab bar and its search circle, toolbar buttons, the composer and its chips, menus and partial-height sheets), content solid, never glass on glass, and the glass made opaque under Reduce Transparency. The member's words sit in navy bubbles; MyPaisa's sit unbubbled beside its mark, the 1c Watcher (MA-103); cards are Warm ledger cards with their own buttons. Every mock is drawn in shell 1a, Chat first. Legible at 25% brightness (MA-181), as Arun asked: "the text and component should be clearly visible even in 25% mobile brightness". Every colour pair in light and dark, text on glass included, passes <code>scripts/contrast_check.py</code> at full brightness and at 25%, a gate on every PR (<code>ARCHITECTURE.md</code> §9.1). One motion system (MA-182), in the app and the web app: springs, glass that morphs, figures that roll, charts that draw in and scrub, haptics in the app, and Reduce Motion honoured: every movement then becomes a short cross-fade or lands at once.</p>
-  <p><b>Status.</b> Design only; nothing is built. Every figure, rate, fund name, file name, device, date, time and wording in the mocks is illustrative. In the MyPaisa iOS v1 Claude Design project the shell is picked (1a, Chat first, Arun, 26 Oct 2026); the other iOS boards are planned until each story's pick, in its options round when the story starts; the Indian cards and screens are still to be designed. MyPaisa never gives tax advice.</p>
+  <p><b>Sources.</b> <code>ARCHITECTURE.md</code> §1, §3, §4.1, §4.2, §4.5, §4.6, §4.7, §4.8, §4.9, §4.10, §5.1, §5.3, §6.6, §8, §9, §10, §11, §12, §14, §15.1, §15.2, §18, §19.5, §19.7, §20, §21 and §22; <code>PLAN.md</code> phases 0 to 20 and phase 2's MA-156; <code>TECH_STACK.md</code>'s Indian sources; <code>docs/design/reviews/MA-101/decision.md</code>; the MA-102 decision on the Admin center; <code>docs/design/reviews/MA-161/decision.md</code> and its stories, MA-162 to MA-185, with Arun's correction that the read-only web app stays; and MA-186 (26 Oct 2026), which made the web app a full door with the chat and renumbered the phases. For flows 19 to 24 (MA-226): <code>docs/design/reviews/MA-193/decision.md</code>, its v4 boards and Prototype v4, and the illustrative household they share, <code>docs/design/figures/household-v4.json</code>, with its clock.</p>
+  <p><b>Look.</b> MyPaisa DS v1, "Warm ledger" (MA-101), with the crimson alert picked on MA-102. The web app keeps the system's web components. The iOS app adds Apple's Liquid Glass (MA-161): glass only on the controls (the tab bar and its search circle, toolbar buttons, the composer and its chips, menus and partial-height sheets), content solid, never glass on glass, and the glass made opaque under Reduce Transparency. The member's words sit in navy bubbles; MyPaisa's sit unbubbled beside its mark, the 1c Watcher (MA-103); cards are Warm ledger cards with their own buttons. Every iPhone mock is drawn in shell 1a, Chat first; flow 19's laptop in the web app's shell 1a, Chat beside, with the dashboard in 1a, Net worth first (MA-193). Legible at 25% brightness (MA-181), as Arun asked: "the text and component should be clearly visible even in 25% mobile brightness". Every colour pair in light and dark, text on glass included, passes <code>scripts/contrast_check.py</code> at full brightness and at 25%, a gate on every PR (<code>ARCHITECTURE.md</code> §9.1). One motion system (MA-182), in the app and the web app: springs, glass that morphs, figures that roll, charts that draw in and scrub, haptics in the app, and Reduce Motion honoured: every movement then becomes a short cross-fade or lands at once.</p>
+  <p><b>Status.</b> Design only; nothing is built. Every figure, rate, fund name, file name, device, date, time and wording in the mocks is illustrative. In the MyPaisa iOS v1 Claude Design project the shell is picked (1a, Chat first, Arun, 26 Oct 2026); the other iOS boards are planned until each story's pick, in its options round when the story starts; the Indian cards and screens are still to be designed. MA-193's picks (Arun, 26 Oct 2026) are the web app's shell (1a, Chat beside), the dashboard (1a, Net worth first), the check-in card (1b, Paid as the Confirm) and the Projection (1a, the fan first); its other v4 boards stay planned until each story's own round. MyPaisa never gives tax advice.</p>
 </footer>
 
 </div>
