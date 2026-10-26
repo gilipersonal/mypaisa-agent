@@ -109,7 +109,7 @@ Added the day each was learned; reviewers check every item.
     refuses a `label` or `dot` attribute anywhere else, however it is quoted
     (fix: `fade`), and a board rule giving a `.mp-chartlbl` or `.mp-chartdot`
     variant its own transform without `!important` (fix: `!important`, since
-    motion.js gives every chart label and dot its role at run time) (MA-161
+    motion.js gives every chart label and dot the board leaves unmarked its role at run time) (MA-161
     rounds 2 and 3: chart axes and two browser labels moved once the arrival
     settled).
 12. **A gate fails closed, and its selftest proves it bites:** a file it cannot
@@ -183,4 +183,8 @@ Added the day each was learned; reviewers check every item.
     rewording missed a case (compact windows, the iPhone, a folded foldable);
     it now reads the same everywhere: "beside every screen over about 900 pt,
     a sheet away from about 600 to 900 pt, and a tab in a compact window
-    (every iPhone, a folded foldable, Slide Over)".
+    (every iPhone, a folded foldable, Slide Over)". An iPhone is always
+    compact, in either orientation, the one exception to "the window's width,
+    never the device" (round 5: the table had said only the smaller iPhones in
+    landscape, while the shell and the landscape board draw every iPhone with
+    its tab bar).

@@ -76,7 +76,7 @@ GLASS_BACKDROP = "accent"
 GLASS_TEXT = [("body", "ink"), ("text", "ink-2"), ("text", "lg-accent"), ("text", "lg-up"), ("presence", "lg-mask")]
 
 
-def blocks(css: str) -> list[tuple[str, str, bool]]:
+def blocks(css: str, name: str = "a stylesheet") -> list[tuple[str, str, bool]]:
     """Every rule in a stylesheet as (selector, body, top_level), in order: comments dropped, an @import or other
     statement before a selector dropped, and a rule inside @media or @supports marked not top-level. The one reader
     behind parse, ios_glass and strays, so what is measured and what is refused come from the same view."""
@@ -91,13 +91,13 @@ def blocks(css: str) -> list[tuple[str, str, bool]]:
         elif ch == "}":
             depth -= 1
             if not sels:
-                sys.exit("contrast: FAIL a '}' with no block to close: the stylesheet cannot be read, so nothing in it is measured")
+                sys.exit(f"contrast: FAIL a '}}' with no block to close in {name}: it cannot be read, so nothing in it is measured")
             head = sels.pop()
             if not head.startswith("@"):
                 out.append((head, css[start:i], depth == 0))
             start = i + 1
     if sels:
-        sys.exit(f"contrast: FAIL a block left open at the end ('{sels[-1]}'): a browser applies it, so it cannot be skipped")
+        sys.exit(f"contrast: FAIL a block left open at the end of {name} ('{sels[-1]}'): a browser applies it, so it cannot be skipped")
     return out
 
 
@@ -113,7 +113,7 @@ def measured(name: str) -> dict[str, tuple[int, dict[str, str]]]:
     p = DESIGN / "ds-v1" / name
     if not p.exists():
         sys.exit(f"contrast: FAIL docs/design/ds-v1/{name} is missing, so {'text on glass is' if name == 'ios.css' else 'nothing is'} measured")
-    rules, found = blocks(p.read_text()), {}
+    rules, found = blocks(p.read_text(), name), {}
     prefix = "mp" if name == "tokens.css" else "lg"
     for theme, sel in MEASURED[name].items():
         want = {" ".join(x.split()) for x in sel.split(",")}  # a selector list matches in any order
@@ -170,7 +170,13 @@ def ios_glass(theme: str) -> dict[str, str]:
     return vals
 
 
-_COLOUR = re.compile(r"#[0-9A-Fa-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(|var\(--(?:mp|lg)-", re.I)
+_NAMED = ("transparent currentcolor white black red green blue yellow orange purple pink brown grey gray silver gold navy "
+          "teal maroon olive lime aqua cyan magenta fuchsia coral crimson salmon tomato indigo violet beige ivory khaki "
+          "lavender plum orchid tan wheat linen snow azure mintcream honeydew seashell whitesmoke gainsboro lightgray "
+          "lightgrey darkgray darkgrey dimgray dimgrey slategray slategrey lightslategray darkslategray steelblue "
+          "royalblue midnightblue skyblue firebrick darkred darkgreen darkblue chartreuse turquoise sienna peru chocolate").split()
+_COLOUR = re.compile(r"#[0-9A-Fa-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(|var\(--(?:mp|lg)-|\b(?:"
+                     + "|".join(_NAMED) + r")\b(?![\w-])", re.I)
 
 
 def strays() -> list[str]:
@@ -186,8 +192,13 @@ def strays() -> list[str]:
         if not path.exists():
             continue
         keep = {idx for idx, _ in found.get(name, {}).values()}
-        for k, (sel, body, top) in enumerate(blocks(path.read_text())):
+        own = {"tokens.css": "mp", "ios.css": "lg"}.get(name)
+        for k, (sel, body, top) in enumerate(blocks(path.read_text(), name)):
             if k in keep:
+                # a measured block is read for its own prefix only: the other file's tokens set here would go unmeasured
+                for tok in re.findall(r"--((?:mp|lg)-[\w-]+)\s*:", body):
+                    if not tok.startswith(own + "-"):
+                        bad.append(f"--{tok} is set in {name} under '{sel}', a block measured only for --{own}-* tokens")
                 continue
             for tok, val in re.findall(r"--((?:mp|lg)-[\w-]+)\s*:\s*([^;]*)", body):
                 if tok in names or _COLOUR.search(val):
@@ -231,6 +242,9 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "stray-mp-in-ios": ("ds-v1/ios.css", r"\Z", "\n.t-dark .mp { --mp-ink-3: #3A4250; }\n", r"--mp-ink-3 is set in ios\.css"),
     "stray-brace": ("ds-v1/tokens.css", r"\Z", "\n.x { color: red; } }\n.t-dark { --mp-ink-3: #3A4250; }\n", r"no block to close"),
     "unclosed-block": ("ds-v1/tokens.css", r"\Z", "\n.t-dark { --mp-ink-3: #3A4250;\n", r"left open at the end"),
+    "stray-in-measured-ios": ("ds-v1/ios.css", r"(\.t-dark\.mp, \.t-dark \.mp \{\n)", r"\1  --mp-ink-3: #3A4250;\n", r"--mp-ink-3 .* measured only for --lg-"),
+    "stray-named-colour": ("ds-v1/tokens.css", r"\Z", "\n.t-dark .mp-card { --mp-glow: white; }\n", r"--mp-glow .* outside"),
+    "stray-in-motion": ("ds-v1/motion.css", r"\Z", "\n@media (prefers-reduced-motion: reduce) { .t-dark .mp { --mp-ink-3: #3A4250; } }\n", r"--mp-ink-3 is set in motion\.css"),
     "chart-4-dim": ("ds-v1/tokens.css", r"--mp-chart-4: #[0-9A-Fa-f]{6};", "--mp-chart-4: #E4C9A0;", r"t-light .* chart-4 on surface"),
     "chart-5-dim": ("ds-v1/tokens.css", r"--mp-chart-5: #[0-9A-Fa-f]{6};", "--mp-chart-5: #D9CBEF;", r"t-light .* chart-5 on surface"),
     "pillar-for-dim": ("ds-v1/tokens.css", r"--mp-pillar-for: #[0-9A-Fa-f]{6};", "--mp-pillar-for: #C9D6F5;", r"t-light .* pillar-for on surface"),

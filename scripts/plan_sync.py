@@ -353,10 +353,13 @@ def agent_tools() -> set[str]:
 def tool_errors(text: str, tools: set[str]) -> list[str]:
     """Each tool a board's run or Activity row names that ARCHITECTURE 8 does not define (MA-161 review, rounds 3 and
     4: read_file, read_image and render_chart survived from the Telegram era beside extract_document and chart_series)."""
-    found = set()
-    for ctx in re.findall(r"tools:\s*(\[\[.*?\]\]|'[^']*')|<span>Tools</span><span>([^<]*)", text, re.S):
+    found = set(re.findall(r"\b(?:" + "|".join(_RETIRED_TOOLS) + r")\b", text))  # retired names, refused anywhere
+    for ctx in re.findall(r"tools\w*:\s*(\[\[.*?\]\]|'[^']*')|<span>Tools</span><span>([^<]*)", text, re.S):
         found |= set(re.findall(r"\b[a-z]+(?:_[a-z]+)+\b", " ".join(ctx)))
     return sorted(found - tools)
+
+
+_RETIRED_TOOLS = ("read_file", "read_image", "render_chart")  # Telegram-era names, never the app's
 
 
 _MOTION_NEEDS = {"label": "mp-chartlbl", "dot": "mp-chartdot"}
@@ -379,11 +382,15 @@ def motion_errors(text: str) -> list[str]:
     if "motion.js" not in text:
         return sorted(set(bad))
     ends = {"mp-chartlbl": "translate(-50%,-100%)", "mp-chartdot": "translate(-50%,-50%)"}
-    carried = {}
+    carried, static, templated = {}, set(), set()
     for m in re.finditer(r"<[a-z][\w-]*\b[^>]*>", text):
         cls = re.search(r"""\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""", m.group(0))
-        names = [n for n in re.sub(r"\{\{.*?\}\}", " ", (cls.group(1) or cls.group(2) or cls.group(3) or "") if cls else "").split()]
+        raw = (cls.group(1) or cls.group(2) or cls.group(3) or "") if cls else ""
+        names = [n for n in re.sub(r"\{\{.*?\}\}", " ", raw).split()]
+        static |= set(names)
         for base in ends:
+            if base in names and "{{" in raw:
+                templated.add(base)  # a class given by the template (Browser's {{ m.pos }}) cannot be read here
             if base in names:
                 for n in names:
                     if n != base:
@@ -401,6 +408,8 @@ def motion_errors(text: str) -> list[str]:
             last = part.strip().split()[-1] if part.strip() else ""
             classes = set(re.findall(r"\.([\w-]+)", last))
             hit = [b for b in ends if b in part] + [carried[c] for c in classes if c in carried]
+            if not hit and templated and re.fullmatch(r"(?:\.[\w-]+)+", part.strip()) and not classes & static:
+                hit = sorted(templated)  # a class-only rule for a class no element carries in the markup: the template's
             for base in hit:
                 if val != ends[base]:
                     bad.append(f"its own transform on '{part.strip()}', which reaches a .{base} (add !important to that transform)")
@@ -585,6 +594,7 @@ def start(trace: dict, key: str) -> int:
 TOOL_CASES = [
     ("tools: [['get_portfolio', '140 ms'], ['chart_series', '80 ms']]", True), ("tools: 'extract_document, propose_change'", True),
     ("tools: [['render_chart', '80 ms']]", False), ("<span>Tools</span><span>read_image, propose_change</span>", False),
+    ("toolsW: 'get_signals, render_chart'", False), ("line: 'Sonnet · 2 calls · read_image'", False),
 ]
 
 # Motion roles the check must accept and refuse (MA-161 review, round 2, e3).
@@ -603,6 +613,9 @@ MOTION_CASES = [
     ('<script src="motion.js"></script><span class="mp-chartdot" style="transform: scale(2)">', False),
     ('<script src="motion.js"></script><style>.mp-chartlbl { transform: translate(-50%, -100%); }</style>', True),
     ('<script src="motion.js"></script><span class="mp-chartlbl lbl-h {{ l.cls }}">', True),
+    ('<script src="motion.js"></script><style>.al { transform: translate(-100%, -100%); }</style><span class="mp-chartlbl {{ m.pos }}">', False),
+    ('<script src="motion.js"></script><style>.al { transform: translate(-100%, -100%) !important; }</style><span class="mp-chartlbl {{ m.pos }}">', True),
+    ('<style>.mp-chartlbl.al { transform: translate(-100%, -100%); }</style>', True),  # no motion.js: nothing animates, so nothing moves it
 ]
 
 # Board dates the check must accept and refuse (MA-161 review, round 1: e3's timeline and lesson 10).
@@ -719,9 +732,17 @@ def selftest(trace: dict) -> int:
             m = json.loads((root / "docs/design/claude-design.json").read_text())
             rec = m["ios"]["files"][Path(board).name]
             rec["bytes"], rec["sha256"] = target.stat().st_size, sha256(target)
+            tools_board = root / "docs/design/ios-v1/iPhone audit and activity.dc.html"
+            if tools_board.exists() and "chart_series" in tools_board.read_text():
+                tools_board.write_text(tools_board.read_text().replace("chart_series", "render_chart", 1))  # a tool §8 lacks
+                rec = m["ios"]["files"][tools_board.name]
+                rec["bytes"], rec["sha256"] = tools_board.stat().st_size, sha256(tools_board)
+            else:
+                bad += 1
+                print("FAIL: the mutated-board selftest needs 'chart_series' in iPhone audit and activity.dc.html")
             (root / "docs/design/claude-design.json").write_text(json.dumps(m, indent=2) + "\n")
             r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
-            for what in ("board date", "board motion"):
+            for what in ("board date", "board motion", "board tool"):
                 if r.returncode == 0 or what not in r.stdout:
                     bad += 1
                     print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")

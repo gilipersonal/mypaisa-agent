@@ -104,7 +104,7 @@ width**, so it fits every iPhone, every iPad in every multitasking size, and a t
 
 | Width | Where | Layout |
 | --- | --- | --- |
-| Compact (under about 600 pt) | iPhone in portrait; iPhone landscape on the smaller models; iPad Slide Over and one-third Split View; a foldable when folded | Tab bar at the bottom (Liquid Glass); one column; sheets for detail; the chat is a tab |
+| Compact (under about 600 pt, and every iPhone) | Every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable when folded | Tab bar at the bottom (Liquid Glass); one column; sheets for detail; the chat is a tab |
 | Regular, narrow (about 600 to 900 pt) | iPad portrait; two-thirds Split View; a foldable open; a Stage Manager window | Sidebar that collapses to a tab bar at the top (`sidebarAdaptable`); the chat as a sheet, beside the screen only over about 900 pt |
 | Regular, wide (over about 900 pt) | iPad landscape; a large Stage Manager window | Sidebar, the screen, and the chat as a trailing column beside every screen (an inspector), so a member reads Home and talks to MyPaisa at once |
 
@@ -152,7 +152,7 @@ Every option has the same screens; they differ in what the app opens to and how 
 | Tabs (iPhone) | Chat · Home · Activity · You (Search as the system's separate search tab) | Home · Holdings · Activity · You, with the composer as the tab bar's bottom accessory on every tab | None: a glass rail of pinned live cards (Portfolio, Today, Alerts, Spend) above the conversation |
 | The dashboard | Its own tab; pulling the strip down opens it as a sheet over the chat | The app itself | Each pinned card opens its screen as a sheet |
 | The chat | Its own tab; every screen's Ask opens it about that screen | The bottom accessory expands to the full chat, carrying the screen's context ("Ask about Balanced") | Always on screen |
-| iPad and an open foldable | Sidebar · the screen · the chat beside it over about 900 pt, a sheet below | Sidebar · the screen · the chat beside it | The conversation with the pinned cards as a column beside it |
+| iPad and an open foldable | Sidebar · the screen · the chat beside it over about 900 pt, a sheet away from about 600 to 900 pt, a tab in a compact window (every iPhone, a folded foldable, Slide Over) | Sidebar · the screen · the chat beside it | The conversation with the pinned cards as a column beside it |
 | Why | Arun asked for "a cool mobile chatbot ... and even see the dashboard": the chat is the front door and the figures are one swipe away; every change starts where it is made | The most native iOS 26 pattern (Music's mini player); best when the household mostly reads | The purest chatbot; Audit, Activity and the Admin center become sheets, which is cramped for the owner |
 
 The recommendation is **1a**. The flow boards are drawn in 1a's shell; every screen on them is shared by the

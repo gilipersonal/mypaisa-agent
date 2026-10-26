@@ -70,7 +70,8 @@ through `/design-first`.
   row), a UI row with no board (`todo` plus a note saying which design round
   will draw it), a board date with a wrong weekday or a board motion role on
   the wrong element (`fade` in place of `label` or `dot`, or `!important` on a
-  chart label variant's own transform; fix the board in
+  chart label's or dot's own transform), or a tool ARCHITECTURE §8 does not
+  define (the right name, or the tool added to §8 first); fix the board in
   Claude Design, through `/design-first`, then copy it again; never edit the
   mirrored copy, whose bytes and sha256 must match Claude Design's).
 

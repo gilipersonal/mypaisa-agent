@@ -58,7 +58,7 @@ Uncommitted files that belong to another story are left alone and named.
 Ask once, in words, naming everything:
 
 > MA-<n> is ready: PR #<n> `[MA-<n>] ...`, checks green (<names>). Review it
-> first (lanes: <the lanes the PR touches>; up to five rounds), then merge,
+> first (lanes: <the lanes the PR touches>; one round, each later round asked first), then merge,
 > or merge it into main now? (MA-<n> goes to Done after the merge.)
 
 A bare "yes" means review first; "merge it" or "merge now" means merge with no
@@ -79,7 +79,8 @@ files, the story's acceptance criteria, the repo's rules and
 covers everything, later rounds the delta since `reviewed_sha` in
 `review/MA-<n>/state.json`. Merge their findings. Fix the blocking ones on
 the branch, add each (and any owner decision the review must keep) to `review/MA-<n>/fixed.json` with a check, push, wait
-for the checks, and run the next round; at most five rounds, then stop and
+for the checks, then report the round and ask before the next one ("Run round N on round N-1's fixes, then merge on a
+clean round, or merge now?"; each round needs its own yes, `ship-autopilot.md`); at most five rounds, then stop and
 ask Arun whether to go on, listing what is left and what each fix costs. The question names the merge
 ("Fix them, run round 6, then merge on a clean round?"), so his yes covers both (`ship-autopilot.md`);
 a yes to a question that does not name the merge is not a yes to merge. A clean round goes straight

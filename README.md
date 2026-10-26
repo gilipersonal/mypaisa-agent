@@ -376,8 +376,9 @@ python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.p
 ```
 
 `plan_sync.py` keeps the plan, the trace, Jira's keys and the Claude Design mirror in step (MA-155), and refuses a
-board date with a wrong weekday, a `label` or `dot` motion role on another element, and a chart label variant's own
-transform that the arrival would override. `contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css`
+board date with a wrong weekday, a `label` or `dot` motion role on another element, a chart label's or dot's own
+transform without `!important` (which the arrival would override), and a tool a board names that ARCHITECTURE §8 does
+not define. `contrast_check.py` measures every colour pair in `docs/design/ds-v1/tokens.css`
 and the glass fills, in light and dark, at full brightness and with the screen at 25%, so text and controls stay
 clear on a dimmed phone (MA-181); it fails closed, and fails when a board project's copy differs from DS v1's. Each
 `selftest` breaks copies on purpose and expects the refusal.

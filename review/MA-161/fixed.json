@@ -838,9 +838,11 @@
         "README.md",
         "docs/design/README.md",
         "docs/design/reviews/MA-161/decision.md",
-        "docs/design/agent-journey.html"
+        "docs/design/agent-journey.html",
+        "docs/trace.json",
+        "docs/TRACE.md"
       ],
-      "pattern": "a sheet (away )?in a narrower|narrower iPad and foldable|tab on (the )?iPhone, beside|sheet away below|sheet in a narrower one",
+      "pattern": "a sheet (away )?in a narrower|narrower iPad and foldable|tab on (the )?iPhone, beside|sheet away below|sheet in a narrower one|narrower window it opens as a sheet|Narrower:[^<]*iPhone|a sheet below",
       "present": false
     }
   },
@@ -895,7 +897,7 @@
     "finding": "Every tool a board's run or Activity row names is one ARCHITECTURE 8 defines (round 4: render_chart too; check refuses any other)",
     "check": {
       "type": "cmd",
-      "run": "python3 scripts/plan_sync.py selftest | grep -q 'tool names and one mutated board, 0 wrong' && ! python3 scripts/plan_sync.py check | grep -q '^DRIFT: board tool'"
+      "run": "python3 scripts/plan_sync.py selftest | grep -q 'tool names and one mutated board, 0 wrong' && ! python3 scripts/plan_sync.py check | grep -q '^DRIFT: board tool' && ! grep -Eq '\\b(read_file|read_image|render_chart)\\b' docs/design/ios-v1/*.dc.html \"docs/design/ds-v1/iOS kit.dc.html\""
     }
   },
   {
@@ -950,7 +952,7 @@
     "finding": "A rule outside the measured blocks that sets a new --mp-* or --lg-* colour, or an --mp-* token in ios.css, is refused",
     "check": {
       "type": "cmd",
-      "run": "python3 scripts/contrast_check.py --selftest stray-new-token stray-mp-in-ios"
+      "run": "python3 scripts/contrast_check.py --selftest stray-new-token stray-mp-in-ios stray-in-measured-ios stray-named-colour stray-in-motion"
     }
   },
   {
@@ -968,7 +970,7 @@
     "finding": "Any transform that reaches a chart label or dot on a motion board is refused unless !important: reordered, descendant, pseudo, a carried class, inline",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Browser.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al.mp-chartlbl { transform: translate(-100%, -100%);')) and p.motion_errors(t.replace(' !important','')) else 1)\" && python3 scripts/plan_sync.py selftest | grep -q '18 motion roles'"
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Browser.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al.mp-chartlbl { transform: translate(-100%, -100%);')) and p.motion_errors(t.replace(' !important','')) else 1)\" && python3 scripts/plan_sync.py selftest | grep -Eq 'motion roles.*0 wrong'"
     }
   },
   {
@@ -978,6 +980,141 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; sys.exit(0 if p.date_errors(\\\"<script>for(i=0;i<n;i++){s='Thu 23 Oct'} if(a>b){}</script>\\\") else 1)\""
+    }
+  },
+  {
+    "id": "r5-c2",
+    "round": 5,
+    "finding": "An iPhone is always compact, in either orientation, in 9.1's table and its two copies, as the shell and the landscape board draw it",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "docs/design/reviews/MA-161/decision.md",
+        "docs/design/README.md"
+      ],
+      "pattern": "smaller iPhones in landscape|landscape on the smaller models|in landscape on the smaller models",
+      "present": false
+    }
+  },
+  {
+    "id": "r5-c3",
+    "round": 5,
+    "finding": "README and plan-sync name every board fault check refuses: dates, motion roles, label and dot transforms, tools",
+    "check": {
+      "type": "grep",
+      "files": [
+        "README.md",
+        ".claude/rules/plan-sync.md"
+      ],
+      "pattern": "ARCHITECTURE §8"
+    }
+  },
+  {
+    "id": "o6",
+    "round": 0,
+    "finding": "Owner decision (Arun, 25 Oct 2026): each review round needs its own yes; the question names the round and the merge",
+    "check": {
+      "type": "grep",
+      "files": [
+        ".claude/rules/independent-review.md",
+        ".claude/rules/ship-autopilot.md",
+        ".claude/skills/autoship/SKILL.md"
+      ],
+      "pattern": "each round needs its own yes|Each round needs its own yes|each later round asked first"
+    }
+  },
+  {
+    "id": "r5-d3",
+    "round": 5,
+    "finding": "check itself refuses a board tool §8 lacks: the mutated-board selftest plants render_chart and fails with the tool loop removed",
+    "check": {
+      "type": "cmd",
+      "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in tool_errors\\(path\\.read_text\\(\\), ctx\\.setdefault\\(\"tools\", agent_tools\\(\\)\\)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong tool'; r=$?; rm -rf $T; exit $r"
+    }
+  },
+  {
+    "id": "r5-d4",
+    "round": 5,
+    "finding": "Every record that names a compact window uses the one phrase: a tab in a compact window (every iPhone, a folded foldable, Slide Over)",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "PLAN.md",
+        "README.md",
+        "docs/design/agent-journey.html",
+        "docs/design/reviews/MA-161/decision.md",
+        "docs/trace.json",
+        "docs/TRACE.md"
+      ],
+      "pattern": "compact window(?! \\(every iPhone, a folded foldable, Slide Over\\))",
+      "present": false
+    }
+  },
+  {
+    "id": "r5-d5",
+    "round": 5,
+    "finding": "A class-only transform rule that a template-given label class could reach is refused unless !important",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Browser.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al { transform: translate(-100%, -100%);')) else 1)\""
+    }
+  },
+  {
+    "id": "r5-b1",
+    "round": 5,
+    "finding": "MA-163's summary carries the whole width phrase, compact window included",
+    "check": {
+      "type": "trace",
+      "key": "MA-163",
+      "field": "summary",
+      "contains": "a tab in a compact window (every iPhone, a folded foldable, Slide Over)"
+    }
+  },
+  {
+    "id": "r5-b2",
+    "round": 5,
+    "finding": "The web Admin center's spend and cycle are listed to redraw on every story built from them, or drawn",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; s='the web Admin center boards (Admin center 2 and 3) redrawn'; sys.exit(0 if all(any(x.startswith(s) for x in t[k].get('undrawn',[])) or ('Drawn: '+s) in t[k].get('notes','') for k in ('MA-184','MA-116','MA-137')) else 1)\""
+    }
+  },
+  {
+    "id": "r5-b7",
+    "round": 5,
+    "finding": "MA-102's Open lists both questions blocking In Review; MA-109 accepts an invite only from the app",
+    "check": {
+      "type": "manual",
+      "what": "Jira MA-102 (Open: two questions, blocking In Review) and MA-109 (invite test with the app's audiences only)"
+    }
+  },
+  {
+    "id": "r5-a1",
+    "round": 5,
+    "finding": "A token with the other file's prefix inside a measured block, or a named colour outside one, is refused",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest stray-in-measured-ios stray-named-colour"
+    }
+  },
+  {
+    "id": "r5-a2",
+    "round": 5,
+    "finding": "A stray colour token in motion.css is refused",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py --selftest stray-in-motion"
+    }
+  },
+  {
+    "id": "r5-a6",
+    "round": 5,
+    "finding": "The tool check reads every tools field (toolsW too) and refuses the retired names anywhere on a board",
+    "check": {
+      "type": "cmd",
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; T=p.agent_tools(); sys.exit(0 if p.tool_errors(\\\"toolsW: 'get_signals, render_chart'\\\", T) and p.tool_errors(\\\"line: 'Sonnet · read_image'\\\", T) else 1)\""
     }
   }
 ]

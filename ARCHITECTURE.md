@@ -307,7 +307,7 @@ off, and a user is created only when someone joins through an invite.
 | The buttons | The app shows Apple's and Google's own buttons, Apple's first, and nothing else. Sign in with Apple runs natively (`ASAuthorizationAppleIDProvider`, no name or email asked for); Google runs through Google's iOS SDK in the system's web sheet, with PKCE. |
 | The token | Before either sheet opens, the app asks the api for a one-time nonce (`/auth/nonce`); Apple's identity token (carrying the nonce's SHA-256) or Google's ID token (carrying the nonce) comes back. |
 | The exchange | The app posts the token to `/auth/apple` or `/auth/google`. The api finds the member that provider account (`sub`) is linked to and starts Cognito's custom auth for them; the verify trigger checks the token against Apple's or Google's published keys: issuer, audience (the app's bundle id for Apple, the environment's Google iOS client id for Google), expiry, an issue time under five minutes, the nonce, and no replay. Cognito then issues that member's tokens. |
-| An unknown account | An Apple or Google account linked to no member is refused, whatever its address, unless the request carries a valid invite token, which creates the member (Joining, below). A paused member gets one line and nothing else (MA-102). |
+| An unknown account | An Apple or Google account linked to no member is refused, whatever its address, unless the request comes from the app with a valid invite token, which creates the member (Joining, below; a browser never joins). A paused member gets one line and nothing else (MA-102). |
 | In a browser | The web app (§9.4) shows the same two buttons, through Sign in with Apple's JS (the environment's Services ID as the audience) and Google Identity Services (the environment's Google web client id), and a passkey. The same `/auth/apple` and `/auth/google` exchange runs; no client secret is used. The api then sets an `HttpOnly`, `Secure`, `SameSite=Strict` session cookie for its own host, with five-minute access tokens behind it that page scripts never see. |
 | A passkey | A member adds one from You in the app (MA-77). In the app it answers the second check (below), never the sign-in screen, which shows Apple and Google only; in a browser it signs in to the web app. To sign in with it, the page asks `/auth/passkey/options` for a one-time WebAuthn challenge, the device signs it under Face ID or Touch ID, and the assertion goes to `/auth/passkey`; the api starts Cognito's custom auth for the member whose credential it is, and the verify trigger checks the signature against that credential's stored public key, the challenge, the origin and the relying-party id. The relying-party id is the environment's console domain (`console.mypaisapp.com`, `console-dev.mypaisapp.com`): it is the web app's origin and serves the iOS app's association file, whose `webcredentials` entry lets one passkey work in both. MA-109 confirms it before anyone registers a passkey; changing it later strands every passkey made. In a browser the api then sets the same session cookie. |
 | A new device | Signing in on a device or a browser the member has not used before sends a push to their other devices and a card in their chat: "New sign-in to MyPaisa: an iPad, with Google, today at 19:41. Was this you?", with Yes, it was me and No, sign it out (which signs that device out). Until the member answers, Members and devices shows it as not confirmed, and the owner's chat gets one line with Open Admin center (MA-102, MA-76). |
@@ -845,11 +845,12 @@ foldable or two-panel device (Arun's "Duo"), folded or open:
 
 | Width | Where | Layout |
 | --- | --- | --- |
-| Compact, under about 600 pt | iPhone in portrait; the smaller iPhones in landscape; Slide Over and one-third Split View; a foldable when folded | The tab bar; one column; sheets for detail; the chat is a tab |
+| Compact: under about 600 pt, and every iPhone | Every iPhone, in portrait or landscape; Slide Over and one-third Split View; a foldable when folded | The tab bar; one column; sheets for detail; the chat is a tab |
 | Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet over the screen, from its Ask or ⌘K |
 | Regular, over about 900 pt | iPad in landscape; a large Stage Manager window | The sidebar, the screen, and the chat beside every screen as a trailing column |
 
-The rule is the window's width, never the device: widen past about 900 pt and
+The rule is the window's width, never the device, with one exception: an iPhone is always compact, its tab bar in
+either orientation, as option 1a draws it (`iPhone · Landscape`). Widen past about 900 pt and
 the sheet becomes the trailing column, narrow below it and the column becomes
 the sheet, with matched geometry and no reload (the boards of
 `iPad and foldable.dc.html`). A fold, a rotation or a resize keeps the conversation, the scroll position and
@@ -970,8 +971,7 @@ The screens, all read-only:
   Me / member switch from §4.5. A holding's screen has Why?, What if?, Ask about
   it, and Update value, which opens the chat with the guided flow already
   started (MA-80). On an iPad or a foldable the chat sits beside them over
-  about 900 pt, is a sheet away from about 600 to 900 pt, and is a tab in a
-  compact window (§9.1).
+  about 900 pt, is a sheet away from about 600 to 900 pt, and is a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
   and date; each row shows before and after and links to the run that made it,
   and a row made from a file opens that file in Quick Look; **Files** lists

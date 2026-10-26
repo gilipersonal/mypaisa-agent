@@ -50,8 +50,8 @@ folded or open, fit with no special case:
 
 | | Compact | Regular, narrow | Regular, wide |
 | --- | --- | --- | --- |
-| Width | under about 600 pt | about 600 to 900 pt | over about 900 pt |
-| Where | iPhone in portrait, and in landscape on the smaller models; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | iPad in landscape; a large Stage Manager window |
+| Width | under about 600 pt, and every iPhone | about 600 to 900 pt | over about 900 pt |
+| Where | every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | iPad in landscape; a large Stage Manager window |
 | Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the chat as a sheet (beside the screen only over about 900 pt) | the sidebar, the screen, and the chat as a column beside every screen |
 | Boards | the `iPhone` files | `iPad and foldable` | `iPad and foldable` |
 

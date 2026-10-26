@@ -411,10 +411,9 @@ sign out everywhere), CORS from another origin, the service worker caching no
 figure, and Playwright screenshots at phone and laptop widths in both themes.
 
 **Exit:** you open Home on your iPhone, on your iPad and on a foldable and see
-the same numbers as the chat, with the chat beside them over about 900 pt (the
-iPad in landscape), a sheet away from about 600 to 900 pt (the iPad in portrait,
-the foldable open), and a tab in a compact window (the iPhone, the foldable
-folded); you open
+the same numbers as the chat, with the chat beside every screen over about 900
+pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over);
+you open
 `console.mypaisapp.com` on your laptop, sign in with Apple, then Google, then a
 passkey, install it, and see the same numbers again; the Audit screen
 shows the change you just made in the chat, with who and when; the Activity

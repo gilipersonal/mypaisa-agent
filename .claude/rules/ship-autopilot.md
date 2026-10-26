@@ -41,7 +41,11 @@ this repo on any change just before you merge the PR. just for this Repo".
      `scripts/review_regress.py` runs them before each round, and reviewers get
      the list and must not undo any of it. Rounds and the reviewed sha are in
      `review/MA-<n>/state.json`.
-  5. **At most five rounds;** if blocking findings remain after the fifth,
+  5. **Each round needs its own yes** (Arun, 25 Oct 2026: "ask me before the
+     reviews please"): after fixing a round, report it and ask "Run round N on
+     round N-1's fixes, then merge on a clean round, or merge now?"; his yes
+     covers that one round and the merge after it if it is clean.
+  6. **At most five rounds;** if blocking findings remain after the fifth,
      stop and ask Arun whether to go on, listing them and what each fix costs.
      The question names the merge ("Fix them, run round 6, then merge on a
      clean round?"), so his yes covers both, as the merge question's does.
@@ -109,7 +113,7 @@ PR, move the issue to In Review, wait for the checks. Then ask exactly once,
 naming the PR and its checks:
 
 > MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key, plan-sync). Review it
-> first (lanes: scripts, trace, docs, rules; up to five rounds), then merge,
+> first (lanes: scripts, trace, docs, rules; one round, each later round asked first), then merge,
 > or merge it into main now? (MA-7 goes to Done after the merge.)
 
 Either yes merges (after a clean review, for the first), closes the issue and
