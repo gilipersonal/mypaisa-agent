@@ -28,6 +28,7 @@
           .dv-oid { font: 600 12px ui-monospace, Menlo, monospace; padding: 3px 8px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
           .dv-oname { font: 700 22px/28px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
           .dv-rec { font: 600 12px/16px -apple-system, system-ui; color: #1D7A3E; background: #E2F2E7; border-radius: 999px; padding: 3px 10px; }
+          .dv-not { font: 600 12px/16px -apple-system, system-ui; color: #4E5462; background: rgba(0,0,0,.06); border-radius: 999px; padding: 3px 10px; }
           .dv-row { display: flex; gap: 52px; align-items: flex-start; flex-wrap: wrap; }
           .dv-col { display: flex; flex-direction: column; }
           .dv-next { margin: 34px 0 0; font: 13px/1.5 -apple-system, system-ui; color: rgba(0,0,0,.55); }
@@ -51,11 +52,11 @@
       </helmet>
       <section class="dv-turn" id="t1" data-screen-label="Shell options: intro">
         <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">The app's shell: three ways the chat and the dashboard meet</span></div>
-        <p class="dv-intro">MyPaisa as one iOS app (MA-161, MA-163). Every option has the same screens (the chat and its cards, Home, a holding, Audit, Activity, the Admin center, You); they differ in what the app opens to and how the chat and the figures meet. Warm ledger (MA-101) is the content; Liquid Glass is only the layer of controls above it: the tab bar, the sidebar, toolbar buttons, the composer and its shortcut chips. iPhone in light and dark, then iPad in landscape. The flow boards in this project are drawn in <a class="dv-oid" href="#1a">1a</a>'s shell. Illustrative figures and names.</p>
+        <p class="dv-intro">MyPaisa as one iOS app (MA-161, MA-163). Every option has the same screens (the chat and its cards, Home, a holding, Audit, Activity, the Admin center, You); they differ in what the app opens to and how the chat and the figures meet. Warm ledger (MA-101) is the content; Liquid Glass is only the layer of controls above it: the tab bar, the sidebar, toolbar buttons, the composer and its shortcut chips. iPhone in light and dark, then iPad in landscape. The flow boards in this project are drawn in <a class="dv-oid" href="#1a">1a</a>'s shell, which Arun picked on 26 Oct 2026; <a class="dv-oid" href="#1b">1b</a> and <a class="dv-oid" href="#1c">1c</a> stay as the record. Illustrative figures and names.</p>
         <div class="dv-opts">
 
           <div class="dv-opt" id="1a">
-            <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span class="dv-oname">Chat first</span><span class="dv-rec">Recommended</span></div>
+            <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span class="dv-oname">Chat first</span><span class="dv-rec">Picked 26 Oct 2026</span></div>
             <div class="dv-row">
               <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
                 <div class="dv-col" data-screen-label="1a Chat first · iPhone · {{ t.label }}">
@@ -117,7 +118,7 @@
                 <p><b>Tabs: Chat · Home · Activity · You,</b> with Search as iOS 26's separate search tab. As the conversation scrolls the tab bar shrinks to its selected tab, so the composer has the bottom to itself.</p>
                 <p><b>The composer is glass;</b> the shortcut chips above it change with the conversation (Portfolio, Today, Add a holding, Log money). The <b>+</b> opens the camera, a document scan, Photos and Files.</p>
                 <p><b>Cards are content,</b> solid Warm ledger with their own buttons. Confirm is a filled content button, never glass.</p>
-                <p><b>Why recommended:</b> Arun asked for "a cool mobile chatbot ... and even see the dashboard". Every change starts where it is made, in the chat, and the figures are one swipe away.</p>
+                <p><b>Picked by Arun, 26 Oct 2026:</b> Arun asked for "a cool mobile chatbot ... and even see the dashboard". Every change starts where it is made, in the chat, and the figures are one swipe away.</p>
                 <p><b>Motion.</b> Messages arrive in turn, the chips stagger in and the total rolls up. On iPad the chat column slides in from the trailing edge when the window widens past 900 pt, and a rotation morphs the layout with matched geometry, no reload.</p>
               </div>
             </div>
@@ -170,7 +171,7 @@
           </div>
 
           <div class="dv-opt" id="1b">
-            <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span class="dv-oname">Ask from anywhere</span></div>
+            <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span class="dv-oname">Ask from anywhere</span><span class="dv-not">Not picked: kept as the record</span></div>
             <div class="dv-row">
               <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
                 <div class="dv-col" data-screen-label="1b Ask from anywhere · iPhone · {{ t.label }}">
@@ -254,7 +255,7 @@
           </div>
 
           <div class="dv-opt" id="1c">
-            <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span class="dv-oname">One timeline</span></div>
+            <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span class="dv-oname">One timeline</span><span class="dv-not">Not picked: kept as the record</span></div>
             <div class="dv-row">
               <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
                 <div class="dv-col" data-screen-label="1c One timeline · iPhone · {{ t.label }}">

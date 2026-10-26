@@ -145,7 +145,7 @@ Liquid Glass, used the way the HIG says:
 
 Every option has the same screens; they differ in what the app opens to and how the chat and the dashboard meet.
 
-| | 1a Chat first (recommended) | 1b Ask from anywhere | 1c One timeline |
+| | 1a Chat first (picked, 26 Oct 2026) | 1b Ask from anywhere | 1c One timeline |
 | --- | --- | --- | --- |
 | Opens to | The chat, with the household's total and day's move in a glass strip at the top | Home, the dashboard | The chat; there is nothing else |
 | Tabs (iPhone) | Chat · Home · Activity · You (Search as the system's separate search tab) | Home · Holdings · Activity · You, with the composer as the tab bar's bottom accessory on every tab | None: a glass rail of pinned live cards (Portfolio, Today, Alerts, Spend) above the conversation |
@@ -250,7 +250,6 @@ it holds no data.
 
 ## Open questions for Arun
 
-- The shell: 1a, 1b or 1c (the pick for MA-163).
 - Joining the Apple Developer Program at $99 a year (MA-162).
 - "Duo": read as a foldable or two-panel Apple device; the layouts follow width, so any such device is covered.
   Say if it meant something else.
@@ -293,4 +292,7 @@ whether the first-run answers need a Confirm (MA-35), and where a member leaves 
 
 ## The pick
 
-Waiting for Arun.
+Arun picked **1a, Chat first**, on 26 Oct 2026, when asked for the pick with the PR (#36) up. 1b and 1c stay on
+`Shell options.dc.html` as the record, marked not picked. MA-163's design is `picked` with 1a's boards and the iPad
+and foldable shell boards. The flow boards, drawn in 1a's shell, stay `planned`: each goes through its own
+story's options round when that story starts (`.claude/rules/plan-sync.md` rule 3).

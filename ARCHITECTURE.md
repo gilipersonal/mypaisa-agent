@@ -785,14 +785,13 @@ the MyPaisa iOS v1 project on the iOS kit of MyPaisa DS v1
 
 ### 9.1 The shell, the chat and the size classes
 
-**The shell** (MA-163) is Arun's pick from three options drawn on
-`Shell options.dc.html`: 1a **Chat first** (recommended: the app opens to the
-chat, the household's total rides in a glass strip at the top, and pulling it
-down opens Home), 1b **Ask from anywhere** (the app opens to Home, and the
-composer rides on every tab as the tab bar's bottom accessory, carrying the
-screen's context) and 1c **One timeline** (the chat is the app, under a rail of
-pinned live cards). The screens are the same in all three; the pick decides the
-frame. This section describes 1a.
+**The shell** (MA-163) is 1a, **Chat first**, Arun's pick on 26 Oct 2026 from
+three options drawn on `Shell options.dc.html`: the app opens to the chat, the
+household's total rides in a glass strip at the top, and pulling it down opens
+Home. The other two stay on the board as the record: 1b **Ask from anywhere**
+(the app opens to Home, and the composer rides on every tab as the tab bar's
+bottom accessory) and 1c **One timeline** (the chat is the app, under a rail of
+pinned live cards).
 
 - **Tabs on iPhone:** Chat · Home · Activity · You, with Search as iOS 26's
   separate search tab (MA-180); the owner opens the Admin center from You. The
@@ -1437,7 +1436,6 @@ a daily digest instead.
 - Whether Twelve Data's free tier serves LSE and Xetra daily closes (if so, EODHD is not needed); answered by the source-comparison report in the first weeks of phase 2, since it sits second in the London chain from day one.
 - UK and EU macro basket constituents (UCITS tickers) and their weights.
 - A Google iOS client per environment, created in the Google Cloud Console for the app's bundle id (an iOS client has no secret); the consent screen needs only the basic profile and email scopes, so no Google verification review applies. Its id goes into that environment's SSM path after the apply that made the parameter (MA-143, MA-109).
-- The shell: 1a Chat first (recommended), 1b Ask from anywhere or 1c One timeline (MA-163; `Shell options.dc.html`).
 - The Apple Developer Program at $99 a year (MA-162): needed for Sign in with Apple, push and TestFlight.
 - "Duo" in Arun's request is read as a foldable or two-panel Apple device; the layouts follow width, so any such device is covered (§9.1).
 - The passkey relying-party id for each environment, fixed before anyone registers a passkey (MA-109).

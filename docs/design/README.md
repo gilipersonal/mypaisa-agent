@@ -55,9 +55,9 @@ folded or open, fit with no special case:
 | Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the screen and the chat side by side when the window is wide enough, otherwise the chat as a sheet | the sidebar, the screen, and the chat as a column beside every screen |
 | Boards | the `iPhone` files | `iPad and foldable` | `iPad and foldable` |
 
-**The shell awaits Arun's pick.** `Shell options` draws three, each on
-iPhone and iPad: 1a Chat first (recommended), 1b Ask from anywhere and 1c
-One timeline. They share every screen and differ in what the app opens to
+**The shell is 1a, Chat first** (Arun's pick, 26 Oct 2026, MA-163).
+`Shell options` draws the three that were offered, each on iPhone and iPad:
+1a Chat first, 1b Ask from anywhere and 1c One timeline. They share every screen and differ in what the app opens to
 and how the chat and the dashboard meet. The flow boards are drawn in 1a's
 shell; a different pick changes the frame around the screens, not the
 screens (MA-163).

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "o1",
+    "round": 0,
+    "finding": "Owner decision (Arun, 25 Oct 2026): the chat moves from Telegram to the iOS app; no bot, webhook, BotFather or Telegram sign-in is planned",
+    "check": {
+      "type": "grep",
+      "files": [
+        "ARCHITECTURE.md",
+        "PLAN.md",
+        "TECH_STACK.md",
+        "README.md"
+      ],
+      "pattern": "BotFather|/telegram/webhook|/auth/telegram|initData|Login Widget",
+      "present": false
+    }
+  },
+  {
+    "id": "o2",
+    "round": 0,
+    "finding": "Owner decision (Arun, 25 Oct 2026): the web app stays as a read-only PWA for the dashboard and the Admin center",
+    "check": {
+      "type": "grep",
+      "file": "ARCHITECTURE.md",
+      "pattern": "### 9\\.4 The web app: the dashboard and the Admin center in a browser",
+      "present": true
+    }
+  },
+  {
+    "id": "o3",
+    "round": 0,
+    "finding": "Owner decision (Arun, 26 Oct 2026): the shell is 1a, Chat first",
+    "check": {
+      "type": "trace",
+      "key": "MA-163",
+      "field": "design",
+      "value": "picked"
+    }
+  },
+  {
+    "id": "o4",
+    "round": 0,
+    "finding": "Owner decision (Arun, 25 Oct 2026): every text and control is legible in light and dark at 25% brightness; the tuned palette passes the gate",
+    "check": {
+      "type": "cmd",
+      "run": "python3 scripts/contrast_check.py"
+    }
+  },
+  {
+    "id": "o5",
+    "round": 0,
+    "finding": "Owner decision (Arun, 25 Oct 2026): the read-only dashboard shows on the iPad and the foldable too",
+    "check": {
+      "type": "trace",
+      "key": "MA-78",
+      "field": "boards",
+      "contains": "iPad · Home with the chat beside it"
+    }
+  }
+]
