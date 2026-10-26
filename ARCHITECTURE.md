@@ -56,7 +56,7 @@ discipline, the toolbelt's card shapes and portfolio review, and the layman's
 front end both of them lack. v1 (prices, briefs, alerts, chat, news, calls on
 Lambda) stands underneath; sections that have not changed are kept short.
 
-The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161; the Lucid views redrawn for v4 on 26 Oct 2026, MA-225):
+The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161; the Lucid views redrawn for v4 on 26 Oct 2026, MA-225; the trace drawn as view 9 the same day, MA-236):
 
 - **The architecture, in Lucid**, on AWS 2024 shapes, one Lucid document per
   view. They are private to the account; share them from each document's
@@ -73,6 +73,7 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   | 6 The market agent and the learning loop | [open](https://lucid.app/lucidchart/6f1b4c75-353c-49e5-b6e7-29fd2c18d356/edit) | §19, §22 |
   | 7 The agent team, settings, caps and alerts | [open](https://lucid.app/lucidchart/3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4/edit) | §15.2, §20 |
   | Adding a record (sequence) | [open](https://lucid.app/lucidchart/b50d49fd-c941-44a0-b623-7d3e99b57fd8/edit) | §4.2, §4.10 |
+  | 9 One trace from the door to the model | [open](https://lucid.app/lucidchart/3692ebe8-3794-4ff5-9658-83a8da565dfb/edit) | §10 |
 
 - **The iOS app, in Claude Design** (MA-161): the screens in
   [MyPaisa iOS v1](https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8)
@@ -1611,6 +1612,10 @@ alarm is a row of trigger `alarm` and a release a row of trigger `deploy`, so
 Activity lists both beside the runs.
 
 ### 10.2 One trace, end to end
+
+![One trace from the door to the model, Lucid page 9](docs/design/lucid/09-observability.png)
+
+Page 9: the trace from the doors through API Gateway, the api, the queues, the agent, the model, the sender, the stream and push, the scheduled and daily runs, and where each signal is kept. [Open it in Lucid](https://lucid.app/lucidchart/3692ebe8-3794-4ff5-9658-83a8da565dfb/edit).
 
 A message is one trace from the finger to the push, and a scheduled job one
 trace from its tick to the last thing it sent. Nothing in the path is allowed

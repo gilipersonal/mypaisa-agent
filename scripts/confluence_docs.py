@@ -55,6 +55,7 @@ LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sect
     ("06-market-agent.png", "The market agent and the learning loop", "6f1b4c75-353c-49e5-b6e7-29fd2c18d356", "§19, §22"),
     ("07-agents-caps.png", "The agent team, settings, caps and alerts", "3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4", "§15.2, §20"),
     ("08-add-holding-sequence.png", "Adding a record (sequence)", "b50d49fd-c941-44a0-b623-7d3e99b57fd8", "§4.2, §4.10"),
+    ("09-observability.png", "One trace from the door to the model", "3692ebe8-3794-4ff5-9658-83a8da565dfb", "§10"),
 ]
 # The screen areas, each a page; every board file a story cites belongs to exactly one.
 AREAS = [
@@ -936,9 +937,9 @@ def render_explainers(ctx: Ctx) -> str:
            "correct a figure, a check-in, a statement, the dashboard, the budget, the Projection, a plan item and Activity (MA-193).</p>"
            f'<p><a href="{DESIGN.format(id=app, file=urllib.parse.quote_plus("Prototype v4.dc.html"))}" data-card-appearance="block"></a></p>',
            "<h2>🏗️ The architecture drawings</h2>"
-           f'<p>Drawn in Lucid on AWS shapes (MA-141, redrawn for v4 on MA-225). Each tab has the drawing, kept in the repo as a PNG, and its live '
+           f'<p>Drawn in Lucid on AWS shapes (MA-141, redrawn for v4 on MA-225, the trace added on MA-236). Each tab has the drawing, kept in the repo as a PNG, and its live '
            f'Lucid document; <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a> explains each one.</p>']
-    out.append(tabs([(f"{k + 1} {title}" if k < 7 else title,
+    out.append(tabs([(title if png.startswith("08-") else f"{k + 1} {title}",
                       image(ctx, f"lucid-{png}", title, 100) + f'<p>{esc(secs)} · <a href="https://lucid.app/lucidchart/{doc}/edit" data-card-appearance="inline"></a></p>')
                      for k, (png, title, doc, secs) in enumerate(LUCID)]))
     return "".join(out) + footer(ctx)

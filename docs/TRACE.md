@@ -53,7 +53,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-229 | The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled | Done | §9.4, §9.5, §16, §21.5 | none |  |
 | MA-230 | The architecture records one trace from the door to the model, OpenTelemetry on every Lambda, and what each reader of the agent's work sees | In Progress | §10, §13, §16 | none |  |
 | MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | To Do | §10.3, §10.5, §10.6, §10.7, §10.9, §18.4 | none |  |
-| MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | To Do | §3, §10 | none |  |
+| MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | In Progress | §3, §10 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

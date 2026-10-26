@@ -27,7 +27,7 @@ figures by hand, no creation." So:
   comes first, as phases 2 to 9, and the market side follows as phases 10 to
   20, as already planned.
 
-Status: planning. Nothing is built. The architecture is drawn in Lucid (seven
+Status: planning. Nothing is built. The architecture is drawn in Lucid (eight
 AWS views and a sequence, linked from `ARCHITECTURE.md`), and two pages walk
 through the flows end to end:
 [MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7) and

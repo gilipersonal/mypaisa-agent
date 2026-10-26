@@ -6623,6 +6623,1016 @@
      ]
     }
    ]
+  },
+  {
+   "id": "p9",
+   "title": "9 One trace, door to model",
+   "shapes": [
+    {
+     "id": "t_p9",
+     "type": "text",
+     "boundingBox": {
+      "x": 40,
+      "y": 30,
+      "w": 2000,
+      "h": 90
+     },
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>One trace from the door to the model, and where each signal lives</b></span></p><p style=\"text-align:left\">OpenTelemetry on every Lambda (the AWS Lambda Layer for OpenTelemetry in the image) \u00b7 X-Ray with Transaction Search and Application Signals \u00b7 Powertools for logs and metrics \u00b7 no prompt, figure or name ever reaches CloudWatch \u00b7 MA-230 to MA-236, MA-29 \u00b7 coral = the trace \u00b7 grey dashed = a signal written</p></div>"
+    },
+    {
+     "id": "t_door",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 20,
+      "y": 360,
+      "w": 200,
+      "h": 150
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>iOS app or web app</b><br>a new traceparent<br>per tap or sentence<br>sent as a header</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "t_claude",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1055,
+      "y": 150,
+      "w": 300,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Anthropic API</b><br>span chat &lt;model&gt;: tokens,<br>cache reads, cost, latency</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "t_push",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1595,
+      "y": 150,
+      "w": 300,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Apple push \u00b7 Web Push</b><br>a span each; the payload<br>carries run_id and trace_id</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCEED6"
+      },
+      "stroke": {
+       "color": "#8A5300",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "t_door2",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 2280,
+      "y": 150,
+      "w": 240,
+      "h": 340
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Every open door</b><br>logs when the event<br>arrived, by run_id<br><br>its own events go to<br>POST /v1/telemetry<br>with the trace id,<br>never any content</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#F6F4F1"
+      },
+      "stroke": {
+       "color": "#13213A",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "cl9",
+     "type": "namedContainer",
+     "className": "AWSCloudAWS2024",
+     "boundingBox": {
+      "x": 320,
+      "y": 300,
+      "w": 1900,
+      "h": 1300
+     },
+     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 us-east-1 \u00b7 prod (dev has the same, dev first)</b></p>"
+    },
+    {
+     "id": "t_apigw",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 380,
+      "y": 380,
+      "w": 90,
+      "h": 90
+     },
+     "text": "REST API\ntracing on\naccess log: trace id"
+    },
+    {
+     "id": "t_api",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 620,
+      "y": 380,
+      "w": 90,
+      "h": 90
+     },
+     "text": "api \u03bb\nadopts the trace\n202 + x-mypaisa-trace-id"
+    },
+    {
+     "id": "t_in",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 880,
+      "y": 380,
+      "w": 90,
+      "h": 90
+     },
+     "text": "updates.fifo\nAWSTraceHeader\non the message"
+    },
+    {
+     "id": "t_agent",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1160,
+      "y": 380,
+      "w": 90,
+      "h": 90
+     },
+     "text": "agent \u03bb\na span per model call,\ntool, DynamoDB, S3"
+    },
+    {
+     "id": "t_out",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 380,
+      "w": 90,
+      "h": 90
+     },
+     "text": "outbox.fifo\nthe same header"
+    },
+    {
+     "id": "t_send",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1700,
+      "y": 380,
+      "w": 90,
+      "h": 90
+     },
+     "text": "sender \u03bb\nappend + push\nare spans"
+    },
+    {
+     "id": "t_ws",
+     "type": "namedShape",
+     "className": "ArchAmazonAPIGatewayAWS2024",
+     "boundingBox": {
+      "x": 1960,
+      "y": 380,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SSE stream\nthe send is a span\non the message's trace"
+    },
+    {
+     "id": "t_sched",
+     "type": "namedShape",
+     "className": "ResAmazonEventBridgeSchedulerAWS2024",
+     "boundingBox": {
+      "x": 380,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "EventBridge Scheduler\nthe tick is the root"
+    },
+    {
+     "id": "t_work",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleQueueServiceAWS2024",
+     "boundingBox": {
+      "x": 880,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "work queue\ncarries the header"
+    },
+    {
+     "id": "t_worker",
+     "type": "namedShape",
+     "className": "ArchAWSLambdaAWS2024",
+     "boundingBox": {
+      "x": 1160,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "worker \u03bb\na chained job\ncontinues it"
+    },
+    {
+     "id": "t_sfn",
+     "type": "namedShape",
+     "className": "ArchAWSStepFunctionsAWS2024",
+     "boundingBox": {
+      "x": 1440,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "Step Functions\ndaily run, tracing on\n(phase 18)"
+    },
+    {
+     "id": "t_bus",
+     "type": "namedShape",
+     "className": "ResAmazonEventBridgeCustomEventBusAWS2024",
+     "boundingBox": {
+      "x": 1700,
+      "y": 720,
+      "w": 90,
+      "h": 90
+     },
+     "text": "EventBridge bus\nevents carry the header\n(phase 18)"
+    },
+    {
+     "id": "t_keys",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 1960,
+      "y": 640,
+      "w": 230,
+      "h": 260
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>On every line, span,<br>metric and RunRecord</b><br>trace_id \u00b7 span_id \u00b7 run_id<br>member (a hash)<br>client_message_id<br>conversation_id \u00b7 job_id<br>env \u00b7 build \u00b7 version</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FFFFFF"
+      },
+      "stroke": {
+       "color": "#646A78",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "sig",
+     "type": "rectangleContainer",
+     "boundingBox": {
+      "x": 360,
+      "y": 960,
+      "w": 1820,
+      "h": 420
+     },
+     "containerTitle": {
+      "text": "Where each signal lives"
+     },
+     "assistedLayout": false,
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#EEE7FA"
+      },
+      "stroke": {
+       "color": "#6B3FB8",
+       "width": 2,
+       "style": "solid"
+      }
+     }
+    },
+    {
+     "id": "s_logs",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 420,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "CloudWatch Logs\n14 days, JSON\nno bodies"
+    },
+    {
+     "id": "s_spans",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 700,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "aws/spans \u00b7 30 days\nTransaction Search\nApplication Signals"
+    },
+    {
+     "id": "s_genai",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 980,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "generative AI views\nmodel calls \u00b7 tokens\ntools \u00b7 latency"
+    },
+    {
+     "id": "s_metrics",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 1260,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "metrics MyPaisa/env\nfifteen names\nno dimensions"
+    },
+    {
+     "id": "s_run",
+     "type": "namedShape",
+     "className": "ArchAmazonDynamoDBAWS2024",
+     "boundingBox": {
+      "x": 1540,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "RunRecord \u00b7 90 days\ntrace_id \u00b7 build\nthe only content kept"
+    },
+    {
+     "id": "s_dash",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 1820,
+      "y": 1040,
+      "w": 90,
+      "h": 90
+     },
+     "text": "one dashboard\neight panels\nsaved queries"
+    },
+    {
+     "id": "s_alarm",
+     "type": "namedShape",
+     "className": "ArchAmazonCloudWatchAWS2024",
+     "boundingBox": {
+      "x": 420,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "alarms, with OK actions\none composite\nspans' own ingestion"
+    },
+    {
+     "id": "s_sns",
+     "type": "namedShape",
+     "className": "ArchAmazonSimpleNotificationServiceAWS2024",
+     "boundingBox": {
+      "x": 700,
+      "y": 1240,
+      "w": 90,
+      "h": 90
+     },
+     "text": "SNS admin-alerts\nemail from phase 0\nchat + push from phase 1"
+    },
+    {
+     "id": "s_never",
+     "type": "rectangle",
+     "boundingBox": {
+      "x": 980,
+      "y": 1240,
+      "w": 1160,
+      "h": 110
+     },
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Never in CloudWatch:</b> a prompt, a reply, a figure, a name, an account number, a token, a file<br>member ids hashed \u00b7 the leak test in CI \u00b7 dev alone may capture the synthetic household, behind a setting prod refuses</p>",
+     "style": {
+      "fill": {
+       "type": "color",
+       "color": "#FCE4EA"
+      },
+      "stroke": {
+       "color": "#B5123F",
+       "width": 2,
+       "style": "dashed"
+      }
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "p9_l1",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_door",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_apigw",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "traceparent",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p9_l2",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_apigw",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_api",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l3",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_api",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_in",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l4",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_in",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_agent",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l5",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_agent",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_out",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l6",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_out",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_send",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l7",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_send",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_ws",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l8",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_ws",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_door2",
+      "position": {
+       "x": 0,
+       "y": 0.8088235294117647
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "SSE: run_id, trace_id",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p9_l9",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_agent",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_claude",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l10",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_send",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_push",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "no fresh presence",
+       "position": 0.35,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p9_l11",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_push",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_door2",
+      "position": {
+       "x": 0,
+       "y": 0.16176470588235295
+      }
+     },
+     "stroke": {
+      "color": "#8A5300",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "push",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p9_l12",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_sched",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_work",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     },
+     "text": [
+      {
+       "text": "tick",
+       "position": 0.5,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p9_l13",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_work",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_worker",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l14",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_sfn",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_bus",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "solid"
+     }
+    },
+    {
+     "id": "p9_l15",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_worker",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "t_sfn",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#C2381F",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p9_l16",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_api",
+      "position": {
+       "x": 0.5,
+       "y": 1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "s_spans",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#646A78",
+      "width": 2,
+      "style": "dashed"
+     },
+     "text": [
+      {
+       "text": "every Lambda",
+       "position": 0.78,
+       "side": "top"
+      }
+     ]
+    },
+    {
+     "id": "p9_l17",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_worker",
+      "position": {
+       "x": 0.3,
+       "y": 1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "s_logs",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#646A78",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p9_l18",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "t_worker",
+      "position": {
+       "x": 0.7,
+       "y": 1
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "s_run",
+      "position": {
+       "x": 0.5,
+       "y": 0
+      }
+     },
+     "stroke": {
+      "color": "#646A78",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p9_l19",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "s_spans",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "s_genai",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#646A78",
+      "width": 2,
+      "style": "dashed"
+     }
+    },
+    {
+     "id": "p9_l20",
+     "lineType": "straight",
+     "endpoint1": {
+      "type": "shapeEndpoint",
+      "style": "none",
+      "shapeId": "s_alarm",
+      "position": {
+       "x": 1,
+       "y": 0.5
+      }
+     },
+     "endpoint2": {
+      "type": "shapeEndpoint",
+      "style": "arrow",
+      "shapeId": "s_sns",
+      "position": {
+       "x": 0,
+       "y": 0.5
+      }
+     },
+     "stroke": {
+      "color": "#B5123F",
+      "width": 2,
+      "style": "dashed"
+     }
+    }
+   ]
   }
  ]
 }
