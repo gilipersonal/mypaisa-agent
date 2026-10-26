@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<style>
+/* Prototype v4 · the conversation, as iPhone v4 · Register, Check-ins and Budget draw it; the web door uses the same cards at the browser boards' smaller type */
+.pchat { display: flex; flex-direction: column; gap: 14px; padding: 8px 16px 0; }
+.pchat > * { flex: none; }
+.pchat .ai-body > .ccard + .ccard { margin-top: 0; }
+.pchat .ccard-h .hdr { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; margin: -6px -8px -4px 0; }
+.pchat .one { padding-bottom: 10px; gap: 2px; }
+.pchat .done { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); }
+.pchat .done > :first-child { color: var(--mp-ink-2); }
+.pchat .done b { font-weight: 600; text-align: right; }
+.pchat .done .ms { font-size: 18px; color: var(--mp-accent); }
+.pchat .ccard-h .done:first-child, .pchat .one .done { border-top: 0; min-height: 26px; }
+.pchat .qblk { border-top: 1px solid var(--mp-line); padding-top: 10px; }
+.pchat .wrap8 { display: flex; flex-wrap: wrap; gap: 8px; }
+.pchat .cbtn { cursor: pointer; }
+.pchat .cbtn.tight { padding: 0 14px; }
+.pchat .ccard-acts.stack { flex-direction: column; align-items: flex-start; }
+.pchat .cbtn.outl { background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-accent); }
+.pchat .ccard-fold.quiet { color: var(--mp-ink-2); }
+.pchat .t15 { font: 400 15px/20px var(--mp-font); color: var(--mp-ink); text-wrap: pretty; }
+.pchk { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pchip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; background: var(--mp-surface-2); color: var(--mp-ink-2); font: 600 13px/18px var(--mp-font); }
+.pchip .ms { font-size: 16px; }
+.pok { color: var(--mp-accent); font-size: 22px; }
+.ptag { align-self: flex-start; }
+.pnote { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+.pnote .ms { font-size: 18px; color: var(--mp-ink-2); }
+.plock { display: flex; gap: 8px; align-items: center; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+.plock .ms { font-size: 18px; }
+.phdr { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-top: 8px; border-top: 1px solid var(--mp-line); }
+.pline { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--mp-line); }
+.pline .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.pline .nm { font: 600 15px/20px var(--mp-font); }
+.pline .sub { font: 400 13px/18px var(--mp-font); }
+.pline .pv { font: 600 15px/20px var(--mp-font); text-align: right; flex: none; }
+.pl-ic { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.pl-lead { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none; background: var(--mp-surface-2); color: var(--mp-ink-2); font: 700 15px/1 var(--mp-font); }
+.pamb { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid var(--mp-line); }
+.pamb .nm { font: 600 15px/20px var(--mp-font); }
+.pamb .sub { font: 400 13px/18px var(--mp-font); }
+.pambp { min-height: 36px; padding: 0 12px; border: 0; border-radius: 999px; font: 600 14px/18px var(--mp-font); background: var(--mp-pause-bg); color: var(--mp-pause); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.pambp.picked { background: var(--mp-surface-2); color: var(--mp-ink); }
+.pambp .ms { font-size: 16px; color: var(--mp-accent); }
+.pambn { color: var(--mp-pause); }
+.fref { font: 600 14px/18px var(--mp-font); color: var(--mp-accent); }
+.ptiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-bottom: 4px; }
+.ptile { background: var(--mp-surface-2); border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ptile b { font: 600 15px/20px var(--mp-font); }
+.ptile .sub { font: 400 12px/16px var(--mp-font); }
+.ptchk { align-self: flex-start; font: 600 12px/16px var(--mp-font); }
+.pfiles { display: flex; flex-direction: column; gap: 6px; }
+.pfile { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 600 14px/18px var(--mp-font); }
+.pfile .ms { color: var(--mp-ink-2); }
+.pmeter { height: 10px; }
+.pmeter > span { display: block; height: 100%; border-radius: 999px; background: var(--mp-meter); }
+.ptab { display: flex; flex-direction: column; font: 400 13px/18px var(--mp-font); }
+.ptr { display: grid; grid-template-columns: minmax(0, 1fr) 72px 52px; gap: 6px; padding: 4px 0; border-top: 1px solid var(--mp-line); }
+.ptr > span:nth-child(n+2) { text-align: right; }
+.ptr.pth { border-top: 0; font-weight: 600; color: var(--mp-ink-2); }
+.pfr { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 56px; padding: 8px 16px; border: 0; border-top: 1px solid var(--mp-line); background: none; color: var(--mp-ink); text-align: left; cursor: pointer; font: inherit; }
+.pfr .nm { font: 600 15px/20px var(--mp-font); }
+.pfr .sub { font: 400 13px/18px var(--mp-font); }
+.pfr .ms { color: var(--mp-ink-2); }
+.pfig { display: flex; flex-direction: column; gap: 2px; }
+.pmef { padding: 6px; display: flex; flex-direction: column; gap: 6px; }
+.pmef .pfile { background: var(--mp-hero-2); color: var(--mp-hero-ink); }
+.pmef .pfile .ms { color: var(--mp-coral); }
+.pmef .fmeta { font: 400 12px/16px var(--mp-font); color: var(--mp-hero-ink-2); }
+.pmef .mft { padding: 0 8px 4px; }
+.ptyp { display: flex; align-items: center; gap: 10px; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); }
+.pban { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: var(--mp-hold-bg); color: var(--mp-hold); font: 500 14px/19px var(--mp-font); }
+.pban .ms { font-size: 18px; }
+/* charts inside a card */
+.pchart { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
+.pc-box { position: relative; margin-left: 40px; }
+.pc-box > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.pc-box path { vector-effect: non-scaling-stroke; fill: none; }
+.pc-grid { stroke: var(--mp-chart-grid); stroke-width: 1; }
+.pc-band { fill: var(--mp-chart-area) !important; stroke: none; }
+.pc-line { stroke: var(--mp-chart-line); stroke-width: 2.5; stroke-linejoin: round; }
+.pc-dash { stroke: var(--mp-ink-2); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.pc-y { position: absolute; left: -40px; transform: translateY(-50%); font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.pc-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-chart-line); }
+.pc-dot.pc-sq { border-radius: 2px; box-shadow: 0 0 0 2px var(--mp-ink); }
+.pc-dot.pc-grey { box-shadow: 0 0 0 2px var(--mp-ink-2); }
+.pc-x { margin-left: 40px; position: relative; height: 16px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.pc-x > span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.pc-x > .ax0 { transform: none; }
+.pc-x > .ax1 { transform: translateX(-100%); }
+.pc-leg { display: flex; flex-wrap: wrap; gap: 4px 12px; font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.pc-k { display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: var(--mp-chart-line); }
+.pc-k.k-dash { background: repeating-linear-gradient(90deg, var(--mp-ink-2) 0 4px, transparent 4px 7px); }
+.pc-k.k-band { height: 10px; background: var(--mp-chart-area); box-shadow: inset 0 0 0 1px var(--mp-chart-line); }
+.pc-k.k-sq { width: 9px; height: 9px; border-radius: 2px; background: none; box-shadow: inset 0 0 0 2px var(--mp-ink); }
+/* the web door: the browser boards' 15 px chat */
+.ptw.pchat { gap: 12px; padding: 12px 16px 4px; }
+.ptw .me { font: 400 15px/20px var(--mp-font); max-width: 84%; border-radius: 20px 20px 6px 20px; }
+.ptw .ai-text { font: 400 15px/21px var(--mp-font); }
+.ptw .ai-mark { width: 26px; height: 26px; }
+.ptw .ai-mark i { width: 10px; height: 10px; }
+.ptw .kv, .ptw .done { font-size: 14px; line-height: 19px; }
+.ptw .mp-hl { font-size: 16px; line-height: 21px; }
+.ptw .cbtn { font-size: 14px; min-height: 40px; padding: 0 14px; }
+.ptw .t15 { font-size: 14px; line-height: 19px; }
+.ptw .daysep { font-size: 12px; line-height: 16px; }
+/* privacy: a figure in its own span is masked */
+.privon .mny { background: var(--mp-mask); color: transparent !important; border-radius: 6px; }
+.privon .me .mny, .privon .mp-hero .mny { background: var(--mp-mask-hero); }
+/* the guide: the next tap pulses a few times, then holds a quiet ring */
+.pnext { position: relative; outline: 2px solid var(--mp-focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: no-preference) {
+  .pnext::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 2px solid var(--mp-focus); pointer-events: none; animation: pnpulse 1.4s var(--mo-smooth, ease-out) 6; opacity: 0; }
+  .pin { animation: mo-rise var(--mo-base, 340ms) var(--mo-smooth, ease-out) both; }
+}
+@keyframes pnpulse { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.12); } }
+</style>
+</helmet>
+<div class="pchat {{ doorCls }}">
+<sc-for list="{{ list }}" as="m" hint-placeholder-count="4">
+<sc-if value="{{ m.isBan }}" hint-placeholder-val="{{ false }}"><div class="pban pin" data-anchor="{{ m.anchor }}"><span class="ms">replay</span><span>{{ m.t }}</span></div></sc-if>
+<sc-if value="{{ m.isSep }}" hint-placeholder-val="{{ true }}"><div class="daysep pin" data-anchor="{{ m.anchor }}">{{ m.t }}</div></sc-if>
+<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me pin">{{ m.t }}</div></sc-if>
+<sc-if value="{{ m.isMeF }}" hint-placeholder-val="{{ false }}"><div class="me pmef pin"><sc-for list="{{ m.files }}" as="f" hint-placeholder-count="2"><div class="pfile"><span class="ms">picture_as_pdf</span><span class="fx col"><span>{{ f.name }}</span><span class="fmeta">{{ f.meta }}</span></span></div></sc-for><span class="mft">{{ m.t }}</span></div></sc-if>
+<sc-if value="{{ m.isTyping }}" hint-placeholder-val="{{ false }}"><div class="ai pin"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ptyp"><span class="typing"><i></i><i></i><i></i></span><span>{{ m.t }}</span></div></div></div></sc-if>
+<sc-if value="{{ m.isAi }}" hint-placeholder-val="{{ false }}"><div class="ai pin"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{{ m.t }}</div><sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><span class="ai-meta"><span class="ms ms-s">{{ m.metaIcon }}</span><span>{{ m.meta }}</span></span></sc-if></div></div></sc-if>
+<sc-if value="{{ m.isCards }}" hint-placeholder-val="{{ false }}">
+<div class="ai pin" data-anchor="{{ m.anchor }}"><div class="ai-mark"><i></i></div><div class="ai-body">
+<sc-if value="{{ m.hasText }}" hint-placeholder-val="{{ false }}"><div class="ai-text">{{ m.t }}</div></sc-if>
+<sc-for list="{{ m.cards }}" as="c" hint-placeholder-count="1">
+<div class="ccard {{ c.cls }}" data-anchor="{{ c.anchor }}">
+<div class="ccard-h {{ c.cls }}">
+<sc-if value="{{ c.hasChip }}" hint-placeholder-val="{{ false }}"><div class="pchk"><span class="pchip"><span class="ms">{{ c.chipIcon }}</span>{{ c.chip }}</span><span class="mp-foot mp-ink2">{{ c.right }}</span></div></sc-if>
+<sc-if value="{{ c.hasOver }}" hint-placeholder-val="{{ true }}"><div class="hdr"><span class="mp-over mp-ink2">{{ c.over }}</span><sc-if value="{{ c.hasCancel }}" hint-placeholder-val="{{ false }}"><button class="cbtn cbtn-ghost" type="button" onclick="{{ c.cancelGo }}">Cancel</button></sc-if></div></sc-if>
+<sc-if value="{{ c.hasTitle }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><sc-if value="{{ c.ok }}" hint-placeholder-val="{{ false }}"><span class="ms ms-fill pok">check_circle</span></sc-if><span class="mp-hl">{{ c.title }}</span></span></sc-if>
+<sc-if value="{{ c.hasTag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ c.tagCls }} ptag">{{ c.tag }}</span></sc-if>
+</div>
+<div class="ccard-b">
+<sc-for list="{{ c.parts }}" as="p" hint-placeholder-count="3">
+<sc-if value="{{ p.isDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span>{{ p.k }}</span><span class="fx ac gap6"><b>{{ p.v }}</b><span class="ms">check</span></span></div></sc-if>
+<sc-if value="{{ p.isQ }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8 qblk"><span class="mp-hl">{{ p.t }}</span><div class="wrap8"><sc-for list="{{ p.chips }}" as="x" hint-placeholder-count="3"><button class="cbtn tight {{ x.cls }}" type="button" onclick="{{ x.go }}">{{ x.t }}</button></sc-for></div></div></sc-if>
+<sc-if value="{{ p.isKv }}" hint-placeholder-val="{{ true }}"><div class="kv"><span>{{ p.k }}</span><span class="{{ p.vcls }}">{{ p.v }}</span></div></sc-if>
+<sc-if value="{{ p.isP }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2 {{ p.cls }}">{{ p.t }}</span></sc-if>
+<sc-if value="{{ p.isStrong }}" hint-placeholder-val="{{ false }}"><span class="mp-hl">{{ p.t }}</span></sc-if>
+<sc-if value="{{ p.isNote }}" hint-placeholder-val="{{ false }}"><div class="pnote"><span class="ms">{{ p.icon }}</span><span>{{ p.t }}</span></div></sc-if>
+<sc-if value="{{ p.isLock }}" hint-placeholder-val="{{ false }}"><div class="plock"><span class="ms">lock</span><span>{{ p.t }}</span></div></sc-if>
+<sc-if value="{{ p.isHdr }}" hint-placeholder-val="{{ false }}"><div class="phdr"><span class="mp-over mp-ink2">{{ p.t }}</span><span class="mp-foot mp-ink2">{{ p.r }}</span></div></sc-if>
+<sc-if value="{{ p.isLine }}" hint-placeholder-val="{{ false }}"><div class="pline"><sc-if value="{{ p.hasIcon }}" hint-placeholder-val="{{ true }}"><span class="mp-icontile pl-ic"><span class="ms ms-s">{{ p.icon }}</span></span></sc-if><sc-if value="{{ p.hasLead }}" hint-placeholder-val="{{ false }}"><span class="pl-lead">{{ p.lead }}</span></sc-if><div class="grow"><span class="nm">{{ p.name }}</span><sc-if value="{{ p.hasSub }}" hint-placeholder-val="{{ true }}"><span class="sub mp-ink2">{{ p.sub }}</span></sc-if></div><span class="fx col gap4 ae"><span class="pv {{ p.vcls }}">{{ p.v }}</span><sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ p.tagCls }}">{{ p.tag }}</span></sc-if></span></div></sc-if>
+<sc-if value="{{ p.isAmb }}" hint-placeholder-val="{{ false }}"><div class="pamb"><div class="fx jb gap8"><span class="fx col"><span class="nm">{{ p.name }}</span><span class="sub mp-ink2">{{ p.sub }}</span></span><span class="nm mny">{{ p.v }}</span></div><div class="fx jb ac"><button class="pambp {{ p.pillCls }}" type="button" onclick="{{ p.go }}">{{ p.pill }}<sc-if value="{{ p.ok }}" hint-placeholder-val="{{ false }}"><span class="ms">check</span></sc-if></button><span class="fref">Change</span></div><sc-if value="{{ p.hasNote }}" hint-placeholder-val="{{ true }}"><span class="sub pambn">{{ p.note }}</span></sc-if></div></sc-if>
+<sc-if value="{{ p.isTiles }}" hint-placeholder-val="{{ false }}"><div class="ptiles"><sc-for list="{{ p.tiles }}" as="t" hint-placeholder-count="4"><div class="ptile"><span class="sub mp-ink2">{{ t.k }}</span><div class="fx jb bl"><b class="mny">{{ t.v }}</b><span class="sub mp-ink2">{{ t.s }}</span></div><sc-if value="{{ t.hasTag }}" hint-placeholder-val="{{ false }}"><span class="amber ptchk">{{ t.tag }}</span></sc-if></div></sc-for></div></sc-if>
+<sc-if value="{{ p.isFiles }}" hint-placeholder-val="{{ false }}"><div class="pfiles"><sc-for list="{{ p.files }}" as="f" hint-placeholder-count="2"><div class="pfile"><span class="ms ms-s">description</span><span>{{ f.name }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ p.isMeter }}" hint-placeholder-val="{{ false }}"><div class="fx col gap4"><div class="pmeter mp-track" role="img" aria-label="{{ p.s }}"><span style="width: {{ p.w }}"></span></div><span class="mp-foot mp-ink2">{{ p.s }}</span></div></sc-if>
+<sc-if value="{{ p.isTable }}" hint-placeholder-val="{{ false }}"><div class="ptab"><div class="ptr pth"><span>Category</span><span>Actual</span><span>Plan</span></div><sc-for list="{{ p.rows }}" as="r" hint-placeholder-count="4"><div class="ptr"><span>{{ r.c }}</span><span class="mny">{{ r.a }}</span><span class="mp-ink2 mny">{{ r.p }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ p.isFig }}" hint-placeholder-val="{{ false }}"><div class="pfig"><span class="mp-num-l mny">{{ p.v }}</span><span class="mp-foot mp-ink2">{{ p.s }}</span></div></sc-if>
+<sc-if value="{{ p.isBig }}" hint-placeholder-val="{{ false }}"><button class="cbtn full {{ p.cls }}" type="button" onclick="{{ p.go }}">{{ p.t }}</button></sc-if>
+<sc-if value="{{ p.isLinkBtn }}" hint-placeholder-val="{{ false }}"><button class="cbtn cbtn-ghost {{ p.cls }}" type="button" onclick="{{ p.go }}">{{ p.t }}</button></sc-if>
+<sc-if value="{{ p.isChart }}" hint-placeholder-val="{{ false }}">
+<div class="pchart"><div class="pc-box" style="height: {{ p.ch.h }}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="pc-grid" d="{{ p.ch.dGrid }}"></path><path class="pc-band" d="{{ p.ch.dBand }}"></path><path class="pc-dash" d="{{ p.ch.dDash }}"></path><path class="pc-line" d="{{ p.ch.dLine }}"></path></svg>
+<sc-for list="{{ p.ch.ys }}" as="y" hint-placeholder-count="3"><span class="pc-y mny" style="top: {{ y.top }}">{{ y.t }}</span></sc-for>
+<sc-for list="{{ p.ch.dots }}" as="d" hint-placeholder-count="3"><span class="pc-dot {{ d.cls }}" style="left: {{ d.l }}; top: {{ d.tp }}"></span></sc-for></div>
+<div class="pc-x"><sc-for list="{{ p.ch.xs }}" as="x" hint-placeholder-count="3"><span class="{{ x.cls }}" style="left: {{ x.l }}">{{ x.t }}</span></sc-for></div>
+<div class="pc-leg"><sc-for list="{{ p.ch.leg }}" as="g" hint-placeholder-count="3"><span class="fx ac gap6"><i class="pc-k {{ g.cls }}"></i>{{ g.t }}</span></sc-for></div></div>
+</sc-if>
+</sc-for>
+</div>
+<sc-if value="{{ c.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts {{ c.actsCls }}"><sc-for list="{{ c.acts }}" as="a" hint-placeholder-count="3"><button class="cbtn {{ a.cls }}" type="button" onclick="{{ a.go }}"><sc-if value="{{ a.hasIcon }}" hint-placeholder-val="{{ false }}"><span class="ms">{{ a.icon }}</span></sc-if>{{ a.t }}</button></sc-for></div></sc-if>
+<sc-if value="{{ c.hasFold }}" hint-placeholder-val="{{ false }}"><div class="fx col"><sc-for list="{{ c.fold }}" as="f" hint-placeholder-count="3"><button class="pfr {{ f.cls }}" type="button" onclick="{{ f.go }}"><span class="fx col"><span class="nm">{{ f.t }}</span><span class="sub mp-ink2">{{ f.s }}</span></span><span class="ms">chevron_right</span></button></sc-for></div></sc-if>
+<sc-if value="{{ c.hasFoot }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">{{ c.footIcon }}</span>{{ c.foot }}</span><span class="mp-foot mp-ink2">{{ c.at }}</span></div></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><span class="ai-meta"><span class="ms ms-s">{{ m.metaIcon }}</span><span>{{ m.meta }}</span></span></sc-if>
+</div></div>
+</sc-if>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props || {};
+    return { list: p.list || [], doorCls: p.isWeb ? 'ptw' : 'pti' };
+  }
+}
+</script>
+</body>
+</html>

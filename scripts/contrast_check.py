@@ -46,7 +46,7 @@ DIM = 0.25
 LIMITS = {"body": (7.0, 4.5), "text": (4.5, 3.0), "ui": (3.0, 1.8), "presence": (1.5, 1.25)}
 DESIGN = ROOT / "docs" / "design"
 # the files the boards load from their own project; each must be byte-for-byte ds-v1's
-COPIES = {"tokens.css": ("ios-v1", "app-v1"), "ios.css": ("ios-v1",), "motion.css": ("ios-v1", "app-v1"), "motion.js": ("ios-v1", "app-v1")}
+COPIES = {"tokens.css": ("ios-v1", "app-v1"), "ios.css": ("ios-v1", "app-v1"), "motion.css": ("ios-v1", "app-v1"), "motion.js": ("ios-v1", "app-v1")}
 
 # (tier, foreground token, background token); both themes
 PAIRS = [
@@ -229,6 +229,7 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "glass-accent-low": ("ds-v1/ios.css", r"--lg-accent: #[0-9A-Fa-f]{6};", "--lg-accent: #E0806C;", r"lg-accent on glass"),
     "glass-mask-vanishes": ("ds-v1/ios.css", r"--lg-mask: #[0-9A-Fa-f]{6};", "--lg-mask: #F2F0EC;", r"t-light .* lg-mask on glass"),
     "copy-differs": ("ios-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-ink-2: )#[0-9A-Fa-f]{6}", r"\1#3A4250", r"ios-v1/tokens\.css differs"),
+    "copy-differs-app-ios": ("app-v1/ios.css", r"--lg-accent: #[0-9A-Fa-f]{6};", "--lg-accent: #E0806C;", r"app-v1/ios\.css differs"),  # MA-193: the prototype's copy
     "mark-lost-on-track": ("ds-v1/tokens.css", r"--mp-ccy-other: #[0-9A-Fa-f]{6};", "--mp-ccy-other: #B4B6BC;", r"ccy-other on track"),
     "track-vanishes": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#F4F4F6", r"t-light .* track on surface"),
     "mask-vanishes": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-mask: )#[0-9A-Fa-f]{6}", r"\1#1A222F", r"t-dark .* mask on surface"),
@@ -315,7 +316,7 @@ def selftest(cases: list[str]) -> int:
             else:
                 # refused for the right reason: the expected FAIL line, and no stray copy failure from the harness
                 hit = any(re.search(expect, line) for line in fails)
-                stray = name != "copy-differs" and any("differs from docs/design/ds-v1/" in line for line in fails)
+                stray = not name.startswith("copy-differs") and any("differs from docs/design/ds-v1/" in line for line in fails)
                 ok, why = r.returncode == 1 and hit and not stray, f"exit {r.returncode}, expected /{expect}/ {'found' if hit else 'not found'}{', copies out of step' if stray else ''}"
             bad += not ok
             print(f"{'ok  ' if ok else 'FAIL'} selftest {name}: {'passes' if expect is None else 'refused for the right reason'}" if ok

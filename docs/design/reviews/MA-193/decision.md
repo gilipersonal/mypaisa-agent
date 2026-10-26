@@ -38,6 +38,10 @@ The re-plan behind it is MA-186 (PR #37): the decisions D1 to D12, the phases re
 - The Projection starts after the correction (lesson 19).
 - The card bill was paid in full on Tue 20 Oct, so the statement confirms the car loan's autopay instead.
 - The HDFC loan ends with its 180th EMI in Jul 2030. A residue under ₹1 had counted as one more payment.
+- Lesson 19, the later frames:
+  - Once Sunday's card statement is confirmed at 08:44, its £1,458 is owed, so net worth is £456,493.
+  - After Thursday's EMI it is £456,747.
+  - Splits round by largest remainder so they always sum to the total shown.
 
 ## The boards (Claude Design)
 
@@ -52,7 +56,28 @@ The re-plan behind it is MA-186 (PR #37): the decisions D1 to D12, the phases re
   (MA-96, MA-218, MA-220)
 - [Web v4 · Projection](https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Web+v4+%C2%B7+Projection.dc.html)
   (MA-224, MA-222, MA-223, MA-221, MA-219)
-- Prototype v4: the clickable walk-through (see below).
+- [Prototype v4](https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7?file=Prototype+v4.dc.html): the
+  clickable walk-through.
+  - **The top bar:**
+    - the door switch (desktop at 1440, phone web at 390, iPhone);
+    - light and dark;
+    - privacy;
+    - who is viewing (Arun or Asha);
+    - Restart;
+    - the ten steps, each one a jump target.
+  - **The journey:**
+    1. sign in;
+    2. register £5,000 of savings, with net worth moving live;
+    3. replay how the SBI FD was registered;
+    4. the valuation check-in, then the Home value corrected in place to £428,000;
+    5. Activity;
+    6. Sunday's statements and the month close;
+    7. Thursday's HDFC EMI check-in, with a "paid off in full" side branch;
+    8. the Projection;
+    9. a what-if and the plan items;
+    10. Asha's view.
+  - **Typing:** steps 2, 4 and 8 ask for a typed value, and "Type it for me" fills each one in.
+  - **Built from:** the recommended options below (1a, 1a, 1b, 1a).
 
 **MyPaisa iOS v1** (iPhone, and iPad where drawn; light and dark):
 - [iPhone v4 · Home](https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8?file=iPhone+v4+%C2%B7+Home.dc.html)
