@@ -87,6 +87,15 @@
           .key { height: 48px; border-radius: 9px; display: grid; place-items: center; background: var(--mp-surface); color: var(--mp-ink); font: 400 25px/1 var(--mp-font); box-shadow: 0 1px 0 var(--mp-line); }
           .key.fn { background: transparent; box-shadow: none; }
           .key .ms { font-size: 24px; }
+          /* the second check (R7), as iPhone admin draws it (A5): the change in words, then iOS's own Sign in with Apple sheet */
+          .shh { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 12px; }
+          .sp44 { width: 44px; height: 44px; flex: none; }
+          .xbtn { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; background: color-mix(in srgb, var(--mp-ink) 12%, transparent); color: var(--mp-ink); }
+          .appmini { width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(180deg, #1C2E4D, #13213A); display: grid; place-items: center; flex: none; }
+          .appmini i { width: 16px; height: 16px; border-radius: 50%; background: #FF6B4F; box-shadow: 0 0 0 4px #13213A, 0 0 0 6.5px #FF6B4F; display: block; }
+          .tc { text-align: center; }
+          .m0 { margin: 0; }
+          .px4 { padding: 0 4px; }
         </style>
       </helmet>
 
@@ -458,6 +467,44 @@
                   <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
                   <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
                 </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · after Approve, the second check</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:14</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="dim"></div>
+                  <div class="sheet full" style="padding:8px 0 0;gap:12px">
+                    <div class="sheet-grab"></div>
+                    <div class="shh"><span class="gbtn lg"><span class="ms">close</span></span><span class="nav-title">Check it's you</span><span class="sp44"></span></div>
+                    <div class="pg" style="padding-top:0">
+                      <div class="mp-card fx col gap10"><span class="mp-over mp-ink2">Admin change</span><span class="mp-t3">Add a new kind: NS&amp;I Premium Bonds</span><div class="kv"><span>Built from</span><span>Cash: the last figure given</span></div><div class="kv"><span>Asked for by</span><span>Asha, 10:12</span></div></div>
+                      <p class="mp-foot mp-ink2 m0 px4">The server binds a challenge to this change; Apple signs you in again to answer it. A passkey under Face ID answers it too.</p>
+                    </div>
+                  </div>
+                  <div class="dim" style="z-index:55;background:rgba(5,8,14,0.14)"></div>
+                  <div class="sheet lg lg-strong apple" style="z-index:60">
+                    <div class="sheet-grab"></div>
+                    <div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="xbtn"><span class="ms">close</span></span></div>
+                    <div class="fx ac gap12"><span class="appmini"><i></i></span><span class="fx col f1"><span class="mp-hl">MyPaisa</span><span class="mp-foot mp-ink2">Continue as Arun Dutta, ar•••@icloud.com</span></span></div>
+                    <div class="faceid" data-mo="face"><span class="ms">ar_on_you</span></div>
+                    <span class="mp-foot mp-ink2 tc">Face ID</span>
+                  </div>
+                  <div class="homebar" style="z-index:70"></div>
+                </div></div></div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · after Approve, approved</div>
+                <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
+                  <div class="sbar"><span>10:14</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="scroll"><div class="fadet"></div><div class="chat cb">
+                    <div class="daysep">Today 10:13</div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New kind · approved</span><span class="mp-chip mp-neutral"><span class="ms">shield_person</span>Admin</span></span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" data-mo="saved">check_circle</span><span class="mp-hl">NS&amp;I Premium Bonds is a kind now</span></span></div>
+                      <div class="ccard-b"><div class="kv"><span>Built from</span><span>Cash: the last figure given</span></div><div class="kv"><span>Interest</span><span>none</span></div><div class="kv"><span>Prizes</span><span>income, in the budget</span></div><div class="kv"><span>Where</span><span>UK, in pounds, liquid</span></div><div class="kv"><span>Checked with</span><span>Sign in with Apple, Face ID</span></div><span class="mp-foot mp-ink2">Asha's registration picks up in her chat, with her own Confirm.</span></div>
+                      <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Approved · in the audit log</span><span class="mp-foot mp-ink2">10:14</span></div>
+                    </div></div></div>
+                  </div></div>
+                  <div class="edge-bot"></div>
+                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                </div></div></div>
               </div>
             </div>
           </sc-for>
@@ -465,7 +512,7 @@
             <p><b>The member hears why, in plain words,</b> and that the admin was asked; nothing is saved and no amount is taken yet.</p>
             <p><b>Only the admin sees Approve and Reject.</b> The agent proposes the kind from the templates (<code>propose_kind</code>, admin only, enforced in code): cash at the last figure given, no interest, prizes as income. Technical opens the spec.</p>
             <p><b>Approve adds data, not a screen;</b> Asha's registration then resumes in her chat like R1, with her own Confirm. Reject tells her plainly.</p>
-            <p><b>Open question:</b> ARCHITECTURE §4.5 does not say whether approving a kind is an admin action behind the second check. Drawn without it; if it is, Approve shows the Face ID sheet first.</p>
+            <p><b>Settled 26 Oct 2026 (MA-197): approving a new kind needs the second check (ARCHITECTURE 4.5).</b> Approve opens it as the iPhone admin boards draw it (iPhone · Second check): the change in words, then a fresh Sign in with Apple, or a passkey, under Face ID, bound to this change. Then the card edits in place to Approved · in the audit log, with how it was checked. A failed Face ID approves nothing.</p>
             <p><b>Builds:</b> MA-197 (<code>propose_kind</code>). Drawn pending: the figure set holds no Premium Bonds, so no outcome or amount is drawn. Sat 31 Oct comes after the set's last close, so the strip shows the day only.</p>
           </div>
         </div>
