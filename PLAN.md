@@ -77,6 +77,10 @@ Yours:
   your yes first) and register two app ids, `com.mypaisapp.agent.dev`
   (MyPaisa Dev) and `com.mypaisapp.agent` (MyPaisa), each with Sign in with
   Apple, push and associated domains.
+- **GitHub connected to AWS CodeBuild (MA-238).** Once, after the bootstrap
+  apply: in the AWS console's Connections, update the pending connection and
+  install the AWS Connector for GitHub app on this repository only, so
+  CodeBuild's runner can take the image builds.
 - **Apple's keys and records (MA-164).** An APNs key and a Sign in with Apple
   key per environment, put by hand into `/mypaisa-agent/<env>/apple/apns_key`
   and `.../apple/siwa_key` after the apply that made their parameters (the
@@ -152,8 +156,14 @@ Claude's:
   hand; no secret ever in state (`ARCHITECTURE.md` §14). So every "into SSM"
   item in this phase waits for the apply that makes its parameter (MA-26's,
   and for prod the first release): a value put first makes that apply fail.
+- **The images, built on AWS (MA-237):** the workflow's image job runs on
+  AWS CodeBuild's arm64 runner (arm1.small, inside its free 100 build
+  minutes a month), builds the `lambda` and `stream` targets natively and
+  pushes them to the one ECR repository by the commit's sha; a pull request
+  that changes the Dockerfile or the lock builds them without pushing. ECR
+  keeps the last five tagged images, and a usage budget warns at 80 minutes.
 - **The release pipeline (MA-107, MA-167):** a merge to `main` builds the
-  Lambdas once, deploys dev and runs the smoke tests, sends MyPaisa Dev to
+  Lambdas once (MA-237), deploys dev and runs the smoke tests, sends MyPaisa Dev to
   TestFlight, then deploys prod after your approval behind each Lambda's
   `live` alias, rolling back on a failed smoke test, and sends MyPaisa to
   TestFlight. The nightly drift check follows (MA-108).
@@ -1403,7 +1413,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 31 (and 3 of yours) | 25 | Mon 2 Nov 2026 | Fri 4 Dec 2026 |
+| 0 Foundations at every door | 31 (and 3.5 of yours) | 25 | Mon 2 Nov 2026 | Fri 4 Dec 2026 |
 | 1 Talk: sign in and chat with the agent at every door | 81 (and 0.5 of yours) | 65 | Mon 7 Dec 2026 | Tue 16 Mar 2027 |
 | 2 The first record: one dynamic structure, one write path | 45 | 36 | Wed 17 Mar 2027 | Mon 10 May 2027 |
 | 3 Deposits, policies and two currencies | 18 | 15 | Tue 11 May 2027 | Tue 1 Jun 2027 |

@@ -415,8 +415,10 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
             out[name] = {"page": f"screens-{a[0]}", "boards": boards}
     for name, path in lucid_images():
         out[name] = {"page": "explainers", "file": path}
-    out["roadmap.png"] = {"page": "hub", "schedule": ctx.schedule}
-    out["journey.png"] = {"page": "roadmap", "schedule": ctx.schedule}
+    # the pictures draw each phase's title and dates only, so an estimate that moves no date redraws nothing
+    drawn = {n: {k: v.get(k) for k in ("title", "start", "end", "on_demand")} for n, v in ctx.schedule.items()}
+    out["roadmap.png"] = {"page": "hub", "schedule": drawn}
+    out["journey.png"] = {"page": "roadmap", "schedule": drawn}
     for name, w in out.items():
         if "boards" in w:
             src = [LAYOUT] + [[p, f, b, ctx.file_sha(p, f), board_state(ctx, (p, f, b))] for p, f, b in w["boards"]]

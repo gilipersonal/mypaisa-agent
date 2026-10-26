@@ -51,6 +51,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-227 | The v4 boards still to draw are drawn: Budget and Assets and Debts on iPad, the check-in cards in the web chat, and the new-kind card's second check | Done | §4.5, §9.3, §9.4 | none |  |
 | MA-228 | The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree | Done | §16 | none |  |
 | MA-229 | The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled | Done | §9.4, §9.5, §16, §21.5 | none |  |
+| MA-237 | Container images are built on AWS CodeBuild's arm64 runner from GitHub Actions and stored in ECR by digest, inside the free tier | To Do | §15, §18.4 | none |  |
+| MA-238 | Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds | To Do | §18.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
