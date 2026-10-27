@@ -1,0 +1,1475 @@
+<title>MyPaisa Architecture v4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: a navy blueprint stage carries the live system; the Warm ledger page around it names every part.
+   Palette and type are MyPaisa DS v1 "Warm ledger" (navy hero, coral accent); AWS icon colours live only on the stage. */
+:root{
+  --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
+  --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
+  --coral:#FF6B4F; --accent:#C2381F; --accent-bg:#FCE7E1; --on-accent:#FFFFFF;
+  --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
+  --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB;
+  --violet:#6B3FB8; --violet-bg:#EEE7FA; --teal:#0B6E62; --teal-bg:#DDF2EC;
+  --track:#DAD6CF; --mark:#13213A; --mark-ink:#FFFFFF;
+  --glass:rgba(246,244,241,.86);
+  --shadow:0 1px 2px rgba(20,23,31,.06),0 12px 32px rgba(20,23,31,.08);
+  /* the stage: navy in both themes */
+  --st-bg:#101B30; --st-bg-2:#16243F; --st-bg-3:#1E2F50; --st-line:rgba(183,194,214,.16); --st-grid:rgba(183,194,214,.075);
+  --st-ink:#F3F5F8; --st-ink-2:#C2CCDC; --st-ink-3:#93A0B8; --st-edge:#3B4C6E;
+  --st-hot:#FF7A5E; --st-hot-2:#FFC2B3; --st-fail:#FF8FA6; --st-up:#8BE8AC; --st-amber:#F6BC4F;
+  --m-opus:#C8B4FF; --m-sonnet:#FF8F75; --m-haiku:#7FD6C2;
+  --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  --f-body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F18; --surface:#141B26; --surface-2:#1C2431; --line:#283141;
+    --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#A9B2C1;
+    --coral:#FF7A5E; --accent:#FF9A82; --accent-bg:#3A1D16; --on-accent:#1A0B06;
+    --up:#5BD68A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+    --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747;
+    --violet:#C8B4FF; --violet-bg:#2A2142; --teal:#7FD6C2; --teal-bg:#12302B;
+    --track:#384252; --mark:#F3F5F8; --mark-ink:#0A0F18;
+    --glass:rgba(10,15,24,.84);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px rgba(0,0,0,.35);
+    --st-bg:#0F1A2D; --st-bg-2:#15223B; --st-bg-3:#1D2D4C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F18; --surface:#141B26; --surface-2:#1C2431; --line:#283141;
+  --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#A9B2C1;
+  --coral:#FF7A5E; --accent:#FF9A82; --accent-bg:#3A1D16; --on-accent:#1A0B06;
+  --up:#5BD68A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+  --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747;
+  --violet:#C8B4FF; --violet-bg:#2A2142; --teal:#7FD6C2; --teal-bg:#12302B;
+  --track:#384252; --mark:#F3F5F8; --mark-ink:#0A0F18;
+  --glass:rgba(10,15,24,.84);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px rgba(0,0,0,.35);
+  --st-bg:#0F1A2D; --st-bg-2:#15223B; --st-bg-3:#1D2D4C;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(34px,5vw,58px);line-height:1.04;font-weight:900}
+h2{font-size:clamp(26px,3vw,36px);line-height:1.12;font-weight:800}
+h3{font-size:18px;line-height:1.25;font-weight:800}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+code,.mono{font-family:var(--f-mono);font-size:.84em;letter-spacing:0}
+code{background:var(--surface-2);border-radius:6px;padding:1px 6px;color:var(--ink-2);overflow-wrap:anywhere}
+a{color:var(--accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:18px;color:var(--ink-2);max-width:64ch}
+.muted{color:var(--ink-3)}
+section{padding-block:64px}
+.sec-head{display:grid;gap:12px;max-width:780px;margin-bottom:32px}
+.sec-head p{color:var(--ink-2);max-width:68ch}
+
+/* top bar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--glass)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:900;font-size:18px;color:var(--ink);text-decoration:none;flex:none}
+.brand svg{width:26px;height:26px}
+.toc{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-left:auto;min-width:0}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:none;font-size:13px;font-weight:600;color:var(--ink-2);text-decoration:none;padding:6px 10px;border-radius:999px}
+.toc a:hover,.toc a.on{background:var(--surface-2);color:var(--ink)}
+
+/* hero */
+.hero{padding-block:52px 28px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{margin-top:18px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--coral);flex:none}
+.pill.amber i{background:var(--amber)}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:28px}
+.stat{display:grid;gap:2px}
+.stat b{font-family:var(--f-display);font-size:30px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--ink-3);line-height:1.3}
+.spec{background:var(--st-bg);color:var(--st-ink);border-radius:20px;padding:22px 22px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;border:1px solid var(--st-line)}
+.spec::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--st-grid) 1px,transparent 1px);background-size:18px 18px;pointer-events:none}
+.spec-top{display:flex;align-items:center;gap:10px;position:relative;margin-bottom:12px}
+.spec-top .dots{display:flex;gap:6px}
+.spec-top .dots i{width:10px;height:10px;border-radius:50%;background:var(--st-bg-3)}
+.spec-top span{font:500 12px var(--f-mono);color:var(--st-ink-3)}
+.spec dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;position:relative;font-size:13px}
+.spec dt{font:600 11px var(--f-mono);color:var(--st-hot);letter-spacing:.04em;text-transform:uppercase;padding-top:2px}
+.spec dd{margin:0;color:var(--st-ink-2);min-width:0}
+.spec dd b{color:var(--st-ink);font-weight:600}
+.spec .row{display:contents}
+@media (prefers-reduced-motion: no-preference){
+  .spec .row dt,.spec .row dd{animation:typein .5s var(--ease) both}
+  .spec .row:nth-child(2) *{animation-delay:.05s}.spec .row:nth-child(3) *{animation-delay:.1s}.spec .row:nth-child(4) *{animation-delay:.15s}
+  .spec .row:nth-child(5) *{animation-delay:.2s}.spec .row:nth-child(6) *{animation-delay:.25s}.spec .row:nth-child(7) *{animation-delay:.3s}
+  .spec .row:nth-child(8) *{animation-delay:.35s}.spec .row:nth-child(9) *{animation-delay:.4s}
+}
+@keyframes typein{from{opacity:.15;transform:translateX(-6px)}to{opacity:1;transform:none}}
+
+/* stage */
+.stage{background:var(--st-bg);border-radius:22px;border:1px solid var(--st-line);box-shadow:var(--shadow);color:var(--st-ink);position:relative;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--st-line);position:relative;z-index:1}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.tab{border:1px solid var(--st-line);background:transparent;color:var(--st-ink-2);font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.tab:hover{color:var(--st-ink);border-color:var(--st-ink-3)}
+.tab[aria-pressed="true"]{background:var(--st-hot);border-color:var(--st-hot);color:#1A0B06}
+.ctrls{display:flex;gap:6px;margin-left:auto}
+.ctl{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--st-line);background:var(--st-bg-2);color:var(--st-ink);font-size:13px;font-weight:600;padding:7px 11px;border-radius:10px;cursor:pointer}
+.ctl:hover{border-color:var(--st-ink-3)}
+.ctl svg{width:14px;height:14px}
+.ctl.primary{background:var(--st-ink);color:var(--st-bg);border-color:var(--st-ink)}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
+.scroll-x::-webkit-scrollbar{height:8px}.scroll-x::-webkit-scrollbar-thumb{background:var(--st-bg-3);border-radius:8px}
+#sysmap{display:block;width:100%;min-width:1040px;height:auto}
+.hint{display:none;font:500 11px var(--f-mono);color:var(--st-ink-3);padding:8px 16px 0}
+@media (max-width:1060px){.hint{display:block}}
+
+/* svg map styling */
+.map text{font-family:var(--f-body)}
+.map .grid{fill:url(#dots)}
+.map .frame{fill:none;stroke:var(--st-line);stroke-width:1.2}
+.map .frame.aws{stroke:rgba(255,153,0,.38)}
+.map .frame.region{stroke:rgba(0,164,166,.5);stroke-dasharray:6 5}
+.map .flabel{font:600 10px var(--f-mono);letter-spacing:.12em;fill:var(--st-ink-3)}
+.map .flabel.strong{fill:var(--st-ink-2);letter-spacing:.04em;font-size:11px}
+.map .edge{fill:none;stroke:var(--st-edge);stroke-width:1.6;transition:stroke .3s,opacity .3s}
+.map .edge.dash{stroke-dasharray:5 5}
+.map .edge.ph18{stroke-dasharray:2 5}
+.map .edge.lit{stroke:rgba(255,122,94,.55);stroke-width:2.1;stroke-dasharray:6 7;animation:flow 1.4s linear infinite}
+.map .edge.lit.fail{stroke:rgba(255,143,166,.6)}
+.map .edge.cur{stroke:var(--st-hot);stroke-width:3;stroke-dasharray:none;animation:none;filter:url(#glow)}
+.map .edge.cur.fail{stroke:var(--st-fail)}
+.map .edge.dim{opacity:.4}
+@keyframes flow{to{stroke-dashoffset:-26}}
+.map .elabel{font:500 9.5px var(--f-mono);fill:var(--st-ink-3);paint-order:stroke;stroke:var(--st-bg);stroke-width:4px;stroke-linejoin:round}
+.map .node{cursor:pointer;transition:opacity .3s}
+.map .node.dim{opacity:.38}
+.map .node .tile{stroke:rgba(255,255,255,.14);stroke-width:1}
+.map .node.door .tile{fill:var(--st-bg-3);stroke:var(--st-ink-3)}
+.map .node.ph18 .tile{opacity:.78}
+.map .node .glyph{color:#FFFFFF}
+.map .node .lbl{fill:var(--st-ink);font-size:11.5px;font-weight:600;paint-order:stroke;stroke:var(--st-bg);stroke-width:4px;stroke-linejoin:round}
+.map .node .sub{fill:var(--st-ink-3);font:500 9.5px var(--f-mono);paint-order:stroke;stroke:var(--st-bg);stroke-width:4px;stroke-linejoin:round}
+.map .node .ring{fill:none;stroke:var(--st-hot);stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.map .node.cur .ring{opacity:1}
+.map .node.cur.fail .ring{stroke:var(--st-fail)}
+.map .node.sel .ring{opacity:1;stroke:var(--st-ink-2);stroke-dasharray:4 4}
+.map .node:focus{outline:none}
+.map .node:focus-visible .ring{opacity:1;stroke:#A8C3FF;stroke-dasharray:none}
+.map .panel-box{fill:var(--st-bg-2);stroke:var(--st-line);stroke-width:1.2}
+.map .panel.claude .panel-box{stroke:rgba(217,119,87,.55)}
+.map .panel .ptitle{fill:var(--st-ink);font-size:12.5px;font-weight:700}
+.map .panel .pline{fill:var(--st-ink-2);font:500 9.6px var(--f-mono)}
+.map .panel .pline.amber{fill:var(--st-amber)}
+.map .wordmark{fill:var(--st-ink);font:700 11px var(--f-body);letter-spacing:.28em}
+.map .model rect{fill:var(--st-bg-3);stroke:transparent;stroke-width:1.5;transition:stroke .3s,fill .3s}
+.map .model .mname{fill:var(--st-ink);font-size:12.5px;font-weight:700}
+.map .model .mid{fill:var(--st-ink-3);font:500 9px var(--f-mono)}
+.map .model.on rect{stroke:currentColor;fill:#24365A}
+.map .model.on .mname{fill:#FFFFFF}
+.map .phase-chip rect{fill:var(--st-bg);stroke:var(--st-amber);stroke-width:1}
+.map .phase-chip text{fill:var(--st-amber);font:600 8.5px var(--f-mono)}
+.map .pk-o{fill:var(--st-hot);opacity:.26}
+.map .pk-i{fill:#FFE6DE}
+.map .pk.fail .pk-o{fill:var(--st-fail)}
+.map .pk.fail .pk-i{fill:#FFE1E8}
+@media (prefers-reduced-motion: no-preference){
+  .map .node.cur .ring{animation:pulse 1.6s ease-out infinite}
+}
+@keyframes pulse{0%{opacity:.95;transform:scale(.94)}100%{opacity:0;transform:scale(1.22)}}
+@media (prefers-reduced-motion: reduce){.map .edge.lit{animation:none}}
+
+/* below the map */
+.under{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);border-top:1px solid var(--st-line)}
+.steps{padding:18px 16px 20px;border-right:1px solid var(--st-line);display:grid;gap:4px;align-content:start;counter-reset:s}
+.steps li button{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;background:transparent;border:0;border-radius:10px;padding:7px 8px;color:var(--st-ink-2);cursor:pointer;font-size:14px}
+.steps li button:hover{background:var(--st-bg-2);color:var(--st-ink)}
+.steps .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:600 11px var(--f-mono);background:var(--st-bg-3);color:var(--st-ink-2)}
+.steps .t{min-width:0}
+.steps .mchip{font:600 10px var(--f-mono);padding:2px 7px;border-radius:999px;background:var(--st-bg-3)}
+.steps li.done .n{background:rgba(255,122,94,.22);color:var(--st-hot-2)}
+.steps li.cur button{background:var(--st-bg-2);color:var(--st-ink)}
+.steps li.cur .n{background:var(--st-hot);color:#1A0B06}
+.steps li.fail.cur .n{background:var(--st-fail)}
+.detail{padding:22px 22px 24px;display:grid;gap:12px;align-content:start;min-width:0}
+.detail .k{font:600 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-hot)}
+.detail h3{color:var(--st-ink);font-size:21px}
+.detail p{color:var(--st-ink-2);font-size:15px}
+.detail .code{font:500 12px/1.5 var(--f-mono);background:var(--st-bg-2);border:1px solid var(--st-line);border-radius:10px;padding:10px 12px;color:var(--st-hot-2);overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.inspector{border-top:1px dashed var(--st-line);padding-top:14px;margin-top:4px;display:grid;gap:8px}
+.inspector .k{color:var(--st-ink-3)}
+.inspector h4{margin:0;font:800 16px var(--f-display);color:var(--st-ink)}
+.inspector p{font-size:14px}
+.facts{display:flex;flex-wrap:wrap;gap:6px}
+.facts span{font:500 11px var(--f-mono);color:var(--st-ink-2);background:var(--st-bg-2);border:1px solid var(--st-line);border-radius:999px;padding:3px 9px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:14px 16px;border-top:1px solid var(--st-line);font-size:12.5px;color:var(--st-ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:4px;flex:none}
+.legend .ln{width:22px;height:0;border-top:2px dashed var(--st-hot);border-radius:0}
+.legend .ln.f{border-color:var(--st-fail)}
+
+/* model chips (page) */
+.chip{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--f-mono);padding:3px 9px;border-radius:999px;white-space:nowrap}
+.chip svg{width:13px;height:13px}
+.chip.opus{background:var(--violet-bg);color:var(--violet)}
+.chip.sonnet{background:var(--accent-bg);color:var(--accent)}
+.chip.haiku{background:var(--teal-bg);color:var(--teal)}
+.chip.code{background:var(--surface-2);color:var(--ink-2)}
+.chip.tpl{background:var(--amber-bg);color:var(--amber)}
+.chip.off{background:var(--surface-2);color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:1px}
+.chip.ok{background:var(--up-bg);color:var(--up)}
+
+/* trace */
+.trace{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.trace-head{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;padding:16px 18px;border-bottom:1px solid var(--line)}
+.trace-head b{font:600 13px var(--f-mono)}
+.trace-head span{font-size:13px;color:var(--ink-3)}
+.trace-body{display:grid;grid-template-columns:minmax(0,1fr) 320px}
+.wf{padding:10px 0 16px;min-width:0;overflow-x:auto}
+.wf-inner{min-width:640px;position:relative;padding-bottom:44px}
+.wf-row{display:grid;grid-template-columns:270px 1fr;align-items:center;height:28px;cursor:pointer;border:0;background:transparent;width:100%;padding:0;text-align:left}
+.wf-row:hover{background:var(--surface-2)}
+.wf-row.sel{background:var(--accent-bg)}
+.wf-name{font:500 12px var(--f-mono);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:16px;display:flex;align-items:center;gap:7px}
+.wf-name i{width:8px;height:8px;border-radius:2px;flex:none}
+.wf-lane{position:relative;height:100%;margin-right:18px}
+.wf-bar{position:absolute;top:8px;height:12px;border-radius:4px;transform-origin:left center;min-width:3px}
+.wf-bar.queue{background-image:repeating-linear-gradient(135deg,rgba(231,21,123,.55) 0 4px,transparent 4px 8px)!important;border:1px solid rgba(231,21,123,.6)}
+.wf-bar .tt{position:absolute;top:-1px;width:2px;height:14px;background:var(--ink)}
+.wf-dur{position:absolute;top:6px;font:500 10.5px var(--f-mono);color:var(--ink-3);white-space:nowrap}
+.wf-dur.in{color:#FFFFFF;top:7px;font-size:10px}
+.wf-axis{display:grid;grid-template-columns:270px 1fr;height:24px;align-items:end;border-bottom:1px solid var(--line);margin-bottom:6px}
+.wf-ticks{position:relative;height:100%;margin-right:18px}
+.wf-ticks span{position:absolute;bottom:4px;font:500 10.5px var(--f-mono);color:var(--ink-3);transform:translateX(-50%)}
+.wf-grid{position:absolute;top:30px;bottom:0;left:270px;right:18px;pointer-events:none}
+.wf-grid i{position:absolute;top:0;bottom:0;border-left:1px dashed var(--line)}
+.wf-mark{position:absolute;top:24px;bottom:40px;border-left:2px solid var(--accent);pointer-events:none}
+.wf-mark span{position:absolute;bottom:-20px;left:6px;font:600 10.5px var(--f-mono);color:var(--accent);white-space:nowrap;background:var(--surface);padding:0 4px;border-radius:4px}
+.wf-mark.end{border-color:var(--up);bottom:22px}.wf-mark.end span{color:var(--up);left:auto;right:6px}
+@media (prefers-reduced-motion: no-preference){
+  .trace.play .wf-bar{animation:grow .7s var(--ease) both;animation-delay:var(--d)}
+}
+@keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+.attrs{border-left:1px solid var(--line);padding:16px 18px;display:grid;gap:10px;align-content:start;min-width:0}
+.attrs h4{margin:0;font:800 16px var(--f-display)}
+.attrs .k{font:600 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.attrs dl{margin:0;display:grid;gap:5px;font:500 11.5px var(--f-mono)}
+.attrs dl div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:4px}
+.attrs dt{color:var(--ink-3);overflow-wrap:anywhere}
+.attrs dd{margin:0;color:var(--ink);text-align:right;overflow-wrap:anywhere}
+.attrs .note{font-size:13px;color:var(--ink-2)}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.keys code{font-size:12px}
+
+/* loop */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.loop{padding:10px 6px 4px}
+.loop svg{display:block;width:100%;min-width:900px;height:auto}
+.lp-box{fill:var(--surface-2);stroke:var(--line);stroke-width:1.2}
+.lp-box.hot{fill:var(--accent-bg);stroke:var(--accent)}
+.lp-t{fill:var(--ink);font:800 14px var(--f-display)}
+.lp-s{fill:var(--ink-3);font:500 10.5px var(--f-mono)}
+.lp-line{fill:none;stroke:var(--track);stroke-width:2}
+.lp-ring{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:3 6;opacity:.7}
+.lp-dot{fill:var(--coral)}
+.lp-halo{fill:var(--coral);opacity:.22}
+.lp-note{fill:var(--ink-2);font:500 11px var(--f-mono)}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.tg{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:8px;align-content:start}
+.tg h4{margin:0;font:800 14px var(--f-display);display:flex;align-items:center;gap:8px}
+.tg h4 i{width:9px;height:9px;border-radius:3px}
+.tg p{font-size:13px;color:var(--ink-3)}
+.tg .list{display:flex;flex-wrap:wrap;gap:5px}
+.tg .list code{font-size:11.5px}
+.loop-rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.lr{border-left:3px solid var(--coral);padding:4px 0 4px 12px;font-size:14px;color:var(--ink-2)}
+.lr b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
+
+/* team */
+#team .stage{padding:0}
+#bus{display:block;width:100%;min-width:900px;height:auto}
+.bus-cap{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:12px 16px;border-top:1px solid var(--st-line);font-size:13px;color:var(--st-ink-2)}
+.bus-cap .now{font:500 12px var(--f-mono);color:var(--st-hot-2)}
+.bus-cap .k{display:inline-flex;align-items:center;gap:7px}
+.bus-cap .k i{width:12px;height:12px;border-radius:50%;border:2.5px solid}
+.agents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+.agent{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;display:grid;gap:10px;align-content:start}
+.agent-top{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center}
+.agent-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--st-bg);color:#fff;border:2.5px solid}
+.agent-ic svg{width:26px;height:26px}
+.agent h3{font-size:17px}
+.agent .type{font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.agent .brain{display:flex;flex-wrap:wrap;gap:5px}
+.agent dl{margin:0;display:grid;gap:6px;font-size:13.5px}
+.agent dt{font:600 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.agent dd{margin:0;color:var(--ink-2)}
+.share{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font:500 11.5px var(--f-mono);color:var(--ink-3)}
+.share .bar{height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.share .bar i{display:block;height:100%;border-radius:6px;background:var(--coral)}
+.team-rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+
+/* models */
+.models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.model-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:12px;align-content:start;position:relative;overflow:hidden}
+.model-card .mh{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center}
+.model-card .spark{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--st-bg)}
+.model-card .spark svg{width:34px;height:34px}
+@media (prefers-reduced-motion: no-preference){.model-card .spark svg{animation:spin 18s linear infinite}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.model-card h3{font-size:22px}
+.model-card .mid{font:500 12px var(--f-mono);color:var(--ink-3)}
+.model-card .role{font-weight:600;color:var(--ink)}
+.model-card ul{display:grid;gap:7px;font-size:14px;color:var(--ink-2)}
+.model-card li{display:grid;grid-template-columns:14px 1fr;gap:8px}
+.model-card li::before{content:"";width:6px;height:6px;border-radius:50%;margin-top:8px;background:currentColor;opacity:.5}
+.model-card .price{font:500 12px var(--f-mono);color:var(--ink-3);border-top:1px dashed var(--line);padding-top:10px}
+.model-card.opus .spark{color:var(--m-opus)} .model-card.sonnet .spark{color:var(--m-sonnet)} .model-card.haiku .spark{color:var(--m-haiku)}
+.model-card.opus{border-top:4px solid var(--violet)} .model-card.sonnet{border-top:4px solid var(--accent)} .model-card.haiku{border-top:4px solid var(--teal)}
+.ladder{margin-top:18px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:14px}
+.ladder .card{padding:20px}
+.ladder h3{margin-bottom:4px}
+.lad-read{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:12px 0 6px}
+.lad-read b{font:900 30px var(--f-display);font-variant-numeric:tabular-nums}
+.lad-read span{font-size:14px;color:var(--ink-2)}
+.lad-step{display:inline-flex;font:700 12px var(--f-mono);padding:3px 10px;border-radius:999px;background:var(--up-bg);color:var(--up)}
+.lad-step.s70{background:var(--blue-bg);color:var(--blue)}
+.lad-step.s85{background:var(--amber-bg);color:var(--amber)}
+.lad-step.s95,.lad-step.s100{background:var(--alert-bg);color:var(--alert)}
+.slider{position:relative;margin:16px 0 26px}
+.slider input{width:100%;accent-color:var(--accent);height:28px;margin:0}
+.slider .marks{position:absolute;left:0;right:0;top:30px;height:16px;pointer-events:none}
+.slider .marks span{position:absolute;transform:translateX(-50%);font:600 10.5px var(--f-mono);color:var(--ink-3)}
+.lad-msg{font-size:14px;color:var(--ink-2);min-height:44px}
+.routes{display:grid;gap:0;margin-top:10px;border-top:1px solid var(--line)}
+.routes div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.guards{display:grid;gap:12px}
+.guard{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.guard b{font:900 22px var(--f-display);font-variant-numeric:tabular-nums;min-width:64px}
+.guard span{font-size:13.5px;color:var(--ink-2)}
+.shares{margin-top:14px}
+.sharebar{display:flex;height:34px;border-radius:10px;overflow:hidden;margin:12px 0 10px;gap:2px}
+.sharebar i{display:block;height:100%}
+.sharekey{display:grid;grid-template-columns:1fr;gap:6px 14px;font-size:13px;color:var(--ink-2)}
+.sharekey span{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center}
+.sharekey i{width:10px;height:10px;border-radius:3px}
+.sharekey b{font:600 12px var(--f-mono);color:var(--ink)}
+
+/* state */
+.state{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:14px}
+.store{padding:18px;display:grid;gap:12px;align-content:start}
+.store-h{display:flex;align-items:center;gap:12px}
+.store-h .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none}
+.store-h .ic svg{width:26px;height:26px;color:#fff}
+.store-h div b{display:block;font:800 16px var(--f-display)}
+.store-h div span{font:500 11.5px var(--f-mono);color:var(--ink-3)}
+.egroup{display:grid;gap:6px}
+.egroup h4{margin:0;font:600 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.egroup .list{display:flex;flex-wrap:wrap;gap:5px}
+.egroup code{font-size:11.5px}
+.prefix{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px;color:var(--ink-2)}
+.prefix code{font-size:11.5px;justify-self:start}
+
+/* delivery */
+.pipe-wrap{position:relative}
+.pipe{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;counter-reset:p}
+.pipe::before{content:"";position:absolute;left:4%;right:4%;top:33px;height:2px;background:var(--track)}
+.pipe .runner{position:absolute;top:28px;left:4%;width:12px;height:12px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 6px rgba(255,107,79,.2)}
+@media (prefers-reduced-motion: no-preference){.pipe .runner{animation:run 9s var(--ease) infinite}}
+@keyframes run{0%{left:4%;opacity:0}4%{opacity:1}92%{opacity:1}100%{left:95%;opacity:0}}
+.stg{position:relative;display:grid;gap:8px;justify-items:center;text-align:center}
+.stg .ic{width:66px;height:66px;border-radius:18px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);position:relative;z-index:1}
+.stg .ic svg{width:36px;height:36px}
+.stg.gate .ic{border:2px solid var(--amber)}
+.stg b{font:800 14px var(--f-display)}
+.stg span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.stg .when{font:500 10.5px var(--f-mono);color:var(--ink-3)}
+.envs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
+.env{padding:18px;display:grid;gap:10px;align-content:start}
+.env-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.env-h b{font:900 20px var(--f-display)}
+.env-h code{font-size:11.5px}
+.env dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13.5px}
+.env dt{font:600 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-top:3px}
+.env dd{margin:0;color:var(--ink-2);min-width:0}
+.env.prod{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rule{padding:18px;display:grid;gap:8px;align-content:start}
+.rule .ri{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--accent-bg);color:var(--accent)}
+.rule .ri svg{width:20px;height:20px}
+.rule h3{font-size:17px}
+.rule p{font-size:14px;color:var(--ink-2)}
+.rule .where{font:500 11.5px var(--f-mono);color:var(--ink-3)}
+
+footer{padding-block:40px 64px;border-top:1px solid var(--line);margin-top:20px}
+footer .wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+footer h3{font-size:15px;margin-bottom:8px}
+footer p,footer li{font-size:14px;color:var(--ink-2)}
+footer ul{display:grid;gap:5px}
+
+/* responsive */
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:1fr}
+  .under{grid-template-columns:1fr}
+  .steps{border-right:0;border-bottom:1px solid var(--st-line)}
+  .trace-body{grid-template-columns:1fr}
+  .attrs{border-left:0;border-top:1px solid var(--line)}
+  .models,.agents,.tools,.rules,.team-rules{grid-template-columns:1fr 1fr}
+  .ladder{grid-template-columns:1fr}
+  .state{grid-template-columns:1fr}
+  .loop-rules{grid-template-columns:1fr 1fr}
+  .pipe{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:24px}
+  .pipe::before,.pipe .runner{display:none}
+}
+@media (max-width:640px){
+  section{padding-block:48px}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:16px}
+  .models,.agents,.tools,.rules,.team-rules,.envs,.loop-rules{grid-template-columns:1fr}
+  .pipe{grid-template-columns:1fr 1fr}
+  .ctrls{margin-left:0}
+  footer .wrap{grid-template-columns:1fr}
+  .wf-row,.wf-axis{grid-template-columns:200px 1fr}
+  .wf-grid{left:200px}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="g-lambda" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 37 L23.5 21.5"/><path d="M16 11 H22 L33.5 37 H38"/></symbol>
+    <symbol id="g-apigw" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 13 L8 24 L15 35"/><path d="M33 13 L40 24 L33 35"/><path d="M27 16 L21 32"/></symbol>
+    <symbol id="g-sqs" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="15" width="20" height="18" rx="3"/><path d="M7 24 H14 M34 24 H41 M38 21 L41 24 L38 27"/><circle cx="19.5" cy="24" r="1.7" fill="currentColor" stroke="none"/><circle cx="24" cy="24" r="1.7" fill="currentColor" stroke="none"/><circle cx="28.5" cy="24" r="1.7" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-dlq" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="15" width="20" height="18" rx="3"/><path d="M7 24 H14"/><path d="M20 20 L28 28 M28 20 L20 28"/><path d="M34 24 H39"/></symbol>
+    <symbol id="g-dynamo" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="24" cy="13.5" rx="11" ry="4"/><path d="M13 13.5 V34.5 C13 36.7 18 38.5 24 38.5 S35 36.7 35 34.5 V13.5"/><path d="M13 24 C13 26.2 18 28 24 28 S35 26.2 35 24"/></symbol>
+    <symbol id="g-s3" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="24" cy="14" rx="13" ry="4.2"/><path d="M11 14 L15 35 C15.5 37 19 38.5 24 38.5 S32.5 37 33 35 L37 14"/></symbol>
+    <symbol id="g-cognito" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="32" height="24" rx="3.5"/><circle cx="18" cy="21.5" r="3.6"/><path d="M12.5 31 C13.5 27.5 22.5 27.5 23.5 31"/><path d="M28 20 H35 M28 25 H35 M28 30 H32"/></symbol>
+    <symbol id="g-cloudfront" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="13"/><ellipse cx="24" cy="24" rx="5.5" ry="13"/><path d="M11 24 H37"/></symbol>
+    <symbol id="g-ssm" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="16.5" cy="24" r="6.5"/><path d="M23 24 H39 M34 24 V30 M38.5 24 V28.5"/></symbol>
+    <symbol id="g-cloudwatch" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 33 H13.5 A6.5 6.5 0 0 1 13 20 A10 10 0 0 1 32 17.5 A7.5 7.5 0 0 1 37 24.5"/><circle cx="28.5" cy="30.5" r="5.5"/><path d="M32.5 34.5 L37.5 39.5"/></symbol>
+    <symbol id="g-sns" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12.5" cy="24" r="4.5"/><path d="M17 24 H31 M16.3 21.4 L31 13.4 M16.3 26.6 L31 34.6"/><circle cx="34.5" cy="12" r="3.5"/><circle cx="34.5" cy="24" r="3.5"/><circle cx="34.5" cy="36" r="3.5"/></symbol>
+    <symbol id="g-clock" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="13"/><path d="M24 16.5 V24 L29.5 28"/></symbol>
+    <symbol id="g-sfn" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="8" width="12" height="9" rx="2"/><rect x="8" y="31" width="12" height="9" rx="2"/><rect x="28" y="31" width="12" height="9" rx="2"/><path d="M24 17 V24 M14 31 V24 H34 V31"/></symbol>
+    <symbol id="g-bus" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 24 H41"/><circle cx="14" cy="13" r="3.5"/><circle cx="34" cy="13" r="3.5"/><circle cx="24" cy="35" r="3.5"/><path d="M14 16.5 V24 M34 16.5 V24 M24 24 V31.5"/></symbol>
+    <symbol id="g-ecr" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8 L38 16 V32 L24 40 L10 32 V16 Z"/><path d="M10 16 L24 24 L38 16 M24 24 V40"/></symbol>
+    <symbol id="g-build" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 13 L8 24 L15 35 M33 13 L40 24 L33 35"/><path d="M21 18 V30 L30.5 24 Z" fill="currentColor"/></symbol>
+    <symbol id="g-phone" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="15" y="7" width="18" height="34" rx="4.5"/><path d="M21.5 36 H26.5"/></symbol>
+    <symbol id="g-browser" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="11" width="34" height="26" rx="3.5"/><path d="M7 18 H41"/><circle cx="11.5" cy="14.5" r=".8" fill="currentColor"/><circle cx="15" cy="14.5" r=".8" fill="currentColor"/></symbol>
+    <symbol id="g-mail" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="13" width="32" height="22" rx="3"/><path d="M9 15 L24 26 L39 15"/></symbol>
+    <symbol id="g-chart" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 37 H39"/><path d="M12 30 L19 22 L25 27 L36 14"/><path d="M31 14 H36 V19"/></symbol>
+    <symbol id="g-branch" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="12" r="3.5"/><circle cx="15" cy="36" r="3.5"/><circle cx="33" cy="17" r="3.5"/><path d="M15 15.5 V32.5 M33 20.5 C33 28 15 25 15 32"/></symbol>
+    <symbol id="g-check" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 25 L20 34 L37 15"/></symbol>
+    <symbol id="g-person" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="17" r="6"/><path d="M9 38 C9 30 14 26 20 26 C23 26 25.5 27 27.3 28.6"/><path d="M28 34 L32 38 L40 29"/></symbol>
+    <symbol id="g-chat" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12 H38 V31 H23 L15 38 V31 H10 Z"/><path d="M16 19 H32 M16 24.5 H27"/></symbol>
+    <symbol id="g-pipe" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 H19 C26 17 25 31 32 31 H40"/><path d="M7 31 H14"/><path d="M33 17 H40"/><path d="M36.5 27.5 L40 31 L36.5 34.5"/></symbol>
+    <symbol id="g-news" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="11" width="24" height="27" rx="2.5"/><path d="M33 17 H38 V34 A4 4 0 0 1 34 38 H13"/><path d="M14 18 H28 M14 24 H28 M14 30 H22"/></symbol>
+    <symbol id="g-gauge" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 33 A15 15 0 0 1 39 33"/><path d="M24 33 L31 21"/><circle cx="24" cy="33" r="2.4" fill="currentColor"/><path d="M13 22 L15 23.5 M24 18 V20.5 M35 22 L33 23.5"/></symbol>
+    <symbol id="g-fan" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 33 L16 28 L22 30 L26 24"/><path d="M26 24 L40 13 M26 24 L40 24 M26 24 L40 34" stroke-dasharray="2.5 3.5"/></symbol>
+    <symbol id="g-target" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="13"/><circle cx="24" cy="24" r="7"/><circle cx="24" cy="24" r="1.9" fill="currentColor"/></symbol>
+    <symbol id="g-wrench" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M30 10 A8 8 0 0 0 21 21 L10 32 A3.5 3.5 0 0 0 15 37 L26 26 A8 8 0 0 0 37 17 L32 22 L27 21 L26 16 Z"/></symbol>
+    <symbol id="g-meter" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="13"/><path d="M24 14.5 V17.5 M24 30.5 V33.5"/><path d="M28.5 19.5 C27.5 18.3 26 18 24.2 18 C21.5 18 20 19.6 20 21.2 C20 25.6 28.5 23 28.5 27.4 C28.5 29.2 26.8 30.4 24.2 30.4 C22 30.4 20.3 29.6 19.4 28.2"/></symbol>
+    <symbol id="g-shield" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8 L37 13 V23 C37 31 31 37 24 40 C17 37 11 31 11 23 V13 Z"/><path d="M18 24 L22.5 28.5 L30 20"/></symbol>
+    <symbol id="g-lock" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="21" width="26" height="18" rx="3.5"/><path d="M16 21 V16 A8 8 0 0 1 32 16 V21"/><path d="M24 28 V32"/></symbol>
+    <symbol id="g-calc" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="8" width="24" height="32" rx="3.5"/><path d="M17 14 H31 V20 H17 Z"/><path d="M18 27 H18.1 M24 27 H24.1 M30 27 H30.1 M18 33 H18.1 M24 33 H24.1 M30 33 H30.1"/></symbol>
+    <symbol id="g-noentry" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="14"/><path d="M14 34 L34 14"/></symbol>
+    <symbol id="g-eye" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 24 C11 15 17 11 24 11 C31 11 37 15 42 24 C37 33 31 37 24 37 C17 37 11 33 6 24 Z"/><circle cx="24" cy="24" r="5"/><path d="M9 39 L39 9"/></symbol>
+    <symbol id="g-spark" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M27.5 24 L41 24 M27.03 25.75 L34.39 30 M25.75 27.03 L32.5 38.72 M24 27.5 L24 36 M22.25 27.03 L15.5 38.72 M20.97 25.75 L13.61 30 M20.5 24 L7 24 M20.97 22.25 L13.61 18 M22.25 20.97 L15.5 9.28 M24 20.5 L24 12 M25.75 20.97 L32.5 9.28 M27.03 22.25 L34.39 18"/></symbol>
+    <symbol id="g-apple" viewBox="0 0 48 48"><path fill="currentColor" d="M31.6 25.6c0-3.4 2.8-5 2.9-5.1-1.6-2.3-4-2.6-4.9-2.7-2.1-.2-4.1 1.2-5.1 1.2-1.1 0-2.7-1.2-4.4-1.2-2.3 0-4.4 1.3-5.5 3.4-2.4 4.1-.6 10.2 1.7 13.5 1.1 1.6 2.5 3.4 4.2 3.4 1.7-.1 2.3-1.1 4.3-1.1s2.6 1.1 4.4 1 2.9-1.6 4-3.3c1.3-1.9 1.8-3.7 1.8-3.8-.1 0-3.4-1.3-3.4-5.3zM28.4 15.7c.9-1.1 1.5-2.6 1.3-4.1-1.3.1-2.9.9-3.8 2-.8.9-1.6 2.5-1.4 3.9 1.5.1 2.9-.7 3.9-1.8z"/></symbol>
+    <symbol id="g-google" viewBox="0 0 48 48" fill="none" stroke-width="4.6"><path stroke="#EA4335" d="M30.9 18.2 A9 9 0 0 0 15.5 20.9"/><path stroke="#FBBC05" d="M15.5 20.9 A9 9 0 0 0 17.1 29.8"/><path stroke="#34A853" d="M17.1 29.8 A9 9 0 0 0 30.9 29.8"/><path stroke="#4285F4" d="M30.9 29.8 A9 9 0 0 0 33 24 H24"/></symbol>
+    <symbol id="g-terraform" viewBox="0 0 48 48"><g fill="#8A55D6"><path d="M8 6 L16.5 10.9 V20.7 L8 15.8 Z"/><path d="M19 12.4 L27.5 17.3 V27.1 L19 22.2 Z"/><path d="M30 17.3 L38.5 12.4 V22.2 L30 27.1 Z"/><path d="M19 25 L27.5 29.9 V39.7 L19 34.8 Z"/></g></symbol>
+    <symbol id="g-mark" viewBox="0 0 512 512"><path d="M440.75 149.33 A213.33 213.33 0 1 1 362.67 71.25" fill="none" style="stroke:var(--mark)" stroke-width="17.07"/><circle cx="256" cy="256" r="155.73" style="fill:var(--mark)"/><g fill="none" style="stroke:var(--mark-ink)" stroke-width="26.28" stroke-linecap="round" stroke-linejoin="round"><path d="M304.85 215.98 C301.87 191.49 285.74 176.55 264.23 176.55 C239.74 176.55 223.62 193.88 223.62 218.37 L223.62 294.83 C223.62 313.34 217.05 325.29 202.11 335.45"/><path d="M202.11 335.45 L316.8 335.45"/><path d="M197.33 264.96 L274.99 264.96"/></g><circle cx="406.85" cy="105.15" r="40.53" fill="#FF6B4F"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#g-mark"/></svg>MyPaisa</a>
+    <nav class="toc" aria-label="Sections">
+      <a href="#map">System map</a><a href="#trace">One trace</a><a href="#loop">Tool loop</a><a href="#team">Agents</a><a href="#models">Models</a><a href="#state">Data</a><a href="#delivery">Delivery</a><a href="#rules">Guardrails</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">MyPaisa Agent · technical architecture · v4</p>
+      <h1 style="margin-top:12px">From a tap at either door to <em>Claude</em> and back, on AWS, in one trace.</h1>
+      <p class="lede">The household's wealth agent end to end: the iOS app and the web app, the AWS services between them, the concierge's tool loop on the Anthropic API, the nine agents of the team, and which Claude model each piece uses. Pick a journey below and press play to watch it move through the system.</p>
+      <div class="pills">
+        <span class="pill amber"><i></i>Design only: nothing is built yet</span>
+        <span class="pill"><i></i>AWS <span class="mono">us-east-1</span> · account <span class="mono">545595341442</span></span>
+        <span class="pill"><i></i>dev and prod, the same shape</span>
+      </div>
+      <div class="stats" aria-label="The system in numbers">
+        <div class="stat"><b>2</b><span>doors: iOS app, web app</span></div>
+        <div class="stat"><b>5</b><span>core Lambda handlers, one Dockerfile</span></div>
+        <div class="stat"><b>3</b><span>SQS queues, a DLQ behind each</span></div>
+        <div class="stat"><b>3</b><span>Claude models</span></div>
+        <div class="stat"><b>9</b><span>agents in the team</span></div>
+        <div class="stat"><b>$160</b><span>prod Claude ceiling a month</span></div>
+      </div>
+    </div>
+    <div class="spec" aria-label="Stack summary">
+      <div class="spec-top"><div class="dots"><i></i><i></i><i></i></div><span>stack.v4 · ARCHITECTURE.md §13</span></div>
+      <dl>
+        <div class="row"><dt>Doors</dt><dd><b>iOS app</b>: React Native 0.88 shell, SwiftUI core · <b>web app</b>: SvelteKit 3 PWA</dd></div>
+        <div class="row"><dt>Edge</dt><dd>API Gateway REST at <b>api.mypaisapp.com</b> · CloudFront at <b>dashboard.mypaisapp.com</b> · Cognito</dd></div>
+        <div class="row"><dt>Runtime</dt><dd>Lambda container image, arm64: <b>api · agent · sender · worker · stream</b></dd></div>
+        <div class="row"><dt>Queues</dt><dd><b>updates.fifo</b> in, <b>outbox.fifo</b> out, <b>work</b> for jobs, each with a DLQ</dd></div>
+        <div class="row"><dt>Live</dt><dd>SSE on the api host · Apple push · Web Push</dd></div>
+        <div class="row"><dt>State</dt><dd>DynamoDB single table · S3 lake in Parquet, read with DuckDB · S3 documents</dd></div>
+        <div class="row"><dt>Claude</dt><dd><b>Opus 5.5 · Sonnet 5.5 · Haiku 5.5</b> through the Anthropic API, key in SSM</dd></div>
+        <div class="row"><dt>Watching</dt><dd>OpenTelemetry on every Lambda → X-Ray, CloudWatch's generative AI views</dd></div>
+        <div class="row"><dt>Delivery</dt><dd>Terraform only · GitHub OIDC · CodeBuild arm64 → ECR · prod on approval</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="map" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">The system map</p>
+      <h2>Every hop a message makes, on the services that carry it</h2>
+      <p>Nothing waits on anything directly: what you send, what MyPaisa sends back and every background job travel through SQS, which retries them and keeps what still fails. The agent Lambda is the only one that talks in the chat, and the sender the only one that delivers to the doors. Tap any part to inspect it.</p>
+    </div>
+    <div class="stage">
+      <div class="stage-bar">
+        <div class="tabs" role="group" aria-label="Journeys" id="tabs"></div>
+        <div class="ctrls">
+          <button class="ctl" id="prev" type="button" aria-label="Previous step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 L5 8 L10 13"/></svg></button>
+          <button class="ctl primary" id="play" type="button"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5 L13 8 L4 13.5 Z"/></svg><span>Play</span></button>
+          <button class="ctl" id="next" type="button" aria-label="Next step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3 L11 8 L6 13"/></svg></button>
+        </div>
+      </div>
+      <p class="hint">Scroll sideways to see the whole map.</p>
+      <div class="scroll-x"><svg id="sysmap" class="map" viewBox="0 0 1200 760" role="group" aria-label="MyPaisa system map: the household's doors, the AWS account in us-east-1, the Anthropic API, Apple push and the free data sources"></svg></div>
+      <div class="legend" aria-label="Legend">
+        <span><i style="background:#ED7100"></i>Compute</span>
+        <span><i style="background:#E7157B"></i>App integration, management</span>
+        <span><i style="background:#C925D1"></i>Database</span>
+        <span><i style="background:#7AA116"></i>Storage</span>
+        <span><i style="background:#8C4FFF"></i>Networking, delivery</span>
+        <span><i style="background:#DD344C"></i>Identity</span>
+        <span><i style="background:#D97757"></i>Anthropic</span>
+        <span><i class="ln"></i>this journey</span>
+        <span><i class="ln f"></i>failure path</span>
+      </div>
+      <div class="under">
+        <ol class="steps" id="steps" aria-label="Steps of this journey"></ol>
+        <div class="detail" aria-live="polite">
+          <div id="detail"></div>
+          <div class="inspector" id="inspector"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trace">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Observability</p>
+      <h2>One message is one trace, from the finger to the last word</h2>
+      <p>The door makes a W3C <code>traceparent</code> for each action. API Gateway, the api, SQS and every Lambda carry it on, so nothing in the path starts a trace of its own. Each model call is a span named <code>chat &lt;model&gt;</code> in the OpenTelemetry GenAI conventions, with MyPaisa's cost and ladder step beside it. Prompts, replies and figures never leave DynamoDB. Timings, tokens and costs below are illustrative; tap a span to read it.</p>
+    </div>
+    <div class="trace" id="tracebox">
+      <div class="trace-head">
+        <b>trace 4bf92f3577b34da6a3ce929d0e0e4736</b>
+        <span>"What if we buy a house in 2028?" · iOS · prod · concierge</span>
+        <span>run_id <span class="mono">run_7Hq2…</span></span>
+      </div>
+      <div class="trace-body">
+        <div class="wf"><div class="wf-inner" id="wf"></div></div>
+        <aside class="attrs" id="attrs" aria-live="polite"></aside>
+      </div>
+    </div>
+    <div class="keys" aria-label="Correlation keys">
+      <span class="muted" style="font-size:13px;margin-right:4px">The same keys on every log line, span and RunRecord:</span>
+      <code>trace_id</code><code>span_id</code><code>run_id</code><code>member</code><code>client_message_id</code><code>conversation_id</code><code>job_id</code><code>env</code><code>build</code><code>version</code><code>door</code><code>app_version</code>
+    </div>
+  </div>
+</section>
+
+<section id="loop">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">The concierge</p>
+      <h2>One Claude tool loop, with code doing every sum</h2>
+      <p>The <code>agent</code> Lambda runs one tool loop on Sonnet 5.5. Before each call it reads the month's spend and lets the ladder choose the model. It sends only the current conversation after a cached prefix, loops through strict tools until it can answer, ask one thing, or show a Confirm card. A draft writes nothing: only a Confirm, a check-in's tap or a Save in place commits, through the one write service.</p>
+    </div>
+    <div class="card loop scroll-x">
+      <svg viewBox="0 0 1100 300" role="img" aria-label="The concierge's loop: message, ladder check, context, then Claude and tools in a loop, ending in an answer, a question or a Confirm card">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--accent)"/></marker>
+        </defs>
+        <path class="lp-line" d="M165 150 H190"/><path class="lp-line" d="M340 150 H365"/><path class="lp-line" d="M515 150 H582"/>
+        <path class="lp-line" d="M738 150 C790 150 800 64 855 64"/><path class="lp-line" d="M738 150 H855"/><path class="lp-line" d="M738 150 C790 150 800 236 855 236"/>
+        <circle class="lp-ring" cx="660" cy="150" r="78"/>
+        <path d="M712 92 A78 78 0 0 1 738 150" fill="none" style="stroke:var(--accent)" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M608 208 A78 78 0 0 1 582 150" fill="none" style="stroke:var(--accent)" stroke-width="2" marker-end="url(#arr)"/>
+        <g><rect class="lp-box" x="15" y="118" width="150" height="64" rx="14"/><text class="lp-t" x="90" y="146" text-anchor="middle">Message</text><text class="lp-s" x="90" y="164" text-anchor="middle">from updates.fifo</text></g>
+        <g><rect class="lp-box" x="190" y="118" width="150" height="64" rx="14"/><text class="lp-t" x="265" y="146" text-anchor="middle">Ladder check</text><text class="lp-s" x="265" y="164" text-anchor="middle">SpendMonth → step</text></g>
+        <g><rect class="lp-box" x="365" y="118" width="150" height="64" rx="14"/><text class="lp-t" x="440" y="146" text-anchor="middle">Context</text><text class="lp-s" x="440" y="164" text-anchor="middle">cached 1 h · notes · turn</text></g>
+        <g><rect class="lp-box hot" x="590" y="50" width="140" height="44" rx="22"/><use href="#g-spark" x="600" y="57" width="30" height="30" style="color:#D97757"/><text class="lp-t" x="636" y="70">Sonnet 5.5</text><text class="lp-s" x="636" y="85">chooses a tool</text></g>
+        <g><rect class="lp-box" x="590" y="206" width="140" height="44" rx="22"/><text class="lp-t" x="660" y="226" text-anchor="middle">Code tools</text><text class="lp-s" x="660" y="241" text-anchor="middle">strict · typed results</text></g>
+        <text class="lp-note" x="754" y="104">tool_use</text>
+        <text class="lp-note" x="520" y="206" text-anchor="end">tool_result</text>
+        <text class="lp-note" x="660" y="282" text-anchor="middle">at most 8 model calls a run · tool_choice auto · history append-only</text>
+        <g><rect class="lp-box" x="855" y="34" width="230" height="60" rx="14"/><text class="lp-t" x="872" y="60">Answer</text><text class="lp-s" x="872" y="78">→ outbox.fifo → every open door</text></g>
+        <g><rect class="lp-box" x="855" y="120" width="230" height="60" rx="14"/><text class="lp-t" x="872" y="146">ask_user</text><text class="lp-s" x="872" y="164">one question · PendingAction</text></g>
+        <g><rect class="lp-box hot" x="855" y="206" width="230" height="60" rx="14"/><text class="lp-t" x="872" y="232">Confirm card</text><text class="lp-s" x="872" y="250">hashed draft · saved on Confirm</text></g>
+        <g id="lpdots">
+          <g><circle class="lp-halo" r="10"/><circle class="lp-dot" r="4.5"/><animateMotion dur="7.5s" repeatCount="indefinite" begin="0s" path="M90 150 H582 A78 78 0 0 1 738 150 A78 78 0 0 1 582 150 A78 78 0 0 1 738 150 C790 150 800 64 855 64"/></g>
+          <g><circle class="lp-halo" r="10"/><circle class="lp-dot" r="4.5"/><animateMotion dur="7.5s" repeatCount="indefinite" begin="2.5s" path="M90 150 H582 A78 78 0 0 1 738 150 H855"/></g>
+          <g><circle class="lp-halo" r="10"/><circle class="lp-dot" r="4.5"/><animateMotion dur="7.5s" repeatCount="indefinite" begin="5s" path="M90 150 H582 A78 78 0 0 1 738 150 A78 78 0 0 1 582 150 A78 78 0 0 1 738 150 A78 78 0 0 1 582 150 A78 78 0 0 1 738 150 C790 150 800 236 855 236"/></g>
+        </g>
+      </svg>
+    </div>
+    <div class="loop-rules">
+      <div class="lr"><b>Asks before it acts</b>Every write is shown before it is saved; a change across records is one plan with one Confirm, then audited step by step.</div>
+      <div class="lr"><b>Never asks what it can look up</b>"I put £200 into Balanced today" goes straight to the Confirm card.</div>
+      <div class="lr"><b>Keeps it all, sends little</b>Every turn kept 90 days; only the current conversation goes to Claude, about 1.5p to 3p a message on Sonnet.</div>
+      <div class="lr"><b>Falls back, never fails silent</b>A refusal or an error sends the plain template, with the engine's numbers.</div>
+    </div>
+    <div class="tools" id="tools"></div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">The agent team · phase 18</p>
+      <h2>Nine agents that never call each other</h2>
+      <p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, delete data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1; the rest join it in phase 18.</p>
+    </div>
+    <div class="team-rules">
+      <div class="lr"><b>Code decides, Claude explains</b>Models and rules make every number and decision; Claude tags, writes, asks and answers.</div>
+      <div class="lr"><b>Nothing changes without a trace</b>Every behaviour is a setting; every change is a version and an audit row.</div>
+      <div class="lr"><b>Outside its band, it asks</b>An agent acts alone only inside its automatic band; anything else is a request on the admin desk.</div>
+    </div>
+    <div class="stage">
+      <div class="scroll-x"><svg id="bus" viewBox="0 0 1100 470" role="img" aria-label="The nine agents around the EventBridge bus, with events travelling between them"></svg></div>
+      <div class="bus-cap">
+        <span class="k"><i style="border-color:var(--st-hot)"></i>Claude tool loop</span>
+        <span class="k"><i style="border-color:var(--st-amber)"></i>Code decides, Claude writes or tags</span>
+        <span class="k"><i style="border-color:var(--st-ink-3)"></i>Code only, no model</span>
+        <span class="now" id="busnow">Illustrative events on the bus</span>
+      </div>
+    </div>
+    <div class="agents" id="agents"></div>
+  </div>
+</section>
+
+<section id="models">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Model routing</p>
+      <h2>Three Claude models, each where it earns its cost</h2>
+      <p>Sonnet carries the conversation, Haiku files and filters at volume, Opus thinks once a week. All three go through one wrapper that meters every call from the API's own <code>usage</code> counts, so the cost on the span is what will be billed. Prompt caching covers the system prompt, the tool list and the card rubrics. Prices are as <code>TECH_STACK.md</code> records them, per million tokens in and out.</p>
+    </div>
+    <div class="models" id="modelcards"></div>
+    <div class="ladder">
+      <div class="card">
+        <h3>The spend ladder</h3>
+        <p class="muted" style="font-size:14px">Drag to see what each step changes. Prod's ceiling is $160 a month, dev's $40, inside the Max 20x plan's $200 credit; the admin moves it in the Admin center behind the second check.</p>
+        <div class="lad-read"><b id="ladamt">$64</b><span id="ladof">of $160 spent this cycle</span><span class="lad-step" id="ladstep">Normal</span></div>
+        <div class="slider">
+          <label for="spend" class="muted" style="font-size:12px;position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Share of the ceiling spent</label>
+          <input type="range" id="spend" min="0" max="100" step="1" value="40">
+          <div class="marks" aria-hidden="true"><span style="left:0%">0%</span><span style="left:70%">70%</span><span style="left:85%">85%</span><span style="left:95%">95%</span><span style="left:100%">100%</span></div>
+        </div>
+        <p class="lad-msg" id="ladmsg"></p>
+        <div class="routes" id="routes"></div>
+      </div>
+      <div class="card">
+        <h3>Guards under the ladder</h3>
+        <p class="muted" style="font-size:14px;margin-bottom:14px">So one bad hour cannot spend a month. The Console's workspace limit stops the key outright if the meter is ever wrong.</p>
+        <div class="guards">
+          <div class="guard"><b>60%</b><span>The most any one member can spend of the ceiling; past it, that member's chat runs at the 95% step.</span></div>
+          <div class="guard"><b>3×</b><span>The daily guard: no day spends more than three times the cycle's daily average, about $16 at a $160 ceiling.</span></div>
+          <div class="guard"><b>8</b><span>Model calls in one run at most; a loop that reaches it stops and says so.</span></div>
+          <div class="guard"><b>$160</b><span>Prod's Console workspace limit, set by hand; dev's is $40. The two add up to the plan's credit.</span></div>
+        </div>
+        <div class="shares">
+          <h3 style="font-size:15px;margin-top:18px">Each agent's share of the ceiling</h3>
+          <div class="sharebar" id="sharebar" role="img" aria-label="Budget shares: concierge 55%, forecaster 10%, news scout 10%, grader and tuner 10%, admin desk 5%, data steward and ops warden 5%, reserve 5%"></div>
+          <div class="sharekey" id="sharekey"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="state">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Where the data lives</p>
+      <h2>One table for state, one lake for the record, one store for secrets</h2>
+      <p>The household's records are data, not code: kinds are versioned documents, records are documents, their history is append-only events, and the dashboard reads materialised views. Every change and its audit row are written in one DynamoDB transaction, chained by hash.</p>
+    </div>
+    <div class="state">
+      <div class="card store">
+        <div class="store-h"><span class="ic" style="background:#C925D1"><svg><use href="#g-dynamo"/></svg></span><div><b>DynamoDB</b><span>mypaisa-prod-* · single table · PITR in prod</span></div></div>
+        <div class="egroup"><h4>The household</h4><div class="list"><code>Portfolio</code><code>Member</code><code>Invite</code><code>Device</code><code>Presence</code></div></div>
+        <div class="egroup"><h4>Records, as data</h4><div class="list"><code>Kind</code><code>Record</code><code>Event</code><code>Commitment</code><code>CheckIn</code><code>PlanItem</code><code>NetWorth</code><code>ProjectionRun</code><code>Document</code></div></div>
+        <div class="egroup"><h4>The conversation and delivery</h4><div class="list"><code>ChatTurn · 90 d</code><code>PendingAction · 24 h</code><code>TurnBuffer</code><code>LiveHead</code><code>StreamEvent · 7 d+</code></div></div>
+        <div class="egroup"><h4>Truth and money</h4><div class="list"><code>AuditEvent · hash-chained</code><code>RunRecord · 90 d</code><code>SpendMonth</code><code>BudgetSettings</code></div></div>
+        <div class="egroup"><h4>Market side and the team</h4><div class="list"><code>Signal</code><code>Stance</code><code>Forecast</code><code>Setting</code><code>ConfigVersion</code><code>ChangeRequest</code><code>Incident</code><code>ScoreDaily</code><code>CalibrationMap</code></div></div>
+      </div>
+      <div class="card store">
+        <div class="store-h"><span class="ic" style="background:#7AA116"><svg><use href="#g-s3"/></svg></span><div><b>S3</b><span>versioned · Parquet · DuckDB</span></div></div>
+        <div class="egroup"><h4>mypaisa-prod-lake</h4>
+          <div class="prefix"><code>raw/&lt;source&gt;/</code><span>each answer as fetched, for replay</span><code>curated/</code><span>with the date each fact was known</span><code>features/</code><span>each day's snapshot</span><code>predictions/</code><span>every stance and forecast as made</span><code>outcomes/</code><span>every grade</span><code>models/</code><span>model files, calibration maps</span><code>raw/dlq/</code><span>every dead letter, for good</span></div>
+        </div>
+        <div class="egroup"><h4>mypaisa-prod-documents</h4><p style="font-size:13px;color:var(--ink-2)">Every file a member sends, before anything reads it; no expiry; opened through five-minute links after a role check.</p></div>
+        <div class="egroup"><h4>The dashboard site</h4><p style="font-size:13px;color:var(--ink-2)">The web app, the apple-app-site-association file and the invite page, behind CloudFront. No data.</p></div>
+      </div>
+      <div class="card store">
+        <div class="store-h"><span class="ic" style="background:#E7157B"><svg><use href="#g-ssm"/></svg></span><div><b>SSM Parameter Store</b><span>/mypaisa-agent/prod/...</span></div></div>
+        <div class="egroup"><h4>Put by hand, never in state</h4><div class="list"><code>Claude key, per workspace</code><code>APNs token key</code><code>Web Push VAPID key</code><code>feed API keys</code></div></div>
+        <p style="font-size:13px;color:var(--ink-2)">Terraform makes each parameter with a write-only placeholder (<code>value_wo</code>), so no secret ever reaches its state. Code reads the value at run time and nothing prints it.</p>
+        <div class="egroup"><h4>Kept for</h4><div class="prefix"><code>logs</code><span>14 days</span><code>spans</code><span>30 days, aws/spans</span><code>RunRecord</code><span>90 days</span><code>metrics</code><span>15 months</span><code>audit</code><span>never deleted</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="delivery">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Environments and delivery</p>
+      <h2>Terraform only, one image, prod after a person says yes</h2>
+      <p>One AWS account, every component twice, kept apart by IAM: each Lambda's role names only its own environment, and the developer role is denied anything tagged <code>env=prod</code>. CI reaches AWS through GitHub OIDC with no stored keys; the AWS MCP only reads.</p>
+    </div>
+    <div class="pipe-wrap"><span class="runner" aria-hidden="true"></span>
+    <ol class="pipe" aria-label="The release pipeline, in order">
+      <li class="stg"><span class="ic"><svg style="color:var(--ink)"><use href="#g-branch"/></svg></span><b>Gates</b><span>ruff, pyright, pytest on moto, tflint, gitleaks, jira-key, the leak test</span><span class="when">every PR</span></li>
+      <li class="stg"><span class="ic"><svg><use href="#g-terraform"/></svg></span><b>Plan</b><span><code>terraform plan</code> for dev and prod, posted on the PR</span><span class="when">PRs touching infra/</span></li>
+      <li class="stg"><span class="ic" style="background:#C925D1;border-color:#C925D1"><svg style="color:#fff"><use href="#g-build"/></svg></span><b>Build</b><span>CodeBuild's arm64 runner builds once, pushes to ECR by the commit's sha</span><span class="when">merge to main</span></li>
+      <li class="stg"><span class="ic" style="background:#ED7100;border-color:#ED7100"><svg style="color:#fff"><use href="#g-lambda"/></svg></span><b>Dev</b><span>apply, deploy, smoke tests that assert one trace from api to sender</span><span class="when">after the build</span></li>
+      <li class="stg"><span class="ic" style="background:#8C4FFF;border-color:#8C4FFF"><svg style="color:#fff"><use href="#g-cloudfront"/></svg></span><b>Dev apps</b><span>web app to dev's bucket; MyPaisa Dev to TestFlight</span><span class="when">after dev passes</span></li>
+      <li class="stg gate"><span class="ic"><svg style="color:var(--amber)"><use href="#g-person"/></svg></span><b>Approval</b><span>Arun approves in the GitHub <code>prod</code> environment</span><span class="when">a person, every time</span></li>
+      <li class="stg"><span class="ic" style="background:var(--st-bg);border-color:var(--st-bg)"><svg style="color:var(--st-hot)"><use href="#g-shield"/></svg></span><b>Prod</b><span>apply, deploy behind each <code>live</code> alias, smoke, automatic rollback; then the apps</span><span class="when">same image digest</span></li>
+    </ol></div>
+    <div class="envs">
+      <div class="card env">
+        <div class="env-h"><b>dev</b><code>*-dev.mypaisapp.com</code></div>
+        <dl>
+          <dt>Data</dt><dd>One illustrative household, seeded by <code>scripts/seed.sh dev</code> through the write service</dd>
+          <dt>Names</dt><dd><code>mypaisa-dev-*</code>, <code>/mypaisa-agent/dev/...</code>, pool <code>mypaisa-dev-users</code></dd>
+          <dt>Claude</dt><dd>Its own workspace key, a $40 ceiling</dd>
+          <dt>App</dt><dd>MyPaisa Dev, <code>com.mypaisapp.agent.dev</code></dd>
+          <dt>Schedules</dt><dd>Off unless switched on; dev may capture prompts on spans, prod refuses</dd>
+        </dl>
+      </div>
+      <div class="card env prod">
+        <div class="env-h"><b>prod</b><code>*.mypaisapp.com</code></div>
+        <dl>
+          <dt>Data</dt><dd>Starts empty; fills only through the app: the chat, statements, the Excel importer</dd>
+          <dt>Names</dt><dd><code>mypaisa-prod-*</code>, <code>/mypaisa-agent/prod/...</code>, pool <code>mypaisa-prod-users</code></dd>
+          <dt>Claude</dt><dd>Its own workspace key, a $160 ceiling the admin moves</dd>
+          <dt>App</dt><dd>MyPaisa, <code>com.mypaisapp.agent</code>, on TestFlight after approval</dd>
+          <dt>Safety</dt><dd><code>prevent_destroy</code>, deletion protection, point-in-time recovery; nightly drift check</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Guardrails</p>
+      <h2>Enforced in code, not in the prompt</h2>
+    </div>
+    <div class="rules">
+      <div class="card rule"><span class="ri"><svg><use href="#g-calc"/></svg></span><h3>Claude never produces a number</h3><p>Every figure comes from tested code: XIRR, loan schedules, the Projection, the engine's pillars. Claude chooses what to say and how.</p><span class="where">§1 rule 1 · wealth/ · the engine</span></div>
+      <div class="card rule"><span class="ri"><svg><use href="#g-noentry"/></svg></span><h3>The app cannot trade</h3><p>No broker login and no orders. No tool can trade, spend beyond a search, delete data or message anyone but the member it answers.</p><span class="where">§1 rule 2 · §8 guardrails</span></div>
+      <div class="card rule"><span class="ri"><svg><use href="#g-check"/></svg></span><h3>One write service</h3><p>New things are created only in the chat, with a card and a Confirm; a figure is corrected in place with Save. Both validate against the kind and write the audit row.</p><span class="where">§4.10 · PATCH /v1/records/{id}</span></div>
+      <div class="card rule"><span class="ri"><svg><use href="#g-person"/></svg></span><h3>Admin actions take a second check</h3><p>A fresh, server-verified Sign in with Apple, passkey or Google, bound to the action. A local Face ID alone never authorises anything on the server.</p><span class="where">§4.5 · MA-76</span></div>
+      <div class="card rule"><span class="ri"><svg><use href="#g-sqs"/></svg></span><h3>Nothing is lost</h3><p>Every hand-off is an SQS queue; handlers are idempotent; a dead letter alarms at once and replays safely. An old Confirm whose flow expired is refused.</p><span class="where">§21 · Powertools idempotency</span></div>
+      <div class="card rule"><span class="ri"><svg><use href="#g-eye"/></svg></span><h3>Nothing private in CloudWatch</h3><p>No prompt, reply, amount, name, token or account number on any span, log or metric; members are hashed. A leak test replays a conversation in CI to hold the line.</p><span class="where">§10.9 · MA-232</span></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h3>Where this comes from</h3>
+      <p>Drawn from <code>ARCHITECTURE.md</code> v4 (§3 system context, §8 the agent, §10 observability, §15.1 the Claude budget, §18 environments, §20 the agent team, §21 queues) and <code>TECH_STACK.md</code>, as of 27 Oct 2026. Status: design only. Timings, tokens, costs and the events on the bus are illustrative.</p>
+    </div>
+    <div>
+      <h3>The other pages</h3>
+      <ul>
+        <li><a href="https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5">Inside MyPaisa</a>: the same system in plain words</li>
+        <li><a href="https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7">MyPaisa Agent Journey</a>: twenty-four flows, lane by lane</li>
+        <li><a href="https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb">MyPaisa Market Agent</a>: the engine, the Forecaster, the learning loop</li>
+        <li><a href="https://lucid.app/lucidchart/4ae817c6-847f-45f8-a10c-4509971c9c09/edit">The Lucid system overview</a> and its eight sibling views</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent, text){
+  var e = document.createElementNS(NS, tag);
+  if (attrs) for (var k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function h(tag, cls, html){ var e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ---------------- the system map ---------------- */
+var CAT = { compute:"#ED7100", int:"#E7157B", db:"#C925D1", storage:"#7AA116", net:"#8C4FFF", sec:"#DD344C", mgmt:"#E7157B" };
+var N = {
+  ios:  {x:80,  y:226, icon:"phone", door:1, name:"iOS app", sub:"iPhone · iPad · foldable",
+         info:"One app for iPhone, iPad and a foldable on iOS and iPadOS 26: a bare React Native 0.88 shell whose every visible piece is SwiftUI, fed one formatted JSON model.",
+         facts:["Sign in with Apple, Google, passkey","5-minute tokens in the Keychain","SSE stream, Apple push","MyPaisa Dev → dev"]},
+  web:  {x:80,  y:400, icon:"browser", door:1, name:"Web app", sub:"SvelteKit 3 PWA",
+         info:"The chat, the dashboard and the Admin center in a browser at dashboard.mypaisapp.com, at desktop and phone width.",
+         facts:["HttpOnly, SameSite=Strict cookie","Fetch-based SSE, one leader tab","Web Push when installed","Strict CSP"]},
+  email:{x:80,  y:670, icon:"mail", door:1, name:"Admin's email", sub:"every alarm",
+         info:"The admin's inbox. Every alarm reaches it through SNS from phase 0, before the chat can carry alarms as cards.",
+         facts:["Composite alarm pages once","Every alarm has an OK action"]},
+  apiS: {x:250, y:190, icon:"apigw", cat:"net", name:"API Gateway", sub:"/v1/stream · SSE",
+         info:"The same REST API on api.mypaisapp.com. The stream route uses API Gateway response streaming: up to 15 minutes per response and a 5-minute idle timeout.",
+         facts:["Heartbeat every 15 s","Ends near 14 min with retry","Resume with Last-Event-ID"]},
+  strm: {x:370, y:190, icon:"lambda", cat:"compute", name:"stream λ", sub:"Lambda Web Adapter",
+         info:"A Starlette app on Uvicorn behind the Lambda Web Adapter, its own build target of the same Dockerfile. It polls one small LiveHead item and sends what is new.",
+         facts:["200 ms in a turn, 1–2 s idle","Re-checks the session every 60 s","Reserved concurrency ~20"]},
+  sndr: {x:490, y:190, icon:"lambda", cat:"compute", name:"sender λ", sub:"stream log, else push",
+         info:"The only function that delivers to the doors. It appends each finished message, card, check-in and record change to the member's StreamEvent log, and pushes to devices with no fresh presence.",
+         facts:["5 tries, honours APNs retry-after","run_id and trace_id in every envelope","No amounts on the lock screen"]},
+  outb: {x:610, y:190, icon:"sqs", cat:"int", name:"outbox.fifo", sub:"lane per member", lab:"above",
+         info:"Every message, card, card edit, check-in and record change MyPaisa sends, one FIFO lane per member so a brief arrives in order.",
+         facts:["Consumer: sender","5 tries, then its DLQ"]},
+  ssm:  {x:850, y:190, icon:"ssm", cat:"mgmt", name:"SSM", sub:"secrets, put by hand",
+         info:"Parameter Store holds every secret, put by hand after the apply that made its parameter. Terraform writes only a write-only placeholder, so no value reaches state.",
+         facts:["/mypaisa-agent/prod/...","Claude key per workspace","value_wo, never value"]},
+  apiC: {x:250, y:310, icon:"apigw", cat:"net", name:"API Gateway", sub:"REST · authorizer",
+         info:"The only address the doors call. A Lambda authorizer checks the token, the member's status and the session epoch on every call.",
+         facts:["/auth/* · /v1/chat/...","PATCH /v1/records/{id}","/v1/admin/... behind the second check"]},
+  api:  {x:370, y:310, icon:"lambda", cat:"compute", name:"api λ", sub:"chat · data · admin",
+         info:"The chat routes queue what you send and answer 202 at once. Apart from them, the one correction route and the owner's admin actions, it can only read.",
+         facts:["Adopts the door's traceparent","202 + x-mypaisa-trace-id","Calls Cognito for /auth/*"]},
+  upd:  {x:490, y:310, icon:"sqs", cat:"int", name:"updates.fifo", sub:"lane per member",
+         info:"Every message and card tap the chat api accepts, one FIFO lane per member; the app's client id dedupes. Each member's messages run one at a time, members in parallel.",
+         facts:["Consumer: agent","3 tries in about a minute","Member told it was kept"]},
+  agent:{x:610, y:310, icon:"lambda", cat:"compute", big:1, name:"agent λ", sub:"the concierge",
+         info:"The one Claude tool loop that talks to members. It reads the spend meter before every call, lets the ladder pick the model, and proposes changes with a Confirm card.",
+         facts:["Sonnet 5.5, Haiku for small turns","At most 8 model calls a run","Strict tools, append-only history"]},
+  cf:   {x:250, y:430, icon:"cloudfront", cat:"net", name:"CloudFront", sub:"S3 site · PWA",
+         info:"CloudFront over the S3 site: the web app, the iOS app's apple-app-site-association file and the invite page. It holds no data.",
+         facts:["dashboard.mypaisapp.com","Service worker caches the shell"]},
+  cog:  {x:370, y:430, icon:"cognito", cat:"sec", name:"Cognito", sub:"Apple · Google · passkey",
+         info:"One Essentials user pool per environment. Apple and Google identity tokens and passkeys are verified in custom-auth Lambda triggers; there is no hosted domain.",
+         facts:["Passkey RP: the dashboard's domain","Refresh tokens rotate","Second check: a fresh assertion"]},
+  docs: {x:490, y:430, icon:"s3", cat:"storage", name:"S3 documents", sub:"kept for good",
+         info:"Every file a member sends, copied before anything reads it, with a Document row and an audit row. It opens only through five-minute links after a role check.",
+         facts:["No expiry; prod versioned","<household>/<member>/<yyyy>/<mm>/"]},
+  ddb:  {x:610, y:430, icon:"dynamo", cat:"db", name:"DynamoDB", sub:"one table",
+         info:"One table: kinds, records, append-only events and views, the hash-chained audit log, chat turns, pending flows, the stream log, the spend meter and the run records.",
+         facts:["On demand","Record + audit in one transaction","PITR and deletion protection in prod"]},
+  lake: {x:760, y:430, icon:"s3", cat:"storage", name:"S3 lake", sub:"Parquet · DuckDB",
+         info:"The market side's record: each source's raw answer, curated data with the date it was known, features, predictions, outcomes and models, in Parquet.",
+         facts:["mypaisa-prod-lake, versioned","raw/ 90 days, the rest for good"]},
+  sched:{x:370, y:550, icon:"clock", cat:"int", name:"Scheduler", sub:"Europe/London",
+         info:"EventBridge Scheduler, every schedule in Europe/London, each with its own retry policy and dead-letter queue. The tick is the root of the job's trace.",
+         facts:["07:15 brief · 21:15 wrap","Daily check-ins, nightly views","Dev's schedules off by default"]},
+  work: {x:490, y:550, icon:"sqs", cat:"int", name:"work queue", sub:"background jobs",
+         info:"Background jobs: each instrument's ingest, each news feed, each document read, the engine, briefs, scoring, check-ins, the nightly views and Projection runs.",
+         facts:["5 tries, 30 s → 30 min backoff","Concurrency keeps free APIs in limits"]},
+  wrkr: {x:610, y:550, icon:"lambda", cat:"compute", name:"worker λ", sub:"each job by type",
+         info:"The same image, running each job by its type. A finished job can queue the next: ingest, then engine, then brief.",
+         facts:["Haiku through Batches","Code decides every check-in","A RunRecord per run"]},
+  sns:  {x:250, y:670, icon:"sns", cat:"int", name:"SNS", sub:"admin-alerts",
+         info:"mypaisa-<env>-admin-alerts: every alarm goes to the admin's email from phase 0.",
+         facts:["One message per incident, not ten"]},
+  cw:   {x:370, y:670, icon:"cloudwatch", cat:"mgmt", name:"CloudWatch", sub:"X-Ray · OTel",
+         info:"OpenTelemetry on every Lambda into X-Ray with Transaction Search and Application Signals; logs, one dashboard and the alarms per environment.",
+         facts:["Spans: chat <model>, tool <name>","No prompt, reply or figure","About £2.50 a month in prod"]},
+  dlq:  {x:490, y:670, icon:"dlq", cat:"int", name:"dead-letter", sub:"14 days + S3",
+         info:"A dead-letter queue behind each queue and the scheduler. An alarm fires the moment one holds anything, and a copy of every message goes to raw/dlq/ for good.",
+         facts:["redrive.sh, then Replay, then the ops warden"]},
+  sfn:  {x:760, y:670, icon:"sfn", cat:"int", ph18:1, name:"Step Functions", sub:"the daily run",
+         info:"Phase 18: ingest, engine, Forecaster, grade, calibrate and brief as one state machine with retries on every step and idempotent writes.",
+         facts:["One trace per day's run"]},
+  bus:  {x:880, y:670, icon:"bus", cat:"int", ph18:1, name:"EventBridge bus", sub:"agent events",
+         info:"Phase 18: the agents never call each other. They publish events on mypaisa-<env>-events and leave work in DynamoDB.",
+         facts:["Each agent its own role and budget share"]},
+  push: {panel:1, name:"Apple push · Web Push", info:"Apple push over HTTP/2 with a token key for the iOS app, and Web Push for an installed web app, each only to a device with no fresh presence on the stream.", facts:["No figures on the lock screen"]},
+  claude:{panel:1, name:"Anthropic API", info:"Claude through the anthropic SDK, with each environment's own workspace key from SSM. Prompt caching on the system prompt, the tools and the card rubrics, with the one-hour TTL.", facts:["Message Batches at half price","Server-side web search and fetch","PDF and image input with citations"]},
+  data: {panel:1, name:"Free market data", info:"One plugin per feed and a chain per kind, set in Terraform. EODHD only when the data steward shows no free source can serve a holding and the admin approves.", facts:["lse_etf: yfinance → twelvedata → issuer_page → stale"]}
+};
+var E = {
+  ios_apiC:  ["ios","apiC","M112,234 C168,234 178,310 222,310"],
+  web_apiC:  ["web","apiC","M112,394 C168,394 180,318 222,316"],
+  web_cf:    ["web","cf","M112,410 C166,410 186,430 222,430"],
+  apiS_ios:  ["apiS","ios","M222,190 C170,190 150,214 112,216"],
+  apiS_web:  ["apiS","web","M224,204 C186,232 158,282 156,330 C154,372 136,392 112,400"],
+  apiC_api:  ["apiC","api","M276,310 H344"],
+  api_upd:   ["api","upd","M396,310 H464"],
+  upd_agent: ["upd","agent","M516,310 H578"],
+  agent_outb:["agent","outb","M610,278 V216"],
+  outb_sndr: ["outb","sndr","M584,190 H516"],
+  sndr_strm: ["sndr","strm","M464,190 H396"],
+  strm_apiS: ["strm","apiS","M344,190 H276"],
+  sndr_push: ["sndr","push","M490,164 V72"],
+  push_ios:  ["push","ios","M420,46 C230,46 84,96 82,198"],
+  api_cog:   ["api","cog","M370,336 V404"],
+  agent_ddb: ["agent","ddb","M610,342 V404"],
+  agent_docs:["agent","docs","M588,336 L512,408"],
+  agent_ssm: ["agent","ssm","M642,296 C712,262 772,206 824,194"],
+  agent_claude:["agent","claude","M642,310 H1032"],
+  ios_docs:  ["ios","docs","M108,250 C150,262 158,386 212,386 H446 Q474,386 482,404"],
+  sched_work:["sched","work","M396,550 H464"],
+  work_wrkr: ["work","wrkr","M516,550 H584"],
+  wrkr_retry:["wrkr","work","M586,538 C566,514 534,514 514,538",1],
+  wrkr_ddb:  ["wrkr","ddb","M610,524 V456"],
+  wrkr_lake: ["wrkr","lake","M634,532 L736,454"],
+  wrkr_outb: ["wrkr","outb","M626,526 C652,522 672,512 672,490 V214 Q672,190 648,190 H638"],
+  wrkr_claude:["wrkr","claude","M636,544 H946 Q960,544 960,530 V404 Q960,390 974,390 H1032"],
+  wrkr_data: ["wrkr","data","M636,562 H1032"],
+  wrkr_sfn:  ["wrkr","sfn","M630,574 L738,648",2],
+  sfn_bus:   ["sfn","bus","M786,670 H854",2],
+  work_dlq:  ["work","dlq","M490,576 V644",1],
+  dlq_cw:    ["dlq","cw","M464,670 H396",1],
+  cw_sns:    ["cw","sns","M344,670 H276",1],
+  sns_email: ["sns","email","M224,670 H112",1],
+  dlq_work:  ["dlq","work","M514,650 C542,628 542,598 514,574",1]
+};
+var LABELS = [
+  [176,180,"SSE"],[188,300,"HTTPS"],[498,118,"push, no fresh presence","start"],[430,181,"stream log"],
+  [846,301,"Anthropic API · prompt cache"],[800,535,"Message Batches"],[850,578,"free sources first"],
+  [550,509,"retry"],[552,616,"replay","start"],[430,661,"alarm"]
+];
+var MODELS = {opus:{name:"Opus 5.5", id:"claude-opus-5-5", y:226, c:"var(--m-opus)"}, sonnet:{name:"Sonnet 5.5", id:"claude-sonnet-5-5", y:306, c:"var(--m-sonnet)"}, haiku:{name:"Haiku 5.5", id:"claude-haiku-5-5", y:386, c:"var(--m-haiku)"}};
+
+var SCEN = [
+ {id:"question", name:"A question", sum:"“What if we buy a house in 2028?” typed on the iPhone, answered at both doors.", steps:[
+  {p:["ios_apiC"], hot:["apiC"], t:"Sent from the iPhone", d:"The door makes a W3C traceparent for the action and posts the message with its client message id.", c:"POST /v1/chat/messages\ntraceparent: 00-4bf92f35…-01"},
+  {p:["apiC_api"], hot:["api"], t:"Checked at the edge", d:"The authorizer checks the five-minute token, the member's status and the session epoch, on every call.", c:"authorizer: token · status · session_epoch"},
+  {p:["api_upd"], hot:["upd"], t:"Queued, answered at once", d:"The api puts the message in the member's lane and answers 202, so the door never waits on the agent.", c:"SendMessage updates.fifo (MessageGroupId = member)\n← 202 · x-mypaisa-trace-id"},
+  {p:["upd_agent"], hot:["agent"], t:"The concierge picks it up", d:"Lambda's SQS event source continues the trace from AWSTraceHeader. Before any call the agent reads this cycle's spend, and the ladder's step decides the model.", c:"GetItem SpendMonth → step: normal → Sonnet 5.5"},
+  {p:["agent_claude","-agent_claude"], hot:["claude"], m:"sonnet", t:"Sonnet 5.5 plans the turn", d:"The cached prefix (system prompt, tools, card rubrics; one-hour TTL), a few one-line notes on recent conversations, then the current conversation. It answers with a tool call.", c:"span: chat claude-sonnet-5-5\nstop_reason: tool_use · tool_choice: auto"},
+  {p:["agent_ddb","-agent_ddb"], hot:["ddb"], t:"Code does the maths", d:"get_networth reads the views; run_projection applies the 2028 house as a typed override that is never saved. Claude never produces a number.", c:"tool get_networth(view)\ntool run_projection(overrides)"},
+  {p:["agent_claude","-agent_claude"], hot:["claude"], m:"sonnet", t:"Sonnet writes the answer", d:"The words go into the turn's buffer about every 200 ms, and the open stream sends each delta to every door as it is written.", c:"TurnBuffer → LiveHead (polled every 200 ms)"},
+  {p:["agent_outb","outb_sndr"], hot:["sndr"], t:"Out through the outbox", d:"The finished message and its scenario card go on the member's outbox lane. The sender appends them to the stream log with the next sequence number.", c:"outbox.fifo → sender\nStreamEvent(seq, type: card, run_id, trace_id)"},
+  {p:["sndr_strm","strm_apiS","apiS_ios","apiS_web"], hot:["ios","web"], t:"Both doors move", d:"The SSE stream on the api host sends the event to the iPhone and to the laptop that is open. A door that was away resumes from its last event.", c:"GET /v1/stream · event: card · id: seq"},
+  {p:[], hot:["cw","ddb"], t:"One run, one RunRecord", d:"The agent writes what it did and cost: each model call's tokens, each tool's time. The spans go to X-Ray; nothing of the conversation does.", c:"RunRecord · mypaisa.cost_usd 0.020 · aws/spans"}
+ ]},
+ {id:"file", name:"A factsheet", sum:"A fund factsheet PDF sent from the iPhone becomes a holding, with one Confirm.", steps:[
+  {p:["ios_apiC","apiC_api"], hot:["api"], t:"Ask for an upload link", d:"The door asks the api for a presigned link to the documents bucket.", c:"POST /v1/uploads → presigned PUT, five minutes"},
+  {p:["ios_docs"], hot:["docs"], t:"The file lands first", d:"The PDF is stored before anything reads it, with a Document row and an audit row of its own. It is kept for good, whatever happens next.", c:"s3://mypaisa-prod-documents/<household>/<member>/2026/10/"},
+  {p:["ios_apiC","apiC_api","api_upd","upd_agent"], hot:["agent"], t:"The message names the file", d:"The chat message carries the file's key through the member's lane to the concierge.", c:"updates.fifo · { s3_key, client_message_id }"},
+  {p:["agent_docs","-agent_docs"], hot:["docs"], t:"The agent opens it", d:"extract_document reads the file with the schema of what it expects to find.", c:"tool extract_document(s3_key, schema)"},
+  {p:["agent_claude","-agent_claude"], hot:["claude"], m:"sonnet", t:"Claude reads the PDF", d:"PDF input with citations: the name, ISIN, cost, top holdings and where it invests. Every figure carries its source line; no PAN, address or account number is kept.", c:"document block · citations: enabled"},
+  {p:["agent_ddb"], hot:["ddb"], t:"A draft, not a record", d:"Code parses and types each field against the kind. The draft is hashed in a PendingAction, so Confirm commits exactly what was shown.", c:"PendingAction(flow_id, draft_hash) · expires in 24 h"},
+  {p:["agent_outb","outb_sndr","sndr_strm","strm_apiS","apiS_ios"], hot:["ios"], t:"The Confirm card", d:"The card shows what will be written, with the source a tap away. Nothing is saved yet.", c:"card: holding.confirm · [Confirm] [Edit] [Cancel]"},
+  {p:["ios_apiC","apiC_api","api_upd","upd_agent","agent_ddb"], hot:["ddb"], t:"Confirm writes it, once", d:"The tap takes the same lane. The write service validates against the kind and writes the record with its hash-chained audit row in one transaction.", c:"TransactWriteItems: Record + AuditEvent(via: factsheet, document_id)"},
+  {p:["agent_outb","outb_sndr","sndr_strm","strm_apiS","apiS_web"], hot:["web"], t:"The laptop moves too", d:"records.changed reaches every open door, so the dashboard on the laptop shows the new holding at once.", c:"event: records.changed"}
+ ]},
+ {id:"checkin", name:"A check-in", sum:"Code decides an EMI is due; the owner taps Paid on the lock-screen push.", steps:[
+  {p:["sched_work"], hot:["work"], t:"The schedule ticks", d:"EventBridge Scheduler, in Europe/London, puts the daily check-ins job on the work queue. The tick is the root of the trace.", c:"schedule: checkins-daily → work · job_id"},
+  {p:["work_wrkr","wrkr_ddb"], hot:["ddb"], t:"Code decides what is due", d:"No model: the worker reads the commitments and finds November's EMI on the HDFC car loan due. The CheckIn row is created once, by a conditional put.", c:"get_commitments(window) → CheckIn(emi#2026-11-05)"},
+  {p:["wrkr_outb"], hot:["outb"], t:"A card that shows what a tap writes", d:"The check-in goes on the owner's outbox lane. Its Paid is the Confirm, with Undo.", c:"card: checkin · [Paid] [Not yet] [Different amount]"},
+  {p:["outb_sndr","sndr_push","push_ios"], hot:["ios"], t:"Pushed, because no door is open", d:"The sender appends to the stream log and, with no fresh presence, sends Apple push. No amount shows on the lock screen.", c:"APNs HTTP/2 · token key · retry-after honoured"},
+  {p:["ios_apiC","apiC_api","api_upd","upd_agent","agent_ddb"], hot:["ddb"], t:"Paid", d:"The tap is acknowledged at once and its effect queued, so the button never spins. The payment event and its audit row are written together.", c:"Event(emi_paid) + AuditEvent(via: checkin)"},
+  {p:["agent_outb","outb_sndr","sndr_strm","strm_apiS","apiS_web"], hot:["web"], t:"Every door agrees", d:"records.changed reaches the open laptop: the loan's balance and the Projection move.", c:"event: records.changed"}
+ ]},
+ {id:"brief", name:"The 07:15 brief", sum:"Phase 10 onwards: prices in, the engine decides, Haiku files the news, Sonnet writes.", steps:[
+  {p:["sched_work","work_wrkr"], hot:["wrkr"], t:"Ingest, then engine, then brief", d:"Each finished job queues the next. Ingest runs each instrument's chain of sources.", c:"work: ingest → engine → brief"},
+  {p:["wrkr_data","-wrkr_data"], hot:["data"], t:"Free data first", d:"The first source that answers with fresh data wins, inside the free tiers' limits; stale is the last entry everywhere, labelled.", c:"lse_etf: yfinance → twelvedata → issuer_page → stale"},
+  {p:["wrkr_lake"], hot:["lake"], t:"Kept as it was known", d:"Raw answers for replay, curated prices with the date each became known, in Parquet.", c:"s3://mypaisa-prod-lake/raw/ · curated/"},
+  {p:["wrkr_ddb"], hot:["ddb"], t:"The engine decides", d:"Indicators, pillars from −2 to +2, the holder's cascade and a confidence score: all code, with golden tests.", c:"Signal · Stance(ADD | HOLD | PAUSE | TRIM, confidence)"},
+  {p:["wrkr_claude","-wrkr_claude"], hot:["claude"], m:"haiku", t:"Haiku filed the news overnight", d:"The day's stories went through the Message Batches API at half price, tagged with the entities they name; code worked out each story's weight on each holding.", c:"ArticleScore(entities[], event_type, matches[])"},
+  {p:["wrkr_claude","-wrkr_claude"], hot:["claude"], m:"sonnet", t:"Sonnet writes the brief", d:"A plain top and a technical underside, from the engine's numbers. On a refusal or an error, the plain template goes out instead.", c:"feature: brief · 07:15 Europe/London"},
+  {p:["wrkr_outb","outb_sndr","sndr_push","push_ios"], hot:["ios"], t:"Delivered", d:"Through the outbox to each member who wants one, by push when no door is open.", c:"outbox.fifo · one lane per member, in order"},
+  {p:[], hot:["cw"], t:"The 07:45 dead man's switch", d:"If the brief has not gone out by 07:45, an alarm reaches the admin by email and in the chat.", c:"alarm: brief-missing → admin-alerts"}
+ ]},
+ {id:"failure", name:"A failure and its replay", sum:"A statement job meets an overloaded API: retried, kept, alarmed, replayed once.", steps:[
+  {p:["work_wrkr"], hot:["wrkr"], t:"A statement to categorise", d:"October's card statement arrived; the documents job reads each line against the merchant memory first.", c:"work: documents · job_id"},
+  {p:["wrkr_claude"], hot:["claude"], m:"haiku", f:1, t:"The Anthropic API is overloaded", d:"Haiku is asked about the merchants the memory has not seen, and the call fails.", c:"529 overloaded_error · span status ERROR"},
+  {p:["wrkr_retry"], hot:["work"], f:1, t:"Backoff, not hammering", d:"The message comes back after a growing wait: five tries, from 30 seconds to 30 minutes.", c:"maxReceiveCount 5 · backoff 30 s → 30 min"},
+  {p:["work_dlq"], hot:["dlq"], f:1, t:"Kept, not lost", d:"After the fifth try it moves to the dead-letter queue, kept 14 days, with a copy in the lake for good.", c:"work-dlq · s3://…-lake/raw/dlq/"},
+  {p:["dlq_cw","cw_sns","sns_email"], hot:["email"], f:1, t:"The admin hears at once", d:"The alarm fires the moment a dead-letter queue holds anything: email through SNS, and from phase 1 a message in the owner's chat.", c:"alarm: work-dlq depth > 0 → mypaisa-prod-admin-alerts"},
+  {p:["dlq_work"], hot:["work"], t:"Replay", d:"Phase 1: scripts/redrive.sh. Phase 8: a Replay button behind the second check. Phase 18: the ops warden replays on its own once the API is healthy, at most three times.", c:"redrive work-dlq → work · a new trace, linked by span link"},
+  {p:["work_wrkr","wrkr_claude","-wrkr_claude"], hot:["claude"], m:"haiku", t:"It succeeds, once", d:"Handlers are idempotent, keyed by the job id and date, so a replay never does anything twice.", c:"Powertools idempotency · job_id + date"},
+  {p:["wrkr_outb","outb_sndr","sndr_strm","strm_apiS","apiS_ios"], hot:["ios"], t:"The review card arrives", d:"Every line by category, the uncertain ones in amber, transfers and EMIs recognised by code, one Confirm.", c:"card: statement.review"}
+ ]}
+];
+
+var svg = document.getElementById("sysmap");
+var gEdges, gLit, gPk, gNodes, edgeEls = {}, nodeEls = {}, modelEls = {};
+function buildMap(){
+  var defs = el("defs", null, svg);
+  var pat = el("pattern", {id:"dots", width:20, height:20, patternUnits:"userSpaceOnUse"}, defs);
+  el("circle", {cx:1, cy:1, r:1, style:"fill:var(--st-grid)"}, pat);
+  var f = el("filter", {id:"glow", x:"-20%", y:"-20%", width:"140%", height:"140%"}, defs);
+  el("feGaussianBlur", {stdDeviation:2.4, result:"b"}, f);
+  var m = el("feMerge", null, f); el("feMergeNode", {in:"b"}, m); el("feMergeNode", {in:"SourceGraphic"}, m);
+  el("rect", {class:"grid", x:0, y:0, width:1200, height:760}, svg);
+  // frames
+  el("rect", {class:"frame", x:16, y:96, width:128, height:648, rx:14}, svg);
+  el("text", {class:"flabel", x:30, y:118}, svg, "HOUSEHOLD");
+  el("rect", {class:"frame aws", x:168, y:96, width:848, height:648, rx:14}, svg);
+  var aw = el("g", {transform:"translate(184,104)"}, svg);
+  el("text", {x:0, y:15, style:"fill:#FFFFFF;font:800 15px var(--f-body);letter-spacing:-.02em"}, aw, "aws");
+  el("path", {d:"M1 19 Q14 25 27 19", fill:"none", style:"stroke:#FF9900", "stroke-width":2.2, "stroke-linecap":"round"}, aw);
+  el("path", {d:"M24 17.5 L28 19 L25.5 22", fill:"none", style:"stroke:#FF9900", "stroke-width":2, "stroke-linecap":"round", "stroke-linejoin":"round"}, aw);
+  el("text", {class:"flabel strong", x:224, y:119}, svg, "account 545595341442");
+  el("rect", {class:"frame region", x:184, y:132, width:816, height:600, rx:10}, svg);
+  el("text", {class:"flabel", x:198, y:150}, svg, "US-EAST-1 · PROD SHOWN, DEV THE SAME SHAPE");
+  el("text", {class:"flabel", x:1032, y:118}, svg, "OUTSIDE AWS");
+
+  gEdges = el("g", null, svg); gLit = el("g", null, svg);
+  for (var id in E){
+    var cls = "edge" + (E[id][3]===1 ? " dash" : E[id][3]===2 ? " ph18" : "");
+    edgeEls[id] = el("path", {d:E[id][2], class:cls, "data-e":id}, gEdges);
+  }
+  LABELS.forEach(function(l){ el("text", {class:"elabel", x:l[0], y:l[1], "text-anchor":l[3]||"middle"}, svg, l[2]); });
+
+  gNodes = el("g", null, svg);
+  // panels
+  panel("push", 420, 18, 200, 56, function(g){
+    el("use", {href:"#g-apple", x:430, y:28, width:30, height:30, style:"color:#FFFFFF"}, g);
+    el("text", {class:"ptitle", x:466, y:42}, g, "Apple push · Web Push");
+    el("text", {class:"pline", x:466, y:58}, g, "APNs HTTP/2 · VAPID");
+  });
+  panel("claude", 1032, 138, 156, 324, function(g){
+    el("use", {href:"#g-spark", x:1044, y:150, width:28, height:28, style:"color:#D97757"}, g);
+    el("text", {class:"wordmark", x:1078, y:163}, g, "ANTHROPIC");
+    el("text", {class:"pline", x:1078, y:177}, g, "Claude API");
+    for (var k in MODELS){
+      var md = MODELS[k], mg = el("g", {class:"model", style:"color:"+md.c}, g);
+      el("rect", {x:1042, y:md.y-27, width:136, height:54, rx:12}, mg);
+      el("use", {href:"#g-spark", x:1050, y:md.y-13, width:26, height:26, style:"color:"+md.c}, mg);
+      el("text", {class:"mname", x:1082, y:md.y-2}, mg, md.name);
+      el("text", {class:"mid", x:1082, y:md.y+13}, mg, md.id);
+      modelEls[k] = mg;
+    }
+    el("text", {class:"pline", x:1044, y:440}, g, "Batches · web search");
+    el("text", {class:"pline", x:1044, y:453}, g, "PDF and image input");
+  });
+  panel("data", 1032, 496, 156, 132, function(g){
+    el("use", {href:"#g-chart", x:1042, y:506, width:26, height:26, style:"color:#FFFFFF"}, g);
+    el("text", {class:"ptitle", x:1074, y:524}, g, "Free market data");
+    el("text", {class:"pline", x:1044, y:550}, g, "yfinance · Twelve Data");
+    el("text", {class:"pline", x:1044, y:566}, g, "FRED · BoE · ECB · EIA");
+    el("text", {class:"pline", x:1044, y:582}, g, "GDELT · RSS feeds");
+    el("text", {class:"pline amber", x:1044, y:606}, g, "EODHD only if approved");
+  });
+  for (var nid in N){ if (!N[nid].panel) node(nid, N[nid]); }
+  gPk = el("g", null, svg);
+}
+function panel(id, x, y, w, hgt, fill){
+  var g = el("g", {class:"node panel "+id, tabindex:0, role:"button", "aria-label":N[id].name, "data-id":id}, gNodes);
+  el("rect", {class:"ring", x:x-5, y:y-5, width:w+10, height:hgt+10, rx:18}, g);
+  el("rect", {class:"panel-box", x:x, y:y, width:w, height:hgt, rx:14}, g);
+  fill(g); nodeEls[id] = g; bindNode(g, id);
+}
+function node(id, n){
+  var g = el("g", {class:"node"+(n.door?" door":"")+(n.ph18?" ph18":""), transform:"translate("+n.x+","+n.y+")", tabindex:0, role:"button", "aria-label":n.name+": "+n.sub, "data-id":id}, gNodes);
+  var s = n.big ? 64 : (n.door ? 56 : 52), hs = s/2;
+  el("rect", {class:"ring", x:-hs-6, y:-hs-6, width:s+12, height:s+12, rx:16}, g);
+  el("rect", {class:"tile", x:-hs, y:-hs, width:s, height:s, rx:n.big?15:12, style:n.door?null:"fill:"+CAT[n.cat]}, g);
+  if (n.big) el("rect", {x:-hs-3, y:-hs-3, width:s+6, height:s+6, rx:17, fill:"none", style:"stroke:var(--st-hot)", "stroke-width":1.5, opacity:.7}, g);
+  var gs = Math.round(s*0.66);
+  el("use", {href:"#g-"+n.icon, class:"glyph", x:-gs/2, y:-gs/2, width:gs, height:gs, style:n.door?"color:var(--st-ink)":null}, g);
+  if (n.lab === "above"){
+    el("text", {class:"lbl", x:0, y:-hs-17, "text-anchor":"middle"}, g, n.name);
+    el("text", {class:"sub", x:0, y:-hs-5, "text-anchor":"middle"}, g, n.sub);
+  } else {
+    el("text", {class:"lbl", x:0, y:hs+16, "text-anchor":"middle"}, g, n.name);
+    el("text", {class:"sub", x:0, y:hs+29, "text-anchor":"middle"}, g, n.sub);
+  }
+  if (n.ph18){
+    var pc = el("g", {class:"phase-chip", transform:"translate(14,-38)"}, g);
+    el("rect", {x:0, y:0, width:44, height:14, rx:7}, pc);
+    el("text", {x:22, y:10, "text-anchor":"middle"}, pc, "PHASE 18");
+  }
+  nodeEls[id] = g; bindNode(g, id);
+}
+var selNode = null;
+function bindNode(g, id){
+  g.addEventListener("click", function(){ inspect(id); });
+  g.addEventListener("keydown", function(ev){ if (ev.key==="Enter" || ev.key===" "){ ev.preventDefault(); inspect(id); } });
+}
+function inspect(id){
+  if (selNode && nodeEls[selNode]) nodeEls[selNode].classList.remove("sel");
+  selNode = id; nodeEls[id].classList.add("sel");
+  var n = N[id], box = document.getElementById("inspector");
+  box.innerHTML = '<span class="k">Inspector</span><h4>'+esc(n.name)+(n.sub?' <span class="mono" style="font-weight:500;font-size:12px;color:var(--st-ink-3)">'+esc(n.sub)+'</span>':'')+'</h4><p>'+esc(n.info)+'</p><div class="facts">'+(n.facts||[]).map(function(f){return "<span>"+esc(f)+"</span>";}).join("")+'</div>';
+}
+
+// scenario engine
+var cur = null, idx = -1, playing = false, tok = 0;
+var tabsEl = document.getElementById("tabs"), stepsEl = document.getElementById("steps"), detailEl = document.getElementById("detail");
+var playBtn = document.getElementById("play");
+function edgeId(s){ return s.charAt(0)==="-" ? s.slice(1) : s; }
+function setScenario(s){
+  tok++; playing = false; setPlayUI();
+  cur = s; idx = -1;
+  Array.prototype.forEach.call(tabsEl.children, function(b){ b.setAttribute("aria-pressed", b.dataset.id===s.id ? "true" : "false"); });
+  var used = {}, touched = {};
+  s.steps.forEach(function(st){
+    st.p.forEach(function(x){ var e = edgeId(x); used[e] = (used[e]||0) | (st.f?2:1); touched[E[e][0]]=1; touched[E[e][1]]=1; });
+    st.hot.forEach(function(x){ touched[x]=1; });
+  });
+  for (var id in edgeEls){
+    var c = edgeEls[id].classList; c.remove("lit","cur","fail","dim");
+    if (used[id]){ c.add("lit"); if (used[id]===2) c.add("fail"); } else c.add("dim");
+  }
+  for (var nid in nodeEls){ nodeEls[nid].classList.remove("cur","fail"); nodeEls[nid].classList.toggle("dim", !touched[nid]); }
+  for (var k in modelEls) modelEls[k].classList.remove("on");
+  stepsEl.innerHTML = "";
+  s.steps.forEach(function(st, i){
+    var li = h("li", st.f ? "fail" : "");
+    var b = h("button"); b.type = "button";
+    b.innerHTML = '<span class="n">'+(i+1)+'</span><span class="t">'+esc(st.t)+'</span>'+(st.m?'<span class="mchip" style="color:'+MODELS[st.m].c+'">'+MODELS[st.m].name+'</span>':'');
+    b.addEventListener("click", function(){ tok++; playing = false; setPlayUI(); doStep(i, tok); });
+    li.appendChild(b); stepsEl.appendChild(li);
+  });
+  detailEl.innerHTML = '<span class="k">'+esc(s.name)+' · '+s.steps.length+' steps</span><h3>'+esc(s.sum)+'</h3><p>Press Play to follow it hop by hop, or pick a step. The lit paths are every hop this journey takes.</p>';
+}
+function setPlayUI(){
+  playBtn.querySelector("span").textContent = playing ? "Pause" : (cur && idx >= cur.steps.length-1 ? "Replay" : "Play");
+  playBtn.querySelector("svg").innerHTML = playing ? '<path d="M4 2.5 H6.5 V13.5 H4 Z M9.5 2.5 H12 V13.5 H9.5 Z"/>' : '<path d="M4 2.5 L13 8 L4 13.5 Z"/>';
+}
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function hop(spec, my, fail){
+  var id = edgeId(spec), rev = spec.charAt(0)==="-", p = edgeEls[id];
+  p.classList.add("cur"); if (fail) p.classList.add("fail");
+  if (RM) return wait(260);
+  var len = p.getTotalLength(), dur = Math.max(380, Math.min(950, len*2.2));
+  var g = el("g", {class:"pk"+(fail?" fail":"")}, gPk);
+  var o = el("circle", {class:"pk-o", r:9}, g), c = el("circle", {class:"pk-i", r:3.8}, g);
+  return new Promise(function(res){
+    var t0 = performance.now();
+    function f(now){
+      if (my !== tok){ g.remove(); res(); return; }
+      var t = Math.min(1, (now - t0)/dur), e = t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+      var pt = p.getPointAtLength(len * (rev ? 1-e : e));
+      g.setAttribute("transform", "translate("+pt.x+","+pt.y+")");
+      if (t < 1) requestAnimationFrame(f); else { g.remove(); res(); }
+    }
+    requestAnimationFrame(f);
+  });
+}
+function doStep(i, my){
+  idx = i; var st = cur.steps[i];
+  Array.prototype.forEach.call(stepsEl.children, function(li, j){ li.classList.toggle("cur", j===i); li.classList.toggle("done", j<i); });
+  for (var id in edgeEls) edgeEls[id].classList.remove("cur");
+  for (var nid in nodeEls) nodeEls[nid].classList.remove("cur","fail");
+  for (var k in modelEls) modelEls[k].classList.toggle("on", st.m===k);
+  detailEl.innerHTML = '<span class="k">Step '+(i+1)+' of '+cur.steps.length+(st.m?' · '+MODELS[st.m].name:'')+'</span><h3>'+esc(st.t)+'</h3><p>'+esc(st.d)+'</p><div class="code">'+esc(st.c)+'</div>';
+  setPlayUI();
+  var chain = Promise.resolve();
+  st.p.forEach(function(spec){ chain = chain.then(function(){ if (my===tok) return hop(spec, my, !!st.f); }); });
+  return chain.then(function(){
+    if (my !== tok) return;
+    st.hot.forEach(function(nid){ var g = nodeEls[nid]; if (g){ g.classList.add("cur"); if (st.f) g.classList.add("fail"); } });
+  });
+}
+function run(){
+  var my = ++tok; playing = true; setPlayUI();
+  var start = (idx >= cur.steps.length-1) ? 0 : idx+1;
+  if (start === 0){ Array.prototype.forEach.call(stepsEl.children, function(li){ li.classList.remove("done","cur"); }); }
+  var chain = Promise.resolve();
+  for (var i = start; i < cur.steps.length; i++) (function(i){
+    chain = chain.then(function(){ if (my===tok) return doStep(i, my).then(function(){ if (my===tok) return wait(RM ? 1600 : 1250); }); });
+  })(i);
+  chain.then(function(){ if (my===tok){ playing = false; setPlayUI(); } });
+}
+playBtn.addEventListener("click", function(){ if (playing){ tok++; playing = false; setPlayUI(); } else run(); });
+document.getElementById("next").addEventListener("click", function(){ tok++; playing = false; if (idx < cur.steps.length-1) doStep(idx+1, tok); setPlayUI(); });
+document.getElementById("prev").addEventListener("click", function(){ tok++; playing = false; if (idx > 0) doStep(idx-1, tok); setPlayUI(); });
+
+buildMap();
+SCEN.forEach(function(s){
+  var b = h("button", "tab"); b.type = "button"; b.dataset.id = s.id; b.textContent = s.name;
+  b.addEventListener("click", function(){ setScenario(s); if (!RM) run(); });
+  tabsEl.appendChild(b);
+});
+setScenario(SCEN[0]);
+inspect("agent");
+if (!RM && "IntersectionObserver" in window){
+  var started = false;
+  var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting && !started){ started = true; run(); io.disconnect(); } }); }, {threshold:.35});
+  io.observe(svg);
+}
+
+/* ---------------- the trace waterfall ---------------- */
+var KC = {door:"#2453C9", net:"#8C4FFF", compute:"#ED7100", int:"#E7157B", queue:"#E7157B", db:"#C925D1", model:"#D97757", tool:"#1D9A5B"};
+var SPANS = [
+  {n:"ios · send message", s:0, e:4150, d:0, k:"door", svc:"ios", a:{"door":"ios","app_version":"1.0 (42)","client_message_id":"c_9x1…","conversation_id":"cv_31…"}},
+  {n:"POST /v1/chat/messages", s:18, e:170, d:1, k:"net", svc:"api-gateway", a:{"http.route":"/v1/chat/messages","http.response.status_code":"202","member":"h:7f3a…"}},
+  {n:"mypaisa-prod-api", s:32, e:158, d:2, k:"compute", svc:"mypaisa-prod-api", a:{"faas.trigger":"http","authorizer":"ok · epoch match","x-mypaisa-trace-id":"4bf92f35…"}},
+  {n:"SendMessage updates.fifo", s:118, e:146, d:3, k:"int", svc:"mypaisa-prod-api", a:{"messaging.system":"aws_sqs","messaging.destination.name":"mypaisa-prod-updates.fifo","MessageGroupId":"member"}},
+  {n:"updates.fifo · in queue", s:158, e:262, d:1, k:"queue", svc:"sqs", a:{"carried as":"AWSTraceHeader","wait_ms":"104"}},
+  {n:"mypaisa-prod-agent", s:262, e:3962, d:1, k:"compute", svc:"mypaisa-prod-agent", a:{"faas.trigger":"pubsub","run_id":"run_7Hq2…","mypaisa.agent":"concierge","model calls":"2 of 8"}},
+  {n:"DynamoDB GetItem SpendMonth", s:270, e:284, d:2, k:"db", svc:"mypaisa-prod-agent", a:{"db.system":"dynamodb","aws.dynamodb.table_names":"mypaisa-prod-*","read":"SpendMonth → step normal"}},
+  {n:"chat claude-sonnet-5-5", s:292, e:1440, d:2, k:"model", ttft:610, svc:"mypaisa-prod-agent", a:{"gen_ai.provider.name":"anthropic","gen_ai.operation.name":"chat","gen_ai.request.model":"claude-sonnet-5-5","gen_ai.usage.input_tokens":"2,400","gen_ai.usage.cache_read.input_tokens":"9,800","gen_ai.usage.output_tokens":"120","gen_ai.response.finish_reasons":"tool_use","mypaisa.feature":"chat","mypaisa.step":"normal","mypaisa.cache_hit":"true","mypaisa.ttft_ms":"610","mypaisa.cost_usd":"0.0080"}},
+  {n:"tool get_networth", s:1452, e:1498, d:2, k:"tool", svc:"mypaisa-prod-agent", a:{"gen_ai.operation.name":"execute_tool","gen_ai.tool.name":"get_networth","outcome":"ok","input / output bytes":"64 / 1,820"}},
+  {n:"tool run_projection", s:1504, e:1690, d:2, k:"tool", svc:"mypaisa-prod-agent", a:{"gen_ai.operation.name":"execute_tool","gen_ai.tool.name":"run_projection","outcome":"ok · not saved","input / output bytes":"212 / 4,960"}},
+  {n:"chat claude-sonnet-5-5", s:1700, e:3880, d:2, k:"model", ttft:520, svc:"mypaisa-prod-agent", sel:1, a:{"gen_ai.provider.name":"anthropic","gen_ai.operation.name":"chat","gen_ai.request.model":"claude-sonnet-5-5","gen_ai.usage.input_tokens":"2,300","gen_ai.usage.cache_read.input_tokens":"9,800","gen_ai.usage.output_tokens":"520","gen_ai.response.finish_reasons":"end_turn","mypaisa.feature":"chat","mypaisa.step":"normal","mypaisa.cache_hit":"true","mypaisa.ttft_ms":"520","mypaisa.cost_usd":"0.0118"}},
+  {n:"SendMessage outbox.fifo", s:3890, e:3918, d:2, k:"int", svc:"mypaisa-prod-agent", a:{"messaging.destination.name":"mypaisa-prod-outbox.fifo","payload":"message + card"}},
+  {n:"DynamoDB PutItem RunRecord", s:3926, e:3950, d:2, k:"db", svc:"mypaisa-prod-agent", a:{"entity":"RunRecord","ttl":"90 days","mypaisa.cost_usd (run)":"0.0198"}},
+  {n:"mypaisa-prod-sender", s:3975, e:4072, d:1, k:"compute", svc:"mypaisa-prod-sender", a:{"faas.trigger":"pubsub","presence":"fresh on ios and web → no push"}},
+  {n:"DynamoDB PutItem StreamEvent", s:3990, e:4028, d:2, k:"db", svc:"mypaisa-prod-sender", a:{"entity":"StreamEvent","type":"card","seq":"next for member"}},
+  {n:"mypaisa-prod-stream · send", s:4084, e:4108, d:1, k:"compute", svc:"mypaisa-prod-stream", a:{"route":"/v1/stream","event":"card","resume":"Last-Event-ID"}},
+  {n:"ios · event received", s:4130, e:4150, d:1, k:"door", svc:"ios", a:{"recorded via":"POST /v1/telemetry","ClientFirstWord_ms":"2,420"}}
+];
+var TOTAL = 4400, wf = document.getElementById("wf"), attrs = document.getElementById("attrs"), rowEls = [];
+function pct(v){ return (v/TOTAL*100).toFixed(3)+"%"; }
+(function(){
+  var ax = h("div","wf-axis"); ax.innerHTML = '<span class="wf-name" style="font-weight:600;color:var(--ink-3)">span</span>';
+  var tk = h("div","wf-ticks");
+  [0,1000,2000,3000,4000].forEach(function(v){ var s = h("span"); s.style.left = pct(v); s.textContent = (v/1000)+" s"; tk.appendChild(s); });
+  ax.appendChild(tk); wf.appendChild(ax);
+  var grid = h("div","wf-grid"); [1000,2000,3000,4000].forEach(function(v){ var i = h("i"); i.style.left = pct(v); grid.appendChild(i); }); wf.appendChild(grid);
+  SPANS.forEach(function(sp, i){
+    var r = h("button","wf-row"); r.type = "button";
+    r.setAttribute("aria-label", sp.n+", "+(sp.e-sp.s)+" milliseconds");
+    var nm = h("span","wf-name"); nm.style.paddingLeft = (16 + sp.d*14)+"px";
+    nm.innerHTML = '<i style="background:'+KC[sp.k]+'"></i>'+esc(sp.n);
+    var lane = h("span","wf-lane");
+    var bar = h("span","wf-bar"+(sp.k==="queue"?" queue":""));
+    bar.style.left = pct(sp.s); bar.style.width = pct(sp.e-sp.s); bar.style.background = KC[sp.k];
+    bar.style.setProperty("--d", (sp.s/TOTAL*1.6).toFixed(2)+"s");
+    if (sp.ttft){ var tt = h("span","tt"); tt.style.left = ((sp.ttft)/(sp.e-sp.s)*100).toFixed(2)+"%"; tt.title = "first token"; bar.appendChild(tt); }
+    var du = h("span","wf-dur"); du.textContent = (sp.e-sp.s)+" ms";
+    var late = sp.e/TOTAL > .8, early = sp.s/TOTAL < .3;
+    if (!late){ du.style.left = "calc("+pct(sp.e)+" + 6px)"; }
+    else if (early){ du.classList.add("in"); du.style.right = "calc("+(100-sp.e/TOTAL*100).toFixed(3)+"% + 8px)"; }
+    else { du.style.right = "calc("+(100-sp.s/TOTAL*100).toFixed(3)+"% + 6px)"; }
+    lane.appendChild(bar); lane.appendChild(du);
+    r.appendChild(nm); r.appendChild(lane);
+    r.addEventListener("click", function(){ select(i); });
+    wf.appendChild(r); rowEls.push(r);
+  });
+  var m1 = h("div","wf-mark"); m1.style.left = "calc(270px + (100% - 288px) * "+(2420/TOTAL).toFixed(4)+")"; m1.innerHTML = "<span>first word at the door · 2.42 s</span>"; wf.appendChild(m1);
+  var m2 = h("div","wf-mark end"); m2.style.left = "calc(270px + (100% - 288px) * "+(4150/TOTAL).toFixed(4)+")"; m2.innerHTML = "<span>whole reply · 4.15 s</span>"; wf.appendChild(m2);
+  function fixMarks(){
+    var narrow = window.matchMedia("(max-width:640px)").matches, L = narrow ? 200 : 270;
+    m1.style.left = "calc("+L+"px + (100% - "+(L+18)+"px) * "+(2420/TOTAL).toFixed(4)+")";
+    m2.style.left = "calc("+L+"px + (100% - "+(L+18)+"px) * "+(4150/TOTAL).toFixed(4)+")";
+  }
+  fixMarks(); window.addEventListener("resize", fixMarks);
+  var selIdx = 0; SPANS.forEach(function(s, i){ if (s.sel) selIdx = i; }); select(selIdx);
+})();
+function select(i){
+  rowEls.forEach(function(r, j){ r.classList.toggle("sel", i===j); });
+  var sp = SPANS[i], rows = "";
+  for (var k in sp.a) rows += "<div><dt>"+esc(k)+"</dt><dd>"+esc(sp.a[k])+"</dd></div>";
+  rows += "<div><dt>service.name</dt><dd>"+esc(sp.svc)+"</dd></div><div><dt>env · build</dt><dd>prod · 3f9c2e1</dd></div>";
+  var note = sp.k==="model" ? "Two calls in this turn: $0.0198 together, about 1.5p. The same figure is added to SpendMonth and checked weekly against the Console, to the token." :
+             sp.k==="tool" ? "The truncated input and output stay on the RunRecord in the household's own table; the span keeps only sizes and the outcome." :
+             sp.k==="queue" ? "SQS carries the trace header as a system attribute, outside the size quota; Lambda's event source continues it with no code." :
+             "Every span carries run_id, the member's hash and the conversation id, never a name, an amount or the text.";
+  attrs.innerHTML = '<span class="k">Span · '+(sp.e-sp.s)+' ms</span><h4 class="mono" style="font-size:14px">'+esc(sp.n)+'</h4><dl>'+rows+'</dl><p class="note">'+note+'</p>';
+}
+var tb = document.getElementById("tracebox");
+if (!RM && "IntersectionObserver" in window){
+  var tio = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ tb.classList.add("play"); tio.disconnect(); } }); }, {threshold:.25});
+  tio.observe(tb);
+}
+
+/* ---------------- tools ---------------- */
+var TOOLS = [
+  {h:"Read the records and views", c:"#C925D1", p:"Look up rather than ask.", l:["get_portfolio","get_holding(id)","get_networth(view)","get_commitments(window)","get_budget(month)","get_audit(filter)","list_kinds","describe_kind","chart_series(id, days)"]},
+  {h:"Read the market side", c:"#ED7100", p:"The engine's output, never re-derived by the model.", l:["get_signals(id)","get_history(id, days)","get_macro","get_events","get_sentiment","get_stances","get_scorecard"]},
+  {h:"Compute, never saved", c:"#1D9A5B", p:"Typed overrides through code.", l:["run_scenario","run_projection(overrides)"]},
+  {h:"Draft and propose", c:"#E7157B", p:"Writes nothing until Confirm; the draft is hashed.", l:["draft_record(kind, fields)","draft_event(record, type, fields)","propose_change(entity, patch)","log_decision"]},
+  {h:"Ask, read, search", c:"#D97757", p:"Server tools are Anthropic's, with citations.", l:["ask_user(question, options[])","extract_document(s3_key, schema)","web_search","web_fetch"]},
+  {h:"The admin only", c:"#DD344C", p:"Enforced in code, behind the second check.", l:["propose_kind","propose_plan_item"]}
+];
+var toolsEl = document.getElementById("tools");
+TOOLS.forEach(function(t){
+  var d = h("div","tg");
+  d.innerHTML = '<h4><i style="background:'+t.c+'"></i>'+esc(t.h)+'</h4><p>'+esc(t.p)+'</p><div class="list">'+t.l.map(function(x){ return "<code>"+esc(x)+"</code>"; }).join("")+'</div>';
+  toolsEl.appendChild(d);
+});
+if (RM){ var lp = document.querySelector("#loop svg"); if (lp && lp.pauseAnimations) lp.pauseAnimations(); var dots = document.getElementById("lpdots"); if (dots) dots.style.display = "none"; }
+
+/* ---------------- agents ---------------- */
+var KIND = {loop:"var(--st-hot)", code:"var(--st-amber)", none:"var(--st-ink-3)"};
+var KIND_PAGE = {loop:"var(--coral)", code:"var(--amber)", none:"var(--ink-3)"};
+var AG = [
+  {id:"con", name:"Concierge", icon:"chat", kind:"loop", type:"Conversational tool-loop agent · the agent Lambda", brain:["sonnet","haiku"], x:160, y:96, job:"Talks to members in the chat; routes the admin's instructions to the admin desk.", own:"Answers, reads, proposes changes to records with a Confirm card.", ask:"Nothing: members confirm their own records.", share:55},
+  {id:"desk", name:"Admin desk", icon:"person", kind:"code", type:"Approval router, the human in the loop", brain:["code","haiku"], x:550, y:88, job:"The one channel between the agents and the admin, in the owner's chat and the Admin center.", own:"Queues, batches into one daily digest, reminds, expires.", ask:"It is the asking: approvals take the second check.", share:5},
+  {id:"bud", name:"Budget keeper", icon:"meter", kind:"none", type:"Spend governor", brain:["code"], x:940, y:96, job:"The meter, the ladder and the guards on every model call.", own:"Steps down the ladder and back up.", ask:"Ceilings and shares are the admin's.", share:0},
+  {id:"stew", name:"Data steward", icon:"pipe", kind:"code", type:"Data reliability agent", brain:["code","haiku"], x:100, y:240, job:"Keeps prices flowing from free sources; watches freshness, gaps, disagreement and free quotas.", own:"Fails over within the chain, retries, fills gaps, labels stale data.", ask:"A new or reordered source, any paid feed, a source's terms.", share:5, shareNote:"5%, shared with the ops warden"},
+  {id:"ops", name:"Ops warden", icon:"wrench", kind:"code", type:"Self-healing operator", brain:["code","haiku"], x:1000, y:240, job:"Runs the daily pipeline and repairs it; finds the cause when a dead-letter queue fills.", own:"Retries, catches up, replays at most three times, rolls back to the last good version.", ask:"Anything it cannot fix: an incident with what was tried.", share:5, shareNote:"5%, shared with the data steward"},
+  {id:"news", name:"News scout", icon:"news", kind:"code", type:"Batch tagger and matcher", brain:["haiku-batch","code"], x:170, y:372, job:"Collects news and events, tags them, and matches them to holdings through each one's exposure map.", own:"Tags and matches; code scores relevance.", ask:"A new feed or event type.", share:10},
+  {id:"ana", name:"Analyst", icon:"gauge", kind:"none", type:"Deterministic rules engine", brain:["code"], x:440, y:395, job:"The rules engine: indicators, pillars, the holder's cascade and confidence.", own:"Runs daily.", ask:"Any rule threshold change, through the tuner.", share:0},
+  {id:"fc", name:"Forecaster", icon:"fan", kind:"code", type:"ML forecaster, a second engine", brain:["code","sonnet"], x:680, y:395, job:"Market mood, risk, similar days, event impacts and direction, four weeks out.", own:"Runs daily; switches itself off when its record slips.", ask:"Promotions, through the tuner.", share:10},
+  {id:"grade", name:"Grader and tuner", icon:"target", kind:"code", type:"Evaluation and calibration loop", brain:["code","sonnet"], x:930, y:372, job:"Grades every prediction daily, calibrates within bounds, and tests challengers in shadow.", own:"Grades, moves calibration at most two points a day, rolls back a worse map.", ask:"Promoting a challenger, any change to rules or models.", share:10}
+];
+var BRAIN = {sonnet:["sonnet","Sonnet 5.5"], haiku:["haiku","Haiku 5.5"], "haiku-batch":["haiku","Haiku 5.5 · Batches"], opus:["opus","Opus 5.5"], code:["code","Code"]};
+var bus = document.getElementById("bus");
+var BUS = {x1:400, x2:700, y1:212, y2:268};
+function busPoint(a){
+  if (a.y < BUS.y1 - 40) return {x:Math.max(BUS.x1+20, Math.min(BUS.x2-20, a.x)), y:BUS.y1};
+  if (a.y > BUS.y2 + 40) return {x:Math.max(BUS.x1+20, Math.min(BUS.x2-20, a.x)), y:BUS.y2};
+  return {x:a.x < 550 ? BUS.x1 : BUS.x2, y:240};
+}
+(function(){
+  var defs = el("defs", null, bus);
+  var pat = el("pattern", {id:"dots2", width:20, height:20, patternUnits:"userSpaceOnUse"}, defs);
+  el("circle", {cx:1, cy:1, r:1, style:"fill:var(--st-grid)"}, pat);
+  el("rect", {x:0, y:0, width:1100, height:470, style:"fill:url(#dots2)"}, bus);
+  var sp = el("g", null, bus);
+  AG.forEach(function(a){ var b = busPoint(a); a.bp = b; a.spoke = el("line", {x1:a.x, y1:a.y, x2:b.x, y2:b.y, style:"stroke:var(--st-edge)", "stroke-width":1.6, "stroke-dasharray":"4 5"}, sp); });
+  var bg = el("g", null, bus);
+  el("rect", {x:BUS.x1, y:BUS.y1, width:BUS.x2-BUS.x1, height:BUS.y2-BUS.y1, rx:28, style:"fill:var(--st-bg-2);stroke:#E7157B", "stroke-width":1.6}, bg);
+  el("rect", {x:BUS.x1+14, y:BUS.y1+12, width:32, height:32, rx:9, style:"fill:#E7157B"}, bg);
+  el("use", {href:"#g-bus", x:BUS.x1+16, y:BUS.y1+14, width:28, height:28, style:"color:#fff"}, bg);
+  el("text", {x:BUS.x1+58, y:BUS.y1+26, style:"fill:var(--st-ink);font:700 13px var(--f-mono)"}, bg, "mypaisa-prod-events");
+  el("text", {x:BUS.x1+58, y:BUS.y1+42, style:"fill:var(--st-ink-3);font:500 10.5px var(--f-mono)"}, bg, "EventBridge custom bus");
+  var sf = el("g", {transform:"translate(475,302)"}, bus);
+  el("rect", {x:0, y:0, width:150, height:36, rx:10, style:"fill:var(--st-bg-3);stroke:var(--st-line)"}, sf);
+  el("use", {href:"#g-sfn", x:8, y:6, width:24, height:24, style:"color:#FF7FB5"}, sf);
+  el("text", {x:38, y:16, style:"fill:var(--st-ink);font:600 11px var(--f-body)"}, sf, "Step Functions");
+  el("text", {x:38, y:29, style:"fill:var(--st-ink-3);font:500 9.5px var(--f-mono)"}, sf, "the daily run");
+  el("line", {x1:550, y1:268, x2:550, y2:302, style:"stroke:var(--st-edge)", "stroke-width":1.6}, bus);
+  var ng = el("g", null, bus);
+  AG.forEach(function(a){
+    var g = el("g", {transform:"translate("+a.x+","+a.y+")"}, ng);
+    a.ring = el("circle", {r:38, fill:"none", style:"stroke:"+KIND[a.kind], "stroke-width":2, opacity:0}, g);
+    el("circle", {r:30, style:"fill:var(--st-bg-3);stroke:"+KIND[a.kind], "stroke-width":2.5}, g);
+    el("use", {href:"#g-"+a.icon, x:-17, y:-17, width:34, height:34, style:"color:#fff"}, g);
+    var top = a.y < 150, ly = top ? -46 : 50;
+    el("text", {x:0, y:ly, "text-anchor":"middle", style:"fill:var(--st-ink);font:700 13px var(--f-body);paint-order:stroke;stroke:var(--st-bg);stroke-width:4px"}, g, a.name);
+    var models = a.brain.filter(function(b){ return b!=="code"; }).map(function(b){ return BRAIN[b][1]; });
+    el("text", {x:0, y:ly + (top ? -15 : 15), "text-anchor":"middle", style:"fill:"+(models.length?"var(--st-ink-2)":"var(--st-ink-3)")+";font:500 10px var(--f-mono);paint-order:stroke;stroke:var(--st-bg);stroke-width:4px"}, g, models.length ? models.join(" · ") : "code only");
+  });
+  var FLOWS = [
+    ["stew","ana","Data steward → Analyst: prices are fresh"],
+    ["ana","con","Analyst → Concierge: stances written for the brief"],
+    ["news","fc","News scout → Forecaster: stories matched to holdings"],
+    ["fc","grade","Forecaster → Grader and tuner: forecasts to grade"],
+    ["grade","desk","Grader and tuner → Admin desk: a challenger beats the live model"],
+    ["bud","con","Budget keeper → Concierge: 85% reached, savers on"],
+    ["ops","desk","Ops warden → Admin desk: an incident it could not fix"],
+    ["desk","stew","Admin desk → Data steward: approved, switch the source on"]
+  ];
+  var byId = {}; AG.forEach(function(a){ byId[a.id] = a; });
+  var now = document.getElementById("busnow");
+  if (RM){ now.textContent = "Events travel spoke to bus to spoke; agents never call each other."; return; }
+  var pk = el("g", {style:"display:none"}, bus);
+  el("circle", {r:10, style:"fill:var(--st-hot)", opacity:.25}, pk); el("circle", {r:4.2, style:"fill:#FFE6DE"}, pk);
+  var fi = 0, visible = false;
+  if ("IntersectionObserver" in window){ new IntersectionObserver(function(es){ visible = es[0].isIntersecting; }, {threshold:.15}).observe(bus); } else visible = true;
+  function lerp(a, b, t){ return {x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t}; }
+  function one(){
+    if (!visible){ setTimeout(one, 600); return; }
+    var f = FLOWS[fi++ % FLOWS.length], A = byId[f[0]], B = byId[f[1]];
+    now.textContent = f[2];
+    var pts = [{x:A.x,y:A.y}, A.bp, B.bp, {x:B.x,y:B.y}], segs = [], tot = 0;
+    for (var i = 0; i < 3; i++){ var L = Math.hypot(pts[i+1].x-pts[i].x, pts[i+1].y-pts[i].y); segs.push(L); tot += L; }
+    A.ring.setAttribute("opacity", 1); A.spoke.style.stroke = "var(--st-hot)";
+    pk.style.display = ""; var t0 = performance.now(), dur = 2300;
+    function f2(t){
+      var u = Math.min(1, (t-t0)/dur), e = u<.5 ? 2*u*u : 1-Math.pow(-2*u+2,2)/2, d = e*tot, k = 0;
+      while (k < 2 && d > segs[k]){ d -= segs[k]; k++; }
+      var p = lerp(pts[k], pts[k+1], segs[k] ? Math.min(1, d/segs[k]) : 1);
+      pk.setAttribute("transform", "translate("+p.x+","+p.y+")");
+      if (k === 2) { B.spoke.style.stroke = "var(--st-hot)"; }
+      if (u < 1) requestAnimationFrame(f2);
+      else {
+        B.ring.setAttribute("opacity", 1); pk.style.display = "none";
+        setTimeout(function(){ A.ring.setAttribute("opacity", 0); B.ring.setAttribute("opacity", 0); A.spoke.style.stroke = ""; B.spoke.style.stroke = ""; setTimeout(one, 350); }, 900);
+      }
+    }
+    requestAnimationFrame(f2);
+  }
+  setTimeout(one, 800);
+})();
+var agentsEl = document.getElementById("agents");
+AG.forEach(function(a){
+  var d = h("article","agent");
+  var chips = a.brain.map(function(b){ var c = BRAIN[b]; return '<span class="chip '+c[0]+'">'+(c[0]!=="code"?'<svg><use href="#g-spark"/></svg>':'')+esc(c[1])+'</span>'; }).join("");
+  d.innerHTML = '<div class="agent-top"><span class="agent-ic" style="border-color:'+KIND_PAGE[a.kind]+'"><svg><use href="#g-'+a.icon+'"/></svg></span><div><h3>'+esc(a.name)+'</h3><p class="type">'+esc(a.type)+'</p></div></div>'+
+    '<div class="brain">'+chips+'</div>'+
+    '<dl><div><dt>Its job</dt><dd>'+esc(a.job)+'</dd></div><div><dt>On its own</dt><dd>'+esc(a.own)+'</dd></div><div><dt>Asks the admin</dt><dd>'+esc(a.ask)+'</dd></div></dl>'+
+    '<div class="share"><span class="bar"><i style="width:'+(a.share*1.6)+'%"></i></span><span>'+(a.share ? (a.shareNote || a.share+"% of the ceiling") : "no Claude share")+'</span></div>';
+  agentsEl.appendChild(d);
+});
+
+/* ---------------- models ---------------- */
+var MC = [
+  {k:"opus", name:"Opus 5.5", id:"claude-opus-5-5", role:"Thinks once a week.", uses:["The Saturday review, from phase 13: what MyPaisa told you this week, the scoreboard, and a reflection over the last four weeks of stances and their grades","Web search and fetch with citations for the review","From 85% of the ceiling, the review moves to Sonnet"], price:"$4 in · $20 out per million tokens"},
+  {k:"sonnet", name:"Sonnet 5.5", id:"claude-sonnet-5-5", role:"Carries the conversation.", uses:["The concierge's tool loop: the chat, its cards and guided flows, about 1.5p to 3p a message","The 07:15 brief and the 21:15 wrap, from the engine's numbers","Reading a factsheet or a screenshot sent in the chat, with citations","The “Why?” button with web search","Phase 18: the Forecaster's explanations and the grader's weekly and monthly reviews"], price:"$2 in · $10 out per million tokens"},
+  {k:"haiku", name:"Haiku 5.5", id:"claude-haiku-5-5", role:"Files and filters at volume.", uses:["Tagging the day's news and the nightly sentiment index, through Message Batches at half price","Statement merchants the memory has not seen","A one-line note on each closed conversation; the alerts' repeat filter; small chat turns","Phase 18: the data steward's requests, the ops warden's incident summaries, the admin desk's drafts","Chat answers at the 95% step"], price:"$0.10 in · $0.50 out per million tokens"}
+];
+var mcEl = document.getElementById("modelcards");
+MC.forEach(function(m){
+  var d = h("article","model-card "+m.k);
+  d.innerHTML = '<div class="mh"><span class="spark"><svg><use href="#g-spark"/></svg></span><div><h3>'+m.name+'</h3><span class="mid">'+m.id+'</span></div></div><p class="role">'+esc(m.role)+'</p><ul>'+m.uses.map(function(u){ return "<li>"+esc(u)+"</li>"; }).join("")+'</ul><p class="price">'+esc(m.price)+'</p>';
+  mcEl.appendChild(d);
+});
+var JOBS = [
+  ["Chat answers", function(p){ return p>=100?["tpl","One-line reply, templates"]:p>=95?["haiku","Haiku 5.5"]:["sonnet","Sonnet 5.5"]; }],
+  ["Brief, wrap and alerts", function(p){ return p>=95?["tpl","Plain template"]:["sonnet","Sonnet 5.5"]; }],
+  ["Reading a factsheet or screenshot", function(p){ return p>=100?["off","Stopped"]:["ok","Works"]; }],
+  ["Saturday review", function(p){ return p>=100?["off","Stopped"]:p>=95?["off","Essentials only"]:p>=85?["sonnet","Sonnet 5.5"]:["opus","Opus 5.5"]; }],
+  ["Bull/bear debate on stances over 70%", function(p){ return p>=100?["off","Stopped"]:p>=85?["off","Skipped"]:["ok","Two calls and a judge"]; }],
+  ["“Why?” searches", function(p){ return p>=100?["off","Stopped"]:p>=95?["off","Essentials only"]:p>=85?["tpl","Three a day"]:["ok","As asked"]; }],
+  ["Nightly sentiment scoring", function(p){ return p>=85?["off","Paused, last index kept"]:["haiku","Haiku 5.5 · Batches"]; }]
+];
+var STEPS = [
+  [100,"s100","Claude stops","Claude stops until the cycle renews or the owner raises the ceiling. Every card goes out as its plain template; buttons and guided flows work as before. Alerts are never dropped: a template needs no model."],
+  [95,"s95","Essentials only","Chat answers on Haiku; the brief, the wrap and alerts go out as their plain templates with the engine's numbers. Reading a factsheet or screenshot still works. The owner is told."],
+  [85,"s85","Savers","The bull/bear debate is skipped, the Saturday review runs on Sonnet instead of Opus, “Why?” searches are limited to three a day, and the nightly sentiment scoring pauses. The owner is told."],
+  [70,"s70","Owner told","One message to the owner: what is spent, on what, and the days left. Nothing changes."],
+  [0,"s0","Normal","Every job runs on its usual model."]
+];
+var spend = document.getElementById("spend"), routes = document.getElementById("routes");
+var CHIPSVG = '<svg><use href="#g-spark"/></svg>';
+function ladder(){
+  var p = +spend.value, st = STEPS.filter(function(s){ return p >= s[0]; })[0];
+  document.getElementById("ladamt").textContent = "$"+Math.round(p*1.6);
+  var se = document.getElementById("ladstep"); se.textContent = st[2]; se.className = "lad-step "+st[1];
+  document.getElementById("ladmsg").textContent = st[3];
+  routes.innerHTML = JOBS.map(function(j){ var r = j[1](p); return '<div><span>'+esc(j[0])+'</span><span class="chip '+r[0]+'">'+((r[0]==="opus"||r[0]==="sonnet"||r[0]==="haiku")?CHIPSVG:"")+esc(r[1])+'</span></div>'; }).join("");
+}
+spend.addEventListener("input", ladder); ladder();
+var SHARES = [["Concierge",55,"#FF6B4F"],["Forecaster",10,"#8C4FFF"],["News scout",10,"#0FA38F"],["Grader and tuner",10,"#2453C9"],["Admin desk",5,"#E7157B"],["Data steward and ops warden",5,"#ED7100"],["Reserve, the chat first",5,"#9AA3B2"]];
+var sb = document.getElementById("sharebar"), sk = document.getElementById("sharekey");
+SHARES.forEach(function(s){
+  var i = h("i"); i.style.width = s[1]+"%"; i.style.background = s[2]; i.title = s[0]+": "+s[1]+"%"; sb.appendChild(i);
+  var k = h("span"); k.innerHTML = '<i style="background:'+s[2]+'"></i>'+esc(s[0])+'<b>'+s[1]+'% · $'+(s[1]*1.6).toFixed(0)+'</b>'; sk.appendChild(k);
+});
+
+/* ---------------- top bar ---------------- */
+var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+if ("IntersectionObserver" in window){
+  var secIO = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ links.forEach(function(a){ a.classList.toggle("on", a.getAttribute("href")==="#"+e.target.id); }); } }); }, {rootMargin:"-45% 0px -50% 0px"});
+  links.forEach(function(a){ var s = document.querySelector(a.getAttribute("href")); if (s) secIO.observe(s); });
+}
+})();
+</script>
