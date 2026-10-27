@@ -504,6 +504,12 @@ async function selftest() {
     // round 2: a chart's range band is the --mp-band token (the case names its own colour, so a band left unfixed on
     // today's boards does not answer for it)
     { name: 'band-not-the-token', board: 'app-v1/Web v4 · Projection.dc.html', file: 'app-v1/Web v4 · Projection.dc.html', mutate: [/<\/style>/, '.oncard .fband { fill: #3a7bd5 !important; }\n</style>'], expect: /^band-not-token$/, text: /rgb\(58, 123, 213\)/ },
+    // round 2: text under a chart's painted note is text on text, not content under a bar: the Proof note as wide as round
+    // 1 left it covers the y axis's labels
+    { name: 'note-over-the-axis', board: 'app-v1/Forecast.dc.html', mutate: [/(\.mp \.shover > div \{ max-width: min\(300px, calc\(100% - )96px/, '$1'+'60px'], expect: /^covered$/, text: /−(10|20)%/ },
+    // round 2: what a board anchors to the bottom of a clipping page runs out above the top as the page narrows, and is
+    // measured: the Dashboard's in-place edit row, its field squeezed beside its figure at 320
+    { name: 'edit-row-above-the-top', board: 'app-v1/Web v4 · Dashboard.dc.html', mutate: [/  \.mp \.edit > \.fx:has\(> \.efield\) \{ flex-wrap: wrap; \}\n  \.mp \.edit > \.fx > \.efield \{ flex: 1 1 100%; \}[^\n]*\n/g, ''], expect: /^(crushed|spill|overlap|clip-x)$/, at: /^320x/, text: /Correcting the value/ },
     // round 2: a documentation page with no frame fails when its template throws
     { name: 'frameless-page-throws', board: 'ds-v1/Foundations.dc.html', file: 'ds-v1/Foundations.dc.html', mutate: [/renderVals\(\) \{/, "renderVals() { throw new Error('selftest: the page failed to render');"], expect: /^did-not-render$/, text: /renderVals|could not render|reported an error/ },
   ];

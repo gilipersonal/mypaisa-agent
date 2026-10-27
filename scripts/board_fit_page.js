@@ -2,7 +2,8 @@
 // frame (window.__fit.frames(); frames(true) adds the device windows drawn inside another frame, such as the Stage
 // Manager window) and reports what is wrong inside one at its current size (window.__fit.scan(i)): text clipped
 // mid-word by a box that does not scroll (clip-x, clip-y), text running past its box (spill), text on text (overlap;
-// over a glass bar, a sheet or the system's own chrome it is the scroll edge, reported apart), a box cut at the screen's
+// over a glass bar, a sheet or the system's own chrome it is the scroll edge, reported apart), a chart's label under a
+// painted note, call-out or label pill in the same chart (covered), a box cut at the screen's
 // edge outside a row that scrolls (cut-at-edge), an icon showing as its name (icon-as-word), a bar's empty track that is
 // not the --mp-track token (track-not-token) and a chart's range band that is not the --mp-band token (band-not-token).
 // Text scrolled or paged out of view is not a fault. A frame drawn under CSS zoom or a scale is measured in the size it
@@ -99,7 +100,9 @@
   // raised (a z-index above 0); a relative box floats only when it is both, since a wrapper raised above a glass's own
   // layer (.sheet > *, .lg > *, a tab, a strip's figure) is still on that glass. Two lines on different surfaces are
   // content scrolling under a bar, a sheet or a toast; two lines on the same surface touching is a fault. A row of chips
-  // or suggestions is content, never chrome by its class: it floats only inside a container that does.
+  // or suggestions is content, never chrome by its class: it floats only inside a container that does. Inside a chart,
+  // a painted box with words that floats over the chart's own labels (a note, a tap call-out, a label's pill) is no
+  // edge: the label under it is covered, a fault (2b below; MA-240 round 2).
   const CHROME_SEL = '.sbar, .island, .homebar, .pstat, .kpad, .nav, .composer, .cmp, .chcomp, .wcomp, .pcomp, .wfield, .wsend';
   const layerOf = (e, f) => {
     for (let n = e; n && n !== f; n = n.parentElement) {
@@ -232,6 +235,33 @@
         issues.push({ type: under ? 'under-layer' : 'overlap', text: snippet(ex) + '  ⟂  ' + snippet(ey), el: path(ex, f) + '  ⟂  ' + path(ey, f), px: Math.round(w) + 'x' + Math.round(h) });
       }
     }
+    // 2b. a chart's label under a painted note, call-out or label pill in the same chart: a box with a solid fill and words
+    // of its own, inside an overlay (an absolute or fixed box), over a label that lies in the chart's flow or in an
+    // overlay drawn before it. A chart is a figure drawn as one image (role="img", data-chart, the design system's chart
+    // box and the boards' own chart classes)
+    const CHART_SEL = '[role="img"], [data-chart], .mp-chartbox, .fanbox, .fanw, .pplot, .pchart, .lchart, .hchart, .cplot, .chartc, .chart4, .herochart';
+    const alphaOf = (c) => { if (!c || c === 'transparent') return 0; const m = c.match(/\/\s*([\d.]+%?)\s*\)$|^rgba\([^)]*,\s*([\d.]+)\s*\)$/); if (!m) return 1; const v = m[1] || m[2]; return v.endsWith('%') ? parseFloat(v) / 100 : parseFloat(v); };
+    const overlayOf = (e, C) => { for (let n = e; n && n !== C && n !== f; n = n.parentElement) { const p = cs(n).position; if (p === 'absolute' || p === 'fixed') return n; } return null; };
+    const covers = [];
+    for (const e of all) {
+      const C = e.closest(CHART_SEL);
+      if (!C || !f.contains(C) || alphaOf(cs(e).backgroundColor) < 0.6 || !(e.textContent || '').trim() || !vis(e)) continue;
+      const O = overlayOf(e, C);
+      if (!O) continue;
+      const r = e.getBoundingClientRect();
+      if (r.width >= 2 && r.height >= 2) covers.push({ e, C, O, r });
+    }
+    if (covers.length) for (const t of shownTexts) {
+      const e = t.e;
+      if (e.classList.contains('ms') || /material/i.test(cs(e).fontFamily)) continue;
+      for (const c of covers) {
+        if (!c.C.contains(e) || c.O.contains(e)) continue;
+        const Ot = overlayOf(e, c.C);
+        if (Ot && (Ot.contains(c.O) || !(Ot.compareDocumentPosition(c.O) & Node.DOCUMENT_POSITION_FOLLOWING))) continue;
+        const hit = (t.vrs || []).find((x) => Math.min(x.r, c.r.right) - Math.max(x.l, c.r.left) > 3 && Math.min(x.b, c.r.bottom) - Math.max(x.t, c.r.top) > (x.b - x.t) * 0.35);
+        if (hit) { issues.push({ type: 'covered', text: snippet(e) + '  under  ' + snippet(c.e), el: path(e, f) + '  under  ' + path(c.e, f) }); break; }
+      }
+    }
     // 3. boxes cut at the screen edge (horizontal), not inside a horizontal scroller
     const clipsY = cs(f).overflowY !== 'visible';
     for (const e of all) {
@@ -305,22 +335,25 @@
   const scrolls = (fi) => scrollers(frames(true)[fi]).map((s) => ({ top: s.scrollTop, max: s.scrollHeight - s.clientHeight, client: s.clientHeight }));
   const scrollTo = (fi, k, top) => { const s = scrollers(frames(true)[fi])[k]; if (s) jump(s, top); };
   // where frame i's content runs to, in the frame's own size: a clipping frame drawn shorter than its content hides the
-  // rest, so the gate grows it to this height and scans again
+  // rest, so the gate grows it to this height and scans again; content a board anchors to the bottom of a clipping box
+  // (a page drawn scrolled to its end, a chat's older messages) runs out above the top as the frame narrows, and the
+  // frame grows by that much too, which brings it back into view (MA-240 round 2)
   const extent = (fi) => {
     const f = frames(true)[fi];
     if (!f) return null;
     CS = new Map(); VM = new Map();
     try {
       const fr = f.getBoundingClientRect(), { sy } = scaleOf(f);
-      let b = 0;
+      let b = 0, t = 0;
       for (const e of f.querySelectorAll('*')) {
         if (e.closest('svg') && e.tagName.toLowerCase() !== 'svg') continue;
         const r = e.getBoundingClientRect();
-        if (r.width < 1 || r.height < 1 || r.bottom - fr.top <= b || !shown(e)) continue;
-        b = r.bottom - fr.top;
+        if (r.width < 1 || r.height < 1 || (r.bottom - fr.top <= b && r.top - fr.top >= t) || !shown(e)) continue;
+        b = Math.max(b, r.bottom - fr.top);
+        t = Math.min(t, r.top - fr.top);
       }
-      const s = getComputedStyle(f);
-      return { h: f.offsetHeight, need: Math.ceil(b / sy), clips: s.overflowY !== 'visible' || s.overflowX !== 'visible', scrollers: scrollers(f).length };
+      const s = getComputedStyle(f), above = Math.ceil(-t / sy);
+      return { h: f.offsetHeight, above, need: Math.max(Math.ceil(b / sy), above > 1 ? f.offsetHeight + above : 0), clips: s.overflowY !== 'visible' || s.overflowX !== 'visible', scrollers: scrollers(f).length };
     } finally { CS = null; VM = null; }
   };
 
