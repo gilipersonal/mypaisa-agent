@@ -3,8 +3,8 @@
 // Renders each current board in the design mirror the way Claude Design does (support.js, ?static=1 so motion lands at
 // once), at the screen's own pixel ratio (3 for the iOS boards, 2 for the rest), and resizes every device and browser
 // frame through the real sizes of its class: an iPhone from 320 (Display Zoom) to 440 and in landscape, an iPad or
-// foldable window from 600 to 1366 (a landscape iPad's sidebar, screen and chat also at 960x744, 1024x1366, 1032x1376,
-// 1080x810 and 1100x744), a device window drawn inside another frame (the Stage Manager window) from 600 to its drawn
+// foldable window from 600 to 1366 (a landscape iPad also at 960x744, 1024x1366, 1032x1376, 1080x810 and 1100x744,
+// where the chat is a sheet away, and at 1133x744, the iPad mini across, with the chat beside), a device window drawn inside another frame (the Stage Manager window) from 600 to its drawn
 // width, and the web from 320 to 1920 (a frame drawn at desktop width also at 320, 390, 440 and 540, on its page as
 // below 1024). Every frame is also measured one pixel below and at each container query's threshold that styles it, the
 // widths found by measuring the container itself. At each size the frame is measured whole: as set, at every step of
@@ -75,7 +75,7 @@ function sizes(w, h, isDev) {
   if (w <= 470 && h > w) return [[320, 568], [375, 667], [375, 812], [390, 844], [402, 874], [430, 932], [440, 956]];
   if (h <= 470 && w > h) return [[568, 320], [667, 375], [844, 390], [956, 440]];
   if (w < 1000 && h > w) return [[600, r(600 * h / w)], [650, r(650 * h / w)], [700, r(700 * h / w)], [744, 1133], [820, 1180], [900, r(900 * h / w)], [1024, 1366]];
-  if (w >= 1000 && isDev) return [[960, 744], [1024, 1366], [1032, 1376], [1080, 810], [1100, 744], [1133, 744], [1180, 820], [1366, 1024]];   // sidebar, screen and chat beside
+  if (w >= 1000 && isDev) return [[960, 744], [1024, 1366], [1032, 1376], [1080, 810], [1100, 744], [1133, 744], [1180, 820], [1366, 1024]];   // the sidebar and the screen; the chat beside from 1133
   if (w >= 1000) return [[320, 568], [390, 844], [440, 956], [540, 960], [600, 960], [768, 1024], [820, 1180], [900, 1200], [1024, r(1024 * h / w)], [1280, r(1280 * h / w)], [1440, r(1440 * h / w)], [1920, r(1920 * h / w)]];   // a tablet's window is tall; under 1024 the page alone
   return [[r(w * 0.85), h], [r(w * 1.15), h]];
 }
@@ -332,7 +332,7 @@ async function walkPrototype(page, board, engine) {
 }
 
 function allowed(row) {
-  return ALLOW.allow.find((a) => a.board.split('|').some((b) => row.board.endsWith(b)) && a.types.includes(row.type) && new RegExp(a.text).test(row.text) && (!a.sizes || a.sizes.some((s) => row.size.startsWith(s))) && (!a.frames || new RegExp(a.frames).test(row.label)) && (!a.el || new RegExp(a.el).test(row.el)));
+  return ALLOW.allow.find((a) => a.board.split('|').some((b) => row.board.endsWith(b)) && a.types.includes(row.type) && new RegExp(a.text).test(row.text) && (!a.sizes || a.sizes.some((s) => row.size.startsWith(s))) && (!a.below || parseFloat(row.size) < a.below) && (!a.frames || new RegExp(a.frames).test(row.label)) && (!a.el || new RegExp(a.el).test(row.el)));
 }
 
 async function run(design, list, engines) {
@@ -482,12 +482,12 @@ async function selftest() {
     { name: 'page-not-a-container', board: 'app-v1/Web v4 · Assets and debts.dc.html', mutate: [/ container: page \/ inline-size;/, ''], expect: /clip-x|overlap|spill/ },
     { name: 'chips-clip-not-scroll', board: 'ios-v1/iPhone v4 · Check-ins.dc.html', mutate: [/(\.mp \.chips, \.mp \.sugg, \.mp \.chiprow, \.mp \.wsugg, \.mp\.pw \.wsugg \{ )overflow-x: auto;/, '$1overflow-x: hidden;'], expect: /clip-x/ },
     { name: 'answers-behind-fade', board: 'ios-v1/iPhone v4 · Check-ins.dc.html', mutate: [/\.mp \.ccard-acts\.rowx \{[^}]*\}\n\.mp \.ccard-acts\.rowx > \.cbtn \{[^}]*\}\n/, ''], expect: /clip-x/ },
-    { name: 'track-own-mix', board: 'ios-v1/iPhone audit and activity.dc.html', mutate: [/\.mp :is\(\.mp-track:is\(\.meter, \.sr-t, \.pl-t, \.rl-t\), \.meter, \.ftrack, \.mwk\) \{[^}]*\}\n/, ''], expect: /track-not-token/ },
+    { name: 'track-own-mix', board: 'ios-v1/iPhone audit and activity.dc.html', mutate: [/\.mp :is\(\.mp-track:is\(\.meter, \.sr-t, \.pl-t, \.rl-t\)[^\n]*\n/, ''], expect: /track-not-token/ },
     { name: 'overlap-in-a-sheet', board: 'ios-v1/iPhone admin.dc.html', mutate: [/$/, '\n.mp .mp-hl.c-alert { margin-bottom: -12px; }\n'], expect: /^overlap$/ },
     { name: 'board-does-not-render', board: BUDGET, remove: 'ios-v1/support.js', expect: /did-not-render/ },
     { name: 'column-crushed', board: 'app-v1/Web v4 · Assets and debts.dc.html', mutate: [/ container: page \/ inline-size;/, ''], expect: /crushed/ },
     { name: 'chip-cut-with-no-ellipsis', board: 'app-v1/Wealth.dc.html', mutate: [/(\.mp \.rtx \.mp-chip \{ )flex: none; max-width: 100%; white-space: normal;/, '$1overflow: hidden; text-overflow: ellipsis;'], expect: /clip-x/ },
-    { name: 'viewer-side-by-side-at-600', board: 'app-v1/Audit and files.dc.html', mutate: [/@container app \(max-width: 719px\) \{\n  \.mp \.ovl:has\(> \.viewer\)[\s\S]*?\n\}\n/, ''], expect: /overlap|crushed/, at: /^600x/ },
+    { name: 'viewer-side-by-side-at-600', board: 'app-v1/Audit and files.dc.html', mutate: [/@container app \(max-width: 779px\) \{\n  \.mp \.ovl:has\(> \.viewer\)[\s\S]*?\n\}\n/, ''], expect: /overlap|crushed/, at: /^600x/ },
     // r1-9: a figure cut by an ellipsis is a fault in the verdict, not a note beside it
     { name: 'figure-cut-by-ellipsis', board: BUDGET, mutate: [/$/, '\n.mp .mp-hero .mp-sub.mp-hero-2 { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }\n'], expect: /^figure-truncated$/ },
     { name: 'value-never-resolved', board: BUDGET, file: BUDGET, mutate: [/\{\{ f\.pg\.hero\.over \}\}/, '{{ f.pg.hero.overx }}'], expect: /did-not-render/ },

@@ -186,7 +186,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **Adaptive.**
   - In the app, every screen lays itself out by size class and window width, never by device, except that an iPhone
     is always compact: compact under about 600 pt and on every iPhone (the tab bar, one column, sheets for detail, the chat a tab), regular narrow about 600 to 900 pt (a sidebar
-    that collapses to a tab bar at the top; the chat as a sheet, beside the screen only over about 900 pt), regular wide over about 900 pt (the sidebar, the screen, and the chat as a column beside it). That covers
+    that collapses to a tab bar at the top; the chat as a sheet, beside the screen only from about 1133 pt), regular wide about 900 to 1133 pt (the sidebar and the screen; the chat as a sheet, from the sidebar's Chat), and from about 1133 pt the sidebar, the screen, and the chat as a column beside it. That covers
     every iPhone, every iPad window (Split View, Slide Over, Stage Manager) and a foldable, folded or open. Dynamic
     Type from xSmall to AX5 reflows every card (figures stack under labels from AX1); a fold, a rotation or a resize
     keeps the conversation, the scroll and any guided flow. Show at least one screen at all three size classes

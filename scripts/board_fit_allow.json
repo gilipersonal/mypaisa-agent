@@ -1,5 +1,5 @@
 {
- "about": "What scripts/board_fit.js does not count as a fault, and why (MA-240). Each allowance names its board (the end of its mirror path), the fault types, a regular expression on the text and, where it holds only there, the sizes, a regular expression on the frame's label and one on the element's path. An allowance that matches nothing is reported, so the list stays true. Change a board to fix a fault; add an allowance only for what is drawn on purpose or what an open issue carries, with its reason.",
+ "about": "What scripts/board_fit.js does not count as a fault, and why (MA-240). Each allowance names its board (the end of its mirror path), the fault types, a regular expression on the text and, where it holds only there, the sizes (or `below`, every measured width under it, never the drawn size), a regular expression on the frame's label and one on the element's path. An allowance that matches nothing is reported, so the list stays true. Change a board to fix a fault; add an allowance only for what is drawn on purpose or what an open issue carries, with its reason.",
  "superseded": {
   "pattern": "^(Telegram |Mini App|Prototype\\.dc|PrototypeV4|Chat basics|Currency check)",
   "frames": "^(Mini App|Telegram)",
@@ -38,8 +38,8 @@
     "clip-x"
    ],
    "frames": "as it opens, the UK",
-   "text": "^(₹1,19,79,306|₹1,34,92,563|India|India · ₹|Own|FP|Fixed deposit · SBI|Flat, Pune|PPF · SBI|Parag Parikh Flexi Cap|property|Arun 50% · Asha 50%)$",
-   "why": "Home's countries are a pager: on the UK card the India card peeks past the screen's edge on purpose, so a swipe is plain; what peeks is the next card's start."
+   "text": "^(₹1,19,79,306|₹1,34,92,563|India|India · ₹|Own|FP|Fixed deposit · SBI|Flat, Pune|PPF · SBI|Parag Parikh Flexi Cap|property|Arun 50% · Asha 50%|≈ £106,483|≈ £106,483 net|LIC Jeevan Anand|Asha · surrender value|NRE savings · HDFC|Infosys|Arun · 120 shares|Home loan · HDFC|PF|PP|FD|LI|NR|IN|HL)$",
+   "why": "Home's countries are a pager: on the UK card the India card peeks past the screen's edge on purpose, so a swipe is plain; what peeks is the next card's start (its header and the start of its rows, wider on a wider phone)."
   },
   {
    "board": "iPhone settings.dc.html",
@@ -113,6 +113,46 @@
    "frames": "^Phone web · (Light|Dark) · step 10$",
    "text": "^2031$",
    "why": "The prototype's Projection on the Phone web door draws 2031 on Today; motion.js thins it, so Today reads whole. Redrawing the axis's labels would remove this allowance."
+  },
+  {
+   "board": "Forecast.dc.html|Admin center 2.dc.html|Admin center 3.dc.html|Browser.dc.html|Browser 2.dc.html|Wealth.dc.html",
+   "types": [
+    "clip-x",
+    "clip-y",
+    "spill",
+    "overlap",
+    "crushed",
+    "cut-at-edge"
+   ],
+   "frames": "^(Browser · |Alerts · |Approvals · |Spend · )",
+   "text": ".",
+   "below": 600,
+   "why": "These planned boards draw the web page at desktop width only. Below 600 the web app shows the page alone, at a phone's width, a layout they do not draw yet: every story that cites them lists it undrawn, for its design-first round (MA-84, MA-97, MA-102, MA-114, MA-116, MA-124, MA-130, MA-135, MA-136, MA-137, MA-145, MA-183, MA-184), which removes this allowance."
+  },
+  {
+   "board": "Browser.dc.html|Browser 2.dc.html",
+   "types": [
+    "overlap"
+   ],
+   "frames": "^Browser · (Track record|Activity)",
+   "text": "(check|check_circle)",
+   "below": 761,
+   "why": "At 759 and 760, where the regular class's two columns begin, a tick sits on the line beside it in Activity's price freshness and Track record's outcome. Both boards are redrawn to the iOS boards' household and ledger (undrawn on MA-183 and MA-184), whose design-first round reviews every size and removes this allowance."
+  },
+  {
+   "board": "Kind icons.dc.html",
+   "types": [
+    "clip-x",
+    "clip-y",
+    "spill",
+    "overlap",
+    "crushed",
+    "cut-at-edge"
+   ],
+   "frames": "Browser, wide",
+   "text": ".",
+   "below": 1024,
+   "why": "MA-241's options board draws its Debts list in a browser at desktop width only, to show the tile in a desktop row; the build draws the tile on the web app's own boards at every width (MA-241)."
   }
  ],
  "drawnOnly": [
