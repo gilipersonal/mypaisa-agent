@@ -194,3 +194,7 @@ as r2-1 onwards.
   at a phone's width is listed undrawn on each of their stories.
 - **Colourful kind icons**: MA-241, option B picked; its open questions and the states still to draw are on its trace
   row; its build is its own branch.
+- **Two colour pairs at the limit**, carried by MA-241 (Arun, 27 Oct 2026), whose change to the colour tokens they
+  belong with: the dark track on the success tint is 1.256:1 at 25% against 1.25 (the tint darkens a little, since a
+  lighter track would take silver on it under 3:1), and the light accent on the alert tint is 4.49:1 and 2.97:1 at 25%,
+  under 4.5 and 3.0 (the pair joins the contrast gate, then the tint moves or no board draws a link on it).
