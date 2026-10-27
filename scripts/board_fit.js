@@ -213,7 +213,7 @@ async function selftest() {
   // copy, unchanged, must pass the same boards
   const CASES = [
     { name: 'page-not-a-container', board: 'app-v1/Web v4 · Assets and debts.dc.html', mutate: [/ container: page \/ inline-size;/, ''], expect: /clip-x|overlap|spill/ },
-    { name: 'chips-clip-not-scroll', board: 'ios-v1/iPhone v4 · Check-ins.dc.html', mutate: [/(\.mp \.chips, \.mp \.sugg, \.mp \.chiprow, \.mp \.crow, \.mp \.wsugg, \.mp\.pw \.wsugg \{ )overflow-x: auto;/, '$1overflow-x: hidden;'], expect: /clip-x/ },
+    { name: 'chips-clip-not-scroll', board: 'ios-v1/iPhone v4 · Check-ins.dc.html', mutate: [/(\.mp \.chips, \.mp \.sugg, \.mp \.chiprow, \.mp \.wsugg, \.mp\.pw \.wsugg \{ )overflow-x: auto;/, '$1overflow-x: hidden;'], expect: /clip-x/ },
     { name: 'answers-behind-fade', board: 'ios-v1/iPhone v4 · Check-ins.dc.html', mutate: [/\.mp \.ccard-acts\.rowx \{[^}]*\}\n\.mp \.ccard-acts\.rowx > \.cbtn \{[^}]*\}\n/, ''], expect: /clip-x/ },
     { name: 'track-own-mix', board: 'ios-v1/iPhone audit and activity.dc.html', mutate: [/\.mp \.mp-track:is\(\.meter, \.sr-t, \.pl-t, \.rl-t\) \{[^}]*\}\n/, ''], expect: /track-not-token/ },
   ];
