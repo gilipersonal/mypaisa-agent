@@ -56,7 +56,7 @@ discipline, the toolbelt's card shapes and portfolio review, and the layman's
 front end both of them lack. v1 (prices, briefs, alerts, chat, news, calls on
 Lambda) stands underneath; sections that have not changed are kept short.
 
-The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161; the Lucid views redrawn for v4 on 26 Oct 2026, MA-225; the trace drawn as view 9 the same day, MA-236):
+The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161; the Lucid views redrawn for v4 on 26 Oct 2026, MA-225; the trace drawn as view 9 the same day, MA-236; the plain-words page added on 27 Oct 2026, MA-239):
 
 - **The architecture, in Lucid**, on AWS 2024 shapes, one Lucid document per
   view. They are private to the account; share them from each document's
@@ -97,6 +97,13 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   currency, India), each across the member, the app, AWS, Claude and data
   lanes, with what the member sees, the safeguards and the Jira stories that
   build it.
+- **[Inside MyPaisa](https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5)** (MA-239): the whole architecture in
+  plain words, with animations, for someone who is not technical: the parts
+  as a small office, the admin's journey in nine steps from the sign-in
+  screen to the chatbot answering a what-if, a map that plays one message
+  through the system (a question, a file, a check-in, a failure and its
+  replay), the agent team and the admin desk, the safety nets, the two
+  environments and a day with MyPaisa.
 - **[MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)**:
   the market side end to end: free data, the rules engine, news matched to
   holdings, the Forecaster's five models, both engines side by side, the
@@ -112,7 +119,7 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   superseded by the iOS app (MA-161); that project's browser boards stay the
   web app's spec (§9.4).
 
-Sources for the pages are in `docs/design/`; both new pages use MyPaisa DS v1,
+Sources for the pages are in `docs/design/`; the three explainer pages use MyPaisa DS v1,
 "Warm ledger" (MA-101), with the crimson alert of MA-102, in light and dark.
 
 Status: design only.
