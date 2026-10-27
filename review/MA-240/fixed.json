@@ -1,0 +1,56 @@
+[
+ {
+  "id": "r0-1",
+  "round": 0,
+  "finding": "With the chat beside the page, the web pages' two columns followed the window, not the page: at 1024 the page fell to a word per line, at 1280 the hero's figures collided (Web v4 boards)",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --only \"Web v4\""
+  }
+ },
+ {
+  "id": "r0-2",
+  "round": 0,
+  "finding": "The check-in card's four answers sat in one row behind a fade, so Paid off in full was cut off on an iPhone; a card row's words spilled at 320",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --only \"iPhone v4 · Check-ins\""
+  }
+ },
+ {
+  "id": "r0-3",
+  "round": 0,
+  "finding": "A bar's empty track faded at 25% on the page, a fill and the dark hero, and two boards mixed their own paler track",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/contrast_check.py && node scripts/board_fit.js --only \"iPhone audit and activity\""
+  }
+ },
+ {
+  "id": "r0-4",
+  "round": 0,
+  "finding": "Prototype v4: the highlighted next step was cut mid-sentence at 320 and 1024; the day-change card ran off a 320 screen; the projection's axis labels collided",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --only \"Prototype v4\""
+  }
+ },
+ {
+  "id": "r0-5",
+  "round": 0,
+  "finding": "Both gates refuse each fault this review found: the page not a container, a scroll row that clips, the answers behind a fade, a board's own track, the old light track on the page, the old dark track on the hero",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --selftest && python3 scripts/contrast_check.py --selftest"
+  }
+ },
+ {
+  "id": "r0-6",
+  "round": 0,
+  "finding": "Every guard leaves every board as drawn: the only drawn-size changes are the darker track, the check-in answers on two rows and the deposit date that wrapped instead of being clipped",
+  "check": {
+   "type": "manual",
+   "what": "Pixel-diff every frame of every current board at its drawn size against main (serve main's and the branch's docs/design, screenshot each frame, compare); every changed frame is one of the three intended changes."
+  }
+ }
+]

@@ -283,6 +283,20 @@ Claude's:
   agent team, plays one message through the system, and shows the safety
   nets, for anyone in the family to read; its source is
   `docs/design/inside-mypaisa.html`.
+- **Whole at every size (MA-240):** every board checked by machine at every
+  size a member can have (an iPhone from 320 to 440 and in landscape, every
+  iPad and foldable window, the web from 320 to 1920), in Chromium and WebKit
+  at the screen's own pixel ratio, with every text, icon and mark measured on
+  its real pixels at full brightness and at 25%; the fixes live in the design
+  system (the page as its own size container, the fit guards in `tokens.css`,
+  a bar's track plain on every background), so both doors inherit them.
+- **Colourful kind icons (MA-241):** each kind of holding, asset and debt
+  leads its row with its own colourful icon, the same at both doors, named in
+  the kind's data (§4.8) so a new kind brings its icon; two or three options
+  drawn in Claude Design for Arun's pick.
+- **The open foldable to the size classes (MA-242):** Foldable · Open and
+  Foldable · Open, Audit redrawn with the chat as a sheet at 880, as the
+  regular, narrow class says, where the boards drew it beside the screen.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -1469,27 +1483,27 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 33.5 (and 3.5 of yours) | 27 | Mon 2 Nov 2026 | Tue 8 Dec 2026 |
-| 1 Talk: sign in and chat with the agent at every door | 88.5 (and 0.5 of yours) | 71 | Wed 9 Dec 2026 | Tue 30 Mar 2027 |
-| 2 The first record: one dynamic structure, one write path | 45 | 36 | Wed 31 Mar 2027 | Thu 20 May 2027 |
-| 3 Deposits, policies and two currencies | 18 | 15 | Fri 21 May 2027 | Fri 11 Jun 2027 |
-| 4 Debts and check-ins | 19 | 16 | Mon 14 Jun 2027 | Mon 5 Jul 2027 |
-| 5 Investments, priced | 23 | 19 | Tue 6 Jul 2027 | Fri 30 Jul 2027 |
-| 6 Budget: statements and monthly check-ins | 12 | 10 | Mon 2 Aug 2027 | Fri 13 Aug 2027 |
-| 7 Projection | 18 | 15 | Mon 16 Aug 2027 | Mon 6 Sep 2027 |
-| 8 Audit, search and the Admin center at every door | 24 | 20 | Tue 7 Sep 2027 | Mon 4 Oct 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Tue 5 Oct 2027 | Wed 20 Oct 2027 |
-| 10 Prices and the engine | 22 | 18 | Thu 21 Oct 2027 | Mon 15 Nov 2027 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Tue 16 Nov 2027 | Fri 3 Dec 2027 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Mon 6 Dec 2027 | Wed 5 Jan 2028 |
-| 13 Track record and calibration | 13 | 11 | Thu 6 Jan 2028 | Thu 20 Jan 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Fri 21 Jan 2028 | Mon 31 Jan 2028 |
-| 15 Stances go live | 5 | 4 | Tue 1 Feb 2028 | Fri 4 Feb 2028 |
+| 0 Foundations at every door | 35 (and 3.5 of yours) | 28 | Mon 2 Nov 2026 | Wed 9 Dec 2026 |
+| 1 Talk: sign in and chat with the agent at every door | 88.5 (and 0.5 of yours) | 71 | Thu 10 Dec 2026 | Wed 31 Mar 2027 |
+| 2 The first record: one dynamic structure, one write path | 45 | 36 | Thu 1 Apr 2027 | Fri 21 May 2027 |
+| 3 Deposits, policies and two currencies | 18 | 15 | Mon 24 May 2027 | Mon 14 Jun 2027 |
+| 4 Debts and check-ins | 19 | 16 | Tue 15 Jun 2027 | Tue 6 Jul 2027 |
+| 5 Investments, priced | 23 | 19 | Wed 7 Jul 2027 | Mon 2 Aug 2027 |
+| 6 Budget: statements and monthly check-ins | 12 | 10 | Tue 3 Aug 2027 | Mon 16 Aug 2027 |
+| 7 Projection | 18 | 15 | Tue 17 Aug 2027 | Tue 7 Sep 2027 |
+| 8 Audit, search and the Admin center at every door | 24 | 20 | Wed 8 Sep 2027 | Tue 5 Oct 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Wed 6 Oct 2027 | Thu 21 Oct 2027 |
+| 10 Prices and the engine | 22 | 18 | Fri 22 Oct 2027 | Tue 16 Nov 2027 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Wed 17 Nov 2027 | Mon 6 Dec 2027 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Tue 7 Dec 2027 | Thu 6 Jan 2028 |
+| 13 Track record and calibration | 13 | 11 | Fri 7 Jan 2028 | Fri 21 Jan 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Mon 24 Jan 2028 | Tue 1 Feb 2028 |
+| 15 Stances go live | 5 | 4 | Wed 2 Feb 2028 | Mon 7 Feb 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Mon 7 Feb 2028 | Mon 13 Mar 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Tue 14 Mar 2028 | Mon 10 Apr 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Tue 11 Apr 2028 | Fri 28 Apr 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 2 May 2028 | Thu 11 May 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Tue 8 Feb 2028 | Tue 14 Mar 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Wed 15 Mar 2028 | Tue 11 Apr 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Wed 12 Apr 2028 | Tue 2 May 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Wed 3 May 2028 | Fri 12 May 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you

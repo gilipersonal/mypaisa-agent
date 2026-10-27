@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kind icons</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ios.css" />
+<link rel="stylesheet" href="motion.css" />
+<script src="motion.js"></script>
+<style>
+html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+.dv-turn { padding: 44px 48px 36px; border-bottom: 1px solid rgba(0,0,0,.08); }
+.dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+.dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+.dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+.dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 12px; text-wrap: pretty; }
+.dv-intro b { color: #14171F; }
+.plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 1100px; box-sizing: border-box; margin: 4px 0 0; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+.plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; text-decoration: none; }
+a.plan-k:hover { color: #FFFFFF; background: #233558; }
+.plan-s { font-weight: 700; color: #14171F; }
+.dv-opt { display: flex; flex-direction: column; gap: 22px; }
+.dv-olabel { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; }
+.dv-oid { font: 600 12px ui-monospace, Menlo, monospace; padding: 3px 8px; background: rgba(0,0,0,.08); color: #1a1a1a; border-radius: 5px; text-decoration: none; }
+.dv-oname { font: 700 24px/30px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+.dv-rec { font: 600 12px/16px -apple-system, system-ui; color: #1D7A3E; background: #E2F2E7; border-radius: 999px; padding: 3px 10px; }
+.dv-not { font: 600 12px/16px -apple-system, system-ui; color: #4E5462; background: rgba(0,0,0,.06); border-radius: 999px; padding: 3px 10px; }
+.dv-row { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.dv-col { display: flex; flex-direction: column; }
+.dv-sub { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 6px 0 0; }
+.notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px 32px; max-width: 1400px; font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+.notes p { margin: 0; } .notes b { color: #14171F; }
+/* the glyph map: one glyph per kind, the same at both doors */
+.gmap { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); max-width: 1400px; margin-top: 18px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); border-radius: 12px; overflow: hidden; }
+.gm { padding: 8px 12px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 10px; min-width: 0; box-shadow: inset -1px -1px 0 rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+.gm b { color: #14171F; font-weight: 600; }
+.gm code { font: 500 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: #14171F; overflow-wrap: anywhere; }
+.gm .gm-c { display: flex; flex-wrap: wrap; gap: 2px 10px; }
+.gm > .ms { grid-row: span 2; font-size: 22px; color: #14171F; font-variation-settings: "FILL" 1, "wght" 500, "opsz" 24; }
+/* a pane: the page colour, each family on a card */
+.pane { width: 640px; max-width: 100%; box-sizing: border-box; padding: 22px; border-radius: 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.phead { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.fam { background: var(--mp-surface); border-radius: var(--mp-r-row); padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 10px; }
+.fam-h { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; }
+.fam-t { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 12px 6px; }
+.kc { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; text-align: center; }
+.kc-l { font: 500 12px/15px var(--mp-font); color: var(--mp-ink-2); text-wrap: balance; overflow-wrap: anywhere; }
+.onpage { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 2px 2px 0; }
+/* ---------- the kind tile ---------- */
+.kt { width: 36px; height: 36px; display: grid; place-items: center; flex: none; box-sizing: border-box; }
+.kt .ms { font-size: 20px; font-variation-settings: "FILL" 1, "wght" 500, "opsz" 20; }
+.kt-l { width: 44px; height: 44px; }
+.kt-l .ms { font-size: 24px; font-variation-settings: "FILL" 1, "wght" 500, "opsz" 24; }
+.kt-mono { font: 700 13px/1 var(--mp-font); letter-spacing: 0.02em; }
+.kt-l .kt-mono { font-size: 15px; }
+.oA .kt { border-radius: 50%; }
+.oB .kt { border-radius: 10px; box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.28); }
+.oB .kt-l { border-radius: 12px; }
+.oC .kt { border-radius: 10px; }
+.oC .kt-l { border-radius: 12px; }
+/* kind vars: begin (written by build.py; check.py reads these back) */
+.oA .t-light { --bg-cash: #8A5300; --fg-cash: #FFFFFF; --bg-dep: #017272; --fg-dep: #FFFFFF; --bg-inv: #2453C9; --fg-inv: #FFFFFF; --bg-bond: #6B3FB8; --fg-bond: #FFFFFF; --bg-metal: #646A78; --fg-metal: #FFFFFF; --bg-pen: #8C399E; --fg-pen: #FFFFFF; --bg-prop: #1B709E; --fg-prop: #FFFFFF; --bg-pol: #782F53; --fg-pol: #FFFFFF; --bg-debt: #254A6E; --fg-debt: #FFFFFF; }
+.oA .t-dark { --bg-cash: #F6BC4F; --fg-cash: #0A0F18; --bg-dep: #57D4D4; --fg-dep: #0A0F18; --bg-inv: #8FB2FF; --fg-inv: #0A0F18; --bg-bond: #B79CFF; --fg-bond: #0A0F18; --bg-metal: #969FAE; --fg-metal: #0A0F18; --bg-pen: #E495F0; --fg-pen: #0A0F18; --bg-prop: #8BCDF8; --fg-prop: #0A0F18; --bg-pol: #D49FB7; --fg-pol: #0A0F18; --bg-debt: #86B0D5; --fg-debt: #0A0F18; }
+.oB .t-light { --bg-cash: linear-gradient(180deg, #C77B0B, #AD6A08); --fg-cash: #FFFFFF; --bg-dep: linear-gradient(180deg, #099C9C, #048686); --fg-dep: #FFFFFF; --bg-inv: linear-gradient(180deg, #5387FD, #4072E7); --fg-inv: #FFFFFF; --bg-bond: linear-gradient(180deg, #9F71FD, #8C5CE6); --fg-bond: #FFFFFF; --bg-metal: linear-gradient(180deg, #858C9E, #72798A); --fg-metal: #FFFFFF; --bg-pen: linear-gradient(180deg, #CD5BE6, #B845D0); --fg-pen: #FFFFFF; --bg-prop: linear-gradient(180deg, #0595D6, #0280B9); --fg-prop: #FFFFFF; --bg-pol: linear-gradient(180deg, #C47397, #AE6084); --fg-pol: #FFFFFF; --bg-debt: linear-gradient(180deg, #42688E, #30557A); --fg-debt: #FFFFFF; }
+.oB .t-dark { --bg-cash: linear-gradient(180deg, #C77B0B, #AD6A08); --fg-cash: #FFFFFF; --bg-dep: linear-gradient(180deg, #099C9C, #048686); --fg-dep: #FFFFFF; --bg-inv: linear-gradient(180deg, #5387FD, #4072E7); --fg-inv: #FFFFFF; --bg-bond: linear-gradient(180deg, #9F71FD, #8C5CE6); --fg-bond: #FFFFFF; --bg-metal: linear-gradient(180deg, #858C9E, #72798A); --fg-metal: #FFFFFF; --bg-pen: linear-gradient(180deg, #CD5BE6, #B845D0); --fg-pen: #FFFFFF; --bg-prop: linear-gradient(180deg, #0595D6, #0280B9); --fg-prop: #FFFFFF; --bg-pol: linear-gradient(180deg, #C47397, #AE6084); --fg-pol: #FFFFFF; --bg-debt: linear-gradient(180deg, #42688E, #30557A); --fg-debt: #FFFFFF; }
+.oC .t-light { --bg-cash: #DDC29A; --fg-cash: #8A5300; --bg-dep: #9DD0D0; --fg-dep: #017272; --bg-inv: #B3C7F5; --fg-inv: #2453C9; --bg-bond: #D1BEF5; --fg-bond: #6B3FB8; --bg-metal: #C4C7CE; --fg-metal: #646A78; --bg-pen: #E4B8ED; --fg-pen: #8C399E; --bg-prop: #9CCDE4; --fg-prop: #1B709E; --bg-pol: #DEBECD; --fg-pol: #782F53; --bg-debt: #BBC7D3; --fg-debt: #254A6E; }
+.oC .t-dark { --bg-cash: #644517; --fg-cash: #F6BC4F; --bg-dep: #0C5358; --fg-dep: #57D4D4; --bg-inv: #2B4889; --fg-inv: #8FB2FF; --bg-bond: #523D88; --fg-bond: #B79CFF; --bg-metal: #444A58; --fg-metal: #969FAE; --bg-pen: #6B3281; --fg-pen: #E495F0; --bg-prop: #0B4F71; --fg-prop: #8BCDF8; --bg-pol: #633F56; --fg-pol: #D49FB7; --bg-debt: #2C4C6E; --fg-debt: #86B0D5; }
+.f-cash { background: var(--bg-cash); color: var(--fg-cash); }
+.f-dep { background: var(--bg-dep); color: var(--fg-dep); }
+.f-inv { background: var(--bg-inv); color: var(--fg-inv); }
+.f-bond { background: var(--bg-bond); color: var(--fg-bond); }
+.f-metal { background: var(--bg-metal); color: var(--fg-metal); }
+.f-pen { background: var(--bg-pen); color: var(--fg-pen); }
+.f-prop { background: var(--bg-prop); color: var(--fg-prop); }
+.f-pol { background: var(--bg-pol); color: var(--fg-pol); }
+.f-debt { background: var(--bg-debt); color: var(--fg-debt); }
+/* kind vars: end */
+/* ---------- the iPhone frame (as P1 draws it) ---------- */
+.navc { position: absolute; left: 64px; right: 160px; text-align: center; font: 600 17px/22px var(--mp-font); pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.navr { margin-left: auto; }
+.pg4 { display: flex; flex-direction: column; gap: 14px; padding: 4px 16px 120px; }
+.meta4 { padding: 0 4px; margin-top: -8px; }
+.sh4 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 4px 6px 16px; }
+.row4 { padding-top: 10px; padding-bottom: 10px; align-items: flex-start; }
+.row4 > .kt { margin-top: 1px; }
+.rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; text-wrap: pretty; }
+.rv { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: none; text-align: right; }
+.hsplit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+.hsplit .mp-hl { white-space: nowrap; }
+.mt4 { margin-top: 4px; } .mt6 { margin-top: 6px; }
+.bal { text-wrap: pretty; }
+/* ---------- the browser (wide: the sidebar and the page) ---------- */
+.brw { width: 1180px; max-width: 100%; border-radius: 14px; overflow: hidden; background: var(--mp-bg); box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
+.brw-bar { height: 40px; display: flex; align-items: center; gap: 14px; padding: 0 16px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
+.brw-dots { display: flex; gap: 8px; } .brw-dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--mp-line); display: block; }
+.brw-url { flex: 1; max-width: 460px; margin: 0 auto; height: 26px; border-radius: 8px; background: var(--mp-surface); color: var(--mp-ink-2); font: 500 13px/26px var(--mp-font); text-align: center; }
+.brw-in { display: flex; min-height: 470px; }
+.side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+.brand { padding: 4px 8px 18px; }
+.navlbl { padding: 14px 12px 4px; }
+.side-ft { padding: 0 12px 4px; }
+.mpm { display: block; flex: none; }
+.mpm-coin { fill: var(--mp-hero); } .t-dark .mpm-coin { fill: var(--mp-hero-2); }
+.mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+.mpm-dot { fill: var(--mp-coral); }
+.brw-pg { flex: 1; min-width: 0; padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 18px; }
+.brw-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.brw-tot { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.dg { display: grid; grid-template-columns: auto minmax(0, 2.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; align-items: center; padding: 10px 18px; position: relative; }
+.dg + .dg::before { content: ""; position: absolute; left: 18px; right: 0; top: 0; height: 1px; background: var(--mp-line); }
+.dg-th { padding-top: 12px; padding-bottom: 8px; }
+.dg-th > span { font: 600 12px/16px var(--mp-font); letter-spacing: 0.02em; text-transform: uppercase; color: var(--mp-ink-2); }
+.dg .r { text-align: right; justify-self: end; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.dg .rt { gap: 1px; }
+.dv-idx { display: flex; flex-wrap: wrap; gap: 6px 20px; max-width: 1100px; margin: 4px 0 14px; font: 600 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; }
+.dv-idx a { color: #14171F; text-decoration: none; }
+.dv-idx a:hover { color: #C2381F; }
+</style>
+</helmet>
+
+<!-- ================= INTRO ================= -->
+<section class="dv-turn" id="top" data-screen-label="Kind icons: intro">
+<div class="dv-thd"><a class="dv-tid" href="#top">K</a><span class="dv-tname">Kind icons: a colour for the family, a glyph for the kind</span></div>
+<p class="dv-intro">{{ intro1 }}</p>
+<p class="dv-intro">{{ intro2 }}</p>
+<nav class="dv-idx" aria-label="The options in this file"><a href="#oA">A · Filled circles, the chart's own colours</a><a href="#oB">B · Settings squircles, one vivid set for both themes</a><a href="#oC">C · Soft tint, the glyph in the chart's colour</a></nav>
+<div class="plan"><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-241">MA-241</a><span>ARCHITECTURE.md §4.8, §9.1, §9.4</span><span class="plan-s">Options, not picked.</span><span>Three options: <a class="dv-oid" href="#oA">A</a> <a class="dv-oid" href="#oB">B</a> <a class="dv-oid" href="#oC">C</a>. A is recommended.</span><span>Illustrative figures from the household figure set, Mon 26 Oct, 09:41.</span></div>
+<div class="gmap" aria-label="One glyph per kind"><sc-for list="{{ kinds }}" as="k" hint-placeholder-count="24"><div class="gm"><span class="ms" aria-hidden="true">{{ k.ms }}</span><span><b>{{ k.label }}</b> · {{ k.famLabel }}</span><span class="gm-c"><code>{{ k.ms }}</code><code>{{ k.sf }}</code></span></div></sc-for></div>
+<p class="dv-sub">Each kind: its label and family, then its Material Symbols name (the web) and its SF Symbol (the app). The same glyph at both doors; every option on this page uses it.</p>
+</section>
+
+<!-- ================= OPTIONS ================= -->
+<sc-for list="{{ options }}" as="o" hint-placeholder-count="3">
+<section class="dv-turn {{ o.cls }}" id="{{ o.id }}" data-screen-label="Kind icons: option {{ o.tid }}">
+<div class="dv-opt">
+<div class="dv-olabel"><a class="dv-oid" href="#{{ o.id }}">{{ o.tid }}</a><span class="dv-oname">{{ o.name }}</span><sc-if value="{{ o.rec }}" hint-placeholder-val="{{ false }}"><span class="dv-rec">Recommended</span></sc-if><sc-if value="{{ o.notRec }}" hint-placeholder-val="{{ true }}"><span class="dv-not">Option</span></sc-if></div>
+<p class="dv-intro">{{ o.summary }}</p>
+
+<div class="dv-row">
+<sc-for list="{{ o.panes }}" as="t" hint-placeholder-count="2">
+<div class="pane mp {{ t.cls }}" data-screen-label="{{ o.tid }} · the set · {{ t.label }}">
+<div class="phead"><span class="mp-over mp-ink2">{{ t.label }} · every kind, by family</span><span class="mp-foot mp-ink2">44 pt here, 36 pt in a row</span></div>
+<sc-for list="{{ fams }}" as="f" hint-placeholder-count="7">
+<div class="fam">
+<div class="fam-h"><span class="mp-over mp-ink2">{{ f.label }}</span><span class="mp-foot mp-ink2">{{ f.note }}</span></div>
+<div class="fam-t"><sc-for list="{{ f.kinds }}" as="k" hint-placeholder-count="6"><div class="kc"><span class="kt kt-l {{ k.fc }}" aria-hidden="true"><span class="ms">{{ k.ms }}</span></span><span class="kc-l">{{ k.label }}</span></div></sc-for></div>
+</div>
+</sc-for>
+<div class="fam">
+<div class="fam-h"><span class="mp-over mp-ink2">No icon yet</span><span class="mp-foot mp-ink2">the family tile and two letters</span></div>
+<div class="fam-t"><sc-for list="{{ monos }}" as="m" hint-placeholder-count="3"><div class="kc"><span class="kt kt-l {{ m.fc }}" aria-hidden="true"><span class="kt-mono">{{ m.mono }}</span></span><span class="kc-l">{{ m.label }}</span></div></sc-for></div>
+</div>
+<div class="onpage" aria-label="Tiles on the page colour"><span class="mp-foot mp-ink2">On the page:</span><sc-for list="{{ strip }}" as="k" hint-placeholder-count="9"><span class="kt {{ k.fc }}" aria-hidden="true"><span class="ms">{{ k.ms }}</span></span></sc-for></div>
+</div>
+</sc-for>
+</div>
+
+<div class="dv-row">
+<sc-for list="{{ o.phones }}" as="f" hint-placeholder-count="4">
+<div class="dv-col">
+<div class="bd-theme">{{ f.cap }}</div>
+<div class="dev dev-iphone mp {{ f.theme }}" data-screen-label="{{ f.cap }}">
+<div class="island"></div>
+<div class="scrn">
+<div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms">chevron_left</span></span><sc-if value="{{ f.inline }}" hint-placeholder-val="{{ false }}"><span class="navc">Assets</span></sc-if><span class="ggroup lg navr"><span class="gbtn" aria-label="Filters"><span class="ms">tune</span></span><span class="gbtn" aria-label="Privacy mode"><span class="ms">visibility</span></span><span class="gbtn" aria-label="Ask about this"><span class="ms">chat_bubble</span></span></span></div>
+<sc-if value="{{ f.large }}" hint-placeholder-val="{{ true }}"><div class="largetitle">Assets</div></sc-if>
+<div class="scroll"><div class="pg4">
+<sc-if value="{{ f.large }}" hint-placeholder-val="{{ true }}">
+<div class="mp-foot mp-ink2 meta4">{{ meta }}</div>
+<div class="mp-hero">
+<div class="fx jb ac gap8 wrap"><span class="mp-over mp-hero-2">What you own · household</span><span class="mp-foot mp-hero-2">17 records</span></div>
+<div class="mt6"><span class="mp-num-hero">{{ own }}</span></div>
+<div class="mp-foot mp-hero-2 mt4 bal">{{ ownSub }}</div>
+<div class="hsplit"><sc-for list="{{ split }}" as="s" hint-placeholder-count="3"><div><div class="mp-foot mp-hero-2">{{ s.l }}</div><div class="mp-hl">{{ s.v }}</div><div class="mp-cap mp-hero-2">{{ s.s }}</div></div></sc-for></div>
+</div>
+</sc-if>
+<sc-for list="{{ f.sects }}" as="s" hint-placeholder-count="3">
+<div>
+<div class="sh4"><span class="mp-over mp-ink2">{{ s.over }}</span><span class="mp-foot mp-ink2 mp-w6">{{ s.tot }}</span></div>
+<div class="mp-group">
+<sc-for list="{{ s.rows }}" as="r" hint-placeholder-count="3">
+<div class="mp-row row4">
+<span class="kt {{ r.fc }}" aria-hidden="true"><span class="ms">{{ r.ms }}</span></span>
+<div class="rt"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></div>
+<div class="rv"><span class="mp-sub mp-w6">{{ r.a }}</span><sc-if value="{{ r.hasB }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2">{{ r.b }}</span></sc-if></div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div></div>
+<div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+<div class="homebar"></div>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div class="dv-col" style="gap: 28px">
+<sc-for list="{{ o.webs }}" as="w" hint-placeholder-count="2">
+<div class="dv-col">
+<div class="bd-theme">{{ w.cap }}</div>
+<div class="brw mp {{ w.theme }}" data-screen-label="{{ w.cap }}">
+<div class="brw-bar"><span class="brw-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="brw-url">dashboard.mypaisapp.com/debts</span></div>
+<div class="brw-in">
+<aside class="mp-side side" aria-label="MyPaisa">
+<div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><span class="mp-side-i {{ n.cls }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</span></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<div style="flex: 1"></div>
+<div class="mp-foot mp-ink2 side-ft">Arun · owner</div>
+</aside>
+<div class="brw-pg">
+<div class="brw-h"><div class="fx col gap4"><span class="mp-t1">Debts</span><span class="mp-foot mp-ink2">{{ debtMeta }}</span></div><div class="brw-tot"><span class="mp-over mp-ink2">You owe · household</span><span class="mp-num-l">{{ owe }}</span></div></div>
+<div class="mp-group">
+<div class="dg dg-th"><span></span><span>Loan or card</span><span>Each month</span><span>Ends</span><span class="r">Left to pay</span></div>
+<sc-for list="{{ debts }}" as="r" hint-placeholder-count="4">
+<div class="dg">
+<span class="kt {{ r.fc }}" aria-hidden="true"><span class="ms">{{ r.ms }}</span></span>
+<div class="rt"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></div>
+<span class="mp-sub">{{ r.month }}</span>
+<span class="mp-sub">{{ r.ends }}</span>
+<div class="r"><span class="mp-sub mp-w6">{{ r.a }}</span><sc-if value="{{ r.hasB }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2">{{ r.b }}</span></sc-if></div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div class="notes"><sc-for list="{{ o.notes }}" as="n" hint-placeholder-count="5"><p><b>{{ n.b }}</b> {{ n.t }}</p></sc-for></div>
+</div>
+</section>
+</sc-for>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{}'>
+class Component extends DCLogic {
+renderVals() {
+const K = {"intro1":"Arun, 27 Oct 2026: “For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that, I need something similar.” Today every record row leads with a grey two-letter tile. Here each kind gets a glyph and each family a colour, both read from the kind's data (ARCHITECTURE.md §4.8: kinds are data), so a kind the agent proposes later arrives with its icon and needs no screen change.","intro2":"Three options, each complete: the whole set by family in light and dark, the fallback for a kind with no icon yet, the Assets list on iPhone (top, and scrolled on so every family is seen in a row) and the Debts list in the web app at desktop width. Every pair is measured at full brightness and at 25% (scripts/contrast_check.py's model): a glyph at the ui tier (3:1, 1.8:1 dimmed), a tile on its card and on the page at the presence tier (1.5:1, 1.25:1). No family is green (gains) or red (alerts), and debts are slate.","kinds":[{"label":"Savings account","famLabel":"Cash and savings","ms":"account_balance","sf":"building.columns"},{"label":"Cash and pots","famLabel":"Cash and savings","ms":"payments","sf":"banknote"},{"label":"Fixed saver","famLabel":"Deposits and schemes","ms":"lock_clock","sf":"lock"},{"label":"Fixed deposit","famLabel":"Deposits and schemes","ms":"hourglass_top","sf":"hourglass"},{"label":"Recurring deposit","famLabel":"Deposits and schemes","ms":"event_repeat","sf":"calendar.badge.clock"},{"label":"PPF","famLabel":"Deposits and schemes","ms":"verified","sf":"checkmark.seal"},{"label":"EPF","famLabel":"Deposits and schemes","ms":"badge","sf":"person.text.rectangle"},{"label":"NPS","famLabel":"Deposits and schemes","ms":"wb_twilight","sf":"sun.horizon"},{"label":"Shares","famLabel":"Investments","ms":"show_chart","sf":"chart.line.uptrend.xyaxis"},{"label":"ETFs","famLabel":"Investments","ms":"stacked_line_chart","sf":"square.stack.3d.up"},{"label":"Funds (OEIC)","famLabel":"Investments","ms":"donut_large","sf":"chart.pie"},{"label":"Mutual funds","famLabel":"Investments","ms":"donut_large","sf":"chart.pie"},{"label":"Bonds and gilts","famLabel":"Investments","ms":"description","sf":"scroll"},{"label":"Gold and silver","famLabel":"Investments","ms":"diamond","sf":"diamond"},{"label":"Workplace pension","famLabel":"Pensions","ms":"work","sf":"briefcase"},{"label":"SIPP","famLabel":"Pensions","ms":"beach_access","sf":"beach.umbrella"},{"label":"Home","famLabel":"Property","ms":"home","sf":"house"},{"label":"Flat or land","famLabel":"Property","ms":"apartment","sf":"building.2"},{"label":"Endowment (LIC)","famLabel":"Policies","ms":"umbrella","sf":"umbrella"},{"label":"Mortgage","famLabel":"Debts","ms":"key","sf":"key"},{"label":"Home loan","famLabel":"Debts","ms":"key","sf":"key"},{"label":"Car loan","famLabel":"Debts","ms":"directions_car","sf":"car"},{"label":"Credit card","famLabel":"Debts","ms":"credit_card","sf":"creditcard"},{"label":"Personal loan","famLabel":"Debts","ms":"request_quote","sf":"doc.text"}],"fams":[{"label":"Cash and savings","note":"amber","kinds":[{"label":"Savings account","fc":"f-cash","ms":"account_balance"},{"label":"Cash and pots","fc":"f-cash","ms":"payments"}]},{"label":"Deposits and schemes","note":"teal","kinds":[{"label":"Fixed saver","fc":"f-dep","ms":"lock_clock"},{"label":"Fixed deposit","fc":"f-dep","ms":"hourglass_top"},{"label":"Recurring deposit","fc":"f-dep","ms":"event_repeat"},{"label":"PPF","fc":"f-dep","ms":"verified"},{"label":"EPF","fc":"f-dep","ms":"badge"},{"label":"NPS","fc":"f-dep","ms":"wb_twilight"}]},{"label":"Investments","note":"blue; bonds violet, gold and silver grey","kinds":[{"label":"Shares","fc":"f-inv","ms":"show_chart"},{"label":"ETFs","fc":"f-inv","ms":"stacked_line_chart"},{"label":"Funds (OEIC)","fc":"f-inv","ms":"donut_large"},{"label":"Mutual funds","fc":"f-inv","ms":"donut_large"},{"label":"Bonds and gilts","fc":"f-bond","ms":"description"},{"label":"Gold and silver","fc":"f-metal","ms":"diamond"}]},{"label":"Pensions","note":"orchid","kinds":[{"label":"Workplace pension","fc":"f-pen","ms":"work"},{"label":"SIPP","fc":"f-pen","ms":"beach_access"}]},{"label":"Property","note":"sky","kinds":[{"label":"Home","fc":"f-prop","ms":"home"},{"label":"Flat or land","fc":"f-prop","ms":"apartment"}]},{"label":"Policies","note":"plum","kinds":[{"label":"Endowment (LIC)","fc":"f-pol","ms":"umbrella"}]},{"label":"Debts","note":"slate, never the alert red","kinds":[{"label":"Mortgage","fc":"f-debt","ms":"key"},{"label":"Home loan","fc":"f-debt","ms":"key"},{"label":"Car loan","fc":"f-debt","ms":"directions_car"},{"label":"Credit card","fc":"f-debt","ms":"credit_card"},{"label":"Personal loan","fc":"f-debt","ms":"request_quote"}]}],"monos":[{"label":"Sukanya Samriddhi","fc":"f-dep","mono":"SS"},{"label":"Premium Bonds","fc":"f-cash","mono":"PB"},{"label":"Gold loan","fc":"f-debt","mono":"GL"}],"strip":[{"fc":"f-cash","ms":"payments"},{"fc":"f-dep","ms":"lock_clock"},{"fc":"f-inv","ms":"show_chart"},{"fc":"f-bond","ms":"description"},{"fc":"f-metal","ms":"diamond"},{"fc":"f-pen","ms":"beach_access"},{"fc":"f-prop","ms":"home"},{"fc":"f-pol","ms":"umbrella"},{"fc":"f-debt","ms":"credit_card"}],"meta":"Mon 26 Oct, 09:41 · investments at the Fri 23 Oct close, the rest as last recorded · Illustrative figures","own":"£691,694","ownSub":"UK and India, in pounds at £1 = ₹112.50 (ECB, Fri 23 Oct)","split":[{"l":"Liquid","v":"£37,596","s":"9 records"},{"l":"Notice","v":"£0","s":"none"},{"l":"Locked","v":"£654,098","s":"8 records"}],"tabs":[{"icon":"chat_bubble","label":"Chat","on":""},{"icon":"home","label":"Home","on":"on"},{"icon":"insights","label":"Activity","on":""},{"icon":"account_circle","label":"You","on":""}],"nav":[{"isI":true,"isL":false,"icon":"home","label":"Home","cls":"","fill":""},{"isI":true,"isL":false,"icon":"account_balance_wallet","label":"Assets","cls":"","fill":""},{"isI":true,"isL":false,"icon":"credit_card","label":"Debts","cls":"on","fill":"ms-fill"},{"isI":true,"isL":false,"icon":"event_note","label":"Budget","cls":"","fill":""},{"isI":true,"isL":false,"icon":"show_chart","label":"Projection","cls":"","fill":""},{"isI":false,"isL":true,"icon":"","label":"Records","cls":"","fill":""},{"isI":true,"isL":false,"icon":"insights","label":"Activity","cls":"","fill":""},{"isI":true,"isL":false,"icon":"fact_check","label":"Audit","cls":"","fill":""}],"debts":[{"name":"Mortgage · Nationwide","sub":"Joint · 4.39% fixed to Jun 2028","month":"£1,456","ends":"Oct 2045","a":"£224,353","hasB":false,"b":"","fc":"f-debt","ms":"key"},{"name":"Home loan · HDFC","sub":"Arun · 8.5% · Pune flat","month":"₹39,390","ends":"Jul 2030","a":"₹15,13,257","hasB":true,"b":"£13,451","fc":"f-debt","ms":"key"},{"name":"Car loan · Close Brothers","sub":"Arun · 6.9%","month":"£347","ends":"Feb 2029","a":"£8,939","hasB":false,"b":"","fc":"f-debt","ms":"directions_car"},{"name":"Barclaycard","sub":"Arun · paid in full · next statement Sun 1 Nov","month":"In full","ends":"Revolving","a":"£0","hasB":false,"b":"","fc":"f-debt","ms":"credit_card"}],"owe":"£246,743","debtMeta":"Mon 26 Oct · balances after each loan's last payment · £1 = ₹112.50 (ECB, Fri 23 Oct) · Illustrative figures","phones":[{"cap":"iPhone · Light · Assets","theme":"t-light","large":true,"inline":false,"sects":[{"over":"Investments","tot":"£30,504","rows":[{"name":"Balanced (BlackRock MyMap 5)","sub":"Arun · ISA · Monzo","fc":"f-inv","ms":"donut_large","a":"£22,925","hasB":false,"b":""},{"name":"NASDAQ 100 ETF","sub":"Asha · ISA","fc":"f-inv","ms":"stacked_line_chart","a":"£512","hasB":false,"b":""},{"name":"Robotics ETF","sub":"Arun · GIA","fc":"f-inv","ms":"stacked_line_chart","a":"£304","hasB":false,"b":""},{"name":"Silver ETC","sub":"Arun · GIA","fc":"f-metal","ms":"diamond","a":"£188","hasB":false,"b":""},{"name":"Parag Parikh Flexi Cap","sub":"Asha · MF folio · CAMS · India","fc":"f-inv","ms":"donut_large","a":"₹5,61,995","hasB":true,"b":"£4,996"},{"name":"Infosys","sub":"Arun · Demat · Zerodha · India","fc":"f-inv","ms":"show_chart","a":"₹1,77,660","hasB":true,"b":"£1,579"}]},{"over":"Property","tot":"£512,778","rows":[{"name":"Home, Reading","sub":"Arun and Asha, half each","fc":"f-prop","ms":"home","a":"£415,000","hasB":false,"b":""},{"name":"Flat, Pune","sub":"Arun and Asha, half each · India","fc":"f-prop","ms":"apartment","a":"₹1,10,00,000","hasB":true,"b":"£97,778"}]}]},{"cap":"iPhone · Dark · Assets","theme":"t-dark","large":true,"inline":false,"sects":[{"over":"Investments","tot":"£30,504","rows":[{"name":"Balanced (BlackRock MyMap 5)","sub":"Arun · ISA · Monzo","fc":"f-inv","ms":"donut_large","a":"£22,925","hasB":false,"b":""},{"name":"NASDAQ 100 ETF","sub":"Asha · ISA","fc":"f-inv","ms":"stacked_line_chart","a":"£512","hasB":false,"b":""},{"name":"Robotics ETF","sub":"Arun · GIA","fc":"f-inv","ms":"stacked_line_chart","a":"£304","hasB":false,"b":""},{"name":"Silver ETC","sub":"Arun · GIA","fc":"f-metal","ms":"diamond","a":"£188","hasB":false,"b":""},{"name":"Parag Parikh Flexi Cap","sub":"Asha · MF folio · CAMS · India","fc":"f-inv","ms":"donut_large","a":"₹5,61,995","hasB":true,"b":"£4,996"},{"name":"Infosys","sub":"Arun · Demat · Zerodha · India","fc":"f-inv","ms":"show_chart","a":"₹1,77,660","hasB":true,"b":"£1,579"}]},{"over":"Property","tot":"£512,778","rows":[{"name":"Home, Reading","sub":"Arun and Asha, half each","fc":"f-prop","ms":"home","a":"£415,000","hasB":false,"b":""},{"name":"Flat, Pune","sub":"Arun and Asha, half each · India","fc":"f-prop","ms":"apartment","a":"₹1,10,00,000","hasB":true,"b":"£97,778"}]}]},{"cap":"iPhone · Light · Assets, scrolled on","theme":"t-light","large":false,"inline":true,"sects":[{"over":"Cash and savings","tot":"£7,092","rows":[{"name":"Instant access savings · Monzo","sub":"Arun · added today, 09:41","fc":"f-cash","ms":"account_balance","a":"£5,000","hasB":false,"b":""},{"name":"Monzo pot","sub":"Arun and Asha, half each","fc":"f-cash","ms":"payments","a":"£181","hasB":false,"b":""},{"name":"NRE savings · HDFC","sub":"Arun · India","fc":"f-cash","ms":"account_balance","a":"₹2,15,000","hasB":true,"b":"£1,911"}]},{"over":"Deposits and PPF","tot":"£20,648","rows":[{"name":"Fixed-rate saver · Nationwide","sub":"Asha · 4.6%","fc":"f-dep","ms":"lock_clock","a":"£10,000","hasB":false,"b":""},{"name":"Fixed deposit · SBI","sub":"Arun · 7.1% · India","fc":"f-dep","ms":"hourglass_top","a":"₹5,17,908","hasB":true,"b":"£4,604"},{"name":"PPF · SBI","sub":"Arun · 7.1% · India","fc":"f-dep","ms":"verified","a":"₹6,80,000","hasB":true,"b":"£6,044"}]},{"over":"Pensions","tot":"£117,650","rows":[{"name":"Workplace pension · Aviva","sub":"Arun · valued 30 Sep","fc":"f-pen","ms":"work","a":"£86,400","hasB":false,"b":""},{"name":"SIPP · Vanguard","sub":"Asha · valued 30 Sep","fc":"f-pen","ms":"beach_access","a":"£31,250","hasB":false,"b":""}]},{"over":"Policies","tot":"£3,022","rows":[{"name":"LIC Jeevan Anand","sub":"Asha · surrender value · India","fc":"f-pol","ms":"umbrella","a":"₹3,40,000","hasB":true,"b":"£3,022"}]}]},{"cap":"iPhone · Dark · Assets, scrolled on","theme":"t-dark","large":false,"inline":true,"sects":[{"over":"Cash and savings","tot":"£7,092","rows":[{"name":"Instant access savings · Monzo","sub":"Arun · added today, 09:41","fc":"f-cash","ms":"account_balance","a":"£5,000","hasB":false,"b":""},{"name":"Monzo pot","sub":"Arun and Asha, half each","fc":"f-cash","ms":"payments","a":"£181","hasB":false,"b":""},{"name":"NRE savings · HDFC","sub":"Arun · India","fc":"f-cash","ms":"account_balance","a":"₹2,15,000","hasB":true,"b":"£1,911"}]},{"over":"Deposits and PPF","tot":"£20,648","rows":[{"name":"Fixed-rate saver · Nationwide","sub":"Asha · 4.6%","fc":"f-dep","ms":"lock_clock","a":"£10,000","hasB":false,"b":""},{"name":"Fixed deposit · SBI","sub":"Arun · 7.1% · India","fc":"f-dep","ms":"hourglass_top","a":"₹5,17,908","hasB":true,"b":"£4,604"},{"name":"PPF · SBI","sub":"Arun · 7.1% · India","fc":"f-dep","ms":"verified","a":"₹6,80,000","hasB":true,"b":"£6,044"}]},{"over":"Pensions","tot":"£117,650","rows":[{"name":"Workplace pension · Aviva","sub":"Arun · valued 30 Sep","fc":"f-pen","ms":"work","a":"£86,400","hasB":false,"b":""},{"name":"SIPP · Vanguard","sub":"Asha · valued 30 Sep","fc":"f-pen","ms":"beach_access","a":"£31,250","hasB":false,"b":""}]},{"over":"Policies","tot":"£3,022","rows":[{"name":"LIC Jeevan Anand","sub":"Asha · surrender value · India","fc":"f-pol","ms":"umbrella","a":"₹3,40,000","hasB":true,"b":"£3,022"}]}]}],"options":[{"id":"oA","cls":"oA","tid":"A","name":"Filled circles, the chart's own colours","rec":true,"notRec":false,"summary":"Monzo's way: the family colour fills a circle and a white glyph sits on it. The fill is the very colour the allocation charts already use (shares blue, bonds violet, silver grey, cash amber), so a holding is one colour in its row and in every mix. In dark the circle takes the chart's dark colour and the glyph turns dark ink, the rule the design system already uses for the accent button and the alert badge.","notes":[["Why it is recommended.","It is the answer to Arun's Monzo request with the least new to learn. A solid circle is the strongest signal at 25% brightness: worst glyph pair gold and silver, glyph on tile (dark): 7.19:1, 2.65:1 dimmed, worst tile on its card gold and silver, tile on card (dark): 6.41:1, 2.57:1 dimmed. It sits below the navy hero as Monzo's coloured circles sit below its card: small solid shapes that echo the hero's solid navy, with the coral accent still the only warm red on screen. In dark the fills lift to the chart's dark colours, so a list never turns into dark holes, and the glyph turns dark ink on them, as it does on the accent button."],["The rule.","One colour per family, nine tokens per theme (--mp-kind-*); a kind whose asset class already has a chart colour (bonds, gold and silver) keeps that colour inside Investments. The glyph comes from the kind; the record never chooses its own."],["Trade-offs.","The loudest of the three: seventeen coloured circles in a list is busy, so the colour is kept to the lead tile only, never the name or the figure. In dark the fills are pastel with dark glyphs, not Monzo's dark-mode white glyphs; B shows that look."],["Accessibility.","The tile is decoration (hidden from VoiceOver); the row's spoken label already names the kind. Colour is never the only signal: the glyph and the section heading say it too. The tile grows with Dynamic Type (@ScaledMetric) up to 1.5×."],["Contrast, measured.","All 54 pairs pass in light and dark, at full brightness and at 25%. Worst glyph: gold and silver, glyph on tile (dark): 7.19:1, 2.65:1 dimmed. Worst tile on its background: gold and silver, tile on card (dark): 6.41:1, 2.57:1 dimmed. A two-letter monogram is measured as a glyph (ui); at the stricter text tier 15 of 18 tile colours pass too."]]},{"id":"oB","cls":"oB","tid":"B","name":"Settings squircles, one vivid set for both themes","rec":false,"notRec":true,"summary":"iOS Settings' way: a rounded square in a brighter version of the family colour, a gentle top-to-bottom gradient and a white glyph, drawn the same in light and dark as Apple's own app icons are. The hue is the chart's hue; the value is its own, brighter than the chart.","notes":[["Best when the list should feel like the system.","The squircle is the shape the row lead already has (36 pt, radius 10), so it drops into every list as it is, and the white glyph reads the same in both themes."],["Trade-offs.","The colours are not the charts' colours, so a holding is one blue in its row and another in the mix. White on a vivid fill is the thinnest margin of the three at 25%: worst glyph pair property, glyph on tile (light): 3.35:1, 2.59:1 dimmed. The gradient is a texture Warm ledger does not use anywhere else, and rows of glossy squares start to look like app icons on a home screen."],["The rule.","Nine vivid pairs (a top and a base stop), the same in both themes; white glyph always."],["Contrast, measured.","All 108 pairs pass in light and dark, at full brightness and at 25%. Worst glyph: property, glyph on tile (light): 3.35:1, 2.59:1 dimmed. Worst tile on its background: debts, tile on card (dark): 2.20:1, 1.35:1 dimmed. A two-letter monogram is measured as a glyph (ui); at the stricter text tier 4 of 36 tile colours pass too."]]},{"id":"oC","cls":"oC","tid":"C","name":"Soft tint, the glyph in the chart's colour","rec":false,"notRec":true,"summary":"Apple Wallet and Health's way: a pale tint of the family colour, with the glyph drawn in the chart's own colour. The calmest of the three and the closest to the stance chips Warm ledger already has.","notes":[["Best when calm matters more than colour.","The figures stay the loudest thing on every row; the tile reads as a label, not a badge."],["Trade-offs.","It is the least like Monzo, and at 25% the colour lives only in the glyph's strokes: the tint must be strong enough to stay on the card (worst tile on its card debts, tile on card (dark): 1.93:1, 1.27:1 dimmed), so it is a mid pastel rather than a whisper, and a family is harder to tell at a glance than with a solid fill. Worst glyph pair property, glyph on tile (light): 3.18:1, 2.23:1 dimmed."],["The rule.","Nine tints per theme, mixed from the family's hue into the card; the glyph is the chart colour itself."],["Contrast, measured.","All 54 pairs pass in light and dark, at full brightness and at 25%. Worst glyph: property, glyph on tile (light): 3.18:1, 2.23:1 dimmed. Worst tile on its background: debts, tile on card (dark): 1.93:1, 1.27:1 dimmed. A two-letter monogram is measured as a glyph (ui); at the stricter text tier 0 of 18 tile colours pass too."]]}]};
+const th = [['Light', 't-light'], ['Dark', 't-dark']];
+return Object.assign({}, K, {
+options: K.options.map((o) => Object.assign({}, o, {
+panes: th.map((t) => ({ label: t[0], cls: t[1] })),
+phones: K.phones.map((f) => Object.assign({}, f, { cap: o.tid + ' · ' + f.cap })),
+webs: th.map((t) => ({ cap: o.tid + ' · Browser, wide · ' + t[0] + ' · Debts', theme: t[1] }))
+}))
+});
+}
+}
+</script>
+</body>
+</html>

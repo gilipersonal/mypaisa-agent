@@ -188,3 +188,18 @@ Added the day each was learned; reviewers check every item.
     never the device" (round 5: the table had said only the smaller iPhones in
     landscape, while the shell and the landscape board draw every iPhone with
     its tab bar).
+24. **A board is measured at every size its class covers, in both engines,
+    not only at the size it is drawn:** an iPhone from 320 (Display Zoom) to
+    440 and in landscape, every iPad and foldable window, the web from 1024
+    to 1920 and its phone door from 320, in Chromium and WebKit at the
+    screen's own pixel ratio, and Prototype v4 at every door and step
+    (MA-240: at 1024 with the chat beside it, the web pages fell to a word
+    per line; the check-in card hid its fourth answer at 402; WebKit's wider
+    system font cut a rupee hero at 320). `node scripts/board_fit.js` is the
+    gate; an allowance names its board, its fault and its reason.
+25. **A shared fix is pixel-diffed against main at every drawn size:** a
+    guard meant for a narrow screen must leave every board as drawn, and each
+    frame that changes is looked at and named as intended (MA-240: a hero
+    figure that shrank at 402, a global word-break that split a table's
+    header, a longer fade over rows that did not overflow and a chip that
+    wrapped at its drawn width were all caught by the diff, not by a scan).

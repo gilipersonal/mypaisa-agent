@@ -66,6 +66,7 @@ PAIRS = [
     ("ui", "chart-4", "surface"), ("ui", "chart-5", "surface"),
     ("ui", "pillar-for", "surface"), ("ui", "pillar-against", "surface"),
     ("presence", "track", "surface"), ("presence", "mask", "surface"), ("presence", "mask-hero", "hero"),
+    ("presence", "track", "bg"), ("presence", "track", "surface-2"), ("presence", "track", "hero"),  # bars sit on the page, a fill and the hero too (MA-240)
 ] + [("ui", t, b) for t in ("ccy-usd", "ccy-gbp", "ccy-eur", "ccy-jpy", "ccy-other", "asset-shares", "asset-bonds",
                             "asset-silver", "asset-cash", "meter", "chart-line") for b in ("surface", "track")]
 # Labels on glass (glass carries labels only, never body copy): the fill composited over the worst backdrop the bar
@@ -232,6 +233,8 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "copy-differs-app-ios": ("app-v1/ios.css", r"--lg-accent: #[0-9A-Fa-f]{6};", "--lg-accent: #E0806C;", r"app-v1/ios\.css differs"),  # MA-193: the prototype's copy
     "mark-lost-on-track": ("ds-v1/tokens.css", r"--mp-ccy-other: #[0-9A-Fa-f]{6};", "--mp-ccy-other: #B4B6BC;", r"ccy-other on track"),
     "track-vanishes": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#F4F4F6", r"t-light .* track on surface"),
+    "track-on-page": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#CDCFD4", r"t-light .* track on bg"),  # MA-240: passed on a card, faded on the page
+    "track-on-hero": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#454E5C", r"t-dark .* track on hero"),
     "mask-vanishes": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-mask: )#[0-9A-Fa-f]{6}", r"\1#1A222F", r"t-dark .* mask on surface"),
     "hero-gain-dim": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-hero-up: )#[0-9A-Fa-f]{6}", r"\1#2E8F52", r"t-light .* hero-up on hero"),
     "stray-glass-block": ("ds-v1/ios.css", r"\Z", "\n.t-light .mp { --lg-fill: rgba(255, 255, 255, 0.30); }\n", r"--lg-fill .* outside"),

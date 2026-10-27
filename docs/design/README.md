@@ -117,7 +117,24 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   pair in `ds-v1/tokens.css` and the glass fills passes
   `python3 scripts/contrast_check.py` in light and dark, at full brightness
   and dimmed to 25%; the dark tokens are tuned for it. No tertiary grey for
-  anything a member must read, and glass carries labels only.
+  anything a member must read, and glass carries labels only. A bar's empty
+  track is the `--mp-track` token on every board, and the gate measures it
+  on a card, the page, a fill and the hero (MA-240).
+- **Whole at every size** (MA-240): Arun asked, on 27 Oct 2026, that nothing
+  overflow or overlap at any screen size and nothing break on a resize. Each board
+  draws a screen at one size; `node scripts/board_fit.js` renders every
+  current board in Chromium and WebKit at the screen's own pixel ratio,
+  resizes each frame through every size its class covers (an iPhone from
+  320, Display Zoom, to 440 and in landscape; every iPad and foldable
+  window; the web from 1024 to 1920 and its phone door from 320), and walks
+  Prototype v4 at every door. Text clipped mid-word, text on text, or a box
+  cut at the screen's edge fails it, but for what
+  `scripts/board_fit_allow.json` names with its reason. The fixes live in
+  `tokens.css`: the page is a size container of its own, so with the chat
+  beside it the page's width, not the window's, sets its columns; and the
+  fit guards keep the parts drawn on many boards whole (rows that scroll
+  really scroll, a card's answers wrap, a hero figure shrinks to fit, a
+  narrow chart keeps its axis's ends).
 
 **The superseded record.** The Mini App boards, the Telegram chats and the
 Prototype's Telegram flows in MyPaisa app v1 (`app-v1/`), the Telegram kit in

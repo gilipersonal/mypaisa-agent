@@ -58,7 +58,7 @@
   --mp-ccy-usd: #2453C9; --mp-ccy-gbp: #4E5462; --mp-ccy-eur: #6B3FB8; --mp-ccy-jpy: #8A5300; --mp-ccy-other: #6E695F;   /* every mark 3:1+ on surface and on the track, at 25% too (MA-181) */
   --mp-asset-shares: #2453C9; --mp-asset-bonds: #6B3FB8; --mp-asset-silver: #646A78; --mp-asset-cash: #8A5300;
   --mp-meter: #2453C9;       /* spend and budget meters */
-  --mp-track: #CDCFD4;       /* the empty part of a bar or meter: plainly there at 25% brightness (MA-181) */
+  --mp-track: #BEC1C8;       /* the empty part of a bar or meter: plainly there at 25% brightness on a card, the page, a fill and the hero (MA-181, MA-240) */
   --mp-mask: #D0C9BE; --mp-mask-hero: #3A5284;   /* privacy placeholders: plainly there, never mistaken for text */
   --mp-shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
   color-scheme: light;
@@ -106,7 +106,7 @@
   --mp-ccy-usd: #8FB2FF; --mp-ccy-gbp: #AEB6C4; --mp-ccy-eur: #B79CFF; --mp-ccy-jpy: #F6BC4F; --mp-ccy-other: #A3ACBA;
   --mp-asset-shares: #8FB2FF; --mp-asset-bonds: #B79CFF; --mp-asset-silver: #969FAE; --mp-asset-cash: #F6BC4F;
   --mp-meter: #8FB2FF;
-  --mp-track: #454E5C;
+  --mp-track: #485160;      /* plainly there on the hero at 25% too (MA-240) */
   --mp-mask: #414D64; --mp-mask-hero: #40598A;
   --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
@@ -293,11 +293,13 @@
    regular  600-1023 tablet, Telegram Desktop: tab bar stays, gutters 24; one column until each of two
                     can be about 340 wide (760), then two equal columns
    wide     >= 1024 laptop: sidebar 248, two columns 1.3 : 1 (the list never under 300), no tab bar,
-                    content capped at 1180, centred past 1360 */
+                    content capped at 1180, centred past 1360
+   The page is a size container too, so with the chat beside it the page's own width decides its
+   columns: under 700 it keeps one column, whatever the window (MA-240). */
 .mp-app { container: app / inline-size; min-height: 100%; }
 .mp-shell { display: flex; min-height: 100%; }
 .mp-shell-side { display: none; }
-.mp-shell-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mp-shell-main { flex: 1; min-width: 0; display: flex; flex-direction: column; container: page / inline-size; }
 .mp-shell-tabs { display: flex; }
 .mp-pagepad { padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 16px; }
 .mp-pagehead { display: flex; flex-direction: column; gap: 12px; }
@@ -324,8 +326,93 @@
 @container app (min-width: 1360px) {
   .mp-pagepad { margin: 0 auto; }
 }
+@container page (max-width: 699px) {
+  .mp-cols { grid-template-columns: minmax(0, 1fr); }
+  .mp .mp-cols.even { grid-template-columns: minmax(0, 1fr) !important; }   /* a board's equal pair, set with !important at the app's width */
+}
+@container page (max-width: 699px) {
+  .mp .pcols { grid-template-columns: minmax(0, 1fr); }   /* the Projection's milestones and assumptions */
+  .mp .mp-num-hero { font-size: 36px; line-height: 40px; }   /* a hero figure in a page this narrow, as on a small phone */
+  .mp .mp-hero.heroC { grid-template-columns: minmax(0, 1fr); }   /* the decades hero: its sparkline goes under the figure */
+}
+@container page (max-width: 719px) {
+  .mp .filt4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* four filters need about 720 of page */
+}
+@container page (max-width: 599px) {
+  .mp-pagehead { flex-direction: column; align-items: stretch; }
+}
 
 /* ---------- screen mock-ups: a scrolling phone screen never squashes its cards, and hides its scrollbar ---------- */
 .scr > * { flex-shrink: 0; }
 .scr { scrollbar-width: none; }
 .scr::-webkit-scrollbar { display: none; }
+
+/* ---------- fit guards: whole at every width a member can have (MA-240) ----------
+   Each board draws a screen at one size; these keep it whole at the others: an iPhone from 320
+   (Display Zoom) to 440, every iPad and foldable window, and the web from 320 to 1920. They sit
+   here because the parts they guard are drawn on many boards. */
+/* rows that scroll sideways (the composer's shortcuts, suggestions, summary pins) really scroll, as iOS's do: a chip
+   cut at the edge, under the row's own fade, is the sign there is more */
+.mp .chips, .mp .sugg, .mp .chiprow, .mp .wsugg, .mp.pw .wsugg { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.mp .fx:has(> .pin) { overflow-x: auto !important; overflow-y: hidden !important; scrollbar-width: none; }   /* the pins' row sets overflow inline */
+.mp .chips::-webkit-scrollbar, .mp .sugg::-webkit-scrollbar, .mp .chiprow::-webkit-scrollbar, .mp .wsugg::-webkit-scrollbar, .mp .fx:has(> .pin)::-webkit-scrollbar { display: none; }
+/* the suggested next step is a sentence: it wraps inside the row and is read whole, never scrolled off */
+.mp .sug, .mp .sg.sug { flex: none; max-width: calc(100% - 8px); white-space: normal; text-align: left; }   /* full width when it fits; wraps only when wider than the row */
+.mp .gchip.sug { height: auto; min-height: 36px; padding-block: 6px; }
+/* a card's answers are never hidden behind a fade: on a narrow card they wrap and fill the rows */
+.mp .ccard-acts.rowx { flex-wrap: wrap; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+.mp .ccard-acts.rowx > .cbtn { flex: 1 1 auto; }
+/* choice and filter chips wrap rather than run off a small screen */
+.mp .filters, .mp .fx:has(> .chipb), .mp .fx:has(> .fch), .mp .fx:has(> .fchip) { flex-wrap: wrap; }
+/* on a screen under 360 a row's chip line wraps as a whole before the chip runs under the row's figure; the chip
+   keeps its one line, and never runs wider than its row */
+.mp .rtx .mp-chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+@container screen (max-width: 359px) { .mp .rtx > .fx { flex-wrap: wrap; } .mp .ccard-b .crow { flex-wrap: wrap; } .mp .ccard-b .crow > .f1 { flex-basis: calc(100% - 52px); } }   /* a card row's answers go under its words */
+@container app (max-width: 359px) { .mp .rtx > .fx { flex-wrap: wrap; } .mp .pc-ann { display: none; } }   /* under 360 the chart's call-out waits for a tap, as the app shows it */
+/* an overline or a key-value figure wraps to a second line before it is cut */
+.mp .mp-over.nowrap, .mp .kvg .mp-hl { white-space: normal; flex-wrap: wrap; }
+/* a table keeps its first column readable (a holding's name never breaks mid-word) and scrolls inside its card */
+.mp .mx { grid-template-columns: minmax(140px, 1fr) 120px 120px 104px; overflow-x: auto; }
+.mp .tbl3 { grid-template-columns: minmax(96px, 1fr) auto auto; overflow-x: auto; }
+/* on a screen under 360 (an iPhone at Display Zoom, a small phone's browser) the hero's figure steps down, as SwiftUI's
+   minimumScaleFactor does, and its strip of three takes two columns; every drawn screen is wider and keeps its hero */
+.dev { container: screen / inline-size; }
+@container screen (max-width: 359px) { .mp-hero .mp-num-hero { font-size: 36px; line-height: 40px; } .mp-hero .hsplit { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container app (max-width: 359px) { .mp-hero .mp-num-hero { font-size: 36px; line-height: 40px; } .mp-hero .hsplit { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* a chart's call-out on the hero wraps rather than runs past the chart */
+.mp .sct { white-space: normal; }
+/* a bar's empty track is the token on every board, edge line included; a board's own paler mix faded at 25% */
+.mp .mp-track:is(.meter, .sr-t, .pl-t, .rl-t) { background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); }
+/* a link or file name under a row's title breaks inside the row rather than run out of it */
+.mp .grow > .mp-foot { overflow-wrap: anywhere; }
+/* annotations drawn inside a frame wrap inside it */
+.mp .anno { white-space: normal; max-width: calc(100% - 24px); }
+/* drawn pages and specimens never run wider than their screen */
+.mp .qlbg .page { max-width: calc(100% - 32px); }   /* a document in Quick Look */
+.mp .cpfr, .mp .sbfr { max-width: 100%; }          /* the kit's composer and sidebar specimens */
+/* a hint beside a row of buttons takes the next line before it runs out of the card */
+.mp .btnrow > .grow { min-width: min(100%, 16em); white-space: normal; }
+/* the landscape iPhone's sidebar keeps a long name on its line, cut with an ellipsis, on the narrowest phone */
+.mp .lnav .f1 { min-width: 0; }
+.mp .lnav .f1 > .mp-hl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* a toast wraps inside the screen's margins */
+.mp .toast, .mp .mp-toast { max-width: calc(100% - 32px); box-sizing: border-box; }
+.mp .toast { white-space: normal; width: max-content; }
+/* key-value grids put a figure on the next row before two figures touch */
+.mp .kvg { grid-template-columns: repeat(auto-fit, minmax(max(min(100%, 132px), calc((100% - 10px) / 2)), 1fr)); }   /* never more than the two columns drawn */
+/* the chat beside the page gives way first: as drawn from 1360, then 28% of the window, never under 300 */
+@container app (max-width: 1359px) { .mp :is(.chat4, .chatcol) { width: clamp(300px, 28cqi, 380px); } }
+/* a chart axis narrower than drawn keeps its ends and every other label between */
+.mp-chartaxis, .mp .pc-x { container-type: inline-size; }
+@container (max-width: 199px) {
+  :is(.mp-chartaxis, .pc-x):has(> :nth-child(3)) > :not(:first-child):not(:last-child) { visibility: hidden; }   /* a small chart keeps its ends */
+}
+@container (max-width: 339px) {
+  :is(.mp-chartaxis, .pc-x):has(> :nth-child(5)) > :nth-child(even):not(:last-child) { visibility: hidden; }
+}
+@container (max-width: 459px) {
+  :is(.mp-chartaxis, .pc-x):has(> :nth-child(7)) > :nth-child(even):not(:last-child) { visibility: hidden; }
+}
+/* a chart's call-out wraps inside the chart; a day-change card stays inside the screen */
+.mp .pc-ann { white-space: normal; max-width: min(200px, 46%); }
+.mp .pdate { max-width: calc(100% - 32px); box-sizing: border-box; white-space: normal; }
