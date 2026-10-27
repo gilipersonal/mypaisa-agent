@@ -308,6 +308,20 @@ Claude's:
   agents, the kind of agent each is and which of Opus, Sonnet and Haiku it
   uses, with the spend ladder; its source is
   `docs/design/architecture-v4.html`.
+- **Guardrails and evals, recorded (MA-245, `ARCHITECTURE.md` §23):**
+  guarded in code before the prompt, tested on every change and never on a
+  calendar, every live run checked by code and a few judged overnight, the
+  judges calibrated by the admin monthly and on every change; nothing new
+  ships without its cases. Arun's choices (27 Oct 2026): monthly
+  calibration, production transcripts kept in our AWS account, Inspect AI,
+  live evals on pull requests capped at $10 a month and $2 a run.
+- **One manifest and the eval harness (MA-246, `ARCHITECTURE.md` §23.3,
+  §23.5):** every agent and tool declared once (its model route, its side
+  effect, who may call it, its scope, its limits, its eval tags); eval cases
+  as Inspect AI datasets on the seed household, graded by code first; T0 on
+  every pull request, the recorded conversations of MA-198 replayed through
+  the agent loop and its guards with no network; and a coverage check that
+  fails CI for a tool, agent, prompt or kind template with no cases.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -318,7 +332,9 @@ by the fallback (MA-194); the iOS shell's Jest and XCUITest runs and its first
 bench (MA-165, MA-166); the scripted journey end to end on the local stack at
 both doors (MA-198); the seed refusing to run against prod (MA-110); the dev
 dashboard rendering with every widget bound, and a test invocation of the
-skeleton Lambda showing in Transaction Search within five minutes (MA-231).
+skeleton Lambda showing in Transaction Search within five minutes (MA-231);
+the coverage check refusing a copy with a tool, then a prompt, that has no
+case (MA-246).
 
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
 the gates run on every PR, the web gates on every PR that touches `web/` and
@@ -463,6 +479,27 @@ arrives from phase 2.
   resume or resync, an api error, a crash or a hang, each with its trace id
   and no content, in one batch to `POST /v1/telemetry`; the client panel and
   its alarms.
+- **Guarded from the first word (MA-247, MA-248, MA-249, `ARCHITECTURE.md`
+  §23.2):** a policy gate in code before every tool call (the agent's
+  manifest, the member's role and household, typed arguments with money in
+  minor units and its currency, the run's limits), failing closed and
+  narrowing a run that has read untrusted text so it can send nothing out;
+  every figure a reply states checked against that turn's tool results, then
+  regenerated once or replaced by the plain template (the chat's half of
+  MA-54's validator, brought forward from phase 11); and a plain refusal,
+  with the reason, for a trade, tax advice, another household's data or
+  "sell everything".
+- **Tested on change, watched live (MA-250, MA-251, MA-252,
+  `ARCHITECTURE.md` §23.3, §23.4):** the chat's golden set, about 40 tasks on
+  the seed household graded on the records they leave, runs live on dev's
+  key (T1, three trials, at most $2 a run and $10 a month) on every pull
+  request that changes a prompt, a tool, a guard, the model routing or a kind
+  template, and never on a timer; a model change waits for the full suite,
+  five trials on the new id, before the release takes it to prod (T2); every
+  live run's checks and the member's signals land in its `RunRecord`, every
+  flagged run and a random 10% are judged overnight on Haiku through
+  Batches, and only a rate that leaves its band raises an alert. The judges
+  stay advisory until phase 8.
 - **The Claude meter and ceiling (MA-113, `ARCHITECTURE.md` §15.1):** every
   model call costed from the API's usage counts into the cycle's
   `SpendMonth` row, in dollars with pounds beside them; `BudgetSettings`
@@ -527,7 +564,11 @@ success and on failure, shown in Activity; one message's trace from `api` to
 it (MA-232); the leak test, no prompt, reply, amount, name, token or account
 number in any span, log line or metric, in CI; a model call's span costed to
 the cent from a recorded `usage` block (MA-233); a telemetry batch over the
-limit, or with content, refused (MA-234); in the app, Jest for the shell and
+limit, or with content, refused (MA-234); the policy gate refusing each
+mutated call, and the safety suite's injection, escalation and refusal
+cases passing all three trials (MA-247, MA-249); an invented, a
+mis-currencied and a mis-scaled figure caught (MA-248); T1 selecting only the
+affected cases on a fixture pull request and stopping at its cap (MA-250); in the app, Jest for the shell and
 XCUITest, snapshot and accessibility checks of every screen and card (iPhone
 and iPad, light and dark, Large and AX5, privacy on) (MA-166); in the web
 app, svelte-check, vitest, Playwright at 390 and 1440 in both themes, an axe
@@ -544,7 +585,9 @@ it; a reply that finishes while the app is closed
 arrives as a push with no amount on the lock screen; each of you is a Cognito
 user in prod; MyPaisa Dev runs on seeded data from TestFlight, and against
 the laptop from the simulator; a merge reaches prod, and MyPaisa reaches your
-phones, only after your approval.
+phones, only after your approval; a pull request that changes the chat's
+prompt shows its golden-set result before it can merge, and the week's
+digest lists the runs the judges read overnight.
 
 **Cost:** about £0.50 (a few Claude calls), and about £2.50 a month of
 CloudWatch in prod for the spans, Application Signals and the metrics and
@@ -553,7 +596,8 @@ stream inside the free tier
 at about three open hours a day for four members (one leader tab, closed
 when hidden; about $0.012 an open hour at 256 MB), priced by the spike and
 put to you before any apply (MA-195); the Apple Developer Program from phase
-0.
+0; the live evals on dev's key at most $10 a month, and the overnight
+judges under $1 a month in prod (`ARCHITECTURE.md` §23.7).
 
 ---
 
@@ -638,6 +682,16 @@ maths arrives.
   Claude on the Anthropic API (structured outputs, citations, per-field
   confidence), and the Confirm / Edit / Cancel card adds or updates a record;
   nothing saved without Confirm.
+- **A file is data, never an instruction (MA-253, `ARCHITECTURE.md`
+  §23.2):** `extract_document` runs as its own model call with no tools, the
+  file's text JSON-encoded inside a labelled tool result and only the strict
+  schema out, checked by code; a red-team set of poisoned statements,
+  factsheets, CAS text, Excel sheets and merchant names proves no instruction
+  in a file reaches a tool or a reply.
+- **Kinds bring their own cases (MA-254, `ARCHITECTURE.md` §23.5):** each
+  kind's field spec generates draft cases (phrasings, both currencies, dates,
+  a missing field), graded by code, so a new kind or field is tested in dev
+  before the admin approves it.
 - **Money in any currency (MA-156, `ARCHITECTURE.md` §4.7):** every record
   keeps its currency from the Confirm card that added it; a parser in code
   reads £ $ € ₹, the codes, the words and lakh and crore; an amount in
@@ -668,7 +722,9 @@ currency parser on every form (£ $ € ₹, codes, words, lakh and crore) and a
 rupee amount against a pound record never saved as pounds; schema migration
 on a v0 item; every data route against each role and member status;
 Playwright and XCUITest for the in-place edit; the iOS scroll bench at 120 Hz
-with no dropped frames.
+with no dropped frames; every poisoned file passing all three trials with no
+tool reached (MA-253); each kind's generated cases in the regression suite
+(MA-254).
 
 **Exit:** you type "£5,000 in Monzo savings" on the iPhone; MyPaisa asks
 whose it is and shows the Confirm card, and on Confirm the net worth on the
@@ -1009,6 +1065,13 @@ built with their records in phases 2 to 9.
 - More than one way in (MA-77): a member adds a second sign-in, Apple or
   Google, or a passkey, from You; the owner can unlink one from the Admin
   center; every link, unlink and sign-in an audit row.
+- **The judges, calibrated by the admin (MA-255, `ARCHITECTURE.md` §23.5):**
+  each month, and whenever a judge, a prompt, a tool or the model changes,
+  the Admin center offers about 30 runs with their transcripts and verdicts;
+  the admin marks pass or fail per failure mode with a one-line critique;
+  each judge's agreement is measured and one below 0.8 drops to advisory; a
+  run marked failed becomes a regression case once rewritten onto the seed
+  household. Designed first with `/design-first`.
 - **The web app's Audit, Files and Admin center (MA-184):** the same pages in
   a browser, from the browser boards in MyPaisa app v1, with the second check
   a passkey or a fresh sign-in for the owner's actions.
@@ -1021,7 +1084,9 @@ unlinking a second sign-in (the right account, one linked to another member,
 unlinking the last one refused); every route against each role and each
 member status; a token from the other environment; JSON shape; the Audit
 screen showing a change made in the chat or in place within a minute; Search
-finding a record, a change, a file and a past answer; snapshot tests of every
+finding a record, a change, a file and a past answer; a judge below 0.8
+dropping to advisory, and a labelled failure becoming a case on the seed
+household (MA-255); snapshot tests of every
 screen on iPhone, iPad and the foldable sizes in both themes, at Large and
 AX5, with privacy on, and the accessibility audit; in the web app,
 Playwright screenshots at 390 and 1440 in both themes.
@@ -1137,7 +1202,8 @@ spot check; the desk's own test cases pass on the port.
 Claude starts writing on top of numbers that already work.
 
 - Anthropic client with the key from SSM, model routing, caching, refusal
-  fallback, number validator.
+  fallback; briefs, wraps, alerts and cards through the figure check the chat
+  has had since phase 1 (MA-54, MA-248).
 - Morning brief and evening wrap as cards, and by push; the Technical section
   on every card; `/technical` mode; the glossary on a tap.
 - Charts: one house style in Swift Charts (MA-56); holding history with
@@ -1152,7 +1218,7 @@ Claude starts writing on top of numbers that already work.
   searches a day and sentiment scoring pauses; at 95% chat runs on Haiku and
   the brief, wrap and alerts go out as templates; alerts are never dropped.
 
-**Tests:** validator catches an invented number; alert state machine with
+**Tests:** the figure check catching an invented number in a brief and a card; alert state machine with
 frozen time; spend driven through each step of the ladder with frozen time,
 checking which calls are made and on which model; card rendering from recorded Claude responses; chart snapshot
 tests.
@@ -1173,7 +1239,8 @@ You can ask anything about what you hold.
 - Cards: `stance`, `holding-profile`, `overlap-review`, `fund-vs-benchmark`,
   `bear-vs-bull` (two calls and a judge), `scenario`.
 - Anthropic's server-side `web_search` and `web_fetch`, results treated as
-  untrusted text; `/why`.
+  untrusted text under phase 1's rule, and a run that has read them narrowed
+  by the policy gate (MA-68, MA-247); `/why`.
 - Natural-language preferences with Confirm.
 - A holding's market view, its stance, signals and Technical section, shows
   at every door, on the one-asset screen of phase 5 (MA-183).
@@ -1358,6 +1425,11 @@ one household and its one admin, the owner.
 - **E8, budgets for the team (MA-136).** Each agent's share of the plan's
   $200 Claude credit, metered by agent; paid feeds recorded as subscriptions
   against the AWS and others cap of MA-137.
+- **Each agent guarded and tested on its own (MA-256, `ARCHITECTURE.md`
+  §23.5).** Every agent of the team has its own manifest entry and safety
+  suite; a `ChangeRequest` that changes a prompt, a rule, a threshold or a
+  model carries the affected suites' results from dev, and a failing safety
+  case blocks its approval.
 
 **Order.** E1 and E2 can come forward once the Admin center and the second
 check exist (phase 8, MA-102); E3 after phase 10; E4 and E5 once stances are
@@ -1494,27 +1566,27 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 35.25 (and 3.5 of yours) | 29 | Mon 2 Nov 2026 | Thu 10 Dec 2026 |
-| 1 Talk: sign in and chat with the agent at every door | 88.5 (and 0.5 of yours) | 71 | Fri 11 Dec 2026 | Thu 1 Apr 2027 |
-| 2 The first record: one dynamic structure, one write path | 45 | 36 | Fri 2 Apr 2027 | Mon 24 May 2027 |
-| 3 Deposits, policies and two currencies | 18 | 15 | Tue 25 May 2027 | Tue 15 Jun 2027 |
-| 4 Debts and check-ins | 19 | 16 | Wed 16 Jun 2027 | Wed 7 Jul 2027 |
-| 5 Investments, priced | 23 | 19 | Thu 8 Jul 2027 | Tue 3 Aug 2027 |
-| 6 Budget: statements and monthly check-ins | 12 | 10 | Wed 4 Aug 2027 | Tue 17 Aug 2027 |
-| 7 Projection | 18 | 15 | Wed 18 Aug 2027 | Wed 8 Sep 2027 |
-| 8 Audit, search and the Admin center at every door | 24 | 20 | Thu 9 Sep 2027 | Wed 6 Oct 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 7 Oct 2027 | Fri 22 Oct 2027 |
-| 10 Prices and the engine | 22 | 18 | Mon 25 Oct 2027 | Wed 17 Nov 2027 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Thu 18 Nov 2027 | Tue 7 Dec 2027 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Wed 8 Dec 2027 | Fri 7 Jan 2028 |
-| 13 Track record and calibration | 13 | 11 | Mon 10 Jan 2028 | Mon 24 Jan 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 25 Jan 2028 | Wed 2 Feb 2028 |
-| 15 Stances go live | 5 | 4 | Thu 3 Feb 2028 | Tue 8 Feb 2028 |
+| 0 Foundations at every door | 38.25 (and 3.5 of yours) | 31 | Mon 2 Nov 2026 | Mon 14 Dec 2026 |
+| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Tue 15 Dec 2026 | Tue 20 Apr 2027 |
+| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Wed 21 Apr 2027 | Thu 17 Jun 2027 |
+| 3 Deposits, policies and two currencies | 18 | 15 | Fri 18 Jun 2027 | Thu 8 Jul 2027 |
+| 4 Debts and check-ins | 19 | 16 | Fri 9 Jul 2027 | Fri 30 Jul 2027 |
+| 5 Investments, priced | 23 | 19 | Mon 2 Aug 2027 | Thu 26 Aug 2027 |
+| 6 Budget: statements and monthly check-ins | 12 | 10 | Fri 27 Aug 2027 | Fri 10 Sep 2027 |
+| 7 Projection | 18 | 15 | Mon 13 Sep 2027 | Fri 1 Oct 2027 |
+| 8 Audit, search and the Admin center at every door | 28 | 23 | Mon 4 Oct 2027 | Wed 3 Nov 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 4 Nov 2027 | Fri 19 Nov 2027 |
+| 10 Prices and the engine | 22 | 18 | Mon 22 Nov 2027 | Wed 15 Dec 2027 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Thu 16 Dec 2027 | Thu 13 Jan 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Fri 14 Jan 2028 | Fri 4 Feb 2028 |
+| 13 Track record and calibration | 13 | 11 | Mon 7 Feb 2028 | Mon 21 Feb 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 22 Feb 2028 | Wed 1 Mar 2028 |
+| 15 Stances go live | 5 | 4 | Thu 2 Mar 2028 | Tue 7 Mar 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Wed 9 Feb 2028 | Wed 15 Mar 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Thu 16 Mar 2028 | Wed 12 Apr 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Thu 13 Apr 2028 | Wed 3 May 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Thu 4 May 2028 | Mon 15 May 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Wed 8 Mar 2028 | Wed 12 Apr 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 28 | 23 | Thu 13 Apr 2028 | Thu 18 May 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Fri 19 May 2028 | Tue 6 Jun 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Wed 7 Jun 2028 | Fri 16 Jun 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you
@@ -1556,7 +1628,12 @@ LCP ≤ 2.5 s on a mid phone, 60 fps scroll), and so do the iOS benches in
 stated when a paid API is touched; every new write path, the in-place
 correction included, produces its event and its audit row, and every new
 handler writes its `RunRecord` and continues the trace it was handed, both
-covered by tests, with the leak test green (`ARCHITECTURE.md` §10.3).
+covered by tests, with the leak test green (`ARCHITECTURE.md` §10.3); every
+new tool, agent, prompt or kind ships with its safety and capability cases
+and its manifest entry, and every incident or review finding becomes a case
+the same day; a phase whose stories touch an agent ends with 30 of its new
+runs read by a person and their failure modes turned into checks or cases
+(`ARCHITECTURE.md` §23).
 
 ---
 
@@ -1588,7 +1665,8 @@ covered by tests, with the leak test green (`ARCHITECTURE.md` §10.3).
 | Two engines disagreeing confuses the household | Both shown side by side with their track records; the disagreement is said out loud; the rules engine stays the default |
 | A message or a job is lost when something fails | Every hand-off through an SQS queue with retries and backoff; idempotent handlers; a dead-letter queue behind each with an alarm, a copy in S3, and replay by script, button or the ops warden |
 | Cost overrun | The Claude ceiling's ladder steps down at 85% and 95% and stops at 100%; guards per member, per day and per run; the Console workspace limit as the hard backstop; AWS Budgets for AWS; `/pause` |
-| Prompt injection via news, a PDF or a statement | Untrusted text marked; no dangerous tools exist; Confirm on every write |
+| Prompt injection via news, a PDF or a statement | Third-party text only as a labelled tool result; files read by a quarantined extractor with no tools; a run that has read such text loses every tool that sends data out; no dangerous tools exist; Confirm on every write; a red-team suite on every change (`ARCHITECTURE.md` §23.2) |
+| An eval suite that cries wolf, or a judge that drifts | Never run on a timer; alerts only when a rate leaves its band; judges calibrated by the admin monthly and on every change, and one below 0.8 agreement drops to advisory (`ARCHITECTURE.md` §23.4, §23.5) |
 | A phone lost or stolen | Tokens in the Keychain on that device only; five-minute access tokens; the data routes only read, apart from corrections to the figures a kind marks editable, each an audit row; status and epoch re-checked on every call and on the stream; the owner signs that device out or pauses the member (MA-102); the optional Face ID lock (MA-171); every admin action needs the second check |
 | A change meant for dev reaches prod | Separate state per environment; the developer role denied on `env=prod`; prod applied only by CI after your approval; the nightly drift check |
 | An import writes bad history into prod | Dry run first; fingerprints stop duplicates; Confirm with the second check; rollback by import id; tested on dev first |

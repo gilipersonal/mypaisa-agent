@@ -139,9 +139,12 @@ they move with Anthropic's releases; the first set is below.
 above; the system prompt, tool list and rubric cached; the monthly Claude ceiling ($160 in prod and $40 in dev, the Max 20x plan's $200 credit, moved by the admin) with its ladder and guards; a refusal or an error falls back to
 the plain-template brief, so a message is never missed because of a model. Before anything is sent, every number in
 the text is checked against that turn's tool results; a number with no source fails the message, which is
-regenerated once and then sent as the plain facts. Search results and fetched pages reach the model marked as
-untrusted text and are never followed as instructions; there is no tool that can spend money beyond a search query,
-delete data, or message anyone but the household's members in the chat.
+regenerated once and then sent as the plain facts. Every third-party text (a file, a statement, a fetched page, a
+search result, a news item) reaches the model only as a labelled tool result and is never followed as an instruction;
+files are read by an extractor with no tools, and a run that has read such text loses every tool that sends data out.
+Every tool call passes a policy gate in code against the agent's manifest; there is no tool that can spend money
+beyond a search query, delete data, or message anyone but the household's members in the chat (`ARCHITECTURE.md`
+§23.2).
 
 Web search and web fetch are Anthropic's server-side tools, with citations, at $10 per 1,000 searches; no separate
 search provider is needed. The nightly sentiment scoring goes through the Message Batches API at half price, since
@@ -149,7 +152,21 @@ latency does not matter overnight.
 
 ### How the agent is evaluated
 
-MyPaisa grades itself, and the tests hold the code to it. Planned in phases 13 and 15 of `PLAN.md`:
+MyPaisa is guarded in code, tested on every change, watched live, and grades its own calls (`ARCHITECTURE.md` §23,
+MA-245). What it must never do is made impossible in code, not asked of the prompt: one manifest per agent and tool, a
+policy gate before every tool call, third-party text only as a labelled tool result, files read by an extractor with
+no tools, and every figure checked against the turn's tool results. Then:
+
+1. **Every change is tested before it merges.** Eval cases on the seed household, graded by code first, run on every
+   pull request: recorded replays always (T0, free), the affected cases live on dev's key when a prompt, tool, guard,
+   model route or kind changes (T1, at most $2 a run and $10 a month), and the full suite on a new model before it
+   reaches prod (T2). The golden set never runs on a timer: nothing it tests changes without a pull request.
+2. **Every live run is checked.** Code checks every run for free; every flagged run and a random 10% are judged
+   overnight on Haiku through Batches; only a rate that leaves its band raises an alert. Nothing leaves the AWS account.
+3. **The admin calibrates the judges,** monthly and on every change; a judge that drifts below 0.8 agreement drops to
+   advisory, and a real failure becomes a permanent case.
+
+The market side grades its own calls, planned in phases 13 and 15 of `PLAN.md`:
 
 1. **Forecasts are logged and graded.** Every 1-month range the signals produce is stored with the price at the
    time. When the month ends the outcome is recorded: did the 80% range cover it, and was `P(fall > 5%)` calibrated.
@@ -161,12 +178,13 @@ MyPaisa grades itself, and the tests hold the code to it. Planned in phases 13 a
 3. **Decisions are logged.** "I acted" on a message writes a decision record. The review compares what was done with
    what the signals said, which is the only honest way to learn whether MyPaisa helps.
 4. **The words are tested on recordings.** Unit tests replay recorded Claude responses, so rendering is
-   deterministic and never reaches a model. The number validator has its own tests, with an invented figure it must
-   catch.
+   deterministic and never reaches a model. The figure check (MA-248) has its own tests, with an invented, a
+   mis-currencied and a mis-scaled figure it must catch.
 5. **Sentiment is spot-checked.** Phase 14 ends with 30 scored articles read by a person against their scores before
    the index is allowed to tilt a call.
 
-Live-model runs are on request only and print their estimate first.
+Unit tests never reach a model; live-model runs are the eval tiers above, capped, and a run that would pass its cap
+asks first with its estimate.
 
 ## Prerequisites
 
@@ -443,8 +461,9 @@ They cover eslint and Jest for the shell, XCUITest for the flows, snapshot tests
 and dark at Large and AX5 text, and `performAccessibilityAudit()` in every screen's UI test. The
 `ios/PERFORMANCE.md` benches run on the phone, before a change and after it, not in CI.
 
-Live checks run on request only and say what they cost first: a brief against the live API
-(`scripts/run.sh dev brief --live`) and the sentiment spot-check set (`scripts/eval.sh sentiment`).
+Live checks run on request and say what they cost first: a brief against the live API
+(`scripts/run.sh dev brief --live`) and the sentiment spot-check set (`scripts/eval.sh sentiment`). The eval
+tiers are the exception, run by CI on the changes that need them and capped (`ARCHITECTURE.md` §23.3).
 
 ## Working on AWS
 

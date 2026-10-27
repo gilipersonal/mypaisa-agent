@@ -185,6 +185,17 @@ def arch_sections() -> dict[str, str]:
     return out
 
 
+def arch_text(num: str) -> str:
+    """The body of ARCHITECTURE.md's top-level section NUM, without its own heading, up to the next one."""
+    text = (ROOT / "ARCHITECTURE.md").read_text()
+    m = re.search(rf"(?m)^## {re.escape(num)}\. .*\n", text)
+    if not m:
+        return ""
+    rest = text[m.end():]
+    end = re.search(r"(?m)^## \d+\. ", rest)
+    return (rest[:end.start()] if end else rest).strip().rstrip("-").strip()
+
+
 def plan_sections() -> dict[int, str]:
     """PLAN.md's phase sections, without their heading, by phase number."""
     text, out = PLAN.read_text(), {}
@@ -364,6 +375,7 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
     out.append(("screens", "Screens, area by area", "hub"))
     out += [(f"screens-{a[0]}", f"Screens · {a[1]}", "screens") for a in AREAS]
     out += [("decisions", "Design decisions and the UX choices kept", "hub"),
+            ("guardrails", "Guardrails and evals: how the agents are guarded and tested", "hub"),
             ("explainers", "Explainers, the prototype and the architecture drawings", "hub"),
             ("sync", "How the plan, Jira, the designs, Confluence and the code stay in step", "hub")]
     return out
@@ -734,6 +746,8 @@ def render_hub(ctx: Ctx) -> str:
             ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey and Market Agent pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
             ("sync", "Staying in step", "How this space, Jira, the boards, the plan and the code are kept the same.", "#F4F5F7", ":link:")))
         + "</section>",
+        cpanel("#E3FCEF", ":shield:", f"<h3>{ctx.link('guardrails', 'Guardrails and evals')}</h3><p>How every agent is guarded in code, "
+               "tested on every change and never on a calendar, watched live, and how the admin calibrates the judges (MA-245).</p>"),
         "<h2>🔗 The records behind it</h2><ul>"
         f'<li><strong>Jira</strong>: <a href="{JIRA}/jira/software/projects/MA/boards">project MA</a>, a phase epic per phase; '
         + jql_link("project = MA AND issuetype = Epic ORDER BY duedate", "the epics by due date") + "</li>"
@@ -978,6 +992,25 @@ def render_sync(ctx: Ctx) -> str:
     return "".join(out) + footer(ctx)
 
 
+def render_guardrails(ctx: Ctx) -> str:
+    """ARCHITECTURE 23 as written, with the stories that build it from the trace."""
+    items = [i for i in ctx.items if any(a == "23" or a.startswith("23.") for a in i.get("arch") or [])]
+    items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
+    out = [
+        cpanel("#E3FCEF", ":shield:", '<p>Arun, 27 Oct 2026 (MA-245): guardrails and an evals strategy for agents that are highly dynamic and will '
+               "grow. What an agent must never do is made impossible in code; every change is tested before it merges, never on a timer; every live "
+               "run is checked by code and a few are judged overnight; the admin calibrates the judges monthly and on every change. "
+               f'The source is {arch_link("23", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the research and its '
+               f'sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §5.</p>'),
+        toc(),
+        md(arch_text("23"), shift=-1),
+        "<h2>🧩 The stories, phase by phase</h2><p>Every story that cites §23 in the trace, with its estimate, status and design.</p>",
+        story_rows(ctx, items),
+        jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
+    ]
+    return "".join(out) + footer(ctx)
+
+
 BLOCK_END = re.compile(r"(</(?:p|h[1-6]|table|thead|tbody|tr|ul|ol|li|div|figure|section|blockquote|pre)>)")
 
 
@@ -1001,7 +1034,7 @@ def render_body(ctx: Ctx, slug_: str) -> str:
         return render_screens(ctx)
     if slug_.startswith("screens-"):
         return render_area(ctx, next(a for a in AREAS if f"screens-{a[0]}" == slug_))
-    return {"decisions": render_decisions, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
+    return {"decisions": render_decisions, "guardrails": render_guardrails, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
 
 
 # ---------- check and the commands ----------

@@ -1,4 +1,4 @@
-<div data-type="panel-custom" data-icon=":chart_with_upwards_trend:" data-color="#DEEBFF"><p><strong>📰 The market side</strong> · epic <a href="https://duttaarun2015.atlassian.net/browse/MA-12" data-card-appearance="inline"></a> · <span data-type="status" data-color="neutral">Not started</span> · <time datetime="2027-11-18">Thu 18 Nov 2027</time> to <time datetime="2027-12-07">Tue 7 Dec 2027</time></p>
+<div data-type="panel-custom" data-icon=":chart_with_upwards_trend:" data-color="#DEEBFF"><p><strong>📰 The market side</strong> · epic <a href="https://duttaarun2015.atlassian.net/browse/MA-12" data-card-appearance="inline"></a> · <span data-type="status" data-color="neutral">Not started</span> · <time datetime="2027-12-16">Thu 16 Dec 2027</time> to <time datetime="2028-01-13">Thu 13 Jan 2028</time></p>
 <p>17 build days, 14 working days · 9 stories, 8 with screens</p>
 </div>
 <div data-type="panel-success"><p><strong>Exit demo.</strong> two weeks of briefs; no alert fires twice in its cooldown; a layman reads the top of a card and understands it without the bottom.</p>
@@ -11,7 +11,7 @@
 </div>
 <div data-type="multi-bodied-extension" data-extension-key="native-tabs" data-extension-type="com.atlassian.confluence.native" data-parameters='{&quot;tabs&quot;: [{&quot;id&quot;: &quot;tab1&quot;, &quot;title&quot;: &quot;Stories&quot;}, {&quot;id&quot;: &quot;tab2&quot;, &quot;title&quot;: &quot;Screens&quot;}, {&quot;id&quot;: &quot;tab3&quot;, &quot;title&quot;: &quot;At every door&quot;}, {&quot;id&quot;: &quot;tab4&quot;, &quot;title&quot;: &quot;The plan&quot;}, {&quot;id&quot;: &quot;tab5&quot;, &quot;title&quot;: &quot;Architecture&quot;}, {&quot;id&quot;: &quot;tab6&quot;, &quot;title&quot;: &quot;Live in Jira&quot;}]}'><div data-type="extension-frame"><table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
 </thead>
-<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-54" data-card-appearance="inline"></a></td><td>The Anthropic client routes, caches and refuses to let Claude invent a number</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§1, §8</td></tr>
+<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-54" data-card-appearance="inline"></a></td><td>The Anthropic client routes, caches and refuses to let Claude invent a number</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§1, §8, §23.2</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-55" data-card-appearance="inline"></a></td><td>Design the morning brief, evening wrap and alert cards</td><td>Story</td><td>1</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>3</td><td>§9.2</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-56" data-card-appearance="inline"></a></td><td>Design the chart house style shared by the chat&#x27;s cards and the dashboard, in Swift Charts</td><td>Story</td><td>1</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>1</td><td>§9.1, §9.3</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-57" data-card-appearance="inline"></a></td><td>The morning brief and evening wrap arrive as cards, with a Technical section and glossary</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>2</td><td>§9.2, §11</td></tr>
@@ -44,13 +44,13 @@
 </table>
 </div>
 <div data-type="extension-frame"><p>Claude starts writing on top of numbers that already work.</p>
-<ul><li>Anthropic client with the key from SSM, model routing, caching, refusal fallback, number validator.</li>
+<ul><li>Anthropic client with the key from SSM, model routing, caching, refusal fallback; briefs, wraps, alerts and cards through the figure check the chat has had since phase 1 (MA-54, MA-248).</li>
 <li>Morning brief and evening wrap as cards, and by push; the Technical section on every card; <code>/technical</code> mode; the glossary on a tap.</li>
 <li>Charts: one house style in Swift Charts (MA-56); holding history with stance horizon shaded; portfolio curve; drawn in the card from the engine&#x27;s series.</li>
 <li>Alert tiers, cooldowns, weekly red budget, quiet hours, Haiku repeat filter; alert tiers as push interruption levels (red time-sensitive with sound, amber passive); <code>I acted</code> and the decision log; dead man&#x27;s switch and error alarms to the owner, in the app and by push.</li>
 <li>The ladder&#x27;s lower steps (MA-114): at 85% of the ceiling the debate is skipped, the Saturday review drops to Sonnet, &quot;Why?&quot; is limited to three searches a day and sentiment scoring pauses; at 95% chat runs on Haiku and the brief, wrap and alerts go out as templates; alerts are never dropped.</li>
 </ul>
-<p><strong>Tests:</strong> validator catches an invented number; alert state machine with frozen time; spend driven through each step of the ladder with frozen time, checking which calls are made and on which model; card rendering from recorded Claude responses; chart snapshot tests.</p>
+<p><strong>Tests:</strong> the figure check catching an invented number in a brief and a card; alert state machine with frozen time; spend driven through each step of the ladder with frozen time, checking which calls are made and on which model; card rendering from recorded Claude responses; chart snapshot tests.</p>
 <p><strong>Exit:</strong> two weeks of briefs; no alert fires twice in its cooldown; a layman reads the top of a card and understands it without the bottom.</p>
 <p><strong>Cost:</strong> about £5 a month.</p>
 </div>
@@ -62,6 +62,7 @@
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#10-observability-what-the-agent-did-what-it-cost-and-one-trace-from-the-door-to-the-model">§10</a> Observability: what the agent did, what it cost, and one trace from the door to the model</li>
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#11-notifications-news-calls">§11</a> Notifications, news, calls</li>
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#151-the-claude-budget-and-its-ceiling">§15.1</a> The Claude budget and its ceiling</li>
+<li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#232-guardrails-strongest-first">§23.2</a> Guardrails, strongest first</li>
 </ul>
 </div>
 <div data-type="extension-frame"><div data-type="extension" data-extension-key="jira" data-extension-type="com.atlassian.confluence.macro.core" data-layout="wide" data-parameters='{&quot;macroParams&quot;: {&quot;jqlQuery&quot;: {&quot;value&quot;: &quot;parent = MA-12 ORDER BY key&quot;}, &quot;showSummary&quot;: {&quot;value&quot;: &quot;true&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Jira&quot;}}'></div>

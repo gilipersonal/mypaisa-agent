@@ -257,12 +257,13 @@
    "status": "To Do",
    "labels": [],
    "arch": [
-    "18.4"
+    "18.4",
+    "23.3"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "CI also runs the evals: T0 on every pull request, T1 when a prompt, tool, guard, model route or kind changes, T2 on a model change (MA-246, MA-250, MA-251; ARCHITECTURE 23.3)."
   },
   {
    "key": "MA-26",
@@ -892,12 +893,13 @@
    "labels": [],
    "arch": [
     "1",
-    "8"
+    "8",
+    "23.2"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Updated 27 Oct 2026 (MA-245): the chat's half of the number validator moved to phase 1 as MA-248; this story reuses it for briefs, wraps, alerts and cards."
   },
   {
    "key": "MA-55",
@@ -1294,12 +1296,13 @@
    "labels": [],
    "arch": [
     "8",
-    "14"
+    "14",
+    "23.2"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Updated 27 Oct 2026 (MA-245): web text follows the untrusted-text rule of ARCHITECTURE 23.2, the policy gate (MA-247) narrows a run that has read it, and its test is a permanent safety case."
   },
   {
    "key": "MA-69",
@@ -1891,12 +1894,13 @@
    "labels": [],
    "arch": [
     "1",
-    "6.3"
+    "6.3",
+    "23.3"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Updated 27 Oct 2026 (MA-245): the review's proof is kept as a permanent case in the safety suite, beside the chat's refusal of \"sell everything\" (MA-249)."
   },
   {
    "key": "MA-93",
@@ -3069,12 +3073,13 @@
    "labels": [],
    "arch": [
     "20.4",
-    "20.6"
+    "20.6",
+    "23.6"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Daily on purpose: its ground truth, the day's prices, is new every day, so it is online outcome scoring, not an offline eval on a timer (ARCHITECTURE 23.6, MA-245)."
   },
   {
    "key": "MA-133",
@@ -3085,12 +3090,13 @@
    "status": "To Do",
    "labels": [],
    "arch": [
-    "20.4"
+    "20.4",
+    "23.6"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Daily on purpose, as MA-132 (ARCHITECTURE 23.6, MA-245)."
   },
   {
    "key": "MA-134",
@@ -4690,12 +4696,13 @@
    "labels": [],
    "arch": [
     "13",
-    "18.1"
+    "18.1",
+    "23.3"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Its recorded conversations are the evals' T0 replays (MA-246, ARCHITECTURE 23.3)."
   },
   {
    "key": "MA-195",
@@ -6416,6 +6423,228 @@
    "design": "none",
    "boards": [],
    "notes": "Arun, 27 Oct 2026: \"I want to generate another html artifact this time it needs to technical architecture diagram using animations and logos of components like aws and anthropic, and it should highlight the end to end flow of my paisa. It should detail out all the agents, the kind of agents they are and the models they will use (opus, sonnet, haiku)\", then \"All good, lets push and merge this to main\". Published at https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9; source docs/design/architecture-v4.html. Drawn and checked in this change, so its estimate is 0 and no date moves."
+  },
+  {
+   "key": "MA-245",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The architecture records how the agents are guarded and evaluated: guardrails in code, evals gated on change, every live run checked, judges calibrated by the admin",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "23",
+    "8",
+    "10",
+    "14",
+    "15.1",
+    "16",
+    "18.4",
+    "20.4",
+    "20.7"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 27 Oct 2026: guardrails and an evals strategy for agents that are highly dynamic and will grow; daily offline evals cost money, repeat the same score and breed alert fatigue. His choices the same day: judges calibrated monthly and on every change, production transcripts kept in our AWS account, Inspect AI, live evals on pull requests capped at $10 a month and $2 a run. Docs only: ARCHITECTURE 23 (new) and 4.1, 8, 10.1, 10.4, 14, 15.1, 16, 18.4, 20.4, 20.7; PLAN's phases 0, 1, 2, 8 and 18, the risks and the definition of done; TECH_STACK; README; RESEARCH 5; the trace, the roadmap and a Confluence page of its own; the descriptions of MA-54, MA-68 and MA-92."
+  },
+  {
+   "key": "MA-246",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "One manifest declares every agent and tool, an Inspect AI harness runs tagged eval cases on the local stack, and CI refuses a tool, agent, prompt or kind template with no cases",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.3",
+    "23.5",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-247",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "Every tool call passes a policy gate in code: allowed for this agent and member, arguments in range, inside the household, within the run's limits, and narrowed once untrusted text is read",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.2",
+    "8",
+    "4.5"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-248",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "Every figure the chat states is checked against that turn's tool results before it is sent",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.2",
+    "1",
+    "8"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "The chat's half of MA-54's number validator, brought forward from phase 11 so the chat never states an invented figure from the first phase it speaks (MA-245)."
+  },
+  {
+   "key": "MA-249",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "A trade, tax advice, another household's data or \"sell everything\" gets a plain refusal with the reason, and the red-team suite proves it",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.2",
+    "1",
+    "14"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-250",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "The chat's golden set, about 40 tasks on the synthetic household graded on the records they leave, runs live three times on every pull request that changes a prompt, a tool or the model, within a $2 cap",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.3",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-251",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "A model change waits for the full suite, five trials on the new model, before the release ships it",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.3",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-252",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "Every live run is checked by code, every flagged run and a random 10% are judged overnight, and only a rate that leaves its band raises an alert",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.4",
+    "10.1",
+    "10.6",
+    "15.2"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-253",
+   "type": "Story",
+   "epic": "MA-187",
+   "phase": 2,
+   "summary": "Uploaded files are read by a quarantined extractor with no tools, and poisoned statements and factsheets prove no instruction in a file reaches a tool",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.2",
+    "4.6",
+    "14"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-254",
+   "type": "Story",
+   "epic": "MA-187",
+   "phase": 2,
+   "summary": "Each kind's field spec generates its own draft cases, so a new kind or field is tested before the admin approves it",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.5",
+    "4.8"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
+  },
+  {
+   "key": "MA-255",
+   "type": "Story",
+   "epic": "MA-14",
+   "phase": 8,
+   "summary": "The admin labels a monthly sample of runs in the Admin center, each judge's agreement is measured, a drifting judge drops to advisory, and a failed run becomes a regression case",
+   "status": "To Do",
+   "labels": [
+    "design"
+   ],
+   "arch": [
+    "23.4",
+    "23.5",
+    "9.4"
+   ],
+   "ui": true,
+   "design": "todo",
+   "boards": [],
+   "notes": "Planned 27 Oct 2026 (MA-245) with no board yet: the Admin center's Evals page (the month's sample, a run's transcript and verdicts, pass or fail per failure mode with a critique, each judge's agreement, the eval caps) is drawn with /design-first, at both doors, before the story starts."
+  },
+  {
+   "key": "MA-256",
+   "type": "Story",
+   "epic": "MA-127",
+   "phase": 18,
+   "summary": "Each team agent has its own tools and safety suite, and a change it proposes to a prompt, rule or model carries its eval results to the admin's approval",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "23.5",
+    "20.2",
+    "20.3"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": ""
   }
  ],
  "others": [
