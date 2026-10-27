@@ -88,13 +88,22 @@
    "why": "The lock screen as iOS draws it: the clock's 92 pt numerals have a line box that reaches into the date above; the glyphs keep their gap."
   },
   {
-   "board": "iPhone v4 · Assets and debts.dc.html|Web v4 · Assets and debts.dc.html",
+   "board": "iPhone v4 · Assets and debts.dc.html",
    "types": [
     "label-thinned-as-drawn"
    ],
-   "frames": "Car loan",
+   "frames": "^iPhone · Car loan · (light|dark)$",
    "text": "^2026$",
-   "why": "The Car loan axis draws 2026 on Mar 2025 (0.2 px apart on the iPhone, overlapping on the web); motion.js thins it, so Mar 2025 reads whole. Redrawing the axis's labels in Claude Design would remove this allowance."
+   "why": "The Car loan axis draws 2026 on Mar 2025 (0.2 px apart); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels in Claude Design would remove this allowance."
+  },
+  {
+   "board": "Web v4 · Assets and debts.dc.html",
+   "types": [
+    "label-thinned-as-drawn"
+   ],
+   "frames": "^Browser · Car loan, phone · (Light|Dark)$",
+   "text": "^2026$",
+   "why": "The Car loan axis draws 2026 on Mar 2025 (overlapping); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels in Claude Design would remove this allowance."
   },
   {
    "board": "Prototype v4.dc.html",
