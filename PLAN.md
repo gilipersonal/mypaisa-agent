@@ -27,7 +27,7 @@ figures by hand, no creation." So:
   comes first, as phases 2 to 9, and the market side follows as phases 10 to
   20, as already planned.
 
-Status: planning. Nothing is built. The architecture is drawn in Lucid (seven
+Status: planning. Nothing is built. The architecture is drawn in Lucid (eight
 AWS views and a sequence, linked from `ARCHITECTURE.md`), and two pages walk
 through the flows end to end:
 [MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7) and
@@ -146,6 +146,12 @@ Claude's:
   developer role with its explicit deny on `env=prod`; the zone and the
   certificate looked up by name (`ARCHITECTURE.md` §18.2); AWS Budgets at £75
   as the backstop behind the app's £50 cap (`ARCHITECTURE.md` §15.2, MA-137).
+- **The watch tower (MA-231, `ARCHITECTURE.md` §10):** each environment's
+  log groups and their retention, Transaction Search and Application Signals
+  (dev first; their first month measured and put to you before prod), the
+  dashboard with its eight panels, the saved queries, the alarm topic and the
+  alarms that need no code, in `infra/modules/mypaisa/observability.tf`,
+  before the first Lambda runs.
 - **Secrets out of state (MA-159, done):** every secret's SSM parameter made
   by Terraform with a write-only placeholder (`value_wo`, `value_wo_version`;
   Terraform 1.11 or later, `hashicorp/aws` 5.87 or later), then overwritten by
@@ -255,6 +261,11 @@ Claude's:
   from the repo; every story estimated in `docs/roadmap.json`, each phase
   epic's due date set from it; and the plan-sync check widened to Confluence
   and the code, with this repo's hooks.
+- **Tracing and LLM observability, recorded (MA-230, MA-236):** one trace
+  from the door through the api, the queues and the agent to the model and
+  back, OpenTelemetry on every Lambda, model and tool spans in the open
+  conventions, fifteen metrics, the alarms and what is never recorded
+  (`ARCHITECTURE.md` §10); the Lucid page that draws it (MA-236).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -263,7 +274,9 @@ and a plan for both environments; the web shell's Playwright screenshots at
 390 and 1440 in both themes, with the association file served, not swallowed
 by the fallback (MA-194); the iOS shell's Jest and XCUITest runs and its first
 bench (MA-165, MA-166); the scripted journey end to end on the local stack at
-both doors (MA-198); the seed refusing to run against prod (MA-110).
+both doors (MA-198); the seed refusing to run against prod (MA-110); the dev
+dashboard rendering with every widget bound, and a test invocation of the
+skeleton Lambda showing in Transaction Search within five minutes (MA-231).
 
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
 the gates run on every PR, the web gates on every PR that touches `web/` and
@@ -276,9 +289,11 @@ shells answer at `dashboard-dev.mypaisapp.com`, from TestFlight (MyPaisa Dev
 builds in CI and installs from it) and on the laptop, each with the seed
 household loaded. Prod's go in after prod's first apply (the release
 workflow, MA-107; which phase holds it is open on MA-107, MA-108 and MA-142),
-by the identity MA-21, MA-26, MA-142 and MA-143 name.
+by the identity MA-21, MA-26, MA-142 and MA-143 name. Dev's dashboard, alarms
+and saved queries exist, and a test invocation shows as a trace (MA-231).
 
-**Cost:** £0 in AWS; the Apple Developer Program, $99 a year (MA-162).
+**Cost:** pennies in AWS (dev's watch tower while it sleeps, `ARCHITECTURE.md`
+§10.9); the Apple Developer Program, $99 a year (MA-162).
 
 ---
 
@@ -383,10 +398,29 @@ arrives from phase 2.
   and one run's detail: its trigger, its steps, each tool call with its time,
   what it proposed, its tokens and its cost, every figure from the
   `RunRecord`.
-- **Observability from the first Lambda (MA-29):** a `RunRecord` per run with
-  model calls, tokens, cost and tool calls; Powertools Logger, Tracer and
-  Metrics wired in the handler base; the error alarm per function to the
-  owner.
+- **Observability from the first Lambda (MA-29, `ARCHITECTURE.md` §10):** a
+  `RunRecord` per run with its trace id, model calls, tokens, cost and tool
+  calls; Powertools Logger and Metrics and OpenTelemetry (the AWS Lambda
+  Layer for OpenTelemetry in the image) wired in the handler base, with the
+  correlation keys on every log line and span; the error alarm per function
+  to the owner.
+- **One trace from the door to the model and back (MA-232):** both doors send
+  a `traceparent` with every action; the api, the queues, the agent, the
+  sender, the stream and push continue it, so one message is one trace from
+  the tap to the push; every `StreamEvent` and push payload carries its
+  `run_id` and `trace_id`; the leak test proves no prompt, figure, name or
+  token reaches CloudWatch, and the dev smoke test asserts the trace.
+- **Every model call a span (MA-233):** one wrapper on every Anthropic call
+  sets the open GenAI attributes and MyPaisa's own (cost, feature, agent, the
+  ladder's step, cache hit, time to the first token, refusal, fallback), and
+  each tool call is a span with its outcome and sizes; the model panel shows
+  spend against the ceiling, tokens, the cache-read share, refusals and
+  fallbacks, with their alarms; the spans appear in CloudWatch's generative
+  AI views.
+- **The doors report what they saw (MA-234):** the time to the first word, a
+  resume or resync, an api error, a crash or a hang, each with its trace id
+  and no content, in one batch to `POST /v1/telemetry`; the client panel and
+  its alarms.
 - **The Claude meter and ceiling (MA-113, `ARCHITECTURE.md` §15.1):** every
   model call costed from the API's usage counts into the cycle's
   `SpendMonth` row, in dollars with pounds beside them; `BudgetSettings`
@@ -446,7 +480,12 @@ a concurrent add, the 100% stop and each guard, and a cycle rolling over on
 the renewal day; the stored history replaying byte for byte, a conversation
 closing at thirty minutes but not while a question waits, and
 `cache_read_input_tokens` above zero on the second message; a `RunRecord` on
-success and on failure, shown in Activity; in the app, Jest for the shell and
+success and on failure, shown in Activity; one message's trace from `api` to
+`sender` through the X-Ray API in dev, with the model, tool and push spans on
+it (MA-232); the leak test, no prompt, reply, amount, name, token or account
+number in any span, log line or metric, in CI; a model call's span costed to
+the cent from a recorded `usage` block (MA-233); a telemetry batch over the
+limit, or with content, refused (MA-234); in the app, Jest for the shell and
 XCUITest, snapshot and accessibility checks of every screen and card (iPhone
 and iPad, light and dark, Large and AX5, privacy on) (MA-166); in the web
 app, svelte-check, vitest, Playwright at 390 and 1440 in both themes, an axe
@@ -457,13 +496,18 @@ with your own Apple or Google account, and in a browser on the laptop and on
 a phone; each of you talks to MyPaisa at all three doors, and a reply streams
 in word by word at every open door; a conversation started on the laptop
 continues on the phone; Activity shows each run's steps, the tools it called,
-its tokens and its cost; a reply that finishes while the app is closed
+its tokens and its cost, and the trace of any message, from the tap to the
+push, opens from its run id in CloudWatch with no prompt, figure or name in
+it; a reply that finishes while the app is closed
 arrives as a push with no amount on the lock screen; each of you is a Cognito
 user in prod; MyPaisa Dev runs on seeded data from TestFlight, and against
 the laptop from the simulator; a merge reaches prod, and MyPaisa reaches your
 phones, only after your approval.
 
-**Cost:** about £0.50 (a few Claude calls); the stream inside the free tier
+**Cost:** about £0.50 (a few Claude calls), and about £2.50 a month of
+CloudWatch in prod for the spans, Application Signals and the metrics and
+alarms past the free ten (`ARCHITECTURE.md` §10.9), measured in dev first; the
+stream inside the free tier
 at about three open hours a day for four members (one leader tab, closed
 when hidden; about $0.012 an open hour at 256 MB), priced by the spike and
 put to you before any apply (MA-195); the Apple Developer Program from phase
@@ -1265,6 +1309,10 @@ one household and its one admin, the owner.
   heartbeats from every agent; dead-lettered work
   replayed on its own once its cause is healthy, at most three times, then an
   incident (MA-146).
+- **E7, one trace (MA-235).** The daily run is one trace from the tick to
+  the brief's push: Step Functions and the event bus carry it, each agent is
+  a service on the map, a replay links to the run it repeats, an incident
+  names its trace, and every heartbeat is a metric (`ARCHITECTURE.md` §10.8).
 - **E8, budgets for the team (MA-136).** Each agent's share of the plan's
   $200 Claude credit, metered by agent; paid feeds recorded as subscriptions
   against the AWS and others cap of MA-137.
@@ -1278,7 +1326,8 @@ is refused; an agent cannot move a setting outside its band; grading never
 runs before a horizon; calibration's daily step limit and rollback;
 a challenger that does not beat the current version is never proposed;
 injected failures at each pipeline step recover idempotently or open an
-incident; metering by agent.
+incident, and the trace shows the step and the incident names it (MA-235);
+metering by agent.
 
 **Exit:** a month in which every change was either inside its band or
 approved by the admin, every prediction was graded, calibration stayed
@@ -1403,27 +1452,27 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 31 (and 3 of yours) | 25 | Mon 2 Nov 2026 | Fri 4 Dec 2026 |
-| 1 Talk: sign in and chat with the agent at every door | 81 (and 0.5 of yours) | 65 | Mon 7 Dec 2026 | Tue 16 Mar 2027 |
-| 2 The first record: one dynamic structure, one write path | 45 | 36 | Wed 17 Mar 2027 | Mon 10 May 2027 |
-| 3 Deposits, policies and two currencies | 18 | 15 | Tue 11 May 2027 | Tue 1 Jun 2027 |
-| 4 Debts and check-ins | 19 | 16 | Wed 2 Jun 2027 | Wed 23 Jun 2027 |
-| 5 Investments, priced | 23 | 19 | Thu 24 Jun 2027 | Tue 20 Jul 2027 |
-| 6 Budget: statements and monthly check-ins | 12 | 10 | Wed 21 Jul 2027 | Tue 3 Aug 2027 |
-| 7 Projection | 18 | 15 | Wed 4 Aug 2027 | Tue 24 Aug 2027 |
-| 8 Audit, search and the Admin center at every door | 24 | 20 | Wed 25 Aug 2027 | Wed 22 Sep 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 23 Sep 2027 | Fri 8 Oct 2027 |
-| 10 Prices and the engine | 22 | 18 | Mon 11 Oct 2027 | Wed 3 Nov 2027 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Thu 4 Nov 2027 | Tue 23 Nov 2027 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Wed 24 Nov 2027 | Wed 15 Dec 2027 |
-| 13 Track record and calibration | 13 | 11 | Thu 16 Dec 2027 | Mon 10 Jan 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 11 Jan 2028 | Wed 19 Jan 2028 |
-| 15 Stances go live | 5 | 4 | Thu 20 Jan 2028 | Tue 25 Jan 2028 |
+| 0 Foundations at every door | 33.5 (and 3 of yours) | 27 | Mon 2 Nov 2026 | Tue 8 Dec 2026 |
+| 1 Talk: sign in and chat with the agent at every door | 88.5 (and 0.5 of yours) | 71 | Wed 9 Dec 2026 | Tue 30 Mar 2027 |
+| 2 The first record: one dynamic structure, one write path | 45 | 36 | Wed 31 Mar 2027 | Thu 20 May 2027 |
+| 3 Deposits, policies and two currencies | 18 | 15 | Fri 21 May 2027 | Fri 11 Jun 2027 |
+| 4 Debts and check-ins | 19 | 16 | Mon 14 Jun 2027 | Mon 5 Jul 2027 |
+| 5 Investments, priced | 23 | 19 | Tue 6 Jul 2027 | Fri 30 Jul 2027 |
+| 6 Budget: statements and monthly check-ins | 12 | 10 | Mon 2 Aug 2027 | Fri 13 Aug 2027 |
+| 7 Projection | 18 | 15 | Mon 16 Aug 2027 | Mon 6 Sep 2027 |
+| 8 Audit, search and the Admin center at every door | 24 | 20 | Tue 7 Sep 2027 | Mon 4 Oct 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Tue 5 Oct 2027 | Wed 20 Oct 2027 |
+| 10 Prices and the engine | 22 | 18 | Thu 21 Oct 2027 | Mon 15 Nov 2027 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Tue 16 Nov 2027 | Fri 3 Dec 2027 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Mon 6 Dec 2027 | Wed 5 Jan 2028 |
+| 13 Track record and calibration | 13 | 11 | Thu 6 Jan 2028 | Thu 20 Jan 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Fri 21 Jan 2028 | Mon 31 Jan 2028 |
+| 15 Stances go live | 5 | 4 | Tue 1 Feb 2028 | Fri 4 Feb 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Wed 26 Jan 2028 | Wed 1 Mar 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 23 | 19 | Thu 2 Mar 2028 | Tue 28 Mar 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Wed 29 Mar 2028 | Thu 13 Apr 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 18 Apr 2028 | Thu 27 Apr 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Mon 7 Feb 2028 | Mon 13 Mar 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Tue 14 Mar 2028 | Mon 10 Apr 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Tue 11 Apr 2028 | Fri 28 Apr 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 2 May 2028 | Thu 11 May 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you
@@ -1464,7 +1513,8 @@ LCP ≤ 2.5 s on a mid phone, 60 fps scroll), and so do the iOS benches in
 `PERFORMANCE.md` (no dropped frames at 120 Hz); no secret anywhere; cost
 stated when a paid API is touched; every new write path, the in-place
 correction included, produces its event and its audit row, and every new
-handler writes its `RunRecord`, both covered by tests.
+handler writes its `RunRecord` and continues the trace it was handed, both
+covered by tests, with the leak test green (`ARCHITECTURE.md` §10.3).
 
 ---
 
@@ -1500,5 +1550,6 @@ handler writes its `RunRecord`, both covered by tests.
 | A phone lost or stolen | Tokens in the Keychain on that device only; five-minute access tokens; the data routes only read, apart from corrections to the figures a kind marks editable, each an audit row; status and epoch re-checked on every call and on the stream; the owner signs that device out or pauses the member (MA-102); the optional Face ID lock (MA-171); every admin action needs the second check |
 | A change meant for dev reaches prod | Separate state per environment; the developer role denied on `env=prod`; prod applied only by CI after your approval; the nightly drift check |
 | An import writes bad history into prod | Dry run first; fingerprints stop duplicates; Confirm with the second check; rollback by import id; tested on dev first |
-| Observability that costs more than the app | Ten metrics, one dashboard, sampled traces, fourteen-day logs, `RunRecord` rows that expire after ninety days |
+| Observability that costs more than the app | Fifteen metrics with no dimensions, one dashboard, fourteen-day logs, thirty-day spans at $0.35 per GB with an ingestion alarm, `RunRecord` rows that expire after ninety days; about £2.50 a month in prod, dev measured first (`ARCHITECTURE.md` §10.9) |
+| A prompt or a figure in CloudWatch | Nothing of the conversation leaves DynamoDB: no prompt, reply, figure, name or token on any span, log line or metric; member ids hashed; the leak test in CI (MA-232); dev's capture of the synthetic household behind a setting prod refuses (§10.4) |
 | OIDC trust mismatch on first deploy | Pin this repository's ids; read CloudTrail |

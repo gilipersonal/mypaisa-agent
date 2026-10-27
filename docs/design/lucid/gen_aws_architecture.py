@@ -1,6 +1,6 @@
 """Build the MyPaisa Agent AWS architecture document (Lucid Standard Import JSON), one page per view.
 
-MA-186 (v4), 26 Oct 2026, drawn here by MA-225. The member has two doors, each with the chat, the dashboard and the
+MA-186 (v4), 26 Oct 2026, drawn here by MA-225; view 9, one trace from the door to the model, by MA-236. The member has two doors, each with the chat, the dashboard and the
 Admin center: the iOS app, MyPaisa, for iPhone, iPad and a foldable (a React Native shell with a native SwiftUI core),
 and the web app, a SvelteKit 3 PWA at dashboard(-dev).mypaisapp.com, whose site also serves the iOS app's
 apple-app-site-association file and the /join invite page. Both doors call only the api host,
@@ -626,6 +626,67 @@ note over out, stream : A device with no fresh Presence gets Apple push or Web P
 @enduml
 """
 
+
+# ---------------------------------------------------------------- 9 one trace from the door to the model (MA-230, MA-236)
+# ARCHITECTURE 10: a message is one trace from the finger to the push. The door makes a traceparent per action; API
+# Gateway, the api, the queues (the header rides each message), the agent, the model and tool spans, the sender, the
+# stream and push continue it, and nothing starts a fresh trace. The band below says where each signal is kept.
+p = Page("p9", "9 One trace, door to model", "One trace from the door to the model, and where each signal lives",
+         "OpenTelemetry on every Lambda (the AWS Lambda Layer for OpenTelemetry in the image) · X-Ray with Transaction Search and Application Signals · "
+         "Powertools for logs and metrics · no prompt, figure or name ever reaches CloudWatch · MA-230 to MA-236, MA-29 · coral = the trace · grey dashed = a signal written")
+p.box("t_door", 20, 360, 200, 150, "<b>iOS app or web app</b><br>a new traceparent<br>per tap or sentence<br>sent as a header", F_HOME, NAVY)
+p.box("t_claude", 1055, 150, 300, 110, "<b>Anthropic API</b><br>span chat &lt;model&gt;: tokens,<br>cache reads, cost, latency", F_OUT, AMBER)
+p.box("t_push", 1595, 150, 300, 110, "<b>Apple push · Web Push</b><br>a span each; the payload<br>carries run_id and trace_id", F_OUT, AMBER)
+p.box("t_door2", 2280, 150, 240, 340, "<b>Every open door</b><br>logs when the event<br>arrived, by run_id<br><br>its own events go to<br>POST /v1/telemetry<br>with the trace id,<br>never any content", F_HOME, NAVY)
+p.group("cl9", "cloud", 320, 300, 1900, 1300, "AWS · us-east-1 · prod (dev has the same, dev first)")
+p.icon("t_apigw", "apigw", 380, 380, "REST API<br>tracing on<br>access log: trace id")
+p.icon("t_api", "lambda", 620, 380, "api λ<br>adopts the trace<br>202 + x-mypaisa-trace-id")
+p.icon("t_in", "sqs", 880, 380, "updates.fifo<br>AWSTraceHeader<br>on the message")
+p.icon("t_agent", "lambda", 1160, 380, "agent λ<br>a span per model call,<br>tool, DynamoDB, S3")
+p.icon("t_out", "sqs", 1440, 380, "outbox.fifo<br>the same header")
+p.icon("t_send", "lambda", 1700, 380, "sender λ<br>append + push<br>are spans")
+p.icon("t_ws", "apigw", 1960, 380, "SSE stream<br>the send is a span<br>on the message's trace")
+p.icon("t_sched", "sched", 380, 720, "EventBridge Scheduler<br>the tick is the root")
+p.icon("t_work", "sqs", 880, 720, "work queue<br>carries the header")
+p.icon("t_worker", "lambda", 1160, 720, "worker λ<br>a chained job<br>continues it")
+p.icon("t_sfn", "sfn", 1440, 720, "Step Functions<br>daily run, tracing on<br>(phase 18)")
+p.icon("t_bus", "bus", 1700, 720, "EventBridge bus<br>events carry the header<br>(phase 18)")
+p.box("t_keys", 1960, 640, 230, 260,
+      "<b>On every line, span,<br>metric and RunRecord</b><br>trace_id · span_id · run_id<br>member (a hash)<br>client_message_id<br>conversation_id · job_id<br>env · build · version", F_NOTE, GREY)
+p.cont("sig", 360, 960, 1820, 420, "Where each signal lives", F_P12, PURPLE)
+p.icon("s_logs", "cw", 420, 1040, "CloudWatch Logs<br>14 days, JSON<br>no bodies")
+p.icon("s_spans", "cw", 700, 1040, "aws/spans · 30 days<br>Transaction Search<br>Application Signals")
+p.icon("s_genai", "cw", 980, 1040, "generative AI views<br>model calls · tokens<br>tools · latency")
+p.icon("s_metrics", "cw", 1260, 1040, "metrics MyPaisa/env<br>fifteen names<br>no dimensions")
+p.icon("s_run", "ddb", 1540, 1040, "RunRecord · 90 days<br>trace_id · build<br>the only content kept")
+p.icon("s_dash", "cw", 1820, 1040, "one dashboard<br>eight panels<br>saved queries")
+p.icon("s_alarm", "cw", 420, 1240, "alarms, with OK actions<br>one composite<br>spans' own ingestion")
+p.icon("s_sns", "sns", 700, 1240, "SNS admin-alerts<br>email from phase 0<br>chat + push from phase 1")
+p.box("s_never", 980, 1240, 1160, 110,
+      "<b>Never in CloudWatch:</b> a prompt, a reply, a figure, a name, an account number, a token, a file<br>"
+      "member ids hashed · the leak test in CI · dev alone may capture the synthetic household, behind a setting prod refuses",
+      F_FAIL, CRIMSON, dashed=True)
+p.line("t_door", "t_apigw", "traceparent", pa=R, pb=Lf)
+p.line("t_apigw", "t_api", "", pa=R, pb=Lf)
+p.line("t_api", "t_in", "", pa=R, pb=Lf)
+p.line("t_in", "t_agent", "", pa=R, pb=Lf)
+p.line("t_agent", "t_out", "", pa=R, pb=Lf)
+p.line("t_out", "t_send", "", pa=R, pb=Lf)
+p.line("t_send", "t_ws", "", pa=R, pb=Lf)
+p.line("t_ws", "t_door2", "SSE: run_id, trace_id", pa=R, pb=(0, (425 - 150) / 340))
+p.line("t_agent", "t_claude", "", color=AMBER, pa=T, pb=B)
+p.line("t_send", "t_push", "no fresh presence", pa=T, pb=B, lpos=0.35)
+p.line("t_push", "t_door2", "push", color=AMBER, pa=(1, 0.5), pb=(0, 55 / 340))
+p.line("t_sched", "t_work", "tick", pa=R, pb=Lf)
+p.line("t_work", "t_worker", "", pa=R, pb=Lf)
+p.line("t_sfn", "t_bus", "", pa=R, pb=Lf)
+p.line("t_worker", "t_sfn", "", pa=R, pb=Lf, dashed=True)
+p.line("t_api", "s_spans", "every Lambda", color=GREY, dashed=True, pa=(0.5, 1), pb=T, lpos=0.78)
+p.line("t_worker", "s_logs", "", color=GREY, dashed=True, pa=(0.3, 1), pb=T)
+p.line("t_worker", "s_run", "", color=GREY, dashed=True, pa=(0.7, 1), pb=T)
+p.line("s_spans", "s_genai", "", color=GREY, dashed=True, pa=R, pb=Lf)
+p.line("s_alarm", "s_sns", "", color=CRIMSON, dashed=True, pa=R, pb=Lf)
+pages.append(p)
 
 doc = {"version": 1, "pages": [pg.out() for pg in pages]}
 # ARCHITECTURE 4.6 and MA-148: a file's Document row (with its audit row) is written when it arrives, before its docs
