@@ -6337,7 +6337,16 @@
      "board": "B · Settings squircles, one vivid set for both themes"
     }
    ],
-   "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options drawn in MyPaisa DS v1, Kind icons, and reviewed; Arun picked B on 27 Oct 2026: \"I want to go for option set B for icons\" (A was recommended). The record is docs/design/reviews/MA-241/decision.md; its open questions (four glyphs, NPS's family, accounts, a kind proposed after release, the remaining states) are settled before the build, which puts B's nine pairs into tokens.css with their gate pairs and the tile on every record row at both doors."
+   "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options drawn in MyPaisa DS v1, Kind icons, and reviewed; Arun picked B on 27 Oct 2026: \"I want to go for option set B for icons\" (A was recommended). The record is docs/design/reviews/MA-241/decision.md; its open questions (four glyphs, NPS's family, accounts, a kind proposed after release, the remaining states) are settled before the build, which puts B's nine pairs into tokens.css with their gate pairs and the tile on every record row at both doors.",
+   "open": [
+    "Four glyphs that may mislead: personal loan's request_quote draws a $, shares' show_chart always trends up and is the Projection's icon, PPF's verified reads as a status, gold and silver is a diamond (the proposed swaps are in docs/design/reviews/MA-241/decision.md); NPS's wb_twilight and the two umbrellas too",
+    "NPS's family: deposits and schemes (teal) as drawn, its asset class, or every family derived from grouping.class through one fixed map",
+    "Holding type may mean the account: whether ISA, GIA, Demat and MF folio records get a tile",
+    "A kind the agent proposes after release: icon names checked against the pinned font's and the SDK's lists at propose and approval, the monogram for anything unknown"
+   ],
+   "undrawn": [
+    "B's tile in the remaining states: a long holding name, many holdings with More, a stale price, loading, empty and error"
+   ]
   },
   {
    "key": "MA-242",
@@ -6377,7 +6386,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "An animated technical page, MyPaisa Architecture v4, plays each journey through AWS and shows every agent and the Claude model it uses",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "3",

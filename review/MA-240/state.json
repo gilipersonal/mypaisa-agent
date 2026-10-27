@@ -1,7 +1,7 @@
 {
  "deliverable": "[MA-240] boards whole at every size, legible at 25%",
- "rounds": 1,
- "reviewed_sha": "261f78e",
+ "rounds": 2,
+ "reviewed_sha": "b289241",
  "history": [
   {
    "round": 1,
@@ -18,6 +18,23 @@
    },
    "blocking": 38,
    "result": "not clean: guards moved drawn frames, the gate failed open and missed overlaps inside sheets and widths from 600 to 1023, faults left at 320, 600 and 1024, and MA-241's board rendered its notes blank; every blocking finding fixed, in fixed.json as r1-1 to r1-16 (several lanes found the same fault)"
+  },
+  {
+   "round": 2,
+   "date": "2026-10-27",
+   "reviewed_sha": "b289241",
+   "range": "261f78e..b289241, round 1's fixes and their joins (MA-244's changes merged from main left out)",
+   "asked": "Arun, 27 Oct 2026: \"Yes run round 2\"",
+   "lanes": {
+    "A shared CSS and motion": 5,
+    "B iOS boards": 9,
+    "C web boards and the prototype": 11,
+    "D gates and scripts": 6,
+    "E records": 7,
+    "F kind icons board": 6
+   },
+   "blocking": 44,
+   "result": "not clean: drawn regressions (the iPad meter's box, iOS's alert in WebKit, a signed figure split on the iPad, the band token never reaching a board); gate blind spots (zoomed frames, content below the fold, widths between samples, the Stage Manager window, a diff at ratio 1 in Chromium only with neutral CSS masking the band and the meter, raised wrappers taken for surfaces); records (MA-241's pick, MA-244's status, Inside MyPaisa, an accent pair at 25% with no issue). Several lanes found the same fault."
   }
  ]
 }

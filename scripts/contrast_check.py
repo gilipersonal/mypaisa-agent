@@ -56,6 +56,7 @@ PAIRS = [
     ("body", "hero-ink", "hero"), ("text", "hero-ink-2", "hero"), ("text", "hero-ink-2", "hero-2"),
     ("text", "accent", "surface"), ("text", "accent", "bg"), ("text", "on-accent", "accent"),  # a filled button's short semibold label
     ("text", "accent", "surface-2"),  # a link or a selected label on a raised or selected row (MA-240)
+    ("text", "accent", "add-bg"),  # a link on a success tint (MA-240 round 2)
     ("text", "up", "surface"), ("text", "up", "bg"), ("text", "down-quiet", "surface"),
     ("text", "alert", "surface"), ("text", "alert", "alert-bg"), ("text", "on-alert", "alert"),  # a count badge
     ("text", "add", "add-bg"), ("text", "hold", "hold-bg"), ("text", "pause", "pause-bg"),
@@ -68,7 +69,9 @@ PAIRS = [
     ("ui", "pillar-for", "surface"), ("ui", "pillar-against", "surface"),
     ("presence", "track", "surface"), ("presence", "mask", "surface"), ("presence", "mask-hero", "hero"),
     ("presence", "track", "bg"), ("presence", "track", "surface-2"), ("presence", "track", "hero"),  # bars sit on the page, a fill and the hero too (MA-240)
+    ("presence", "track", "add-bg"),  # a bar on a success tint (MA-240 round 2)
     ("presence", "band", "hero"), ("presence", "band", "surface"),  # a chart's range band, as the Projection draws its 8 in 10 runs (MA-240)
+    ("ui", "coral", "band+hero"), ("ui", "chart-line", "band+surface"),  # the line drawn over the band (a ground "a+b" is a over b)
 ] + [("ui", t, b) for t in ("ccy-usd", "ccy-gbp", "ccy-eur", "ccy-jpy", "ccy-other", "asset-shares", "asset-bonds",
                             "asset-silver", "asset-cash", "meter", "chart-line") for b in ("surface", "track")]
 # Labels on glass (glass carries labels only, never body copy): the fill composited over the worst backdrop the bar
@@ -239,6 +242,8 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "track-on-hero": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#454E5C", r"t-dark .* track on hero"),
     "accent-on-raised": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-accent: )#[0-9A-Fa-f]{6}", r"\1#FF8E74", r"t-dark .* accent on surface-2"),  # MA-240: a darker coral falls under 3:1 dimmed on a raised row
     "band-vanishes": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-band: )rgba\([^)]*\)", r"\1rgba(255, 107, 79, 0.18)", r"t-light .* band on hero"),  # MA-240: the 8 in 10 band at the old area's 18%
+    "band-hides-line": ("ds-v1/tokens.css", r"(\.t-dark\s*\{(?:.*\n)*?  --mp-band: )rgba\([^)]*\)", r"\1rgba(255, 122, 94, 0.55)", r"t-dark .* coral on band\+hero"),  # MA-240 round 2: a band so strong the line over it fades
+    "accent-on-tint": ("ds-v1/tokens.css", r"(\.t-dark\s*\{(?:.*\n)*?  --mp-accent: )#[0-9A-Fa-f]{6}", r"\1#FF9A82", r"t-dark .* accent on add-bg"),  # MA-240 round 2: the old dark accent on a success tint
     "mask-vanishes": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-mask: )#[0-9A-Fa-f]{6}", r"\1#1A222F", r"t-dark .* mask on surface"),
     "hero-gain-dim": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-hero-up: )#[0-9A-Fa-f]{6}", r"\1#2E8F52", r"t-light .* hero-up on hero"),
     "stray-glass-block": ("ds-v1/ios.css", r"\Z", "\n.t-light .mp { --lg-fill: rgba(255, 255, 255, 0.30); }\n", r"--lg-fill .* outside"),
@@ -342,10 +347,12 @@ def main(argv: list[str]) -> int:
         surface = rgba(tok["surface"])
         rows = []
         for tier, f, b in PAIRS:
-            if f not in tok or b not in tok:
+            if f not in tok or any(x not in tok for x in b.split("+")):
                 rows.append((tier, f"{f} on {b}", None, None, "missing token"))
                 continue
-            bg = over(rgba(tok[b]), surface)
+            bg = surface
+            for layer in reversed(b.split("+")):   # "band+hero": the band composited over the hero
+                bg = over(rgba(tok[layer]), bg)
             fg = over(rgba(tok[f]), bg)
             rows.append((tier, f"{f} on {b}", ratio(fg, bg), ratio(fg, bg, DIM), ""))
         lg = ios_glass(theme)

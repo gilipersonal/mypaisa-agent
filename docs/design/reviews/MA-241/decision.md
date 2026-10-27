@@ -13,9 +13,11 @@ colourful icon chosen by the record's kind, at both doors (the iOS app and the w
 
 ## The board
 
-- Repo copy: `docs/design/ds-v1/Kind icons.dc.html` (about 40 KB), for the MyPaisa DS v1 project. It is not written to
-  Claude Design yet, so there is no claude.ai/design link yet and `docs/design/claude-design.json` does not record it.
-  Until it does, `plan_sync.py check` reports the file as an unrecorded mirror file.
+- In Claude Design: MyPaisa DS v1, Kind icons
+  (https://claude.ai/design/p/2f7310cd-e56a-4d13-8339-8fc637249c9a?file=Kind+icons.dc.html), mirrored at
+  `docs/design/ds-v1/Kind icons.dc.html` with its etag in `docs/design/claude-design.json`.
+- The tile is a fixed 36 pt row lead at every size class, so an iPad, a foldable and the web app at 390 draw it exactly
+  as the iPhone and desktop frames on the board do; the build shows it on each door's own boards.
 - It loads `tokens.css`, `ios.css`, `motion.css`, `motion.js` and `support.js` like the iOS boards do. Each option
   defines its colours as custom properties scoped to its own section (`.oA`, `.oB`, `.oC`). They are proposals. The
   picked option's values move into `tokens.css`, with their gate pairs, before any other board uses them (lesson 11).
@@ -53,8 +55,8 @@ standard SF Symbols, but they have not been checked on a device. The build adds 
 (below).
 
 **One colour per family.** There are seven families. Two kinds in Investments take their own colour instead of blue:
-Bonds and gilts, and Gold and silver. Their asset class already has a chart colour, so they keep it. That gives nine
-colour classes:
+Bonds and gilts, and Gold and silver. That gives nine colour classes. The table gives A's fills and C's glyph colours,
+which are the charts' own; B's (picked) are under "What the build would touch":
 
 | Class | Light | Dark | Source |
 | --- | --- | --- | --- |
@@ -176,8 +178,8 @@ The `presentation` of a kind (ARCHITECTURE.md §4.1 and §4.8) gains two fields:
 
 - **`family`** is required. It is one of a closed list: `cash`, `deposits`, `investments`, `pensions`, `property`,
   `policies`, `debts`. The colour comes from the family, so a spec never holds a hex value.
-  - The one exception is a kind whose `grouping.class` already has a chart colour (bonds, commodities). It takes that
-    class's colour, so a holding matches the mix.
+  - The one exception is a kind whose `grouping.class` is bonds or commodities: it takes its own class (bonds,
+    metals) instead of its family's. Under B these are B's own colours, not the charts'.
   - New colours are added only to `tokens.css`, never to a spec.
 - **`icon`** is optional. It has two fields:
   - `sf`, an SF Symbol name, drawn in the app with the `.fill` variant;
@@ -201,12 +203,25 @@ The `presentation` of a kind (ARCHITECTURE.md §4.1 and §4.8) gains two fields:
    - if a renderer meets a kind with no family, it draws today's neutral tile;
    - it also logs the kind, so the spec can be fixed.
 
-## What the build would touch, once an option is picked
+## What the build would touch (B picked)
 
-- **Tokens.** `tokens.css` gains:
-  - `--mp-kind-cash`, `-deposits`, `-investments`, `-bonds`, `-metals`, `-pensions`, `-property`, `-policies` and
-    `-debts`, in both themes, with the bonds, metals, investments and cash values equal to the `--mp-asset-*` ones;
-  - `--mp-on-kind` for A, or the tint and glyph pair for C.
+- **Tokens.** `tokens.css` gains B's nine tiles, one set for both themes, each a top and a base stop of a gradient
+  with a white glyph (`--mp-on-kind: #FFFFFF`):
+
+  | Class | Top | Base |
+  | --- | --- | --- |
+  | Cash and savings | #C77B0B | #AD6A08 |
+  | Deposits and schemes | #099C9C | #048686 |
+  | Investments | #5387FD | #4072E7 |
+  | Bonds | #9F71FD | #8C5CE6 |
+  | Gold and silver | #858C9E | #72798A |
+  | Pensions | #CD5BE6 | #B845D0 |
+  | Property | #0595D6 | #0280B9 |
+  | Policies | #C47397 | #AE6084 |
+  | Debts | #42688E | #30557A |
+
+  as `--mp-kind-<class>-top` and `--mp-kind-<class>` (the base). They are not the `--mp-asset-*` chart colours, so a
+  holding's tile and its slice of a mix are two blues; Home's liquidity bar keeps its own colours.
 - **The gate.** The pairs go into `scripts/contrast_check.py` `PAIRS`:
   - ui pairs for the glyph on each tile;
   - presence pairs for each tile on the surface and on the page;
@@ -255,7 +270,9 @@ build:
   build checks `icon.sf` and `icon.material` against the pinned font's and the SDK's name lists when a kind is
   proposed and approved, and takes the monogram path for anything unknown.
 - **The remaining states** design-first asks of a pick before the build: a long holding name, many holdings with
-  More, a stale price, loading and empty, each with the new tile.
+  More, a stale price, loading, empty and error, each with the new tile. The trace row lists these questions as `open`
+  and the states as `undrawn`, so `python3 scripts/plan_sync.py start MA-241` refuses the build until each is settled
+  or drawn.
 
 The questions asked before the pick follow, as they were.
 
@@ -293,7 +310,7 @@ The questions asked before the pick follow, as they were.
 - **The glyph map.** Its empty last cell showed a grey block. The map now shows each glyph and draws its own cell
   lines.
 - **B's slate.** Brightened like the rest, it came within 0.047 in OKLab of property's sky. B's debts are now a deep
-  slate (0.088 from sky), which is still visible on the dark card.
+  slate (0.142 from sky at the base stop, 0.148 at the top), which is still visible on the dark card.
 
 ## Evidence
 

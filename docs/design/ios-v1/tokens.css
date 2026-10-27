@@ -45,7 +45,7 @@
   /* data */
   --mp-chart-line: #C2381F;
   --mp-chart-area: rgba(255, 107, 79, 0.14);
-  --mp-band: rgba(255, 107, 79, 0.40);   /* a range band (the Projection's 8 in 10 runs): plain at 25% on the hero and on a card (MA-240) */
+  --mp-band: rgba(255, 107, 79, 0.39);   /* a range band (the Projection's 8 in 10 runs): plain at 25% on the hero and on a card, and the line over it still 3:1 (MA-240) */
   --mp-chart-grid: #ECE8E2;
   --mp-chart-2: #2453C9;
   --mp-chart-3: #1D7A3E;
@@ -80,7 +80,8 @@
   --mp-hero-ink-2: #B7C2D6;
   --mp-hero-up: #A6F0C2;     /* 11.0:1, 4.2:1 at 25% */
   --mp-coral: #FF7A5E;
-  --mp-accent: #FF9A82;      /* lighter than the coral marks, so links and labels hold at 25% brightness (MA-181) */
+  --mp-accent: #FFAF9B;      /* lighter than the coral marks, so links and labels hold at 25% brightness, on a selected tab, a sheet's
+                                header and a tint too (MA-181, MA-240) */
   --mp-on-accent: #1A0B06;   /* 7.5:1 */
   --mp-up: #44D17A;
   --mp-down-quiet: #C5CCD7;
@@ -95,7 +96,7 @@
   --mp-watch: #C5CCD7; --mp-watch-bg: #232B38;
   --mp-chart-line: #FF7A5E;
   --mp-chart-area: rgba(255, 122, 94, 0.16);
-  --mp-band: rgba(255, 122, 94, 0.40);
+  --mp-band: rgba(255, 122, 94, 0.37);
   --mp-chart-grid: #222B39;
   --mp-chart-2: #8FB2FF;
   --mp-chart-3: #5BDB8B;
@@ -355,6 +356,9 @@
   @container page (max-width: 699px) {
     .mp .mp-num-hero { font-size: 36px; line-height: 40px; }
   }
+  @container page (max-width: 559px) {
+    .mp .sct { display: none; }   /* the chart's call-out waits for a tap, as on a phone, before it covers the line's labels */
+  }
   @container page (max-width: 899px) {
     .mp .krow { grid-template-columns: minmax(0, 1fr); }   /* a detail card's label over its value */
     .mp .mp-card > .fx.ac.gap12 { flex-wrap: wrap; }        /* a card's head: its title takes the line before it squeezes */
@@ -390,15 +394,23 @@
 .mp .filters, .mp .fx:has(> .chipb), .mp .fx:has(> .fch), .mp .fx:has(> .fchip) { flex-wrap: wrap; }
 /* a row's chip keeps its one line and never shrinks; it is never wider than its row */
 .mp .rtx .mp-chip { flex: none; max-width: 100%; white-space: normal; }
-/* an overline wraps before it is cut; a key-value figure with no pencil wraps inside its cell (a figure with its
-   pencil keeps them together on one line, as drawn) */
-.mp .mp-over.nowrap, .mp .kvg .mp-hl:not(:has(> .edbtn)) { white-space: normal; }
+/* an overline wraps before it is cut; a key-value value of words (a date) with no pencil wraps inside its cell; a signed
+   figure (a gain or a fall) and a figure with its pencil keep to one line, as drawn */
+.mp .mp-over.nowrap, .mp .kvg .mp-hl:not(:has(> .edbtn)):not(.mp-up):not(.mp-dq):not(.mp-down) { white-space: normal; }
+/* a figure with its pencil may use its cell's 12 px end padding, then its words wrap beside the pencil rather than run
+   under the next cell */
+.mp .kvg .mp-hl:has(> .edbtn) { margin-right: -12px; }
+.mp .kvg .mp-hl:has(> .edbtn) > :first-child { white-space: normal; }
 /* a table keeps its first column readable (a holding's name never breaks mid-word) and scrolls inside its card */
 .mp .mx { grid-template-columns: minmax(140px, 1fr) 120px 120px 104px; overflow-x: auto; }
 .mp .tbl3 { grid-template-columns: minmax(96px, 1fr) auto auto; overflow-x: auto; }
 .mp .evt { grid-template-columns: minmax(96px, 1.3fr) 44px minmax(104px, 1.4fr) 68px; overflow-x: auto; }
-/* a file viewer too narrow for its preview and its details side by side puts the details under the preview, and the dialog scrolls */
-@container app (max-width: 719px) {
+.mp .evt > .tr > :last-child { position: sticky; right: 0; background: var(--mp-surface); box-shadow: -8px 0 0 var(--mp-surface); }   /* its figures stay in view; the range plot scrolls under them */
+/* the Forecaster's eight weeks go to two rows of four before a week's tick and number spill out of its chip */
+.mp .wks { grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); }
+/* a file viewer too narrow for its preview and its details side by side puts the details under the preview, and the dialog scrolls
+   (side by side, the preview's bar needs about 307 px beside the 380 px details: a window from 780) */
+@container app (max-width: 779px) {
   .mp .ovl:has(> .viewer) { padding: 16px; }
   .mp .viewer { grid-template-columns: minmax(0, 1fr); grid-template-rows: max-content max-content; height: 100%; overflow-y: auto; }
   .mp .viewer > .vside { border-left: 0; border-top: 1px solid var(--mp-line); overflow: visible; }
@@ -416,16 +428,20 @@
 .mp .row4 > .rv { margin-left: auto; }
 /* an iPad window narrower than the 11-inch in landscape keeps two lists beside the chat: a name keeps 8em before its figure goes under it */
 @container screen (min-width: 1024px) and (max-width: 1179px) { .mp .row4 > .rt { min-width: min(100%, 8em); } }
+/* and in a window from 1024 to 1099 (an iPad Pro upright, the 10.2-inch across) a two-column key-value card is too narrow
+   for a loan's figures: its cells stack */
+@container screen (min-width: 1024px) and (max-width: 1099px) { .mp .kvg { grid-template-columns: minmax(0, 1fr); } }
 /* a schedule's cut name shows its ellipsis: a flex cell cannot draw one */
 .mp .sched > .ell { display: block; min-height: 0; padding-block: 7px; }
 /* a chart's call-out on the hero wraps rather than runs past the chart */
 .mp .sct { white-space: normal; }
 /* a chart's “not run yet” note keeps clear of its axis labels on a narrow chart */
-.mp .shover > div { max-width: min(300px, calc(100% - 80px)); }
+.mp .shover > div { max-width: min(300px, calc(100% - 96px)); }   /* 48 each side: the axis's widest label, "−20%", and its gap */
 /* a bar's empty track is the token on every board, edge line included: a board's own paler fill faded at 25% */
-.mp :is(.mp-track:is(.meter, .sr-t, .pl-t, .rl-t), .meter, .ftrack, .mwk) { background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); }
-/* a chart's range band (the Projection's 8 in 10 runs) is its own token, plain at 25% on the hero and on a card */
-.mp .fband { fill: var(--mp-band); }
+.mp :is(.mp-track:is(.meter, .sr-t, .pl-t, .rl-t), .meter:not(:has(> .mp-track)), .ftrack, .mwk:not(.on)) { background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); }   /* a .meter that holds a track is its frame, and a week that is on keeps its fill */
+/* a chart's range band (the Projection's 8 in 10 runs) is its own token, plain at 25% on the hero and on a card; the boards
+   fill it on the hero and on a card, so the token must win there too */
+.mp .fband, .mp :is(.onhero, .oncard) .fband { fill: var(--mp-band); }
 /* a link or file name under a row's title breaks inside the row rather than run out of it */
 .mp .grow > .mp-foot { overflow-wrap: anywhere; }
 /* a hint beside a row of buttons wraps in its place rather than run out of the card */
@@ -439,7 +455,7 @@
 .mp .qlbg .page { max-width: calc(100% - 32px); }   /* a document in Quick Look */
 .mp .cpfr, .mp .sbfr { max-width: 100%; }          /* the kit's composer and sidebar specimens */
 /* iOS's own alert keeps inside a narrow screen (it is 270 pt wide on a phone; drawn here at 300 where it fits) */
-.mp .sysalert { width: min(300px, calc(100% - 40px)); margin-left: calc(min(300px, calc(100% - 40px)) / -2); }
+.mp .sysalert { width: min(300px, calc(100% - 76px)); margin-left: max(-150px, calc(20px - 50%)); }   /* 76: its 18 px padding each side and a 20 px margin; the margin stays -150 where it fits, in a zoomed frame too */
 /* the landscape iPhone's sidebar keeps a long name on its line, cut with an ellipsis, on the narrowest phone */
 .mp .lnav .f1 { min-width: 0; }
 .mp .lnav .f1 > .mp-hl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -454,27 +470,40 @@
 @container screen (max-width: 639px) { .mp .ttabs .ttab { padding-left: 10px; padding-right: 10px; } }
 /* on a screen under 360 (an iPhone at Display Zoom, a small phone's browser): the hero's figure steps down as SwiftUI's
    minimumScaleFactor does and its strip of three takes two columns; a row's chip line, and a card row's answers, go
-   under the words; the chat's strip puts its change under the figure; a toast wraps inside the margins; a table's
-   headers wrap and the table scrolls; the inline title keeps clear of the bar's buttons; a chart's call-out waits
-   for a tap. Every drawn screen is wider. */
+   under the words; the chat's strip puts its change under the figure; an in-place edit's field takes its own line; a
+   toast wraps inside the margins; the inline title keeps clear of the bar's buttons. Every drawn screen is wider. */
 @container screen (max-width: 359px) {
   .mp-hero .mp-num-hero { font-size: 36px; line-height: 40px; }
   .mp-hero .hsplit { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mp .rtx > .fx { flex-wrap: wrap; }
   .mp .ccard-b .crow { flex-wrap: wrap; }
   .mp .ccard-b .crow > .f1 { flex-basis: calc(100% - 52px); }
-  .mp :is(.toast, .mp-toast) { max-width: calc(100% - 64px); white-space: normal; }
-  .mp .tb4 { overflow-x: auto; }
-  .mp .tb4 > .th4 { white-space: normal; }
+  .mp :is(.toast, .mp-toast) { width: max-content; max-width: calc(100% - 64px); box-sizing: border-box; white-space: normal; }
   .mp .navc { right: 150px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mp .edit > .fx:has(> .efield) { flex-wrap: wrap; }
+  .mp .edit > .fx > .efield { flex: 1 1 100%; }   /* an in-place edit's field takes its own line */
 }
 @container app (max-width: 359px) {
   .mp-hero .mp-num-hero { font-size: 36px; line-height: 40px; }
   .mp-hero .hsplit { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mp .rtx > .fx { flex-wrap: wrap; }
-  .mp :is(.toast, .mp-toast) { max-width: calc(100% - 64px); white-space: normal; }
-  .mp .tb4 { overflow-x: auto; }
-  .mp .tb4 > .th4 { white-space: normal; }
+  .mp :is(.toast, .mp-toast) { width: max-content; max-width: calc(100% - 64px); box-sizing: border-box; white-space: normal; }
   .mp .strip > .f1 > .fx { flex-wrap: wrap; row-gap: 0; }
+  .mp .edit > .fx:has(> .efield) { flex-wrap: wrap; }
+  .mp .edit > .fx > .efield { flex: 1 1 100%; }   /* an in-place edit's field takes its own line */
 }
-@container app (max-width: 379px) { .mp .pc-ann { display: none; } }   /* under 380 the chart's call-out waits for a tap */
+@container app (max-width: 379px) { .mp .pc-ann { display: none; } }
+/* under 375 a table's figures keep to their width (a sign with its figure) and the table scrolls inside its card rather
+   than run one column into the next; its first column takes what is left */
+@container screen (max-width: 374px) {
+  .mp .tb4 { overflow-x: auto; }
+  .mp .tb4:has(> .th4:nth-child(4)):not(:has(> .th4:nth-child(5))) { grid-template-columns: minmax(max-content, 1fr) repeat(3, max-content) !important; }
+  .mp .tb4:has(> .th4:nth-child(3)):not(:has(> .th4:nth-child(4))) { grid-template-columns: minmax(max-content, 1fr) repeat(2, max-content) !important; }
+  .mp .tb4 > .td4.r > span { white-space: nowrap; }
+}
+@container app (max-width: 374px) {
+  .mp .tb4 { overflow-x: auto; }
+  .mp .tb4:has(> .th4:nth-child(4)):not(:has(> .th4:nth-child(5))) { grid-template-columns: minmax(max-content, 1fr) repeat(3, max-content) !important; }
+  .mp .tb4:has(> .th4:nth-child(3)):not(:has(> .th4:nth-child(4))) { grid-template-columns: minmax(max-content, 1fr) repeat(2, max-content) !important; }
+  .mp .tb4 > .td4.r > span { white-space: nowrap; }
+}   /* under 380 the chart's call-out waits for a tap */
