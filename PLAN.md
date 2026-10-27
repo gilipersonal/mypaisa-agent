@@ -418,7 +418,7 @@ arrives from phase 2.
   phone.
 - **The app (MA-163, MA-168, MA-169):** the shell Arun picked, 1a Chat first
   (tabs on iPhone; on iPad and an open foldable the sidebar; the chat beside
-  every screen over about 900 pt, a sheet away from about 600 to 900 pt, and
+  every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and
   a tab in a compact window (every iPhone, a folded foldable, Slide Over)), built as the React Native shell with SwiftUI
   pieces (MA-165), which the web app follows; the sign-in screen with Apple's
   and Google's buttons; and the chat in a native SwiftUI timeline: the

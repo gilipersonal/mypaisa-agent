@@ -184,7 +184,7 @@ the layers are added.
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
 | Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so MyPaisa says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with chips: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
-| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; anything new is made in the chat, and a figure is corrected where it shows |
+| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; anything new is made in the chat, and a figure is corrected where it shows |
 | Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for the owner the Admin center; the chat beside the dashboard on a laptop and a tab at phone width; replies stream in as they are written (§9.4, §21.5) |
 | Start something on the laptop and pick up the phone | One conversation per member at every door: a flow started on the laptop finishes on the phone, and a Confirm on the phone moves the laptop's dashboard at once (§21.5) |
 | Type "£5,000 in Monzo savings", or "an SBI FD of ₹5 lakh at 7.1% for three years" | Drafts the record, asks only what is missing (whose is it? which bank?) one thing at a time with chips, and shows a Confirm card with the figures code computed, such as the maturity value and date; the owner can register for any member, and the card names the owner (§4.8) |
@@ -1262,13 +1262,15 @@ foldable or two-panel device (Arun's "Duo"), folded or open:
 | --- | --- | --- |
 | Compact: under about 600 pt, and every iPhone | Every iPhone, in portrait or landscape; Slide Over and one-third Split View; a foldable when folded | The tab bar; one column; sheets for detail; the chat is a tab |
 | Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet over the screen, from its Ask or ⌘K |
-| Regular, over about 900 pt | iPad in landscape; a large Stage Manager window | The sidebar, the screen, and the chat beside every screen as a trailing column |
+| Regular, about 900 to 1133 pt | A 13-inch iPad upright; a wide Split View pane or Stage Manager window | The sidebar and the screen; the chat as a sheet over the screen, from the sidebar's Chat, its Ask or ⌘K |
+| Regular, from about 1133 pt | iPad in landscape, from the iPad mini up; a large Stage Manager window | The sidebar, the screen, and the chat beside every screen as a trailing column |
 
 The rule is the window's width, never the device, with one exception: an iPhone is always compact, its tab bar in
 either orientation, as option 1a draws it (`iPhone · Landscape`). Widen past about 900 pt and
-the sheet becomes the trailing column, narrow below it and the column becomes
-the sheet, with matched geometry and no reload (the boards of
-`iPad and foldable.dc.html`). A fold, a rotation or a resize keeps the conversation, the scroll position and
+the sidebar opens beside the screen; widen past about 1133 pt and the sheet becomes the trailing column, narrow below it
+and the column becomes the sheet, with matched geometry and no reload (the boards of
+`iPad and foldable.dc.html`). Arun, 27 Oct 2026 (MA-240): from 900 to 1133 pt the screen beside both the sidebar and
+the chat fell to about 360 to 480 pt, too narrow for the screens as drawn, so there the chat is a sheet away. A fold, a rotation or a resize keeps the conversation, the scroll position and
 any guided flow. With a hardware keyboard, Return sends, ⌘K focuses the
 composer, ⌘1 to ⌘5 open the sections and ⌘F searches. Every screen works from
 xSmall to AX5 Dynamic Type, with VoiceOver, Increase Contrast, Reduce
@@ -1378,8 +1380,8 @@ of the same app (MA-78, MA-79, MA-95), built from the boards in MyPaisa iOS
 v1: one spec, drawn for iPhone and for iPad and the foldable, in light and
 dark (`docs/design/README.md`). Arun, 25 Oct 2026, asked for the dashboard
 "on the ios tablet duo" too: every one of these screens is
-laid out for the iPad and the open foldable too, with the chat beside it over
-about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
+laid out for the iPad and the open foldable too, with the chat beside it from
+about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
 The web app shows the same screens in a browser (§9.4).
 
 The screens, where anything new is made in the chat and a figure its kind
@@ -1413,8 +1415,8 @@ marks editable is corrected in place (§4.10):
 - **Home, a holding, Overlap, Scorecard**: as the boards, with the Household /
   Me / member switch from §4.5. A holding's screen has Why?, What if?, Ask about
   it, and Update value, which opens the chat with the guided flow already
-  started (MA-80); a figure on it can also be corrected in place. On an iPad or a foldable the chat sits beside them over
-  about 900 pt, is a sheet away from about 600 to 900 pt, and is a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
+  started (MA-80); a figure on it can also be corrected in place. On an iPad or a foldable the chat sits beside them from
+  about 1133 pt, is a sheet away from about 600 to 1133 pt, and is a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1).
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
   and date; each row shows before and after and links to the run that made it,
   and a row made from a file opens that file in Quick Look; **Files** lists
@@ -2317,7 +2319,7 @@ a daily digest instead.
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
-| Front end | Two full doors, built in parallel in every phase. One app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger), a React Native shell with a native SwiftUI core (§9.5): the chat with native cards and Swift Charts, and the dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them over about 900 pt, a sheet away from about 600 to 900 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1); and the web app, a SvelteKit 3 PWA with the same chat, dashboard and Admin center at desktop and phone width (§9.4); no Telegram (MA-161, 25 Oct 2026; MA-186, 26 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "Performance is key … silky smooth like Monzo"; native sign-in, push and Face ID in the app, the same chat in any browser, and the TypeScript shared between the two |
+| Front end | Two full doors, built in parallel in every phase. One app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger), a React Native shell with a native SwiftUI core (§9.5): the chat with native cards and Swift Charts, and the dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§9.1); and the web app, a SvelteKit 3 PWA with the same chat, dashboard and Admin center at desktop and phone width (§9.4); no Telegram (MA-161, 25 Oct 2026; MA-186, 26 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "Performance is key … silky smooth like Monzo"; native sign-in, push and Face ID in the app, the same chat in any browser, and the TypeScript shared between the two |
 | Confidence | Computed from agreement, persistence, quality, history; calibrated weekly | A number that is checked, not felt |
 | Calls | Shadow until 8 weeks above baseline | Prove value before it reaches the chat |
 | The kill switch's name | `/pause` and `/resume`, kept though PAUSE is also a stance; the stance only appears on a holding's card with its confidence, never as a command (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Three different things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §8); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5); the PAUSE stance is a view on one holding |

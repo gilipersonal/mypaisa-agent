@@ -1,6 +1,6 @@
 {
- "about": "What MA-240 meant to change at the boards' drawn sizes, for `node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json` (d6e243f is main before MA-240). Every other frame of every current board is unchanged pixel for pixel. The neutral CSS puts one grey on the track and the range band on both sides, so their new colours (checked by scripts/contrast_check.py) do not hide a change in layout.",
- "neutral": "*, ::before, ::after { --mp-track: #8a8a8a !important; --mp-band: rgba(138, 138, 138, 0.4) !important; } .mp :is(.mp-track, .meter:not(:has(> .mp-track)), .ftrack, .mwk:not(.on), .sr-t, .pl-t, .rl-t) { background: #8a8a8a !important; box-shadow: none !important; }",
+ "about": "What MA-240 meant to change at the boards' drawn sizes, for `node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json` (d6e243f is main before MA-240). Every other frame of every current board is unchanged pixel for pixel. The neutral CSS puts one grey on the track, the range band and the accent on both sides, so their new colours (checked by scripts/contrast_check.py, and the track and band checked as applied on every board by the gate) do not hide a change in layout.",
+ "neutral": "*, ::before, ::after { --mp-track: #8a8a8a !important; --mp-band: rgba(138, 138, 138, 0.4) !important; --mp-accent: #8a8a8a !important; } .mp :is(.mp-track, .meter:not(:has(> .mp-track)), .ftrack, .mwk:not(.on), .sr-t, .pl-t, .rl-t) { background: #8a8a8a !important; box-shadow: none !important; } .mp .fband { fill: rgba(138, 138, 138, 0.4) !important; }",
  "changes": [
   {
    "board": "iPhone v4 · Check-ins.dc.html",
@@ -36,6 +36,11 @@
    "board": "Prototype v4.dc.html",
    "frames": "^Phone web · (Light|Dark) · step 10$",
    "why": "The chart's 2031 sat on Today as drawn; it is thinned, so Today reads whole."
+  },
+  {
+   "board": "iOS kit.dc.html",
+   "frames": "^dark$",
+   "why": "The colour table's accent row shows the lighter dark accent, #FFAF9B at 9.7:1 and 3.5:1 dimmed (was #FF9A82), which holds 3:1 at 25% on the add tint and the board tints too."
   }
  ]
 }

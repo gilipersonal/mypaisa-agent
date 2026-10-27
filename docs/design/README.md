@@ -57,12 +57,12 @@ shell (MA-165), so each board maps onto SwiftUI views. It never asks which devic
 class and window width, so every iPhone, every iPad window and a foldable,
 folded or open, fit with no special case:
 
-| | Compact | Regular, narrow | Regular, wide |
-| --- | --- | --- | --- |
-| Width | under about 600 pt, and every iPhone | about 600 to 900 pt | over about 900 pt |
-| Where | every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | iPad in landscape; a large Stage Manager window |
-| Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the chat as a sheet (beside the screen only over about 900 pt) | the sidebar, the screen, and the chat as a column beside every screen |
-| Boards | the `iPhone` files | `iPad and foldable` | `iPad and foldable` |
+| | Compact | Regular, narrow | Regular, wide | Regular, widest |
+| --- | --- | --- | --- | --- |
+| Width | under about 600 pt, and every iPhone | about 600 to 900 pt | about 900 to 1133 pt | from about 1133 pt |
+| Where | every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | a 13-inch iPad upright; a wide Split View pane or Stage Manager window | iPad in landscape, from the iPad mini up; a large Stage Manager window |
+| Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the chat as a sheet (beside the screen only from about 1133 pt) | the sidebar and the screen; the chat as a sheet, from the sidebar's Chat | the sidebar, the screen, and the chat as a column beside every screen |
+| Boards | the `iPhone` files | `iPad and foldable` | the landscape boards, the chat column put away (`tokens.css`, MA-240) | `iPad and foldable`, `iPad v4` |
 
 **The shell is 1a, Chat first** (Arun's pick, 26 Oct 2026, MA-163).
 `Shell options` draws the three that were offered, each on iPhone and iPad:

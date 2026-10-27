@@ -181,13 +181,15 @@ Added the day each was learned; reviewers check every item.
 23. **A rule repeated across records is one phrase, copied word for word:**
     the width rule was reworded in each record four rounds running, and each
     rewording missed a case (compact windows, the iPhone, a folded foldable);
-    it now reads the same everywhere: "beside every screen over about 900 pt,
-    a sheet away from about 600 to 900 pt, and a tab in a compact window
+    it now reads the same everywhere: "beside every screen from about 1133 pt,
+    a sheet away from about 600 to 1133 pt, and a tab in a compact window
     (every iPhone, a folded foldable, Slide Over)". An iPhone is always
     compact, in either orientation, the one exception to "the window's width,
     never the device" (round 5: the table had said only the smaller iPhones in
     landscape, while the shell and the landscape board draw every iPhone with
-    its tab bar).
+    its tab bar). The phrase moved from "over about 900 pt" to "from about 1133 pt" on
+    27 Oct 2026 (Arun, MA-240), in every record at once: from 900 to 1133 pt
+    the screen between the sidebar and the chat fell to about 360 to 480 pt.
 24. **A board is measured at every size its class covers, in both engines,
     not only at the size it is drawn:** an iPhone from 320 (Display Zoom) to
     440 and in landscape, an iPad or foldable window from 600 to 1366, and the
@@ -222,3 +224,28 @@ Added the day each was learned; reviewers check every item.
     that matched `alert` and `.lg` let overlaps inside sheets and bars pass;
     a mutated board proved it). A column crushed to a word or two a line is a
     fault even when nothing clips.
+27. **A token is checked where a board applies it, not where it is
+    defined:** `contrast_check.py` measured the new range band while no board
+    drew it, since each board filled its band with its own 18% (MA-240 round
+    2). The board gate now refuses a band or a track drawn in anything but
+    its token, and a token's selftest case mutates a board, not the token.
+28. **A drawn-size diff runs at the screen's own pixel ratio, in both
+    engines, and greys out a colour only where a check proves the colour is
+    applied:** at ratio 1 in Chromium alone, round 1's diff passed an alert
+    that WebKit's zoom set off the screen, and its neutral CSS greyed the
+    meter's frame and the band on both sides, so a frame whose box changed
+    and a band that never reached a board both passed (MA-240 round 2).
+29. **A gate measures what a member can reach, not what the first viewport
+    shows:** the content below the fold (scrolled to its end), the widths
+    between its samples (each container query's threshold, one below and
+    at it), a zoomed frame's own box, and every frame of a board, the Stage
+    Manager window included (MA-240 round 2: each was a blind spot).
+30. **A fault across a whole band of widths is an owner's decision, not an
+    allowance or a guard per screen:** from 900 to 1132 pt every iPad board
+    failed (179 faults) because three columns left the screen 360 to 480 pt;
+    Arun chose where the chat goes, and the rule changed in every record at
+    once (MA-240 round 2).
+31. **A guard that answers a band is retired when the band is settled:** the
+    iPad guards for 1024 to 1179 pt (a name's 8em, a key-value card's one
+    column) were narrowed or removed once the chat left those widths, and the
+    gate showed they were not needed (MA-240 round 2).
