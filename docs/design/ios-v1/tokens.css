@@ -532,7 +532,8 @@
   .mp .edit > .fx:has(> .efield) { flex-wrap: wrap; }
   .mp .edit > .fx > .efield { flex: 1 1 100%; }   /* an in-place edit's field takes its own line */
 }
-@container app (max-width: 379px) { .mp .pc-ann { display: none; } }   /* under 380 the chart's call-out waits for a tap */
+@container app (max-width: 599px) { .mp .sct { display: none; } }   /* on a phone's page the Projection's call-out waits for a tap, as it does beside the chat */
+@container app (max-width: 379px) { .mp :is(.pc-ann, .mp-chartlbl.pill) { display: none; } }   /* under 380 a chart's call-out and its milestone pills wait for a tap; the milestones are listed under it */
 /* under 375 the hero's figure steps down; a table's figures keep to their width (a sign with its figure) and the table
    scrolls inside its card rather than run one column into the next, its first column taking what is left; a milestone's
    figure goes under its words; a list row keeps 9em of name */

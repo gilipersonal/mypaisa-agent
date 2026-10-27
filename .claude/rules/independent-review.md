@@ -223,7 +223,10 @@ Added the day each was learned; reviewers check every item.
     fault, inside a sheet or a glass bar too (MA-240 round 1: a class list
     that matched `alert` and `.lg` let overlaps inside sheets and bars pass;
     a mutated board proved it). A column crushed to a word or two a line is a
-    fault even when nothing clips.
+    fault even when nothing clips. Inside a chart, a painted note, call-out or
+    label pill floating over the chart's own labels is no such edge: the label
+    under it is covered, a fault (MA-240 round 2: the Proof note and a
+    call-out passed as "under-layer").
 27. **A token is checked where a board applies it, not where it is
     defined:** `contrast_check.py` measured the new range band while no board
     drew it, since each board filled its band with its own 18% (MA-240 round
@@ -236,7 +239,8 @@ Added the day each was learned; reviewers check every item.
     meter's frame and the band on both sides, so a frame whose box changed
     and a band that never reached a board both passed (MA-240 round 2).
 29. **A gate measures what a member can reach, not what the first viewport
-    shows:** the content below the fold (scrolled to its end), the widths
+    shows:** the content below the fold (scrolled to its end) and above the
+    top (a page a board anchors to the bottom of its box), the widths
     between its samples (each container query's threshold, one below and
     at it), a zoomed frame's own box, and every frame of a board, the Stage
     Manager window included (MA-240 round 2: each was a blind spot).

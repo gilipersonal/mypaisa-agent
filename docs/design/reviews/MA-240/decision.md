@@ -90,8 +90,9 @@ All in the design system, copied to the iOS and app projects, so both doors inhe
   milestone's figure goes under its words and a list row keeps 9em of name; under 360 the hero's strip of three takes
   two columns, a row's chip line, a list row's figure and a card row's answers go under the words, the chat's strip
   puts its change under the figure, an in-place edit's field takes its own line, a toast wraps inside the margins and
-  the inline and Quick Look titles keep clear of the bar's buttons; under 380 the prototype chart's call-out waits for
-  a tap.
+  the inline and Quick Look titles keep clear of the bar's buttons. On a phone's page the Projection's call-out waits
+  for a tap, as it does on a narrow page beside the chat, and under 380 the prototype chart's call-out and a chart's
+  milestone pills do too (the milestones are listed under the chart).
 - **`tokens.css`: two colour tokens**: `--mp-track` is `#BEC1C8` in light (1.64:1 on the page, 1.54:1 on a fill,
   1.80:1 on a card, and 1.43:1 or more at 25%) and `#485160` in dark (1.81:1 and 1.26:1 dimmed on the hero, every mark
   on it still 3:1); every board's track takes it, edge line included (a meter that holds a track is its frame and
@@ -120,9 +121,11 @@ these and the diff holds the rest.
   ratio, for any change under `docs/design/` (`.claude/jira-flow.json`; `npm ci --prefix scripts` installs its pinned
   playwright-core). Each frame is measured through its class's sizes and one pixel below and at every container
   query's threshold that styles it, and at each size whole: as set, at every step of each vertical scroller, and
-  grown to its content's height where the frame clips it; a frame drawn under zoom or a scale is measured at the size
-  it shows. Two lines touch only when they sit on the same surface, found by what paints behind them, so a wrapper
-  raised over a sheet or a strip is on that glass. It fails closed: a board that does not render, a board with no
+  grown to its content's height where the frame clips it, above its top too where a board anchors its content to the
+  bottom of a clipping box (a page drawn scrolled to its end); a frame drawn under zoom or a scale is measured at the
+  size it shows. Two lines touch only when they sit on the same surface, found by what paints behind them, so a wrapper
+  raised over a sheet or a strip is on that glass; inside a chart, a label under a painted note, call-out or label
+  pill that floats over it is covered, a fault. It fails closed: a board that does not render, a board with no
   frame but the pages its allowances name, a frame it cannot measure, a missing icon or text font, a template value
   that never resolved and a container query it cannot read are failures; since the boards fetch React and their fonts
   over the network, such a board is tried once more first, and a fault in it fails both times. An ellipsis on a flex
@@ -133,9 +136,10 @@ these and the diff holds the rest.
   each kind of fault in a copy of the mirror and expects the refusal, at the size it must show at where that matters:
   the page not a container, a scroll row that clips, the answers behind a fade, a board's own track, a band that is
   not the token, an overlap inside a sheet and between a sheet's siblings, a strip's figure on its label, a board that
-  does not render, a crushed column and one below the fold, a chip cut with no ellipsis, the file viewer side by side
-  at 600, the Stage Manager window's tabs at 600, iOS's alert past a zoomed screen, a figure cut by an ellipsis, a
-  template value that never resolved and a page with no frame; the unchanged copy passes the same boards.
+  does not render, a crushed column and one below the fold, an edit row broken above a page's top, a note over a
+  chart's axis labels, a chip cut with no ellipsis, the file viewer side by side at 600, the Stage Manager window's
+  tabs at 600, iOS's alert past a zoomed screen, a figure cut by an ellipsis, a template value that never resolved and
+  a page with no frame; the unchanged copy passes the same boards.
 - `node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json` is the pixel diff as a command:
   every frame of every current board, and every step of Prototype v4, at its drawn size against `main` before this
   story, in Chromium and WebKit at the screen's own pixel ratio, as drawn, at every step of each vertical scroller and
