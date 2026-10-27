@@ -6275,7 +6275,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "An animated plain-words page, Inside MyPaisa, walks the admin from the first screen to the chatbot and the agent team",
-   "status": "In Review",
+   "status": "Done",
    "labels": [],
    "arch": [
     "3",
@@ -6370,6 +6370,28 @@
    "design": "none",
    "boards": [],
    "notes": "Found by MA-240's gate: three sub-lines on Wealth (MA-97's board) end in a figure, so their one-line ellipsis cuts it. A copy fix in Claude Design; scripts/board_fit_allow.json allows the three until it lands. Design upkeep, as MA-160."
+  },
+  {
+   "key": "MA-244",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "An animated technical page, MyPaisa Architecture v4, plays each journey through AWS and shows every agent and the Claude model it uses",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "3",
+    "8",
+    "10",
+    "15.1",
+    "18",
+    "20",
+    "21"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 27 Oct 2026: \"I want to generate another html artifact this time it needs to technical architecture diagram using animations and logos of components like aws and anthropic, and it should highlight the end to end flow of my paisa. It should detail out all the agents, the kind of agents they are and the models they will use (opus, sonnet, haiku)\", then \"All good, lets push and merge this to main\". Published at https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9; source docs/design/architecture-v4.html. Drawn and checked in this change, so its estimate is 0 and no date moves."
   }
  ],
  "others": [

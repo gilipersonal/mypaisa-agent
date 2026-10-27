@@ -34,7 +34,8 @@ through the flows end to end:
 [MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)
 (MA-141), and [Inside MyPaisa](https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5) explains the whole of it in
 plain words, from the first screen to the chatbot and the agent team
-(MA-239). Every phase is an epic in Jira project MA, and every deliverable
+(MA-239), and [MyPaisa Architecture v4](https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9) draws it technically, with
+every agent and the Claude model it uses (MA-244). Every phase is an epic in Jira project MA, and every deliverable
 below is a story or task under it. Each phase ends with a demo you can click
 at both doors and an update to the agent-journey page, so you can follow the
 agent as it is built.
@@ -298,6 +299,12 @@ Claude's:
 - **Wealth's sub-lines, figure first (MA-243):** three one-line sub-lines on
   Wealth reordered so their ellipsis never cuts a figure. (MA-242, filed for
   the open foldable's chat, duplicates the redraw MA-163 already carries.)
+- **The technical architecture page (MA-244):** MyPaisa Architecture v4, an
+  animated page that plays five journeys through the AWS services hop by
+  hop, traces one message from the door to the model, and shows the nine
+  agents, the kind of agent each is and which of Opus, Sonnet and Haiku it
+  uses, with the spend ladder; its source is
+  `docs/design/architecture-v4.html`.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

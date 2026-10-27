@@ -44,6 +44,7 @@ GITHUB = "https://github.com/gilipersonal/mypaisa-agent/blob/main/"
 DESIGN = "https://claude.ai/design/p/{id}?file={file}"
 ARTIFACTS = {
     "Inside MyPaisa": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
+    "MyPaisa Architecture v4": "https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9",
     "MyPaisa Agent Journey": "https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7",
     "MyPaisa Market Agent": "https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb",
 }
@@ -730,7 +731,7 @@ def render_hub(ctx: Ctx) -> str:
         '<section data-type="layout-three-equal">'
         + "".join(f'<div data-type="column">{cpanel(c, i, f"<h3>{ctx.link(sl, t)}</h3><p>{esc(d)}</p>")}</div>' for sl, t, d, c, i in (
             ("decisions", "Design decisions", "Every design round: the question, the options drawn, the pick and why.", "#FFEBE6", ":dart:"),
-            ("explainers", "Explainers", "The Inside MyPaisa, Agent Journey and Market Agent pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
+            ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey and Market Agent pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
             ("sync", "Staying in step", "How this space, Jira, the boards, the plan and the code are kept the same.", "#F4F5F7", ":link:")))
         + "</section>",
         "<h2>🔗 The records behind it</h2><ul>"
@@ -932,11 +933,12 @@ def render_explainers(ctx: Ctx) -> str:
                   "Arun's Claude account and open after signing in to claude.ai; the Lucid drawings open in Lucid.</p>"),
            "<h2>📖 The explainer pages</h2>"
            f'<p>Kept in the repo as <a href="{gh("docs/design/inside-mypaisa.html")}">inside-mypaisa.html</a> (the whole architecture in plain words, MA-239), '
+           f'<a href="{gh("docs/design/architecture-v4.html")}">architecture-v4.html</a> (the same architecture, technical and animated, MA-244), '
            f'<a href="{gh("docs/design/agent-journey.html")}">agent-journey.html</a> and '
            f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a>, and published as Claude artifacts.</p>',
-           '<section data-type="layout-three-equal">' + "".join(
-               f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in ARTIFACTS.items())
-           + "</section>",
+           "".join('<section data-type="layout-two-equal">' + "".join(
+               f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
+               + "</section>" for pair in (list(ARTIFACTS.items())[k:k + 2] for k in range(0, len(ARTIFACTS), 2))),
            "<h2>🖱️ The clickable prototype</h2><p>Prototype v4 walks the whole journey at desktop, phone web and iPhone: sign in, register, "
            "correct a figure, a check-in, a statement, the dashboard, the budget, the Projection, a plan item and Activity (MA-193).</p>"
            f'<p><a href="{DESIGN.format(id=app, file=urllib.parse.quote_plus("Prototype v4.dc.html"))}" data-card-appearance="block"></a></p>',

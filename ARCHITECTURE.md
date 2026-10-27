@@ -56,7 +56,7 @@ discipline, the toolbelt's card shapes and portfolio review, and the layman's
 front end both of them lack. v1 (prices, briefs, alerts, chat, news, calls on
 Lambda) stands underneath; sections that have not changed are kept short.
 
-The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161; the Lucid views redrawn for v4 on 26 Oct 2026, MA-225; the trace drawn as view 9 the same day, MA-236; the plain-words page added on 27 Oct 2026, MA-239):
+The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn for the iOS app and the web app on 25 Oct 2026, MA-161; the Lucid views redrawn for v4 on 26 Oct 2026, MA-225; the trace drawn as view 9 the same day, MA-236; the plain-words page added on 27 Oct 2026, MA-239, and the technical page the same day, MA-244):
 
 - **The architecture, in Lucid**, on AWS 2024 shapes, one Lucid document per
   view. They are private to the account; share them from each document's
@@ -104,6 +104,14 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   through the system (a question, a file, a check-in, a failure and its
   replay), the agent team and the admin desk, the safety nets, the two
   environments and a day with MyPaisa.
+- **[MyPaisa Architecture v4](https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9)** (MA-244): the same
+  architecture, technical and animated, on AWS-style service icons: a system
+  map that plays five journeys hop by hop (a question, a factsheet, a
+  check-in, the 07:15 brief, a failure and its replay), one message as an
+  OpenTelemetry trace with its GenAI spans, the concierge's Claude tool loop
+  and its tools, the nine agents with the kind of agent each is and the
+  models it uses, the routing across Opus, Sonnet and Haiku with the spend
+  ladder, where the data lives, delivery and the guardrails.
 - **[MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)**:
   the market side end to end: free data, the rules engine, news matched to
   holdings, the Forecaster's five models, both engines side by side, the
@@ -111,7 +119,7 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   self-healing and the budgets.
 - Earlier pages, kept for reference: the
   [animated architecture](https://claude.ai/artifact/DHWD7WFjsy7r3VmMvu9eDx)
-  (v3, before the queues and the agent team), the
+  (v3, before the queues and the agent team; superseded by MyPaisa Architecture v4, MA-244), the
   [first user journeys](https://claude.ai/artifact/LQAFk1kz4sddEMkKnwpbam),
   the [dashboard screens](https://claude.ai/artifact/A9mF3PJ91NJ9gRshFes5qp),
   and the Telegram and Mini App boards in
@@ -119,7 +127,7 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   superseded by the iOS app (MA-161); that project's browser boards stay the
   web app's spec (§9.4).
 
-Sources for the pages are in `docs/design/`; the three explainer pages use MyPaisa DS v1,
+Sources for the pages are in `docs/design/`; the four explainer pages use MyPaisa DS v1,
 "Warm ledger" (MA-101), with the crimson alert of MA-102, in light and dark.
 
 Status: design only.

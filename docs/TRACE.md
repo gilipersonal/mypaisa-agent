@@ -56,11 +56,12 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | In Progress | §3, §10 | none |  |
 | MA-237 | Container images are built on AWS CodeBuild's arm64 runner from GitHub Actions and stored in ECR by digest, inside the free tier | To Do | §15, §18.4 | none |  |
 | MA-238 | Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds | To Do | §18.4 | none |  |
-| MA-239 | An animated plain-words page, Inside MyPaisa, walks the admin from the first screen to the chatbot and the agent team | In Review | §3, §8, §20, §21 | none |  |
+| MA-239 | An animated plain-words page, Inside MyPaisa, walks the admin from the first screen to the chatbot and the agent team | Done | §3, §8, §20, §21 | none |  |
 | MA-240 | Every board stays whole at every supported screen size and legible at 25% brightness | In Progress | §9.1, §9.4 | none |  |
 | MA-241 | Every holding, asset and debt shows a colourful icon for its kind, chosen from the kind's data | To Do | §4.8, §9.1, §9.4 | picked | Kind icons.dc.html: B · Settings squircles, one vivid set for both themes |
 | MA-242 | The open foldable boards show the chat as a sheet, as the size classes say, not as a column beside the screen | To Do | §9.1 | none |  |
 | MA-243 | Wealth's one-line sub-lines put the figure first, so an ellipsis never cuts a figure | To Do | §9.4 | none |  |
+| MA-244 | An animated technical page, MyPaisa Architecture v4, plays each journey through AWS and shows every agent and the Claude model it uses | In Progress | §3, §8, §10, §15.1, §18, §20, §21 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
