@@ -414,8 +414,8 @@
 .mp .row4 { flex-wrap: wrap; }
 .mp .row4 > .rt { min-width: min(100%, 5em); }
 .mp .row4 > .rv { margin-left: auto; }
-/* an iPad window narrower than the 11-inch in landscape keeps two lists beside the chat: a name keeps 7em before its figure goes under it */
-@container screen (min-width: 1024px) and (max-width: 1179px) { .mp .row4 > .rt { min-width: min(100%, 7em); } }
+/* an iPad window narrower than the 11-inch in landscape keeps two lists beside the chat: a name keeps 8em before its figure goes under it */
+@container screen (min-width: 1024px) and (max-width: 1179px) { .mp .row4 > .rt { min-width: min(100%, 8em); } }
 /* a schedule's cut name shows its ellipsis: a flex cell cannot draw one */
 .mp .sched > .ell { display: block; min-height: 0; padding-block: 7px; }
 /* a chart's call-out on the hero wraps rather than runs past the chart */

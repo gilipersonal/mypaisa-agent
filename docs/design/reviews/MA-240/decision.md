@@ -69,7 +69,7 @@ All in the design system, copied to the iOS and app projects, so both doors inhe
   dialog's fixed matrix scrolls inside the dialog; a file viewer too narrow for its preview and its details side by
   side (under 720) puts the details under the preview and scrolls; a list row's figure goes under its name, at the
   right, when the two no longer fit side by side (on an iPad window narrower than the 11-inch in landscape, before the
-  name falls under 7em); a chart's "not run yet" note keeps clear of its axis labels; a schedule's cut name shows its
+  name falls under 8em); a chart's "not run yet" note keeps clear of its axis labels; a schedule's cut name shows its
   ellipsis; iOS's alert keeps inside a narrow screen. On a screen under 360 the hero figure steps down to 36 and its
   strip of three takes two columns, a row's chip line and a card row's answers go under the words, the chat's strip
   puts its change under the figure, a toast wraps inside the margins, a table's headers wrap and the inline title
@@ -96,7 +96,8 @@ these and the diff holds the rest.
 - `node scripts/board_fit.js` is the measurement above as a gate, in Chromium and WebKit, for any change under
   `docs/design/` (`.claude/jira-flow.json`; `npm ci --prefix scripts` installs its pinned playwright-core). It fails
   closed: a board that does not render, a board with no frame but the pages its allowances name, a frame it cannot
-  measure, a missing icon or text font and a template value that never resolved are failures. An ellipsis on a flex
+  measure, a missing icon or text font and a template value that never resolved are failures; since the boards fetch
+  React and their fonts over the network, such a board is tried once more first, and a fault in it fails both times. An ellipsis on a flex
   or grid box draws nothing, so the text it cuts counts as clipped; a label that `motion.js` has to thin at a frame's
   drawn size is a fault, since every drawn axis fits. Its allowances, each with its reason, its frames or elements,
   and the issue that removes it where one does, are in `scripts/board_fit_allow.json`. `--selftest` makes each kind of

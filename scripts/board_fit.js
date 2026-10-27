@@ -111,7 +111,14 @@ async function settle(page) {
   return false;
 }
 
+// the boards fetch React and their fonts over the network, so a board that did not render is tried once more before
+// it fails: a fault in the board fails both times
 async function scanBoard(browser, port, board, engine) {
+  const rows = await scanBoardOnce(browser, port, board, engine);
+  return rows.some((r) => r.type === 'did-not-render') ? scanBoardOnce(browser, port, board, engine) : rows;
+}
+
+async function scanBoardOnce(browser, port, board, engine) {
   const dpr = board.startsWith('ios-v1/') ? 3 : 2;
   const ctx = await browser.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: dpr });
   const page = await ctx.newPage();
