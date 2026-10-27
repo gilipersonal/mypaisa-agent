@@ -1,6 +1,6 @@
 {
  "about": "What MA-240 meant to change at the boards' drawn sizes, for `node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json` (d6e243f is main before MA-240). Every other frame of every current board is unchanged pixel for pixel. The neutral CSS puts one grey on the track and the range band on both sides, so their new colours (checked by scripts/contrast_check.py) do not hide a change in layout.",
- "neutral": "*, ::before, ::after { --mp-track: #8a8a8a !important; --mp-band: rgba(138, 138, 138, 0.4) !important; } .mp :is(.mp-track, .meter, .ftrack, .mwk, .sr-t, .pl-t, .rl-t) { background: #8a8a8a !important; box-shadow: none !important; } .mp .fband { fill: #8a8a8a !important; fill-opacity: 1 !important; }",
+ "neutral": "*, ::before, ::after { --mp-track: #8a8a8a !important; --mp-band: rgba(138, 138, 138, 0.4) !important; } .mp :is(.mp-track, .meter:not(:has(> .mp-track)), .ftrack, .mwk:not(.on), .sr-t, .pl-t, .rl-t) { background: #8a8a8a !important; box-shadow: none !important; }",
  "changes": [
   {
    "board": "iPhone v4 · Check-ins.dc.html",
