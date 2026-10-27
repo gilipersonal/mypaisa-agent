@@ -1,0 +1,271 @@
+MA-241 Kind icons: measure every tile pair of every option, in light and dark, at full brightness and at 25%.
+
+    python3 check.py            # read the colours back from the written board, measure, write contrast.txt; exit 1 on a fail
+
+The model is scripts/contrast_check.py's: ratio (L1 + 0.05) / (L2 + 0.05) at full brightness, and
+(0.25 L1 + 0.05) / (0.25 L2 + 0.05) with the screen at 25%. Tiers:
+  ui        a glyph or a monogram on its tile (it carries the kind): 3:1, and 1.8:1 at 25%
+  presence  a tile's fill on the card and on the page (it must be seen): 1.5:1, and 1.25:1 at 25%
+A gradient tile (option B) is measured at both its stops, so the worst stop counts.
+
+== Option A · light (card #FFFFFF, page #F6F4F1)
+  ok   ui       cash and savings       glyph on tile #FFFFFF on #8A5300   6.33:1  dimmed 3.80:1
+  ok   presence cash and savings       tile on card  #8A5300 on #FFFFFF   6.33:1  dimmed 3.80:1
+  ok   presence cash and savings       tile on page  #8A5300 on #F6F4F1   5.77:1  dimmed 3.50:1
+  ok   ui       deposits and schemes   glyph on tile #FFFFFF on #017272   5.75:1  dimmed 3.61:1
+  ok   presence deposits and schemes   tile on card  #017272 on #FFFFFF   5.75:1  dimmed 3.61:1
+  ok   presence deposits and schemes   tile on page  #017272 on #F6F4F1   5.24:1  dimmed 3.33:1
+  ok   ui       investments            glyph on tile #FFFFFF on #2453C9   6.65:1  dimmed 3.90:1
+  ok   presence investments            tile on card  #2453C9 on #FFFFFF   6.65:1  dimmed 3.90:1
+  ok   presence investments            tile on page  #2453C9 on #F6F4F1   6.06:1  dimmed 3.59:1
+  ok   ui       bonds                  glyph on tile #FFFFFF on #6B3FB8   6.93:1  dimmed 3.98:1
+  ok   presence bonds                  tile on card  #6B3FB8 on #FFFFFF   6.93:1  dimmed 3.98:1
+  ok   presence bonds                  tile on page  #6B3FB8 on #F6F4F1   6.32:1  dimmed 3.67:1
+  ok   ui       gold and silver        glyph on tile #FFFFFF on #646A78   5.42:1  dimmed 3.49:1
+  ok   presence gold and silver        tile on card  #646A78 on #FFFFFF   5.42:1  dimmed 3.49:1
+  ok   presence gold and silver        tile on page  #646A78 on #F6F4F1   4.94:1  dimmed 3.22:1
+  ok   ui       pensions               glyph on tile #FFFFFF on #8C399E   6.57:1  dimmed 3.87:1
+  ok   presence pensions               tile on card  #8C399E on #FFFFFF   6.57:1  dimmed 3.87:1
+  ok   presence pensions               tile on page  #8C399E on #F6F4F1   5.99:1  dimmed 3.57:1
+  ok   ui       property               glyph on tile #FFFFFF on #1B709E   5.44:1  dimmed 3.50:1
+  ok   presence property               tile on card  #1B709E on #FFFFFF   5.44:1  dimmed 3.50:1
+  ok   presence property               tile on page  #1B709E on #F6F4F1   4.96:1  dimmed 3.23:1
+  ok   ui       policies               glyph on tile #FFFFFF on #782F53   9.01:1  dimmed 4.50:1
+  ok   presence policies               tile on card  #782F53 on #FFFFFF   9.01:1  dimmed 4.50:1
+  ok   presence policies               tile on page  #782F53 on #F6F4F1   8.21:1  dimmed 4.15:1
+  ok   ui       debts                  glyph on tile #FFFFFF on #254A6E   9.20:1  dimmed 4.54:1
+  ok   presence debts                  tile on card  #254A6E on #FFFFFF   9.20:1  dimmed 4.54:1
+  ok   presence debts                  tile on page  #254A6E on #F6F4F1   8.38:1  dimmed 4.19:1
+
+== Option A · dark (card #151C27, page #0A0F18)
+  ok   ui       cash and savings       glyph on tile #0A0F18 on #F6BC4F  11.17:1  dimmed 3.72:1
+  ok   presence cash and savings       tile on card  #F6BC4F on #151C27   9.96:1  dimmed 3.60:1
+  ok   presence cash and savings       tile on page  #F6BC4F on #0A0F18  11.17:1  dimmed 3.72:1
+  ok   ui       deposits and schemes   glyph on tile #0A0F18 on #57D4D4  10.76:1  dimmed 3.61:1
+  ok   presence deposits and schemes   tile on card  #57D4D4 on #151C27   9.59:1  dimmed 3.49:1
+  ok   presence deposits and schemes   tile on page  #57D4D4 on #0A0F18  10.76:1  dimmed 3.61:1
+  ok   ui       investments            glyph on tile #0A0F18 on #8FB2FF   9.12:1  dimmed 3.17:1
+  ok   presence investments            tile on card  #8FB2FF on #151C27   8.13:1  dimmed 3.07:1
+  ok   presence investments            tile on page  #8FB2FF on #0A0F18   9.12:1  dimmed 3.17:1
+  ok   ui       bonds                  glyph on tile #0A0F18 on #B79CFF   8.42:1  dimmed 2.98:1
+  ok   presence bonds                  tile on card  #B79CFF on #151C27   7.51:1  dimmed 2.89:1
+  ok   presence bonds                  tile on page  #B79CFF on #0A0F18   8.42:1  dimmed 2.98:1
+  ok   ui       gold and silver        glyph on tile #0A0F18 on #969FAE   7.19:1  dimmed 2.65:1
+  ok   presence gold and silver        tile on card  #969FAE on #151C27   6.41:1  dimmed 2.57:1
+  ok   presence gold and silver        tile on page  #969FAE on #0A0F18   7.19:1  dimmed 2.65:1
+  ok   ui       pensions               glyph on tile #0A0F18 on #E495F0   9.01:1  dimmed 3.14:1
+  ok   presence pensions               tile on card  #E495F0 on #151C27   8.03:1  dimmed 3.04:1
+  ok   presence pensions               tile on page  #E495F0 on #0A0F18   9.01:1  dimmed 3.14:1
+  ok   ui       property               glyph on tile #0A0F18 on #8BCDF8  11.13:1  dimmed 3.71:1
+  ok   presence property               tile on card  #8BCDF8 on #151C27   9.93:1  dimmed 3.59:1
+  ok   presence property               tile on page  #8BCDF8 on #0A0F18  11.13:1  dimmed 3.71:1
+  ok   ui       policies               glyph on tile #0A0F18 on #D49FB7   8.63:1  dimmed 3.04:1
+  ok   presence policies               tile on card  #D49FB7 on #151C27   7.69:1  dimmed 2.94:1
+  ok   presence policies               tile on page  #D49FB7 on #0A0F18   8.63:1  dimmed 3.04:1
+  ok   ui       debts                  glyph on tile #0A0F18 on #86B0D5   8.39:1  dimmed 2.98:1
+  ok   presence debts                  tile on card  #86B0D5 on #151C27   7.48:1  dimmed 2.88:1
+  ok   presence debts                  tile on page  #86B0D5 on #0A0F18   8.39:1  dimmed 2.98:1
+
+Option A: worst glyph gold and silver, glyph on tile (dark): 7.19:1, 2.65:1 dimmed; worst tile gold and silver, tile on card (dark): 6.41:1, 2.57:1 dimmed; monogram at the text tier: 15 of 18
+
+== Option B · light (card #FFFFFF, page #F6F4F1)
+  ok   ui       cash and savings       glyph on tile #FFFFFF on #C77B0B   3.35:1  dimmed 2.59:1
+  ok   presence cash and savings       tile on card  #C77B0B on #FFFFFF   3.35:1  dimmed 2.59:1
+  ok   presence cash and savings       tile on page  #C77B0B on #F6F4F1   3.05:1  dimmed 2.39:1
+  ok   ui       cash and savings       glyph on tile #FFFFFF on #AD6A08   4.34:1  dimmed 3.06:1
+  ok   presence cash and savings       tile on card  #AD6A08 on #FFFFFF   4.34:1  dimmed 3.06:1
+  ok   presence cash and savings       tile on page  #AD6A08 on #F6F4F1   3.95:1  dimmed 2.82:1
+  ok   ui       deposits and schemes   glyph on tile #FFFFFF on #099C9C   3.36:1  dimmed 2.60:1
+  ok   presence deposits and schemes   tile on card  #099C9C on #FFFFFF   3.36:1  dimmed 2.60:1
+  ok   presence deposits and schemes   tile on page  #099C9C on #F6F4F1   3.06:1  dimmed 2.39:1
+  ok   ui       deposits and schemes   glyph on tile #FFFFFF on #048686   4.41:1  dimmed 3.09:1
+  ok   presence deposits and schemes   tile on card  #048686 on #FFFFFF   4.41:1  dimmed 3.09:1
+  ok   presence deposits and schemes   tile on page  #048686 on #F6F4F1   4.02:1  dimmed 2.85:1
+  ok   ui       investments            glyph on tile #FFFFFF on #5387FD   3.36:1  dimmed 2.59:1
+  ok   presence investments            tile on card  #5387FD on #FFFFFF   3.36:1  dimmed 2.59:1
+  ok   presence investments            tile on page  #5387FD on #F6F4F1   3.06:1  dimmed 2.39:1
+  ok   ui       investments            glyph on tile #FFFFFF on #4072E7   4.39:1  dimmed 3.09:1
+  ok   presence investments            tile on card  #4072E7 on #FFFFFF   4.39:1  dimmed 3.09:1
+  ok   presence investments            tile on page  #4072E7 on #F6F4F1   4.00:1  dimmed 2.84:1
+  ok   ui       bonds                  glyph on tile #FFFFFF on #9F71FD   3.36:1  dimmed 2.59:1
+  ok   presence bonds                  tile on card  #9F71FD on #FFFFFF   3.36:1  dimmed 2.59:1
+  ok   presence bonds                  tile on page  #9F71FD on #F6F4F1   3.06:1  dimmed 2.39:1
+  ok   ui       bonds                  glyph on tile #FFFFFF on #8C5CE6   4.39:1  dimmed 3.08:1
+  ok   presence bonds                  tile on card  #8C5CE6 on #FFFFFF   4.39:1  dimmed 3.08:1
+  ok   presence bonds                  tile on page  #8C5CE6 on #F6F4F1   3.99:1  dimmed 2.84:1
+  ok   ui       gold and silver        glyph on tile #FFFFFF on #858C9E   3.36:1  dimmed 2.60:1
+  ok   presence gold and silver        tile on card  #858C9E on #FFFFFF   3.36:1  dimmed 2.60:1
+  ok   presence gold and silver        tile on page  #858C9E on #F6F4F1   3.06:1  dimmed 2.39:1
+  ok   ui       gold and silver        glyph on tile #FFFFFF on #72798A   4.36:1  dimmed 3.07:1
+  ok   presence gold and silver        tile on card  #72798A on #FFFFFF   4.36:1  dimmed 3.07:1
+  ok   presence gold and silver        tile on page  #72798A on #F6F4F1   3.97:1  dimmed 2.83:1
+  ok   ui       pensions               glyph on tile #FFFFFF on #CD5BE6   3.37:1  dimmed 2.60:1
+  ok   presence pensions               tile on card  #CD5BE6 on #FFFFFF   3.37:1  dimmed 2.60:1
+  ok   presence pensions               tile on page  #CD5BE6 on #F6F4F1   3.07:1  dimmed 2.40:1
+  ok   ui       pensions               glyph on tile #FFFFFF on #B845D0   4.37:1  dimmed 3.08:1
+  ok   presence pensions               tile on card  #B845D0 on #FFFFFF   4.37:1  dimmed 3.08:1
+  ok   presence pensions               tile on page  #B845D0 on #F6F4F1   3.99:1  dimmed 2.84:1
+  ok   ui       property               glyph on tile #FFFFFF on #0595D6   3.35:1  dimmed 2.59:1
+  ok   presence property               tile on card  #0595D6 on #FFFFFF   3.35:1  dimmed 2.59:1
+  ok   presence property               tile on page  #0595D6 on #F6F4F1   3.05:1  dimmed 2.39:1
+  ok   ui       property               glyph on tile #FFFFFF on #0280B9   4.38:1  dimmed 3.08:1
+  ok   presence property               tile on card  #0280B9 on #FFFFFF   4.38:1  dimmed 3.08:1
+  ok   presence property               tile on page  #0280B9 on #F6F4F1   3.99:1  dimmed 2.84:1
+  ok   ui       policies               glyph on tile #FFFFFF on #C47397   3.36:1  dimmed 2.60:1
+  ok   presence policies               tile on card  #C47397 on #FFFFFF   3.36:1  dimmed 2.60:1
+  ok   presence policies               tile on page  #C47397 on #F6F4F1   3.06:1  dimmed 2.39:1
+  ok   ui       policies               glyph on tile #FFFFFF on #AE6084   4.37:1  dimmed 3.07:1
+  ok   presence policies               tile on card  #AE6084 on #FFFFFF   4.37:1  dimmed 3.07:1
+  ok   presence policies               tile on page  #AE6084 on #F6F4F1   3.98:1  dimmed 2.83:1
+  ok   ui       debts                  glyph on tile #FFFFFF on #42688E   5.83:1  dimmed 3.64:1
+  ok   presence debts                  tile on card  #42688E on #FFFFFF   5.83:1  dimmed 3.64:1
+  ok   presence debts                  tile on page  #42688E on #F6F4F1   5.31:1  dimmed 3.35:1
+  ok   ui       debts                  glyph on tile #FFFFFF on #30557A   7.76:1  dimmed 4.21:1
+  ok   presence debts                  tile on card  #30557A on #FFFFFF   7.76:1  dimmed 4.21:1
+  ok   presence debts                  tile on page  #30557A on #F6F4F1   7.07:1  dimmed 3.88:1
+
+== Option B · dark (card #151C27, page #0A0F18)
+  ok   ui       cash and savings       glyph on tile #FFFFFF on #C77B0B   3.35:1  dimmed 2.59:1
+  ok   presence cash and savings       tile on card  #C77B0B on #151C27   5.11:1  dimmed 2.19:1
+  ok   presence cash and savings       tile on page  #C77B0B on #0A0F18   5.73:1  dimmed 2.26:1
+  ok   ui       cash and savings       glyph on tile #FFFFFF on #AD6A08   4.34:1  dimmed 3.06:1
+  ok   presence cash and savings       tile on card  #AD6A08 on #151C27   3.95:1  dimmed 1.86:1
+  ok   presence cash and savings       tile on page  #AD6A08 on #0A0F18   4.42:1  dimmed 1.92:1
+  ok   ui       deposits and schemes   glyph on tile #FFFFFF on #099C9C   3.36:1  dimmed 2.60:1
+  ok   presence deposits and schemes   tile on card  #099C9C on #151C27   5.09:1  dimmed 2.19:1
+  ok   presence deposits and schemes   tile on page  #099C9C on #0A0F18   5.71:1  dimmed 2.26:1
+  ok   ui       deposits and schemes   glyph on tile #FFFFFF on #048686   4.41:1  dimmed 3.09:1
+  ok   presence deposits and schemes   tile on card  #048686 on #151C27   3.88:1  dimmed 1.84:1
+  ok   presence deposits and schemes   tile on page  #048686 on #0A0F18   4.35:1  dimmed 1.90:1
+  ok   ui       investments            glyph on tile #FFFFFF on #5387FD   3.36:1  dimmed 2.59:1
+  ok   presence investments            tile on card  #5387FD on #151C27   5.09:1  dimmed 2.19:1
+  ok   presence investments            tile on page  #5387FD on #0A0F18   5.71:1  dimmed 2.26:1
+  ok   ui       investments            glyph on tile #FFFFFF on #4072E7   4.39:1  dimmed 3.09:1
+  ok   presence investments            tile on card  #4072E7 on #151C27   3.89:1  dimmed 1.84:1
+  ok   presence investments            tile on page  #4072E7 on #0A0F18   4.37:1  dimmed 1.90:1
+  ok   ui       bonds                  glyph on tile #FFFFFF on #9F71FD   3.36:1  dimmed 2.59:1
+  ok   presence bonds                  tile on card  #9F71FD on #151C27   5.10:1  dimmed 2.19:1
+  ok   presence bonds                  tile on page  #9F71FD on #0A0F18   5.71:1  dimmed 2.26:1
+  ok   ui       bonds                  glyph on tile #FFFFFF on #8C5CE6   4.39:1  dimmed 3.08:1
+  ok   presence bonds                  tile on card  #8C5CE6 on #151C27   3.90:1  dimmed 1.84:1
+  ok   presence bonds                  tile on page  #8C5CE6 on #0A0F18   4.38:1  dimmed 1.90:1
+  ok   ui       gold and silver        glyph on tile #FFFFFF on #858C9E   3.36:1  dimmed 2.60:1
+  ok   presence gold and silver        tile on card  #858C9E on #151C27   5.09:1  dimmed 2.19:1
+  ok   presence gold and silver        tile on page  #858C9E on #0A0F18   5.70:1  dimmed 2.26:1
+  ok   ui       gold and silver        glyph on tile #FFFFFF on #72798A   4.36:1  dimmed 3.07:1
+  ok   presence gold and silver        tile on card  #72798A on #151C27   3.93:1  dimmed 1.85:1
+  ok   presence gold and silver        tile on page  #72798A on #0A0F18   4.40:1  dimmed 1.91:1
+  ok   ui       pensions               glyph on tile #FFFFFF on #CD5BE6   3.37:1  dimmed 2.60:1
+  ok   presence pensions               tile on card  #CD5BE6 on #151C27   5.08:1  dimmed 2.18:1
+  ok   presence pensions               tile on page  #CD5BE6 on #0A0F18   5.70:1  dimmed 2.26:1
+  ok   ui       pensions               glyph on tile #FFFFFF on #B845D0   4.37:1  dimmed 3.08:1
+  ok   presence pensions               tile on card  #B845D0 on #151C27   3.91:1  dimmed 1.85:1
+  ok   presence pensions               tile on page  #B845D0 on #0A0F18   4.39:1  dimmed 1.91:1
+  ok   ui       property               glyph on tile #FFFFFF on #0595D6   3.35:1  dimmed 2.59:1
+  ok   presence property               tile on card  #0595D6 on #151C27   5.11:1  dimmed 2.19:1
+  ok   presence property               tile on page  #0595D6 on #0A0F18   5.73:1  dimmed 2.27:1
+  ok   ui       property               glyph on tile #FFFFFF on #0280B9   4.38:1  dimmed 3.08:1
+  ok   presence property               tile on card  #0280B9 on #151C27   3.90:1  dimmed 1.84:1
+  ok   presence property               tile on page  #0280B9 on #0A0F18   4.38:1  dimmed 1.90:1
+  ok   ui       policies               glyph on tile #FFFFFF on #C47397   3.36:1  dimmed 2.60:1
+  ok   presence policies               tile on card  #C47397 on #151C27   5.09:1  dimmed 2.19:1
+  ok   presence policies               tile on page  #C47397 on #0A0F18   5.71:1  dimmed 2.26:1
+  ok   ui       policies               glyph on tile #FFFFFF on #AE6084   4.37:1  dimmed 3.07:1
+  ok   presence policies               tile on card  #AE6084 on #151C27   3.92:1  dimmed 1.85:1
+  ok   presence policies               tile on page  #AE6084 on #0A0F18   4.39:1  dimmed 1.91:1
+  ok   ui       debts                  glyph on tile #FFFFFF on #42688E   5.83:1  dimmed 3.64:1
+  ok   presence debts                  tile on card  #42688E on #151C27   2.94:1  dimmed 1.56:1
+  ok   presence debts                  tile on page  #42688E on #0A0F18   3.29:1  dimmed 1.61:1
+  ok   ui       debts                  glyph on tile #FFFFFF on #30557A   7.76:1  dimmed 4.21:1
+  ok   presence debts                  tile on card  #30557A on #151C27   2.20:1  dimmed 1.35:1
+  ok   presence debts                  tile on page  #30557A on #0A0F18   2.47:1  dimmed 1.39:1
+
+Option B: worst glyph property, glyph on tile (light): 3.35:1, 2.59:1 dimmed; worst tile debts, tile on card (dark): 2.20:1, 1.35:1 dimmed; monogram at the text tier: 4 of 36
+
+== Option C · light (card #FFFFFF, page #F6F4F1)
+  ok   ui       cash and savings       glyph on tile #8A5300 on #DDC29A   3.69:1  dimmed 2.41:1
+  ok   presence cash and savings       tile on card  #DDC29A on #FFFFFF   1.71:1  dimmed 1.57:1
+  ok   presence cash and savings       tile on page  #DDC29A on #F6F4F1   1.56:1  dimmed 1.45:1
+  ok   ui       deposits and schemes   glyph on tile #017272 on #9DD0D0   3.39:1  dimmed 2.31:1
+  ok   presence deposits and schemes   tile on card  #9DD0D0 on #FFFFFF   1.70:1  dimmed 1.56:1
+  ok   presence deposits and schemes   tile on page  #9DD0D0 on #F6F4F1   1.55:1  dimmed 1.44:1
+  ok   ui       investments            glyph on tile #2453C9 on #B3C7F5   3.93:1  dimmed 2.50:1
+  ok   presence investments            tile on card  #B3C7F5 on #FFFFFF   1.69:1  dimmed 1.56:1
+  ok   presence investments            tile on page  #B3C7F5 on #F6F4F1   1.54:1  dimmed 1.44:1
+  ok   ui       bonds                  glyph on tile #6B3FB8 on #D1BEF5   4.09:1  dimmed 2.55:1
+  ok   presence bonds                  tile on card  #D1BEF5 on #FFFFFF   1.69:1  dimmed 1.56:1
+  ok   presence bonds                  tile on page  #D1BEF5 on #F6F4F1   1.54:1  dimmed 1.44:1
+  ok   ui       gold and silver        glyph on tile #646A78 on #C4C7CE   3.20:1  dimmed 2.24:1
+  ok   presence gold and silver        tile on card  #C4C7CE on #FFFFFF   1.69:1  dimmed 1.56:1
+  ok   presence gold and silver        tile on page  #C4C7CE on #F6F4F1   1.54:1  dimmed 1.44:1
+  ok   ui       pensions               glyph on tile #8C399E on #E4B8ED   3.88:1  dimmed 2.48:1
+  ok   presence pensions               tile on card  #E4B8ED on #FFFFFF   1.70:1  dimmed 1.56:1
+  ok   presence pensions               tile on page  #E4B8ED on #F6F4F1   1.55:1  dimmed 1.44:1
+  ok   ui       property               glyph on tile #1B709E on #9CCDE4   3.18:1  dimmed 2.23:1
+  ok   presence property               tile on card  #9CCDE4 on #FFFFFF   1.71:1  dimmed 1.57:1
+  ok   presence property               tile on page  #9CCDE4 on #F6F4F1   1.56:1  dimmed 1.45:1
+  ok   ui       policies               glyph on tile #782F53 on #DEBECD   5.30:1  dimmed 2.88:1
+  ok   presence policies               tile on card  #DEBECD on #FFFFFF   1.70:1  dimmed 1.56:1
+  ok   presence policies               tile on page  #DEBECD on #F6F4F1   1.55:1  dimmed 1.44:1
+  ok   ui       debts                  glyph on tile #254A6E on #BBC7D3   5.35:1  dimmed 2.88:1
+  ok   presence debts                  tile on card  #BBC7D3 on #FFFFFF   1.72:1  dimmed 1.58:1
+  ok   presence debts                  tile on page  #BBC7D3 on #F6F4F1   1.57:1  dimmed 1.45:1
+
+== Option C · dark (card #151C27, page #0A0F18)
+  ok   ui       cash and savings       glyph on tile #F6BC4F on #644517   5.08:1  dimmed 2.82:1
+  ok   presence cash and savings       tile on card  #644517 on #151C27   1.96:1  dimmed 1.28:1
+  ok   presence cash and savings       tile on page  #644517 on #0A0F18   2.20:1  dimmed 1.32:1
+  ok   ui       deposits and schemes   glyph on tile #57D4D4 on #0C5358   4.92:1  dimmed 2.74:1
+  ok   presence deposits and schemes   tile on card  #0C5358 on #151C27   1.95:1  dimmed 1.28:1
+  ok   presence deposits and schemes   tile on page  #0C5358 on #0A0F18   2.19:1  dimmed 1.32:1
+  ok   ui       investments            glyph on tile #8FB2FF on #2B4889   4.17:1  dimmed 2.41:1
+  ok   presence investments            tile on card  #2B4889 on #151C27   1.95:1  dimmed 1.28:1
+  ok   presence investments            tile on page  #2B4889 on #0A0F18   2.18:1  dimmed 1.32:1
+  ok   ui       bonds                  glyph on tile #B79CFF on #523D88   3.87:1  dimmed 2.27:1
+  ok   presence bonds                  tile on card  #523D88 on #151C27   1.94:1  dimmed 1.27:1
+  ok   presence bonds                  tile on page  #523D88 on #0A0F18   2.18:1  dimmed 1.31:1
+  ok   ui       gold and silver        glyph on tile #969FAE on #444A58   3.32:1  dimmed 2.03:1
+  ok   presence gold and silver        tile on card  #444A58 on #151C27   1.93:1  dimmed 1.27:1
+  ok   presence gold and silver        tile on page  #444A58 on #0A0F18   2.16:1  dimmed 1.31:1
+  ok   ui       pensions               glyph on tile #E495F0 on #6B3281   4.11:1  dimmed 2.38:1
+  ok   presence pensions               tile on card  #6B3281 on #151C27   1.95:1  dimmed 1.28:1
+  ok   presence pensions               tile on page  #6B3281 on #0A0F18   2.19:1  dimmed 1.32:1
+  ok   ui       property               glyph on tile #8BCDF8 on #0B4F71   5.14:1  dimmed 2.83:1
+  ok   presence property               tile on card  #0B4F71 on #151C27   1.93:1  dimmed 1.27:1
+  ok   presence property               tile on page  #0B4F71 on #0A0F18   2.17:1  dimmed 1.31:1
+  ok   ui       policies               glyph on tile #D49FB7 on #633F56   3.97:1  dimmed 2.31:1
+  ok   presence policies               tile on card  #633F56 on #151C27   1.94:1  dimmed 1.27:1
+  ok   presence policies               tile on page  #633F56 on #0A0F18   2.17:1  dimmed 1.31:1
+  ok   ui       debts                  glyph on tile #86B0D5 on #2C4C6E   3.88:1  dimmed 2.27:1
+  ok   presence debts                  tile on card  #2C4C6E on #151C27   1.93:1  dimmed 1.27:1
+  ok   presence debts                  tile on page  #2C4C6E on #0A0F18   2.16:1  dimmed 1.31:1
+
+Option C: worst glyph property, glyph on tile (light): 3.18:1, 2.23:1 dimmed; worst tile debts, tile on card (dark): 1.93:1, 1.27:1 dimmed; monogram at the text tier: 0 of 18
+
+== Separation (information, not a gate): OKLab distance between family colours, and to green, alert red and the accent
+  A light: closest families deposits and schemes / property 0.076, then bonds / pensions 0.077; nearest meaning colour deposits and schemes / up 0.089; tokens' shares / bonds 0.102
+  A dark : closest families gold and silver / debts 0.062, then investments / debts 0.063; nearest meaning colour policies / alert 0.069; tokens' shares / bonds 0.073
+  B light: closest families deposits and schemes / property 0.088, then investments / property 0.091; nearest meaning colour deposits and schemes / up 0.101; tokens' shares / bonds 0.102
+  B dark : closest families deposits and schemes / property 0.088, then investments / property 0.091; nearest meaning colour policies / alert 0.209; tokens' shares / bonds 0.073
+  C light: closest families deposits and schemes / property 0.076, then bonds / pensions 0.077; nearest meaning colour deposits and schemes / up 0.089; tokens' shares / bonds 0.102
+  C dark : closest families gold and silver / debts 0.062, then investments / debts 0.063; nearest meaning colour policies / alert 0.069; tokens' shares / bonds 0.073
+
+== Agreement with the chart encodings (tokens.css --mp-asset-*)
+  ok   A light investments      fill #2453C9 = --mp-asset-shares #2453C9
+  ok   A light bonds            fill #6B3FB8 = --mp-asset-bonds #6B3FB8
+  ok   A light gold and silver  fill #646A78 = --mp-asset-silver #646A78
+  ok   A light cash and savings fill #8A5300 = --mp-asset-cash #8A5300
+  ok   A dark  investments      fill #8FB2FF = --mp-asset-shares #8FB2FF
+  ok   A dark  bonds            fill #B79CFF = --mp-asset-bonds #B79CFF
+  ok   A dark  gold and silver  fill #969FAE = --mp-asset-silver #969FAE
+  ok   A dark  cash and savings fill #F6BC4F = --mp-asset-cash #F6BC4F
+  ok   C light investments      glyph #2453C9 = --mp-asset-shares #2453C9
+  ok   C light bonds            glyph #6B3FB8 = --mp-asset-bonds #6B3FB8
+  ok   C light gold and silver  glyph #646A78 = --mp-asset-silver #646A78
+  ok   C light cash and savings glyph #8A5300 = --mp-asset-cash #8A5300
+  ok   C dark  investments      glyph #8FB2FF = --mp-asset-shares #8FB2FF
+  ok   C dark  bonds            glyph #B79CFF = --mp-asset-bonds #B79CFF
+  ok   C dark  gold and silver  glyph #969FAE = --mp-asset-silver #969FAE
+  ok   C dark  cash and savings glyph #F6BC4F = --mp-asset-cash #F6BC4F
+
+Result: every pair passes

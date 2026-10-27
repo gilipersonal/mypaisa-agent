@@ -1,0 +1,164 @@
+{
+ "about": "What scripts/board_fit.js does not count as a fault, and why (MA-240). Each allowance names its board (the end of its mirror path), the fault types, a regular expression on the text and, where it holds only there, the sizes (or `below`, every measured width under it, never the drawn size), a regular expression on the frame's label and one on the element's path. An allowance that matches nothing is reported, so the list stays true. Change a board to fix a fault; add an allowance only for what is drawn on purpose or what an open issue carries, with its reason.",
+ "superseded": {
+  "pattern": "^(Telegram |Mini App|Prototype\\.dc|PrototypeV4|Chat basics|Currency check)",
+  "frames": "^(Mini App|Telegram)",
+  "why": "The superseded record (MA-161), nothing built from it: the Telegram files (Telegram admin, chats, second check; the Telegram kit), Mini App, the first Prototype, Chat basics (the Telegram chat's messages) and both Currency check files (the Telegram currency check). PrototypeV4Chat, Pages, Phone and Web are the parts Prototype v4 mounts; the gate walks them inside it. In a file that mixes them with current boards, a frame whose label starts with Mini App or Telegram is the same record and is left out too."
+ },
+ "noFrames": [
+  {
+   "board": "Foundations.dc.html",
+   "why": "The design system's documentation: tokens, type and colour as specimens, no device frame."
+  },
+  {
+   "board": "Components.dc.html",
+   "why": "The design system's components as specimens at one width, no device frame."
+  },
+  {
+   "board": "Components 2.dc.html",
+   "why": "More components as specimens, no device frame."
+  },
+  {
+   "board": "Logo.dc.html",
+   "why": "The mark and its animation, no device frame."
+  },
+  {
+   "board": "MyPaisa DS v1.dc.html",
+   "why": "The directions page Arun picked Warm ledger from (MA-101), no device frame."
+  },
+  {
+   "board": "Research cards.dc.html",
+   "why": "The research and review cards drawn as messages in the Telegram chat (69 tg- parts, no MyPaisa device or browser frame), so there is no screen to resize; the stories that show these cards (MA-63 to MA-65 and the rest) draw them on the iOS and browser boards before they start."
+  }
+ ],
+ "allow": [
+  {
+   "board": "iPhone v4 · Home.dc.html",
+   "types": [
+    "clip-x"
+   ],
+   "frames": "as it opens, the UK",
+   "text": "^(₹1,19,79,306|₹1,34,92,563|India|India · ₹|Own|FP|Fixed deposit · SBI|Flat, Pune|PPF · SBI|Parag Parikh Flexi Cap|property|Arun 50% · Asha 50%|≈ £106,483|≈ £106,483 net|LIC Jeevan Anand|Asha · surrender value|NRE savings · HDFC|Infosys|Arun · 120 shares|Home loan · HDFC|PF|PP|FD|LI|NR|IN|HL)$",
+   "why": "Home's countries are a pager: on the UK card the India card peeks past the screen's edge on purpose, so a swipe is plain; what peeks is the next card's start (its header and the start of its rows, wider on a wider phone)."
+  },
+  {
+   "board": "iPhone settings.dc.html",
+   "types": [
+    "clip-x",
+    "cut-at-edge"
+   ],
+   "text": "^(another app|MyPaisa)$",
+   "why": "The app switcher, drawn as iOS draws it: the cards of the apps either side, and MyPaisa's own card at 320, sit past the screen's edge.",
+   "el": "\\.sw\\b|swc|swcard"
+  },
+  {
+   "board": "iPad and foldable.dc.html",
+   "types": [
+    "clip-x",
+    "spill",
+    "overlap",
+    "crushed",
+    "cut-at-edge"
+   ],
+   "frames": "^Foldable · (open|Open)",
+   "text": ".",
+   "sizes": [
+    "600x",
+    "650x",
+    "700x",
+    "744x"
+   ],
+   "why": "Foldable · Open and Foldable · Open, Audit draw the chat beside the screen at 880, where the plan's size classes put a foldable, open, in the regular, narrow class with the chat as a sheet; under 744 their screen column is too narrow. The redraw is listed undrawn on MA-70, MA-71, MA-78, MA-79 and MA-163, for MA-163's design-first round, which removes this allowance."
+  },
+  {
+   "board": "Wealth.dc.html",
+   "types": [
+    "figure-truncated"
+   ],
+   "text": "^(set 2 Oct: “plan £400 a month for the holiday”|Joint · Insurer G · £400,000 cover|₹24,000 a year, each March)$",
+   "why": "Three one-line sub-lines end in a figure, so their ellipsis cuts it; MA-243 puts the figure first and removes this allowance."
+  },
+  {
+   "board": "iPhone settings.dc.html|iPhone v4 · Check-ins.dc.html|Web v4 · Shell and chat.dc.html",
+   "types": [
+    "overlap"
+   ],
+   "el": "lock-(date|time)",
+   "text": "⟂",
+   "why": "The lock screen as iOS draws it: the clock's 92 pt numerals have a line box that reaches into the date above; the glyphs keep their gap."
+  },
+  {
+   "board": "iPhone v4 · Assets and debts.dc.html",
+   "types": [
+    "label-thinned-as-drawn"
+   ],
+   "frames": "^iPhone · Car loan · (light|dark)$",
+   "text": "^2026$",
+   "why": "The Car loan axis draws 2026 on Mar 2025 (0.2 px apart); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels in Claude Design would remove this allowance."
+  },
+  {
+   "board": "Web v4 · Assets and debts.dc.html",
+   "types": [
+    "label-thinned-as-drawn"
+   ],
+   "frames": "^Browser · Car loan, phone · (Light|Dark)$",
+   "text": "^2026$",
+   "why": "The Car loan axis draws 2026 on Mar 2025 (overlapping); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels in Claude Design would remove this allowance."
+  },
+  {
+   "board": "Prototype v4.dc.html",
+   "types": [
+    "label-thinned-as-drawn"
+   ],
+   "frames": "^Phone web · (Light|Dark) · step 10$",
+   "text": "^2031$",
+   "why": "The prototype's Projection on the Phone web door draws 2031 on Today; motion.js thins it, so Today reads whole. Redrawing the axis's labels would remove this allowance."
+  },
+  {
+   "board": "Forecast.dc.html|Admin center 2.dc.html|Admin center 3.dc.html|Browser.dc.html|Browser 2.dc.html|Wealth.dc.html",
+   "types": [
+    "clip-x",
+    "clip-y",
+    "spill",
+    "overlap",
+    "crushed",
+    "cut-at-edge"
+   ],
+   "frames": "^(Browser · |Alerts · |Approvals · |Spend · )",
+   "text": ".",
+   "below": 600,
+   "why": "These planned boards draw the web page at desktop width only. Below 600 the web app shows the page alone, at a phone's width, a layout they do not draw yet: every story that cites them lists it undrawn, for its design-first round (MA-84, MA-97, MA-102, MA-114, MA-116, MA-124, MA-130, MA-135, MA-136, MA-137, MA-145, MA-183, MA-184), which removes this allowance."
+  },
+  {
+   "board": "Browser.dc.html|Browser 2.dc.html",
+   "types": [
+    "overlap"
+   ],
+   "frames": "^Browser · (Track record|Activity)",
+   "text": "(check|check_circle)",
+   "below": 761,
+   "why": "At 759 and 760, where the regular class's two columns begin, a tick sits on the line beside it in Activity's price freshness and Track record's outcome. Both boards are redrawn to the iOS boards' household and ledger (undrawn on MA-183 and MA-184), whose design-first round reviews every size and removes this allowance."
+  },
+  {
+   "board": "Kind icons.dc.html",
+   "types": [
+    "clip-x",
+    "clip-y",
+    "spill",
+    "overlap",
+    "crushed",
+    "cut-at-edge"
+   ],
+   "frames": "Browser, wide",
+   "text": ".",
+   "below": 1024,
+   "why": "MA-241's options board draws its Debts list in a browser at desktop width only, to show the tile in a desktop row; the build draws the tile on the web app's own boards at every width (MA-241)."
+  }
+ ],
+ "drawnOnly": [
+  {
+   "board": "iOS kit.dc.html",
+   "why": "The kit's specimen panels (controls, curves, cards, glass) are components at one size, not screens; its iPhone and iPad frames are resized like every board's."
+  }
+ ]
+}

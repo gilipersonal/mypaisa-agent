@@ -142,3 +142,48 @@
   }).observe(document.documentElement, { childList: true, subtree: true });
   if (document.readyState !== 'loading') scan(); else document.addEventListener('DOMContentLoaded', scan);
 })();
+
+/* Axis labels thin themselves where they would touch (MA-240), as Swift Charts and LayerChart do: on a chart narrower
+   than drawn, a label that would sit within 2 px of the one kept before it, or of the last, is hidden; the first and
+   the last always stay. A meter's labels and the market mood strip's segment labels (.mlab) thin the same way, the
+   strip's colours keeping their legend. Labels that fit are never touched, so every chart keeps its drawn axis. This
+   is layout, not motion, so it runs under Reduce Motion and ?static=1 too, and again whenever an axis changes width. */
+(function () {
+  if (window.__mpAxisFit) return;
+  window.__mpAxisFit = true;
+  var AXES = '.mp-chartaxis, .pc-x, .ticks, .mlab';
+  var GAP = 2;   // the tightest drawn pair that does not touch, a meter's 85% and 95%, keeps 4.7 px
+
+  function fit(axis) {
+    var kids = [].filter.call(axis.children, function (k) { return k.nodeType === 1; });
+    kids.forEach(function (k) { if (k.__mpThinned) { k.style.removeProperty('visibility'); k.__mpThinned = false; } });
+    if (kids.length < 3) return;
+    var box = kids.map(function (k) { return k.getBoundingClientRect(); });
+    var order = kids.map(function (k, i) { return i; }).filter(function (i) { return box[i].width > 0; })
+      .sort(function (a, b) { return box[a].left - box[b].left; });
+    if (order.length < 3) return;
+    var last = box[order[order.length - 1]], kept = box[order[0]];
+    for (var j = 1; j < order.length - 1; j++) {
+      var i = order[j], b = box[i];
+      if (b.left < kept.right + GAP || b.right > last.left - GAP) {
+        kids[i].style.setProperty('visibility', 'hidden');
+        kids[i].__mpThinned = true;
+      } else kept = b;
+    }
+  }
+
+  var ro = 'ResizeObserver' in window ? new ResizeObserver(function (es) { es.forEach(function (e) { fit(e.target); }); }) : null;
+  function scan() {
+    document.querySelectorAll(AXES).forEach(function (a) {
+      if (a.__mpFit) return;
+      a.__mpFit = true;
+      if (ro) ro.observe(a); else fit(a);
+    });
+  }
+  var pending = 0;
+  new MutationObserver(function () {
+    if (pending) return;
+    pending = setTimeout(function () { pending = 0; scan(); }, 120);
+  }).observe(document.documentElement, { childList: true, subtree: true });
+  if (document.readyState !== 'loading') scan(); else document.addEventListener('DOMContentLoaded', scan);
+})();

@@ -30,7 +30,7 @@ As a member I want one app that is the chat and the dashboard at once, on whiche
 **Acceptance.**
 - Arun picks 1a, 1b or 1c on `Shell options.dc.html` (`/design-first`); the picked shell is built, nothing else.
 - iPhone (compact): the Liquid Glass tab bar with the picked tabs and the separate search tab; the tab bar minimises as content scrolls.
-- iPad and an open foldable (regular): the sidebar; at over about 900 pt the chat sits beside every screen as a trailing column; under it, the chat opens as a sheet. Split View, Slide Over and Stage Manager windows from 320 pt wide lay out by width alone.
+- iPad and an open foldable (regular): the sidebar; from about 1133 pt the chat sits beside every screen as a trailing column; under it, the chat opens as a sheet (over about 900 pt as filed; moved on 27 Oct 2026, MA-240). Split View, Slide Over and Stage Manager windows from 320 pt wide lay out by width alone.
 - A rotation, a fold or a window resize keeps the conversation, the scroll position and any guided flow (scene state restoration).
 - Hardware keyboard: Return sends, Shift-Return breaks a line, ⌘K the composer, ⌘1 to ⌘5 the sections, ⌘F search, Esc closes a sheet; pointer hover on rows and buttons.
 - Gates: the iOS gates (MA-166); snapshot tests of the shell at iPhone, iPad portrait and landscape, one-third Split View and the foldable sizes, light and dark.

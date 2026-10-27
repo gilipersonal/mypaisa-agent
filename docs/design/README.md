@@ -57,12 +57,12 @@ shell (MA-165), so each board maps onto SwiftUI views. It never asks which devic
 class and window width, so every iPhone, every iPad window and a foldable,
 folded or open, fit with no special case:
 
-| | Compact | Regular, narrow | Regular, wide |
-| --- | --- | --- | --- |
-| Width | under about 600 pt, and every iPhone | about 600 to 900 pt | over about 900 pt |
-| Where | every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | iPad in landscape; a large Stage Manager window |
-| Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the chat as a sheet (beside the screen only over about 900 pt) | the sidebar, the screen, and the chat as a column beside every screen |
-| Boards | the `iPhone` files | `iPad and foldable` | `iPad and foldable` |
+| | Compact | Regular, narrow | Regular, wide | Regular, widest |
+| --- | --- | --- | --- | --- |
+| Width | under about 600 pt, and every iPhone | about 600 to 900 pt | about 900 to 1133 pt | from about 1133 pt |
+| Where | every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | a 13-inch iPad upright; a wide Split View pane or Stage Manager window | iPad in landscape, from the iPad mini up; a large Stage Manager window |
+| Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the chat as a sheet (beside the screen only from about 1133 pt) | the sidebar and the screen; the chat as a sheet, from the sidebar's Chat | the sidebar, the screen, and the chat as a column beside every screen |
+| Boards | the `iPhone` files | `iPad and foldable` | the landscape boards, the chat column put away (`tokens.css`, MA-240) | `iPad and foldable`, `iPad v4` |
 
 **The shell is 1a, Chat first** (Arun's pick, 26 Oct 2026, MA-163).
 `Shell options` draws the three that were offered, each on iPhone and iPad:
@@ -118,7 +118,28 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   pair in `ds-v1/tokens.css` and the glass fills passes
   `python3 scripts/contrast_check.py` in light and dark, at full brightness
   and dimmed to 25%; the dark tokens are tuned for it. No tertiary grey for
-  anything a member must read, and glass carries labels only.
+  anything a member must read, and glass carries labels only. A bar's empty
+  track is the `--mp-track` token on every board, and the gate measures it
+  on a card, the page, a fill and the hero (MA-240).
+- **Whole at every size** (MA-240): Arun asked, on 27 Oct 2026, that nothing
+  overflow or overlap at any screen size and nothing break on a resize. Each board
+  draws a screen at one size; `node scripts/board_fit.js` renders every
+  current board in Chromium and WebKit at the screen's own pixel ratio,
+  resizes each frame through every size its class covers (an iPhone from
+  320 (Display Zoom) to 440 and in landscape, an iPad or foldable window
+  from 600 to 1366, and the web from 320 to 1920), and walks
+  Prototype v4 at every door. Text clipped mid-word, text on text, a crushed
+  column or a box cut at the screen's edge fails it, but for what
+  `scripts/board_fit_allow.json` names with its reason. The fixes live in
+  `tokens.css`: the page is a size container of its own, so with the chat
+  beside it the page's width, not the window's, sets its columns; and the
+  fit guards keep the parts drawn on many boards whole (rows that scroll
+  really scroll, a card's answers wrap, a hero figure shrinks to fit, a
+  list row's figure goes under its name). In `motion.js`, a narrow chart's
+  axis labels thin where they would touch. A shared rule must leave every
+  board as drawn: `node scripts/board_fit.js --diff <main> --expect
+  review/MA-<n>/drawn-changes.json` compares every frame at its drawn size,
+  pixel by pixel, and fails on a change the story does not name.
 
 **The superseded record.** The Mini App boards, the Telegram chats and the
 Prototype's Telegram flows in MyPaisa app v1 (`app-v1/`), the Telegram kit in

@@ -45,6 +45,12 @@
       "cwd": ".",
       "run": "python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py",
       "paths": ["**"]
+    },
+    {
+      "name": "board-fit",
+      "cwd": ".",
+      "run": "npm ci --prefix scripts --silent --no-audit --no-fund && node scripts/board_fit.js --selftest && node scripts/board_fit.js",
+      "paths": ["docs/design/**", "scripts/board_fit*"]
     }
   ],
   "work": {

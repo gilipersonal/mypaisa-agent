@@ -181,10 +181,75 @@ Added the day each was learned; reviewers check every item.
 23. **A rule repeated across records is one phrase, copied word for word:**
     the width rule was reworded in each record four rounds running, and each
     rewording missed a case (compact windows, the iPhone, a folded foldable);
-    it now reads the same everywhere: "beside every screen over about 900 pt,
-    a sheet away from about 600 to 900 pt, and a tab in a compact window
+    it now reads the same everywhere: "beside every screen from about 1133 pt,
+    a sheet away from about 600 to 1133 pt, and a tab in a compact window
     (every iPhone, a folded foldable, Slide Over)". An iPhone is always
     compact, in either orientation, the one exception to "the window's width,
     never the device" (round 5: the table had said only the smaller iPhones in
     landscape, while the shell and the landscape board draw every iPhone with
-    its tab bar).
+    its tab bar). The phrase moved from "over about 900 pt" to "from about 1133 pt" on
+    27 Oct 2026 (Arun, MA-240), in every record at once: from 900 to 1133 pt
+    the screen between the sidebar and the chat fell to about 360 to 480 pt.
+24. **A board is measured at every size its class covers, in both engines,
+    not only at the size it is drawn:** an iPhone from 320 (Display Zoom) to
+    440 and in landscape, an iPad or foldable window from 600 to 1366, and the
+    web from 320 to 1920, in Chromium and WebKit at the screen's own pixel
+    ratio, and Prototype v4 at every door and step (MA-240: at 1024 with the
+    chat beside it, the web pages fell to a word per line; the check-in card
+    hid its fourth answer at 402; WebKit's wider system font cut a rupee hero
+    at 320). `node scripts/board_fit.js` is the gate; it fails closed (a
+    board with no frame, a frame it cannot measure, a missing icon or text
+    font, a template value that never resolved, which is how MA-241's notes
+    rendered blank), and an allowance names its board, its fault, its frames
+    and its reason. An ellipsis on a flex or grid box draws nothing, so the
+    text it cuts is a clip.
+25. **A shared fix is pixel-diffed against main at every drawn size:** a
+    guard meant for a narrow screen must leave every board as drawn, and each
+    frame that changes is looked at and named as intended (MA-240: a hero
+    figure that shrank at 402, a global word-break that split a table's
+    header, a longer fade over rows that did not overflow and a chip that
+    wrapped at its drawn width were all caught by the diff, not by a scan).
+    The diff runs again after every later change to a shared rule, before
+    any review: MA-240's round 1 found a phone-door hero shrunk, a phone
+    drawer narrowed, chips cut, axis labels hidden and grids collapsed, all
+    added after the last diff. It is a command, `node scripts/board_fit.js
+    --diff <main before the story> --expect review/MA-<n>/drawn-changes.json`:
+    the file names each drawn change the story means and why, a change it
+    does not name fails, and so does a named one that no longer shows. A
+    label that motion.js must thin at a frame's drawn size is a fault too.
+26. **Text on text is judged by the surfaces the two lines sit on, never by
+    class names:** a line under a bar, a sheet, a toast or the chat's
+    controls is the scroll edge; two lines on the same surface touching is a
+    fault, inside a sheet or a glass bar too (MA-240 round 1: a class list
+    that matched `alert` and `.lg` let overlaps inside sheets and bars pass;
+    a mutated board proved it). A column crushed to a word or two a line is a
+    fault even when nothing clips. Inside a chart, a painted note, call-out or
+    label pill floating over the chart's own labels is no such edge: the label
+    under it is covered, a fault (MA-240 round 2: the Proof note and a
+    call-out passed as "under-layer").
+27. **A token is checked where a board applies it, not where it is
+    defined:** `contrast_check.py` measured the new range band while no board
+    drew it, since each board filled its band with its own 18% (MA-240 round
+    2). The board gate now refuses a band or a track drawn in anything but
+    its token, and a token's selftest case mutates a board, not the token.
+28. **A drawn-size diff runs at the screen's own pixel ratio, in both
+    engines, and greys out a colour only where a check proves the colour is
+    applied:** at ratio 1 in Chromium alone, round 1's diff passed an alert
+    that WebKit's zoom set off the screen, and its neutral CSS greyed the
+    meter's frame and the band on both sides, so a frame whose box changed
+    and a band that never reached a board both passed (MA-240 round 2).
+29. **A gate measures what a member can reach, not what the first viewport
+    shows:** the content below the fold (scrolled to its end) and above the
+    top (a page a board anchors to the bottom of its box), the widths
+    between its samples (each container query's threshold, one below and
+    at it), a zoomed frame's own box, and every frame of a board, the Stage
+    Manager window included (MA-240 round 2: each was a blind spot).
+30. **A fault across a whole band of widths is an owner's decision, not an
+    allowance or a guard per screen:** from 900 to 1132 pt every iPad board
+    failed (179 faults) because three columns left the screen 360 to 480 pt;
+    Arun chose where the chat goes, and the rule changed in every record at
+    once (MA-240 round 2).
+31. **A guard that answers a band is retired when the band is settled:** the
+    iPad guards for 1024 to 1179 pt (a name's 8em, a key-value card's one
+    column) were narrowed or removed once the chat left those widths, and the
+    gate showed they were not needed (MA-240 round 2).

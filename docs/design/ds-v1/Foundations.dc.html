@@ -506,7 +506,7 @@
               ] },
               { name: 'Accent', hint: 'One accent: coral draws, brick writes', tokens: [
                 T('--mp-coral', 'Lines and marks on the hero; never small text on light', bar('coral', '3px', 'hero'), ['#FF6B4F', '5.7:1', 'on hero, a graphic (3:1 needed)'], ['#FF7A5E', '5.7:1', 'on hero, a graphic (3:1 needed)']),
-                T('--mp-accent', 'Links, the selected tab, filled buttons', txt('accent'), ['#C2381F', '5.4:1', 'on surface'], ['#FF9A82', '8.3:1', 'on surface']),
+                T('--mp-accent', 'Links, the selected tab, filled buttons', txt('accent'), ['#C2381F', '5.4:1', 'on surface'], ['#FFAF9B', '9.7:1', 'on surface']),
                 T('--mp-on-accent', 'The label on a filled button', txt('on-accent', 'accent'), ['#FFFFFF', '5.4:1', 'on accent'], ['#1A0B06', '9.3:1', 'on accent']),
                 T('--mp-focus', 'Keyboard focus ring, 3 px, offset 2', bar('focus', '3px'), ['#2453C9', '6.7:1', 'vs surface (3:1 needed)'], ['#8FB2FF', '8.1:1', 'vs surface (3:1 needed)'])
               ] }
@@ -529,6 +529,7 @@
               { name: 'Data', hint: 'One line, one area, a quiet grid, extra series hues', tokens: [
                 T('--mp-chart-line', 'Value and price lines on surfaces (coral on the hero)', bar('chart-line', '3px'), ['#C2381F', '5.4:1', 'vs surface'], ['#FF7A5E', '6.7:1', 'vs surface']),
                 T('--mp-chart-area', 'Fill under the line', bar('chart-area', '22px'), ['#FF6B4F at 14%', 'fill', 'under the line only'], ['#FF7A5E at 16%', 'fill', 'under the line only']),
+                T('--mp-band', 'A range band, the Projection’s 8 in 10 runs: plainly there at 25%, on the hero and on a card, the line over it still 3:1', bar('band', '22px', 'hero'), ['#FF6B4F at 39%', '1.9:1', 'on hero; 1.5:1 on a card'], ['#FF7A5E at 37%', '1.9:1', 'on hero; 2.0:1 on a card']),
                 T('--mp-chart-grid', 'Grid lines and baselines', bar('chart-grid', '1px'), ['#ECE8E2', '1.2:1', 'vs surface, decorative'], ['#222B39', '1.2:1', 'vs surface, decorative']),
                 T('--mp-chart-2', 'Second series; single-series bars', bar('chart-2', '3px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
                 T('--mp-chart-3', 'A third line series only; green means good, so never a category, progress bar or meter', bar('chart-3', '3px'), ['#1D7A3E', '5.4:1', 'vs surface'], ['#5BDB8B', '9.7:1', 'vs surface']),
@@ -550,7 +551,7 @@
                 T('--mp-asset-silver', 'Silver', bar('asset-silver', '10px'), ['#646A78', '5.4:1', 'vs surface'], ['#969FAE', '6.4:1', 'vs surface']),
                 T('--mp-asset-cash', 'Cash', bar('asset-cash', '10px'), ['#8A5300', '6.3:1', 'vs surface'], ['#F6BC4F', '10.0:1', 'vs surface']),
                 T('--mp-meter', 'Spend, budget and progress meters, on .mp-track', bar('meter', '10px'), ['#2453C9', '6.7:1', 'vs surface'], ['#8FB2FF', '8.1:1', 'vs surface']),
-                T('--mp-track', 'The empty part of a bar or meter: plainly there at 25% brightness, never read', bar('track', '10px'), ['#CDCFD4', '1.6:1', 'vs surface; 1.5:1 needed'], ['#454E5C', '2.0:1', 'vs surface; 1.5:1 needed']),
+                T('--mp-track', 'The empty part of a bar or meter: plainly there at 25% brightness on a card, the page, a fill and the hero, never read', bar('track', '10px'), ['#BEC1C8', '1.8:1', 'vs surface; 1.5:1 needed, 1.25:1 at 25%'], ['#485160', '2.1:1', 'vs surface; 1.5:1 needed, 1.25:1 at 25%']),
                 T('--mp-mask', 'Privacy placeholder on surfaces: a shape where pounds were, never text', bar('mask', '14px'), ['#D0C9BE', '1.6:1', 'vs surface; a placeholder, not text'], ['#414D64', '2.0:1', 'vs surface; a placeholder, not text']),
                 T('--mp-mask-hero', 'Privacy placeholder on the hero card, never text', bar('mask-hero', '14px', 'hero'), ['#3A5284', '2.1:1', 'vs hero; a placeholder, not text'], ['#40598A', '2.1:1', 'vs hero; a placeholder, not text']),
                 T('--mp-hero-area', 'Area under the coral line on the hero', bar('hero-area', '22px', 'hero'), ['#FF6B4F at 18%', 'fill', 'on hero, under the line'], ['#FF7A5E at 18%', 'fill', 'on hero, under the line'])
