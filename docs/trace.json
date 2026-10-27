@@ -6233,6 +6233,41 @@
    "design": "none",
    "boards": [],
    "notes": "Drawn 26 Oct 2026 in this change: Lucid view 9 (3692ebe8-3794-4ff5-9658-83a8da565dfb), its PNG, the explainers page and the embed in ARCHITECTURE 10.2."
+  },
+  {
+   "key": "MA-237",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Container images are built on AWS CodeBuild's arm64 runner from GitHub Actions and stored in ECR by digest, inside the free tier",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "15",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 26 Oct 2026: \"Can we do docker builds on AWS infra directly and store on ECR for free? If yes then that would be preferred.\" CodeBuild's free tier is 100 build minutes a month on arm1.small, never expiring; ECR's 500 MB is free only in a new account's first year, then $0.10 per GB a month. The build moved here from MA-107 and MA-25, whose estimates fell by the same days, so no date moved. Past the free 100 minutes builds go on at about $0.0034 to $0.004 a minute (under a cent a build); Arun, 26 Oct 2026: \"lets keep AWS stack\", so there is no fallback to GitHub's runners."
+  },
+  {
+   "key": "MA-238",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds",
+   "status": "To Do",
+   "labels": [
+    "manual"
+   ],
+   "arch": [
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Installing the AWS Connector for GitHub app grants an app access, which only Arun does."
   }
  ],
  "others": [

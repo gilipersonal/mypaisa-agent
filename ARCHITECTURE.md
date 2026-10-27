@@ -2475,7 +2475,7 @@ resource (`.claude/rules/aws-changes.md`).
 | Web gates | every PR touching `web/` | svelte-check, eslint, vitest, npm audit, and Playwright at 390 and 1440 in both themes, with `prefers-reduced-motion` both ways; the contrast gate (`scripts/contrast_check.py`) on every PR |
 | iOS gates | every PR touching `ios/` | on a macOS runner: Jest and the TypeScript checks for the shell; swift-format, build, XCUITest on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); the performance benches of §9.5 on the phone before a release |
 | Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
-| Build | merge to `main` | the Lambda packages built once and stored by digest; the same build goes to both environments |
+| Build | merge to `main` | the Lambda images built once on AWS: the workflow's image job runs on AWS CodeBuild's arm64 runner (`codebuild-mypaisa-ci-image-…`, arm1.small, inside CodeBuild's free 100 minutes a month), builds the `lambda` and `stream` targets natively and pushes them to ECR by the commit's sha; the same digest goes to both environments (MA-237) |
 | Dev | after the build | apply dev, deploy, smoke tests against `api-dev`, which also assert one trace from `api` to `sender` through the X-Ray API (§10.3, MA-232) |
 | Dev app | after dev passes | the web app synced to dev's dashboard bucket and its CloudFront cache cleared; when `ios/` changed, MyPaisa Dev archived and uploaded to TestFlight (MA-167) |
 | Prod | after dev passes and Arun approves in the GitHub `prod` environment | apply prod, deploy behind each Lambda's `live` alias, smoke tests, automatic rollback to the previous version on failure; then the web app synced to prod's dashboard bucket and MyPaisa uploaded to TestFlight, so a new front end never meets an old api (MA-167) |
@@ -2486,7 +2486,12 @@ CI reaches AWS through the account's GitHub OIDC provider with three roles:
 `ci-prod-deploy` (`main` and the `prod` environment only). These roles, and
 the developer role, live in a small root of their own, `infra/bootstrap`,
 applied once from the laptop, since CI cannot assume a role that does not
-exist yet. Actions are pinned
+exist yet. The same root holds what the image build needs (MA-237): the
+CodeBuild runner project and its service role, which alone pushes to ECR, the
+CodeConnections connection to GitHub, which Arun authorises once (MA-238),
+the one `mypaisa` ECR repository both environments pull from (scan on push;
+untagged images expire after a day and the last five tagged ones are kept),
+and a usage budget that warns at 80 of the free 100 build minutes. Actions are pinned
 to commit SHAs, workflows hold `contents: read` unless a step needs more, and
 runs of the same workflow on the same branch never overlap.
 

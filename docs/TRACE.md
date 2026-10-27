@@ -54,6 +54,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-230 | The architecture records one trace from the door to the model, OpenTelemetry on every Lambda, and what each reader of the agent's work sees | In Progress | §10, §13, §16 | none |  |
 | MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | To Do | §10.3, §10.5, §10.6, §10.7, §10.9, §18.4 | none |  |
 | MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | In Progress | §3, §10 | none |  |
+| MA-237 | Container images are built on AWS CodeBuild's arm64 runner from GitHub Actions and stored in ECR by digest, inside the free tier | To Do | §15, §18.4 | none |  |
+| MA-238 | Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds | To Do | §18.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
