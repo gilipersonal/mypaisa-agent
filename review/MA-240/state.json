@@ -1,6 +1,23 @@
 {
-  "deliverable": "[MA-240] boards whole at every size, legible at 25%",
-  "rounds": 0,
-  "reviewed_sha": null,
-  "history": []
+ "deliverable": "[MA-240] boards whole at every size, legible at 25%",
+ "rounds": 1,
+ "reviewed_sha": "261f78e",
+ "history": [
+  {
+   "round": 1,
+   "date": "2026-10-27",
+   "reviewed_sha": "261f78e",
+   "range": "d6e243f..261f78e (everything)",
+   "asked": "Arun, 27 Oct 2026: \"I want precise measurement and accurate pixel render, used the best approach to fix all the glitches and review properly\"",
+   "lanes": {
+    "A design-system CSS": 7,
+    "B iOS boards": 8,
+    "C web boards and the prototype": 9,
+    "D gates and records": 10,
+    "E kind icon options": 4
+   },
+   "blocking": 38,
+   "result": "not clean: guards moved drawn frames, the gate failed open and missed overlaps inside sheets and widths from 600 to 1023, faults left at 320, 600 and 1024, and MA-241's board rendered its notes blank; every blocking finding fixed, in fixed.json as r1-1 to r1-16 (several lanes found the same fault)"
+  }
+ ]
 }

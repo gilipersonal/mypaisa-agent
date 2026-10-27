@@ -190,16 +190,35 @@ Added the day each was learned; reviewers check every item.
     its tab bar).
 24. **A board is measured at every size its class covers, in both engines,
     not only at the size it is drawn:** an iPhone from 320 (Display Zoom) to
-    440 and in landscape, every iPad and foldable window, the web from 1024
-    to 1920 and its phone door from 320, in Chromium and WebKit at the
-    screen's own pixel ratio, and Prototype v4 at every door and step
-    (MA-240: at 1024 with the chat beside it, the web pages fell to a word
-    per line; the check-in card hid its fourth answer at 402; WebKit's wider
-    system font cut a rupee hero at 320). `node scripts/board_fit.js` is the
-    gate; an allowance names its board, its fault and its reason.
+    440 and in landscape, an iPad or foldable window from 600 to 1366, and the
+    web from 320 to 1920, in Chromium and WebKit at the screen's own pixel
+    ratio, and Prototype v4 at every door and step (MA-240: at 1024 with the
+    chat beside it, the web pages fell to a word per line; the check-in card
+    hid its fourth answer at 402; WebKit's wider system font cut a rupee hero
+    at 320). `node scripts/board_fit.js` is the gate; it fails closed (a
+    board with no frame, a frame it cannot measure, a missing icon or text
+    font, a template value that never resolved, which is how MA-241's notes
+    rendered blank), and an allowance names its board, its fault, its frames
+    and its reason. An ellipsis on a flex or grid box draws nothing, so the
+    text it cuts is a clip.
 25. **A shared fix is pixel-diffed against main at every drawn size:** a
     guard meant for a narrow screen must leave every board as drawn, and each
     frame that changes is looked at and named as intended (MA-240: a hero
     figure that shrank at 402, a global word-break that split a table's
     header, a longer fade over rows that did not overflow and a chip that
     wrapped at its drawn width were all caught by the diff, not by a scan).
+    The diff runs again after every later change to a shared rule, before
+    any review: MA-240's round 1 found a phone-door hero shrunk, a phone
+    drawer narrowed, chips cut, axis labels hidden and grids collapsed, all
+    added after the last diff. It is a command, `node scripts/board_fit.js
+    --diff <main before the story> --expect review/MA-<n>/drawn-changes.json`:
+    the file names each drawn change the story means and why, a change it
+    does not name fails, and so does a named one that no longer shows. A
+    label that motion.js must thin at a frame's drawn size is a fault too.
+26. **Text on text is judged by the surfaces the two lines sit on, never by
+    class names:** a line under a bar, a sheet, a toast or the chat's
+    controls is the scroll edge; two lines on the same surface touching is a
+    fault, inside a sheet or a glass bar too (MA-240 round 1: a class list
+    that matched `alert` and `.lg` let overlaps inside sheets and bars pass;
+    a mutated board proved it). A column crushed to a word or two a line is a
+    fault even when nothing clips.

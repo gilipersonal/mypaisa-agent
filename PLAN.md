@@ -284,19 +284,20 @@ Claude's:
   nets, for anyone in the family to read; its source is
   `docs/design/inside-mypaisa.html`.
 - **Whole at every size (MA-240):** every board checked by machine at every
-  size a member can have (an iPhone from 320 to 440 and in landscape, every
-  iPad and foldable window, the web from 320 to 1920), in Chromium and WebKit
+  size a member can have (an iPhone from 320 (Display Zoom) to 440 and in
+  landscape, an iPad or foldable window from 600 to 1366, and the web from 320
+  to 1920), in Chromium and WebKit
   at the screen's own pixel ratio, with every text, icon and mark measured on
   its real pixels at full brightness and at 25%; the fixes live in the design
   system (the page as its own size container, the fit guards in `tokens.css`,
   a bar's track plain on every background), so both doors inherit them.
 - **Colourful kind icons (MA-241):** each kind of holding, asset and debt
   leads its row with its own colourful icon, the same at both doors, named in
-  the kind's data (§4.8) so a new kind brings its icon; two or three options
-  drawn in Claude Design for Arun's pick.
-- **The open foldable to the size classes (MA-242):** Foldable · Open and
-  Foldable · Open, Audit redrawn with the chat as a sheet at 880, as the
-  regular, narrow class says, where the boards drew it beside the screen.
+  the kind's data (§4.8) so a new kind brings its icon; three options drawn in
+  Claude Design, and Arun picked B, Settings squircles (27 Oct 2026).
+- **Wealth's sub-lines, figure first (MA-243):** three one-line sub-lines on
+  Wealth reordered so their ellipsis never cuts a figure. (MA-242, filed for
+  the open foldable's chat, duplicates the redraw MA-163 already carries.)
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -1483,7 +1484,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 35 (and 3.5 of yours) | 28 | Mon 2 Nov 2026 | Wed 9 Dec 2026 |
+| 0 Foundations at every door | 34.75 (and 3.5 of yours) | 28 | Mon 2 Nov 2026 | Wed 9 Dec 2026 |
 | 1 Talk: sign in and chat with the agent at every door | 88.5 (and 0.5 of yours) | 71 | Thu 10 Dec 2026 | Wed 31 Mar 2027 |
 | 2 The first record: one dynamic structure, one write path | 45 | 36 | Thu 1 Apr 2027 | Fri 21 May 2027 |
 | 3 Deposits, policies and two currencies | 18 | 15 | Mon 24 May 2027 | Mon 14 Jun 2027 |

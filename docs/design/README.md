@@ -125,16 +125,20 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   draws a screen at one size; `node scripts/board_fit.js` renders every
   current board in Chromium and WebKit at the screen's own pixel ratio,
   resizes each frame through every size its class covers (an iPhone from
-  320, Display Zoom, to 440 and in landscape; every iPad and foldable
-  window; the web from 1024 to 1920 and its phone door from 320), and walks
-  Prototype v4 at every door. Text clipped mid-word, text on text, or a box
-  cut at the screen's edge fails it, but for what
+  320 (Display Zoom) to 440 and in landscape, an iPad or foldable window
+  from 600 to 1366, and the web from 320 to 1920), and walks
+  Prototype v4 at every door. Text clipped mid-word, text on text, a crushed
+  column or a box cut at the screen's edge fails it, but for what
   `scripts/board_fit_allow.json` names with its reason. The fixes live in
   `tokens.css`: the page is a size container of its own, so with the chat
   beside it the page's width, not the window's, sets its columns; and the
   fit guards keep the parts drawn on many boards whole (rows that scroll
   really scroll, a card's answers wrap, a hero figure shrinks to fit, a
-  narrow chart keeps its axis's ends).
+  list row's figure goes under its name). In `motion.js`, a narrow chart's
+  axis labels thin where they would touch. A shared rule must leave every
+  board as drawn: `node scripts/board_fit.js --diff <main> --expect
+  review/MA-<n>/drawn-changes.json` compares every frame at its drawn size,
+  pixel by pixel, and fails on a change the story does not name.
 
 **The superseded record.** The Mini App boards, the Telegram chats and the
 Prototype's Telegram flows in MyPaisa app v1 (`app-v1/`), the Telegram kit in

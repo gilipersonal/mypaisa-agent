@@ -1,6 +1,7 @@
 # MA-241: a colourful icon for every kind of holding, asset and debt
 
-Draft, not picked. The options are drawn and checked; Arun has not chosen one yet.
+Picked: **B, Settings squircles** (Arun, 27 Oct 2026: “I want to go for option set B for icons”). A was recommended; B
+is the spec MA-241 builds. The options were drawn, checked and put through an independent review before the pick.
 
 ## The request, in Arun's words (27 Oct 2026)
 
@@ -73,14 +74,17 @@ colour classes:
   colours, as the hue wheel allows. Nine families and four reserved colours crowd the wheel, so some pairs end up
   close.
 - **The closest pairs.** In light the closest pair is 0.076 in OKLab. In dark it is 0.062, between gold and silver
-  and debts. For comparison, the design system's own blue and violet are 0.073 apart in dark. Those two pairs are
-  never in the same list, and their glyphs differ.
+  and debts. For comparison, the design system's own blue and violet are 0.073 apart in dark. Some close pairs do
+  share a screen (deposits and property, 0.076; bonds and pensions, 0.077 in light and 0.072 in dark, all on Assets);
+  their glyphs differ, and the section heading names the family. In A's dark set, investments, gold and silver,
+  debts and property are four pale cool tones 0.062 to 0.076 apart, and at 25% investments, silver and debts nearly
+  merge; B's vivid fills keep these apart.
 - **Nearest to a meaning colour.** In dark, the policies plum is 0.069 from the alert pink. It is shown as an open
   question below.
 
 ## The options
 
-### A. Filled circles, in the charts' own colours (recommended)
+### A. Filled circles, in the charts' own colours (recommended; not picked)
 
 Monzo's approach: the family colour fills a circle, with a white glyph on it.
 - **Light:** each fill is the class colour from the table above. For the four classes that already have a chart
@@ -99,7 +103,9 @@ Monzo's approach: the family colour fills a circle, with a white glyph on it.
 - **With the navy hero and Warm ledger:** small solid circles below the hero look like Monzo's coloured circles below
   its card. They echo the hero's solid navy, and the coral accent stays the only warm red on screen.
 - **In dark:** the fills lift to the charts' dark colours, so a list never turns into a row of dark holes.
-- **It needs the least new design.** A holding is the same colour in its row as in every mix.
+- **It needs the least new design.** A holding is the same colour in its row as in the asset-class mix (shares, bonds,
+  silver, cash). Not everywhere: Home's and the Dashboard's liquidity bar draws Liquid, Fixed and Locked in blue,
+  violet and amber, the same hues A gives investments, bonds and cash, so under A that bar would need its own colours.
 
 **Trade-offs.**
 - It is the loudest of the three options. Seventeen coloured circles make a busy list, so colour stays on the lead
@@ -123,9 +129,10 @@ The same fills are drawn in light and dark, as Apple's own icons are.
 **Trade-offs.**
 - **They do not match the charts.** The colours are not the chart colours, so a holding is one blue in its row and a
   different blue in the mix.
-- **The thinnest glyph margin at 25%.** B's white glyph on a vivid fill has the smallest margin of the three options:
-  3.35:1 at full brightness and 2.59:1 dimmed, measured at the gradient's lighter top stop. A monogram passes the
-  text tier in only 4 of 36 stops.
+- **Its glyph margin at 25% is close to A's.** B's worst glyph on a vivid fill is 3.35:1 at full brightness and
+  2.59:1 dimmed (property, light, at the gradient's lighter top stop); A's worst is 2.65:1 dimmed and C's 2.03:1. A
+  monogram passes the text tier in only 4 of 36 stops. Separation is measured at one stop; at the top stop investments
+  and property are 0.084 apart in OKLab.
 - **Debts had to be dark.** To keep debts apart from property's sky blue, B's slate is deep. That leaves the weakest
   tile on the dark card: 2.20:1 at full brightness and 1.35:1 dimmed.
 - **A texture Warm ledger lacks.** Warm ledger uses no gradient anywhere else.
@@ -230,7 +237,27 @@ The `presentation` of a kind (ARCHITECTURE.md §4.1 and §4.8) gains two fields:
   - a Playwright check that every `material` name renders as a glyph and not as a word (its width stays within 1.35×
     the font size, as this round's capture checked).
 
-## Open questions for the pick (none blocks the board)
+## Open questions for the build (B picked; none blocks the board)
+
+These were raised by the independent review of the options (27 Oct 2026) and are Arun's to settle before MA-241's
+build:
+
+- **Four glyphs that may mislead.** Personal loan's `request_quote` draws a $ in a £ and ₹ household (proposed:
+  `signature` · `signature`); shares' `show_chart` always trends up and is the sidebar's Projection icon (proposed:
+  `candlestick_chart` · `chart.line.flattrend.xyaxis`); PPF's `verified` reads as a status in an app built on Confirm
+  (proposed: `shield` · `shield`); gold and silver is a diamond (proposed: `workspace_premium` · `medal`). NPS's
+  `wb_twilight` looks like a bell at 20 px, and SIPP and endowment are two umbrellas.
+- **NPS's family.** NPS is a pension scheme, filed here under deposits and schemes (teal) because it arrives with
+  them in phase 3; its colour could follow its asset class instead. Better still, the family could be derived from
+  the kind's `grouping.class` through one fixed map, so the colour has one source.
+- **"Holding type" may mean the account.** ISA, GIA, Demat and MF folio records (§4.8) get no tile here.
+- **A kind the agent proposes after release.** An unknown Material name renders as its word inside the tile; the
+  build checks `icon.sf` and `icon.material` against the pinned font's and the SDK's name lists when a kind is
+  proposed and approved, and takes the monogram path for anything unknown.
+- **The remaining states** design-first asks of a pick before the build: a long holding name, many holdings with
+  More, a stale price, loading and empty, each with the new tile.
+
+The questions asked before the pick follow, as they were.
 
 1. **The dark glyph in A.** In dark, A uses the design system's rule of a lifted fill with a dark glyph. Arun may
    prefer Monzo's white glyphs in dark; that is B's look, and it could be applied to A's circles.
@@ -276,4 +303,7 @@ model: each pixel's luminance is multiplied by 0.25 and the room's 0.05 is added
 
 ## The pick
 
-Not yet made.
+**B, Settings squircles**, Arun, 27 Oct 2026: “I want to go for option set B for icons”. Recorded in
+`docs/trace.json` (MA-241, design `picked`, board `B · Settings squircles, one vivid set for both themes`) and on the
+issue. The build is MA-241's own branch: B's nine pairs into `tokens.css` with their gate pairs, the kind spec's
+`icon` and `family`, then every record row at both doors.

@@ -4,6 +4,7 @@
 // text (overlap; over a glass bar, a sheet or the system's own chrome it is the scroll edge, reported apart), a box cut
 // at the screen's edge outside a row that scrolls (cut-at-edge), an icon showing as its name (icon-as-word), and a
 // bar's empty track that is not the --mp-track token (track-not-token). Text scrolled or paged out of view is not a fault.
+// window.__fit.thinned(i) lists the axis labels motion.js hid in a frame, which the gate refuses at the drawn size.
 (() => {
   const PX = 1.5;
   const vis = (e) => {
@@ -57,20 +58,21 @@
     const l = r.left + n.clientLeft, t = r.top + n.clientTop;
     return { l, t, r: l + n.clientWidth, b: t + n.clientHeight };
   };
-  const isGlassy = (e, f) => {
+  // The surface a text is drawn on: the nearest ancestor that floats over what lies under it, being positioned and
+  // painted (a background, a backdrop filter) or raised (a z-index above 0), or the system's own chrome (the status bar,
+  // the island, the home bar, the keypad). Two lines on different surfaces are content scrolling under a bar, a sheet or
+  // a toast; two lines on the same surface touching is a fault.
+  const CHROME_SEL = '.sbar, .island, .homebar, .pstat, .kpad, .composer, .cmp, .chips, .sugg, .wsugg, .wfield, .wsend';   // the system's chrome; the chat's controls over its conversation
+  const layerOf = (e, f) => {
     for (let n = e; n && n !== f; n = n.parentElement) {
+      if (n.matches && n.matches(CHROME_SEL)) return n;
       const cs = getComputedStyle(n);
-      if ((cs.position === 'absolute' || cs.position === 'fixed' || cs.position === 'sticky') && (cs.backdropFilter !== 'none' || /\b(lg|tabdock|tabbar|composer|edge-bot|edge-top|toolbar|sbar|homebar|island|navbar|mp-tabbar|cbar|pstat|sheet|scrim|menu|pop|toast|banner)\b/.test(n.className))) return true;
+      if (cs.position === 'static') continue;
+      const painted = (cs.backgroundColor && cs.backgroundColor !== 'rgba(0, 0, 0, 0)') || cs.backgroundImage !== 'none' || cs.backdropFilter !== 'none';
+      const raised = cs.zIndex !== 'auto' && parseInt(cs.zIndex, 10) > 0;
+      if (raised || (painted && cs.position !== 'relative')) return n;
     }
-    return false;
-  };
-  const isOverlay = (e, f) => {
-    for (let n = e; n && n !== f; n = n.parentElement) {
-      const cs = getComputedStyle(n);
-      if ((cs.position === 'absolute' || cs.position === 'fixed') && parseInt(cs.zIndex || '0') > 0) return true;
-      if (/\b(sheet|scrim|menu|popover|pop|toast|dialog|modal|alert)\b/.test(n.className)) return true;
-    }
-    return false;
+    return f;
   };
   const snippet = (e) => (e.innerText || e.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 70);
   const path = (e, f) => {
@@ -113,10 +115,13 @@
       if (empty(v)) continue; // scrolled or paged out of view: not a fault
       t.chain = chain;
       shown.push(t);
-      const ellOwner = chain.find((c) => c.cs.textOverflow === 'ellipsis' && c.n.scrollWidth > c.n.clientWidth + 1 && c.b.b - c.b.t < 80);
-      if (ellOwner || (cs.textOverflow === 'ellipsis' && e.scrollWidth > e.clientWidth + 1)) {
+      // an ellipsis is drawn only by a block box: on a flex or grid box the text is cut with none, so that is a clip
+      const drawsEllipsis = (c) => !/flex|grid/.test(c.display);
+      const ellOwner = chain.find((c) => c.cs.textOverflow === 'ellipsis' && drawsEllipsis(c.cs) && c.n.scrollWidth > c.n.clientWidth + 1 && c.b.b - c.b.t < 80);
+      if (ellOwner || (cs.textOverflow === 'ellipsis' && drawsEllipsis(cs) && e.scrollWidth > e.clientWidth + 1)) {
         const o = ellOwner ? ellOwner.n : e;
         issues.push({ type: 'ellipsis', text: snippet(o), el: path(o, f), w: Math.round(o.clientWidth), need: o.scrollWidth });
+        t.vrs = t.rs.map((r) => { let x = { l: r.left, t: r.top, r: r.right, b: r.bottom }; for (const c of chain) x = inter(x, c.b); return x; }).filter((x) => !empty(x));
         continue;
       }
       let pastScrollerX = false;
@@ -141,6 +146,10 @@
         const pb = p ? p.getBoundingClientRect() : null;
         if (pb && v.r > pb.right + PX) issues.push({ type: 'spill', text: snippet(e), el: path(e, f), px: Math.round(v.r - pb.right) });
       }
+      {
+        const fs = parseFloat(cs.fontSize), lines = new Set(t.rs.map((r) => Math.round(r.top))).size, chars = ownText(e).reduce((n, x) => n + x.textContent.trim().length, 0);
+        if (((lines >= 4 && chars / lines < 8) || (lines >= 3 && chars / lines < 5)) && (v.r - v.l) < 9 * fs && /\s/.test(ownText(e).map((x) => x.textContent.trim()).join(' '))) issues.push({ type: 'crushed', text: snippet(e), el: path(e, f), px: lines + ' lines in ' + Math.round(v.r - v.l) });
+      }
       if (e.classList.contains('ms') || /material/i.test(cs.fontFamily)) {
         const fs = parseFloat(cs.fontSize);
         if (u.r - u.l > fs * 1.7) issues.push({ type: 'icon-as-word', text: snippet(e), el: path(e, f) });
@@ -164,10 +173,8 @@
         const key = A.i + ':' + B.i;
         if (seen.has(key)) continue;
         seen.add(key);
-        const chrome = !!(ea.closest('.sbar, .island, .homebar, .pstat') || eb.closest('.sbar, .island, .homebar, .pstat'));
-        const glass = chrome || isGlassy(ea, f) !== isGlassy(eb, f);
-        const overlay = isOverlay(ea, f) || isOverlay(eb, f);
-        issues.push({ type: glass ? 'under-glass' : overlay ? 'overlap-overlay' : 'overlap', text: snippet(ea) + '  ⟂  ' + snippet(eb), el: path(ea, f) + '  ⟂  ' + path(eb, f), px: Math.round(w) + 'x' + Math.round(h) });
+        const under = layerOf(ea, f) !== layerOf(eb, f);
+        issues.push({ type: under ? 'under-layer' : 'overlap', text: snippet(ea) + '  ⟂  ' + snippet(eb), el: path(ea, f) + '  ⟂  ' + path(eb, f), px: Math.round(w) + 'x' + Math.round(h) });
       }
     }
     // 3. boxes cut at the screen edge (horizontal), not inside a horizontal scroller
@@ -207,5 +214,11 @@
     }
     return { label: label(f), section: section(f), w: Math.round(fr.r - fr.l), h: Math.round(fr.b - fr.t), issues };
   };
-  window.__fit = { frames, scan, label, section, clipBox };
+  // the axis labels motion.js has thinned in frame i: at a frame's drawn size there should be none, since every drawn
+  // axis fits; a label thinned there was a collision drawn into the board
+  const thinned = (i) => {
+    const f = frames()[i];
+    return [...f.querySelectorAll('*')].filter((e) => e.__mpThinned).map((e) => ({ text: e.textContent.trim(), el: path(e, f) }));
+  };
+  window.__fit = { frames, scan, label, section, clipBox, thinned };
 })();

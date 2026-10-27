@@ -55,6 +55,7 @@ PAIRS = [
     ("text", "ink-3", "surface"), ("text", "ink-3", "bg"), ("text", "ink-3", "surface-2"),
     ("body", "hero-ink", "hero"), ("text", "hero-ink-2", "hero"), ("text", "hero-ink-2", "hero-2"),
     ("text", "accent", "surface"), ("text", "accent", "bg"), ("text", "on-accent", "accent"),  # a filled button's short semibold label
+    ("text", "accent", "surface-2"),  # a link or a selected label on a raised or selected row (MA-240)
     ("text", "up", "surface"), ("text", "up", "bg"), ("text", "down-quiet", "surface"),
     ("text", "alert", "surface"), ("text", "alert", "alert-bg"), ("text", "on-alert", "alert"),  # a count badge
     ("text", "add", "add-bg"), ("text", "hold", "hold-bg"), ("text", "pause", "pause-bg"),
@@ -67,6 +68,7 @@ PAIRS = [
     ("ui", "pillar-for", "surface"), ("ui", "pillar-against", "surface"),
     ("presence", "track", "surface"), ("presence", "mask", "surface"), ("presence", "mask-hero", "hero"),
     ("presence", "track", "bg"), ("presence", "track", "surface-2"), ("presence", "track", "hero"),  # bars sit on the page, a fill and the hero too (MA-240)
+    ("presence", "band", "hero"), ("presence", "band", "surface"),  # a chart's range band, as the Projection draws its 8 in 10 runs (MA-240)
 ] + [("ui", t, b) for t in ("ccy-usd", "ccy-gbp", "ccy-eur", "ccy-jpy", "ccy-other", "asset-shares", "asset-bonds",
                             "asset-silver", "asset-cash", "meter", "chart-line") for b in ("surface", "track")]
 # Labels on glass (glass carries labels only, never body copy): the fill composited over the worst backdrop the bar
@@ -235,6 +237,8 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "track-vanishes": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#F4F4F6", r"t-light .* track on surface"),
     "track-on-page": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#CDCFD4", r"t-light .* track on bg"),  # MA-240: passed on a card, faded on the page
     "track-on-hero": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-track: )#[0-9A-Fa-f]{6}", r"\1#454E5C", r"t-dark .* track on hero"),
+    "accent-on-raised": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-accent: )#[0-9A-Fa-f]{6}", r"\1#FF8E74", r"t-dark .* accent on surface-2"),  # MA-240: a darker coral falls under 3:1 dimmed on a raised row
+    "band-vanishes": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-band: )rgba\([^)]*\)", r"\1rgba(255, 107, 79, 0.18)", r"t-light .* band on hero"),  # MA-240: the 8 in 10 band at the old area's 18%
     "mask-vanishes": ("ds-v1/tokens.css", r"(\.t-dark \{(?:.*\n)*?  --mp-mask: )#[0-9A-Fa-f]{6}", r"\1#1A222F", r"t-dark .* mask on surface"),
     "hero-gain-dim": ("ds-v1/tokens.css", r"(:root,\s*\.t-light\s*\{(?:.*\n)*?  --mp-hero-up: )#[0-9A-Fa-f]{6}", r"\1#2E8F52", r"t-light .* hero-up on hero"),
     "stray-glass-block": ("ds-v1/ios.css", r"\Z", "\n.t-light .mp { --lg-fill: rgba(255, 255, 255, 0.30); }\n", r"--lg-fill .* outside"),

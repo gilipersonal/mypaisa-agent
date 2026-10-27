@@ -6303,7 +6303,15 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Arun, 27 Oct 2026: \"The UI to glitch free, no overflowing or overalapping on different screen sizes\" and \"when resizing nothing should break or over flow\", then \"I want precise measurement and accurate pixel render\". Design upkeep, as MA-160: the fixes are in the design system's tokens.css (the page as its own size container, the fit guards, the track token) and reach every board that loads it; no screen's design changes, so no story's design state moves."
+   "notes": "Arun, 27 Oct 2026: \"The UI to glitch free, no overflowing or overalapping on different screen sizes\" and \"when resizing nothing should break or over flow\", then \"I want precise measurement and accurate pixel render\". Design upkeep, as MA-160: the fixes are in the design system (tokens.css: the page as its own size container, the fit guards, the track and band tokens; motion.js: axis labels that thin only where two would touch) and reach every board. At the drawn sizes only fixes show: the darker track and band, the check-in answers on two rows, a cut date that wraps, two labels drawn on their neighbours thinned, and two cut suggestions in Prototype v4 that wrap; review/MA-240/drawn-changes.json names them and every other drawn frame is unchanged pixel for pixel. These mend what was drawn rather than change any screen's design, so no story's design state moves. The gate is scripts/board_fit.js, with --diff for the drawn sizes.",
+   "code": [
+    "scripts/board_fit.js",
+    "scripts/board_fit_page.js",
+    "scripts/board_fit_allow.json",
+    "scripts/package.json",
+    "docs/design/ds-v1/tokens.css",
+    "docs/design/ds-v1/motion.js"
+   ]
   },
   {
    "key": "MA-241",
@@ -6321,25 +6329,15 @@
     "9.4"
    ],
    "ui": true,
-   "design": "planned",
+   "design": "picked",
    "boards": [
     {
      "project": "ds",
      "file": "Kind icons.dc.html",
-     "board": "A · Filled circles, the chart's own colours"
-    },
-    {
-     "project": "ds",
-     "file": "Kind icons.dc.html",
      "board": "B · Settings squircles, one vivid set for both themes"
-    },
-    {
-     "project": "ds",
-     "file": "Kind icons.dc.html",
-     "board": "C · Soft tint, the glyph in the chart's colour"
     }
    ],
-   "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options are drawn ahead of the story in MyPaisa DS v1, Kind icons, each with every kind in light and dark, the Assets list on iPhone and the Debts list in the browser; the record is docs/design/reviews/MA-241/decision.md, and the pick sets the family tokens in tokens.css with their gate pairs. The story starts, through /design-first, when Arun picks."
+   "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options drawn in MyPaisa DS v1, Kind icons, and reviewed; Arun picked B on 27 Oct 2026: \"I want to go for option set B for icons\" (A was recommended). The record is docs/design/reviews/MA-241/decision.md; its open questions (four glyphs, NPS's family, accounts, a kind proposed after release, the remaining states) are settled before the build, which puts B's nine pairs into tokens.css with their gate pairs and the tile on every record row at both doors."
   },
   {
    "key": "MA-242",
@@ -6355,7 +6353,23 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Found by MA-240's measurement: iPad and foldable draws Foldable · Open and Foldable · Open, Audit at 880 with the chat beside the screen, where the size classes put a foldable, open, in the regular, narrow class with the chat as a sheet. The plan settles it (rule 6), so the boards change to match; scripts/board_fit_allow.json allows the two boards at 700 and 744 until then. Design upkeep, as MA-160."
+   "notes": "Filed in MA-240 for the open foldable's chat, then found to duplicate work the plan already carries: the redraw of Foldable · Open and Foldable · Open, Audit to the regular, narrow class is undrawn on MA-70, MA-71, MA-78, MA-79 and MA-163, for MA-163's design-first round (the sidebar collapsing to a tab bar at the top, the chat a sheet). Nothing is left to do here; it waits for Arun to close it as a duplicate. scripts/board_fit_allow.json points its foldable allowance at MA-163."
+  },
+  {
+   "key": "MA-243",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Wealth's one-line sub-lines put the figure first, so an ellipsis never cuts a figure",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "9.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Found by MA-240's gate: three sub-lines on Wealth (MA-97's board) end in a figure, so their one-line ellipsis cuts it. A copy fix in Claude Design; scripts/board_fit_allow.json allows the three until it lands. Design upkeep, as MA-160."
   }
  ],
  "others": [

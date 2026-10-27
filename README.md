@@ -186,6 +186,7 @@ except these tools.
 | Xcode | 26 or later | `ios/`: the iOS and iPadOS 26 SDK, the simulators, and swift-format, which comes in its toolchain (`xcrun swift-format`) | the Mac App Store |
 | pnpm | 12 | the web app's workspace | `corepack enable` |
 | Playwright's Chromium | with `web/`'s packages | the web app's tests at phone (390) and laptop (1440) widths, in both themes | `npx playwright install chromium`, in `web/` |
+| playwright-core 1.63 with Chromium and WebKit | pinned in `scripts/package.json` | `node scripts/board_fit.js`, the boards measured at every size (MA-240) | `npm ci --prefix scripts`, then `npx --prefix scripts playwright-core install chromium webkit` |
 
 You also need, in the AWS account `545595341442`, a profile that can assume the operator role (`agent-toolkit`).
 The SSM parameters listed under [Secrets](#secrets) are not a prerequisite: step 4's apply makes dev's (prod's are made

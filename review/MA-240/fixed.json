@@ -47,10 +47,213 @@
  {
   "id": "r0-6",
   "round": 0,
-  "finding": "Every guard leaves every board as drawn: the only drawn-size changes are the darker track, the check-in answers on two rows and the deposit date that wrapped instead of being clipped",
+  "finding": "Every guard leaves every board as drawn: at the drawn sizes the only changes are the ones review/MA-240/drawn-changes.json names, each a fix (round 1 found this false, and made it a command)",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json"
+  }
+ },
+ {
+  "id": "r1-1",
+  "round": 1,
+  "lanes": [
+   "A",
+   "B",
+   "C"
+  ],
+  "finding": "Axis labels were hidden by the chart's width alone, so drawn axes that fitted lost labels (iPhone v4 Home and Assets and debts, Forecaster Proof, Research cards); labels now thin only where two would touch, and a label thinned at a frame's drawn size is a fault",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --engine chromium --only \"iPhone v4 · (Home|Assets and debts)|Forecast\""
+  }
+ },
+ {
+  "id": "r1-2",
+  "round": 1,
+  "lanes": [
+   "A",
+   "B",
+   "C"
+  ],
+  "finding": "A row's chip was cut with no ellipsis, an ellipsis a flex box cannot draw (Ahead by 9 months read Ahead by 9 on Wealth's Debts; Arun 50% · Asha 5 on Home at 320); the gate counted it as a drawn ellipsis",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --selftest --case chip-cut-with-no-ellipsis && node scripts/board_fit.js --engine chromium --only \"Wealth|iPhone v4 · Home\""
+  }
+ },
+ {
+  "id": "r1-3",
+  "round": 1,
+  "lanes": [
+   "A",
+   "B",
+   "C"
+  ],
+  "finding": "Guards moved drawn frames: every phone-door hero shrank to 36, the phone chat drawer narrowed to 300, the kit's toast specimens wrapped, two-column key-value grids fell to one and their pencils were orphaned, a button row's hint dropped under its button, the prototype's date card and a suggestion wrapped",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json"
+  }
+ },
+ {
+  "id": "r1-4",
+  "round": 1,
+  "lanes": [
+   "B",
+   "C"
+  ],
+  "finding": "Faults left at 320: iOS's alert wider than the screen, the inline title under the bar's buttons, a schedule's names cut with no ellipsis, the Debts table's headers on each other and past the card, the chat strip's change squeezed",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --only \"iPhone sign-in|iPhone dashboard|iPhone v4 · (Budget|Assets and debts)|iPhone audit and activity|Web v4 · (Assets and debts|Check-ins)\""
+  }
+ },
+ {
+  "id": "r1-5",
+  "round": 1,
+  "lanes": [
+   "B",
+   "C"
+  ],
+  "finding": "Faults left from 600 to 1133: the Stage Manager window's tab bar cut at 600, the Admin center meter's labels run together at 1133, Projection's decades and title crushed at 1024 and 900, Budget's statement crushed by the narrower chat at 1024, Admin center 2's detail a word a line at 1024, and in the round's own run the file viewer at 600, Forecast from 768 to 1024 and the iPad's lists at 1133",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --only \"iPad and foldable|iPad v4|Web v4 · (Projection|Budget)|Admin center|Audit and files|Forecast\""
+  }
+ },
+ {
+  "id": "r1-6",
+  "round": 1,
+  "lanes": [
+   "D",
+   "E"
+  ],
+  "finding": "The gate failed open: a board that never rendered, a board with no frames and a frame it could not measure passed, and a template value that never resolved (the Kind icons board's blank notes) was not seen",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --selftest --case board-does-not-render && node scripts/board_fit.js --selftest --case value-never-resolved"
+  }
+ },
+ {
+  "id": "r1-7",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "Text on text inside a sheet, an alert, a bar or the sidebar was never measured: overlaps were dropped by class name, not by surface",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --selftest --case overlap-in-a-sheet"
+  }
+ },
+ {
+  "id": "r1-8",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "Widths from 600 to 1023 and the iPad Pro in portrait were never measured, though the records said they were",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --selftest --case viewer-side-by-side-at-600 && node -e \"const s=require('./scripts/board_fit.js').sizes; const w=s(1280,800,false).map((x)=>x[0]), t=s(820,1180,true).map((x)=>x.join('x')); if (![600,768,820,900,1024].every((x)=>w.includes(x)) || !t.includes('1024x1366') || !t.includes('600x863')) process.exit(1)\""
+  }
+ },
+ {
+  "id": "r1-9",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "A figure cut by an ellipsis was a note, not a fault; three on Wealth now carry MA-243",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --selftest --case figure-cut-by-ellipsis"
+  }
+ },
+ {
+  "id": "r1-10",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "The Kind icons board was in no Confluence screen area, which hid every other Confluence check",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/plan_sync.py check"
+  }
+ },
+ {
+  "id": "r1-11",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "MA-242 claimed the open foldable's redraw that MA-163's design-first round already carries (with MA-70, MA-71, MA-78 and MA-79); the allowance now points at MA-163 and MA-242 waits to be closed as a duplicate",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json; a=[x for x in json.load(open('scripts/board_fit_allow.json'))['allow'] if 'Foldable' in x.get('frames', '')]; assert a and all('MA-163' in x['why'] and 'MA-242' not in x['why'] for x in a)\""
+  }
+ },
+ {
+  "id": "r1-12",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "Foundations still showed the old track colours",
+  "check": {
+   "type": "grep",
+   "file": "docs/design/ds-v1/Foundations.dc.html",
+   "pattern": "#CDCFD4|#454E5C",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-13",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "The gate could not run as configured: no pinned playwright-core",
+  "check": {
+   "type": "cmd",
+   "run": "npm ci --prefix scripts --silent --no-audit --no-fund && node -e \"require('./scripts/node_modules/playwright-core')\""
+  }
+ },
+ {
+  "id": "r1-14",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "The phase epics' due dates in Jira were a day behind docs/roadmap.json",
   "check": {
    "type": "manual",
-   "what": "Pixel-diff every frame of every current board at its drawn size against main (serve main's and the branch's docs/design, screenshot each frame, compare); every changed frame is one of the three intended changes."
+   "what": "Each phase epic's Jira due date equals its phase's end in docs/roadmap.json (/plan-sync checks it)."
+  }
+ },
+ {
+  "id": "r1-15",
+  "round": 1,
+  "lanes": [
+   "D"
+  ],
+  "finding": "Two allowances were broad enough to hide real faults: Home's pager allowance named no frame, the app switcher's matched MyPaisa anywhere",
+  "check": {
+   "type": "cmd",
+   "run": "node -e \"const a=require('./scripts/board_fit.js').allowed; if (a({board:'ios-v1/iPhone v4 · Home.dc.html',type:'clip-x',text:'₹1,19,79,306',size:'320x568',label:'iPhone · swiped to India · light',el:'span > span'}) || a({board:'ios-v1/iPhone settings.dc.html',type:'clip-x',text:'MyPaisa',size:'320x568',label:'iPhone · Settings',el:'div.row > span'})) process.exit(1)\""
+  }
+ },
+ {
+  "id": "r1-16",
+  "round": 1,
+  "lanes": [
+   "E"
+  ],
+  "finding": "MA-241's board: its notes rendered blank, two reasons given for A were wrong (the same colour in every mix; B's glyph margin the thinnest), and it gave no reason for drawing no iPad or 390 frame",
+  "check": {
+   "type": "cmd",
+   "run": "node scripts/board_fit.js --only \"Kind icons\" && python3 -c \"import re; d=open('docs/design/reviews/MA-241/decision.md').read(); b=open('docs/design/ds-v1/Kind icons.dc.html').read(); assert re.search(r'same colour in its row as in the asset-class mix', d) and 'liquidity bar' in d; assert not re.search(r'thinnest glyph margin', d + b); assert 'fixed 36 pt lead at every size class' in b\""
   }
  }
 ]
