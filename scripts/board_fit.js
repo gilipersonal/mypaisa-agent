@@ -321,7 +321,7 @@ async function diff(ref, expectFile, out) {
     console.log(`${m ? 'ok  ' : 'FAIL'} ${r.board} · ${r.label} · ${r.what}${m ? ' · ' + m.why.slice(0, 80) : ''}`);
     if (!m) n++;
   }
-  for (const c of expect.changes || []) if (!rows.some((r) => meant(r) === c)) { console.log(`FAIL a change the story meant no longer shows: ${c.board} · ${c.frames} · ${c.why.slice(0, 80)}`); n++; }
+  for (const c of expect.changes || []) if (list.some((b) => c.board.split('|').some((x) => b.endsWith(x))) && !rows.some((r) => meant(r) === c)) { console.log(`FAIL a change the story meant no longer shows: ${c.board} · ${c.frames} · ${c.why.slice(0, 80)}`); n++; }
   console.log(`board-fit diff: ${list.length} boards against ${ref}, ${rows.length} frames changed, ${n} not meant`);
   process.exit(n ? 1 : 0);
 }
@@ -425,6 +425,11 @@ async function diffDirs(baseDir, headDir, neutral, out, only = ONLY) {
           for (const p of [pa, pb]) await p.evaluate((st) => document.querySelectorAll('.psteps button')[st].click(), st);
           await pb.waitForTimeout(600);
           await steady(pa); await steady(pb);
+          // the prototype scrolls a step's chat to a spot it measures 60 ms after the step, which lands a few pixels
+          // apart from run to run: the head is pictured at the base's scroll, so that does not count, and content
+          // that moved above the spot still shows
+          const tops = await pa.evaluate(() => [...document.querySelectorAll('.pframe [data-scroll]')].map((e) => e.scrollTop));
+          await pb.evaluate((tops) => document.querySelectorAll('.pframe [data-scroll]').forEach((e, i) => { if (tops[i] !== undefined) e.scrollTop = tops[i]; }), tops);
           await record(board, `${door} · ${theme} · step ${st + 1}`, await shot(pa, 0), await shot(pb, 0));
         }
       }
