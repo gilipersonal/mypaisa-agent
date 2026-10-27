@@ -1,0 +1,1613 @@
+<title>Inside MyPaisa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: a coral thread runs down the page like the mark's orbit; each stop pairs plain words with a live screen.
+   Palette and type are MyPaisa DS v1, "Warm ledger": navy hero, coral accent, warm grouped ground. */
+:root{
+  --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
+  --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
+  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6; --hero-up:#8BE8AC;
+  --coral:#FF6B4F; --accent:#C2381F; --on-accent:#FFFFFF;
+  --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
+  --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB; --violet:#6B3FB8; --violet-bg:#EEE7FA;
+  --track:#CDCFD4; --grid:#ECE8E2;
+  --bubble:#13213A; --bubble-ink:#FFFFFF;
+  --mark:#13213A; --mark-ink:#FFFFFF;
+  --frame:#1A1D24; --frame-hi:#3A3F4A; --glass:rgba(255,255,255,.82);
+  --apple:#000000; --apple-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,23,31,.06),0 10px 30px rgba(20,23,31,.08);
+  --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+    --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6; --hero-up:#A6F0C2;
+    --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+    --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+    --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+    --track:#454E5C; --grid:#222B39;
+    --bubble:#2B4170; --bubble-ink:#FFFFFF;
+    --mark:#F3F5F8; --mark-ink:#0A0F18;
+    --frame:#2A303B; --frame-hi:#4A5260; --glass:rgba(21,28,39,.84);
+    --apple:#FFFFFF; --apple-ink:#000000;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+  --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6; --hero-up:#A6F0C2;
+  --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+  --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+  --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+  --track:#454E5C; --grid:#222B39;
+  --bubble:#2B4170; --bubble-ink:#FFFFFF;
+  --mark:#F3F5F8; --mark-ink:#0A0F18;
+  --frame:#2A303B; --frame-hi:#4A5260; --glass:rgba(21,28,39,.84);
+  --apple:#FFFFFF; --apple-ink:#000000;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(36px,5.6vw,64px);line-height:1.04;font-weight:900}
+h2{font-size:clamp(26px,3.2vw,36px);line-height:1.12;font-weight:800}
+h3{font-size:19px;line-height:1.25;font-weight:800}
+p{margin:0}
+code,.mono{font-family:var(--f-mono);font-size:.82em;letter-spacing:0}
+code{background:var(--surface-2);border-radius:6px;padding:1px 6px;color:var(--ink-2);overflow-wrap:anywhere}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:18px;color:var(--ink-2);max-width:62ch}
+.muted{color:var(--ink-3)}
+section{padding-block:72px}
+.sec-head{display:grid;gap:12px;max-width:760px;margin-bottom:36px}
+
+/* ---------- top bar ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--glass)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:900;font-size:18px;color:var(--ink);text-decoration:none;flex:none}
+.brand svg{width:26px;height:26px}
+.toc{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-left:auto;min-width:0}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:none;font-size:13px;font-weight:600;color:var(--ink-2);text-decoration:none;padding:6px 10px;border-radius:999px}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{padding-block:56px 40px}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.hero h1 .c{color:var(--accent)}
+.hero .lede{margin-top:18px}
+.status{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--coral);display:inline-block}
+.orbit-stage{position:relative;aspect-ratio:1/1;max-width:420px;width:100%;justify-self:center}
+.orbit-stage .bigmark{position:absolute;inset:14%;}
+.orbit-stage .bigmark .spin{transform-origin:256px 256px;animation:spin 26s linear infinite}
+.float{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:8px 12px;font-size:12.5px;line-height:1.3;animation:bob 6s ease-in-out infinite;max-width:62%}
+.float b{display:block;font-size:14px}
+.float.f1{top:4%;left:0}
+.float.f2{top:44%;right:-2%;animation-delay:-2s}
+.float.f3{bottom:2%;left:6%;animation-delay:-4s}
+.float .ok{color:var(--up);font-weight:700}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ---------- promises ---------- */
+.promises{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.promise{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:8px;align-content:start}
+.promise .n{font-family:var(--f-display);font-weight:900;font-size:28px;color:var(--coral);line-height:1}
+.promise p{font-size:14.5px;color:var(--ink-2)}
+
+/* ---------- cast ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--ink-2);margin-bottom:18px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.cat-door{--cc:var(--blue)} .cat-pipe{--cc:var(--ink-3)} .cat-ai{--cc:var(--coral)} .cat-code{--cc:var(--up)} .cat-store{--cc:var(--violet)}
+.cast{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.who{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;grid-template-columns:44px 1fr;gap:4px 12px;align-items:start}
+.who .ic{grid-row:span 3;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--surface-2);color:var(--cc)}
+.who .ic svg{width:24px;height:24px}
+.who h3{font-size:17px}
+.who .real{font-family:var(--f-mono);font-size:11.5px;color:var(--cc);font-weight:500}
+.who p{font-size:14px;color:var(--ink-2)}
+.ico{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- journey ---------- */
+.journey{position:relative}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1fr);gap:0 36px;padding-block:44px;position:relative}
+.step::before{content:"";position:absolute;left:31px;top:0;bottom:0;width:2px;background:linear-gradient(var(--coral),var(--coral)) no-repeat center/2px 100%;opacity:.35}
+.step:first-child::before{top:60px}
+.step:last-child::before{bottom:auto;height:60px}
+.num{position:relative;z-index:1;width:64px;height:64px;border-radius:50%;background:var(--surface);border:2px solid var(--coral);display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:24px;color:var(--accent);align-self:start}
+.copy{display:grid;gap:14px;align-content:start;min-width:0}
+.copy .tag{display:flex;flex-wrap:wrap;gap:6px}
+.chipx{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-2)}
+.chipx.ph{background:var(--blue-bg);color:var(--blue)}
+.chipx.ai{background:var(--alert-bg);color:var(--accent)}
+.chipx.code{background:var(--up-bg);color:var(--up)}
+.copy p{color:var(--ink-2)}
+.behind{list-style:none;margin:6px 0 0;padding:16px 18px;display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.behind .bh{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.behind li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;font-size:14.5px;color:var(--ink-2)}
+.behind li::before{content:"";width:10px;height:10px;border-radius:50%;margin-top:7px;margin-left:5px;background:var(--cc,var(--coral))}
+.behind li b{color:var(--ink)}
+.stage{position:relative;display:grid;justify-items:center;gap:14px;align-content:start;min-width:0;--u:.8s}
+.replay{font:inherit;font-size:13px;font-weight:700;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px 6px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.replay:hover{color:var(--ink);border-color:var(--ink-3)}
+.replay svg{width:14px;height:14px}
+.caption{font-size:13px;color:var(--ink-3);text-align:center;max-width:44ch}
+
+/* ---------- phone ---------- */
+.phone{width:290px;max-width:100%;aspect-ratio:290/600;background:var(--frame);border-radius:46px;padding:9px;box-shadow:0 0 0 1.5px var(--frame-hi) inset,var(--shadow),0 30px 60px -20px rgba(20,23,31,.35);position:relative;flex:none}
+.phone.sm{width:236px}
+.pair .phone.sm{width:auto;flex:1 1 0;max-width:236px;min-width:0}
+.phone.sm .screen{font-size:11px}
+.screen{position:relative;height:100%;border-radius:37px;background:var(--bg);overflow:hidden;display:flex;flex-direction:column;font-size:12.5px;line-height:1.35;color:var(--ink)}
+.island{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:84px;height:24px;border-radius:14px;background:#000;z-index:5}
+.sbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-weight:700;font-size:12px;flex:none;height:38px}
+.sbar .sig{display:flex;gap:4px;align-items:center}
+.sbar .sig i{display:block;width:14px;height:8px;border-radius:2px;border:1.5px solid currentColor;opacity:.8}
+.strip{margin:2px 10px 0;padding:7px 12px;border-radius:14px;background:var(--glass);border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:11.5px;flex:none}
+.strip b{font-size:13px}
+.chat{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:7px;padding:8px 11px 6px;overflow:hidden;min-height:0}
+.me{align-self:flex-end;background:var(--bubble);color:var(--bubble-ink);border-radius:16px 16px 5px 16px;padding:7px 11px;max-width:82%}
+.bot{display:grid;grid-template-columns:18px 1fr;gap:6px;align-items:start;max-width:94%}
+.bot .av{width:18px;height:18px;margin-top:1px}
+.bot > div{min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:9px 10px;box-shadow:0 1px 2px rgba(20,23,31,.05);display:grid;gap:6px}
+.card .ct{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.card .row{display:flex;justify-content:space-between;gap:8px;font-size:11.5px}
+.card .row span:first-child{color:var(--ink-3)}
+.card .row b{font-weight:600;text-align:right}
+.card .row.amb{background:var(--amber-bg);border-radius:7px;padding:3px 6px;margin-inline:-6px}
+.card .row.amb span:first-child,.card .row.amb b{color:var(--amber)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-weight:600;font-size:11px;background:var(--surface);color:var(--ink)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.b1,.b2{border-radius:10px;padding:5px 10px;font-weight:700;font-size:11.5px;text-align:center;flex:1}
+.b1{background:var(--accent);color:var(--on-accent)}
+.b2{background:var(--surface-2);color:var(--ink)}
+.done{display:flex;align-items:center;gap:6px;color:var(--up);font-weight:700;font-size:11.5px}
+.done svg{width:14px;height:14px}
+.composer{flex:none;margin:4px 10px 12px;display:flex;align-items:center;gap:8px;background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 8px;color:var(--ink-3);font-size:12px}
+.composer .plus{width:24px;height:24px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;color:var(--ink-2);font-weight:700}
+.composer .send{margin-left:auto;width:26px;height:26px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+.composer .send svg{width:13px;height:13px;stroke:var(--on-accent)}
+.file{align-self:flex-end;display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px 14px 5px 14px;padding:7px 10px;max-width:82%}
+.file .pdf{width:26px;height:32px;border-radius:5px;background:var(--alert-bg);color:var(--alert);font-size:8px;font-weight:800;display:grid;place-items:end center;padding-bottom:4px}
+.typing{display:none;gap:4px;align-items:center;padding:6px 0 2px 24px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.layer{position:absolute;inset:0;display:flex;flex-direction:column}
+
+/* sign-in */
+.signin{align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;background:var(--bg)}
+.signin .mk{width:72px;height:72px;margin-bottom:6px}
+.signin .nm{font-family:var(--f-display);font-weight:900;font-size:24px}
+.signin .tl{color:var(--ink-2);font-size:12.5px;margin-bottom:18px}
+.sib{width:100%;border-radius:12px;padding:10px;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px}
+.sib.apple{background:var(--apple);color:var(--apple-ink)}
+.sib.google{background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+.sib svg{width:15px;height:15px}
+.fine{font-size:10.5px;color:var(--ink-3);margin-top:8px}
+.sheet{position:absolute;left:8px;right:8px;bottom:8px;background:var(--surface);border-radius:26px;padding:18px 16px;display:grid;justify-items:center;gap:8px;box-shadow:0 -10px 30px rgba(0,0,0,.25);text-align:center}
+.faceid{width:64px;height:64px;color:var(--blue)}
+.dim{position:absolute;inset:0;background:rgba(10,15,24,.35)}
+
+/* lock screen */
+.lock{background:linear-gradient(160deg,#1C2E4D 0%,#13213A 45%,#5A2A3A 100%);color:#fff;align-items:center;padding-top:60px}
+.lock .tm{font-family:var(--f-display);font-weight:800;font-size:64px;line-height:1}
+.lock .dt{font-size:13px;opacity:.85;margin-bottom:auto;margin-top:4px}
+.notif{width:calc(100% - 20px);background:rgba(255,255,255,.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:18px;padding:10px 12px;display:grid;grid-template-columns:30px 1fr;gap:9px;margin-bottom:70px;text-align:left}
+.notif .ap{width:30px;height:30px;border-radius:8px;background:#fff;display:grid;place-items:center}
+.notif .ap svg{width:22px;height:22px}
+.notif b{font-size:12px}
+.notif .when{float:right;font-size:10.5px;opacity:.75;font-weight:400}
+
+/* dashboard pieces */
+.herocard{background:var(--hero);color:var(--hero-ink);border-radius:18px;padding:12px 13px;display:grid;gap:6px}
+.herocard .seg{display:flex;gap:2px;background:var(--hero-2);border-radius:8px;padding:2px;width:max-content;font-size:10.5px;font-weight:700}
+.herocard .seg span{padding:2px 8px;border-radius:6px;color:var(--hero-ink-2)}
+.herocard .seg span.on{background:var(--hero-ink);color:var(--hero)}
+.herocard .lab{font-size:10.5px;color:var(--hero-ink-2)}
+.herocard .big{font-family:var(--f-display);font-weight:900;font-size:26px;line-height:1.05;font-variant-numeric:tabular-nums}
+.herocard .sub{display:flex;gap:12px;font-size:10.5px;color:var(--hero-ink-2);font-variant-numeric:tabular-nums}
+.herocard .sub b{color:var(--hero-ink);font-weight:700}
+.herocard svg{width:100%;height:34px}
+.split{display:flex;height:6px;border-radius:4px;overflow:hidden;gap:2px}
+.split i{display:block;background:var(--coral)}
+.split i+i{background:var(--hero-ink-2)}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;font-size:11.5px;border-top:1px solid var(--line);position:relative}
+.li:first-child{border-top:0}
+.li small{display:block;color:var(--ink-3);font-size:10px}
+.li b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.edit{position:absolute;inset:3px 6px;border-radius:9px;border:2px solid var(--blue);background:var(--surface);display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-size:11px}
+.edit .ba{color:var(--ink-3)}
+.edit .ba b{color:var(--ink)}
+.edit .sv{background:var(--accent);color:var(--on-accent);border-radius:7px;padding:2px 8px;font-weight:700}
+.toast{position:absolute;left:50%;bottom:62px;transform:translateX(-50%);background:var(--ink);color:var(--bg);border-radius:999px;padding:6px 12px;font-size:11px;font-weight:700;white-space:nowrap;display:flex;gap:6px;align-items:center}
+
+/* laptop */
+.step.wide{grid-template-columns:64px minmax(0,1fr)}
+.step.wide .stage{grid-column:2}
+.step.wide .copy{max-width:780px}
+.duo{position:relative;width:100%;max-width:880px;display:flex;align-items:center;justify-content:center}
+.duo .laptop{flex:1;min-width:0}
+.laptop{width:100%;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;font-size:10.5px}
+.laptop .bar{display:flex;gap:6px;align-items:center;padding:7px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.laptop .bar i{width:8px;height:8px;border-radius:50%;background:var(--track)}
+.laptop .url{margin-left:10px;background:var(--surface);border-radius:6px;padding:2px 10px;color:var(--ink-2);font-family:var(--f-mono);font-size:10px}
+.laptop .body{display:grid;grid-template-columns:96px 1fr 128px;min-height:250px}
+.laptop .side{border-right:1px solid var(--line);padding:10px 8px;display:grid;gap:3px;align-content:start;color:var(--ink-2)}
+.laptop .side span{padding:3px 6px;border-radius:6px}
+.laptop .side span.on{background:var(--surface-2);color:var(--ink);font-weight:700}
+.laptop .main{padding:10px;display:grid;gap:8px;align-content:start;background:var(--bg);min-width:0}
+.laptop .chatcol{border-left:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.laptop .herocard .big{font-size:22px}
+.mini-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mini{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 8px}
+.mini small{color:var(--ink-3);display:block}
+.mini b{font-variant-numeric:tabular-nums}
+.duo .phone{width:210px;margin-left:18px;z-index:2}
+.duo .phone .screen{font-size:10px}
+.duo .phone .herocard .big{font-size:19px}
+
+/* invite */
+.pair{display:flex;gap:18px;align-items:flex-start;justify-content:center;position:relative;width:100%}
+.env{position:absolute;top:42%;left:44%;width:42px;height:30px;border-radius:6px;background:var(--coral);display:grid;place-items:center;color:#fff;opacity:0;z-index:4}
+.env svg{width:24px;height:24px}
+.share{position:absolute;left:6px;right:6px;bottom:6px;background:var(--surface);border-radius:22px;padding:12px;display:grid;gap:10px;box-shadow:0 -10px 30px rgba(0,0,0,.2)}
+.share .lnk{display:flex;gap:8px;align-items:center;background:var(--surface-2);border-radius:10px;padding:6px 8px;font-size:10px}
+.share .lnk .mk{width:24px;height:24px}
+.share .apps{display:flex;justify-content:space-around}
+.share .apps span{display:grid;justify-items:center;gap:3px;font-size:9.5px;color:var(--ink-2)}
+.share .apps i{width:34px;height:34px;border-radius:9px;display:block}
+.inv{align-items:center;justify-content:center;text-align:center;padding:22px;gap:8px}
+.inv .mk{width:56px;height:56px}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.role{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;color:var(--ink-2)}
+.role b{display:block;color:var(--ink);font-family:var(--f-display);font-size:15px}
+
+/* ledger tape */
+.tape{display:flex;gap:0;align-items:center;width:100%;max-width:420px;justify-content:center}
+.blk{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:10.5px;line-height:1.35;flex:1;min-width:0}
+.blk .h{font-family:var(--f-mono);color:var(--violet);font-size:10px}
+.blk.new{border-color:var(--coral);box-shadow:0 0 0 3px color-mix(in srgb,var(--coral) 22%,transparent)}
+.link{width:16px;height:2px;background:var(--violet);flex:none}
+
+/* statement & budget */
+.stmt{width:100%;max-width:440px;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.paper{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:11.5px;box-shadow:var(--shadow);display:grid;gap:3px}
+.paper .ph{display:flex;justify-content:space-between;font-weight:700;font-size:12px;border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:3px}
+.paper .ln{display:flex;justify-content:space-between;gap:6px;font-variant-numeric:tabular-nums}
+.paper .ln span:first-child{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.paper .ln.unsure{color:var(--amber)}
+.paper .ln.unsure span:first-child{color:var(--amber)}
+.review .row b{font-variant-numeric:tabular-nums}
+.bars{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:9px}
+.bars .bt{display:flex;justify-content:space-between;font-size:13px}
+.bars .bt b{font-family:var(--f-display)}
+.bar{display:grid;grid-template-columns:96px 1fr 86px;gap:10px;align-items:center;font-size:12px}
+.bar .tr{position:relative;height:10px;border-radius:5px;background:var(--surface-2)}
+.bar .pl{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink-2);border-radius:1px}
+.bar .ac{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--blue)}
+.bar .ac.over{background:var(--amber)}
+.bar .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap}
+.bar .v b{color:var(--ink)}
+.bars .key{display:flex;gap:14px;font-size:11.5px;color:var(--ink-3);flex-wrap:wrap}
+.bars .key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* rhythm dots */
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dots i{width:14px;height:14px;border-radius:50%;background:var(--track);display:block}
+.dots i.snd{background:var(--coral)}
+
+/* fan chart */
+.fan{width:100%;height:auto;display:block}
+.fan .band{fill:var(--coral);opacity:.18}
+.fan .p50{fill:none;stroke:var(--coral);stroke-width:2}
+.fan .base{fill:none;stroke:var(--blue);stroke-width:1.6;stroke-dasharray:4 3}
+.fan .gl{stroke:var(--grid);stroke-width:1}
+.fan text{fill:var(--ink-3);font-size:10px;font-family:var(--f-body)}
+.fan .dot{fill:var(--coral)}
+.fan .lbl{fill:var(--ink);font-weight:700}
+
+/* ---------- engine room ---------- */
+.engine{background:var(--surface);border-block:1px solid var(--line)}
+.tours{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tour{font:inherit;font-size:14px;font-weight:700;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);cursor:pointer}
+.tour[aria-pressed="true"]{background:var(--hero);border-color:var(--hero);color:var(--hero-ink)}
+.mapbox{overflow-x:auto;border-radius:20px;border:1px solid var(--line);background:var(--bg);-webkit-overflow-scrolling:touch}
+#map{display:block;width:100%;min-width:780px;height:auto}
+#map .box{fill:var(--surface);stroke:var(--line);stroke-width:1.5;transition:stroke .3s,fill .3s}
+#map .node.on .box{stroke:var(--coral);stroke-width:3}
+#map .node .ring{fill:none;stroke:var(--coral);stroke-width:2;opacity:0}
+#map .node.on .ring{animation:ring 1.6s ease-out infinite}
+#map .ttl{fill:var(--ink);font-family:var(--f-display);font-weight:800;font-size:16px}
+#map .sub{fill:var(--ink-3);font-family:var(--f-mono);font-size:11px}
+#map .cdot{fill:var(--cc)}
+#map .n-claude .box{stroke-dasharray:6 5}
+#map .wire{fill:none;stroke:var(--track);stroke-width:2;transition:stroke .3s}
+#map .wire.dash{stroke-dasharray:3 5}
+#map .wire.lit{stroke:var(--coral);stroke-width:3;stroke-dasharray:7 6;animation:flow .5s linear infinite}
+#map .wire.bad{stroke:var(--alert);stroke-width:3;stroke-dasharray:4 4}
+#map .lane{fill:var(--ink-3);font-size:12.5px;font-weight:600;font-family:var(--f-body)}
+#map .note{fill:var(--ink-3);font-size:11px;font-family:var(--f-body)}
+#token{fill:var(--coral);stroke:var(--surface);stroke-width:3}
+#token-glow{fill:var(--coral);opacity:.25}
+@keyframes ring{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
+#map .ring{transform-box:fill-box;transform-origin:center}
+@keyframes flow{to{stroke-dashoffset:-13}}
+.player{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start;margin-top:18px}
+.cap{min-height:150px;display:grid;gap:8px;align-content:start}
+.cap .k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.cap h3{font-size:22px}
+.cap p{color:var(--ink-2);max-width:70ch}
+.cap .tech{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 10px;max-width:70ch}
+.ctrl{display:flex;gap:8px;align-items:center}
+.ctrl button{font:inherit;font-weight:700;font-size:14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:9px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.ctrl button.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent);min-width:104px;justify-content:center}
+.ctrl button:disabled{opacity:.4;cursor:default}
+.ctrl svg{width:14px;height:14px}
+.prog{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
+.prog i{width:22px;height:5px;border-radius:3px;background:var(--track);display:block;cursor:pointer}
+.prog i.done{background:var(--coral);opacity:.45}
+.prog i.cur{background:var(--coral)}
+.scroll-hint{display:none;font-size:12.5px;color:var(--ink-3);margin-top:8px}
+
+/* ---------- agents ---------- */
+.rules3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.rule{border-left:3px solid var(--coral);padding:4px 0 4px 14px}
+.rule b{font-family:var(--f-display);font-size:17px;display:block}
+.rule p{font-size:14.5px;color:var(--ink-2)}
+.bus{position:relative;height:46px;margin:6px 0 14px}
+.bus svg{width:100%;height:100%}
+.bus .lineb{stroke:var(--track);stroke-width:2}
+.bus .pulse{fill:var(--coral)}
+.bus text{fill:var(--ink-3);font-size:12px;font-family:var(--f-mono)}
+.team{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.agent{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:10px;align-content:start;position:relative}
+.agent .top{display:flex;gap:12px;align-items:center}
+.agent .ic{width:40px;height:40px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;color:var(--cc);flex:none}
+.agent .ic svg{width:22px;height:22px}
+.agent h3{font-size:17px}
+.agent .brain{font-family:var(--f-mono);font-size:11px;color:var(--ink-3)}
+.agent .beat{position:absolute;top:16px;right:16px;width:9px;height:9px;border-radius:50%;background:var(--up);animation:beat 2.4s ease-in-out infinite}
+.agent .beat.later{background:var(--track);animation:none}
+.agent dl{margin:0;display:grid;gap:6px;font-size:13.5px}
+.agent dt{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.agent dd{margin:0;color:var(--ink-2)}
+.agent .when{font-size:12px;font-weight:700;color:var(--blue)}
+@keyframes beat{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--up) 50%,transparent)}50%{box-shadow:0 0 0 6px transparent}}
+.desk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:start;margin-top:56px}
+.screens{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px}
+.screens div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px;color:var(--ink-2)}
+.screens b{display:block;color:var(--ink)}
+
+/* ---------- safety ---------- */
+.nets{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.net{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
+.net p{color:var(--ink-2);font-size:14.5px}
+.meter{position:relative;height:14px;border-radius:7px;background:var(--surface-2);margin:26px 0 6px}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;width:15%;border-radius:7px;background:var(--blue)}
+.meter .tick{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink-3)}
+.meter .tick span{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.meter .tick.lo span{bottom:auto;top:calc(100% + 2px)}
+.meter .exp{position:absolute;top:calc(100% + 6px);font-size:11.5px;color:var(--blue);font-weight:700;white-space:nowrap}
+.ladder{display:grid;gap:6px;margin-top:20px}
+.ladder div{display:grid;grid-template-columns:52px 1fr;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.ladder b{font-family:var(--f-display);color:var(--ink)}
+.chain{display:flex;align-items:center;gap:0;overflow:hidden}
+.chain .blk{flex:1}
+.chain .blk.broken{border-color:var(--alert);background:var(--alert-bg)}
+.chain .link.broken{background:var(--alert);opacity:.3}
+.guard{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.guard li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14.5px;color:var(--ink-2)}
+.guard svg{width:18px;height:18px;margin-top:2px;color:var(--up)}
+.guard b{color:var(--ink)}
+
+/* ---------- where it lives ---------- */
+.homes{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:16px}
+.home{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:10px;align-content:start}
+.home .envn{color:var(--ink-3);display:block;font-family:var(--f-mono);font-size:12px}
+.home ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:14px;display:grid;gap:4px}
+.ship{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+.ship span{background:var(--surface-2);border-radius:8px;padding:4px 8px;font-weight:600}
+.ship span.gate{background:var(--amber-bg);color:var(--amber)}
+.ship em{font-style:normal;color:var(--ink-3)}
+.cost{font-family:var(--f-display);font-weight:900;font-size:40px;line-height:1}
+
+/* ---------- day ---------- */
+.day{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:26px 22px 22px;overflow:hidden}
+.track{position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--hero) 0%,var(--hero) 22%,var(--coral) 30%,var(--amber) 50%,var(--coral) 80%,var(--hero) 92%);margin:46px 0 8px}
+.sun{position:absolute;top:50%;width:22px;height:22px;border-radius:50%;background:var(--surface);border:3px solid var(--coral);transform:translate(-50%,-50%);left:30%;animation:sun 18s linear infinite}
+@keyframes sun{from{left:0}to{left:100%}}
+.hrs{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);font-family:var(--f-mono)}
+.events{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:22px}
+.ev{display:grid;gap:4px;align-content:start;font-size:13.5px;color:var(--ink-2)}
+.ev .t{font-family:var(--f-mono);font-size:12px;color:var(--accent);font-weight:500}
+.ev b{color:var(--ink);font-family:var(--f-display);font-size:15px}
+.ev .tg{font-size:11px;font-weight:700;width:max-content;padding:2px 7px;border-radius:999px}
+.ev .tg.code{background:var(--up-bg);color:var(--up)}
+.ev .tg.ai{background:var(--alert-bg);color:var(--accent)}
+.pin{position:absolute;top:-30px;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.pin::after{content:"";position:absolute;left:50%;top:18px;width:2px;height:14px;background:var(--ink-3);transform:translateX(-50%)}
+
+footer{padding-block:48px 64px;border-top:1px solid var(--line);color:var(--ink-3);font-size:14px}
+footer .wrap{display:grid;gap:10px}
+
+/* ---------- play-in animations (at rest every element shows its final state) ---------- */
+.run .a{animation:rise .55s var(--ease) both;animation-delay:calc(var(--d,0) * var(--u))}
+.run .typing{display:flex;animation:typing calc(var(--u) * 1.2) linear both;animation-delay:calc(var(--d,0) * var(--u))}
+.run .pick{animation:pick .25s both;animation-delay:calc(var(--d,0) * var(--u))}
+.run .tap{animation:tap .7s var(--ease) both;animation-delay:calc(var(--d,0) * var(--u))}
+.run .pick.tap{animation-name:pick,tap;animation-duration:.25s,.7s;animation-fill-mode:both}
+.run .gone{animation:gone .4s both;animation-delay:calc(var(--d,0) * var(--u))}
+.gone{opacity:0;visibility:hidden}
+.later{opacity:0;visibility:hidden}
+.run .later{animation:appear .5s var(--ease) both;animation-delay:calc(var(--d,0) * var(--u))}
+@keyframes appear{from{opacity:0;visibility:visible}to{opacity:1;visibility:visible}}
+.run .show-hide{animation:showhide calc(var(--len,3) * var(--u)) both;animation-delay:calc(var(--d,0) * var(--u))}
+.show-hide{opacity:0;visibility:hidden}
+.run .sheet.a{animation-name:sheet}
+.run .env{animation:fly calc(var(--u) * 2) var(--ease) both;animation-delay:calc(var(--d,0) * var(--u))}
+.run .grow{animation:grow .9s var(--ease) both;animation-delay:calc(var(--d,0) * var(--u))}
+.run .draw{stroke-dasharray:1000;animation:draw 1.6s var(--ease) both;animation-delay:calc(var(--d,0) * var(--u))}
+.run .bandin{animation:bandin 1s var(--ease) both;animation-delay:calc(var(--d,0) * var(--u))}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes sheet{from{opacity:0;transform:translateY(60%)}to{opacity:1;transform:none}}
+@keyframes typing{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0;visibility:hidden;height:0;padding:0}}
+@keyframes pick{from{background:var(--surface);border-color:var(--line);color:var(--ink)}to{}}
+@keyframes tap{0%{transform:scale(1)}40%{transform:scale(.92);box-shadow:0 0 0 6px color-mix(in srgb,var(--coral) 40%,transparent)}100%{transform:scale(1)}}
+@keyframes gone{from{opacity:1;visibility:visible}to{opacity:0;visibility:hidden}}
+@keyframes showhide{0%{opacity:0;visibility:visible}12%{opacity:1}85%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes fly{0%{opacity:0;transform:translate(-60px,10px) scale(.6)}15%{opacity:1}80%{opacity:1;transform:translate(40px,-10px) scale(1)}100%{opacity:0;transform:translate(70px,0) scale(.6)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+.grow{transform-origin:left center}
+@keyframes draw{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+@keyframes bandin{from{opacity:0}to{}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .gone,.show-hide,.later{opacity:0;visibility:hidden}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1000px){
+  .promises,.cast{grid-template-columns:repeat(2,1fr)}
+  .team{grid-template-columns:repeat(2,1fr)}
+  .homes{grid-template-columns:1fr 1fr}
+  .homes .home:last-child{grid-column:span 2}
+  .events{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width: 860px){
+  .hero .wrap{grid-template-columns:1fr}
+  .orbit-stage{max-width:320px}
+  .step{grid-template-columns:44px minmax(0,1fr);gap:20px 16px}
+  .step::before{left:21px}
+  .step.wide{grid-template-columns:44px minmax(0,1fr)}
+  .step.wide .stage{grid-column:1 / -1}
+  .num{width:44px;height:44px;font-size:18px}
+  .stage{grid-column:1 / -1}
+  .desk{grid-template-columns:1fr}
+  .nets{grid-template-columns:1fr}
+  .rules3{grid-template-columns:1fr}
+  .player{grid-template-columns:1fr}
+  .scroll-hint{display:block}
+}
+@media (max-width: 560px){
+  section{padding-block:52px}
+  .promises,.cast,.team,.homes{grid-template-columns:1fr}
+  .homes .home:last-child{grid-column:auto}
+  .events{grid-template-columns:1fr 1fr}
+  .roles{grid-template-columns:1fr}
+  .stmt{grid-template-columns:1fr}
+  .pair{gap:10px}
+  .phone.sm .screen{font-size:10px}
+  .duo{flex-direction:column;align-items:center}
+  .duo .phone{width:210px;margin:16px 0 0}
+  .pair .phone.sm .inv{padding:30px 10px 10px}
+  .pair .phone.sm .inv b{font-size:13.5px!important}
+  .pair .phone.sm .sib{font-size:10.5px;padding:7px 4px;gap:4px}
+  .pair .phone.sm .sib svg{width:12px;height:12px}
+  .laptop .body{grid-template-columns:72px 1fr}
+  .laptop .chatcol{display:none}
+  .bar{grid-template-columns:74px 1fr 92px;gap:8px}
+  .screens{grid-template-columns:1fr}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mark" viewBox="0 0 512 512">
+      <path d="M440.75 149.33 A213.33 213.33 0 1 1 362.67 71.25" fill="none" style="stroke:var(--mark)" stroke-width="22"/>
+      <circle cx="256" cy="256" r="155.73" style="fill:var(--mark)"/>
+      <g fill="none" style="stroke:var(--mark-ink)" stroke-width="26.28" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M304.85 215.98 C301.87 191.49 285.74 176.55 264.23 176.55 C239.74 176.55 223.62 193.88 223.62 218.37 L223.62 294.83 C223.62 313.34 217.05 325.29 202.11 335.45"/>
+        <path d="M202.11 335.45 L316.8 335.45"/><path d="M197.33 264.96 L274.99 264.96"/>
+      </g>
+      <circle cx="406.85" cy="105.15" r="40.53" style="fill:var(--coral)"/>
+    </symbol>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+    <symbol id="i-desk" viewBox="0 0 24 24"><path d="M3 18h18M5.5 18a6.5 6.5 0 0 1 13 0M12 11.5V9M10 9h4"/></symbol>
+    <symbol id="i-tray" viewBox="0 0 24 24"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1.2 2.5h5.6L16 13h5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H10l-5 4v-4H4z"/><path d="M9 10.5h6"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 7h7M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01M8.5 15h.01M12 15h.01M15.5 15h.01M8.5 18h.01M12 18h3.5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v15H7.5A2.5 2.5 0 0 0 5 20.5z"/><path d="M5 20.5A2.5 2.5 0 0 1 7.5 18H19v3H7.5"/><path d="M9 7.5h6M9 11h4"/></symbol>
+    <symbol id="i-cabinet" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1.8"/><path d="M5 12h14M10 7.5h4M10 16.5h4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6"/><path d="M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7M5.6 18.4a9 9 0 0 1 0-12.8M18.4 5.6a9 9 0 0 1 0 12.8"/></symbol>
+    <symbol id="i-news" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8.5h10M7 12h10M7 15.5h6"/></symbol>
+    <symbol id="i-fan" viewBox="0 0 24 24"><path d="M3 20h18M4 16c4-1 7-4 9-8 1.5 3 4 5 7 6"/><path d="M4 16c4 0 9-2 16-9" opacity=".55"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9.5"/></symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 4.5a4.5 4.5 0 0 0-5.6 5.8L3.5 15.7a2 2 0 1 0 2.8 2.8l5.4-5.4a4.5 4.5 0 0 0 5.8-5.6l-2.6 2.6-2.4-.4-.4-2.4z"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 3v6c0 4.5-3.2 7.6-7.5 9-4.3-1.4-7.5-4.5-7.5-9V6z"/><path d="M8.8 12.2l2.2 2.2 4.3-4.3"/></symbol>
+    <symbol id="i-tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-face" viewBox="0 0 24 24"><path d="M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16M8.5 9v1.5M15.5 9v1.5M12 9v4h-1M9 16c1.8 1.4 4.2 1.4 6 0"/></symbol>
+    <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.6-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8-.1 0-2.5-1-2.5-4zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.6 2.8-1.4z"/></symbol>
+    <symbol id="i-google" viewBox="0 0 24 24"><path fill="#4285F4" stroke="none" d="M22 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.6a4.8 4.8 0 0 1-2.1 3.1v2.6h3.4c2-1.8 3.1-4.5 3.1-7.6z"/><path fill="#34A853" stroke="none" d="M12 22.5c2.8 0 5.2-.9 6.9-2.5l-3.4-2.6c-.9.6-2.1 1-3.5 1-2.7 0-5-1.8-5.8-4.3H2.7v2.7A10.5 10.5 0 0 0 12 22.5z"/><path fill="#FBBC05" stroke="none" d="M6.2 14.1a6.3 6.3 0 0 1 0-4.2V7.2H2.7a10.5 10.5 0 0 0 0 9.6z"/><path fill="#EA4335" stroke="none" d="M12 5.7c1.5 0 2.9.5 4 1.5l3-3A10.5 10.5 0 0 0 2.7 7.2l3.5 2.7C7 7.5 9.3 5.7 12 5.7z"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg>MyPaisa</a>
+    <nav class="toc" aria-label="Sections">
+      <a href="#cast">The cast</a>
+      <a href="#journey">The admin's journey</a>
+      <a href="#engine">Inside one message</a>
+      <a href="#agents">The agent team</a>
+      <a href="#safety">Safety nets</a>
+      <a href="#homes">Where it lives</a>
+      <a href="#day">A day</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">How MyPaisa works, in plain words</div>
+      <h1 style="margin-top:12px">From the first tap to a <span class="c">team of agents</span> keeping the family's money.</h1>
+      <p class="lede">MyPaisa is a private money assistant for one household. You talk to it in a chat, on the iPhone, the iPad or in a browser. It keeps everything the family owns and owes in the UK and India, asks when something is due, and explains what moved. This page follows the household's admin from the very first screen to the chatbot at work, and shows what happens behind every tap.</p>
+      <div class="status">
+        <span class="pill"><i></i>Status: designed, being built in phases 0 to 20</span>
+        <span class="pill">Every name and figure here is illustrative</span>
+      </div>
+    </div>
+    <div class="orbit-stage" aria-hidden="true">
+      <svg class="bigmark" viewBox="0 0 512 512">
+        <g class="spin">
+          <path d="M440.75 149.33 A213.33 213.33 0 1 1 362.67 71.25" fill="none" style="stroke:var(--mark)" stroke-width="10"/>
+          <circle cx="406.85" cy="105.15" r="30" style="fill:var(--coral)"/>
+        </g>
+        <circle cx="256" cy="256" r="155.73" style="fill:var(--mark)"/>
+        <g fill="none" style="stroke:var(--mark-ink)" stroke-width="26.28" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M304.85 215.98 C301.87 191.49 285.74 176.55 264.23 176.55 C239.74 176.55 223.62 193.88 223.62 218.37 L223.62 294.83 C223.62 313.34 217.05 325.29 202.11 335.45"/>
+          <path d="M202.11 335.45 L316.8 335.45"/><path d="M197.33 264.96 L274.99 264.96"/>
+        </g>
+      </svg>
+      <div class="float f1"><span class="muted">Dutta household</span><b>£457,951 net worth</b></div>
+      <div class="float f2"><span class="muted">HDFC home loan</span><b>November's EMI <span class="ok">Paid</span></b></div>
+      <div class="float f3"><span class="muted">You asked</span><b>What if we buy a second flat?</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROMISES ================= -->
+<section style="padding-top:12px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Four promises the whole design keeps</div>
+      <h2>The AI talks. Plain code does the maths. You approve every change.</h2>
+    </div>
+    <div class="promises">
+      <div class="promise"><span class="n">1</span><h3>Claude never makes a number</h3><p>Every figure comes from tested code. Claude, the AI, only chooses what to say and how to say it.</p></div>
+      <div class="promise"><span class="n">2</span><h3>It cannot trade</h3><p>No broker log-in and no orders. It can suggest; it can never buy, sell or move money.</p></div>
+      <div class="promise"><span class="n">3</span><h3>Plain first, detail one tap away</h3><p>Every message has a simple top. The technical side opens only when you ask for it.</p></div>
+      <div class="promise"><span class="n">4</span><h3>New things only in the chat</h3><p>Anything new is made in the chat with a Confirm tap. An existing figure can be corrected where it shows.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAST ================= -->
+<section id="cast" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">The cast</div>
+      <h2>Think of MyPaisa as a small, well-run office</h2>
+      <p class="lede">Each part has one job. Here they are in everyday words, with the real name underneath for anyone who builds it. The colours stay the same all the way down the page.</p>
+    </div>
+    <div class="legend">
+      <span class="cat-door"><i style="background:var(--cc)"></i>Your screens</span>
+      <span class="cat-pipe"><i style="background:var(--cc)"></i>Plumbing that carries messages</span>
+      <span class="cat-ai"><i style="background:var(--cc)"></i>AI (Claude)</span>
+      <span class="cat-code"><i style="background:var(--cc)"></i>Plain code, no AI</span>
+      <span class="cat-store"><i style="background:var(--cc)"></i>Where things are kept</span>
+    </div>
+    <div class="cast">
+      <div class="who cat-door"><div class="ic"><svg class="ico"><use href="#i-person"/></svg></div><h3>You, the admin</h3><span class="real">owner · the one admin</span><p>Sets up the household, invites the family, approves what the agents ask for.</p></div>
+      <div class="who cat-door"><div class="ic"><svg class="ico"><use href="#i-phone"/></svg></div><h3>The doors</h3><span class="real">iOS app · web app (PWA)</span><p>The iPhone and iPad app, and the same chat and dashboard in any browser.</p></div>
+      <div class="who cat-pipe"><div class="ic"><svg class="ico"><use href="#i-desk"/></svg></div><h3>The front desk</h3><span class="real">api · API Gateway + Lambda</span><p>Checks who you are on every call, says "got it" at once, and passes things on.</p></div>
+      <div class="who cat-pipe"><div class="ic"><svg class="ico"><use href="#i-tray"/></svg></div><h3>The in-tray and out-tray</h3><span class="real">SQS queues · updates, outbox, work</span><p>Nothing is handed over directly. It waits in a tray that retries it until it works.</p></div>
+      <div class="who cat-ai"><div class="ic"><svg class="ico"><use href="#i-chat"/></svg></div><h3>The concierge</h3><span class="real">agent Lambda + Claude</span><p>The only one who talks to you. It understands what you mean and calls the right tools.</p></div>
+      <div class="who cat-code"><div class="ic"><svg class="ico"><use href="#i-calc"/></svg></div><h3>The calculator</h3><span class="real">engine · wealth maths, tested</span><p>Net worth, loan schedules, deposits, the Projection. Numbers come only from here.</p></div>
+      <div class="who cat-store"><div class="ic"><svg class="ico"><use href="#i-book"/></svg></div><h3>The ledger</h3><span class="real">DynamoDB · records, events, audit</span><p>Everything the family owns and owes, with a tamper-evident line for every change.</p></div>
+      <div class="who cat-store"><div class="ic"><svg class="ico"><use href="#i-cabinet"/></svg></div><h3>The filing cabinet</h3><span class="real">S3 · documents bucket</span><p>Every file and screenshot you send, kept for good and opened from the audit log.</p></div>
+      <div class="who cat-code"><div class="ic"><svg class="ico"><use href="#i-clock"/></svg></div><h3>The back office</h3><span class="real">worker · scheduler</span><p>Runs the jobs nobody asked for out loud: prices, reading files, check-ins, overnight sums.</p></div>
+      <div class="who cat-pipe"><div class="ic"><svg class="ico"><use href="#i-mail"/></svg></div><h3>The postman</h3><span class="real">sender Lambda</span><p>Delivers every reply to each open screen, or by push when the app is closed.</p></div>
+      <div class="who cat-pipe"><div class="ic"><svg class="ico"><use href="#i-wave"/></svg></div><h3>The live line</h3><span class="real">SSE stream on the api host</span><p>Keeps open screens in step: a tap on the phone moves the laptop at once.</p></div>
+      <div class="who cat-ai"><div class="ic"><svg class="ico"><use href="#i-spark"/></svg></div><h3>Claude</h3><span class="real">Anthropic API · Sonnet, Haiku, Opus</span><p>The language brain the concierge consults. It lives outside AWS and sees only what it needs.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= JOURNEY ================= -->
+<section id="journey" style="padding-bottom:20px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">The admin's journey</div>
+      <h2>Nine steps, from the first screen to the chatbot at work</h2>
+      <p class="lede">Arun is the household's owner and its one admin. Follow him through the app. Each step plays once as you reach it; press Replay to watch again.</p>
+    </div>
+
+    <div class="journey">
+
+      <!-- STEP 1 -->
+      <article class="step">
+        <div class="num">1</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 1</span><span class="chipx">No passwords</span></div>
+          <h2>Open the app and sign in</h2>
+          <p>The first screen shows two buttons and nothing else: Sign in with Apple and Sign in with Google. Arun taps Apple, looks at the phone, and he is in. There is no password to make, forget or leak.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-door"><span><b>A one-time code first.</b> Before the Apple sheet opens, the app fetches a code that can be used once, so a stolen sign-in can't be replayed. <code>/auth/nonce</code></span></li>
+            <li class="cat-pipe"><span><b>Apple vouches for him.</b> Face ID unlocks Apple's own sign-in, which returns a signed note: "this is that Apple account".</span></li>
+            <li class="cat-pipe"><span><b>The ID desk checks the signature</b> against Apple's published keys, then issues a pass that lasts five minutes and renews itself quietly. <code>Cognito custom auth</code></span></li>
+            <li class="cat-store"><span><b>The pass stays on this device only,</b> in the iPhone's Keychain. On the web it is a cookie that page scripts can never read.</span></li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="phone"><div class="screen">
+            <div class="island"></div>
+            <div class="layer signin">
+              <svg class="mk"><use href="#mark"/></svg>
+              <div class="nm">MyPaisa</div>
+              <div class="tl">Your household's money, in one chat.</div>
+              <div class="sib apple tap" style="--d:1"><svg><use href="#i-apple"/></svg>Sign in with Apple</div>
+              <div class="sib google"><svg><use href="#i-google"/></svg>Sign in with Google</div>
+              <div class="fine">New here? Ask your household's admin for an invite.</div>
+            </div>
+            <div class="layer show-hide" style="--d:1.6;--len:2.6">
+              <div class="dim"></div>
+              <div class="sheet">
+                <svg class="faceid ico"><use href="#i-face"/></svg>
+                <b>Sign in to MyPaisa with your Apple Account</b>
+                <span class="muted" style="font-size:11px">Face ID</span>
+              </div>
+            </div>
+            <div class="layer later" style="--d:4.2;background:var(--bg)">
+              <div class="sbar"><span>9:41</span><span class="sig"><i></i></span></div>
+              <div class="chat">
+                <div class="bot"><svg class="av"><use href="#mark"/></svg><div>Welcome, Arun. You're signed in with Apple.</div></div>
+                <div class="done" style="padding-left:24px"><svg class="ico"><use href="#i-tick"/></svg>Signed in · this iPhone</div>
+              </div>
+              <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
+            </div>
+          </div></div>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 2 -->
+      <article class="step">
+        <div class="num">2</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 1</span><span class="chipx ai">The concierge talks</span></div>
+          <h2>Set up in three questions</h2>
+          <p>No forms. The chat asks three things, one at a time, each with tap-able answers: which currency totals should be in, what the family holds (send a screenshot, or add things later), and how often to be told things. Whoever opens the app first becomes the household's owner, and its only admin.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-ai"><span><b>The concierge asks, and remembers where it got to.</b> Each half-finished conversation is kept as an open flow, so a phone call in the middle loses nothing. <code>ask_user</code> · <code>PendingAction</code></span></li>
+            <li class="cat-store"><span><b>A household is created</b> with its base currency, and Arun is its owner. Every later item is filed under this household and no other.</span></li>
+            <li class="cat-code"><span><b>Quiet by design.</b> About ten notifications a week, at most two with sound.</span></li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="phone"><div class="screen">
+            <div class="island"></div>
+            <div class="sbar"><span>9:42</span><span class="sig"><i></i></span></div>
+            <div class="chat">
+              <div class="bot a" style="--d:0"><svg class="av"><use href="#mark"/></svg><div>Welcome to MyPaisa, Arun. Three quick things and you're set.</div></div>
+              <div class="bot a" style="--d:1"><svg class="av"><use href="#mark"/></svg><div class="card"><span class="ct">1 of 3</span>Which currency should totals be in?<div class="chips"><span class="chip on pick" style="--d:2">£ Pounds</span><span class="chip">₹ Rupees</span></div></div></div>
+              <div class="bot a" style="--d:2.6"><svg class="av"><use href="#mark"/></svg><div class="card"><span class="ct">2 of 3</span>What does the family hold? Send a screenshot or a factsheet, or type it.<div class="chips"><span class="chip">Send a file</span><span class="chip on pick" style="--d:3.6">Later, in the chat</span></div></div></div>
+              <div class="bot a" style="--d:4.2"><svg class="av"><use href="#mark"/></svg><div class="card"><span class="ct">3 of 3</span>How often should I tell you things?<div class="chips"><span class="chip on pick" style="--d:5.2">A morning brief</span><span class="chip">Only what matters</span></div></div></div>
+              <div class="bot a" style="--d:5.8"><svg class="av"><use href="#mark"/></svg><div>Done. You're the owner of the <b>Dutta household</b>, and its admin.</div></div>
+            </div>
+            <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
+          </div></div>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 3 -->
+      <article class="step">
+        <div class="num">3</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 1</span><span class="chipx">Admin only</span></div>
+          <h2>Invite the family</h2>
+          <p>In the Admin center, Arun taps Invite and sends the link with the iPhone's share sheet. Asha opens it on her own iPhone, sees "Arun invited you to the Dutta household", and signs in with her own Apple or Google account. She gets her own chat, her own accounts and her own settings, inside the same household.</p>
+          <div class="roles">
+            <div class="role"><b>Owner</b>Everything, including the Admin center. There is only one.</div>
+            <div class="role"><b>Member</b>Adds and corrects their own records; sees the household totals.</div>
+            <div class="role"><b>Viewer</b>Reads the household overview and what others share.</div>
+          </div>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-code"><span><b>The link works once, for 24 hours,</b> for this household and this role only. <code>dashboard.mypaisapp.com/join/&lt;token&gt;</code></span></li>
+            <li class="cat-pipe"><span><b>Strangers are turned away.</b> An Apple or Google account linked to nobody is refused unless it arrives with a valid invite.</span></li>
+            <li class="cat-store"><span><b>Each person's detail is private by default.</b> Asha sees the household totals; she shares her own accounts only if she chooses.</span></li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="pair">
+            <div class="phone sm"><div class="screen">
+              <div class="island"></div>
+              <div class="sbar"><span>9:50</span><span class="sig"><i></i></span></div>
+              <div style="padding:6px 12px;display:grid;gap:8px">
+                <b style="font-family:var(--f-display);font-size:17px">Members and devices</b>
+                <div class="list">
+                  <div class="li"><span>Arun<small>Owner · iPhone, iPad</small></span><span class="chipx">You</span></div>
+                  <div class="li"><span class="a" style="--d:3.2">Asha<small>Member · joined just now</small></span></div>
+                </div>
+                <div class="b1 tap" style="--d:.6;padding:8px">Invite someone</div>
+              </div>
+              <div class="share show-hide" style="--d:1;--len:2.4">
+                <div class="lnk"><svg class="mk"><use href="#mark"/></svg><span><b>Join the Dutta household</b><br><span class="mono">dashboard.mypaisapp.com/join/…</span></span></div>
+                <div class="apps"><span><i style="background:#34C759"></i>Messages</span><span><i style="background:#25D366"></i>WhatsApp</span><span><i style="background:#2F7CF6"></i>Mail</span></div>
+              </div>
+            </div></div>
+            <div class="env" style="--d:1.8"><svg class="ico"><use href="#i-mail"/></svg></div>
+            <div class="phone sm"><div class="screen">
+              <div class="island"></div>
+              <div class="layer inv a" style="--d:2.4">
+                <svg class="mk"><use href="#mark"/></svg>
+                <b style="font-family:var(--f-display);font-size:16px">Arun invited you to the Dutta household</b>
+                <span class="muted" style="font-size:11px">You'll join as a member.</span>
+                <div class="sib apple tap" style="--d:3;margin-top:8px"><svg><use href="#i-apple"/></svg>Sign in with Apple</div>
+                <div class="sib google"><svg><use href="#i-google"/></svg>Sign in with Google</div>
+              </div>
+            </div></div>
+          </div>
+          <p class="caption">Left: Arun's Admin center. Right: Asha's iPhone opening the link.</p>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 4 -->
+      <article class="step">
+        <div class="num">4</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 2</span><span class="chipx ai">AI understands</span><span class="chipx code">Code checks</span></div>
+          <h2>Add something by just saying it</h2>
+          <p>Arun types "£5,000 in Monzo savings". MyPaisa asks only what it can't work out (whose is it?), shows a card with exactly what it will save, and waits for Confirm. The same works for a fixed deposit in India, a mortgage, a pension or a car loan: one sentence, a question or two, one tap.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-ai"><span><b>Claude reads the sentence</b> and passes each part, in Arun's own words, to the drafting tool. <code>draft_record</code></span></li>
+            <li class="cat-code"><span><b>Code turns words into checked values,</b> works out anything it can (an EMI, a maturity date), and lists what is missing. A draft writes nothing.</span></li>
+            <li class="cat-ai"><span><b>Only the missing bits are asked,</b> one at a time with chips. It never asks what it could look up.</span></li>
+            <li class="cat-store"><span><b>Confirm saves exactly the card you saw,</b> and the change and its audit line are written together or not at all.</span></li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="phone"><div class="screen">
+            <div class="island"></div>
+            <div class="sbar"><span>9:41</span><span class="sig"><i></i></span></div>
+            <div class="strip"><span>Dutta household</span><b><span data-pre="£" data-from="439951" data-to="444951" data-at="5.4">£444,951</span></b></div>
+            <div class="chat">
+              <div class="me a" style="--d:0">£5,000 in Monzo savings</div>
+              <div class="typing" style="--d:.6"><i></i><i></i><i></i></div>
+              <div class="bot a" style="--d:1.6"><svg class="av"><use href="#mark"/></svg><div class="card">Whose savings are these?<div class="chips"><span class="chip on pick" style="--d:2.6">Mine</span><span class="chip">Asha's</span><span class="chip">Joint</span></div></div></div>
+              <div class="bot a" style="--d:3.2"><svg class="av"><use href="#mark"/></svg><div class="card">
+                <span class="ct">New record · check and confirm</span>
+                <div class="row"><span>What</span><b>Instant access savings</b></div>
+                <div class="row"><span>Bank</span><b>Monzo · UK</b></div>
+                <div class="row"><span>Owner</span><b>Arun</b></div>
+                <div class="row"><span>Balance</span><b>£5,000</b></div>
+                <div class="btns"><span class="b1 tap" style="--d:4.4">Confirm</span><span class="b2">Change</span></div>
+              </div></div>
+              <div class="bot a" style="--d:5"><svg class="av"><use href="#mark"/></svg><div><span class="done"><svg class="ico"><use href="#i-tick"/></svg>Saved</span>Net worth is now £444,951.</div></div>
+            </div>
+            <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
+          </div></div>
+          <div class="tape" aria-label="The audit chain">
+            <div class="blk"><span class="h">#…a41f</span><br>Fixed-rate saver</div><span class="link"></span>
+            <div class="blk"><span class="h">#…7c02</span><br>Home valued</div><span class="link"></span>
+            <div class="blk new a" style="--d:5.2"><span class="h">#…e9d3</span><br>Monzo savings +£5,000</div>
+          </div>
+          <p class="caption">Each audit line carries a fingerprint of the one before it, so a deleted or edited line shows.</p>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 5 -->
+      <article class="step">
+        <div class="num">5</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 5</span><span class="chipx ai">AI reads the file</span></div>
+          <h2>Send a file or a screenshot</h2>
+          <p>Arun taps <b>+</b> and sends the factsheet for his Monzo "Balanced" fund. MyPaisa reads it, fills a card with what it found, and marks anything it is unsure of in amber, with a question. A screenshot of Monzo's valuations works the same way: it matches the values to holdings and shows before and after.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-store"><span><b>The file goes straight to the filing cabinet,</b> before anything reads it, and stays there for good. It opens later from the audit log. <code>s3://mypaisa-prod-documents/…</code></span></li>
+            <li class="cat-code"><span><b>The back office reads it</b> as a background job, so the chat never waits. Each figure keeps a note of the line it came from. <code>extract_document</code></span></li>
+            <li class="cat-ai"><span><b>Unsure means amber.</b> A field Claude isn't sure of is never guessed; it is asked about.</span></li>
+            <li class="cat-store"><span><b>Every change made from the file names the file,</b> so "where did this number come from?" always has an answer. A Source button opens the original.</span></li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="phone"><div class="screen">
+            <div class="island"></div>
+            <div class="sbar"><span>10:05</span><span class="sig"><i></i></span></div>
+            <div class="chat">
+              <div class="file a" style="--d:0"><span class="pdf">PDF</span><span><b>Balanced factsheet.pdf</b><br><span class="muted" style="font-size:10.5px">BlackRock MyMap 5</span></span></div>
+              <div class="bot a" style="--d:1"><svg class="av"><use href="#mark"/></svg><div>Kept it safe. Reading it now…</div></div>
+              <div class="typing" style="--d:1.4"><i></i><i></i><i></i></div>
+              <div class="bot a" style="--d:2.6"><svg class="av"><use href="#mark"/></svg><div class="card">
+                <span class="ct">New holding · from your factsheet</span>
+                <div class="row"><span>Fund</span><b>Balanced (BlackRock MyMap 5)</b></div>
+                <div class="row"><span>Kind</span><b>UK fund (OEIC)</b></div>
+                <div class="row"><span>Currency</span><b>GBP</b></div>
+                <div class="row"><span>Holds</span><b>~66% shares · ~34% bonds</b></div>
+                <div class="row amb"><span>Account</span><b>Which one?</b></div>
+                <div class="chips"><span class="chip on pick" style="--d:3.8">ISA · Monzo</span><span class="chip">General account</span></div>
+                <div class="btns"><span class="b1 tap" style="--d:4.6">Confirm</span><span class="b2">Source</span></div>
+              </div></div>
+              <div class="bot a" style="--d:5.2"><svg class="av"><use href="#mark"/></svg><div><span class="done"><svg class="ico"><use href="#i-tick"/></svg>Added to your ISA</span></div></div>
+            </div>
+            <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
+          </div></div>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 6 -->
+      <article class="step wide">
+        <div class="num">6</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phases 2 to 9</span><span class="chipx code">Code computes</span></div>
+          <h2>See the whole picture, and fix a figure where it shows</h2>
+          <p>Pull the chat down and Home opens: the household's net worth in pounds and rupees, what it owns and owes, each person's share, UK against India, then Assets, Debts, Budget and the Projection. On the laptop, the same dashboard sits beside the chat. Arun taps his home's value, types the new estimate, sees before and after, and taps Save. The laptop moves at the same moment.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-code"><span><b>Figures are views, rebuilt from history.</b> Every record keeps a list of what happened to it; net worth is worked out from those, never typed in.</span></li>
+            <li class="cat-store"><span><b>A correction is a new line, not an overwrite.</b> It is saved as a correction with its audit line, and the old value stays in the history. <code>via: inline_edit</code></span></li>
+            <li class="cat-code"><span><b>Only figures their kind marks editable</b> can be tapped. Derived figures (an EMI, net worth) are not editable; their inputs are.</span></li>
+            <li class="cat-pipe"><span><b>Two screens never overwrite each other.</b> Save carries the figure it showed and is refused if it has moved since. A saved change reaches every open screen on the live line.</span></li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="duo">
+            <div class="laptop">
+              <div class="bar"><i></i><i></i><i></i><span class="url">dashboard.mypaisapp.com</span></div>
+              <div class="body">
+                <div class="side"><span class="on">Home</span><span>Assets</span><span>Debts</span><span>Budget</span><span>Projection</span><span>Audit</span><span>Activity</span><span>Admin</span></div>
+                <div class="main">
+                  <div class="herocard">
+                    <div class="seg"><span class="on">Household</span><span>Me</span><span>Asha</span></div>
+                    <span class="lab">Net worth · Mon 26 Oct</span>
+                    <span class="big" data-pre="£" data-from="444951" data-to="457951" data-at="4.6">£457,951</span>
+                    <div class="sub"><span>Own <b data-pre="£" data-from="691694" data-to="704694" data-at="4.6">£704,694</b></span><span>Owe <b>£246,743</b></span><span>₹5,15,19,488</span></div>
+                    <svg viewBox="0 0 200 34" preserveAspectRatio="none"><path d="M0 28 L20 26 L40 27 L60 22 L80 23 L100 19 L120 17 L140 18 L160 12 L180 10 L200 5" fill="none" stroke="var(--coral)" stroke-width="2"/></svg>
+                  </div>
+                  <div class="mini-rows">
+                    <div class="mini"><small>UK</small><b>£351,468</b></div>
+                    <div class="mini"><small>India</small><b>£106,483</b></div>
+                  </div>
+                </div>
+                <div class="chatcol">
+                  <div class="me" style="font-size:10px">Mortgage end date?</div>
+                  <div style="font-size:10px">1 October 2045, after the £5,000 overpayment.</div>
+                </div>
+              </div>
+            </div>
+            <div class="phone"><div class="screen">
+              <div class="island"></div>
+              <div class="sbar"><span>9:52</span><span class="sig"><i></i></span></div>
+              <div style="padding:2px 9px;display:grid;gap:7px">
+                <div class="herocard">
+                  <span class="lab">Net worth · household</span>
+                  <span class="big" data-pre="£" data-from="444951" data-to="457951" data-at="4.2">£457,951</span>
+                  <div class="split"><i style="width:77%"></i><i style="width:23%"></i></div>
+                </div>
+                <div class="list">
+                  <div class="li"><span>Home, Reading<small>your estimate</small></span><b data-pre="£" data-from="415000" data-to="428000" data-at="3.6">£428,000</b>
+                    <div class="edit show-hide" style="--d:1;--len:3"><span class="ba">£415,000 → <b>£428,000</b></span><span class="sv tap" style="--d:3.2">Save</span></div>
+                  </div>
+                  <div class="li"><span>Workplace pension<small>Aviva</small></span><b>£86,400</b></div>
+                  <div class="li"><span>Mortgage<small>Nationwide · joint</small></span><b>−£224,353</b></div>
+                </div>
+              </div>
+              <div class="toast show-hide" style="--d:4;--len:2.4"><svg class="ico" style="width:12px;height:12px"><use href="#i-tick"/></svg>Saved · audit line written</div>
+            </div></div>
+          </div>
+          <div style="height:24px"></div>
+          <p class="caption">The phone saves a correction; the laptop's dashboard moves at the same moment.</p>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 7 -->
+      <article class="step">
+        <div class="num">7</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 4</span><span class="chipx code">Decided by code, no AI</span></div>
+          <h2>MyPaisa asks you, so you don't have to remember</h2>
+          <p>Every loan EMI, card bill, SIP, premium, salary and maturity is a promise with a date. On the day, a check-in arrives: "HDFC home loan: was November's EMI paid?" The card already shows exactly what a tap will save, so <b>Paid</b> is the Confirm, with Undo. "Not yet" asks again in a few days; "Paid off in full" closes the loan and reruns the Projection.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-code"><span><b>A daily job, plain code,</b> finds what is due and puts each check-in straight in the out-tray. No AI is needed to know a date has come.</span></li>
+            <li class="cat-code"><span><b>Asked once, never twice.</b> Each check-in has an id made from the promise and its date, so a retry can't ask again. <code>commitment#due_date</code></span></li>
+            <li class="cat-pipe"><span><b>No amounts on the lock screen,</b> unless you turn that on.</span></li>
+            <li class="cat-code"><span><b>Autopay is assumed paid</b> after its grace days and listed once a week, which keeps the household to about ten notifications a week.</span></li>
+          </ul>
+          <div style="display:grid;gap:8px">
+            <b style="font-family:var(--f-display)">A typical week of notifications</b>
+            <div class="dots" aria-label="About ten a week, two with sound"><i class="snd"></i><i class="snd"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="muted" style="font-size:13px">About ten in all; at most two make a sound (coral).</span>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="phone"><div class="screen">
+            <div class="island"></div>
+            <div class="sbar"><span>9:00</span><span class="sig"><i></i></span></div>
+            <div class="chat">
+              <div class="bot"><svg class="av"><use href="#mark"/></svg><div class="card">
+                <span class="ct">Check-in · Thu 5 Nov</span>
+                <b>HDFC home loan: was November's EMI paid?</b>
+                <div class="row"><span>EMI</span><b>₹39,390</b></div>
+                <div class="row"><span>Loan</span><b>Pune flat</b></div>
+                <div class="chips"><span class="chip on pick tap" style="--d:3.4">Paid</span><span class="chip">Not yet</span><span class="chip">Different amount</span><span class="chip">Paid off in full</span></div>
+                <div class="done a" style="--d:4"><svg class="ico"><use href="#i-tick"/></svg>Paid · saved 09:02 · <span style="color:var(--accent)">Undo</span></div>
+              </div></div>
+              <div class="bot a" style="--d:4.8"><svg class="av"><use href="#mark"/></svg><div>Logged. Next: the Parag Parikh SIP on the 10th.</div></div>
+            </div>
+            <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
+            <div class="layer lock show-hide" style="--d:0;--len:3">
+              <span class="tm">9:00</span>
+              <span class="dt">Thursday 5 November</span>
+              <div class="notif">
+                <span class="ap"><svg><use href="#mark"/></svg></span>
+                <span><b>MyPaisa</b><span class="when">now</span><br>HDFC home loan: was November's EMI paid?</span>
+              </div>
+            </div>
+          </div></div>
+          <p class="caption">The lock screen names the loan, never the amount. The card in the app shows it.</p>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 8 -->
+      <article class="step">
+        <div class="num">8</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 6</span><span class="chipx ai">AI sorts new shops</span><span class="chipx code">Code spots transfers</span></div>
+          <h2>Send a statement; the budget fills itself</h2>
+          <p>Arun sends the Barclaycard statement (PDF, CSV or a spreadsheet, from a UK or Indian bank). Every line is sorted into a category. Payments between the family's own accounts, card payments and loan EMIs are recognised so nothing counts twice. One review card follows, with the unsure lines in amber, and one Confirm. On the 1st of the month a check-in closes last month's budget, asking only about money no statement covered, such as cash.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen</li>
+            <li class="cat-code"><span><b>Shops it knows are sorted from memory first.</b> Only new ones go to Claude's smallest model, Haiku, and its answers join the memory once you confirm.</span></li>
+            <li class="cat-code"><span><b>On a card, only interest and fees are spending;</b> paying the card off is a transfer. A loan EMI's principal counts as saving.</span></li>
+            <li class="cat-store"><span><b>The statement itself is kept for good,</b> like every file. A payment it shows answers its check-in by itself.</span></li>
+          </ul>
+        </div>
+        <div class="stage">
+          <div class="stmt">
+            <div class="paper a" style="--d:0">
+              <div class="ph"><span>Barclaycard</span><span>1 Nov</span></div>
+              <div class="ln"><span>Tesco</span><span>£463</span></div>
+              <div class="ln"><span>Pret</span><span>£188</span></div>
+              <div class="ln"><span>AMZN Mktp</span><span>£165</span></div>
+              <div class="ln"><span>Shell</span><span>£122</span></div>
+              <div class="ln"><span>Lidl</span><span>£100</span></div>
+              <div class="ln"><span>Waitrose</span><span>£81</span></div>
+              <div class="ln"><span>GWR</span><span>£76</span></div>
+              <div class="ln"><span>PAYPAL *EBAY</span><span>£42</span></div>
+              <div class="ln muted"><span>… 9 more lines</span><span></span></div>
+              <div class="ln" style="border-top:1px solid var(--line);padding-top:4px;font-weight:700"><span style="color:var(--ink)">Balance</span><span>£1,458</span></div>
+            </div>
+            <div class="card review a" style="--d:1.4">
+              <span class="ct">Review · by category</span>
+              <div class="row"><span>Groceries</span><b>£702</b></div>
+              <div class="row"><span>Eating out</span><b>£236</b></div>
+              <div class="row"><span>Transport</span><b>£198</b></div>
+              <div class="row"><span>Shopping</span><b>£189</b></div>
+              <div class="row amb"><span>AMZN Mktp: shopping?</span><b>£165</b></div>
+              <div class="row"><span>Other</span><b>£64</b></div>
+              <div class="row amb"><span>PAYPAL *EBAY: other?</span><b>£42</b></div>
+              <div class="row"><span>Subscriptions</span><b>£45</b></div>
+              <div class="row"><span>Health</span><b>£24</b></div>
+              <div class="btns"><span class="b1 tap" style="--d:2.8">Confirm all</span></div>
+            </div>
+          </div>
+          <div class="bars a" style="--d:3.4">
+            <div class="bt"><b>October · plan against actual</b><span class="muted">Budget</span></div>
+            <div class="bar"><span>Groceries</span><span class="tr"><span class="ac over grow" style="--d:3.6;width:100%"></span><span class="pl" style="left:92.6%"></span></span><span class="v"><b>£702</b> / £650</span></div>
+            <div class="bar"><span>Bills</span><span class="tr"><span class="ac over grow" style="--d:3.7;width:61.4%"></span><span class="pl" style="left:59.8%"></span></span><span class="v"><b>£431</b> / £420</span></div>
+            <div class="bar"><span>Shopping</span><span class="tr"><span class="ac grow" style="--d:3.8;width:26.9%"></span><span class="pl" style="left:35.6%"></span></span><span class="v"><b>£189</b> / £250</span></div>
+            <div class="bar"><span>Eating out</span><span class="tr"><span class="ac over grow" style="--d:3.9;width:33.6%"></span><span class="pl" style="left:25.6%"></span></span><span class="v"><b>£236</b> / £180</span></div>
+            <div class="bar"><span>Transport</span><span class="tr"><span class="ac grow" style="--d:4;width:28.2%"></span><span class="pl" style="left:31.3%"></span></span><span class="v"><b>£198</b> / £220</span></div>
+            <div class="bar"><span>Holidays</span><span class="tr"><span class="ac grow" style="--d:4.1;width:0%"></span><span class="pl" style="left:57%"></span></span><span class="v"><b>£0</b> / £400</span></div>
+            <div class="key"><span><i style="background:var(--blue)"></i>Within plan</span><span><i style="background:var(--amber)"></i>Over plan</span><span><i style="background:var(--ink-2);width:3px"></i>The plan</span></div>
+          </div>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+      <!-- STEP 9 -->
+      <article class="step">
+        <div class="num">9</div>
+        <div class="copy">
+          <div class="tag"><span class="chipx ph">Phase 7</span><span class="chipx ai">AI explains</span><span class="chipx code">Code computes</span></div>
+          <h2>Ask anything: the chatbot at work</h2>
+          <p>"What if we put £60,000 down on a second flat in June 2028?" MyPaisa answers in plain words with a chart: the household's net worth year by year with that deposit, its likely range, and the plan as it stands for comparison. It's a what-if, so nothing is saved unless Arun, as admin, chooses to add it to the plan. "Why?" and "Technical" open the reasoning and the assumptions, each with its source.</p>
+          <ul class="behind">
+            <li class="bh" style="display:block">Behind the screen, in about two seconds</li>
+            <li class="cat-pipe"><span><b>The front desk says "got it" at once</b> and drops the question in Arun's own lane of the in-tray.</span></li>
+            <li class="cat-ai"><span><b>The concierge asks Claude</b> what's needed. Claude picks two tools: read the figures, and run the projection with this change.</span></li>
+            <li class="cat-code"><span><b>The calculator runs 30 years forward</b> from the family's own history and stated assumptions, with a low, middle and high path. Code makes every number.</span></li>
+            <li class="cat-ai"><span><b>Claude writes the answer around those numbers,</b> and the words appear on screen as they are written.</span></li>
+          </ul>
+          <p><button class="replay" type="button" id="watchInside" style="font-size:14px;padding:8px 14px"><svg class="ico"><use href="#i-send" transform="rotate(90 12 12)"/></svg>Watch this question travel through the system</button></p>
+        </div>
+        <div class="stage">
+          <div class="phone"><div class="screen">
+            <div class="island"></div>
+            <div class="sbar"><span>20:14</span><span class="sig"><i></i></span></div>
+            <div class="chat">
+              <div class="me a" style="--d:0">What if we put £60,000 down on a second flat in June 2028?</div>
+              <div class="typing" style="--d:.6"><i></i><i></i><i></i></div>
+              <div class="bot a" style="--d:1.6"><svg class="av"><use href="#mark"/></svg><div>It would set you back for a few years, then you'd keep growing. By 2036 you'd be at about <b>£1.23m</b>, against £1.32m without it.</div></div>
+              <div class="bot a" style="--d:2.4"><svg class="av"><use href="#mark"/></svg><div class="card">
+                <span class="ct">What-if · not saved</span>
+                <svg class="fan" id="fan" viewBox="0 0 250 150" role="img" aria-label="Net worth from 2027 to 2041: with the deposit the middle path reaches about £1.87m in 2041, against £1.98m without it"></svg>
+                <div class="chips"><span class="chip">Why?</span><span class="chip">Technical</span><span class="chip">Add to the plan</span></div>
+              </div></div>
+            </div>
+            <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
+          </div></div>
+          <p class="caption">Coral: with the deposit, its middle path and its range. Blue dashes: the plan as it stands.</p>
+          <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= ENGINE ROOM ================= -->
+<section id="engine" class="engine">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Inside one message</div>
+      <h2>Watch a message travel through MyPaisa</h2>
+      <p class="lede">Pick a journey and press Play. The glowing dot is the message; the lit boxes are the parts at work. Nothing hands work straight to anything else: it always waits in a tray that keeps it safe and tries again if something fails.</p>
+    </div>
+    <div class="tours" role="group" aria-label="Journeys">
+      <button class="tour" type="button" data-tour="ask" aria-pressed="true">You ask a question</button>
+      <button class="tour" type="button" data-tour="file" aria-pressed="false">You send a file</button>
+      <button class="tour" type="button" data-tour="checkin" aria-pressed="false">MyPaisa asks you</button>
+      <button class="tour" type="button" data-tour="fail" aria-pressed="false">Something fails</button>
+    </div>
+    <div class="mapbox">
+      <svg id="map" viewBox="0 0 1120 640" role="img" aria-label="Map of MyPaisa's parts: the doors, the front desk, the in-tray, the concierge, Claude, the calculator, the ledger, the filing cabinet, the back office, the out-tray, the postman, the live line and safe keeping">
+        <text class="lane" x="250" y="40">Everything you send comes in along the top →</text>
+        <text class="lane" x="250" y="420">← Everything MyPaisa sends goes back along the bottom</text>
+        <text class="note" x="18" y="628">Push, when the app is closed</text>
+        <text class="note" x="958" y="160">outside AWS</text>
+        <g id="wires"></g>
+        <g id="nodes"></g>
+        <g id="tok"><circle id="token-glow" r="16" cx="110" cy="198"/><circle id="token" r="8" cx="110" cy="198"/></g>
+      </svg>
+    </div>
+    <p class="scroll-hint">Swipe the map sideways to see all of it.</p>
+    <div class="player">
+      <div class="cap" aria-live="polite">
+        <span class="k" id="capK">Step 1 of 12</span>
+        <h3 id="capT"></h3>
+        <p id="capB"></p>
+        <div class="tech" id="capX"></div>
+        <div class="prog" id="prog"></div>
+      </div>
+      <div class="ctrl">
+        <button type="button" id="prev" aria-label="Previous step"><svg class="ico"><use href="#i-send" transform="rotate(-90 12 12)"/></svg></button>
+        <button type="button" id="play" class="pri">Play</button>
+        <button type="button" id="next" aria-label="Next step"><svg class="ico"><use href="#i-send" transform="rotate(90 12 12)"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AGENTS ================= -->
+<section id="agents">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">The agent team · phase 18</div>
+      <h2>Later, one concierge becomes a team of nine, and you are its manager</h2>
+      <p class="lede">Today the concierge does the talking and plain code does the rest. In phase 18 the background work is split among specialist agents. Each has one job, a small budget and a fixed area where it may act alone. Anything outside that area becomes a request to you.</p>
+    </div>
+    <div class="rules3">
+      <div class="rule"><b>Code decides, Claude explains</b><p>Models and rules make every number and decision. Claude tags, writes, asks and answers.</p></div>
+      <div class="rule"><b>Nothing changes without a trace</b><p>Every behaviour is a setting, and every change to one is a new version and an audit line.</p></div>
+      <div class="rule"><b>Outside its band, it asks</b><p>An agent acts alone only within the limits its settings allow; often that limit is zero.</p></div>
+    </div>
+    <div class="bus" aria-hidden="true">
+      <svg viewBox="0 0 1000 46" preserveAspectRatio="none">
+        <line class="lineb" x1="0" y1="23" x2="1000" y2="23"/>
+        <circle class="pulse" r="5" cy="23"><animate attributeName="cx" from="0" to="1000" dur="5s" repeatCount="indefinite"/></circle>
+        <circle class="pulse" r="5" cy="23" opacity=".6"><animate attributeName="cx" from="1000" to="0" dur="7s" repeatCount="indefinite"/></circle>
+      </svg>
+    </div>
+    <p class="muted" style="font-size:13px;margin:-8px 0 16px">The agents never call each other directly. They post news on a shared board (an event bus) and leave work in the ledger; a daily pipeline runs them in order.</p>
+    <div class="team">
+      <div class="agent cat-ai"><span class="beat"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-chat"/></svg></div><div><h3>Concierge</h3><span class="brain">Sonnet · Haiku for small turns</span></div></div><dl><dt>Its job</dt><dd>Talks to every member in the chat; passes the admin's instructions to the admin desk.</dd><dt>On its own</dt><dd>Answers, reads, drafts changes with a Confirm card.</dd><dt>Asks</dt><dd>Members confirm their own records.</dd></dl><span class="when">Working from phase 1</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-wave"/></svg></div><div><h3>Data steward</h3><span class="brain">Code · Haiku writes its requests</span></div></div><dl><dt>Its job</dt><dd>Keeps prices flowing from free sources; watches for gaps, stale data and quotas.</dd><dt>On its own</dt><dd>Switches to the next source, retries, labels stale data.</dd><dt>Asks</dt><dd>A new source, or anything that costs money.</dd></dl><span class="when">Phase 18</span></div>
+      <div class="agent cat-ai"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-news"/></svg></div><div><h3>News scout</h3><span class="brain">Haiku in batches · code scores</span></div></div><dl><dt>Its job</dt><dd>Collects news and events and matches them to what the family holds.</dd><dt>On its own</dt><dd>Tags and matches.</dd><dt>Asks</dt><dd>A new feed or a new kind of event.</dd></dl><span class="when">Phase 18</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-calc"/></svg></div><div><h3>Analyst</h3><span class="brain">Code only</span></div></div><dl><dt>Its job</dt><dd>The rules engine that reads trends and risk for each holding.</dd><dt>On its own</dt><dd>Runs every day.</dd><dt>Asks</dt><dd>Any change to a rule, through the tuner.</dd></dl><span class="when">Phase 18</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-fan"/></svg></div><div><h3>Forecaster</h3><span class="brain">Code · Sonnet explains</span></div></div><dl><dt>Its job</dt><dd>A second engine of models that estimates ranges, beside the rules engine.</dd><dt>On its own</dt><dd>Runs daily, and switches itself off when its record slips.</dd><dt>Asks</dt><dd>Before a model is promoted.</dd></dl><span class="when">Phase 18</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-check"/></svg></div><div><h3>Grader and tuner</h3><span class="brain">Code · Sonnet writes the reviews</span></div></div><dl><dt>Its job</dt><dd>Marks every past call against what really happened, so confidence means something.</dd><dt>On its own</dt><dd>Grades daily, nudges calibration within bounds, undoes a worse one.</dd><dt>Asks</dt><dd>Any change to rules or models.</dd></dl><span class="when">Phase 18</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-wrench"/></svg></div><div><h3>Ops warden</h3><span class="brain">Code · Haiku sums up incidents</span></div></div><dl><dt>Its job</dt><dd>Runs the daily pipeline and repairs it when a step fails.</dd><dt>On its own</dt><dd>Retries, catches up, rolls back to the last good version, replays stuck work.</dd><dt>Asks</dt><dd>Anything it can't fix becomes an incident for you.</dd></dl><span class="when">Phase 18</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-gauge"/></svg></div><div><h3>Budget keeper</h3><span class="brain">Code</span></div></div><dl><dt>Its job</dt><dd>The AI spend meter and its ladder of savings.</dd><dt>On its own</dt><dd>Steps down to cheaper modes, and back up.</dd><dt>Asks</dt><dd>Never moves a ceiling: those are yours.</dd></dl><span class="when">Meter and ladder from phase 1</span></div>
+      <div class="agent cat-pipe"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-desk"/></svg></div><div><h3>Admin desk</h3><span class="brain">Code · Haiku reads your words</span></div></div><dl><dt>Its job</dt><dd>The one channel between every agent and you.</dd><dt>On its own</dt><dd>Queues requests, bundles the non-urgent ones into one daily digest, reminds, lets them expire.</dd><dt>Asks</dt><dd>It is the asking.</dd></dl><span class="when">Phase 18</span></div>
+    </div>
+
+    <div class="desk">
+      <div class="copy">
+        <div class="eyebrow">The admin desk</div>
+        <h2>An agent asks; you approve with your face</h2>
+        <p>When an agent needs something outside its limits, the request reaches Arun as a card in his own chat and in the Admin center. It says what changes, from what to what, why, with its evidence, the cost and the budget left, the risk, how to undo it, and when it expires. Approving needs a fresh Face ID check, because the server must know the admin is holding the phone right now. Deciding in one place updates the other.</p>
+        <p>Arun can also give instructions in his own words, such as "put Twelve Data first for London" or "why did the Forecaster go quiet on silver?". The concierge turns an instruction into the same kind of request card, and a question into an answer from the agent concerned.</p>
+        <div class="screens">
+          <div><b>Approvals</b>Every agent's open requests</div>
+          <div><b>Settings</b>Every behaviour, with its range and history</div>
+          <div><b>Agents</b>What each did and spent</div>
+          <div><b>Incidents</b>What could not be fixed alone</div>
+          <div><b>Members and devices</b>Invite, sign out, pause</div>
+          <div><b>Spend</b>The AI ceiling and the AWS cap</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="phone"><div class="screen">
+          <div class="island"></div>
+          <div class="sbar"><span>08:30</span><span class="sig"><i></i></span></div>
+          <div class="chat">
+            <div class="bot a" style="--d:0"><svg class="av"><use href="#mark"/></svg><div class="card">
+              <span class="ct">Data steward asks</span>
+              <span>yfinance has not returned Balanced for 3 days; Twelve Data does not list it. EODHD's free key returns its history back to 2019.</span>
+              <b>Switch on EODHD Historian at £19.99 a month?</b>
+              <div class="row"><span>AWS and others</span><b>£3 of £50 used</b></div>
+              <div class="row"><span>Undo</span><b>Switch it off</b></div>
+              <div class="btns"><span class="b1 tap" style="--d:1.4">Approve</span><span class="b2">Reject</span><span class="b2">Why?</span></div>
+              <div class="done a" style="--d:4.2"><svg class="ico"><use href="#i-tick"/></svg>Approved by Arun · Face ID · audited</div>
+            </div></div>
+          </div>
+          <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
+          <div class="layer show-hide" style="--d:2;--len:2.2">
+            <div class="dim"></div>
+            <div class="sheet">
+              <svg class="faceid ico"><use href="#i-face"/></svg>
+              <b>Confirm it's you</b>
+              <span class="muted" style="font-size:11px">A fresh Face ID check, under five minutes old, bound to this one approval</span>
+            </div>
+          </div>
+        </div></div>
+        <button class="replay" data-replay type="button"><svg class="ico"><use href="#i-replay"/></svg>Replay</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SAFETY ================= -->
+<section id="safety" style="background:var(--surface);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Safety nets</div>
+      <h2>What stops it going wrong</h2>
+      <p class="lede">A money app for a family has to be boring in the right places. These are the guard rails, written into the code rather than into the AI's instructions, so the AI can't talk its way around them.</p>
+    </div>
+    <div class="nets">
+      <div class="net">
+        <h3>A spending ceiling for the AI, with a ladder</h3>
+        <p>The admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan's monthly credit. Two members are expected to use about $24 of it. Every call's cost is added to a meter, and the meter is read before every call.</p>
+        <div class="meter" aria-label="Expected spend $24 of a $160 ceiling">
+          <span class="fill grow" style="--d:0"></span>
+          <span class="tick" style="left:70%"><span>70%</span></span>
+          <span class="tick" style="left:85%"><span>85%</span></span>
+          <span class="tick" style="left:95%"><span>95%</span></span>
+          <span class="tick lo" style="left:100%"><span>100%</span></span>
+          <span class="exp" style="left:0">Expected: about $24 a month</span>
+        </div>
+        <div class="ladder">
+          <div><b>70%</b><span>A message to the admin. Nothing changes.</span></div>
+          <div><b>85%</b><span>Savers: shorter reviews, fewer web searches, overnight news scoring paused.</span></div>
+          <div><b>95%</b><span>Essentials: chat on the smallest model; briefs and alerts as plain templates.</span></div>
+          <div><b>100%</b><span>The AI stops until the month renews or the ceiling is raised. Buttons, check-ins and alerts still work, since they need no AI.</span></div>
+        </div>
+      </div>
+      <div class="net">
+        <h3>Nothing is lost, everything is retried</h3>
+        <p>Every hand-over goes through a tray (a queue). If Apple's push service, Claude or a price source has a bad minute, the work waits and tries again, a little later each time. After too many tries it goes into safe keeping for 14 days, with a copy kept for good, and the admin gets an alert with a Replay button. Every part remembers what it has done, so a retry never does anything twice.</p>
+        <div class="tape" style="max-width:none">
+          <div class="blk">Try 1<br><span class="h" style="color:var(--alert)">failed</span></div><span class="link"></span>
+          <div class="blk">Try 2<br><span class="h" style="color:var(--alert)">30 s later</span></div><span class="link"></span>
+          <div class="blk">Tries 3–5<br><span class="h">waits grow</span></div><span class="link"></span>
+          <div class="blk new">Safe keeping<br><span class="h">alert + Replay</span></div>
+        </div>
+        <p class="muted" style="font-size:13px">From phase 18, the ops warden replays stuck work by itself once the cause is healthy, at most three times.</p>
+      </div>
+      <div class="net">
+        <h3>An audit line for every change, chained</h3>
+        <p>Every change to the records writes an audit line in the same step as the change, so one can't happen without the other: who, when, how (typed, a button, a screenshot, a check-in), before and after. Each line holds a fingerprint of the one before, so a deleted or edited line breaks the chain, and the weekly check says so.</p>
+        <div class="chain stage" data-chain>
+          <div class="blk"><span class="h">#…a41f</span><br>Saver added</div><span class="link"></span>
+          <div class="blk"><span class="h">#…7c02</span><br>Home valued</div><span class="link"></span>
+          <div class="blk"><span class="h">#…e9d3</span><br>Savings +£5,000</div><span class="link"></span>
+          <div class="blk"><span class="h">#…31b8</span><br>Home → £428,000</div>
+        </div>
+        <p class="muted" style="font-size:13px">Lines are never deleted. Members see their own; the admin sees all.</p>
+      </div>
+      <div class="net">
+        <h3>Things no part of MyPaisa can do</h3>
+        <ul class="guard">
+          <li><svg class="ico"><use href="#i-shield"/></svg><span><b>Trade or move money.</b> There is no broker connection at all.</span></li>
+          <li><svg class="ico"><use href="#i-shield"/></svg><span><b>Delete data.</b> A loan is closed, a fund is sold; nothing is erased.</span></li>
+          <li><svg class="ico"><use href="#i-shield"/></svg><span><b>Message anyone</b> but the member it is answering.</span></li>
+          <li><svg class="ico"><use href="#i-shield"/></svg><span><b>Save a draft.</b> Only a Confirm, a check-in tap or a Save commits.</span></li>
+          <li><svg class="ico"><use href="#i-shield"/></svg><span><b>See another household.</b> Every item is filed by household, and every tool call carries who is asking.</span></li>
+          <li><svg class="ico"><use href="#i-shield"/></svg><span><b>Keep running when told to stop.</b> Pause MyPaisa in You, or type <code>/pause</code>, and everything scheduled stops.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHERE IT LIVES ================= -->
+<section id="homes">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Where it lives</div>
+      <h2>Two copies on AWS, and one careful way to change them</h2>
+      <p class="lede">Everything runs on Amazon Web Services in one account, twice: a practice copy with made-up data, and the real one with the family's. Claude is reached through Anthropic's API, with its key locked away where only the code can read it.</p>
+    </div>
+    <div class="homes">
+      <div class="home">
+        <span class="envn">mypaisa-dev-*</span>
+        <h3>Dev: the practice copy</h3>
+        <ul>
+          <li>Made-up household data only</li>
+          <li><span class="mono">dashboard-dev.mypaisapp.com</span></li>
+          <li>The MyPaisa Dev app points here</li>
+          <li>AI ceiling $40 a month</li>
+        </ul>
+      </div>
+      <div class="home">
+        <span class="envn">mypaisa-prod-*</span>
+        <h3>Prod: the family's copy</h3>
+        <ul>
+          <li>The household's real records and files</li>
+          <li><span class="mono">dashboard.mypaisapp.com</span></li>
+          <li>Data stores protected from deletion</li>
+          <li>AI ceiling $160 a month</li>
+        </ul>
+      </div>
+      <div class="home">
+        <span class="envn">How a change ships</span>
+        <h3>Written down, checked, approved</h3>
+        <div class="ship"><span>A change</span><em>→</em><span>GitHub</span><em>→</em><span>Checks</span><em>→</em><span>Dev</span><em>→</em><span class="gate">Arun approves</span><em>→</em><span>Prod</span></div>
+        <p class="muted" style="font-size:14px">Infrastructure is described in Terraform files and changed only through them; nobody clicks around the AWS console. Prod is updated only by the release workflow.</p>
+        <div style="display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><span class="cost">≈ £45</span><span class="muted" style="font-size:14px">a month for two members on the standard setup, about £6 of it Apple's developer membership. The AI is paid from the plan's monthly credit.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAY ================= -->
+<section id="day" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">A day with MyPaisa</div>
+      <h2>Mostly quiet, on time, and there when you ask</h2>
+    </div>
+    <div class="day">
+      <div class="track">
+        <span class="pin" style="left:30.2%">07:15</span>
+        <span class="pin" style="left:37.5%">09:00</span>
+        <span class="pin" style="left:88.5%">21:15</span>
+        <span class="sun" aria-hidden="true"></span>
+      </div>
+      <div class="hrs"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+      <div class="events">
+        <div class="ev"><span class="t">Overnight</span><b>The sums are redone</b><span>Prices, net worth, the views and the Projection are rebuilt; news is scored in a cheap batch.</span><span class="tg code">Code, Haiku in batch</span></div>
+        <div class="ev"><span class="t">07:15</span><b>Morning brief</b><span>What moved, why, and anything to do. One for the household, one each for members who want one.</span><span class="tg ai">Claude writes</span></div>
+        <div class="ev"><span class="t">09:00</span><b>Check-ins</b><span>Whatever is due today: an EMI, a SIP, a valuation. Several at once become one card.</span><span class="tg code">Code decides</span></div>
+        <div class="ev"><span class="t">Any time</span><b>The chat</b><span>Add, correct, ask, what-if. Every write shown first; every change audited.</span><span class="tg ai">Concierge</span></div>
+        <div class="ev"><span class="t">21:15</span><b>Evening wrap</b><span>Only to whoever's accounts moved today.</span><span class="tg ai">Claude writes</span></div>
+        <div class="ev"><span class="t">Saturday · the 1st</span><b>Review and month-end</b><span>The weekly review on Claude's largest model; on the 1st, last month's budget closes.</span><span class="tg ai">Opus · code</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Drawn from MyPaisa's ARCHITECTURE.md (v4, the whole wealth first), PLAN.md and the illustrative household figure set. Every name and figure on this page is illustrative. The design is being built phase by phase; the agent team arrives in phase 18.</span>
+    <span>More detail: the <a href="https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7">MyPaisa Agent Journey</a> (every flow, lane by lane) and the <a href="https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb">MyPaisa Market Agent</a> (the market side).</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const U = 800;
+
+  /* ---------- fan chart (from the figure set: what-if fan and the plan's middle path) ---------- */
+  const W = [[2027,451,499,547],[2028,442,522,598],[2029,506,599,691],[2030,576,677,786],[2031,634,740,866],[2032,699,835,989],[2033,758,922,1111],[2034,830,1034,1242],[2035,915,1132,1371],[2036,1001,1233,1513],[2037,1085,1345,1710],[2038,1166,1483,1891],[2039,1247,1614,2059],[2040,1342,1746,2256],[2041,1440,1869,2466]];
+  const B = [499,582,660,747,812,906,1001,1122,1214,1316,1447,1586,1718,1851,1981];
+  const fan = document.getElementById('fan');
+  if (fan) {
+    const x0 = 36, x1 = 242, y0 = 128, y1 = 10, ymax = 2500;
+    const X = i => x0 + (x1 - x0) * i / (W.length - 1);
+    const Y = v => y0 - (y0 - y1) * v / ymax;
+    let s = '';
+    [500,1000,1500,2000,2500].forEach(v => {
+      s += `<line class="gl" x1="${x0}" x2="${x1}" y1="${Y(v)}" y2="${Y(v)}"/>`;
+      if (v % 1000 === 0 || v === 500) s += `<text x="0" y="${Y(v)+3}">£${v>=1000?(v/1000)+'m':v+'k'}</text>`;
+    });
+    [0,7,14].forEach(i => s += `<text x="${X(i)}" y="144" text-anchor="middle">${W[i][0]}</text>`);
+    const up = W.map((r,i)=>`${X(i)},${Y(r[3])}`).join(' L');
+    const dn = W.slice().reverse().map((r,j)=>`${X(W.length-1-j)},${Y(r[1])}`).join(' L');
+    s += `<path class="band bandin" style="--d:2.8" d="M${up} L${dn} Z"/>`;
+    s += `<path class="base draw" style="--d:3" d="M${B.map((v,i)=>`${X(i)},${Y(v)}`).join(' L')}"/>`;
+    s += `<path class="p50 draw" style="--d:2.8" d="M${W.map((r,i)=>`${X(i)},${Y(r[2])}`).join(' L')}"/>`;
+    s += `<circle class="dot" cx="${X(9)}" cy="${Y(W[9][2])}" r="3"/>`;
+    s += `<text class="lbl" x="${X(9)-4}" y="${Y(W[9][2])-7}" text-anchor="end">2036: £1.23m</text>`;
+    fan.innerHTML = s;
+  }
+
+  /* ---------- stages: play once in view, replay on demand ---------- */
+  const fmt = (pre, v) => pre + Math.round(v).toLocaleString('en-GB');
+  function runStage(st) {
+    (st._t || []).forEach(clearTimeout); st._t = [];
+    st.classList.remove('run'); void st.offsetWidth; st.classList.add('run');
+    st.querySelectorAll('[data-from]').forEach(el => {
+      const pre = el.dataset.pre || '', from = +el.dataset.from, to = +el.dataset.to;
+      el.textContent = fmt(pre, from);
+      st._t.push(setTimeout(() => {
+        const t0 = performance.now();
+        const tick = now => { const p = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - p, 3);
+          el.textContent = fmt(pre, from + (to - from) * e); if (p < 1) requestAnimationFrame(tick); };
+        requestAnimationFrame(tick);
+      }, +el.dataset.at * U));
+    });
+    if (st.hasAttribute('data-chain')) chainBreak(st);
+  }
+  function chainBreak(st) {
+    const blocks = st.querySelectorAll('.blk'), links = st.querySelectorAll('.link');
+    blocks.forEach(b => b.classList.remove('broken')); links.forEach(l => l.classList.remove('broken'));
+    st._t.push(setTimeout(() => { blocks[1].classList.add('broken'); links[1].classList.add('broken'); }, 1400));
+    st._t.push(setTimeout(() => { blocks[1].classList.remove('broken'); links[1].classList.remove('broken'); }, 4200));
+  }
+  // every step plays at the moment it reaches the screen; in their resting state all are complete
+  document.querySelectorAll('[data-replay]').forEach(b => b.addEventListener('click', () => runStage(b.closest('.stage'))));
+  // the chain lives in a .net, its own small stage
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); runStage(e.target); } }), { threshold: .35 });
+    document.querySelectorAll('.stage, .net').forEach(s => io.observe(s));
+  }
+
+  /* ---------- the map ---------- */
+  const NS = 'http://www.w3.org/2000/svg';
+  const N = {
+    phone:[30,150,160,96,'iPhone · iPad app','SwiftUI in RN shell','door'],
+    web:[30,340,160,96,'Web app','SvelteKit PWA','door'],
+    api:[250,60,170,80,'Front desk','api · API Gateway','pipe'],
+    id:[250,160,170,64,'ID desk','Cognito · Apple · Google','pipe'],
+    files:[250,250,170,80,'Filing cabinet','documents · S3','store'],
+    live:[250,450,170,80,'Live line','SSE stream','pipe'],
+    inq:[480,60,170,80,'In-tray','updates · SQS FIFO','pipe'],
+    calc:[480,250,170,80,'Calculator','engine · tested code','code'],
+    post:[480,450,170,80,'Postman','sender Lambda','pipe'],
+    agent:[720,60,180,80,'Concierge','agent Lambda','ai'],
+    out:[720,450,180,80,'Out-tray','outbox · SQS FIFO','pipe'],
+    dlq:[720,560,180,64,'Safe keeping','dead-letter queue','pipe'],
+    claude:[950,60,150,80,'Claude','Anthropic API','ai'],
+    ledger:[950,250,150,80,'Ledger','DynamoDB · audit','store'],
+    office:[950,450,150,80,'Back office','worker · scheduler','code']
+  };
+  const P = {
+    phoneapi:'M190,170 H226 V100 H250',
+    webapi:'M190,372 H238 V120 H250',
+    phoneid:'M190,192 H250',
+    phonefiles:'M190,226 H244 V290 H250',
+    apiin:'M420,100 H480',
+    inagent:'M650,100 H720',
+    agentclaude:'M900,92 H950',
+    claudeagent:'M950,112 H900',
+    agentcalc:'M760,140 L630,250',
+    agentledger:'M880,140 L990,250',
+    agentout:'M810,140 V450',
+    agentoffice:'M870,140 V430 H1000 V450',
+    officeout:'M950,490 H900',
+    officeledger:'M1060,450 V330',
+    outpost:'M720,490 H650',
+    postlive:'M480,490 H420',
+    liveweb:'M250,476 H214 V392 H190',
+    livephone:'M250,504 H204 V236 H190',
+    postpush:'M560,530 V606 H14 V200 H30',
+    postdlq:'M650,510 H690 V592 H720'
+  };
+  const svg = document.getElementById('map');
+  const gW = svg.querySelector('#wires'), gN = svg.querySelector('#nodes');
+  const wires = {}, nodes = {};
+  for (const [id, d] of Object.entries(P)) {
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', d); p.setAttribute('class', 'wire' + (id === 'postpush' || id === 'postdlq' ? ' dash' : ''));
+    gW.appendChild(p); wires[id] = p;
+  }
+  for (const [id, [x, y, w, h, t, s, c]] of Object.entries(N)) {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', `node cat-${c} n-${id}`);
+    g.innerHTML = `<rect class="ring" x="${x-4}" y="${y-4}" width="${w+8}" height="${h+8}" rx="20"/>
+      <rect class="box" x="${x}" y="${y}" width="${w}" height="${h}" rx="16"/>
+      <circle class="cdot" cx="${x+18}" cy="${y+h/2-9}" r="5"/>
+      <text class="ttl" x="${x+30}" y="${y+h/2-3}">${t}</text>
+      <text class="sub" x="${x+14}" y="${y+h/2+17}">${s}</text>`;
+    gN.appendChild(g); nodes[id] = g;
+  }
+  const tok = svg.querySelector('#token'), glow = svg.querySelector('#token-glow');
+  const center = id => { const [x, y, w, h] = N[id]; return [x + w / 2, y + h / 2]; };
+  const place = (x, y) => { tok.setAttribute('cx', x); tok.setAttribute('cy', y); glow.setAttribute('cx', x); glow.setAttribute('cy', y); };
+
+  const T = {
+    ask: [
+      {n:['phone'], t:'You type a question and press send', b:'"What if we put £60,000 down on a second flat in June 2028?" The app gives the message its own label, so even if the network hiccups it can never arrive twice.', x:'client id · idempotency'},
+      {n:['api'], w:['phoneapi'], t:'The front desk checks your pass and says "got it"', b:'It checks the five-minute pass on every single call, answers at once so the app never waits, and passes the message on. The app shows the typing dots.', x:'the chat route → 202 Accepted · authorizer checks token, status, session epoch'},
+      {n:['inq'], w:['apiin'], t:'It waits in your own lane of the in-tray', b:'Every member has a lane. Your messages are handled one at a time, in order, while Asha\'s run alongside. If anything below fails, the tray tries again.', x:'mypaisa-prod-updates.fifo · one message group per member · 3 tries'},
+      {n:['agent'], w:['inagent'], t:'The concierge picks it up', b:'It loads its standing instructions and tools (kept warm, so they cost little), plus a few one-line notes about your recent chats. It does not resend old chats; it looks things up instead.', x:'agent Lambda · prompt cache (1 hour) · conversation notes'},
+      {n:['agent','claude'], w:['agentclaude'], t:'It asks Claude what is needed', b:'Claude reads the question and decides it needs two tools: the household\'s figures, and the projection with this change. Claude chooses tools; it does not do the sums.', x:'Claude Sonnet 5.5 · tool_choice auto · strict tools'},
+      {n:['calc'], w:['agentcalc'], t:'The calculator runs 30 years forward', b:'Plain, tested code projects the family\'s net worth year by year from their own history and stated assumptions, with a low, middle and high path. The £60,000 is a what-if: nothing is saved.', x:'run_projection(overrides) · deterministic engine · p10 / p50 / p90'},
+      {n:['ledger'], w:['agentledger'], t:'It reads only what you may see', b:'The tool reads the records it needs. Who is asking travels with every call, and code refuses anything outside your rights.', x:'get_networth(view) · household and member checks in code'},
+      {n:['claude','agent'], w:['claudeagent'], t:'Claude writes the answer around the numbers', b:'The numbers come back from code; Claude puts them into plain words and a chart card. The words appear on your screen as they are written, about five times a second.', x:'TurnBuffer every ~200 ms · streamed to every open screen'},
+      {n:['out'], w:['agentout'], t:'The finished reply goes in the out-tray', b:'The full message and its card join your lane of the out-tray, so a brief\'s several messages always arrive in order.', x:'mypaisa-prod-outbox.fifo · 5 tries'},
+      {n:['post'], w:['outpost'], t:'The postman files it in your message log', b:'It appends the reply to your personal log. Any screen that was away can catch up from the last thing it saw.', x:'sender Lambda · StreamEvent log · Last-Event-ID'},
+      {n:['live','phone','web'], w:['postlive','livephone'], t:'Every open screen shows it', b:'Your phone shows the answer and the chart. If the laptop is open too, it shows the same conversation. A screen that is closed gets a push instead.', x:'GET /v1/stream · Server-Sent Events · Apple push / Web Push when closed'},
+      {n:['ledger'], t:'A run record notes what it did and cost', b:'Every run records its model calls, tools, time and cost. The spend meter is added to; a message like this costs about 1.5p to 3p. The Activity screen shows it all.', x:'RunRecord · SpendMonth meter · Activity'}
+    ],
+    file: [
+      {n:['phone'], t:'You attach a factsheet', b:'Arun taps + and picks the PDF from Files (or the camera, a scan, or Photos).', x:'composer · VisionKit, Photos, Files'},
+      {n:['files'], w:['phonefiles'], t:'It goes straight into the filing cabinet', b:'The file travels from the phone directly into storage, before anything reads it, and stays there for good with its own audit line.', x:'presigned upload · s3://mypaisa-prod-documents/<household>/<member>/<yyyy>/<mm>/ · Document row'},
+      {n:['api','inq'], w:['phoneapi','apiin'], t:'A note that a file arrived joins the in-tray', b:'The chat message "I sent a file" follows the usual path: the front desk, then your lane of the in-tray.', x:'202 Accepted · updates queue'},
+      {n:['agent'], w:['inagent'], t:'The concierge sees a file', b:'Reading a document can take a while, so the concierge doesn\'t do it in the chat. It hands it to the back office.', x:'work queue job: document read'},
+      {n:['office','files'], w:['agentoffice'], t:'The back office reads it', b:'Claude reads the PDF and pulls out the name, kind, currency and what the fund holds. Each figure keeps the line it came from.', x:'worker · extract_document(s3_key, schema) · source line per figure'},
+      {n:['calc'], w:['agentcalc'], t:'Code checks every value', b:'The draft is checked against what a UK fund must have. Anything missing or unsure is listed. A draft writes nothing.', x:'draft_record(kind, fields) · draft hashed in PendingAction'},
+      {n:['out','post','live','phone'], w:['agentout','outpost','postlive','livephone'], t:'A card comes back with one amber question', b:'"Which account?" is in amber because the factsheet doesn\'t say. Everything else is shown for you to check.', x:'card JSON → drawn natively on iOS, in Svelte on the web'},
+      {n:['phone','agent','ledger'], w:['phoneapi','apiin','inagent','agentledger'], t:'You tap ISA · Monzo, then Confirm', b:'Confirm commits exactly the draft you saw. The new holding and its audit line, naming the file, are written in one step: both or neither.', x:'write service · DynamoDB transaction · audit row with document_id'},
+      {n:['live','web','phone'], w:['agentout','outpost','postlive','liveweb'], t:'Every screen moves', b:'The laptop\'s dashboard and the phone\'s Home pick up the new holding at once.', x:'records.changed on the stream'}
+    ],
+    checkin: [
+      {n:['office'], t:'09:00: the back office wakes up', b:'A schedule starts the daily check-in job. It is plain code; no AI is needed to know that a date has arrived.', x:'scheduler → work queue → worker · check-ins job'},
+      {n:['office','ledger'], w:['officeledger'], t:'It finds the HDFC EMI due today', b:'It reads the family\'s promises (EMIs, SIPs, bills, maturities) and creates exactly one check-in for each one due. A retry can\'t create a second.', x:'Commitment → CheckIn id commitment#due_date · conditional put'},
+      {n:['out'], w:['officeout'], t:'The card goes straight in the out-tray', b:'It skips the concierge entirely. The card already shows what a tap will write.', x:'outbox FIFO'},
+      {n:['post','phone'], w:['outpost','postpush'], t:'The app is closed, so it arrives as a push', b:'"HDFC home loan: was November\'s EMI paid?" The lock screen never shows the amount unless you choose.', x:'Apple push (APNs) · only to a device with no open stream'},
+      {n:['phone'], t:'You tap Paid', b:'The tap is the Confirm, because the card showed exactly what will be saved. Undo is right there.', x:'card tap acknowledged at once, its effect queued'},
+      {n:['agent','ledger'], w:['phoneapi','apiin','inagent','agentledger'], t:'One step writes it all', b:'The check-in is marked answered, the payment is added to the loan\'s history, and the audit line is written, together.', x:'transaction · via: checkin · event + audit row'},
+      {n:['web','live'], w:['agentout','outpost','postlive','liveweb'], t:'The laptop\'s dashboard moves too', b:'If the web app is open, the HDFC balance there updates at the same moment.', x:'records.changed on the stream'}
+    ],
+    fail: [
+      {n:['post'], w:['outpost'], t:'A reply is ready for Asha', b:'Her app is closed, so the postman will send a push to her iPhone.', x:'sender · no fresh Presence for her device'},
+      {n:['post'], bad:'postpush', t:'Apple\'s push service has a bad minute', b:'The push fails. Nothing is lost: the message is still in the out-tray, which simply hasn\'t been told it worked.', x:'APNs error · retry-after honoured'},
+      {n:['out','post'], t:'It tries again, waiting longer each time', b:'A failed message comes back after a growing wait, so a struggling service isn\'t hammered. Because every part remembers what it has done, a retry never sends anything twice.', x:'5 tries · backoff · idempotency keys'},
+      {n:['dlq'], w:['postdlq'], t:'After five tries, safe keeping', b:'It moves to a holding area for 14 days, and a copy goes to the filing cabinet for good. It is never thrown away.', x:'dead-letter queue · copy in S3 raw/dlq/'},
+      {n:['dlq','phone'], t:'The admin is told at once', b:'An alarm reaches Arun as "failed work", with a Replay button in his chat and in the Admin center.', x:'alarm → alert router → admin\'s app and email'},
+      {n:['dlq','post','phone'], w:['postdlq','postpush'], rev:['postdlq'], t:'Replay delivers it, once', b:'When Apple is healthy again, Arun taps Replay (behind Face ID) and the message goes back in line and is delivered once. From phase 18 the ops warden does this on its own.', x:'redrive → Replay button (phase 8) → ops warden (phase 18), at most 3 times'}
+    ]
+  };
+
+  const capK = document.getElementById('capK'), capT = document.getElementById('capT'), capB = document.getElementById('capB'), capX = document.getElementById('capX');
+  const prog = document.getElementById('prog'), playBtn = document.getElementById('play'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+  let tour = 'ask', idx = 0, playing = false, timer = null, anim = 0;
+
+  function moveAlong(list, rev, done) {
+    const id = ++anim;
+    if (!list.length) { done && done(); return; }
+    let k = 0;
+    const stepWire = () => {
+      if (id !== anim) return;
+      if (k >= list.length) { done && done(); return; }
+      const w = wires[list[k]], back = rev.includes(list[k]), L = w.getTotalLength();
+      if (reduce) { const pt = w.getPointAtLength(back ? 0 : L); place(pt.x, pt.y); k++; stepWire(); return; }
+      const t0 = performance.now(), dur = Math.max(450, Math.min(1100, L * 2.2));
+      const f = now => {
+        if (id !== anim) return;
+        const p = Math.min(1, (now - t0) / dur), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+        const pt = w.getPointAtLength((back ? 1 - e : e) * L); place(pt.x, pt.y);
+        if (p < 1) requestAnimationFrame(f); else { k++; stepWire(); }
+      };
+      requestAnimationFrame(f);
+    };
+    stepWire();
+  }
+
+  function show(i) {
+    const steps = T[tour]; idx = Math.max(0, Math.min(steps.length - 1, i));
+    const s = steps[idx];
+    Object.values(nodes).forEach(g => g.classList.remove('on'));
+    Object.values(wires).forEach(w => w.classList.remove('lit', 'bad'));
+    s.n.forEach(n => nodes[n].classList.add('on'));
+    (s.w || []).forEach(w => wires[w].classList.add('lit'));
+    if (s.bad) { wires[s.bad].classList.remove('lit'); wires[s.bad].classList.add('bad'); }
+    capK.textContent = `Step ${idx + 1} of ${steps.length}`;
+    capT.textContent = s.t; capB.textContent = s.b; capX.textContent = s.x;
+    prog.innerHTML = steps.map((_, j) => `<i class="${j < idx ? 'done' : j === idx ? 'cur' : ''}" data-j="${j}" title="Step ${j+1}"></i>`).join('');
+    prevBtn.disabled = idx === 0; nextBtn.disabled = idx === steps.length - 1;
+    const after = () => {
+      if (!s.w || !s.w.length) { const [x, y] = center(s.n[0]); place(x, y); }
+      if (playing) {
+        clearTimeout(timer);
+        timer = setTimeout(() => { if (idx < T[tour].length - 1) show(idx + 1); else { playing = false; playBtn.textContent = 'Play again'; } }, 3600);
+      }
+    };
+    if (s.w && s.w.length) moveAlong(s.w, s.rev || [], after); else { anim++; after(); }
+  }
+  function setPlay(on) {
+    playing = on; clearTimeout(timer);
+    playBtn.textContent = on ? 'Pause' : 'Play';
+    if (on) { if (idx >= T[tour].length - 1) show(0); else show(idx); }
+  }
+  function setTour(k, autoplay) {
+    tour = k; document.querySelectorAll('.tour').forEach(b => b.setAttribute('aria-pressed', b.dataset.tour === k));
+    clearTimeout(timer); playing = !!autoplay; playBtn.textContent = playing ? 'Pause' : 'Play'; show(0);
+  }
+  playBtn.addEventListener('click', () => setPlay(!playing));
+  prevBtn.addEventListener('click', () => { setPlay(false); show(idx - 1); });
+  nextBtn.addEventListener('click', () => { setPlay(false); show(idx + 1); });
+  prog.addEventListener('click', e => { const j = e.target.dataset && e.target.dataset.j; if (j != null) { setPlay(false); show(+j); } });
+  document.querySelectorAll('.tour').forEach(b => b.addEventListener('click', () => setTour(b.dataset.tour, !reduce)));
+  document.getElementById('watchInside').addEventListener('click', () => {
+    document.getElementById('engine').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    setTour('ask', !reduce);
+  });
+  setTour('ask', false);
+  if (!reduce && 'IntersectionObserver' in window) {
+    const mo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { mo.disconnect(); if (!playing && tour === 'ask' && idx === 0) setPlay(true); } }), { threshold: .2 });
+    mo.observe(document.getElementById('map'));
+  }
+})();
+</script>

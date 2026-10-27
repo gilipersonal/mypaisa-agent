@@ -32,7 +32,9 @@ AWS views and a sequence, linked from `ARCHITECTURE.md`), and two pages walk
 through the flows end to end:
 [MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7) and
 [MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)
-(MA-141). Every phase is an epic in Jira project MA, and every deliverable
+(MA-141), and [Inside MyPaisa](https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5) explains the whole of it in
+plain words, from the first screen to the chatbot and the agent team
+(MA-239). Every phase is an epic in Jira project MA, and every deliverable
 below is a story or task under it. Each phase ends with a demo you can click
 at both doors and an update to the agent-journey page, so you can follow the
 agent as it is built.
@@ -276,6 +278,11 @@ Claude's:
   back, OpenTelemetry on every Lambda, model and tool spans in the open
   conventions, fifteen metrics, the alarms and what is never recorded
   (`ARCHITECTURE.md` §10); the Lucid page that draws it (MA-236).
+- **The architecture in plain words (MA-239):** Inside MyPaisa, an animated
+  page that walks the admin from the sign-in screen to the chatbot and the
+  agent team, plays one message through the system, and shows the safety
+  nets, for anyone in the family to read; its source is
+  `docs/design/inside-mypaisa.html`.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
