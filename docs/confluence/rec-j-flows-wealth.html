@@ -400,7 +400,7 @@
 <tr><td data-background="#FFFAE6"><strong>12</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The engine&#x27;s figures, for the words around them</td></tr>
 <tr><td data-background="#EAE6FF"><strong>13</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>What the deposit costs by 2036, and why; every number in it is the engine&#x27;s</td></tr>
 <tr><td data-background="#FFFAE6"><strong>14</strong></td><td data-background="#FFFAE6">AWS to App</td><td>An unsaved scenario card: 2036&#x27;s middle path £1,233,000 with the flat, against £1,316,000 on today&#x27;s plan, ▼ £83,000. <strong>Save as a plan item</strong> is shown to the admin only</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Plan items are the admin&#x27;s alone:</strong> future income and spends, made in the admin&#x27;s chat with <code>propose_plan_item</code> and saved only after the admin&#x27;s Confirm (a home extension, −£35,000 in Jun 2027; Asha&#x27;s bonus, +£3,000 every March; a new car, −£25,000 in Jun 2031), then corrected in place by the admin, as the saved assumptions are. They change a plan, not the records, so they need no second check. Asha views the Projection and asks her own what-if at 10:26; she saves nothing.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Plan items are the admin&#x27;s alone:</strong> future income, spends, changes to existing flows and events on records (such as a loan closed), made in the admin&#x27;s chat with <code>propose_plan_item</code> and saved only after the admin&#x27;s Confirm (a home extension, −£35,000 in Jun 2027; Asha&#x27;s bonus, +£3,000 every March; a new car, −£25,000 in Jun 2031), then corrected, paused or ended in place by the admin, as the saved assumptions are; when a plan leaves the household short, <code>rearrange_budget</code> proposes options and the admin&#x27;s Confirm applies one, today&#x27;s budget included. They change a plan, not the records, so they need no second check. Asha views the Projection and asks her own what-if at 10:26; she saves nothing.</td></tr>
 <tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>The agent also explains what drives the curve, raises the trouble flags code computes, and notices milestones: the car loan ends in Feb 2029 and frees £347 a month, the HDFC loan in Jul 2030, the mortgage in Oct 2045. A locked pension cannot cover a shortfall before it unlocks.</td></tr>
 </tbody>
 </table>
@@ -432,7 +432,7 @@
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Reproducible</strong></strong></p>
-<p>Each run keeps its inputs hash, seed and engine version; a record closing or an assumption changing runs it again.</p>
+<p>Each run keeps its inputs hash (records, priors and every active plan item&#x27;s version), seed and engine version; a record closing or being corrected, a statement confirmed, a month closed, a plan item changed or an assumption changing runs it again.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Constraints kept</strong></strong></p>
@@ -445,6 +445,8 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-223" data-card-appearance="inline"></a></td><td>What-ifs and the Projection&#x27;s story: the agent proposes assumptions, runs scenarios and explains the curve, every figure from the engine</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-224" data-card-appearance="inline"></a></td><td>The Projection screen shows the fan, its milestones and the editable assumptions, at every door</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-222" data-card-appearance="inline"></a></td><td>Plan items: the admin adds future income and spends through the chat and corrects them in place</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-262" data-card-appearance="inline"></a></td><td>The Budget forecast shows each year&#x27;s income, spend by category, EMIs, plans and surplus to the horizon, every figure traced to its flows, at every door</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-263" data-card-appearance="inline"></a></td><td>When a plan leaves the household short, the agent proposes ways to rearrange the budget, and the admin&#x27;s Confirm applies one, today&#x27;s budget included</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-221" data-card-appearance="inline"></a></td><td>Projection priors per country: long-run returns, inflation and wage growth, versioned with their sources</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-212" data-card-appearance="inline"></a></td><td>XIRR to the penny for a holding, an account, a member and the household, from the dated ledger</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-215" data-card-appearance="inline"></a></td><td>With no history, the agent asks for past transactions to compute the return, or an estimate it marks as one</td></tr>

@@ -958,7 +958,7 @@ in AWS.
 What comes in and what goes out, each month, per member and for the
 household, filled from statements and one short check-in.
 
-- **Budget (MA-96):** each member's income and its history (past years'
+- **Budget (MA-96, `ARCHITECTURE.md` §4.1, §6.6, §12):** each member's income and its history (past years'
   figures, so growth can be measured), from the chat or payslips, stored as
   income commitments; a monthly plan per category, the categories data you
   change by chat, EMIs and card payments from their commitments; the Budget
@@ -1007,7 +1007,7 @@ Forecaster); **Projection** is the household's net worth over time, and
 - **The engine (MA-219, `ARCHITECTURE.md` §6.6):** `wealth/projection.py`
   runs month by month to a horizon (twenty years by default; 5, 10, 20 or
   30), with a today's-money toggle, money in `Decimal`. Its inputs: each record's country, which sets its
-  inflation, wage-growth prior and tax drag, with GBP/INR drifting with the
+  inflation and wage-growth prior, with GBP/INR drifting with the
   inflation gap; each member's current net salary, its growth blending the
   member's own measured history with the country's prior, weighted by the
   years of history; returns (contractual rates as given; a market asset's
@@ -1032,7 +1032,7 @@ Forecaster); **Projection** is the household's net worth over time, and
   country, inflation per country with category overrides such as education
   and health, and wage growth per country, each versioned with its source;
   set by the admin, every change audited.
-- **Plan items: future plans by talking (MA-222, MA-261):** the admin says
+- **Plan items: future plans by talking (MA-222, MA-261, `ARCHITECTURE.md` §4.1, §4.5, §4.10, §6.6, §8):** the admin says
   what is coming ("£4,000 a month from Jan 2029 for my kid's schooling", "my
   salary goes to £8,000 a month from Sep 2028", "₹2 cr to close my SBI home
   loan"); the agent asks only for what is missing, at most three questions
@@ -1045,11 +1045,11 @@ Forecaster); **Projection** is the household's net worth over time, and
   assumptions; members see them; every change audited with the admin's own
   words and the Projection run before and after; no second check, since they
   change a plan, not the records.
-- **The Budget forecast (MA-262):** each year to the horizon, expandable to
+- **The Budget forecast (MA-262, `ARCHITECTURE.md` §6.6, §9.3, §12):** each year to the horizon, expandable to
   its months: income by member, spend by category, EMIs, each plan item, the
   surplus, the savings rate and closing cash, in GBP or INR; any figure
   opens the flows that make it; at both doors.
-- **Rearranging the budget (MA-263):** when a plan leaves cash below zero or
+- **Rearranging the budget (MA-263, `ARCHITECTURE.md` §4.5, §4.10, §6.6, §8, §12):** when a plan leaves cash below zero or
   the surplus below the admin's floor, code works out the options (trim a
   category from a date, pause a SIP, move a plan's start, draw from a named
   pool, change the surplus rule) and the agent ranks and explains them, each
@@ -1057,14 +1057,14 @@ Forecaster); **Projection** is the household's net worth over time, and
   proposes a change and you accept it: plan items from their dates and, where
   it touches this month, the current month's budget plan, each with its audit
   row and Undo.
-- **What-ifs and the story (MA-223):** code produces every number; the model
+- **What-ifs and the story (MA-223, `ARCHITECTURE.md` §6.6, §8):** code produces every number; the model
   never does. The agent proposes the assumption set with a reason for each
   figure; answers a what-if ("what if we buy a house in 2028?") by filling a
   typed override whose numbers trace to the member's words or a named preset,
   shown as an unsaved scenario card; explains what drives the curve, from the
   engine's trace; and raises the trouble flags and milestones code computes.
   Members ask what-ifs but save nothing.
-- **The Projection screen (MA-224, `ARCHITECTURE.md` §9.3, §12):** the fan in
+- **The Projection screen (MA-224, `ARCHITECTURE.md` §6.6, §9.3, §12):** the fan in
   GBP or INR, in today's money or not, opening at 20 years with 5, 10, 20 and
   30 to choose; milestones on the line (loans ending, maturities, plan
   items); the assumptions panel with each source, editable in place by the

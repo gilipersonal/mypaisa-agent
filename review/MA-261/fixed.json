@@ -1,0 +1,165 @@
+[
+ {
+  "id": "r1-b1",
+  "round": 1,
+  "finding": "ARCHITECTURE section citations drifted between docs/trace.json, PLAN.md and the Jira stories' Where lines across MA-261, MA-96, MA-222, MA-224, MA-262 and MA-263 (lane B)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; want={'MA-96':['4.1','6.6','12'],'MA-219':['6.6'],'MA-222':['4.1','4.5','4.10','6.6','8'],'MA-223':['6.6','8'],'MA-224':['6.6','9.3','12'],'MA-262':['6.6','9.3','12'],'MA-263':['4.5','4.10','6.6','8','12'],'MA-261':['2','4.1','4.5','4.10','6.6','8','9.3','12']}; ok=all(t[k]['arch']==v for k,v in want.items()) and 'ARCHITECTURE 2, 4.1, 4.5, 4.10, 6.6, 8, 9.3 and 12' in t['MA-261']['notes']; sys.exit(0 if ok else 1)\""
+  }
+ },
+ {
+  "id": "r1-b1-plan",
+  "round": 1,
+  "finding": "PLAN.md bullets for MA-96, MA-219, MA-222, MA-223, MA-224, MA-262 and MA-263 cite the same ARCHITECTURE sections as docs/trace.json (lane B)",
+  "check": {
+   "type": "grep",
+   "file": "PLAN.md",
+   "pattern": "Budget \\(MA-96, `ARCHITECTURE\\.md` §4\\.1, §6\\.6, §12\\)[\\s\\S]*?The engine \\(MA-219, `ARCHITECTURE\\.md` §6\\.6\\)[\\s\\S]*?Plan items: future plans by talking \\(MA-222, MA-261, `ARCHITECTURE\\.md` §4\\.1, §4\\.5, §4\\.10, §6\\.6, §8\\)[\\s\\S]*?The Budget forecast \\(MA-262, `ARCHITECTURE\\.md` §6\\.6, §9\\.3, §12\\)[\\s\\S]*?Rearranging the budget \\(MA-263, `ARCHITECTURE\\.md` §4\\.5, §4\\.10, §6\\.6, §8, §12\\)[\\s\\S]*?What-ifs and the story \\(MA-223, `ARCHITECTURE\\.md` §6\\.6, §8\\)[\\s\\S]*?The Projection screen \\(MA-224, `ARCHITECTURE\\.md` §6\\.6, §9\\.3, §12\\)",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-b1-jira",
+  "round": 1,
+  "finding": "Jira Where lines on MA-261, MA-96, MA-219, MA-222, MA-223, MA-224, MA-262 and MA-263 match their trace arch lists, and MA-222 and MA-262 name records.changed (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Jira MA-261, MA-96, MA-219, MA-222, MA-223, MA-224, MA-262 and MA-263: Where lines match trace.json arch lists, and MA-222 and MA-262 name records.changed instead of projection.changed"
+  }
+ },
+ {
+  "id": "r1-b2",
+  "round": 1,
+  "finding": "MA-96, MA-222, MA-223 and MA-224 had acceptance states not yet drawn on their listed boards omitted from their undrawn lists (lesson 1, lane B)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need=[('MA-96','the chat flows'),('MA-222','the change_flow'),('MA-222','the plan item\\'s audit row'),('MA-222','refusal and validation outcomes'),('MA-223','a what-if using the three effects'),('MA-223','trouble flags from code'),('MA-223','a member\\'s what-if card in the web app'),('MA-223','the override validator\\'s refusal'),('MA-224','plan-item milestones on the line'),('MA-224','the Projection screen at the 390 phone-web door and on iPad')]; ok=all(any(u.startswith(n) for u in d[k].get('undrawn',[])) or ('Drawn: '+n) in d[k]['notes'] for k,n in need); sys.exit(0 if ok else 1)\""
+  }
+ },
+ {
+  "id": "r1-b3",
+  "round": 1,
+  "finding": "MA-96's dated future changes on income commitments, category inflation keys and take-home amounts were missing from ARCHITECTURE.md 4.1 and 12 (lane B)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "Income with its history and dated future changes, a monthly plan per category \\(each with its `inflation_key`\\)[\\s\\S]*?income commitments accept dated future changes \\(§12, MA-96\\)[\\s\\S]*?kept as income commitments that accept\\s+dated future changes so phase 7's plan items can change them \\(MA-96, MA-261\\)",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c1",
+  "round": 1,
+  "finding": "docs/design/architecture-v4.html TOOLS 'The admin only' omitted rearrange_budget and said every admin tool sat behind the second check, while plan items and rearrangements take Confirm without the second check (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "docs/design/architecture-v4.html",
+    "docs/confluence/rec-j-v4-parts.html"
+   ],
+   "pattern": "propose_kind takes the second check, plan and budget changes take Confirm[\\s\\S]*?rearrange_budget",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c2",
+  "round": 1,
+  "finding": "ARCHITECTURE.md 6.6 and PLAN.md phase 7 still listed 'tax drag per wrapper' / 'tax drag' right after stating the engine does no tax maths (lessons 5 and 17, lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "TECH_STACK.md",
+    "README.md",
+    "docs/design/*.html"
+   ],
+   "pattern": "tax drag",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c3",
+  "round": 1,
+  "finding": "ARCHITECTURE.md 6.6 named an undeclared stream event projection.changed instead of records.changed from the closed StreamEvent.type list in 4.1 and 21.5 (lesson 18, lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "TECH_STACK.md",
+    "README.md",
+    "docs/design/*.html"
+   ],
+   "pattern": "projection\\.changed",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c4",
+  "round": 1,
+  "finding": "scripts/confluence_docs.py listed UI stories with design: 'todo' and no boards yet (including MA-262 and MA-263) under 'Back end, agent and infrastructure (no screen)' on phase pages and 'Back end' in stories.csv (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "docs/confluence/phase-07.html",
+   "pattern": "Screens still to draw \\(/design-first\\)</td><td><a href=\"https://duttaarun2015\\.atlassian\\.net/browse/MA-262\">MA-262</a>, <a href=\"https://duttaarun2015\\.atlassian\\.net/browse/MA-263\">MA-263</a></td>",
+   "present": true
+  }
+ },
+ {
+  "id": "d1-admin-only",
+  "round": 1,
+  "finding": "Owner decision (Arun, 28 Oct 2026): plans stay the admin's alone; members view the Projection and ask what-ifs, saving nothing",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "They\\s+are created through the admin's chat \\(`propose_plan_item`\\) and corrected,\\s+paused or ended in place by the admin only[\\s\\S]*?Members view the Projection, the plans and the Budget\\s+forecast, and ask what-ifs, but save nothing",
+   "present": true
+  }
+ },
+ {
+  "id": "d2-rearrange-confirm",
+  "round": 1,
+  "finding": "Owner decision (Arun, 28 Oct 2026): rearranging is proposed and applied on the admin's Confirm, including the current month's budget plan, with an audit row and Undo",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "The admin's Confirm applies one,\\s+as Claude proposes a change and you accept it \\(Arun, 28 Oct 2026\\):\\s+`change_flow` plan items from their dates and, where it touches this\\s+month, the current month's budget plan, each with its audit row and Undo",
+   "present": true
+  }
+ },
+ {
+  "id": "d3-no-tax-maths",
+  "round": 1,
+  "finding": "Owner decision (Arun, 28 Oct 2026): no tax calculation; every amount is take-home",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "Every amount is take-home: the engine does no tax maths\\s+\\(Arun, 28 Oct 2026, MA-261\\)",
+   "present": true
+  }
+ },
+ {
+  "id": "d4-funding-default",
+  "round": 1,
+  "finding": "Owner decision (Arun, 28 Oct 2026): a one-off with no source named is paid from the surplus and cash in its currency first, and a pool running short is a flag, never silent borrowing",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "A one-off draws on `funded_from`; when\\s+none is named it is paid from the surplus and then cash in its currency\\s+first, and a pool running short is a flag, never silent borrowing",
+   "present": true
+  }
+ },
+ {
+  "id": "d5-horizon-20",
+  "round": 1,
+  "finding": "Owner decision (Arun, 28 Oct 2026): the Projection opens at 20 years, with 5, 10, 20 and 30 to choose, and the engine's default horizon is 20 years",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "horizon \\(20 years by default; the screen offers 5, 10, 20 and 30\\)",
+   "present": true
+  }
+ }
+]

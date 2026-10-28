@@ -275,11 +275,11 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy` (always the position's), `amount_gbp`, `orig_amount?`, `orig_ccy?`, `fx_rate?`, `fx_source?` (`as_credited` · `ecb` · `statement`), `fx_date?` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. For the household's own records these are `Event`s of the record's kind (§4.8), with these fields in their payload; XIRR, payoff curves and the Projection are computed from them, so every money movement is recorded with its date. |
 | **Liability** | `account_id`, `kind` (`mortgage` · `loan` · `card`), `principal`, `rate`, `term_months`, `started_at`, `emi`, `schedule[]` (computed), `ccy` | A debt: the balance against the original plan, the interest and principal split, the payoff date. For the household's own records a mortgage, a loan or a card is a `Record` of a debt kind (§4.8) with dated terms (a floating-rate reset, a fixed rate that ends), a prepay mode (a shorter term or a lower EMI, by country), balance checkpoints and, for a card, revolving debt from its statements; its schedule is computed (§6.6). Phase 4. |
 | **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | A view, materialised from the records' events and the prices and rebuilt after a kind changes (§4.8); the series the dashboard and the Projection read. Phase 2, in GBP or INR from phase 3. |
-| **Budget**, **ProjectionAssumptions**, **ProjectionRun** | per member; per portfolio; per run: `inputs_hash`, `seed`, `engine_version`, `horizon`, `percentiles` (p10, p50, p90), `milestones[]` | Income with its history, a monthly plan per category and plan against actual, the actuals from statements and check-ins (phase 6, §12); the assumption set the Projection runs on, each figure with its source, saved by the admin alone (§4.5); one row per Projection run, so any curve can be reproduced (§6.6, phase 7). `ForecastAssumptions` is renamed: Forecast stays the market's word (§19). |
+| **Budget**, **ProjectionAssumptions**, **ProjectionRun** | per member; per portfolio; per run: `inputs_hash`, `seed`, `engine_version`, `horizon`, `percentiles` (p10, p50, p90), `milestones[]` | Income with its history and dated future changes, a monthly plan per category (each with its `inflation_key`) and plan against actual, the actuals from statements and check-ins, every amount take-home (phase 6, §12, MA-96, MA-261); the assumption set the Projection runs on, each figure with its source, saved by the admin alone (§4.5); one row per Projection run, so any curve can be reproduced (§6.6, phase 7). `ForecastAssumptions` is renamed: Forecast stays the market's word (§19). |
 | **Kind** | `kind`, `version`, `fields[]` (typed; required, optional or derived; `editable` or not), `valuation` (a method from the library), `events[]`, `commitments[]` and `checkins[]` (templates), `grouping` {class, liquidity, country}, `presentation`, `status` (`proposed` · `approved`) | A kind of asset or debt, as data, versioned (§4.8). The admin approves a new one; it adds no screen, form or tool. |
 | **Record** | `portfolio_id`, `record_id`, `kind`, `kind_version`, `owners[]` ({member, share_pct}), `country`, `ccy`, `liquidity`, `status` (`open` · `closed` · `matured` · `sold`), `parent_id?`, `instrument_id?`, `attrs{}` | One thing the household owns or owes, as a document (§4.8). Never deleted; closing it is a status. |
 | **Event** | `record_id`, `seq`, `type` (one the kind accepts), `effective_date`, `payload{}`, `source`, `actor`, `document_id?` | A record's history, append-only and hash-chained with the audit log; a correction or a reversal is a new event (§4.8, §4.10). |
-| **Commitment** | `commitment_id`, `record_id?` or `member_id`, `type` (`emi` · `card_bill` · `sip` · `rent` · `premium` · `salary` · `maturity` · `valuation_due` · …), `amount?`, `ccy`, `schedule`, `autopay`, `grace_days`, `payer?`, `ends_at?` | Any expected, dated money tied to a record or a member (§4.9). |
+| **Commitment** | `commitment_id`, `record_id?` or `member_id`, `type` (`emi` · `card_bill` · `sip` · `rent` · `premium` · `salary` · `maturity` · `valuation_due` · …), `amount?`, `ccy`, `schedule`, `autopay`, `grace_days`, `payer?`, `ends_at?` | Any expected, dated money tied to a record or a member (§4.9); income commitments accept dated future changes (§12, MA-96). |
 | **CheckIn** | `id` (`commitment#due_date`), `status` (`open` · `answered` · `assumed` · `overdue`), `message_id`, `answer?`, `answered_by?`, `event_id?` | One occurrence of a commitment, created once by a conditional put; answered by a tap, a short flow or a statement (§4.9). |
 | **PlanItem** | `plan_item_id`, `effect` (`new_flow` · `change_flow` · `record_event`), `type` (`income` · `spend`), `member_id`, `for_member?`, `category`, `one_off` or `recurring` (`monthly` · `termly` · `yearly`), `start`, `end?` (a date, after N months, until an age, or open), `amount`, `ccy`, `growth` (a fixed `growth_pct`, the category's prior, or none), `target_ref?` (the commitment, record or category a `change_flow` changes and how: set to, or changed by an amount or a percentage; the record a `record_event` acts on), `funded_from?`, `source_text`, `status` (`active` · `paused` · `done`), `version`, `created_by` | A future change for the Projection, the admin's alone (§4.5, §6.6): a new flow, a change to an existing flow from a date, or an event on a record such as a loan prepaid or closed. Every amount is take-home. `source_text` keeps the admin's own words (MA-261). |
 | **Signal** | `instrument_id`, `date`, indicators, pillars, flags, forecast range, data quality | From the engine. |
@@ -297,7 +297,7 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **AwsSpendMonth**, **AlertRule**, **Alert** | AWS and others: month to date by service and `env`, the forecast, `cap_gbp`, `steps[]`, `actions{}`, `step`; alert routing: type × severity → app, push, email, quiet hours, cooldown; each alert sent, where and when | The AWS meter and caps, and the alert router (§15.2). |
 | **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
 | **SentimentIndex**, **ArticleScore**, **MessageSeen** | per portfolio, global, or per member (the client ids already taken, §21.2) | |
-| **PendingAction** | `member_id`, `flow_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `register_record` · `record_event` · `checkin` · `statement` · `settings` · `confirm`), `step`, `collected` (the answers so far), `draft_hash?`, `message_id`, `expires_at` (24 h) | The state of the guided flows: what MyPaisa is waiting for from this member. Several can be open at once, keyed by flow id, so a check-in arriving mid-way does not wipe a half-registered FD. A draft (§4.8) is hashed here, and Confirm commits exactly that draft. The next message or tap resumes its flow; expiry clears it. |
+| **PendingAction** | `member_id`, `flow_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `register_record` · `record_event` · `checkin` · `statement` · `plan_item` · `rearrange_budget` · `settings` · `confirm`), `step`, `collected` (the answers so far), `draft_hash?`, `message_id`, `expires_at` (24 h) | The state of the guided flows: what MyPaisa is waiting for from this member. Several can be open at once, keyed by flow id, so a check-in arriving mid-way does not wipe a half-registered FD. A draft (§4.8) is hashed here, and Confirm commits exactly that draft. The next message or tap resumes its flow; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `cas` · `broker_export` · `statement` · `checkin` · `inline_edit` · `agent_proposal` · `schedule` · `migration`), `document_id?` (the file a change came from), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
 | **RunRecord** | `run_id`, `trace_id`, `build`, `version`, `function`, `trigger` (`message` · `action` · `schedule:<name>` · `alarm` · `deploy`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output, cache-read and cache-write tokens, cost, ms, time to the first token, stop reason, refused or fell back), `tool_calls[]` (name, ms, ok, error class, input and output sizes, the truncated input and output), `messages_sent`, `checks[]` (the policy gate's decisions, the figure check, the member's signals; §23.4), `outcome`, `error?` | What one run of any Lambda did and cost, and the trace it is on. 90-day TTL. Activity at every door and the cost guard rails read these; the only place a tool's input and output are kept outside `ChatTurn`. See §10. |
 | **EvalResult**, **EvalLabel** | `run_id` or `case_id`, `judge`, `judge_version`, `verdict` (`pass` · `fail` · `unknown`), `reason`, `flags[]`, `at`; the admin's `label` per failure mode with a one-line critique, the labelled run's transcript, `labelled_at` | A judge's verdict on a live run or a case, and the admin's own reading that calibrates it (§23.4, §23.5). A label keeps its run's transcript past the run's ninety days, so a changed judge is measured again on the same runs. Kept beside the runs, in the household's own table, and stored nowhere else. |
@@ -752,13 +752,15 @@ Rule 4 (§1), built in phase 2 (MA-201):
   maturity value, net worth) is not editable: its inputs are.
 - **One write service** takes both paths. It validates the change against the
   kind spec (the field exists, is `editable`, and has the right type and
-  range), writes the event and its audit row in one transaction (§4.6), and
+  range; or, for the admin's `PlanItem` and `ProjectionAssumptions` changes,
+  against their schema, §6.6), writes the event and its audit row in one transaction (§4.6), and
   the views move. Save carries the figure the screen showed and is refused if
   the record has moved since, so two doors never overwrite each other. A
   confirmed change reaches every open door on the stream as
   `records.changed` (§21.5).
 - **The api's correction route** is `PATCH /v1/records/{id}`, for the spec's
-  editable fields only; every other data route is GET.
+  editable fields (and the admin's plan items and saved Projection assumptions,
+  §6.6) only; every other data route is GET.
 - **Who may change what:**
   - a member corrects their own records' figures;
   - the owner corrects anyone's;
@@ -993,8 +995,8 @@ shown or stored. Every amount is take-home: the engine does no tax maths
 (Arun, 28 Oct 2026, MA-261). Its inputs:
 
 - **Geography.** Each record's country sets its inflation (consumer prices,
-  with category overrides such as education and health), its wage-growth
-  prior and its tax drag per wrapper. GBP/INR drifts each year by the gap
+  with category overrides such as education and health) and its wage-growth
+  prior. GBP/INR drifts each year by the gap
   between the two countries' inflation.
 - **Income.** Each member's current net salary. Its growth blends the
   member's own measured history (the yearly growth over past years' salaries)
@@ -1055,7 +1057,7 @@ rate.
   nightly job runs it again, and so does a record closing or being
   corrected, a statement confirmed, a month closed, a plan item created,
   corrected, paused or ended, or an assumption changing; each door shows the
-  new run on `projection.changed` (§21.5).
+  new run on `records.changed` (§21.5).
 - The engine ports the old tracker's tested `forecast.ts`, `budget.ts` and
   `amortisation.ts` with their cases as golden fixtures, then extends them:
   property, savings and pensions, the Monte Carlo, the priors and the
@@ -1518,7 +1520,8 @@ their time.
 
 Nothing new is created outside the chat, in the app or on the web. The api's
 data routes are GET only, with one exception: `PATCH /v1/records/{id}` takes a
-correction to a field its kind marks editable, through the write service
+correction to a field its kind marks editable (and the admin's plan items and
+saved Projection assumptions, §6.6), through the write service
 (§4.10). No screen creates a record (the CAS password of §22.2 is typed only to
 open a file on the device, and changes nothing); everything new still goes
 through a card and a Confirm tap in the chat, where it is audited. The other
@@ -2049,19 +2052,21 @@ The screens, from the tracker's own list, and what each reads:
 | Overview | `NetWorth` and the other views by member, class and country; commitments due; maturing next; largest assets | nothing new; the first dashboard of phase 2 grows into it, complete in phase 9 with the old tracker's cards |
 | Assets, one asset | asset `Record`s and their `Event`s, prices (`Valuation`), XIRR from the events, documents | "£5,000 in Monzo savings", "add a property", "FD matured", "update the house valuation", "log the rent" |
 | Debts, one loan | debt `Record`s, their events, the schedule, the audit rows | "add a loan", "prepaid £2,000", "rate changed to 6.1%", "preclose", the EMI's check-in |
-| Budget | `Budget` per member: income with its history, the plan per category, the actuals from statements and check-ins; EMIs and card payments from the commitments | "my salary is now …", "plan £400 a month for …", a statement, the check-in on the 1st |
+| Budget | `Budget` per member: income with its history and dated future changes, the plan per category with its inflation key, the actuals from statements and check-ins; EMIs and card payments from the commitments; amounts are take-home | "my salary is now …", "plan £400 a month for …", a statement, the check-in on the 1st |
 | Projection | `ProjectionAssumptions`, `ProjectionRun`, plan items, the budget forecast (§6.6) | "what if we buy a house in 2028?"; for the owner, a plan item ("£4,000 a month from Jan 2029 for my kid's schooling"), a rearrangement or a saved assumption |
 | Reports | composition by type and institution; exports | nothing; exports are GET |
 | Access, Settings | `Member`, `Invite`, preferences | `/invite`, `/members`, `/settings`, already there |
 
 **Budget: statements plus monthly check-ins** (phase 6). Income is each
-member's salary and its history (past years' figures, so growth can be
-measured), from the chat or payslips, kept as income commitments. The plan is
-a monthly amount per category; categories are data the household changes by
-chat, and EMIs and card payments come from the commitments. The actuals come
-from statements, categorised and reviewed with one Confirm, and from the
-check-in on the 1st, which asks for what no statement covered (§4.9). The
-screen shows plan against actual per category, income, EMIs, surplus and
+member's take-home salary and its history (past years' figures, so growth can
+be measured), from the chat or payslips, kept as income commitments that accept
+dated future changes so phase 7's plan items can change them (MA-96, MA-261).
+The plan is a monthly amount per category; categories are data the household
+changes by chat, each carrying its inflation key, and EMIs and card payments
+come from the commitments. The actuals come from statements, categorised and
+reviewed with one Confirm, and from the check-in on the 1st, which asks for
+what no statement covered (§4.9). Every amount is take-home, with no tax maths.
+The screen shows plan against actual per category, income, EMIs, surplus and
 savings rate, per member and for the household, in GBP or INR.
 
 Order of work, as PLAN's phases:

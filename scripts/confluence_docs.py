@@ -614,7 +614,7 @@ def stories_csv(ctx: Ctx) -> str:
         r = ctx.schedule.get(str(p["phase"]), {})
         for it in sorted((i for i in ctx.items if i.get("phase") == p["phase"]), key=lambda i: key_n(i["key"])):
             doors = sorted({door_of(b["board"], b["project"]) for b in it.get("boards") or []}, key=list(DOOR_NAMES).index)
-            tags = [door_tag[d] for d in doors] or (["Back end"] if "manual" not in (it.get("labels") or []) else ["Yours"])
+            tags = [door_tag[d] for d in doors] or (["Still to draw"] if it.get("ui") else (["Back end"] if "manual" not in (it.get("labels") or []) else ["Yours"]))
             row = [f"{JIRA}/browse/{it['key']}", it["summary"], f"Phase {p['phase']}", group(p["phase"])[1], it["type"],
                    it.get("status", ""), design_tag.get(it.get("design", "none"), "No screens"), "|".join(tags),
                    f"{ctx.rm['estimates'].get(it['key'], 0):g}", len(it.get("boards") or []), r.get("end") or "",
@@ -892,12 +892,18 @@ def render_phase(ctx: Ctx, p: dict) -> str:
             out.append(f'<div data-type="panel-note"><p>{jira_text(it["key"])}, still to draw: {inline(u)}</p></div>')
     doors: dict[str, list[str]] = {}
     for it in items:
-        ds = {door_of(b["board"], b["project"]) for b in it.get("boards") or []} or {"manual" if "manual" in (it.get("labels") or []) else "back"}
+        ds = {door_of(b["board"], b["project"]) for b in it.get("boards") or []} or {
+            "manual" if "manual" in (it.get("labels") or []) else ("todo" if it.get("ui") else "back")
+        }
         for d in ds:
             doors.setdefault(d, []).append(it["key"])
     door_tab = "<table><thead><tr><th>Where</th><th>Stories</th></tr></thead><tbody>" + "".join(
         f"<tr><td>{esc(name)}</td><td>{', '.join(jira_text(k) for k in sorted(set(doors[d]), key=key_n))}</td></tr>"
-        for d, name in list(DOOR_NAMES.items()) + [("back", "Back end, agent and infrastructure (no screen)"), ("manual", "Your tasks")]
+        for d, name in list(DOOR_NAMES.items()) + [
+            ("todo", "Screens still to draw (/design-first)"),
+            ("back", "Back end, agent and infrastructure (no screen)"),
+            ("manual", "Your tasks"),
+        ]
         if doors.get(d)) + "</tbody></table>"
     sheets = phase_sheets(ctx, n)
     screens = ("<p>Each story's first board at each door, as drawn in Claude Design, light and dark. Every board, with its file, is on "
