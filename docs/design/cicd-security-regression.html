@@ -1,0 +1,488 @@
+<title>MyPaisa CI/CD, Security, Smoke and Regression</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: a navy masthead states the four CI/CD and testing picks; below it, four sections with animated block
+   diagrams and tables covering the GitHub Actions + AWS CodeBuild arm64 + ECR delivery pipeline, the seven-layer
+   vulnerability scanning gate, the phase-progressive smoke suite with <5s prod auto-rollback, and the five-layer
+   regression pyramid with the Option D £0/mo runner cost analysis. MyPaisa DS v1, "Warm ledger" (MA-267 to MA-272). */
+:root{
+  --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
+  --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
+  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF6B4F; --accent:#C2381F; --on-accent:#FFFFFF;
+  --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
+  --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB; --violet:#6B3FB8; --violet-bg:#EEE7FA;
+  --track:#CDCFD4; --grid:#ECE8E2;
+  --shadow:0 1px 2px rgba(20,23,31,.06),0 10px 30px rgba(20,23,31,.08);
+  --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+    --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+    --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+    --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+    --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+    --track:#454E5C; --grid:#222B39;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+  --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+  --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+  --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+  --track:#454E5C; --grid:#222B39;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(24px,3.2vw,32px);font-weight:900;line-height:1.15}
+h3{font-size:18px;font-weight:800}
+p{margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:6px}
+
+.mast{background:var(--hero);color:var(--hero-ink);padding-block:40px 36px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-ink-2);font-weight:600}
+.mast h1{font-size:clamp(30px,5vw,50px);font-weight:900;line-height:1.06;margin-top:10px;max-width:22ch}
+.mast .lede{color:var(--hero-ink-2);font-size:17px;max-width:68ch;margin-top:16px}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.rules li{background:var(--hero-2);color:var(--hero-ink);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.rules li b{color:var(--coral);margin-right:6px;font-family:var(--f-mono);font-weight:500}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.ghost{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.bar nav{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;margin-left:auto}
+.bar nav a{color:var(--ink-2);text-decoration:none}
+.bar nav a:hover{color:var(--accent)}
+
+main{padding-block:12px 56px}
+section{padding-block:36px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.head{display:flex;flex-direction:column;gap:8px;max-width:72ch}
+.kicker{font:600 12px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.body{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin-top:18px}
+.copy{display:flex;flex-direction:column;gap:12px;max-width:70ch;color:var(--ink-2)}
+.copy strong{color:var(--ink)}
+.copy ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+[data-mode="plain"] .tech,[data-mode="tech"] .plain{display:none!important}
+
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;margin:0}
+.fig .scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:680px;height:auto}
+.fig figcaption{font-size:13px;color:var(--ink-3);margin-top:8px}
+
+.s-box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.s-box2{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.s-t{fill:var(--ink);font:600 13.5px var(--f-body)}
+.s-s{fill:var(--ink-2);font:500 12px var(--f-body)}
+.s-m{fill:var(--ink-3);font:500 11.5px var(--f-mono)}
+.s-h{fill:var(--ink);font:800 14.5px var(--f-display)}
+.s-line{stroke:var(--track);stroke-width:2;fill:none}
+.s-dash{stroke:var(--track);stroke-width:2;fill:none;stroke-dasharray:5 5}
+.s-up{fill:var(--up)} .s-upbg{fill:var(--up-bg);stroke:var(--up);stroke-width:1.2}
+.s-al{fill:var(--alert)} .s-albg{fill:var(--alert-bg);stroke:var(--alert);stroke-width:1.2}
+.s-am{fill:var(--amber)} .s-ambg{fill:var(--amber-bg);stroke:var(--amber);stroke-width:1.2}
+.s-bl{fill:var(--blue)} .s-blbg{fill:var(--blue-bg);stroke:var(--blue);stroke-width:1.2}
+.s-vi{fill:var(--violet)} .s-vibg{fill:var(--violet-bg);stroke:var(--violet);stroke-width:1.2}
+.s-co{fill:var(--coral)} .s-tr{fill:var(--track)}
+.s-upt{fill:var(--up);font:700 12.5px var(--f-body)}
+.s-alt{fill:var(--alert);font:700 12.5px var(--f-body)}
+.s-amt{fill:var(--amber);font:700 12.5px var(--f-body)}
+.s-blt{fill:var(--blue);font:700 12.5px var(--f-body)}
+.s-vit{fill:var(--violet);font:700 12.5px var(--f-body)}
+
+@keyframes pulseGlow{0%,100%{opacity:.25}50%{opacity:1}}
+.pulse{animation:pulseGlow 3s infinite ease-in-out}
+[data-paused="true"] *{animation-play-state:paused!important}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--surface-2);font-weight:700;color:var(--ink)}
+tr:last-child td{border-bottom:0}
+td.k{font-family:var(--f-mono);font-weight:600;white-space:nowrap;color:var(--accent)}
+
+footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);font-size:13px}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="eyebrow">MyPaisa Architecture · MA-267 to MA-272</div>
+    <h1>CI/CD, Seven-Layer Security, Smoke &amp; Regression</h1>
+    <p class="lede">One arm64 container build on AWS CodeBuild promoted by immutable digest from <code>dev</code> to <code>prod</code>, guarded by seven open-source vulnerability gates, a phase-progressive smoke runner that never writes to <code>prod</code> tables and rolls back in under five seconds, and a five-layer regression pyramid that stays at £0.00/month inside the GitHub Actions and CodeBuild free tiers.</p>
+    <ul class="rules">
+      <li><b>01</b>Build once on AWS CodeBuild arm64, promote by sha256 digest</li>
+      <li><b>02</b>Seven security gates on every PR, container build &amp; Monday sweep</li>
+      <li><b>03</b>Prod smoke is strictly read-only; failed smoke rolls back :live in &lt;5s</li>
+      <li><b>04</b>Option D hybrid runners keep monthly CI at £0.00/month</li>
+    </ul>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="seg" role="radiogroup" aria-label="Explanation depth">
+      <button type="button" role="radio" aria-checked="false" data-set="plain">Plain words</button>
+      <button type="button" role="radio" aria-checked="true" data-set="tech">Technical</button>
+    </div>
+    <button type="button" class="ghost" id="pause" aria-pressed="false">Pause the diagrams</button>
+    <nav aria-label="Sections">
+      <a href="#cicd">1 · CI/CD pipeline</a>
+      <a href="#security">2 · 7-layer security</a>
+      <a href="#smoke">3 · Smoke &amp; rollback</a>
+      <a href="#regression">4 · Regression &amp; costs</a>
+      <a href="#stories">5 · Stories</a>
+    </nav>
+  </div>
+</div>
+
+<main id="main" data-mode="tech">
+<div class="wrap">
+
+<section id="cicd">
+  <div class="head">
+    <div class="kicker">1 · Delivery pipeline (MA-25, MA-107, MA-237, MA-268)</div>
+    <h2>Build once on AWS CodeBuild arm64, prove in dev, promote the exact digest to prod</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Every change starts on a pull request where automated checks test the code, the screens, and the security rules. Once merged to <code>main</code>, AWS builds the container image once, deploys it to the test environment (<code>dev</code>), and runs a full rehearsal.</p>
+      <p>Production (<code>prod</code>) never rebuilds code and never moves without your click. After you approve in GitHub, the exact same verified image is switched on behind a live pointer, checked in seconds, and rolled back automatically if anything looks wrong.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>PR Gates (<code>.github/workflows/pr-gates.yml</code>):</strong> Runs on <code>ubuntu-24.04-arm</code> (1x) for L1–L3 regression, OpenAPI contract parity, 7-layer security scans, <code>T0</code> agent replays, and <code>terraform plan</code> via OIDC role <code>ci-plan</code>. Path-filters Playwright (<code>web/**</code>, <code>cards/**</code>) and macOS <code>XCUITest</code> (<code>ios/**</code>).</li>
+        <li><strong>Build Once on AWS CodeBuild Arm64 (<code>MA-237</code>):</strong> On merge to <code>main</code>, GitHub Actions triggers CodeBuild <code>arm1.small</code> (within the 100 free mins/mo). CodeBuild builds the multi-stage <code>Dockerfile</code> targets (<code>lambda</code> and <code>stream</code>), runs <code>trivy image --exit-code 1 --severity HIGH,CRITICAL</code>, and pushes to the single <code>mypaisa</code> ECR repository, returning immutable <code>sha256</code> digests.</li>
+        <li><strong>Dev Auto-Deploy &amp; Prod Promotion (<code>MA-107</code>, <code>MA-268</code>):</strong> Terraform applies <code>infra/dev</code> with the new digests, runs <code>scripts/smoke.py --env dev</code>, and pauses at the GitHub <code>prod</code> environment gate. After your approval, <code>infra/prod</code> applies the <strong>identical ECR digests</strong>, flips each Lambda's <code>:live</code> alias, runs <code>scripts/smoke.py --env prod</code>, and only then syncs S3/CloudFront and promotes TestFlight.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-1">
+      <div class="scroll">
+      <svg id="svg-1" viewBox="0 0 960 360" role="img" aria-label="End-to-end CI/CD pipeline across GitHub Actions, AWS CodeBuild arm64, ECR, dev and prod">
+        <rect class="s-box2" x="16" y="18" width="190" height="324" rx="12"/>
+        <text class="s-h" x="30" y="44">1 · PR Gates (GH)</text>
+        <rect class="s-upbg" x="28" y="60" width="166" height="44" rx="8"/>
+        <text class="s-t" x="38" y="80">Fast Gates &amp; Security</text>
+        <text class="s-m" x="38" y="96">ruff, pyright, trivy, gitleaks</text>
+        <rect class="s-blbg" x="28" y="114" width="166" height="44" rx="8"/>
+        <text class="s-t" x="38" y="134">L1–L3 &amp; T0 Replay</text>
+        <text class="s-m" x="38" y="150">pytest + moto + OpenAPI</text>
+        <rect class="s-vibg" x="28" y="168" width="166" height="44" rx="8"/>
+        <text class="s-t" x="38" y="188">Path-Gated UI (L4)</text>
+        <text class="s-m" x="38" y="204">Playwright / XCUITest</text>
+        <rect class="s-ambg" x="28" y="222" width="166" height="44" rx="8"/>
+        <text class="s-t" x="38" y="242">Terraform Plan</text>
+        <text class="s-m" x="38" y="258">OIDC: mypaisa-ci-plan</text>
+        <rect class="s-box" x="28" y="278" width="166" height="48" rx="8"/>
+        <text class="s-upt" x="38" y="298">Merge to main</text>
+        <text class="s-m" x="38" y="314">Arun: "merge it"</text>
+
+        <rect class="s-box2" x="234" y="18" width="212" height="324" rx="12"/>
+        <text class="s-h" x="248" y="44">2 · AWS CodeBuild arm64</text>
+        <rect class="s-blbg" x="246" y="62" width="188" height="62" rx="8"/>
+        <text class="s-t" x="256" y="84">arm1.small (Graviton)</text>
+        <text class="s-m" x="256" y="102">100 free mins/mo (~63 used)</text>
+        <text class="s-m" x="256" y="116">Builds lambda &amp; stream</text>
+        <rect class="s-albg" x="246" y="138" width="188" height="54" rx="8"/>
+        <text class="s-alt" x="256" y="160">Gate 5: trivy image</text>
+        <text class="s-m" x="256" y="178">Blocks HIGH/CRITICAL CVEs</text>
+        <rect class="s-upbg" x="246" y="206" width="188" height="120" rx="8"/>
+        <text class="s-upt" x="256" y="228">Amazon ECR (mypaisa)</text>
+        <text class="s-m" x="256" y="248">:lambda-&lt;sha&gt;</text>
+        <text class="s-m" x="256" y="266">:stream-&lt;sha&gt;</text>
+        <text class="s-s" x="256" y="290">Immutable digests:</text>
+        <text class="s-m" x="256" y="308">sha256:8f3a... / 4c91...</text>
+
+        <rect class="s-box2" x="474" y="18" width="214" height="324" rx="12"/>
+        <text class="s-h" x="488" y="44">3 · Dev Auto-Deploy</text>
+        <rect class="s-blbg" x="486" y="62" width="190" height="56" rx="8"/>
+        <text class="s-t" x="496" y="84">terraform apply (dev)</text>
+        <text class="s-m" x="496" y="102">Flips dev :live aliases</text>
+        <rect class="s-box" x="486" y="130" width="190" height="52" rx="8"/>
+        <text class="s-t" x="496" y="152">S3 + CloudFront + Seed</text>
+        <text class="s-m" x="496" y="170">MyPaisa Dev → TestFlight</text>
+        <rect class="s-upbg" x="486" y="194" width="190" height="74" rx="8"/>
+        <text class="s-upt" x="496" y="216">smoke.py --env dev</text>
+        <text class="s-m" x="496" y="234">Sign-in + SSE + Chat turn</text>
+        <text class="s-m" x="496" y="252">X-Ray E2E trace verified</text>
+        <rect class="s-ambg" x="486" y="280" width="190" height="48" rx="8"/>
+        <text class="s-amt" x="496" y="300">GitHub prod Approval</text>
+        <text class="s-m" x="496" y="316">Waits for Arun (+ T2 if model)</text>
+
+        <rect class="s-box2" x="716" y="18" width="228" height="324" rx="12"/>
+        <text class="s-h" x="730" y="44">4 · Prod Cutover &amp; Guard</text>
+        <rect class="s-vibg" x="728" y="62" width="204" height="58" rx="8"/>
+        <text class="s-vit" x="738" y="84">Same sha256 Digests</text>
+        <text class="s-m" x="738" y="102">Never rebuilt; flips :live</text>
+        <rect class="s-upbg" x="728" y="132" width="204" height="68" rx="8"/>
+        <text class="s-upt" x="738" y="154">smoke.py --env prod</text>
+        <text class="s-m" x="738" y="172">Read-only deep probe + 401</text>
+        <text class="s-m" x="738" y="188">Zero writes to prod tables</text>
+        <rect class="s-box" x="728" y="212" width="204" height="50" rx="8"/>
+        <text class="s-t" x="738" y="232">PASS → Web &amp; TestFlight</text>
+        <text class="s-m" x="738" y="248">Frontend promoted after API</text>
+        <rect class="s-albg" x="728" y="274" width="204" height="54" rx="8"/>
+        <text class="s-alt" x="738" y="294">FAIL → &lt;5s Auto-Rollback</text>
+        <text class="s-m" x="738" y="312">update-alias → prev_version</text>
+      </svg>
+      </div>
+      <figcaption>One build on AWS CodeBuild arm64 feeds both dev and prod by immutable sha256 digest; prod waits for Arun's approval and rolls back its Lambda :live aliases in under five seconds if smoke.py fails.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="security">
+  <div class="head">
+    <div class="kicker">2 · Seven-layer vulnerability gate (MA-267)</div>
+    <h2>Every secret, source file, dependency, Terraform resource, container image and live route is scanned</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Security checks run automatically before code can merge, when container images are built on AWS, after deployment, and every Monday morning at 04:00 UTC so newly discovered vulnerabilities in third-party libraries are caught even during quiet weeks.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Shift-left to post-deploy (<code>scripts/security_scan.py</code>):</strong> Combines <code>gitleaks</code> (Gate 1), <code>ruff</code> Bandit <code>S</code> + <code>semgrep</code> + <code>eslint-plugin-security</code> (Gate 2), <code>pip-audit</code> + <code>pnpm audit</code> + <code>trivy fs</code> on <code>ios/Package.resolved</code> (Gate 3), <code>tflint</code> + <code>trivy config</code> + the <code>value_wo</code> SSM rule (Gate 4), <code>trivy image</code> + ECR Basic Scan on push (Gate 5), Inspect AI <code>T0</code> prompt-taint &amp; OTel PII-leak checks (Gate 6), and live TLS/CSP/401 perimeter checks + Monday 04:00 UTC scheduled sweeps (Gate 7).</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-2">
+      <div class="scroll">
+      <svg id="svg-2" viewBox="0 0 960 320" role="img" aria-label="Seven-layer vulnerability scanning architecture">
+        <rect class="s-box2" x="16" y="16" width="928" height="288" rx="12"/>
+        <text class="s-h" x="32" y="44">Seven Zero-Cost Security Gates (Fail-Closed on Critical / High Findings)</text>
+
+        <rect class="s-albg" x="30" y="64" width="214" height="104" rx="10"/>
+        <text class="s-alt" x="42" y="88">G1 · Secrets (gitleaks)</text>
+        <text class="s-s" x="42" y="108">pre-commit + PR commit range</text>
+        <text class="s-m" x="42" y="128">Blocks AWS/Claude keys,</text>
+        <text class="s-m" x="42" y="144">JWTs, .p8, high-entropy</text>
+
+        <rect class="s-ambg" x="258" y="64" width="214" height="104" rx="10"/>
+        <text class="s-amt" x="270" y="88">G2 · SAST (3 languages)</text>
+        <text class="s-s" x="270" y="108">ruff S, semgrep, eslint-sec</text>
+        <text class="s-m" x="270" y="128">Python, SvelteKit, SwiftUI,</text>
+        <text class="s-m" x="270" y="144">FastAPI auth Depends check</text>
+
+        <rect class="s-blbg" x="486" y="64" width="214" height="104" rx="10"/>
+        <text class="s-blt" x="498" y="88">G3 · SCA Dependencies</text>
+        <text class="s-s" x="498" y="108">pip-audit, pnpm audit, trivy</text>
+        <text class="s-m" x="498" y="128">uv.lock, pnpm-lock.yaml,</text>
+        <text class="s-m" x="498" y="144">ios/Package.resolved OSV</text>
+
+        <rect class="s-vibg" x="714" y="64" width="214" height="104" rx="10"/>
+        <text class="s-vit" x="726" y="88">G4 · Terraform IaC</text>
+        <text class="s-s" x="726" y="108">tflint + trivy config infra/</text>
+        <text class="s-m" x="726" y="128">KMS, S3 PublicAccessBlock,</text>
+        <text class="s-m" x="726" y="144">SSM value_wo enforcement</text>
+
+        <rect class="s-upbg" x="30" y="184" width="290" height="104" rx="10"/>
+        <text class="s-upt" x="42" y="208">G5 · Container Images (arm64)</text>
+        <text class="s-s" x="42" y="228">trivy image + ECR Scan on Push</text>
+        <text class="s-m" x="42" y="248">Scans :lambda-&lt;sha&gt; &amp; :stream-&lt;sha&gt;</text>
+        <text class="s-m" x="42" y="264">in CodeBuild before deploy</text>
+
+        <rect class="s-blbg" x="336" y="184" width="290" height="104" rx="10"/>
+        <text class="s-blt" x="348" y="208">G6 · LLM Taint &amp; PII Leak Gate</text>
+        <text class="s-s" x="348" y="228">Inspect AI T0 + OTel Span Scanner</text>
+        <text class="s-m" x="348" y="248">Blocks untrusted-text exfiltration</text>
+        <text class="s-m" x="348" y="264">&amp; any £/₹/ISIN/name in spans</text>
+
+        <rect class="s-ambg" x="642" y="184" width="286" height="104" rx="10"/>
+        <text class="s-amt" x="654" y="208">G7 · Live Perimeter &amp; Weekly Cron</text>
+        <text class="s-s" x="654" y="228">smoke.py --security + Mon 04:00 UTC</text>
+        <text class="s-m" x="654" y="248">Probes every OpenAPI path for 401,</text>
+        <text class="s-m" x="654" y="264">HSTS/CSP + weekly CVE sweep</text>
+      </svg>
+      </div>
+      <figcaption>All seven security gates use open-source tools and AWS free-tier scanning (£0/month) and fail closed on any Critical or High vulnerability.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="smoke">
+  <div class="head">
+    <div class="kicker">3 · Smoke suite &amp; prod read-only safety (MA-268, MA-232)</div>
+    <h2>Full synthetic round-trip and X-Ray trace in dev; strictly read-only canary and &lt;5s rollback in prod</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>In <code>dev</code>, the smoke runner signs in as a synthetic member, opens the live stream, sends a test message, and checks that the entire trace shows up in AWS X-Ray. In <code>prod</code>, where only your real family data lives, the smoke runner never writes a single row—it verifies health, encryption, security headers, and the authentication perimeter, and instantly rewinds the release if any check fails.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong><code>scripts/smoke.py --env dev --up-to-phase N</code>:</strong> Verifies <code>/v1/health</code> SHA parity, <code>/v1/health?deep=1</code>, OpenAPI <code>401</code> perimeter, synthetic Cognito sign-in, <code>/v1/stream</code> SSE handshake, scripted chat turn, <code>RunRecord</code>, and polls <code>aws xray batch-get-traces</code> to assert one unbroken trace across <code>api</code> $\rightarrow$ SQS $\rightarrow$ <code>agent</code> $\rightarrow$ <code>sender</code>.</li>
+        <li><strong><code>scripts/smoke.py --env prod --up-to-phase N</code>:</strong> Honours <code>.claude/rules/aws-changes.md</code> (zero script writes to <code>prod</code>): verifies <code>/v1/health</code>, read-only <code>/v1/health?deep=1</code> (<code>DescribeTable</code>, <code>HeadBucket</code>, <code>GetQueueAttributes</code>, KMS), CloudFront HSTS/CSP &amp; Universal Links, OpenAPI unauthenticated <code>401</code> guard, and zero CloudWatch error alarms.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-3">
+      <div class="scroll">
+      <svg id="svg-3" viewBox="0 0 960 320" role="img" aria-label="Comparison of dev synthetic round-trip smoke test and prod read-only smoke test with automatic rollback">
+        <rect class="s-box2" x="16" y="16" width="452" height="288" rx="12"/>
+        <text class="s-h" x="32" y="44">dev Smoke Profile (Synthetic Household)</text>
+        <rect class="s-upbg" x="32" y="60" width="420" height="50" rx="8"/>
+        <text class="s-upt" x="44" y="82">1. Health, SHA Parity &amp; Deep Read-Only Probe</text>
+        <text class="s-m" x="44" y="100">GET /v1/health + /v1/health?deep=1 + OpenAPI 401 scan</text>
+        <rect class="s-blbg" x="32" y="122" width="420" height="54" rx="8"/>
+        <text class="s-blt" x="44" y="144">2. Synthetic Sign-In, SSE Stream &amp; Chat Turn</text>
+        <text class="s-m" x="44" y="162">Cognito token → GET /v1/stream → POST /v1/chat/messages</text>
+        <rect class="s-vibg" x="32" y="188" width="420" height="98" rx="8"/>
+        <text class="s-vit" x="44" y="210">3. X-Ray Trace Assertion (MA-232)</text>
+        <text class="s-m" x="44" y="230">xray batch-get-traces --trace-ids &lt;x-mypaisa-trace-id&gt;</text>
+        <text class="s-m" x="44" y="248">Asserts: api → SQS → agent → sender + RunRecord</text>
+        <text class="s-upt" x="44" y="270">✓ Unlocks GitHub prod approval gate</text>
+
+        <rect class="s-box2" x="492" y="16" width="452" height="288" rx="12"/>
+        <text class="s-h" x="508" y="44">prod Smoke Profile (Zero Synthetic Writes)</text>
+        <rect class="s-upbg" x="508" y="60" width="420" height="50" rx="8"/>
+        <text class="s-upt" x="520" y="82">1. Read-Only Deep Probe &amp; OpenAPI 401 Guard</text>
+        <text class="s-m" x="520" y="100">DescribeTable, HeadBucket, SQS attrs, KMS, all routes 401</text>
+        <rect class="s-blbg" x="508" y="122" width="420" height="54" rx="8"/>
+        <text class="s-blt" x="520" y="144">2. Web Door, Universal Links &amp; CloudWatch Alarms</text>
+        <text class="s-m" x="520" y="162">dashboard.mypaisapp.com CSP/HSTS + 0 Lambda error alarms</text>
+        <rect class="s-albg" x="508" y="188" width="420" height="98" rx="8"/>
+        <text class="s-alt" x="520" y="210">3. Instant Atomic Rollback on Failure (&lt; 5 s)</text>
+        <text class="s-m" x="520" y="230">aws lambda update-alias --name live --function-version PREV</text>
+        <text class="s-m" x="520" y="248">Restores S3 web manifest + invalidates CloudFront + SNS alert</text>
+        <text class="s-upt" x="520" y="270">✓ On PASS: syncs prod web &amp; promotes TestFlight</text>
+      </svg>
+      </div>
+      <figcaption>dev runs a full synthetic chat and X-Ray trace check; prod runs strictly read-only checks to protect household data and rewinds Lambda :live aliases in under five seconds on any fault.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="regression">
+  <div class="head">
+    <div class="kicker">4 · Five-layer regression pyramid &amp; runner cost analysis (MA-269, MA-272)</div>
+    <h2>Five testing layers across Phases 0–20 at £0.00/month by defeating the 10x macOS multiplier</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>GitHub charges ten minutes of quota for every one minute on a Mac runner, so running iPhone simulator tests on every commit would burn through the free monthly allowance in twenty runs. By running Python, web, and iOS TypeScript tests on fast Linux arm64 runners, building Docker images on AWS CodeBuild's free tier, and running Xcode Simulator tests only when iOS files change, the entire regression suite runs for <strong>£0.00/month</strong>.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Five-Layer Pyramid (<code>scripts/regression.py</code>):</strong> L1 Unit + Hypothesis + <code>openapi-typescript</code> zero-diff (~20s); L2 <code>moto</code> + FastAPI ASGI multi-Lambda integration (~30s); L3 Inspect AI <code>T0</code> deterministic replay + 646 wealth-tracker &amp; 11 trading-desk golden maths fixtures + PII leak check (~45s); L4 Path-filtered Playwright (390/1440, light/dark, <code>axe-core</code>) &amp; iOS <code>XCUITest</code>/Snapshot/AX5; L5 Change-gated live <code>T1</code>/<code>T2</code> evals.</li>
+        <li><strong>Option D Hybrid Runner Math:</strong> ~450 Linux mins/mo (<code>1x</code>) + ~80–120 path-gated macOS mins/mo (<code>800–1,200</code> billed at <code>10x</code>, or <code>0</code> on self-hosted Mac) = <strong>450–1,650 billed GitHub mins/mo</strong> (&lt; 2,000 free tier) and <strong>~63 CodeBuild arm64 mins/mo</strong> (&lt; 100 free tier) = <strong>£0.00/month</strong>.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-4">
+      <div class="scroll">
+      <svg id="svg-4" viewBox="0 0 960 340" role="img" aria-label="Five-layer regression pyramid and GitHub Actions vs AWS CodeBuild monthly cost comparison">
+        <rect class="s-box2" x="16" y="16" width="470" height="308" rx="12"/>
+        <text class="s-h" x="32" y="42">Five-Layer Regression Pyramid (Phases 0–20)</text>
+
+        <rect class="s-ambg" x="116" y="56" width="270" height="42" rx="8"/>
+        <text class="s-amt" x="128" y="75">L5 · Live Evals T1 / T2 ($10 cap)</text>
+        <text class="s-m" x="128" y="90">On prompt / tool / guard / model change</text>
+
+        <rect class="s-vibg" x="86" y="106" width="330" height="46" rx="8"/>
+        <text class="s-vit" x="98" y="126">L4 · Web Playwright &amp; iOS XCUITest / AX5</text>
+        <text class="s-m" x="98" y="143">Path-gated: web/**, cards/**, ios/** + main</text>
+
+        <rect class="s-blbg" x="62" y="160" width="378" height="48" rx="8"/>
+        <text class="s-blt" x="74" y="180">L3 · T0 Replay, PII Gate &amp; 657 Golden Maths</text>
+        <text class="s-m" x="74" y="198">Every PR (~45s on ubuntu-24.04-arm, 1x)</text>
+
+        <rect class="s-upbg" x="44" y="216" width="414" height="46" rx="8"/>
+        <text class="s-upt" x="56" y="236">L2 · Local Full-Stack Integration (moto + ASGI)</text>
+        <text class="s-m" x="56" y="253">api → SQS → agent → DynamoDB TransactWrite → SSE (~30s)</text>
+
+        <rect class="s-upbg" x="30" y="270" width="442" height="42" rx="8"/>
+        <text class="s-upt" x="42" y="289">L1 · Unit, Hypothesis Property &amp; OpenAPI Contract</text>
+        <text class="s-m" x="42" y="304">ruff, pyright, pytest, vitest, Jest, openapi-typescript (~20s)</text>
+
+        <rect class="s-box2" x="504" y="16" width="440" height="308" rx="12"/>
+        <text class="s-h" x="520" y="42">Monthly Runner Cost Comparison (60 PR runs + 25 merges)</text>
+
+        <rect class="s-albg" x="520" y="60" width="408" height="54" rx="8"/>
+        <text class="s-alt" x="532" y="82">Option A · Naive (Every PR runs macOS 10x)</text>
+        <text class="s-m" x="532" y="100">7,480 billed GH mins/mo (5,480 overage) → £35 / mo</text>
+
+        <rect class="s-box" x="520" y="124" width="408" height="54" rx="8"/>
+        <text class="s-t" x="532" y="146">Option B · Path-Filtered GitHub Hosted Only</text>
+        <text class="s-m" x="532" y="164">1,650 billed GH mins/mo (&lt; 2,000 quota) → £0–£4 / mo</text>
+
+        <rect class="s-box" x="520" y="188" width="408" height="54" rx="8"/>
+        <text class="s-t" x="532" y="210">Option C · Offload Linux Regression to CodeBuild</text>
+        <text class="s-m" x="532" y="228">1,320 GH mins + 420 CodeBuild mins → £0.85 / mo</text>
+
+        <rect class="s-upbg" x="520" y="252" width="408" height="60" rx="8"/>
+        <text class="s-upt" x="532" y="274">Option D (Selected) · Hybrid GH arm64 + CodeBuild + Split iOS</text>
+        <text class="s-m" x="532" y="292">450–1,650 GH mins (&lt;2,000) + 63 CB mins (&lt;100) → £0.00 / mo</text>
+      </svg>
+      </div>
+      <figcaption>Option D keeps both GitHub Actions (under 2,000 free minutes) and AWS CodeBuild (under 100 free arm64 minutes) at £0.00/month.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="stories">
+  <div class="head">
+    <div class="kicker">5 · Jira stories</div>
+    <h2>Where CI/CD, security, smoke, regression and setup items are tracked</h2>
+  </div>
+  <div class="body">
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Story</th><th>Phase</th><th>What it delivers</th></tr></thead>
+        <tbody>
+          <tr><td class="k">MA-267</td><td>0</td><td>Seven-layer vulnerability gate across secrets (<code>gitleaks</code>), SAST (<code>ruff S</code>, <code>semgrep</code>), SCA (<code>pip-audit</code>, <code>pnpm audit</code>, <code>trivy fs</code>), Terraform (<code>tflint</code>, <code>trivy config</code>), container images (<code>trivy image</code> + ECR scan) and Monday 04:00 UTC CVE sweep</td></tr>
+          <tr><td class="k">MA-268</td><td>0</td><td>Phase-progressive smoke runner (<code>scripts/smoke.py --env dev|prod --up-to-phase N</code>) with full synthetic round-trip + X-Ray trace check in <code>dev</code>, read-only safety in <code>prod</code>, and &lt;5s Lambda <code>:live</code> alias rollback</td></tr>
+          <tr><td class="k">MA-269</td><td>0</td><td>Five-layer regression pyramid (<code>scripts/regression.py</code>), OpenAPI contract gate, 657 golden financial maths fixtures, and Option D path-filtered CI runner configuration (£0/mo)</td></tr>
+          <tr><td class="k">MA-272</td><td>0</td><td>CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis recorded in the plan and Confluence with block diagrams</td></tr>
+          <tr><td class="k">MA-271</td><td>1</td><td>Typed <code>AnthropicAgentRunner</code> loop, four-breakpoint prompt-cache assembler, Pydantic v2 <code>@tool</code> registry, policy/figure hooks and <code>gen_ai.*</code> OpenTelemetry spans</td></tr>
+          <tr><td class="k">MA-270</td><td>2</td><td>Typed DynamoDB single-table repository on Pydantic v2, <code>boto3</code> <code>TypeSerializer</code>, <code>mypy-boto3-dynamodb</code>, <code>ForbiddenScanError</code> guard, signed cursor pagination and <code>TransactWriteUnit</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+<footer>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §7 and <span class="mono">ARCHITECTURE.md</span> §18.4 in the MyPaisa repository, 28 Oct 2026 (MA-267 to MA-272).</div>
+</footer>
+
+<script>
+(function(){
+  var main=document.getElementById('main');
+  var btns=document.querySelectorAll('.seg button');
+  function setMode(m){
+    main.setAttribute('data-mode',m);
+    btns.forEach(function(b){b.setAttribute('aria-checked',b.getAttribute('data-set')===m?'true':'false');});
+    try{localStorage.setItem('mp-cicd-mode',m);}catch(e){}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){setMode(b.getAttribute('data-set'));});});
+  try{var saved=localStorage.getItem('mp-cicd-mode');if(saved==='plain'||saved==='tech')setMode(saved);}catch(e){}
+  var pause=document.getElementById('pause');
+  pause.addEventListener('click',function(){
+    var on=main.getAttribute('data-paused')!=='true';
+    main.setAttribute('data-paused',on?'true':'false');
+    pause.setAttribute('aria-pressed',on?'true':'false');
+    pause.textContent=on?'Play the diagrams':'Pause the diagrams';
+  });
+})();
+</script>

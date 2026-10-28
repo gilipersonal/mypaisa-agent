@@ -69,7 +69,11 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-259 | The Claude Design boards and the repo mirror stay the same: one command pulls every change, a check fails on any drift, and a plan for Claude Design's move into Claude | In Progress |  | none |  |
 | MA-260 | The boards move into Claude with Anthropic's Move to Claude before standalone Claude Design closes on 14 Dec 2026, and the sync and its check follow them; by 1 Dec without it, the boards stay in the repo alone | To Do |  | none |  |
 | MA-261 | The plan records future plans by talking: new spends, salary changes and loan closures, a 20-year budget forecast, and the budget rearranged on the admin's Confirm | In Progress | §2, §4.1, §4.5, §4.10, §6.6, §8, §9.3, §12 | none |  |
-| MA-265 | The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent framework options, and end-to-end FastAPI and LLM observability with costing are researched and recorded in Confluence with block diagrams | In Progress | §3, §4.8, §8, §9.4, §9.5, §10.2, §10.3, §13, §21.5 | none |  |
+| MA-265 | The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent framework options, and end-to-end FastAPI and LLM observability with costing are researched and recorded in Confluence with block diagrams | Done | §3, §4.8, §8, §9.4, §9.5, §10.2, §10.3, §13, §21.5 | none |  |
+| MA-267 | Every pull request, container build and weekly schedule runs the seven-layer vulnerability gate across secrets, SAST, dependencies, Terraform and arm64 ECR images | To Do | §14, §18.4, §23.2 | none |  |
+| MA-268 | A phase-progressive smoke runner checks every deployment in dev and prod, protects prod from synthetic writes, verifies the X-Ray trace in dev, and rolls back prod on failure | To Do | §10.3, §18.1, §18.4 | none |  |
+| MA-269 | A five-layer regression pyramid and path-filtered CI runner test units, OpenAPI contracts, moto integration, golden maths, web and iOS UI, and T0 agent replays inside the free minute tiers | To Do | §9.4, §9.5, §18.4, §23.3 | none |  |
+| MA-272 | The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams | In Progress | §10.3, §14, §18.1, §18.4, §23.2, §23.3 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
@@ -116,6 +120,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-251 | A model change waits for the full suite, five trials on the new model, before the release ships it | To Do | §23.3, §18.4 | none |  |
 | MA-252 | Every live run is checked by code, every flagged run and a random 10% are judged overnight, and only a rate that leaves its band raises an alert | To Do | §23.4, §10.1, §10.6, §15.2, §10.4 | none |  |
 | MA-266 | The api and stream Lambdas run FastAPI with Pydantic v2, request-id and trace correlation middleware, OpenTelemetry route spans, and generated OpenAPI TypeScript types shared by both doors | To Do | §3, §9.4, §10.2, §10.3, §13, §21.5 | none |  |
+| MA-271 | A typed AnthropicAgentRunner loop manages four-breakpoint prompt caching, the Pydantic v2 tool registry, policy and figure hooks, and gen_ai OpenTelemetry spans | To Do | §8, §10.3, §15.1, §23.2 | none |  |
 
 ## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 
@@ -138,6 +143,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-208 | The first dashboard shows net worth and every record at every door, and moves live when a change is confirmed | To Do | §9.3 | picked | Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first; Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first, phone; Web v4 · Dashboard.dc.html: Browser · Dashboard, first record; Web v4 · Dashboard.dc.html: Browser · Dashboard, first record, phone; Web v4 · Dashboard.dc.html: Browser · Dashboard, empty; Web v4 · Dashboard.dc.html: Browser · Dashboard, empty, phone; Web v4 · Dashboard.dc.html: Browser · Dashboard, privacy on; Web v4 · Dashboard.dc.html: Browser · Dashboard, privacy on, phone; Web v4 · Shell and chat.dc.html: Browser · Home moves live; Web v4 · Shell and chat.dc.html: Browser · Home moves live, phone; iPhone v4 · Home.dc.html: iPhone · Home, net worth first; iPhone v4 · Home.dc.html: iPhone · Home, first record; iPhone v4 · Home.dc.html: iPhone · Home, empty; iPhone v4 · Home.dc.html: iPhone · Home, privacy on; iPhone v4 · Home.dc.html: iPad · Whole wealth with the chat beside it |
 | MA-253 | Uploaded files are read by a quarantined extractor with no tools, and poisoned statements and factsheets prove no instruction in a file reaches a tool | To Do | §23.2, §4.6, §14 | none |  |
 | MA-254 | Each kind's field spec generates its own draft cases, so a new kind or field is tested before the admin approves it | To Do | §23.5, §4.8 | none |  |
+| MA-270 | A typed DynamoDB single-table repository wraps boto3 TypeSerializer, mypy-boto3-dynamodb and TransactWriteUnit with Pydantic v2 marshaling, scan guard and signed cursor pagination | To Do | §4.1, §4.6, §4.7, §4.8 | none |  |
 
 ## Phase 3: Deposits, policies and two currencies (MA-188)
 
