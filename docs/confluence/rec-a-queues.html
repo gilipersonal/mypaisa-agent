@@ -11,20 +11,20 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":frame_photo:" data-color="#FFFAE6"><p><strong>3 pictures</strong></p>
-<p>2 animated, captured from the explainer pages, and the Lucid drawings in place.</p>
+<p>2 animated, captured from the explainer pages; 1 Lucid drawing where the text puts it.</p>
 </div>
 </div>
 </section>
 <h2>🎬 See it move</h2>
-<div data-type="panel-note"><p>Preview <code>rec-a-queues--v4-failure.gif</code> is still to upload.</p>
-</div>
-<div data-type="panel-note"><p>Preview <code>rec-a-queues--inside-tour-fail.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="de07bff0-5ee8-4e67-9de8-724acdd6d125" data-collection="contentId-1442082" data-alt="rec-a-queues--v4-failure.gif"></div>
+<figcaption>A statement job meets an overloaded API: retried, kept, alarmed, replayed once (Architecture v4)</figcaption></figure>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="69d3a6ce-3b50-424b-b90f-277bb0f35e17" data-collection="contentId-1442082" data-alt="rec-a-queues--inside-tour-fail.gif"></div>
+<figcaption>One message through MyPaisa: something fails (Inside MyPaisa)</figcaption></figure>
 <p><strong>📖 Contents</strong></p>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;3&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>21. Queues: nothing lost, everything retried (MA-138)</h2>
-<div data-type="panel-note"><p>Preview <code>rec-a-queues--lucid-04-queues.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7b77bb02-ed4d-47ca-8f45-fd842cf0107c" data-collection="contentId-1442082" data-alt="rec-a-queues--lucid-04-queues.png"></div>
+<figcaption>Queues, retries and replay, Lucid page 4</figcaption></figure>
 <p>Page 4: the three queues and their consumers, the idempotency records, the retry rules, and the failure path from the dead-letter queues to replay. <a href="https://lucid.app/lucidchart/ddc9bde5-18d4-468b-af6e-c1f86d7d7647/edit">Open it in Lucid</a>. The SSE stream the sender delivers through is §21.5. Arun, 24 Oct 2026: &quot;Add SQS, the system should be resilient and self heal with retries from Queues.&quot;</p>
 <p>Every place where one part hands work to another goes through an SQS queue. A queue holds the work until it succeeds, retries it with backoff when it fails, and keeps it in a dead-letter queue when it has failed too often, so a bad minute at Apple&#x27;s push service, at the Anthropic API or at a data source costs a delay, never a message or a day&#x27;s work.</p>
 <h3>21.1 The queues</h3>

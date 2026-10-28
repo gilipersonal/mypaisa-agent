@@ -11,15 +11,15 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":frame_photo:" data-color="#FFFAE6"><p><strong>3 pictures</strong></p>
-<p>2 animated, captured from the explainer pages, and the Lucid drawings in place.</p>
+<p>2 animated, captured from the explainer pages; 1 Lucid drawing where the text puts it.</p>
 </div>
 </div>
 </section>
 <h2>🎬 See it move</h2>
-<div data-type="panel-note"><p>Preview <code>rec-a-team--v4-team.gif</code> is still to upload.</p>
-</div>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-a-team--inside-agents.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d10e7e1f-dea8-4e27-a7c6-d98f88dac72c" data-collection="contentId-1769473" data-alt="rec-a-team--v4-team.gif"></div>
+<figcaption>Nine agents that never call each other, around one event bus (Architecture v4)</figcaption></figure>
+<section data-type="layout-two-equal"><div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="a7f6d349-5a2b-4488-b5c3-f14d4dfc7a4c" data-collection="contentId-1769473" data-alt="rec-a-team--inside-agents.gif"></div>
+<figcaption>An agent asks; the admin approves with Face ID (Inside MyPaisa)</figcaption></figure>
 </div>
 <div data-type="column"><p></p>
 </div>
@@ -65,8 +65,8 @@
 <h3>20.5 Self-healing (E7, MA-135)</h3>
 <p>The daily run (ingest, engine, Forecaster, grade, calibrate, brief) is one Step Functions state machine with retries and backoff on every step and idempotent writes, its jobs carried by the queues of §21. When a dead-letter queue fills, the ops warden finds the cause (Apple push, the Anthropic API, a data source, a deploy) and, once it is healthy again, replays the messages at most three times with growing gaps; a message that fails the same way again becomes an incident with its errors attached. What the system fixes on its own, and tells the admin in the digest: a failed step retried; a source failed over within its chain; a gap filled on the next run; a missed schedule caught up; a model or a calibration map rolled back to its last good version; a step that still fails skipped, its output labelled stale. Everything else is an <code>Incident</code> on the admin desk with what happened, what was tried and the choices. Every agent reports a heartbeat, and a silent one is an incident. The daily run is one trace and each agent a service on the map; a replay links to the run it repeats and an incident names its trace (§10.8, MA-235). The 07:45 dead man&#x27;s switch, the nightly drift check (MA-108) and the Lambda rollback (MA-107) stay as they are.</p>
 <h3>20.6 Where the data lives</h3>
-<div data-type="panel-note"><p>Preview <code>rec-a-team--lucid-05-data.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="8676e216-de30-4fa8-8034-aa3f0544f467" data-collection="contentId-1769473" data-alt="rec-a-team--lucid-05-data.png"></div>
+<figcaption>Where the data lives, Lucid page 5</figcaption></figure>
 <p>Page 5: the one DynamoDB table, with the dynamic structure (kinds, records, events and views, §4.8) and the commitments and check-ins (§4.9) beside its other entity groups, the S3 lake and its prefixes, DuckDB, the stream&#x27;s items, the documents bucket, the web app&#x27;s site and SSM. <a href="https://lucid.app/lucidchart/674e3574-9c79-403c-9157-72769a8d5fce/edit">Open it in Lucid</a>. <strong>S3</strong>, the record, in the <code>mypaisa-&lt;env&gt;-lake</code> bucket, versioned, in Parquet, queried with DuckDB:</p>
 <table><thead><tr><th>Prefix</th><th>What</th><th>Kept</th></tr>
 </thead>

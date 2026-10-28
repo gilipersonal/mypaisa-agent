@@ -135,8 +135,8 @@
 </table>
 <h2>🧵 One message is one trace, from the finger to the last word</h2>
 <p>The door makes a W3C <code>traceparent</code> for each action. API Gateway, the api, SQS and every Lambda carry it on, so nothing in the path starts a trace of its own. Each model call is a span named <code>chat &lt;model&gt;</code> in the OpenTelemetry GenAI conventions, with MyPaisa&#x27;s cost and ladder step beside it. Prompts, replies and figures never leave DynamoDB. Timings, tokens and costs below are illustrative; tap a span to read it.</p>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4-parts--v4-trace.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d1614ec1-01e2-4c3a-b680-09c7543b00bf" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-trace.gif"></div>
+<figcaption>One message is one trace, from the finger to the last word (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Span</th><th>Service</th><th>From, to (ms)</th><th>Attributes</th></tr>
 </thead>
 <tbody><tr><td data-background="#DEEBFF"><strong>ios · send message</strong></td><td>ios</td><td>0 to 4150</td><td><code>door</code>: ios<br><code>app_version</code>: 1.0 (42)<br><code>client_message_id</code>: c_9x1…<br><code>conversation_id</code>: cv_31…</td></tr>
@@ -160,8 +160,8 @@
 </table>
 <h2>🔁 One Claude tool loop, with code doing every sum</h2>
 <p>The <code>agent</code> Lambda runs one tool loop on Sonnet 5.5. Before each call it reads the month&#x27;s spend and lets the ladder choose the model. It sends only the current conversation after a cached prefix, loops through strict tools until it can answer, ask one thing, or show a Confirm card. A draft writes nothing: only a Confirm, a check-in&#x27;s tap or a Save in place commits, through the one write service.</p>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4-parts--v4-loop.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="99fede0a-db95-4a6e-8cc0-240cb07b55ea" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-loop.gif"></div>
+<figcaption>One Claude tool loop, with code doing every sum (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Tools</th><th>Rule</th><th>The tools</th></tr>
 </thead>
 <tbody><tr><td><strong>Read the records and views</strong></td><td>Look up rather than ask.</td><td><code>get_portfolio</code> <code>get_holding(id)</code> <code>get_networth(view)</code> <code>get_commitments(window)</code> <code>get_budget(month)</code> <code>get_audit(filter)</code> <code>list_kinds</code> <code>describe_kind</code> <code>chart_series(id, days)</code></td></tr>
@@ -174,8 +174,8 @@
 </table>
 <h2>👥 Nine agents that never call each other</h2>
 <p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, delete data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1; the rest join it in phase 18.</p>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4-parts--v4-team.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ebac16a5-4722-488d-bc8c-f2ea7803328a" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-team.gif"></div>
+<figcaption>Nine agents that never call each other, around one event bus (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Agent</th><th>Kind</th><th>Models</th><th>Its job</th><th>On its own</th><th>Asks the admin</th><th>Budget share</th></tr>
 </thead>
 <tbody><tr><td><strong>Concierge</strong><br>Conversational tool-loop agent · the agent Lambda</td><td><span data-type="status" data-color="red">Claude tool loop</span></td><td><span data-type="status" data-color="red">Sonnet 5.5</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>Talks to members in the chat; routes the admin&#x27;s instructions to the admin desk.</td><td>Answers, reads, proposes changes to records with a Confirm card.</td><td>Nothing: members confirm their own records.</td><td>55% of the ceiling</td></tr>
@@ -248,12 +248,12 @@
 <tr><td>Reserve, the chat first</td><td>5%</td></tr>
 </tbody>
 </table>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4-parts--v4-models.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="14a6967d-0a4e-417e-bd71-c0ea39ac5dfc" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-models.png"></div>
+<figcaption>Three Claude models, each where it earns its cost, and the spend ladder (Architecture v4)</figcaption></figure>
 <h2>🗄️ One table for state, one lake for the record, one store for secrets</h2>
 <p>The household&#x27;s records are data, not code: kinds are versioned documents, records are documents, their history is append-only events, and the dashboard reads materialised views. Every change and its audit row are written in one DynamoDB transaction, chained by hash.</p>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4-parts--v4-state.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="000563b1-1a6c-4227-a534-b4cee84b6199" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-state.png"></div>
+<figcaption>One table for state, one lake for the record, one store for secrets (Architecture v4)</figcaption></figure>
 <p><strong>DynamoDB</strong>mypaisa-prod-* · single table · PITR in prod</p>
 <h5>The household</h5>
 <p><code>Portfolio</code><code>Member</code><code>Invite</code><code>Device</code><code>Presence</code></p>
@@ -280,8 +280,8 @@
 <p><code>logs</code>14 days<code>spans</code>30 days, aws/spans<code>RunRecord</code>90 days<code>metrics</code>15 months<code>audit</code>never deleted</p>
 <h2>🚀 Terraform only, one image, prod after a person says yes</h2>
 <p>One AWS account, every component twice, kept apart by IAM: each Lambda&#x27;s role names only its own environment, and the developer role is denied anything tagged <code>env=prod</code>. CI reaches AWS through GitHub OIDC with no stored keys; the AWS MCP only reads.</p>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4-parts--v4-delivery.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="448ec4a7-4b60-4191-b8a8-5b4041267c68" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-delivery.png"></div>
+<figcaption>Terraform only, one image, prod after a person says yes (Architecture v4)</figcaption></figure>
 <ol><li><strong>Gates</strong>ruff, pyright, pytest on moto, tflint, gitleaks, jira-key, the leak testevery PR</li>
 <li><strong>Plan</strong><code>terraform plan</code> for dev and prod, posted on the PRPRs touching infra/</li>
 <li><strong>Build</strong>CodeBuild&#x27;s arm64 runner builds once, pushes to ECR by the commit&#x27;s shamerge to main</li>
@@ -313,8 +313,8 @@
 <p>Safety</p>
 <p><code>prevent_destroy</code>, deletion protection, point-in-time recovery; nightly drift check</p>
 <h2>🛡️ Enforced in code, not in the prompt</h2>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4-parts--v4-rules.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="14917602-9953-48c9-8b6d-7ee52f7a5ae2" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-rules.png"></div>
+<figcaption>Enforced in code, not in the prompt (Architecture v4)</figcaption></figure>
 <h4>Claude never produces a number</h4>
 <p>Every figure comes from tested code: XIRR, loan schedules, the Projection, the engine&#x27;s pillars. Claude chooses what to say and how.</p>
 <p>§1 rule 1 · wealth/ · the engine</p>

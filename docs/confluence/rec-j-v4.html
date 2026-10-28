@@ -9,8 +9,8 @@
 <h2>❓ A question: 10 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>“What if we buy a house in 2028?” typed on the iPhone, answered at both doors.</strong></p>
 </div>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4--v4-question.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="65d62125-5167-4359-9857-be5fe924a597" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-question.gif"></div>
+<figcaption>A question, typed on the iPhone and answered at both doors, hop by hop (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>Sent from the iPhone</strong></td><td>The door makes a W3C traceparent for the action and posts the message with its client message id.</td><td><code>POST /v1/chat/messages</code><br><code>traceparent: 00-4bf92f35…-01</code></td><td></td></tr>
@@ -28,8 +28,8 @@
 <h2>📄 A factsheet: 9 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>A fund factsheet PDF sent from the iPhone becomes a holding, with one Confirm.</strong></p>
 </div>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4--v4-file.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="4934bc73-3f2c-47d8-8113-f2a86588a040" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-file.gif"></div>
+<figcaption>A factsheet sent from the iPhone becomes a holding, with one Confirm (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>Ask for an upload link</strong></td><td>The door asks the api for a presigned link to the documents bucket.</td><td><code>POST /v1/uploads → presigned PUT, five minutes</code></td><td></td></tr>
@@ -46,8 +46,8 @@
 <h2>✅ A check-in: 6 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Code decides an EMI is due; the owner taps Paid on the lock-screen push.</strong></p>
 </div>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4--v4-checkin.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="89fbda0e-f404-4a14-81f9-86c9e70c3c0f" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-checkin.gif"></div>
+<figcaption>Code decides an EMI is due; the owner taps Paid on the push (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>The schedule ticks</strong></td><td>EventBridge Scheduler, in Europe/London, puts the daily check-ins job on the work queue. The tick is the root of the trace.</td><td><code>schedule: checkins-daily → work · job_id</code></td><td></td></tr>
@@ -61,8 +61,8 @@
 <h2>🌅 The 07:15 brief: 8 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Phase 10 onwards: prices in, the engine decides, Haiku files the news, Sonnet writes.</strong></p>
 </div>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4--v4-brief.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="90716f23-a779-4dce-bfba-8483154974ba" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-brief.gif"></div>
+<figcaption>The 07:15 brief: prices in, the engine decides, Haiku files the news, Sonnet writes (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>Ingest, then engine, then brief</strong></td><td>Each finished job queues the next. Ingest runs each instrument&#x27;s chain of sources.</td><td><code>work: ingest → engine → brief</code></td><td></td></tr>
@@ -78,8 +78,8 @@
 <h2>🧯 A failure and its replay: 8 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>A statement job meets an overloaded API: retried, kept, alarmed, replayed once.</strong></p>
 </div>
-<div data-type="panel-note"><p>Preview <code>rec-j-v4--v4-failure.gif</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="157bffe8-6c1d-4e87-bff9-82834c8074d6" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-failure.gif"></div>
+<figcaption>A statement job meets an overloaded API: retried, kept, alarmed, replayed once (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>A statement to categorise</strong></td><td>October&#x27;s card statement arrived; the documents job reads each line against the merchant memory first.</td><td><code>work: documents · job_id</code></td><td></td></tr>

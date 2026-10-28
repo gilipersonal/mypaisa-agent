@@ -25,6 +25,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const PORT = +(process.env.CAPTURE_PORT || 8766);
 const ANIMATIONS = `(() => { const el = document.querySelector(window.__capTarget); if (!el) return false;
   const live = el.getAnimations({ subtree: true }).filter((a) => { const t = a.effect && a.effect.getComputedTiming();
     return t && t.iterations !== Infinity && a.playState !== 'finished' && a.playState !== 'idle'; });
@@ -36,7 +37,7 @@ async function open(browser, r) {
                                        reducedMotion: r.kind === 'png' ? 'reduce' : 'no-preference' });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
-  await page.goto('http://127.0.0.1:8766/' + r.src, { waitUntil: 'networkidle', timeout: 45000 });
+  await page.goto('http://127.0.0.1:' + PORT + '/' + r.src, { waitUntil: 'networkidle', timeout: 45000 });
   await page.evaluate(() => document.fonts && document.fonts.ready);
   if (r.hide && r.hide.length) await page.addStyleTag({ content: r.hide.join(',') + '{visibility:hidden !important}' });
   await page.evaluate((t) => { window.__capTarget = t; }, r.target);
@@ -111,7 +112,7 @@ async function gif(browser, r, out, tmp) {
 
 (async () => {
   fs.mkdirSync(outDir, { recursive: true });
-  await new Promise((r) => server.listen(8766, '127.0.0.1', r));
+  await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
   const browser = await chromium.launch();
   const report = {};
   let bad = 0;

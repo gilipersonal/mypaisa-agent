@@ -11,15 +11,15 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":frame_photo:" data-color="#FFFAE6"><p><strong>3 pictures</strong></p>
-<p>1 animated, captured from the explainer pages, and the Lucid drawings in place.</p>
+<p>1 animated and 1 still, captured from the explainer pages; 1 Lucid drawing where the text puts it.</p>
 </div>
 </div>
 </section>
 <h2>🎬 See it move</h2>
-<div data-type="panel-note"><p>Preview <code>rec-a-rules--v4-question.gif</code> is still to upload.</p>
-</div>
-<div data-type="panel-note"><p>Preview <code>rec-a-rules--inside-cast.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7d4368c1-c731-4955-9c69-5b9cce9c3848" data-collection="contentId-1671190" data-alt="rec-a-rules--v4-question.gif"></div>
+<figcaption>A question, typed on the iPhone and answered at both doors, hop by hop (Architecture v4)</figcaption></figure>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="5b16bdc6-a22c-4462-afb4-0c3ef2c40c6f" data-collection="contentId-1671190" data-alt="rec-a-rules--inside-cast.png"></div>
+<figcaption>MyPaisa as a small, well-run office (Inside MyPaisa)</figcaption></figure>
 <p><strong>📖 Contents</strong></p>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;3&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>1. The two rules, and two more</h2>
@@ -61,8 +61,8 @@
 <p>Silence is a feature: about ten notifications a week, two with sound at most.</p>
 <h2>3. System context</h2>
 <p>Page 1 of the Lucid architecture (<a href="https://lucid.app/lucidchart/4ae817c6-847f-45f8-a10c-4509971c9c09/edit">open</a>): the household&#x27;s doors on the left (the iOS app and the web app), the chat path along the top (API Gateway, the chat api, the updates queue, the agent, the outbox, the sender, the SSE stream on the api host back to both doors, and Apple push and Web Push), sign-in below it, the background jobs, the stores, and the failure path to the admin&#x27;s email. The other six pages zoom into one part each and are drawn in their sections.</p>
-<div data-type="panel-note"><p>Preview <code>rec-a-rules--lucid-01-overview.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="9be17e3c-abcb-4237-a1cd-a7a5743fef8d" data-collection="contentId-1671190" data-alt="rec-a-rules--lucid-01-overview.png"></div>
+<figcaption>System overview, Lucid page 1</figcaption></figure>
 <p>One container image and a handful of handlers: <code>api</code> (the chat routes, the data routes, the one correction route and the owner&#x27;s admin routes), <code>agent</code>, <code>sender</code>, <code>worker</code> (which runs each background job by its type: ingest, engine, news, scoring, documents, briefs, check-ins, the nightly views and Projection runs), <code>stream</code> (the SSE stream on the api host, a separate build target of the same Dockerfile through the Lambda Web Adapter, §21.5), the authorizer and the Cognito triggers. Nothing waits on anything else directly: your messages, MyPaisa&#x27;s replies and every background job travel through SQS queues that retry them and keep what still fails (§21). The agent Lambda is the only one that talks to you in the chat, and the sender the only one that delivers to the doors: it appends to each member&#x27;s stream log, which the stream sends to every open door, and sends Apple push and Web Push to a device with no open stream. The api Lambda, with the stream beside it on the same host, is the only one the doors call: its chat routes put what you send on the updates queue, and apart from those, the correction route (<code>PATCH /v1/records/{id}</code>, only for figures a kind marks editable, through the write service, §4.10) and the owner&#x27;s admin actions in the Admin center (§9.3: the security actions, the ceiling and caps, replays, agents&#x27; requests and settings, incidents), each admin action behind the second check, it can only read. Dev and prod are two copies of all of this (§18). Every other Lambda produces data they read, and every one of them writes a <code>RunRecord</code> saying what it did (§10).</p>
 <h2>🧩 The stories that build it</h2>
 <p>Every story whose trace row cites §1 to §3, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-141%2C%20MA-225%2C%20MA-236%2C%20MA-239%2C%20MA-244%2C%20MA-257%2C%20MA-31%2C%20MA-35%2C%20MA-201%2C%20MA-102%2C%20MA-54%2C%20MA-67%2C%20MA-69%2C%20MA-90%2C%20MA-92%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>

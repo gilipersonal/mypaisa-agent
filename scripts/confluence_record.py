@@ -743,10 +743,9 @@ def render_arch_page(ctx: cd.Ctx, entry: tuple) -> str:
            cols([cd.cpanel("#EAE6FF", ":straight_ruler:", f"<p><strong>{len(nums)} section{'s' if len(nums) != 1 else ''}</strong></p><p>ARCHITECTURE.md as written, in full, below.</p>"),
                  cd.cpanel("#E3FCEF", ":jigsaw:", f"<p><strong>{len(items)} stor{'ies' if len(items) != 1 else 'y'}</strong></p><p>"
                            + (f"Cite these sections, in phases {', '.join(str(p) for p in phases)}." if phases else "No story cites these sections yet.") + "</p>"),
-                 cd.cpanel("#FFFAE6", ":frame_photo:", f"<p><strong>{len(media) + len(page_lucid(slug))} pictures</strong></p><p>"
-                           f"{sum(1 for m in media if MEDIA[m]['kind'] == 'gif')} animated, captured from the explainer pages, and the Lucid drawings in place.</p>")], 3)]
+                 cd.cpanel("#FFFAE6", ":frame_photo:", f"<p><strong>{len(media) + len(page_lucid(slug))} pictures</strong></p><p>{pictures_line(slug, media)}</p>")], 3)]
     if media:
-        out.append("<h2>🎬 See it move</h2>")
+        out.append("<h2>🎬 See it move</h2>" if any(MEDIA[m]["kind"] == "gif" for m in media) else "<h2>🖼️ See it</h2>")
         out.append(gallery(ctx, slug, media))
     out += ["<p><strong>📖 Contents</strong></p>", toc(3), link_md(arch_md(secs), ctx, slug)]
     out.append("<h2>🧩 The stories that build it</h2>")
@@ -761,6 +760,16 @@ def render_arch_page(ctx: cd.Ctx, entry: tuple) -> str:
     out.append(f'<p>The source: <a href="{cd.gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>, '
                + ", ".join(cd.arch_link(n, ctx.sections) for n in [s.rstrip("/") for s in secs]) + ".</p>")
     return "".join(out) + footer()
+
+
+def pictures_line(slug: str, media: list[str]) -> str:
+    gifs = sum(1 for m in media if MEDIA[m]["kind"] == "gif")
+    parts = [f"{gifs} animated" if gifs else "", f"{len(media) - gifs} still" if len(media) > gifs else ""]
+    caught = " and ".join(p for p in parts if p)
+    lucid = len(page_lucid(slug))
+    out = [f"{caught}, captured from the explainer pages" if caught else "",
+           f"{lucid} Lucid drawing{'s' if lucid != 1 else ''} where the text puts {'them' if lucid != 1 else 'it'}" if lucid else ""]
+    return cd.esc("; ".join(o for o in out if o) + ".") if any(out) else "The text alone."
 
 
 MEDIA_CAPTION = {

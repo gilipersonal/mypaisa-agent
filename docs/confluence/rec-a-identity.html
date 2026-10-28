@@ -11,23 +11,23 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":frame_photo:" data-color="#FFFAE6"><p><strong>3 pictures</strong></p>
-<p>2 animated, captured from the explainer pages, and the Lucid drawings in place.</p>
+<p>2 animated, captured from the explainer pages; 1 Lucid drawing where the text puts it.</p>
 </div>
 </div>
 </section>
 <h2>🎬 See it move</h2>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-a-identity--inside-step-1.gif</code> is still to upload.</p>
+<section data-type="layout-two-equal"><div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="059cbfbf-9ae4-43be-acf9-a9cabe8dddfc" data-collection="contentId-1540282" data-alt="rec-a-identity--inside-step-1.gif"></div>
+<figcaption>Step 1: Open the app and sign in (Inside MyPaisa)</figcaption></figure>
 </div>
-</div>
-<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-a-identity--inside-step-3.gif</code> is still to upload.</p>
-</div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="11b44ef7-c88b-4983-b010-c927b15083f6" data-collection="contentId-1540282" data-alt="rec-a-identity--inside-step-3.gif"></div>
+<figcaption>Step 3: Invite the family (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
 <p><strong>📖 Contents</strong></p>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;3&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h3>4.5 Identity, members and views</h3>
-<div data-type="panel-note"><p>Preview <code>rec-a-identity--lucid-03-identity.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d68abf53-78bf-409e-9fd5-8f0a572ab26d" data-collection="contentId-1540282" data-alt="rec-a-identity--lucid-03-identity.png"></div>
+<figcaption>Identity and sign-in, Lucid page 3</figcaption></figure>
 <p>Page 3: the two doors (the iOS app and the web app), Sign in with Apple, Google and a passkey, the custom auth, Cognito, the Keychain and the session cookie, the authorizer, and the owner&#x27;s sign-out and pause. <a href="https://lucid.app/lucidchart/c23040ec-b253-47e2-a614-612dab962292/edit">Open it in Lucid</a>. <strong>There are no passwords.</strong> Apple or Google vouches for the person: Sign in with Apple on any iPhone or iPad, or Sign in with Google for a member who prefers it (Arun, 25 Oct 2026, MA-161: &quot;No more telegram login, on Google SSO or iOS login&quot;). &quot;Signing in&quot; is: which Apple or Google account is this, which member is it linked to, and which household is that member in.</p>
 <p><strong>One identity store, on AWS from day one</strong> (Arun, 24 Oct 2026; MA-109). Each environment has its own Amazon Cognito user pool, <code>mypaisa-dev-users</code> and <code>mypaisa-prod-users</code> (Essentials plan, free under 10,000 monthly users), with one user per member: that member&#x27;s Apple account, Google account and passkeys are all linked to the same Cognito user. Password sign-in and self sign-up are off, and a user is created only when someone joins through an invite.</p>
 <table><thead><tr><th>Step</th><th>How</th></tr>

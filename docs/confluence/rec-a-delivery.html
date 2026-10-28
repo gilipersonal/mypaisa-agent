@@ -11,20 +11,20 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":frame_photo:" data-color="#FFFAE6"><p><strong>3 pictures</strong></p>
-<p>0 animated, captured from the explainer pages, and the Lucid drawings in place.</p>
+<p>2 still, captured from the explainer pages; 1 Lucid drawing where the text puts it.</p>
 </div>
 </div>
 </section>
-<h2>🎬 See it move</h2>
-<div data-type="panel-note"><p>Preview <code>rec-a-delivery--v4-delivery.png</code> is still to upload.</p>
-</div>
-<div data-type="panel-note"><p>Preview <code>rec-a-delivery--inside-homes.png</code> is still to upload.</p>
-</div>
+<h2>🖼️ See it</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="8764ba6c-881d-40a2-89d2-63d6636fe06f" data-collection="contentId-1540302" data-alt="rec-a-delivery--v4-delivery.png"></div>
+<figcaption>Terraform only, one image, prod after a person says yes (Architecture v4)</figcaption></figure>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="37398cd7-8ca2-4fb0-b3c3-2f5bdfcb4fa7" data-collection="contentId-1540302" data-alt="rec-a-delivery--inside-homes.png"></div>
+<figcaption>Two copies on AWS, and one careful way to change them (Inside MyPaisa)</figcaption></figure>
 <p><strong>📖 Contents</strong></p>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;3&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>18. Environments, domains and delivery</h2>
-<div data-type="panel-note"><p>Preview <code>rec-a-delivery--lucid-02-environments.png</code> is still to upload.</p>
-</div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c1c29783-9ffb-4a9f-a825-c622893c67f9" data-collection="contentId-1540302" data-alt="rec-a-delivery--lucid-02-environments.png"></div>
+<figcaption>Environments, domains and delivery, Lucid page 2</figcaption></figure>
 <p>Page 2: one account, what is shared in it, dev and prod side by side with their own keys, and how a change reaches each. <a href="https://lucid.app/lucidchart/350c6593-a915-495f-88f1-a781b3ed1c5b/edit">Open it in Lucid</a>. Arun&#x27;s decisions, 24 Oct 2026 (MA-106): &quot;I will be developing local, from day 1 I need the auth to be fixed using AWS tech&quot;; one AWS account with every component twice; dev seeded with synthetic data, prod a clean slate; everything on AWS through Terraform, read with the AWS MCP; prod deployed only by GitHub CI; a console host for the web app. On 25 Oct 2026 (MA-161) the Telegram bot gave way to the iOS app, which reached each environment through <code>api</code> and <code>live</code>. On 26 Oct 2026 (MA-186) the <code>live</code> host gave way to SSE on <code>api</code> (§21.5), the web app&#x27;s host became <code>dashboard-dev.mypaisapp.com</code> and <code>dashboard.mypaisapp.com</code>, serving the web app and the iOS app&#x27;s links (§18.2), and dev and the laptop are seeded from one illustrative household (§18.1).</p>
 <h3>18.1 Two environments, one account</h3>
 <p>One AWS account (<code>us-east-1</code>), every component twice. Names are <code>mypaisa-&lt;env&gt;-&lt;part&gt;</code> and every resource carries the tag <code>env</code>. Nothing is shared between the two except the account, the DNS zone and the certificate.</p>
