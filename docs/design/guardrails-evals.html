@@ -1,0 +1,661 @@
+<title>MyPaisa Guardrails and Evals</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: a navy masthead states the four rules; below it, one section per fence or test, each a plain or technical
+   paragraph beside a drawn diagram that plays its own small story. MyPaisa DS v1, "Warm ledger" (MA-101). */
+:root{
+  --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
+  --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
+  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF6B4F; --accent:#C2381F; --on-accent:#FFFFFF;
+  --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
+  --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB; --violet:#6B3FB8; --violet-bg:#EEE7FA;
+  --track:#CDCFD4; --grid:#ECE8E2;
+  --shadow:0 1px 2px rgba(20,23,31,.06),0 10px 30px rgba(20,23,31,.08);
+  --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+    --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+    --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+    --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+    --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+    --track:#454E5C; --grid:#222B39;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+  --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+  --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+  --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+  --track:#454E5C; --grid:#222B39;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(24px,3.2vw,32px);font-weight:900;line-height:1.15}
+h3{font-size:18px;font-weight:800}
+p{margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:6px}
+
+/* masthead */
+.mast{background:var(--hero);color:var(--hero-ink);padding-block:40px 36px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-ink-2);font-weight:600}
+.mast h1{font-size:clamp(30px,5.2vw,52px);font-weight:900;line-height:1.05;margin-top:10px;max-width:16ch}
+.mast .lede{color:var(--hero-ink-2);font-size:17px;max-width:62ch;margin-top:16px}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.rules li{background:var(--hero-2);color:var(--hero-ink);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.rules li b{color:var(--coral);margin-right:6px;font-family:var(--f-mono);font-weight:500}
+
+/* controls */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.ghost{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.bar nav{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;margin-left:auto}
+.bar nav a{color:var(--ink-2);text-decoration:none}
+.bar nav a:hover{color:var(--accent)}
+
+/* sections */
+main{padding-block:12px 56px}
+section{padding-block:36px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.head{display:flex;flex-direction:column;gap:8px;max-width:70ch}
+.kicker{font:600 12px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.body{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin-top:18px}
+.copy{display:flex;flex-direction:column;gap:12px;max-width:68ch;color:var(--ink-2)}
+.copy strong{color:var(--ink)}
+.copy ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+[data-mode="plain"] .tech,[data-mode="tech"] .plain{display:none!important}
+
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px}
+.fig .scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:640px;height:auto}
+.fig figcaption{font-size:13px;color:var(--ink-3);margin-top:8px}
+
+/* the diagrams' shared marks */
+.s-box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.s-box2{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.s-fence{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.s-t{fill:var(--ink);font:600 14px var(--f-body)}
+.s-s{fill:var(--ink-2);font:500 12.5px var(--f-body)}
+.s-m{fill:var(--ink-3);font:500 12px var(--f-mono)}
+.s-h{fill:var(--ink);font:800 15px var(--f-display)}
+.s-line{stroke:var(--track);stroke-width:2;fill:none}
+.s-dash{stroke:var(--track);stroke-width:2;fill:none;stroke-dasharray:5 6}
+.s-up{fill:var(--up)} .s-upbg{fill:var(--up-bg)} .s-al{fill:var(--alert)} .s-albg{fill:var(--alert-bg)}
+.s-am{fill:var(--amber)} .s-ambg{fill:var(--amber-bg)} .s-bl{fill:var(--blue)} .s-blbg{fill:var(--blue-bg)}
+.s-vi{fill:var(--violet)} .s-vibg{fill:var(--violet-bg)} .s-co{fill:var(--coral)} .s-tr{fill:var(--track)}
+.s-ink3{fill:var(--ink-3)}
+.s-on{fill:var(--on-accent);font:700 12.5px var(--f-body)}
+.s-upt{fill:var(--up);font:700 13px var(--f-body)} .s-alt{fill:var(--alert);font:700 13px var(--f-body)}
+.s-amt{fill:var(--amber);font:700 13px var(--f-body)} .s-blt{fill:var(--blue);font:700 13px var(--f-body)}
+.s-vit{fill:var(--violet);font:700 13px var(--f-body)}
+
+/* 1 the fences (9 s) */
+.f1 *{animation-duration:9s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+.f1 .tok1{animation-name:f1a} .f1 .tok2{animation-name:f1b,f1bc} .f1 .tok3{animation-name:f1c}
+.f1 .out1{animation-name:f1o1} .f1 .out2{animation-name:f1o2} .f1 .out3{animation-name:f1o3}
+@keyframes f1a{0%{transform:translateX(0);opacity:0}4%{opacity:1}52%{transform:translateX(610px)}92%{transform:translateX(610px);opacity:1}100%{transform:translateX(610px);opacity:0}}
+@keyframes f1b{0%{transform:translateX(0);opacity:0}4%{opacity:1}30%{transform:translateX(262px)}92%{transform:translateX(262px);opacity:1}100%{transform:translateX(262px);opacity:0}}
+@keyframes f1bc{0%,30%{fill:var(--alert)}34%,100%{fill:var(--ink-3)}}
+@keyframes f1c{0%{transform:translateX(0);opacity:0}4%{opacity:1}40%{transform:translateX(384px)}92%{transform:translateX(384px);opacity:1}100%{transform:translateX(384px);opacity:0}}
+@keyframes f1o1{0%,50%{opacity:.25}56%,92%{opacity:1}100%{opacity:.25}}
+@keyframes f1o2{0%,30%{opacity:.25}36%,92%{opacity:1}100%{opacity:.25}}
+@keyframes f1o3{0%,40%{opacity:.25}46%,92%{opacity:1}100%{opacity:.25}}
+
+/* 2 the policy gate (10 s): the first call passes, the second is refused */
+.f2 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:linear}
+.f2 .cardA{animation-name:f2ca} .f2 .cardB{animation-name:f2cb}
+.f2 .k1{animation-name:f2k1} .f2 .k2{animation-name:f2k2} .f2 .k3{animation-name:f2k3} .f2 .k4{animation-name:f2k4} .f2 .k5{animation-name:f2k5}
+.f2 .resA{animation-name:f2ra} .f2 .resB{animation-name:f2rb} .f2 .x5{animation-name:f2x5}
+@keyframes f2ca{0%,46%{opacity:1}50%,96%{opacity:.35}100%{opacity:1}}
+@keyframes f2cb{0%,46%{opacity:.35}50%,96%{opacity:1}100%{opacity:.35}}
+@keyframes f2k1{0%,6%{fill:var(--track)}8%,46%{fill:var(--up)}50%,54%{fill:var(--track)}56%,96%{fill:var(--up)}100%{fill:var(--track)}}
+@keyframes f2k2{0%,12%{fill:var(--track)}14%,46%{fill:var(--up)}50%,60%{fill:var(--track)}62%,96%{fill:var(--up)}100%{fill:var(--track)}}
+@keyframes f2k3{0%,18%{fill:var(--track)}20%,46%{fill:var(--up)}50%,66%{fill:var(--track)}68%,96%{fill:var(--up)}100%{fill:var(--track)}}
+@keyframes f2k4{0%,24%{fill:var(--track)}26%,46%{fill:var(--up)}50%,72%{fill:var(--track)}74%,96%{fill:var(--up)}100%{fill:var(--track)}}
+@keyframes f2k5{0%,30%{fill:var(--track)}32%,46%{fill:var(--up)}50%,78%{fill:var(--track)}80%,96%{fill:var(--alert)}100%{fill:var(--track)}}
+@keyframes f2x5{0%,79%{opacity:0}81%,96%{opacity:1}100%{opacity:0}}
+@keyframes f2ra{0%,34%{opacity:.2}38%,46%{opacity:1}50%,100%{opacity:.2}}
+@keyframes f2rb{0%,82%{opacity:.2}86%,96%{opacity:1}100%{opacity:.2}}
+
+/* 3 the tiers (12 s): a doc change, a prompt change, a model change */
+.f3 *{animation-duration:12s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.f3 .sc1{animation-name:f3s1} .f3 .sc2{animation-name:f3s2} .f3 .sc3{animation-name:f3s3}
+.f3 .t0{animation-name:f3t0} .f3 .t1{animation-name:f3t1} .f3 .t2{animation-name:f3t2}
+.f3 .rel{animation-name:f3rel}
+@keyframes f3s1{0%,30%{opacity:1}33%,97%{opacity:0}100%{opacity:1}}
+@keyframes f3s2{0%,31%{opacity:0}34%,63%{opacity:1}66%,100%{opacity:0}}
+@keyframes f3s3{0%,64%{opacity:0}67%,97%{opacity:1}100%{opacity:0}}
+@keyframes f3t0{0%,4%{stroke:var(--line);stroke-width:1.5}8%,28%{stroke:var(--up);stroke-width:3}31%,37%{stroke:var(--line);stroke-width:1.5}41%,61%{stroke:var(--up);stroke-width:3}64%,70%{stroke:var(--line);stroke-width:1.5}74%,94%{stroke:var(--up);stroke-width:3}97%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes f3t1{0%,40%{stroke:var(--line);stroke-width:1.5}44%,61%{stroke:var(--blue);stroke-width:3}64%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes f3t2{0%,73%{stroke:var(--line);stroke-width:1.5}77%,94%{stroke:var(--violet);stroke-width:3}97%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes f3rel{0%,80%{opacity:0}84%,95%{opacity:1}98%,100%{opacity:0}}
+
+/* 4 watching live (10 s) */
+.f4 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:linear}
+.f4 .run{animation-name:f4run} .f4 .run.d2{animation-delay:-1.25s} .f4 .run.d3{animation-delay:-2.5s} .f4 .run.d4{animation-delay:-3.75s}
+.f4 .run.d5{animation-delay:-5s} .f4 .run.d6{animation-delay:-6.25s} .f4 .run.d7{animation-delay:-7.5s} .f4 .run.d8{animation-delay:-8.75s}
+.f4 .flag{animation-name:f4flag} .f4 .flag.d2{animation-delay:-5s}
+.f4 .rate{animation-name:f4rate} .f4 .alert{animation-name:f4al} .f4 .quiet{animation-name:f4q}
+@keyframes f4run{0%{transform:translateX(0);opacity:0}5%{opacity:1}45%{transform:translateX(250px);opacity:1}50%{transform:translateX(250px);opacity:0}100%{transform:translateX(250px);opacity:0}}
+@keyframes f4flag{0%,40%{transform:translate(0,0);opacity:0}44%{opacity:1}80%{transform:translate(268px,0);opacity:1}86%,100%{transform:translate(268px,0);opacity:0}}
+@keyframes f4rate{0%,55%{d:path("M712 300 L752 296 L792 302 L832 298 L872 300 L912 297")}75%,92%{d:path("M712 300 L752 296 L792 302 L832 298 L872 284 L912 262")}100%{d:path("M712 300 L752 296 L792 302 L832 298 L872 300 L912 297")}}
+@keyframes f4al{0%,72%{opacity:0}76%,92%{opacity:1}96%,100%{opacity:0}}
+@keyframes f4q{0%,70%{opacity:1}74%,94%{opacity:.25}98%,100%{opacity:1}}
+
+/* 5 calibration (12 s) */
+.f5 *{animation-duration:12s;animation-iteration-count:infinite;animation-timing-function:linear}
+.f5 .cell{animation-name:f5cell} .f5 .pbar{animation-name:f5p} .f5 .fbar{animation-name:f5f}
+.f5 .tpr{animation-name:f5tpr} .f5 .tnr{animation-name:f5tnr}
+.f5 .adv{animation-name:f5adv} .f5 .act{animation-name:f5act} .f5 .adv2{animation-name:f5adv2}
+@keyframes f5cell{0%{fill:var(--track)}100%{fill:var(--track)}}
+@keyframes f5p{0%,4%{width:0}46%,96%{width:220px}100%{width:0}}
+@keyframes f5f{0%,8%{width:0}50%,96%{width:220px}100%{width:0}}
+@keyframes f5tpr{0%,50%{width:120px}58%,96%{width:198px}100%{width:120px}}
+@keyframes f5tnr{0%,50%{width:110px}58%,72%{width:206px}80%,96%{width:150px}100%{width:110px}}
+@keyframes f5adv{0%,53%{opacity:1}56%,100%{opacity:0}}
+@keyframes f5act{0%,54%{opacity:0}57%,76%{opacity:1}79%,100%{opacity:0}}
+@keyframes f5adv2{0%,77%{opacity:0}80%,96%{opacity:1}99%,100%{opacity:0}}
+
+/* 6 growth (9 s) */
+.f6 *{animation-duration:9s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.f6 .newrow{animation-name:f6row} .f6 .m1{animation-name:f6m1} .f6 .m2{animation-name:f6m2}
+.f6 .refuse{animation-name:f6ref} .f6 .pass{animation-name:f6pass}
+@keyframes f6row{0%,6%{opacity:0;transform:translateY(-8px)}12%,94%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes f6m1{0%,52%{fill:var(--alert)}58%,100%{fill:var(--up)}}
+@keyframes f6m2{0%,60%{fill:var(--alert)}66%,100%{fill:var(--up)}}
+@keyframes f6ref{0%,14%{opacity:0}18%,50%{opacity:1}54%,100%{opacity:0}}
+@keyframes f6pass{0%,66%{opacity:0}70%,94%{opacity:1}98%,100%{opacity:0}}
+
+/* at rest (reduced motion, or before the first frame) each diagram shows its first state only */
+.f2 .x5,.f3 .sc2,.f3 .sc3,.f3 .rel,.f4 .alert,.f5 .act,.f5 .adv2,.f6 .pass{opacity:0}
+[data-paused="true"] .anim *{animation-play-state:paused!important}
+@media (prefers-reduced-motion: reduce){ .anim *{animation:none!important} }
+
+/* lists and tables */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.card .tag{align-self:flex-start;font:700 12px var(--f-mono);border-radius:6px;padding:2px 8px}
+.tag.safety{background:var(--alert-bg);color:var(--alert)} .tag.reg{background:var(--blue-bg);color:var(--blue)} .tag.cap{background:var(--amber-bg);color:var(--amber)}
+.card p{font-size:15px;color:var(--ink-2)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.tile .n{font:900 30px var(--f-display);font-variant-numeric:tabular-nums}
+.tile .l{font-size:14px;color:var(--ink-2);margin-top:4px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td.k{font-family:var(--f-mono);white-space:nowrap;color:var(--accent)}
+.pill{display:inline-block;font:700 12px var(--f-body);border-radius:999px;padding:2px 9px}
+.pill.never{background:var(--alert-bg);color:var(--alert)} .pill.on{background:var(--up-bg);color:var(--up)}
+dl.gloss{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr);gap:10px 18px;margin:0}
+dl.gloss dt{font-weight:700}
+dl.gloss dd{margin:0;color:var(--ink-2)}
+@media (max-width:640px){ dl.gloss{grid-template-columns:minmax(0,1fr)} dl.gloss dd{margin-bottom:8px} .bar nav{display:none} }
+footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px solid var(--line)}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="eyebrow">MyPaisa · ARCHITECTURE §23 · MA-245</div>
+    <h1>Guarded in code. Tested on every change. Watched live.</h1>
+    <p class="lede">MyPaisa's agents read your statements, answer your questions and, later, propose changes to their own rules. This page shows the fences that stop them doing what they must not, and the tests that check they still do what they should whenever something changes.</p>
+    <ul class="rules" aria-label="The rules">
+      <li><b>1</b>Guard in code, not in the prompt</li>
+      <li><b>2</b>Test on change, never on a calendar</li>
+      <li><b>3</b>Check every live run with code, judge a few</li>
+      <li><b>4</b>People calibrate the judges</li>
+      <li><b>+</b>Nothing new ships without its cases</li>
+    </ul>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="seg" role="radiogroup" aria-label="How to explain it">
+      <button type="button" role="radio" id="mode-plain" aria-checked="true" data-set="plain">Plain words</button>
+      <button type="button" role="radio" id="mode-tech" aria-checked="false" data-set="tech">Technical</button>
+    </div>
+    <button type="button" class="ghost" id="pause" aria-pressed="false">Pause the diagrams</button>
+    <nav aria-label="Sections">
+      <a href="#fences">Fences</a><a href="#gate">Gate</a><a href="#tiers">Tests</a><a href="#live">Live</a><a href="#judges">Judges</a><a href="#growth">Growth</a><a href="#cost">Cost</a>
+    </nav>
+  </div>
+</div>
+
+<main id="main" data-mode="plain" data-paused="false">
+<div class="wrap">
+
+<section id="why">
+  <div class="head">
+    <div class="kicker">Why not test every day</div>
+    <h2>The tests run when something changes, and the live chat is watched instead</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Nothing the tests check changes overnight. The Claude model MyPaisa uses is a fixed version, and its instructions, tools and fences only change when someone changes them on purpose. Running the same tests every day would cost money, give the same score, and teach everyone to ignore the alarms.</p>
+      <p>So the tests run on the change itself, before it reaches you. What does change every day is what you and your family ask and send, and that is watched live, every run, by code.</p>
+    </div>
+    <div class="copy tech">
+      <p>Claude model ids are <strong>pinned snapshots</strong>, so behaviour changes only when a prompt, a tool, a guard, the agent loop, the model routing, a kind template, the SDK or a model id changes, and each of those arrives through a pull request. A scheduled rerun of an unchanged golden set measures sampling noise and breeds alert fatigue.</p>
+      <p>Offline evals are therefore gated on change (T0, T1, T2). What changes without a pull request, member traffic and Anthropic's own classifiers and server tools, is covered by online evals: code checks on every run and a judged sample overnight (§23.1, rule 2).</p>
+    </div>
+  </div>
+</section>
+
+<section id="fences">
+  <div class="head">
+    <div class="kicker">Guardrails, strongest first</div>
+    <h2>Five fences between a request and anything it can do</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>A fence that makes a thing impossible beats one that spots it, and one that spots it beats asking the model nicely. Each request passes all five, in this order.</p>
+      <ul>
+        <li><strong>Least agency.</strong> There is no tool that can trade, delete, read a secret or message anyone else. Nothing is saved until you tap Confirm.</li>
+        <li><strong>The policy gate.</strong> Code checks every tool call before it runs.</li>
+        <li><strong>Untrusted text.</strong> What is written in a file, a web page or a news story is read as data, never as an instruction.</li>
+        <li><strong>What it says.</strong> Every figure in a reply must come from a tool or from your own words; out-of-scope asks get a plain refusal.</li>
+        <li><strong>Limits.</strong> The monthly Claude ceiling, the per-run caps and <code>/pause</code>.</li>
+      </ul>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Least agency</strong> (§8, §4.10): no trade, delete, secret or cross-member message tool; drafts write nothing; Confirm commits exactly the draft whose hash <code>PendingAction</code> holds; the SQL copy runs DuckDB read only, external access off, configuration locked, over the asker's views (§12.1); admin actions behind the second check.</li>
+        <li><strong>Policy gate</strong> (MA-247): manifest, role and household scope, strict schema with amounts as the member's text, run caps, taint; fails closed.</li>
+        <li><strong>Untrusted text</strong> (MA-253): third-party text only as a JSON-encoded, labelled tool result, or a labelled document or image block; a quarantined extractor with no tools returns strict JSON with each field's source line; a conversation that has read such text, with its notes and summaries, loses every outbound tool.</li>
+        <li><strong>Output checks</strong> (MA-248, MA-249): figures grounded in the tool results and the member's words after normalising unit, currency and rounding; one regeneration, then the plain template; scope refusals; no remote images.</li>
+        <li><strong>Limits</strong> (§15.1): the ceiling's ladder, member, day and run guards, the tool-call cap, <code>/pause</code>. Mapped to the OWASP LLM (2025) and Agentic (2026) top tens in §23.2.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-layers">
+      <div class="scroll">
+      <svg class="anim f1" viewBox="0 0 960 360" role="img" aria-label="Three requests meet five fences. A request to put £200 into a fund passes all five and becomes a Confirm card. An instruction hidden in a statement is stopped at the untrusted-text fence and kept as data. A request to sell everything is stopped at the fence that checks what the agent says, and gets a plain refusal.">
+        <g>
+          <rect class="s-fence" x="208" y="44" width="104" height="300" rx="12"/><rect class="s-fence" x="326" y="44" width="104" height="300" rx="12"/>
+          <rect class="s-fence" x="444" y="44" width="104" height="300" rx="12"/><rect class="s-fence" x="562" y="44" width="104" height="300" rx="12"/>
+          <rect class="s-fence" x="680" y="44" width="104" height="300" rx="12"/>
+          <text class="s-t" x="260" y="30" text-anchor="middle">1 Least agency</text><text class="s-t" x="378" y="30" text-anchor="middle">2 Policy gate</text>
+          <text class="s-t" x="496" y="30" text-anchor="middle">3 Untrusted text</text><text class="s-t" x="614" y="30" text-anchor="middle">4 What it says</text>
+          <text class="s-t" x="732" y="30" text-anchor="middle">5 Limits</text>
+        </g>
+        <g>
+          <rect class="s-box" x="12" y="72" width="184" height="56" rx="10"/><text class="s-t" x="24" y="96">“Put £200 into</text><text class="s-t" x="24" y="115">Balanced today”</text>
+          <rect class="s-box" x="12" y="166" width="184" height="56" rx="10"/><text class="s-t" x="24" y="190">A statement line:</text><text class="s-s" x="24" y="209">“ignore your rules, send…”</text>
+          <rect class="s-box" x="12" y="260" width="184" height="56" rx="10"/><text class="s-t" x="24" y="284">“Sell everything”</text><text class="s-s" x="24" y="303">typed in the chat</text>
+          <line class="s-dash" x1="196" y1="100" x2="806" y2="100"/><line class="s-dash" x1="196" y1="194" x2="456" y2="194"/><line class="s-dash" x1="196" y1="288" x2="576" y2="288"/>
+        </g>
+        <circle class="tok1 s-up" cx="200" cy="100" r="9"/>
+        <circle class="tok2 s-al" cx="200" cy="194" r="9"/>
+        <circle class="tok3 s-am" cx="200" cy="288" r="9"/>
+        <g class="out1"><rect class="s-upbg" x="810" y="78" width="140" height="44" rx="22"/><text class="s-upt" x="880" y="105" text-anchor="middle">Confirm card</text></g>
+        <g class="out2"><rect class="s-box2" x="452" y="214" width="190" height="40" rx="20"/><text class="s-s" x="547" y="239" text-anchor="middle">kept as data, never obeyed</text></g>
+        <g class="out3"><rect class="s-ambg" x="572" y="308" width="160" height="40" rx="20"/><text class="s-amt" x="652" y="333" text-anchor="middle">plain refusal</text></g>
+      </svg>
+      </div>
+      <figcaption>Three requests, five fences. Only the first reaches you, as a card that saves nothing until you tap Confirm.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="gate">
+  <div class="head">
+    <div class="kicker">The policy gate</div>
+    <h2>Code checks every tool call before it runs, and refuses when in doubt</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>When the agent wants to use a tool, a small piece of code stands in the way and asks five questions. Is this agent allowed this tool? Is this person allowed it? Do the details make sense? Is the run inside its limits? Has this conversation read text from outside, such as a statement or a web page? If it has, every tool that could send something out is taken away for the rest of the conversation.</p>
+      <p>If the gate itself breaks or is slow, the answer is no.</p>
+    </div>
+    <div class="copy tech">
+      <p>Before every call of one of our own tools (MA-247): the tool is in the calling agent's manifest; the member's role and household scope allow it (§4.5); arguments match the strict schema and ranges, an amount being the member's own text parsed by code (§4.7), a typed override only taking minor units and an ISO 4217 code (§6.6); the run is under its tool-call cap and not repeating a call; and once untrusted text is in the conversation, tools whose side effect is external are removed for it and for every note or summary drawn from it.</p>
+      <p>It fails closed: an error or a timeout refuses. Each decision is a span attribute and an entry in <code>RunRecord.checks</code>. Anthropic's server tools (<code>web_search</code>, <code>web_fetch</code>) run inside one API request where no code can stop a call, so they are given only to a call holding no household figure (a name and ISIN, never an amount), with <code>max_uses</code> set.</p>
+    </div>
+    <figure class="fig" id="fig-gate">
+      <div class="scroll">
+      <svg class="anim f2" viewBox="0 0 960 380" role="img" aria-label="Two tool calls meet the policy gate. A draft of a £5,000 saving passes all five checks and runs, saving nothing until Confirm. A web fetch asked for after the conversation read a statement fails the untrusted-text check and is refused.">
+        <g class="cardA"><rect class="s-box" x="14" y="70" width="290" height="84" rx="12"/><text class="s-m" x="30" y="98">draft_record(</text><text class="s-m" x="44" y="118">kind: "savings",</text><text class="s-m" x="44" y="138">amount: "£5,000 in Monzo")</text></g>
+        <g class="cardB"><rect class="s-box" x="14" y="226" width="290" height="84" rx="12"/><text class="s-m" x="30" y="254">web_fetch(url from a</text><text class="s-m" x="44" y="274">statement it just read)</text><text class="s-s" x="30" y="296">asked for later in the same chat</text></g>
+        <path class="s-line" d="M304 112 C330 112 330 190 352 190"/><path class="s-line" d="M304 268 C330 268 330 190 352 190"/>
+        <rect class="s-box2" x="352" y="22" width="300" height="340" rx="16"/>
+        <text class="s-h" x="372" y="52">Policy gate, in code</text>
+        <text class="s-s" x="372" y="72">every call of our own tools</text>
+        <g>
+          <circle class="k1 s-tr" cx="380" cy="110" r="9"/><text class="s-t" x="398" y="115">In this agent's manifest</text>
+          <circle class="k2 s-tr" cx="380" cy="158" r="9"/><text class="s-t" x="398" y="163">Role and household allow it</text>
+          <circle class="k3 s-tr" cx="380" cy="206" r="9"/><text class="s-t" x="398" y="211">Arguments typed; amount is</text><text class="s-s" x="398" y="228">the member's own words</text>
+          <circle class="k4 s-tr" cx="380" cy="262" r="9"/><text class="s-t" x="398" y="267">Under the run's caps, no repeat</text>
+          <circle class="k5 s-tr" cx="380" cy="310" r="9"/><text class="s-t" x="398" y="315">No untrusted text read before</text><text class="s-s" x="398" y="332">an outbound tool</text>
+          <text class="x5 s-on" x="380" y="315" text-anchor="middle">✕</text>
+        </g>
+        <text class="s-m" x="372" y="352">error or timeout → refuse</text>
+        <path class="s-line" d="M652 190 C680 190 680 112 704 112"/><path class="s-line" d="M652 190 C680 190 680 268 704 268"/>
+        <g class="resA"><rect class="s-upbg" x="704" y="80" width="244" height="64" rx="14"/><text class="s-upt" x="722" y="106">Runs</text><text class="s-s" x="722" y="128">the draft saves nothing until Confirm</text></g>
+        <g class="resB"><rect class="s-albg" x="704" y="236" width="244" height="64" rx="14"/><text class="s-alt" x="722" y="262">Refused</text><text class="s-s" x="722" y="284">this chat read a statement</text></g>
+      </svg>
+      </div>
+      <figcaption>The same five checks, twice. The second call is refused at the fifth, because the conversation had already read a statement.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="tiers">
+  <div class="head">
+    <div class="kicker">Offline evals</div>
+    <h2>Tested on the change, before it merges, never on a timer</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>The tests are about 40 short conversations with a pretend household, the same family the designs use. Most are marked by code: did the agent call the right tool, ask one thing at a time, refuse what it should, and state only figures it was given? A second Claude, a <em>judge</em>, marks only what code cannot, such as whether a reply was plain and clear.</p>
+      <p>Every change runs the free recorded tests. A change to anything the agent rests on also runs the live tests, three times each, because a model can answer differently each time. A new Claude model runs everything five times before it answers you.</p>
+    </div>
+    <div class="copy tech">
+      <p>Cases are Inspect AI datasets on the synthetic household (MA-110's figure set), graded by code first on the outcome: tools called and not called, refusals, grounded figures, and from phase 2 the <code>PendingAction</code> draft, the records after Confirm and nothing written before it. Binary judges only for what code cannot measure, one per failure mode, with "unknown" allowed. Multi-turn cases script the member's side by slot.</p>
+      <p><strong>T0</strong>, every PR: recorded replays through the real loop and guards, guard tests, the coverage check; no network. <strong>T1</strong>, when a prompt, tool, guard, the agent loop, model routing, a kind template or the SDK changes: the affected cases live, three trials each, in the <code>mypaisa-evals</code> Console workspace, at most $10 a run and $30 a month; a run stopped by its cap is incomplete, never green. <strong>T2</strong>, on a model-id change: the full suite, five trials, and the release waits for it. Safety needs pass^k; regression is a paired difference with its standard error.</p>
+    </div>
+    <figure class="fig" id="fig-tiers">
+      <div class="scroll">
+      <svg class="anim f3" viewBox="0 0 960 380" role="img" aria-label="A pull request goes to a check of what changed. Every pull request runs T0, the free recorded tests. A prompt or tool change also runs T1, live, three trials each, within ten dollars. A model change runs T2, the full suite five times, and the release waits for it. Then it can merge. None of it runs on a timer.">
+        <rect class="s-box" x="14" y="158" width="150" height="64" rx="12"/><text class="s-t" x="30" y="185">A pull request</text>
+        <g class="sc1"><text class="s-s" x="30" y="206">changes a page of docs</text></g>
+        <g class="sc2"><text class="s-s" x="30" y="206">changes the chat prompt</text></g>
+        <g class="sc3"><text class="s-s" x="30" y="206">changes a model id</text></g>
+        <path class="s-line" d="M164 190 L200 190"/>
+        <rect class="s-box2" x="200" y="160" width="132" height="60" rx="30"/><text class="s-t" x="266" y="195" text-anchor="middle">What changed?</text>
+        <path class="s-line" d="M332 190 C352 190 352 82 376 82"/><path class="s-line" d="M332 190 L376 190"/><path class="s-line" d="M332 190 C352 190 352 298 376 298"/>
+        <rect class="t0 s-box" x="376" y="46" width="340" height="72" rx="14" style="stroke:var(--line);stroke-width:1.5"/>
+        <text class="s-upt" x="394" y="74">T0 · every pull request</text><text class="s-s" x="394" y="96">recorded replays · guard tests · coverage · free</text>
+        <rect class="t1 s-box" x="376" y="154" width="340" height="72" rx="14" style="stroke:var(--line);stroke-width:1.5"/>
+        <text class="s-blt" x="394" y="182">T1 · prompt, tool, guard, loop, routing, kind, SDK</text><text class="s-s" x="394" y="204">live · 3 trials · ≤ $10 a run · ≤ $30 a month</text>
+        <rect class="t2 s-box" x="376" y="262" width="340" height="72" rx="14" style="stroke:var(--line);stroke-width:1.5"/>
+        <text class="s-vit" x="394" y="290">T2 · a model id changed</text><text class="s-s" x="394" y="312">full suite · 5 trials · release waits</text>
+        <path class="s-line" d="M716 82 C740 82 740 190 762 190"/><path class="s-line" d="M716 190 L762 190"/><path class="s-line" d="M716 298 C740 298 740 190 762 190"/>
+        <rect class="s-upbg" x="762" y="160" width="184" height="60" rx="30"/><text class="s-upt" x="854" y="195" text-anchor="middle">Can merge</text>
+        <g class="rel"><rect class="s-vibg" x="762" y="236" width="184" height="40" rx="20"/><text class="s-vit" x="854" y="261" text-anchor="middle">release may ship it</text></g>
+        <g><rect class="s-albg" x="762" y="300" width="184" height="44" rx="22"/><text class="s-alt" x="854" y="327" text-anchor="middle">never on a timer</text></g>
+      </svg>
+      </div>
+      <figcaption>Three changes in turn: a docs change runs T0 only; a prompt change adds T1; a model change runs T2 before a release may ship it.</figcaption>
+    </figure>
+    <div class="cards" aria-label="The three suites">
+      <div class="card"><span class="tag safety">safety</span><p><span class="plain">Attempts to trick the agent: hidden instructions, asks beyond someone's role, trades, tax advice, "sell everything". Every attempt must fail, every time.</span><span class="tech">Red-team cases: injection in a file, page or merchant name, role escalation, out-of-scope asks. Pass every trial (pass^k).</span></p></div>
+      <div class="card"><span class="tag reg">regression</span><p><span class="plain">Things that already work, every past mistake, and each kind of holding's own tests. They must keep working.</span><span class="tech">Graduated capability cases, incidents and review findings, the kinds' generated cases. At or above baseline less measured noise, with its standard error.</span></p></div>
+      <div class="card"><span class="tag cap">capability</span><p><span class="plain">New things the agent is still learning. They are tracked, never block a change, and join the regression set once they pass reliably.</span><span class="tech">Tracked, never blocking; graduates after passing every trial in ten gated runs in a row.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="live">
+  <div class="head">
+    <div class="kicker">Online evals</div>
+    <h2>Every live run checked by code; a few read overnight by a judge</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Every real conversation is checked by code, for free: did a fence trip, was a figure unsupported, did someone cancel a proposal or correct a figure soon after confirming it, or ask the same question twice? Any of these flags the conversation.</p>
+      <p>Overnight, a judge reads every flagged conversation and one in ten of the rest, picked at random to catch what no flag notices. You only hear about it when a rate moves out of its normal range, never for a single flag. Transcripts are kept only in MyPaisa's own AWS account.</p>
+    </div>
+    <div class="copy tech">
+      <p>Each run's <code>RunRecord.checks</code> hold the gate's decisions, the figure check, refusal, template fallback, tool errors, loop length and cost, and member signals (a question asked twice; from phase 2, a cancelled proposal and a correction within seven days of a Confirm).</p>
+      <p>Nightly, every flagged run plus a random 10% are judged by the T1 judges on Haiku through the Batches API, within 3% of prod's ceiling, metered as the feature <code>evals</code> and pausing from the 85% step; verdicts are <code>EvalResult</code> rows. Each rate is compared a week at a time with its eight-week band; outside it, an alert goes to the owner's outbox (§10.6), through the alert router from phase 8. The rest is listed in Activity. Judges stay advisory until calibrated (MA-255). No CloudWatch metric is added.</p>
+    </div>
+    <figure class="fig" id="fig-live">
+      <div class="scroll">
+      <svg class="anim f4" viewBox="0 0 960 380" role="img" aria-label="Live runs flow into code checks, which see every run. Flagged runs and a random one in ten go to the overnight judges. Their rates are compared with an eight-week band; when a rate climbs out of the band an alert goes to the owner, otherwise the runs are listed in Activity.">
+        <rect class="s-box" x="14" y="86" width="150" height="72" rx="12"/><text class="s-t" x="30" y="114">Every live run</text><text class="s-s" x="30" y="136">the chat, the cards</text>
+        <path class="s-line" d="M164 122 L196 122"/>
+        <rect class="s-box2" x="196" y="70" width="190" height="104" rx="14"/><text class="s-t" x="212" y="98">Code checks</text><text class="s-s" x="212" y="120">100% of runs · free</text><text class="s-s" x="212" y="140">gate, figures, refusals,</text><text class="s-s" x="212" y="158">member signals</text>
+        <circle class="run s-up" cx="40" cy="186" r="6"/><circle class="run d2 s-up" cx="40" cy="186" r="6"/><circle class="run d3 s-up" cx="40" cy="186" r="6"/><circle class="run d4 s-up" cx="40" cy="186" r="6"/>
+        <circle class="run d5 s-up" cx="40" cy="186" r="6"/><circle class="run d6 s-up" cx="40" cy="186" r="6"/><circle class="run d7 s-up" cx="40" cy="186" r="6"/><circle class="run d8 s-up" cx="40" cy="186" r="6"/>
+        <line class="s-dash" x1="40" y1="186" x2="290" y2="186"/>
+        <path class="s-line" d="M386 122 L420 122"/>
+        <rect class="s-vibg" x="420" y="54" width="226" height="138" rx="14"/><text class="s-vit" x="438" y="82">Overnight judges</text><text class="s-t" x="438" y="104">flagged runs + a random 10%</text><text class="s-s" x="438" y="126">Haiku · Batches, half price</text><text class="s-s" x="438" y="146">≤ 3% of prod's ceiling</text><text class="s-s" x="438" y="166">advisory until calibrated</text>
+        <circle class="flag s-am" cx="370" cy="226" r="7"/><circle class="flag d2 s-bl" cx="370" cy="226" r="7"/>
+        <line class="s-dash" x1="370" y1="226" x2="638" y2="226"/>
+        <path class="s-line" d="M646 122 L686 122"/>
+        <rect class="s-box" x="686" y="40" width="262" height="300" rx="14"/>
+        <text class="s-t" x="704" y="68">A rate, week by week</text><text class="s-s" x="704" y="88">against its eight-week band</text>
+        <rect class="s-tr" x="712" y="276" width="200" height="40" rx="6" style="opacity:.45"/>
+        <path class="rate" d="M712 300 L752 296 L792 302 L832 298 L872 300 L912 297" style="fill:none;stroke:var(--ink);stroke-width:2.5"/>
+        <g class="alert"><rect class="s-albg" x="704" y="104" width="226" height="54" rx="12"/><text class="s-alt" x="720" y="128">Alert to the owner</text><text class="s-s" x="720" y="148">outbox; the router from phase 8</text></g>
+        <g class="quiet"><rect class="s-upbg" x="704" y="170" width="226" height="44" rx="12"/><text class="s-upt" x="720" y="197">Inside the band: in Activity</text></g>
+        <text class="s-m" x="14" y="352">transcripts stored only in our AWS account · no evaluation service stores them</text>
+      </svg>
+      </div>
+      <figcaption>Runs stream through the code checks; a flagged run and a random one go to the judges; a rate that leaves its band raises the only alert.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="judges">
+  <div class="head">
+    <div class="kicker">The judges</div>
+    <h2>A model that grades a model is trusted only as far as it agrees with you</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Once a month, and whenever something changes, the Admin center shows you about 30 conversations. You mark each one pass or fail and add a line saying why. Each mark asks for your Face ID or passkey, like the other admin actions.</p>
+      <p>Your marks add up over time. A judge only counts once it has at least 50 of your passes and 50 of your fails to be measured against, and it stays a quiet helper until then. If it disagrees with you too often, it goes back to being a helper until it is fixed. A conversation you mark as failed is rewritten onto the pretend household and becomes a permanent test.</p>
+    </div>
+    <div class="copy tech">
+      <p>MA-255: the Evals page offers about 30 runs a month (every judge and code-check disagreement, flagged runs, a random share), and opens again on a change to a judge, prompt, tool or model and when flags spike. The admin labels pass or fail per failure mode with a critique, each label behind the second check with an audit row (Arun, 28 Oct 2026).</p>
+      <p>Labels accumulate as <code>EvalLabel</code> rows that keep their run's transcript past its ninety days. A judge acts only with at least 50 pass and 50 fail labels it was not built from; below 0.8 on its true-positive or true-negative rate it is advisory until a pull request fixes it. A failed run is rewritten onto the synthetic household and, on Confirm behind the second check, becomes a regression case through a pull request.</p>
+    </div>
+    <figure class="fig" id="fig-judges">
+      <div class="scroll">
+      <svg class="anim f5" viewBox="0 0 960 400" role="img" aria-label="The admin's monthly labels add up. Pass labels and fail labels each fill toward fifty. Once both are full the judge's true-positive and true-negative rates are measured against a 0.8 line; while both are above it the judge is active. When one falls below 0.8 the judge goes back to advisory until a pull request fixes it.">
+        <rect class="s-box" x="14" y="36" width="230" height="256" rx="14"/>
+        <text class="s-t" x="30" y="62">Each month, ~30 runs</text><text class="s-s" x="30" y="82">you mark pass or fail</text>
+        <g>
+          <rect class="s-up" x="32" y="102" width="30" height="30" rx="6"/><rect class="s-up" x="70" y="102" width="30" height="30" rx="6"/><rect class="s-al" x="108" y="102" width="30" height="30" rx="6"/><rect class="s-up" x="146" y="102" width="30" height="30" rx="6"/><rect class="s-up" x="184" y="102" width="30" height="30" rx="6"/>
+          <rect class="s-al" x="32" y="140" width="30" height="30" rx="6"/><rect class="s-up" x="70" y="140" width="30" height="30" rx="6"/><rect class="s-up" x="108" y="140" width="30" height="30" rx="6"/><rect class="s-al" x="146" y="140" width="30" height="30" rx="6"/><rect class="s-up" x="184" y="140" width="30" height="30" rx="6"/>
+          <rect class="s-up" x="32" y="178" width="30" height="30" rx="6"/><rect class="s-up" x="70" y="178" width="30" height="30" rx="6"/><rect class="s-al" x="108" y="178" width="30" height="30" rx="6"/><rect class="s-up" x="146" y="178" width="30" height="30" rx="6"/><rect class="s-al" x="184" y="178" width="30" height="30" rx="6"/>
+        </g>
+        <text class="s-s" x="30" y="236">each mark behind Face ID</text><text class="s-s" x="30" y="256">or a passkey, with an</text><text class="s-s" x="30" y="276">audit row</text>
+        <path class="s-line" d="M244 164 L280 164"/>
+        <rect class="s-box" x="280" y="36" width="300" height="256" rx="14"/>
+        <text class="s-t" x="298" y="62">Labels add up</text><text class="s-s" x="298" y="82">a judge counts once both reach 50</text>
+        <text class="s-s" x="298" y="122">Pass labels</text><rect class="s-tr" x="298" y="132" width="220" height="16" rx="8" style="opacity:.5"/><rect class="pbar s-up" x="298" y="132" width="220" height="16" rx="8"/>
+        <text class="s-s" x="298" y="186">Fail labels</text><rect class="s-tr" x="298" y="196" width="220" height="16" rx="8" style="opacity:.5"/><rect class="fbar s-al" x="298" y="196" width="220" height="16" rx="8"/>
+        <text class="s-m" x="526" y="146">50</text><text class="s-m" x="526" y="210">50</text>
+        <text class="s-s" x="298" y="252">kept with their transcripts,</text><text class="s-s" x="298" y="272">past the runs' ninety days</text>
+        <path class="s-line" d="M580 164 L616 164"/>
+        <rect class="s-box" x="616" y="36" width="330" height="256" rx="14"/>
+        <text class="s-t" x="634" y="62">The judge, measured</text>
+        <text class="s-s" x="634" y="102">True-positive rate</text><rect class="s-tr" x="634" y="112" width="240" height="16" rx="8" style="opacity:.5"/><rect class="tpr s-bl" x="634" y="112" width="198" height="16" rx="8"/>
+        <text class="s-s" x="634" y="160">True-negative rate</text><rect class="s-tr" x="634" y="170" width="240" height="16" rx="8" style="opacity:.5"/><rect class="tnr s-bl" x="634" y="170" width="206" height="16" rx="8"/>
+        <line x1="826" y1="94" x2="826" y2="196" style="stroke:var(--alert);stroke-width:2;stroke-dasharray:4 4"/><text class="s-alt" x="826" y="88" text-anchor="middle">0.8</text>
+        <g class="adv"><rect class="s-ambg" x="634" y="220" width="160" height="40" rx="20"/><text class="s-amt" x="714" y="245" text-anchor="middle">advisory</text></g>
+        <g class="act"><rect class="s-upbg" x="634" y="220" width="160" height="40" rx="20"/><text class="s-upt" x="714" y="245" text-anchor="middle">active</text></g>
+        <g class="adv2"><rect class="s-ambg" x="634" y="220" width="296" height="40" rx="20"/><text class="s-amt" x="782" y="245" text-anchor="middle">advisory until a PR fixes it</text></g>
+        <rect class="s-box2" x="14" y="316" width="932" height="62" rx="14"/>
+        <text class="s-t" x="32" y="343">A run you mark as failed</text><text class="s-s" x="32" y="364">→ rewritten onto the pretend household → you confirm, with the second check → a permanent regression test</text>
+      </svg>
+      </div>
+      <figcaption>Labels fill toward 50 of each; the judge becomes active only while both rates stay above 0.8, and steps back when one falls.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="growth">
+  <div class="head">
+    <div class="kicker">Growing with the agents</div>
+    <h2>Nothing new ships without its tests</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>MyPaisa will keep gaining new tools, new kinds of holding and, later, a team of agents. Each one is written into a single list, the manifest, with the tests that prove it. A check refuses any change that adds something without its tests. Each new kind of holding writes its own tests from its fields, and a change the agent team proposes to its own rules shows you its test results before you approve it.</p>
+    </div>
+    <div class="copy tech">
+      <p>One manifest (MA-246) declares every agent (model route, tools) and every tool (side effect, roles, scope, whether untrusted text removes it, per-run limit, eval tags). The gate reads it at run time; the coverage check reads it in CI and refuses a tool, agent, prompt file or kind template with no safety case, or with no capability or regression case. Kind templates generate draft cases (MA-254); a <code>ChangeRequest</code> carries its suites' T1 results and a failing safety case blocks it (MA-256). Every incident and review finding becomes a case the same day; a safety or regression case is never retired.</p>
+    </div>
+    <figure class="fig" id="fig-growth">
+      <div class="scroll">
+      <svg class="anim f6" viewBox="0 0 960 330" role="img" aria-label="The manifest lists tools, a kind and a prompt, each with a safety test and a capability or regression test. A new tool is added without tests, and the coverage check refuses the change. Its tests are added, and the check passes.">
+        <rect class="s-box" x="14" y="20" width="560" height="290" rx="14"/>
+        <text class="s-h" x="34" y="50">The manifest</text>
+        <text class="s-m" x="404" y="50">safety</text><text class="s-m" x="476" y="50">cap/reg</text>
+        <g>
+          <text class="s-t" x="34" y="90">tool · get_networth</text><circle class="s-up" cx="424" cy="85" r="8"/><circle class="s-up" cx="500" cy="85" r="8"/>
+          <text class="s-t" x="34" y="132">tool · query_ledger_sql</text><circle class="s-up" cx="424" cy="127" r="8"/><circle class="s-up" cx="500" cy="127" r="8"/>
+          <text class="s-t" x="34" y="174">kind · Premium Bonds</text><text class="s-s" x="200" y="174">cases from its fields</text><circle class="s-up" cx="424" cy="169" r="8"/><circle class="s-up" cx="500" cy="169" r="8"/>
+          <text class="s-t" x="34" y="216">prompt · the chat</text><circle class="s-up" cx="424" cy="211" r="8"/><circle class="s-up" cx="500" cy="211" r="8"/>
+        </g>
+        <g class="newrow">
+          <rect class="s-ambg" x="26" y="236" width="536" height="46" rx="10"/>
+          <text class="s-t" x="34" y="264">tool · a new one</text><text class="s-s" x="200" y="264">added in a pull request</text>
+          <circle class="m1" cx="424" cy="259" r="8" style="fill:var(--alert)"/><circle class="m2" cx="500" cy="259" r="8" style="fill:var(--alert)"/>
+        </g>
+        <path class="s-line" d="M574 165 L622 165"/>
+        <rect class="s-box2" x="622" y="110" width="150" height="110" rx="14"/><text class="s-t" x="640" y="150">Coverage</text><text class="s-t" x="640" y="170">check</text><text class="s-s" x="640" y="194">in CI</text>
+        <path class="s-line" d="M772 165 L806 165"/>
+        <g class="refuse"><rect class="s-albg" x="806" y="128" width="142" height="74" rx="14"/><text class="s-alt" x="820" y="158">Refused</text><text class="s-s" x="820" y="180">no safety case</text></g>
+        <g class="pass"><rect class="s-upbg" x="806" y="128" width="142" height="74" rx="14"/><text class="s-upt" x="820" y="158">Passes</text><text class="s-s" x="820" y="180">its cases added</text></g>
+      </svg>
+      </div>
+      <figcaption>A new tool arrives without tests and the check refuses it; once its tests are added, it passes.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="timers">
+  <div class="head">
+    <div class="kicker">What runs on a timer</div>
+    <h2>Only what has something new to look at</h2>
+  </div>
+  <div class="body">
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Job</th><th>When</th><th>Why then</th></tr></thead>
+        <tbody>
+          <tr><td>Grading predictions and calibrating confidence (§20.4)</td><td><span class="pill on">daily</span></td><td>Its answer key, the day's prices, is new every day</td></tr>
+          <tr><td>The overnight judges and the rates</td><td><span class="pill on">nightly</span></td><td>They read the day's new conversations, compared a week at a time</td></tr>
+          <tr><td>Your calibration of the judges</td><td><span class="pill on">monthly + on change</span></td><td>People are the slow, careful grader, kept for checking the fast ones</td></tr>
+          <tr><td>The golden set of tests</td><td><span class="pill never">never on a timer</span></td><td>What it tests changes only through a pull request</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="cost">
+  <div class="head">
+    <div class="kicker">What it costs</div>
+    <h2>Capped in its own workspace, on top of the two ceilings</h2>
+  </div>
+  <div class="body">
+    <div class="tiles">
+      <div class="tile"><div class="n">$10</div><div class="l">at most per live test run (T1 or T2)</div></div>
+      <div class="tile"><div class="n">$30</div><div class="l">a month at most, the <span class="mono">mypaisa-evals</span> workspace's own limit</div></div>
+      <div class="tile"><div class="n">&lt; $1</div><div class="l">a month for the overnight judges, capped at 3% of prod's ceiling</div></div>
+      <div class="tile"><div class="n">£0</div><div class="l">for Inspect AI, open source, and the result rows in the free tiers</div></div>
+    </div>
+    <div class="copy">
+      <p class="plain">The test workspace's $30 sits on top of the $160 for the live app and $40 for testing. With no card on file, the plan's $200 credit is still the last stop, and a normal month uses well under $80.</p>
+      <p class="tech">The three Console limits sum to $230 against the $200 credit; with no card on file the credit stays the last stop, so the Admin center's warning compares only prod's and dev's ceilings (§15.1, §23.7). The key is <code>/mypaisa-agent/dev/anthropic/evals_key</code>, read only by the <code>ci-evals</code> role.</p>
+    </div>
+  </div>
+</section>
+
+<section id="stories">
+  <div class="head">
+    <div class="kicker">The work</div>
+    <h2>The stories that build it</h2>
+  </div>
+  <div class="body">
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Story</th><th>Phase</th><th>What</th></tr></thead>
+        <tbody>
+          <tr><td class="k">MA-245</td><td>0</td><td>The record: ARCHITECTURE §23</td></tr>
+          <tr><td class="k">MA-246</td><td>0</td><td>The manifest, the Inspect AI harness, T0 and the coverage check</td></tr>
+          <tr><td class="k">MA-21</td><td>0</td><td>The evals workspace with its $30 limit and its key, set up by Arun</td></tr>
+          <tr><td class="k">MA-258</td><td>0</td><td>This page and the explainer pages</td></tr>
+          <tr><td class="k">MA-247</td><td>1</td><td>The policy gate, and the server tools kept apart</td></tr>
+          <tr><td class="k">MA-248</td><td>1</td><td>The figure check</td></tr>
+          <tr><td class="k">MA-249</td><td>1</td><td>Plain refusals, proved by the safety suite</td></tr>
+          <tr><td class="k">MA-250</td><td>1</td><td>The golden set, T1 on pull requests and the <code>ci-evals</code> role</td></tr>
+          <tr><td class="k">MA-251</td><td>1</td><td>T2: a model change waits for the full suite</td></tr>
+          <tr><td class="k">MA-252</td><td>1</td><td>Online evals: every run checked, a few judged overnight</td></tr>
+          <tr><td class="k">MA-253</td><td>2</td><td>The quarantined extractor and the poisoned files</td></tr>
+          <tr><td class="k">MA-254</td><td>2</td><td>Each kind's generated tests</td></tr>
+          <tr><td class="k">MA-255</td><td>8</td><td>Your calibration and the eval caps on the Evals page</td></tr>
+          <tr><td class="k">MA-256</td><td>18</td><td>Each team agent's tools, safety tests and evidence on its changes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="words">
+  <div class="head">
+    <div class="kicker">The words</div>
+    <h2>Terms, in plain words</h2>
+  </div>
+  <div class="body">
+    <dl class="gloss">
+      <dt>Eval, case, trial</dt><dd>A test of the agent; one scripted conversation with what must be true afterwards; one attempt at it. A case runs several trials because a model can answer differently each time.</dd>
+      <dt>Golden set</dt><dd>The fixed collection of cases, about 40 for the chat, on the pretend household.</dd>
+      <dt>Judge</dt><dd>A second Claude that answers one yes-or-no question about a reply, such as "was it plain?", used only where code cannot check.</dd>
+      <dt>pass^k</dt><dd>Passing every one of k trials, not just one of them. Safety cases need it.</dd>
+      <dt>T0, T1, T2</dt><dd>The three tiers: recorded tests on every change; live tests when what the agent rests on changes; the full suite on a new model.</dd>
+      <dt>True-positive and true-negative rates</dt><dd>How often a judge agrees with you on the failures, and on the passes, counted apart so a rare failure is not hidden by many passes.</dd>
+      <dt>Untrusted text</dt><dd>Anything written by someone outside the chat: a statement, a factsheet, a web page, a news story, a shop's name.</dd>
+      <dt>Quarantined extractor</dt><dd>The step that reads a file. It has no tools at all, so whatever the file says, it can only fill in the form it was given.</dd>
+      <dt>Manifest</dt><dd>The one list of every agent and tool, what each may do, and the tests that prove it.</dd>
+      <dt>Second check</dt><dd>A fresh Face ID, passkey or sign-in that the server checks before an admin action.</dd>
+    </dl>
+  </div>
+</section>
+
+</div>
+</main>
+<footer>
+  <div class="wrap">From <span class="mono">ARCHITECTURE.md</span> §23 and <span class="mono">docs/RESEARCH.md</span> §5 in the MyPaisa repository, 28 Oct 2026 (MA-245, MA-258). Figures are the plan's defaults; the admin moves the caps.</div>
+</footer>
+
+<script>
+(function(){
+  var main=document.getElementById('main');
+  var btns=document.querySelectorAll('.seg button');
+  function setMode(m){
+    main.setAttribute('data-mode',m);
+    btns.forEach(function(b){b.setAttribute('aria-checked',b.getAttribute('data-set')===m?'true':'false');});
+    try{localStorage.setItem('mp-ge-mode',m);}catch(e){}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){setMode(b.getAttribute('data-set'));});});
+  try{var saved=localStorage.getItem('mp-ge-mode');if(saved==='plain'||saved==='tech')setMode(saved);}catch(e){}
+  var pause=document.getElementById('pause');
+  pause.addEventListener('click',function(){
+    var on=main.getAttribute('data-paused')!=='true';
+    main.setAttribute('data-paused',on?'true':'false');
+    pause.setAttribute('aria-pressed',on?'true':'false');
+    pause.textContent=on?'Play the diagrams':'Pause the diagrams';
+  });
+})();
+</script>

@@ -249,7 +249,8 @@ stance "a view, not advice", suggests only ISA-safe actions, and never says
 
 Researched for `ARCHITECTURE.md` §23, from Anthropic's own engineering posts
 and docs, the main evaluation vendors' write-ups, the work on calibrating LLM
-judges, the OWASP and NIST frameworks and the FCA's October 2026 remarks.
+judges, the OWASP and NIST frameworks (NIST AI 600-1, the generative AI
+profile) and the FCA's October 2026 remarks.
 Arun's starting point was that daily offline evals cost money, repeat the
 same score and breed alert fatigue. The sources agree with him.
 
@@ -331,9 +332,9 @@ same score and breed alert fatigue. The sources agree with him.
 
 ### 5.4 Personal finance
 
-- Models handle simple lookups well and multi-step calculations badly, and
-  cannot reliably spot their own numeric errors (FAITH, 2025; PHANTOM,
-  2025). So code computes every figure and a deterministic check ties every
+- Models handle simple lookups well and multi-step calculations badly
+  (FAITH, 2025), and cannot reliably spot their own numeric errors (PHANTOM,
+  NeurIPS 2025). So code computes every figure and a deterministic check ties every
   figure in a reply to a tool result, after normalising units and currency.
 - UK FCA: regulated advice is a personal recommendation on a particular
   investment, made by way of business (PERG 8, PERG 2.3). A household's own
@@ -342,7 +343,7 @@ same score and breed alert fatigue. The sources agree with him.
   disclaimers on financial answers; "a view, not advice" stays on every
   stance card.
 - Forecasts are scored when they resolve: Brier score with its reliability
-  diagram, against a base rate (§3.5, §20.4 of the architecture).
+  diagram, against a base rate (§3.5 above; `ARCHITECTURE.md` §20.4).
 
 ### 5.5 Tools
 
@@ -376,6 +377,6 @@ still in development, so the `RunRecord` stays the source of truth (§10).
 - Anthropic on guardrails: <https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks>, <https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations>, <https://www.anthropic.com/research/prompt-injection-defenses>, <https://code.claude.com/docs/en/agent-sdk/permissions>, <https://code.claude.com/docs/en/agent-sdk/hooks>, <https://platform.claude.com/docs/en/about-claude/models/overview>
 - Offline and online evals: <https://www.inngest.com/blog/online-vs-offline-ai-evals-when-to-use-each>, <https://www.langchain.com/resources/agent-evals>, <https://langfuse.com/docs/evaluation/get-started/online.md>, <https://docs.langchain.com/langsmith/rules>, <https://www.braintrust.dev/docs/core/logs/score>
 - Judges: <https://hamel.dev/blog/posts/llm-judge/>, <https://hamel.dev/blog/posts/evals-faq/>, <https://arxiv.org/abs/2404.12272>, <https://arxiv.org/html/2406.12624v2>, <https://arize.com/blog/measuring-human-llm-judge-alignment.md>
-- Security: <https://genai.owasp.org/llm-top-10/>, <https://genai.owasp.org/llmrisk/llm062025-excessive-agency/>, <https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/>, <https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/>, <https://arxiv.org/abs/2506.08837>, <https://arxiv.org/abs/2503.18813>, <https://arxiv.org/html/2403.14720v1>, <https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html>
-- Finance: <https://arxiv.org/html/2508.05201>, <https://handbook.fca.org.uk/handbook/PERG/8/30B.html>, <https://www.fca.org.uk/news/speeches/building-future-finance-age-ai>
+- Security: <https://genai.owasp.org/llm-top-10/>, <https://genai.owasp.org/llmrisk/llm062025-excessive-agency/>, <https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/>, <https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/>, <https://arxiv.org/abs/2506.08837>, <https://arxiv.org/abs/2503.18813>, <https://arxiv.org/html/2403.14720v1>, <https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html>, <https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf>
+- Finance: <https://arxiv.org/html/2508.05201>, <https://mlanthology.org/neurips/2025/ji2025neurips-phantom>, <https://handbook.fca.org.uk/handbook/PERG/8/30B.html>, <https://www.fca.org.uk/news/speeches/building-future-finance-age-ai>
 - Tools: <https://inspect.aisi.org.uk>, <https://www.promptfoo.dev/docs/usage/command-line/>, <https://deepeval.com/docs/metrics-tool-correctness>, <https://langfuse.com/pricing>, <https://www.braintrust.dev/pricing>

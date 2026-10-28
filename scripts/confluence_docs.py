@@ -3,7 +3,7 @@
 
 Confluence (space mypaisaa-agent) is the fifth record beside PLAN.md and ARCHITECTURE.md, Jira, the Claude Design
 boards and the code (.claude/rules/plan-sync.md). Every page is rendered here from docs/trace.json, PLAN.md,
-docs/roadmap.json, the design decision records and the design mirror, written to docs/confluence/<page>.html, and
+ARCHITECTURE.md, docs/roadmap.json, the design decision records and the design mirror, written to docs/confluence/<page>.html, and
 published through the Atlassian MCP by /plan-sync. docs/confluence.json records each page's id, the version
 published and the hash of the HTML sent, and each board preview's media id and the boards it shows.
 
@@ -47,7 +47,16 @@ ARTIFACTS = {
     "MyPaisa Architecture v4": "https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9",
     "MyPaisa Agent Journey": "https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7",
     "MyPaisa Market Agent": "https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb",
+    "MyPaisa Guardrails and Evals": "https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
 }
+GUARDRAILS_GIFS = [  # (gif in docs/design/guardrails-evals, tab title, caption): the explainer's diagrams, animated (MA-258)
+    ("01-fences.gif", "Five fences", "Three requests meet the five fences; only the first reaches the member, as a card that saves nothing until Confirm."),
+    ("02-policy-gate.gif", "The policy gate", "The gate's five checks run twice: a draft passes; a web fetch after reading a statement is refused."),
+    ("03-tested-on-change.gif", "Tested on change", "A docs change runs T0; a prompt change adds T1; a model change runs T2 before a release may ship it."),
+    ("04-watched-live.gif", "Watched live", "Every run is checked by code; flagged runs and a random 10% are judged overnight; only a rate leaving its band alerts."),
+    ("05-judges-calibrated.gif", "The judges", "The admin's labels fill toward 50 of each; a judge is active only while both rates stay above 0.8."),
+    ("06-growth.gif", "Growth", "A new tool arrives without its cases and the coverage check refuses it; with its cases it passes."),
+]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
     ("01-overview.png", "System overview", "4ae817c6-847f-45f8-a10c-4509971c9c09", "§3"),
     ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§18"),
@@ -185,15 +194,41 @@ def arch_sections() -> dict[str, str]:
     return out
 
 
-def arch_text(num: str) -> str:
-    """The body of ARCHITECTURE.md's top-level section NUM, without its own heading, up to the next one."""
-    text = (ROOT / "ARCHITECTURE.md").read_text()
-    m = re.search(rf"(?m)^## {re.escape(num)}\. .*\n", text)
-    if not m:
-        return ""
-    rest = text[m.end():]
-    end = re.search(r"(?m)^## \d+\. ", rest)
-    return (rest[:end.start()] if end else rest).strip().rstrip("-").strip()
+GUARDRAILS = ("23", "Guardrails and evals")  # the ARCHITECTURE section the guardrails page shows, and its title (MA-245)
+
+
+def arch_text(num: str) -> tuple[str, str]:
+    """ARCHITECTURE.md's top-level section NUM: its heading's title and its body, up to the next top-level heading
+    (any `#` or `##` heading outside a code fence, numbered or not). ("", "") when there is no such section."""
+    lines = (ROOT / "ARCHITECTURE.md").read_text().splitlines()
+    start = next((k for k, line in enumerate(lines) if re.match(rf"^## {re.escape(num)}\.? ", line)), None)
+    if start is None:
+        return "", ""
+    body, fenced = [], False
+    for line in lines[start + 1:]:
+        if line.startswith("```"):
+            fenced = not fenced
+        elif not fenced and re.match(r"^#{1,2} ", line):
+            break
+        body.append(line)
+    title = re.sub(rf"^## {re.escape(num)}\.? ", "", lines[start]).strip()
+    return title, "\n".join(body).strip().rstrip("-").strip()
+
+
+def guardrails_errors(ctx: "Ctx") -> list[str]:
+    """The guardrails page fails closed: its section must be there, be the guardrails section, have a body, and be cited."""
+    num, want = GUARDRAILS
+    title, body = arch_text(num)
+    if not title:
+        return [f"confluence: guardrails page: ARCHITECTURE.md has no section {num}"]
+    out = []
+    if not title.startswith(want):
+        out.append(f"confluence: guardrails page: ARCHITECTURE §{num} is not {want!r} (it reads {title[:60]!r})")
+    if not re.search(rf"(?m)^### {re.escape(num)}\.1 ", body):
+        out.append(f"confluence: guardrails page: ARCHITECTURE §{num} has no body (no §{num}.1)")
+    if not any(a == num or a.startswith(num + ".") for i in ctx.items for a in i.get("arch") or []):
+        out.append(f"confluence: guardrails page: no story in the trace cites §{num}")
+    return out
 
 
 def plan_sections() -> dict[int, str]:
@@ -430,6 +465,8 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
             out[name] = {"page": f"screens-{a[0]}", "boards": boards}
     for name, path in lucid_images():
         out[name] = {"page": "explainers", "file": path}
+    for gif, _, _ in GUARDRAILS_GIFS:
+        out[f"guardrails-{gif}"] = {"page": "guardrails", "file": ROOT / "docs" / "design" / "guardrails-evals" / gif}
     # the pictures draw each phase's title and dates only, so an estimate that moves no date redraws nothing
     drawn = {n: {k: v.get(k) for k in ("title", "start", "end", "on_demand")} for n, v in ctx.schedule.items()}
     out["roadmap.png"] = {"page": "hub", "schedule": drawn}
@@ -743,7 +780,7 @@ def render_hub(ctx: Ctx) -> str:
         '<section data-type="layout-three-equal">'
         + "".join(f'<div data-type="column">{cpanel(c, i, f"<h3>{ctx.link(sl, t)}</h3><p>{esc(d)}</p>")}</div>' for sl, t, d, c, i in (
             ("decisions", "Design decisions", "Every design round: the question, the options drawn, the pick and why.", "#FFEBE6", ":dart:"),
-            ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey and Market Agent pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
+            ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey, Market Agent and Guardrails and Evals pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
             ("sync", "Staying in step", "How this space, Jira, the boards, the plan and the code are kept the same.", "#F4F5F7", ":link:")))
         + "</section>",
         cpanel("#E3FCEF", ":shield:", f"<h3>{ctx.link('guardrails', 'Guardrails and evals')}</h3><p>How every agent is guarded in code, "
@@ -948,8 +985,10 @@ def render_explainers(ctx: Ctx) -> str:
            "<h2>📖 The explainer pages</h2>"
            f'<p>Kept in the repo as <a href="{gh("docs/design/inside-mypaisa.html")}">inside-mypaisa.html</a> (the whole architecture in plain words, MA-239), '
            f'<a href="{gh("docs/design/architecture-v4.html")}">architecture-v4.html</a> (the same architecture, technical and animated, MA-244), '
-           f'<a href="{gh("docs/design/agent-journey.html")}">agent-journey.html</a> and '
-           f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a>, and published as Claude artifacts.</p>',
+           f'<a href="{gh("docs/design/agent-journey.html")}">agent-journey.html</a>, '
+           f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a> and '
+           f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
+           'and published as Claude artifacts.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
                + "</section>" for pair in (list(ARTIFACTS.items())[k:k + 2] for k in range(0, len(ARTIFACTS), 2))),
@@ -994,17 +1033,23 @@ def render_sync(ctx: Ctx) -> str:
 
 def render_guardrails(ctx: Ctx) -> str:
     """ARCHITECTURE 23 as written, with the stories that build it from the trace."""
-    items = [i for i in ctx.items if any(a == "23" or a.startswith("23.") for a in i.get("arch") or [])]
+    num = GUARDRAILS[0]
+    items = [i for i in ctx.items if any(a == num or a.startswith(num + ".") for a in i.get("arch") or [])]
     items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
     out = [
         cpanel("#E3FCEF", ":shield:", '<p>Arun, 27 Oct 2026 (MA-245): guardrails and an evals strategy for agents that are highly dynamic and will '
                "grow. What an agent must never do is made impossible in code; every change is tested before it merges, never on a timer; every live "
                "run is checked by code and a few are judged overnight; the admin calibrates the judges monthly and on every change. "
-               f'The source is {arch_link("23", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the research and its '
-               f'sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §5.</p>'),
+               f'The source is {arch_link(num, ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the research is '
+               f'<a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §5, its sources in the list at the end.</p>'),
         toc(),
-        md(arch_text("23"), shift=-1),
-        "<h2>🧩 The stories, phase by phase</h2><p>Every story that cites §23 in the trace, with its estimate, status and design.</p>",
+        "<h2>🎞️ The diagrams</h2>"
+        f'<p>Animated, from the explainer page, which says the same in plain words or in technical detail: '
+        f'<a href="{ARTIFACTS["MyPaisa Guardrails and Evals"]}" data-card-appearance="inline"></a> '
+        f'(<a href="{gh("docs/design/guardrails-evals.html")}">docs/design/guardrails-evals.html</a>, MA-258).</p>',
+        tabs([(title, image(ctx, f"guardrails-{gif}", caption, 100)) for gif, title, caption in GUARDRAILS_GIFS]),
+        md(arch_text(num)[1], shift=-1),
+        f"<h2>🧩 The stories</h2><p>Every story that cites §{num} in the trace, in build order, with its estimate, status and design.</p>",
         story_rows(ctx, items),
         jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
     ]
@@ -1048,6 +1093,7 @@ def errors(ctx: Ctx | None = None) -> list[str]:
     if out:
         return out
     model = pages(ctx)
+    out += guardrails_errors(ctx)
     recorded = ctx.manifest.get("pages", {})
     for slug_, title, _ in model:
         path = PAGES / f"{slug_}.html"

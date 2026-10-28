@@ -15,14 +15,14 @@ The rules are in `.claude/rules/plan-sync.md`.
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
 | MA-20 | MyPaisa Dev's identity exists: its bundle id, its icon with the DEV band, and its sign-in ids in dev's SSM paths | To Do | §14, §18.1 | planned | iOS kit.dc.html: 10 · App icon |
-| MA-21 | Claude API access is paid from the plan, with dev and prod workspaces and spend limits | To Do | §15.1, §18.1 | none |  |
+| MA-21 | Claude API access is paid from the plan, with dev, prod and evals workspaces and spend limits | To Do | §15.1, §18.1 | none |  |
 | MA-22 | A free Twelve Data key is in SSM for the US lines and the FX fallback | To Do | §5.1 | none |  |
 | MA-23 | Each Monzo fund's factsheet and a valuation screenshot are ready to send in the app | To Do | §4.2 | none |  |
 | MA-24 | The Python project skeleton exists with its gates and the working rules | To Do | §13, §16 | none |  |
 | MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | To Do | §18.4, §23.3 | none |  |
 | MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | To Do | §18.1, §18.4 | none |  |
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §9.3, §12, §13, §14, §15, §16 | none |  |
-| MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | To Do | §18.4, §20.5 | none |  |
+| MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | To Do | §18.4, §20.5, §23.3 | none |  |
 | MA-108 | A nightly check reports any prod change made outside Terraform | To Do | §18.4, §20.5 | none |  |
 | MA-110 | Dev and the laptop are seeded and hydrated with one illustrative household of every kind, from the design figure set | To Do | §18.1 | none |  |
 | MA-112 | The architecture records the $100 Claude budget for prod, its ceiling ladder and the chat-memory rules | Done | §4.5, §8, §9.3, §10, §12, §15, §16, §17, §18 | none |  |
@@ -62,8 +62,9 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-242 | The open foldable boards show the chat as a sheet, as the size classes say, not as a column beside the screen | To Do | §9.1 | none |  |
 | MA-243 | Wealth's one-line sub-lines put the figure first, so an ellipsis never cuts a figure | To Do | §9.4 | none |  |
 | MA-244 | An animated technical page, MyPaisa Architecture v4, plays each journey through AWS and shows every agent and the Claude model it uses | Done | §3, §8, §10, §15.1, §18, §20, §21 | none |  |
-| MA-245 | The architecture records how the agents are guarded and evaluated: guardrails in code, evals gated on change, every live run checked, judges calibrated by the admin | In Progress | §23, §8, §10, §14, §15.1, §16, §18.4, §20.4, §20.7 | none |  |
+| MA-245 | The architecture records how the agents are guarded and evaluated: guardrails in code, evals gated on change, every live run checked, judges calibrated by the admin | In Progress | §23, §8, §10, §14, §15.1, §16, §18.4, §20.4, §20.7, §4.1, §9.3, §12.1, §13 | none |  |
 | MA-246 | One manifest declares every agent and tool, an Inspect AI harness runs tagged eval cases on the local stack, and CI refuses a tool, agent, prompt or kind template with no cases | To Do | §23.3, §23.5, §18.4 | none |  |
+| MA-258 | The guardrails and evals are explained on a page of their own with animated diagrams, synced to Confluence, and the other explainer pages show them too | In Progress | §23, §8 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
@@ -79,7 +80,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-75 | The api's authorizer checks the access token or the session cookie, the member's status and session epoch on every call and on the stream | To Do | §4.5, §9.3 | none |  |
 | MA-76 | The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server | To Do | §4.5, §9.3 | planned | iPhone admin.dc.html: iPhone · Second check; iPhone settings.dc.html: iPhone · Sign-in methods |
 | MA-109 | Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys, verified in custom-auth Lambdas | To Do | §4.5, §17, §18.3 | none |  |
-| MA-113 | Every Claude call is metered and nothing runs past the monthly ceiling | To Do | §15.1, §15.2 | none |  |
+| MA-113 | Every Claude call is metered and nothing runs past the monthly ceiling | To Do | §15.1, §15.2, §23.7 | none |  |
 | MA-115 | The chat sends Claude only the current conversation, kept short, with notes on recent ones | To Do | §8 | none |  |
 | MA-139 | Each member's messages travel through ordered queues, in and out, are retried with backoff and are never lost | To Do | §21 | none |  |
 | MA-140 | Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue that alerts and can be replayed | To Do | §21 | none |  |
@@ -104,11 +105,11 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-233 | Every model call and tool call is a span with its model, tokens, cache reads, cost, latency and outcome, shown on the model panel with its quality alarms | To Do | §10.4, §10.5, §8, §15.1 | none |  |
 | MA-234 | The doors report what they saw, with the trace id and no content: the time to the first word, a resume or resync, an api error, a crash or a hang | To Do | §10.2, §10.5, §9.4, §9.5 | none |  |
 | MA-247 | Every tool call passes a policy gate in code: allowed for this agent and member, arguments in range, inside the household, within the run's limits, and narrowed once untrusted text is read | To Do | §23.2, §8, §4.5 | none |  |
-| MA-248 | Every figure the chat states is checked against that turn's tool results before it is sent | To Do | §23.2, §1, §8 | none |  |
+| MA-248 | Every figure the chat states is checked against the tool results and the member's own words before it is sent | To Do | §23.2, §1, §8 | none |  |
 | MA-249 | A trade, tax advice, another household's data or "sell everything" gets a plain refusal with the reason, and the red-team suite proves it | To Do | §23.2, §1, §14 | none |  |
-| MA-250 | The chat's golden set, about 40 tasks on the synthetic household graded on the records they leave, runs live three times on every pull request that changes a prompt, a tool or the model, within a $2 cap | To Do | §23.3, §18.4 | none |  |
+| MA-250 | The chat's golden set, about 40 tasks on the synthetic household graded by code first, runs live three times on every pull request that changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK, within $10 a run | To Do | §23.3, §18.4 | none |  |
 | MA-251 | A model change waits for the full suite, five trials on the new model, before the release ships it | To Do | §23.3, §18.4 | none |  |
-| MA-252 | Every live run is checked by code, every flagged run and a random 10% are judged overnight, and only a rate that leaves its band raises an alert | To Do | §23.4, §10.1, §10.6, §15.2 | none |  |
+| MA-252 | Every live run is checked by code, every flagged run and a random 10% are judged overnight, and only a rate that leaves its band raises an alert | To Do | §23.4, §10.1, §10.6, §15.2, §10.4 | none |  |
 
 ## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 
@@ -119,13 +120,13 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-33 | Each member's records have their owners, and a joint record has two owners with their shares | To Do | §4.1, §4.5 | none |  |
 | MA-34 | Design the Portfolio card and the Confirm card before they are built | To Do | §9.2 | planned | iOS kit.dc.html: 6 · Messages and cards; iPhone chat.dc.html: iPhone · Portfolio card; iPhone chat.dc.html: iPhone · Confirm card |
 | MA-35 | The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips | To Do | §2, §8, §9.1 | planned | iPhone sign-in.dc.html: iPhone · First-run setup; iPhone chat.dc.html: iPhone · Chat home; iPhone settings.dc.html: iPhone · You; iPhone settings.dc.html: iPhone · Pause and resume; iPhone dashboard.dc.html: iPhone · Home, empty |
-| MA-37 | A factsheet or valuation screenshot sent from the camera, a scan, Photos or Files adds or updates a record after Confirm | To Do | §4.2, §4.6 | planned | iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Reading a factsheet; iPhone chat.dc.html: iPhone · Factsheet card with amber fields; iPhone chat.dc.html: iPhone · Screenshot valuations, before and after |
+| MA-37 | A factsheet or valuation screenshot sent from the camera, a scan, Photos or Files adds or updates a record after Confirm | To Do | §4.2, §4.6, §23.2 | planned | iPhone chat.dc.html: iPhone · Attach a file; iPhone chat.dc.html: iPhone · Reading a factsheet; iPhone chat.dc.html: iPhone · Factsheet card with amber fields; iPhone chat.dc.html: iPhone · Screenshot valuations, before and after |
 | MA-39 | Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting | To Do | §9.1 | planned | iPhone chat.dc.html: iPhone · Guided flow: log a transaction |
 | MA-40 | "What changed this week?" lists every change with who and when | To Do | §4.6 | planned | iPhone chat.dc.html: iPhone · What changed this week; iPhone audit and activity.dc.html: iPhone · Audit |
 | MA-74 | The api serves each member only what they may see, and accepts in-place corrections only to the figures a kind marks editable | To Do | §4.5, §9.3, §4.10 | none |  |
 | MA-80 | Each card opens its dashboard screen, and each screen's Ask opens the chat about it | To Do | §9.1, §9.3, §18.2 | planned | iPhone chat.dc.html: iPhone · Portfolio card; iPhone dashboard.dc.html: iPhone · Holding |
 | MA-156 | A transaction can be typed in any currency, and the chat checks it against the holding's own currency and puts a mismatch right before Confirm | To Do | §4.1, §4.7, §5.3, §22.3 | planned | iPhone chat.dc.html: iPhone · Currency check |
-| MA-197 | Kind specs and the generic draft tools let the agent register any kind of asset or debt, asking only what is missing | To Do | §4.8, §8 | planned | iPhone v4 · Register.dc.html: iPhone · A new kind for the admin: Premium Bonds; iPhone v4 · Register.dc.html: iPhone · Register a record: Monzo savings |
+| MA-197 | Kind specs and the generic draft tools let the agent register any kind of asset or debt, asking only what is missing | To Do | §4.8, §8, §23.5 | planned | iPhone v4 · Register.dc.html: iPhone · A new kind for the admin: Premium Bonds; iPhone v4 · Register.dc.html: iPhone · Register a record: Monzo savings |
 | MA-201 | One write service takes the chat's Confirm and an in-place correction alike, checked against the kind and audited | To Do | §1, §4.10 | planned | Web v4 · Dashboard.dc.html: Browser · Correct a figure in place; Web v4 · Dashboard.dc.html: Browser · Correct a figure in place, phone; iPhone v4 · Home.dc.html: iPhone · Correct a figure in place; iPhone v4 · Register.dc.html: iPhone · Correct a figure in place: Home's value; Web v4 · Assets and debts.dc.html: Browser · Correct a value; Web v4 · Assets and debts.dc.html: Browser · Correct a value, phone; iPhone v4 · Assets and debts.dc.html: iPhone · Correct a value; Web v4 · Budget.dc.html: Browser · Budget, correct a plan amount; Web v4 · Budget.dc.html: Browser · Budget, correct a plan amount, phone; iPhone v4 · Budget.dc.html: iPhone · Budget, correct a plan amount |
 | MA-203 | Savings, cash, a property's value and a pension's value are registered through the chat and corrected in place | To Do | §4.8, §4.10 | planned | iPhone v4 · Register.dc.html: iPhone · Register a record: Monzo savings; iPhone v4 · Register.dc.html: iPhone · Register a property: the Pune flat; iPhone v4 · Register.dc.html: iPhone · Privacy mode: a Confirm card; Web v4 · Shell and chat.dc.html: Browser · Chat, a Confirm card; Web v4 · Shell and chat.dc.html: Browser · Chat, a Confirm card, phone; iPhone v4 · Check-ins.dc.html: iPhone · Check-in: a valuation due |
 | MA-208 | The first dashboard shows net worth and every record at every door, and moves live when a change is confirmed | To Do | §9.3 | picked | Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first; Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first, phone; Web v4 · Dashboard.dc.html: Browser · Dashboard, first record; Web v4 · Dashboard.dc.html: Browser · Dashboard, first record, phone; Web v4 · Dashboard.dc.html: Browser · Dashboard, empty; Web v4 · Dashboard.dc.html: Browser · Dashboard, empty, phone; Web v4 · Dashboard.dc.html: Browser · Dashboard, privacy on; Web v4 · Dashboard.dc.html: Browser · Dashboard, privacy on, phone; Web v4 · Shell and chat.dc.html: Browser · Home moves live; Web v4 · Shell and chat.dc.html: Browser · Home moves live, phone; iPhone v4 · Home.dc.html: iPhone · Home, net worth first; iPhone v4 · Home.dc.html: iPhone · Home, first record; iPhone v4 · Home.dc.html: iPhone · Home, empty; iPhone v4 · Home.dc.html: iPhone · Home, privacy on; iPhone v4 · Home.dc.html: iPad · Whole wealth with the chat beside it |
@@ -202,7 +203,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-149 | The Audit screen opens the original file behind each change, through a short-lived link only the right member can use | To Do | §4.6, §9.3 | planned | iPhone audit and activity.dc.html: iPhone · Audit, a change from a file; iPhone audit and activity.dc.html: iPhone · Files; iPhone audit and activity.dc.html: iPhone · File preview; Audit and files.dc.html: Browser · Audit with files; Audit and files.dc.html: Browser · File viewer; Audit and files.dc.html: Browser · Files |
 | MA-180 | Search finds a holding, a change, a file or a past answer from anywhere in the app | To Do | §9.3 | todo |  |
 | MA-184 | The web app's Audit, Files and Admin center pages work in a browser, with the second check for the owner's actions | To Do | §4.6, §9.4, §15.1, §15.2 | planned | Browser 2.dc.html: Browser · Activity; Browser 2.dc.html: Browser · Audit; Audit and files.dc.html: Browser · Audit with files; Audit and files.dc.html: Browser · Files; Admin center 2.dc.html: Browser · Admin · Spend; Admin center 2.dc.html: Browser · Admin · Alerts |
-| MA-255 | The admin labels a monthly sample of runs in the Admin center, each judge's agreement is measured, a drifting judge drops to advisory, and a failed run becomes a regression case | To Do | §23.4, §23.5, §9.4 | todo |  |
+| MA-255 | The admin labels a monthly sample of runs in the Admin center, each judge's agreement is measured, a drifting judge drops to advisory, and a failed run becomes a regression case | To Do | §23.4, §23.5, §9.4, §9.3 | todo |  |
 
 ## Phase 9: The whole dashboard, and the old wealth tracker retired (MA-18)
 
@@ -210,7 +211,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | --- | --- | --- | --- | --- | --- |
 | MA-95 | The Overview is complete at every door: liquid and locked, what is owed, this month's cash flow, by member and by country, maturing next and the largest assets | To Do | §12, §9.3 | picked | Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first; Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first, phone; iPhone v4 · Home.dc.html: iPhone · Home, net worth first; iPhone v4 · Home.dc.html: iPad · Whole wealth with the chat beside it |
 | MA-97 | Reports and exports are in place, mypaisapp.com points to the dashboard, and the old wealth tracker is retired | To Do | §12 | planned | Wealth.dc.html: Browser · Reports |
-| MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §12.1, §8 | todo |  |
+| MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §12.1, §8, §23.2 | todo |  |
 | MA-111 | The owner fills prod's history from an Excel workbook sent in the chat | To Do | §12, §18.5, §22.2, §22.5 | todo |  |
 
 ## Phase 10: Prices and the engine (MA-11)
@@ -312,7 +313,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | --- | --- | --- | --- | --- | --- |
 | MA-128 | The architecture records the agent team, the settings and approvals, the learning loop, self-healing and the new budgets | Done | §5.1, §6.4, §15, §15.1, §16, §17, §18.1, §19.2, §20 | none |  |
 | MA-129 | E1: every behaviour is a versioned setting with bounds, and nothing changes it except through the settings service | To Do | §20.2 | none |  |
-| MA-130 | E2: an admin desk in the owner's chat and the Admin center where agents ask questions and seek approval, and the admin gives instructions | To Do | §20.3 | planned | Admin center 2.dc.html: Browser · Admin · Approvals; Admin center 2.dc.html: Browser · Admin · Approvals · Approve, the fresh check; Admin center 2.dc.html: Browser · Admin · Approvals · Approved; Admin center 2.dc.html: Browser · Admin · Settings |
+| MA-130 | E2: an admin desk in the owner's chat and the Admin center where agents ask questions and seek approval, and the admin gives instructions | To Do | §20.3, §23.5 | planned | Admin center 2.dc.html: Browser · Admin · Approvals; Admin center 2.dc.html: Browser · Admin · Approvals · Approve, the fresh check; Admin center 2.dc.html: Browser · Admin · Approvals · Approved; Admin center 2.dc.html: Browser · Admin · Settings |
 | MA-131 | E3: a data steward keeps prices flowing from free sources, repairs gaps, and asks before adding a paid one | To Do | §5.1, §19.2, §20 | none |  |
 | MA-132 | E4: every prediction is stored as made and graded every day against what prices actually did | To Do | §20.4, §20.6, §23.6 | none |  |
 | MA-133 | E5: confidence is recalibrated every day within safe bounds, and rolled back on its own if it gets worse | To Do | §20.4, §23.6 | none |  |

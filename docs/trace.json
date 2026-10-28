@@ -178,7 +178,7 @@
    "type": "Task",
    "epic": "MA-9",
    "phase": 0,
-   "summary": "Claude API access is paid from the plan, with dev and prod workspaces and spend limits",
+   "summary": "Claude API access is paid from the plan, with dev, prod and evals workspaces and spend limits",
    "status": "To Do",
    "labels": [
     "manual"
@@ -190,7 +190,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "",
+   "notes": "Review round 1 of MA-245 (28 Oct 2026): a third workspace, mypaisa-evals, with a $30 limit on top of the two ceilings, its key in /mypaisa-agent/dev/anthropic/evals_key for the ci-evals role (ARCHITECTURE 23.3, 23.7).",
    "open": [
     "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
    ]
@@ -557,7 +557,8 @@
    ],
    "arch": [
     "4.2",
-    "4.6"
+    "4.6",
+    "23.2"
    ],
    "ui": true,
    "design": "planned",
@@ -583,7 +584,7 @@
      "board": "iPhone · Screenshot valuations, before and after"
     }
    ],
-   "notes": "Adding from a factsheet is drawn end to end and picked (Telegram kit · 5 · Confirm after a factsheet; Telegram chats · b · Adding a holding from a factsheet). Updating a valuation from a screenshot was drawn in MA-158 (Chat basics · Valuation from a screenshot) and is planned, so its options round covers it. With privacy on, its money cards follow Currency check options · 1b·4b. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts.",
+   "notes": "Adding from a factsheet is drawn end to end and picked (Telegram kit · 5 · Confirm after a factsheet; Telegram chats · b · Adding a holding from a factsheet). Updating a valuation from a screenshot was drawn in MA-158 (Chat basics · Valuation from a screenshot) and is planned, so its options round covers it. With privacy on, its money cards follow Currency check options · 1b·4b. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts. Review round 1 of MA-245 (28 Oct 2026): the extractor has no tools and returns strict JSON with each field's source line and confidence; the file goes in as a labelled document or image block (ARCHITECTURE 23.2, MA-253).",
    "undrawn": [
     "Valuation from a screenshot h3: Leave it out shows the matched values to confirm, never saves on the tap, with the next state drawn (the board's copy says it saves; fix made, waiting on MA-160)"
    ]
@@ -1302,7 +1303,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Updated 27 Oct 2026 (MA-245): web text follows the untrusted-text rule of ARCHITECTURE 23.2, the policy gate (MA-247) narrows a run that has read it, and its test is a permanent safety case."
+   "notes": "Updated 27 Oct 2026 (MA-245): web text follows the untrusted-text rule of ARCHITECTURE 23.2, the policy gate (MA-247) narrows a conversation that has read it, and its test is a permanent safety case."
   },
   {
    "key": "MA-69",
@@ -2449,12 +2450,13 @@
    ],
    "arch": [
     "12.1",
-    "8"
+    "8",
+    "23.2"
    ],
    "ui": true,
    "design": "todo",
    "boards": [],
-   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. Refusing anything but SELECT is a code guard named in the board's note, not a screen. Its Telegram and Mini App boards are superseded by the iOS app (MA-161), and any browser boards stay as the web app's spec (ARCHITECTURE 9.4); its iOS boards are drawn in MyPaisa iOS v1 with /design-first before it starts."
+   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. Refusing anything but SELECT is a code guard named in the board's note, not a screen. Its Telegram and Mini App boards are superseded by the iOS app (MA-161), and any browser boards stay as the web app's spec (ARCHITECTURE 9.4); its iOS boards are drawn in MyPaisa iOS v1 with /design-first before it starts. Review round 1 of MA-245 (28 Oct 2026): DuckDB runs with external access off and its configuration locked, over views of the asker's own scope (ARCHITECTURE 12.1, 23.2)."
   },
   {
    "key": "MA-105",
@@ -2504,12 +2506,13 @@
    "labels": [],
    "arch": [
     "18.4",
-    "20.5"
+    "20.5",
+    "23.3"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "",
+   "notes": "Review round 1 of MA-245 (28 Oct 2026): the release to prod waits for a green T2 on the model ids it ships (ARCHITECTURE 18.4, 23.3; MA-251).",
    "open": [
     "Which phase holds the first prod release: PLAN.md once listed MA-107 and MA-108 under phase 1; since MA-186 PLAN, Jira and the trace all put them in phase 0 (MA-9), and the phase of the first prod release is still to settle. Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
    ]
@@ -2623,12 +2626,13 @@
    "labels": [],
    "arch": [
     "15.1",
-    "15.2"
+    "15.2",
+    "23.7"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Metering only; the member-facing step messages are drawn under MA-114. Its output is shown on Admin center 2 · Browser · Admin · Spend (drawn for the stories with UI)."
+   "notes": "Metering only; the member-facing step messages are drawn under MA-114. Its output is shown on Admin center 2 · Browser · Admin · Spend (drawn for the stories with UI). Review round 1 of MA-245 (28 Oct 2026): the meter also meters the feature evals and keeps prod's overnight judges to their 3%, pausing them from the 85% step (ARCHITECTURE 15.1, 23.7)."
   },
   {
    "key": "MA-114",
@@ -3008,7 +3012,8 @@
     "design"
    ],
    "arch": [
-    "20.3"
+    "20.3",
+    "23.5"
    ],
    "ui": true,
    "design": "planned",
@@ -3034,7 +3039,7 @@
      "board": "Browser · Admin · Settings"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The request ids (cr-26, cr-27) and the setting keys on the boards are illustrative. The screens in its undrawn list were drawn in MA-158 (25 Oct 2026). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
+   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The request ids (cr-26, cr-27) and the setting keys on the boards are illustrative. The screens in its undrawn list were drawn in MA-158 (25 Oct 2026). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. Review round 1 of MA-245 (28 Oct 2026): a ChangeRequest's approval shows its eval results, and a failing safety case blocks it (MA-256).",
    "undrawn": [
     "Admin center 3 · Telegram · Daily digest, its replay line agreeing with the replay boards: 3 replayed, 2 ran, 1 failed again (fix made, waiting on MA-160)",
     "an agent's question and an instruction from you, in the owner's chat",
@@ -3042,7 +3047,8 @@
     "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)",
     "the daily digest in the owner's chat in the app, not in Telegram (Admin center 3; MA-161)",
     "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)",
-    "The web page at a phone's width (below 600, the page alone as the web app shows it): Admin center 2 draws it at desktop width only, and the frames break there (MA-240's gate allows them until this is drawn)"
+    "The web page at a phone's width (below 600, the page alone as the web app shows it): Admin center 2 draws it at desktop width only, and the frames break there (MA-240's gate allows them until this is drawn)",
+    "A ChangeRequest's eval results on its approval, a failing safety case blocking it, and where a proposal drawn from uploaded or fetched text came from, carried by MA-256"
    ]
   },
   {
@@ -4891,7 +4897,8 @@
    ],
    "arch": [
     "4.8",
-    "8"
+    "8",
+    "23.5"
    ],
    "ui": true,
    "design": "planned",
@@ -4907,7 +4914,10 @@
      "board": "iPhone · Register a record: Monzo savings"
     }
    ],
-   "notes": "Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). Settled: Does approving a new kind need the second check. Yes (Arun, 26 Oct 2026): a kind changes what every member can register, so approving it sits behind the second check (ARCHITECTURE 4.5, 4.8, 8; drawn on MA-227). The Premium Bonds board draws the second check and the approval (MA-227)."
+   "notes": "Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). Settled: Does approving a new kind need the second check. Yes (Arun, 26 Oct 2026): a kind changes what every member can register, so approving it sits behind the second check (ARCHITECTURE 4.5, 4.8, 8; drawn on MA-227). The Premium Bonds board draws the second check and the approval (MA-227). Review round 1 of MA-245 (28 Oct 2026): the new-kind approval card shows its generated cases' result before Confirm (MA-254).",
+   "undrawn": [
+    "The new-kind approval card's eval result (its generated cases passed, failed with the failing cases named, or still running), carried by MA-254"
+   ]
   },
   {
    "key": "MA-201",
@@ -6441,12 +6451,16 @@
     "16",
     "18.4",
     "20.4",
-    "20.7"
+    "20.7",
+    "4.1",
+    "9.3",
+    "12.1",
+    "13"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Arun, 27 Oct 2026: guardrails and an evals strategy for agents that are highly dynamic and will grow; daily offline evals cost money, repeat the same score and breed alert fatigue. His choices the same day: judges calibrated monthly and on every change, production transcripts kept in our AWS account, Inspect AI, live evals on pull requests capped at $10 a month and $2 a run. Docs only: ARCHITECTURE 23 (new) and 4.1, 8, 10.1, 10.4, 14, 15.1, 16, 18.4, 20.4, 20.7; PLAN's phases 0, 1, 2, 8 and 18, the risks and the definition of done; TECH_STACK; README; RESEARCH 5; the trace, the roadmap and a Confluence page of its own; the descriptions of MA-54, MA-68 and MA-92."
+   "notes": "Arun, 27 Oct 2026: guardrails and an evals strategy for agents that are highly dynamic and will grow; daily offline evals cost money, repeat the same score and breed alert fatigue. His choices the same day: judges calibrated monthly and on every change, production transcripts kept in our AWS account, Inspect AI. Docs only: ARCHITECTURE 23 (new) and 4.1, 8, 10.1, 10.4, 14, 15.1, 16, 18.4, 20.4, 20.7; PLAN's phases 0, 1, 2, 8 and 18, the risks and the definition of done; TECH_STACK; README; RESEARCH 5; the trace, the roadmap and a Confluence page of its own; the descriptions of MA-54, MA-68 and MA-92. Review round 1 of MA-245 (28 Oct 2026): 32 blocking findings fixed across 23.2 to 23.8 and their joins; Arun's decisions: T1 at $10 a run and $30 a month in its own workspace on top of the two ceilings, its key in SSM read by a ci-evals role, and each label and each new case behind the second check."
   },
   {
    "key": "MA-246",
@@ -6489,7 +6503,7 @@
    "type": "Story",
    "epic": "MA-10",
    "phase": 1,
-   "summary": "Every figure the chat states is checked against that turn's tool results before it is sent",
+   "summary": "Every figure the chat states is checked against the tool results and the member's own words before it is sent",
    "status": "To Do",
    "labels": [],
    "arch": [
@@ -6525,7 +6539,7 @@
    "type": "Story",
    "epic": "MA-10",
    "phase": 1,
-   "summary": "The chat's golden set, about 40 tasks on the synthetic household graded on the records they leave, runs live three times on every pull request that changes a prompt, a tool or the model, within a $2 cap",
+   "summary": "The chat's golden set, about 40 tasks on the synthetic household graded by code first, runs live three times on every pull request that changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK, within $10 a run",
    "status": "To Do",
    "labels": [],
    "arch": [
@@ -6535,7 +6549,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Review round 1 of MA-245 (28 Oct 2026): T1 runs in its own Console workspace, `mypaisa-evals` ($10 a run, $30 a month, Arun's choice), its key read from SSM by a `ci-evals` role added to infra/bootstrap in an apply Arun asks for; phase 1's cases grade tools, refusals and grounded figures, and the record-graded cases join with phase 2 (MA-254)."
   },
   {
    "key": "MA-251",
@@ -6566,12 +6580,13 @@
     "23.4",
     "10.1",
     "10.6",
-    "15.2"
+    "15.2",
+    "10.4"
    ],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Review round 1 of MA-245 (28 Oct 2026): until phase 8's alert router, a rate outside its band reaches the owner's outbox and an alarm RunRecord (10.6); the rest is listed in Activity; the record-based member signals start in phase 2."
   },
   {
    "key": "MA-253",
@@ -6621,12 +6636,13 @@
    "arch": [
     "23.4",
     "23.5",
-    "9.4"
+    "9.4",
+    "9.3"
    ],
    "ui": true,
    "design": "todo",
    "boards": [],
-   "notes": "Planned 27 Oct 2026 (MA-245) with no board yet: the Admin center's Evals page (the month's sample, a run's transcript and verdicts, pass or fail per failure mode with a critique, each judge's agreement, the eval caps) is drawn with /design-first, at both doors, before the story starts."
+   "notes": "Planned 27 Oct 2026 (MA-245) with no board yet: the Admin center's Evals page (the month's sample, a run's transcript and verdicts, pass or fail per failure mode with a critique, each judge's true-positive and true-negative rates and its label counts, the eval caps) is drawn with /design-first, at both doors, before the story starts. Review round 1 of MA-245 (28 Oct 2026): each label and each new case behind the second check with an audit row (Arun's choice); a judge acts once it has 50 pass and 50 fail labels."
   },
   {
    "key": "MA-256",
@@ -6645,6 +6661,27 @@
    "design": "none",
    "boards": [],
    "notes": ""
+  },
+  {
+   "key": "MA-258",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The guardrails and evals are explained on a page of their own with animated diagrams, synced to Confluence, and the other explainer pages show them too",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "23",
+    "8"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from review round 1 of MA-245 (28 Oct 2026, lesson 5): the three explainer pages do not yet show ARCHITECTURE 23, and Architecture v4's tool list lacks query_ledger, query_ledger_sql and get_spend. Arun, 28 Oct 2026: \"make sure we create a detailed architecture diagrams in animated gif from and a html claude artifact to explain the evals and judjes and evrything in technical and simple terms. Sync them to confluence too.\" Delivered in PR #52: docs/design/guardrails-evals.html (MyPaisa Guardrails and Evals), its six GIFs in docs/design/guardrails-evals/ on the Guardrails and evals page, and the three explainer pages updated.",
+   "code": [
+    "docs/design/guardrails-evals.html",
+    "docs/design/guardrails-evals/*.gif"
+   ]
   }
  ],
  "others": [

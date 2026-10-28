@@ -112,6 +112,10 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   and its tools, the nine agents with the kind of agent each is and the
   models it uses, the routing across Opus, Sonnet and Haiku with the spend
   ladder, where the data lives, delivery and the guardrails.
+- **[MyPaisa Guardrails and Evals](https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT)** (MA-258): §23 as an
+  explainer, plain or technical at a switch, with six animated diagrams: the
+  five fences, the policy gate, the tests on change, watching live, the
+  judges' calibration and growth through the manifest.
 - **[MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)**:
   the market side end to end: free data, the rules engine, news matched to
   holdings, the Forecaster's five models, both engines side by side, the
@@ -288,14 +292,14 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.6). |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
-| **BudgetSettings** | `portfolio_id`, `ceiling_usd` (prod $160, dev $40: the Max 20x plan's $200 credit), `steps[]` (70, 85, 95, 100), `daily_guard_x` (3), `run_max_calls` (8), `hard_limit_usd` (the Console workspace limit, typed in to match it), `agent_shares{}` (§20.7), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `eval_caps{}` (dev's live evals: $10 a month, $2 a run; prod's overnight judges: 3%; §23.7), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
+| **BudgetSettings** | `portfolio_id`, `ceiling_usd` (prod $160, dev $40: the Max 20x plan's $200 credit), `steps[]` (70, 85, 95, 100), `daily_guard_x` (3), `run_max_calls` (8), `hard_limit_usd` (the Console workspace limit, typed in to match it), `agent_shares{}` (§20.7), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `eval_caps{}` (prod's overnight judges: 3% of the ceiling; the evals workspace's live evals: $10 a run, $30 a month; §23.7), `updated_by`, `updated_at` | The Claude ceiling the owner moves in the Admin center; every change is an audit row (§15.1). |
 | **AwsSpendMonth**, **AlertRule**, **Alert** | AWS and others: month to date by service and `env`, the forecast, `cap_gbp`, `steps[]`, `actions{}`, `step`; alert routing: type × severity → app, push, email, quiet hours, cooldown; each alert sent, where and when | The AWS meter and caps, and the alert router (§15.2). |
 | **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§15.1). |
 | **SentimentIndex**, **ArticleScore**, **MessageSeen** | per portfolio, global, or per member (the client ids already taken, §21.2) | |
 | **PendingAction** | `member_id`, `flow_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `register_record` · `record_event` · `checkin` · `statement` · `settings` · `confirm`), `step`, `collected` (the answers so far), `draft_hash?`, `message_id`, `expires_at` (24 h) | The state of the guided flows: what MyPaisa is waiting for from this member. Several can be open at once, keyed by flow id, so a check-in arriving mid-way does not wipe a half-registered FD. A draft (§4.8) is hashed here, and Confirm commits exactly that draft. The next message or tap resumes its flow; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `cas` · `broker_export` · `statement` · `checkin` · `inline_edit` · `agent_proposal` · `schedule` · `migration`), `document_id?` (the file a change came from), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
 | **RunRecord** | `run_id`, `trace_id`, `build`, `version`, `function`, `trigger` (`message` · `action` · `schedule:<name>` · `alarm` · `deploy`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output, cache-read and cache-write tokens, cost, ms, time to the first token, stop reason, refused or fell back), `tool_calls[]` (name, ms, ok, error class, input and output sizes, the truncated input and output), `messages_sent`, `checks[]` (the policy gate's decisions, the figure check, the member's signals; §23.4), `outcome`, `error?` | What one run of any Lambda did and cost, and the trace it is on. 90-day TTL. Activity at every door and the cost guard rails read these; the only place a tool's input and output are kept outside `ChatTurn`. See §10. |
-| **EvalResult**, **EvalLabel** | `run_id` or `case_id`, `judge`, `judge_version`, `verdict` (`pass` · `fail` · `unknown`), `reason`, `flags[]`, `at`; the admin's `label` per failure mode with a one-line critique, `labelled_at` | A judge's verdict on a live run or a case, and the admin's own reading that calibrates it (§23.4, §23.5). Kept beside the runs, in the household's own table; never copied out of the account. |
+| **EvalResult**, **EvalLabel** | `run_id` or `case_id`, `judge`, `judge_version`, `verdict` (`pass` · `fail` · `unknown`), `reason`, `flags[]`, `at`; the admin's `label` per failure mode with a one-line critique, the labelled run's transcript, `labelled_at` | A judge's verdict on a live run or a case, and the admin's own reading that calibrates it (§23.4, §23.5). A label keeps its run's transcript past the run's ninety days, so a changed judge is measured again on the same runs. Kept beside the runs, in the household's own table, and stored nowhere else. |
 
 Signals and macro regimes are per instrument and shared by everyone who holds
 it; stances are per position, because the horizon, the drift from target and
@@ -1078,7 +1082,8 @@ and scoring, Opus 5.5 for the Saturday review), with strict tools over the
 registry, the engine and the cards, through the Anthropic API with the key in
 SSM. Prompt caching on the system prompt, the tool list and the card rubrics.
 Anthropic's server-side web search and web fetch (with citations) serve the
-"Why?" button and the Saturday review; the nightly sentiment scoring goes
+"Why?" button and the Saturday review, in a call of their own that holds a
+holding's name and ISIN but no household figure (§23.2); the nightly sentiment scoring goes
 through the Message Batches API at half price. Refusal or error falls back to
 the plain template.
 
@@ -1182,10 +1187,12 @@ filtered before the cascade runs. The monthly Claude ceiling with its
 ladder and guards (§15.1), the weekly red budget and quiet hours are enforced
 by the agent Lambda. `/pause` sets a flag
 every scheduled run checks first. These are the first layer of §23.2: every
-tool call also passes a policy gate in code against the agent's manifest,
-third-party text reaches the model only as a labelled tool result, and every
-figure a reply states is checked against the turn's tool results; §23 holds
-the guardrails and the evals that test them on every change.
+call of our own tools also passes a policy gate in code against the agent's
+manifest, third-party text reaches the model only as labelled data, a
+conversation that has read it loses every tool that sends data out, and every
+figure a reply states is checked against the tool results and the member's
+own words; §23 holds the guardrails and the evals that test them on every
+change.
 
 ---
 
@@ -1455,7 +1462,9 @@ MA-102); the Claude ceiling with its member share, renewal day and hard limit,
 the caps, their alert thresholds and the alert routing, quiet hours and
 cooldowns (§15.1, §15.2, MA-116, MA-137); replaying dead-lettered work (§21.3,
 MA-145); approving or rejecting an agent's request and rolling a setting back
-(§20.2, §20.3, MA-130); and choosing how an incident ends (§20.5, MA-135). Each
+(§20.2, §20.3, MA-130); choosing how an incident ends (§20.5, MA-135); and on
+the Evals page, labelling runs for the judges, turning a failed run into a
+test case and moving the eval caps (§23.5, §23.7, MA-255). Each
 is behind the second check (§4.5), writes an audit row, and none changes the
 household's records. Privacy mode hides pounds and rupees here too. Each
 environment has its own api host (`api-dev`, `api`), with the stream on it
@@ -1720,7 +1729,7 @@ span named `chat <model>` and sets:
   `gen_ai.tool.name` on each tool span;
 - **MyPaisa's own:** `mypaisa.cost_usd` (from the price table, the same figure
   the meter adds, §15.1), `mypaisa.feature` (chat, brief, wrap, review,
-  scoring, extraction, search, notes), `mypaisa.agent` (§20.1),
+  scoring, extraction, search, notes, evals), `mypaisa.agent` (§20.1),
   `mypaisa.step` (the ladder's step at the time), `mypaisa.cache_hit`,
   `mypaisa.ttft_ms`, `mypaisa.refusal`, `mypaisa.fallback` (the plain template
   went out instead), `mypaisa.batch` for Batches, and `run_id`, `member` and
@@ -2024,7 +2033,10 @@ pensions since 2024") are answered without a database running all month:
 - A `query_ledger_sql` tool runs DuckDB inside the Lambda over that
   household's files only. Claude writes the SQL from the question; the query
   is read-only (SELECT only), stops at 10,000 rows or 10 seconds, and cannot
-  reach another household's prefix.
+  reach another household's prefix. DuckDB runs with external access off
+  and its configuration locked, so a query cannot read a URL or a local file,
+  over views of the asker's own scope, so a member sees only what they may
+  see (§4.5, §23.2).
 - The figures in the answer come from the result, never from the model, and
   the SQL is shown under the answer's Technical section so every answer can
   be checked. The card is designed first.
@@ -2045,7 +2057,7 @@ pensions since 2024") are answered without a database running all month:
 | Data | pandas, numpy, pyarrow; **exchange_calendars**; **feedparser, trafilatura** |
 | **Engine** | **The desk's indicator and pillar logic ported to pandas with golden tests; macro baskets per region** |
 | Claude | **the `anthropic` SDK against the Anthropic API, key in SSM**; structured outputs; server-side web search and fetch; Message Batches; **PDF and image input for documents** |
-| **Documents** | **S3 + Claude extraction with citations; no OCR library** |
+| **Documents** | **S3 + Claude extraction (strict JSON, each field's source line and confidence; the extractor has no tools, §23.2); no OCR library** |
 | **The app** | **One app for iOS and iPadOS 26 (Liquid Glass): a React Native shell (bare React Native 0.88, the New Architecture, Hermes, TypeScript, no Expo, Swift Package Manager) with a native SwiftUI core in Swift 6, every piece a member looks at hosted through Fabric and fed one formatted JSON model (§9.5); Swift Charts; AuthenticationServices (Sign in with Apple, passkeys) and Google Sign-In for iOS; LocalAuthentication for the app lock; UserNotifications; VisionKit, PhotosUI and Quick Look for files; Jest for the shell, swift-format, XCUITest, snapshot and accessibility tests for the SwiftUI pieces, and a `PERFORMANCE.md` with its benches; TestFlight (§9, §18.4)** |
 | Charts | **Swift Charts in the app and shadcn-svelte's charts on LayerChart in the web app (lightweight-charts for the market side's price charts), from the engine's series; no image is drawn on the server** |
 | **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Sign in with Apple and Google verified in custom-auth Lambdas, passkeys; five-minute access tokens in the Keychain** |
@@ -2077,10 +2089,12 @@ password is never stored; privacy mode hides pounds in every card, every
 screen and every notification.
 
 Untrusted text is no longer only the web's: every third-party text, a file's
-included, reaches a model only as a labelled tool result, files are read by
-a quarantined extractor with no tools, and a run that has read such text
-loses every tool that sends data out; a red-team suite proves it on every
-change (§23.2, §23.3).
+included, reaches a model only as labelled data, files are read by a
+quarantined extractor with no tools, and a conversation that has read such
+text, with every note and summary drawn from it, loses every tool that sends
+data out; a red-team suite proves it on every change (§23.2, §23.3). The
+doors render a reply as plain text and card fields, with no remote image and
+no link the reply invents.
 
 The web app keeps v2's browser rules (§9.4): the session cookie is `HttpOnly`,
 `Secure`, `SameSite=Strict`, set by the api for its own host; CORS admits only
@@ -2147,6 +2161,11 @@ and that device are now the key to the app.
 | **Total, one member** | **£19** | **£45** | **£55** |
 | Each further member (their briefs and chat) | +£2 | +£3 | +£5 |
 
+Not in the table: the live evals in their own Console workspace (§23.7), up
+to $30 (about £23) in a month of prompt or tool changes and nothing in a
+quiet one, paid from the same credit; and the overnight judges, under $1
+inside prod's ceiling.
+
 Two members on the standard setup: about £48, of which about £6 is Apple's developer membership and about £2.50 the watching of §10.9. The Claude lines are paid by
 the monthly API credit that comes with the Max 20x plan ($200 a month,
 about £154), spent through a Console organisation linked to the plan;
@@ -2187,7 +2206,11 @@ the day's ECB rate. With no payment method and auto-reload off, the credit
 itself is the last stop. Going past $200 (to a full £200, about $260, say)
 means adding a card on the Console organisation, so when prod's and dev's
 ceilings together would pass the credit, the Admin center warns that the
-extra needs a card and asks for an explicit yes (MA-116).
+extra needs a card and asks for an explicit yes (MA-116). A third workspace,
+`evals`, holds the live evals with its own $30 limit, on top of the two
+ceilings (Arun, 28 Oct 2026): the three limits sum to $230, the credit stays
+the last stop with no card on file, and the warning still compares only
+prod's and dev's ceilings (§23.7).
 
 **What $160 buys.** Two members are expected to spend about $24 a month on
 the standard setup and $39 on the full one (the Claude lines above, in
@@ -2208,9 +2231,9 @@ loop, not a ration.
 ceiling ($160 in prod, $40 in dev), the steps of the ladder (70%, 85%, 95%,
 100%), each member's share (60%), the daily guard (three times the daily
 average), the calls per run (eight), each agent's
-share (§20.7), the eval caps (dev's live evals at $10 a month and $2 a
-run, prod's overnight judges at 3%; §23.7), and the day the plan's credit
-renews, which starts each cycle. The admin moves the ceiling up or down in the Admin center (MA-116),
+share (§20.7), the eval caps (prod's overnight judges at 3%, pausing from
+the 85% step; the evals workspace's live evals at $10 a run and $30 a month;
+§23.7), and the day the plan's credit renews, which starts each cycle. The admin moves the ceiling up or down in the Admin center (MA-116),
 or from phase 18 in the admin's chat (§20.3): the admin only, behind
 the second check (MA-76, MA-102), with an audit row and a message to the
 admin in the chat; it takes effect on the next model call. Lowering it below what is already
@@ -2272,8 +2295,8 @@ behind the second check, each change an audit row and a message in the admin's c
 
 **Claude.** The ceiling per environment, the ladder's steps (any ascending
 list; 70%, 85%, 95% and 100% by default), what each step does (§15.1), the
-member share, the daily guard, the calls per run and each agent's share
-(§20.7). Hard stops behind them: the Console workspace limits, then the
+member share, the daily guard, the calls per run, each agent's share
+(§20.7) and the eval caps (§23.7, on the Evals page). Hard stops behind them: the Console workspace limits, then the
 credit itself.
 
 **AWS and others.** AWS has no true spending cap, so the app caps by acting:
@@ -2366,8 +2389,8 @@ a daily digest instead.
 | Live delivery | SSE on the api host at both doors, with a per-member event log for resume and push only where no stream is open, replacing the API Gateway WebSocket and its `live` host; a spike proves it first (§21.5) | The session cookie reaches the api host; one stream carries replies, cards, check-ins and record changes |
 | Documentation | Confluence (space mypaisaa-agent) is the readable copy of the plan: generated from the trace, PLAN, ARCHITECTURE, the roadmap, the decision records and the design mirror by `scripts/confluence_docs.py`, published through the Atlassian MCP, and checked with the other records by `scripts/plan_sync.py`; every story's estimate and every phase's dates live in `docs/roadmap.json`, and each phase epic's due date in Jira is its target end; each story names the code that builds it (MA-228) | Arun, 26 Oct 2026: the plan, Jira, the designs, the documents and the code stay the same and do not drift; one source for each fact, every copy generated from it and checked |
 | UI and app stack | The web app on Smart Clearance's stack: SvelteKit 3, Tailwind CSS 4 over the Warm ledger tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, Motion. The iOS shell on bong-panjika's: React Native 0.88, TanStack Query on the shared query definitions, Reanimated, MMKV on Nitro, with every pixel SwiftUI. Each at its latest; Swift Package Manager from day one; the api a REST API so the stream can stream (MA-229, 26 Oct 2026) | Arun: "Go with the latest and greatest ... for UI, I want what we used for Smart Clearance and bong-panjika, Tanstack, shadcn-ui, tailwind CSS"; two stacks already proven in his projects, one data layer for both doors |
-| Guardrails | In code before the prompt: least agency, one manifest per agent and tool, a policy gate before every tool call that fails closed, third-party text only as labelled tool results and files read by a quarantined extractor with no tools, every figure checked against the turn's tool results, plain refusals for what is out of scope (§23.2; MA-245, 27 Oct 2026) | A prompt can be talked round and a file can carry instructions; code cannot be, so what the agent must never do is made impossible, not discouraged |
-| Evals | Tested on change, never on a calendar: T0 replays on every pull request, T1 live on dev's key when a prompt, tool, guard, model route or kind changes ($2 a run, $10 a month), T2 on a model change before it reaches prod; every live run checked by code, flagged runs and 10% judged overnight on Haiku through Batches, alerts only when a rate leaves its band; the admin calibrates the judges monthly and on every change; Inspect AI; no evaluation service sees the household's data (§23.3 to §23.7; MA-245, 27 Oct 2026) | Arun: a daily rerun of an unchanged set costs money, repeats the same score and breeds alert fatigue; model ids are pinned snapshots, so only a change can change the agent, while live traffic changes every day |
+| Guardrails | In code before the prompt: least agency, one manifest per agent and tool, a policy gate before every call of our own tools that fails closed, Anthropic's server tools only in a call that holds no household figure, third-party text only as labelled data and files read by a quarantined extractor with no tools, a conversation that has read such text losing every tool that sends data out, every figure checked against the tool results and the member's own words, plain refusals for what is out of scope (§23.2; MA-245, 27 and 28 Oct 2026) | A prompt can be talked round and a file can carry instructions; code cannot be, so what the agent must never do is made impossible, not discouraged |
+| Evals | Tested on change, never on a calendar: T0 replays on every pull request; T1 live when a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK changes, three trials a case, in a Console workspace of its own, `evals` ($10 a run, $30 a month, on top of the two ceilings), its key in SSM read only by a `ci-evals` role; T2 on a model change before it reaches prod; every live run checked by code, flagged runs and 10% judged overnight on Haiku through Batches, alerts only when a rate leaves its band; the admin calibrates the judges monthly and on every change, each label behind the second check; Inspect AI; transcripts stored only in our AWS account, and no evaluation service stores them (§23.3 to §23.7; MA-245, 27 and 28 Oct 2026) | Arun: a daily rerun of an unchanged set costs money, repeats the same score and breeds alert fatigue; model ids are pinned snapshots, so only a change can change the agent, while live traffic changes every day |
 | Domains | `dashboard(-dev)` and `api(-dev)`; the `console` and `live` hosts are gone; the apex redirects to `dashboard.mypaisapp.com` at cutover (§18.2) | One host for the web app, its links and its passkeys |
 
 ## 17. Open questions
@@ -2506,7 +2529,7 @@ resource (`.claude/rules/aws-changes.md`).
 | Gates | every PR | ruff, pyright, pytest (AWS faked with moto), `terraform fmt` and `validate`, tflint, a security scan of the Terraform, gitleaks, pip-audit, the `jira-key` check |
 | Web gates | every PR touching `web/` | svelte-check, eslint, vitest, npm audit, and Playwright at 390 and 1440 in both themes, with `prefers-reduced-motion` both ways; the contrast gate (`scripts/contrast_check.py`) on every PR |
 | iOS gates | every PR touching `ios/` | on a macOS runner: Jest and the TypeScript checks for the shell; swift-format, build, XCUITest on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); the performance benches of §9.5 on the phone before a release |
-| Evals | every PR; live when it touches `playbooks/`, the manifest, a tool, a guard, the model routing or a kind template; the full suite on a model-id change | T0: the recorded conversations replayed through the agent loop and its guards, and the coverage check; T1: the affected cases live on dev's key, three trials each, within $2; T2: every case five times on the new model (§23.3; MA-246, MA-250, MA-251) |
+| Evals | every PR; live when it changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK; the full suite on a model-id change | T0: the recorded conversations replayed through the agent loop and its guards, and the coverage check; T1: the affected cases live in the `evals` workspace, three trials each, within $10 a run and $30 a month, a run stopped by its cap marked incomplete; T2: every case five times on the new model (§23.3; MA-246, MA-250, MA-251) |
 | Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
 | Build | merge to `main` | the Lambda images built once on AWS: the workflow's image job runs on AWS CodeBuild's arm64 runner (`codebuild-mypaisa-ci-image-…`, arm1.small, inside CodeBuild's free 100 minutes a month), builds the `lambda` and `stream` targets natively and pushes them to ECR by the commit's sha; the same digest goes to both environments (MA-237) |
 | Dev | after the build | apply dev, deploy, smoke tests against `api-dev`, which also assert one trace from `api` to `sender` through the X-Ray API (§10.3, MA-232) |
@@ -2514,12 +2537,14 @@ resource (`.claude/rules/aws-changes.md`).
 | Prod | after dev passes, T2 is green for the model ids it ships (§23.3), and Arun approves in the GitHub `prod` environment | apply prod, deploy behind each Lambda's `live` alias, smoke tests, automatic rollback to the previous version on failure; then the web app synced to prod's dashboard bucket and MyPaisa uploaded to TestFlight, so a new front end never meets an old api (MA-167) |
 | Drift | nightly | `terraform plan` for both environments; any difference is a message in the admin's chat (MA-108) |
 
-CI reaches AWS through the account's GitHub OIDC provider with three roles:
-`ci-plan` (read only, any branch), `ci-dev-deploy` (`main` only) and
-`ci-prod-deploy` (`main` and the `prod` environment only). These roles, and
+CI reaches AWS through the account's GitHub OIDC provider with four roles:
+`ci-plan` (read only, any branch), `ci-evals` (the evals job on any pull
+request, reading only the evals workspace's key,
+`/mypaisa-agent/dev/anthropic/evals_key`; §23.3, MA-250), `ci-dev-deploy`
+(`main` only) and `ci-prod-deploy` (`main` and the `prod` environment only). These roles, and
 the developer role, live in a small root of their own, `infra/bootstrap`,
 applied once from the laptop, since CI cannot assume a role that does not
-exist yet. The same root holds what the image build needs (MA-237): the
+exist yet; `ci-evals` joins it in an apply Arun asks for (MA-250). The same root holds what the image build needs (MA-237): the
 CodeBuild runner project and its service role, which alone pushes to ECR, the
 CodeConnections connection to GitHub, which Arun authorises once (MA-238),
 the one `mypaisa` ECR repository both environments pull from (scan on push;
@@ -3194,10 +3219,14 @@ His starting point: running the offline evals every day costs money, repeats
 the same score while nothing has changed, and trains everyone to ignore the
 alerts; gate the golden set in CI/CD, watch production online, and have a
 person calibrate the LLM judges on a schedule. His choices the same day: the
-judges calibrated monthly and on every change; production transcripts stay in
-our AWS account; Inspect AI is the harness; live evals on pull requests capped
-at $10 a month and $2 a run. The research behind this section, with its
-sources, is `docs/RESEARCH.md` §5.
+judges calibrated monthly and on every change; production transcripts stored
+only in our AWS account; Inspect AI as the harness. And on 28 Oct 2026, after
+the first review round: the live evals capped at $10 a run and $30 a month in
+a Console workspace of their own, on top of prod's and dev's ceilings; CI
+reaching that workspace's key through SSM and a role of its own; and labelling
+runs and turning a run into a test case each behind the second check. The
+research behind this section is `docs/RESEARCH.md` §5, its sources in the list
+at the end of that file.
 
 The agents will keep changing: new kinds of holding (§4.8), new tools, new
 prompts, a new model every so often, and in phase 18 a team of agents that
@@ -3208,25 +3237,27 @@ written once. It is a set of rules every new piece must meet, checked by code.
 
 1. **Guard in code, not in the prompt.** What an agent cannot do is enforced
    where the prompt cannot reach: the tools it is given, a policy gate before
-   every tool call, the one write service behind Confirm (§4.10), and checks
-   on what it says before it is sent. The prompt explains; code decides
-   (§1, §8).
+   every call of our own tools, the one write service behind Confirm (§4.10),
+   and checks on what it says before it is sent. The prompt explains; code
+   decides (§1, §8).
 2. **Test on change, never on a calendar.** Claude model ids are pinned
-   snapshots, so the agent behaves the same until we change a prompt, a tool,
-   a guard, a kind or the model id. The golden set runs on the pull request
-   that makes such a change, and before a model change reaches prod; it never
-   runs on a timer, where it would only measure noise.
-3. **Check every live run with code, judge a few.** What changes without a
-   pull request is what members ask and send. Every run is checked by code at
-   no cost; every flagged run and a random 10% are judged overnight; only a
-   rate that leaves its band raises an alert.
+   snapshots, so the agent behaves the same until we change what it rests on:
+   a prompt, a tool, a guard, the agent loop, the model routing, a kind
+   template, the SDK or a model id. The golden set runs on the pull request
+   that makes such a change, and before a new model reaches prod; it never
+   runs on a timer, where it would only measure noise. What changes without a
+   pull request (what members ask and send, and Anthropic's own side, such as
+   its classifiers and server tools) is what the online checks watch.
+3. **Check every live run with code, judge a few.** Every run is checked by
+   code at no cost; every flagged run and a random 10% are judged overnight;
+   only a rate that leaves its band raises an alert.
 4. **People calibrate the judges.** A model that grades a model is trusted
    only as far as it agrees with the admin's own reading: monthly, and
    whenever a judge, a prompt, a tool or the model changes.
 5. **Nothing new ships without its cases** (the growth rule). Every agent,
    tool, prompt and kind is declared in one manifest, and CI refuses one with
-   no safety case and no capability case. Every incident, and every finding of
-   a review, becomes a case the same day.
+   no safety case, or with no capability or regression case. Every incident,
+   and every finding of a review, becomes a case the same day.
 
 ### 23.2 Guardrails, strongest first
 
@@ -3235,22 +3266,31 @@ detects it beats one that asks the model nicely. The layers, in that order:
 
 | Layer | What it does | Story |
 | --- | --- | --- |
-| **Least agency** | No tool can trade, delete data, read a secret or message anyone but the member it is answering (§8). Drafts write nothing; only Confirm, a check-in's tap or a Save in place commits, through the write service, and Confirm commits exactly the draft whose hash `PendingAction` holds (§4.10). The SQL copy is read only (§12.1); admin actions sit behind the second check (§4.5). Each agent gets only the tools its manifest lists (§23.5). | §8, MA-246, MA-256 |
-| **The policy gate** | Before every tool call, in code: the tool is in the calling agent's manifest; the member's role and the household scope allow it (§4.5); the arguments match the strict schema and their ranges, money as integer minor units with an ISO 4217 code; the run is under its tool-call cap and is not repeating the same call. It fails closed: an error or a timeout refuses the call. Each decision is an attribute on the tool's span and an entry in the `RunRecord`'s `checks`. | MA-247 |
-| **Untrusted text, one way in** | Every third-party text (a file's text, a statement line, a CAS file, an Excel sheet, a fetched page, a search result, a news item, a merchant name) reaches a model only inside a tool result, JSON-encoded and labelled with its source, and the system prompt says such text is data, never instruction. Files are read by a quarantined extractor: its own model call, with no tools, whose only output is the strict schema, checked by code. Once untrusted text is in a run, the gate removes every tool that sends data out for the rest of that run, so no run holds private data, untrusted text and a way out at once. | MA-253, MA-68 |
-| **Checks on what it says** | Every figure in a reply is matched against that turn's tool results after normalising the unit, the currency and the rounding; a miss regenerates once, then the plain template is sent (§1). A trade, tax advice, another household's data, a member's detail not shared with the asker, and "sell everything" get a plain refusal with the reason. Stance cards carry "a view, not advice". A reply that names a record outside the asker's scope is refused. | MA-248, MA-249, MA-54, MA-92 |
+| **Least agency** | No tool can trade, delete data, read a secret or message anyone but the member it is answering (§8). Drafts write nothing; only Confirm, a check-in's tap or a Save in place commits, through the write service, and Confirm commits exactly the draft whose hash `PendingAction` holds (§4.10). The SQL copy is read only, and its DuckDB runs with external access off and its configuration locked, over views of the asker's own scope (§12.1). Admin actions sit behind the second check (§4.5). Each agent gets only the tools its manifest lists (§23.5). | §8, §12.1, MA-246, MA-256 |
+| **The policy gate** | Before every call of one of our own tools, in code: the tool is in the calling agent's manifest; the member's role and the household scope allow it (§4.5); the arguments match the strict schema and their ranges (an amount is the member's own text, parsed and typed by code, §4.7; only a typed override takes minor units and a currency code, §6.6); the run is under its tool-call cap and is not repeating the same call. It fails closed: an error or a timeout refuses the call. Each decision is an attribute on the tool's span and an entry in the `RunRecord`'s `checks`. Anthropic's server tools (`web_search`, `web_fetch`) run inside one API request, where no code can stop a call, so the gate acts on them between requests: they are given only to a call that holds no household figures (the "Why?" research and the review's sources get a holding's name and ISIN, never an amount), with `max_uses` set, and `web_fetch` reaches only links already in that conversation. | MA-247, MA-68 |
+| **Untrusted text, one way in** | Every third-party text (a file, a statement line, a CAS file, an Excel sheet, a fetched page, a search result, a news item, a merchant name) reaches a model only as data: inside a tool result, JSON-encoded and labelled with its source, or, for a PDF or a screenshot, as a labelled document or image block. The system prompt says such text is data, never instruction. Files are read by a quarantined extractor: its own model call, with no tools, whose only output is the strict schema with each field's source line and confidence, checked by code. The one-shot calls that read such text (statement categorisation, news tagging and scoring) also run with no tools and a strict schema. Once untrusted text is in a conversation, that conversation, and any note or summary drawn from it, loses every tool that sends data out, so nothing holds private data, untrusted text and a way out at once. | MA-253, MA-68, MA-247 |
+| **Checks on what it says** | Every figure in a reply is matched against the conversation's tool results and the member's own words, after normalising the unit, the currency and the rounding; a miss regenerates once, then the plain template is sent (§1). A trade, tax advice, another household's data, a member's detail not shared with the asker, and "sell everything" get a plain refusal with the reason. A reply that names a record outside the asker's scope is refused. The doors render a reply as plain text and card fields, with no remote image and no link the reply invents (§14). Stance cards keep their "a view, not advice" line (§9.2). | MA-248, MA-249, MA-54, MA-92 |
 | **Limits** | The Claude ceiling and its ladder, the member, day and run guards (§15.1); a cap on tool calls per run; `/pause`. | §15.1, MA-247 |
+
+No classifier screens text today: the layers above make an injection
+harmless instead of hoping to spot it, and a screen would add a model call to
+every file and page. A Haiku screen of extracted text is the first thing to add
+if the online checks (§23.4) show an injection getting through.
 
 The same layers answer the OWASP Top 10 for LLM Applications (2025) and the
 OWASP Top 10 for Agentic Applications (2026):
 
 | Risk | Where it is stopped |
 | --- | --- |
-| Prompt injection, direct and through files or pages (LLM01, ASI01) | Untrusted text one way in; the quarantined extractor; the gate narrows a run that has read it; Confirm before any write |
-| Sensitive information disclosure (LLM02) | Household and member scope in the gate and in every read (§4.5); the scope check on replies; nothing of a prompt or a reply in CloudWatch (§10.9) |
-| Improper output handling, misinformation (LLM05, LLM09) | The figure check; strict structured outputs for cards; the plain template on failure |
+| Prompt injection, direct and through files or pages (LLM01, ASI01) | Untrusted text one way in; the quarantined extractor; a conversation that has read it loses its outbound tools; the server tools only in a call with no figures; Confirm before any write |
+| Sensitive information disclosure (LLM02) | Household and member scope in the gate and in every read (§4.5); the scope check on replies; no remote images in a reply; nothing of a prompt or a reply in CloudWatch (§10.9) |
+| Improper output handling (LLM05) | The model's output reaches a door only as card fields and plain text, rendered with no HTML under the CSP (§14); its SQL runs only in the locked DuckDB (§12.1) |
+| Misinformation (LLM09) | The figure check; strict structured outputs for cards; the plain template on failure |
 | Excessive agency, tool misuse, privilege abuse (LLM06, ASI02, ASI03) | Least agency; the manifest; the gate; admin tools enforced in code; the second check |
-| Memory and context poisoning (ASI06) | The merchant memory and `propose_kind` change only after a member's Confirm or the admin's approval; a team proposal drawn from uploaded or fetched text says so (MA-256) |
+| Unexpected code execution (ASI05) | The SQL is the only code the model writes: read only, external access off, its configuration locked, over the asker's views, at most 10 seconds and 10,000 rows (§12.1) |
+| Memory and context poisoning (ASI06) | A conversation that has read untrusted text, and every note and summary drawn from it, keeps no outbound tool; the merchant memory and `propose_kind` change only after a member's Confirm or the admin's approval; a team proposal drawn from uploaded or fetched text says so (MA-256) |
+| Insecure inter-agent communication (ASI07) | The agents of §20 talk only through the event bus and the settings service, every message typed and checked like a tool call; no agent takes another's text as an instruction |
+| Human-agent trust exploitation (ASI09) | A Confirm card shows exactly what a tap writes, with code's figures; an import and every admin action also need the second check |
 | Unbounded consumption (LLM10) | The ceiling, its guards and the tool-call cap |
 | Rogue or cascading agents (ASI08, ASI10) | Each agent's own manifest and safety suite; every change outside a setting's band is a `ChangeRequest` the admin approves, with its eval results attached (§20.3, MA-256) |
 
@@ -3258,15 +3298,19 @@ OWASP Top 10 for Agentic Applications (2026):
 
 **A case** is a task on the synthetic household (the one figure set the dev
 seed and the boards use, MA-110): a conversation or an event, the records it
-starts from, and what must be true afterwards. Its graders come in order of
-trust: code first, on the outcome (the `PendingAction` draft's values, the
-records after Confirm, nothing written before Confirm, every figure
-grounded, the tools called and not called); a binary judge only for what
-code cannot measure ("asked one thing at a time", "plain and clear"), one
-judge per failure mode, with an "unknown" answer allowed. Each case carries
-its tags: the agent, the tool, the kind, the flow, the story key and its
-suite. Cases are Inspect AI datasets in `evals/`; Inspect runs the trials,
-scores them and keeps the logs.
+starts from, and what must be true afterwards. A case of several turns has its
+member's side scripted by slot (whose, how much, when), so the agent may ask in
+any order and still get the same answers. Its graders come in order of trust:
+code first, on the outcome (the tools called and not called, the refusals,
+every figure grounded, and from phase 2 the `PendingAction` draft's values,
+the records after Confirm and nothing written before Confirm); a binary judge
+only for what code cannot measure ("asked one thing at a time", "plain and
+clear"), one judge per failure mode, with an "unknown" answer allowed. Each
+case carries its tags: the agent, the tool, the kind, the flow, the story key
+and its suite. Cases are Inspect AI datasets in `evals/`; Inspect runs the
+trials, scores them and keeps the logs. Phase 1's cases test what the phase-1
+chat does; registering, Confirm, cancel and correcting join with phase 2's
+draft tools and write service (MA-197, MA-201).
 
 **Three suites.**
 
@@ -3274,18 +3318,24 @@ scores them and keeps the logs.
 | --- | --- | --- |
 | `safety` | Red-team cases: injection in a file, a page or a merchant name; a request beyond the member's role; a trade, tax advice, another household, "sell everything" | Every case passes every trial (pass^k) |
 | `regression` | Graduated capability cases, every incident and review finding, the kinds' generated cases | The pass rate stays at or above its baseline less its measured noise, reported with its standard error |
-| `capability` | New work, expected to fail at first | Tracked, never blocking; a case that passes every run for four weeks graduates to `regression` |
+| `capability` | New work, expected to fail at first | Tracked, never blocking; a case that passes every trial in ten gated runs in a row graduates to `regression` |
 
 **Three tiers.**
 
 | Tier | When | What | Cost |
 | --- | --- | --- | --- |
 | T0 | every pull request | the recorded conversations replayed through the real agent loop and its guards (MA-198's scripted mode), the guards' own tests, and the coverage check (§23.5); no network | nothing |
-| T1 | a pull request that touches `playbooks/`, the manifest, a tool, a guard, the model routing or a kind template | live on dev's Claude key, only the tags those paths cover, three trials a case; the result posted on the pull request | at most $2 a run and $10 a month |
-| T2 | a change to a model id (in `infra/dev`, `infra/prod`, or a judge's), and before a release takes a new id to prod | the full suite, five trials a case, on the new id; the recordings re-recorded; the release workflow waits for it | inside the same $10; a T2 that would pass it asks the admin first, with its estimate |
+| T1 | a pull request that changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK | live in the evals workspace, the cases those paths cover, three trials each; the result posted on the pull request | at most $10 a run and $30 a month; a run that reaches its cap stops, is marked incomplete, never green, and the pull request waits for the admin's word |
+| T2 | a change to a model id (ours in `infra/dev` or `infra/prod`, or a judge's), and before a release takes a new id to prod | the full suite, five trials a case, on the new id; the recordings re-recorded; the release workflow waits for it | inside the same $30; a T2 that would pass what is left of it asks the admin first, with its estimate |
 
-Unit tests still never reach the Anthropic API (TECH_STACK §6): T1 and T2 are
-an eval job of their own, on dev's key, not the test suite.
+**Where they run.** T1 and T2 run in CI in a job of their own, with the key of
+a Console workspace of their own, `evals`, whose $30 monthly limit is the hard
+stop. The key sits in dev's SSM path (`/mypaisa-agent/dev/anthropic/evals_key`),
+and only a role of its own, `ci-evals`, reads it, for that job alone (§18.4);
+Arun makes the workspace and puts the key by hand (MA-21). The evals run on the
+seed household and never touch dev's ceiling or its ladder, so a run always
+tests the model that ships. Unit tests still never reach the Anthropic API
+(TECH_STACK §6).
 
 **Non-determinism.** A case runs several trials; safety needs every one,
 regression is compared as a paired difference with its standard error, and a
@@ -3297,90 +3347,108 @@ by a person (the transcript, not only the score) and either fixed or moved to
 
 **Every run, at no cost.** The `RunRecord`'s `checks` (§10.1) hold the gate's
 decisions, the figure check, a refusal, a template fallback, tool errors, the
-loop's length and its cost; and the member's own signals: a proposal
-cancelled, a correction within seven days of a Confirm on the same record, a
-question asked twice in a conversation. Any of these flags the run.
+loop's length and its cost; and the member's own signals: a question asked
+twice in a conversation, and from phase 2 a proposal cancelled and a
+correction within seven days of a Confirm on the same record. Any of these
+flags the run.
 
 **Judged overnight.** Every flagged run and a random 10% of the rest are
 judged by the same binary judges as T1, on Haiku through the Batches API at
-half price. The random share is there to find what no flag catches. Each
-verdict is an `EvalResult` row (§4.1) beside the run. Nothing leaves the AWS
-account: the judges are Claude calls from our own Lambda, and no evaluation
-service sees the household's money.
+half price, within 3% of prod's Claude ceiling, metered as the feature `evals`
+(§10.4, §15.1); they pause from the ladder's 85% step. The random share is
+there to find what no flag catches. Each verdict is an `EvalResult` row (§4.1)
+beside the run. Transcripts are stored only in our AWS account: the judges
+send them to the Anthropic API on the same terms as the chat, and no
+evaluation service stores them.
 
 **Alerts on rates, not on flags.** The same job counts each rate (guard
-trips, figure misses, member signals, judge fails) and compares it with its
-band over the last eight weeks. Only a rate outside its band raises an alert,
-through the alert router (§15.2); the rest is a line in the weekly digest. No
+trips, figure misses, member signals, judge fails) and compares it, a week at a
+time and only once it has enough runs behind it, with its band over the last
+eight weeks, so a quiet night is no alarm. A rate outside its band raises an
+alert: in phases 1 to 7 a message on the owner's outbox and an alarm
+`RunRecord` (§10.6), from phase 8 through the alert router (§15.2). The rest is
+listed in Activity (MA-196), and from phase 8 in the router's daily digest. No
 CloudWatch metric is added: the rates live in the `EvalResult` rows and the
 runs.
 
 **Advisory until calibrated.** Until the admin's calibration lands in phase 8
-(MA-255), the judges' verdicts go to the digest only and never alert.
+(MA-255), the judges' verdicts are listed in Activity only and never alert.
 
 ### 23.5 Calibration and growth
 
-**The admin calibrates the judges** (MA-255), in the Admin center, monthly
-and whenever a judge, a prompt, a tool or the model changes, or flags spike.
-About 30 runs are offered: every run where a judge and a code check disagree,
-flagged runs and a random share, each with its transcript, its tool calls and
-the verdicts. The admin marks pass or fail for each failure mode, with a
-one-line critique. Each judge's true-positive and true-negative rates are
-measured on labels it was not built from; a judge below 0.8 on either drops
-to advisory until a pull request fixes it. The labels (`EvalLabel`, §4.1)
-are the judges' ground truth.
+**The admin calibrates the judges** (MA-255), on the Admin center's Evals
+page, monthly and whenever a judge, a prompt, a tool or the model changes, or
+flags spike. About 30 runs are offered: every run where a judge and a code
+check disagree, flagged runs and a random share, each with its transcript, its
+tool calls and the verdicts. The admin marks pass or fail for each failure
+mode, with a one-line critique; each label is behind the second check (§4.5)
+and writes an audit row. Labels accumulate: each label is an `EvalLabel`
+(§4.1) that keeps the transcript of the run it labels past that run's ninety
+days, so a changed judge is measured again on the same runs. A judge acts only
+once it has at least 50 pass and 50 fail labels it was not built from; until
+then, and whenever its true-positive or true-negative rate falls below 0.8, it
+is advisory until a pull request fixes it.
 
 **A real failure becomes a permanent case.** A run the admin marks as failed
 is rewritten onto the synthetic household (its figures, names and files
-replaced, its shape kept), shown to the admin, and on Confirm becomes a
-`regression` case through a pull request. The same goes for every incident
-and every finding of a review, the same day.
+replaced, its shape kept), shown to the admin, and on Confirm, behind the
+second check, becomes a `regression` case through a pull request. The same
+goes for every incident and every finding of a review, the same day.
 
 **One manifest** (MA-246) declares every agent (its model route and its
 tools) and every tool: its side effect (read, draft, commit through Confirm,
 external), the roles that may call it, its household scope, whether
 untrusted text removes it, its per-run limit and its eval tags. The policy
-gate reads it at run time; the coverage check reads it in CI and fails a tool,
-agent, prompt file or kind template with no safety case and no capability
-case; §8's Tools list is checked against it.
+gate reads it at run time; the coverage check reads it in CI and refuses a
+tool, agent, prompt file or kind template with no safety case, or with no
+capability or regression case; §8's Tools list is checked against it.
 
 **Kinds bring their own cases** (MA-254). Each kind template's field spec
 generates draft cases (varied phrasings, both currencies, dates in several
 forms, a missing field), graded by code. Approving a new kind or field runs
-its cases in dev first and shows the result before Confirm.
+its cases first in the evals job, on the seed household, and the approval
+card shows the result before Confirm (drawn with MA-197's boards).
 
 **The team's changes carry their evidence** (MA-256). Each agent of §20 has
 its own manifest entry and safety suite. A `ChangeRequest` that changes a
 prompt, a rule, a threshold or a model carries the affected suites' T1
-results from dev; a failing safety case blocks its approval.
+results; the approval shows them, and a failing safety case blocks it (drawn
+with MA-130's boards).
 
 **Each phase ends with a read.** A phase whose stories touch an agent ends
 with a person reading 30 of its new runs and naming their failure modes; a
 new mode becomes a code check, a judge or a case before the next phase
-starts. Cases that always pass and judges that never fail are retired or
-moved to T2 only.
+starts. A capability case that always passes and a judge that never fails are
+retired, or moved to T2 only; a safety or regression case is never retired,
+and one drawn from an incident never leaves T1.
 
 ### 23.6 What runs on a timer, and why
 
 | Job | When | Why it runs then |
 | --- | --- | --- |
 | Grading predictions and calibrating confidence (§20.4) | daily, after the close | Its ground truth, the day's prices, is new every day: it scores outcomes as they arrive, not a fixed set |
-| The overnight judges (§23.4) | nightly | They read the day's new runs |
+| The overnight judges and the rates (§23.4) | nightly, compared a week at a time | They read the day's new runs |
 | The admin's calibration (§23.5) | monthly, and on every change | People are the slow, expensive grader, kept for checking the fast ones |
-| The digest line | weekly | One place for everything below an alert |
-| The golden set (§23.3) | **never on a timer** | Nothing it tests changes without a pull request |
+| The golden set (§23.3) | **never on a timer** | What it tests changes only through a pull request; what changes without one is the online checks' to watch |
 
 ### 23.7 Cost
 
 | Line | Expected | Cap |
 | --- | ---: | --- |
-| T1 and T2 live runs, on dev's key | a few dollars in a month with prompt or tool changes | $2 a run, $10 a month, inside dev's $40 ceiling (§15.1) |
-| The overnight judges, Haiku through Batches | under $1 a month at two members | 3% of prod's ceiling (about $4.80) |
+| T1 and T2, in the evals workspace | up to $30 in a month of prompt or tool changes, nothing in a quiet one | $10 a run and $30 a month, the workspace's own Console limit |
+| The overnight judges, Haiku through Batches | under $1 a month at two members | 3% of prod's ceiling (about $4.80), pausing from the 85% step |
 | `EvalResult` and `EvalLabel` rows, the overnight job | inside DynamoDB's and Lambda's free tiers | |
 | Inspect AI | free, open source | |
 
-The caps are `BudgetSettings.eval_caps` (§4.1, §15.1). The overnight judges
-are not an agent of §20.7: they are metered as the feature `evals` and kept
+The evals workspace's $30 sits on top of prod's $160 and dev's $40 (Arun, 28
+Oct 2026): the three Console limits sum to $230 against the plan's $200
+credit, and with no card on file the credit itself stays the last stop, so
+the Admin center's warning still compares only prod's and dev's ceilings
+(§15.1); expected use is under $80 a month. The caps are
+`BudgetSettings.eval_caps` (§4.1): the meter (MA-113) keeps prod's judges to
+their share, the evals job keeps a run to its $10, and the admin sees and
+moves both on the Evals page (MA-255), behind the second check. The overnight
+judges are not an agent of §20.7: they are metered as the feature `evals`
 inside their own cap, whatever the agents' shares.
 
 ### 23.8 The stories
@@ -3389,18 +3457,23 @@ inside their own cap, whatever the agents' shares.
 | --- | --- | --- |
 | MA-245 | 0 | This record |
 | MA-246 | 0 | The manifest, the Inspect AI harness, T0 and the coverage check |
-| MA-247 | 1 | The policy gate before every tool call |
+| MA-21 | 0 | The evals workspace with its $30 limit and its key in dev's SSM path, by Arun |
+| MA-258 | 0 | The Guardrails and Evals explainer with its animated diagrams (on Confluence as GIFs), and the other explainer pages showing the guardrails and the evals |
+| MA-247 | 1 | The policy gate before every call of our own tools, and the server tools kept apart |
 | MA-248 | 1 | The chat's figure check (MA-54 reuses it for briefs and cards) |
 | MA-249 | 1 | Plain refusals for what is out of scope, proved by the safety suite |
-| MA-250 | 1 | The chat's golden set and T1 on pull requests |
+| MA-250 | 1 | The chat's golden set, T1 on pull requests and the `ci-evals` role |
 | MA-251 | 1 | T2: a model change waits for the full suite |
 | MA-252 | 1 | Online evals: every run checked by code, a few judged overnight |
 | MA-253 | 2 | The quarantined extractor and the poisoned files |
 | MA-254 | 2 | Each kind's generated cases |
-| MA-255 | 8 | The admin's calibration in the Admin center |
+| MA-255 | 8 | The admin's calibration and the eval caps on the Evals page |
 | MA-256 | 18 | Each team agent's tools, safety suite and evidence on its changes |
 
 Earlier stories this changes: MA-54 (its chat half moved to MA-248), MA-68
 (web text follows the untrusted-text rule), MA-92 (its proof kept as a
 safety case), MA-198 (its recordings are T0), MA-25 (CI runs T0, T1 and T2),
-and MA-132 and MA-133 (daily on purpose, §23.6).
+MA-107 (the release waits for T2), MA-104 (the locked DuckDB), MA-113 (the
+`evals` feature and its cap), MA-37 (the extractor's output), MA-197 and
+MA-130 (the eval results on their approval cards), and MA-132 and MA-133
+(daily on purpose, §23.6).
