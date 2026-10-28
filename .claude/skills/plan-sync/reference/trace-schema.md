@@ -71,6 +71,8 @@ with the etag Claude Design reported when it was copied:
 
 A file whose Claude Design etag differs from the recorded one has changed
 there and must be copied again (and its boards checked against the trace).
+`python3 scripts/design_sync.py pull` copies and records every such file;
+`check` fails while any file is new, changed or gone on either side (MA-259).
 
 ## The roadmap: `docs/roadmap.json`
 

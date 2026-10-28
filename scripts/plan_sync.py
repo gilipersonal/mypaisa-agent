@@ -11,7 +11,8 @@ Design and live Confluence halves need their MCP tools and live in /plan-sync.
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
     python3 scripts/plan_sync.py start MA-149  # what a story needs before work starts
-    python3 scripts/plan_sync.py selftest      # board names, dates and motion roles against known cases, and check on a mutated board (CI)
+    python3 scripts/plan_sync.py selftest      # board names, dates and motion roles against known cases, check on a mutated board,
+                                               # and scripts/design_sync.py's offline selftest (CI)
 """
 from __future__ import annotations
 
@@ -426,6 +427,32 @@ def motion_errors(text: str) -> list[str]:
     return sorted(set(bad))
 
 
+def disk_errors(projects: dict, mirror: dict, root: Path = ROOT) -> list[str]:
+    """The copies on disk against docs/design/claude-design.json: nothing unrecorded, nothing missing, every copy's bytes
+    and sha256 as recorded. scripts/design_sync.py checks the record against Claude Design and calls this too."""
+    errors = []
+    for proj_key, proj in projects.items():
+        if not isinstance(proj, dict) or not isinstance(proj.get("dir"), str):
+            errors.append(f"claude_design.{proj_key} needs a dir")
+            continue
+        recorded = mirror.get(proj_key, {}).get("files", {})
+        base = root / proj["dir"]
+        if base.is_dir():
+            for f in sorted(base.rglob("*")):
+                rel = f.relative_to(base).as_posix()
+                if f.is_file() and rel not in recorded:
+                    errors.append(f"mirror: {proj['dir']}/{rel} is not recorded in docs/design/claude-design.json")
+        for name, meta in recorded.items():
+            path = base / name
+            if not path.is_file():
+                errors.append(f"mirror: {proj['dir']}/{name} is recorded but missing")
+            elif meta.get("bytes") is not None and path.stat().st_size != meta["bytes"]:
+                errors.append(f"mirror: {proj['dir']}/{name} is {path.stat().st_size} bytes, recorded {meta['bytes']}; copy it again")
+            elif meta.get("sha256") and sha256(path) != meta["sha256"]:
+                errors.append(f"mirror: {proj['dir']}/{name} differs from the copy recorded in claude-design.json; copy it again")
+    return errors
+
+
 def check(trace: dict) -> tuple[list[str], list[str]]:
     errors, warnings = shape_errors(trace) or mirror_errors(load(MIRROR) if MIRROR.exists() else {}), []
     if errors:
@@ -480,26 +507,13 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             if f"MA-{n}" not in keys:
                 errors.append(f"{doc.relative_to(ROOT)} cites MA-{n}, which is not in the trace")
 
-    # The mirror matches what is on disk, and nothing on disk is unrecorded.
+    # The mirror matches what is on disk, and nothing on disk is unrecorded (Claude Design's side: scripts/design_sync.py).
+    errors += disk_errors(ctx["projects"], ctx["mirror"])
     for proj_key, proj in ctx["projects"].items():
         if not isinstance(proj, dict) or not isinstance(proj.get("dir"), str):
-            errors.append(f"claude_design.{proj_key} needs a dir")
             continue
-        recorded = ctx["mirror"].get(proj_key, {}).get("files", {})
-        base = ROOT / proj["dir"]
-        if base.is_dir():
-            for f in sorted(base.rglob("*")):
-                rel = f.relative_to(base).as_posix()
-                if f.is_file() and rel not in recorded:
-                    errors.append(f"mirror: {proj['dir']}/{rel} is not recorded in docs/design/claude-design.json")
-        for name, meta in recorded.items():
-            path = base / name
-            if not path.is_file():
-                errors.append(f"mirror: {proj['dir']}/{name} is recorded but missing")
-            elif meta.get("bytes") is not None and path.stat().st_size != meta["bytes"]:
-                errors.append(f"mirror: {proj['dir']}/{name} is {path.stat().st_size} bytes, recorded {meta['bytes']}; copy it again")
-            elif meta.get("sha256") and sha256(path) != meta["sha256"]:
-                errors.append(f"mirror: {proj['dir']}/{name} differs from the copy recorded in claude-design.json; copy it again")
+        for name in ctx["mirror"].get(proj_key, {}).get("files", {}):
+            path = ROOT / proj["dir"] / name
             if path.is_file() and name.endswith(".html"):
                 for d in date_errors(path.read_text()):
                     errors.append(f"board date: {proj['dir']}/{name} says {d!r}, a wrong weekday")
@@ -857,6 +871,14 @@ def selftest(trace: dict) -> int:
                     bad += 1
                     print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")
     bad += record_cases()
+    # MA-259: Claude Design against the mirror, offline, against a stand-in built from the mirror (it prints its own line).
+    try:
+        import design_sync  # noqa: PLC0415
+    except ImportError as e:  # fails closed, as the roadmap and Confluence checks do
+        bad += 1
+        print(f"FAIL: the design-sync selftest cannot run: {e}")
+    else:
+        bad += design_sync.selftest()
     # The review ledgers read this line: keep "tool names and one mutated board, <n> wrong" as it is.
     print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles, {len(TOOL_CASES)} tool names and one mutated board, {bad} wrong, counting {len(RECORD_CASES)} mutated records")
     return 1 if bad else 0
