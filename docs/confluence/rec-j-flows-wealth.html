@@ -54,7 +54,7 @@
 <li><strong>Asha&#x27;s chat, Sat 31 Oct.</strong> She hears why, in plain words, and that the admin was asked. Nothing is saved and no amount is taken yet.</li>
 <li><strong>Arun&#x27;s chat, the admin&#x27;s card.</strong> Only the admin sees Approve and Reject. Approve asks for the second check first: a fresh sign-in bound to this one approval, checked by the server.</li>
 </ul>
-<h3>🛤️ Safeguards on this path</h3>
+<h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
 <p><code>draft_record</code> writes nothing. Confirm commits exactly the draft hashed in the PendingAction, through the one write service.</p>
 </div>
@@ -132,7 +132,7 @@
 <li><strong>Saved, with its audit line.</strong> A correction is an event, never an overwrite: the April figure stays in the history, under the correction. Arun&#x27;s share follows.</li>
 <li><strong>Browser · Audit, the same morning.</strong> The correction made in place, and the record made in the chat before it.</li>
 </ul>
-<h3>🛤️ Safeguards on this path</h3>
+<h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Correct, never create</strong></strong></p>
 <p>Nothing new can be made in place. The api&#x27;s data routes are GET, apart from <code>PATCH /v1/records/{id}</code>, for the fields a kind marks editable.</p>
 </div>
@@ -198,7 +198,7 @@
 <li><strong>Several due at once, Mon 26 Oct.</strong> Two valuations come as one card, and its Confirm saves both rows exactly as shown; One by one opens each row&#x27;s own card. Overdue is amber, never red.</li>
 </ul>
 <p><strong>Picked.</strong> Three check-in cards were drawn for MA-193 (<code>iPhone v4 · Check-ins.dc.html</code>): 1a, every answer as a chip in one row; 1b, Paid as the Confirm with the rest behind Something else; 1c, a compact row. On 26 Oct 2026 Arun picked <strong>1b, Paid as the Confirm</strong>; 1c&#x27;s rows carry several check-ins due at once. Figures from the v4 figure set.</p>
-<h3>🛤️ Safeguards on this path</h3>
+<h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Asked by code, not a model</strong></strong></p>
 <p>The daily job is code with no LLM; Claude is not called to ask, or to record a payment.</p>
 </div>
@@ -273,7 +273,7 @@
 <li><strong>One Confirm, at 08:44.</strong> The lines that are not spending are recognised, so nothing counts twice. Once confirmed, the card&#x27;s £1,458 is owed and net worth moves to £456,493.</li>
 <li><strong>The autopay, confirmed.</strong> Monday&#x27;s weekly digest listed the car loan&#x27;s EMI as assumed paid; Sunday&#x27;s statement shows the payment, so its check-in is confirmed by itself, with nothing to answer.</li>
 </ul>
-<h3>🛤️ Safeguards on this path</h3>
+<h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Kept for good, before anything reads it</strong></strong></p>
 <p>Each statement is in S3 with its Document row and opens from the audit log; every line saved points to it.</p>
 </div>
@@ -342,7 +342,7 @@
 <li><strong>Closed, with Undo.</strong> The tap was the Confirm; the closed card says when, and its audit row.</li>
 <li><strong>Browser · Budget, Sun 1 Nov.</strong> October closed: plan against actual for every category, with the chat column hidden for a wider page. Every figure is the Budget view&#x27;s.</li>
 </ul>
-<h3>🛤️ Safeguards on this path</h3>
+<h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Only what no statement covered</strong></strong></p>
 <p>Cash, or a bank with no statement; everything else is already in, from the statements, the loans and the SIP.</p>
 </div>
@@ -412,7 +412,7 @@
 <li><strong>A plan item, in the admin&#x27;s chat.</strong> The evening before: made in the chat with a Confirm and an audit row, and no second check, since it changes a plan, not the records.</li>
 </ul>
 <p><strong>Picked.</strong> Three Projection screens were drawn for MA-193 (<code>iPhone v4 · Projection.dc.html</code>, <code>Web v4 · Projection.dc.html</code>): 1a, the fan first; 1b, a story first; 1c, decades. On 26 Oct 2026 Arun picked <strong>1a, the fan first</strong>, the screen ARCHITECTURE §6.6 lists. The old wealth tracker&#x27;s Forecast is renamed Projection. Every figure is an illustrative engine run from the v4 figure set.</p>
-<h3>🛤️ Safeguards on this path</h3>
+<h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Code computes, the agent explains</strong></strong></p>
 <p>Every figure on the screen and in the chat is the engine&#x27;s. Claude proposes assumptions with their reasons, fills a what-if&#x27;s override, explains the curve and raises the flags code computes.</p>
 </div>

@@ -1189,7 +1189,9 @@ def flow_blocks(ctx: cd.Ctx, slug: str, fid: str) -> str:
     blocks_after = [k for k in sec.kids if isinstance(k, Node) and "flow-h" not in k.cls()]
     for k in blocks_after:
         if k.tag == "h3":
-            out.append(f"<h3>{'🛤️' if 'path' in k.text().lower() else '🛡️' if 'Safeguards' in k.text() else '🧩' if 'Built by' in k.text() else '👀' if 'see' in k.text() else '📌'} {line(k)}</h3>")
+            t = k.text()
+            emo = "🛡️" if t.startswith("Safeguards") else "🧩" if t == "Built by" else "🛤️" if t.lower().startswith("the path") else "👀" if " see" in t else "📌"
+            out.append(f"<h3>{emo} {line(k)}</h3>")
             continue
         if "seq-card" in k.cls():
             for r in [k] if k.find("ol", cls="seq") else []:
