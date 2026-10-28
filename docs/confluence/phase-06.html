@@ -1,5 +1,5 @@
 <div data-type="panel-custom" data-icon=":moneybag:" data-color="#E3FCEF"><p><strong>🧮 The whole wealth</strong> · epic <a href="https://duttaarun2015.atlassian.net/browse/MA-190" data-card-appearance="inline"></a> · <span data-type="status" data-color="neutral">Not started</span> · <time datetime="2027-09-01">Wed 1 Sep 2027</time> to <time datetime="2027-09-14">Tue 14 Sep 2027</time></p>
-<p>12 build days, 10 working days · 3 stories, 3 with screens</p>
+<p>12.5 build days, 10 working days · 3 stories, 3 with screens</p>
 </div>
 <div data-type="panel-success"><p><strong>Exit demo.</strong> you send a bank statement in the chat; it comes back categorised, transfers recognised, uncertain lines in amber, for one Confirm; the Budget screen shows plan against actual.</p>
 </div>
@@ -7,9 +7,11 @@
 </div>
 <div data-type="panel-note"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-96">MA-96</a>, still to draw: its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)</p>
 </div>
+<div data-type="panel-note"><p><a href="https://duttaarun2015.atlassian.net/browse/MA-96">MA-96</a>, still to draw: the chat flows (&#x27;my salary is now ...&#x27;, &#x27;plan £400 a month for groceries&#x27;, dated future income changes) and a category&#x27;s inflation key, at both doors (MA-261)</p>
+</div>
 <div data-type="multi-bodied-extension" data-extension-key="native-tabs" data-extension-type="com.atlassian.confluence.native" data-parameters='{&quot;tabs&quot;: [{&quot;id&quot;: &quot;tab1&quot;, &quot;title&quot;: &quot;Stories&quot;}, {&quot;id&quot;: &quot;tab2&quot;, &quot;title&quot;: &quot;Screens&quot;}, {&quot;id&quot;: &quot;tab3&quot;, &quot;title&quot;: &quot;At every door&quot;}, {&quot;id&quot;: &quot;tab4&quot;, &quot;title&quot;: &quot;The plan&quot;}, {&quot;id&quot;: &quot;tab5&quot;, &quot;title&quot;: &quot;Architecture&quot;}, {&quot;id&quot;: &quot;tab6&quot;, &quot;title&quot;: &quot;Live in Jira&quot;}]}'><div data-type="extension-frame"><table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
 </thead>
-<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-96" data-card-appearance="inline"></a></td><td>Budget: each member&#x27;s income with its history, a monthly plan per category, and plan against actual, set through the chat</td><td>Story</td><td>5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>7</td><td>§6.6, §12</td></tr>
+<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-96" data-card-appearance="inline"></a></td><td>Budget: each member&#x27;s income with its history, a monthly plan per category, and plan against actual, set through the chat</td><td>Story</td><td>5.5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>7</td><td>§4.1, §6.6, §12</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-218" data-card-appearance="inline"></a></td><td>A bank or card statement sent in the chat is read, every line categorised and transfers recognised, for one Confirm</td><td>Story</td><td>5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>8</td><td>§4.9, §12</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-220" data-card-appearance="inline"></a></td><td>On the 1st the agent closes last month&#x27;s budget, asking only for what no statement covered</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>3</td><td>§4.9, §12</td></tr>
 </tbody>
@@ -33,7 +35,7 @@
 </table>
 </div>
 <div data-type="extension-frame"><p>What comes in and what goes out, each month, per member and for the household, filled from statements and one short check-in.</p>
-<ul><li><strong>Budget (MA-96):</strong> each member&#x27;s income and its history (past years&#x27; figures, so growth can be measured), from the chat or payslips, stored as income commitments; a monthly plan per category, the categories data you change by chat, EMIs and card payments from their commitments; the Budget screen with plan against actual per category, income, EMIs, the surplus and the savings rate, per member and for the household, in GBP or INR. The Projection that used to sit with the budget is phase 7.</li>
+<ul><li><strong>Budget (MA-96, <code>ARCHITECTURE.md</code> §4.1, §6.6, §12):</strong> each member&#x27;s income and its history (past years&#x27; figures, so growth can be measured), from the chat or payslips, stored as income commitments; a monthly plan per category, the categories data you change by chat, EMIs and card payments from their commitments; the Budget screen with plan against actual per category, income, EMIs, the surplus and the savings rate, per member and for the household, in GBP or INR. Income commitments accept dated future changes and each category carries its inflation key, so phase 7&#x27;s plan items can change them (MA-261); every amount is take-home, with no tax maths. The Projection that used to sit with the budget is phase 7.</li>
 <li><strong>Statements (MA-218):</strong> a bank or card statement sent in the chat (PDF, CSV or XLSX; UK and Indian banks and cards), kept in S3 for good; each line categorised, the merchant memory first and Haiku for the unknowns; card payments, moves between your own accounts and EMIs matched to their commitments are recognised as transfers, so nothing counts twice; a payment on a statement answers its check-in; one review card by category, uncertain lines in amber, and one Confirm. A statement is routine, so it takes no second check. The parsers are built from your anonymised samples.</li>
 <li><strong>The month closed on the 1st (MA-220):</strong> last month&#x27;s plan against actual; the agent asks only for what no statement covered (cash, other banks) and closes the month with one Confirm.</li>
 </ul>
@@ -41,7 +43,8 @@
 <p><strong>Exit:</strong> you send a bank statement in the chat; it comes back categorised, transfers recognised, uncertain lines in amber, for one Confirm; the Budget screen shows plan against actual.</p>
 <p><strong>Cost:</strong> Haiku only for the merchants the memory does not know, inside the ceiling; nothing more in AWS.</p>
 </div>
-<div data-type="extension-frame"><ul><li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#49-commitments-and-check-ins">§4.9</a> Commitments and check-ins</li>
+<div data-type="extension-frame"><ul><li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#41-entities-dynamodb-single-table">§4.1</a> Entities (DynamoDB, single table)</li>
+<li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#49-commitments-and-check-ins">§4.9</a> Commitments and check-ins</li>
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#66-wealth-maths-phases-2-to-7">§6.6</a> Wealth maths (phases 2 to 7)</li>
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#12-the-road-to-mypaisa-the-wealth-tracker">§12</a> The road to MyPaisa, the wealth tracker</li>
 </ul>

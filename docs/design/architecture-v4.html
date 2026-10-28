@@ -1307,7 +1307,7 @@ var TOOLS = [
   {h:"Compute, never saved", c:"#1D9A5B", p:"Typed overrides through code.", l:["run_scenario","run_projection(overrides)"]},
   {h:"Draft and propose", c:"#E7157B", p:"Writes nothing until Confirm; the draft is hashed.", l:["draft_record(kind, fields)","draft_event(record, type, fields)","propose_change(entity, patch)","log_decision"]},
   {h:"Ask, read, search", c:"#D97757", p:"Server tools are Anthropic's, with citations.", l:["ask_user(question, options[])","extract_document(s3_key, schema)","web_search","web_fetch"]},
-  {h:"The admin only", c:"#DD344C", p:"Enforced in code, behind the second check.", l:["propose_kind","propose_plan_item"]}
+  {h:"The admin only", c:"#DD344C", p:"Enforced in code; propose_kind takes the second check, plan and budget changes take Confirm.", l:["propose_kind","propose_plan_item","rearrange_budget"]}
 ];
 var toolsEl = document.getElementById("tools");
 TOOLS.forEach(function(t){

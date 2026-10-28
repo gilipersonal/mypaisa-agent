@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "claude_design": {
   "app": {
    "id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7",
@@ -2014,6 +2014,7 @@
     "design"
    ],
    "arch": [
+    "4.1",
     "6.6",
     "12"
    ],
@@ -2056,10 +2057,11 @@
      "board": "iPad · Budget"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. Drawn: plan against actual filled from statements and the monthly check-in (MA-186) on Web v4 · Budget and iPhone v4 · Budget (MA-193). Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). It supersedes Wealth.dc.html's Browser · Budget. Drawn: the budget screens on iPad (MA-193 drew iPhone, desktop and 390), on iPad v4 · Budget, assets and debts.dc.html (MA-227).",
+   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. Drawn: plan against actual filled from statements and the monthly check-in (MA-186) on Web v4 · Budget and iPhone v4 · Budget (MA-193). Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). It supersedes Wealth.dc.html's Browser · Budget. Drawn: the budget screens on iPad (MA-193 drew iPhone, desktop and 390), on iPad v4 · Budget, assets and debts.dc.html (MA-227). Updated on MA-261 (28 Oct 2026): income commitments accept dated future changes and each category carries its inflation key, so the Projection's plan items can change them; amounts are take-home.",
    "undrawn": [
     "privacy on for Budget and Forecast, at both doors",
-    "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)"
+    "its iOS screens, drawn in MyPaisa iOS v1 before it starts (MA-161)",
+    "the chat flows ('my salary is now ...', 'plan £400 a month for groceries', dated future income changes) and a category's inflation key, at both doors (MA-261)"
    ]
   },
   {
@@ -5841,7 +5843,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "Updated on MA-261 (28 Oct 2026): a plan item's three effects, funded_from (the surplus and cash first), annual step growth, the budget forecast ledger and a trace for every figure, Decimal money, a 20-year default horizon (Arun), golden fixtures for the three sentences."
   },
   {
    "key": "MA-221",
@@ -5871,9 +5873,11 @@
     "design"
    ],
    "arch": [
+    "4.1",
     "4.5",
     "4.10",
-    "6.6"
+    "6.6",
+    "8"
    ],
    "ui": true,
    "design": "planned",
@@ -5904,7 +5908,15 @@
      "board": "iPhone · Projection, milestones and plan items"
     }
    ],
-   "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3)."
+   "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). Updated on MA-261 (28 Oct 2026): future plans by talking: three effects, at most three questions with chips, an impact card, pause and end in place, the admin's own words and the Projection run before and after in the audit row; still the admin's alone (Arun).",
+   "undrawn": [
+    "the plan item's question cards in the admin's chat: at most three questions with chips (whose, until when, how it grows, paid from where), at both doors (MA-261)",
+    "the plan item's impact card before Confirm: net worth at 5, 10 and 20 years, the surplus each year, the first month cash goes negative, new milestones (MA-261)",
+    "a plan item paused, resumed and ended in place, with its audit row (MA-261)",
+    "the change_flow ('my salary goes to £8,000 a month from Sep 2028') and record_event ('₹2 cr to close my SBI home loan') plan-item effects and fields (for_member, funded_from, category-prior growth, until an age or after N months), at both doors (MA-261)",
+    "the plan item's audit row on creation and in-place correction showing the admin's own words (source_text), the version before and after, and the ProjectionRun before and after with the 20-year net-worth change (MA-261)",
+    "refusal and validation outcomes in the chat and in place: plan items and saved assumptions refused to a member, and ambiguous or unresolvable plans ('about 2 cr', no end date, a loan that does not exist) asked or refused (MA-261)"
+   ]
   },
   {
    "key": "MA-223",
@@ -5939,7 +5951,13 @@
      "board": "iPhone · Chat, a what-if as Asha asks it"
     }
    ],
-   "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3)."
+   "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). Updated on MA-261 (28 Oct 2026): a what-if uses the plan item's three effects and questions; the admin's card offers Save as a plan item; the agent explains the curve from the engine's trace.",
+   "undrawn": [
+    "a what-if using the three effects (change_flow, record_event) and missing-slot questions as a plan item, at both doors (MA-261)",
+    "trouble flags from code and the agent explaining what drives the curve from the engine's trace, at both doors (MA-261)",
+    "a member's what-if card in the web app (with no Save as a plan item button; Web v4 · Projection draws only the admin's card)",
+    "the override validator's refusal in the chat when a number traces to neither the member's words nor a named preset"
+   ]
   },
   {
    "key": "MA-224",
@@ -5952,6 +5970,7 @@
     "design"
    ],
    "arch": [
+    "6.6",
     "9.3",
     "12"
    ],
@@ -6019,7 +6038,55 @@
      "board": "iPhone · Projection, correcting an assumption"
     }
    ],
-   "notes": "Starts from boards drawn for MA-96 before MA-186; the rest is drawn on MA-193. Drawn: the Projection's fan, milestones and editable assumptions, renamed from Forecast (MA-186) on Web v4 · Projection and iPhone v4 · Projection (MA-193). Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. It supersedes Wealth.dc.html's Browser · Forecast."
+   "notes": "Starts from boards drawn for MA-96 before MA-186; the rest is drawn on MA-193. Drawn: the Projection's fan, milestones and editable assumptions, renamed from Forecast (MA-186) on Web v4 · Projection and iPhone v4 · Projection (MA-193). Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. It supersedes Wealth.dc.html's Browser · Forecast. Updated on MA-261 (28 Oct 2026): opens at 20 years with 5, 10, 20 and 30 to choose (Arun); the Plans and Budget forecast tabs.",
+   "undrawn": [
+    "the horizon chips 5, 10, 20 and 30, opening at 20 years: the Projection boards draw 30 years, to 2056 (MA-261)",
+    "the Plans tab: each plan on a timeline, corrected and paused in place by the admin, with Add in chat, at both doors (MA-261)",
+    "plan-item milestones on the line and in the Milestones list (a school starting, a salary step, a loan closed), at both doors (MA-261)",
+    "the Projection screen at the 390 phone-web door and on iPad (Web v4 · Projection draws the screen at 1440 only, and P7 at 390 is the chat tab; iPhone v4 · Projection draws iPhone only)"
+   ]
+  },
+  {
+   "type": "Story",
+   "epic": "MA-191",
+   "phase": 7,
+   "status": "To Do",
+   "labels": [
+    "design"
+   ],
+   "ui": true,
+   "design": "todo",
+   "boards": [],
+   "key": "MA-262",
+   "arch": [
+    "6.6",
+    "9.3",
+    "12"
+   ],
+   "summary": "The Budget forecast shows each year's income, spend by category, EMIs, plans and surplus to the horizon, every figure traced to its flows, at every door",
+   "notes": "Planned 28 Oct 2026 (MA-261) with no board yet: the Projection's Budget forecast tab (each year to the horizon, expandable to its months, every figure opening the flows that make it, at desktop, 390, iPhone and iPad, light and dark) is drawn with /design-first before the story starts."
+  },
+  {
+   "type": "Story",
+   "epic": "MA-191",
+   "phase": 7,
+   "status": "To Do",
+   "labels": [
+    "design"
+   ],
+   "ui": true,
+   "design": "todo",
+   "boards": [],
+   "key": "MA-263",
+   "arch": [
+    "4.5",
+    "4.10",
+    "6.6",
+    "8",
+    "12"
+   ],
+   "summary": "When a plan leaves the household short, the agent proposes ways to rearrange the budget, and the admin's Confirm applies one, today's budget included",
+   "notes": "Planned 28 Oct 2026 (MA-261) with no board yet: the rearrangement's scenario cards in the admin's chat (the options code works out, ranked and explained, each with its effect on every year), the Confirm that applies one, this month's budget included, its audit row and Undo, are drawn with /design-first before the story starts. Arun: rearranging works just like Claude does, proposed then applied on Confirm."
   },
   {
    "key": "MA-186",
@@ -6703,6 +6770,29 @@
     "docs/design/guardrails-evals.html",
     "docs/design/guardrails-evals/*.gif"
    ]
+  },
+  {
+   "key": "MA-261",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The plan records future plans by talking: new spends, salary changes and loan closures, a 20-year budget forecast, and the budget rearranged on the admin's Confirm",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "2",
+    "4.1",
+    "4.5",
+    "4.10",
+    "6.6",
+    "8",
+    "9.3",
+    "12"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 28 Oct 2026: say what is coming (GBP 4,000 a month from Jan 2029 for schooling; the salary to GBP 8,000 a month from Sep 2028; INR 2 cr closing the SBI home loan), be asked what is missing, and see the budget and the Projection recalculated, audited and editable. Decisions: plans stay the admin's alone; rearranging is proposed and applied on the admin's Confirm, this month's budget included; no tax maths, every amount take-home; a one-off with no source is paid from the surplus and cash first; the Projection opens at 20 years. Docs only: PLAN's phases 6 and 7, ARCHITECTURE 2, 4.1, 4.5, 4.10, 6.6, 8, 9.3 and 12, the explainer pages, the trace, the roadmap and Confluence; MA-96, MA-219, MA-222, MA-223 and MA-224 updated in Jira; MA-262 and MA-263 filed."
   },
   {
    "key": "MA-259",
