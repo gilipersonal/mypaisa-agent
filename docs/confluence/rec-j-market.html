@@ -1,0 +1,785 @@
+<div data-type="panel-custom" data-icon=":chart_with_upwards_trend:" data-color="#EAE6FF"><p><strong>📈 MyPaisa <em>Market</em> Agent</strong></p>
+<p>How MyPaisa reads the market for one household, end to end: a rules engine anyone can check by hand, a Forecaster that learns from ten years of history and sits beside it, and a small team of agents that grade, calibrate and repair both every day. The UK holdings come first; from phase 19 the household&#x27;s Indian mutual funds, shares and ETFs are read the same way, in rupees with pounds beside them.</p>
+<p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/market-agent.html">market-agent.html</a> (MA-141, India in MA-155, the iOS app in MA-161), live at <a href="https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb">MyPaisa Market Agent</a>. The market side is built in phases 10 to 20, after the whole wealth.</p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>🗺️ From free sources to a card the household reads</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d7307926-7968-4949-bdd8-fc1321d25d01" data-collection="contentId-1769493" data-alt="rec-j-market--market-map.png"></div>
+<figcaption>From free sources to a card the household reads (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>0</p>
+<p>The whole market side in one drawing</p>
+<p>After each close (London, New York and, from phase 19, India&#x27;s NSE and BSE, and from phase 5 AMFI&#x27;s fund prices in the UK evening) a schedule in <code>Europe/London</code> queues the day&#x27;s jobs. One worker Lambda runs each job by its type: ingest, news, the rules engine, the Forecaster, grading and calibration, the brief. The record lives in an S3 lake, the state in DynamoDB, and the result reaches the iOS app (its chat, its dashboard and push) and the web app. Claude only tags news and explains; code makes every number.</p>
+<p>Scroll sideways to see the whole drawing.</p>
+</details><h2>🎯 What can and cannot be forecast</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ea4eca76-1a5b-4654-a58b-24f642633c69" data-collection="contentId-1769493" data-alt="rec-j-market--market-s1.png"></div>
+<figcaption>What can and cannot be forecast (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>1</p>
+<p>The honest starting point</p>
+<p>MA-117ARCHITECTURE §19.1</p>
+<p>Risk and mood can be forecast; tomorrow&#x27;s up or down cannot. Calm and rough spells cluster, so how rough the next few weeks will be is far more forecastable than which way prices go. A tool claiming 80 to 90% accuracy on direction has learned its past by heart.</p>
+<p>Can</p>
+<ul><li><strong>How rough the next few weeks will be</strong>, and the chance of a deep fall: risk is far more forecastable than direction.</li>
+<li><strong>The market&#x27;s mood</strong>: calm and rising, choppy, stressed or falling.</li>
+<li><strong>What usually followed days like today</strong>, and how a holding moved after past events of a kind.</li>
+<li><strong>A modest, honest edge on direction</strong> over weeks, not days.</li>
+</ul>
+<p>Cannot</p>
+<ul><li><strong>Tomorrow&#x27;s up or down</strong>: short-term moves are mostly noise.</li>
+<li><strong>Rare shocks</strong>: wars and pandemics have too few past cases for confident numbers.</li>
+<li><strong>Candles or opening prices for OEICs</strong>: they price once a day and deal at the next day&#x27;s price.</li>
+<li><strong>Anything faster than the household can act on.</strong></li>
+</ul>
+<h4>Rough days follow rough days</h4>
+<p>Each bar is one day&#x27;s move. The band is twice the last three weeks&#x27; volatility. The size of the moves comes in spells, so next month&#x27;s roughness can be estimated; the sign of tomorrow&#x27;s bar is close to a coin toss.</p>
+<p>+4%−4%calmrough spell: big moves both wayscalm again</p>
+<h4>An ETF or a share: candles</h4>
+<p>It trades through the day, so each day has an open, high, low and close. The Forecast page draws candles for ETFs and shares, an NSE or BSE share or ETF (<code>in_listed</code>, phase 19) among them.</p>
+<h4>A UK fund (OEIC): one price a day</h4>
+<p>Its NAV is struck once a day and published the next morning, and a deal goes through at the next day&#x27;s price. No candles, no opening price: one dot a day. An Indian mutual fund (<code>in_mutual_fund</code>, phase 5) is the same: one NAV a day, from AMFI by the UK evening.</p>
+<p>So the horizon is four weeks (20 trading days), the first aim is avoiding deep falls, and direction is the last and least trusted piece.</p>
+<p>Up candles are green with the day&#x27;s gain; falls are quiet ink. The figures are illustrative.</p>
+</details><h2>📥 Free sources first, stamped with the day they became known</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0f289444-c784-4922-83a6-490c7609da81" data-collection="contentId-1769493" data-alt="rec-j-market--market-s2.png"></div>
+<figcaption>Free sources first, stamped with the day they became known (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>2</p>
+<p>Data in, as it was known each day</p>
+<p>Phase 10: price chainsF1 MA-119E3 MA-131</p>
+<p>Ten years, from 2015 or a fund&#x27;s inception, in Parquet in the <code>mypaisa-&lt;env&gt;-lake</code> bucket S3, queried with DuckDB. A daily refresh runs after the close as jobs on the SQS work queue, run by the worker λ. Both engines run on free sources; each source&#x27;s terms are recorded, and the use is personal.</p>
+<table data-layout="full-width"><thead><tr><th>Kind</th><th>What</th><th>Free source, in order</th><th>Cost</th></tr>
+</thead>
+<tbody><tr><td>Shares, ETFs, commodity ETCs</td><td>Daily open, high, low, close and volume; each fund&#x27;s top constituents and the index it tracks</td><td>yfinance first, Twelve Data&#x27;s free tier second</td><td>Free</td></tr>
+<tr><td>UK funds (OEICs)</td><td>The daily price: one a day, no candles</td><td>Yahoo&#x27;s <code>0P…</code> id; the fund manager&#x27;s page (BlackRock, Vanguard)</td><td>Free</td></tr>
+<tr><td>Commodity drivers</td><td>Gold, silver, Brent and WTI futures; daily Brent and WTI</td><td>yfinance; the US Energy Information Administration (EIA)</td><td>Free</td></tr>
+<tr><td>Economy</td><td>Policy rates, 2-year and 10-year yields, real yields, inflation, unemployment, each as first published</td><td>FRED with its ALFRED archive; Bank of England; ECB; ONS. India (phase 19): the RBI&#x27;s database for the policy rate and yields, MOSPI&#x27;s inflation; FRED&#x27;s India series behind them</td><td>Free</td></tr>
+<tr><td>Market stress</td><td>VIX, high-yield and investment-grade credit spreads, the dollar index; for India, India VIX and the daily foreign portfolio investor flows</td><td>yfinance, FRED; NSDL for the flows</td><td>Free</td></tr>
+<tr><td>World events</td><td>Daily event counts and tone by country and theme; the geopolitical risk index</td><td>GDELT, with its India coverage; the Caldara and Iacoviello GPR index</td><td>Free</td></tr>
+<tr><td>News</td><td>Stories on the holdings, their countries and sectors</td><td>GDELT; the RSS feeds of the brief. India: Economic Times, Mint and Business Standard by RSS, and NSE&#x27;s company announcements</td><td>Free</td></tr>
+<tr><td>Calendars</td><td>Central bank decisions, inflation releases, earnings of top holdings, elections; for India, the RBI&#x27;s policy dates, India&#x27;s inflation releases, NSE holidays and results season</td><td>The banks&#x27; and the ONS&#x27;s published calendars; earnings dates from yfinance; NSE&#x27;s own trading calendar</td><td>Free</td></tr>
+<tr><td>Indian mutual funds (phase 5, MA-207; the history in phase 19, MA-151)</td><td>One NAV a day for every scheme, by AMFI scheme code and ISIN; each scheme&#x27;s full history</td><td>AMFI&#x27;s daily NAV file, the official industry source; mfapi.in for the history and as the fallback; a screenshot</td><td>Free</td></tr>
+<tr><td>NSE and BSE shares and ETFs (phase 19, MA-151)</td><td>Daily candles and ten years of history</td><td>yfinance <code>.NS</code>, then <code>.BO</code>; the exchanges&#x27; bhavcopy end-of-day files, free for personal use</td><td>Free</td></tr>
+<tr><td>Indian fund look-through (phase 19)</td><td>Each fund&#x27;s holdings</td><td>The fund houses&#x27; monthly portfolio disclosures, which SEBI requires; the factsheet</td><td>Free</td></tr>
+<tr><td>INR exchange rate</td><td>Rupees to pounds each day</td><td>The ECB&#x27;s daily reference rate, which includes INR; the RBI/FBIL reference rate behind it</td><td>Free</td></tr>
+</tbody>
+</table>
+<p>Twelve Data&#x27;s free tier allows 8 credits a minute and 800 a day; the ingest job spends at most 200 a day, so the agent&#x27;s own calls never run the tier dry. yfinance is unofficial and can break without notice, so a failed source is treated as a normal day.</p>
+<p>Last resort</p>
+<h4>EODHD, only on the admin&#x27;s approval</h4>
+<p>Historian costs <strong>£19.99 a month</strong> (£199.90 a year): 30+ years, 100,000 calls a day, its news feed included. It is switched on only when the data steward shows that no free source can serve a named holding, or its ten-year history, and the admin approves.</p>
+<ul><li>Before asking, the steward tries EODHD&#x27;s free key on that holding and records what comes back.</li>
+<li>The request shows the evidence, the £19.99 and the headroom left in the £50 line for AWS and others.</li>
+<li>A paid feed not needed for 60 days is proposed for cancellation.</li>
+<li>India&#x27;s paid options follow the same rule: Twelve Data&#x27;s Grow plan ($79 a month; its free tier has no NSE or BSE), or Zerodha Kite Connect (₹500 a month, with history) if the member has a Zerodha account.</li>
+</ul>
+<p>£</p>
+<p>MyPaisaadmin chat · illustrative</p>
+<p><strong>Data steward asks</strong> yfinance has not returned Balanced for 3 days; Twelve Data does not list it. EODHD&#x27;s free key returns its history back to 2019. <strong>Switch on EODHD Historian at £19.99 a month?</strong> AWS and others: £3 of £50 used this month. Undo: switch it off; nothing else changes.</p>
+<p>08:02</p>
+<p>ApproveRejectWhy?Later</p>
+<h4>Price chains: the first source with fresh data wins</h4>
+<p>Each feed is a plugin behind one contract; which plugins run, and in which order, is configuration per environment in Terraform. India adds the <code>amfi</code>, <code>mfapi</code> and <code>bhavcopy</code> plugins and two chains, with no change to the contract. The brief says which source answered. <code>stale</code> is last everywhere: the previous close, labelled, never silently reused.</p>
+<table data-layout="full-width"><thead><tr><th>Kind</th><th>Default chain, in order</th><th>Freshness</th></tr>
+</thead>
+<tbody><tr><td>OEIC (Monzo&#x27;s BlackRock funds)</td><td>yfinance 0P…LBlackRock pageFT tearsheetproxy basketlast screenshot</td><td>NAV once a day, next morning; proxy intraday, labelled provisional</td></tr>
+<tr><td>ETF or ETC on LSE or Xetra</td><td>yfinanceTwelve Dataissuer NAVstale</td><td>Each exchange close; GBX normalised to GBP</td></tr>
+<tr><td>ETF or stock on NYSE or Nasdaq</td><td>Twelve Datayfinancestale</td><td>21:00 UK close</td></tr>
+<tr><td>Commodity ETC</td><td>As its listing, plus the metal&#x27;s spot price times FX as a sanity check</td><td>Each close</td></tr>
+<tr><td>Indian mutual fund, <code>in_mutual_fund</code> (phases 5 and 19)</td><td>AMFI NAV filemfapi.inscreenshotstale</td><td>One NAV a day, out by the UK evening; no candles</td></tr>
+<tr><td>NSE or BSE share or ETF, <code>in_listed</code> (phase 19)</td><td>yfinance .NSyfinance .BObhavcopystale</td><td>15:30 IST close, 10:00 or 11:00 UK; in rupees</td></tr>
+<tr><td>Cash</td><td>ECBTwelve Data</td><td>Daily</td></tr>
+<tr><td>INR rate (phases 3 and 19)</td><td>ECBRBI/FBIL</td><td>Daily</td></tr>
+</tbody>
+</table>
+<h4>The point-in-time rule</h4>
+<p>Every row carries the date it became known, and a revision is added beside the first figure, never written over it. A backtest of 2018 sees only what was known in 2018. The lab has a test for it: no feature is used before the date it was known.</p>
+<table data-layout="full-width"><thead><tr><th>Figure for a month</th><th>Value</th><th>Known on</th></tr>
+</thead>
+<tbody><tr><td>US jobs, first published</td><td>+140k</td><td>day 1</td></tr>
+<tr><td>US jobs, revised</td><td>+160k</td><td>day 29</td></tr>
+</tbody>
+</table>
+<p>IllustrativeA replay of day 10 uses +140k, because that was all anyone knew; a replay of day 30 uses +160k. ALFRED keeps every vintage of US data, so the first figure is never lost.</p>
+<h4>The data steward: failover and gap repair</h4>
+<p>Code keeps the prices flowing; Haiku only writes its requests to the admin.</p>
+<ul><li><strong>Fails over</strong> within the chain when a source answers nothing or stale data, and marks the valuation provisional.</li>
+<li><strong>Watches</strong> freshness, gaps, free quotas, and disagreement: when two sources serve one instrument, a close more than 0.2% apart, a missing day or a late correction is listed.</li>
+<li><strong>Repairs</strong> a gap on the next run and labels anything it could not fill as stale; a stale series is left out of scoring.</li>
+<li><strong>Raises</strong> a stale feed as an alarm in the chat; the 07:45 alarm fires only when every source has failed for two days.</li>
+<li><strong>Asks</strong> the admin for a new or reordered source, any paid feed, or a source&#x27;s terms.</li>
+</ul>
+</details><h2>📐 Fixed rules a person can check by hand</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="4415fbfa-889c-47b5-8569-61420032a89c" data-collection="contentId-1769493" data-alt="rec-j-market--market-s3.png"></div>
+<figcaption>Fixed rules a person can check by hand (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>3</p>
+<p>The rules engine today</p>
+<p>Phase 10: indicators, pillars, cascade, confidence v0Phase 13: history termPhase 14: sentiment tiltPhase 15: go-live gate</p>
+<p>Ported from the desk and extended for a holder who accumulates with care. The worker λ runs the ingest and engine jobs at 07:00 and 21:00 Europe/London, and writes a Signal and a Stance for each holding to DynamoDB. From phase 19 the Indian holdings are scored by the same rules, from India&#x27;s previous day, whose prices are in by the UK evening.</p>
+<ol><li>Clean bars Drop interpolated bars; append today only when the session traded; a series older than the previous session is STALE and left out.</li>
+<li>Indicators The desk&#x27;s stack plus volatility, drawdown and momentum. Known-answer self-tests run first; a failing one blocks scoring that day.</li>
+<li>Four pillars Trend, momentum, macro and risk, each from −2 to +2.</li>
+<li>Flags Exhaustion, relentless-bearish, rebound, death-cross.</li>
+<li>The holder&#x27;s cascade ADD, HOLD, PAUSE, TRIM, REBALANCE or WAIT.</li>
+<li>Confidence A percentage; below 55% the card says &quot;no clear view&quot;.</li>
+</ol>
+<h4>Indicators</h4>
+<p>EMA 20 / 50 / 200Wilder RSI-14MACD 12/26/9, histogram slope TRIX-15, EMA-9 signalBollinger 20/2, %Bslopes vs 5 bars bars since below EMA20ATR-14realised vol, 20-day and EWMA its 3-year percentiledrawdown from 1-year high12-1 momentumproxy-vs-NAV gap</p>
+<p>Golden-file tests cover every indicator: a constant series&#x27; EMA, a monotonic RSI, MACD equal to EMA12 minus EMA26, a flat %B.</p>
+<h4>Pillars, from −2 to +2</h4>
+<p>NASDAQ 100 ETF, illustrative. Blue supports the holding, amber weighs against it.</p>
+<p>Trend</p>
+<p>+1</p>
+<p>Momentum</p>
+<p>−1</p>
+<p>Macro</p>
+<p>0</p>
+<p>Risk</p>
+<p>−2</p>
+<p>−20+2</p>
+<table data-layout="full-width"><thead><tr><th>Pillar</th><th>Inputs</th></tr>
+</thead>
+<tbody><tr><td><strong>Trend</strong></td><td>Price vs EMA20, EMA20 above EMA50, EMA50 above EMA200, the EMA200&#x27;s slope; partial components labelled</td></tr>
+<tr><td><strong>Momentum</strong></td><td>RSI zones (45 / 55), the MACD histogram&#x27;s sign, TRIX vs its signal</td></tr>
+<tr><td><strong>Macro</strong></td><td>The cross-asset regime of the baskets the holding is exposed to, weighted by look-through: the US basket (RSP/SPY, HYG/LQD, IWM/SPY, SPY/TLT, XLY/XLP, SPY-TLT correlation, 10Y−2Y), UK and EU baskets from UCITS equivalents, and from phase 19 an India basket (the Nifty 50 against Indian government bonds, India VIX, the rupee against the dollar, foreign portfolio investor flows, the RBI&#x27;s policy rate); for a commodity ETC, dollar strength and real yields instead</td></tr>
+<tr><td><strong>Risk</strong></td><td>Volatility percentile, drawdown depth, proxy gap, bars present, NAV age</td></tr>
+</tbody>
+</table>
+<h4>The holder&#x27;s cascade</h4>
+<p>The desk&#x27;s cascade rotated capital; this one accumulates with care. Adverse macro and elevated risk tighten the framing and lower confidence; they never change the pillar numbers. Sentiment may tilt the action one notch only when the price pillars do not contradict it. News alone never triggers a red alert.</p>
+<table data-layout="full-width"><thead><tr><th>Call</th><th>When</th><th>What it tells the household</th></tr>
+</thead>
+<tbody><tr><td>ADD</td><td>Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated</td><td>Make this month&#x27;s contribution here, or bring it forward</td></tr>
+<tr><td>HOLD</td><td>The default for a holding with no triggers</td><td>Nothing to do</td></tr>
+<tr><td>PAUSE</td><td>Holding; exhaustion ≥ 2, or risk elevated, or adverse macro</td><td>Keep what you have; delay new money until the next review</td></tr>
+<tr><td>TRIM</td><td>Holding; drift above target by more than the band, or relentless-bearish ≥ 3 with a death-cross, and not protected</td><td>Rebalance toward target; never &quot;sell everything&quot;</td></tr>
+<tr><td>REBALANCE</td><td>Portfolio-level drift beyond the band</td><td>Move the next contributions, not the holdings, unless drift is large</td></tr>
+<tr><td>WAIT / WATCH</td><td>Not holding; a candidate</td><td>No entry trigger yet, and the trigger that would change it</td></tr>
+</tbody>
+</table>
+<h4>The confidence score</h4>
+<p>confidence = clamp(0.5 + agreement + persistence + quality + history, 0, 0.95)</p>
+<ul><li><strong>Agreement</strong>: +0.05 for each pillar pointing the same way, −0.05 for each against.</li>
+<li><strong>Persistence</strong>: bars the state has held, 0 for 1 bar up to +0.10 for 10 or more.</li>
+<li><strong>Quality</strong>: −0.10 for partial components, stale or provisional data, or a proxy gap over 1%.</li>
+<li><strong>History</strong>: the hit-rate of past calls in the same state, once 20 or more exist, pulling the score toward it (phase 13).</li>
+</ul>
+<h4>How a PAUSE reaches 64%</h4>
+<p>The NASDAQ 100 ETF above: momentum and risk agree on caution, trend points the other way.</p>
+<p>Base</p>
+<p>50%</p>
+<p>Agreement</p>
+<p>+5</p>
+<p>Persistence</p>
+<p>+5</p>
+<p>Quality</p>
+<p>0</p>
+<p>History</p>
+<p>+4</p>
+<p><strong>Confidence</strong></p>
+<p>64%</p>
+<p>IllustrativeCalibrated weekly from phase 13 (Brier score, a reliability table by bucket), the map changing only after 8 weeks of evidence; daily within small bounds from phase 18 (section 7).</p>
+<h4>Forecast ranges</h4>
+<p>A one-month return distribution by volatility-scaled block bootstrap on the holding&#x27;s own history: the 10th, 50th and 90th percentiles and <code>P(fall &gt; 5%)</code>. These are the rules engine&#x27;s own ranges, graded on coverage from phase 13, and the baseline the Forecaster&#x27;s risk model has to beat.</p>
+<h4>Shadow mode, until it beats the baseline for 8 weeks</h4>
+<p>Every stance is paper-traded and graded. It appears only in the Saturday review until the record beats the baseline for 8 consecutive weeks, checked in code and reported every Saturday (phase 15); then it appears in weekday cards.</p>
+<p><strong>✓</strong>W1</p>
+<p><strong>✓</strong>W2</p>
+<p><strong>✓</strong>W3</p>
+<p><strong>✓</strong>W4</p>
+<p><strong>✓</strong>W5</p>
+<p><strong>·</strong>W6</p>
+<p><strong>·</strong>W7</p>
+<p><strong>·</strong>W8</p>
+<p>IllustrativeA miss in any week starts the count again.</p>
+</details><h2>📰 A story counts by how much of a holding it touches</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="2ba54e90-af70-4c88-bca6-76ba6cf47041" data-collection="contentId-1769493" data-alt="rec-j-market--market-s4.png"></div>
+<figcaption>A story counts by how much of a holding it touches (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>4</p>
+<p>Matching news and world events to holdings</p>
+<p>F1 MA-119F4 MA-122Phase 14: news and events</p>
+<p>Every holding has an exposure map, kept on the instrument&#x27;s <code>exposure</code> and refreshed on its own clock. Claude Haiku tags each day&#x27;s stories; code works out how much each story touches each holding. Code produces every number, and news alone never raises a red alert.</p>
+<p>OEIC or ETF · monthly, iShares files daily</p>
+<h4>Look-through</h4>
+<p>Its top holdings, countries, sectors and currencies, from the factsheet and the holdings file. An Indian fund&#x27;s comes from its fund house&#x27;s monthly portfolio disclosure, which SEBI requires (phase 19).</p>
+<p>Share · each quarter&#x27;s results</p>
+<h4>The company and its web</h4>
+<p>The company, its sector, its main markets, its main suppliers and rivals.</p>
+<p>Commodity ETC · a fixed list, reviewed yearly</p>
+<h4>Its drivers</h4>
+<p><strong>Gold</strong>: real yields, the dollar, central-bank buying, geopolitical stress. <strong>Silver</strong>: gold&#x27;s drivers and industrial demand. <strong>Oil</strong>: OPEC+ decisions, stockpiles, supply from the Middle East and Russia, world growth.</p>
+<p>Cash · with the rate</p>
+<h4>Its rate and currency</h4>
+<p>A pound pot is touched by the Bank of England&#x27;s rate, a dollar balance by the Fed&#x27;s and by the dollar.</p>
+<ol><li>Stories in GDELT and the RSS feeds; from phase 19 the Indian feeds and NSE&#x27;s announcements; EODHD&#x27;s news feed only if EODHD is approved. SQS work queue</li>
+<li>Haiku tags each story Companies, countries, sectors, commodities and central banks named; its event type; the direction it points. Checked weekly on a labelled sample. Claude Haiku, Batches</li>
+<li>Code scores relevance A story&#x27;s weight on a holding is the holding&#x27;s exposure to the entities the story names.</li>
+<li>A floor drops the faint The rest are stored on <code>ArticleScore</code>: <code>entities[]</code>, <code>event_type</code>, <code>matches[]</code>. DynamoDB</li>
+<li>Where matches go The event-impact lookup, the direction model&#x27;s features, and the morning brief: &quot;3 stories touch your holdings today&quot;.</li>
+</ol>
+<p>Worked example 1</p>
+<h4>A chip-export story reaches a NASDAQ fund</h4>
+<p>US tightens chip exports→sector: semiconductorsUS, China</p>
+<p>NASDAQ 100 ETF</p>
+<p>24%</p>
+<p>Automation &amp; Robotics</p>
+<p>11%</p>
+<p>Balanced, dropped</p>
+<p>2%</p>
+<p>Physical Silver</p>
+<p>0</p>
+<p>IllustrativeIt reaches the fund through its chipmakers&#x27; weight. The coral tick is a 3% floor.</p>
+<p>Worked example 2</p>
+<h4>An OPEC+ cut reaches an oil holding</h4>
+<p>OPEC+ agrees a deeper cut→commodity: oilOPEC+ decision</p>
+<p>Oil ETC, if held</p>
+<p>1st driver</p>
+<p>Balanced (energy)</p>
+<p>4%</p>
+<p>NASDAQ 100, dropped</p>
+<p>1%</p>
+<p>IllustrativeA commodity is reached through its driver list; OPEC+ decisions are oil&#x27;s first driver.</p>
+<p>Worked example 3</p>
+<h4>A Fed surprise reaches gold</h4>
+<p>Fed raises more than expected→central bank: Fedrate surprise</p>
+<p>Gold ETC, if held</p>
+<p>drivers 1, 2</p>
+<p>Physical Silver</p>
+<p>via gold</p>
+<p>Cash pot (pounds)</p>
+<p>0</p>
+<p>IllustrativeThrough real yields and the dollar. A pound cash pot answers to the Bank of England, not the Fed.</p>
+<p>In the morning brief · illustrative</p>
+<h4>3 stories touch your holdings today</h4>
+<ul><li><strong>NASDAQ 100 ETF</strong>: US tightens chip exports. After past tariff and export-curb stories it moved −2.6% on average over four weeks (11 cases).</li>
+<li><strong>Automation &amp; Robotics</strong>: the same story, through its chipmakers.</li>
+<li><strong>Physical Silver</strong>: a Fed rate surprise. Low confidence on this one: fewer than 8 past cases.</li>
+</ul>
+<p>Each line names its holding and the measured past effect, all from code. Claude writes the sentence, not the number.</p>
+</details><h2>⚖️ Risk first, direction last</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c68c7d2d-31f3-41e1-9d8b-cca3837ddce5" data-collection="contentId-1769493" data-alt="rec-j-market--market-s5.png"></div>
+<figcaption>Risk first, direction last (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>5</p>
+<p>The Forecaster&#x27;s five models</p>
+<p>F3 MA-121F4 MA-122F5 MA-123epic MA-117</p>
+<p>A second engine beside the rules engine that learns from ten years of history. Each model answers one question over the next four weeks. Code makes every number, the event impacts included; Claude files each day&#x27;s news under the event types and explains the result. From phase 19 it takes the Indian holdings on the same terms, with ten years of their history from yfinance and mfapi.in, and shows nothing for them until its gates are passed.</p>
+<h4>1 · Market mood</h4>
+<p>F3 MA-121</p>
+<p>Asks</p>
+<p>Is the market calm and rising, choppy, stressed or falling, and with what probability?</p>
+<p>Method</p>
+<p>A regime model over cross-asset features, smoothed so it does not flip daily.</p>
+<p>Trust</p>
+<p>Good</p>
+<p>Raw daily read</p>
+<p>Smoothed mood, as shown</p>
+<p>Calm and risingChoppyStressedFalling</p>
+<p>Illustrative120 trading days. Today: stressed, 71%.</p>
+<h4>2 · Four-week risk</h4>
+<p>F3 MA-121</p>
+<p>Asks</p>
+<p>How rough will the next four weeks be for this holding, and what is the chance of a fall over 5%?</p>
+<p>Method</p>
+<p>A volatility model and gradient-boosted trees, combined and calibrated.</p>
+<p>Trust</p>
+<p>Good</p>
+<p>30%20%10%usually 12%21% now</p>
+<p>IllustrativeNASDAQ 100 ETF: the chance of a fall over 5% in the next four weeks, now 21% against its usual 12%.</p>
+<h4>3 · Similar days</h4>
+<p>F4 MA-122</p>
+<p>Asks</p>
+<p>What followed the 30 days since 2015 most like today, after 5, 20 and 60 days?</p>
+<p>Method</p>
+<p>Nearest neighbours over a feature vector, with the last 20 days left out so today cannot match itself.</p>
+<p>Trust</p>
+<p>Good, and easy to explain</p>
+<p>+10%−10%</p>
+<p>IllustrativeEach dot is one similar day; the coral tick is the middle, its value under each column. Higher afterwards: 16, 19 and 24 of the 30.</p>
+<h4>4 · Event impacts</h4>
+<p>F4 MA-122</p>
+<p>Asks</p>
+<p>How did this holding move after past rate surprises, inflation surprises, elections, conflict, tariffs, pandemics, earnings misses and OPEC+ decisions?</p>
+<p>Method</p>
+<p>Event studies: the average move, its spread, the number of cases and a confidence interval. Under 8 cases is marked low confidence.</p>
+<p>Trust</p>
+<p>Fair</p>
+<p>Rate surprise14 cases</p>
+<p>−2.1%</p>
+<p>Inflation surprise22 cases</p>
+<p>−1.4%</p>
+<p>Tariffs11 cases</p>
+<p>−2.6%</p>
+<p>Conflict9 cases</p>
+<p>−1.2%</p>
+<p>Earnings miss31 cases</p>
+<p>−0.6%</p>
+<p>OPEC+ decision16 cases</p>
+<p>−0.2%</p>
+<p>Election6 cases · low confidence</p>
+<p>+0.8%</p>
+<p>IllustrativeNASDAQ 100 ETF, four weeks after each kind of event, with its interval. Pandemics: one case since 2015, shown only as low confidence, never as a pattern.</p>
+<h4>5 · Direction</h4>
+<p>F5 MA-123</p>
+<p>Asks</p>
+<p>What is the chance of being up in four weeks, the likely range (10th, 50th and 90th percentile), and what are the main drivers?</p>
+<p>Method</p>
+<p>Gradient-boosted trees combined with the four models above, calibrated; conformal intervals for the range. Retrained monthly; each version a <code>ModelVersion</code> row with its test scores.</p>
+<p>Trust</p>
+<p>Modest, the least reliable piece</p>
+<p>Main drivers, NASDAQ 100 ETF: from a usual 57% chance of being up to 52% today.</p>
+<p>Momentum fading</p>
+<p>−4 pts</p>
+<p>US yields rising</p>
+<p>−3 pts</p>
+<p>Chip export news</p>
+<p>−2 pts</p>
+<p>Calm credit spreads</p>
+<p>+3 pts</p>
+<p>Earnings season</p>
+<p>+1 pt</p>
+<p>IllustrativeBlue lifts the chance, amber lowers it.</p>
+<h4>How they combine and are calibrated</h4>
+<ol><li>Mood, risk, similar days, event impacts Each a calibrated answer of its own, written daily to <code>features/</code> and <code>predictions/</code>. S3 lake</li>
+<li>Direction combines them Gradient-boosted trees take the four as inputs, with the matched news as features.</li>
+<li>Calibration map Raw chances become calibrated ones, so a 70% means about 70%. The map is a <code>CalibrationMap</code> item. DynamoDB</li>
+<li>One Forecast row <code>p_up</code>, <code>p_fall_5</code>, range p10, p50, p90, mood, analogs, events, drivers, <code>model_version</code>.</li>
+<li>Sonnet explains It writes the &quot;Why?&quot; in plain words from the row. It never changes a number. Claude Sonnet</li>
+</ol>
+<h4>Said vs seen</h4>
+<p>A reliability chart. The dashed diagonal is perfect: said equals seen. Hollow dots: a model before calibration, too sure of itself at both ends. Filled dots: after, on the diagonal.</p>
+<p>saidseen</p>
+<p>IllustrativeGraded daily from phase 18 (section 7).</p>
+<h4>Where it runs</h4>
+<ul><li>Daily forecasts in the worker λ from the same image: the data is small, a few thousand days for a few dozen series.</li>
+<li>The monthly retrain in a Lambda too (up to 15 minutes and 10 GB), moving to a Fargate task only if it outgrows that. The one-off GDELT backfill runs as such a task.</li>
+<li>Models are files in S3 under <code>models/&lt;name&gt;/&lt;version&gt;/</code>, behind <code>ModelVersion</code> rows: name, version, data through, walk-forward and live scores, status <code>shadow</code>, <code>live</code> or <code>off</code>.</li>
+<li>Compute is a few dollars a month; Haiku filing the news is well under a dollar.</li>
+</ul>
+</details><h2>🃏 Both engines in one card, and one page per holding</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c28f57eb-2851-444a-86fe-0f9a283e2794" data-collection="contentId-1769493" data-alt="rec-j-market--market-s6.png"></div>
+<figcaption>Both engines in one card, and one page per holding (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>6</p>
+<p>Side by side</p>
+<p>F6 MA-124needs phases 12 and 13</p>
+<p>The rules engine&#x27;s call and the Forecaster&#x27;s view sit together, each with its own track record. When the two disagree, the card says so; below the confidence floor it says &quot;no clear view&quot;. The Forecaster appears in weekday cards for a holding only after 8 live weeks beating both the base rate and the rules engine; until then, only in the Saturday review, labelled &quot;in practice&quot;. Both views are designed first, with privacy mode and both themes. From phase 19 an Indian holding gets the same card, its figures in rupees with pounds beside them.</p>
+<p>£</p>
+<p>MyPaisachat · illustrative figures, §19.7</p>
+<p><strong>NASDAQ 100 ETF</strong></p>
+<p>Rules engine<strong>PAUSE · 64%</strong> Forecasternext 4 weeks Chance up52% Chance of −5%21% (usually 12%) Likely range−7% … +6% Market moodStressed, since 3 Oct Similar days31 since 2015; 18 recovered within 4 weeks Main driversmomentum fading, US yields rising, chip export news</p>
+<p>07:16</p>
+<p>Why?ChartTrack record</p>
+<p>£</p>
+<p>MyPaisachat · illustrative</p>
+<p><strong>Physical Silver</strong></p>
+<p>Rules engine<strong>ADD · 58%</strong> Forecasternext 4 weeks Chance up47% Chance of −5%27% (usually 15%) Likely range−9% … +7% Market moodFalling, since 14 Oct</p>
+<p><strong>The two engines disagree.</strong> The rules see a rebound with healthy structure; the Forecaster sees a high chance of a deep fall. Tap Why? for both sides.</p>
+<p>07:16</p>
+<p>Why?ChartTrack record</p>
+<p>The app draws the card and its buttons natively from the card&#x27;s JSON (MA-174); MyPaisa owns the words and their order. No pound figures: privacy mode shows the same card.</p>
+<p>dashboard.mypaisapp.com · Holdings · NASDAQ 100 ETF · Forecast</p>
+<p>iShares · ISA · illustrative</p>
+<h4>NASDAQ 100 ETF</h4>
+<p>Next 4 weeks · Forecaster, in practice</p>
+<p>52%chance of being up</p>
+<p>Chance of −5% <strong>21%</strong> (usually 12%)Range <strong>−7% … +6%</strong>Rules engine <strong>PAUSE 64%</strong></p>
+<p>+5%−5%0%+6%middle−7%next 4 weeks</p>
+<p>Candles to Friday&#x27;s close, then the likely range: the outer band 10th to 90th percentile, the inner band the middle half, the dashed line the middle. For an OEIC the same page draws one price a day and no candles.</p>
+<h5>Market mood</h5>
+<p>Calm and risingChoppyStressed, since 3 OctNext 4 weeks: stressed 71%</p>
+<h5>Similar days, drawn over today&#x27;s chart</h5>
+<p>+10%−10%the last 40 daysmiddle</p>
+<p>31 similar days since 2015; 18 recovered within 4 weeks. Thin lines: what followed each one. Dashed: their middle.</p>
+<h5>Event impacts, four weeks after</h5>
+<table data-layout="full-width"><thead><tr><th>Event</th><th>Cases</th><th>After</th></tr>
+</thead>
+<tbody><tr><td>Tariffs</td><td>11</td><td>−2.6%</td></tr>
+<tr><td>Rate surprise</td><td>14</td><td>−2.1%</td></tr>
+<tr><td>Inflation surprise</td><td>22</td><td>−1.4%</td></tr>
+<tr><td>Conflict</td><td>9</td><td>−1.2%</td></tr>
+<tr><td>Election low confidence</td><td>6</td><td>+0.8%</td></tr>
+</tbody>
+</table>
+<h5>Main drivers</h5>
+<p>Momentum fading</p>
+<p>−4</p>
+<p>US yields rising</p>
+<p>−3</p>
+<p>Chip export news</p>
+<p>−2</p>
+<p>Calm credit spreads</p>
+<p>+3</p>
+<h5>Track records, side by side</h5>
+<p>Rules engine</p>
+<p>31 / 46</p>
+<p>calls held up · live</p>
+<p>Forecaster</p>
+<p>5 / 8</p>
+<p>weeks beating both · in practice</p>
+<p><strong>✓</strong>W1</p>
+<p><strong>✓</strong>W2</p>
+<p><strong>✓</strong>W3</p>
+<p><strong>✓</strong>W4</p>
+<p><strong>✓</strong>W5</p>
+<p><strong>·</strong>W6</p>
+<p><strong>·</strong>W7</p>
+<p><strong>·</strong>W8</p>
+<p>IllustrativeThe web app is <code>dashboard.mypaisapp.com</code>, served by CloudFront; it and the iOS app, on iPhone and iPad, read through the api λ from the <code>Forecast</code> and <code>ScoreDaily</code> items.</p>
+<p>In both, the charts and cards move with one motion system (MA-182): springs, glass that morphs, figures that roll, charts that draw in and scrub, haptics in the app, and Reduce Motion honoured. They stay legible at 25% brightness (MA-181): every colour pair in light and dark, text on glass included, passes <code>scripts/contrast_check.py</code> at full brightness and at 25%, a gate on every PR (ARCHITECTURE §9.1).</p>
+</details><h2>🎓 Grade every day, calibrate every day, change rules on evidence</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="57f1f075-b941-41ba-aada-31f344f58f38" data-collection="contentId-1769493" data-alt="rec-j-market--market-s7.png"></div>
+<figcaption>Grade every day, calibrate every day, change rules on evidence (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>7</p>
+<p>The learning loop, daily</p>
+<p>Phase 13: the graderE4 MA-132E5 MA-133E6 MA-134</p>
+<p>The grader and tuner runs the loop for both engines. Every prediction is kept exactly as it was made, with the versions of its model and settings and the date its inputs were known, and graded against what prices actually did.</p>
+<ol><li>Keep it as made Every stance and forecast, with its model and settings versions and the date its inputs were known. S3 predictions/</li>
+<li>Grade after each close For each horizon that has passed: the realised return, hit or miss, Brier score, log loss, inside its range or not. A late correction adds a regrade; nothing is overwritten. S3 outcomes/ScoreDaily</li>
+<li>Calibrate within bounds Refit on a rolling window; used only if better on the held-back part, only where a bucket has enough cases, at most 2 points per bucket per day. CalibrationMap</li>
+<li>Probation 10 trading days. A map that does worse is rolled back on its own.</li>
+<li>Report A line in the admin&#x27;s daily digest, the scoreboard in the Saturday review, a monthly note on what changed and why.</li>
+</ol>
+<h4>What a grade measures</h4>
+<table data-layout="full-width"><thead><tr><th>Score</th><th>What it says</th></tr>
+</thead>
+<tbody><tr><td><strong>Brier score</strong></td><td>The average of (chance said − what happened)², where what happened is 1 or 0. Lower is better; always saying 50% scores 0.25.</td></tr>
+<tr><td><strong>Log loss</strong></td><td>Punishes being confidently wrong far harder than being unsure.</td></tr>
+<tr><td><strong>Range coverage</strong></td><td>How often the outcome fell inside the 10th to 90th percentile range: it should be about 80%.</td></tr>
+<tr><td><strong>Hit rate</strong></td><td>Calls that held up, by model, holding and mood.</td></tr>
+</tbody>
+</table>
+<p><code>ScoreDaily</code> keeps the scoreboard per model, holding and mood, rolling over 30, 90 and 365 days; the full outcomes live in S3.</p>
+<h4>Calibration moves a little, then waits</h4>
+<p>70%66%62%−2 a day, at most10 days on probation</p>
+<p>IllustrativeThe 70% bucket of one model. The dotted line shows the rollback that would follow a worse probation.</p>
+<h4>Challengers: tested over 10 years and 8 live weeks</h4>
+<p>The monthly retrain, other parameters and rule thresholds within their ranges are challengers. Each is tested over the ten years and runs live in shadow. One that beats the current version in the held-out years and over 8 live weeks, by more than a margin, becomes a <code>ChangeRequest</code> to the admin, with the scores side by side.</p>
+<p>The admin approves in the owner&#x27;s chat or on the Admin center&#x27;s Approvals page, in the app or the web app, with the second check, bound to the action and verified by the server: a fresh Sign in with Apple or passkey under Face ID in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser (MA-76, MA-102). Deciding in one place updates the others. After a promotion the old version stays ready and is restored on its own if the new one slips.</p>
+<p>£</p>
+<p>MyPaisaadmin chat · illustrative</p>
+<p><strong>Grader and tuner asks</strong> Promote the risk model v8 over v7? Held-out years, Brier: v8 0.162, v7 0.171 8 live weeks, Brier: v8 0.158, v7 0.169 Cost: none. Risk: low. Undo: v7 stays ready and comes back on its own if v8 slips. Expires in 7 days.</p>
+<p>09:30</p>
+<p>ApproveRejectWhy?Later</p>
+<h4>Why the rules themselves are not retuned daily</h4>
+<p>A day&#x27;s outcomes are mostly noise, and a system that chases yesterday learns noise. Calibration moves a little every day; structure moves only on weeks of evidence and the admin&#x27;s approval. That is how accuracy, and above all honest confidence, grow over the years.</p>
+<p>100%50%0%90-day hit rate: 60%</p>
+<p>IllustrativeGrey: one day&#x27;s hit rate across five holdings. Coral: the same over 90 days.</p>
+</details><h2>🧭 Steer the money the household already moves</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="3e418719-fd67-439c-84de-eac192ca7765" data-collection="contentId-1769493" data-alt="rec-j-market--market-s8.png"></div>
+<figcaption>Steer the money the household already moves (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>8</p>
+<p>The strategy layer · where the goal is won</p>
+<p>F7 MA-125after F2 and F3</p>
+<p>Forecasts become suggestions about the monthly contributions. It shows as the suggested split on the first-of-the-month contribution prompt, beside the rules engine&#x27;s. The app cannot trade: the household reads the suggestion and makes any move itself.</p>
+<h4>The rules it keeps</h4>
+<ul><li><strong>Contributions always continue.</strong> Money keeps going in every month; the question is only where.</li>
+<li><strong>New money tilts away from stress</strong>: from holdings in a stressed or falling mood or with a high chance of a deep fall.</li>
+<li><strong>A trend filter</strong>: a holding below its long-run trend gets less of the new money until the trend turns. The exact rule is F7&#x27;s to design and the lab&#x27;s to test.</li>
+<li><strong>Rebalancing within bands</strong>, done with the next contributions rather than by selling.</li>
+<li><strong>A drawdown budget the admin sets</strong>: the deepest fall the household is willing to sit through.</li>
+<li><strong>Never &quot;sell everything&quot;</strong>, stays ISA-safe, and only suggests. For Indian accounts (phase 19) &quot;ISA-safe&quot; becomes &quot;wrapper-aware&quot;: a suggestion names only actions that suit its account.</li>
+</ul>
+<p>First of the month · illustrative</p>
+<h4>Suggested split of this month&#x27;s contribution</h4>
+<p>Rules engine</p>
+<p>Forecaster</p>
+<table data-layout="full-width"><thead><tr><th>Holding</th><th>Rules</th><th>Forecaster</th></tr>
+</thead>
+<tbody><tr><td>Balanced</td><td>50%</td><td>65%</td></tr>
+<tr><td>NASDAQ 100 PAUSE</td><td>0%</td><td>0%</td></tr>
+<tr><td>Automation &amp; Robotics</td><td>20%</td><td>25%</td></tr>
+<tr><td>Physical Silver</td><td>30%</td><td>10%</td></tr>
+</tbody>
+</table>
+<p>IllustrativeBoth columns add to 100%: the contribution continues. The Forecaster moves money away from silver&#x27;s falling mood.</p>
+<h4>A rebalancing band</h4>
+<p>Target 20%, band ±5 points. The holding has drifted to 27%, outside the band: the next contributions go elsewhere until it is back inside. The holdings are moved only if drift is large.</p>
+<h4>The drawdown budget</h4>
+<p>Set by the admin: here 15%. The household is 6% below its previous high, well inside it. The suggestions aim to keep the worst fall inside the budget; the lab measures whether they do.</p>
+<p>F2, F3 and F7 do most of the work for the goal: proof, risk, and the steering of new money. F5, direction, is the least reliable piece and does the least.</p>
+<p>Suggestions only. The app cannot trade, and every decision stays with the household.</p>
+</details><h2>🧪 A lab first, practice next, and an off switch</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="195888f3-0d34-48aa-ac1f-a3b2e22d346c" data-collection="contentId-1769493" data-alt="rec-j-market--market-s9.png"></div>
+<figcaption>A lab first, practice next, and an off switch (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>9</p>
+<p>How it proves itself</p>
+<p>F2 MA-120F5 MA-123F6 MA-124</p>
+<p>Nothing is shown because it sounds clever. A model earns its place in the lab over ten years, then in eight live weeks, and loses it again when its record slips. Each holding passes the gate on its own record, so an Indian holding from phase 19 starts in practice like any other.</p>
+<h4>The backtest lab</h4>
+<p>It replays any strategy one day at a time over the ten years, with fees, next-day pricing for OEICs and monthly contributions. It reports yearly growth, the worst fall, the worst year, time below a previous high and the calls&#x27; calibration, against buy-and-hold with monthly contributions and a simple trend rule.</p>
+<table data-layout="full-width"><thead><tr><th>First report: the rules engine over 10 years</th><th>Status</th></tr>
+</thead>
+<tbody><tr><td>Yearly growth, worst fall, worst year</td><td>not run yet</td></tr>
+<tr><td>Time below a previous high</td><td>not run yet</td></tr>
+<tr><td>Calibration of its calls</td><td>not run yet</td></tr>
+</tbody>
+</table>
+<p>No figures yet, by design: the first report tests the rules engine years before its live record could say as much. A strategy that peeks at tomorrow is caught by the lab&#x27;s own test, and a known-answer backtest matches to the penny.</p>
+<h4>What &quot;time below a previous high&quot; looks like</h4>
+<p>−10%−20%worst fall ▼ 25%</p>
+<p>IllustrativeA drawdown curve: how far below its previous high a strategy sat each month. The goal is shallower and shorter dips than buy-and-hold, within the growth trade-off the household sets.</p>
+<h4>Walk-forward folds, with a gap and the last two years held out</h4>
+<p>Train on the past, test on the years after, with a gap so no window overlaps. The last two years are held back for one final test. A model that does not beat the base rate there is not used.</p>
+<p>Fold 1</p>
+<p>Fold 2</p>
+<p>Fold 3</p>
+<p>Fold 4</p>
+<p>Fold 5</p>
+<p>Final test</p>
+<p>TrainGapTestLast two years, held out</p>
+<h4>The live gate: 8 weeks beating both</h4>
+<p>Every forecast is a <code>Forecast</code> row, graded when its four weeks are up. For each holding the Forecaster reaches weekday cards only after 8 live weeks beating <strong>both</strong> the base rate and the rules engine.</p>
+<table data-layout="full-width"><thead><tr><th>Week</th><th>vs base rate</th><th>vs rules engine</th></tr>
+</thead>
+<tbody><tr><td>1 to 5</td><td>✓ beat</td><td>✓ beat</td></tr>
+<tr><td>6 to 8</td><td>to come</td><td>to come</td></tr>
+</tbody>
+</table>
+<p>IllustrativeUntil the gate passes it appears only in the Saturday review, labelled &quot;in practice&quot;.</p>
+<h4>The switch-off</h4>
+<p>When its live record is worse than the base rate for four weeks, it switches itself off and the owner is told. Models retrain monthly; each version is a <code>ModelVersion</code> row with its test scores and its status.</p>
+<p><strong>shadow</strong>graded, not shown→ <strong>live</strong>after 8 weeks→ <strong>off</strong>4 weeks worse→ <strong>retrain</strong>monthly, to shadow</p>
+</details><h2>🔁 Nothing lost, everything retried, the rest raised</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="1a5265f9-b230-44a4-a8c8-a8bbdd5191aa" data-collection="contentId-1769493" data-alt="rec-j-market--market-s10.png"></div>
+<figcaption>Nothing lost, everything retried, the rest raised (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>10</p>
+<p>Self-healing on the market pipeline</p>
+<p>MA-138MA-139MA-140E7 MA-135MA-137</p>
+<p>A bad minute at a data source, the Anthropic API or Apple&#x27;s push service costs a delay, never a day&#x27;s work. From phase 18 the daily run is one Step Functions state machine with retries and backoff on every step and idempotent writes, its jobs carried by the SQS work queue.</p>
+<ol><li>Ingest Prices, the economy, events, through each chain.</li>
+<li>Engine The rules: signals and stances.</li>
+<li>Forecaster The five models, one Forecast row per holding.</li>
+<li>Grade Every prediction whose horizon has passed.</li>
+<li>Calibrate Within bounds, on probation.</li>
+<li>Brief Always attempted; late inputs go out labelled stale.</li>
+</ol>
+<p>Each step retries with backoff and writes idempotently. A step that still fails is skipped and its output labelled stale; the rest of the run goes on.</p>
+<p>Scroll sideways to see the whole drawing.</p>
+<h4>Fixed on its own, told in the digest</h4>
+<ul><li>A failed step retried.</li>
+<li>A source failed over within its chain.</li>
+<li>A gap filled on the next run.</li>
+<li>A missed schedule caught up.</li>
+<li>A model or a calibration map rolled back to its last good version.</li>
+<li>A step that still fails skipped, its output labelled stale.</li>
+</ul>
+<h4>Raised as an incident</h4>
+<p>Everything else is an Incident on the admin desk, at once, with what happened, what was tried and the choices. Every agent reports a heartbeat, and a silent one is an incident.</p>
+<p>The 07:45 dead man&#x27;s switch, the nightly drift check (MA-108) and the Lambda rollback (MA-107) stay as they are.</p>
+<h4>Free-tier limits, honoured by the queue</h4>
+<p>The work queue&#x27;s maximum concurrency keeps yfinance, Twelve Data&#x27;s free tier and the other free sources, AMFI from phase 5 and mfapi.in from phase 19 among them, inside their limits.</p>
+<p>Twelve Data: 8 credits a minute. A job that cannot succeed (a malformed message, a holding with no source) goes straight to the dead-letter queue with its reason. Tries, backoff, concurrency and replay limits are settings.</p>
+</details><h2>💰 Two ceilings the admin moves, and a small expected spend</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="37146e68-26f4-4b73-8f09-f9665de77b96" data-collection="contentId-1769493" data-alt="rec-j-market--market-s11.png"></div>
+<figcaption>Two ceilings the admin moves, and a small expected spend (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>11</p>
+<p>Budgets</p>
+<p>MA-113MA-137E8 MA-136</p>
+<p>Claude · the Max 20x plan&#x27;s credit</p>
+<h4>$200 a month, across both environments</h4>
+<p>About £154 at $1.30. Each environment&#x27;s ceiling is a setting the admin moves in the Admin center, behind the fresh check; the Console&#x27;s workspace limits back it up.</p>
+<p><em>prod $160</em><em>dev $40</em></p>
+<h5>Each agent&#x27;s share of prod&#x27;s $160</h5>
+<p>Concierge: chat, cards, briefs</p>
+<p>55% · $88</p>
+<p>Forecaster explanations</p>
+<p>10% · $16</p>
+<p>News scout</p>
+<p>10% · $16</p>
+<p>Grader and tuner reviews</p>
+<p>10% · $16</p>
+<p>Admin desk</p>
+<p>5% · $8</p>
+<p>Data steward, ops warden</p>
+<p>5% · $8</p>
+<p>Reserve, the chat first</p>
+<p>5% · $8</p>
+<p>Coral: the three market agents. An agent past its share drops to its 95% step; the reserve covers the chat before anything else.</p>
+<p>70%: the owner is told85%: savers95%: essentials100%: plain templates</p>
+<p>AWS and other services</p>
+<h4>£50 a month, across both environments</h4>
+<p>AWS has no true spending cap, so the app caps by acting: flags the jobs read, never changes to AWS resources.</p>
+<ul><li><strong>50%</strong>: the admin is told, also when the month&#x27;s forecast passes the cap.</li>
+<li><strong>80%</strong>: dev&#x27;s schedules pause.</li>
+<li><strong>100%</strong>: dev pauses; prod&#x27;s back-fills, retraining and challengers pause. The brief, alerts and the chat never stop.</li>
+<li>Behind it: one AWS Budgets hard limit at £75, made by Terraform; alerts in the app and the web app, by push and by SNS email.</li>
+<li>A paid feed is a subscription against this cap: EODHD&#x27;s £19.99, or for India Twelve Data&#x27;s Grow plan ($79) or Kite Connect (₹500), each only if approved.</li>
+</ul>
+<p>IllustrativeThe £3 used is the figure from the data steward&#x27;s example request.</p>
+<table data-layout="full-width"><thead><tr><th>Expected spend, a month</th><th>Estimate</th><th>Inside</th></tr>
+</thead>
+<tbody><tr><td>Claude for two members: briefs, alerts, chat, cards, the Saturday review, sentiment, documents, web search</td><td>$24 standard, $39 full</td><td>prod&#x27;s $160</td></tr>
+<tr><td>Claude for the Forecaster and the agents of phase 18</td><td>a few pounds more</td><td>their shares</td></tr>
+<tr><td>Haiku filing the news for the Forecaster</td><td>well under $1</td><td>the news scout&#x27;s share</td></tr>
+<tr><td>Forecaster compute: daily Lambda runs and the monthly retrain</td><td>a few dollars</td><td>£50</td></tr>
+<tr><td>SQS queues and dead-letter alarms</td><td>nothing to about $1, plus a few pence an alarm</td><td>£50</td></tr>
+<tr><td>Step Functions, EventBridge, the extra DynamoDB items</td><td>inside their free tiers at this volume</td><td>£50</td></tr>
+<tr><td>Market data</td><td>£0 by default; £19.99 only if EODHD is approved</td><td>£50</td></tr>
+<tr><td>India, phase 19: a few more jobs a day; a paid Indian feed only if a free source fails and the admin approves</td><td>£0 on the free path</td><td>£50</td></tr>
+</tbody>
+</table>
+<p>Figures as estimated in ARCHITECTURE §15 and §19.8, to be measured in the first months. The ceilings are guards against a bad month or a runaway loop, not a ration.</p>
+</details><h2>🇮🇳 India: Indian funds, shares and ETFs beside the UK ones</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0e30a441-18bf-4777-87a7-17fbae588028" data-collection="contentId-1769493" data-alt="rec-j-market--market-s12.png"></div>
+<figcaption>India: Indian funds, shares and ETFs beside the UK ones (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>12</p>
+<p>A second market, the same engines</p>
+<p>epic MA-147IN1 MA-151IN2 MA-152IN3 MA-153IN4 MA-154MA-156Phase 19 · ARCHITECTURE §22</p>
+<p>It works without changing the core: currency, country and the kind of holding are data, every feed is a plugin in a chain, and the INR view was already planned. India adds plugins, two kinds of holding, account types, a macro basket and an importer. Free sources first; a paid feed only on the admin&#x27;s approval.</p>
+<p>“If later I want to add Indian market in the mix will it work? … I also have some existing portfolio of MF and stock in India market which I will feed later.”</p>
+<p>Arun, 24 Oct 2026, on MA-147. Yes: the sections above already carry India where it fits; this one gathers it in one place.</p>
+<p>Like a UK OEIC</p>
+<h4>An Indian mutual fund: one NAV a day</h4>
+<p>The kind <code>in_mutual_fund</code>: no candles, one NAV a day for every scheme, matched by AMFI scheme code and ISIN. AMFI&#x27;s daily file is the official industry source; mfapi.in, free and community-run, is the fallback and the history source, not the record.</p>
+<p>AMFI NAV filemfapi.inscreenshotstale</p>
+<p>Out by the UK evening, so the 07:15 brief carries the previous day&#x27;s NAVs.</p>
+<p>Daily candles</p>
+<h4>An NSE or BSE share or ETF</h4>
+<p>The kind <code>in_listed</code>: yfinance with <code>.NS</code> first, then <code>.BO</code>: daily candles and ten years of history. Behind them, the exchanges&#x27; own bhavcopy end-of-day files, free for personal use; <code>stale</code> last, labelled and left out of scoring.</p>
+<p>yfinance .NSyfinance .BObhavcopystale</p>
+<p>NSE and BSE close at 15:30 IST: 10:00 UK time in winter, 11:00 in British Summer Time. NSE&#x27;s trading holidays come from the exchange&#x27;s calendar.</p>
+<h4>Sources, free first</h4>
+<p>Each row is a plugin or a feed in a chain; a paid one is a request to the admin with its price, never switched on by itself.</p>
+<table data-layout="full-width"><thead><tr><th>Holding or input</th><th>First, free</th><th>Fallback, free</th><th>Paid, only on the admin&#x27;s approval</th></tr>
+</thead>
+<tbody><tr><td>Indian mutual funds</td><td>AMFI&#x27;s daily NAV file for every scheme, by scheme code and ISIN</td><td>mfapi.in, each scheme&#x27;s full NAV history; a screenshot</td><td>none needed</td></tr>
+<tr><td>NSE and BSE shares and ETFs</td><td>yfinance <code>.NS</code>, then <code>.BO</code>: daily candles, ten years of history</td><td>The exchanges&#x27; bhavcopy end-of-day files; <code>stale</code> last</td><td>Twelve Data&#x27;s Grow plan, $79 a month (its free tier has no NSE or BSE); Zerodha Kite Connect, ₹500 a month with history, if the member has a Zerodha account</td></tr>
+<tr><td>Look-through of funds</td><td>The fund houses&#x27; monthly portfolio disclosures, which SEBI requires</td><td>The factsheet</td><td>none</td></tr>
+<tr><td>INR exchange rate</td><td>The ECB&#x27;s daily reference rate, which includes INR</td><td>The RBI/FBIL reference rate</td><td>none</td></tr>
+<tr><td>Economy and stress</td><td>RBI&#x27;s database (policy rate, yields), MOSPI&#x27;s inflation, India VIX, NSDL&#x27;s daily foreign portfolio investor flows</td><td>FRED&#x27;s India series</td><td>none</td></tr>
+<tr><td>News and events</td><td>Economic Times, Mint and Business Standard by RSS; NSE company announcements; GDELT&#x27;s India coverage</td><td>none</td><td>none</td></tr>
+</tbody>
+</table>
+<h4>The Indian day, on the UK clock</h4>
+<p>All schedules stay in <code>Europe/London</code>. EventBridge Scheduler puts the Indian jobs on the SQS work queue after the Indian close and after AMFI&#x27;s NAVs; the worker λ runs them like any other.</p>
+<ol><li>NSE and BSE close 15:30 IST, which is 10:00 or 11:00 UK time. No close is expected on an NSE holiday.</li>
+<li>Shares and ETFs priced The <code>in_listed</code> chain after the close; candles in rupees, raw answers in S3. SQS work queue</li>
+<li>Fund NAVs priced AMFI&#x27;s NAVs are out by the UK evening; the <code>in_mutual_fund</code> chain runs then. worker λ</li>
+<li>07:10 the engine Every holding scored; the Indian ones read the India basket in their macro pillar. DynamoDB</li>
+<li>07:15 the brief India&#x27;s previous day, in rupees with pounds beside them, and which sources answered.</li>
+</ol>
+<h4>The engine and the Forecaster on Indian holdings</h4>
+<p>IN4 · MA-154 · the macro pillar</p>
+<h4>The India basket</h4>
+<p>It joins the UK, EU and US baskets. A holding&#x27;s macro pillar reads the baskets it is exposed to, weighted by its look-through, as for every holding.</p>
+<ul><li>The Nifty 50 against Indian government bonds</li>
+<li>India VIX</li>
+<li>The rupee against the dollar</li>
+<li>Foreign portfolio investor flows, from NSDL each day</li>
+<li>The RBI&#x27;s policy rate</li>
+</ul>
+<p>The calendars add the RBI&#x27;s policy dates, India&#x27;s inflation releases, NSE holidays and results season. Golden tests cover the basket.</p>
+<p>Worked example · illustrative</p>
+<h4>An RBI surprise reaches the Indian holdings</h4>
+<p>RBI raises more than expected→central bank: RBIIndiarate surprise</p>
+<p>Nifty 50 index fund</p>
+<p>100%</p>
+<p>Nifty 50 ETF (NSE)</p>
+<p>100%</p>
+<p>Flexi-cap fund</p>
+<p>95%</p>
+<p>Balanced, dropped</p>
+<p>1%</p>
+<p>NASDAQ 100 ETF</p>
+<p>0</p>
+<p>IllustrativeEach holding&#x27;s exposure to India, from the fund houses&#x27; monthly disclosures and the UK factsheets; the coral tick is the 3% floor. Haiku tags the story; code makes every weight.</p>
+<h4>Indian news, matched by code</h4>
+<p>Economic Times, Mint and Business Standard by RSS, NSE&#x27;s company announcements and GDELT&#x27;s India coverage go through the same steps as every story (section 4): Claude Haiku tags each one through Batches; code weighs it against each holding&#x27;s exposure map; a floor drops the faint. News alone never raises a red alert.</p>
+<h4>The Forecaster&#x27;s gates, for India too</h4>
+<p>The Forecaster takes the Indian holdings on the same terms: nothing is shown until its gates are passed. Its Indian forecasts need phase 17 (IN4).</p>
+<p><strong>lab</strong>ten years, walk-forward→ <strong>in practice</strong>Saturday review only→ <strong>live</strong>8 weeks beating both→ <strong>off</strong>4 weeks worse</p>
+<h4>FX in the picture</h4>
+<p>GBP base · INR beside · both stored</p>
+<h4>Every Indian figure twice</h4>
+<p>The base currency is GBP. Each member reads figures in GBP or INR; every Indian figure shows in rupees with its pounds beside it, and the household total is in pounds with the INR view one tap away. The stored value is always both: the native amount and its GBP equivalent on the day.</p>
+<table data-layout="full-width"><thead><tr><th>One Valuation row</th><th>Value</th></tr>
+</thead>
+<tbody><tr><td>Instrument</td><td>Nifty 50 ETF (NSE)</td></tr>
+<tr><td><code>price</code> · <code>price_ccy</code></td><td>270.00 · INR</td></tr>
+<tr><td><code>units</code></td><td>1,250</td></tr>
+<tr><td><code>fx_to_gbp</code></td><td>0.008889 (₹112.50 to £1, ECB)</td></tr>
+<tr><td><code>value_gbp</code></td><td>£3,000.00</td></tr>
+<tr><td><code>source</code></td><td>close</td></tr>
+</tbody>
+</table>
+<p>Illustrative₹3,37,500 of the ETF on 23 Oct, kept with its £3,000 at that day&#x27;s ECB rate. INR and GBP views must agree with the FX of the day; a test checks it.</p>
+<p>£</p>
+<p>MyPaisachat · illustrative · MA-156</p>
+<p>You: I put ₹20,000 into Balanced Balanced is held in pounds (GBP), so it can&#x27;t take rupees. The rupees were changed to pounds on the way in. <strong>How many pounds arrived?</strong> Type them, or send a screenshot of the platform&#x27;s confirmation. Or use the estimate: ₹112.50 per £, the ECB rate of Fri 23 Oct, worked out by MyPaisa&#x27;s engine. Nothing is saved yet.</p>
+<p>19:10</p>
+<p>About £177.78 · ECB estimate</p>
+<p>Nifty 50 insteadCancel</p>
+<p>The currency check (MA-156, phase 2): every holding keeps the currency it is bought and valued in; money typed in another is never saved as typed. MyPaisa asks again in the holding&#x27;s currency (Arun&#x27;s pick, 1b): the pounds typed in answer are recorded, with the rate the engine works out from them beside it; the <em>ECB estimate</em> button, its figure in view, is the engine&#x27;s conversion at that day&#x27;s reference rate, with its date, marked an estimate; Confirm is always a separate tap. With privacy on, no amount and no rate on the card. The original amount, rate and source stay on the transaction. Every pair, both ways, on a typed line, a guided flow, a screenshot, a CAS or broker line.</p>
+<p>IN2 · MA-152</p>
+<h4>The existing Indian portfolio, imported once</h4>
+<table data-layout="full-width"><thead><tr><th>What is held</th><th>The file to send</th><th>What it gives</th></tr>
+</thead>
+<tbody><tr><td>Mutual funds, every fund house</td><td>The detailed CAS PDF from CAMS, KFintech or MF Central</td><td>Every folio and scheme, the units, and every purchase, SIP, switch and redemption since inception</td></tr>
+<tr><td>Shares, ETFs and funds in demat</td><td>The NSDL or CDSL CAS, or the broker&#x27;s holdings and tradebook export</td><td>Holdings and quantities by ISIN, and the trades</td></tr>
+<tr><td>Anything else</td><td>A screenshot or a typed line</td><td>One holding at a time</td></tr>
+</tbody>
+</table>
+<ul><li>Every file is kept in S3 first and opens from the Audit page; each change&#x27;s audit row names it.</li>
+<li>Parsed by code (a pinned open-source CAS parser, tested on synthetic statements); Claude reads only a file the parsers cannot.</li>
+<li>Matched by ISIN: a fund to its AMFI scheme code, a share or ETF to its <code>.NS</code> or <code>.BO</code> listing. Anything unmatched is listed, never guessed.</li>
+<li>A dry run, one summary card, Confirm with the second check, fingerprints so a statement never adds twice, rollback by import id.</li>
+<li>No PAN, address or account number in any record; a protected PDF&#x27;s password is used in memory and never stored.</li>
+</ul>
+<p>IN3 · MA-153</p>
+<h4>Accounts, suggestions and the tax flag</h4>
+<p>dematmf_folionrenroppf, nps, elss if held</p>
+<p>Each account has country IN and currency INR. &quot;ISA-safe&quot; becomes &quot;wrapper-aware&quot;: a suggestion names only actions that suit the account it is about, and the app still never trades.</p>
+<p>For a UK resident many Indian funds are not UK &quot;reporting funds&quot;, so gains may be taxed differently. MyPaisa flags those holdings in plain words and says to check with a tax adviser. It never gives tax advice.</p>
+<p>Privacy mode hides rupees as it hides pounds. The cards and pages are designed first, in Claude Design, before any is built.</p>
+<h4>Cost and order</h4>
+<p>Cost · ARCHITECTURE §22.5</p>
+<h4>£0 on the free path</h4>
+<p>India costs nothing beyond a few more jobs a day inside the free tiers. A paid feed is a request to the admin with its price, counted inside the £50 cap for AWS and others (section 11).</p>
+<table data-layout="full-width"><thead><tr><th>Paid Indian feed, only if approved</th><th>Price</th></tr>
+</thead>
+<tbody><tr><td>Twelve Data Grow (its free tier has no NSE or BSE)</td><td>$79 a month</td></tr>
+<tr><td>Zerodha Kite Connect, with history, for a Zerodha account</td><td>₹500 a month</td></tr>
+<tr><td>Indian mutual funds, look-through, FX, economy, news</td><td>free; none needed</td></tr>
+</tbody>
+</table>
+<p>Order · about 3 to 4 weeks</p>
+<h4>IN1 first, then the rest</h4>
+<p><strong>IN1 · prices</strong>after phase 10→ <strong>IN2 · import</strong>with MA-111, MA-148→ <strong>IN3 · views</strong>needs IN1 and IN2</p>
+<p><strong>IN4 · engine, Forecaster</strong>after IN1; phase 17 for forecasts <strong>MA-156 · any currency</strong>phase 2, already planned</p>
+<p><strong>Tests:</strong> synthetic CAS statements and broker exports import exactly once; an unmatched ISIN is listed, not guessed; each Indian chain falls through to stale; INR and GBP views agree with the FX of the day; golden tests for the India basket.</p>
+</details><h2>🧩 What each story needs before it can start</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c5b460a3-cc63-48b0-a9ca-c5e8dd6e6e36" data-collection="contentId-1769493" data-alt="rec-j-market--market-s13.png"></div>
+<figcaption>What each story needs before it can start (Market Agent)</figcaption></figure>
+<details><summary>The words of this section</summary><p>13</p>
+<p>The road</p>
+<p>epic MA-117: F1 to F7epic MA-127: E1 to E8epic MA-147: IN1 to IN4</p>
+<p>All three epics are later work, after the rules engine and its track record. Indicatively, the Forecaster takes 8 to 12 weeks, the agent team 6 to 8 and India 3 to 4. F1 and F2 can start any time after phase 10, and F2&#x27;s first report tests the rules engine early. IN1 can start after phase 10 too; the currency check India leans on, MA-156, is phase 2.</p>
+<p>Forecaster, F1 to F7 (MA-119 to MA-125)Agent team, E1 to E8 (MA-129 to MA-136)India, IN1 to IN4 (MA-151 to MA-154), with MA-156</p>
+<h5>After phase 10</h5>
+<p><strong>F1 · Data</strong>Ten years, point in time; exposure mapsMA-119</p>
+<p><strong>F2 · The backtest lab</strong>First report: the rules engineMA-120</p>
+<p><strong>E3 · The data steward</strong>Free sources, failover, gap repairMA-131</p>
+<h5>After F1, and phase 14 for F4</h5>
+<p><strong>F3 · Mood and risk</strong>In shadow, calibratedMA-121</p>
+<p><strong>F4 · Similar days, event impacts</strong>Needs phase 14&#x27;s newsMA-122</p>
+<h5>After phase 8 and MA-102</h5>
+<p><strong>E1 · Settings</strong>Every behaviour a versioned settingMA-129</p>
+<p><strong>E2 · The admin desk</strong>The owner&#x27;s chat and the Admin centerMA-130</p>
+<h5>After phase 13</h5>
+<p><strong>E4 · Store and daily grading</strong>Once stances are gradedMA-132</p>
+<p><strong>E5 · Daily calibration</strong>Bounds, probation, rollbackMA-133</p>
+<p><strong>F6 · The side-by-side view</strong>Needs phases 12 and 13MA-124</p>
+<h5>With the Forecaster</h5>
+<p><strong>F5 · Direction</strong>After F3 and F4MA-123</p>
+<p><strong>F7 · Risk-steered money</strong>After F2 and F3MA-125</p>
+<p><strong>E6 · Challengers</strong>With phase 17MA-134</p>
+<p><strong>E7 · Ops warden · E8 · Budgets</strong>AlongsideMA-135 · MA-136</p>
+<h4>India, phase 19</h4>
+<h5>Phase 2</h5>
+<p><strong>Money in any currency</strong>Checked against each holding&#x27;s currency, both waysMA-156</p>
+<h5>After phase 10</h5>
+<p><strong>IN1 · Indian prices</strong>The AMFI, mfapi.in and bhavcopy plugins; yfinance .NS and .BO; NSE&#x27;s calendarMA-151</p>
+<h5>After IN1, the importer and file keeping</h5>
+<p><strong>IN2 · The import</strong>CAS and broker files, matched by ISIN, one Confirm; needs MA-111 and MA-148MA-152</p>
+<h5>After IN1 and IN2</h5>
+<p><strong>IN3 · Accounts and views</strong>INR with GBP beside; wrapper-aware; the tax flag; designed firstMA-153</p>
+<h5>After IN1; phase 17 for forecasts</h5>
+<p><strong>IN4 · Engine and Forecaster</strong>The India basket, Indian news, the RBI&#x27;s calendarMA-154</p>
+<p>The exit for phase 17: over ten years of walk-forward tests and 8 live weeks, the risk forecasts beat the base rate, and the steered contributions cut the worst fall and the time underwater against buy-and-hold, within the growth trade-off the household sets. For phase 18: a month in which every change was inside its band or approved, every prediction was graded, and spend stayed inside both budgets. For phase 19: a member sends their CAS and broker export, taps Confirm once, and the Indian holdings with their history appear in the brief and on the dashboard in INR and GBP, with the files they came from open from the Audit page.</p>
+</details><hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

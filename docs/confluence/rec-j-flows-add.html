@@ -1,0 +1,154 @@
+<div data-type="panel-custom" data-icon=":compass:" data-color="#E3FCEF"><p><strong>➕ Adding a holding and logging money</strong></p>
+<p>2 of the Agent Journey's flows, each as a numbered path across five lanes (the member, the app, AWS, Claude and external data), the screens the member sees, the safeguards on the path and the Jira stories that build it.</p>
+<p><span data-type="status" data-color="red">Member</span> <span data-type="status" data-color="blue">App and web app</span> <span data-type="status" data-color="yellow">AWS</span> <span data-type="status" data-color="purple">Claude</span> <span data-type="status" data-color="neutral">External data</span> <span data-type="status" data-color="green">A note</span></p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>03 · Adding a holding from a factsheet or a screenshot</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Attach the fund&#x27;s factsheet PDF from Files, then a screenshot of its value in the Monzo app from Photos (or take either with the camera or a document scan). Claude reads them; code checks them; nothing is saved until the member taps Confirm. Anything Claude is unsure of comes back in amber.</p>
+<p><em><strong>Trigger</strong> a PDF or a picture attached in the chat, or <code>/add</code></em> <span data-type="status" data-color="blue">Phase 2 (reading a file)</span> <span data-type="status" data-color="blue">Phase 5 (a fund)</span></p>
+</div>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>+</strong> in the composer and pick the Balanced fund&#x27;s factsheet PDF from Files (or <code>/add</code> first)</td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app asks for a presigned upload link and sends the PDF straight into the private <strong>S3</strong> documents bucket, then posts the message naming the file to <code>/v1/chat/messages</code> with its client id</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>Your lane on the updates queue, then <strong>agent λ</strong>. The file is kept for good, with a <strong>Document</strong> row and an audit row, and a document read goes on the <strong>SQS work</strong> queue; <strong>worker λ</strong> runs the docs job</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The PDF and a schema: name, ISIN, charge, allocation, top holdings, benchmark, currency</td></tr>
+<tr><td data-background="#EAE6FF"><strong>5</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Structured JSON, a citation for each figure and a confidence for each field</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App</td><td>A card of what was read, from the agent&#x27;s JSON, low-confidence fields in amber, with <strong>Confirm</strong>, <strong>Edit</strong> and <strong>Cancel</strong></td></tr>
+<tr><td data-background="#FFEBE6"><strong>7</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Confirm; the tap is posted to <code>/v1/chat/actions</code> and acknowledged at once</td></tr>
+<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Instrument</strong> saved in <strong>DynamoDB</strong> with an audit row carrying the factsheet&#x27;s <code>document_id</code> (its <strong>Document</strong> row was written when it arrived); price sources resolved from the ISIN (the Yahoo id, the BlackRock page)</td></tr>
+<tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to App</td><td><em>Added. How much do you hold? Send a screenshot or type it.</em></td></tr>
+<tr><td data-background="#FFEBE6"><strong>10</strong></td><td data-background="#FFEBE6">Member to App</td><td>You attach a screenshot of the Monzo valuation from Photos; it uploads the same way and the same docs job reads it with Claude</td></tr>
+<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td>After Confirm: <strong>Position</strong>, <strong>Valuation</strong> (source <code>user_screenshot</code>) and <strong>Transaction</strong>, each with an audit row that names the screenshot it came from. The Position keeps the currency this card showed, confirmed once (flow 15). The screenshot stays in S3 and opens from the Audit screen</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="23948113-472f-4c3a-ad06-f8558076d564" data-collection="contentId-1704077" data-alt="rec-j-flows-add--flow-holding.png"></div>
+<figcaption>What the member sees: Adding a holding from a factsheet or a screenshot (Agent Journey)</figcaption></figure>
+<ul><li><strong>Attach.</strong> The composer&#x27;s + opens a glass menu: the camera, a document scan, Photos and Files.</li>
+<li><strong>The factsheet card.</strong> Two fields in amber, asked about. Identifiers shortened here.</li>
+<li><strong>The screenshot.</strong> Read, matched to the holding, saved only after Confirm.</li>
+</ul>
+<h3>🛡️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
+<p>A holding is never saved without the Confirm tap. The same path handles an ETF, a share or cash.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Amber when unsure</strong></strong></p>
+<p>Any field Claude is unsure of is shown in amber and asked about.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A source for every figure</strong></strong></p>
+<p>Extracted figures carry the line they came from. Claude reads; it does not invent a number.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Straight to the private bucket</strong></strong></p>
+<p>The app uploads through a presigned link that works once, for one file, for a few minutes; nothing passes through the chat&#x27;s queue but its name.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Every file kept, and yours to see</strong></strong></p>
+<p>Each file you send is kept for good in a private, encrypted bucket and opens from the Audit screen through a five-minute link, for you and the owner only (MA-148, MA-149).</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A document&#x27;s words are data</strong></strong></p>
+<p>Text inside a PDF is untrusted and never followed as an instruction; no tool can trade or delete.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Retries</strong></strong></p>
+<p>The document read is a job on the work queue: five tries with backoff, then a dead-letter queue and an alarm.</p>
+</div>
+</div>
+<div data-type="column"><p></p>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-37" data-card-appearance="inline"></a></td><td>A factsheet or valuation screenshot sent from the camera, a scan, Photos or Files adds or updates a holding after Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-169" data-card-appearance="inline"></a></td><td>The chat in the app shows the conversation, renders every card natively, streams replies and sends text, photos, scans and files</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-174" data-card-appearance="inline"></a></td><td>Every card is a versioned JSON document the app renders natively, with a plain line for notifications</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-34" data-card-appearance="inline"></a></td><td>Design the Portfolio card and the Confirm card before they are built</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-39" data-card-appearance="inline"></a></td><td>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-27" data-card-appearance="inline"></a></td><td>The household&#x27;s records live in one dynamic structure: kinds as data, records as documents, history as events, figures as views</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-148" data-card-appearance="inline"></a></td><td>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-140" data-card-appearance="inline"></a></td><td>Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue</td></tr>
+</tbody>
+</table>
+<h2>04 · Logging money in plain words</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Type it the way you would say it, in any currency. When the sentence has everything and its currency matches the holding&#x27;s, it goes straight to a Confirm card; with no currency named, the holding&#x27;s own is assumed and said on the card. When something is missing, MyPaisa asks for that one thing on a card with buttons, edited in place so the chat stays tidy. Rupees typed for a pound holding take the currency check of flow 15.</p>
+<p><em><strong>Trigger</strong> &quot;I put £200 into Balanced today&quot;, &quot;1.5 lakh into my Nifty 50 index fund&quot;, &quot;I want to log a transaction&quot;, or the <strong>Log money</strong> chip</em> <em>Phase 5 (pound and rupee holdings)</em></p>
+</div>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>You type <em>I put £200 into Balanced today</em></td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td><code>POST /v1/chat/messages</code>, then your lane on the <strong>SQS FIFO updates</strong> queue: your messages one at a time, in order; Asha&#x27;s run in parallel</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>agent λ</strong> reads this cycle&#x27;s spend meter (one item), then builds the current conversation</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The conversation and the strict tools to Sonnet; <code>tool_choice</code> stays <code>auto</code></td></tr>
+<tr><td data-background="#EAE6FF"><strong>5</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Claude calls <code>propose_change</code>: a buy of £200 in Balanced, today. Every detail is there, so no questions</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>A parser in code reads the amount: £ $ € ₹, the codes, the words (pounds, rupees, Rs) and lakh and crore. £200 against Balanced&#x27;s own currency, pounds from its factsheet&#x27;s Confirm card: they match</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>Code works out the units from the NAV: about 10.8 at 18.57. A <strong>PendingAction</strong> row holds the proposal for up to a day</td></tr>
+<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The Confirm card, as the agent&#x27;s JSON with every figure from code, through the outbox and sender λ</td></tr>
+<tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Confirm</td></tr>
+<tr><td data-background="#DEEBFF"><strong>10</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap goes to <code>/v1/chat/actions</code>, acknowledged at once and queued in your lane like a message</td></tr>
+<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Transaction</strong> and the <strong>Position</strong>&#x27;s units saved with an audit row, in one transaction; the card edits in place</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Missing a detail? <code>ask_user</code> ends the turn with one question on a card with its buttons. The next tap resumes the flow from the PendingAction; whatever was already said is skipped; a day of silence clears it. An amount in another currency than the holding&#x27;s is not saved as typed: it takes the currency check of flow 15.</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="606de065-2654-4c13-b438-1786a8ed97a4" data-collection="contentId-1704077" data-alt="rec-j-flows-add--flow-money.png"></div>
+<figcaption>What the member sees: Logging money in plain words (Agent Journey)</figcaption></figure>
+<ul><li><strong>One sentence.</strong> Everything was said, so it goes straight to Confirm.</li>
+<li><strong>The guided flow.</strong> Shown as a sequence here; in the app each answer edits the same card, and Pick a date opens the system date picker. It ends on the same Confirm card.</li>
+<li><strong>No currency named.</strong> The holding&#x27;s own is assumed and said on the card, never guessed.</li>
+</ul>
+<h3>🛡️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
+<p><code>propose_change</code> saves nothing; only the Confirm tap does.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Numbers from code</strong></strong></p>
+<p>Claude fills the fields when the wording is free; a parser in code reads the amount, and the units and the NAV come from code. The figure is always the member&#x27;s own, echoed back.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The holding&#x27;s own currency</strong></strong></p>
+<p>Every position keeps the currency from the Confirm card that added it. An amount in another currency goes to the check of flow 15, never straight in.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Nothing asked twice</strong></strong></p>
+<p>It never asks for what it can look up, and skips every question the sentence already answered.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A day, then gone</strong></strong></p>
+<p>A PendingAction expires after 24 hours; an expired Confirm is refused.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm needs a connection</strong></strong></p>
+<p>A Confirm tapped offline is refused on the device, so nothing is saved by surprise when the signal returns (MA-173).</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
+<p>Who, when, &quot;via typed&quot; or &quot;via button&quot;, before and after, and the run that made it.</p>
+</div>
+</div>
+<div data-type="column"><p></p>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-38" data-card-appearance="inline"></a></td><td>&quot;I put £200 into Balanced&quot; becomes a transaction after Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-39" data-card-appearance="inline"></a></td><td>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-156" data-card-appearance="inline"></a></td><td>A transaction can be typed in any currency, and the chat checks it against the holding&#x27;s own currency and puts a mismatch right before Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-34" data-card-appearance="inline"></a></td><td>Design the Portfolio card and the Confirm card before they are built</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-169" data-card-appearance="inline"></a></td><td>The chat in the app renders every card natively; Confirm, Edit and Cancel post to /v1/chat/actions</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-139" data-card-appearance="inline"></a></td><td>Each member&#x27;s messages travel through ordered queues, in and out, retried with backoff and never lost</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+</tbody>
+</table>
+<p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

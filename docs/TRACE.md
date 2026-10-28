@@ -64,6 +64,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-244 | An animated technical page, MyPaisa Architecture v4, plays each journey through AWS and shows every agent and the Claude model it uses | Done | §3, §8, §10, §15.1, §18, §20, §21 | none |  |
 | MA-245 | The architecture records how the agents are guarded and evaluated: guardrails in code, evals gated on change, every live run checked, judges calibrated by the admin | In Progress | §23, §8, §10, §14, §15.1, §16, §18.4, §20.4, §20.7, §4.1, §9.3, §12.1, §13 | none |  |
 | MA-246 | One manifest declares every agent and tool, an Inspect AI harness runs tagged eval cases on the local stack, and CI refuses a tool, agent, prompt or kind template with no cases | To Do | §23.3, §23.5, §18.4 | none |  |
+| MA-257 | The whole architecture and every journey recorded in Confluence, page by page, colourful and animated | In Progress | §3 | none |  |
 | MA-258 | The guardrails and evals are explained on a page of their own with animated diagrams, synced to Confluence, and the other explainer pages show them too | In Progress | §23, §8 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
