@@ -187,3 +187,56 @@ Arun, 28 Oct 2026, picked the recommended option each time, and settled the floo
 Chat, adding a plan item`, `Browser · Plan item in the chat, phone`). The questions card and the impact card now come
 before Confirm. Those boards' own notes say so in the next round, when the v4 Projection boards are redrawn from this
 figure set.
+
+## Round 2: the picked options' remaining states
+
+Arun's "Yes, draw them" (28 Oct 2026). Five lanes ran at once from `brief.md`'s round-2 section. The figure set was
+regenerated first: the 26 Oct run and its what-if, now month by month; and the rest of the evening (21:06 to 21:22),
+in which a plan is paused, resumed, corrected and ended, and a wedding leaves cash short.
+
+| Lane | Files | What it drew |
+| --- | --- | --- |
+| A | `Web v4 · Budget forecast 1a states`, `iPhone v4 · Budget forecast 1a states` | after the pot; in rupees; in today's money; at 5, 10 and 30 years; privacy; loading, error and empty; as Asha sees it; 1a's trace on iPhone and iPad |
+| B | `Web v4 · Plans in the chat 2a states`, `iPhone v4 · Plans in the chat 2a states` | the two more ways; November's Budget with the pot's line; the salary step (change_flow) and the HDFC closure (record_event), each with its audit row in Technical; the wedding (cash below zero, its three ways, applied, then undone); Asha asking, and refused; the plans it cannot set up ("about 2 cr", a loan that does not exist) |
+| C | `Web v4 · Plans tab 3a states`, `iPhone v4 · Plans tab 3a states` | privacy; a plan paused, resumed, corrected in place (the fees' end, with its history and the run before and after) and ended; as Asha sees it |
+| D | `Web v4 · Projection`, `iPhone v4 · Projection` (edited) | every figure moved to the 26 Oct run; 1a and its states given the tabs and the 20-year opening; the what-if card with code's cash flag; new boards for the Net worth tab at 390 and on iPad, and after the plans (21:06); MA-193's plan-item card marked superseded by 2a |
+| E | Prototype v4 (`PrototypeV4Pages`, `PrototypeV4Chat`, `prototype-v4.js`, `prototype-v4-pages.js`), `docs/design/agent-journey.html` | the Projection's figures moved to the 26 Oct run, the tabs and the 20-year opening, step 9's plan item made 2a's way, and the Agent Journey's flows in the same figures and flow |
+
+Every `undrawn` item of MA-262, MA-263, MA-222 and MA-224 now has its boards and a `Drawn:` note on its row, so no
+picked story waits on a board.
+
+**Found in review, and settled:**
+- **The figure set rounded a pot-topped month to £498 to £501.** Rounding each group of lines on its own does that.
+  Rounding a month's lines together would have moved about £1 in some 120 months and 12 to 18 years of every ledger,
+  so the rule stays: a total is the sum of its shown lines, and the flags read exact figures. The README says so, and
+  the boards fold those months into their year.
+- **Prototype v4's board-fit allowance for a thinned "2031"** no longer matched anything; it is removed from
+  `scripts/board_fit_allow.json`.
+- **The detector's kit and canvas false positives on the new files** are scoped in `.impeccable/config.json` with
+  their reasons. MA-193's own findings on the Projection boards and the prototype predate this round and stay as they
+  were.
+
+**Where a board departs, said on it:**
+- Prototype step 9 stops at the impact card. Saving would leave cash short, and the figure set computes no ways for
+  that plan.
+- Lane B's salary and HDFC impact cards show the middle path and the floor and cash lines, not yearly bars, since the
+  set keeps no R3 ledger.
+- Asha's and Arun's extra lines at 21:20 and 21:22 ("Can we afford the wedding?", "about 2 cr to close my loan") are
+  the boards' own words, as illustrative as the rest.
+- The Agent Journey quotes this household's sentences (£5,500; the HDFC loan with the SBI FD). ARCHITECTURE keeps
+  MA-261's general examples, and point 3 of the first list says why.
+
+**The gates, after round 2:**
+- board-fit: 52 boards in Chromium and WebKit, 0 faults, and no allowance left unmatched;
+- plan-sync: selftest 0 wrong; check clean but for the Confluence pages, previews and captures, published with the PR;
+- contrast: selftest and plain run clean;
+- design-sync: 3 projects, 100 files, 0 drift;
+- impeccable: 0 findings on the six new state boards. The edited Projection boards and the prototype keep only
+  MA-193's earlier findings.
+
+**Points to settle (Arun):**
+6. **The floor in retirement.** At 30 years the forecast flags 2053 to 2056 below the floor, because the surplus sits
+   at £0 while Balanced pays the budget in retirement. No record says whether the floor holds then.
+7. **Prototype v4's clock.** Its steps 8 to 10 are dated Thu 5 Nov but show the 26 Oct run (that predates this round),
+   and they come after the Mon 2 Nov evening, whose plans they do not show (lesson 19).
+8. **The Agent Journey's published page** now differs from the repo copy; republishing it is Arun's call.

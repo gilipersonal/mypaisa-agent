@@ -134,6 +134,11 @@ set it at 10:40), and Asha's bonus grows 3.5% a year (corrected at 10:44).
   rate.
 - **Checked:** every month, opening cash + its flows = closing cash; every year's lines (rounded by largest
   remainder) sum to its surplus; no option leaves cash below zero.
+- **How a figure is rounded.** Each group of lines (income by member, spending by category, the EMIs) is rounded by
+  largest remainder to its group's total, and a surplus shown is the sum of its shown lines. So a total can sit £1 or £2
+  from its exact figure rounded on its own, and the lines on a board always add up. The floor and cash flags use the
+  exact figures. A month the pot tops up to exactly £500 can therefore show £498 to £501, and it is not flagged. The
+  boards fold such months into their year, and say "no month is flagged" rather than "£500 or more every month".
 
 ## The evening
 

@@ -4060,7 +4060,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">24</span>
     <h2 id="h-projection">The Projection, and a what-if</h2>
-    <p class="lede">Projection, not forecast: Forecast stays the market's word for a holding's next four weeks, and the Projection is the household's net worth over the years. Code computes every figure, month by month to the horizon; the agent explains. The screen opens at 20 years, with 5, 10, 20 and 30 to choose (MA-261); this flow is drawn at 30 years, to 2056. From £457,951 on Mon 26 Oct the middle path reaches £1,316,000 by 2036 and £4,635,000 by 2056, and every assumption shows its source. A what-if is a typed override the engine runs and nobody saves: <i>£60,000 down on a second flat in June 2028</i> puts 2036's middle path at £1,233,000 against £1,316,000. Plan items, and the saved assumptions, are the admin's alone. Since MA-261 the admin says what is coming (<i>£4,000 a month from Jan 2029 for my kid's schooling</i>, <i>my salary goes to £8,000 a month from Sep 2028</i>, <i>₹2 cr to close my SBI home loan</i>); the agent asks only what is missing, shows the engine's impact, and on Confirm the Projection and the Budget forecast move; if the household falls short it proposes ways to rearrange the budget, and the admin's Confirm applies one.</p>
+    <p class="lede">Projection, not forecast: Forecast stays the market's word for a holding's next four weeks, and the Projection is the household's net worth over the years. Code computes every figure, month by month to the horizon; the agent explains. The screen has three tabs, Net worth, Plans and Budget forecast, and opens at 20 years, with 5, 10, 20 and 30 to choose (MA-261); this flow is drawn at 20 years, to 2046. From £457,951 on Mon 26 Oct the middle path reaches £1,508,000 by 2036 and £3,697,000 by 2046, and every assumption shows its source. A what-if is a typed override the engine runs and nobody saves: <i>£60,000 down on a second flat in June 2028</i> puts 2036's middle path at £1,417,000 against £1,508,000, and code flags cash £14,462 below zero in Jun 2028. Plan items, and the saved assumptions, are the admin's alone. Since MA-261 the admin says what is coming (<i>£4,000 a month from Jan 2029 for my kid's schooling</i>, <i>my salary goes to £5,500 a month from Sep 2028</i>, <i>close my HDFC loan with the SBI FD when it matures</i>); one card at a time (MA-264's 2a): the agent asks only what is missing, then the engine's impact card and its Confirm save the plan with its audit row, and the Projection and the Budget forecast move; if the household falls short, a card of ways to rearrange the budget follows, and the admin's Confirm applies one.</p>
     <div class="meta"><span class="chip trig"><b>Trigger</b> Projection from Home, a question that starts <i>What if</i>, or a plan item in the admin's chat</span><span class="chip">Phase 7 (the Projection)</span></div>
   </div>
 
@@ -4082,8 +4082,8 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box">A <span class="sg">validator</span> refuses any number not traceable to your words or a named preset; £60,000 and June 2028 are yours. The engine runs the scenario beside today's plan, and <span class="sg">nothing is saved</span></span></li>
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The engine's figures, for the words around them</span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">What the deposit costs by 2036, and why; every number in it is the engine's</span><span class="ln"></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">An unsaved scenario card: 2036's middle path £1,233,000 with the flat, against £1,316,000 on today's plan, ▼ £83,000. <b>Save as a plan item</b> is shown to the admin only</span><span class="ln"></span></li>
-      <li class="st note" data-lanes="Note"><span class="box"><b>Plan items are the admin's alone:</b> future income, spends, changes to existing flows and events on records (such as a loan closed), made in the admin's chat with <code>propose_plan_item</code> and saved only after the admin's Confirm (a home extension, −£35,000 in Jun 2027; Asha's bonus, +£3,000 every March; a new car, −£25,000 in Jun 2031), then corrected, paused or ended in place by the admin, as the saved assumptions are; when a plan leaves the household short, <code>rearrange_budget</code> proposes options and the admin's Confirm applies one, today's budget included. They change a plan, not the records, so they need no second check. Asha views the Projection and asks her own what-if at 10:26; she saves nothing.</span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">An unsaved scenario card: 2036's middle path £1,417,000 with the flat, against £1,508,000 on today's plan, ▼ £91,000, and code's flag: cash £14,462 below zero in Jun 2028, back above zero in Nov 2028. <b>Save as a plan item</b> is shown to the admin only</span><span class="ln"></span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Plan items are the admin's alone:</b> future income, spends, changes to existing flows and events on records (such as a loan closed), made in the admin's chat with <code>propose_plan_item</code>, one card at a time: the questions, only for what is missing; then the impact card (the middle path at 5, 10 and 20 years, the surplus each year, the first month cash goes negative, new milestones); then the admin's Confirm saves it with its audit row (a home extension, −£35,000 in Jun 2027; Asha's bonus, +£3,000 every March; a new car, −£25,000 in Jun 2031), then corrected, paused or ended in place by the admin, as the saved assumptions are; when a plan leaves the household short, <code>rearrange_budget</code> proposes options and the admin's Confirm applies one, today's budget included. They change a plan, not the records, so they need no second check. Asha views the Projection and asks her own what-if at 10:26; she saves nothing.</span></li>
       <li class="st note" data-lanes="Note"><span class="box">The agent also explains what drives the curve, raises the trouble flags code computes, and notices milestones: the car loan ends in Feb 2029 and frees £347 a month, the HDFC loan in Jul 2030, the mortgage in Oct 2045. A locked pension cannot cover a shortfall before it unlocks.</span></li>
     </ol></div>
   </div></div>
@@ -4094,16 +4094,17 @@ footer.foot b { color: var(--mp-ink); }
       <div class="browser">
         <div class="bbar"><i class="bdot"></i><i class="bdot"></i><i class="bdot"></i><span class="addr">dashboard.mypaisapp.com/projection</span></div>
         <div class="bpage">
-          <div class="ptop"><div><p class="over">Projection · the engine's run of Mon 26 Oct, 09:53</p><p class="ptitle">Where the household is heading</p></div><div class="filters"><div class="seg" style="min-width:320px"><span class="on">£ GBP</span><span>₹ INR</span><span>Today's money</span></div></div></div>
+          <div class="ptop"><div><p class="over">Projection · the engine's run of Mon 26 Oct, 09:53</p><p class="ptitle">Where the household is heading</p></div><div class="filters"><div class="seg" style="min-width:240px"><span>5 yrs</span><span>10 yrs</span><span class="on">20 yrs</span><span>30 yrs</span></div><div class="seg" style="min-width:300px"><span class="on">£ GBP</span><span>₹ INR</span><span>Today's money</span></div></div></div>
+          <div class="seg" style="max-width:420px;margin:10px 0 2px"><span class="on">Net worth</span><span>Plans</span><span>Budget forecast</span></div>
           <div class="cols">
             <div class="panel">
               <div class="dshero">
-                <p class="lbl">Middle path in 2056</p>
-                <p class="big">£4,635,000</p>
-                <p style="margin-top:4px;font:400 13px/18px var(--font);color:var(--mp-hero-ink-2)">From £457,951 today; £1,316,000 by 2036. 8 in 10 runs end 2056 between £3,156,000 and £7,141,000.</p>
-                <svg class="fan" viewBox="0 0 300 110" preserveAspectRatio="none" role="img" aria-label="Chart: the household's net worth to 2056, a widening band of 8 in 10 runs around the rising middle path"><path d="M0.0 99.7 L10.0 98.5 L20.0 97.0 L30.0 95.6 L40.0 94.2 L50.0 93.1 L60.0 91.2 L70.0 89.4 L80.0 87.6 L90.0 85.6 L100.0 83.5 L110.0 80.7 L120.0 78.0 L130.0 75.4 L140.0 72.5 L150.0 69.6 L160.0 66.5 L170.0 63.1 L180.0 60.5 L190.0 56.6 L200.0 52.8 L210.0 49.8 L220.0 45.6 L230.0 41.0 L240.0 35.4 L250.0 30.2 L260.0 25.7 L270.0 22.2 L280.0 16.2 L290.0 12.3 L300.0 8.2 L300.0 62.8 L290.0 65.5 L280.0 66.4 L270.0 68.1 L260.0 69.5 L250.0 69.2 L240.0 71.7 L230.0 74.2 L220.0 74.9 L210.0 77.1 L200.0 78.5 L190.0 81.1 L180.0 81.6 L170.0 82.9 L160.0 84.0 L150.0 85.2 L140.0 86.5 L130.0 88.0 L120.0 89.2 L110.0 90.3 L100.0 91.5 L90.0 92.6 L80.0 93.9 L70.0 94.9 L60.0 95.6 L50.0 96.6 L40.0 97.4 L30.0 98.3 L20.0 99.1 L10.0 99.8 L0.0 99.7 Z" fill="var(--mp-hero-area)"/><path d="M0.0 99.7 L10.0 99.2 L20.0 98.0 L30.0 97.0 L40.0 95.8 L50.0 94.9 L60.0 93.6 L70.0 92.3 L80.0 90.6 L90.0 89.4 L100.0 88.0 L110.0 86.2 L120.0 84.3 L130.0 82.5 L140.0 80.6 L150.0 78.9 L160.0 77.1 L170.0 74.8 L180.0 72.8 L190.0 69.9 L200.0 68.1 L210.0 65.4 L220.0 62.3 L230.0 60.2 L240.0 57.5 L250.0 54.9 L260.0 52.3 L270.0 49.5 L280.0 47.1 L290.0 45.4 L300.0 42.5" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/></svg>
+                <p class="lbl">Middle path in 2046</p>
+                <p class="big">£3,697,000</p>
+                <p style="margin-top:4px;font:400 13px/18px var(--font);color:var(--mp-hero-ink-2)">From £457,951 today; £1,508,000 by 2036. 8 in 10 runs end 2046 between £2,548,000 and £5,766,000.</p>
+                <svg class="fan" viewBox="0 0 300 110" preserveAspectRatio="none" role="img" aria-label="Chart: the household's net worth to 2046, a widening band of 8 in 10 runs around the rising middle path"><path d="M0.0 98.2 L15.0 96.4 L30.0 94.3 L45.0 92.4 L60.0 90.1 L75.0 88.4 L90.0 85.6 L105.0 82.8 L120.0 80.3 L135.0 77.0 L150.0 73.2 L165.0 69.8 L180.0 65.0 L195.0 60.1 L210.0 55.2 L225.0 49.1 L240.0 42.2 L255.0 32.2 L270.0 26.3 L285.0 17.0 L300.0 7.4 L300.0 62.4 L285.0 65.5 L270.0 68.6 L255.0 71.0 L240.0 73.1 L225.0 76.4 L210.0 78.7 L195.0 81.0 L180.0 83.0 L165.0 84.9 L150.0 86.4 L135.0 88.4 L120.0 89.9 L105.0 91.2 L90.0 92.7 L75.0 94.3 L60.0 95.0 L45.0 96.1 L30.0 97.2 L15.0 98.3 L0.0 98.2 Z" fill="var(--mp-hero-area)"/><path d="M0.0 98.2 L15.0 97.2 L30.0 95.7 L45.0 94.3 L60.0 92.5 L75.0 91.3 L90.0 89.4 L105.0 87.7 L120.0 85.3 L135.0 83.0 L150.0 80.2 L165.0 77.9 L180.0 75.3 L195.0 71.9 L210.0 69.0 L225.0 65.2 L240.0 61.0 L255.0 56.2 L270.0 52.2 L285.0 47.3 L300.0 42.8" fill="none" stroke="var(--mp-coral)" stroke-width="2.5"/></svg>
               </div>
-              <p class="small muted" style="display:flex;justify-content:space-between"><span>Today</span><span>2036</span><span>2046</span><span>2056</span></p>
+              <p class="small muted" style="display:flex;justify-content:space-between"><span>Today</span><span>2031</span><span>2036</span><span>2041</span><span>2046</span></p>
               <div class="filters"><span class="chip">What if we buy a second flat?</span><span class="chip">What moves the line most?</span></div>
               <h4>Milestones</h4>
               <div class="kv"><span>Asha's saver matures, £10,460</span><span>Dec 2026</span><span>The mortgage's fixed rate ends</span><span>Jun 2028</span><span>Car loan paid off, frees £347 a month</span><span>Feb 2029</span><span>SBI FD matures, ₹6,17,538</span><span>Mar 2029</span><span>HDFC loan paid off, frees ₹39,390 a month</span><span>Jul 2030</span><span>Mortgage paid off, frees £1,456 a month</span><span>Oct 2045</span></div>
@@ -4122,6 +4123,7 @@ footer.foot b { color: var(--mp-ink); }
                 <tr><td>Asha's salary growth</td><td>History and prior: her 3.5% a year since 2023, with the UK's 3.5%</td><td><span class="efig">3.5%</span></td></tr>
                 <tr><td>UK inflation</td><td>Prior · UK consumer prices</td><td><span class="efig">2.5%</span></td></tr>
                 <tr><td>India inflation</td><td>Prior · it also drifts the rupee</td><td><span class="efig">5%</span></td></tr>
+                <tr><td>Arun's floor</td><td>His setting: the monthly surplus he keeps; a plan that takes the surplus under it brings ways to cover it</td><td><span class="efig">£500 a month</span></td></tr>
                 </tbody>
               </table></div>
               <p class="small muted">Priors are the household's settings, each with its source; Arun sets them. The engine runs again whenever a figure changes.</p>
@@ -4132,7 +4134,7 @@ footer.foot b { color: var(--mp-ink); }
           </div>
         </div>
       </div>
-      <figcaption><b>Browser · Projection, 10:05, in 1a, the fan first.</b> The fan, the milestones on the line, and every assumption with its source. The figures the admin may correct in place carry the dotted line.</figcaption>
+      <figcaption><b>Browser · Projection, 10:05, in 1a, the fan first.</b> The Net worth tab, opening at 20 years: the fan, the milestones on the line, and every assumption with its source, Arun's floor among them. The figures the admin may correct in place carry the dotted line.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
@@ -4146,9 +4148,10 @@ footer.foot b { color: var(--mp-ink); }
             <div class="mcard">
               <h5>What-if · Jun 2028 · not saved</h5>
               <p><b>£60,000 down on a second flat</b></p>
-              <div class="wif"><svg viewBox="0 0 300 96" preserveAspectRatio="none" role="img" aria-label="Chart: the middle path to 2036, lower with the flat from June 2028"><line x1="72.6" y1="0" x2="72.6" y2="96" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="3 3"/><path d="M0.0 86.8 L30.0 83.1 L60.0 75.7 L90.0 68.7 L120.0 60.9 L150.0 55.1 L180.0 46.7 L210.0 38.2 L240.0 27.3 L270.0 19.1 L300.0 9.9" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5"/><path d="M0.0 86.8 L30.0 83.1 L60.0 81.1 L90.0 74.2 L120.0 67.2 L150.0 61.5 L180.0 53.0 L210.0 45.2 L240.0 35.2 L270.0 26.4 L300.0 17.4" fill="none" stroke="var(--mp-chart-2)" stroke-width="2.5"/></svg></div>
+              <div class="wif"><svg viewBox="0 0 300 96" preserveAspectRatio="none" role="img" aria-label="Chart: the middle path to 2036, lower with the flat from June 2028"><line x1="72.6" y1="0" x2="72.6" y2="96" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="3 3"/><path d="M0.0 91.4 L30.0 87.0 L60.0 80.0 L90.0 73.4 L120.0 65.0 L150.0 59.1 L180.0 50.2 L210.0 42.3 L240.0 31.2 L270.0 20.2 L300.0 7.4" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5"/><path d="M0.0 91.4 L30.0 87.0 L60.0 85.0 L90.0 78.6 L120.0 70.9 L150.0 65.0 L180.0 55.8 L210.0 48.1 L240.0 37.4 L270.0 26.7 L300.0 14.6" fill="none" stroke="var(--mp-chart-2)" stroke-width="2.5"/></svg></div>
               <p class="wlegend"><span><i style="background:var(--mp-chart-2)"></i>With the flat</span><span><i style="background:var(--mp-chart-line)"></i>Today's plan</span><span>Dashed: the deposit</span></p>
-              <div class="kv"><span>2036, with the flat</span><span><b>£1,233,000</b></span><span>2036, today's plan</span><span>£1,316,000</span><span>Middle path</span><span>▼ £83,000 lower</span></div>
+              <div class="kv"><span>2036, with the flat</span><span><b>£1,417,000</b></span><span>2036, today's plan</span><span>£1,508,000</span><span>Middle path</span><span>▼ £91,000 lower</span></div>
+              <p class="c-alert" style="padding:8px 10px;border-radius:12px;font:600 14px/19px var(--font)">▼ Cash goes £14,462 below zero in Jun 2028, back above zero in Nov 2028.</p>
               <small>The engine's figures; nothing is saved. £60,000 and June 2028 are your words.</small>
               <div class="cbs c2"><span class="cb">Save as a plan item</span><span class="cb">Change it</span></div>
             </div>
@@ -4160,36 +4163,35 @@ footer.foot b { color: var(--mp-ink); }
     </figure>
     <figure class="mock">
       <div class="phone">
-        <div class="sbar" aria-hidden="true"><span>20:15</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
-        <div class="nav"><span class="gcap glass strip"><small>Household</small><b>Sun 25 Oct</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
+        <div class="sbar" aria-hidden="true"><span>10:21</span><span class="island"></span><svg class="sbi" viewBox="0 0 64 12"><use href="#i-sb"/></svg></div>
+        <div class="nav"><span class="gcap glass strip"><small>Household · Mon 26 Oct</small><b>£457,951</b><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></span></div>
         <div class="chat">
-          <span class="day">The admin's chat · Sun 25 Oct, 20:14</span>
-          <div class="me">Plan Asha's bonus: £3,000 every March, 2027 to 2052</div>
+          <span class="day">After Save as a plan item, 10:21</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
+            <p>As a plan item, one thing is missing.</p>
             <div class="mcard">
-              <h5>New plan item · check and confirm</h5>
-              <p><b>Asha's annual bonus</b></p>
-              <div class="kv wrap"><span>Amount</span><span>+£3,000</span><span>When</span><span>Every March, 2027 to 2052</span><span>Currency</span><span>GBP</span><span>Grows</span><span>No growth</span></div>
-              <small>Your words, as a plan item. The engine runs the Projection again once you confirm; only you can change it later.</small>
-              <div class="cbs"><span class="cb p">Confirm</span><span class="cb">Change</span><span class="cb">Cancel</span></div>
+              <h5>New plan item · one question</h5>
+              <p><b>Second flat deposit</b>, −£60,000 once, Jun 2028</p>
+              <div class="kv wrap"><span>Paid from where?</span><span><b>The monthly budget, then cash</b></span></div>
             </div>
           </div></div>
-          <span class="day">After Confirm, the card edited in place</span>
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
             <div class="mcard">
-              <p class="okline"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Added to the plan</p>
-              <p>Asha's annual bonus · +£3,000 every March, 2027 to 2052</p>
-              <small>Audit · Plan item added · Arun · Sun 25 Oct 20:15 · in the chat</small>
+              <h5>Not saved yet · the impact</h5>
+              <div class="kv"><span>2031</span><span>£787,000 · ▼ £74,000</span><span>2036</span><span>£1,417,000 · ▼ £91,000</span><span>2046</span><span>£3,564,000 · ▼ £133,000</span></div>
+              <small>Today's plan: £861,000, £1,508,000 and £3,697,000. The surplus each year stays as it is: a one-off is paid from cash.</small>
+              <p class="c-alert" style="padding:8px 10px;border-radius:12px;font:600 14px/19px var(--font)">▼ Cash goes £14,462 below zero in Jun 2028, back above zero in Nov 2028.</p>
+              <div class="cbs"><span class="cb p">Confirm</span><span class="cb">Change</span><span class="cb">Cancel</span></div>
             </div>
           </div></div>
         </div>
         <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>
-      <figcaption><b>A plan item, in the admin's chat.</b> The evening before: made in the chat with a Confirm and an audit row, and no second check, since it changes a plan, not the records.</figcaption>
+      <figcaption><b>A plan item, one card at a time (MA-264's 2a).</b> From the what-if's Save as a plan item: the one thing missing, asked with chips, then the engine's impact before Confirm. Confirm saves it with its audit row and no second check, since it changes a plan, not the records; here, with cash going below zero, a card of ways to cover it would follow. This walk-through cancels, so the plan keeps its three items.</figcaption>
     </figure>
   </div>
 
-  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span><b>Picked.</b> Three Projection screens were drawn for MA-193 (<code>iPhone v4 · Projection.dc.html</code>, <code>Web v4 · Projection.dc.html</code>): 1a, the fan first; 1b, a story first; 1c, decades. On 26 Oct 2026 Arun picked <b>1a, the fan first</b>, the screen ARCHITECTURE §6.6 lists. The old wealth tracker's Forecast is renamed Projection. Every figure is an illustrative engine run from the v4 figure set.</span></p>
+  <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><span><b>Picked.</b> Three Projection screens were drawn for MA-193 (<code>iPhone v4 · Projection.dc.html</code>, <code>Web v4 · Projection.dc.html</code>): 1a, the fan first; 1b, a story first; 1c, decades. On 26 Oct 2026 Arun picked <b>1a, the fan first</b>, the screen ARCHITECTURE §6.6 lists. The old wealth tracker's Forecast is renamed Projection. Every figure is an illustrative engine run from the v4 figure set, run month by month since MA-264 (<code>future-plans-v4.json</code>). On 28 Oct 2026 Arun picked the screens MA-261 added (MA-264): the Budget forecast tab 1a, the surplus first; a plan in the chat 2a, a card per step; the Plans tab 3a, bars on a timeline.</span></p>
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
