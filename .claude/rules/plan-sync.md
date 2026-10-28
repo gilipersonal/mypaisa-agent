@@ -154,7 +154,12 @@ checks: after an edit to a record the check runs and new drift is reported at
 once; raising a PR (`gh pr create`, `gh pr ready`) is refused while the check
 fails or while `design_sync.py check` finds Claude Design and the mirror
 apart; and a prompt about a new design or feature brings the New work rule
-above into the session (`.claude/hooks/plan_sync_hook.py`).
+above into the session (`.claude/hooks/plan_sync_hook.py`). Each hook checks
+the checkout the call acts on: the folder a command runs in (or the last `cd`
+before `gh pr`), or the edited file's own checkout, so a PR raised from a
+worktree is checked in that worktree, with its own scripts, not in the main
+checkout beside it (MA-260); `plan_sync_hook.py selftest`, run by
+`plan_sync.py selftest`, holds the cases.
 
 Jira-side drift (a key, parent, label or status that differs from the trace,
 or an epic's due date that differs from the roadmap) and Confluence drift (a

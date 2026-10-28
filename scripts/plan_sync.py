@@ -871,6 +871,11 @@ def selftest(trace: dict) -> int:
                     bad += 1
                     print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")
     bad += record_cases()
+    # MA-260: the PR and edit hooks check the checkout a call acts on, a worktree included (it prints its own line).
+    hook = ROOT / ".claude" / "hooks" / "plan_sync_hook.py"
+    r = subprocess.run([sys.executable, "-I", str(hook), "selftest"], capture_output=True, text=True) if hook.is_file() else None
+    print(r.stdout.strip() if r else "FAIL: the plan-sync hook selftest cannot run: .claude/hooks/plan_sync_hook.py is missing")
+    bad += 0 if r and r.returncode == 0 else 1
     # MA-259: Claude Design against the mirror, offline, against a stand-in built from the mirror (it prints its own line).
     try:
         import design_sync  # noqa: PLC0415

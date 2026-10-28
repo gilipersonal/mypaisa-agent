@@ -6,6 +6,7 @@
                                    run the check and tell the session about drift the edit introduced
     plan_sync_hook.py before-pr    PreToolUse on Bash: refuse `gh pr create` and `gh pr ready` while the check fails, or
                                    while Claude Design and the repo's mirror of it differ (scripts/design_sync.py, MA-259)
+    plan_sync_hook.py selftest     offline: each hook finds the checkout a call acts on (a worktree, not main beside it)
     plan_sync_hook.py new-work     UserPromptSubmit: when the prompt talks about a new design or feature, remind the
                                    session that it gets a Jira issue and its Confluence page in the same change
 
@@ -17,6 +18,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -30,16 +32,76 @@ NEW_WORK = re.compile(r"\b(new (feature|screen|page|flow|design|card|story|kind)
                       r"|i (want|need) (a|an|the|to see))\b", re.I)
 
 
-def drift() -> tuple[int, list[str]]:
-    r = subprocess.run([sys.executable, "-I", str(ROOT / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True, cwd=ROOT, timeout=120)
+def checkout(start: str | None) -> Path:
+    """The checkout a tool call acts on: the git top level of `start` (the folder a command runs in, or an edited file),
+    when it holds this repo's scripts, else the project folder. A worktree's edits and PRs are checked in that worktree,
+    against its own scripts and records, never in the main checkout beside it (MA-260: the PR hook checked main's mirror
+    while the PR came from a worktree)."""
+    if start:
+        d = Path(start)
+        d = d if d.is_dir() else d.parent
+        try:
+            top = subprocess.run(["git", "-C", str(d), "rev-parse", "--show-toplevel"], capture_output=True, text=True, timeout=10).stdout.strip()
+        except (OSError, subprocess.SubprocessError):
+            top = ""
+        if top and (Path(top) / "scripts" / "plan_sync.py").is_file():
+            return Path(top)
+    return ROOT
+
+
+def pr_checkout(before: str, cwd: str | None) -> Path:
+    """The checkout a command raises its PR from: the last `cd` before `gh pr`, else the folder the command runs in."""
+    where = cwd
+    if cds := [m.end() for m in re.finditer(r"(?:^|[;&|(]|\bthen|\bdo)\s*cd\s+", before)]:
+        lex = shlex.shlex(before[cds[-1]:], posix=True, punctuation_chars=True)
+        lex.whitespace_split = True
+        try:
+            where = os.path.expanduser(next(iter(lex), "") or "") or cwd  # the shell's own reading of the path
+        except ValueError:  # an unclosed quote: no path to read, so the folder the command runs in
+            where = cwd
+    if cds and where and cwd and not os.path.isabs(where):
+        where = os.path.join(cwd, where)
+    return checkout(where)
+
+
+def selftest() -> int:
+    """Offline: the hooks find the checkout a call acts on (MA-260), in throwaway repos; plan_sync.py selftest runs it."""
+    bad = 0
+    with tempfile.TemporaryDirectory() as t:
+        main, wt, other = Path(t) / "main", Path(t) / "main" / ".claude" / "worktrees" / "a b", Path(t) / "plain"
+        for repo in (main, wt):
+            (repo / "scripts").mkdir(parents=True)
+            (repo / "scripts" / "plan_sync.py").write_text("")
+            subprocess.run(["git", "init", "-q", str(repo)], check=True)
+        other.mkdir()
+        cases = [
+            ("the command's folder", pr_checkout("", str(wt)), wt),
+            ("a file deep in a worktree", checkout(str(wt / "scripts" / "plan_sync.py")), wt),
+            ("cd into a worktree from main", pr_checkout(f'cd "{wt}" && ', str(main)), wt),
+            ("cd into main from a worktree", pr_checkout(f"cd {main}; ", str(wt)), main),
+            ("the last cd wins", pr_checkout(f"cd {main} && cd '{wt}' && ", str(other)), wt),
+            ("a relative cd", pr_checkout("cd .claude/worktrees/'a b' && ", str(main)), wt),
+            ("a folder that is no checkout of this repo", pr_checkout("", str(other)), ROOT),
+            ("no folder at all", pr_checkout("", None), ROOT),
+        ]
+        for what, got, want in cases:
+            if got.resolve() != want.resolve():
+                bad += 1
+                print(f"FAIL: plan-sync hook, {what}: chose {got}, not {want}")
+    print(f"plan-sync hook selftest: {len(cases)} checkouts, {bad} wrong")
+    return 1 if bad else 0
+
+
+def drift(root: Path = ROOT) -> tuple[int, list[str]]:
+    r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True, cwd=root, timeout=120)
     return r.returncode, [ln[len("DRIFT: "):] for ln in r.stdout.splitlines() if ln.startswith("DRIFT: ")]
 
 
-def design_drift() -> tuple[int, list[str]]:
+def design_drift(root: Path = ROOT) -> tuple[int, list[str]]:
     """Claude Design against the mirror, live. Fails closed: a check that cannot reach Claude Design is drift too."""
     try:
-        r = subprocess.run([sys.executable, "-I", str(ROOT / "scripts" / "design_sync.py"), "check"], capture_output=True, text=True,
-                           cwd=ROOT, timeout=150)
+        r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "design_sync.py"), "check"], capture_output=True, text=True,
+                           cwd=root, timeout=150)
     except subprocess.TimeoutExpired:
         return 1, ["design: the check took over 150 s"]
     lines = [ln[len("DRIFT: "):] for ln in r.stdout.splitlines() if ln.startswith("DRIFT: ")]
@@ -52,14 +114,15 @@ def say(event: str, text: str) -> None:
 
 def after_edit(data: dict) -> int:
     path = (data.get("tool_input") or {}).get("file_path") or ""
+    root = checkout(path)
     try:
-        rel = Path(path).resolve().relative_to(ROOT.resolve()).as_posix()
+        rel = Path(path).resolve().relative_to(root.resolve()).as_posix()
     except ValueError:
         return 0
     if not RECORDS.match(rel):
         return 0
-    _, lines = drift()
-    seen_file = Path(tempfile.gettempdir()) / f"mypaisa-plan-sync-{hashlib.sha256(str(ROOT).encode()).hexdigest()[:12]}.json"
+    _, lines = drift(root)
+    seen_file = Path(tempfile.gettempdir()) / f"mypaisa-plan-sync-{hashlib.sha256(str(root).encode()).hexdigest()[:12]}.json"
     try:
         seen = set(json.loads(seen_file.read_text()))
     except (OSError, ValueError):
@@ -80,14 +143,15 @@ def after_edit(data: dict) -> int:
 def before_pr(data: dict) -> int:
     cmd = (data.get("tool_input") or {}).get("command") or ""
     # an actual invocation: at the start of a line or after a shell separator, not the words inside a heredoc or a quote
-    if not re.search(r"(?m)(?:^|[;&|(]|\bthen|\bdo)\s*(?:\w+=\S+\s+)*gh\s+pr\s+(?:create|ready)\b", cmd):
+    if not (m := re.search(r"(?m)(?:^|[;&|(]|\bthen|\bdo)\s*(?:\w+=\S+\s+)*gh\s+pr\s+(?:create|ready)\b", cmd)):
         return 0
-    code, lines = drift()
+    root = pr_checkout(cmd[:m.start()], data.get("cwd"))
+    code, lines = drift(root)
     if code != 0:
         print(f"plan-sync check reports {len(lines)} drift; the plan, Jira, the designs, Confluence and the code must agree before a PR "
               "(.claude/rules/plan-sync.md). First items:\n- " + "\n- ".join(lines[:10]), file=sys.stderr)
         return 2
-    code, lines = design_drift()
+    code, lines = design_drift(root)
     if code == 0:
         return 0
     print(f"design-sync check reports {len(lines)} drift: Claude Design and docs/design/ must be the same before a PR; "
@@ -106,10 +170,12 @@ def new_work(data: dict) -> int:
 
 def main(argv: list[str]) -> int:
     try:
-        data = json.load(sys.stdin)
+        data = {} if argv[1:2] == ["selftest"] else json.load(sys.stdin)
     except ValueError:
         data = {}
     try:
+        if argv[1:2] == ["selftest"]:
+            return selftest()
         return {"after-edit": after_edit, "before-pr": before_pr, "new-work": new_work}[argv[1]](data)
     except (KeyError, IndexError):
         print(__doc__, file=sys.stderr)
