@@ -350,6 +350,15 @@ Claude's:
   reaches the account, and the sync follows them; by 1 Dec without it, they
   stay in the repo alone (Arun's pick, MA-260;
   `docs/design/reviews/MA-259/decision.md`).
+- **The future-plans design (MA-264):** the screens MA-261's future plans
+  need, drawn before anything is built, from one figure set
+  (`docs/design/figures/future-plans-v4.json`: MA-193's household with its
+  plans and a month-by-month budget forecast ledger). Two or three options,
+  at desktop, 390, iPhone and iPad in light and dark, for the Budget forecast
+  tab (MA-262), a plan made in the admin's chat with its questions, its
+  impact and, when it leaves the household short, the rearrangement applied
+  on Confirm (MA-222, MA-263), and the Plans tab (MA-224). You pick; the
+  picked option's remaining states are drawn before those stories start.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

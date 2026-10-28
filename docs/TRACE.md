@@ -69,6 +69,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-259 | The Claude Design boards and the repo mirror stay the same: one command pulls every change, a check fails on any drift, and a plan for Claude Design's move into Claude | In Progress |  | none |  |
 | MA-260 | The boards move into Claude with Anthropic's Move to Claude before standalone Claude Design closes on 14 Dec 2026, and the sync and its check follow them; by 1 Dec without it, the boards stay in the repo alone | To Do |  | none |  |
 | MA-261 | The plan records future plans by talking: new spends, salary changes and loan closures, a 20-year budget forecast, and the budget rearranged on the admin's Confirm | In Progress | §2, §4.1, §4.5, §4.10, §6.6, §8, §9.3, §12 | none |  |
+| MA-264 | Design the future-plans screens at every door: the Budget forecast, a plan made by talking, the budget rearranged on Confirm and the Plans tab, before anything is built | In Progress | §6.6, §8, §9.3, §12 | todo |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
