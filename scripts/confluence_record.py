@@ -675,9 +675,15 @@ def img_name(slug: str, what: str) -> str:
 
 def wanted_images(ctx: cd.Ctx) -> dict[str, dict]:
     out: dict[str, dict] = {}
+    sources = {}
+    for m in MEDIA:
+        try:
+            sources[m] = media_source(m)
+        except RecordError as e:  # errors() reports it; the picture stays stale until its page is fixed
+            sources[m] = f"unreadable: {e}"
     for slug, _, _ in pages():
         for m in page_media(slug):
-            out[img_name(slug, media_file(m))] = {"page": slug, "capture": m, "source": media_source(m)}
+            out[img_name(slug, media_file(m))] = {"page": slug, "capture": m, "source": sources[m]}
         for png in dict.fromkeys(page_lucid(slug)):
             f = DESIGN / "lucid" / png
             src = hashlib.sha256(f.read_bytes()).hexdigest() if f.exists() else "missing"
@@ -1434,6 +1440,11 @@ def render(ctx: cd.Ctx, slug: str) -> str:
 def errors(ctx: cd.Ctx, slugs: set[str]) -> list[str]:
     """Every ARCHITECTURE section on exactly one record page, or on the page ELSEWHERE gives it."""
     out = []
+    for m in MEDIA:
+        try:
+            media_source(m)
+        except RecordError as e:
+            out.append(f"confluence: picture {m}: {e}")
     _, heads = arch()
     held: dict[str, list[str]] = {}
     for slug, *_, secs, _, _ in ARCH:
