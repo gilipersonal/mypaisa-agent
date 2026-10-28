@@ -6,7 +6,7 @@
 <p>ARCHITECTURE.md as written, in full, below.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":jigsaw:" data-color="#E3FCEF"><p><strong>12 stories</strong></p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":jigsaw:" data-color="#E3FCEF"><p><strong>13 stories</strong></p>
 <p>Cite these sections, in phases 0, 2, 3, 4, 5, 6, 7.</p>
 </div>
 </div>
@@ -61,13 +61,13 @@
 <li><strong>The api&#x27;s correction route</strong> is <code>PATCH /v1/records/{id}</code>, for the spec&#x27;s editable fields only; every other data route is GET.</li>
 <li><strong>Who may change what:</strong><ul><li>a member corrects their own records&#x27; figures;</li>
 <li>the owner corrects anyone&#x27;s;</li>
-<li>plan items and saved Projection assumptions are the admin&#x27;s alone (§4.5, §6.6).</li>
+<li>plan items, a rearrangement&#x27;s Confirm and saved Projection assumptions are the admin&#x27;s alone (§4.5, §6.6).</li>
 </ul>
 </li>
 <li><strong>The Admin center</strong> stays the one other exception: the owner&#x27;s admin settings and operations, never a record, each behind the second check (§9.3).</li>
 </ul>
 <h2>🧩 The stories that build it</h2>
-<p>Every story whose trace row cites §4.9 to §4.10, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-226%2C%20MA-74%2C%20MA-201%2C%20MA-203%2C%20MA-202%2C%20MA-205%2C%20MA-210%2C%20MA-211%2C%20MA-216%2C%20MA-218%2C%20MA-220%2C%20MA-222%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>
+<p>Every story whose trace row cites §4.9 to §4.10, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-226%2C%20MA-74%2C%20MA-201%2C%20MA-203%2C%20MA-202%2C%20MA-205%2C%20MA-210%2C%20MA-211%2C%20MA-216%2C%20MA-218%2C%20MA-220%2C%20MA-222%2C%20MA-263%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>
 <table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
 </thead>
 <tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-226" data-card-appearance="inline"></a></td><td>The explainer pages walk the v4 flows: registering anything, check-ins, statements, in-place correction and the Projection</td><td>Task</td><td>0</td><td data-background="#E3FCEF"><span data-type="status" data-color="green">Done</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§4.8, §4.9, §4.10, §6.6</td></tr>
@@ -81,7 +81,8 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-216" data-card-appearance="inline"></a></td><td>SIPs and regular contributions are commitments that record each buy, with an annual step-up</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>2</td><td>§4.9</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-218" data-card-appearance="inline"></a></td><td>A bank or card statement sent in the chat is read, every line categorised and transfers recognised, for one Confirm</td><td>Story</td><td>5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>8</td><td>§4.9, §12</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-220" data-card-appearance="inline"></a></td><td>On the 1st the agent closes last month&#x27;s budget, asking only for what no statement covered</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>3</td><td>§4.9, §12</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-222" data-card-appearance="inline"></a></td><td>Plan items: the admin adds future income and spends through the chat and corrects them in place</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>5</td><td>§4.5, §4.10, §6.6</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-222" data-card-appearance="inline"></a></td><td>Plan items: the admin adds future income and spends through the chat and corrects them in place</td><td>Story</td><td>6</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>5</td><td>§4.5, §4.10, §6.6</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-263" data-card-appearance="inline"></a></td><td>When a plan leaves the household short, the agent proposes ways to rearrange the budget, and the admin&#x27;s Confirm applies one, today&#x27;s budget included</td><td>Story</td><td>2.5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§4.10, §6.6, §8, §12</td></tr>
 </tbody>
 </table>
 <h2>🔗 The explainer pages</h2>

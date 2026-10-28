@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-26",
+ "updated": "2026-10-28",
  "about": "Estimates and dates for every phase (MA-228). An estimate is build days for one story at every door it touches: Claude builds, Arun reviews and tests. A phase's working days are its stories' build days, plus the buffer for review rounds, the demo and fixes, divided by how much runs side by side (the web app and the iOS app are built in parallel, as Arun asked on 26 Oct 2026). Arun's own tasks (label manual) run beside the lane and are due before their phase starts. Change a figure here, run `python3 scripts/roadmap.py write`, and the dates, PLAN's Timeline, the Confluence pages and the epics' due dates follow.",
  "start": "2026-11-02",
  "buffer": 0.2,
@@ -137,7 +137,7 @@
   "MA-93": 5,
   "MA-94": 3,
   "MA-95": 5,
-  "MA-96": 5,
+  "MA-96": 5.5,
   "MA-97": 3,
   "MA-98": 2,
   "MA-99": 3,
@@ -249,9 +249,9 @@
   "MA-217": 5,
   "MA-218": 5,
   "MA-220": 2,
-  "MA-219": 5,
+  "MA-219": 7,
   "MA-221": 2,
-  "MA-222": 3,
+  "MA-222": 6,
   "MA-223": 3,
   "MA-224": 5,
   "MA-186": 0,
@@ -290,7 +290,10 @@
   "MA-257": 0,
   "MA-258": 0,
   "MA-259": 0,
-  "MA-260": 2
+  "MA-260": 2,
+  "MA-261": 0,
+  "MA-262": 2.5,
+  "MA-263": 2.5
  },
  "schedule": {
   "0": {
@@ -350,7 +353,7 @@
   "6": {
    "epic": "MA-190",
    "title": "Budget: statements and monthly check-ins",
-   "lane_days": 12,
+   "lane_days": 12.5,
    "arun_days": 0,
    "working_days": 10,
    "start": "2027-09-01",
@@ -359,11 +362,11 @@
   "7": {
    "epic": "MA-191",
    "title": "Projection",
-   "lane_days": 18,
+   "lane_days": 28.0,
    "arun_days": 0,
-   "working_days": 15,
+   "working_days": 23,
    "start": "2027-09-15",
-   "end": "2027-10-05"
+   "end": "2027-10-15"
   },
   "8": {
    "epic": "MA-14",
@@ -371,8 +374,8 @@
    "lane_days": 28,
    "arun_days": 0,
    "working_days": 23,
-   "start": "2027-10-06",
-   "end": "2027-11-05"
+   "start": "2027-10-18",
+   "end": "2027-11-17"
   },
   "9": {
    "epic": "MA-18",
@@ -380,8 +383,8 @@
    "lane_days": 14,
    "arun_days": 0,
    "working_days": 12,
-   "start": "2027-11-08",
-   "end": "2027-11-23"
+   "start": "2027-11-18",
+   "end": "2027-12-03"
   },
   "10": {
    "epic": "MA-11",
@@ -389,8 +392,8 @@
    "lane_days": 22,
    "arun_days": 0,
    "working_days": 18,
-   "start": "2027-11-24",
-   "end": "2027-12-17"
+   "start": "2027-12-06",
+   "end": "2028-01-07"
   },
   "11": {
    "epic": "MA-12",
@@ -398,8 +401,8 @@
    "lane_days": 17,
    "arun_days": 0,
    "working_days": 14,
-   "start": "2027-12-20",
-   "end": "2028-01-17"
+   "start": "2028-01-10",
+   "end": "2028-01-27"
   },
   "12": {
    "epic": "MA-13",
@@ -407,8 +410,8 @@
    "lane_days": 19,
    "arun_days": 0,
    "working_days": 16,
-   "start": "2028-01-18",
-   "end": "2028-02-08"
+   "start": "2028-01-28",
+   "end": "2028-02-18"
   },
   "13": {
    "epic": "MA-15",
@@ -416,8 +419,8 @@
    "lane_days": 13,
    "arun_days": 0,
    "working_days": 11,
-   "start": "2028-02-09",
-   "end": "2028-02-23"
+   "start": "2028-02-21",
+   "end": "2028-03-06"
   },
   "14": {
    "epic": "MA-16",
@@ -425,8 +428,8 @@
    "lane_days": 8,
    "arun_days": 0,
    "working_days": 7,
-   "start": "2028-02-24",
-   "end": "2028-03-03"
+   "start": "2028-03-07",
+   "end": "2028-03-15"
   },
   "15": {
    "epic": "MA-17",
@@ -434,8 +437,8 @@
    "lane_days": 5,
    "arun_days": 0,
    "working_days": 4,
-   "start": "2028-03-06",
-   "end": "2028-03-09"
+   "start": "2028-03-16",
+   "end": "2028-03-21"
   },
   "16": {
    "epic": "MA-19",
@@ -451,8 +454,8 @@
    "lane_days": 32,
    "arun_days": 0,
    "working_days": 26,
-   "start": "2028-03-10",
-   "end": "2028-04-18"
+   "start": "2028-03-22",
+   "end": "2028-04-28"
   },
   "18": {
    "epic": "MA-127",
@@ -460,8 +463,8 @@
    "lane_days": 28,
    "arun_days": 0,
    "working_days": 23,
-   "start": "2028-04-19",
-   "end": "2028-05-22"
+   "start": "2028-05-02",
+   "end": "2028-06-02"
   },
   "19": {
    "epic": "MA-147",
@@ -469,8 +472,8 @@
    "lane_days": 14,
    "arun_days": 0,
    "working_days": 12,
-   "start": "2028-05-23",
-   "end": "2028-06-08"
+   "start": "2028-06-05",
+   "end": "2028-06-20"
   },
   "20": {
    "epic": "MA-175",
@@ -478,8 +481,8 @@
    "lane_days": 10,
    "arun_days": 0,
    "working_days": 8,
-   "start": "2028-06-09",
-   "end": "2028-06-20"
+   "start": "2028-06-21",
+   "end": "2028-06-30"
   }
  }
 }

@@ -963,8 +963,11 @@ household, filled from statements and one short check-in.
   income commitments; a monthly plan per category, the categories data you
   change by chat, EMIs and card payments from their commitments; the Budget
   screen with plan against actual per category, income, EMIs, the surplus and
-  the savings rate, per member and for the household, in GBP or INR. The
-  Projection that used to sit with the budget is phase 7.
+  the savings rate, per member and for the household, in GBP or INR. Income
+  commitments accept dated future changes and each category carries its
+  inflation key, so phase 7's plan items can change them (MA-261); every
+  amount is take-home, with no tax maths. The Projection that used to sit
+  with the budget is phase 7.
 - **Statements (MA-218):** a bank or card statement sent in the chat (PDF,
   CSV or XLSX; UK and Indian banks and cards), kept in S3 for good; each line
   categorised, the merchant memory first and Haiku for the unknowns; card
@@ -1002,8 +1005,8 @@ Forecaster); **Projection** is the household's net worth over time, and
 `ForecastAssumptions` becomes `ProjectionAssumptions`.
 
 - **The engine (MA-219, `ARCHITECTURE.md` §6.6):** `wealth/projection.py`
-  runs month by month to a horizon (thirty years by default), with a
-  today's-money toggle. Its inputs: each record's country, which sets its
+  runs month by month to a horizon (twenty years by default; 5, 10, 20 or
+  30), with a today's-money toggle, money in `Decimal`. Its inputs: each record's country, which sets its
   inflation, wage-growth prior and tax drag, with GBP/INR drifting with the
   inflation gap; each member's current net salary, its growth blending the
   member's own measured history with the country's prior, weighted by the
@@ -1017,27 +1020,57 @@ Forecaster); **Projection** is the household's net worth over time, and
   (p10, p50, p90); each run stored as a `ProjectionRun` with its inputs hash,
   seed, engine version, percentiles and milestones. It ports the old
   tracker's `forecast.ts`, `budget.ts` and `amortisation.ts` with their cases
-  as golden fixtures, then extends them.
+  as golden fixtures, then extends them. Since MA-261 it also applies a plan
+  item's three effects (a new flow; a change to an existing flow, such as a
+  salary, a SIP or a budget category, from a date; an event on a record, such
+  as a loan prepaid or closed, freeing its EMI), steps growth up on each
+  anniversary of a plan's start, pays a one-off from where it names (the
+  surplus and cash first when it names nothing, a flag if they run short),
+  and puts out a budget forecast ledger and a trace of the flows behind every
+  figure.
 - **Priors by country (MA-221):** long-run returns per asset class and
   country, inflation per country with category overrides such as education
   and health, and wage growth per country, each versioned with its source;
   set by the admin, every change audited.
-- **Plan items (MA-222):** future one-off or recurring income and spends, with
-  a start, an end, a currency and a growth rate, created only in the admin's
-  chat and corrected in place only by the admin, as are the saved
-  assumptions; members see them; every change audited; no second check,
-  since they change a plan, not the records.
+- **Plan items: future plans by talking (MA-222, MA-261):** the admin says
+  what is coming ("£4,000 a month from Jan 2029 for my kid's schooling", "my
+  salary goes to £8,000 a month from Sep 2028", "₹2 cr to close my SBI home
+  loan"); the agent asks only for what is missing, at most three questions
+  with chips (whose, until when, how it grows, paid from where), and shows an
+  impact card from the engine (net worth at 5, 10 and 20 years, the surplus
+  each year, the first month cash would go negative, new milestones) for one
+  Confirm. One-off or recurring, with a start, an end, a currency and a growth
+  rate; every amount take-home. Created only in the admin's chat and
+  corrected, paused or ended in place only by the admin, as are the saved
+  assumptions; members see them; every change audited with the admin's own
+  words and the Projection run before and after; no second check, since they
+  change a plan, not the records.
+- **The Budget forecast (MA-262):** each year to the horizon, expandable to
+  its months: income by member, spend by category, EMIs, each plan item, the
+  surplus, the savings rate and closing cash, in GBP or INR; any figure
+  opens the flows that make it; at both doors.
+- **Rearranging the budget (MA-263):** when a plan leaves cash below zero or
+  the surplus below the admin's floor, code works out the options (trim a
+  category from a date, pause a SIP, move a plan's start, draw from a named
+  pool, change the surplus rule) and the agent ranks and explains them, each
+  as an unsaved scenario card; the admin's Confirm applies one, as Claude
+  proposes a change and you accept it: plan items from their dates and, where
+  it touches this month, the current month's budget plan, each with its audit
+  row and Undo.
 - **What-ifs and the story (MA-223):** code produces every number; the model
   never does. The agent proposes the assumption set with a reason for each
   figure; answers a what-if ("what if we buy a house in 2028?") by filling a
   typed override whose numbers trace to the member's words or a named preset,
-  shown as an unsaved scenario card; explains what drives the curve; and
-  raises the trouble flags and milestones code computes. Members ask
-  what-ifs but save nothing.
+  shown as an unsaved scenario card; explains what drives the curve, from the
+  engine's trace; and raises the trouble flags and milestones code computes.
+  Members ask what-ifs but save nothing.
 - **The Projection screen (MA-224, `ARCHITECTURE.md` §9.3, §12):** the fan in
-  GBP or INR, in today's money or not; milestones on the line (loans ending,
-  maturities, plan items); the assumptions panel with each source, editable
-  in place by the admin; scenario chips; Ask; at both doors.
+  GBP or INR, in today's money or not, opening at 20 years with 5, 10, 20 and
+  30 to choose; milestones on the line (loans ending, maturities, plan
+  items); the assumptions panel with each source, editable in place by the
+  admin; a Plans tab (each plan on a timeline, corrected in place by the
+  admin, with a pause toggle and Add in chat) and a Budget forecast tab;
+  scenario chips; Ask; at both doors.
 
 **Tests:** the engine against the old tracker's forecast and budget cases as
 golden fixtures; debts amortising to their real end dates; a locked pension
@@ -1045,11 +1078,19 @@ never covering a shortfall before it unlocks; the shrinkage weight on
 hand-computed cases; a Monte Carlo run reproduced from its stored seed; the
 override validator refusing a number traced to neither the member's words
 nor a named preset; plan items and saved assumptions refused to a member, in
-the chat and in place; the Projection screen at both doors.
+the chat and in place; golden fixtures for the three sentences above (the
+schooling, the salary step, the loan closed and its EMI freed); every month,
+opening cash plus its flows equals closing cash; a paused plan changes
+nothing; the goal-seek's options on hand-computed cases; eval cases for the
+three sentences and ambiguous ones (no end date, "about 2 cr", a loan that
+does not exist); the Projection screen at both doors.
 
 **Exit:** the Projection screen shows the fan with its milestones; you ask a
-what-if and see an unsaved scenario; as the admin you add a plan item through
-the chat and correct an assumption in place, each with its audit row.
+what-if and see an unsaved scenario; as the admin you say "£4,000 a month
+from Jan 2029 for my kid's schooling", answer the agent's questions, confirm,
+and see the Budget forecast and the fan move; you accept a rearrangement and
+see this month's budget change; you correct a plan item and an assumption in
+place; each with its audit row.
 
 **Cost:** the engine is code; only the assumptions, the what-ifs and the
 narration call Claude, inside the ceiling; nothing more in AWS.
@@ -1616,21 +1657,21 @@ How the dates are worked out:
 | 3 Deposits, policies and two currencies | 18 | 15 | Tue 22 Jun 2027 | Mon 12 Jul 2027 |
 | 4 Debts and check-ins | 19 | 16 | Tue 13 Jul 2027 | Tue 3 Aug 2027 |
 | 5 Investments, priced | 23 | 19 | Wed 4 Aug 2027 | Tue 31 Aug 2027 |
-| 6 Budget: statements and monthly check-ins | 12 | 10 | Wed 1 Sep 2027 | Tue 14 Sep 2027 |
-| 7 Projection | 18 | 15 | Wed 15 Sep 2027 | Tue 5 Oct 2027 |
-| 8 Audit, search and the Admin center at every door | 28 | 23 | Wed 6 Oct 2027 | Fri 5 Nov 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Mon 8 Nov 2027 | Tue 23 Nov 2027 |
-| 10 Prices and the engine | 22 | 18 | Wed 24 Nov 2027 | Fri 17 Dec 2027 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Mon 20 Dec 2027 | Mon 17 Jan 2028 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Tue 18 Jan 2028 | Tue 8 Feb 2028 |
-| 13 Track record and calibration | 13 | 11 | Wed 9 Feb 2028 | Wed 23 Feb 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Thu 24 Feb 2028 | Fri 3 Mar 2028 |
-| 15 Stances go live | 5 | 4 | Mon 6 Mar 2028 | Thu 9 Mar 2028 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Wed 1 Sep 2027 | Tue 14 Sep 2027 |
+| 7 Projection | 28 | 23 | Wed 15 Sep 2027 | Fri 15 Oct 2027 |
+| 8 Audit, search and the Admin center at every door | 28 | 23 | Mon 18 Oct 2027 | Wed 17 Nov 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 18 Nov 2027 | Fri 3 Dec 2027 |
+| 10 Prices and the engine | 22 | 18 | Mon 6 Dec 2027 | Fri 7 Jan 2028 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Mon 10 Jan 2028 | Thu 27 Jan 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Fri 28 Jan 2028 | Fri 18 Feb 2028 |
+| 13 Track record and calibration | 13 | 11 | Mon 21 Feb 2028 | Mon 6 Mar 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 7 Mar 2028 | Wed 15 Mar 2028 |
+| 15 Stances go live | 5 | 4 | Thu 16 Mar 2028 | Tue 21 Mar 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Fri 10 Mar 2028 | Tue 18 Apr 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 28 | 23 | Wed 19 Apr 2028 | Mon 22 May 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Tue 23 May 2028 | Thu 8 Jun 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Fri 9 Jun 2028 | Tue 20 Jun 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Wed 22 Mar 2028 | Fri 28 Apr 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 28 | 23 | Tue 2 May 2028 | Fri 2 Jun 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Mon 5 Jun 2028 | Tue 20 Jun 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Wed 21 Jun 2028 | Fri 30 Jun 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you
