@@ -1,4 +1,4 @@
-<div data-type="panel-custom" data-icon=":chart_with_upwards_trend:" data-color="#DEEBFF"><p><strong>❓ The market side</strong> · epic <a href="https://duttaarun2015.atlassian.net/browse/MA-13" data-card-appearance="inline"></a> · <span data-type="status" data-color="neutral">Not started</span> · <time datetime="2027-12-08">Wed 8 Dec 2027</time> to <time datetime="2028-01-07">Fri 7 Jan 2028</time></p>
+<div data-type="panel-custom" data-icon=":chart_with_upwards_trend:" data-color="#DEEBFF"><p><strong>❓ The market side</strong> · epic <a href="https://duttaarun2015.atlassian.net/browse/MA-13" data-card-appearance="inline"></a> · <span data-type="status" data-color="neutral">Not started</span> · <time datetime="2028-01-14">Fri 14 Jan 2028</time> to <time datetime="2028-02-04">Fri 4 Feb 2028</time></p>
 <p>19 build days, 16 working days · 9 stories, 8 with screens</p>
 </div>
 <div data-type="panel-success"><p><strong>Exit demo.</strong> ten real questions answered with sources; the overlap review on your two funds shows the shared holdings and currency exposure.</p>
@@ -31,7 +31,7 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-65" data-card-appearance="inline"></a></td><td>The overlap review and fund-vs-benchmark cards show what your funds share and how they compare</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>1</td><td>§7, §5.2</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-66" data-card-appearance="inline"></a></td><td>Bear vs bull argues both sides in two calls and a judge, bounded to one round</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§7, §8</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-67" data-card-appearance="inline"></a></td><td>&quot;What if the pound falls 10%?&quot; gets a scenario card from the look-through exposure</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>1</td><td>§2, §9.2, §5.2</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-68" data-card-appearance="inline"></a></td><td>The bot searches the web for sources and never follows instructions it finds there</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§8, §14</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-68" data-card-appearance="inline"></a></td><td>The bot searches the web for sources and never follows instructions it finds there</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§8, §14, §23.2</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-69" data-card-appearance="inline"></a></td><td>&quot;Stop pinging me under 2%&quot; sets a preference after Confirm</td><td>Story</td><td>1</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>2</td><td>§2, §4.6</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-183" data-card-appearance="inline"></a></td><td>A holding&#x27;s market view, its stance, signals and Technical section, shows at every door</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>5</td><td>§9.3, §9.4</td></tr>
 </tbody>
@@ -56,7 +56,7 @@
 <div data-type="extension-frame"><p>You can ask anything about what you hold.</p>
 <ul><li>The tool loop with strict tools, <code>tool_choice</code> always <code>auto</code>; the composer&#x27;s shortcut chips and each screen&#x27;s Ask.</li>
 <li>Cards: <code>stance</code>, <code>holding-profile</code>, <code>overlap-review</code>, <code>fund-vs-benchmark</code>, <code>bear-vs-bull</code> (two calls and a judge), <code>scenario</code>.</li>
-<li>Anthropic&#x27;s server-side <code>web_search</code> and <code>web_fetch</code>, results treated as untrusted text; <code>/why</code>.</li>
+<li>Anthropic&#x27;s server-side <code>web_search</code> and <code>web_fetch</code>, results treated as untrusted text under phase 1&#x27;s rule, given only to a call that holds no household figure, and a conversation that has read them narrowed by the policy gate (MA-68, MA-247); <code>/why</code>.</li>
 <li>Natural-language preferences with Confirm.</li>
 <li>A holding&#x27;s market view, its stance, signals and Technical section, shows at every door, on the one-asset screen of phase 5 (MA-183).</li>
 </ul>
@@ -73,6 +73,7 @@
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#93-the-dashboard-inside-the-app">§9.3</a> The dashboard, inside the app</li>
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#94-the-web-app-the-dashboard-and-the-admin-center-in-a-browser">§9.4</a> The web app: the dashboard and the Admin center in a browser</li>
 <li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#14-security-and-privacy">§14</a> Security and privacy</li>
+<li><a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#232-guardrails-strongest-first">§23.2</a> Guardrails, strongest first</li>
 </ul>
 </div>
 <div data-type="extension-frame"><div data-type="extension" data-extension-key="jira" data-extension-type="com.atlassian.confluence.macro.core" data-layout="wide" data-parameters='{&quot;macroParams&quot;: {&quot;jqlQuery&quot;: {&quot;value&quot;: &quot;parent = MA-13 ORDER BY key&quot;}, &quot;showSummary&quot;: {&quot;value&quot;: &quot;true&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Jira&quot;}}'></div>

@@ -112,6 +112,33 @@
         ],
         "createdAt": "2026-10-25T10:18:57.000Z",
         "reason": "Claude: the .scroll table's cells carry 12px 14px padding inside the box, and .card has 22px padding with its .three children divided only by a top rule, so no text meets a box edge (MA-156)"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "docs/design/guardrails-evals.html"
+        ],
+        "createdAt": "2026-10-28T00:51:38.983Z",
+        "reason": "Claude (MA-258): static scan pairs one theme's ink with the other theme's surface; a live render in light and dark measured every text node at or above WCAG AA"
+      },
+      {
+        "rule": "all-caps-body",
+        "value": "*",
+        "files": [
+          "docs/design/guardrails-evals.html"
+        ],
+        "createdAt": "2026-10-28T00:51:39.002Z",
+        "reason": "Claude (MA-258): uppercase only on one-line eyebrows, section kickers and table headers (35 characters at most), the eyebrow style the other explainer pages use"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/guardrails-evals.html"
+        ],
+        "createdAt": "2026-10-28T00:51:39.018Z",
+        "reason": "Claude (MA-258): the scan cannot read padding-block or max(16px, env()); sections have 36px of block padding, the bar's wrap 10px and 16px, and the table cells 10px 14px, so no text meets a box edge (a copy with longhand padding cleared the section hits)"
       }
     ]
   }

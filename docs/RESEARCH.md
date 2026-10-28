@@ -245,6 +245,118 @@ stance "a view, not advice", suggests only ISA-safe actions, and never says
 
 ---
 
+## 5. Guardrails and evals for the agents (27 Oct 2026, MA-245)
+
+Researched for `ARCHITECTURE.md` §23, from Anthropic's own engineering posts
+and docs, the main evaluation vendors' write-ups, the work on calibrating LLM
+judges, the OWASP and NIST frameworks (NIST AI 600-1, the generative AI
+profile) and the FCA's October 2026 remarks.
+Arun's starting point was that daily offline evals cost money, repeat the
+same score and breed alert fatigue. The sources agree with him.
+
+### 5.1 What an eval is, and when it runs
+
+- **Terms** (Anthropic, *Demystifying evals for AI agents*, Jan 2026). A
+  *task* is one case with its success criteria; a *trial* is one attempt;
+  a *grader* scores one aspect; the *outcome* is the state the agent leaves
+  (the record in the database, not the agent's word that it saved one).
+  Graders come in three kinds: code (fast, cheap, exact, brittle), model
+  (flexible, needs calibrating) and people (the gold standard, slow).
+  Grade the outcome where possible; check the transcript for how tools were
+  used. Start with 20 to 50 tasks drawn from real failures.
+- **Capability and regression suites.** Capability cases start failing;
+  regression cases sit near 100%; a capability case that saturates
+  graduates. **pass@k** (one of k trials succeeds) suits a tool where one
+  good answer is enough; **pass^k** (all k succeed) suits anything that
+  writes or faces a person, and falls fast: 75% a trial is about 42% over
+  three.
+- **Statistics.** Report a standard error with every score, compare
+  versions as paired differences, and treat a gap smaller than the measured
+  noise as no gap (Anthropic, *A statistical approach to model evals*,
+  2024; *Infrastructure noise*, 2026).
+- **Offline against online.** Offline evals run a fixed set before a
+  release and can gate it; online evals score live traffic and cannot
+  (Inngest, 2026; LangChain, 2026; Hamel Husain and Shreya Shankar's evals
+  FAQ, 2026). Claude model ids are pinned snapshots, so a fixed set rerun
+  against unchanged code and an unchanged id measures only noise; what
+  changes without a pull request is the traffic, which online checks see.
+- **Sampling.** Cheap code checks on every run; model judges on every
+  flagged run plus a random 5 to 10%, the random share to catch what the
+  flags miss; people on the riskiest and oddest runs; confirmed failures
+  promoted into the golden set (LangChain, Langfuse, LangSmith, Braintrust,
+  Hamel Husain).
+
+### 5.2 Judges and their calibration
+
+- Build judges from an expert's own pass or fail verdicts with a written
+  critique ("critique shadowing"), one binary judge per failure mode, and
+  measure each against held-out labels by its true-positive and
+  true-negative rates, not raw agreement, which flatters when failures are
+  rare (Hamel Husain, *Using LLM-as-a-judge*, 2024, updated 2026). About 100
+  labels per failure mode give a usable interval; fewer than about 60 do
+  not.
+- Criteria drift: people discover what they mean by "good" by grading
+  outputs, so the rubric is revised as the labels come in (Shankar et al.,
+  *Who validates the validators?*, 2024). Cohen's kappa is reported beside
+  raw agreement, not instead of it (Arize, 2026).
+- No source fixes a cadence. The common rule is calibration on every change
+  to a judge, a prompt, a tool or the model, and on a spike, plus a regular
+  spot check: monthly here (Arun, 27 Oct 2026).
+
+### 5.3 Guardrails for an agent with tools
+
+- **Architecture before detection.** Least agency; authorisation enforced in
+  the system the tool calls, never in the model (complete mediation); a
+  person approves high-impact actions (OWASP Top 10 for LLM Applications
+  2025, LLM06 Excessive Agency; OWASP Top 10 for Agentic Applications 2026).
+- **The lethal trifecta.** Private data, untrusted content and a way to send
+  data out, together, make an agent exploitable; remove one leg (Simon
+  Willison, 2025). The dual-LLM pattern, the six patterns of Beurer-Kellner
+  et al. (2025) and Google DeepMind's CaMeL (2025) do it by design: the model
+  that reads untrusted text cannot act, and untrusted data cannot choose
+  which tools run.
+- **Anthropic's advice for indirect injection.** Put third-party content
+  only in tool results, say in the tool's description where it came from,
+  JSON-encode it, never put instructions inside a tool result, give least
+  privilege, and red-team the agent with poisoned documents. Even with
+  Anthropic's latest defences, about 1 to 2% of injection attempts succeed
+  against its models in browser use (Anthropic, Nov 2025), so detection is
+  a layer, never the defence.
+- **Agent SDK hooks** run before every tool call, can deny or rewrite it,
+  and fail closed on a timeout; MyPaisa's loop is its own, but the policy
+  gate takes the same shape.
+- **Hosted guardrails** (AWS Bedrock Guardrails' contextual grounding and
+  automated reasoning, NeMo Guardrails, Llama Guard, LlamaFirewall) were
+  weighed and left out: the figure check in code is exact where grounding
+  scores are approximate, and each adds a per-call price or a model to run.
+
+### 5.4 Personal finance
+
+- Models handle simple lookups well and multi-step calculations badly
+  (FAITH, 2025), and cannot reliably spot their own numeric errors (PHANTOM,
+  NeurIPS 2025). So code computes every figure and a deterministic check ties every
+  figure in a reply to a tool result, after normalising units and currency.
+- UK FCA: regulated advice is a personal recommendation on a particular
+  investment, made by way of business (PERG 8, PERG 2.3). A household's own
+  tool is outside that perimeter on our reading (§3.6; not legal advice).
+  The FCA's 19 Oct 2026 remarks ask AI tools for clear, proportionate
+  disclaimers on financial answers; "a view, not advice" stays on every
+  stance card.
+- Forecasts are scored when they resolve: Brier score with its reliability
+  diagram, against a base rate (§3.5 above; `ARCHITECTURE.md` §20.4).
+
+### 5.5 Tools
+
+Inspect AI (UK AISI, open source, Python: datasets, solvers, scorers,
+repeated trials) fits the Python stack and wraps our own agent loop.
+promptfoo (YAML, Node, OWASP red-team presets) and DeepEval were the
+alternatives; hosted platforms (Langfuse Cloud, Braintrust, LangSmith) were
+left out because their dashboards would need the household's transcripts
+outside AWS (Arun, 27 Oct 2026). The OpenTelemetry GenAI conventions are
+still in development, so the `RunRecord` stays the source of truth (§10).
+
+---
+
 ## Sources
 
 - Agentic Trading Desk: <https://github.com/Oft3r/agentic-trading-desk> (README, SKILL.md, `scripts/*.py`, `hooks/mandate-order-guard.sh`)
@@ -261,3 +373,10 @@ stance "a view, not advice", suggests only ISA-safe actions, and never says
 - Telegram Mini Apps: <https://core.telegram.org/bots/webapps>; rich messages (third-party write-ups): <https://autogram.ninja/en/blog/telegram-sendrichmessage-explained>, <https://www.unifyport.ai/blog/telegram-bot-api-10-2-upgrade-checklist/>, <https://blog.cosine.ren/en/post/telegram-rich-messages-integration/>
 - MCP market-data servers compared: <https://dev.to/kevin_menesesgonzlez/the-7-best-mcp-servers-for-stock-market-data-2026-389l>, <https://marketxls.com/blog/best-financial-data-mcp-servers-ai-market-data>
 - Bedrock feature availability: the Claude Platform availability table bundled with the Claude API skill used during this research
+- Anthropic on evals and agents: <https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents>, <https://www.anthropic.com/engineering/building-effective-agents>, <https://www.anthropic.com/engineering/writing-tools-for-agents>, <https://www.anthropic.com/research/statistical-approach-to-model-evals>, <https://www.anthropic.com/engineering/infrastructure-noise>
+- Anthropic on guardrails: <https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks>, <https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations>, <https://www.anthropic.com/research/prompt-injection-defenses>, <https://code.claude.com/docs/en/agent-sdk/permissions>, <https://code.claude.com/docs/en/agent-sdk/hooks>, <https://platform.claude.com/docs/en/about-claude/models/overview>
+- Offline and online evals: <https://www.inngest.com/blog/online-vs-offline-ai-evals-when-to-use-each>, <https://www.langchain.com/resources/agent-evals>, <https://langfuse.com/docs/evaluation/get-started/online.md>, <https://docs.langchain.com/langsmith/rules>, <https://www.braintrust.dev/docs/core/logs/score>
+- Judges: <https://hamel.dev/blog/posts/llm-judge/>, <https://hamel.dev/blog/posts/evals-faq/>, <https://arxiv.org/abs/2404.12272>, <https://arxiv.org/html/2406.12624v2>, <https://arize.com/blog/measuring-human-llm-judge-alignment.md>
+- Security: <https://genai.owasp.org/llm-top-10/>, <https://genai.owasp.org/llmrisk/llm062025-excessive-agency/>, <https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/>, <https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/>, <https://arxiv.org/abs/2506.08837>, <https://arxiv.org/abs/2503.18813>, <https://arxiv.org/html/2403.14720v1>, <https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html>, <https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf>
+- Finance: <https://arxiv.org/html/2508.05201>, <https://mlanthology.org/neurips/2025/ji2025neurips-phantom>, <https://handbook.fca.org.uk/handbook/PERG/8/30B.html>, <https://www.fca.org.uk/news/speeches/building-future-finance-age-ai>
+- Tools: <https://inspect.aisi.org.uk>, <https://www.promptfoo.dev/docs/usage/command-line/>, <https://deepeval.com/docs/metrics-tool-correctness>, <https://langfuse.com/pricing>, <https://www.braintrust.dev/pricing>

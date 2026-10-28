@@ -1,0 +1,403 @@
+[
+ {
+  "id": "r1-a1",
+  "round": 1,
+  "finding": "The guardrails page failed open: a renumbered, retitled or emptied ARCHITECTURE 23 rendered an empty page and no check noticed (lane A)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/plan_sync.py selftest"
+  }
+ },
+ {
+  "id": "r1-c1",
+  "round": 1,
+  "finding": "The policy gate claimed to see Anthropic's server tools, which run inside one API request; they now run only in a call with no household figure, with max_uses set (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "server tools \\(`web_search`, `web_fetch`\\) run inside one API request[\\s\\S]*?`max_uses`",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c2",
+  "round": 1,
+  "finding": "The taint ended with the run while the history, notes and summaries carried untrusted text on; it now covers the conversation and what is drawn from it (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "for the rest of that run|a run that has read such text|narrowing a run that has read",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c3",
+  "round": 1,
+  "finding": "Model-written SQL could reach URLs and local files through DuckDB; it runs with external access off, its configuration locked, over the asker's views (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "DuckDB runs with external access off\\s+and its configuration locked",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c4",
+  "round": 1,
+  "finding": "The extractor could not be built as written (citations with structured outputs, a PDF as JSON text in a tool result); a file now goes in as a labelled document or image block and fields carry their source line (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "file's text JSON-encoded inside a labelled tool result|extraction with citations|structured outputs, citations",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c5",
+  "round": 1,
+  "finding": "Tool arguments took money in minor units, which made Claude produce the number against rule 1; an amount is the member's own text, parsed by code (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "money as integer minor units|money in\\s+minor units",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c6-b6",
+  "round": 1,
+  "finding": "Phase 1's online evals alerted through phase 8's router and a weekly digest no story built; until phase 8 an alert is the owner's outbox, the rest is listed in Activity (lanes B and C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "the rest is a line in the weekly digest|week's digest lists the runs|line in the weekly digest",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c7-b5",
+  "round": 1,
+  "finding": "Phase 1's golden set was graded on records phase 1 cannot make; phase 1 grades tools, refusals and figures, records join with phase 2 (lanes B and C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "graded on the records they leave",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c8",
+  "round": 1,
+  "finding": "Calibration used too few labels for the 0.8 rule to mean anything; labels accumulate and a judge acts only once it has 50 pass and 50 fail labels (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "at least 50 pass and 50 fail labels",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c9",
+  "round": 1,
+  "finding": "Retiring always-passing cases contradicted permanent regression and safety cases; only capability cases and judges are retired (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md"
+   ],
+   "pattern": "Cases that always pass and judges that never fail are retired",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c10-o1",
+  "round": 1,
+  "finding": "T1's cost could not fit $2 a run; Arun raised the caps to $10 a run and $30 a month in their own workspace, and a run stopped by its cap is incomplete, never green (lane C; Arun, 28 Oct 2026)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md",
+    "docs/trace.json"
+   ],
+   "pattern": "\\$2 a run|at most \\$2|within \\$2",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c11",
+  "round": 1,
+  "finding": "The evals ran under dev's ladder, so a step-down could change the model a run tests; they run in their own workspace and never touch dev's ceiling or ladder (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "never touch dev's ceiling or its ladder",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c12-o2",
+  "round": 1,
+  "finding": "CI on a pull request had no way to reach a Claude key; a ci-evals role reads only the evals workspace's key from SSM (lane C; Arun, 28 Oct 2026)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "`ci-evals` \\(the evals job on any pull\\s+request",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c13",
+  "round": 1,
+  "finding": "'Nothing leaves the AWS account' was false, since the judges call the Anthropic API; transcripts are stored only in our account (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "othing leaves the AWS account",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c14",
+  "round": 1,
+  "finding": "The coverage rule had three wordings and two meanings; it is one phrase everywhere: no safety case, or no capability or regression case (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "no safety case and no capability case|with its safety and capability cases|kind template with no cases",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c15",
+  "round": 1,
+  "finding": "'0.8 agreement' named the metric the research rejects; the rule is 0.8 on the true-positive or true-negative rate (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md",
+    "docs/trace.json"
+   ],
+   "pattern": "0\\.8 agreement|drifts below 0\\.8 agreement",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c16",
+  "round": 1,
+  "finding": "The evals feature was missing from the span feature list (and the eval caps from the budget lists) (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "scoring, extraction, search, notes, evals\\)",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c17",
+  "round": 1,
+  "finding": "README said a tool may message the household's members, against 8's 'the member it is answering' (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "README.md"
+   ],
+   "pattern": "anyone but the household's members",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c18",
+  "round": 1,
+  "finding": "README named search_news, a tool 8 does not define (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "README.md",
+    "ARCHITECTURE.md"
+   ],
+   "pattern": "search_news",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c19",
+  "round": 1,
+  "finding": "The explainer pages did not carry the owner's decision; MA-258 carries their update (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "docs/design/inside-mypaisa.html",
+    "docs/design/architecture-v4.html",
+    "docs/design/agent-journey.html"
+   ],
+   "pattern": "claude\\.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
+   "present": true
+  },
+  "note": "Lesson 6: the check reads the item's own evidence (each explainer page links to the guardrails and evals explainer MA-258 made), not MA-258's summary, which changed when the work was done."
+ },
+ {
+  "id": "r1-c20",
+  "round": 1,
+  "finding": "RESEARCH named NIST without citing it; NIST AI 600-1 is now in its sources (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "docs/RESEARCH.md",
+   "pattern": "NIST\\.AI\\.600-1",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-b1",
+  "round": 1,
+  "finding": "MA-250's summary named the wrong trigger and a model change; it names the T1 triggers (lane B)",
+  "check": {
+   "type": "trace",
+   "key": "MA-250",
+   "field": "summary",
+   "contains": "a guard, the agent loop, the model routing, a kind template or the SDK"
+  }
+ },
+ {
+  "id": "r1-b2",
+  "round": 1,
+  "finding": "T2 was said to run on every prod release; it runs on a model-id change and the release waits for it before taking a new id to prod (lane B)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "before a release takes a new id to prod",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-b3",
+  "round": 1,
+  "finding": "MA-251 added a judge's prompt as a T2 trigger and left out T2's cost rule (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Jira MA-251: T2 triggers are model ids only (a judge's prompt is a calibration trigger), T2 runs inside the evals workspace's $30 and asks first past it, and it depends on MA-107."
+  }
+ },
+ {
+  "id": "r1-b4",
+  "round": 1,
+  "finding": "MA-245's Jira 'Where' listed the wrong sections (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Jira MA-245's Where lists 4.1, 8, 9.3, 10.1, 10.4, 12.1, 13, 14, 15, 15.1, 15.2, 16, 18.4, 20.4, 20.7 and not 10.5."
+  }
+ },
+ {
+  "id": "r1-b7",
+  "round": 1,
+  "finding": "MA-249 promised refusals hidden in files and stance cards, which arrive in later phases (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Jira MA-249: file-hidden asks join with MA-253; the stance card's line is the stance card's own (9.2)."
+  }
+ },
+ {
+  "id": "r1-b8a",
+  "round": 1,
+  "finding": "MA-254 changes the new-kind approval card, which no board drew (lane B)",
+  "check": {
+   "type": "trace",
+   "key": "MA-197",
+   "field": "undrawn",
+   "contains": "carried by MA-254"
+  }
+ },
+ {
+  "id": "r1-b8b",
+  "round": 1,
+  "finding": "MA-256 changes the ChangeRequest approval, which no board drew (lane B)",
+  "check": {
+   "type": "trace",
+   "key": "MA-130",
+   "field": "undrawn",
+   "contains": "carried by MA-256"
+  }
+ },
+ {
+  "id": "r1-b9-o3",
+  "round": 1,
+  "finding": "9.3's closed list of Admin center writes left out labelling and turning a run into a case; both are behind the second check (lane B; Arun, 28 Oct 2026)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "labelling runs for the judges, turning a failed run into a\\s+test case",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-b10",
+  "round": 1,
+  "finding": "The eval caps had no owning story or page; MA-113 meters them and MA-255's Evals page shows and moves them (lane B)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "the meter \\(MA-113\\) keeps prod's judges to\\s+their share",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-b11",
+  "round": 1,
+  "finding": "Stories changed in the docs (MA-25, MA-198, MA-132, MA-133, MA-107, MA-104, MA-113, MA-37, MA-197, MA-130, MA-21) had no Jira update (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Each of MA-21, MA-25, MA-37, MA-104, MA-107, MA-113, MA-130, MA-132, MA-133, MA-197 and MA-198 carries an 'Updated 28 Oct 2026 (MA-245' line in its Jira description, and MA-245 links to each."
+  }
+ },
+ {
+  "id": "r1-o4",
+  "round": 1,
+  "finding": "Arun's decision: the evals workspace's $30 sits on top of prod's $160 and dev's $40, the credit the last stop (Arun, 28 Oct 2026)",
+  "check": {
+   "type": "grep",
+   "file": "ARCHITECTURE.md",
+   "pattern": "sits on top of prod's \\$160 and dev's \\$40",
+   "present": true
+  }
+ }
+]

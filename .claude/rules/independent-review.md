@@ -253,3 +253,23 @@ Added the day each was learned; reviewers check every item.
     iPad guards for 1024 to 1179 pt (a name's 8em, a key-value card's one
     column) were narrowed or removed once the chat left those widths, and the
     gate showed they were not needed (MA-240 round 2).
+32. **A guard is checked against where it can act:** a gate in our own loop
+    cannot see a tool that runs inside one API request (Anthropic's server-side
+    `web_search` and `web_fetch`); such a tool is kept apart by what the call
+    holds, not by the gate (MA-245 round 1).
+33. **A taint lasts as long as the text it marks:** untrusted text in an
+    append-only history, a conversation note or a summary carries on past the
+    run that read it, so the guard covers the conversation and what is drawn
+    from it (MA-245 round 1).
+34. **A story is checked against what its phase can build:** a phase-1 eval
+    graded on records phase 2 makes, an alert through phase 8's router, a
+    refusal hidden in a file phase 2 first reads; each later piece is named in
+    the story that brings it (MA-245 round 1).
+35. **A cap is checked against what it must pay for:** cases times trials
+    times messages times the price of a message, before the cap is written
+    down; what a run stopped by its cap means is written down with it
+    (MA-245 round 1: $2 against a run of $5 to $15).
+36. **An API combination is checked against the API:** citations cannot be
+    combined with structured outputs, and a PDF reaches the model as a document
+    block, not as text in a tool result (MA-245 round 1).
+
