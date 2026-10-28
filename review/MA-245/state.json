@@ -1,0 +1,23 @@
+{
+ "deliverable": "[MA-245] Guardrails and evals for the agents",
+ "rounds": 1,
+ "reviewed_sha": "387f58c",
+ "history": [
+  {
+   "round": 1,
+   "date": "2026-10-28",
+   "reviewed_sha": "387f58c",
+   "range": "8e4b675..387f58c (everything)",
+   "asked": "Arun, 27 Oct 2026: \"Review, then merge\"",
+   "lanes": {
+    "A scripts and checks": 1,
+    "B the trace against Jira": 11,
+    "C the spec docs": 20
+   },
+   "blocking": 32,
+   "result": "not clean: the guardrails page failed open; the gate could not see the server tools; the taint ended with the run; DuckDB could reach URLs; the extractor could not be built as written; phase-1 stories leaned on phases 2 and 8; T1 could not fit its cap; CI had no key; wording drifted across records; the explainer pages and eleven Jira stories did not carry the change",
+   "decisions": "Arun, 28 Oct 2026: T1 at $10 a run and $30 a month; the evals workspace's key in SSM read by a ci-evals role; each label and each new case behind the second check; the $30 on top of the two ceilings",
+   "fixed": "All 32 blocking findings fixed (r1-* in fixed.json, several lanes finding the same fault); MA-258 filed for the explainer pages"
+  }
+ ]
+}

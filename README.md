@@ -91,6 +91,7 @@ fund; ETFs, shares, bond ETFs and commodity ETCs in GBP, USD or EUR slot in as p
 | [MyPaisa Architecture v4](https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9) · [source](docs/design/architecture-v4.html) | The same architecture, technical and animated (MA-244): a system map on AWS-style service icons, from the two doors through API Gateway, the Lambdas, the three SQS queues, DynamoDB and S3 to the Anthropic API, that plays five journeys hop by hop (a question, a factsheet, a check-in, the 07:15 brief, a failure and its replay) with an inspector for every part; one message as an OpenTelemetry trace with its GenAI spans; the concierge's Claude tool loop and its tools; the nine agents around the EventBridge bus, the kind of agent each is and the models it uses; the routing across Opus, Sonnet and Haiku with an interactive spend ladder; where the data lives; dev, prod and the release pipeline; and the guardrails. |
 | [MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7) · [source](docs/design/agent-journey.html) | Twenty-four flows end to end: joining by invite, signing in with Apple or Google, adding a holding, logging money in plain words, the 07:15 brief, a red alert, a question, the dashboard in the app and the web app, the Admin center, what happens when something fails, the spend ladder, the first-of-the-month prompt, money in any currency, the Indian import, the household in INR and GBP, and India's day; and, since MA-226, the whole-wealth flows: registering anything by talking, correcting a figure in place, a check-in, a statement, the month close, and the Projection with a what-if. Each is a numbered path across the member, the app, AWS, Claude and data lanes, with the screens the member sees, its safeguards and the Jira stories that build it. Updated for the iOS app in MA-161 and for v4 in MA-226. |
 | [MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb) · [source](docs/design/market-agent.html) | How MyPaisa reads the market: what can and cannot be forecast, free data as it was known each day, the rules engine, news matched to holdings, the Forecaster's five models, both engines side by side, the daily learning loop, the strategy layer, how it proves itself, self-healing and the budgets. |
+| [MyPaisa Guardrails and Evals](https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT) · [source](docs/design/guardrails-evals.html) | How the agents are guarded and tested (MA-245, MA-258), in plain words or technical detail at a switch: the five fences from least agency to the limits, the policy gate before every tool call, the T0, T1 and T2 tests run on change and never on a timer, every live run checked by code and a few judged overnight, the admin's calibration of the judges, and growth through the manifest; six animated diagrams, also on the Confluence page Guardrails and evals as GIFs (`docs/design/guardrails-evals/`). |
 | [The AWS architecture in Lucid](https://lucid.app/lucidchart/4ae817c6-847f-45f8-a10c-4509971c9c09/edit) · [source](docs/design/lucid/) | Eight views on AWS shapes, one Lucid document each (overview, environments and delivery, identity, queues and replay, data stores, the market agent and learning loop, the agent team with caps and alerts, one trace from the door to the model) and the sequence of adding a record and correcting it in place. Embedded and linked in `ARCHITECTURE.md`; the import JSON and the script that writes it are kept so every view can be recreated. |
 | [MyPaisa iOS v1](https://claude.ai/design/p/43fdf88b-4960-4a4b-a4f1-fc653fcb7ab8) · [source](docs/design/ios-v1/) | The app's screens as boards in Claude Design, each in light and dark: the three shell options (Arun picked 1a, Chat first, on 26 Oct 2026), iPhone sign-in, chat, dashboard, audit and activity, admin and settings, and iPad and the foldable. Drawn ahead of their stories (planned); the iOS kit and `ios.css` are in MyPaisa DS v1. The web app's spec is the browser boards in [MyPaisa app v1](https://claude.ai/design/p/0bf02ae1-2de2-42a8-98ff-96046b2a26d7) (`docs/design/app-v1/`), at desktop and at phone width (390); its Mini App and Telegram boards and `docs/design/dashboard/` are the superseded record. The whole-wealth boards for both doors and a clickable prototype are drawn on MA-193. [docs/design/README.md](docs/design/README.md) says how the files relate. |
 | [The build plan in Confluence](https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/197090) · [source](docs/confluence/) | The whole plan as one tree in Confluence (MA-228): the roadmap with every phase's dates, a page per phase (its epic, every story with its estimate, status and design state, the screens at each door as previews, the plan as written, the epic live from Jira), a page per screen area with every board, the design decisions and the options kept, and the explainers and architecture drawings. Generated from the repo by `scripts/confluence_docs.py`; never edited in Confluence. |
@@ -107,6 +108,7 @@ builds it, phase by phase:
 | --- | --- |
 | `src/mypaisa_agent/` | The Python package. `registry/` (the kind specs, records and events, and the views folded from them; instruments; documents), `wealth/` (accrual, loan schedules, XIRR and the Projection, ported from the old wealth tracker's tested maths), `importers/statements/` (bank and card statements, every line categorised and transfers recognised), `data/` (one `PriceSource` contract and a plugin per feed: yfinance, Twelve Data, EODHD, issuer pages, FT, proxy, screenshot; the chain per kind chosen by configuration per environment, yfinance by default; ECB FX, calendars; input hygiene), `engine/` (indicators, pillars, flags, macro, the holder's cascade, confidence; ported from the Agentic Trading Desk with its self-tests as golden files), `cards/` (stance, holding profile, overlap review, bear vs bull, scenario; each card a versioned JSON document that the app draws in SwiftUI and the web app in Svelte, MA-174), `docs/` (factsheet and screenshot extraction through Claude), `news/` and `events/` (RSS, dedupe, scoring; the calendar), `calls/` (the hash-chained ledger, grader, scorecard, calibration), `tools/` (one file per Claude tool), `agent.py` (the tool loop, model routing, caching, the debate), `handlers/` (one entry point per Lambda: api for the chat, the dashboard's reads and the in-place corrections, from the app and the web app; stream for the SSE stream, through the Lambda Web Adapter; agent; sender, to the open doors and by Apple push and Web Push; worker for ingest, engine, news, score, docs, the check-ins and the briefs; the authorizer and the Cognito triggers that verify Apple's and Google's tokens); `audit.py` (the hash-chained audit rows) and `runs.py` (the `RunRecord` per run). |
 | `playbooks/` | Prompt files loaded into the agent's context only when a task matches: `read-central-bank-statement`, `map-headline-to-holdings`, `write-stance`, `grade-stance`. Versioned with the code. |
+| `evals/` | Planned, phase 0 (MA-246): the eval cases as Inspect AI datasets on the seed household, their scorers and judges, the recordings T0 replays, and the safety, regression and capability suites; the manifest of every agent and tool is `src/mypaisa_agent/manifest.py` (`ARCHITECTURE.md` §23). |
 | `ios/` | The app (MA-165), a bare React Native 0.88 app with a native SwiftUI core, built the way bong-panjika is, its native dependencies through Swift Package Manager (MA-229): `package.json` and `src/`, the TypeScript shell (navigation through the system's tab bar and sidebar, the store, the api and SSE client with TanStack Query, sign-in, push registration, MMKV for the offline store; the shared models and query definitions imported from `web/src/lib/` by path); the Xcode project with the SwiftUI pieces, each hosted through a Fabric component and fed one JSON model (the chat timeline and its cards, the composer, the hero and the figure rows, inline edit, Swift Charts, sheets), in MyPaisa DS v1 "Warm ledger" (colour assets generated from `tokens.css`, Dynamic Type styles, the Liquid Glass controls); `PERFORMANCE.md` with its benches; Jest and XCUITest; from phase 20, the widgets and the share extension. Two configurations chosen by scheme: MyPaisa Dev against dev, MyPaisa against prod. Built from the boards in the MyPaisa iOS v1 project in Claude Design (`docs/design/README.md`). |
 | `web/` | The web app (MA-194, MA-199, MA-184, MA-185): SvelteKit 3 with Svelte 5 and `adapter-static`, a pnpm workspace on Smart Clearance's stack (Tailwind CSS 4 over the DS tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form; MA-229), in the MyPaisa DS v1 "Warm ledger" look, built from the browser boards in the MyPaisa app v1 project in Claude Design at desktop and at 390 (`docs/design/README.md`), with shadcn-svelte's charts on LayerChart and the shared motion (Motion 14, Svelte transitions, View Transitions; MA-182): the chat, Home and the dashboard as it grows, Audit and Files, Activity, Search and the owner's Admin center; `src/lib/` holds the card types, formatting and view models that the iOS app's shell imports too; a PWA whose service worker caches the shell only and never a figure, with Web Push once installed; served from its own S3 + CloudFront at `dashboard-dev.mypaisapp.com` and `dashboard.mypaisapp.com`, which also serve the iOS app's `apple-app-site-association` file and the invite page (MA-73). |
 | `tests/` | pytest: golden files for every signal and for the wealth maths (the old tracker's cases, MA-105), property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
@@ -131,17 +133,20 @@ they move with Anthropic's releases; the first set is below.
 | Morning brief, evening wrap, alert text | Sonnet 5.5, `anthropic.claude-sonnet-5-5` | low | Six lines in the household's context from the day's signals. Every figure comes from the tool results. |
 | Document extraction | Sonnet 5.5 | medium | The facts on a factsheet PDF or a valuation screenshot, as strict JSON with the source line and a confidence per field; shown on a Confirm card before anything is saved. |
 | Statement lines | Haiku 5.5 | low | The category of each line on a bank or card statement that merchant memory does not know, as strict JSON; transfers between the household's own accounts are recognised in code, and one review card holds every line before one Confirm. |
-| Chat and cards | Sonnet 5.5 | medium | Registering anything by talking, through `draft_record` and `draft_event` (code types every value against the kind and computes what it can); an answer to a question, built by calling the tools (`get_networth`, `get_commitments`, `get_budget`, `run_projection`, `get_portfolio`, `get_signals`, `run_scenario`, `search_news`, `propose_change`, and the rest in `ARCHITECTURE.md`); the research cards. |
+| Chat and cards | Sonnet 5.5 | medium | Registering anything by talking, through `draft_record` and `draft_event` (code types every value against the kind and computes what it can); an answer to a question, built by calling the tools (`get_networth`, `get_commitments`, `get_budget`, `run_projection`, `get_portfolio`, `get_signals`, `run_scenario`, `get_events`, `propose_change`, and the rest in `ARCHITECTURE.md` §8); the research cards. |
 | Stances | Sonnet 5.5 | medium | The reasons and the invalidation rule for a stance the cascade has set. The stance, horizon, confidence and entry price are code. Above 70% confidence, a two-call bull-versus-bear debate with a judge. |
 | Saturday review | Opus 5.5, `anthropic.claude-opus-5-5` | high | The week in context, with the scorecard, the decisions logged and the events ahead. |
 
 **Guardrails on every call:** tools with `strict` schemas and `tool_choice: auto`; adaptive thinking with the effort
 above; the system prompt, tool list and rubric cached; the monthly Claude ceiling ($160 in prod and $40 in dev, the Max 20x plan's $200 credit, moved by the admin) with its ladder and guards; a refusal or an error falls back to
 the plain-template brief, so a message is never missed because of a model. Before anything is sent, every number in
-the text is checked against that turn's tool results; a number with no source fails the message, which is
-regenerated once and then sent as the plain facts. Search results and fetched pages reach the model marked as
-untrusted text and are never followed as instructions; there is no tool that can spend money beyond a search query,
-delete data, or message anyone but the household's members in the chat.
+the text is checked against the tool results and the member's own words; a number with no source fails the message,
+which is regenerated once and then sent as the plain facts. Every third-party text (a file, a statement, a fetched
+page, a search result, a news item) reaches the model only as labelled data and is never followed as an instruction;
+files are read by an extractor with no tools, and a conversation that has read such text loses every tool that sends
+data out. Every call of our own tools passes a policy gate in code against the agent's manifest, and the server-side
+web tools run only in a call that holds no household figure; there is no tool that can spend money beyond a search
+query, delete data, or message anyone but the member it is answering (`ARCHITECTURE.md` §8, §23.2).
 
 Web search and web fetch are Anthropic's server-side tools, with citations, at $10 per 1,000 searches; no separate
 search provider is needed. The nightly sentiment scoring goes through the Message Batches API at half price, since
@@ -149,7 +154,25 @@ latency does not matter overnight.
 
 ### How the agent is evaluated
 
-MyPaisa grades itself, and the tests hold the code to it. Planned in phases 13 and 15 of `PLAN.md`:
+MyPaisa is guarded in code, tested on every change, watched live, and grades its own calls (`ARCHITECTURE.md` §23,
+MA-245). What it must never do is made impossible in code, not asked of the prompt: one manifest per agent and tool, a
+policy gate before every call of our own tools, third-party text only as labelled data, files read by an extractor
+with no tools, and every figure checked against the tool results and the member's own words. Then:
+
+1. **Every change is tested before it merges.** Eval cases on the seed household, graded by code first, run on every
+   pull request: recorded replays always (T0, free); the affected cases live, three trials each, when a prompt, a tool,
+   a guard, the agent loop, the model routing, a kind template or the SDK changes (T1, in a Console workspace of their
+   own, at most $10 a run and $30 a month, a run stopped by its cap marked incomplete); and the full suite on a new
+   model before it reaches prod (T2). The golden set never runs on a timer: what it tests changes only through a pull
+   request, and what changes without one is the online checks' to watch.
+2. **Every live run is checked.** Code checks every run for free; every flagged run and a random 10% are judged
+   overnight on Haiku through Batches; only a rate that leaves its band raises an alert. Transcripts are stored only in
+   our AWS account; the judges send them to the Anthropic API on the same terms as the chat, and no evaluation service
+   stores them.
+3. **The admin calibrates the judges,** monthly and on every change, each label behind the second check; a judge
+   below 0.8 on its true-positive or true-negative rate drops to advisory, and a real failure becomes a permanent case.
+
+The market side grades its own calls, planned in phases 13 and 15 of `PLAN.md`:
 
 1. **Forecasts are logged and graded.** Every 1-month range the signals produce is stored with the price at the
    time. When the month ends the outcome is recorded: did the 80% range cover it, and was `P(fall > 5%)` calibrated.
@@ -161,12 +184,13 @@ MyPaisa grades itself, and the tests hold the code to it. Planned in phases 13 a
 3. **Decisions are logged.** "I acted" on a message writes a decision record. The review compares what was done with
    what the signals said, which is the only honest way to learn whether MyPaisa helps.
 4. **The words are tested on recordings.** Unit tests replay recorded Claude responses, so rendering is
-   deterministic and never reaches a model. The number validator has its own tests, with an invented figure it must
-   catch.
+   deterministic and never reaches a model. The figure check (MA-248) has its own tests, with an invented, a
+   mis-currencied and a mis-scaled figure it must catch.
 5. **Sentiment is spot-checked.** Phase 14 ends with 30 scored articles read by a person against their scores before
    the index is allowed to tilt a call.
 
-Live-model runs are on request only and print their estimate first.
+Unit tests never reach a model; live-model runs are the eval tiers above, capped, and a run that would pass its cap
+asks first with its estimate.
 
 ## Prerequisites
 
@@ -443,8 +467,9 @@ They cover eslint and Jest for the shell, XCUITest for the flows, snapshot tests
 and dark at Large and AX5 text, and `performAccessibilityAudit()` in every screen's UI test. The
 `ios/PERFORMANCE.md` benches run on the phone, before a change and after it, not in CI.
 
-Live checks run on request only and say what they cost first: a brief against the live API
-(`scripts/run.sh dev brief --live`) and the sentiment spot-check set (`scripts/eval.sh sentiment`).
+Live checks run on request and say what they cost first: a brief against the live API
+(`scripts/run.sh dev brief --live`) and the sentiment spot-check set (`scripts/eval.sh sentiment`). The eval
+tiers are the exception, run by CI on the changes that need them and capped (`ARCHITECTURE.md` §23.3).
 
 ## Working on AWS
 
@@ -484,8 +509,9 @@ environment, is the one outside AWS); anything that adds cost is asked about fir
 - **Operators** use the `agent-toolkit` profile through the developer role, which works in dev and is denied
   anything tagged `env=prod`. Reading prod goes through the AWS MCP, read-only: describe, list, logs,
   metrics, costs and Terraform state, never a record or a secret.
-- **CI** assumes one of three OIDC roles: `ci-plan` (read only, any pull request), `ci-dev-deploy` (`main` only) and
-  `ci-prod-deploy` (`main` and the `prod` GitHub environment only). The trust policies' subjects embed this
+- **CI** assumes one of four OIDC roles: `ci-plan` (read only, any pull request), `ci-evals` (the evals job on a pull
+  request, reading only the evals workspace's key, `/mypaisa-agent/dev/anthropic/evals_key`; MA-250), `ci-dev-deploy`
+  (`main` only) and `ci-prod-deploy` (`main` and the `prod` GitHub environment only). The trust policies' subjects embed this
   repository's numeric ids, e.g. `repo:gilipersonal@325700199/mypaisa-agent@<repo_id>:environment:prod`, so the
   wealth tracker's policies cannot be copied. On `AccessDenied` from `AssumeRoleWithWebIdentity`, read CloudTrail
   first: it records the exact subject presented.
@@ -511,6 +537,7 @@ Each environment has its own set, under `/mypaisa-agent/dev/...` and `/mypaisa-a
 | `.../apple/services_id` | that environment's Services ID, the audience on Apple's identity tokens from the web app (a plain String) |
 | `.../twelvedata/api_key` | Twelve Data free tier: US closes, the macro basket, the earnings calendar |
 | `.../anthropic/api_key` | the Anthropic API key from that environment's workspace, which has its own spend limit |
+| `/mypaisa-agent/dev/anthropic/evals_key` | dev only: the key of the `mypaisa-evals` workspace ($30 limit), read only by the `ci-evals` role for the live evals (`ARCHITECTURE.md` §23.3) |
 | `.../google/client_id` | that environment's Google iOS client id, the audience on Google's ID tokens from the app (a plain String; an iOS client has no secret) |
 | `.../google/web_client_id` | that environment's Google web client id, the audience on Google's ID tokens from the web app (a plain String; no secret is used) |
 | `.../webpush/vapid_key` | that environment's Web Push VAPID private key, for push to the installed web app (MA-200); its public half is not a secret |

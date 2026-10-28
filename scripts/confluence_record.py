@@ -118,17 +118,48 @@ class _Builder(HTMLParser):
 
 
 @functools.lru_cache(maxsize=None)
-def _parsed(path: str, stamp: float) -> Node:
+def _parsed(path: Path, stamp: float) -> Node:
     b = _Builder()
-    b.feed((ROOT / path).read_text())
+    b.feed(path.read_text())
     return b.root
 
 
-def dom(path: str) -> Node:
-    p = ROOT / path
+def dom(path: str, root: Path = ROOT) -> Node:
+    p = root / path
     if not p.exists():
         raise RecordError(f"{path} is missing")
-    return _parsed(path, p.stat().st_mtime)
+    return _parsed(p, p.stat().st_mtime)
+
+
+def select(root: Node, selector: str) -> Node | None:
+    """The first element a capture recipe's selector names: descendant steps of a tag, an #id, .classes and
+    :nth-of-type(n), the forms the recipes use."""
+    steps = []
+    for part in selector.split():
+        m = re.fullmatch(r"([a-z][a-z0-9]*)?(?:#([\w-]+))?((?:\.[\w-]+)*)(?::nth-of-type\((\d+)\))?", part)
+        if not m:
+            raise RecordError(f"cannot read the selector step {part!r} in {selector!r}")
+        steps.append((m.group(1), m.group(2), [c for c in m.group(3).split(".") if c], int(m.group(4)) if m.group(4) else None))
+
+    def fits(n: Node, step: tuple) -> bool:
+        tag, id_, classes, nth = step
+        if (tag and n.tag != tag) or (id_ and n.attrs.get("id") != id_) or not all(c in n.cls() for c in classes):
+            return False
+        return nth is None or (n.parent is not None and [k for k in n.parent.children() if k.tag == n.tag].index(n) + 1 == nth)
+
+    found = [root]
+    for step in steps:
+        found = [n for f in found for n in f.walk() if fits(n, step)]
+        found = list(dict.fromkeys(found))
+    return found[0] if found else None
+
+
+def markup(n: Node | str) -> str:
+    """A subtree written out in one canonical form, so the same markup always hashes the same."""
+    if isinstance(n, str):
+        return n
+    attrs = "".join(f" {k}={v!r}" for k, v in sorted(n.attrs.items()))
+    return f"<{n.tag}{attrs}>" + "".join(markup(k) for k in n.kids) + f"</{n.tag}>"
 
 
 def clean(s: str) -> str:
@@ -575,11 +606,24 @@ def media_file(name: str) -> str:
     return f"{name}.{media_ext(name)}"
 
 
-def media_source(name: str) -> str:
-    m = MEDIA[name]
-    src = ROOT / m["src"]
-    page = hashlib.sha256(src.read_bytes()).hexdigest() if src.exists() else "missing"
-    return cd.sha(json.dumps([CAPTURE, m, page], sort_keys=True, ensure_ascii=False))
+def drawn_from(m: dict, root: Path = ROOT) -> str:
+    """What a picture is drawn from: the markup of its target, and the page's styles and scripts. A change anywhere
+    else on the page leaves the picture as it was; a target that is gone fails the check."""
+    src = root / m["src"]
+    if not src.exists():
+        return "missing"
+    if src.suffix == ".svg":
+        return hashlib.sha256(src.read_bytes()).hexdigest()
+    page = dom(m["src"], root)
+    target = select(page, m["target"])
+    if target is None:
+        raise RecordError(f"{m['src']} has no {m['target']}, which a picture of the record is captured from")
+    drawn = [markup(target)] + [markup(n) for n in page.walk() if n.tag in ("style", "script")]
+    return cd.sha("\x00".join(drawn))
+
+
+def media_source(name: str, root: Path = ROOT) -> str:
+    return cd.sha(json.dumps([CAPTURE, MEDIA[name], drawn_from(MEDIA[name], root)], sort_keys=True, ensure_ascii=False))
 
 
 def lucid_refs(text: str) -> list[str]:

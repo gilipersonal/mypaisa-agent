@@ -22,7 +22,7 @@
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The finished job queues the next. The <strong>engine</strong> runs its self-tests, then indicators, pillars, macro and the stance, and writes Signals to <strong>DynamoDB</strong> by 07:10</td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>07:15 a brief job per member reads the signals and that member&#x27;s preferences: privacy mode, simple or technical, their accounts and a line per household member</td></tr>
 <tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The engine&#x27;s numbers and the cached card rubric go to Sonnet, after the spend meter is read</td></tr>
-<tr><td data-background="#EAE6FF"><strong>8</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Claude writes the words. A validator checks every figure against the engine&#x27;s; on a refusal or an error the plain template goes instead</td></tr>
+<tr><td data-background="#EAE6FF"><strong>8</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Claude writes the words. The figure check tests every figure against the tool results; on a refusal or an error the plain template goes instead</td></tr>
 <tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS</td><td>The card (its words, the engine&#x27;s figures, the chart&#x27;s series and a plain line for the notification) goes on the <strong>SQS outbox</strong>, one lane per member, so its parts arrive in order</td></tr>
 <tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS to App</td><td><strong>sender λ</strong> delivers it to each open stream; the app draws the chart in Swift Charts from the series</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to External (APNs)</td><td>To each device with no open stream, a push through <strong>APNs</strong>: an ordinary notification, its plain line with no amount on the lock screen unless the member chose amounts</td></tr>
@@ -42,7 +42,7 @@
 </ul>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Claude never produces a number</strong></strong></p>
-<p>The validator catches an invented figure; a refusal or error falls back to the plain template. The chart is drawn from the engine&#x27;s series, not from words.</p>
+<p>The figure check (MA-248) catches an invented figure; a refusal or error falls back to the plain template. The chart is drawn from the engine&#x27;s series, not from words.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Stale is labelled, not skipped</strong></strong></p>

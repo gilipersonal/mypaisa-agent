@@ -180,6 +180,9 @@
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ca77e0cb-3ddb-4bd4-9dd1-cff588196115" data-collection="contentId-1736725" data-alt="rec-j-inside-more--inside-safety.png"></div>
 <figcaption>What stops it going wrong (Inside MyPaisa)</figcaption></figure>
 <p>A money app for a family has to be boring in the right places. These are the guard rails, written into the code rather than into the AI&#x27;s instructions, so the AI can&#x27;t talk its way around them.</p>
+<h4>Guarded in code, tested on every change</h4>
+<p>Before any tool runs, a small piece of code checks it is allowed for this agent and this person, that its details make sense and that the run is inside its limits; if in doubt, the answer is no. What a statement, a factsheet or a web page says is read as data, never as an instruction, and a chat that has read one loses every tool that could send something out. Every figure in a reply must come from a tool or from your own words.</p>
+<p>The tests run on every change, never on a timer: recorded ones always, live ones when the AI&#x27;s instructions or tools change, and a new Claude model is tested five times over before it answers you. Every live chat is checked by code, and a few are read overnight by a judge that you calibrate each month. The whole story, in plain words or technical detail: <a href="https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT">MyPaisa Guardrails and Evals</a>.</p>
 <h4>A spending ceiling for the AI, with a ladder</h4>
 <p>The admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan&#x27;s monthly credit. Two members are expected to use about $24 of it. Every call&#x27;s cost is added to a meter, and the meter is read before every call.</p>
 <p>70% 85% 95% 100% Expected: about $24 a month</p>

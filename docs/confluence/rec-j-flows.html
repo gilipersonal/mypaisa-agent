@@ -58,40 +58,47 @@
 </section>
 <h2>🛡️ The safeguards, in one place</h2>
 <p>They recur across the flows, so here is what each one means.</p>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The policy gate and the evals</strong></strong></p>
+<p>Code checks every tool call against the agent&#x27;s manifest, the member&#x27;s role and the run&#x27;s caps, and refuses when in doubt; text from a file or a page is data, never an instruction. Every change is tested before it merges, every live run is checked by code, and the judges are calibrated by the admin (<a href="https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT">MyPaisa Guardrails and Evals</a>, ARCHITECTURE §23).</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
 <p>Anything new is shown as a card first and saved only after the member taps Confirm on it; a check-in&#x27;s Paid is the Confirm of a card that shows exactly what it saves. A correction in place shows its before and after, then Save. A change across several records is one plan with one Confirm.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
 <p>An <code>AuditEvent</code> in the same DynamoDB transaction as the change: who, when, through what, before and after, which run. Hash-chained, never deleted.</p>
 </div>
 </div>
-</section>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Privacy mode</strong></strong></p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Privacy mode</strong></strong></p>
 <p>The eye on Home and in You, or <code>/privacy</code>, hides pounds and rupees in every card, screen, chart axis and notification; percentages stay, and the app switcher shows only the mark (MA-171). On the currency check&#x27;s cards (MA-156, ARCHITECTURE §4.7) it shows no amount and no rate, only words, currencies and dates.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The currency check</strong></strong></p>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The currency check</strong></strong></p>
 <p>Every holding keeps the one currency it is bought and valued in. An amount typed in another is never saved as it is: MyPaisa says why and asks for the amount that arrived (MA-156).</p>
 </div>
 </div>
-</section>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Signed in, in the app or the browser</strong></strong></p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Signed in, in the app or the browser</strong></strong></p>
 <p>Sign in with Apple or Google (or, in the browser, a passkey), exchanged for Cognito tokens: in the app they live in the Keychain, this device only; in the web app behind an HttpOnly cookie page scripts never see. Five-minute access tokens; token, status and session epoch checked on every call and on the stream.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The second check</strong></strong></p>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The second check</strong></strong></p>
 <p>In the app, a fresh Sign in with Apple or a passkey under Face ID (a Google-only member signs in with Google again); in the web app, a passkey or a fresh sign-in. Bound to one action and verified by the server: an import, a rollback, leaving the household, and every admin action, from the Admin center or the admin&#x27;s chat, approving a new kind among them (MA-197). A local Face ID alone never authorises anything.</p>
 </div>
 </div>
-</section>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The spend ladder</strong></strong></p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The spend ladder</strong></strong></p>
 <p>The month&#x27;s Claude spend is read before every call; at 70, 85, 95 and 100% of the ceiling MyPaisa steps down. Alerts are never dropped.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Retries and dead-letter queues</strong></strong></p>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Retries and dead-letter queues</strong></strong></p>
 <p>Every hand-off goes through SQS: retried with backoff, idempotent, and kept in a dead-letter queue with an alarm and a replay when it keeps failing. The app keeps what is typed offline and catches up when it opens.</p>
 </div>
+</div>
+<div data-type="column"><p></p>
 </div>
 </section>
 <h2>🗂️ The twenty-four flows</h2>
