@@ -67,7 +67,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-257 | The whole architecture and every journey recorded in Confluence, page by page, colourful and animated | In Progress | §3 | none |  |
 | MA-258 | The guardrails and evals are explained on a page of their own with animated diagrams, synced to Confluence, and the other explainer pages show them too | In Progress | §23, §8 | none |  |
 | MA-259 | The Claude Design boards and the repo mirror stay the same: one command pulls every change, a check fails on any drift, and a plan for Claude Design's move into Claude | In Progress |  | none |  |
-| MA-260 | The boards move off standalone Claude Design before it closes on 14 Dec 2026, the way Arun picks, and the sync and its check follow them | To Do |  | none |  |
+| MA-260 | The boards move into Claude with Anthropic's Move to Claude before standalone Claude Design closes on 14 Dec 2026, and the sync and its check follow them; by 1 Dec without it, the boards stay in the repo alone | To Do |  | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

@@ -171,5 +171,16 @@ none was missed.
 
 ## The pick
 
-Not yet made. Asked on 28 Oct 2026. The work is MA-260 (To Do, estimated at C's two
-days, due before 1 Dec 2026); it starts once Arun picks.
+**A, through Anthropic's Move to Claude; B by 1 Dec 2026 if it has not come** (Arun, 28 Oct
+2026: "I will go with A", then "Wait for Move").
+
+- Move to Claude had not reached the account on 28 Oct: no artifact held the boards, and the three
+  standalone projects answered as before.
+- Moving them by hand ("Can you just move these 3 manually?") was tried and dropped. A Design
+  canvas frame is at most 8,000 px a side and the type expects one artboard per frame; measured in
+  Chromium, 41 of the 55 board files are taller (Wealth 81,254 px). A private trial canvas holding
+  iOS kit (24,041 px) as one page cut it off (Arun: "Cut off"). Splitting would mean about 1,377
+  boards, 910 of them in app v1, past a canvas's 512-file cap.
+- So: the current sync stays until Move to Claude reaches the account; then the projects are moved
+  and the sync follows them (MA-260). If it has not come by 1 Dec 2026, MA-260 does B instead, before
+  14 Dec.

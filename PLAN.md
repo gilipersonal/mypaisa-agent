@@ -346,8 +346,10 @@ Claude's:
   Design into `docs/design/` byte for byte with its etag, and
   `python3 scripts/design_sync.py check` fails before every PR (a gate and the
   PR hook) whenever the two differ. Standalone Claude Design closes by 14 Dec
-  2026: the boards move where Arun picks from the options in
-  `docs/design/reviews/MA-259/decision.md`, by 1 Dec (MA-260).
+  2026: the boards move into Claude with Anthropic's Move to Claude once it
+  reaches the account, and the sync follows them; by 1 Dec without it, they
+  stay in the repo alone (Arun's pick, MA-260;
+  `docs/design/reviews/MA-259/decision.md`).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
