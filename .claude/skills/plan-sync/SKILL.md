@@ -118,7 +118,11 @@ made in Confluence.
      the file's rows (the database guide's edit workflow, `edit_entry` for
      changed rows, `add_entry` and `delete_entry` for the rest; the update
      needs `context.content` set to the CSV just read, or it is refused), then
-     `set-database stories <id> published`.
+     `set-database stories <id> published`. The server reads an `edit_entry`'s
+     row number against the rows as they are before the batch, whatever the
+     guide says about post-batch indices: put the edits first and the adds
+     after them (MA-259, where post-batch numbers were refused as "Entry not
+     found").
    - `apps`: the Maui apps (`roadmap-gantt` on the roadmap, `decision-cards`
      on the decisions page), made with `createConfluenceMauiApp` (or
      `editConfluenceMauiApp` once made) from
