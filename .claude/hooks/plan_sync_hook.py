@@ -4,7 +4,8 @@
     plan_sync_hook.py after-edit   PostToolUse on Edit|Write|MultiEdit: after an edit to a record (the trace, the
                                    roadmap, PLAN, ARCHITECTURE, the design mirror, the Confluence pages, the code),
                                    run the check and tell the session about drift the edit introduced
-    plan_sync_hook.py before-pr    PreToolUse on Bash: refuse `gh pr create` and `gh pr ready` while the check fails
+    plan_sync_hook.py before-pr    PreToolUse on Bash: refuse `gh pr create` and `gh pr ready` while the check fails, or
+                                   while Claude Design and the repo's mirror of it differ (scripts/design_sync.py, MA-259)
     plan_sync_hook.py new-work     UserPromptSubmit: when the prompt talks about a new design or feature, remind the
                                    session that it gets a Jira issue and its Confluence page in the same change
 
@@ -32,6 +33,17 @@ NEW_WORK = re.compile(r"\b(new (feature|screen|page|flow|design|card|story|kind)
 def drift() -> tuple[int, list[str]]:
     r = subprocess.run([sys.executable, "-I", str(ROOT / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True, cwd=ROOT, timeout=120)
     return r.returncode, [ln[len("DRIFT: "):] for ln in r.stdout.splitlines() if ln.startswith("DRIFT: ")]
+
+
+def design_drift() -> tuple[int, list[str]]:
+    """Claude Design against the mirror, live. Fails closed: a check that cannot reach Claude Design is drift too."""
+    try:
+        r = subprocess.run([sys.executable, "-I", str(ROOT / "scripts" / "design_sync.py"), "check"], capture_output=True, text=True,
+                           cwd=ROOT, timeout=150)
+    except subprocess.TimeoutExpired:
+        return 1, ["design: the check took over 150 s"]
+    lines = [ln[len("DRIFT: "):] for ln in r.stdout.splitlines() if ln.startswith("DRIFT: ")]
+    return r.returncode, lines or ([f"design: the check exited {r.returncode}: {(r.stderr or r.stdout).strip()[-300:]}"] if r.returncode else [])
 
 
 def say(event: str, text: str) -> None:
@@ -71,10 +83,15 @@ def before_pr(data: dict) -> int:
     if not re.search(r"(?m)(?:^|[;&|(]|\bthen|\bdo)\s*(?:\w+=\S+\s+)*gh\s+pr\s+(?:create|ready)\b", cmd):
         return 0
     code, lines = drift()
+    if code != 0:
+        print(f"plan-sync check reports {len(lines)} drift; the plan, Jira, the designs, Confluence and the code must agree before a PR "
+              "(.claude/rules/plan-sync.md). First items:\n- " + "\n- ".join(lines[:10]), file=sys.stderr)
+        return 2
+    code, lines = design_drift()
     if code == 0:
         return 0
-    print(f"plan-sync check reports {len(lines)} drift; the plan, Jira, the designs, Confluence and the code must agree before a PR "
-          "(.claude/rules/plan-sync.md). First items:\n- " + "\n- ".join(lines[:10]), file=sys.stderr)
+    print(f"design-sync check reports {len(lines)} drift: Claude Design and docs/design/ must be the same before a PR; "
+          "run `python3 scripts/design_sync.py pull` (.claude/rules/plan-sync.md, rule 7). First items:\n- " + "\n- ".join(lines[:10]), file=sys.stderr)
     return 2
 
 

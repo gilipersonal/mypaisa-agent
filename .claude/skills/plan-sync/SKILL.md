@@ -19,8 +19,8 @@ transitions in `.claude/jira-flow.json`. Claude Design projects in
 screens since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the web app's
 browser boards, its spec, beside the superseded Mini App and Telegram boards). Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
 `mcp__atlassian__editJiraIssue`, `mcp__atlassian__createJiraIssue`,
-`mcp__atlassian__addOrEditJiraIssueComment`, `mcp__claude-design__list_files`,
-`mcp__claude-design__read_file`, and for Confluence (space `mypaisaaag`, id
+`mcp__atlassian__addOrEditJiraIssueComment` (Claude Design is read by
+`scripts/design_sync.py`, no tool to load), and for Confluence (space `mypaisaaag`, id
 `196872`) `mcp__atlassian__getConfluenceContent`,
 `mcp__atlassian__createConfluenceContent`,
 `mcp__atlassian__updateConfluenceContent` and `mcp__atlassian__executeWrite`
@@ -54,18 +54,35 @@ asking in this repo (`.claude/rules/ship-autopilot.md`).
 
 ## 2. Claude Design against the mirror
 
-List every project under `claude_design` with depth -1 and compare with
-`docs/design/claude-design.json`.
+One command does the copying (MA-259); it reads the projects under
+`claude_design` through the claude-design connector by running Claude Code
+headless, read-only, and writes each file byte for byte:
+
+```bash
+python3 scripts/design_sync.py pull
+```
+
+It lists every project (depth -1), copies each file that is new, whose etag
+or size moved, or whose copy on disk differs from its record, checks each
+copy's decoded length and etag against the listing, and only then writes the
+copies and their etag, bytes and sha256 into `docs/design/claude-design.json`;
+any failure writes nothing. It ends with the check, which must say `0 drift`.
+`python3 scripts/design_sync.py check` is the same comparison without copying
+(the `design-sync` gate and the PR hook run it). A 403 means the connector's
+login lapsed: Arun runs `/design-login` in an interactive `claude` terminal
+(not the desktop app).
+
+Then, by hand:
 
 | Found | Do |
 | --- | --- |
-| A file whose etag moved | Read it in full (page past 256 KiB with offset/limit), decode `&amp;` `&lt;` `&gt;`, write the repo copy, record the new etag, bytes and sha256. Then read its boards' notes (each board names its Jira keys) and update those rows' `boards` |
-| A new file | Copy it the same way, add it to the json, map its boards to rows |
-| A file gone from Claude Design | Keep the repo copy, report it, and ask Arun whether it was meant |
+| A file the pull copied (`copied ...`) | Read its boards' notes (each board names its Jira keys) and update those rows' `boards`; a new file's boards are mapped to rows the same way |
+| A file gone from Claude Design (`gone from Claude Design`) | The copy is kept and the check keeps failing: ask Arun whether it was meant. If it was, `python3 scripts/design_sync.py pull --drop <project>/<file>` removes the copy and its record, and every row that names its boards is changed in the same change |
 | A board whose note names a key not in the trace | Report it; fix the note or the trace |
 
 Copy only; never write to Claude Design from this skill. Designs change
-through `/design-first`.
+through `/design-first`. Never edit a mirrored copy: its bytes and sha256 must
+match Claude Design's, and the check refuses one that does not.
 
 ## 2b. Confluence against `docs/confluence.json`
 

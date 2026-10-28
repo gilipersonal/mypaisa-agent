@@ -50,8 +50,12 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    (ARCHITECTURE.md says so plainly), change the board to match the plan
    instead, and name the disagreement and the plan's answer in the notes.
 7. **Claude Design is edited there, copied here.** Boards are drawn in Claude
-   Design; the repo copy is refreshed by `/plan-sync` whenever an etag moves.
-   The repo copy is what a PR reviews and what the check reads.
+   Design; `python3 scripts/design_sync.py pull` copies every new or changed
+   file into the repo byte for byte and records its etag, and
+   `python3 scripts/design_sync.py check` fails whenever Claude Design and the
+   repo copy differ, either way (MA-259). The repo copy is what a PR reviews
+   and what the check reads. Standalone Claude Design closes by 14 Dec 2026;
+   what replaces it is Arun's pick (`docs/design/reviews/MA-259/decision.md`).
 8. **Confluence is generated here, published there.** Every page is rendered
    from the records above by `python3 scripts/confluence_docs.py write` and
    published by `/plan-sync`. Never edit the content in Confluence: an edit
@@ -93,8 +97,8 @@ A hook reminds the session when a prompt talks about a new design or feature
 | --- | --- | --- |
 | Starting a story (`/jira-flow:work`, or by hand) | `/plan-sync MA-<n>` (refreshes the row and the story's boards), then `python3 scripts/plan_sync.py start MA-<n>` | The story is traced, its sections exist, its boards exist and are current; a UI story's design is `planned` (run `/design-first`) or `picked`; no `open` question |
 | After any change to a record | `python3 scripts/roadmap.py write` (when an estimate or a phase changed), `python3 scripts/plan_sync.py render`, `python3 scripts/confluence_docs.py write`, then `/plan-sync --confluence` to publish the changed pages and previews | The check is clean; the hook after each edit reports new drift at once |
-| Before every PR (`/autoship` step 1) | `/plan-sync --design`, `/plan-sync --confluence`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) | Every Claude Design etag matches `claude-design.json` (a file edited there is copied here first); no drift; `docs/TRACE.md` is rendered |
-| On every PR, in CI | `.github/workflows/plan-sync.yml` | The same check |
+| Before every PR (`/autoship` step 1) | `/plan-sync --design` (`python3 scripts/design_sync.py pull`), `/plan-sync --confluence`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) and the `design-sync` gate (`python3 scripts/design_sync.py check`) | Every Claude Design file and etag matches `claude-design.json` and the copy on disk (a file edited there is copied here first); no drift; `docs/TRACE.md` is rendered |
+| On every PR, in CI | `.github/workflows/plan-sync.yml` | The same check, but for Claude Design itself: CI cannot reach it, so it runs `design_sync.py`'s offline selftest and checks the copies against `claude-design.json` |
 | After planning (a new phase, a new story, a design round) | `/plan-sync` | Jira, Claude Design and the trace agree; drift is fixed or filed |
 | Weekly, or when unsure | `/plan-sync --all` | The whole backlog and every Claude Design project under `claude_design` agree with the trace |
 
@@ -108,6 +112,7 @@ A hook reminds the session when a prompt talks about a new design or feature
 - A `planned` story that is In Review or Done: code came before Arun's pick (rule 3). A story In Review or Done with screens still `undrawn` or questions still `open`.
 - `ui` and the `design` label disagreeing: the label marks exactly the stories with UI (`.claude/jira/taxonomy.md`).
 - A board file missing from the repo mirror or from `claude-design.json`; a board name that is not exactly one of its canvas's titles (a caption, or a numbered board as `<number> · <name>` with its own number), optionally after the door the whole file draws; a mirrored file whose size or hash no longer matches; a file in the mirror that `claude-design.json` does not record.
+- (`design_sync.py check`, before every PR, MA-259.) A file new in Claude Design, changed there (its etag moved) or gone from it, and not yet copied or settled; a size Claude Design lists that the record does not hold at the same etag; any copy on disk that differs from its record; a project Claude Design will not list, which fails the gate rather than skipping it (a lapsed login: `/design-login` in an interactive `claude` terminal). Every file is mirrored but the `.thumbnail` preview image. A file gone from Claude Design is never deleted by the sync: Arun says whether it was meant, then `pull --drop <project>/<file>`.
 - A key in both `items` and `others`; a row, phase or entry that is not an object; a row with no key, summary, status or type; a phase with no epic or title; a field of the wrong type.
 - A board element given the `label` or `dot` motion role without the class whose transform that role's keyframe ends on (`mp-chartlbl`, `mp-chartdot`): once the arrival settles it is moved off its place; use `fade`. And a board rule giving a `.mp-chartlbl` or `.mp-chartdot` variant its own transform without `!important`: motion.js gives every chart label and dot the board leaves unmarked its role at run time, so the arrival overrides the variant's transform; add `!important` to it (MA-161 review, rounds 2 and 3).
 - A tool a board's run or Activity row names that ARCHITECTURE §8's **Tools** list does not define (`render_chart`, `read_file`; MA-161 review, rounds 3 and 4). Fix the board through `/design-first` if the name is wrong; if the tool is new, add it to §8 (and PLAN and the trace) first.
@@ -136,18 +141,30 @@ The selftest also mutates a copy of the repo for each MA-228 check (a Story
 Done with no code, a code path that does not exist, a missing estimate, an
 estimate changed without the schedule, a page edited by hand, a page not
 published, a preview older than its boards) and expects check to refuse it.
+It then runs `design_sync.py`'s selftest (MA-259), offline, against a
+stand-in Claude Design built from the mirror: an etag moved, a file new or
+gone on either side, a size that disagrees, a copy edited in the repo, a
+project that will not list, a body one byte short, a file that moves while it
+is read, a file past read_file's cap and a line longer than it, a raw `<`,
+and a `--drop` of a file still there; each must be refused or copied exactly,
+and a refused pull must write nothing.
 
 Three hooks in `.claude/settings.json` (this repo only) hold the line between
 checks: after an edit to a record the check runs and new drift is reported at
 once; raising a PR (`gh pr create`, `gh pr ready`) is refused while the check
-fails; and a prompt about a new design or feature brings the New work rule
+fails or while `design_sync.py check` finds Claude Design and the mirror
+apart; and a prompt about a new design or feature brings the New work rule
 above into the session (`.claude/hooks/plan_sync_hook.py`).
 
 Jira-side drift (a key, parent, label or status that differs from the trace,
-or an epic's due date that differs from the roadmap), Claude Design drift (an
-etag that moved) and Confluence drift (a page whose live version moved past
-the one recorded, because someone edited it there) need their MCP tools, so
-`/plan-sync` checks those; `/autoship` runs `/plan-sync --design` and `--confluence` before
-every PR, so a board edited in Claude Design is copied in before it ships.
+or an epic's due date that differs from the roadmap) and Confluence drift (a
+page whose live version moved past the one recorded, because someone edited
+it there) need their MCP tools, so `/plan-sync` checks those. Claude Design
+drift needs the claude-design connector too, and `scripts/design_sync.py`
+reaches it on its own by running Claude Code headless (`claude -p` on Haiku,
+read-only, on the signed-in claude.ai plan, so no API key and no bill), so the
+same command works in a session, in the gate and in the PR hook. `/autoship`
+runs `/plan-sync --design` and `--confluence` before every PR, so a board
+edited in Claude Design is copied in before it ships.
 A status the trace records lags Jira by one step at most: Done is set after
 the merge, so the next `/plan-sync` brings it in.

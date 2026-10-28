@@ -207,7 +207,8 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   the superseded record (MA-161). A significant revision is a new file or a new vN, never an overwrite of what Arun
   picked from.
 - **`tokens.css` and the motion files are copied** from the DS project into the iOS and app projects, and `ios.css`
-  into the iOS project, after every change (`copy_files`), then all of them are mirrored into the repo; a snapshot of
+  into the iOS project, after every change (`copy_files`), then all of them are mirrored into the repo
+  (`python3 scripts/design_sync.py pull`); a snapshot of
   `tokens.css` goes into `docs/design/reviews/MA-<n>/` at the end of the round, as its record. `docs/design/ds-v1/`
   is the source; once `ios/` exists, its colour assets are generated from it (MA-165). A token change is measured
   before it is copied: mirror the DS change and run `python3 scripts/contrast_check.py --report`, where every pair
@@ -235,8 +236,8 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   3. Read comments left in Claude Design (`list_comments`), and acknowledge them once handled.
 - **The pick.** Record it in `decision.md` and on the MA issue. Then keep the plan in sync (`.claude/rules/plan-sync.md`):
   in `docs/trace.json` set the story's `design` to `picked` and list the picked boards (each board's note names its
-  Jira keys), clear each `undrawn` item this round drew and say `Drawn: <the item, as it was listed>` in the notes; run `/plan-sync MA-<n>` to copy the changed Claude Design files into `docs/design/ios-v1/`, `app-v1/` or `ds-v1/`
-  with their etags; then `python3 scripts/plan_sync.py render` and `check`.
+  Jira keys), clear each `undrawn` item this round drew and say `Drawn: <the item, as it was listed>` in the notes; run `python3 scripts/design_sync.py pull` (MA-259; `/plan-sync MA-<n>` runs it) to copy the changed Claude Design files
+  into `docs/design/ios-v1/`, `app-v1/` or `ds-v1/` with their etags; then `python3 scripts/plan_sync.py render` and `check`.
   - "None of these", or feedback, means another round: back to step 1, in the same projects as new files or a new vN.
 
 ## 4. Build the picked option

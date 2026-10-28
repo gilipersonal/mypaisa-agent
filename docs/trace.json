@@ -6703,6 +6703,37 @@
     "docs/design/guardrails-evals.html",
     "docs/design/guardrails-evals/*.gif"
    ]
+  },
+  {
+   "key": "MA-259",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The Claude Design boards and the repo mirror stay the same: one command pulls every change, a check fails on any drift, and a plan for Claude Design's move into Claude",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 28 Oct 2026: \"On Claude Code, I should be able to sync my claude design with the docs/design ones; they should not drift.\" scripts/design_sync.py (pull, check, selftest) reads the three projects through the claude-design connector by running Claude Code headless and writes each file byte for byte; the design-sync gate and the PR hook run its check, and plan_sync.py selftest runs its offline cases. The drift on 28 Oct 2026 (app's support.js changed in Claude Design, DS v1's five _ds/ files never copied) is in docs/design/reviews/MA-259/drift.md and was pulled. Standalone Claude Design closes by 14 Dec 2026: the options and the recommendation are in docs/design/reviews/MA-259/decision.md, for Arun to pick; the move is MA-260.",
+   "code": [
+    "scripts/design_sync.py"
+   ]
+  },
+  {
+   "key": "MA-260",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The boards move off standalone Claude Design before it closes on 14 Dec 2026, the way Arun picks, and the sync and its check follow them",
+   "status": "To Do",
+   "labels": [],
+   "arch": [],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-259 (28 Oct 2026). Waits on Arun's pick of A (move the projects into Claude as Design artifacts and sync from them), B (the repo mirror the only record) or C (recommended: the repo the source, each project a Design canvas published from it, checked both ways), in docs/design/reviews/MA-259/decision.md. Estimated at C's two days. Due before 1 Dec 2026."
   }
  ],
  "others": [

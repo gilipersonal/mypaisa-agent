@@ -33,8 +33,10 @@ Uncommitted files that belong to another story are left alone and named.
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured". The `plan-sync` gate
    (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) always applies. Before it, run
-   `/plan-sync --design` every time, so any board edited in Claude Design is
-   copied in with its etag, and `/plan-sync --confluence`, so every page the
+   `/plan-sync --design` (`python3 scripts/design_sync.py pull`) every time,
+   so any board edited in Claude Design is copied in with its etag (the
+   `design-sync` gate, `python3 scripts/design_sync.py check`, then fails on
+   any difference left), and `/plan-sync --confluence`, so every page the
    change re-rendered is published; and if the story changed a board, a phase
    or a story, run `/plan-sync MA-<n>` too, so the trace, the design mirror,
    Confluence and Jira agree before the PR.

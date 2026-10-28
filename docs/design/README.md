@@ -164,6 +164,11 @@ Since 24 Oct 2026 (MA-155) the boards, the plan and Jira are one record
   through its options round when the story starts, and the pick makes them
   **picked**, the spec;
 - the Claude Design files are copied into `ios-v1/`, `ds-v1/` and `app-v1/`
-  with their etags; `/plan-sync` copies them again whenever one moves;
+  with their etags by one command, `python3 scripts/design_sync.py pull`
+  (MA-259), which reads the three projects through the claude-design
+  connector and writes each file byte for byte; `python3 scripts/design_sync.py
+  check` fails whenever Claude Design and these copies differ, and runs before
+  every PR (a gate and the PR hook); standalone Claude Design closes by 14 Dec
+  2026, and the options for what replaces it are in `reviews/MA-259/decision.md`;
 - `python3 scripts/plan_sync.py check` runs before every PR and in CI, and
   `python3 scripts/plan_sync.py start MA-<n>` before a story starts.
