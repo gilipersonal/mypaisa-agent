@@ -1,0 +1,202 @@
+<div data-type="panel-custom" data-icon=":house:" data-color="#FFFAE6"><p><strong>🏠 From the first tap to a team of agents keeping the family&#x27;s money.</strong></p>
+<p>MyPaisa is a private money assistant for one household. You talk to it in a chat, on the iPhone, the iPad or in a browser. It keeps everything the family owns and owes in the UK and India, asks when something is due, and explains what moved. This page follows the household&#x27;s admin from the very first screen to the chatbot at work, and shows what happens behind every tap.</p>
+<p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/inside-mypaisa.html">inside-mypaisa.html</a> (MA-239), the whole architecture in plain words, live at <a href="https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5">Inside MyPaisa</a>.</p>
+</div>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-hero.png</code> is still to upload.</p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>🤝 The promises</h2>
+<p>Four promises the whole design keeps</p>
+<h3>The AI talks. Plain code does the maths. You approve every change.</h3>
+<p>1</p>
+<h4>Claude never makes a number</h4>
+<p>Every figure comes from tested code. Claude, the AI, only chooses what to say and how to say it.</p>
+<p>2</p>
+<h4>It cannot trade</h4>
+<p>No broker log-in and no orders. It can suggest; it can never buy, sell or move money.</p>
+<p>3</p>
+<h4>Plain first, detail one tap away</h4>
+<p>Every message has a simple top. The technical side opens only when you ask for it.</p>
+<p>4</p>
+<h4>New things only in the chat</h4>
+<p>Anything new is made in the chat with a Confirm tap. An existing figure can be corrected where it shows.</p>
+<h2>🏢 The cast</h2>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-cast.png</code> is still to upload.</p>
+</div>
+<p>The cast</p>
+<h3>Think of MyPaisa as a small, well-run office</h3>
+<p>Each part has one job. Here they are in everyday words, with the real name underneath for anyone who builds it. The colours stay the same all the way down the page.</p>
+<p>Your screens Plumbing that carries messages AI (Claude) Plain code, no AI Where things are kept</p>
+<h4>You, the admin</h4>
+<p>owner · the one admin</p>
+<p>Sets up the household, invites the family, approves what the agents ask for.</p>
+<h4>The doors</h4>
+<p>iOS app · web app (PWA)</p>
+<p>The iPhone and iPad app, and the same chat and dashboard in any browser.</p>
+<h4>The front desk</h4>
+<p>api · API Gateway + Lambda</p>
+<p>Checks who you are on every call, says &quot;got it&quot; at once, and passes things on.</p>
+<h4>The in-tray and out-tray</h4>
+<p>SQS queues · updates, outbox, work</p>
+<p>Nothing is handed over directly. It waits in a tray that retries it until it works.</p>
+<h4>The concierge</h4>
+<p>agent Lambda + Claude</p>
+<p>The only one who talks to you. It understands what you mean and calls the right tools.</p>
+<h4>The calculator</h4>
+<p>engine · wealth maths, tested</p>
+<p>Net worth, loan schedules, deposits, the Projection. Numbers come only from here.</p>
+<h4>The ledger</h4>
+<p>DynamoDB · records, events, audit</p>
+<p>Everything the family owns and owes, with a tamper-evident line for every change.</p>
+<h4>The filing cabinet</h4>
+<p>S3 · documents bucket</p>
+<p>Every file and screenshot you send, kept for good and opened from the audit log.</p>
+<h4>The back office</h4>
+<p>worker · scheduler</p>
+<p>Runs the jobs nobody asked for out loud: prices, reading files, check-ins, overnight sums.</p>
+<h4>The postman</h4>
+<p>sender Lambda</p>
+<p>Delivers every reply to each open screen, or by push when the app is closed.</p>
+<h4>The live line</h4>
+<p>SSE stream on the api host</p>
+<p>Keeps open screens in step: a tap on the phone moves the laptop at once.</p>
+<h4>Claude</h4>
+<p>Anthropic API · Sonnet, Haiku, Opus</p>
+<p>The language brain the concierge consults. It lives outside AWS and sees only what it needs.</p>
+<h2>🚶 Nine steps, from the first screen to the chatbot at work</h2>
+<p>Arun is the household&#x27;s owner and its one admin. Follow him through the app. Each step plays once as you reach it; press Replay to watch again.</p>
+<section data-type="layout-two-equal"><div data-type="column"><h3>1 · Open the app and sign in</h3>
+<p><span data-type="status" data-color="blue">Phase 1</span> <span data-type="status" data-color="purple">No passwords</span></p>
+<p>The first screen shows two buttons and nothing else: Sign in with Apple and Sign in with Google. Arun taps Apple, looks at the phone, and he is in. There is no password to make, forget or leak.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#DEEBFF"><strong>A one-time code first.</strong> Before the Apple sheet opens, the app fetches a code that can be used once, so a stolen sign-in can&#x27;t be replayed. <code>/auth/nonce</code></td></tr>
+<tr><td data-background="#EAE6FF"><strong>Apple vouches for him.</strong> Face ID unlocks Apple&#x27;s own sign-in, which returns a signed note: &quot;this is that Apple account&quot;.</td></tr>
+<tr><td data-background="#EAE6FF"><strong>The ID desk checks the signature</strong> against Apple&#x27;s published keys, then issues a pass that lasts five minutes and renews itself quietly. <code>Cognito custom auth</code></td></tr>
+<tr><td data-background="#FFFAE6"><strong>The pass stays on this device only,</strong> in the iPhone&#x27;s Keychain. On the web it is a cookie that page scripts can never read.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-1.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>2 · Set up in three questions</h3>
+<p><span data-type="status" data-color="blue">Phase 1</span> <span data-type="status" data-color="purple">The concierge talks</span></p>
+<p>No forms. The chat asks three things, one at a time, each with tap-able answers: which currency totals should be in, what the family holds (send a screenshot, or add things later), and how often to be told things. Whoever opens the app first becomes the household&#x27;s owner, and its only admin.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#FFEBE6"><strong>The concierge asks, and remembers where it got to.</strong> Each half-finished conversation is kept as an open flow, so a phone call in the middle loses nothing. <code>ask_user</code> · <code>PendingAction</code></td></tr>
+<tr><td data-background="#FFFAE6"><strong>A household is created</strong> with its base currency, and Arun is its owner. Every later item is filed under this household and no other.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>Quiet by design.</strong> About ten notifications a week, at most two with sound.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-2.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>3 · Invite the family</h3>
+<p><span data-type="status" data-color="blue">Phase 1</span> <span data-type="status" data-color="purple">Admin only</span></p>
+<p>In the Admin center, Arun taps Invite and sends the link with the iPhone&#x27;s share sheet. Asha opens it on her own iPhone, sees &quot;Arun invited you to the Dutta household&quot;, and signs in with her own Apple or Google account. She gets her own chat, her own accounts and her own settings, inside the same household.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#E3FCEF"><strong>The link works once, for 24 hours,</strong> for this household and this role only. <code>dashboard.mypaisapp.com/join/&lt;token&gt;</code></td></tr>
+<tr><td data-background="#EAE6FF"><strong>Strangers are turned away.</strong> An Apple or Google account linked to nobody is refused unless it arrives with a valid invite.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>Each person&#x27;s detail is private by default.</strong> Asha sees the household totals; she shares her own accounts only if she chooses.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-3.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>4 · Add something by just saying it</h3>
+<p><span data-type="status" data-color="blue">Phase 2</span> <span data-type="status" data-color="purple">AI understands</span> <span data-type="status" data-color="green">Code checks</span></p>
+<p>Arun types &quot;£5,000 in Monzo savings&quot;. MyPaisa asks only what it can&#x27;t work out (whose is it?), shows a card with exactly what it will save, and waits for Confirm. The same works for a fixed deposit in India, a mortgage, a pension or a car loan: one sentence, a question or two, one tap.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#FFEBE6"><strong>Claude reads the sentence</strong> and passes each part, in Arun&#x27;s own words, to the drafting tool. <code>draft_record</code></td></tr>
+<tr><td data-background="#E3FCEF"><strong>Code turns words into checked values,</strong> works out anything it can (an EMI, a maturity date), and lists what is missing. A draft writes nothing.</td></tr>
+<tr><td data-background="#FFEBE6"><strong>Only the missing bits are asked,</strong> one at a time with chips. It never asks what it could look up.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>Confirm saves exactly the card you saw,</strong> and the change and its audit line are written together or not at all.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-4.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>5 · Send a file or a screenshot</h3>
+<p><span data-type="status" data-color="blue">Phase 5</span> <span data-type="status" data-color="purple">AI reads the file</span></p>
+<p>Arun taps <strong>+</strong> and sends the factsheet for his Monzo &quot;Balanced&quot; fund. MyPaisa reads it, fills a card with what it found, and marks anything it is unsure of in amber, with a question. A screenshot of Monzo&#x27;s valuations works the same way: it matches the values to holdings and shows before and after.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#FFFAE6"><strong>The file goes straight to the filing cabinet,</strong> before anything reads it, and stays there for good. It opens later from the audit log. <code>s3://mypaisa-prod-documents/…</code></td></tr>
+<tr><td data-background="#E3FCEF"><strong>The back office reads it</strong> as a background job, so the chat never waits. Each figure keeps a note of the line it came from. <code>extract_document</code></td></tr>
+<tr><td data-background="#FFEBE6"><strong>Unsure means amber.</strong> A field Claude isn&#x27;t sure of is never guessed; it is asked about.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>Every change made from the file names the file,</strong> so &quot;where did this number come from?&quot; always has an answer. A Source button opens the original.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-5.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>6 · See the whole picture, and fix a figure where it shows</h3>
+<p><span data-type="status" data-color="blue">Phases 2 to 9</span> <span data-type="status" data-color="purple">Code computes</span></p>
+<p>Pull the chat down and Home opens: the household&#x27;s net worth in pounds and rupees, what it owns and owes, each person&#x27;s share, UK against India, then Assets, Debts, Budget and the Projection. On the laptop, the same dashboard sits beside the chat. Arun taps his home&#x27;s value, types the new estimate, sees before and after, and taps Save. The laptop moves at the same moment.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#E3FCEF"><strong>Figures are views, rebuilt from history.</strong> Every record keeps a list of what happened to it; net worth is worked out from those, never typed in.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>A correction is a new line, not an overwrite.</strong> It is saved as a correction with its audit line, and the old value stays in the history. <code>via: inline_edit</code></td></tr>
+<tr><td data-background="#E3FCEF"><strong>Only figures their kind marks editable</strong> can be tapped. Derived figures (an EMI, net worth) are not editable; their inputs are.</td></tr>
+<tr><td data-background="#EAE6FF"><strong>Two screens never overwrite each other.</strong> Save carries the figure it showed and is refused if it has moved since. A saved change reaches every open screen on the live line.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-6.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>7 · MyPaisa asks you, so you don&amp;#x27;t have to remember</h3>
+<p><span data-type="status" data-color="blue">Phase 4</span> <span data-type="status" data-color="purple">Decided by code, no AI</span></p>
+<p>Every loan EMI, card bill, SIP, premium, salary and maturity is a promise with a date. On the day, a check-in arrives: &quot;HDFC home loan: was November&#x27;s EMI paid?&quot; The card already shows exactly what a tap will save, so <strong>Paid</strong> is the Confirm, with Undo. &quot;Not yet&quot; asks again in a few days; &quot;Paid off in full&quot; closes the loan and reruns the Projection.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#E3FCEF"><strong>A daily job, plain code,</strong> finds what is due and puts each check-in straight in the out-tray. No AI is needed to know a date has come.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>Asked once, never twice.</strong> Each check-in has an id made from the promise and its date, so a retry can&#x27;t ask again. <code>commitment#due_date</code></td></tr>
+<tr><td data-background="#EAE6FF"><strong>No amounts on the lock screen,</strong> unless you turn that on.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>Autopay is assumed paid</strong> after its grace days and listed once a week, which keeps the household to about ten notifications a week.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-7.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>8 · Send a statement; the budget fills itself</h3>
+<p><span data-type="status" data-color="blue">Phase 6</span> <span data-type="status" data-color="purple">AI sorts new shops</span> <span data-type="status" data-color="green">Code spots transfers</span></p>
+<p>Arun sends the Barclaycard statement (PDF, CSV or a spreadsheet, from a UK or Indian bank). Every line is sorted into a category. Payments between the family&#x27;s own accounts, card payments and loan EMIs are recognised so nothing counts twice. One review card follows, with the unsure lines in amber, and one Confirm. On the 1st of the month a check-in closes last month&#x27;s budget, asking only about money no statement covered, such as cash.</p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#E3FCEF"><strong>Shops it knows are sorted from memory first.</strong> Only new ones go to Claude&#x27;s smallest model, Haiku, and its answers join the memory once you confirm.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>On a card, only interest and fees are spending;</strong> paying the card off is a transfer. A loan EMI&#x27;s principal counts as saving.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>The statement itself is kept for good,</strong> like every file. A payment it shows answers its check-in by itself.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-8.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><h3>9 · Ask anything: the chatbot at work</h3>
+<p><span data-type="status" data-color="blue">Phase 7</span> <span data-type="status" data-color="purple">AI explains</span> <span data-type="status" data-color="green">Code computes</span></p>
+<p>&quot;What if we put £60,000 down on a second flat in June 2028?&quot; MyPaisa answers in plain words with a chart: the household&#x27;s net worth year by year with that deposit, its likely range, and the plan as it stands for comparison. It&#x27;s a what-if, so nothing is saved unless Arun, as admin, chooses to add it to the plan. &quot;Why?&quot; and &quot;Technical&quot; open the reasoning and the assumptions, each with its source.</p>
+<p></p>
+<h4>Behind the screen</h4>
+<table><tbody><tr><td data-background="#EAE6FF"><strong>The front desk says &quot;got it&quot; at once</strong> and drops the question in Arun&#x27;s own lane of the in-tray.</td></tr>
+<tr><td data-background="#FFEBE6"><strong>The concierge asks Claude</strong> what&#x27;s needed. Claude picks two tools: read the figures, and run the projection with this change.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>The calculator runs 30 years forward</strong> from the family&#x27;s own history and stated assumptions, with a low, middle and high path. Code makes every number.</td></tr>
+<tr><td data-background="#FFEBE6"><strong>Claude writes the answer around those numbers,</strong> and the words appear on screen as they are written.</td></tr>
+</tbody>
+</table>
+</div>
+<div data-type="column"><div data-type="panel-note"><p>Preview <code>rec-j-inside--inside-step-9.gif</code> is still to upload.</p>
+</div>
+</div>
+</section>
+<p>Next: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1736725">one message through MyPaisa, the agent team, the safety nets and a day</a>.</p>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

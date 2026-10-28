@@ -714,6 +714,12 @@ def _set(t: dict, key: str, **kw: object) -> dict:
 # MA-228: the roadmap, the Confluence pages and the code paths, each mutated in a copy of the repo and refused by check.
 # (what the case breaks, the file it changes, how, and the words check must print)
 RECORD_CASES = [
+    ("an ARCHITECTURE section on no record page", "ARCHITECTURE.md", lambda t: t + "\n\n## 99. A section nobody records\n\nText.\n",
+     r"ARCHITECTURE §99 is on 0 record pages"),
+    ("an explainer page changed after its pictures were captured", "docs/design/architecture-v4.html",
+     lambda h: h.replace("</body>", "<!-- changed -->\n</body>", 1), r"preview rec-j-v4--v4-question\.gif is older than its boards"),
+    ("a flow the record names gone from the Agent Journey", "docs/design/agent-journey.html",
+     lambda h: h.replace('id="invite"', 'id="invite-gone"', 1), r"has no flow #invite"),
     ("a Story Done with no code", "docs/trace.json", lambda t: _set(t, "MA-36", status="Done"), r"MA-36: a Story Done names no code"),
     ("a code path that does not exist", "docs/trace.json", lambda t: _set(t, "MA-36", code=["web/src/no-such-file.ts"]),
      r"MA-36: code path 'web/src/no-such-file.ts' matches nothing"),
@@ -743,7 +749,7 @@ def record_cases() -> int:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "scripts").mkdir()
-            for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py"):
+            for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py", "confluence_record.py"):
                 if (Path(__file__).parent / script).exists():
                     shutil.copy(Path(__file__).parent / script, root / "scripts" / script)
             for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
@@ -807,7 +813,7 @@ def selftest(trace: dict) -> int:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "scripts").mkdir()
-        for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py"):
+        for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py", "confluence_record.py"):
             if (Path(__file__).parent / script).exists():  # a lone copy of this file still runs its board cases
                 shutil.copy(Path(__file__).parent / script, root / "scripts" / script)
         for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):

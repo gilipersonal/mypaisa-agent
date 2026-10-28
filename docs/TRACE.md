@@ -62,6 +62,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-242 | The open foldable boards show the chat as a sheet, as the size classes say, not as a column beside the screen | To Do | §9.1 | none |  |
 | MA-243 | Wealth's one-line sub-lines put the figure first, so an ellipsis never cuts a figure | To Do | §9.4 | none |  |
 | MA-244 | An animated technical page, MyPaisa Architecture v4, plays each journey through AWS and shows every agent and the Claude model it uses | Done | §3, §8, §10, §15.1, §18, §20, §21 | none |  |
+| MA-257 | The whole architecture and every journey recorded in Confluence, page by page, colourful and animated | In Progress | §3 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

@@ -1,0 +1,193 @@
+<div data-type="panel-custom" data-icon=":compass:" data-color="#FFEBE6"><p><strong>🔑 Joining and signing in</strong></p>
+<p>2 of the Agent Journey's flows, each as a numbered path across five lanes (the member, the app, AWS, Claude and external data), the screens the member sees, the safeguards on the path and the Jira stories that build it.</p>
+<p><span data-type="status" data-color="red">Member</span> <span data-type="status" data-color="blue">App and web app</span> <span data-type="status" data-color="yellow">AWS</span> <span data-type="status" data-color="purple">Claude</span> <span data-type="status" data-color="neutral">External data</span> <span data-type="status" data-color="green">A note</span></p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>01 · Joining by invite</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The owner types <code>/invite</code> in the chat. MyPaisa answers with a one-time link, which the owner shares from iOS&#x27;s share sheet. Asha taps it on her own iPhone, MyPaisa opens on the invite, and signing in with Apple or Google makes her a member of the same household, with her own chat, her own accounts and her own preferences.</p>
+<p><em><strong>Trigger</strong> the owner types <code>/invite</code> (or <code>/invite viewer</code>)</em> <span data-type="status" data-color="blue">Phase 1</span></p>
+</div>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>You type <code>/invite</code> in the chat</td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app posts it to <strong>API Gateway</strong>, <code>POST /v1/chat/messages</code>, with a client id and your access token</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>The authorizer checks the token, your status and your session epoch. <strong>api λ</strong> puts the message on the <strong>SQS FIFO updates</strong> queue in your lane (the client id dedupes) and answers <code>202</code> at once</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>agent λ</strong> knows you from the token, checks you are the owner, and writes an <strong>Invite</strong> to <strong>DynamoDB</strong>: single use, 24-hour expiry, this household, this role. Its audit row goes in the same transaction</td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The reply goes on the <strong>SQS outbox</strong>; <strong>sender λ</strong> delivers it over the stream: a card with the link <code>https://dashboard.mypaisapp.com/join/&lt;token&gt;</code> and <strong>Share</strong></td></tr>
+<tr><td data-background="#FFEBE6"><strong>6</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>Share</strong>; iOS&#x27;s share sheet sends the link to Asha in Messages, WhatsApp or Mail</td></tr>
+<tr><td data-background="#FFEBE6"><strong>7</strong></td><td data-background="#FFEBE6">Member to App</td><td>Asha taps it on her iPhone. iOS opens MyPaisa through the universal link (the <code>apple-app-site-association</code> file the web app&#x27;s site serves on <code>dashboard.mypaisapp.com</code>); a phone without the app gets the site&#x27;s static join page, which names nothing</td></tr>
+<tr><td data-background="#DEEBFF"><strong>8</strong></td><td data-background="#DEEBFF">App to External (Apple)</td><td>She taps <strong>Sign in with Apple</strong> and passes Face ID; Apple returns its identity token with the api&#x27;s one-time nonce inside it</td></tr>
+<tr><td data-background="#DEEBFF"><strong>9</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app sends the token and the invite to <code>/auth/apple</code></td></tr>
+<tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Cognito</strong>&#x27;s custom-auth Lambdas check Apple&#x27;s token against Apple&#x27;s published keys, then the invite: unused, under 24 hours old, this household. It is marked used; Asha&#x27;s <strong>Member</strong> row and her Cognito user in <code>mypaisa-prod-users</code> are created, linked to her Apple account&#x27;s stable id, each with an audit row</td></tr>
+<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Her tokens go to the Keychain; the welcome and the first of three setup questions arrive over her stream</td></tr>
+<tr><td data-background="#FFEBE6"><strong>12</strong></td><td data-background="#FFEBE6">Member to App</td><td>Asha answers with the cards&#x27; buttons: base currency, what she holds, how often to be told things; then iOS asks to allow notifications</td></tr>
+</tbody>
+</table>
+<h3>👀 What the members see</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-join--flow-invite.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>Your chat.</strong> The one-time link; Share opens iOS&#x27;s share sheet.</li>
+<li><strong>Asha&#x27;s iPhone.</strong> The link opens MyPaisa on the invite; signing in creates her member.</li>
+<li><strong>Asha&#x27;s chat.</strong> Three setup questions, one card at a time; then iOS asks to allow notifications.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A one-time link</strong></strong></p>
+<p>Single use, a 24-hour expiry, bound to one household and one role. Shared outside MyPaisa, it is worth nothing once used or expired.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The join page names nothing</strong></strong></p>
+<p><code>dashboard.mypaisapp.com</code> serves the file that lets iOS open the app and a static join page; nothing before sign-in names the household or a member, and every figure is behind the api.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Only signed-in members</strong></strong></p>
+<p>The chat API refuses any message without a valid token; the client id drops a duplicate.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Strangers are refused</strong></strong></p>
+<p>An Apple or Google account linked to nobody, and carrying no valid invite, is refused at sign-in.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
+<p>The invite, the new member and her Cognito user each leave a row in the same transaction as the change.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>No passwords</strong></strong></p>
+<p>Password sign-in and self sign-up are off in Cognito. A user exists only because someone joined through an invite.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Nothing lost on the way</strong></strong></p>
+<p>Every message travels the FIFO queue in its member&#x27;s lane, in order, retried and dead-lettered if it keeps failing.</p>
+</div>
+</div>
+<div data-type="column"><p></p>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<h2>02 · Signing in with Apple, Google or a passkey</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>There are no passwords. In the app, Apple or Google vouches for the member, natively, and the environment&#x27;s Cognito user pool turns that into a short-lived session kept in the Keychain. In the web app it is Apple, Google or a passkey, and the session is a cookie the api sets. An import, a rollback, leaving the household and every admin action, from the Admin center or the admin&#x27;s chat, need a second check, bound to that one action: a fresh Sign in with Apple or a passkey under Face ID in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser.</p>
+<p><em><strong>Trigger</strong> opening MyPaisa on a device that is not signed in, opening <code>dashboard.mypaisapp.com</code> in a browser, or an action that needs the second check</em> <em>Phase 1 (sign-in and the second check, in the app and the browser)</em></p>
+</div>
+<h3>🛤️ The paths</h3>
+<p><strong>Route 1: Sign in with AppleApple&#x27;s identity token, exchanged at <code>/auth/apple</code> for Cognito tokens</strong></p>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>Asha opens MyPaisa. The welcome screen shows Apple&#x27;s and Google&#x27;s own buttons, Apple&#x27;s first, and nothing else</td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app asks the api for a one-time nonce</td></tr>
+<tr><td data-background="#DEEBFF"><strong>3</strong></td><td data-background="#DEEBFF">App to External (Apple)</td><td>She taps <strong>Sign in with Apple</strong>; iOS shows Apple&#x27;s sheet and she passes Face ID. No scope beyond the id is asked for</td></tr>
+<tr><td data-background="#F4F5F7"><strong>4</strong></td><td data-background="#F4F5F7">External (Apple) to App</td><td>Apple&#x27;s identity token, with the SHA-256 of the nonce inside it</td></tr>
+<tr><td data-background="#DEEBFF"><strong>5</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app sends it to <code>/auth/apple</code>; the api starts Cognito&#x27;s custom auth for the member that Apple account is linked to</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>The verify trigger checks the token against Apple&#x27;s published keys: issuer, audience (the app&#x27;s bundle id), expiry, an issue time under five minutes, the nonce, and no replay. An account linked to nobody is refused, unless it carries a valid invite (flow 1)</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Cognito&#x27;s tokens: a five-minute access token and a refresh token that rotates on use, kept in the Keychain, this device only, after first unlock</td></tr>
+<tr><td data-background="#DEEBFF"><strong>8</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app registers the device and its push token (<code>POST /v1/devices</code>) and opens the stream, <code>/v1/stream</code> on <code>api.mypaisapp.com</code></td></tr>
+<tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS</td><td>On every <code>/v1</code> call and on the stream the authorizer checks the token, Asha&#x27;s status and her session epoch; the data routes accept a correction only to a figure its kind marks editable. Each sign-in is an audit row</td></tr>
+<tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS to App</td><td>A new device: Asha&#x27;s chat asks <em>Was this you?</em>, and the owner gets a message with <strong>Open Admin center</strong></td></tr>
+</tbody>
+</table>
+<p><strong>Route 2: Sign in with GoogleGoogle&#x27;s iOS sign-in, with PKCE, exchanged at <code>/auth/google</code></strong></p>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>Asha taps <strong>Sign in with Google</strong></td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to External (Google)</td><td>Google&#x27;s iOS SDK opens Google&#x27;s own sign-in in a secure system sheet, with PKCE and the api&#x27;s nonce</td></tr>
+<tr><td data-background="#F4F5F7"><strong>3</strong></td><td data-background="#F4F5F7">External (Google) to App</td><td>Google&#x27;s ID token</td></tr>
+<tr><td data-background="#DEEBFF"><strong>4</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app sends it to <code>/auth/google</code></td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The same verify trigger: Google&#x27;s keys, the audience (this environment&#x27;s Google iOS client id), expiry, issue time, nonce, no replay. Google&#x27;s stable account id (<code>sub</code>) maps to the member it was linked to, never the address. A Google account linked to nobody is refused</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Every door ends the same way: Cognito&#x27;s tokens in the Keychain, the device registered, an audit row</td></tr>
+</tbody>
+</table>
+<p><strong>Route 3: the web app in a browserApple, Google or a passkey, through the same <code>/auth</code> exchange as the app; the session is an HttpOnly cookie set by the api</strong></p>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to Web app</td><td>Asha opens <code>dashboard.mypaisapp.com</code> on a laptop: <strong>CloudFront</strong> serves the static shell and its sign-in page, with no data in it</td></tr>
+<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">Web app to AWS</td><td>The page asks the api for a one-time nonce, as the app does</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">Web app to External (Apple or Google)</td><td><strong>Sign in with Apple</strong> through Apple&#x27;s JS (this environment&#x27;s Services ID as the audience), or <strong>Google</strong> through Google Identity Services (this environment&#x27;s Google web client id), with the nonce</td></tr>
+<tr><td data-background="#F4F5F7"><strong>4</strong></td><td data-background="#F4F5F7">External (Apple or Google) to Web app</td><td>Apple&#x27;s identity token or Google&#x27;s ID token, back to the page</td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">Web app to AWS</td><td>The page posts it to <code>/auth/apple</code> or <code>/auth/google</code>, the same exchange as the app, with no client secret. Or a <strong>passkey</strong>: a one-time challenge from <code>/auth/passkey/options</code>, signed under Face ID or Touch ID, sent to <code>/auth/passkey</code></td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>The api starts Cognito&#x27;s custom auth for the linked member, and the verify trigger checks the token against Apple&#x27;s or Google&#x27;s published keys (audience, expiry, issue time, nonce, no replay), or the passkey&#x27;s signature against its stored public key, the challenge, the origin and the relying party, the web app&#x27;s own domain. The account&#x27;s stable id maps to the member, never the address; an account linked to nobody is refused</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS to Web app</td><td>The api sets the session: an HttpOnly, Secure, SameSite=Strict cookie for its own host, 30 days on a laptop; the five-minute access tokens behind it are never seen by page scripts</td></tr>
+<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS</td><td>Every <code>/v1</code> call from the page carries the cookie; the authorizer checks the session, status and epoch, and CORS admits only this environment&#x27;s site. Each web sign-in is an audit row, and a new browser gets <em>Was this you?</em> in her app&#x27;s chat</td></tr>
+</tbody>
+</table>
+<p><strong>Route 4: the second checkA fresh assertion, bound to one action, verified by the server</strong></p>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member (owner) to App</td><td>You tap an action that needs it: <strong>Pause Asha</strong> in the Admin center (or an import&#x27;s Confirm, or a rollback)</td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app asks the server for a challenge bound to that action</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The challenge: one use, five minutes, this action only</td></tr>
+<tr><td data-background="#DEEBFF"><strong>4</strong></td><td data-background="#DEEBFF">App to External (Apple or Google)</td><td>A fresh <strong>Sign in with Apple</strong> with the challenge as its nonce; iOS shows the Face ID sheet. Or a passkey under Face ID; a Google-only member signs in with Google again. In the web app: a passkey, or a fresh sign-in</td></tr>
+<tr><td data-background="#F4F5F7"><strong>5</strong></td><td data-background="#F4F5F7">External (Apple or Google) to App</td><td>The fresh assertion</td></tr>
+<tr><td data-background="#DEEBFF"><strong>6</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The action and the assertion together</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>api λ</strong> accepts the action only with an assertion under five minutes old whose nonce is that challenge; then it acts, with its audit row. A local Face ID check alone never authorises anything on the server</td></tr>
+</tbody>
+</table>
+<h3>📌 The session, the same behind every door</h3>
+<p>Access tokens</p>
+<p>Five minutes, refreshed silently with the refresh token, which rotates each time it is used.</p>
+<p>The Keychain</p>
+<p>The tokens live in the Keychain, this device only, available after first unlock: never in the app&#x27;s files and never in a backup.</p>
+<p>Every call</p>
+<p>Token, member status and session epoch checked on every HTTP call and on the stream, so removing or pausing a member locks them out at once.</p>
+<p>The cookie, in the web app</p>
+<p><code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>, set by <code>api.mypaisapp.com</code> for its own host; 30 days on a laptop. Page scripts never see a token.</p>
+<p>Two environments</p>
+<p>MyPaisa Dev and MyPaisa are separate apps, with their own bundle ids, sign-in settings and user pools, and each has its own web app. Tokens from dev are refused by prod; CORS admits only that environment&#x27;s site.</p>
+<p>A second sign-in</p>
+<p>From You, Sign-in methods, a member adds Apple or Google, or a passkey, to their own identity while signed in, so the person who proves it is the member. Every link and unlink is an audit row.</p>
+<p>Each device and browser</p>
+<p>A <code>Device</code> row: name, model, last seen, push token; a browser session is listed beside them. A member signs their own out from You; the owner signs out one or all of a member&#x27;s from the Admin center.</p>
+<p>Face ID, two ways</p>
+<p>The optional app lock (Face ID or the passcode on opening and after five minutes away) is a comfort on the device. The second check is the server&#x27;s: a fresh sign-in bound to the action.</p>
+<h3>👀 What the member sees</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-join--flow-signin.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>Welcome.</strong> Apple&#x27;s and Google&#x27;s own buttons and nothing else; nothing before sign-in names a member.</li>
+<li><strong>Apple&#x27;s sheet.</strong> Face ID, then Apple&#x27;s token goes to <code>/auth/apple</code>; MyPaisa never sees a password.</li>
+<li><strong>The web app, in a browser.</strong> Three doors; nothing before sign-in names a member.</li>
+<li><strong>The second check.</strong> A fresh sign-in bound to one action: Face ID on the device, the proof on the server.</li>
+<li><strong>A new device.</strong> The member is asked; the owner is told.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Tokens, checked properly</strong></strong></p>
+<p>Apple&#x27;s or Google&#x27;s token against their published keys: issuer, audience, expiry, an issue time under five minutes, the api&#x27;s nonce, a replay refused.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>By account id, not by address</strong></strong></p>
+<p>Apple&#x27;s and Google&#x27;s stable ids are the key. A renamed Gmail still works; an address handed to someone else does not.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The Keychain, and the cookie</strong></strong></p>
+<p>In the app, tokens on this device only, after first unlock, with a refresh token that rotates on use. In the browser, an HttpOnly cookie; page scripts never hold a token.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The second check</strong></strong></p>
+<p>A fresh Sign in with Apple or a passkey in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser: bound to one action, under five minutes old, verified by the server. Never a local-only Face ID.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Was this you?</strong></strong></p>
+<p>A new device is asked about at once, and the owner can end it from the Admin center.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Refused, in one line</strong></strong></p>
+<p>An account linked to nobody with no invite; a removed member; a paused member; an expired or used invite. Each is drawn and tested.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
+<p>Every sign-in, every sign-out, and every link and unlink of a sign-in method is recorded.</p>
+</div>
+</div>
+<div data-type="column"><p></p>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

@@ -1,0 +1,267 @@
+<div data-type="panel-custom" data-icon=":compass:" data-color="#DEEBFF"><p><strong>💬 Asking, and seeing it at every door</strong></p>
+<p>4 of the Agent Journey's flows, each as a numbered path across five lanes (the member, the app, AWS, Claude and external data), the screens the member sees, the safeguards on the path and the Jira stories that build it.</p>
+<p><span data-type="status" data-color="red">Member</span> <span data-type="status" data-color="blue">App and web app</span> <span data-type="status" data-color="yellow">AWS</span> <span data-type="status" data-color="purple">Claude</span> <span data-type="status" data-color="neutral">External data</span> <span data-type="status" data-color="green">A note</span></p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>07 · Asking a question in chat</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Ask in plain words. The agent looks up what it needs with its tools, sends Claude only the current conversation, and answers with a card; its words stream into the chat as they are written. <strong>Why?</strong> goes to the web for today&#x27;s reasons, with the sources cited.</p>
+<p><em><strong>Trigger</strong> a typed question, the <strong>Ask</strong> chip, or a screen&#x27;s Ask</em> <span data-type="status" data-color="blue">Phase 1 (memory, streaming)</span> <span data-type="status" data-color="blue">Phase 12 (tools, cards)</span></p>
+</div>
+<h3>📌 Chat memory: keep it all, send little</h3>
+<p><strong>Yesterday 19:02</strong>Asked about the NASDAQ 100 fall. Closed after 30 minutes of silence; Haiku wrote a one-line note.note</p>
+<p><strong>Today 08:13</strong>Logged £200 into Balanced. Closed when the guided flow finished.note</p>
+<p>42 minutes of silence: a new conversation starts</p>
+<p><strong>Today 08:55</strong>&quot;Should I add to Balanced this month?&quot; The only conversation sent to Claude, after the cached fixed part and the notes above.sent</p>
+<p>Kept</p>
+<p>Every message, one <code>ChatTurn</code> row each, stored exactly as returned, for ninety days. History is never edited; the app reads it from <code>GET /v1/chat/turns</code>.</p>
+<p>Sent</p>
+<p>The cached fixed part (system prompt, tools, card rubrics; one-hour cache), notes on recent conversations, and the current one.</p>
+<p>Ends</p>
+<p>After 30 minutes of silence or when a guided flow finishes; it stays open while a question waits. Past about 50,000 tokens it starts afresh from a summary.</p>
+<p>Costs</p>
+<p>About 1.5p to 3p a message on Sonnet, where re-sending whole histories would cost 7p to 85p after a month.</p>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>You ask: <em>should I add to Balanced this month?</em></td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td><code>POST /v1/chat/messages</code>, your lane on the updates queue, then <strong>agent λ</strong>; the app shows a typing mark</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>The spend meter is read. The last message was 42 minutes ago, so a new conversation starts from the cached fixed part and the notes on recent ones</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>Only the current conversation goes to Sonnet, with strict tools</td></tr>
+<tr><td data-background="#EAE6FF"><strong>5</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Tool calls: <code>get_holding</code>, <code>get_signals</code>, <code>get_stances</code>, <code>get_scorecard</code></td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>Results from <strong>DynamoDB</strong>: every number comes from code</td></tr>
+<tr><td data-background="#EAE6FF"><strong>7</strong></td><td data-background="#EAE6FF">Claude</td><td>Above 70% confidence: a bull, a bear and a judge, bounded to one round</td></tr>
+<tr><td data-background="#EAE6FF"><strong>8</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>The stance card&#x27;s words, streamed as they are written</td></tr>
+<tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to App</td><td><strong>agent λ</strong> streams the words to your open app over the stream; the figures stay the engine&#x27;s</td></tr>
+<tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td>Each turn is a <strong>ChatTurn</strong> row; the call&#x27;s cost is added to the meter and the <strong>RunRecord</strong></td></tr>
+<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The finished card goes through the outbox; sender λ delivers it whole to every open stream you have, your iPad&#x27;s too, with <strong>Why?</strong>, <strong>What if?</strong>, <strong>Technical</strong> and <strong>I acted</strong></td></tr>
+<tr><td data-background="#FFEBE6"><strong>12</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>Why?</strong></td></tr>
+<tr><td data-background="#DEEBFF"><strong>13</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap, through <code>/v1/chat/actions</code> and your lane</td></tr>
+<tr><td data-background="#FFFAE6"><strong>14</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The question goes to Claude with web search and fetch on</td></tr>
+<tr><td data-background="#EAE6FF"><strong>15</strong></td><td data-background="#EAE6FF">Claude to External data</td><td>Anthropic&#x27;s server-side search reads today&#x27;s sources; their text is untrusted and never obeyed</td></tr>
+<tr><td data-background="#FFFAE6"><strong>16</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The reasons, streamed, with each source cited</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-see--flow-ask.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>Streaming.</strong> The words arrive as Claude writes them; the card follows whole, its figures from the engine.</li>
+<li><strong>The answer card.</strong> A plain top; the technical underside one tap away.</li>
+<li><strong>Why? and Technical.</strong> Sources cited; pillars as numbers, from the engine.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Numbers from tools</strong></strong></p>
+<p>Claude calls the tools and words the card; the stance, confidence and range come from the engine, and a card&#x27;s figures are typed numbers in its JSON, never prose.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Untrusted web text</strong></strong></p>
+<p>Search results that contain instructions are not acted on. No tool can trade, delete or message anyone else.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Short memory, full record</strong></strong></p>
+<p>Only the current conversation is sent; the agent looks up the rest with <code>get_audit</code>, <code>get_portfolio</code>, <code>get_stances</code>.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>At most eight calls a run</strong></strong></p>
+<p>A loop that reaches it stops and says so.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The spend ladder</strong></strong></p>
+<p>At 85% Why? gets three searches a day; at 95% chat answers on Haiku; at 100% free text waits for the renewal.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
+<p>A question can lead to a change (&quot;stop pinging me under 2%&quot;), but only through a card and Confirm.</p>
+</div>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<h2>08 · The dashboard in the app</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Home, a holding, Overlap and Scorecard, the audit log of every change, and what the agent did and spent: the same screens on iPhone and iPad, one tab away from the chat, and in the web app on a laptop (flow 10). Nothing new is created on them, and an existing figure can be corrected in place (rule 4); a screen&#x27;s Update and Ask open the chat.</p>
+<p><em><strong>Trigger</strong> the Home or Activity tab, a card&#x27;s <strong>Open</strong>, or pulling the chat&#x27;s household strip down</em> <span data-type="status" data-color="blue">Phases 2 to 9</span> <span data-type="status" data-color="blue">Phase 13 (Overlap, Scorecard)</span></p>
+</div>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>Home</strong>, or pull the chat&#x27;s household strip down, which opens Home as a sheet over the chat</td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td><code>GET /v1/home</code> to <code>api.mypaisapp.com</code>, with the access token from the Keychain</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>The authorizer checks token, status, epoch and role; <strong>api λ</strong> reads <strong>DynamoDB</strong> and returns just what this member may see</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The household or your own total, the day&#x27;s move, the month&#x27;s series and the holdings, with the Household and Me switch; Swift Charts draws the line</td></tr>
+<tr><td data-background="#DEEBFF"><strong>5</strong></td><td data-background="#DEEBFF">App</td><td>The last fetch is kept on the device, encrypted, and shown with its time when the network is gone</td></tr>
+<tr><td data-background="#FFEBE6"><strong>6</strong></td><td data-background="#FFEBE6">Member to App</td><td>You open a holding: its chart, its stance, then Overlap and Scorecard</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Audit</strong> reads the <strong>AuditEvent</strong> rows. <strong>Activity</strong> reads the <strong>RunRecord</strong> rows, the schedule board, the spend meter and seven days of <strong>CloudWatch</strong> alarms</td></tr>
+<tr><td data-background="#DEEBFF"><strong>8</strong></td><td data-background="#DEEBFF">App to AWS</td><td>A file behind an audit row opens through a five-minute link, for its member and the owner only; the opening is itself an audit row</td></tr>
+<tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member to App</td><td>To add anything, the screen&#x27;s <strong>Update</strong> opens the chat with the right guided flow started: a card, Confirm, an audit row; an existing figure can be corrected in place, with its audit row</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>On the iPad the same screens sit between the sidebar and the chat, so a member reads and asks at once (flow 9); in a browser they are the web app, with the same chat beside them (flow 10). Every card carries <strong>Open</strong> to its screen, and every screen&#x27;s <strong>Ask</strong> opens the chat about it.</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-see--flow-dashboard.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>iPhone · Home.</strong> One number, one line, one chart, then &quot;Nothing to do this week&quot; and every holding.</li>
+<li><strong>Asha&#x27;s iPhone · a holding.</strong> Privacy mode on; the 8% alert crossed; PAUSE shaded for the next two weeks.</li>
+<li><strong>iPhone · Audit.</strong> Every change, who made it, through what, and the run behind it.</li>
+<li><strong>iPhone · Activity.</strong> What each run did, called and cost, the schedules, and the spend against the ceiling.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Create in the chat, correct in place</strong></strong></p>
+<p>No screen, in the app or the web app, has a form that creates a record: anything new goes through the chat. An existing figure its kind marks editable can be corrected in place, and the data routes accept nothing else; both go through one write service, with an audit row. The one write path outside it is the owner&#x27;s Admin center, for admin settings and operations only, each behind the second check; none changes a record.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Checked on every call</strong></strong></p>
+<p>Token, status, epoch and role on every call; the token never leaves the Keychain except to the api.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Privacy mode</strong></strong></p>
+<p>Pounds and rupees hidden on every screen and chart axis, with placeholders that stay visible in dark; the app switcher shows only the mark.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Roles</strong></strong></p>
+<p>A member sees the household totals and their own detail; a viewer reads Home and what members share.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit log, readable</strong></strong></p>
+<p>Filtered by member, record and date; a member sees their own rows and the household&#x27;s, the owner sees all.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Offline, labelled</strong></strong></p>
+<p>The last Home, holdings and conversation stay on the device with complete file protection, shown &quot;as of 08:42&quot; when the network is gone; an old figure is never shown as new.</p>
+</div>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<h2>09 · On the iPad: reading Home while asking about it</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>On an iPad in landscape, or any window from about 1133 points, the chat sits beside every screen; from about 600 to 1133 points it is a sheet away, and in a compact window (every iPhone, a folded foldable, Slide Over) it is the Chat tab. You read Home and ask about it at once: the question carries the screen as its context, the answer streams in beside the figures, and Home stays where it was. The same conversation is on your iPhone.</p>
+<p><em><strong>Trigger</strong> opening MyPaisa on an iPad, a Stage Manager window or an open foldable</em> <span data-type="status" data-color="blue">Phase 1 (the shell)</span> <span data-type="status" data-color="blue">Phases 2 to 9 (the screens)</span></p>
+</div>
+<h3>📌 The layout follows the width, never the device</h3>
+<p>Compact, under about 600 pt</p>
+<p>iPhone; iPad in Slide Over or one-third Split View; a foldable, folded. The glass tab bar, one column; each screen&#x27;s Ask opens the chat about it.</p>
+<p>Regular, about 600 to 900 pt</p>
+<p>iPad portrait, two-thirds Split View, a foldable open, a Stage Manager window. The sidebar (or its tab bar at the top); the chat as a sheet over the screen, from its Ask or ⌘K.</p>
+<p>Regular, about 900 to 1133 pt</p>
+<p>A 13-inch iPad upright, a wide Split View pane or Stage Manager window. The sidebar and the screen; the chat as a sheet, from the sidebar&#x27;s Chat, the screen&#x27;s Ask or ⌘K.</p>
+<p>Regular, from about 1133 pt</p>
+<p>iPad landscape, from the iPad mini up, a large window. The sidebar, the screen, and the chat as a column beside every screen.</p>
+<p>A hardware keyboard</p>
+<p>Return sends, Shift-Return breaks a line, ⌘K the composer, ⌘1 to ⌘5 the sections, ⌘F search, Esc closes a sheet; the pointer hovers rows and buttons.</p>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>You open MyPaisa on the iPad in landscape: the sidebar, Home, and the chat as a column beside it</td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td><code>GET /v1/home</code> for the screen, <code>GET /v1/chat/turns</code> for the conversation and the stream, all with the iPad&#x27;s own tokens</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>The authorizer checks each; <strong>api λ</strong> reads <strong>DynamoDB</strong></td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Home&#x27;s figures, and the same conversation you had on your iPhone this morning</td></tr>
+<tr><td data-background="#FFEBE6"><strong>5</strong></td><td data-background="#FFEBE6">Member to App</td><td>Reading Home, you type in the column beside it: <em>Why is Balanced up this month?</em> The composer carries the screen: <strong>About Home · Household</strong></td></tr>
+<tr><td data-background="#DEEBFF"><strong>6</strong></td><td data-background="#DEEBFF">App to AWS</td><td><code>POST /v1/chat/messages</code> with the client id and the context: which screen, which holding. A pointer, never a figure</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>agent λ</strong> reads the spend meter and starts from the screen you are on</td></tr>
+<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The current conversation and the screen&#x27;s context, with the strict tools</td></tr>
+<tr><td data-background="#EAE6FF"><strong>9</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td><code>get_holding</code> and <code>get_signals</code>, then the words around the engine&#x27;s numbers</td></tr>
+<tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The words stream into the chat column while Home stays where it was; the card arrives whole, with <strong>Open Balanced</strong></td></tr>
+<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>sender λ</strong> delivers the finished card to every open stream you have, so the iPhone in your pocket shows it too; a device with the app closed catches up when it opens</td></tr>
+<tr><td data-background="#FFEBE6"><strong>12</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>Open Balanced</strong>: the holding opens in the middle, and the chat stays beside it</td></tr>
+<tr><td data-background="#DEEBFF"><strong>13</strong></td><td data-background="#DEEBFF">App</td><td>You turn the iPad to portrait: the chat becomes a sheet, and the conversation, the scroll position and any guided flow stay where they were</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>To add anything, the screen&#x27;s <strong>Update</strong> starts the guided flow in the chat column: a card, Confirm, an audit row, as on the iPhone. The screen itself creates nothing; an existing figure can be corrected in place.</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-see--flow-ipad.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>iPad, landscape.</strong> The sidebar, Home, and the chat beside it: the question is about the screen, and the screen stays put while MyPaisa answers.</li>
+<li><strong>Compact: every iPhone, a folded foldable, Slide Over.</strong> Home&#x27;s Ask opens the Chat tab about the screen, with Home&#x27;s context on the question; the same conversation as on the iPad.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A pointer, never a figure</strong></strong></p>
+<p>The screen&#x27;s context tells the agent where you are; the answer&#x27;s numbers come from the engine, as everywhere else.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>One conversation, every device</strong></strong></p>
+<p>Each finished message reaches every open stream of the member; a device with the app closed catches up on opening, so nothing depends on a stream staying up.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Created in the chat beside it</strong></strong></p>
+<p>The screen creates nothing: anything new starts the guided flow in the chat column, a card, Confirm, an audit row. An existing figure can be corrected in place, through the same write service.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Nothing lost on a turn or a fold</strong></strong></p>
+<p>Scene state restoration keeps the conversation, the scroll position and any guided flow through a rotation, a fold or a window resize.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Privacy in both columns</strong></strong></p>
+<p>Privacy mode hides amounts in the screen and in the chat at once, and in the strip and the sidebar.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Readable at every size</strong></strong></p>
+<p>Dynamic Type from xSmall to AX5 (figures stack under their labels from AX1), a spoken label on every figure, 44 pt targets, glass made opaque under Reduce Transparency.</p>
+</div>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<h2>10 · The web app on a laptop</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The chat, the dashboard and the owner&#x27;s Admin center also live in a browser: <code>dashboard.mypaisapp.com</code>, the web app, a SvelteKit 3 progressive web app that installs like an app on a laptop, an iPad or a phone. The same conversation, the same figures, the audit log of every change, and what the agent did and spent. Anything new is created in its chat, as in the app, with a card and Confirm; an existing figure can be corrected in place.</p>
+<p><em><strong>Trigger</strong> <code>dashboard.mypaisapp.com</code> in a browser, or the installed web app</em> <span data-type="status" data-color="blue">Phases 1 to 9</span> <span data-type="status" data-color="blue">Phase 13 (Overlap, Scorecard)</span></p>
+</div>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to Web app</td><td>You open <code>dashboard.mypaisapp.com</code> on your laptop, or the web app you installed from it</td></tr>
+<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">Web app to AWS</td><td><strong>CloudFront</strong> and <strong>S3</strong> serve the static shell: public, with no data in it</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>Signed in as in flow 2, route 3: Apple, Google or a passkey. The api keeps the session behind an HttpOnly cookie for its own host</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td>Every call to <code>api.mypaisapp.com/v1</code>, and the stream from <code>/v1/stream</code>, carries the cookie. The authorizer checks session, status, epoch and role; CORS admits only this environment&#x27;s site; <strong>api λ</strong> reads <strong>DynamoDB</strong> and returns just what this member may see</td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS to Web app</td><td>The same chat, beside Home, a holding, Overlap and Scorecard, with the Household and Me switch; Audit and Files; Activity: the app&#x27;s screens, laid out for a wide window</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Audit</strong> reads the <strong>AuditEvent</strong> rows. <strong>Activity</strong> reads the <strong>RunRecord</strong> rows, the schedule board, the spend meter and seven days of <strong>CloudWatch</strong> alarms. Every run is one <strong>OpenTelemetry</strong> trace from the door to the model, with its id on every log line, span and RunRecord; the logs, spans, metrics, dashboard and alarms live in CloudWatch, the content only in the RunRecord (ARCHITECTURE 10). A file opens through a five-minute link, for its member and the owner only</td></tr>
+<tr><td data-background="#FFEBE6"><strong>7</strong></td><td data-background="#FFEBE6">Member (owner) to Web app</td><td>The owner opens the <strong>Admin center</strong>: every action asks for the second check in the browser, a passkey or a fresh sign-in (flow 11)</td></tr>
+<tr><td data-background="#FFEBE6"><strong>8</strong></td><td data-background="#FFEBE6">Member to Web app</td><td>To add anything, the member asks in the web app&#x27;s chat: a card, Confirm, an audit row, through the same write service as the app. An existing figure can be corrected in place where it shows</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Installable as a progressive web app on a laptop, an iPad or a phone: its own window and icon, the same chat and screens. When it is closed, a reply arrives by Web Push (MA-200), on a device with no open stream.</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-see--flow-web.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>Browser · Home.</strong> The same household as the app; anything new is made in the chat, and a figure is corrected in place.</li>
+<li><strong>Browser · Audit.</strong> Every change, who made it, through what, and the run behind it.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Create in the chat, correct in place</strong></strong></p>
+<p>The web app has no form that creates a record: anything new goes through its chat, a card and Confirm, and an existing figure its kind marks editable is corrected in place, both through the one write service with an audit row. The owner&#x27;s Admin center acts on admin settings and operations only, each behind the second check; none changes a record.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Checked on every call</strong></strong></p>
+<p>Session, status, epoch and role; tokens never visible to page scripts; CORS for this environment&#x27;s site only; a strict Content-Security-Policy.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A shell with nothing in it</strong></strong></p>
+<p>The site on CloudFront and S3 is public and holds no figures; everything a member sees comes from the api after sign-in.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Privacy mode</strong></strong></p>
+<p>Pounds and rupees hidden here too, with placeholders that stay visible in dark.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Roles</strong></strong></p>
+<p>A member sees the household totals and their own detail; a viewer reads Home and what members share; only the owner sees the Admin center.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit log, readable</strong></strong></p>
+<p>Filtered by member, record and date; a member sees their own rows and the household&#x27;s, the owner sees all. Each file opening is itself an audit row.</p>
+</div>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

@@ -1,0 +1,130 @@
+<div data-type="panel-custom" data-icon=":pager:" data-color="#F4F5F7"><p><strong>📟 How a layman uses the bot, scene by scene</strong></p>
+<p>Eight journeys through the Telegram bot, played on a phone. Each one shows what you tap, what comes back, and what happens behind it. Nothing technical appears unless you ask; when you do, it is one tap away. These are mock-ups of the design; nothing is built yet.</p>
+</div>
+<div data-type="panel-warning"><p><strong>Kept for reference.</strong> Eight user journeys on a phone frame, in the Nocturne look, from 23 Oct 2026 (<a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/journeys.html">journeys.html</a>). Superseded by the Agent Journey (<a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">its twenty-four flows</a>); the Telegram bot they show was superseded by the iOS app (MA-161), and the web app was kept beside it.</p>
+</div>
+<div data-type="panel-note"><p>Preview <code>rec-j-first--first-phone.gif</code> is still to upload.</p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>📱 First open</h2>
+<p><em>Three questions, then you are set up</em> · at 19:02</p>
+<ol><li><strong>You send /start</strong> You open the chat and press Start. Telegram sends the update to the webhook, which checks it is you and hands it to the agent.</li>
+<li><strong>MyPaisa: Hello Arun. I keep an eye on what you hold and tell you what matters.</strong> The setup is three cards. No forms, no app to install. The agent writes a preferences record as you go.</li>
+<li><strong>You tap £ GBP</strong> A tap is a callback query; it travels the same path as a message. GBP is saved.</li>
+<li><strong>MyPaisa: 2 of 3 · What do you hold?</strong> Any of the three ways works. The next journey shows the factsheet path.</li>
+<li><strong>You tap Skip for now</strong> Skipping is fine; the bot works with whatever you give it.</li>
+<li><strong>MyPaisa: 3 of 3 · How often should I speak?</strong> The ping budget, quiet hours and alert thresholds are set here and changeable later by just saying so.</li>
+<li><strong>You tap Sounds right</strong> Preferences saved.</li>
+<li><strong>MyPaisa: Done. The four buttons below are all you need: Portfolio, Today, Ask, Settings. Your first brief arrives tomorrow at 07:15.</strong> The reply keyboard appears. It stays at the bottom of the chat from now on. Commands exist (/add, /why, /pause) but you never have to remember them.</li>
+</ol>
+<h2>📱 Add a holding</h2>
+<p><em>A factsheet, a screenshot, two taps</em> · at 19:06</p>
+<ol><li><strong>You send iShares Automation &amp; Robotics UCITS ETF factsheet.pdf</strong> You share the factsheet from the Monzo app. Telegram stores it; the agent downloads it into a private bucket.</li>
+<li><strong>MyPaisa: Reading the factsheet…</strong> Claude on Bedrock reads the PDF with a fixed schema: name, ISIN, charge, allocation, top holdings, benchmark, currency. Each figure comes back with the line it was read from and a confidence.</li>
+<li><strong>MyPaisa: Here is what I read. Tap Confirm if it looks right.</strong> The agent resolved the ISIN to two London lines and guessed GBP. Amber means &quot;I am not sure&quot;; a tap on Edit lets you change it. Nothing is saved yet.</li>
+<li><strong>You tap Confirm</strong> Only now is the Instrument written to the registry, with the document and its extracted facts.</li>
+<li><strong>MyPaisa: Added. How much do you hold? Send a screenshot of your Monzo holdings screen, or type an amount.</strong> The position is separate from the instrument: the same ETF could sit in an ISA and a general account.</li>
+<li>You send a screenshot. Claude reads the values on it as an image. The agent matches &quot;Automation &amp; Robotics&quot; to the holding it just created.</li>
+<li><strong>MyPaisa: From the screenshot, 23 Oct:</strong> Units are derived from the value and the last close. The account question is asked because the factsheet cannot know it.</li>
+<li><strong>You tap Confirm</strong> Position, Valuation (source: your screenshot) and a Transaction are written. The screenshot is deleted unless you say keep.</li>
+<li><strong>MyPaisa: 📊 Portfolio · 23 Oct · £31,280</strong> Done in about a minute and two taps. The same path adds a US share, a gold ETC or another fund; a known kind needs no code.</li>
+</ol>
+<h2>📱 Morning brief</h2>
+<p><em>Silent, six lines, detail on tap</em> · at 07:15</p>
+<ol><li><strong>Mon 26 Oct · 07:15</strong> 07:15, Europe/London. Overnight the ingest fetched the closes, the fund NAV and the ECB rates; the engine ran its self-tests and computed the pillars, flags and ranges.</li>
+<li><strong>MyPaisa: 🌅 Monday brief · £31,410 ▲0.4% · month ▲2.1%</strong> Sonnet 5.5 wrote the words from the engine&#x27;s JSON. Every number came from a tool; the validator checks that before sending. Silent push: no sound.</li>
+<li><strong>You tap Technical ▾</strong> You want the numbers. The card edits in place; a rich message opens its collapsed section without a round trip.</li>
+<li>The technical section is the engine&#x27;s scorecard: pillars from −2 to +2, flags, volatility percentiles, the 1-month ranges, and which data source answered. Tap any term for a one-line glossary.</li>
+</ol>
+<h2>📱 Ask why</h2>
+<p><em>A question in plain words, an answer with sources</em> · at 13:12</p>
+<ol><li><strong>You send why did my silver drop so much this week?</strong> You ask in your own words. The webhook acks in 100 ms; the agent shows &quot;typing…&quot; while it works.</li>
+<li><strong>MyPaisa: Looking at it…</strong> Claude calls get_holding(&quot;silver&quot;), get_signals(&quot;silver&quot;) and get_macro. It cannot invent a number; it can only ask the tools.</li>
+<li><strong>MyPaisa: Silver is down 6.2% this week, 9% from its high.</strong> The chart is a PNG rendered by code in the house style. The local-versus-FX split is the engine&#x27;s; the sentence is Claude&#x27;s.</li>
+<li><strong>You tap Why the dollar?</strong> Follow-up. Chat memory holds the last turns and their tool results.</li>
+<li><strong>MyPaisa: Two things, from the news (3 sources):</strong> Brave Search results arrive marked untrusted; they can explain, never alter a score. Links open in the browser.</li>
+</ol>
+<h2>📱 Should I add?</h2>
+<p><em>A stance with a confidence you can check</em> · at 20:31</p>
+<ol><li><strong>You send should I put £200 into the Nasdaq one this month?</strong> The question the whole system exists for.</li>
+<li><strong>MyPaisa: Checking the signals and your track record…</strong> get_signals, get_macro, get_events, get_stances. For a stance above 70% the agent also runs a short bull-versus-bear debate with a judge.</li>
+<li><strong>MyPaisa: iShares NASDAQ 100 · stance ADD · confidence 64%</strong> The stance and its confidence are computed: pillar agreement, how long the state has held, data quality, and how calls in this state did before. Below 55% the card would say &quot;no clear view&quot;.</li>
+<li><strong>You tap Why 64%?</strong> Confidence is explainable, because it is arithmetic.</li>
+<li><strong>MyPaisa: How 64% is made</strong> Every Saturday the reliability table checks that 64% means 64%. The mapping only changes after eight weeks of evidence, and the change is logged.</li>
+<li><strong>You tap I acted</strong> You act in the Monzo app, then tell the bot. It cannot trade; it records the decision so the review can compare what you did with what the signals said.</li>
+<li><strong>MyPaisa: Logged: £200 into NASDAQ 100 on Thu 29 Oct. I&#x27;ll pick it up from your next screenshot or you can type the units.</strong> The decision log is part of the scorecard. Honest grading needs both what the bot said and what you did.</li>
+</ol>
+<h2>📱 Red alert</h2>
+<p><em>The one message a week that makes a sound</em> · at 21:40</p>
+<ol><li><strong>Wed 28 Oct · 21:40 · after the US close</strong> The 21:15 wrap ran. The engine found the NASDAQ ETF 8.4% below its high, past your 8% line, with volatility doubled. Cooldown clear, red budget unspent, not quiet hours.</li>
+<li><strong>MyPaisa: 🔴 NASDAQ 100 is 8.4% below its high</strong> Haiku checked this was not a repeat of something you were told this week; Sonnet wrote it. Sound on, for the first time this week.</li>
+<li><strong>You tap Snooze 7d</strong> Snooze sets the cooldown for this holding; amber signals still reach the digest.</li>
+<li><strong>MyPaisa: Snoozed loud alerts on NASDAQ 100 until Wed 4 Nov. Briefs will still mention it.</strong> The alert state machine lives in code: fire → cooldown → re-arm. Claude never decides whether a rule fired, only whether it is worth saying.</li>
+</ol>
+<h2>📱 Saturday review</h2>
+<p><em>Scorecard, then the dashboard</em> · at 08:00</p>
+<ol><li><strong>Sat 31 Oct · 08:00</strong> Every forecast and stance whose horizon ended this week has been graded. Opus 5.5 reads four weeks of stances and their grades before writing.</li>
+<li><strong>MyPaisa: 📒 Week 44 · £31,090 ▼0.6% this week · +2.4% this month</strong> The review is the only place the bot grades itself in public. The go-live gate for weekday stances is checked in code, not by the model.</li>
+<li><strong>You tap Open dashboard</strong> The Mini App opens inside Telegram. A static page on CloudFront; it shows data only after validating Telegram&#x27;s signed proof that it is you.</li>
+<li>Interactive charts (pinch, scroll), the overlap map, the scorecard. Read-only: every change still happens in the chat with a Confirm tap, so there is one place where state changes.</li>
+<li>Close it and you are back in the chat.</li>
+</ol>
+<h2>📱 Settings by chatting</h2>
+<p><em>Preferences, privacy, pause</em> · at 22:10</p>
+<ol><li><strong>You send stop pinging me for moves under 2%</strong> Plain English. Claude turns it into a structured change through propose_change; nothing is saved yet.</li>
+<li><strong>MyPaisa: Change your alert threshold?</strong> The card shows exactly what will change and what will not.</li>
+<li><strong>You tap Confirm</strong> Saved to preferences. The next engine run uses it.</li>
+<li><strong>You send /privacy on</strong> Bot chats are not end-to-end encrypted. Privacy mode hides pounds everywhere, including the dashboard.</li>
+<li><strong>MyPaisa: 📊 Portfolio · privacy on</strong> Same card, no amounts.</li>
+<li><strong>You send /pause</strong> The kill switch. A flag every scheduled run checks first.</li>
+<li><strong>Paused. No briefs, alerts or stances until /resume. Your records are kept.</strong> Pause stops everything that speaks or scores. Prices keep being collected, so there is no gap when you come back.</li>
+</ol>
+<h2>🗓️ A week in the life</h2>
+<p>About ten messages a week, at most two with sound. Quiet 22:00–07:00. Everything else waits for the next brief.</p>
+<table><tbody><tr><td data-background="#DEEBFF"><strong><strong>MON</strong></strong></td><td>07:15 brief, silent<br>21:15 wrap only if something moved</td></tr>
+<tr><td data-background="#DEEBFF"><strong><strong>TUE</strong></strong></td><td>07:15 brief<br>🟡 amber: vol doubled, silent</td></tr>
+<tr><td data-background="#DEEBFF"><strong><strong>WED</strong></strong></td><td>07:15 brief: &quot;Fed tonight&quot;<br>🔴 21:40 red alert, sound</td></tr>
+<tr><td data-background="#DEEBFF"><strong><strong>THU</strong></strong></td><td>07:15 brief<br>You ask &quot;why?&quot; at lunch</td></tr>
+<tr><td data-background="#DEEBFF"><strong><strong>FRI</strong></strong></td><td>07:15 brief<br>21:15 wrap</td></tr>
+<tr><td data-background="#DEEBFF"><strong><strong>SAT</strong></strong></td><td>08:00 review + scorecard<br>You open the dashboard</td></tr>
+<tr><td data-background="#DEEBFF"><strong><strong>SUN</strong></strong></td><td>nothing<br>You send a screenshot after topping up</td></tr>
+</tbody>
+</table>
+<h2>🗓️ The first months</h2>
+<table><tbody><tr><td data-background="#E3FCEF"><strong><strong>Day 1</strong></strong></td><td>Open the chat, pick GBP, send four factsheets and one screenshot. Five holdings in the registry after five Confirm taps. The Portfolio card shows your own figures.</td></tr>
+<tr><td data-background="#E3FCEF"><strong><strong>Day 2</strong></strong></td><td>The first morning brief, from yesterday&#x27;s closes and the fund&#x27;s NAV. Stances are computed but shown nowhere yet.</td></tr>
+<tr><td data-background="#E3FCEF"><strong><strong>Week 2</strong></strong></td><td>You ask your first &quot;why?&quot;. The technical section is there if you want it; most days you don&#x27;t.</td></tr>
+<tr><td data-background="#E3FCEF"><strong><strong>Week 4</strong></strong></td><td>The first Saturday review with a scorecard: did the 80% ranges cover 80% of outcomes?</td></tr>
+<tr><td data-background="#E3FCEF"><strong><strong>Week 8</strong></strong></td><td>Stances have been paper-traded for eight weeks. If they beat doing nothing, ADD / HOLD / PAUSE chips appear on weekday cards. If not, the review says so and they stay in the Saturday review.</td></tr>
+<tr><td data-background="#E3FCEF"><strong><strong>Any day</strong></strong></td><td>Send a factsheet for a new ETF, a share or a commodity; it is priced from the next close. Say &quot;stop pinging me under 2%&quot; and confirm. <code>/pause</code> stops everything; <code>/privacy on</code> hides pounds.</td></tr>
+</tbody>
+</table>
+<h2>🗓️ Rules every journey keeps</h2>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":pushpin:" data-color="#EAE6FF"><p><strong><strong>Plain on top, detail on tap</strong></strong></p>
+<p>Every card reads in two lines. &quot;Technical ▾&quot; opens the numbers; a glossary sits behind each term.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":pushpin:" data-color="#EAE6FF"><p><strong><strong>Nothing saved without Confirm</strong></strong></p>
+<p>A misread factsheet or a mistyped amount cannot quietly change your records.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":pushpin:" data-color="#EAE6FF"><p><strong><strong>Numbers from code, words from Claude</strong></strong></p>
+<p>Every figure in a message came out of a tool; Claude only chooses what to say.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":pushpin:" data-color="#EAE6FF"><p><strong><strong>A view, not advice; never &quot;sell everything&quot;</strong></strong></p>
+<p>Stances are ADD, HOLD, PAUSE, TRIM or REBALANCE, with a confidence that is checked every Saturday.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":pushpin:" data-color="#EAE6FF"><p><strong><strong>It cannot trade</strong></strong></p>
+<p>No broker login exists. You act in the Monzo app and tell the bot &quot;I acted&quot;.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":pushpin:" data-color="#EAE6FF"><p><strong><strong>Silence is a feature</strong></strong></p>
+<p>Cooldowns, a weekly budget of two loud alerts, quiet hours, and a filter that drops repeats.</p>
+</div>
+</div>
+</section>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

@@ -366,6 +366,8 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
     out += [("decisions", "Design decisions and the UX choices kept", "hub"),
             ("explainers", "Explainers, the prototype and the architecture drawings", "hub"),
             ("sync", "How the plan, Jira, the designs, Confluence and the code stay in step", "hub")]
+    import confluence_record  # noqa: PLC0415  (the architecture and journeys record, MA-257)
+    out += confluence_record.pages()
     return out
 
 
@@ -418,6 +420,8 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
             out[name] = {"page": f"screens-{a[0]}", "boards": boards}
     for name, path in lucid_images():
         out[name] = {"page": "explainers", "file": path}
+    import confluence_record  # noqa: PLC0415
+    record = confluence_record.wanted_images(ctx)  # their sources are worked out there: a capture's recipe and its page
     # the pictures draw each phase's title and dates only, so an estimate that moves no date redraws nothing
     drawn = {n: {k: v.get(k) for k in ("title", "start", "end", "on_demand")} for n, v in ctx.schedule.items()}
     out["roadmap.png"] = {"page": "hub", "schedule": drawn}
@@ -430,6 +434,7 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
         else:
             src = [LAYOUT, w["schedule"]]
         w["source"] = sha(json.dumps(src, sort_keys=True, ensure_ascii=False))
+    out.update(record)
     return out
 
 
@@ -987,6 +992,9 @@ def render(ctx: Ctx, slug_: str) -> str:
 
 
 def render_body(ctx: Ctx, slug_: str) -> str:
+    import confluence_record  # noqa: PLC0415
+    if confluence_record.is_record(slug_):
+        return confluence_record.render(ctx, slug_)
     if slug_ == "home":
         return render_home(ctx)
     if slug_ == "hub":
@@ -1015,10 +1023,16 @@ def errors(ctx: Ctx | None = None) -> list[str]:
     if out:
         return out
     model = pages(ctx)
+    import confluence_record  # noqa: PLC0415
+    out += confluence_record.errors(ctx, {s for s, _, _ in model})
     recorded = ctx.manifest.get("pages", {})
     for slug_, title, _ in model:
         path = PAGES / f"{slug_}.html"
-        want = render(ctx, slug_)
+        try:
+            want = render(ctx, slug_)
+        except confluence_record.RecordError as e:
+            out.append(f"confluence: {e}")
+            continue
         rec = recorded.get(slug_, {})
         if not rec.get("id"):
             out.append(f"confluence: page {title!r} has no Confluence id in docs/confluence.json; create it with /plan-sync")

@@ -1,0 +1,147 @@
+<div data-type="panel-custom" data-icon=":compass:" data-color="#FFFAE6"><p><strong>🌅 The market&#x27;s day: the brief and an alert</strong></p>
+<p>2 of the Agent Journey's flows, each as a numbered path across five lanes (the member, the app, AWS, Claude and external data), the screens the member sees, the safeguards on the path and the Jira stories that build it.</p>
+<p><span data-type="status" data-color="red">Member</span> <span data-type="status" data-color="blue">App and web app</span> <span data-type="status" data-color="yellow">AWS</span> <span data-type="status" data-color="purple">Claude</span> <span data-type="status" data-color="neutral">External data</span> <span data-type="status" data-color="green">A note</span></p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>05 · The 07:15 morning brief, end to end</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>At 07:00 the prices come in from free sources; by 07:10 the engine has scored every holding; at 07:15 each member&#x27;s brief arrives: in the chat if the app is open, and as a notification if it is not. If a price is late, the brief still goes, and says so.</p>
+<p><em><strong>Trigger</strong> EventBridge Scheduler, Europe/London, each weekday</em> <span data-type="status" data-color="blue">Phase 10 (prices, engine)</span> <span data-type="status" data-color="blue">Phase 11 (the brief)</span></p>
+</div>
+<h3>📌 The morning, by the clock</h3>
+<p><strong>07:00</strong>Ingest. The Scheduler queues one job per holding; free sources first.</p>
+<p><strong>07:10</strong>Signals. The engine has scored every holding; stances stay in shadow until phase 15.</p>
+<p><strong>07:15</strong>Brief. Once for the household and once for each member who wants one, in their own preferences: in the chat, and pushed to a closed app.</p>
+<p><strong>07:45</strong>Dead man&#x27;s switch. If the brief has not gone out, an alarm tells the owner, in the app and by push.</p>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFFAE6"><strong>1</strong></td><td data-background="#FFFAE6">AWS</td><td>07:00 <strong>EventBridge Scheduler</strong>. The <code>/pause</code> flag is checked first, then one ingest job per holding goes on the <strong>SQS work</strong> queue</td></tr>
+<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">AWS to External data</td><td><strong>worker λ</strong> runs each job down the holding&#x27;s chain: yfinance, then Twelve Data&#x27;s free tier, then the issuer page; ECB for FX</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">External data to AWS</td><td>Bars in the native currency with their source; pence turned into pounds; raw answers kept in <strong>S3</strong></td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td>A source that answers nothing is skipped. Last in every chain is <code>stale</code>: the previous close, labelled, never silently reused, and left out of scoring</td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The finished job queues the next. The <strong>engine</strong> runs its self-tests, then indicators, pillars, macro and the stance, and writes Signals to <strong>DynamoDB</strong> by 07:10</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>07:15 a brief job per member reads the signals and that member&#x27;s preferences: privacy mode, simple or technical, their accounts and a line per household member</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The engine&#x27;s numbers and the cached card rubric go to Sonnet, after the spend meter is read</td></tr>
+<tr><td data-background="#EAE6FF"><strong>8</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Claude writes the words. A validator checks every figure against the engine&#x27;s; on a refusal or an error the plain template goes instead</td></tr>
+<tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS</td><td>The card (its words, the engine&#x27;s figures, the chart&#x27;s series and a plain line for the notification) goes on the <strong>SQS outbox</strong>, one lane per member, so its parts arrive in order</td></tr>
+<tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS to App</td><td><strong>sender λ</strong> delivers it to each open stream; the app draws the chart in Swift Charts from the series</td></tr>
+<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to External (APNs)</td><td>To each device with no open stream, a push through <strong>APNs</strong>: an ordinary notification, its plain line with no amount on the lock screen unless the member chose amounts</td></tr>
+<tr><td data-background="#F4F5F7"><strong>12</strong></td><td data-background="#F4F5F7">External (APNs) to App</td><td>iOS shows it; a tap opens the chat at the brief, and the app catches up on every turn after the last one it has</td></tr>
+<tr><td data-background="#DEEBFF"><strong>13</strong></td><td data-background="#DEEBFF">App to Member</td><td>You read the top; the technical detail is one tap away</td></tr>
+<tr><td data-background="#FFFAE6"><strong>14</strong></td><td data-background="#FFFAE6">AWS</td><td>07:45 <strong>CloudWatch</strong>: if the brief has not gone out, the dead man&#x27;s switch alarm reaches the owner</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>From phase 18 one <strong>Step Functions</strong> state machine drives the same jobs (ingest, engine, Forecaster, grade, calibrate, brief) with retries and backoff on every step, and the ops warden repairs what it safely can.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>From phase 19 the brief also carries <strong>India&#x27;s previous day</strong>. NSE and BSE close at 15:30 IST and AMFI&#x27;s fund prices arrive by the UK evening, so the Indian jobs have run long before 07:00; flow 18 follows them.</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-day--flow-brief.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>The lock screen.</strong> The brief as an ordinary notification: the moves, never an amount, unless you turn amounts on.</li>
+<li><strong>The owner&#x27;s brief.</strong> The household, a line for Asha, the chart drawn in the card from the engine&#x27;s series.</li>
+<li><strong>Labelled, not skipped.</strong> A late price goes out marked stale; privacy mode hides pounds, in the strip too, but keeps the moves.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Claude never produces a number</strong></strong></p>
+<p>The validator catches an invented figure; a refusal or error falls back to the plain template. The chart is drawn from the engine&#x27;s series, not from words.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Stale is labelled, not skipped</strong></strong></p>
+<p>The previous close, marked stale and kept out of scoring. The brief, the wrap and alerts are always attempted.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Retries and dead-letter queues</strong></strong></p>
+<p>Each job: five tries, backoff from 30 seconds to 30 minutes, then its dead-letter queue. Idempotent per date.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Free sources kept inside their limits</strong></strong></p>
+<p>The work queue&#x27;s concurrency keeps Twelve Data&#x27;s free tier at 8 calls a minute; ingest spends at most 200 of its 800 daily credits.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The dead man&#x27;s switch</strong></strong></p>
+<p>07:45: no brief, an alarm. Any holding&#x27;s price older than two days also raises one.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>No amounts on the lock screen</strong></strong></p>
+<p>A notification shows moves, not money, unless the member turns on &quot;Show amounts in notifications&quot;; with privacy mode on, never. In the app, privacy mode hides pounds, and rupees once Indian holdings arrive.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The kill switch</strong></strong></p>
+<p><code>/pause</code> sets a flag every scheduled run checks first.</p>
+</div>
+</div>
+<div data-type="column"><p></p>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<h2>06 · A red alert after the US close</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>After the US close the engine sees the NASDAQ 100 ETF is 8.4% below its high, just past Asha&#x27;s 8% alert. Code decides whether it rings, and how loudly: a red alert is a time-sensitive notification with sound. Claude only words it.</p>
+<p><em><strong>Trigger</strong> the 21:00 run after the US close</em> <span data-type="status" data-color="blue">Phase 11</span></p>
+</div>
+<h3>📌 The gates, all in code</h3>
+<p>Tier<strong>Red</strong>Red is time-sensitive with sound; amber is passive; the rest waits for the digest.</p>
+<p>Cooldown<strong>Clear</strong>Not sent for this holding within its cooldown.</p>
+<p>Quiet hours<strong>Outside</strong>Asha&#x27;s own hours, checked before anything makes a sound.</p>
+<p>Weekly red budget<strong>1 of 2 used</strong>At most two reds a week per member.</p>
+<p>Repeat filter<strong>New</strong>Haiku checks she has not already been told this.</p>
+<h3>🛤️ The path</h3>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
+</thead>
+<tbody><tr><td data-background="#FFFAE6"><strong>1</strong></td><td data-background="#FFFAE6">AWS</td><td>21:00 <strong>EventBridge Scheduler</strong> queues the evening ingest on the <strong>SQS work</strong> queue</td></tr>
+<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">AWS to External data</td><td><strong>worker λ</strong> fetches the closes: Twelve Data&#x27;s free tier for the US lines (<code>QQQ</code> as the check on the NASDAQ 100 ETF), yfinance for London</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">External data to AWS</td><td>Closes back, written to <strong>S3</strong></td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td>The <strong>engine</strong> finds the NASDAQ 100 ETF 8.4% below its one-year high, past Asha&#x27;s 8% threshold: an alert candidate for <strong>agent λ</strong></td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>agent λ</strong> runs the gates in code: the tier, the cooldown, Asha&#x27;s quiet hours and her weekly red budget</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>Haiku&#x27;s repeat filter: has Asha already been told this?</td></tr>
+<tr><td data-background="#EAE6FF"><strong>7</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Not a repeat. Sonnet writes the words around the engine&#x27;s numbers</td></tr>
+<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Outbox, then sender λ: the alert card to Asha, whose account it is (and to you, if you asked for her alerts), over each open stream</td></tr>
+<tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to External (APNs)</td><td>To each of her devices with the app closed: <strong>APNs</strong>, interruption level time-sensitive, with sound</td></tr>
+<tr><td data-background="#F4F5F7"><strong>10</strong></td><td data-background="#F4F5F7">External (APNs) to App</td><td>iOS shows it on the lock screen, through a Focus; a tap opens the chat at the alert</td></tr>
+<tr><td data-background="#FFEBE6"><strong>11</strong></td><td data-background="#FFEBE6">Member to App</td><td>Asha reads it and later taps <strong>I acted</strong></td></tr>
+<tr><td data-background="#DEEBFF"><strong>12</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap, through <code>/v1/chat/actions</code>: a <strong>Decision</strong> record, which the Saturday review compares with what the signals said</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>News alone never raises a red alert. A commodity such as silver alerts at a wider band, 12%, because 8% is a normal week for it. Past 95% of the Claude ceiling the alert still goes, as its plain template.</td></tr>
+</tbody>
+</table>
+<h3>👀 What the member sees</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-flows-day--flow-alert.png</code> is still to upload.</p>
+</div>
+<ul><li><strong>Asha&#x27;s lock screen.</strong> Time-sensitive, with sound; a move, never an amount.</li>
+<li><strong>Asha&#x27;s red alert.</strong> Crimson is kept for this tier only. The stance chip appears once stances go live in phase 15.</li>
+</ul>
+<h3>🛤️ Safeguards on this path</h3>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Tiers, as interruption levels</strong></strong></p>
+<p>Red is time-sensitive with sound, amber is passive, the rest goes in a digest. About ten messages a week, two with sound at most.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Cooldowns and quiet hours</strong></strong></p>
+<p>Per member, enforced by the agent Lambda before anything is pushed, never by the prompt.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Two reds a week</strong></strong></p>
+<p>The weekly red budget is per member; an alert never fires twice in its cooldown.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>No repeats</strong></strong></p>
+<p>Haiku&#x27;s repeat filter, and a self-audit of what MyPaisa said this week.</p>
+</div>
+</div>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Never dropped</strong></strong></p>
+<p>At any step of the spend ladder an alert goes out; a template needs no model.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The app cannot trade</strong></strong></p>
+<p>The card suggests only ISA-safe actions and never says sell everything.</p>
+</div>
+</div>
+</section>
+<h3>🧩 Built by</h3>
+<table><tbody></tbody>
+</table>
+<p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

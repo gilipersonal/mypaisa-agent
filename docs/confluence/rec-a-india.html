@@ -1,0 +1,74 @@
+<div data-type="panel-custom" data-icon=":flag_in:" data-color="#FFFAE6"><p><strong>🇮🇳 §22 · Indian markets</strong></p>
+<p>Indian shares, ETFs and mutual funds beside the UK ones: free sources first, the existing portfolio imported once, accounts and currency, and the engine and the Forecaster for India.</p>
+<p><span data-type="status" data-color="blue">§22</span> <span data-type="status" data-color="neutral">§22.1</span> <span data-type="status" data-color="neutral">§22.2</span> <span data-type="status" data-color="neutral">§22.3</span> <span data-type="status" data-color="neutral">§22.4</span> <span data-type="status" data-color="neutral">§22.5</span></p>
+</div>
+<section data-type="layout-three-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":straight_ruler:" data-color="#EAE6FF"><p><strong>6 sections</strong></p>
+<p>ARCHITECTURE.md as written, in full, below.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":jigsaw:" data-color="#E3FCEF"><p><strong>7 stories</strong></p>
+<p>Cite these sections, in phases 0, 2, 9, 19.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":frame_photo:" data-color="#FFFAE6"><p><strong>1 pictures</strong></p>
+<p>0 animated, captured from the explainer pages, and the Lucid drawings in place.</p>
+</div>
+</div>
+</section>
+<h2>🎬 See it move</h2>
+<div data-type="panel-note"><p>Preview <code>rec-a-india--market-s12.png</code> is still to upload.</p>
+</div>
+<p><strong>📖 Contents</strong></p>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;3&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>22. Indian markets: shares, ETFs and mutual funds (phase 19, later)</h2>
+<p>Arun, 24 Oct 2026 (MA-147): &quot;If later I want to add Indian market in the mix will it work? ... I also have some existing portfolio of MF and stock in India market which I will feed later.&quot; It works without changing the core: currency, country and the kind of holding are data (§4), every feed is a plugin in a chain (§5.1), and the INR view comes in phase 3. The minimal pricing comes earlier, in phase 5 (MA-207): AMFI&#x27;s daily NAV file for each Indian mutual fund the household registers, so the whole-wealth dashboard values them. This phase adds the rest: mfapi.in&#x27;s history, NSE and BSE shares and ETFs, the other sources, two kinds, account types, a macro basket and an importer.</p>
+<h3>22.1 Sources, free first (IN1, MA-151)</h3>
+<table><thead><tr><th>Holding</th><th>First (free)</th><th>Fallback (free)</th><th>Paid, only on the admin&#x27;s approval</th></tr>
+</thead>
+<tbody><tr><td>Indian mutual funds</td><td>AMFI&#x27;s daily NAV file for every scheme, the official industry source, matched by AMFI scheme code and ISIN</td><td>mfapi.in (free JSON with each scheme&#x27;s full NAV history; community-run, so a fallback and the history source, not the record); a screenshot</td><td>none needed</td></tr>
+<tr><td>NSE and BSE shares and ETFs</td><td>yfinance with <code>.NS</code>, then <code>.BO</code> tickers: daily candles and ten years of history</td><td>The exchanges&#x27; own bhavcopy end-of-day files, free to download for personal use; stale last</td><td>Twelve Data&#x27;s Grow plan ($79 a month; its free tier has no NSE or BSE); Zerodha Kite Connect at ₹500 a month with history, if the member has a Zerodha account</td></tr>
+<tr><td>Look-through of funds</td><td>The fund houses&#x27; monthly portfolio disclosures, which SEBI requires</td><td>The factsheet</td><td>none</td></tr>
+<tr><td>INR exchange rate</td><td>The ECB&#x27;s daily reference rate (it includes INR)</td><td>The RBI/FBIL reference rate</td><td>none</td></tr>
+<tr><td>Economy and stress</td><td>RBI&#x27;s database (policy rate, yields), MOSPI&#x27;s inflation, India VIX, NSDL&#x27;s daily foreign portfolio investor flows</td><td>FRED&#x27;s India series</td><td>none</td></tr>
+<tr><td>News and events</td><td>Economic Times, Mint and Business Standard by RSS; NSE company announcements; GDELT&#x27;s India coverage</td><td>none</td><td>none</td></tr>
+</tbody>
+</table>
+<p>Two new kinds: <code>in_mutual_fund</code>, one NAV a day and no candles, like a UK OEIC; and <code>in_listed</code>, an NSE or BSE share or ETF with daily candles. NSE and BSE close at 15:30 IST (10:00 or 11:00 UK time) and AMFI&#x27;s NAVs arrive by the UK evening, so the jobs run on the work queue after those times and the 07:15 brief carries India&#x27;s previous day. NSE&#x27;s trading holidays come from the exchange&#x27;s calendar.</p>
+<h3>22.2 The existing Indian portfolio, imported once (IN2, MA-152)</h3>
+<table><thead><tr><th>What the member holds</th><th>The file to send</th><th>What it gives</th></tr>
+</thead>
+<tbody><tr><td>Mutual funds, every fund house</td><td>The detailed Consolidated Account Statement (CAS) PDF from CAMS, KFintech or MF Central</td><td>Every folio and scheme, units, and every purchase, SIP, switch and redemption since inception, so cost and XIRR are right from day one</td></tr>
+<tr><td>Shares, ETFs and funds in demat</td><td>The NSDL or CDSL CAS, or the broker&#x27;s holdings and tradebook export (for example Zerodha Console&#x27;s CSV)</td><td>Holdings and quantities by ISIN, and the trades from the tradebook</td></tr>
+<tr><td>Anything else</td><td>A screenshot or a typed line</td><td>One holding at a time, as for the UK funds</td></tr>
+</tbody>
+</table>
+<p>The files are parsed by code (an open-source CAS parser, pinned and tested on synthetic statements); Claude reads only a file the parsers cannot. Each holding is matched by ISIN: a fund to its AMFI scheme code, a share or ETF to its <code>.NS</code> or <code>.BO</code> listing; anything unmatched is listed, never guessed. The import has the Excel importer&#x27;s safety (§18.5, MA-111): a dry run, one summary card, fingerprints so the same statement never adds twice, Confirm with the second check, rollback by import id, and an audit row per change that names the file it came from. The file itself is kept in S3 like every other (§4.6, MA-148). A protected PDF&#x27;s password is typed once into the app, which opens the file on the device and sends the statement&#x27;s lines with the original; the password is never stored, logged or sent; or the member sends an unlocked copy. The records never keep the PAN, the address or an account number, though the file is kept as sent.</p>
+<h3>22.3 Accounts, currency and suggestions (IN3, MA-153)</h3>
+<p>New account types <code>demat</code>, <code>mf_folio</code>, <code>nre</code> and <code>nro</code> (and <code>ppf</code>, <code>nps</code>, <code>elss</code> if one is held), each with country <code>IN</code> and currency INR. Every Indian figure shows in INR with its GBP value beside it; the household total is in the base currency with the INR view one tap away (phase 3). Rupees typed against a pound holding, or pounds against an Indian one, get the correction of §4.7 (MA-156). Privacy mode hides rupees as it hides pounds. &quot;ISA-safe&quot; becomes &quot;wrapper-aware&quot;: a suggestion names only actions that suit the account it is about, and MyPaisa still never trades. For a UK resident many Indian funds are not UK &quot;reporting funds&quot;, so gains may be taxed differently; MyPaisa flags those holdings in plain words and says to check with a tax adviser. It never gives tax advice. The cards and pages are designed first.</p>
+<h3>22.4 The engine and the Forecaster (IN4, MA-154)</h3>
+<p>An India basket joins the UK, EU and US ones in the macro pillar (§6.2): the Nifty 50 against Indian government bonds, India VIX, the rupee against the dollar, foreign portfolio investor flows and the RBI&#x27;s policy rate. The news scout reads the Indian feeds, and the exposure maps come from the fund houses&#x27; monthly disclosures. The calendars add the RBI&#x27;s policy dates, India&#x27;s inflation releases, NSE holidays and results season. The Forecaster (§19) and its lab take the Indian holdings on the same terms: nothing is shown until its gates are passed.</p>
+<h3>22.5 Cost and order</h3>
+<p>On the free path India costs nothing beyond a few more jobs a day inside the free tiers. A paid feed is a request to the admin with its price, counted inside the £50 cap (§15.2). IN1 comes first; IN2 needs IN1, the Excel importer (MA-111) and file keeping (MA-148); IN3 needs both; IN4 needs IN1 and, for the Forecaster, phase 17.</p>
+<h2>🧩 The stories that build it</h2>
+<p>Every story whose trace row cites §22, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-150%2C%20MA-156%2C%20MA-111%2C%20MA-151%2C%20MA-152%2C%20MA-153%2C%20MA-154%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>
+<table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
+</thead>
+<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-150" data-card-appearance="inline"></a></td><td>The architecture and plan record Indian markets as phase 13 and keep every file a member sends, viewable from the audit log</td><td>Task</td><td>0</td><td data-background="#E3FCEF"><span data-type="status" data-color="green">Done</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§4.1, §4.6, §9.3, §14, §16, §22</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-156" data-card-appearance="inline"></a></td><td>A transaction can be typed in any currency, and the chat checks it against the holding&#x27;s own currency and puts a mismatch right before Confirm</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>1</td><td>§4.1, §4.7, §5.3, §22.3</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-111" data-card-appearance="inline"></a></td><td>The owner fills prod&#x27;s history from an Excel workbook sent in the chat</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§12, §18.5, §22.2, §22.5</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-151" data-card-appearance="inline"></a></td><td>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§5.1, §22</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-152" data-card-appearance="inline"></a></td><td>IN2: The existing Indian portfolio is imported from a CAS statement or a broker export, with every past transaction, after one Confirm</td><td>Story</td><td>5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§18.5, §22</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-153" data-card-appearance="inline"></a></td><td>IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>3</td><td>§4.1, §9, §22</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-154" data-card-appearance="inline"></a></td><td>IN4: The engine and the Forecaster read Indian markets through an India basket, Indian news and the RBI&#x27;s calendar</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§6.2, §19.2, §19.3, §22</td></tr>
+</tbody>
+</table>
+<h2>🔗 The explainer pages</h2>
+<section data-type="layout-two-equal"><div data-type="column"><h4>MyPaisa Market Agent</h4>
+<p><a href="https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb" data-card-appearance="block"></a></p>
+</div>
+<div data-type="column"><h4>MyPaisa Agent Journey</h4>
+<p><a href="https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7" data-card-appearance="block"></a></p>
+</div>
+</section>
+<p>The source: <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a>, <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#22-indian-markets-shares-etfs-and-mutual-funds-phase-19-later">§22</a>.</p>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

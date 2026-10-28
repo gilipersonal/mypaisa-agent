@@ -1,0 +1,250 @@
+<div data-type="panel-custom" data-icon=":envelope_with_arrow:" data-color="#E3FCEF"><p><strong>✉️ Inside MyPaisa, the rest of the way</strong></p>
+<p>One message played through the system in four tours, the agent team of phase 18 and the admin's approval, what stops it going wrong, the two homes on AWS, and a day with MyPaisa.</p>
+<p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/inside-mypaisa.html">inside-mypaisa.html</a> (MA-239).</p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
+<h2>✉️ Watch a message travel through MyPaisa</h2>
+<p>Pick a journey and press Play. The glowing dot is the message; the lit boxes are the parts at work. Nothing hands work straight to anything else: it always waits in a tray that keeps it safe and tries again if something fails.</p>
+<h3>❓ When you ask a question: 12 steps</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-tour-ask.gif</code> is still to upload.</p>
+</div>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>Behind it</th></tr>
+</thead>
+<tbody><tr><td><strong>1</strong></td><td><strong>You type a question and press send</strong></td><td>&quot;What if we put £60,000 down on a second flat in June 2028?&quot; The app gives the message its own label, so even if the network hiccups it can never arrive twice.</td><td><code>client id · idempotency</code></td></tr>
+<tr><td><strong>2</strong></td><td><strong>The front desk checks your pass and says &quot;got it&quot;</strong></td><td>It checks the five-minute pass on every single call, answers at once so the app never waits, and passes the message on. The app shows the typing dots.</td><td><code>the chat route → 202 Accepted · authorizer checks token, status, session epoch</code></td></tr>
+<tr><td><strong>3</strong></td><td><strong>It waits in your own lane of the in-tray</strong></td><td>Every member has a lane. Your messages are handled one at a time, in order, while Asha&#x27;s run alongside. If anything below fails, the tray tries again.</td><td><code>mypaisa-prod-updates.fifo · one message group per member · 3 tries</code></td></tr>
+<tr><td><strong>4</strong></td><td><strong>The concierge picks it up</strong></td><td>It loads its standing instructions and tools (kept warm, so they cost little), plus a few one-line notes about your recent chats. It does not resend old chats; it looks things up instead.</td><td><code>agent Lambda · prompt cache (1 hour) · conversation notes</code></td></tr>
+<tr><td><strong>5</strong></td><td><strong>It asks Claude what is needed</strong></td><td>Claude reads the question and decides it needs two tools: the household&#x27;s figures, and the projection with this change. Claude chooses tools; it does not do the sums.</td><td><code>Claude Sonnet 5.5 · tool_choice auto · strict tools</code></td></tr>
+<tr><td><strong>6</strong></td><td><strong>The calculator runs 30 years forward</strong></td><td>Plain, tested code projects the family&#x27;s net worth year by year from their own history and stated assumptions, with a low, middle and high path. The £60,000 is a what-if: nothing is saved.</td><td><code>run_projection(overrides) · deterministic engine · p10 / p50 / p90</code></td></tr>
+<tr><td><strong>7</strong></td><td><strong>It reads only what you may see</strong></td><td>The tool reads the records it needs. Who is asking travels with every call, and code refuses anything outside your rights.</td><td><code>get_networth(view) · household and member checks in code</code></td></tr>
+<tr><td><strong>8</strong></td><td><strong>Claude writes the answer around the numbers</strong></td><td>The numbers come back from code; Claude puts them into plain words and a chart card. The words appear on your screen as they are written, about five times a second.</td><td><code>TurnBuffer every ~200 ms · streamed to every open screen</code></td></tr>
+<tr><td><strong>9</strong></td><td><strong>The finished reply goes in the out-tray</strong></td><td>The full message and its card join your lane of the out-tray, so a brief&#x27;s several messages always arrive in order.</td><td><code>mypaisa-prod-outbox.fifo · 5 tries</code></td></tr>
+<tr><td><strong>10</strong></td><td><strong>The postman files it in your message log</strong></td><td>It appends the reply to your personal log. Any screen that was away can catch up from the last thing it saw.</td><td><code>sender Lambda · StreamEvent log · Last-Event-ID</code></td></tr>
+<tr><td><strong>11</strong></td><td><strong>Every open screen shows it</strong></td><td>Your phone shows the answer and the chart. If the laptop is open too, it shows the same conversation. A screen that is closed gets a push instead.</td><td><code>GET /v1/stream · Server-Sent Events · Apple push / Web Push when closed</code></td></tr>
+<tr><td><strong>12</strong></td><td><strong>A run record notes what it did and cost</strong></td><td>Every run records its model calls, tools, time and cost. The spend meter is added to; a message like this costs about 1.5p to 3p. The Activity screen shows it all.</td><td><code>RunRecord · SpendMonth meter · Activity</code></td></tr>
+</tbody>
+</table>
+<h3>📄 When you send a file: 9 steps</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-tour-file.gif</code> is still to upload.</p>
+</div>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>Behind it</th></tr>
+</thead>
+<tbody><tr><td><strong>1</strong></td><td><strong>You attach a factsheet</strong></td><td>Arun taps + and picks the PDF from Files (or the camera, a scan, or Photos).</td><td><code>composer · VisionKit, Photos, Files</code></td></tr>
+<tr><td><strong>2</strong></td><td><strong>It goes straight into the filing cabinet</strong></td><td>The file travels from the phone directly into storage, before anything reads it, and stays there for good with its own audit line.</td><td><code>presigned upload · s3://mypaisa-prod-documents/&lt;household&gt;/&lt;member&gt;/&lt;yyyy&gt;/&lt;mm&gt;/ · Document row</code></td></tr>
+<tr><td><strong>3</strong></td><td><strong>A note that a file arrived joins the in-tray</strong></td><td>The chat message &quot;I sent a file&quot; follows the usual path: the front desk, then your lane of the in-tray.</td><td><code>202 Accepted · updates queue</code></td></tr>
+<tr><td><strong>4</strong></td><td><strong>The concierge sees a file</strong></td><td>Reading a document can take a while, so the concierge doesn&#x27;t do it in the chat. It hands it to the back office.</td><td><code>work queue job: document read</code></td></tr>
+<tr><td><strong>5</strong></td><td><strong>The back office reads it</strong></td><td>Claude reads the PDF and pulls out the name, kind, currency and what the fund holds. Each figure keeps the line it came from.</td><td><code>worker · extract_document(s3_key, schema) · source line per figure</code></td></tr>
+<tr><td><strong>6</strong></td><td><strong>Code checks every value</strong></td><td>The draft is checked against what a UK fund must have. Anything missing or unsure is listed. A draft writes nothing.</td><td><code>draft_record(kind, fields) · draft hashed in PendingAction</code></td></tr>
+<tr><td><strong>7</strong></td><td><strong>A card comes back with one amber question</strong></td><td>&quot;Which account?&quot; is in amber because the factsheet doesn&#x27;t say. Everything else is shown for you to check.</td><td><code>card JSON → drawn natively on iOS, in Svelte on the web</code></td></tr>
+<tr><td><strong>8</strong></td><td><strong>You tap ISA · Monzo, then Confirm</strong></td><td>Confirm commits exactly the draft you saw. The new holding and its audit line, naming the file, are written in one step: both or neither.</td><td><code>write service · DynamoDB transaction · audit row with document_id</code></td></tr>
+<tr><td><strong>9</strong></td><td><strong>Every screen moves</strong></td><td>The laptop&#x27;s dashboard and the phone&#x27;s Home pick up the new holding at once.</td><td><code>records.changed on the stream</code></td></tr>
+</tbody>
+</table>
+<h3>🔔 When MyPaisa asks you: 7 steps</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-tour-checkin.gif</code> is still to upload.</p>
+</div>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>Behind it</th></tr>
+</thead>
+<tbody><tr><td><strong>1</strong></td><td><strong>09:00: the back office wakes up</strong></td><td>A schedule starts the daily check-in job. It is plain code; no AI is needed to know that a date has arrived.</td><td><code>scheduler → work queue → worker · check-ins job</code></td></tr>
+<tr><td><strong>2</strong></td><td><strong>It finds the HDFC EMI due today</strong></td><td>It reads the family&#x27;s promises (EMIs, SIPs, bills, maturities) and creates exactly one check-in for each one due. A retry can&#x27;t create a second.</td><td><code>Commitment → CheckIn id commitment#due_date · conditional put</code></td></tr>
+<tr><td><strong>3</strong></td><td><strong>The card goes straight in the out-tray</strong></td><td>It skips the concierge entirely. The card already shows what a tap will write.</td><td><code>outbox FIFO</code></td></tr>
+<tr><td><strong>4</strong></td><td><strong>The app is closed, so it arrives as a push</strong></td><td>&quot;HDFC home loan: was November&#x27;s EMI paid?&quot; The lock screen never shows the amount unless you choose.</td><td><code>Apple push (APNs) · only to a device with no open stream</code></td></tr>
+<tr><td><strong>5</strong></td><td><strong>You tap Paid</strong></td><td>The tap is the Confirm, because the card showed exactly what will be saved. Undo is right there.</td><td><code>card tap acknowledged at once, its effect queued</code></td></tr>
+<tr><td><strong>6</strong></td><td><strong>One step writes it all</strong></td><td>The check-in is marked answered, the payment is added to the loan&#x27;s history, and the audit line is written, together.</td><td><code>transaction · via: checkin · event + audit row</code></td></tr>
+<tr><td><strong>7</strong></td><td><strong>The laptop&#x27;s dashboard moves too</strong></td><td>If the web app is open, the HDFC balance there updates at the same moment.</td><td><code>records.changed on the stream</code></td></tr>
+</tbody>
+</table>
+<h3>🧯 When something fails: 6 steps</h3>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-tour-fail.gif</code> is still to upload.</p>
+</div>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>Behind it</th></tr>
+</thead>
+<tbody><tr><td><strong>1</strong></td><td><strong>A reply is ready for Asha</strong></td><td>Her app is closed, so the postman will send a push to her iPhone.</td><td><code>sender · no fresh Presence for her device</code></td></tr>
+<tr><td data-background="#FFEBE6"><strong>2</strong></td><td data-background="#FFEBE6"><strong>Apple&#x27;s push service has a bad minute</strong></td><td data-background="#FFEBE6">The push fails. Nothing is lost: the message is still in the out-tray, which simply hasn&#x27;t been told it worked.</td><td data-background="#FFEBE6"><code>APNs error · retry-after honoured</code></td></tr>
+<tr><td><strong>3</strong></td><td><strong>It tries again, waiting longer each time</strong></td><td>A failed message comes back after a growing wait, so a struggling service isn&#x27;t hammered. Because every part remembers what it has done, a retry never sends anything twice.</td><td><code>5 tries · backoff · idempotency keys</code></td></tr>
+<tr><td><strong>4</strong></td><td><strong>After five tries, safe keeping</strong></td><td>It moves to a holding area for 14 days, and a copy goes to the filing cabinet for good. It is never thrown away.</td><td><code>dead-letter queue · copy in S3 raw/dlq/</code></td></tr>
+<tr><td><strong>5</strong></td><td><strong>The admin is told at once</strong></td><td>An alarm reaches Arun as &quot;failed work&quot;, with a Replay button in his chat and in the Admin center.</td><td><code>alarm → alert router → admin&#x27;s app and email</code></td></tr>
+<tr><td><strong>6</strong></td><td><strong>Replay delivers it, once</strong></td><td>When Apple is healthy again, Arun taps Replay (behind Face ID) and the message goes back in line and is delivered once. From phase 18 the ops warden does this on its own.</td><td><code>redrive → Replay button (phase 8) → ops warden (phase 18), at most 3 times</code></td></tr>
+</tbody>
+</table>
+<h2>👥 Later, one concierge becomes a team of nine, and you are its manager</h2>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-agents.gif</code> is still to upload.</p>
+</div>
+<h3>Later, one concierge becomes a team of nine, and you are its manager</h3>
+<p>Today the concierge does the talking and plain code does the rest. In phase 18 the background work is split among specialist agents. Each has one job, a small budget and a fixed area where it may act alone. Anything outside that area becomes a request to you.</p>
+<p><strong>Code decides, Claude explains</strong></p>
+<p>Models and rules make every number and decision. Claude tags, writes, asks and answers.</p>
+<p><strong>Nothing changes without a trace</strong></p>
+<p>Every behaviour is a setting, and every change to one is a new version and an audit line.</p>
+<p><strong>Outside its band, it asks</strong></p>
+<p>An agent acts alone only within the limits its settings allow; often that limit is zero.</p>
+<p>The agents never call each other directly. They post news on a shared board (an event bus) and leave work in the ledger; a daily pipeline runs them in order.</p>
+<h4>Concierge</h4>
+<p>Sonnet · Haiku for small turns</p>
+<p>Its job</p>
+<p>Talks to every member in the chat; passes the admin&#x27;s instructions to the admin desk.</p>
+<p>On its own</p>
+<p>Answers, reads, drafts changes with a Confirm card.</p>
+<p>Asks</p>
+<p>Members confirm their own records.</p>
+<p>Working from phase 1</p>
+<h4>Data steward</h4>
+<p>Code · Haiku writes its requests</p>
+<p>Its job</p>
+<p>Keeps prices flowing from free sources; watches for gaps, stale data and quotas.</p>
+<p>On its own</p>
+<p>Switches to the next source, retries, labels stale data.</p>
+<p>Asks</p>
+<p>A new source, or anything that costs money.</p>
+<p>Phase 18</p>
+<h4>News scout</h4>
+<p>Haiku in batches · code scores</p>
+<p>Its job</p>
+<p>Collects news and events and matches them to what the family holds.</p>
+<p>On its own</p>
+<p>Tags and matches.</p>
+<p>Asks</p>
+<p>A new feed or a new kind of event.</p>
+<p>Phase 18</p>
+<h4>Analyst</h4>
+<p>Code only</p>
+<p>Its job</p>
+<p>The rules engine that reads trends and risk for each holding.</p>
+<p>On its own</p>
+<p>Runs every day.</p>
+<p>Asks</p>
+<p>Any change to a rule, through the tuner.</p>
+<p>Phase 18</p>
+<h4>Forecaster</h4>
+<p>Code · Sonnet explains</p>
+<p>Its job</p>
+<p>A second engine of models that estimates ranges, beside the rules engine.</p>
+<p>On its own</p>
+<p>Runs daily, and switches itself off when its record slips.</p>
+<p>Asks</p>
+<p>Before a model is promoted.</p>
+<p>Phase 18</p>
+<h4>Grader and tuner</h4>
+<p>Code · Sonnet writes the reviews</p>
+<p>Its job</p>
+<p>Marks every past call against what really happened, so confidence means something.</p>
+<p>On its own</p>
+<p>Grades daily, nudges calibration within bounds, undoes a worse one.</p>
+<p>Asks</p>
+<p>Any change to rules or models.</p>
+<p>Phase 18</p>
+<h4>Ops warden</h4>
+<p>Code · Haiku sums up incidents</p>
+<p>Its job</p>
+<p>Runs the daily pipeline and repairs it when a step fails.</p>
+<p>On its own</p>
+<p>Retries, catches up, rolls back to the last good version, replays stuck work.</p>
+<p>Asks</p>
+<p>Anything it can&#x27;t fix becomes an incident for you.</p>
+<p>Phase 18</p>
+<h4>Budget keeper</h4>
+<p>Code</p>
+<p>Its job</p>
+<p>The AI spend meter and its ladder of savings.</p>
+<p>On its own</p>
+<p>Steps down to cheaper modes, and back up.</p>
+<p>Asks</p>
+<p>Never moves a ceiling: those are yours.</p>
+<p>Meter and ladder from phase 1</p>
+<h4>Admin desk</h4>
+<p>Code · Haiku reads your words</p>
+<p>Its job</p>
+<p>The one channel between every agent and you.</p>
+<p>On its own</p>
+<p>Queues requests, bundles the non-urgent ones into one daily digest, reminds, lets them expire.</p>
+<p>Asks</p>
+<p>It is the asking.</p>
+<p>Phase 18</p>
+<h3>An agent asks; you approve with your face</h3>
+<p>When an agent needs something outside its limits, the request reaches Arun as a card in his own chat and in the Admin center. It says what changes, from what to what, why, with its evidence, the cost and the budget left, the risk, how to undo it, and when it expires. Approving needs a fresh Face ID check, because the server must know the admin is holding the phone right now. Deciding in one place updates the other.</p>
+<p>Arun can also give instructions in his own words, such as &quot;put Twelve Data first for London&quot; or &quot;why did the Forecaster go quiet on silver?&quot;. The concierge turns an instruction into the same kind of request card, and a question into an answer from the agent concerned.</p>
+<p><strong>Approvals</strong>Every agent&#x27;s open requests</p>
+<p><strong>Settings</strong>Every behaviour, with its range and history</p>
+<p><strong>Agents</strong>What each did and spent</p>
+<p><strong>Incidents</strong>What could not be fixed alone</p>
+<p><strong>Members and devices</strong>Invite, sign out, pause</p>
+<p><strong>Spend</strong>The AI ceiling and the AWS cap</p>
+<p>08:30</p>
+<p>Data steward asks yfinance has not returned Balanced for 3 days; Twelve Data does not list it. EODHD&#x27;s free key returns its history back to 2019. <strong>Switch on EODHD Historian at £19.99 a month?</strong></p>
+<p>AWS and others<strong>£3 of £50 used</strong></p>
+<p>Undo<strong>Switch it off</strong></p>
+<p>ApproveRejectWhy?</p>
+<p>Approved by Arun · Face ID · audited</p>
+<p>+Message MyPaisa</p>
+<p><strong>Confirm it&#x27;s you</strong> A fresh Face ID check, under five minutes old, bound to this one approval</p>
+<h2>🛟 What stops it going wrong</h2>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-safety.png</code> is still to upload.</p>
+</div>
+<h3>What stops it going wrong</h3>
+<p>A money app for a family has to be boring in the right places. These are the guard rails, written into the code rather than into the AI&#x27;s instructions, so the AI can&#x27;t talk its way around them.</p>
+<h4>A spending ceiling for the AI, with a ladder</h4>
+<p>The admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan&#x27;s monthly credit. Two members are expected to use about $24 of it. Every call&#x27;s cost is added to a meter, and the meter is read before every call.</p>
+<p>70% 85% 95% 100% Expected: about $24 a month</p>
+<p><strong>70%</strong>A message to the admin. Nothing changes.</p>
+<p><strong>85%</strong>Savers: shorter reviews, fewer web searches, overnight news scoring paused.</p>
+<p><strong>95%</strong>Essentials: chat on the smallest model; briefs and alerts as plain templates.</p>
+<p><strong>100%</strong>The AI stops until the month renews or the ceiling is raised. Buttons, check-ins and alerts still work, since they need no AI.</p>
+<h4>Nothing is lost, everything is retried</h4>
+<p>Every hand-over goes through a tray (a queue). If Apple&#x27;s push service, Claude or a price source has a bad minute, the work waits and tries again, a little later each time. After too many tries it goes into safe keeping for 14 days, with a copy kept for good, and the admin gets an alert with a Replay button. Every part remembers what it has done, so a retry never does anything twice.</p>
+<p>Try 1 failed</p>
+<p>Try 2 30 s later</p>
+<p>Tries 3–5 waits grow</p>
+<p>Safe keeping alert + Replay</p>
+<p>From phase 18, the ops warden replays stuck work by itself once the cause is healthy, at most three times.</p>
+<h4>An audit line for every change, chained</h4>
+<p>Every change to the records writes an audit line in the same step as the change, so one can&#x27;t happen without the other: who, when, how (typed, a button, a screenshot, a check-in), before and after. Each line holds a fingerprint of the one before, so a deleted or edited line breaks the chain, and the weekly check says so.</p>
+<p>#…a41f Saver added</p>
+<p>#…7c02 Home valued</p>
+<p>#…e9d3 Savings +£5,000</p>
+<p>#…31b8 Home → £428,000</p>
+<p>Lines are never deleted. Members see their own; the admin sees all.</p>
+<h4>Things no part of MyPaisa can do</h4>
+<ul><li><strong>Trade or move money.</strong> There is no broker connection at all.</li>
+<li><strong>Delete data.</strong> A loan is closed, a fund is sold; nothing is erased.</li>
+<li><strong>Message anyone</strong> but the member it is answering.</li>
+<li><strong>Save a draft.</strong> Only a Confirm, a check-in tap or a Save commits.</li>
+<li><strong>See another household.</strong> Every item is filed by household, and every tool call carries who is asking.</li>
+<li><strong>Keep running when told to stop.</strong> Pause MyPaisa in You, or type <code>/pause</code>, and everything scheduled stops.</li>
+</ul>
+<h2>🏘️ Two copies on AWS, and one careful way to change them</h2>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-homes.png</code> is still to upload.</p>
+</div>
+<h3>Two copies on AWS, and one careful way to change them</h3>
+<p>Everything runs on Amazon Web Services in one account, twice: a practice copy with made-up data, and the real one with the family&#x27;s. Claude is reached through Anthropic&#x27;s API, with its key locked away where only the code can read it.</p>
+<p>mypaisa-dev-*</p>
+<h4>Dev: the practice copy</h4>
+<ul><li>Made-up household data only</li>
+<li>dashboard-dev.mypaisapp.com</li>
+<li>The MyPaisa Dev app points here</li>
+<li>AI ceiling $40 a month</li>
+</ul>
+<p>mypaisa-prod-*</p>
+<h4>Prod: the family&#x27;s copy</h4>
+<ul><li>The household&#x27;s real records and files</li>
+<li>dashboard.mypaisapp.com</li>
+<li>Data stores protected from deletion</li>
+<li>AI ceiling $160 a month</li>
+</ul>
+<p>How a change ships</p>
+<h4>Written down, checked, approved</h4>
+<p>A change<em>→</em>GitHub<em>→</em>Checks<em>→</em>Dev<em>→</em>Arun approves<em>→</em>Prod</p>
+<p>Infrastructure is described in Terraform files and changed only through them; nobody clicks around the AWS console. Prod is updated only by the release workflow.</p>
+<p>≈ £45a month for two members on the standard setup, about £6 of it Apple&#x27;s developer membership. The AI is paid from the plan&#x27;s monthly credit.</p>
+<h2>☀️ Mostly quiet, on time, and there when you ask</h2>
+<div data-type="panel-note"><p>Preview <code>rec-j-inside-more--inside-day.png</code> is still to upload.</p>
+</div>
+<h3>Mostly quiet, on time, and there when you ask</h3>
+<p>07:15 09:00 21:15</p>
+<p>00:0006:0012:0018:0024:00</p>
+<p>Overnight<strong>The sums are redone</strong>Prices, net worth, the views and the Projection are rebuilt; news is scored in a cheap batch.Code, Haiku in batch</p>
+<p>07:15<strong>Morning brief</strong>What moved, why, and anything to do. One for the household, one each for members who want one.Claude writes</p>
+<p>09:00<strong>Check-ins</strong>Whatever is due today: an EMI, a SIP, a valuation. Several at once become one card.Code decides</p>
+<p>Any time<strong>The chat</strong>Add, correct, ask, what-if. Every write shown first; every change audited.Concierge</p>
+<p>21:15<strong>Evening wrap</strong>Only to whoever&#x27;s accounts moved today.Claude writes</p>
+<p>Saturday · the 1st<strong>Review and month-end</strong>The weekly review on Claude&#x27;s largest model; on the 1st, last month&#x27;s budget closes.Opus · code</p>
+<hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>
