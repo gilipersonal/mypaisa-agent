@@ -160,8 +160,9 @@ def line(n: Node | None) -> str:
     return clean(inl(n)) if n is not None else ""
 
 
-def blocks(n: Node, shift: int = 0, skip: tuple[str, ...] = ()) -> str:
-    """A node's content as Confluence blocks: headings, paragraphs, lists and tables; containers are read through."""
+def blocks(n: Node, shift: int = 0, skip: tuple[str, ...] = (), drop: tuple = ()) -> str:
+    """A node's content as Confluence blocks: headings, paragraphs, lists and tables; containers are read through.
+    `skip` names classes to leave out, `drop` the nodes themselves (a heading the page has already written)."""
     out: list[str] = []
     buf: list[str] = []
 
@@ -177,7 +178,7 @@ def blocks(n: Node, shift: int = 0, skip: tuple[str, ...] = ()) -> str:
                 buf.append(inl(k))
             continue
         flush()
-        if any(c in k.cls() for c in skip) or k.attrs.get("aria-hidden") == "true":
+        if any(c in k.cls() for c in skip) or k.attrs.get("aria-hidden") == "true" or any(k is d for d in drop):
             continue
         t = k.tag
         if re.fullmatch(r"h[1-6]", t):
@@ -197,7 +198,7 @@ def blocks(n: Node, shift: int = 0, skip: tuple[str, ...] = ()) -> str:
             out.append(f"<pre><code>{cd.esc(k.text())}</code></pre>")
         elif t != "hr":
             if any(isinstance(c, Node) and c.tag in BLOCK for c in k.kids):
-                out.append(blocks(k, shift, skip))
+                out.append(blocks(k, shift, skip, drop))
             elif s := line(k):
                 out.append(f"<p>{s}</p>")
     flush()
@@ -708,7 +709,12 @@ def link_md(md_text: str, ctx: cd.Ctx, slug: str) -> str:
         keep.append((m.group(2), m.group(1)))
         return f"\x01{len(keep) - 1}\x01"
 
-    text = re.sub(r"(?m)^!\[([^\]]*)\]\(docs/design/lucid/([\w.-]+\.png)\)[ \t]*$", stash, md_text)
+    def dedent(m: re.Match) -> str:  # a fence indented inside a list, which the shared reader takes for prose
+        pad = len(m.group(1))
+        return "\n".join(x[pad:] if x[:pad].isspace() else x for x in m.group(0).split("\n"))
+
+    text = re.sub(r"(?ms)^( +)```[^\n]*\n.*?^\1```[ \t]*$", dedent, md_text)
+    text = re.sub(r"(?m)^!\[([^\]]*)\]\(docs/design/lucid/([\w.-]+\.png)\)[ \t]*$", stash, text)
     out = cd.md(text, shift=0)
     out = re.sub(r"<p>\x01(\d+)\x01</p>", lambda m: lucid_pic(ctx, slug, keep[int(m.group(1))][0], keep[int(m.group(1))][1]), out)
     if "\x01" in out:
@@ -725,6 +731,14 @@ def items_for(ctx: cd.Ctx, specs: list[str]) -> list[dict]:
         return a in nums or a in exact or any(a.startswith(w + ".") for w in whole)
     its = [i for i in ctx.items if any(hit(a) for a in i.get("arch") or [])]
     return sorted(its, key=lambda i: (i.get("phase", 0), cd.key_n(i["key"])))
+
+
+def guardrails_note(ctx: cd.Ctx) -> str:
+    """A pointer to the guardrails and evals page (MA-245, MA-258), once the space has it; the record never redraws them."""
+    if not ctx.manifest.get("pages", {}).get("guardrails", {}).get("id"):
+        return ""
+    return cd.cpanel("#E3FCEF", ":shield:", f"<p><strong>🛡️ The guardrails and evals</strong> have a page of their own, with their own "
+                     f"explainer and diagrams: {ctx.link('guardrails', 'Guardrails and evals')} (ARCHITECTURE §23).</p>")
 
 
 def explainer_cards(names: list[str]) -> str:
@@ -747,6 +761,8 @@ def render_arch_page(ctx: cd.Ctx, entry: tuple) -> str:
     if media:
         out.append("<h2>🎬 See it move</h2>" if any(MEDIA[m]["kind"] == "gif" for m in media) else "<h2>🖼️ See it</h2>")
         out.append(gallery(ctx, slug, media))
+    if slug in ("rec-a-security", "rec-a-agent", "rec-a-team"):
+        out.append(guardrails_note(ctx))
     out += ["<p><strong>📖 Contents</strong></p>", toc(3), link_md(arch_md(secs), ctx, slug)]
     out.append("<h2>🧩 The stories that build it</h2>")
     if items:
@@ -840,6 +856,8 @@ def render_rec(ctx: cd.Ctx) -> str:
         "<li>🟦 <strong>The colours</strong> follow the parts: blue for the doors and the plumbing, green for the money, purple for the market "
         "side and the models, amber for the agents, red for safety.</li>"
         "<li>🧩 <strong>Every area</strong> ends with the Jira stories that build it, live from the trace.</li>"
+        + (f"<li>🛡️ <strong>The guardrails and evals</strong> (§23) are on {ctx.link('guardrails', 'their own page')}, with their own explainer.</li>"
+           if ctx.manifest.get("pages", {}).get("guardrails", {}).get("id") else "") +
         "<li>🔁 <strong>It stays in step.</strong> These pages are generated from the repo; a change to ARCHITECTURE.md or an explainer page "
         "shows here at the next publish, and the check fails until it does.</li></ul>",
         "<h2>✨ The live, interactive pages</h2>",
@@ -1042,7 +1060,7 @@ def render_v4_parts(ctx: cd.Ctx) -> str:
         sec = root.need("section", id=sid)
         _, h2, intro = sec_head(root, sid)
         out += [f"<h2>{emo} {h2}</h2>{intro}", pic(ctx, slug, f"v4-{sid}", media_caption(f"v4-{sid}")),
-                blocks(sec.need(cls="wrap"), shift=1, skip=("sec-head",))]
+                blocks(sec.need(cls="wrap"), shift=1, skip=("sec-head",)), guardrails_note(ctx) if sid == "rules" else ""]
     return "".join(out) + footer()
 
 
@@ -1058,7 +1076,7 @@ def inside_steps() -> list[dict]:
     for art in root.need("section", id="journey").find_all("article", cls="step"):
         copy = art.need(cls="copy")
         behind = copy.find("ul", cls="behind")
-        out.append({"n": art.need(cls="num").text(), "title": line(copy.need("h2")),
+        out.append({"n": art.need(cls="num").text(), "title": copy.need("h2").text(),
                     "tags": [c.text() for c in copy.find_all(cls="chipx")],
                     "paras": [line(p) for p in copy.children("p")],
                     "behind": [(next((c for c in li.cls() if c.startswith("cat-")), ""), line(li)) for li in (behind.children("li") if behind else []) if "bh" not in li.cls()],
@@ -1113,7 +1131,8 @@ def render_inside_more(ctx: cd.Ctx) -> str:
         out.append("</tbody></table>")
     for sid, emo, media in (("agents", "👥", "inside-agents"), ("safety", "🛟", "inside-safety"), ("homes", "🏘️", "inside-homes"), ("day", "☀️", "inside-day")):
         sec = root.need("section", id=sid)
-        out += [f"<h2>{emo} {line(sec.find('h2'))}</h2>", pic(ctx, slug, media, media_caption(media)), blocks(sec, shift=1, skip=("eyebrow",))]
+        out += [f"<h2>{emo} {line(sec.find('h2'))}</h2>", pic(ctx, slug, media, media_caption(media)),
+                blocks(sec, shift=1, skip=("eyebrow",), drop=(sec.find("h2"),))]
     return "".join(out) + footer()
 
 
@@ -1125,8 +1144,8 @@ def _flows(stamp: float) -> dict[str, dict]:
     out = {}
     for sec in root.find_all("section", cls="flow"):
         head = sec.need(cls="flow-h")
-        out[sec.attrs["id"]] = {"n": head.need(cls="flow-n").text(), "title": line(head.need("h2")), "lede": line(head.find("p", cls="lede")),
-                                "chips": [line(c) for c in head.find_all(cls="chip")], "node": sec}
+        out[sec.attrs["id"]] = {"n": head.need(cls="flow-n").text(), "title": head.need("h2").text(), "lede": line(head.find("p", cls="lede")),
+                                "chips": [(c.text(), line(c)) for c in head.find_all(cls="chip")], "node": sec}
     return out
 
 
@@ -1166,7 +1185,7 @@ def flow_blocks(ctx: cd.Ctx, slug: str, fid: str) -> str:
     sec: Node = f["node"]
     out = [f"<h2>{cd.esc(f['n'])} · {cd.esc(f['title'])}</h2>",
            cd.cpanel("#F4F5F7", ":round_pushpin:", f"<p>{f['lede']}</p><p>" + " ".join(
-               cd.lozenge(c, "blue" if c.startswith("Phase") else "purple") if len(c) < 30 else f"<em>{c}</em>" for c in f["chips"]) + "</p>")]
+               cd.lozenge(t, "blue" if t.startswith("Phase") else "purple") if len(t) < 30 else f"<em>{h}</em>" for t, h in f["chips"]) + "</p>")]
     blocks_after = [k for k in sec.kids if isinstance(k, Node) and "flow-h" not in k.cls()]
     for k in blocks_after:
         if k.tag == "h3":
@@ -1188,8 +1207,10 @@ def flow_blocks(ctx: cd.Ctx, slug: str, fid: str) -> str:
             cells = [cd.cpanel("#E3FCEF", ":shield:", f"<p><strong>{line(c.find('b'))}</strong></p><p>{line(c.find('span'))}</p>") for c in k.find_all(cls="sgc")]
             out.append(cols(cells, 2))
         elif "keys" in k.cls():
-            keys = [(line(a.find("b")), line(a.find("span"))) for a in k.find_all("a", cls="key")]
-            out.append("<table><tbody>" + "".join(f"<tr><td>{cd.jira(key)}</td><td>{what}</td></tr>" for key, what in keys if re.fullmatch(r"MA-\d+", key)) + "</tbody></table>")
+            keys = [(a.need("b").text(), line(a.find("span"))) for a in k.find_all("a", cls="key")]
+            if bad := [key for key, _ in keys if not re.fullmatch(r"MA-\d+", key)]:
+                raise RecordError(f"{FLOWS} flow #{fid} is built by {', '.join(bad)}, which is no Jira key")
+            out.append("<table><tbody>" + "".join(f"<tr><td>{cd.jira(key)}</td><td>{what}</td></tr>" for key, what in keys) + "</tbody></table>")
         else:
             out.append(blocks(k, shift=1) if any(isinstance(c, Node) for c in k.kids) or k.tag != "div" else "")
     return "".join(out)
@@ -1233,7 +1254,7 @@ def render_flows(ctx: cd.Ctx) -> str:
         for fid in g[4]:
             f = flow(fid)
             out.append("<tr>" + cd.cell(f"<strong>{cd.esc(f['n'])}</strong>", g[2]) + f"<td><strong>{cd.esc(f['title'])}</strong><br>{f['lede']}</td>"
-                       f"<td>{'<br>'.join(f['chips'])}</td><td>{ctx.link(g[0], titles[g[0]])}</td></tr>")
+                       f"<td>{'<br>'.join(h for _, h in f['chips'])}</td><td>{ctx.link(g[0], titles[g[0]])}</td></tr>")
     out.append("</tbody></table>")
     missing = set(flows()) - {f for g in FLOW_GROUPS for f in g[4]}
     if missing:
@@ -1261,7 +1282,7 @@ def _market(stamp: float) -> dict[str, dict]:
     root = dom(MARKET)
     out = {}
     for s in root.find_all("section", cls="sec"):
-        out[s.attrs["id"]] = {"title": line(s.need("h2")), "node": s}
+        out[s.attrs["id"]] = {"title": s.need("h2").text(), "node": s}
     return out
 
 
@@ -1284,8 +1305,8 @@ def render_market(ctx: cd.Ctx) -> str:
            toc(2)]
     emo = ["🗺️", "🎯", "📥", "📐", "📰", "⚖️", "🃏", "🎓", "🧭", "🧪", "🔁", "💰", "🇮🇳", "🧩"]
     for k, (sid, s) in enumerate(market_sections().items()):
-        out += [f"<h2>{emo[k]} {s['title']}</h2>", pic(ctx, slug, f"market-{sid}", media_caption(f"market-{sid}")),
-                f"<details><summary>The words of this section</summary>{blocks(s['node'], shift=1, skip=('eyebrow',))}</details>"]
+        out += [f"<h2>{emo[k]} {cd.esc(s['title'])}</h2>", pic(ctx, slug, f"market-{sid}", media_caption(f"market-{sid}")),
+                f"<details><summary>The words of this section</summary>{blocks(s['node'], shift=1, skip=('eyebrow',), drop=(s['node'].find('h2'),))}</details>"]
     return "".join(out) + footer()
 
 

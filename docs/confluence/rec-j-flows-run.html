@@ -62,7 +62,15 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-102" data-card-appearance="inline"></a></td><td>The owner can sign out or pause any member&#x27;s devices from the Admin center, behind the second check</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-184" data-card-appearance="inline"></a></td><td>The web app&#x27;s Audit, Files and Admin center pages work in a browser, with the second check for the owner&#x27;s actions</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-116" data-card-appearance="inline"></a></td><td>The owner moves the Claude ceiling up or down in the Admin center</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-137" data-card-appearance="inline"></a></td><td>The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app and the web app, push and email</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-113" data-card-appearance="inline"></a></td><td>Every Claude call is metered and nothing runs past the monthly ceiling</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-130" data-card-appearance="inline"></a></td><td>E2: an admin desk in the owner&#x27;s chat and the Admin center where agents ask questions and seek approval (phase 18)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-136" data-card-appearance="inline"></a></td><td>E8: each agent has its share of the $200 Claude credit (phase 18)</td></tr>
+</tbody>
 </table>
 <h2>12 · When something fails</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Every hand-off goes through an SQS queue. A bad minute at Apple&#x27;s push service, at the Anthropic API or at a data source costs a delay, never a message or a day&#x27;s work. What keeps failing waits in a dead-letter queue until someone, or later the ops warden, replays it. A lost signal on the member&#x27;s side costs nothing either: the app keeps what is typed and catches up when it is back.</p>
@@ -160,7 +168,15 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-139" data-card-appearance="inline"></a></td><td>Each member&#x27;s messages travel through ordered queues, in and out, are retried with backoff and are never lost</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-140" data-card-appearance="inline"></a></td><td>Background jobs run from a work queue with retries, and every failure lands in a dead-letter queue that alerts and can be replayed</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-137" data-card-appearance="inline"></a></td><td>Alerts reach the app and the web app, push and email; &quot;failed work&quot; carries a Replay button</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-173" data-card-appearance="inline"></a></td><td>Offline, the app shows the last figures with their time, keeps what is typed and sends it once back online</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-30" data-card-appearance="inline"></a></td><td>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-135" data-card-appearance="inline"></a></td><td>E7: an ops warden repairs what it safely can and opens an incident when it cannot (phase 18)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-61" data-card-appearance="inline"></a></td><td>A dead man&#x27;s switch and the error alarms tell the owner, in the app and by push, when a job did not run</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-29" data-card-appearance="inline"></a></td><td>Every Lambda run leaves a RunRecord, logs, traces and an error alarm</td></tr>
+</tbody>
 </table>
 <h2>13 · The Claude spend ladder in practice</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The agents&#x27; allowance is the Max 20x plan&#x27;s $200 monthly credit: $160 for prod and $40 for dev, each a ceiling the owner moves. As the month&#x27;s spend climbs, MyPaisa steps down to cheaper ways of working before it stops. Alerts always go out.</p>
@@ -228,9 +244,14 @@
 <li><strong>100%.</strong> One line; everything with a button keeps working. The renewal date is illustrative.</li>
 </ul>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-113" data-card-appearance="inline"></a></td><td>Every Claude call is metered and nothing runs past the monthly ceiling</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-114" data-card-appearance="inline"></a></td><td>As spend nears the ceiling, MyPaisa steps down to cheaper ways of working before it stops</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-116" data-card-appearance="inline"></a></td><td>The owner moves the Claude ceiling up or down in the Admin center</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-137" data-card-appearance="inline"></a></td><td>The admin sets the caps and their alert thresholds; alerts reach the app and the web app, push and email</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-136" data-card-appearance="inline"></a></td><td>E8: each agent has its share of the $200 Claude credit (phase 18)</td></tr>
+</tbody>
 </table>
-<h2>14 · The first of the month: a contribution&amp;#x27;s check-in</h2>
+<h2>14 · The first of the month: a contribution&#x27;s check-in</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The old first-of-the-month question is now a check-in (ARCHITECTURE §4.9). A usual contribution is a commitment, made when its record is confirmed, so on its day code puts a check-in card in its member&#x27;s chat: did your usual £200 go into Balanced? The card shows exactly what Went through saves, so that tap is the Confirm, with Undo. The same morning the budget&#x27;s own check-in closes last month (flow 23), and several due together fold into one card. Later, the Forecaster&#x27;s risk-steered split sits beside the rules engine&#x27;s on the same card.</p>
 <p><em><strong>Trigger</strong> the daily check-in job, on the day a usual contribution is due</em> <span data-type="status" data-color="blue">Phase 4 (check-ins)</span> <em>Phase 5 (contributions and SIPs as commitments)</em> <span data-type="status" data-color="blue">Phase 17 (the steered split)</span></p>
 </div>
@@ -250,7 +271,7 @@
 </table>
 <h3>👀 What the members see</h3>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="bf37710f-6e7f-477f-9b22-c906607a9e80" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-monthly.png"></div>
-<figcaption>What the member sees: The first of the month: a contribution&amp;#x27;s check-in (Agent Journey)</figcaption></figure>
+<figcaption>What the member sees: The first of the month: a contribution&#x27;s check-in (Agent Journey)</figcaption></figure>
 <ul><li><strong>Today.</strong> A check-in card in 1b&#x27;s style: Went through is the Confirm, saved with Undo.</li>
 <li><strong>Later.</strong> Both engines side by side, the disagreement said out loud; Confirm follows.</li>
 </ul>
@@ -281,7 +302,13 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-205" data-card-appearance="inline"></a></td><td>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-216" data-card-appearance="inline"></a></td><td>SIPs and regular contributions are commitments that record each buy, with an annual step-up</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-38" data-card-appearance="inline"></a></td><td>&quot;I put £200 into Balanced&quot; becomes a transaction after Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-170" data-card-appearance="inline"></a></td><td>Apple push reaches each member&#x27;s devices when the app is closed, with no amounts on the lock screen unless they choose</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-124" data-card-appearance="inline"></a></td><td>F6: the Forecaster&#x27;s view appears beside the rules engine in the chat and on the dashboard</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-125" data-card-appearance="inline"></a></td><td>F7: monthly money and rebalancing are steered by risk to cut deep falls while growing steadily</td></tr>
+</tbody>
 </table>
 <p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

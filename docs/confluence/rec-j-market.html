@@ -8,7 +8,6 @@
 <figcaption>From free sources to a card the household reads (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>0</p>
 <p>The whole market side in one drawing</p>
-<h3>From free sources to a card the household reads</h3>
 <p>After each close (London, New York and, from phase 19, India&#x27;s NSE and BSE, and from phase 5 AMFI&#x27;s fund prices in the UK evening) a schedule in <code>Europe/London</code> queues the day&#x27;s jobs. One worker Lambda runs each job by its type: ingest, news, the rules engine, the Forecaster, grading and calibration, the brief. The record lives in an S3 lake, the state in DynamoDB, and the result reaches the iOS app (its chat, its dashboard and push) and the web app. Claude only tags news and explains; code makes every number.</p>
 <p>Scroll sideways to see the whole drawing.</p>
 </details><h2>🎯 What can and cannot be forecast</h2>
@@ -16,7 +15,6 @@
 <figcaption>What can and cannot be forecast (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>1</p>
 <p>The honest starting point</p>
-<h3>What can and cannot be forecast</h3>
 <p>MA-117ARCHITECTURE §19.1</p>
 <p>Risk and mood can be forecast; tomorrow&#x27;s up or down cannot. Calm and rough spells cluster, so how rough the next few weeks will be is far more forecastable than which way prices go. A tool claiming 80 to 90% accuracy on direction has learned its past by heart.</p>
 <p>Can</p>
@@ -45,7 +43,6 @@
 <figcaption>Free sources first, stamped with the day they became known (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>2</p>
 <p>Data in, as it was known each day</p>
-<h3>Free sources first, stamped with the day they became known</h3>
 <p>Phase 10: price chainsF1 MA-119E3 MA-131</p>
 <p>Ten years, from 2015 or a fund&#x27;s inception, in Parquet in the <code>mypaisa-&lt;env&gt;-lake</code> bucket S3, queried with DuckDB. A daily refresh runs after the close as jobs on the SQS work queue, run by the worker λ. Both engines run on free sources; each source&#x27;s terms are recorded, and the use is personal.</p>
 <table data-layout="full-width"><thead><tr><th>Kind</th><th>What</th><th>Free source, in order</th><th>Cost</th></tr>
@@ -114,7 +111,6 @@
 <figcaption>Fixed rules a person can check by hand (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>3</p>
 <p>The rules engine today</p>
-<h3>Fixed rules a person can check by hand</h3>
 <p>Phase 10: indicators, pillars, cascade, confidence v0Phase 13: history termPhase 14: sentiment tiltPhase 15: go-live gate</p>
 <p>Ported from the desk and extended for a holder who accumulates with care. The worker λ runs the ingest and engine jobs at 07:00 and 21:00 Europe/London, and writes a Signal and a Stance for each holding to DynamoDB. From phase 19 the Indian holdings are scored by the same rules, from India&#x27;s previous day, whose prices are in by the UK evening.</p>
 <ol><li>Clean bars Drop interpolated bars; append today only when the session traded; a series older than the previous session is STALE and left out.</li>
@@ -198,7 +194,6 @@
 <figcaption>A story counts by how much of a holding it touches (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>4</p>
 <p>Matching news and world events to holdings</p>
-<h3>A story counts by how much of a holding it touches</h3>
 <p>F1 MA-119F4 MA-122Phase 14: news and events</p>
 <p>Every holding has an exposure map, kept on the instrument&#x27;s <code>exposure</code> and refreshed on its own clock. Claude Haiku tags each day&#x27;s stories; code works out how much each story touches each holding. Code produces every number, and news alone never raises a red alert.</p>
 <p>OEIC or ETF · monthly, iShares files daily</p>
@@ -263,7 +258,6 @@
 <figcaption>Risk first, direction last (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>5</p>
 <p>The Forecaster&#x27;s five models</p>
-<h3>Risk first, direction last</h3>
 <p>F3 MA-121F4 MA-122F5 MA-123epic MA-117</p>
 <p>A second engine beside the rules engine that learns from ten years of history. Each model answers one question over the next four weeks. Code makes every number, the event impacts included; Claude files each day&#x27;s news under the event types and explains the result. From phase 19 it takes the Indian holdings on the same terms, with ten years of their history from yfinance and mfapi.in, and shows nothing for them until its gates are passed.</p>
 <h4>1 · Market mood</h4>
@@ -363,7 +357,6 @@
 <figcaption>Both engines in one card, and one page per holding (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>6</p>
 <p>Side by side</p>
-<h3>Both engines in one card, and one page per holding</h3>
 <p>F6 MA-124needs phases 12 and 13</p>
 <p>The rules engine&#x27;s call and the Forecaster&#x27;s view sit together, each with its own track record. When the two disagree, the card says so; below the confidence floor it says &quot;no clear view&quot;. The Forecaster appears in weekday cards for a holding only after 8 live weeks beating both the base rate and the rules engine; until then, only in the Saturday review, labelled &quot;in practice&quot;. Both views are designed first, with privacy mode and both themes. From phase 19 an Indian holding gets the same card, its figures in rupees with pounds beside them.</p>
 <p>£</p>
@@ -434,7 +427,6 @@
 <figcaption>Grade every day, calibrate every day, change rules on evidence (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>7</p>
 <p>The learning loop, daily</p>
-<h3>Grade every day, calibrate every day, change rules on evidence</h3>
 <p>Phase 13: the graderE4 MA-132E5 MA-133E6 MA-134</p>
 <p>The grader and tuner runs the loop for both engines. Every prediction is kept exactly as it was made, with the versions of its model and settings and the date its inputs were known, and graded against what prices actually did.</p>
 <ol><li>Keep it as made Every stance and forecast, with its model and settings versions and the date its inputs were known. S3 predictions/</li>
@@ -473,7 +465,6 @@
 <figcaption>Steer the money the household already moves (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>8</p>
 <p>The strategy layer · where the goal is won</p>
-<h3>Steer the money the household already moves</h3>
 <p>F7 MA-125after F2 and F3</p>
 <p>Forecasts become suggestions about the monthly contributions. It shows as the suggested split on the first-of-the-month contribution prompt, beside the rules engine&#x27;s. The app cannot trade: the household reads the suggestion and makes any move itself.</p>
 <h4>The rules it keeps</h4>
@@ -508,7 +499,6 @@
 <figcaption>A lab first, practice next, and an off switch (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>9</p>
 <p>How it proves itself</p>
-<h3>A lab first, practice next, and an off switch</h3>
 <p>F2 MA-120F5 MA-123F6 MA-124</p>
 <p>Nothing is shown because it sounds clever. A model earns its place in the lab over ten years, then in eight live weeks, and loses it again when its record slips. Each holding passes the gate on its own record, so an Indian holding from phase 19 starts in practice like any other.</p>
 <h4>The backtest lab</h4>
@@ -550,7 +540,6 @@
 <figcaption>Nothing lost, everything retried, the rest raised (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>10</p>
 <p>Self-healing on the market pipeline</p>
-<h3>Nothing lost, everything retried, the rest raised</h3>
 <p>MA-138MA-139MA-140E7 MA-135MA-137</p>
 <p>A bad minute at a data source, the Anthropic API or Apple&#x27;s push service costs a delay, never a day&#x27;s work. From phase 18 the daily run is one Step Functions state machine with retries and backoff on every step and idempotent writes, its jobs carried by the SQS work queue.</p>
 <ol><li>Ingest Prices, the economy, events, through each chain.</li>
@@ -581,7 +570,6 @@
 <figcaption>Two ceilings the admin moves, and a small expected spend (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>11</p>
 <p>Budgets</p>
-<h3>Two ceilings the admin moves, and a small expected spend</h3>
 <p>MA-113MA-137E8 MA-136</p>
 <p>Claude · the Max 20x plan&#x27;s credit</p>
 <h4>$200 a month, across both environments</h4>
@@ -632,7 +620,6 @@
 <figcaption>India: Indian funds, shares and ETFs beside the UK ones (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>12</p>
 <p>A second market, the same engines</p>
-<h3>India: Indian funds, shares and ETFs beside the UK ones</h3>
 <p>epic MA-147IN1 MA-151IN2 MA-152IN3 MA-153IN4 MA-154MA-156Phase 19 · ARCHITECTURE §22</p>
 <p>It works without changing the core: currency, country and the kind of holding are data, every feed is a plugin in a chain, and the INR view was already planned. India adds plugins, two kinds of holding, account types, a macro basket and an importer. Free sources first; a paid feed only on the admin&#x27;s approval.</p>
 <p>“If later I want to add Indian market in the mix will it work? … I also have some existing portfolio of MF and stock in India market which I will feed later.”</p>
@@ -761,7 +748,6 @@
 <figcaption>What each story needs before it can start (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>13</p>
 <p>The road</p>
-<h3>What each story needs before it can start</h3>
 <p>epic MA-117: F1 to F7epic MA-127: E1 to E8epic MA-147: IN1 to IN4</p>
 <p>All three epics are later work, after the rules engine and its track record. Indicatively, the Forecaster takes 8 to 12 weeks, the agent team 6 to 8 and India 3 to 4. F1 and F2 can start any time after phase 10, and F2&#x27;s first report tests the rules engine early. IN1 can start after phase 10 too; the currency check India leans on, MA-156, is phase 2.</p>
 <p>Forecaster, F1 to F7 (MA-119 to MA-125)Agent team, E1 to E8 (MA-129 to MA-136)India, IN1 to IN4 (MA-151 to MA-154), with MA-156</p>

@@ -717,7 +717,7 @@ RECORD_CASES = [
     ("an ARCHITECTURE section on no record page", "ARCHITECTURE.md", lambda t: t + "\n\n## 99. A section nobody records\n\nText.\n",
      r"ARCHITECTURE §99 is on 0 record pages"),
     ("an explainer page changed after its pictures were captured", "docs/design/architecture-v4.html",
-     lambda h: h.replace("</body>", "<!-- changed -->\n</body>", 1), r"preview rec-j-v4--v4-question\.gif is older than its boards"),
+     lambda h: h + "\n<!-- changed -->\n", r"preview rec-j-v4--v4-question\.gif is older than its boards"),
     ("a flow the record names gone from the Agent Journey", "docs/design/agent-journey.html",
      lambda h: h.replace('id="invite"', 'id="invite-gone"', 1), r"has no flow #invite"),
     ("a Story Done with no code", "docs/trace.json", lambda t: _set(t, "MA-36", status="Done"), r"MA-36: a Story Done names no code"),

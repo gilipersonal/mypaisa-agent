@@ -27,7 +27,8 @@
 <ul><li><strong>What a check-in is.</strong> A <code>Commitment</code> (§4.1) is any expected, dated money tied to a record or a member: an EMI, a card bill, a SIP, rent, a premium, a salary, a maturity, a valuation due. Its kind&#x27;s templates make it when the record is confirmed. A <code>CheckIn</code> is one occurrence, with the id <code>commitment#due_date</code>, created once by a conditional put, so a retry never asks twice.</li>
 <li><strong>The daily job.</strong> A worker job, code with no LLM, finds what is due and puts each check-in card straight on the outbox, with push (no amounts on the lock screen, MA-170):</li>
 </ul>
-<p>``<code> HDFC car loan: was November&#x27;s EMI paid? [Paid] [Not yet] [Different amount] [Paid off in full] </code>``</p>
+<pre><code>HDFC car loan: was November&#x27;s EMI paid?
+[Paid] [Not yet] [Different amount] [Paid off in full]</code></pre>
 <ul><li><strong>Answers.</strong><ul><li><strong>Paid:</strong> the card already shows exactly what will be written, so the tap is the Confirm, with Undo. One transaction moves the check-in to answered, writes the event and its audit row (<code>via: checkin</code>), and updates the commitment.</li>
 <li><strong>Not yet:</strong> asks again in a few days, then shows as overdue.</li>
 <li><strong>Different amount</strong> and <strong>Paid off in full</strong> open a short flow. Paid off in full closes the record, ends the commitment and runs the Projection again.</li>

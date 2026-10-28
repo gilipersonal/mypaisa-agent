@@ -67,7 +67,15 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-32" data-card-appearance="inline"></a></td><td>The first person to sign in owns the household and invites and removes members with one-time links</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-168" data-card-appearance="inline"></a></td><td>Signing in takes one tap with Apple or Google, the session stays in the Keychain, and an invite link opens the app to join</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-73" data-card-appearance="inline"></a></td><td>Each environment hosts the web app at dashboard(-dev).mypaisapp.com on S3 and CloudFront, with the iOS app&#x27;s association file and the invite page</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-162" data-card-appearance="inline"></a></td><td>The Apple Developer Program, and the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-35" data-card-appearance="inline"></a></td><td>The chat answers onboarding, add, update, privacy, pause, resume and help, typed or from its shortcut chips</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-33" data-card-appearance="inline"></a></td><td>Each member&#x27;s records have their owners, and a joint record has two owners with their shares</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-31" data-card-appearance="inline"></a></td><td>The chat API accepts only a signed-in member&#x27;s messages and taps, and hands each off once</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+</tbody>
 </table>
 <h2>02 · Signing in with Apple, Google or a passkey</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>There are no passwords. In the app, Apple or Google vouches for the member, natively, and the environment&#x27;s Cognito user pool turns that into a short-lived session kept in the Keychain. In the web app it is Apple, Google or a passkey, and the session is a cookie the api sets. An import, a rollback, leaving the household and every admin action, from the Admin center or the admin&#x27;s chat, need a second check, bound to that one action: a fresh Sign in with Apple or a passkey under Face ID in the app (Google again for a Google-only member), a passkey or a fresh sign-in in the browser.</p>
@@ -187,7 +195,18 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-168" data-card-appearance="inline"></a></td><td>Signing in takes one tap with Apple or Google, the session stays in the Keychain, and an invite link opens the app to join</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-109" data-card-appearance="inline"></a></td><td>Each environment has its own Cognito sign-in with Sign in with Apple, Google and passkeys, verified in custom-auth Lambdas</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-185" data-card-appearance="inline"></a></td><td>In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-143" data-card-appearance="inline"></a></td><td>Each environment has its own Google iOS and web clients and Sign in with Apple&#x27;s ids, with their ids in SSM, before Cognito is built</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-75" data-card-appearance="inline"></a></td><td>The api&#x27;s authorizer checks the access token or the session cookie, the member&#x27;s status and session epoch on every call and on the stream</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-77" data-card-appearance="inline"></a></td><td>A member adds a second sign-in, Apple or Google, or a passkey, to their identity from You</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-72" data-card-appearance="inline"></a></td><td>Each member&#x27;s Apple Account and Google account use two-factor authentication, and each device has a passcode and Face ID</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-172" data-card-appearance="inline"></a></td><td>A member signs out of a device or leaves the household from You, and their sign-in is deleted and Apple&#x27;s token revoked</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-171" data-card-appearance="inline"></a></td><td>Privacy in the app: privacy mode hides amounts everywhere, the app switcher shows nothing, and Face ID can lock the app</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-102" data-card-appearance="inline"></a></td><td>The owner can sign out or pause any member&#x27;s devices from the Admin center, behind the second check</td></tr>
+</tbody>
 </table>
 <p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

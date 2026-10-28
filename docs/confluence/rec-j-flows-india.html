@@ -75,7 +75,14 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-156" data-card-appearance="inline"></a></td><td>A transaction can be typed in any currency, and the chat checks it against the holding&#x27;s own currency and puts a mismatch right before Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-38" data-card-appearance="inline"></a></td><td>&quot;I put £200 into Balanced&quot; becomes a transaction after Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-39" data-card-appearance="inline"></a></td><td>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-44" data-card-appearance="inline"></a></td><td>ECB FX rates and market calendars are loaded daily (the ECB-rate button, phase 3)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-153" data-card-appearance="inline"></a></td><td>IN3: Indian accounts show in INR and GBP; rupees and pounds checked both ways (phase 19)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-169" data-card-appearance="inline"></a></td><td>The chat in the app renders every card natively; its buttons post to /v1/chat/actions</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+</tbody>
 </table>
 <h2>16 · Importing the existing Indian portfolio, once</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The household&#x27;s Indian mutual funds, shares and ETFs arrive once, with their whole history, from the statements India already produces. Each file is kept first; code parses it; every holding is matched by ISIN; a dry run shows everything; one Confirm, with the second check, writes it all. Anything that does not match is listed, never guessed.</p>
@@ -148,7 +155,15 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-152" data-card-appearance="inline"></a></td><td>IN2: The existing Indian portfolio is imported from a CAS statement or a broker export, with every past transaction, after one Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-151" data-card-appearance="inline"></a></td><td>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-111" data-card-appearance="inline"></a></td><td>The owner fills prod&#x27;s history from an Excel workbook sent in the chat: the same dry run, Confirm and rollback</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-148" data-card-appearance="inline"></a></td><td>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-149" data-card-appearance="inline"></a></td><td>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-179" data-card-appearance="inline"></a></td><td>A Live Activity follows a long job, such as an import, on the Lock Screen and in the Dynamic Island (phase 20, later)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian markets and the existing Indian portfolio (phase 19)</td></tr>
+</tbody>
 </table>
 <h2>17 · The household in INR and GBP</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Indian holdings sit in Indian accounts, in rupees, with the pound value beside every figure. The household total stays in the base currency, pounds, with the rupee view one tap away. Privacy mode hides rupees as it hides pounds; a suggestion names only what suits its account; and a holding the UK may tax differently is flagged in plain words.</p>
@@ -211,7 +226,13 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-153" data-card-appearance="inline"></a></td><td>IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-156" data-card-appearance="inline"></a></td><td>A transaction can be typed in any currency and is checked against the holding&#x27;s own currency</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-94" data-card-appearance="inline"></a></td><td>Wealth maths and a daily net worth, with the household&#x27;s INR view one tap away (phase 3)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-78" data-card-appearance="inline"></a></td><td>Overlap and Scorecard work at every door: iPhone, iPad, the foldable and the browser</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-183" data-card-appearance="inline"></a></td><td>A holding&#x27;s market view, its stance, signals and Technical section, shows at every door</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian markets and the existing Indian portfolio (phase 19)</td></tr>
+</tbody>
 </table>
 <h2>18 · India in the daily rhythm</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>India closes while the UK is at work, and its fund prices arrive in the UK evening. Every schedule stays in <code>Europe/London</code>: the Indian jobs run on the work queue after those times, and the 07:15 brief carries India&#x27;s previous day beside the UK&#x27;s.</p>
@@ -275,7 +296,14 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-151" data-card-appearance="inline"></a></td><td>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-154" data-card-appearance="inline"></a></td><td>IN4: The engine and the Forecaster read Indian markets through an India basket, Indian news and the RBI&#x27;s calendar</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-44" data-card-appearance="inline"></a></td><td>ECB FX rates and market calendars are loaded daily</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-53" data-card-appearance="inline"></a></td><td>The ingest and engine jobs write signals and shadow stances every weekday by 07:10</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-57" data-card-appearance="inline"></a></td><td>The morning brief and evening wrap arrive as cards, with a Technical section and glossary</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-140" data-card-appearance="inline"></a></td><td>Background jobs run from a work queue with retries and a dead-letter queue</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian markets and the existing Indian portfolio (phase 19)</td></tr>
+</tbody>
 </table>
 <p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

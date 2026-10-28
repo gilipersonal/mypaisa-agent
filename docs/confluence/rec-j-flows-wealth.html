@@ -92,7 +92,19 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-197" data-card-appearance="inline"></a></td><td>Kind specs and the generic draft tools let the agent register any kind of asset or debt, asking only what is missing</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-203" data-card-appearance="inline"></a></td><td>Savings, cash, a property&#x27;s value and a pension&#x27;s value are registered through the chat and corrected in place</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-27" data-card-appearance="inline"></a></td><td>The household&#x27;s records live in one dynamic structure: kinds as data, records as documents, history as events, figures as views</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-33" data-card-appearance="inline"></a></td><td>Each member&#x27;s records have their owners, and a joint record has two owners with their shares</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-201" data-card-appearance="inline"></a></td><td>One write service takes the chat&#x27;s Confirm and an in-place correction alike, checked against the kind and audited</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-209" data-card-appearance="inline"></a></td><td>Loans, mortgages and EMIs are registered through the chat, with dated terms, rate changes, prepayments and closure</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-206" data-card-appearance="inline"></a></td><td>Shares, ETFs, OEICs, mutual funds, bonds and gold in the UK and India are registered through the chat as holdings in their accounts</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-30" data-card-appearance="inline"></a></td><td>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-208" data-card-appearance="inline"></a></td><td>The first dashboard shows net worth and every record at every door, and moves live when a change is confirmed</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-199" data-card-appearance="inline"></a></td><td>The web app&#x27;s chat shows the conversation, renders every card, streams replies and sends text and files, at desktop and phone width</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</td></tr>
+</tbody>
 </table>
 <h2>20 · Correcting a figure in place</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>An existing figure that its kind marks editable is corrected where it is shown, on any screen, at either door: tap it, type the new value, see the before and after, Save. Home, Reading has shown £415,000 since its April valuation; at 09:52 on Mon 26 Oct Arun puts it right at £428,000. Save writes a correction event and its audit row through the same write service as the chat&#x27;s Confirm, £415,000 stays in the history, and net worth moves from £444,951 to £457,951. Nothing is created in place: anything new is made only in the chat.</p>
@@ -149,7 +161,13 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-201" data-card-appearance="inline"></a></td><td>One write service takes the chat&#x27;s Confirm and an in-place correction alike, checked against the kind and audited</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-203" data-card-appearance="inline"></a></td><td>Savings, cash, a property&#x27;s value and a pension&#x27;s value are registered through the chat and corrected in place</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-74" data-card-appearance="inline"></a></td><td>The api serves each member only what they may see, and accepts in-place corrections only to the figures a kind marks editable</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-30" data-card-appearance="inline"></a></td><td>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-79" data-card-appearance="inline"></a></td><td>The Audit screen shows every change with who, when and the file behind it, at every door</td></tr>
+</tbody>
 </table>
 <h2>21 · A check-in: the agent asks, one tap records it</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>When an EMI, a card bill, a SIP, rent, a premium, a salary, a maturity or a valuation is due, code (no model) puts a check-in card in the right member&#x27;s chat. On Thu 5 Nov the HDFC home loan&#x27;s EMI of ₹39,390 is due. The card says exactly what Paid saves, so the Paid tap is the Confirm, with Undo. The rarer answers wait behind Something else, among them Paid off in full, which closes the loan after its own Confirm. Several due at once fold into one card, and an autopay is assumed paid and listed once a week.</p>
@@ -216,7 +234,15 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-205" data-card-appearance="inline"></a></td><td>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-209" data-card-appearance="inline"></a></td><td>Loans, mortgages and EMIs are registered through the chat, with dated terms, rate changes, prepayments and closure</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-204" data-card-appearance="inline"></a></td><td>Loan maths: the EMI, the schedule, the interest split, prepayment by term or by EMI, and preclosure, to the penny</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-211" data-card-appearance="inline"></a></td><td>Autopay commitments and a weekly digest keep the agent to about ten notifications a week</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-202" data-card-appearance="inline"></a></td><td>A maturing deposit asks whether it was renewed, paid out or moved, and a renewal starts its successor record</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-216" data-card-appearance="inline"></a></td><td>SIPs and regular contributions are commitments that record each buy, with an annual step-up</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-170" data-card-appearance="inline"></a></td><td>Apple push reaches each member&#x27;s devices when the app is closed, with no amounts on the lock screen unless they choose</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+</tbody>
 </table>
 <h2>22 · Sending a statement</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>MyPaisa never connects to a bank. On Sun 1 Nov at 08:40 Arun sends October&#x27;s statements in the chat: Barclaycard&#x27;s of Sun 1 Nov and Monzo&#x27;s for October. Both files are kept for good, then read. Every line is categorised, the merchant memory first and Haiku for the merchants it has not seen; transfers, the card payment and the EMIs are recognised by code, so nothing counts twice; the two lines it is unsure of come back in amber; and one review card takes one Confirm. The Monzo statement shows the car loan&#x27;s EMI, so the autopay the weekly digest had assumed paid is confirmed by itself.</p>
@@ -283,7 +309,14 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-218" data-card-appearance="inline"></a></td><td>A bank or card statement sent in the chat is read, every line categorised and transfers recognised, for one Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-210" data-card-appearance="inline"></a></td><td>Credit cards are kept as revolving debt from their statements, and only interest and fees count as spending</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-211" data-card-appearance="inline"></a></td><td>Autopay commitments and a weekly digest keep the agent to about ten notifications a week</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-205" data-card-appearance="inline"></a></td><td>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-96" data-card-appearance="inline"></a></td><td>Budget: each member&#x27;s income with its history, a monthly plan per category, and plan against actual, set through the chat</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-148" data-card-appearance="inline"></a></td><td>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+</tbody>
 </table>
 <h2>23 · Closing the month on the 1st</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>On the 1st the month closes with a check-in, in place of the old first-of-the-month question. At 09:00 on Sun 1 Nov, after the statements confirmed at 08:44, the card shows October&#x27;s plan against actual for each category, with the income, the EMIs and the SIP, the surplus and the savings rate, then asks only for what no statement covered: cash, or another bank. One tap closes October, with Undo, and Budget reads the result at every door.</p>
@@ -338,7 +371,13 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-220" data-card-appearance="inline"></a></td><td>On the 1st the agent closes last month&#x27;s budget, asking only for what no statement covered</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-96" data-card-appearance="inline"></a></td><td>Budget: each member&#x27;s income with its history, a monthly plan per category, and plan against actual, set through the chat</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-218" data-card-appearance="inline"></a></td><td>A bank or card statement sent in the chat is read, every line categorised and transfers recognised, for one Confirm</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-205" data-card-appearance="inline"></a></td><td>Commitments and check-ins: when a payment, a maturity or a valuation is due, the agent asks and one tap records it</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-170" data-card-appearance="inline"></a></td><td>Apple push reaches each member&#x27;s devices when the app is closed, with no amounts on the lock screen unless they choose</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
+</tbody>
 </table>
 <h2>24 · The Projection, and a what-if</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Projection, not forecast: Forecast stays the market&#x27;s word for a holding&#x27;s next four weeks, and the Projection is the household&#x27;s net worth over the years. Code computes every figure, month by month to 2056; the agent explains. From £457,951 on Mon 26 Oct the middle path reaches £1,316,000 by 2036 and £4,635,000 by 2056, and every assumption shows its source. A what-if is a typed override the engine runs and nobody saves: <em>£60,000 down on a second flat in June 2028</em> puts 2036&#x27;s middle path at £1,233,000 against £1,316,000. Plan items, and the saved assumptions, are the admin&#x27;s alone.</p>
@@ -402,7 +441,14 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody></tbody>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-219" data-card-appearance="inline"></a></td><td>The Projection engine runs the household&#x27;s net worth month by month to the horizon, deterministic first, then a Monte Carlo fan</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-223" data-card-appearance="inline"></a></td><td>What-ifs and the Projection&#x27;s story: the agent proposes assumptions, runs scenarios and explains the curve, every figure from the engine</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-224" data-card-appearance="inline"></a></td><td>The Projection screen shows the fan, its milestones and the editable assumptions, at every door</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-222" data-card-appearance="inline"></a></td><td>Plan items: the admin adds future income and spends through the chat and corrects them in place</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-221" data-card-appearance="inline"></a></td><td>Projection priors per country: long-run returns, inflation and wage growth, versioned with their sources</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-212" data-card-appearance="inline"></a></td><td>XIRR to the penny for a holding, an account, a member and the household, from the dated ledger</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-215" data-card-appearance="inline"></a></td><td>With no history, the agent asks for past transactions to compute the return, or an estimate it marks as one</td></tr>
+</tbody>
 </table>
 <p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>
