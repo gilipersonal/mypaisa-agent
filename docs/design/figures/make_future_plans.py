@@ -144,7 +144,7 @@ EXISTING = [
      "created": "Sun 25 Oct 20:09"},
     {"id": "bonus", "what": "Asha's annual bonus", "effect": "new_flow", "type": "income", "member_id": "asha",
      "category": "Income", "recurring": "yearly", "start": "2027-03", "end": "2052-03", "amount": 3000, "ccy": "GBP",
-     "growth": {"kind": "fixed", "pct": 0.035}, "source_text": "Asha gets about £3,000 bonus every March", "status": "active",
+     "growth": {"kind": "fixed", "pct": 0.035}, "source_text": "Add Asha's bonus to the plan: £3,000 every March from 2027 to 2052", "status": "active",
      "version": 2, "created": "Sun 25 Oct 20:15", "corrected": "Mon 26 Oct 10:44, growth none → 3.5% a year (the v4 Projection boards, P7)"},
     {"id": "car2", "what": "Replace the car", "effect": "new_flow", "type": "spend", "member_id": "arun",
      "category": "Transport", "one_off": True, "start": "2031-06", "amount": 25000, "ccy": "GBP", "growth": None,
@@ -488,6 +488,11 @@ def ledger_rows(ms, rows_of):
         for k, v in r["closed"].items():
             closed[NAMES.get(k, k)] = closed.get(NAMES.get(k, k), 0) + v
     below = [r for r in rows_of if r["surplus"] < FLOOR - 0.5]
+    # the leanest month as the boards show it: that month's own rounded lines, summed
+    if len(rows_of) == 1:
+        low_label, low_shown = rows_of[0]["label"], surplus
+    else:
+        low_label, low_shown = min(((r["label"], ledger_rows(ms, [r])["surplus"]) for r in rows_of), key=lambda x: x[1])
     fxs = [r["fx"] for r in rows_of]
     return {
         "income": inc_r, "income_total": sum(inc_r.values()),
@@ -501,7 +506,7 @@ def ledger_rows(ms, rows_of):
         "invested": round(sum(r["invested"] for r in rows_of)), "opening_cash": round(rows_of[0]["opening_cash"]),
         "closing_cash": round(rows_of[-1]["closing_cash"]),
         "below_floor": len(below), "below_floor_months": [r["label"] for r in below],
-        "lowest_month": min(rows_of, key=lambda r: r["surplus"])["label"], "lowest_surplus": round(min(r["surplus"] for r in rows_of)),
+        "lowest_month": low_label, "lowest_surplus": low_shown,
         "cash_negative": next((r["label"] for r in rows_of if r["closing_cash"] < 0), None),
         "fx_avg": round(sum(fxs) / len(fxs), 2), "deflator": round(1 / (1 + INFL["UK"]) ** (rows_of[-1]["y"] - 2026), 4),
     }
@@ -653,7 +658,8 @@ def main():
             "surplus_by_year_before": {y: s0y[y]["surplus"] for y in range(2027, 2047)},
             "surplus_by_year_after": {y: s1y[y]["surplus"] for y in range(2027, 2047)},
             "below_floor_months": len(gap_months), "first_below_floor": gap_months[0], "last_below_floor": gap_months[-1],
-            "lowest_month": min(B["ms1"][:240], key=lambda r: r["surplus"])["label"], "lowest_surplus": round(min(r["surplus"] for r in B["ms1"][:240])),
+            "lowest_month": min(B["ms1"][:240], key=lambda r: r["surplus"])["label"],
+            "lowest_surplus": ledger_rows(B["ms1"], [min(B["ms1"][:240], key=lambda r: r["surplus"])])["surplus"],
             "cash_negative": next((r["label"] for r in B["ms1"] if r["closing_cash"] < 0), None),
             "new_milestones": [{"when": "2029-01", "what": "School fees start", "amount": "£4,000 a month"},
                                {"when": "2041-07", "what": "School fees end", "frees": gbp(plan_amount(SCHOOLING, idx(2041, 7)) * -1) + " a month"}],
