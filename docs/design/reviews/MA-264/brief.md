@@ -218,3 +218,32 @@ These are design-first's rules and the checklist in `.claude/rules/independent-r
    - the `open_url`s;
    - the board-fit results in both engines;
    - anything you could not draw, or that disagrees with the plan.
+
+# Round 2: the picked options' remaining states (Arun's yes, 28 Oct 2026)
+
+Arun picked 1a, 2a and 3a and settled his floor (£500 a month among the Projection's assumptions, his alone). Each
+picked story's `undrawn` list in `docs/trace.json` is the checklist; every item is drawn, or the lane says why not. The
+figures are `future-plans-v4.json` as regenerated:
+- `R26` and `what_if_26` are the 26 Oct runs;
+- `evening2.plans_tab` covers 21:08 to 21:13;
+- `evening2.wedding` covers 21:15 to 21:18;
+- `forecast.R2`, `forecast.R7` and `forecast.W` are the ledgers.
+
+The README's "The rest of the evening" tells the story.
+
+The rules of round 1 hold, plus:
+- **Every board name is a literal string** in its board object (`name: 'iPhone · …'`), so `plan_sync.py check` can
+  read it.
+- **The existing boards keep their names and captions exactly.** The trace cites them.
+- **No card inside a card, no left stripe, no all-caps line over 24 characters.** Canvas id chips keep contrast on
+  hover (`a.dv-tid:hover, a.plan-k:hover { color: #fff; }`).
+- **A pick supersedes the drawn flow everywhere** (lesson 8). A state drawn at a time shows everything that happened
+  before it that evening (lesson 19).
+
+| Lane | Files (new unless named) | States |
+| --- | --- | --- |
+| A, Budget forecast 1a (MA-262) | app `Web v4 · Budget forecast 1a states.dc.html`; ios `iPhone v4 · Budget forecast 1a states.dc.html` | after the pot (20:47, R2: no flags, the pot's lines); ₹ and Today's money (20:48, derived per year from `fx_avg` and `deflator`, said in the notes); 5, 10 and 30 years (20:49, 20:50; 30 shows retirement drawing on Balanced); privacy (20:51); loading (20:52, the run after the salary step, the last run kept); error (the last run kept, Retry); empty (no budget yet: the chat's way in); Asha at 21:20 (`forecast.W`: cash below zero Jun 2027 to Feb 2028, from the wedding and the extension; she can ask, not apply); 1a's trace on iPhone and iPad (20:43) |
+| B, Plans in the chat 2a (MA-263, MA-222) | app `Web v4 · Plans in the chat 2a states.dc.html`; ios `iPhone v4 · Plans in the chat 2a states.dc.html` | the two more ways opened (20:44); the salary step (20:52 to 20:53: change_flow, its question, impact R2 → R3, saved, its audit row in Technical with source_text, version and the run before and after); the HDFC closure (20:58 to 20:59: record_event, impact R3 → R4, the EMI stopping 16 months early, ₹23,689 left over); the wedding (21:15 to 21:18: the cash flag, the three ways for cash, way 1 applied, then Undo); Asha at 21:20 (asking about the wedding: the ways read-only; asking to add a plan: refused, offered a what-if); Arun at 21:22 ("about 2 cr" asked for the exact amount and which loan; "my ICICI loan" answered with the loans he has); November's Budget screen with the School fees pot line (20:47, the screen drawn as `Web v4 · Budget` and `iPhone v4 · Budget` draw it) |
+| C, Plans tab 3a (MA-224, MA-222) | app `Web v4 · Plans tab 3a states.dc.html`; ios `iPhone v4 · Plans tab 3a states.dc.html` | privacy (21:06); Replace the car paused (21:08) and resumed (21:09) from its menu, each with its audit row and the summary's new middle path; School fees' end corrected in place in its sheet (21:11: editing, then saved, before → after, history v2, the audit with the run before and after); Replace the car ended (21:13: an Ended section); Asha at 21:20 (8 plans with the wedding, no pills, no Add in chat, a lock note) |
+| D, the Net worth tab (MA-224) | **existing** app `Web v4 · Projection.dc.html` and ios `iPhone v4 · Projection.dc.html` | every figure moved to `R26` and `what_if_26` (fan, hero, ranges, 1b's story, 1c's decades, P4's rupees, the what-if cards with code's cash flag, the notes); 1a and its states get the tabs (Net worth selected) and the horizon opening at 20 years ("Middle path in 2046"); new frames: the Net worth tab at 390 and on iPad (26 Oct); after the plans (Mon 2 Nov 21:06, R4): plan-item milestones on the line and in Milestones; the notes on MA-193's plan-item card boards (P10 and the web phone board) saying 2a supersedes them for a new plan item |
+| E, the prototype and the Agent Journey | **existing** app `Prototype v4.dc.html`, `PrototypeV4Chat.dc.html`, `PrototypeV4Pages.dc.html`, `PrototypeV4Phone.dc.html`, `PrototypeV4Web.dc.html`, `prototype-v4.js`, `prototype-v4-pages.js`; repo `docs/design/agent-journey.html` | the Projection's figures moved to `R26` and `what_if_26`, with the what-if's cash flag; the Projection page's tabs and the 20-year opening; step 9's plan item made 2a's way (questions, then the impact card, then Confirm); the Agent Journey's Projection and future-plans flows in the same figures and the same flow. Republishing the Agent Journey's artifact is Arun's call: change the repo copy only |

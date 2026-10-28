@@ -320,9 +320,8 @@ def project(paths: int = 400, years: int = 30, seed: int = 7, extra: list | None
 start_net, fan = project()
 # A what-if the boards show: "What if we put £60,000 down on a second flat in June 2028?" (unsaved; numbers from the member's words).
 what_if = {"asked": "What if we put £60,000 down on a second flat in June 2028?", "override": {"what": "Second flat deposit", "ccy": "GBP", "amount": -60000, "when": "2028-06", "repeat": None}}
-_, what_if_fan = project(extra=[what_if["override"]])
-what_if["fan"] = what_if_fan
-what_if["delta_p50_2036"] = next(b["p50"] for b in what_if_fan if b["year"] == 2036) - next(b["p50"] for b in fan if b["year"] == 2036)
+# The what-if's run, like the Projection's, is make_future_plans.py's (MA-264): future-plans-v4.json, what_if_26.
+what_if["runs"] = "future-plans-v4.json: what_if_26 (Mon 26 Oct 10:20), month by month (MA-264)"
 
 # October's statements: every spending line, summing exactly to the budget's actuals; transfers and EMIs recognised.
 rnd_s = random.Random(11)
@@ -401,7 +400,8 @@ out = {
     "autopay_digest_week": {"week_of": "2026-10-19", "assumed_paid": [["Mortgage · Nationwide", gbp(mort_pay), "1 Oct"], ["Car loan · Close Brothers", gbp(car_pay), "20 Oct"]]},
     "projection": {"start_net_gbp": start_net, "horizon_years": 30, "assumptions": assumed, "inflation": INFLATION,
                    "priors": {k: {"return": v[0], "volatility": v[1]} for k, v in PRIORS.items()}, "plan_items": plan_items,
-                   "fan": fan, "milestones": milestones, "engine_note": "illustrative run for the boards; the product's engine is MA-191's"},
+                   "runs": "future-plans-v4.json: R26 (Mon 26 Oct 09:53), run month by month by make_future_plans.py (MA-264), replaces this script's yearly sketch",
+                   "milestones": milestones, "engine_note": "illustrative run for the boards; the product's engine is MA-191's"},
     "formatted": {"net_before": gbp(before["net_gbp"]), "net_after": gbp(after["net_gbp"]), "net_after_inr": inr(after["net_inr"]), "net_after_correction": gbp(after_correction["net_gbp"]), "net_after_correction_inr": inr(after_correction["net_inr"]),
                   "mortgage_payment": gbp(mort_pay), "car_payment": gbp(car_pay), "hdfc_emi": inr(hl_pay),
                   "fd_maturity": inr(fd_mat), "fd_value": inr(fd_accrued), "mf_value": inr(mf_value), "infosys_value": inr(120 * 1480.50)},

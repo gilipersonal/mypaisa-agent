@@ -167,7 +167,7 @@ def p_idx(s: str) -> int:
 
 def plan_amount(p: dict, i: int) -> float:
     """What a plan item moves in month i, in its own currency: + for income, − for spend; 0 outside its dates."""
-    if p.get("status") == "paused":
+    if p.get("status") in ("paused", "done"):
         return 0.0
     s = p_idx(p["start"])
     e = p_idx(p["end"]) if p.get("end") else None
@@ -190,14 +190,18 @@ def plan_amount(p: dict, i: int) -> float:
 
 
 # --- one run of the ledger -----------------------------------------------------------------------------------------
-def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict] | None = None, horizon: int = N):
+def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict] | None = None, horizon: int = N,
+        as_of26: bool = False):
     """The month-by-month ledger and the net-worth path. `changes` are change_flow items (a category trimmed, the SIP
     paused, a plan moved, a pool drawn); `shocks` (Monte Carlo) replace each year's return for the market classes."""
     changes = changes or []
+    # the 26 Oct run (09:53) comes before Arun's correction to his salary growth (10:40) and before Sunday's card
+    # statement, so it uses the 4.17% blend and owes nothing on the card
+    gr = {"arun": G["salary growth Arun"], "asha": growth["asha"]} if as_of26 else growth
     v = assets_at_start()
     cash = sum(v.pop(k) for k in ("pot", "monzo_savings")) + v.pop("nre") / FX0
     loans = {k: {"bal": l["bal0"], **l} for k, l in LOANS.items()}
-    card_owed = float(H["statements_oct"]["barclaycard_nov"]["balance"])          # due Fri 20 Nov
+    card_owed = 0.0 if as_of26 else float(H["statements_oct"]["barclaycard_nov"]["balance"])   # due Fri 20 Nov
     pots = {}                                                                     # named pools a rearrangement builds
     months, nw = [], []
     for i in range(horizon):
@@ -208,10 +212,10 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
         inc = {}
         for mid in ("arun", "asha"):
             base = members[mid]["salary_net_month_gbp"]["2026"]
-            sal = base * (1 + growth[mid]) ** aprils_since_start(i)
+            sal = base * (1 + gr[mid]) ** aprils_since_start(i)
             for c in changes:
                 if c["kind"] == "salary" and c["member"] == mid and i >= p_idx(c["from"]):
-                    sal = c["to"] * (1 + growth[mid]) ** sum(1 for k in range(p_idx(c["from"]) + 1, i + 1) if ym(k)[1] == 4)
+                    sal = c["to"] * (1 + gr[mid]) ** sum(1 for k in range(p_idx(c["from"]) + 1, i + 1) if ym(k)[1] == 4)
             if i >= retire[mid]:
                 sal = 0.0
             inc[mid] = sal
@@ -308,11 +312,20 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
         one_total = sum(one.values())
         interest = max(cash, 0.0) * CASH_RATE / 12
         cash = cash + surplus_after + one_total + sum(mat.values()) + sum(closed.values()) + settle + interest
+        pool_cash = 0.0
+        for c in changes:
+            if c["kind"] == "cash_draw" and cash < 0 and p_idx(c["from"]) <= i <= p_idx(c.get("until", "2099-12")):
+                pool_cash = min(-cash, v[c["pool"]])
+                v[c["pool"]] -= pool_cash
+                cash += pool_cash
         # the surplus rule: cash above six months of outgoings, plus the one-offs due in the next twelve months,
         # goes into Balanced, so a planned one-off is not paid by selling investments
         due = 0.0
         for p in plans:
-            if p["effect"] == "new_flow" and p.get("one_off") and p["type"] == "spend" and i < p_idx(p["start"]) <= i + 12:
+            moved = next((c for c in changes if c["kind"] == "move" and c["plan"] == p["id"]), None)
+            start = moved["to"] if moved else p.get("start")
+            if (p["effect"] == "new_flow" and p.get("one_off") and p["type"] == "spend"
+                    and p.get("status") not in ("paused", "done") and i < p_idx(start) <= i + 12):
                 due += p["amount"]
         target = BUFFER_MONTHS * outgo + due
         invested = max(0.0, cash - target)
@@ -336,10 +349,10 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
         row.update({"income": inc, "plans_income": {k: a for k, a in rec.items() if a > 0}, "spend": spend,
                     "emis": emis, "sip": sip, "premium": premium, "plans_spend": {k: a for k, a in rec.items() if a < 0},
                     "surplus_before_pool": surplus, "pot_in": pot_in, "pot_draw": pot_draw, "retired_draw": retired_draw, "surplus": surplus_after,
-                    "one_offs": one, "maturities": mat, "closed": closed, "settle": settle, "interest": interest, "invested": invested,
+                    "one_offs": one, "maturities": mat, "closed": closed, "pool_cash": pool_cash, "settle": settle, "interest": interest, "invested": invested,
                     "closing_cash": cash, "pots": dict(pots), "net_worth": net, "income_total": income})
         # the ledger's identity, every month
-        flows = surplus_after + one_total + sum(mat.values()) + sum(closed.values()) + settle + interest - invested
+        flows = surplus_after + one_total + sum(mat.values()) + sum(closed.values()) + pool_cash + settle + interest - invested
         assert abs(row["opening_cash"] + flows - cash) < 1e-6
         months.append(row)
         nw.append(net)
@@ -503,7 +516,8 @@ def ledger_rows(ms, rows_of):
         "savings_rate": round(surplus / sum(inc_r.values()), 3) if inc_r else None,
         "one_offs": {k: round(v) for k, v in one.items()}, "maturities": {k: round(v) for k, v in mat.items()},
         "loans_closed": {k: round(v) for k, v in closed.items()},
-        "invested": round(sum(r["invested"] for r in rows_of)), "opening_cash": round(rows_of[0]["opening_cash"]),
+        "invested": round(sum(r["invested"] for r in rows_of)), "from_a_pool_to_cash": round(sum(r["pool_cash"] for r in rows_of)),
+        "opening_cash": round(rows_of[0]["opening_cash"]),
         "closing_cash": round(rows_of[-1]["closing_cash"]),
         "below_floor": len(below), "below_floor_months": [r["label"] for r in below],
         "lowest_month": low_label, "lowest_surplus": low_shown,
@@ -578,6 +592,129 @@ def build():
     S4c = S3c + changes_for("hdfc_close")
     ms4, fan4 = fan(S1 + [SALARY_STEP, HDFC_CLOSE], S4c)
     return locals()
+
+
+WEDDING = {"id": "wedding", "what": "Sister's wedding", "effect": "new_flow", "type": "spend", "member_id": "arun",
+           "category": "Family", "one_off": True, "start": "2027-03", "amount": 20000, "ccy": "GBP", "growth": None,
+           "funded_from": None, "source_text": "£20,000 for my sister's wedding in Mar 2027", "status": "active", "version": 1}
+WHAT_IF_26 = {"id": "flat2", "what": "Second flat deposit", "effect": "new_flow", "type": "spend", "member_id": "arun",
+              "category": "Home", "one_off": True, "start": "2028-06", "amount": 60000, "ccy": "GBP", "growth": None,
+              "source_text": "What if we put £60,000 down on a second flat in June 2028?", "status": "active"}
+
+
+def with_(plans, pid, **kw):
+    return [dict(p, **kw) if p["id"] == pid else p for p in plans]
+
+
+def cash_short(ms, upto=None):
+    neg = [r for r in ms[:upto] if r["closing_cash"] < -0.5]
+    return (neg[0]["label"], round(min(r["closing_cash"] for r in neg))) if neg else None
+
+
+def build2(B):
+    """The rest of the evening (MA-264's remaining states), after the Plans tab at 21:05, and the 26 Oct run."""
+    import copy
+    out = {}
+    # the 26 Oct run at 09:53 and its what-if at 10:20, before Arun's corrections at 10:40 and 10:44
+    e26 = copy.deepcopy(EXISTING)
+    e26[1]["growth"], e26[1]["version"] = None, 1
+    ms26, _ = run(e26, as_of26=True)
+    det26 = [r["net_worth"] for r in ms26]
+    fan26 = fan_as26(e26)
+    wi = fan_as26(e26 + [WHAT_IF_26])
+    ms_wi, _ = run(e26 + [WHAT_IF_26], as_of26=True)
+    out["R26"] = {"when": "Mon 26 Oct 09:53", "after": "the Monzo savings (09:41) and the home's new value (09:52)",
+                  "start": H["totals_after_correction"]["net_gbp"], "fan": fan26,
+                  "assumptions": {"salary growth Arun": G["salary growth Arun"], "Asha's bonus growth": None}}
+    out["what_if_26"] = {"when": "Mon 26 Oct 10:20", "asked": WHAT_IF_26["source_text"], "fan": wi,
+                         "middle_path_2036": at(wi, 2036), "today_2036": at(fan26, 2036), "change_2036": at(wi, 2036) - at(fan26, 2036),
+                         "middle_path_2046": at(wi, 2046), "today_2046": at(fan26, 2046), "change_2046": at(wi, 2046) - at(fan26, 2046),
+                         "cash_short": cash_short(ms_wi),
+                         "cash_back_above_zero": next((r["label"] for r in ms_wi[idx(2028, 6):] if r["closing_cash"] >= 0), None)}
+    # 21:08 to 21:13 on the Plans tab: the car paused, resumed, the fees' end corrected, the car ended
+    plans4 = EXISTING + [SCHOOLING, SALARY_STEP, HDFC_CLOSE]
+    ch4 = B["S4c"]
+    p5 = with_(plans4, "car2", status="paused")
+    p6 = with_(plans4, "schooling", end="2040-07", version=2)
+    p7 = with_(p6, "car2", status="done")
+    runs = {}
+    for key, when, what, plans in (("R5", "Mon 2 Nov 21:08", "Replace the car paused", p5),
+                                   ("R5b", "Mon 2 Nov 21:09", "Replace the car resumed", plans4),
+                                   ("R6", "Mon 2 Nov 21:11", "School fees' end corrected in place, Jul 2041 → Jul 2040", p6),
+                                   ("R7", "Mon 2 Nov 21:13", "Replace the car ended (keeping the car)", p7)):
+        ms, fn = fan(plans, ch4)
+        runs[key] = {"when": when, "after": what, "middle_path": {y: at(fn, y) for y in (2031, 2036, 2046)}, "fan": fn,
+                     "cash_short": cash_short(ms), "below_floor": len(caused_gap(B["ms0"], ms))}
+        runs[key]["ms"] = ms
+    # 21:15 the wedding: a one-off paid from the surplus and cash leaves cash below zero
+    pw = p7 + [WEDDING]
+    msw, fnw = fan(pw, ch4)
+    short = cash_short(msw)
+    base7 = runs["R7"]["ms"]
+    def ok(ms):
+        return cash_short(ms) is None and not caused_gap(B["ms0"], ms)
+    w1c = ch4 + [{"kind": "cash_draw", "pool": "balanced", "from": "2026-11"}]
+    ms1, fn1 = fan(pw, w1c)
+    assert ok(ms1)
+    drawn1 = [(r["label"], round(r["pool_cash"])) for r in ms1 if r["pool_cash"] > 0.5]
+    move_to = None
+    for k in range(idx(2027, 7), idx(2031, 1)):
+        y, m = ym(k)
+        c = ch4 + [{"kind": "move", "plan": "extension", "to": f"{y}-{m:02d}"}]
+        msm, _ = run(pw, c)
+        if ok(msm):
+            move_to = (y, m, c)
+            break
+    ms2, fn2 = fan(pw, move_to[2])
+    pot_paused = [ch for ch in ch4 if ch["kind"] != "save_pot"] + pot_change(0, B["pot"][1]) + [
+        {"kind": "cash_draw", "pool": "balanced", "from": "2026-11"}]
+    ms3, fn3 = fan(pw, pot_paused)
+    assert ok(ms3), "pot paused"
+    drawn3 = [(r["label"], round(r["pool_cash"])) for r in ms3 if r["pool_cash"] > 0.5]
+    out["evening2"] = {
+        "plans_tab": {k: {kk: vv for kk, vv in v.items() if kk != "ms"} for k, v in runs.items()},
+        "wedding": {"when": "Mon 2 Nov 21:15", "plan": WEDDING, "saved": "21:16", "middle_path_before": runs["R7"]["middle_path"],
+                    "middle_path_after": {y: at(fnw, y) for y in (2031, 2036, 2046)}, "fan": fnw, "cash_short": short,
+                    "cash_back_above_zero": next((r["label"] for r in msw[idx(int(short[0][-4:]), MONTHS.index(short[0][:3]) + 1):] if r["closing_cash"] >= 0), None),
+                    "negative_months": [(r["label"], round(r["closing_cash"])) for r in msw if r["closing_cash"] < -0.5],
+                    "options": [
+                        {"id": "isa", "rank": 1, "title": "Take it from Balanced (ISA) when cash runs short",
+                         "changes": [f"Balanced (ISA) pays {gbp(a)} in {l}" for l, a in drawn1],
+                         "why": "Nothing you spend or plan moves; the investments you would have kept pay for the wedding.",
+                         "middle_path": {y: at(fn1, y) for y in (2031, 2036, 2046)}, "drawn": sum(a for _, a in drawn1)},
+                        {"id": "move", "rank": 2, "title": f"Move the home extension to {MONTHS[move_to[1] - 1]} {move_to[0]}",
+                         "changes": [f"Home extension: Jun 2027 → {MONTHS[move_to[1] - 1]} {move_to[0]}, still £35,000"],
+                         "why": "Only if the extension can wait; cash then covers both from the budget.",
+                         "middle_path": {y: at(fn2, y) for y in (2031, 2036, 2046)}},
+                        {"id": "pot", "rank": 3, "title": "Pause the School fees pot until Jun 2027, and take the rest from Balanced",
+                         "changes": [f"School fees pot: £0 a month Nov 2026 to Jun 2027 (this month's budget included), then £{B['pot'][1]:,} to Dec 2028",
+                                     "Balanced (ISA) pays " + ", ".join(f"{gbp(a)} in {l}" for l, a in drawn3)],
+                         "why": "The pot is more than the fees now need, since the salary step and the HDFC closure; it lends the wedding eight months.",
+                         "middle_path": {y: at(fn3, y) for y in (2031, 2036, 2046)}, "drawn": sum(a for _, a in drawn3)},
+                    ],
+                    "applied": {"when": "21:17", "option": "isa",
+                                "audit": f"Plan item added · Balanced (ISA) pays the wedding's shortfall, {', '.join(f'{gbp(a)} in {l}' for l, a in drawn1)} · Arun · Mon 2 Nov 21:17 · in the chat · Undo"},
+                    "undone": {"when": "21:18", "audit": "Undone · Balanced (ISA) paying the wedding's shortfall · Arun · Mon 2 Nov 21:18 · in the chat",
+                               "state": "the wedding stays saved; cash is flagged again"}},
+    }
+    out["forecast_evening2"] = {"R7": {"years": forecast(base7, 2056)}, "W": {"years": forecast(msw, 2056),
+                                "months_2027": month_rows(msw, 2027)}}
+    return out
+
+
+def fan_as26(plans):
+    det_ms, det = run(plans, as_of26=True)
+    cols = {y: [] for y in range(2026, 2057)}
+    for sh in SHOCKS[1:]:
+        _, nw = run(plans, None, sh, as_of26=True)
+        for y in range(2026, 2057):
+            cols[y].append(nw[idx(y, 12)])
+    rows = []
+    for y in range(2026, 2057):
+        c = sorted(cols[y])
+        q = lambda f: int(round(c[int(f * (len(c) - 1))] / 1000) * 1000)
+        rows.append({"year": y, "p10": q(0.10), "p50": q(0.50), "p90": q(0.90), "deterministic": int(round(det[idx(y, 12)] / 1000) * 1000)})
+    return rows
 
 
 def yearly(ms):
@@ -718,8 +855,12 @@ def main():
     out["later"]["hdfc_close"]["left_over_inr"] = round(FD_AT_MATURITY - close)
     out["later"]["hdfc_close"]["frees_inr_a_month"] = round(LOANS["hdfc"]["pay"])
     out["later"]["hdfc_close"]["emis_saved"] = 16
+    out.update(build2(B))
+    for key in ("R7", "W"):
+        out["forecast"][key] = out["forecast_evening2"][key]
+    del out["forecast_evening2"]
     # checks the boards rely on (lesson 10): every year's lines sum to its surplus; the ledger closes
-    for key in ("R1", "R2", "R4", "R0"):
+    for key in ("R1", "R2", "R4", "R0", "R7", "W"):
         for r in out["forecast"][key]["years"]:
             lines = r["income_total"] - r["spend_total"] - r["emis_total"] - r["sip"] - r["premium"] + sum(r["plans"].values()) - r["to_pot"] + r["from_pot"] + r["from_investments"]
             assert lines == r["surplus"], (key, r["year"])
