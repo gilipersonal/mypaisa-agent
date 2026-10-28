@@ -6,7 +6,8 @@ account is illustrative.
 
 Run: python3 make_future_plans.py > future-plans-v4.json
 
-The clock is Mon 2 Nov 2026, the evening after October closed (Sun 1 Nov) and before Thursday's HDFC EMI. The ledger
+The clock is Thu 5 Nov 2026, the evening after the HDFC EMI check-in (answered at 09:12) and Prototype v4's Projection steps (moved
+there from Thu 5 Nov by Arun's pick on 28 Oct 2026, so the prototype's Thursday comes before the plans). The ledger
 starts on 1 Nov 2026 and runs to Dec 2056; the boards show 20 years (to 2046) by default, as MA-261 asks.
 Each month the ledger keeps one identity, checked below: opening cash + the month's flows = closing cash.
 """
@@ -82,7 +83,7 @@ def years_since_2026(i: int) -> int:
     return ym(i)[0] - 2026
 
 
-# --- the household on Mon 2 Nov 2026 ----------------------------------------------------------------------------
+# --- the household on Thu 5 Nov 2026 ----------------------------------------------------------------------------
 members = {m["id"]: m for m in H["members"]}
 A = {a["id"]: a for a in H["assets"]}
 D = {d["id"]: d for d in H["debts"]}
@@ -500,7 +501,9 @@ def ledger_rows(ms, rows_of):
     for r in rows_of:
         for k, v in r["closed"].items():
             closed[NAMES.get(k, k)] = closed.get(NAMES.get(k, k), 0) + v
-    below = [r for r in rows_of if r["surplus"] < FLOOR - 0.5]
+    # the floor holds while anyone in the household earns a salary (Arun, 28 Oct 2026); in retirement only cash and
+    # investments running out are flagged
+    below = [r for r in rows_of if r["surplus"] < FLOOR - 0.5 and r["i"] < retire["asha"]]
     # the leanest month as the boards show it: that month's own rounded lines, summed
     if len(rows_of) == 1:
         low_label, low_shown = rows_of[0]["label"], surplus
@@ -631,6 +634,16 @@ def build2(B):
                          "middle_path_2046": at(wi, 2046), "today_2046": at(fan26, 2046), "change_2046": at(wi, 2046) - at(fan26, 2046),
                          "cash_short": cash_short(ms_wi),
                          "cash_back_above_zero": next((r["label"] for r in ms_wi[idx(2028, 6):] if r["closing_cash"] >= 0), None)}
+    # Prototype v4's Thursday (Arun, 28 Oct 2026): its Projection shows the run of Thu 5 Nov 09:13 (R5N, R0's figures)
+    # and its what-if at 10:20 is run on that day's assumptions, after Arun's corrections of 26 Oct
+    ms5, fan5 = fan(EXISTING)
+    msw5, wi5 = fan(EXISTING + [WHAT_IF_26])
+    out["what_if_5nov"] = {"when": "Thu 5 Nov 10:20", "asked": WHAT_IF_26["source_text"], "fan": wi5,
+                           "middle_path_2036": at(wi5, 2036), "today_2036": at(fan5, 2036), "change_2036": at(wi5, 2036) - at(fan5, 2036),
+                           "middle_path_2046": at(wi5, 2046), "today_2046": at(fan5, 2046), "change_2046": at(wi5, 2046) - at(fan5, 2046),
+                           "middle_path_2031": at(wi5, 2031), "today_2031": at(fan5, 2031), "change_2031": at(wi5, 2031) - at(fan5, 2031),
+                           "cash_short": cash_short(msw5),
+                           "cash_back_above_zero": next((r["label"] for r in msw5[idx(2028, 6):] if r["closing_cash"] >= 0), None)}
     # 21:08 to 21:13 on the Plans tab: the car paused, resumed, the fees' end corrected, the car ended
     plans4 = EXISTING + [SCHOOLING, SALARY_STEP, HDFC_CLOSE]
     ch4 = B["S4c"]
@@ -638,10 +651,10 @@ def build2(B):
     p6 = with_(plans4, "schooling", end="2040-07", version=2)
     p7 = with_(p6, "car2", status="done")
     runs = {}
-    for key, when, what, plans in (("R5", "Mon 2 Nov 21:08", "Replace the car paused", p5),
-                                   ("R5b", "Mon 2 Nov 21:09", "Replace the car resumed", plans4),
-                                   ("R6", "Mon 2 Nov 21:11", "School fees' end corrected in place, Jul 2041 → Jul 2040", p6),
-                                   ("R7", "Mon 2 Nov 21:13", "Replace the car ended (keeping the car)", p7)):
+    for key, when, what, plans in (("R5", "Thu 5 Nov 21:08", "Replace the car paused", p5),
+                                   ("R5b", "Thu 5 Nov 21:09", "Replace the car resumed", plans4),
+                                   ("R6", "Thu 5 Nov 21:11", "School fees' end corrected in place, Jul 2041 → Jul 2040", p6),
+                                   ("R7", "Thu 5 Nov 21:13", "Replace the car ended (keeping the car)", p7)):
         ms, fn = fan(plans, ch4)
         runs[key] = {"when": when, "after": what, "middle_path": {y: at(fn, y) for y in (2031, 2036, 2046)}, "fan": fn,
                      "cash_short": cash_short(ms), "below_floor": len(caused_gap(B["ms0"], ms))}
@@ -673,7 +686,7 @@ def build2(B):
     drawn3 = [(r["label"], round(r["pool_cash"])) for r in ms3 if r["pool_cash"] > 0.5]
     out["evening2"] = {
         "plans_tab": {k: {kk: vv for kk, vv in v.items() if kk != "ms"} for k, v in runs.items()},
-        "wedding": {"when": "Mon 2 Nov 21:15", "plan": WEDDING, "saved": "21:16", "middle_path_before": runs["R7"]["middle_path"],
+        "wedding": {"when": "Thu 5 Nov 21:15", "plan": WEDDING, "saved": "21:16", "middle_path_before": runs["R7"]["middle_path"],
                     "middle_path_after": {y: at(fnw, y) for y in (2031, 2036, 2046)}, "fan": fnw, "cash_short": short,
                     "cash_back_above_zero": next((r["label"] for r in msw[idx(int(short[0][-4:]), MONTHS.index(short[0][:3]) + 1):] if r["closing_cash"] >= 0), None),
                     "negative_months": [(r["label"], round(r["closing_cash"])) for r in msw if r["closing_cash"] < -0.5],
@@ -693,8 +706,8 @@ def build2(B):
                          "middle_path": {y: at(fn3, y) for y in (2031, 2036, 2046)}, "drawn": sum(a for _, a in drawn3)},
                     ],
                     "applied": {"when": "21:17", "option": "isa",
-                                "audit": f"Plan item added · Balanced (ISA) pays the wedding's shortfall, {', '.join(f'{gbp(a)} in {l}' for l, a in drawn1)} · Arun · Mon 2 Nov 21:17 · in the chat · Undo"},
-                    "undone": {"when": "21:18", "audit": "Undone · Balanced (ISA) paying the wedding's shortfall · Arun · Mon 2 Nov 21:18 · in the chat",
+                                "audit": f"Plan item added · Balanced (ISA) pays the wedding's shortfall, {', '.join(f'{gbp(a)} in {l}' for l, a in drawn1)} · Arun · Thu 5 Nov 21:17 · in the chat · Undo"},
+                    "undone": {"when": "21:18", "audit": "Undone · Balanced (ISA) paying the wedding's shortfall · Arun · Thu 5 Nov 21:18 · in the chat",
                                "state": "the wedding stays saved; cash is flagged again"}},
     }
     out["forecast_evening2"] = {"R7": {"years": forecast(base7, 2056)}, "W": {"years": forecast(msw, 2056),
@@ -754,15 +767,17 @@ def main():
     out = {
         "about": "The future-plans boards' figures (MA-264): MA-193's household (household-v4.json), run forward month by month "
                  "from 1 Nov 2026 by make_future_plans.py, a design aid and not the product's engine (MA-219). Illustrative.",
-        "clock": {"day": "2026-11-02", "day_label": "Mon 2 Nov", "evening": "20:41 to 21:05",
-                  "why": "after October closed (Sun 1 Nov, 09:02) and before Thursday's HDFC EMI; one evening, so every frame shares one clock",
-                  "net_worth_today": H["totals_after_statement_sun_1_nov"]["net_gbp"], "fx": FX0},
+        "clock": {"day": "2026-11-05", "day_label": "Thu 5 Nov", "evening": "20:41 to 21:22",
+                  "why": "the evening after the HDFC EMI check-in (answered at 09:12) and Prototype v4's Projection steps (10:05 to 10:26), so the prototype's Thursday comes before the plans (Arun, 28 Oct 2026); one evening, so every frame shares one clock",
+                  "net_worth_today": H["totals_after_hdfc_emi_thu_5_nov"]["net_gbp"], "fx": FX0,
+                  "base_run": "R5N, Thu 5 Nov 09:13: the run after the EMI was confirmed, the same figures as R0 (the EMI was already in November's flows)"},
         "settings": {"floor_gbp_month": FLOOR, "floor_note": "Arun's floor: the monthly surplus he keeps (his setting)",
                      "surplus_rule": "Cash up to 6 months of outgoings, plus the one-offs due in the next 12 months; the rest into Balanced (ISA) each month",
                      "inflation_keys": {"UK": INFL["UK"], "UK health": INFL["UK health"], "India": INFL["IN"], "UK school fees": INFL["UK school fees"]},
                      "categories": [{"category": c, "inflation_key": {"IN": "India"}.get(k, k), "plan_today": (FAMILY_INR if c.startswith("Family") else plan_gbp[c]), "ccy": "INR" if c.startswith("Family") else "GBP"} for c, k in CATS],
                      "horizon_default_years": 20, "horizon_choices": [5, 10, 20, 30], "cash_rate": CASH_RATE,
-                     "retirement": "Arun 60 in Jan 2051, Asha in Jan 2053; a pension pays 4% of its pot a year; in retirement Balanced pays any gap"},
+                     "retirement": "Arun 60 in Jan 2051, Asha in Jan 2053; a pension pays 4% of its pot a year; in retirement Balanced pays any gap",
+                     "floor_while": "anyone in the household earns a salary (to Dec 2052); in retirement only cash running out is flagged (Arun, 28 Oct 2026)"},
         "plans": {"existing": EXISTING, "schooling": SCHOOLING, "salary_step": SALARY_STEP, "hdfc_close": HDFC_CLOSE},
         "conversation": [
             {"t": "20:41", "who": "Arun", "says": SCHOOLING["source_text"]},
@@ -772,22 +787,24 @@ def main():
                 {"slot": "paid from where", "q": "Paid from where?", "chips": ["The monthly budget", "A pool you name"], "answer": "The monthly budget"},
             ], "known": {"amount": "£4,000 a month", "from": "Jan 2029", "whose": "the household's, paid by Arun's budget", "for": "your kid (not a member)", "category": "Education, new"}},
             {"t": "20:42", "who": "MyPaisa", "card": "impact"},
-            {"t": "20:43", "who": "Arun", "taps": "Confirm", "audit": "Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Mon 2 Nov 20:43 · in the chat · 2046 middle path " + gbp(at(fan1, 2046) - at(fan0, 2046))},
+            {"t": "20:43", "who": "Arun", "taps": "Confirm", "audit": "Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:43 · in the chat · 2046 middle path " + gbp(at(fan1, 2046) - at(fan0, 2046))},
             {"t": "20:43", "who": "MyPaisa", "card": "rearrange"},
             {"t": "20:46", "who": "Arun", "taps": "Confirm option 1", "audit": [
-                (f"Plan item added · School fees pot, £{pot1:,} a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Mon 2 Nov 20:46 · in the chat · Undo"
+                (f"Plan item added · School fees pot, £{pot1:,} a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat · Undo"
                  if pot1 == pot2 else
-                 f"Plan item added · School fees pot, £{pot1:,} a month from Nov 2026 to Jun 2027, then £{pot2:,} to Dec 2028, drawn from Jan 2029 · Arun · Mon 2 Nov 20:46 · in the chat · Undo"),
-                f"November's budget changed · School fees pot £{pot1:,} added; planned surplus £2,636 → £{2636 - pot1:,} · Arun · Mon 2 Nov 20:46 · in the chat · Undo"]},
+                 f"Plan item added · School fees pot, £{pot1:,} a month from Nov 2026 to Jun 2027, then £{pot2:,} to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat · Undo"),
+                f"November's budget changed · School fees pot £{pot1:,} added; planned surplus £2,636 → £{2636 - pot1:,} · Arun · Thu 5 Nov 20:46 · in the chat · Undo"]},
             {"t": "20:52", "who": "Arun", "says": SALARY_STEP["source_text"]},
             {"t": "20:58", "who": "Arun", "says": HDFC_CLOSE["source_text"]},
         ],
         "runs": {
             "R0": {"when": "Sun 1 Nov 09:03", "after": "October closed", "plans": [p["id"] for p in EXISTING], "fan": fan0},
-            "R1": {"when": "Mon 2 Nov 20:43", "after": "School fees saved", "plans": [p["id"] for p in EXISTING] + ["schooling"], "fan": fan1},
-            "R2": {"when": "Mon 2 Nov 20:46", "after": "the school fees pot applied", "fan": opt["pot"]["fan"]},
-            "R3": {"when": "Mon 2 Nov 20:53", "after": "Arun's salary step saved", "fan": B["fan3"]},
-            "R4": {"when": "Mon 2 Nov 20:59", "after": "the HDFC loan's closure saved", "fan": B["fan4"]},
+            "R5N": {"when": "Thu 5 Nov 09:13", "after": "November's HDFC EMI answered Paid at 09:12; the figures are R0's, since the EMI was already in November's flows",
+                    "plans": [p["id"] for p in EXISTING], "fan": fan0},
+            "R1": {"when": "Thu 5 Nov 20:43", "after": "School fees saved", "plans": [p["id"] for p in EXISTING] + ["schooling"], "fan": fan1},
+            "R2": {"when": "Thu 5 Nov 20:46", "after": "the school fees pot applied", "fan": opt["pot"]["fan"]},
+            "R3": {"when": "Thu 5 Nov 20:53", "after": "Arun's salary step saved", "fan": B["fan3"]},
+            "R4": {"when": "Thu 5 Nov 20:59", "after": "the HDFC loan's closure saved", "fan": B["fan4"]},
         },
         "impact": {
             "plan": "schooling", "middle_path_before": {y: at(fan0, y) for y in yrs}, "middle_path_after": {y: at(fan1, y) for y in yrs},

@@ -1061,8 +1061,9 @@ Forecaster); **Projection** is the household's net worth over time, and
   by code; at both doors.
 - **Rearranging the budget (MA-263, `ARCHITECTURE.md` §4.5, §4.10, §6.6, §8, §12):** when a plan leaves cash below zero or
   the surplus below the admin's floor (a monthly surplus kept among the
-  Projection's assumptions, £500 to start, the admin's alone; Arun, 28 Oct
-  2026, MA-264), code works out the options (trim a
+  Projection's assumptions, £500 to start, the admin's alone, holding while
+  anyone in the household earns a salary; in retirement only cash running
+  out is flagged; Arun, 28 Oct 2026, MA-264), code works out the options (trim a
   category from a date, pause a SIP, move a plan's start, draw from a named
   pool, change the surplus rule) and the agent ranks and explains them, each
   as an unsaved scenario card; the admin's Confirm applies one, as Claude

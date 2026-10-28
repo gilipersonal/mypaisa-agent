@@ -286,7 +286,7 @@
                             </sc-if>
                             <div class="mp-hero heroP">
                               <div class="fx col gap2"><span class="mp-sub mp-hero-2">Middle path in 2046</span><span class="mp-num-hero">{{ f.p.big }}</span></div>
-                              <p class="pp mp-sub mp-hero-2">From £456,493 today. 8 in 10 of the engine's runs end between {{ f.p.lo }} and {{ f.p.hi }}.</p>
+                              <p class="pp mp-sub mp-hero-2">From £456,747 today. 8 in 10 of the engine's runs end between {{ f.p.lo }} and {{ f.p.hi }}.</p>
                               <div class="fanw onhero">
                                 <div class="mp-chartbox fanbox" role="img" aria-label="{{ f.p.aria }}">
                                   <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ f.p.grid }}" as="g" hint-placeholder-count="3"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><path class="fband" sc-camel-d="{{ f.p.band }}"></path><path class="fline" sc-camel-d="{{ f.p.line }}"></path></svg>
@@ -346,7 +346,7 @@
                             <!-- the plan saved, collapsed in place with its audit row (2a and 2c) -->
                             <sc-if value="{{ m.c.kSaved }}" hint-placeholder-val="{{ false }}"><div class="ccard">
                               <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, 4.5% a year · 2046 middle path ▼ £1,317,000</span></div>
-                              <div class="ccard-tech">Audit · Plan item added · Arun · Mon 2 Nov 20:43 · in the chat</div>
+                              <div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div>
                             </div></sc-if>
 
                             <!-- 2a: the ways to cover it, stacked, each with its own Confirm; the best fit open, the others in brief -->
@@ -454,7 +454,7 @@
             R1: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 516000, 599000, 681000], [2029, 532000, 635000, 748000], [2030, 548000, 685000, 819000], [2031, 542000, 701000, 863000], [2032, 571000, 753000, 943000], [2033, 608000, 803000, 1017000], [2034, 643000, 863000, 1089000], [2035, 693000, 931000, 1165000], [2036, 726000, 1002000, 1279000], [2037, 789000, 1048000, 1378000], [2038, 845000, 1123000, 1495000], [2039, 902000, 1192000, 1584000], [2040, 941000, 1279000, 1723000], [2041, 1035000, 1417000, 1913000], [2042, 1226000, 1592000, 2167000], [2043, 1395000, 1827000, 2575000], [2044, 1582000, 2042000, 2789000], [2045, 1755000, 2299000, 3187000], [2046, 1950000, 2580000, 3544000]],
             R2: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 517000, 598000, 678000], [2029, 530000, 633000, 745000], [2030, 550000, 683000, 812000], [2031, 546000, 700000, 859000], [2032, 569000, 753000, 936000], [2033, 609000, 800000, 1011000], [2034, 653000, 861000, 1080000], [2035, 698000, 929000, 1160000], [2036, 729000, 1001000, 1263000], [2037, 792000, 1046000, 1363000], [2038, 849000, 1122000, 1478000], [2039, 900000, 1191000, 1574000], [2040, 942000, 1280000, 1702000], [2041, 1038000, 1415000, 1894000], [2042, 1219000, 1586000, 2150000], [2043, 1402000, 1822000, 2549000], [2044, 1575000, 2036000, 2779000], [2045, 1758000, 2298000, 3187000], [2046, 1949000, 2585000, 3546000]]
           };
-          const START = 456493, NOW = 2026 + 10 / 12 + 1 / 30, SPAN = 2047 - NOW;   // today is Mon 2 Nov; each point is a year's end
+          const START = 456747, NOW = 2026 + 10 / 12 + 4 / 30, SPAN = 2047 - NOW;   // today is Thu 5 Nov; each point is a year's end
           const fan = (run) => {
             const rows = [[NOW, START, START, START]].concat(FAN[run].map((r) => [r[0] + 1, r[1], r[2], r[3]]));
             const vmax = run === 'R0' ? 6.5e6 : 4e6, step = run === 'R0' ? 2e6 : 1e6;
@@ -464,7 +464,7 @@
             const end = FAN[run][20];
             return { band: 'M' + rows.map((r) => pt(r, 3)).join(' L') + ' L' + rows.slice().reverse().map((r) => pt(r, 1)).join(' L') + ' Z', line: 'M' + rows.map((r) => pt(r, 2)).join(' L'), grid,
               big: gbp(end[2]), lo: gbp(end[1]), hi: gbp(end[3]),
-              aria: 'Net worth to 2046: the middle path from £456,493 today to ' + gbp(end[2]) + ', with 8 in 10 runs between ' + gbp(end[1]) + ' and ' + gbp(end[3]) + '; the milestones are listed below.' };
+              aria: 'Net worth to 2046: the middle path from £456,747 today to ' + gbp(end[2]) + ', with 8 in 10 runs between ' + gbp(end[1]) + ' and ' + gbp(end[3]) + '; the milestones are listed below.' };
           };
           // the milestones, on the Projection beside the chat (household-v4.json's milestones, and the new plans)
           const MS = (run) => [].concat(
@@ -475,7 +475,7 @@
             [['directions_car', 'Car loan paid off', '20 Feb 2029', 'frees £347 a month', 'mk-dot'],
              ['account_balance', 'SBI FD matures', '10 Mar 2029', '₹6,17,538', 'mk-tk']]
           ).map((m) => ({ i: m[0], w: m[1], d: m[2], a: m[3], k: m[4], isNew: !!m[5], nw: m[5] || '' }));
-          const page = (run, cmp) => Object.assign(fan(run), { run: { R0: 'Sun 1 Nov 09:03', R1: 'Mon 2 Nov 20:43', R2: 'Mon 2 Nov 20:46' }[run], ms: MS(run), cmp: !!cmp });
+          const page = (run, cmp) => Object.assign(fan(run), { run: { R0: 'Thu 5 Nov 09:13', R1: 'Thu 5 Nov 20:43', R2: 'Thu 5 Nov 20:46' }[run], ms: MS(run), cmp: !!cmp });
 
           // the impact: the middle path before and after, and the surplus each year (impact.surplus_by_year_before/after)
           const impMp = [['In 5 years', '2031', 866000, 701000], ['In 10 years', '2036', 1539000, 1002000], ['In 20 years', '2046', 3897000, 2580000]]
@@ -535,13 +535,13 @@
             'start Jan 2029 · end Jul 2041 · £4,000 · growth: prior, UK school fees 4.5%',
             'rearrange_budget → 3 ways and 2 more · goal-seek on the £500 floor, cash ≥ 0',
             'applied: way 1 · change_flow on the budget plan from Nov 2026',
-            'Projection run Mon 2 Nov 20:46 · 300 runs · seed 7',
+            'Projection run Thu 5 Nov 20:46 · 300 runs · seed 7',
             'Every figure is the engine’s. Your words: “£4,000 a month from Jan 2029 for my kid’s schooling”.'
           ];
-          const AUD = ['Audit · Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Mon 2 Nov 20:46 · in the chat',
-                       'Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Mon 2 Nov 20:46 · in the chat'];
+          const AUD = ['Audit · Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat',
+                       'Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat'];
           // 2b saves the plan and the pot with one Confirm, so its first row is the 20:46 Confirm's too (−£1,312,000 = £2,585,000 − £3,897,000)
-          const AUD_B = ['Audit · Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Mon 2 Nov 20:46 · in the chat · with the pot, 2046 middle path −£1,312,000'].concat(AUD);
+          const AUD_B = ['Audit · Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:46 · in the chat · with the pot, 2046 middle path −£1,312,000'].concat(AUD);
 
           // the conversation (conversation[]), message by message
           const day = { isDay: true, t: 'Today' };
@@ -603,7 +603,7 @@
             { anchor: 'o2a', id: '2a', name: 'Browser · Plans in the chat 2a, a card per step', rec: true, keys: 'MA-222 · MA-263 · MA-223 · MA-264',
               lead: 'Three cards, each with one job and one Confirm: the questions (20:41), the impact from the engine (20:42), then, once the plan is saved, the ways to cover the gap, each with its own Confirm (20:43). At 20:46 the card shows what was applied, with its two audit rows and Undo. The Projection beside the chat moves with each Confirm. Recommended: it is how every card in the chat already works at both doors, and each card has one plain line for push and screen readers.',
               frames: frames('a', 'Browser · Plans in the chat 2a, a card per step'),
-              notes: [{ h: 'The figures:', t: 'conversation, impact and rearrange in future-plans-v4.json; the page shows R0 (Sun 1 Nov 09:03) until the plan is saved, R1 (20:43) after it, and R2 (20:46) once the pot is applied, each with its own middle path in 2046.' },
+              notes: [{ h: 'The figures:', t: 'conversation, impact and rearrange in future-plans-v4.json; the page shows R5N (Thu 5 Nov 09:13, R0’s figures) until the plan is saved, R1 (20:43) after it, and R2 (20:46) once the pot is applied, each with its own middle path in 2046.' },
                 { h: 'The floor is monthly, the bars yearly,', t: 'so the chart marks a year with a month under £500 (▼, in the alert colour) rather than draw a yearly line that would not match the flag.' },
                 { h: 'One Confirm each,', t: 'in §6.6’s order: the plan first, with its audit row; then the rearrangement, with one row for the plan item it adds and one for this month’s budget, each with Undo (MA-263).' },
                 { h: 'Under 1024', t: 'the chat is a tab, as at 390; the 390 frames draw the ways on the phone-web door.' }] },
@@ -624,8 +624,8 @@
             boards, impMp, impBars, gapTotal, ways: W, pager, mini, cmpHead, cmpCells, cmpBars, tech,
             nav: [['home', 'Home'], ['account_balance_wallet', 'Assets'], ['credit_card', 'Debts'], ['event_note', 'Budget'], ['show_chart', 'Projection'], ['history', 'Activity'], ['fact_check', 'Audit'], ['person', 'You']].map((n) => ({ i: n[0], l: n[1], on: n[1] === 'Projection' ? 'on' : '', fill: n[1] === 'Projection' ? 'ms-fill' : '' })),
             ptabs: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '', fill: t[1] === 'Chat' ? 'ms-fill' : '' })),
-            intro1: 'Arun, the household’s one admin, says “£4,000 a month from Jan 2029 for my kid’s schooling” at 20:41 on Mon 2 Nov 2026. MyPaisa asks at most three questions with chips (until when, how it grows, paid from where), shows the engine’s impact with one Confirm, and, because the plan leaves the household short, offers the ways code worked out to rearrange the budget; the admin’s Confirm applies one, this month’s budget included (ARCHITECTURE §6.6, items 6 and 7).',
-            intro2: 'Three options for how the chat carries it, at the laptop (1440, shell 1a: the Projection beside the chat) at every step, and at the phone-web door (390, the Chat tab), in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,493.'
+            intro1: 'Arun, the household’s one admin, says “£4,000 a month from Jan 2029 for my kid’s schooling” at 20:41 on Thu 5 Nov 2026. MyPaisa asks at most three questions with chips (until when, how it grows, paid from where), shows the engine’s impact with one Confirm, and, because the plan leaves the household short, offers the ways code worked out to rearrange the budget; the admin’s Confirm applies one, this month’s budget included (ARCHITECTURE §6.6, items 6 and 7).',
+            intro2: 'Three options for how the chat carries it, at the laptop (1440, shell 1a: the Projection beside the chat) at every step, and at the phone-web door (390, the Chat tab), in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747.'
           };
         }
       }

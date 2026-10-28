@@ -193,7 +193,7 @@
 
       <section class="dv-turn" id="intro" data-screen-label="iPhone v4 · Plans tab 3a states: intro">
         <div class="dv-thd"><a class="dv-tid" href="#intro">3a</a><span class="dv-tname">iPhone and iPad · the Plans tab, 3a picked: its remaining states</span></div>
-        <p class="dv-intro">Arun picked 3a, bars on a timeline, on 28 Oct 2026 (MA-264). These are the states it still needed before MA-224 and MA-222 start, on iPhone (pushed from Home in shell 1a, the Liquid Glass tab bar) and on iPad in landscape at 1180 (the glass sidebar, the chat beside it), in light and dark. The evening goes on from 21:05 on Mon 2 Nov: privacy on at 21:06; Replace the car paused at 21:08 and resumed at 21:09; School fees' end corrected in place at 21:11; Replace the car ended at 21:13; and at 21:20 Asha, a member, opens the tab after Arun saved his sister's wedding (21:16) and undid the way he chose to cover it (21:18). Every figure is the figure set's (docs/design/figures/future-plans-v4.json); every change writes a correction event with its audit row, the version before and after, and the engine's run before and after. The browser boards are Web v4 · Plans tab 3a states.</p>
+        <p class="dv-intro">Arun picked 3a, bars on a timeline, on 28 Oct 2026 (MA-264). These are the states it still needed before MA-224 and MA-222 start, on iPhone (pushed from Home in shell 1a, the Liquid Glass tab bar) and on iPad in landscape at 1180 (the glass sidebar, the chat beside it), in light and dark. The evening goes on from 21:05 on Thu 5 Nov: privacy on at 21:06; Replace the car paused at 21:08 and resumed at 21:09; School fees' end corrected in place at 21:11; Replace the car ended at 21:13; and at 21:19 Asha, a member, opens the tab after Arun saved his sister's wedding (21:16) and undid the way he chose to cover it (21:18). Every figure is the figure set's (docs/design/figures/future-plans-v4.json); every change writes a correction event with its audit row, the version before and after, and the engine's run before and after. The browser boards are Web v4 · Plans tab 3a states.</p>
         <div class="plan"><span class="plan-s">Jira</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-264">MA-264</a><span>the design round</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-224">MA-224</a><span>the Plans tab</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-222">MA-222</a><span>plan items: pause, resume, end, correct</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-263">MA-263</a><span>the wedding's shortfall</span><span>ARCHITECTURE.md §4.10, §6.6, §9.1, §9.3</span><span class="plan-s">Picked: 3a.</span><span>Illustrative figures.</span></div>
       </section>
 
@@ -226,7 +226,7 @@
                         <sc-if value="{{ f.banner }}"><div class="okb {{ f.banner.c }}" role="status" data-mo="pop"><span class="ms ms-fill">{{ f.banner.i }}</span><span>{{ f.banner.t }}</span></div><div class="hist aud"><span class="ms">fact_check</span><span>{{ f.banner.audit }}</span></div></sc-if>
                         <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">{{ f.head }}</span><span class="mp-foot mp-ink2"><sc-for list="{{ f.sum }}" as="s" hint-placeholder-count="7"><span class="sg {{ s.c }}">{{ s.t }}</span></sc-for></span></div><sc-if value="{{ f.adm }}"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>Add in chat</button></sc-if></div>
                         <div class="mp-card tl">
-                          <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Mon 2 Nov</span></div>
+                          <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
                           <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                           <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                             <div class="tl-row {{ r.cls }}">
@@ -271,7 +271,7 @@
                               <sc-if value="{{ r.plain }}"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><span class="fig ed">{{ r.v }}<span class="ms">edit</span></span><sc-if value="{{ r.src }}"><span class="src"><span class="ms">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-if>
                               <sc-if value="{{ r.editing }}"><div class="edrow"><span class="mp-sub mp-w6">{{ r.k }}</span><span class="mp-foot mp-ink2">{{ r.field }}</span><div class="wheels" role="group" aria-label="The last month"><div class="wcol"><sc-for list="{{ r.months }}" as="w" hint-placeholder-count="5"><span class="wi {{ w.c }}">{{ w.t }}</span></sc-for></div><div class="wcol"><sc-for list="{{ r.years }}" as="w" hint-placeholder-count="5"><span class="wi {{ w.c }}">{{ w.t }}</span></sc-for></div></div><div class="ba"><span class="old">{{ r.before }}</span><span class="ms ms-s mp-ink2">arrow_forward</span><b>{{ r.after }}</b></div><span class="mp-foot mp-ink2">{{ r.hint }}</span><div class="fx gap8"><span class="mp-btn mp-btn-primary mp-btn-small">Save</span><span class="mp-btn mp-btn-tinted mp-btn-small">Cancel</span></div></div></sc-if>
                             </sc-for></div>
-                            <div class="eng"><span class="mp-over mp-ink2">From the engine</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for><span class="mp-foot mp-ink2">The run of {{ f.sh.run }}, Mon 2 Nov</span></div>
+                            <div class="eng"><span class="mp-over mp-ink2">From the engine</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for><span class="mp-foot mp-ink2">The run of {{ f.sh.run }}, Thu 5 Nov</span></div>
                             <div class="acts"><span class="cbtn"><span class="ms">pause</span>Pause</span><span class="cbtn"><span class="ms">event_busy</span>End it</span><span class="cbtn"><span class="ms">chat_bubble</span>Ask in chat</span></div>
                             <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms">fact_check</span><span>{{ h }}</span></div></sc-for></div>
                           </div></div>
@@ -303,7 +303,7 @@
                         <span class="side-i"><span class="ms">account_circle</span>You</span>
                       </div>
                       <div class="main">
-                        <div class="sbar"><span>{{ f.clock }} Mon 2 Nov</span><span></span></div>
+                        <div class="sbar"><span>{{ f.clock }} Thu 5 Nov</span><span></span></div>
                         <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms z1">{{ f.eye }}</span></span></span></div>
                         <div class="ipane"><sc-if value="{{ f.scrolled }}"><div class="edge-top ietp"></div></sc-if><div class="ipg" style="margin-top: {{ f.off }}">
                           <div class="mp-foot mp-ink2 meta4">{{ f.meta }}</div>
@@ -316,7 +316,7 @@
                           <sc-if value="{{ f.banner }}"><div class="okb {{ f.banner.c }}" role="status" data-mo="pop"><span class="ms ms-fill">{{ f.banner.i }}</span><span>{{ f.banner.t }}</span></div><div class="hist aud"><span class="ms">fact_check</span><span>{{ f.banner.audit }}</span></div></sc-if>
                           <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">{{ f.head }}</span><span class="mp-foot mp-ink2"><sc-for list="{{ f.sum }}" as="s" hint-placeholder-count="7"><span class="sg {{ s.c }}">{{ s.t }}</span></sc-for></span></div><sc-if value="{{ f.adm }}"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>Add in chat</button></sc-if></div>
                           <div class="mp-card tl">
-                            <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Mon 2 Nov</span></div>
+                            <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
                             <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                             <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                               <div class="tl-row {{ r.cls }}">
@@ -350,7 +350,7 @@
                             <div class="me">close my HDFC loan with the SBI FD when it matures</div>
                             <div class="me-time">20:58</div>
                             <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Saved. It closes the loan in Mar 2029, when the FD matures.</div>
-                              <div class="ccard"><div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Mon 2 Nov 20:59 · in the chat</div></div>
+                              <div class="ccard"><div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:59 · in the chat</div></div>
                             </div></div>
                           </sc-if>
                           <sc-if value="{{ f.mem }}"><p class="pp mp-foot mp-ink2 chnote">Your own conversation with MyPaisa. Ask about any plan, or try a what-if; plans are Arun’s to change.</p></sc-if>
@@ -367,7 +367,7 @@
                           <sc-if value="{{ f.sh.saved }}"><div class="okb ok-add" role="status" data-mo="pop"><span class="ms ms-fill">check_circle</span><span>Saved. The Projection runs again with it.</span></div></sc-if>
                           <div class="qbox"><span class="mp-over mp-ink2">Your words</span><span class="fwords">“{{ f.sh.words }}”</span><span class="mp-foot mp-ink2">{{ f.sh.wmeta }}</span></div>
                           <div class="kcard"><sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="5"><sc-if value="{{ r.plain }}"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><span class="fig ed">{{ r.v }}<span class="ms">edit</span></span><sc-if value="{{ r.src }}"><span class="src"><span class="ms">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-if></sc-for></div>
-                          <div class="eng"><span class="mp-over mp-ink2">From the engine</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for><span class="mp-foot mp-ink2">The run of {{ f.sh.run }}, Mon 2 Nov</span></div>
+                          <div class="eng"><span class="mp-over mp-ink2">From the engine</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for><span class="mp-foot mp-ink2">The run of {{ f.sh.run }}, Thu 5 Nov</span></div>
                           <div class="acts"><span class="cbtn"><span class="ms">pause</span>Pause</span><span class="cbtn"><span class="ms">event_busy</span>End it</span><span class="cbtn"><span class="ms">chat_bubble</span>Ask in chat</span></div>
                           <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms">fact_check</span><span>{{ h }}</span></div></sc-for></div>
                         </div></div>
@@ -456,9 +456,9 @@
           const axis = [['Today', 0, 'ax0'], ['2031', 25, ''], ['2036', 50, ''], ['2041', 75, ''], ['2046', 100, 'ax1']].map((a) => ({ l: a[0], left: pc(a[1]), c: a[2] }));
           const FOOT_ADMIN = 'Tap a plan to correct its figures, pause it or end it. Nothing is added here: a new plan starts in the chat.';
           const FOOT_MEMBER = 'Plans are Arun’s, the admin’s: you see them here, without pencils. Ask in the chat about any of them, or try a what-if.';
-          const H1 = 'Plan item added · v1 · his words “£4,000 a month from Jan 2029 for my kid’s schooling” · Arun · Mon 2 Nov 20:43 · in the chat · run Sun 1 Nov 09:03 → 20:43: 2046 middle path £3,897,000 → £2,580,000';
-          const H2 = 'Covered by the school fees pot · Arun · Mon 2 Nov 20:46 · in the chat';
-          const H3 = 'Plan item corrected · ends Jul 2041 → Jul 2040 · v1 → v2 · Arun · Mon 2 Nov 21:11 · in place · run 21:09 → 21:11: 2046 middle path £2,923,000 → £3,037,000';
+          const H1 = 'Plan item added · v1 · his words “£4,000 a month from Jan 2029 for my kid’s schooling” · Arun · Thu 5 Nov 20:43 · in the chat · run Thu 5 Nov 09:13 → 20:43: 2046 middle path £3,897,000 → £2,580,000';
+          const H2 = 'Covered by the school fees pot · Arun · Thu 5 Nov 20:46 · in the chat';
+          const H3 = 'Plan item corrected · ends Jul 2041 → Jul 2040 · v1 → v2 · Arun · Thu 5 Nov 21:11 · in place · run 21:09 → 21:11: 2046 middle path £2,923,000 → £3,037,000';
           const wheel = (list, on) => list.map((t) => ({ t, c: t === on ? 'on' : '' }));
           const feesRows = (state) => [
             { plain: true, editing: false, k: 'Amount', v: '£4,000 a month', src: '', si: '' },
@@ -470,7 +470,7 @@
             { plain: true, editing: false, k: 'Paid from', v: 'The monthly budget', src: '', si: '' }
           ];
           const feesSheet = (state, off) => ({ i: 'school', title: 'School fees', eff: 'A new flow · money out · Education · for your kid',
-            words: '£4,000 a month from Jan 2029 for my kid’s schooling', wmeta: 'Arun · Mon 2 Nov 20:41 · in the chat · version ' + (state === 'edit' ? '1' : '2'),
+            words: '£4,000 a month from Jan 2029 for my kid’s schooling', wmeta: 'Arun · Thu 5 Nov 20:41 · in the chat · version ' + (state === 'edit' ? '1' : '2'),
             rows: feesRows(state), saved: state !== 'edit', run: state === 'edit' ? '21:09' : '21:11', off: off || '0px',
             eng: state === 'edit'
               ? ['£48,000 in 2029; £6,784 a month by Jul 2041; £789,759 in all.', 'The school fees pot tops up £1,361 in Jan and Feb 2029.']
@@ -483,7 +483,7 @@
             const who = o.who || ARUN, priv = !!o.priv;
             const f = Object.assign({}, who, {
               cap: cap + ' · ' + theme[0], phone: door === 'iphone', pad: door === 'ipad', clock: o.clock, off: o.off || '0px', scrolled: !!o.scrolled,
-              meta: o.meta || ('Seven plans, Arun’s · the engine’s run of Mon 2 Nov ' + RUN[o.run][0]),
+              meta: o.meta || ('Seven plans, Arun’s · the engine’s run of Thu 5 Nov ' + RUN[o.run][0]),
               eye: priv ? 'visibility_off' : 'visibility', eyeP: priv ? 'true' : 'false',
               head: o.head, sum: sumOf(o.run, priv), rows: rowsOf(o.ids || SEVEN, Object.assign({ priv }, o.rowo || {})),
               hasPaused: !!(o.rowo && o.rowo.paused && o.rowo.paused.length), banner: o.banner || null,
@@ -493,22 +493,22 @@
             f.root = 'dev ' + (door === 'iphone' ? 'dev-iphone mp ' : 'dev-ipad-l mp ipad ') + theme[1];
             return f;
           };
-          const ENDED = [{ i: 'directions_car', name: 'Replace the car', endsub: '−£25,000 once, Jun 2031 · ended by Arun, Mon 2 Nov 21:13' }];
+          const ENDED = [{ i: 'directions_car', name: 'Replace the car', endsub: '−£25,000 once, Jun 2031 · ended by Arun, Thu 5 Nov 21:13' }];
           const ADMIN_HEAD = '7 plans · yours alone, as the admin';
           const st = {
             priv: { clock: '21:06', run: 'R4', head: ADMIN_HEAD, priv: true, meet: true },
             menu: { clock: '21:08', run: 'R4', head: ADMIN_HEAD, rowo: { sel: 'car', menu: 'car' } },
             paused: { clock: '21:08', run: 'R5', head: '7 plans · 1 paused', rowo: { paused: ['car'], sel: 'car' },
-              banner: { c: 'ok-pause', i: 'pause_circle', t: 'Paused. The Projection runs again without it.', audit: 'Audit · Plan item paused · Replace the car · v1 → v2 · Arun · Mon 2 Nov 21:08 · in place · run 20:59 → 21:08: 2046 middle path £2,923,000 → £2,977,000' } },
+              banner: { c: 'ok-pause', i: 'pause_circle', t: 'Paused. The Projection runs again without it.', audit: 'Audit · Plan item paused · Replace the car · v1 → v2 · Arun · Thu 5 Nov 21:08 · in place · run 20:59 → 21:08: 2046 middle path £2,923,000 → £2,977,000' } },
             resumed: { clock: '21:09', run: 'R5b', head: ADMIN_HEAD, rowo: { sel: 'car' },
-              banner: { c: 'ok-add', i: 'play_circle', t: 'Resumed. The Projection runs again with it.', audit: 'Audit · Plan item resumed · Replace the car · v2 → v3 · Arun · Mon 2 Nov 21:09 · in place · run 21:08 → 21:09: 2046 middle path £2,977,000 → £2,923,000' } },
+              banner: { c: 'ok-add', i: 'play_circle', t: 'Resumed. The Projection runs again with it.', audit: 'Audit · Plan item resumed · Replace the car · v2 → v3 · Arun · Thu 5 Nov 21:09 · in place · run 21:08 → 21:09: 2046 middle path £2,977,000 → £2,923,000' } },
             edit: { clock: '21:11', run: 'R5b', head: ADMIN_HEAD, rowo: { sel: 'fees' }, sh: feesSheet('edit') },
             saved: { clock: '21:11', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'fees2' }, sh: feesSheet('saved') },
             confirm: { clock: '21:13', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'car' },
               cf: { title: 'End Replace the car?', body: 'It stops counting from now, and the Projection runs again without it. It stays in its history and in Audit; a new plan starts in the chat.', label: 'A word for the audit (optional)', typed: 'we’re keeping the car' } },
-            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, Arun’s, and one ended · the engine’s run of Mon 2 Nov 21:13', head: '6 plans · yours alone, as the admin', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
-              banner: { c: 'ok-neutral', i: 'event_busy', t: 'Ended. The Projection runs again without it.', audit: 'Audit · Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Mon 2 Nov 21:13 · in place · run 21:11 → 21:13: 2046 middle path £3,037,000 → £3,091,000' } },
-            asha: { who: ASHA, clock: '21:20', run: 'W', head: '7 plans · Arun’s, the admin’s', ids: ['pot', 'bonus', 'wed', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
+            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, Arun’s, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · yours alone, as the admin', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
+              banner: { c: 'ok-neutral', i: 'event_busy', t: 'Ended. The Projection runs again without it.', audit: 'Audit · Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Thu 5 Nov 21:13 · in place · run 21:11 → 21:13: 2046 middle path £3,037,000 → £3,091,000' } },
+            asha: { who: ASHA, clock: '21:19', run: 'W', head: '7 plans · Arun’s, the admin’s', ids: ['pot', 'bonus', 'wed', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
               note: { h: 'Cash runs short', s: 'from the engine, run of 21:18', t: 'The wedding in Mar 2027 and the extension in Jun 2027 take cash £19,871 below zero that June; it is back above zero in Mar 2028. Ask in the chat to see the ways to cover it; applying one is Arun’s.' } }
           };
           // where each frame is scrolled to (a negative top margin on the page), measured so the state is on screen
@@ -538,7 +538,7 @@
               frames: [fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.confirm, '-652px'), 'the confirm'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.ended, '0px'), 'ended'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[1], SC(st.ended, '-975px'), 'ended, scrolled'), fr('iPhone · Plans tab 3a, a plan ended', PD, T[0], SC(st.ended, '-694px'), 'ended, scrolled')],
               notes: [{ h: 'Ending asks:', t: 'unlike Pause, End takes the plan out of the count for good; it stays in its history and in Audit, and a new one starts in the chat.' }, { h: 'The alert is solid,', t: 'since it carries a sentence and the admin’s words; End it is in the alert colour.' }, { h: 'The engine’s figures:', t: '2046’s middle path £3,091,000 (R7); 8 in 10 runs end between £2,298,000 and £4,296,000.' }, { h: 'Two scroll positions:', t: 'the light frame at the top with the audit row, the dark frame and the iPad scrolled to the Ended list.' }] },
             { anchor: 's6', id: '3a', name: 'iPhone · Plans tab 3a, as Asha sees it', keys: 'MA-224 · MA-222 · MA-263',
-              head: { n: '2', t: 'As Asha sees it', p: '21:20: Asha, a member, opens the tab after Arun saved his sister’s wedding at 21:16 and undid, at 21:18, the way he had chosen to cover it. She sees every plan and the engine’s figures, and saves nothing.' },
+              head: { n: '2', t: 'As Asha sees it', p: '21:19: Asha, a member, opens the tab after Arun saved his sister’s wedding at 21:16 and undid, at 21:18, the way he had chosen to cover it. She sees every plan and the engine’s figures, and saves nothing.' },
               lead: 'The plans with the wedding, and the car under Ended; no pencils, no menus, no Add in chat, and a lock line instead of the admin’s hint. The engine’s flag on the wedding and its note: cash £19,871 below zero in Jun 2027, back above zero in Mar 2028. On iPad, no Admin center in her sidebar.',
               frames: [fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[0], SC(st.asha, '-219px')), fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[1], SC(st.asha, '-1033px'), 'scrolled'), fr('iPhone · Plans tab 3a, as Asha sees it', PD, T[0], SC(st.asha, '-140px'))],
               notes: [{ h: 'Read, ask, never save:', t: 'figures show plain, without pencils; her chat is her own, where she can ask about a plan, see the ways to cover the wedding, or try a what-if.' }, { h: 'The engine’s figures', t: 'are the run after Arun’s Undo (21:18): 2046’s middle path £3,040,000; 8 in 10 runs end between £2,275,000 and £4,224,000.' }, { h: 'Colour is never alone:', t: 'the wedding’s flag says ▼ and what is short; the Ended chip says Ended.' }, { h: 'Two scroll positions:', t: 'the light frame shows the wedding’s row and its flag; the dark frame is scrolled to the Ended list and the engine’s note.' }] }

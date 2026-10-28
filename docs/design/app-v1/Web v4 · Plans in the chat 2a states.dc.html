@@ -339,7 +339,7 @@
                             <sc-if value="{{ f.p.isFan }}" hint-placeholder-val="{{ true }}">
                               <div class="mp-hero heroP">
                                 <div class="fx col gap2"><span class="mp-sub mp-hero-2">Middle path in 2046</span><span class="mp-num-hero">{{ f.p.big }}</span></div>
-                                <p class="pp mp-sub mp-hero-2">From £456,493 today. 8 in 10 of the engine's runs end between {{ f.p.lo }} and {{ f.p.hi }}.</p>
+                                <p class="pp mp-sub mp-hero-2">From £456,747 today. 8 in 10 of the engine's runs end between {{ f.p.lo }} and {{ f.p.hi }}.</p>
                                 <div class="fanw onhero">
                                   <div class="mp-chartbox fanbox" role="img" aria-label="{{ f.p.aria }}">
                                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ f.p.grid }}" as="g" hint-placeholder-count="4"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><path class="fband" sc-camel-d="{{ f.p.band }}"></path><path class="fline" sc-camel-d="{{ f.p.line }}"></path></svg>
@@ -434,8 +434,8 @@
           const pc = (v) => v.toFixed(2) + '%';
           const FAN = {"R1": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 516000, 599000, 681000], [2029, 532000, 635000, 748000], [2030, 548000, 685000, 819000], [2031, 542000, 701000, 863000], [2032, 571000, 753000, 943000], [2033, 608000, 803000, 1017000], [2034, 643000, 863000, 1089000], [2035, 693000, 931000, 1165000], [2036, 726000, 1002000, 1279000], [2037, 789000, 1048000, 1378000], [2038, 845000, 1123000, 1495000], [2039, 902000, 1192000, 1584000], [2040, 941000, 1279000, 1723000], [2041, 1035000, 1417000, 1913000], [2042, 1226000, 1592000, 2167000], [2043, 1395000, 1827000, 2575000], [2044, 1582000, 2042000, 2789000], [2045, 1755000, 2299000, 3187000], [2046, 1950000, 2580000, 3544000]], "R2": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 517000, 598000, 678000], [2029, 530000, 633000, 745000], [2030, 550000, 683000, 812000], [2031, 546000, 700000, 859000], [2032, 569000, 753000, 936000], [2033, 609000, 800000, 1011000], [2034, 653000, 861000, 1080000], [2035, 698000, 929000, 1160000], [2036, 729000, 1001000, 1263000], [2037, 792000, 1046000, 1363000], [2038, 849000, 1122000, 1478000], [2039, 900000, 1191000, 1574000], [2040, 942000, 1280000, 1702000], [2041, 1038000, 1415000, 1894000], [2042, 1219000, 1586000, 2150000], [2043, 1402000, 1822000, 2549000], [2044, 1575000, 2036000, 2779000], [2045, 1758000, 2298000, 3187000], [2046, 1949000, 2585000, 3546000]], "R3": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 520000, 601000, 681000], [2029, 543000, 646000, 757000], [2030, 572000, 706000, 835000], [2031, 579000, 734000, 892000], [2032, 612000, 796000, 984000], [2033, 667000, 860000, 1069000], [2034, 716000, 931000, 1158000], [2035, 771000, 1014000, 1252000], [2036, 827000, 1114000, 1378000], [2037, 894000, 1169000, 1512000], [2038, 962000, 1250000, 1639000], [2039, 1023000, 1363000, 1763000], [2040, 1091000, 1462000, 1929000], [2041, 1210000, 1624000, 2167000], [2042, 1417000, 1835000, 2463000], [2043, 1612000, 2089000, 2898000], [2044, 1765000, 2348000, 3201000], [2045, 1980000, 2634000, 3616000], [2046, 2188000, 2923000, 4058000]], "R4": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 520000, 601000, 681000], [2029, 543000, 646000, 757000], [2030, 572000, 706000, 835000], [2031, 579000, 734000, 892000], [2032, 613000, 796000, 984000], [2033, 667000, 860000, 1069000], [2034, 717000, 931000, 1158000], [2035, 772000, 1014000, 1252000], [2036, 827000, 1114000, 1378000], [2037, 894000, 1169000, 1512000], [2038, 962000, 1250000, 1639000], [2039, 1023000, 1363000, 1763000], [2040, 1091000, 1462000, 1929000], [2041, 1210000, 1624000, 2167000], [2042, 1417000, 1835000, 2463000], [2043, 1612000, 2089000, 2897000], [2044, 1766000, 2348000, 3201000], [2045, 1980000, 2634000, 3615000], [2046, 2188000, 2923000, 4058000]], "R7": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 520000, 601000, 681000], [2029, 543000, 646000, 757000], [2030, 573000, 706000, 835000], [2031, 603000, 758000, 918000], [2032, 638000, 823000, 1011000], [2033, 697000, 887000, 1103000], [2034, 737000, 959000, 1203000], [2035, 793000, 1039000, 1291000], [2036, 855000, 1141000, 1428000], [2037, 911000, 1197000, 1548000], [2038, 987000, 1294000, 1683000], [2039, 1041000, 1398000, 1816000], [2040, 1159000, 1534000, 2029000], [2041, 1315000, 1748000, 2321000], [2042, 1522000, 1969000, 2635000], [2043, 1716000, 2238000, 3076000], [2044, 1875000, 2498000, 3418000], [2045, 2095000, 2779000, 3869000], [2046, 2298000, 3091000, 4296000]], "W": [[2026, 459000, 468000, 477000], [2027, 432000, 491000, 542000], [2028, 500000, 580000, 659000], [2029, 523000, 624000, 731000], [2030, 557000, 681000, 806000], [2031, 580000, 734000, 888000], [2032, 618000, 801000, 981000], [2033, 673000, 857000, 1068000], [2034, 720000, 933000, 1155000], [2035, 774000, 1012000, 1251000], [2036, 827000, 1110000, 1375000], [2037, 895000, 1169000, 1502000], [2038, 962000, 1258000, 1628000], [2039, 1025000, 1365000, 1759000], [2040, 1131000, 1501000, 1963000], [2041, 1282000, 1708000, 2247000], [2042, 1498000, 1937000, 2588000], [2043, 1692000, 2202000, 3003000], [2044, 1863000, 2460000, 3331000], [2045, 2057000, 2747000, 3765000], [2046, 2275000, 3040000, 4224000]]};
           const CASH = [["Jan 2027", 21948], ["Feb 2027", 23878], ["Mar 2027", 8444], ["Apr 2027", 10665], ["May 2027", 12894], ["Jun 2027", -19871], ["Jul 2027", -17667], ["Aug 2027", -15462], ["Sep 2027", -13256], ["Oct 2027", -11050], ["Nov 2027", -8842], ["Dec 2027", -6633], ["Jan 2028", -4499], ["Feb 2028", -2363]];   // forecast.W: cash at each month's end, Jan 2027 to Feb 2028 (months_2027 and evening2.wedding.negative_months)
-          const START = 456493, NOW = 2026 + 10 / 12 + 1 / 30, SPAN = 2047 - NOW;   // Mon 2 Nov; each point is a year's end
-          const RUNAT = { R1: 'Mon 2 Nov 20:43', R2: 'Mon 2 Nov 20:46', R3: 'Mon 2 Nov 20:53', R4: 'Mon 2 Nov 20:59', R7: 'Mon 2 Nov 21:13', W: 'Mon 2 Nov 21:16' };
+          const START = 456747, NOW = 2026 + 10 / 12 + 4 / 30, SPAN = 2047 - NOW;   // Thu 5 Nov; each point is a year's end
+          const RUNAT = { R1: 'Thu 5 Nov 20:43', R2: 'Thu 5 Nov 20:46', R3: 'Thu 5 Nov 20:53', R4: 'Thu 5 Nov 20:59', R7: 'Thu 5 Nov 21:13', W: 'Thu 5 Nov 21:16' };
           const fan = (run) => {
             const rows = [[NOW, START, START, START]].concat(FAN[run].map((r) => [r[0] + 1, r[1], r[2], r[3]]));
             const vmax = 4.5e6, step = 1e6;
@@ -445,7 +445,7 @@
             const end = FAN[run][20];
             return { band: 'M' + rows.map((r) => pt(r, 3)).join(' L') + ' L' + rows.slice().reverse().map((r) => pt(r, 1)).join(' L') + ' Z', line: 'M' + rows.map((r) => pt(r, 2)).join(' L'), grid,
               big: gbp(end[2]), lo: gbp(end[1]), hi: gbp(end[3]),
-              aria: 'Net worth to 2046: the middle path from £456,493 today to ' + gbp(end[2]) + ', with 8 in 10 runs between ' + gbp(end[1]) + ' and ' + gbp(end[3]) + '; the milestones are listed below.' };
+              aria: 'Net worth to 2046: the middle path from £456,747 today to ' + gbp(end[2]) + ', with 8 in 10 runs between ' + gbp(end[1]) + ' and ' + gbp(end[3]) + '; the milestones are listed below.' };
           };
           // the milestones each run puts on the line (household-v4.json's, and the evening's plans with the time each was added)
           const M = {
@@ -532,7 +532,7 @@
 
           // 20:47, the applied card, then November's budget
           const appliedMini = card({ ok: true, over: 'Applied · way 1 of 3', title: 'Start a school fees pot this month', sub: '£690 a month, Nov 2026 to Dec 2028, drawn Jan 2029 to Feb 2035',
-            blocks: [kv('November’s planned surplus', '£2,636 → £1,946'), aud('Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Mon 2 Nov 20:46 · in the chat', true)],
+            blocks: [kv('November’s planned surplus', '£2,636 → £1,946'), aud('Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat', true)],
             acts: [btn('See November’s budget', '')] });
           const S2 = [ai('Done. November’s budget now puts £690 into the School fees pot, and the Projection has run again.', appliedMini)];
 
@@ -544,7 +544,7 @@
               foot('Was £700,000 · £1,001,000 · £2,585,000'), ok('No month is flagged under your £500 floor. Cash stays above zero.')],
             acts: [btn('Confirm', 'cbtn-primary'), btn('Change'), btn('Cancel', 'cbtn-ghost')], folds: [fold('Details and technical')] });
           const salSaved = card({ ok: true, over: 'Added to the plan', title: 'Arun’s salary, £5,500 a month from Sep 2028', sub: 'Then 4.8% each April, until you retire at 60 · 2046 middle path ▲ £338,000',
-            blocks: [aud('Audit · Plan item added · Arun’s salary set to £5,500 a month from Sep 2028 · Arun · Mon 2 Nov 20:53 · in the chat', true)],
+            blocks: [aud('Audit · Plan item added · Arun’s salary set to £5,500 a month from Sep 2028 · Arun · Thu 5 Nov 20:53 · in the chat', true)],
             folds: [fold('Technical', true)],
             tech: ['propose_plan_item → Arun’s salary · change_flow · income', 'target: commitment Salary · Arun · set to £5,500 a month · from Sep 2028', 'growth: member, 4.8% a year from Apr 2029 · until Jan 2051 (60)', 'version: none → 1', 'source_text: “my salary goes to £5,500 a month from Sep 2028”', 'Projection run 20:46 → 20:53 · 2046 middle path £2,585,000 → £2,923,000 (+£338,000)', 'Every figure is the engine’s.'] });
           const S3a = [me('my salary goes to £5,500 a month from Sep 2028'), tm('20:52'), ai('I’ll change your salary from Sep 2028. Two things first.', salQ)];
@@ -560,7 +560,7 @@
               ok('No month is flagged under your £500 floor. Cash stays above zero.')],
             acts: [btn('Confirm', 'cbtn-primary'), btn('Change'), btn('Cancel', 'cbtn-ghost')], folds: [fold('Details and technical')] });
           const hdSaved = card({ ok: true, over: 'Added to the plan', title: 'Close the HDFC home loan in Mar 2029', sub: 'With the SBI FD; frees ₹39,390 a month, 16 EMIs early',
-            blocks: [aud('Audit · Plan item added · Close the HDFC home loan with the SBI FD, Mar 2029 · Arun · Mon 2 Nov 20:59 · in the chat', true)],
+            blocks: [aud('Audit · Plan item added · Close the HDFC home loan with the SBI FD, Mar 2029 · Arun · Thu 5 Nov 20:59 · in the chat', true)],
             folds: [fold('Technical', true)],
             tech: ['propose_plan_item → Close the HDFC home loan · record_event', 'target: record Home loan · HDFC (Pune flat) · prepay the balance', 'funded_from: Fixed deposit · SBI, at maturity (₹6,17,538)', 'Mar 2029: ₹5,93,849 cleared · ₹23,689 into cash · the ₹39,390 EMI stops', 'version: none → 1', 'source_text: “close my HDFC loan with the SBI FD when it matures”', 'Projection run 20:53 → 20:59 · 2046 middle path £2,923,000, unchanged', 'Every figure is the engine’s.'] });
           const S4a = [me('close my HDFC loan with the SBI FD when it matures'), tm('20:58'), ai('That’s 10 Mar 2029. One thing first.', hdQ)];
@@ -576,7 +576,7 @@
               foot('No month is flagged under your £500 floor; it is cash that runs short.')],
             acts: [btn('Confirm', 'cbtn-primary'), btn('Change'), btn('Cancel', 'cbtn-ghost')], folds: [fold('Details and technical')] });
           const wedSaved = card({ ok: true, over: 'Added to the plan', title: 'Sister’s wedding, £20,000 in Mar 2027', sub: '2046 middle path ▼ £51,000 · cash below zero Jun 2027 to Feb 2028',
-            blocks: [aud('Audit · Plan item added · Sister’s wedding, £20,000 in Mar 2027 · Arun · Mon 2 Nov 21:16 · in the chat', true)] });
+            blocks: [aud('Audit · Plan item added · Sister’s wedding, £20,000 in Mar 2027 · Arun · Thu 5 Nov 21:16 · in the chat', true)] });
           const WAYSC = (member) => [
             { n: '1', rk: 'one', t: 'Take it from Balanced (ISA) when cash runs short', chg: ['Balanced (ISA) pays £19,871 in Jun 2027'], why: 'Nothing you spend or plan moves; the investments you would have kept pay for the wedding.', mp: '£3,041,000' },
             { n: '2', rk: '', t: 'Move the home extension to Mar 2028', chg: ['Home extension: Jun 2027 → Mar 2028, still £35,000'], why: 'Only if the extension can wait; cash then covers both from the budget.', mp: '£3,041,000' },
@@ -589,9 +589,9 @@
             foldsB: [fold('Technical')] });
           const wedApplied = card({ ok: true, over: 'Applied · way 1 of 3', title: 'Take it from Balanced (ISA) when cash runs short', sub: 'Balanced (ISA) pays £19,871 in Jun 2027',
             blocks: [kv('Cash in Jun 2027', '−£19,871 → £0'), kv('2046 middle path', '£3,040,000 → £3,041,000'),
-              aud('Audit · Plan item added · Balanced (ISA) pays the wedding’s shortfall, £19,871 in Jun 2027 · Arun · Mon 2 Nov 21:17 · in the chat', true)] });
+              aud('Audit · Plan item added · Balanced (ISA) pays the wedding’s shortfall, £19,871 in Jun 2027 · Arun · Thu 5 Nov 21:17 · in the chat', true)] });
           const wedUndone = card({ over: 'Undone', title: 'Balanced (ISA) no longer pays the shortfall', sub: 'The wedding stays in the plan; cash is flagged again',
-            blocks: [aud('Audit · Undone · Balanced (ISA) paying the wedding’s shortfall · Arun · Mon 2 Nov 21:18 · in the chat', false),
+            blocks: [aud('Audit · Undone · Balanced (ISA) paying the wedding’s shortfall · Arun · Thu 5 Nov 21:18 · in the chat', false),
               flag('▼ Cash goes £19,871 below zero in Jun 2027; back above zero in Mar 2028')],
             acts: [btn('See the three ways', '')] });
           const S5a = [me('£20,000 for my sister’s wedding in Mar 2027'), tm('21:15'), ai('I’ll add that as a plan item. One thing first.', wedQ), me('The monthly budget, then cash'), tm('21:15'), ai('', wedImp)];
@@ -644,7 +644,7 @@
             split: [['Income', '£7,560'], ['Spending plan', '£2,682'], ['EMIs and SIP', '£2,242'], ['School fees pot', '£690']].map((s) => ({ l: s[0], v: s[1] })),
             inc: [['person', 'Arun', 'Salary, take-home', '£4,350'], ['person', 'Asha', 'Salary, take-home', '£3,050'], ['apartment', 'Pune rent', '₹18,000 a month', '£160']].map((r) => ({ i: r[0], n: r[1], s: r[2], v: r[3] })),
             potSub: '£690 a month to Dec 2028, drawn Jan 2029 to Feb 2035; put in by a rearrangement',
-            aud: 'Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Mon 2 Nov 20:46 · in the chat',
+            aud: 'Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat',
             cats: CATS.map((c) => ({ i: ICON[c[0]], n: c[0], v: gbp(c[1]), s: c[2] })) };
           const N = (s) => 'Browser · Plans in the chat 2a, ' + s;
           const n1 = 'Browser · Plans in the chat 2a, the two more ways opened';
@@ -680,11 +680,11 @@
                 { h: 'Figures:', t: 'later.hdfc_close: the FD’s ₹6,17,538 clears ₹5,93,849 in Mar 2029, ₹23,689 left over, the ₹39,390 EMI stops 16 EMIs early; the middle path does not move at 2031, 2036 or 2046.' }] },
             { anchor: 's5', id: 'S5', name: 'Browser · Plans in the chat 2a, the wedding, cash below zero', keys: 'MA-263 · MA-222 · MA-264',
               lead: 'At 21:15 Arun adds “£20,000 for my sister’s wedding in Mar 2027”. It leaves cash £19,871 below zero in Jun 2027, when the extension is paid; the ways are for cash, not the floor. At 21:17 he applies way 1, and at 21:18 undoes it. The page beside is the Net worth tab scrolled to its milestones.',
-              frames: [desk(n5 + ' · 21:15, the question and the impact', T[0], '21:15', S5a, page('list', 'R7', 'Mon 2 Nov 21:13'), -400),
-                desk(n5 + ' · 21:16, the ways to cover it', T[0], '21:16', S5b, page('list', 'W', 'Mon 2 Nov 21:16'), -120),
-                desk(n5 + ' · 21:16, the ways to cover it', T[1], '21:16', S5b, page('list', 'W', 'Mon 2 Nov 21:16'), -420),
-                desk(n5 + ' · 21:17, way 1 applied', T[0], '21:17', S5c, page('list', 'W1', 'Mon 2 Nov 21:17'), -40),
-                desk(n5 + ' · 21:18, undone', T[1], '21:18', S5d, page('list', 'W', 'Mon 2 Nov 21:18'), -120),
+              frames: [desk(n5 + ' · 21:15, the question and the impact', T[0], '21:15', S5a, page('list', 'R7', 'Thu 5 Nov 21:13'), -400),
+                desk(n5 + ' · 21:16, the ways to cover it', T[0], '21:16', S5b, page('list', 'W', 'Thu 5 Nov 21:16'), -120),
+                desk(n5 + ' · 21:16, the ways to cover it', T[1], '21:16', S5b, page('list', 'W', 'Thu 5 Nov 21:16'), -420),
+                desk(n5 + ' · 21:17, way 1 applied', T[0], '21:17', S5c, page('list', 'W1', 'Thu 5 Nov 21:17'), -40),
+                desk(n5 + ' · 21:18, undone', T[1], '21:18', S5d, page('list', 'W', 'Thu 5 Nov 21:18'), -120),
                 phone(ph(n5) + ' · 21:16, the ways to cover it', T[0], '21:16', S5b, -120), phone(ph(n5) + ' · 21:16, the ways to cover it', T[1], '21:16', S5b, -470)],
               notes: [{ h: 'Draws (MA-263):', t: '“(…) and a rearrangement offered because cash would go below zero rather than the floor”, and “Undo after a way is applied, and its audit row”.' },
                 { h: 'Figures:', t: 'evening2.wedding: the middle path R7 → W, 2046 £3,091,000 → £3,040,000 (£3,041,000 with way 1 applied); cash by month from forecast.W; the three ways and their 2046 middle paths; the applied and undone audit rows.' },
@@ -692,22 +692,22 @@
                 { h: 'The page is scrolled to the milestones', t: 'because way 1’s run has a middle path in the figure set but no fan; the hero above it is the fan, as on the other boards.' }] },
             { anchor: 's6', id: 'S6', name: 'Browser · Plans in the chat 2a, Asha asks', keys: 'MA-263 · MA-222 · MA-264',
               lead: 'At 21:20 Asha, a member, asks in her own conversation: the wedding’s ways, with a lock where Confirm would be; then a plan and a saved assumption, each refused with a what-if offered. Nothing she does here is saved; her page is the same Projection.',
-              frames: [desk(n6 + ' · 21:20', T[0], '21:20', S6, page('fan', 'W', 'Mon 2 Nov 21:18'), -40, { member: true }), desk(n6 + ' · 21:21', T[1], '21:21', S6, page('fan', 'W', 'Mon 2 Nov 21:18'), -990, { member: true }),
+              frames: [desk(n6 + ' · 21:20', T[0], '21:20', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -40, { member: true }), desk(n6 + ' · 21:21', T[1], '21:21', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -990, { member: true }),
                 phone(ph(n6) + ' · 21:20', T[0], '21:20', S6, -60), phone(ph(n6) + ' · 21:21', T[1], '21:21', S6, -1060)],
               notes: [{ h: 'Draws (MA-263):', t: '“a member asking for ways to cover a shortfall: the options shown, nothing saved, at both doors”.' },
                 { h: 'Draws (MA-222):', t: '“refusal and validation outcomes in the chat and in place: plan items and saved assumptions refused to a member (…)”. In place, a member’s figures have no pencil (Plans tab 3a states).' },
                 { h: 'Asha’s words', t: 'are the board’s own, illustrative; the £300 and the 3% are hers. Her sidebar’s foot says she is a member.' }] },
             { anchor: 's7', id: 'S7', name: 'Browser · Plans in the chat 2a, plans it cannot set up', keys: 'MA-222 · MA-264',
               lead: 'At 21:22 Arun tries “about 2 cr to close my loan”, asked for the loan and the exact amount, and “close my ICICI loan”, answered with the loans he has.',
-              frames: [desk(n7 + ' · 21:22', T[0], '21:22', S7, page('fan', 'W', 'Mon 2 Nov 21:18'), -60), desk(n7 + ' · 21:22', T[1], '21:22', S7, page('fan', 'W', 'Mon 2 Nov 21:18'), -360)],
+              frames: [desk(n7 + ' · 21:22', T[0], '21:22', S7, page('fan', 'W', 'Thu 5 Nov 21:18'), -60), desk(n7 + ' · 21:22', T[1], '21:22', S7, page('fan', 'W', 'Thu 5 Nov 21:18'), -360)],
               notes: [{ h: 'Draws (MA-222):', t: '“refusal and validation outcomes (…): (…) ambiguous or unresolvable plans (‘about 2 cr’, no end date, a loan that does not exist) asked or refused”. No end date is asked by round 1’s questions card.' },
                 { h: 'The loans', t: 'are household-v4.json’s; the HDFC loan is already closing in Mar 2029 from 20:59.' }] }
           ];
           return {
             boards, bud,
             ptabs: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '', fill: t[1] === 'Chat' ? 'ms-fill' : '' })),
-            intro1: 'The picked 2a, a card per step (Arun, 28 Oct 2026), in the states MA-263 and MA-222 still had to draw. The evening of Mon 2 Nov 2026 goes on from round 1’s 20:46: the two more ways (20:44), the pot in November’s budget (20:47), Arun’s salary step (20:52) and the HDFC closure (20:58); after the Plans tab’s changes (21:08 to 21:13), the wedding that leaves cash short, a way applied and undone (21:15 to 21:18); Asha’s questions (21:20); and two plans MyPaisa cannot set up as said (21:22).',
-            intro2: 'The laptop (1440, shell 1a: the page beside the chat) at every state, and the phone-web door (390, the Chat tab) for the wedding and for Asha, in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,493 all evening.'
+            intro1: 'The picked 2a, a card per step (Arun, 28 Oct 2026), in the states MA-263 and MA-222 still had to draw. The evening of Thu 5 Nov 2026 goes on from round 1’s 20:46: the two more ways (20:44), the pot in November’s budget (20:47), Arun’s salary step (20:52) and the HDFC closure (20:58); after the Plans tab’s changes (21:08 to 21:13), the wedding that leaves cash short, a way applied and undone (21:15 to 21:18); Asha’s questions (21:20); and two plans MyPaisa cannot set up as said (21:22).',
+            intro2: 'The laptop (1440, shell 1a: the page beside the chat) at every state, and the phone-web door (390, the Chat tab) for the wedding and for Asha, in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747 all evening.'
           };
 
         }

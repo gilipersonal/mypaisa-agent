@@ -1089,8 +1089,10 @@ does (rule 1).
    named prior or the engine.
 7. Rearranges the budget (MA-263). When a plan leaves cash below zero or the
    surplus below the admin's floor (a monthly surplus kept among the
-   Projection's assumptions, £500 to start, the admin's alone; Arun, 28 Oct
-   2026, MA-264), code works out the options with a deterministic goal-seek (trim a category from a date, pause or reduce a
+   Projection's assumptions, £500 to start, the admin's alone, holding while
+   anyone in the household earns a salary; in retirement only cash running
+   out is flagged; Arun, 28 Oct 2026, MA-264), code works out the options
+   with a deterministic goal-seek (trim a category from a date, pause or reduce a
    SIP, move a plan's start, draw from a named pool, change the surplus
    rule); `rearrange_budget` returns them and the agent ranks and explains
    them, each as an unsaved scenario card. The admin's Confirm applies one,

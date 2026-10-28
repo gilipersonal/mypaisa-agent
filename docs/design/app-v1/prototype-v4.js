@@ -1,6 +1,6 @@
 /* MyPaisa · Prototype v4 (MA-193): the journey, its clock, and every screen's figures.
-   Every figure is the v4 figure set's (docs/design/figures/household-v4.json; the Projection's runs, R26 and what_if_26,
-   are future-plans-v4.json's, month by month, MA-264). A figure the set lacks is derived from
+   Every figure is the v4 figure set's (docs/design/figures/household-v4.json; the Projection's run on Thursday, R5N, and
+   its what-if, what_if_5nov, are future-plans-v4.json's, month by month, MA-264). A figure the set lacks is derived from
    its figures and says how, beside it. Claude never produces a number: figures come from the engine or the registry.
    Prototype v4.dc.html holds the state and calls MP4.build(); the templates only lay out what this file returns. */
 (function () {
@@ -60,12 +60,12 @@
     { id: 's7c', s: 7, d: D3, tm: '09:14', t: 'row:hdfc', p: 'debts', hint: 'Open the HDFC home loan.' },
     { id: 's7d', s: 7, d: D3, tm: '09:14', t: 'next', p: 'guide', hint: 'Left to pay ₹14,84,587 after November\'s EMI; 136 of 180 EMIs paid. Net worth £456,747; Debts shows the card\'s £1,458 too.' },
     { id: 's8a', s: 8, d: D3, tm: '10:05', go: 'proj', jv: { page: 'hdfc', chat: false }, hint: 'Open the Projection.' },
-    { id: 's8b', s: 8, d: D3, tm: '10:05', t: 'asm:arun', p: 'proj', hint: 'The fan from £457,951, the engine\'s run of Mon 26 Oct; the milestones and the assumptions. As the admin, tap Arun\'s salary growth, 4.17%.' },
-    { id: 's8c', s: 8, d: D3, tm: '10:06', t: 'asmedit', p: 'proj', fill: '4.8', hint: 'Type 4.8 to see before → after, then Cancel, so the figures stay true.' },
-    { id: 's8d', s: 8, d: D3, tm: '10:06', t: 'next', p: 'guide', hint: 'Cancelled: 4.17% stays, and so does the engine\'s run.' },
+    { id: 's8b', s: 8, d: D3, tm: '10:05', t: 'asm:arun', p: 'proj', hint: 'The fan from £456,747, the engine\'s run after this morning\'s EMI; the milestones and the assumptions. As the admin, tap Arun\'s salary growth, 4.8%, which you set on Mon 26 Oct.' },
+    { id: 's8c', s: 8, d: D3, tm: '10:06', t: 'asmedit', p: 'proj', fill: '4.17', hint: 'Type 4.17 to see before → after, then Cancel, so the figures stay true.' },
+    { id: 's8d', s: 8, d: D3, tm: '10:06', t: 'next', p: 'guide', hint: 'Cancelled: 4.8% stays, and so does the engine\'s run.' },
     { id: 's9a', s: 9, d: D3, tm: '10:20', t: 'sugg', p: 'chat', v: { page: 'proj', chat: true }, msg: MSG_WI, hint: 'Ask in the chat: tap the what-if suggestion, or type and press Enter.' },
     { id: 's9b', s: 9, d: D3, tm: '10:20', auto: 1200, hint: 'The engine runs it; nothing is saved.' },
-    { id: 's9c', s: 9, d: D3, tm: '10:20', t: 'plan:save', p: 'chat', hint: '2036\'s middle path: £1,417,000 with the flat, against £1,508,000, and code flags cash £14,462 below zero in Jun 2028. Save as a plan item is the admin\'s: tap it.' },
+    { id: 's9c', s: 9, d: D3, tm: '10:20', t: 'plan:save', p: 'chat', hint: '2036\'s middle path: £1,446,000 with the flat, against £1,539,000, and code flags cash £15,377 below zero in Jun 2028. Save as a plan item is the admin\'s: tap it.' },
     { id: 's9d', s: 9, d: D3, tm: '10:20', t: 'pay:cash', p: 'chat', hint: 'MyPaisa asks only what is missing: where the deposit is paid from. Tap The monthly budget, then cash.' },
     { id: 's9e', s: 9, d: D3, tm: '10:21', auto: 1200, hint: 'The engine works out the impact.' },
     { id: 's9f', s: 9, d: D3, tm: '10:21', t: 'plan:cancel', p: 'chat', hint: 'The impact before Confirm: the middle path in 2031, 2036 and 2046, and code\'s cash flag. Tap Cancel, so the plan keeps its three items and the figures stay true.' },
@@ -117,13 +117,13 @@
     ['dGrid', 'dBand', 'dLine', 'dDash'].forEach(function (k) { if (!c[k]) c[k] = 'M0 0'; });
     return c;
   }
-  var NOW = 2026.82;
-  var PJ = [[NOW, 457951, 457951, 457951]];   /* year, p10, p50, p90 */
-  /* R26: the engine's run of Mon 26 Oct 09:53, to 2046, the 20 years the Projection opens at (MA-261, MA-264) */
-  var PJ_FAN = [[2027,453000,512000,563000],[2028,517000,600000,682000],[2029,581000,683000,797000],[2030,644000,787000,929000],[2031,683000,861000,1032000],[2032,776000,973000,1193000],[2033,866000,1071000,1359000],[2034,942000,1210000,1505000],[2035,1032000,1347000,1696000],[2036,1146000,1508000,1920000],[2037,1232000,1646000,2118000],[2038,1343000,1796000,2399000],[2039,1463000,1993000,2687000],[2040,1598000,2163000,2972000],[2041,1733000,2385000,3331000],[2042,1926000,2633000,3734000],[2043,2047000,2910000,4319000],[2044,2186000,3146000,4661000],[2045,2368000,3435000,5205000],[2046,2548000,3697000,5766000]];
+  var NOW = 2026.84;   /* Thu 5 Nov, the day of the prototype's Projection steps */
+  var PJ = [[NOW, 456747, 456747, 456747]];   /* year, p10, p50, p90 */
+  /* R5N: the engine's run after Thursday's EMI, to 2046, the 20 years the Projection opens at (MA-261, MA-264) */
+  var PJ_FAN = [[2027,452000,511000,562000],[2028,516000,599000,681000],[2029,582000,684000,798000],[2030,647000,789000,932000],[2031,688000,866000,1037000],[2032,783000,979000,1200000],[2033,878000,1084000,1373000],[2034,955000,1227000,1525000],[2035,1050000,1373000,1726000],[2036,1170000,1539000,1957000],[2037,1264000,1685000,2176000],[2038,1380000,1836000,2463000],[2039,1501000,2053000,2759000],[2040,1652000,2228000,3061000],[2041,1781000,2465000,3454000],[2042,1995000,2748000,3888000],[2043,2146000,3027000,4502000],[2044,2274000,3284000,4870000],[2045,2484000,3601000,5445000],[2046,2676000,3897000,6052000]];
   PJ = PJ.concat(PJ_FAN);
-  /* what_if_26: £60,000 down on a second flat in Jun 2028, run at 10:20 */
-  var WI_FAN = [[NOW,457951,457951,457951],[2027,453000,512000,563000],[2028,458000,538000,617000],[2029,516000,618000,727000],[2030,585000,714000,850000],[2031,626000,787000,950000],[2032,708000,902000,1096000],[2033,802000,999000,1248000],[2034,885000,1132000,1405000],[2035,967000,1266000,1566000],[2036,1064000,1417000,1771000]];
+  /* what_if_5nov: £60,000 down on a second flat in Jun 2028, run at 10:20 on Thursday */
+  var WI_FAN = [[NOW,456747,456747,456747],[2027,452000,511000,562000],[2028,457000,537000,617000],[2029,517000,619000,728000],[2030,587000,717000,852000],[2031,631000,792000,955000],[2032,716000,908000,1106000],[2033,814000,1010000,1261000],[2034,900000,1149000,1421000],[2035,987000,1293000,1593000],[2036,1088000,1446000,1806000]];
   function col(a, k) { return a.map(function (r) { return [r[0], r[k]]; }); }
 
   function fanChart(compact) {
@@ -141,7 +141,7 @@
       ys: [['£2m', 2000000], ['£4m', 4000000], ['£6m', 6000000]].map(function (y) { return { t: y[0], top: Y(y[1]).toFixed(2) + '%' }; }),
       xs: (compact ? [['Today', NOW], ['2036', 2036], ['2046', 2046]] : [['Today', NOW], ['2031', 2031], ['2036', 2036], ['2041', 2041], ['2046', 2046]]).map(function (x, i, a) { return { t: x[0], l: X(x[1]).toFixed(2) + '%', cls: i === 0 ? 'ax0' : i === a.length - 1 ? 'ax1' : '' }; }),
       dots: dots.concat(ticks), lbls: lbls,
-      ann: !compact, annL: X(2031).toFixed(2) + '%', annY: '2031', annM: gbp(861000), annLo: gbp(683000), annHi: gbp(1032000),
+      ann: !compact, annL: X(2031).toFixed(2) + '%', annY: '2031', annM: gbp(866000), annLo: gbp(688000), annHi: gbp(1037000),
       hasLeg: true, leg: [{ cls: 'k-line', t: 'Middle path' }, { cls: 'k-band', t: '8 in 10 runs' }, { cls: 'k-dot', t: 'A loan ends' }, { cls: 'k-sq', t: 'A plan item' }, { cls: 'k-tick', t: 'A maturity or rate change' }]
     });
   }
@@ -153,7 +153,7 @@
       dGrid: grid([500000, 1000000, 1500000], Y), dBand: band(col(WI_FAN, 1), col(WI_FAN, 3), X, Y), dLine: line(col(WI_FAN, 2), X, Y), dDash: line(base, X, Y),
       ys: [['£0.5m', 500000], ['£1m', 1000000], ['£1.5m', 1500000]].map(function (y) { return { t: y[0], top: Y(y[1]).toFixed(2) + '%' }; }),
       xs: [['Today', NOW, 'ax0'], ['2031', 2031, ''], ['2036', 2036, 'ax1']].map(function (x) { return { t: x[0], l: X(x[1]).toFixed(2) + '%', cls: x[2] }; }),
-      dots: [{ l: X(2028.42).toFixed(2) + '%', tp: Y(interp(col(WI_FAN, 2), 2028.42)).toFixed(2) + '%', cls: 'pc-sq' }, { l: '100%', tp: Y(1417000).toFixed(2) + '%', cls: '' }, { l: '100%', tp: Y(1508000).toFixed(2) + '%', cls: 'pc-grey' }],
+      dots: [{ l: X(2028.42).toFixed(2) + '%', tp: Y(interp(col(WI_FAN, 2), 2028.42)).toFixed(2) + '%', cls: 'pc-sq' }, { l: '100%', tp: Y(1446000).toFixed(2) + '%', cls: '' }, { l: '100%', tp: Y(1539000).toFixed(2) + '%', cls: 'pc-grey' }],
       hasLeg: true, leg: [{ cls: 'k-line', t: 'With the flat' }, { cls: 'k-dash', t: 'Today\'s plan' }, { cls: 'k-sq', t: 'Deposit' }, { cls: 'k-band', t: '8 in 10 runs' }]
     });
   }
@@ -364,9 +364,9 @@
         msgs.push(aiCards([card({ hasOver: true, over: cx ? 'Not saved' : 'Not saved yet', hasTitle: true, title: 'Second flat deposit',
           parts: cx ? [para('Cancelled at 10:21. Nothing is saved; the plan keeps its three items.', 't15')]
             : [para('−£60,000 once, Jun 2028, paid from the monthly budget, then cash'), hdr('Middle path, with it', 'against today\'s plan'),
-               kv('2031', '£787,000 · ▼ £74,000', true), kv('2036', '£1,417,000 · ▼ £91,000', true), kv('2046', '£3,564,000 · ▼ £133,000', true),
-               para('Today\'s plan: £861,000, £1,508,000 and £3,697,000.'),
-               { isFlag: true, t: '▼ Cash goes £14,462 below zero in Jun 2028, back above zero in Nov 2028.' },
+               kv('2031', '£792,000 · ▼ £74,000', true), kv('2036', '£1,446,000 · ▼ £93,000', true), kv('2046', '£3,772,000 · ▼ £125,000', true),
+               para('Today\'s plan: £866,000, £1,539,000 and £3,897,000.'),
+               { isFlag: true, t: '▼ Cash goes £15,377 below zero in Jun 2028, back above zero in Nov 2028.' },
                para('The surplus each year stays as it is: a one-off is paid from cash. New milestone: Second flat deposit, Jun 2028. Every figure is the engine\'s; £60,000 and June 2028 are your words.')],
           hasActs: !cx, acts: [act('Confirm', 'plan:confirm', 'cbtn-primary'), act('Change', 'x'), act('Cancel', 'plan:cancel', 'cbtn-ghost')] })],
           { hasText: true, t: cx ? 'Cancelled. The plan stays as it is.' : 'Here\'s what it does to the plan.' }));
@@ -381,8 +381,8 @@
     }
     function wiCard(live, asha) {
       return card({ hasOver: true, over: 'What-if · Jun 2028 · not saved', hasTitle: true, title: '£60,000 down on a second flat',
-        parts: [{ isChart: true, ch: wiChart() }, kv('2036, with the flat', '£1,417,000', true), kv('2036, today\'s plan', '£1,508,000', true), kv('Middle path', '▼ £91,000 lower', true),
-          { isFlag: true, t: '▼ Cash goes £14,462 below zero in Jun 2028, back above zero in Nov 2028.' }, para('The engine\'s figures; nothing is saved. £60,000 and June 2028 are your words.')]
+        parts: [{ isChart: true, ch: wiChart() }, kv('2036, with the flat', '£1,446,000', true), kv('2036, today\'s plan', '£1,539,000', true), kv('Middle path', '▼ £93,000 lower', true),
+          { isFlag: true, t: '▼ Cash goes £15,377 below zero in Jun 2028, back above zero in Nov 2028.' }, para('The engine\'s figures; nothing is saved. £60,000 and June 2028 are your words.')]
           .concat(asha ? [{ isLock: true, t: 'Only Arun can save it as a plan item.' }] : []),
         hasActs: live, acts: asha ? [act('Change it', 'x')] : [act('Save as a plan item', 'plan:save', 'cbtn-primary', 'bookmark_add'), act('Change it', 'x')] });
     }
@@ -454,7 +454,7 @@
     var shown = (door === 'desk' || !st.v.chat) && st.v.page === b.p;
     if (!shown) return navTo(st, door, b.p);
     if (b.t === 'edit') return normNum(st.ev) === '428000' ? 'save' : 'field';
-    if (b.t === 'asmedit') return st.ea === '4.8' ? 'asm:cancel' : 'asmfield';
+    if (b.t === 'asmedit') return st.ea === '4.17' ? 'asm:cancel' : 'asmfield';
     return b.t;
   }
   function normNum(s) { return String(s || '').replace(/[^\d.]/g, ''); }
@@ -501,7 +501,7 @@
     if (key === 'fill') {
       if (b.msg) return { typed: b.msg };
       if (b.id === 's4d') return { ev: '428000' };
-      if (b.id === 's8c') return { ea: '4.8' };
+      if (b.id === 's8c') return { ea: '4.17' };
       return {};
     }
     /* the branch */
@@ -532,7 +532,7 @@
     if (key === 'save' && b.id === 's4d') return normNum(st.ev) === '428000' ? next() : toast('Type 428000 first: the figure set\'s correction.', now);
     if (key === 'cancel' && b.id === 's4d') return go(st, IX.s4c, now);
     if (key === 'asm:arun' && b.id === 's8b') return next();
-    if (key === 'asm:cancel' && b.id === 's8c') return Object.assign(next(), toast('Cancelled. Nothing changed: 4.17% stays, and so does the engine\'s run.', now));
+    if (key === 'asm:cancel' && b.id === 's8c') return Object.assign(next(), toast('Cancelled. Nothing changed: 4.8% stays, and so does the engine\'s run.', now));
     if (key === 'asm:save' && b.id === 's8c') return toast('Save would run the Projection again. This walk-through cancels, so the figures stay true.', now);
     if (key === 'plan:confirm' && b.id === 's9f') return toast('Confirm would save it with its audit row and, since cash goes below zero, offer ways to cover it. This walk-through cancels, so the figures stay true.', now);
     if (key === 'x:early') return toast('Pick the two amber lines first.', now);

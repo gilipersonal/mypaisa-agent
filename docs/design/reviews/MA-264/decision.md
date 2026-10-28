@@ -25,7 +25,7 @@ Its updated stories list screens still to draw:
 `docs/design/figures/future-plans-v4.json`, from `make_future_plans.py`, as lesson 13 asks; the README beside it
 says how every figure is made and checked.
 
-- **The clock.** One evening, Mon 2 Nov 2026, 20:41 to 21:05. October has closed; net worth is £456,493.
+- **The clock.** One evening, Thu 5 Nov 2026, 20:41 to 21:22, after that morning's HDFC EMI (net worth £456,747) and Prototype v4's Projection steps. It was drawn on Mon 2 Nov first; Arun moved it on 28 Oct 2026 (point 7).
 - **Carried from the v4 boards (lesson 19):** Arun's salary growth of 4.8% (corrected at 10:40 on Mon 26 Oct) and
   Asha's bonus growing 3.5% a year (corrected at 10:44).
 - **The ledger.** It runs month by month from 1 Nov 2026 to Dec 2056. Every month, opening cash plus its flows equals
@@ -234,9 +234,41 @@ picked story waits on a board.
 - impeccable: 0 findings on the six new state boards. The edited Projection boards and the prototype keep only
   MA-193's earlier findings.
 
-**Points to settle (Arun):**
-6. **The floor in retirement.** At 30 years the forecast flags 2053 to 2056 below the floor, because the surplus sits
-   at £0 while Balanced pays the budget in retirement. No record says whether the floor holds then.
-7. **Prototype v4's clock.** Its steps 8 to 10 are dated Thu 5 Nov but show the 26 Oct run (that predates this round),
-   and they come after the Mon 2 Nov evening, whose plans they do not show (lesson 19).
-8. **The Agent Journey's published page** now differs from the repo copy; republishing it is Arun's call.
+**Points to settle (Arun), settled 28 Oct 2026:**
+6. **The floor in retirement.** It holds only while anyone in the household earns a salary, to Dec 2052. In retirement
+   only cash running out is flagged, so 2053 to 2056 are no longer flagged. ARCHITECTURE §6.6, PLAN's MA-263 bullet,
+   the figure set, the 30-year boards and the Jira descriptions say so.
+7. **Prototype v4's clock.** MA-264's evening moves to Thu 5 Nov, 20:41 to 21:22, after the prototype's Thursday. The
+   prototype's Projection steps show that day's run (R5N, 09:13, after the EMI; R0's figures) and that day's what-if.
+   Every MA-264 board is re-dated: net worth today is £456,747, and the base run is Thu 5 Nov 09:13.
+8. **The Agent Journey** is republished with MA-264's PR, together with the Confluence publish.
+
+## Round 3: Arun's answers applied
+
+Arun, 28 Oct 2026: the floor only while earning, the evening on Thu 5 Nov, and the Agent Journey republished with the
+PR.
+
+- **The clock.**
+  - Every MA-264 board, the figure set, the README, the brief and the trace say Thu 5 Nov 2026, 20:41 to 21:22.
+  - Net worth today is £456,747, after the HDFC EMI answered Paid at 09:12 on the Check-ins boards and in the
+    prototype.
+  - The evening's base run is R5N, Thu 5 Nov 09:13. It has R0's figures, since the EMI was already in November's
+    flows.
+- **Prototype v4's Thursday:**
+  - steps 8 to 10 show R5N (2046: £3,897,000);
+  - its what-if is `what_if_5nov` (2036: £1,446,000 against £1,539,000, and cash £15,377 below zero in Jun 2028);
+  - Arun's corrections of 26 Oct show as set.
+- **The Agent Journey** keeps the 26 Oct run, since its story is Mon 26 Oct.
+- **The floor in retirement.** The 30-year Budget forecast shows 2053 to 2056 as "Both retired: no floor", and its
+  floor line stops at 2052.
+- **One record, one wording (lesson 13).** The salary card beside the Budget forecast's loading and error frames now
+  reads exactly as the chat's saved card.
+- **Asha's views move to 21:19,** a minute before she asks about the wedding at 21:20, so the chat beside them is the
+  empty one it shows.
+
+**The gates, after round 3:**
+- board-fit: 52 boards in Chromium and WebKit, 0 faults;
+- plan-sync: selftest 0 wrong; check clean but for the Confluence publish held for the PR;
+- contrast: clean;
+- design-sync: 100 files, 0 drift;
+- impeccable: 0 on all twelve MA-264 boards.

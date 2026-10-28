@@ -247,3 +247,12 @@ The rules of round 1 hold, plus:
 | C, Plans tab 3a (MA-224, MA-222) | app `Web v4 · Plans tab 3a states.dc.html`; ios `iPhone v4 · Plans tab 3a states.dc.html` | privacy (21:06); Replace the car paused (21:08) and resumed (21:09) from its menu, each with its audit row and the summary's new middle path; School fees' end corrected in place in its sheet (21:11: editing, then saved, before → after, history v2, the audit with the run before and after); Replace the car ended (21:13: an Ended section); Asha at 21:20 (8 plans with the wedding, no pills, no Add in chat, a lock note) |
 | D, the Net worth tab (MA-224) | **existing** app `Web v4 · Projection.dc.html` and ios `iPhone v4 · Projection.dc.html` | every figure moved to `R26` and `what_if_26` (fan, hero, ranges, 1b's story, 1c's decades, P4's rupees, the what-if cards with code's cash flag, the notes); 1a and its states get the tabs (Net worth selected) and the horizon opening at 20 years ("Middle path in 2046"); new frames: the Net worth tab at 390 and on iPad (26 Oct); after the plans (Mon 2 Nov 21:06, R4): plan-item milestones on the line and in Milestones; the notes on MA-193's plan-item card boards (P10 and the web phone board) saying 2a supersedes them for a new plan item |
 | E, the prototype and the Agent Journey | **existing** app `Prototype v4.dc.html`, `PrototypeV4Chat.dc.html`, `PrototypeV4Pages.dc.html`, `PrototypeV4Phone.dc.html`, `PrototypeV4Web.dc.html`, `prototype-v4.js`, `prototype-v4-pages.js`; repo `docs/design/agent-journey.html` | the Projection's figures moved to `R26` and `what_if_26`, with the what-if's cash flag; the Projection page's tabs and the 20-year opening; step 9's plan item made 2a's way (questions, then the impact card, then Confirm); the Agent Journey's Projection and future-plans flows in the same figures and the same flow. Republishing the Agent Journey's artifact is Arun's call: change the repo copy only |
+
+# Round 3: Arun's answers (28 Oct 2026)
+
+- **The clock.** The evening is Thu 5 Nov 2026, 20:41 to 21:22. Every "Mon 2 Nov" above reads "Thu 5 Nov".
+  - Net worth today is £456,747.
+  - The base run is R5N, Thu 5 Nov 09:13.
+  - Prototype v4's Thursday shows R5N and `what_if_5nov`.
+- **The floor** holds while anyone earns a salary, to Dec 2052. In retirement only cash running out is flagged.
+- **The Agent Journey** is republished with the PR.

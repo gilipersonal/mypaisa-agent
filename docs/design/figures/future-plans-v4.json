@@ -1,12 +1,13 @@
 {
  "about": "The future-plans boards' figures (MA-264): MA-193's household (household-v4.json), run forward month by month from 1 Nov 2026 by make_future_plans.py, a design aid and not the product's engine (MA-219). Illustrative.",
  "clock": {
-  "day": "2026-11-02",
-  "day_label": "Mon 2 Nov",
-  "evening": "20:41 to 21:05",
-  "why": "after October closed (Sun 1 Nov, 09:02) and before Thursday's HDFC EMI; one evening, so every frame shares one clock",
-  "net_worth_today": 456493,
-  "fx": 112.5
+  "day": "2026-11-05",
+  "day_label": "Thu 5 Nov",
+  "evening": "20:41 to 21:22",
+  "why": "the evening after the HDFC EMI check-in (answered at 09:12) and Prototype v4's Projection steps (10:05 to 10:26), so the prototype's Thursday comes before the plans (Arun, 28 Oct 2026); one evening, so every frame shares one clock",
+  "net_worth_today": 456747,
+  "fx": 112.5,
+  "base_run": "R5N, Thu 5 Nov 09:13: the run after the EMI was confirmed, the same figures as R0 (the EMI was already in November's flows)"
  },
  "settings": {
   "floor_gbp_month": 500,
@@ -100,7 +101,8 @@
    30
   ],
   "cash_rate": 0.03,
-  "retirement": "Arun 60 in Jan 2051, Asha in Jan 2053; a pension pays 4% of its pot a year; in retirement Balanced pays any gap"
+  "retirement": "Arun 60 in Jan 2051, Asha in Jan 2053; a pension pays 4% of its pot a year; in retirement Balanced pays any gap",
+  "floor_while": "anyone in the household earns a salary (to Dec 2052); in retirement only cash running out is flagged (Arun, 28 Oct 2026)"
  },
  "plans": {
   "existing": [
@@ -287,7 +289,7 @@
    "t": "20:43",
    "who": "Arun",
    "taps": "Confirm",
-   "audit": "Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Mon 2 Nov 20:43 · in the chat · 2046 middle path −£1,317,000"
+   "audit": "Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:43 · in the chat · 2046 middle path −£1,317,000"
   },
   {
    "t": "20:43",
@@ -299,8 +301,8 @@
    "who": "Arun",
    "taps": "Confirm option 1",
    "audit": [
-    "Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Mon 2 Nov 20:46 · in the chat · Undo",
-    "November's budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Mon 2 Nov 20:46 · in the chat · Undo"
+    "Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat · Undo",
+    "November's budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat · Undo"
    ]
   },
   {
@@ -543,8 +545,236 @@
     }
    ]
   },
+  "R5N": {
+   "when": "Thu 5 Nov 09:13",
+   "after": "November's HDFC EMI answered Paid at 09:12; the figures are R0's, since the EMI was already in November's flows",
+   "plans": [
+    "extension",
+    "bonus",
+    "car2"
+   ],
+   "fan": [
+    {
+     "year": 2026,
+     "p10": 459000,
+     "p50": 468000,
+     "p90": 477000,
+     "deterministic": 469000
+    },
+    {
+     "year": 2027,
+     "p10": 452000,
+     "p50": 511000,
+     "p90": 562000,
+     "deterministic": 513000
+    },
+    {
+     "year": 2028,
+     "p10": 516000,
+     "p50": 599000,
+     "p90": 681000,
+     "deterministic": 597000
+    },
+    {
+     "year": 2029,
+     "p10": 582000,
+     "p50": 684000,
+     "p90": 798000,
+     "deterministic": 690000
+    },
+    {
+     "year": 2030,
+     "p10": 647000,
+     "p50": 789000,
+     "p90": 932000,
+     "deterministic": 791000
+    },
+    {
+     "year": 2031,
+     "p10": 688000,
+     "p50": 866000,
+     "p90": 1037000,
+     "deterministic": 875000
+    },
+    {
+     "year": 2032,
+     "p10": 783000,
+     "p50": 979000,
+     "p90": 1200000,
+     "deterministic": 995000
+    },
+    {
+     "year": 2033,
+     "p10": 878000,
+     "p50": 1084000,
+     "p90": 1373000,
+     "deterministic": 1124000
+    },
+    {
+     "year": 2034,
+     "p10": 955000,
+     "p50": 1227000,
+     "p90": 1525000,
+     "deterministic": 1266000
+    },
+    {
+     "year": 2035,
+     "p10": 1050000,
+     "p50": 1373000,
+     "p90": 1726000,
+     "deterministic": 1419000
+    },
+    {
+     "year": 2036,
+     "p10": 1170000,
+     "p50": 1539000,
+     "p90": 1957000,
+     "deterministic": 1586000
+    },
+    {
+     "year": 2037,
+     "p10": 1264000,
+     "p50": 1685000,
+     "p90": 2176000,
+     "deterministic": 1767000
+    },
+    {
+     "year": 2038,
+     "p10": 1380000,
+     "p50": 1836000,
+     "p90": 2463000,
+     "deterministic": 1963000
+    },
+    {
+     "year": 2039,
+     "p10": 1501000,
+     "p50": 2053000,
+     "p90": 2759000,
+     "deterministic": 2176000
+    },
+    {
+     "year": 2040,
+     "p10": 1652000,
+     "p50": 2228000,
+     "p90": 3061000,
+     "deterministic": 2407000
+    },
+    {
+     "year": 2041,
+     "p10": 1781000,
+     "p50": 2465000,
+     "p90": 3454000,
+     "deterministic": 2656000
+    },
+    {
+     "year": 2042,
+     "p10": 1995000,
+     "p50": 2748000,
+     "p90": 3888000,
+     "deterministic": 2926000
+    },
+    {
+     "year": 2043,
+     "p10": 2146000,
+     "p50": 3027000,
+     "p90": 4502000,
+     "deterministic": 3218000
+    },
+    {
+     "year": 2044,
+     "p10": 2274000,
+     "p50": 3284000,
+     "p90": 4870000,
+     "deterministic": 3533000
+    },
+    {
+     "year": 2045,
+     "p10": 2484000,
+     "p50": 3601000,
+     "p90": 5445000,
+     "deterministic": 3873000
+    },
+    {
+     "year": 2046,
+     "p10": 2676000,
+     "p50": 3897000,
+     "p90": 6052000,
+     "deterministic": 4241000
+    },
+    {
+     "year": 2047,
+     "p10": 2907000,
+     "p50": 4266000,
+     "p90": 6705000,
+     "deterministic": 4638000
+    },
+    {
+     "year": 2048,
+     "p10": 3145000,
+     "p50": 4574000,
+     "p90": 7279000,
+     "deterministic": 5067000
+    },
+    {
+     "year": 2049,
+     "p10": 3370000,
+     "p50": 5101000,
+     "p90": 7918000,
+     "deterministic": 5529000
+    },
+    {
+     "year": 2050,
+     "p10": 3538000,
+     "p50": 5469000,
+     "p90": 8786000,
+     "deterministic": 6027000
+    },
+    {
+     "year": 2051,
+     "p10": 3713000,
+     "p50": 5900000,
+     "p90": 9503000,
+     "deterministic": 6393000
+    },
+    {
+     "year": 2052,
+     "p10": 3850000,
+     "p50": 6226000,
+     "p90": 10533000,
+     "deterministic": 6781000
+    },
+    {
+     "year": 2053,
+     "p10": 3675000,
+     "p50": 6467000,
+     "p90": 10719000,
+     "deterministic": 7091000
+    },
+    {
+     "year": 2054,
+     "p10": 3760000,
+     "p50": 6499000,
+     "p90": 11226000,
+     "deterministic": 7418000
+    },
+    {
+     "year": 2055,
+     "p10": 3880000,
+     "p50": 6758000,
+     "p90": 12448000,
+     "deterministic": 7761000
+    },
+    {
+     "year": 2056,
+     "p10": 3651000,
+     "p50": 7027000,
+     "p90": 12828000,
+     "deterministic": 8122000
+    }
+   ]
+  },
   "R1": {
-   "when": "Mon 2 Nov 20:43",
+   "when": "Thu 5 Nov 20:43",
    "after": "School fees saved",
    "plans": [
     "extension",
@@ -773,7 +1003,7 @@
    ]
   },
   "R2": {
-   "when": "Mon 2 Nov 20:46",
+   "when": "Thu 5 Nov 20:46",
    "after": "the school fees pot applied",
    "fan": [
     {
@@ -996,7 +1226,7 @@
    ]
   },
   "R3": {
-   "when": "Mon 2 Nov 20:53",
+   "when": "Thu 5 Nov 20:53",
    "after": "Arun's salary step saved",
    "fan": [
     {
@@ -1219,7 +1449,7 @@
    ]
   },
   "R4": {
-   "when": "Mon 2 Nov 20:59",
+   "when": "Thu 5 Nov 20:59",
    "after": "the HDFC loan's closure saved",
    "fan": [
     {
@@ -3238,21 +3468,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31175,
      "closing_cash": 31678,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2053",
-      "Feb 2053",
-      "Mar 2053",
-      "Apr 2053",
-      "May 2053",
-      "Jun 2053",
-      "Jul 2053",
-      "Aug 2053",
-      "Sep 2053",
-      "Oct 2053",
-      "Nov 2053",
-      "Dec 2053"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Mar 2053",
      "lowest_surplus": -1,
      "cash_negative": null,
@@ -3300,21 +3517,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31678,
      "closing_cash": 32486,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2054",
-      "Feb 2054",
-      "Mar 2054",
-      "Apr 2054",
-      "May 2054",
-      "Jun 2054",
-      "Jul 2054",
-      "Aug 2054",
-      "Sep 2054",
-      "Oct 2054",
-      "Nov 2054",
-      "Dec 2054"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2054",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -3362,21 +3566,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 32486,
      "closing_cash": 33314,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2055",
-      "Feb 2055",
-      "Mar 2055",
-      "Apr 2055",
-      "May 2055",
-      "Jun 2055",
-      "Jul 2055",
-      "Aug 2055",
-      "Sep 2055",
-      "Oct 2055",
-      "Nov 2055",
-      "Dec 2055"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Feb 2055",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -3424,21 +3615,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 33314,
      "closing_cash": 34164,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2056",
-      "Feb 2056",
-      "Mar 2056",
-      "Apr 2056",
-      "May 2056",
-      "Jun 2056",
-      "Jul 2056",
-      "Aug 2056",
-      "Sep 2056",
-      "Oct 2056",
-      "Nov 2056",
-      "Dec 2056"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2056",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -5590,21 +5768,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31175,
      "closing_cash": 31678,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2053",
-      "Feb 2053",
-      "Mar 2053",
-      "Apr 2053",
-      "May 2053",
-      "Jun 2053",
-      "Jul 2053",
-      "Aug 2053",
-      "Sep 2053",
-      "Oct 2053",
-      "Nov 2053",
-      "Dec 2053"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Mar 2053",
      "lowest_surplus": -1,
      "cash_negative": null,
@@ -5652,21 +5817,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31678,
      "closing_cash": 32486,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2054",
-      "Feb 2054",
-      "Mar 2054",
-      "Apr 2054",
-      "May 2054",
-      "Jun 2054",
-      "Jul 2054",
-      "Aug 2054",
-      "Sep 2054",
-      "Oct 2054",
-      "Nov 2054",
-      "Dec 2054"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2054",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -5714,21 +5866,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 32486,
      "closing_cash": 33314,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2055",
-      "Feb 2055",
-      "Mar 2055",
-      "Apr 2055",
-      "May 2055",
-      "Jun 2055",
-      "Jul 2055",
-      "Aug 2055",
-      "Sep 2055",
-      "Oct 2055",
-      "Nov 2055",
-      "Dec 2055"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Feb 2055",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -5776,21 +5915,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 33314,
      "closing_cash": 34164,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2056",
-      "Feb 2056",
-      "Mar 2056",
-      "Apr 2056",
-      "May 2056",
-      "Jun 2056",
-      "Jul 2056",
-      "Aug 2056",
-      "Sep 2056",
-      "Oct 2056",
-      "Nov 2056",
-      "Dec 2056"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2056",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -8029,21 +8155,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31175,
      "closing_cash": 31678,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2053",
-      "Feb 2053",
-      "Mar 2053",
-      "Apr 2053",
-      "May 2053",
-      "Jun 2053",
-      "Jul 2053",
-      "Aug 2053",
-      "Sep 2053",
-      "Oct 2053",
-      "Nov 2053",
-      "Dec 2053"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Mar 2053",
      "lowest_surplus": -1,
      "cash_negative": null,
@@ -8091,21 +8204,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31678,
      "closing_cash": 32486,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2054",
-      "Feb 2054",
-      "Mar 2054",
-      "Apr 2054",
-      "May 2054",
-      "Jun 2054",
-      "Jul 2054",
-      "Aug 2054",
-      "Sep 2054",
-      "Oct 2054",
-      "Nov 2054",
-      "Dec 2054"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2054",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -8153,21 +8253,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 32486,
      "closing_cash": 33314,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2055",
-      "Feb 2055",
-      "Mar 2055",
-      "Apr 2055",
-      "May 2055",
-      "Jun 2055",
-      "Jul 2055",
-      "Aug 2055",
-      "Sep 2055",
-      "Oct 2055",
-      "Nov 2055",
-      "Dec 2055"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Feb 2055",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -8215,21 +8302,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 33314,
      "closing_cash": 34164,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2056",
-      "Feb 2056",
-      "Mar 2056",
-      "Apr 2056",
-      "May 2056",
-      "Jun 2056",
-      "Jul 2056",
-      "Aug 2056",
-      "Sep 2056",
-      "Oct 2056",
-      "Nov 2056",
-      "Dec 2056"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2056",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -10326,21 +10400,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31175,
      "closing_cash": 31678,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2053",
-      "Feb 2053",
-      "Mar 2053",
-      "Apr 2053",
-      "May 2053",
-      "Jun 2053",
-      "Jul 2053",
-      "Aug 2053",
-      "Sep 2053",
-      "Oct 2053",
-      "Nov 2053",
-      "Dec 2053"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Mar 2053",
      "lowest_surplus": -1,
      "cash_negative": null,
@@ -10388,21 +10449,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31678,
      "closing_cash": 32486,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2054",
-      "Feb 2054",
-      "Mar 2054",
-      "Apr 2054",
-      "May 2054",
-      "Jun 2054",
-      "Jul 2054",
-      "Aug 2054",
-      "Sep 2054",
-      "Oct 2054",
-      "Nov 2054",
-      "Dec 2054"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2054",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -10450,21 +10498,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 32486,
      "closing_cash": 33314,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2055",
-      "Feb 2055",
-      "Mar 2055",
-      "Apr 2055",
-      "May 2055",
-      "Jun 2055",
-      "Jul 2055",
-      "Aug 2055",
-      "Sep 2055",
-      "Oct 2055",
-      "Nov 2055",
-      "Dec 2055"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Feb 2055",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -10512,21 +10547,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 33314,
      "closing_cash": 34164,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2056",
-      "Feb 2056",
-      "Mar 2056",
-      "Apr 2056",
-      "May 2056",
-      "Jun 2056",
-      "Jul 2056",
-      "Aug 2056",
-      "Sep 2056",
-      "Oct 2056",
-      "Nov 2056",
-      "Dec 2056"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2056",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -12010,21 +12032,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31175,
      "closing_cash": 31678,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2053",
-      "Feb 2053",
-      "Mar 2053",
-      "Apr 2053",
-      "May 2053",
-      "Jun 2053",
-      "Jul 2053",
-      "Aug 2053",
-      "Sep 2053",
-      "Oct 2053",
-      "Nov 2053",
-      "Dec 2053"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Mar 2053",
      "lowest_surplus": -1,
      "cash_negative": null,
@@ -12072,21 +12081,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31678,
      "closing_cash": 32486,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2054",
-      "Feb 2054",
-      "Mar 2054",
-      "Apr 2054",
-      "May 2054",
-      "Jun 2054",
-      "Jul 2054",
-      "Aug 2054",
-      "Sep 2054",
-      "Oct 2054",
-      "Nov 2054",
-      "Dec 2054"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2054",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -12134,21 +12130,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 32486,
      "closing_cash": 33314,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2055",
-      "Feb 2055",
-      "Mar 2055",
-      "Apr 2055",
-      "May 2055",
-      "Jun 2055",
-      "Jul 2055",
-      "Aug 2055",
-      "Sep 2055",
-      "Oct 2055",
-      "Nov 2055",
-      "Dec 2055"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Feb 2055",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -12196,21 +12179,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 33314,
      "closing_cash": 34164,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2056",
-      "Feb 2056",
-      "Mar 2056",
-      "Apr 2056",
-      "May 2056",
-      "Jun 2056",
-      "Jul 2056",
-      "Aug 2056",
-      "Sep 2056",
-      "Oct 2056",
-      "Nov 2056",
-      "Dec 2056"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2056",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -13695,21 +13665,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31175,
      "closing_cash": 31678,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2053",
-      "Feb 2053",
-      "Mar 2053",
-      "Apr 2053",
-      "May 2053",
-      "Jun 2053",
-      "Jul 2053",
-      "Aug 2053",
-      "Sep 2053",
-      "Oct 2053",
-      "Nov 2053",
-      "Dec 2053"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Mar 2053",
      "lowest_surplus": -1,
      "cash_negative": null,
@@ -13757,21 +13714,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 31678,
      "closing_cash": 32486,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2054",
-      "Feb 2054",
-      "Mar 2054",
-      "Apr 2054",
-      "May 2054",
-      "Jun 2054",
-      "Jul 2054",
-      "Aug 2054",
-      "Sep 2054",
-      "Oct 2054",
-      "Nov 2054",
-      "Dec 2054"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2054",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -13819,21 +13763,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 32486,
      "closing_cash": 33314,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2055",
-      "Feb 2055",
-      "Mar 2055",
-      "Apr 2055",
-      "May 2055",
-      "Jun 2055",
-      "Jul 2055",
-      "Aug 2055",
-      "Sep 2055",
-      "Oct 2055",
-      "Nov 2055",
-      "Dec 2055"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Feb 2055",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -13881,21 +13812,8 @@
      "from_a_pool_to_cash": 0,
      "opening_cash": 33314,
      "closing_cash": 34164,
-     "below_floor": 12,
-     "below_floor_months": [
-      "Jan 2056",
-      "Feb 2056",
-      "Mar 2056",
-      "Apr 2056",
-      "May 2056",
-      "Jun 2056",
-      "Jul 2056",
-      "Aug 2056",
-      "Sep 2056",
-      "Oct 2056",
-      "Nov 2056",
-      "Dec 2056"
-     ],
+     "below_floor": 0,
+     "below_floor_months": [],
      "lowest_month": "Jan 2056",
      "lowest_surplus": 0,
      "cash_negative": null,
@@ -15033,10 +14951,247 @@
   ],
   "cash_back_above_zero": "Nov 2028"
  },
+ "what_if_5nov": {
+  "when": "Thu 5 Nov 10:20",
+  "asked": "What if we put £60,000 down on a second flat in June 2028?",
+  "fan": [
+   {
+    "year": 2026,
+    "p10": 459000,
+    "p50": 468000,
+    "p90": 477000,
+    "deterministic": 469000
+   },
+   {
+    "year": 2027,
+    "p10": 452000,
+    "p50": 511000,
+    "p90": 562000,
+    "deterministic": 513000
+   },
+   {
+    "year": 2028,
+    "p10": 457000,
+    "p50": 537000,
+    "p90": 617000,
+    "deterministic": 536000
+   },
+   {
+    "year": 2029,
+    "p10": 517000,
+    "p50": 619000,
+    "p90": 728000,
+    "deterministic": 625000
+   },
+   {
+    "year": 2030,
+    "p10": 587000,
+    "p50": 717000,
+    "p90": 852000,
+    "deterministic": 722000
+   },
+   {
+    "year": 2031,
+    "p10": 631000,
+    "p50": 792000,
+    "p90": 955000,
+    "deterministic": 803000
+   },
+   {
+    "year": 2032,
+    "p10": 716000,
+    "p50": 908000,
+    "p90": 1106000,
+    "deterministic": 918000
+   },
+   {
+    "year": 2033,
+    "p10": 814000,
+    "p50": 1010000,
+    "p90": 1261000,
+    "deterministic": 1043000
+   },
+   {
+    "year": 2034,
+    "p10": 900000,
+    "p50": 1149000,
+    "p90": 1421000,
+    "deterministic": 1179000
+   },
+   {
+    "year": 2035,
+    "p10": 987000,
+    "p50": 1293000,
+    "p90": 1593000,
+    "deterministic": 1327000
+   },
+   {
+    "year": 2036,
+    "p10": 1088000,
+    "p50": 1446000,
+    "p90": 1806000,
+    "deterministic": 1489000
+   },
+   {
+    "year": 2037,
+    "p10": 1199000,
+    "p50": 1598000,
+    "p90": 2007000,
+    "deterministic": 1664000
+   },
+   {
+    "year": 2038,
+    "p10": 1341000,
+    "p50": 1755000,
+    "p90": 2288000,
+    "deterministic": 1854000
+   },
+   {
+    "year": 2039,
+    "p10": 1440000,
+    "p50": 1954000,
+    "p90": 2588000,
+    "deterministic": 2060000
+   },
+   {
+    "year": 2040,
+    "p10": 1599000,
+    "p50": 2134000,
+    "p90": 2894000,
+    "deterministic": 2284000
+   },
+   {
+    "year": 2041,
+    "p10": 1726000,
+    "p50": 2354000,
+    "p90": 3230000,
+    "deterministic": 2526000
+   },
+   {
+    "year": 2042,
+    "p10": 1930000,
+    "p50": 2627000,
+    "p90": 3688000,
+    "deterministic": 2788000
+   },
+   {
+    "year": 2043,
+    "p10": 2089000,
+    "p50": 2915000,
+    "p90": 4245000,
+    "deterministic": 3072000
+   },
+   {
+    "year": 2044,
+    "p10": 2224000,
+    "p50": 3182000,
+    "p90": 4614000,
+    "deterministic": 3378000
+   },
+   {
+    "year": 2045,
+    "p10": 2422000,
+    "p50": 3474000,
+    "p90": 5130000,
+    "deterministic": 3709000
+   },
+   {
+    "year": 2046,
+    "p10": 2630000,
+    "p50": 3772000,
+    "p90": 5737000,
+    "deterministic": 4067000
+   },
+   {
+    "year": 2047,
+    "p10": 2859000,
+    "p50": 4116000,
+    "p90": 6396000,
+    "deterministic": 4454000
+   },
+   {
+    "year": 2048,
+    "p10": 3061000,
+    "p50": 4418000,
+    "p90": 6970000,
+    "deterministic": 4871000
+   },
+   {
+    "year": 2049,
+    "p10": 3321000,
+    "p50": 4899000,
+    "p90": 7541000,
+    "deterministic": 5322000
+   },
+   {
+    "year": 2050,
+    "p10": 3498000,
+    "p50": 5327000,
+    "p90": 8316000,
+    "deterministic": 5807000
+   },
+   {
+    "year": 2051,
+    "p10": 3614000,
+    "p50": 5691000,
+    "p90": 9095000,
+    "deterministic": 6160000
+   },
+   {
+    "year": 2052,
+    "p10": 3737000,
+    "p50": 6084000,
+    "p90": 9975000,
+    "deterministic": 6534000
+   },
+   {
+    "year": 2053,
+    "p10": 3611000,
+    "p50": 6311000,
+    "p90": 10296000,
+    "deterministic": 6830000
+   },
+   {
+    "year": 2054,
+    "p10": 3697000,
+    "p50": 6325000,
+    "p90": 10749000,
+    "deterministic": 7140000
+   },
+   {
+    "year": 2055,
+    "p10": 3768000,
+    "p50": 6586000,
+    "p90": 11942000,
+    "deterministic": 7467000
+   },
+   {
+    "year": 2056,
+    "p10": 3583000,
+    "p50": 6845000,
+    "p90": 12273000,
+    "deterministic": 7811000
+   }
+  ],
+  "middle_path_2036": 1446000,
+  "today_2036": 1539000,
+  "change_2036": -93000,
+  "middle_path_2046": 3772000,
+  "today_2046": 3897000,
+  "change_2046": -125000,
+  "middle_path_2031": 792000,
+  "today_2031": 866000,
+  "change_2031": -74000,
+  "cash_short": [
+   "Jun 2028",
+   -15377
+  ],
+  "cash_back_above_zero": "Nov 2028"
+ },
  "evening2": {
   "plans_tab": {
    "R5": {
-    "when": "Mon 2 Nov 21:08",
+    "when": "Thu 5 Nov 21:08",
     "after": "Replace the car paused",
     "middle_path": {
      "2031": 758000,
@@ -15266,7 +15421,7 @@
     "below_floor": 0
    },
    "R5b": {
-    "when": "Mon 2 Nov 21:09",
+    "when": "Thu 5 Nov 21:09",
     "after": "Replace the car resumed",
     "middle_path": {
      "2031": 734000,
@@ -15496,7 +15651,7 @@
     "below_floor": 0
    },
    "R6": {
-    "when": "Mon 2 Nov 21:11",
+    "when": "Thu 5 Nov 21:11",
     "after": "School fees' end corrected in place, Jul 2041 → Jul 2040",
     "middle_path": {
      "2031": 734000,
@@ -15726,7 +15881,7 @@
     "below_floor": 0
    },
    "R7": {
-    "when": "Mon 2 Nov 21:13",
+    "when": "Thu 5 Nov 21:13",
     "after": "Replace the car ended (keeping the car)",
     "middle_path": {
      "2031": 758000,
@@ -15957,7 +16112,7 @@
    }
   },
   "wedding": {
-   "when": "Mon 2 Nov 21:15",
+   "when": "Thu 5 Nov 21:15",
    "plan": {
     "id": "wedding",
     "what": "Sister's wedding",
@@ -16298,11 +16453,11 @@
    "applied": {
     "when": "21:17",
     "option": "isa",
-    "audit": "Plan item added · Balanced (ISA) pays the wedding's shortfall, £19,871 in Jun 2027 · Arun · Mon 2 Nov 21:17 · in the chat · Undo"
+    "audit": "Plan item added · Balanced (ISA) pays the wedding's shortfall, £19,871 in Jun 2027 · Arun · Thu 5 Nov 21:17 · in the chat · Undo"
    },
    "undone": {
     "when": "21:18",
-    "audit": "Undone · Balanced (ISA) paying the wedding's shortfall · Arun · Mon 2 Nov 21:18 · in the chat",
+    "audit": "Undone · Balanced (ISA) paying the wedding's shortfall · Arun · Thu 5 Nov 21:18 · in the chat",
     "state": "the wedding stays saved; cash is flagged again"
    }
   }

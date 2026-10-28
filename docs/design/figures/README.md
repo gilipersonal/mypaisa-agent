@@ -107,8 +107,15 @@ first set, it is a design aid, not MA-219's engine; every name and figure is ill
 
 ## The clock
 
-One evening, Mon 2 Nov 2026, 20:41 to 21:05: after October closed (Sun 1 Nov at 09:02, net worth £456,493) and before
-Thursday's HDFC EMI. Every board of MA-264 shares it.
+One evening, Thu 5 Nov 2026, 20:41 to 21:22. The HDFC EMI was answered Paid at 09:12 (net worth £456,747), and Prototype
+v4's Projection steps ran that morning. Arun moved the evening here from Thu 5 Nov on 28 Oct 2026, so the prototype's
+Thursday comes before the plans. Every board of MA-264 shares this clock.
+
+- **The evening's base run** is R5N, Thu 5 Nov 09:13, after the EMI was confirmed. It has R0's figures (Sun 1 Nov
+  09:03), since the EMI was already in November's flows.
+- **Prototype v4's Projection** shows R5N. Its what-if at 10:20 (`what_if_5nov`) puts 2036's middle path at
+  £1,446,000 against £1,539,000, £93,000 lower. Code flags cash
+  £15,377 below zero in Jun 2028, back above zero in Nov 2028.
 
 Two corrections drawn on the v4 Projection boards on Mon 26 Oct hold here (lesson 19): Arun's salary growth is 4.8% (he
 set it at 10:40), and Asha's bonus grows 3.5% a year (corrected at 10:44).
@@ -129,7 +136,8 @@ set it at 10:40), and Asha's bonus grows 3.5% a year (corrected at 10:44).
   in November. Cash earns 3%.
 - **The surplus rule:** cash keeps six months of outgoings plus the one-offs due in the next twelve months; the rest
   goes into Balanced (ISA) each month.
-- **Arun's floor:** a surplus of £500 a month (his setting). A month below it is flagged.
+- **Arun's floor:** a surplus of £500 a month (his setting). A month below it is flagged while anyone in the
+  household earns a salary (to Dec 2052); in retirement only cash running out is flagged (Arun, 28 Oct 2026).
 - **FX:** £1 = ₹112.50 on 1 Nov, drifting 2.44% a year (the inflation gap); each rupee flow converts at its month's
   rate.
 - **Checked:** every month, opening cash + its flows = closing cash; every year's lines (rounded by largest
