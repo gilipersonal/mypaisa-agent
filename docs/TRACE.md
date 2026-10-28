@@ -69,6 +69,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-259 | The Claude Design boards and the repo mirror stay the same: one command pulls every change, a check fails on any drift, and a plan for Claude Design's move into Claude | In Progress |  | none |  |
 | MA-260 | The boards move into Claude with Anthropic's Move to Claude before standalone Claude Design closes on 14 Dec 2026, and the sync and its check follow them; by 1 Dec without it, the boards stay in the repo alone | To Do |  | none |  |
 | MA-261 | The plan records future plans by talking: new spends, salary changes and loan closures, a 20-year budget forecast, and the budget rearranged on the admin's Confirm | In Progress | §2, §4.1, §4.5, §4.10, §6.6, §8, §9.3, §12 | none |  |
+| MA-265 | The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent framework options, and end-to-end FastAPI and LLM observability with costing are researched and recorded in Confluence with block diagrams | In Progress | §3, §4.8, §8, §9.4, §9.5, §10.2, §10.3, §13, §21.5 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
@@ -114,6 +115,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-250 | The chat's golden set, about 40 tasks on the synthetic household graded by code first, runs live three times on every pull request that changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK, within $10 a run | To Do | §23.3, §18.4 | none |  |
 | MA-251 | A model change waits for the full suite, five trials on the new model, before the release ships it | To Do | §23.3, §18.4 | none |  |
 | MA-252 | Every live run is checked by code, every flagged run and a random 10% are judged overnight, and only a rate that leaves its band raises an alert | To Do | §23.4, §10.1, §10.6, §15.2, §10.4 | none |  |
+| MA-266 | The api and stream Lambdas run FastAPI with Pydantic v2, request-id and trace correlation middleware, OpenTelemetry route spans, and generated OpenAPI TypeScript types shared by both doors | To Do | §3, §9.4, §10.2, §10.3, §13, §21.5 | none |  |
 
 ## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 
