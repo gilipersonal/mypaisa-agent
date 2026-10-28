@@ -1057,9 +1057,12 @@ Forecaster); **Projection** is the household's net worth over time, and
 - **The Budget forecast (MA-262, `ARCHITECTURE.md` §6.6, §9.3, §12):** each year to the horizon, expandable to
   its months: income by member, spend by category, EMIs, each plan item, the
   surplus, the savings rate and closing cash, in GBP or INR; any figure
-  opens the flows that make it; at both doors.
+  opens the flows that make it; the months below the admin's floor flagged
+  by code; at both doors.
 - **Rearranging the budget (MA-263, `ARCHITECTURE.md` §4.5, §4.10, §6.6, §8, §12):** when a plan leaves cash below zero or
-  the surplus below the admin's floor, code works out the options (trim a
+  the surplus below the admin's floor (a monthly surplus kept among the
+  Projection's assumptions, £500 to start, the admin's alone; Arun, 28 Oct
+  2026, MA-264), code works out the options (trim a
   category from a date, pause a SIP, move a plan's start, draw from a named
   pool, change the surplus rule) and the agent ranks and explains them, each
   as an unsaved scenario card; the admin's Confirm applies one, as Claude

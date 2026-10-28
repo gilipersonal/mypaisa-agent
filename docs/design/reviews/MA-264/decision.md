@@ -139,10 +139,10 @@ all six files.
 
 ## Points to settle
 
-1. **Arun's floor (open on MA-263 and MA-262).** §6.6 says a rearrangement is offered when "the surplus [falls] below
-   the admin's floor", but no record says where the floor is set or what it starts at. The boards draw £500 a month as
-   Arun's setting, among the Projection's assumptions, which are the admin's alone. Is that where it lives, and is
-   that its default?
+1. **Arun's floor. Settled 28 Oct 2026.** §6.6 offers a rearrangement when "the surplus [falls] below the admin's
+   floor", but no record said where the floor is set or what it starts at. Arun's answer: a monthly surplus kept
+   among the Projection's assumptions, £500 to start, the admin's alone, corrected in place like any assumption.
+   ARCHITECTURE §6.6 and §9.3, PLAN's MA-262 and MA-263 bullets, the trace rows and the Jira descriptions now say so.
 2. **The Projection's figures move.** MA-193's Projection boards come from a yearly sketch: October's surplus growing a
    flat 3% a year, £2,769,000 in 2046. This ledger runs pay, prices and commitments month by month, and its 2046
    middle path before the fees is £3,897,000. The v4 Projection boards keep the 26 Oct run until MA-224's remaining
@@ -160,4 +160,30 @@ all six files.
 
 ## The pick
 
-Waiting for Arun.
+Arun, 28 Oct 2026, picked the recommended option each time, and settled the floor as drawn:
+
+| Question | Pick | Stories now `picked` |
+| --- | --- | --- |
+| The Budget forecast tab | **1a The surplus first** | MA-262 |
+| A plan made in the admin's chat | **2a A card per step** | MA-263, MA-222 |
+| The Plans tab | **3a Bars on a timeline** | MA-224 (already picked for its screen, 1a the fan first) |
+| Arun's floor | **£500 a month, among the Projection's assumptions** | settled on MA-262 and MA-263 |
+
+**The rows:**
+- Each picked story lists the picked boards. The options not picked stay on MA-264's row as the record.
+- MA-222's question card and impact card are drawn by 2a; MA-224's Plans tab is drawn by 3a. Both carry `Drawn:` notes.
+- Each picked story lists its remaining states in `undrawn`, so `start` refuses it until they are drawn. That is the
+  next round of MA-264:
+  - MA-262: privacy; INR, today's money and the other horizons; Asha's view; the tab after a rearrangement, and its
+    loading, empty and error states; 1a's trace on iOS.
+  - MA-263: a member asking; Undo; the Budget screen's November with the pot's line; the two more ways opened; a
+    rearrangement offered because cash would go below zero.
+  - MA-222: pause, resume and end in place; the change_flow and record_event effects; the audit row; refusals.
+    MA-193's single plan-item card is marked superseded in its own notes.
+  - MA-224: the horizon chips on the Net worth tab; plan-item milestones; the Net worth tab at 390 and on iPad;
+    Asha's view and privacy; the v4 Projection boards' figures moved to this figure set.
+
+**What the pick supersedes:** for a new plan item, 2a replaces the single plan-item card drawn on MA-193 (`iPhone ·
+Chat, adding a plan item`, `Browser · Plan item in the chat, phone`). The questions card and the impact card now come
+before Confirm. Those boards' own notes say so in the next round, when the v4 Projection boards are redrawn from this
+figure set.
