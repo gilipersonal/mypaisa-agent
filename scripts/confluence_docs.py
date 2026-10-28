@@ -57,6 +57,14 @@ GUARDRAILS_GIFS = [  # (gif in docs/design/guardrails-evals, tab title, caption)
     ("05-judges-calibrated.gif", "The judges", "The admin's labels fill toward 50 of each; a judge is active only while both rates stay above 0.8."),
     ("06-growth.gif", "Growth", "A new tool arrives without its cases and the coverage check refuses it; with its cases it passes."),
 ]
+STACK_GIFS = [  # (gif in docs/design/tech-stack-observability, tab title, caption): the stack & observability block diagrams, animated (MA-265)
+    ("01-e2e-trace-fastapi.gif", "1 · E2E trace & FastAPI", "One W3C trace and request ID flow from the browser or iPhone through FastAPI (Mangum and Uvicorn + LWA), the FIFO queues, the agent's Claude GenAI spans and SSE back to the door."),
+    ("02-observability-surfaces-cost.gif", "2 · Surfaces & £2.50/mo cost", "Every run feeds the in-app Activity screen (£0), the 8-panel CloudWatch Watch Tower and Transaction Search, and the owner's alerts, for £2.46/month in prod."),
+    ("03-frontend-sveltekit-stack.gif", "3 · Web stack (SvelteKit 3)", "SvelteKit 3.1, Svelte 5 runes, Tailwind CSS 4.3, shadcn-svelte, LayerChart and TanStack Query/Table/Virtual/Form sit over web/src/lib/, whose OpenAPI types come straight from FastAPI."),
+    ("04-ios-rn-swiftui-stack.gif", "4 · iOS stack (RN + SwiftUI)", "React Native 0.88 handles state, offline MMKV caching and SSE in TypeScript; every visible screen, card and chart is Swift 6 SwiftUI at 120 Hz across the Fabric C++ bridge."),
+    ("05-backend-fastapi-dynamodb.gif", "5 · FastAPI & DynamoDB", "FastAPI serves both REST and SSE; a thin typed repository on Pydantic v2, boto3 and mypy-boto3-dynamodb handles single-table DynamoDB at £0/mo, whereas DocumentDB would cost £75–£110/mo."),
+    ("06-agent-framework-architecture.gif", "6 · Agent loop & frameworks", "The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge in Phase 18."),
+]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
     ("01-overview.png", "System overview", "4ae817c6-847f-45f8-a10c-4509971c9c09", "§3"),
     ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§18"),
@@ -411,6 +419,7 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
     out += [(f"screens-{a[0]}", f"Screens · {a[1]}", "screens") for a in AREAS]
     out += [("decisions", "Design decisions and the UX choices kept", "hub"),
             ("guardrails", "Guardrails and evals: how the agents are guarded and tested", "hub"),
+            ("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability", "hub"),
             ("explainers", "Explainers, the prototype and the architecture drawings", "hub"),
             ("sync", "How the plan, Jira, the designs, Confluence and the code stay in step", "hub")]
     import confluence_record  # noqa: PLC0415  (the architecture and journeys record, MA-257)
@@ -469,6 +478,8 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
         out[name] = {"page": "explainers", "file": path}
     for gif, _, _ in GUARDRAILS_GIFS:
         out[f"guardrails-{gif}"] = {"page": "guardrails", "file": ROOT / "docs" / "design" / "guardrails-evals" / gif}
+    for gif, _, _ in STACK_GIFS:
+        out[f"stack-{gif}"] = {"page": "stack", "file": ROOT / "docs" / "design" / "tech-stack-observability" / gif}
     import confluence_record  # noqa: PLC0415
     record = confluence_record.wanted_images(ctx)  # their sources are worked out there: a capture's recipe and its page
     # the pictures draw each phase's title and dates only, so an estimate that moves no date redraws nothing
@@ -790,6 +801,9 @@ def render_hub(ctx: Ctx) -> str:
         + "</section>",
         cpanel("#E3FCEF", ":shield:", f"<h3>{ctx.link('guardrails', 'Guardrails and evals')}</h3><p>How every agent is guarded in code, "
                "tested on every change and never on a calendar, watched live, and how the admin calibrates the judges (MA-245).</p>"),
+        cpanel("#DEEBFF", ":hammer_and_wrench:", f"<h3>{ctx.link('stack', 'Tech stack, FastAPI, DynamoDB, agents and end-to-end observability')}</h3><p>"
+               "The four-layer implementation stack (SvelteKit 3, TanStack and shadcn-svelte; React Native 0.88 and SwiftUI; Python 3.14, FastAPI and "
+               "single-table DynamoDB versus DocumentDB; the agent framework comparison) and end-to-end tracing and LLM observability with monthly costing (MA-265, MA-266).</p>"),
         "<h2>🔗 The records behind it</h2><ul>"
         f'<li><strong>Jira</strong>: <a href="{JIRA}/jira/software/projects/MA/boards">project MA</a>, a phase epic per phase; '
         + jql_link("project = MA AND issuetype = Epic ORDER BY duedate", "the epics by due date") + "</li>"
@@ -997,8 +1011,9 @@ def render_explainers(ctx: Ctx) -> str:
            f'<p>Kept in the repo as <a href="{gh("docs/design/inside-mypaisa.html")}">inside-mypaisa.html</a> (the whole architecture in plain words, MA-239), '
            f'<a href="{gh("docs/design/architecture-v4.html")}">architecture-v4.html</a> (the same architecture, technical and animated, MA-244), '
            f'<a href="{gh("docs/design/agent-journey.html")}">agent-journey.html</a>, '
-           f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a> and '
-           f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
+           f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a>, '
+           f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258) and '
+           f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}), '
            'and published as Claude artifacts.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
@@ -1068,6 +1083,64 @@ def render_guardrails(ctx: Ctx) -> str:
     return "".join(out) + footer(ctx)
 
 
+def research_text(num: str) -> str:
+    """docs/RESEARCH.md's top-level section NUM, without its ## heading."""
+    lines = (ROOT / "docs" / "RESEARCH.md").read_text().splitlines()
+    start = next((k for k, line in enumerate(lines) if re.match(rf"^## {re.escape(num)}\.? ", line)), None)
+    if start is None:
+        return ""
+    body, fenced = [], False
+    for line in lines[start + 1:]:
+        if line.startswith("```"):
+            fenced = not fenced
+        elif not fenced and re.match(r"^#{1,2} ", line):
+            break
+        body.append(line)
+    return "\n".join(body).strip().rstrip("-").strip()
+
+
+def render_stack(ctx: Ctx) -> str:
+    """The four-layer implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks, and end-to-end observability with costing (MA-265, MA-266)."""
+    keys = {"MA-265", "MA-266", "MA-24", "MA-194", "MA-165", "MA-198", "MA-230", "MA-231", "MA-195", "MA-31", "MA-30", "MA-29", "MA-232", "MA-233", "MA-234", "MA-196", "MA-27", "MA-28"}
+    items = [i for i in ctx.items if i["key"] in keys]
+    items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
+    sec6 = research_text("6")
+    out = [
+        cpanel("#DEEBFF", ":hammer_and_wrench:", '<p>Arun, 28 Oct 2026 (MA-265, MA-266): end-to-end AWS monitoring, tracing and LLM/API observability '
+               "(including the FastAPI REST and SSE APIs) with a full monthly costing analysis, together with the detailed implementation stack across "
+               "all four layers: the web front end (SvelteKit 3, TanStack, shadcn-svelte), the native iOS app (React Native 0.88 shell and Swift 6 "
+               "SwiftUI core), the Python 3.14 backend (FastAPI, Pydantic v2, single-table DynamoDB versus DocumentDB, and the Python DynamoDB library "
+               "comparison), and the agent framework evaluation and recommendation. "
+               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §6, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a>, and '
+               f'{arch_link("3", ctx.sections)}, {arch_link("4.8", ctx.sections)}, {arch_link("8", ctx.sections)}, {arch_link("9.4", ctx.sections)} and '
+               f'{arch_link("10", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
+               f'<a href="{gh("docs/design/tech-stack-observability.html")}">docs/design/tech-stack-observability.html</a>.</p>'),
+        toc(),
+        "<h2>🎞️ Block diagrams (animated)</h2>"
+        f'<p>Six animated block diagrams captured from <a href="{gh("docs/design/tech-stack-observability.html")}">docs/design/tech-stack-observability.html</a> '
+        "(MA-265): browse them in the tabs below, or beside each section further down.</p>",
+        tabs([(title, image(ctx, f"stack-{gif}", caption, 100)) for gif, title, caption in STACK_GIFS]),
+        "<h2>📡 1. End-to-end tracing, Request IDs &amp; FastAPI observability</h2>",
+        image(ctx, "stack-01-e2e-trace-fastapi.gif", STACK_GIFS[0][2], 100),
+        "<h2>💷 2. Observability surfaces &amp; £2.50/month cost analysis</h2>",
+        image(ctx, "stack-02-observability-surfaces-cost.gif", STACK_GIFS[1][2], 100),
+        "<h2>🌐 3. Web front-end stack (SvelteKit 3, TanStack, shadcn-svelte)</h2>",
+        image(ctx, "stack-03-frontend-sveltekit-stack.gif", STACK_GIFS[2][2], 100),
+        "<h2>📱 4. iOS app stack (React Native 0.88 shell + Swift 6 SwiftUI core)</h2>",
+        image(ctx, "stack-04-ios-rn-swiftui-stack.gif", STACK_GIFS[3][2], 100),
+        "<h2>🐍 5. Python 3.14 backend, FastAPI &amp; DynamoDB vs DocumentDB</h2>",
+        image(ctx, "stack-05-backend-fastapi-dynamodb.gif", STACK_GIFS[4][2], 100),
+        "<h2>🤖 6. Agent loop architecture &amp; framework comparison</h2>",
+        image(ctx, "stack-06-agent-framework-architecture.gif", STACK_GIFS[5][2], 100),
+        "<h2>📖 Full research, architecture &amp; costing record (docs/RESEARCH.md §6)</h2>",
+        md(sec6, shift=-1),
+        "<h2>🧩 The stories that build it</h2><p>Every story in the trace that records or builds the stack and observability, in phase order.</p>",
+        story_rows(ctx, items),
+        jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
+    ]
+    return "".join(out) + footer(ctx)
+
+
 BLOCK_END = re.compile(r"(</(?:p|h[1-6]|table|thead|tbody|tr|ul|ol|li|div|figure|section|blockquote|pre)>)")
 
 
@@ -1094,7 +1167,7 @@ def render_body(ctx: Ctx, slug_: str) -> str:
         return render_screens(ctx)
     if slug_.startswith("screens-"):
         return render_area(ctx, next(a for a in AREAS if f"screens-{a[0]}" == slug_))
-    return {"decisions": render_decisions, "guardrails": render_guardrails, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
+    return {"decisions": render_decisions, "guardrails": render_guardrails, "stack": render_stack, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
 
 
 # ---------- check and the commands ----------

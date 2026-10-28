@@ -1,0 +1,763 @@
+<title>MyPaisa Tech Stack and Observability</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: a navy masthead states the six architectural picks; below it, six sections with animated block diagrams
+   and tables covering end-to-end tracing and FastAPI observability, the £2.50/mo CloudWatch budget, the SvelteKit 3
+   web stack, the React Native 0.88 + SwiftUI iOS stack, Python 3.14 + FastAPI + DynamoDB vs DocumentDB, and the
+   agent framework evaluation. MyPaisa DS v1, "Warm ledger" (MA-101, MA-265). */
+:root{
+  --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
+  --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
+  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF6B4F; --accent:#C2381F; --on-accent:#FFFFFF;
+  --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
+  --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB; --violet:#6B3FB8; --violet-bg:#EEE7FA;
+  --track:#CDCFD4; --grid:#ECE8E2;
+  --shadow:0 1px 2px rgba(20,23,31,.06),0 10px 30px rgba(20,23,31,.08);
+  --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+    --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+    --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+    --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+    --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+    --track:#454E5C; --grid:#222B39;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+  --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+  --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+  --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+  --track:#454E5C; --grid:#222B39;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(24px,3.2vw,32px);font-weight:900;line-height:1.15}
+h3{font-size:18px;font-weight:800}
+p{margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:6px}
+
+/* masthead */
+.mast{background:var(--hero);color:var(--hero-ink);padding-block:40px 36px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-ink-2);font-weight:600}
+.mast h1{font-size:clamp(30px,5vw,50px);font-weight:900;line-height:1.06;margin-top:10px;max-width:20ch}
+.mast .lede{color:var(--hero-ink-2);font-size:17px;max-width:66ch;margin-top:16px}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.rules li{background:var(--hero-2);color:var(--hero-ink);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.rules li b{color:var(--coral);margin-right:6px;font-family:var(--f-mono);font-weight:500}
+
+/* controls */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.ghost{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.bar nav{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;margin-left:auto}
+.bar nav a{color:var(--ink-2);text-decoration:none}
+.bar nav a:hover{color:var(--accent)}
+
+/* sections */
+main{padding-block:12px 56px}
+section{padding-block:36px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.head{display:flex;flex-direction:column;gap:8px;max-width:72ch}
+.kicker{font:600 12px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.body{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin-top:18px}
+.copy{display:flex;flex-direction:column;gap:12px;max-width:70ch;color:var(--ink-2)}
+.copy strong{color:var(--ink)}
+.copy ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+[data-mode="plain"] .tech,[data-mode="tech"] .plain{display:none!important}
+
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;margin:0}
+.fig .scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:680px;height:auto}
+.fig figcaption{font-size:13px;color:var(--ink-3);margin-top:8px}
+
+/* shared diagram classes */
+.s-box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.s-box2{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.s-t{fill:var(--ink);font:600 13.5px var(--f-body)}
+.s-s{fill:var(--ink-2);font:500 12px var(--f-body)}
+.s-m{fill:var(--ink-3);font:500 11.5px var(--f-mono)}
+.s-h{fill:var(--ink);font:800 14.5px var(--f-display)}
+.s-line{stroke:var(--track);stroke-width:2;fill:none}
+.s-dash{stroke:var(--track);stroke-width:2;fill:none;stroke-dasharray:5 5}
+.s-up{fill:var(--up)} .s-upbg{fill:var(--up-bg);stroke:var(--up);stroke-width:1.2}
+.s-al{fill:var(--alert)} .s-albg{fill:var(--alert-bg);stroke:var(--alert);stroke-width:1.2}
+.s-am{fill:var(--amber)} .s-ambg{fill:var(--amber-bg);stroke:var(--amber);stroke-width:1.2}
+.s-bl{fill:var(--blue)} .s-blbg{fill:var(--blue-bg);stroke:var(--blue);stroke-width:1.2}
+.s-vi{fill:var(--violet)} .s-vibg{fill:var(--violet-bg);stroke:var(--violet);stroke-width:1.2}
+.s-co{fill:var(--coral)} .s-tr{fill:var(--track)}
+.s-upt{fill:var(--up);font:700 12.5px var(--f-body)}
+.s-alt{fill:var(--alert);font:700 12.5px var(--f-body)}
+.s-amt{fill:var(--amber);font:700 12.5px var(--f-body)}
+.s-blt{fill:var(--blue);font:700 12.5px var(--f-body)}
+.s-vit{fill:var(--violet);font:700 12.5px var(--f-body)}
+
+/* 1 E2E Trace & FastAPI (10 s) */
+.d1 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.d1 .pkt{animation-name:d1pkt}
+.d1 .st1{animation-name:d1s1} .d1 .st2{animation-name:d1s2} .d1 .st3{animation-name:d1s3} .d1 .st4{animation-name:d1s4}
+.d1 .cw{animation-name:d1cw}
+@keyframes d1pkt{
+  0%{transform:translate(0,0);opacity:0}
+  5%{transform:translate(0,0);opacity:1}
+  25%{transform:translate(196px,0);opacity:1}
+  50%{transform:translate(432px,0);opacity:1}
+  75%{transform:translate(668px,0);opacity:1}
+  92%{transform:translate(668px,0);opacity:1}
+  100%{transform:translate(668px,0);opacity:0}
+}
+@keyframes d1s1{0%,22%{stroke:var(--blue);stroke-width:2.5}26%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d1s2{0%,20%{stroke:var(--line);stroke-width:1.5}24%,48%{stroke:var(--up);stroke-width:2.5}52%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d1s3{0%,46%{stroke:var(--line);stroke-width:1.5}50%,74%{stroke:var(--violet);stroke-width:2.5}78%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d1s4{0%,70%{stroke:var(--line);stroke-width:1.5}74%,95%{stroke:var(--up);stroke-width:2.5}98%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d1cw{0%,55%{opacity:.45}62%,95%{opacity:1}100%{opacity:.45}}
+
+/* 2 Observability Surfaces & Cost (10 s) */
+.d2 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.d2 .sf1{animation-name:d2a} .d2 .sf2{animation-name:d2b} .d2 .sf3{animation-name:d2c} .d2 .cost{animation-name:d2d}
+@keyframes d2a{0%,24%{stroke:var(--up);stroke-width:2.5}28%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d2b{0%,24%{stroke:var(--line);stroke-width:1.5}28%,54%{stroke:var(--blue);stroke-width:2.5}58%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d2c{0%,54%{stroke:var(--line);stroke-width:1.5}58%,78%{stroke:var(--amber);stroke-width:2.5}82%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d2d{0%,74%{stroke:var(--up);stroke-width:1.5}78%,96%{stroke:var(--up);stroke-width:3}100%{stroke:var(--up);stroke-width:1.5}}
+
+/* 3 Web Front End Stack (10 s) */
+.d3 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.d3 .w1{animation-name:d3a} .d3 .w2{animation-name:d3b} .d3 .w3{animation-name:d3c} .d3 .w4{animation-name:d3d}
+@keyframes d3a{0%,24%{stroke:var(--blue);stroke-width:2.5}28%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d3b{0%,24%{stroke:var(--line);stroke-width:1.5}28%,52%{stroke:var(--violet);stroke-width:2.5}56%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d3c{0%,52%{stroke:var(--line);stroke-width:1.5}56%,78%{stroke:var(--up);stroke-width:2.5}82%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d3d{0%,76%{stroke:var(--line);stroke-width:1.5}80%,96%{stroke:var(--amber);stroke-width:2.5}100%{stroke:var(--line);stroke-width:1.5}}
+
+/* 4 iOS RN + SwiftUI Stack (10 s) */
+.d4 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.d4 .i1{animation-name:d4a} .d4 .i2{animation-name:d4b} .d4 .i3{animation-name:d4c}
+.d4 .bridge{animation-name:d4pkt}
+@keyframes d4a{0%,32%{stroke:var(--blue);stroke-width:2.5}36%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d4b{0%,30%{stroke:var(--line);stroke-width:1.5}34%,64%{stroke:var(--amber);stroke-width:2.5}68%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d4c{0%,62%{stroke:var(--line);stroke-width:1.5}66%,96%{stroke:var(--up);stroke-width:2.5}100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d4pkt{0%,25%{transform:translateX(0);opacity:0}30%{opacity:1}65%{transform:translateX(210px);opacity:1}72%,100%{transform:translateX(210px);opacity:0}}
+
+/* 5 Backend FastAPI & DynamoDB vs DocumentDB (10 s) */
+.d5 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.d5 .b1{animation-name:d5a} .d5 .b2{animation-name:d5b} .d5 .b3{animation-name:d5c} .d5 .b4{animation-name:d5d}
+@keyframes d5a{0%,26%{stroke:var(--blue);stroke-width:2.5}30%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d5b{0%,26%{stroke:var(--line);stroke-width:1.5}30%,60%{stroke:var(--up);stroke-width:2.5}64%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d5c{0%,58%{stroke:var(--up);stroke-width:1.2}62%,82%{stroke:var(--up);stroke-width:3}86%,100%{stroke:var(--up);stroke-width:1.2}}
+@keyframes d5d{0%,80%{stroke:var(--alert);stroke-width:1.2}84%,96%{stroke:var(--alert);stroke-width:3}100%{stroke:var(--alert);stroke-width:1.2}}
+
+/* 6 Agent Loop & Framework Scorecard (10 s) */
+.d6 *{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.d6 .a1{animation-name:d6a} .d6 .a2{animation-name:d6b} .d6 .a3{animation-name:d6c} .d6 .a4{animation-name:d6d}
+@keyframes d6a{0%,25%{stroke:var(--violet);stroke-width:2.5}29%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d6b{0%,25%{stroke:var(--line);stroke-width:1.5}29%,55%{stroke:var(--up);stroke-width:2.5}59%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d6c{0%,55%{stroke:var(--line);stroke-width:1.5}59%,80%{stroke:var(--blue);stroke-width:2.5}84%,100%{stroke:var(--line);stroke-width:1.5}}
+@keyframes d6d{0%,78%{stroke:var(--up);stroke-width:1.2}82%,96%{stroke:var(--up);stroke-width:3}100%{stroke:var(--up);stroke-width:1.2}}
+
+[data-paused="true"] .anim *{animation-play-state:paused!important}
+@media (prefers-reduced-motion: reduce){ .anim *{animation:none!important} }
+
+/* lists and tables */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.tile .n{font:900 28px var(--f-display);font-variant-numeric:tabular-nums}
+.tile .l{font-size:14px;color:var(--ink-2);margin-top:4px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td.k{font-family:var(--f-mono);white-space:nowrap;color:var(--accent)}
+.pill{display:inline-block;font:700 12px var(--f-body);border-radius:999px;padding:2px 9px}
+.pill.never{background:var(--alert-bg);color:var(--alert)} .pill.on{background:var(--up-bg);color:var(--up)} .pill.mid{background:var(--blue-bg);color:var(--blue)}
+@media (max-width:640px){ .bar nav{display:none} }
+footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px solid var(--line)}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="eyebrow">MyPaisa · ARCHITECTURE §3, §4.8, §8, §9.4, §10 · TECH_STACK · MA-265 · MA-266</div>
+    <h1>Four layers, one trace from tap to push, £2.50 a month to watch.</h1>
+    <p class="lede">How MyPaisa is built and watched end to end: SvelteKit 3 and TanStack on the web, a React Native 0.88 shell with a native SwiftUI core on iOS, FastAPI and a typed single-table DynamoDB repository on Python 3.14 (with no DocumentDB cluster), a thin custom loop on the official Anthropic SDK, and one OpenTelemetry trace across every hop.</p>
+    <ul class="rules" aria-label="The architectural choices">
+      <li><b>1</b>One W3C trace + request ID from door to model</li>
+      <li><b>2</b>£2.46/mo CloudWatch in prod (£0.03 in dev)</li>
+      <li><b>3</b>SvelteKit 3 + TanStack + shadcn-svelte</li>
+      <li><b>4</b>RN 0.88 shell + Swift 6 SwiftUI at 120 Hz</li>
+      <li><b>5</b>FastAPI + DynamoDB single-table (no DocumentDB)</li>
+      <li><b>6</b>Thin Anthropic SDK loop (10/10)</li>
+    </ul>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="seg" role="radiogroup" aria-label="How to explain it">
+      <button type="button" role="radio" id="mode-plain" aria-checked="true" data-set="plain">Plain words</button>
+      <button type="button" role="radio" id="mode-tech" aria-checked="false" data-set="tech">Technical</button>
+    </div>
+    <button type="button" class="ghost" id="pause" aria-pressed="false">Pause the diagrams</button>
+    <nav aria-label="Sections">
+      <a href="#trace">Trace &amp; FastAPI</a><a href="#surfaces">Cost &amp; Surfaces</a><a href="#web">Web</a><a href="#ios">iOS</a><a href="#backend">Backend &amp; DB</a><a href="#agents">Agents</a><a href="#stories">Stories</a>
+    </nav>
+  </div>
+</div>
+
+<main id="main" data-mode="plain" data-paused="false">
+<div class="wrap">
+
+<section id="trace">
+  <div class="head">
+    <div class="kicker">1 · End-to-end tracing and Request ID propagation</div>
+    <h2>One trace and every correlation ID from the tap through FastAPI, SQS and Claude to the stream</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>When you send a message or tap Confirm on your phone or laptop, the app stamps it with a unique trace number and a message ID. As that message travels through the front-door FastAPI server, the waiting queues, the agent talking to Claude, and the live reply stream back to your screen, every step passes that same trace number along.</p>
+      <p>Every response also hands the trace number and request ID back to your device in its headers, so if anything ever goes wrong, one click in the Activity screen opens the entire journey in AWS CloudWatch — while a strict automated test guarantees no personal figure, name or message text is ever written into the logs.</p>
+    </div>
+    <div class="copy tech">
+      <p>Already planned in <code>ARCHITECTURE.md</code> §10 (MA-29, MA-230 to MA-236, MA-196) and extended with FastAPI in <strong>MA-265</strong> and <strong>MA-266</strong>: both doors generate a W3C <code>traceparent</code> (<code>00-&lt;trace_id&gt;-&lt;span_id&gt;-01</code>) and <code>client_message_id</code> (ULID). <code>handlers/api</code> runs <strong>FastAPI</strong> behind <code>Mangum(app, lifespan="off")</code>; <code>handlers/stream</code> runs <strong>FastAPI</strong> on <strong>Uvicorn</strong> behind the <strong>AWS Lambda Web Adapter 1.1</strong> (<code>AWS_LWA_INVOKE_MODE=response_stream</code>).</p>
+      <p><code>CorrelationMiddleware</code> and <code>opentelemetry-instrumentation-fastapi</code> run on both apps: they extract <code>traceparent</code>, read API Gateway's <code>request_id</code> (<code>aws_request_id</code> / <code>x-request-id</code>), bind <code>{trace_id, span_id, request_id, client_message_id, run_id, household_id, member_id}</code> onto the Powertools Logger and the active span (setting <code>http.route</code> for Application Signals), and echo <code>x-mypaisa-trace-id</code> and <code>x-request-id</code> on every HTTP response and SSE handshake. Across <code>updates.fifo</code>, <code>outbox.fifo</code> and <code>work</code>, the AWS OpenTelemetry distro propagates <code>AWSTraceHeader</code> automatically and handler code copies <code>traceparent</code>, <code>request_id</code> and <code>run_id</code> into SQS message attributes.</p>
+    </div>
+    <figure class="fig" id="fig-trace">
+      <div class="scroll">
+      <svg class="anim d1" viewBox="0 0 960 390" role="img" aria-label="End-to-end trace propagation from the web and iOS doors through API Gateway and FastAPI, SQS updates.fifo, the agent Lambda and Claude GenAI spans, outbox.fifo and the FastAPI stream Lambda, into CloudWatch Transaction Search.">
+        <rect class="st1 s-box" x="14" y="28" width="178" height="218" rx="14"/>
+        <text class="s-h" x="28" y="54">1 · Both Doors</text>
+        <text class="s-s" x="28" y="74">SvelteKit 3 · iOS App</text>
+        <rect class="s-blbg" x="26" y="88" width="154" height="52" rx="8"/>
+        <text class="s-blt" x="36" y="108">W3C traceparent</text>
+        <text class="s-m" x="36" y="126">00-4bf92f...01</text>
+        <rect class="s-box2" x="26" y="148" width="154" height="44" rx="8"/>
+        <text class="s-t" x="36" y="168">client_message_id</text>
+        <text class="s-m" x="36" y="184">msg_01J8X9...</text>
+        <text class="s-s" x="28" y="218">POST /v1/chat/messages</text>
+        <text class="s-m" x="28" y="234">+ GET /v1/stream</text>
+
+        <path class="s-line" d="M192 114 L218 114"/>
+        <rect class="st2 s-box" x="218" y="28" width="218" height="218" rx="14"/>
+        <text class="s-h" x="232" y="54">2 · FastAPI REST &amp; SSE</text>
+        <text class="s-s" x="232" y="74">api (Mangum) · stream (LWA)</text>
+        <rect class="s-upbg" x="230" y="88" width="194" height="54" rx="8"/>
+        <text class="s-upt" x="240" y="108">CorrelationMiddleware</text>
+        <text class="s-m" x="240" y="126">request_id · http.route</text>
+        <rect class="s-box2" x="230" y="150" width="194" height="46" rx="8"/>
+        <text class="s-t" x="240" y="170">Response headers</text>
+        <text class="s-m" x="240" y="186">x-mypaisa-trace-id · 202</text>
+        <text class="s-s" x="232" y="218">SQS updates.fifo</text>
+        <text class="s-m" x="232" y="234">AWSTraceHeader + attrs</text>
+
+        <path class="s-line" d="M436 114 L462 114"/>
+        <rect class="st3 s-box" x="462" y="28" width="224" height="218" rx="14"/>
+        <text class="s-h" x="476" y="54">3 · Agent &amp; Claude</text>
+        <text class="s-s" x="476" y="74">agent · worker · Anthropic API</text>
+        <rect class="s-vibg" x="474" y="88" width="200" height="54" rx="8"/>
+        <text class="s-vit" x="484" y="108">OTel GenAI v1.40 Spans</text>
+        <text class="s-m" x="484" y="126">chat claude-sonnet-5-5</text>
+        <rect class="s-box2" x="474" y="150" width="200" height="46" rx="8"/>
+        <text class="s-t" x="484" y="170">tool get_networth · draft</text>
+        <text class="s-m" x="484" y="186">tokens · cost_usd · ttft_ms</text>
+        <text class="s-s" x="476" y="218">Writes RunRecord (DynamoDB)</text>
+        <text class="s-m" x="476" y="234">→ SQS outbox.fifo</text>
+
+        <path class="s-line" d="M686 114 L712 114"/>
+        <rect class="st4 s-box" x="712" y="28" width="234" height="218" rx="14"/>
+        <text class="s-h" x="726" y="54">4 · Sender, SSE &amp; Push</text>
+        <text class="s-s" x="726" y="74">sender · stream (Uvicorn)</text>
+        <rect class="s-upbg" x="724" y="88" width="210" height="54" rx="8"/>
+        <text class="s-upt" x="734" y="108">SSE StreamEvent</text>
+        <text class="s-m" x="734" y="126">{seq, run_id, trace_id}</text>
+        <rect class="s-box2" x="724" y="150" width="210" height="46" rx="8"/>
+        <text class="s-t" x="734" y="170">APNs &amp; Web Push</text>
+        <text class="s-m" x="734" y="186">no amounts on lock screen</text>
+        <text class="s-s" x="726" y="218">POST /v1/telemetry</text>
+        <text class="s-m" x="726" y="234">client TTFT + trace_id</text>
+
+        <circle class="pkt s-co" cx="140" cy="114" r="8"/>
+
+        <g class="cw">
+          <rect class="s-box2" x="14" y="268" width="932" height="104" rx="14"/>
+          <text class="s-h" x="32" y="294">5 · CloudWatch Transaction Search (aws/spans, 100% indexed) + Application Signals + GenAI Observability</text>
+          <text class="s-s" x="32" y="316">Every log line and span carries: <tspan class="s-m">trace_id · span_id · request_id · run_id · client_message_id · household_id · member_id · feature · agent</tspan></text>
+          <rect class="s-upbg" x="32" y="328" width="430" height="32" rx="8"/>
+          <text class="s-upt" x="46" y="349">100% of spans in aws/spans (free 10 GB/mo; $0.35/GB)</text>
+          <rect class="s-albg" x="480" y="328" width="450" height="32" rx="8"/>
+          <text class="s-alt" x="494" y="349">Zero prompts, replies, amounts, names or tokens in CloudWatch</text>
+        </g>
+      </svg>
+      </div>
+      <figcaption>One W3C trace and request ID flow from the browser or iPhone through FastAPI (Mangum and Uvicorn + LWA), the FIFO queues, the agent's Claude GenAI spans and SSE back to the door.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="surfaces">
+  <div class="head">
+    <div class="kicker">2 · Observability surfaces and monthly costing</div>
+    <h2>Three readers for every run, for £0.03 a month in dev and £2.46 a month in prod</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>You never have to open the AWS console just to see what MyPaisa did or what it cost. Every run is written into the app's own <strong>Activity</strong> screen with its steps, tools, tokens and cost. When you want engineering curves, an eight-panel CloudWatch dashboard and full trace search are ready in AWS; when something breaks or spend crosses 70%, MyPaisa messages you in the chat and by push.</p>
+      <p>By writing our own metrics in CloudWatch's Embedded Metric Format and sending 100% of spans to CloudWatch Transaction Search instead of paying per-trace X-Ray fees or $39+/month SaaS seats, the entire observability stack costs <strong>£0.03/month in dev</strong> and <strong>£2.46/month in prod</strong>.</p>
+    </div>
+    <div class="copy tech">
+      <p><code>infra/modules/mypaisa/observability.tf</code> (MA-231) provisions all log groups (30-day retention in prod, 7-day in dev, 365-day for <code>evals</code>), <code>aws_xray_transaction_search_config</code> (100% of spans into <code>aws/spans</code>, no $5/M X-Ray Indexed Spans charge), Application Signals on FastAPI's <code>http.route</code> spans, the 8-panel CloudWatch dashboard, 7 saved Logs Insights queries, 15 EMF metrics in <code>MyPaisa/Agent</code> (billed as log bytes, $0 per metric), and 12 alarms per environment (first 10 across the account free).</p>
+    </div>
+    <figure class="fig" id="fig-surfaces">
+      <div class="scroll">
+      <svg class="anim d2" viewBox="0 0 960 380" role="img" aria-label="Three observability surfaces fed by every run: the in-app Activity screen from DynamoDB RunRecord at £0, the CloudWatch 8-panel dashboard and Transaction Search, and the owner's chat, push and SNS alarms, alongside the £2.46/month prod cost breakdown.">
+        <rect class="sf1 s-box" x="14" y="24" width="290" height="104" rx="14"/>
+        <text class="s-h" x="30" y="50">Surface 1 · Activity Screen</text>
+        <text class="s-s" x="30" y="70">Both doors · reads DynamoDB RunRecord</text>
+        <text class="s-m" x="30" y="90">trigger · steps · tools · tokens · cost</text>
+        <text class="s-upt" x="30" y="112">£0.00 / mo (DynamoDB free tier)</text>
+
+        <rect class="sf2 s-box" x="14" y="140" width="290" height="108" rx="14"/>
+        <text class="s-h" x="30" y="166">Surface 2 · AWS CloudWatch</text>
+        <text class="s-s" x="30" y="186">8-panel dashboard · 7 saved queries</text>
+        <text class="s-m" x="30" y="206">aws/spans (100%) · App Signals · GenAI</text>
+        <text class="s-blt" x="30" y="228">~74 MB logs + ~65 MB spans / mo</text>
+
+        <rect class="sf3 s-box" x="14" y="260" width="290" height="100" rx="14"/>
+        <text class="s-h" x="30" y="286">Surface 3 · Chat, Push &amp; SNS</text>
+        <text class="s-s" x="30" y="306">15 EMF metrics · 12 alarms per env</text>
+        <text class="s-m" x="30" y="326">DLQ &gt; 0 · Error · P99 · Spend 70/100%</text>
+        <text class="s-amt" x="30" y="346">Owner outbox + SNS email backstop</text>
+
+        <path class="s-line" d="M304 76 L342 76"/><path class="s-line" d="M304 194 L342 194"/><path class="s-line" d="M304 310 L342 310"/>
+
+        <rect class="cost s-box2" x="342" y="24" width="604" height="336" rx="16"/>
+        <text class="s-h" x="364" y="54">Monthly Observability Cost Analysis (dev + prod in one AWS account)</text>
+        <text class="s-s" x="364" y="74">Account free tiers cover 5 GB logs, 10 GB Transaction Search spans, 3 dashboards &amp; 10 alarms</text>
+
+        <rect class="s-box" x="364" y="90" width="278" height="142" rx="12"/>
+        <text class="s-upt" x="380" y="114">MyPaisa Native AWS Stack (Chosen)</text>
+        <text class="s-t" x="380" y="138">• CloudWatch Logs (~74 MB): <tspan class="s-m">$0.00</tspan></text>
+        <text class="s-t" x="380" y="158">• Transaction Search (~65 MB): <tspan class="s-m">$0.00</tspan></text>
+        <text class="s-t" x="380" y="178">• 15 EMF metrics + 2 dashboards: <tspan class="s-m">$0.00</tspan></text>
+        <text class="s-t" x="380" y="198">• App Signals ($0.73) + Alarms ($2.40)</text>
+        <text class="s-upt" x="380" y="220">dev: £0.03/mo · prod: £2.46/mo ($3.13)</text>
+
+        <rect class="s-box" x="654" y="90" width="274" height="142" rx="12"/>
+        <text class="s-alt" x="670" y="114">External LLM SaaS Alternatives</text>
+        <text class="s-s" x="670" y="138">• LangSmith Plus: <tspan class="s-m">$39+/mo (£31+)</tspan></text>
+        <text class="s-s" x="670" y="158">• Langfuse Cloud: <tspan class="s-m">$29–$59/mo (£23+)</tspan></text>
+        <text class="s-s" x="670" y="178">• Datadog LLM Obs: <tspan class="s-m">$70+/mo (£55+)</tspan></text>
+        <text class="s-s" x="670" y="198">• Self-hosted Phoenix/Langfuse: <tspan class="s-m">$25+/mo</tspan></text>
+        <text class="s-alt" x="670" y="220">Rejected: cost &amp; data leaves AWS</text>
+
+        <rect class="s-upbg" x="364" y="248" width="564" height="94" rx="12"/>
+        <text class="s-upt" x="382" y="272">The 8 CloudWatch Dashboard Panels (observability.tf, MA-231)</text>
+        <text class="s-t" x="382" y="294">1. System health (api, stream, agent, sender, worker) · 2. Queues &amp; DLQs · 3. Stream &amp; push · 4. Data &amp; engine</text>
+        <text class="s-t" x="382" y="314">5. Claude &amp; spend (tokens, cache hit %, TTFT, ceiling) · 6. Client UX · 7. Cost vs £50 cap · 8. Evals &amp; judges</text>
+        <text class="s-m" x="382" y="332">Heavy usage (5× chat + 20 statements/mo) moves prod by only +£0.52/mo to £2.98/mo</text>
+      </svg>
+      </div>
+      <figcaption>Every run feeds the in-app Activity screen (£0), the 8-panel CloudWatch Watch Tower and Transaction Search, and the owner's alerts, for £2.46/month in prod.</figcaption>
+    </figure>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Observability component</th><th>Volume (prod / mo)</th><th>AWS free tier</th><th>dev / mo</th><th>prod baseline / mo</th><th>prod heavy (5×) / mo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CloudWatch Logs</strong> (JSON via Powertools, 30d retention)</td><td>~74 MB</td><td>5 GB / mo</td><td>$0.00</td><td>$0.00</td><td>$0.00 (~310 MB)</td></tr>
+          <tr><td><strong>Transaction Search</strong> (<code>aws/spans</code>, 100% spans, GenAI + FastAPI)</td><td>~65 MB (~54k spans)</td><td>10 GB / mo</td><td>$0.00</td><td>$0.00</td><td>$0.00 (~240 MB)</td></tr>
+          <tr><td><strong>15 custom metrics in <code>MyPaisa/Agent</code></strong> (via EMF in logs)</td><td>15 metrics</td><td>Included in log bytes</td><td>$0.00</td><td>$0.00</td><td>$0.00</td></tr>
+          <tr><td><strong>CloudWatch Dashboards</strong> (8 panels × <code>dev</code> &amp; <code>prod</code>)</td><td>2 dashboards</td><td>3 dashboards (50 metrics)</td><td>$0.00</td><td>$0.00</td><td>$0.00</td></tr>
+          <tr><td><strong>Application Signals</strong> (FastAPI <code>http.route</code> SLIs &amp; service map)</td><td>~2.2 GB-mo</td><td>100 MB-mo trial</td><td>$0.04</td><td>$0.73</td><td>$1.40</td></tr>
+          <tr><td><strong>CloudWatch Alarms</strong> (12 standard alarms × 2 envs = 24 total)</td><td>24 alarms</td><td>First 10 alarms free</td><td>$0.00 (in first 10)</td><td>$2.40 (14 + 10 composite)</td><td>$2.40</td></tr>
+          <tr><td><strong>DynamoDB <code>RunRecord</code> + <code>EvalResult</code></strong> (Activity &amp; Evals UI)</td><td>~3,000 items</td><td>25 GB + 25 WCU/RCU</td><td>$0.00</td><td>$0.00</td><td>$0.00</td></tr>
+          <tr><td><strong>Total Monthly Observability Cost</strong></td><td>—</td><td>—</td><td><strong>$0.04 (~£0.03)</strong></td><td><strong>$3.13 (~£2.46)</strong></td><td><strong>$3.80 (~£2.98)</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="web">
+  <div class="head">
+    <div class="kicker">3 · Front-end tech stack (`web/`)</div>
+    <h2>SvelteKit 3.1, Svelte 5 runes, Tailwind CSS 4, shadcn-svelte and TanStack</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>The web app at <code>dashboard.mypaisapp.com</code> works on a laptop, an iPad or a phone browser. It uses SvelteKit 3 with Tailwind CSS 4 in the Warm ledger look, accessible components from shadcn-svelte, and TanStack for live data, sortable tables, long virtualised audit lists and inline figure edits.</p>
+      <p>Its data types are generated automatically from the Python FastAPI server, and the iOS app imports that exact same TypeScript folder so the browser and the iPhone can never drift apart.</p>
+    </div>
+    <div class="copy tech">
+      <p>Proven in Smart Clearance (`MA-194`, `MA-229`, `MA-265`): a <code>pnpm 12.x</code> workspace on <strong>SvelteKit 3.1.x</strong> (<code>@sveltejs/adapter-static</code>) and <strong>Svelte 5.57.x</strong> runes (<code>$state</code>, <code>$derived</code>, <code>$effect</code>), built with <strong>Vite 8.x</strong> and <strong>TypeScript 6.x</strong>. Styled with <strong>Tailwind CSS 4.3.x</strong> over <code>docs/design/ds-v1/tokens.css</code>, <strong>shadcn-svelte 1.7.x</strong> on <strong>bits-ui 2.20.x</strong>, <strong>LayerChart 2.9.x</strong> + <strong>d3-scale / d3-shape</strong> for wealth charts and <strong>lightweight-charts 5.2.x</strong> for market candlesticks/indicators, and <strong>Motion 14.0.x</strong>.</p>
+      <p>Data and state run on <strong>@tanstack/svelte-query 6.3.x</strong> (updated in place by the SSE stream on <code>records.changed</code>), <strong>@tanstack/table-core 9.3.x</strong>, <strong>@tanstack/svelte-virtual 3.13.x</strong> and <strong>@tanstack/svelte-form 1.33.x</strong> + <strong>zod 4.x</strong>. <code>pnpm generate:api</code> runs <strong>openapi-typescript 7.x</strong> against FastAPI's <code>app.openapi()</code> to emit <code>web/src/lib/api-types.d.ts</code>.</p>
+    </div>
+    <figure class="fig" id="fig-web">
+      <div class="scroll">
+      <svg class="anim d3" viewBox="0 0 960 380" role="img" aria-label="The web front-end architecture in web/: SvelteKit 3.1 and Svelte 5 runes, Tailwind CSS 4.3 and shadcn-svelte on bits-ui, LayerChart and lightweight-charts with Motion 14, TanStack Query, Table, Virtual and Form with live SSE updates, and the shared web/src/lib/ layer generated from FastAPI.">
+        <rect class="w1 s-box" x="14" y="24" width="296" height="156" rx="14"/>
+        <text class="s-h" x="30" y="50">App Shell &amp; Build (web/)</text>
+        <text class="s-blt" x="30" y="72">SvelteKit 3.1 · Svelte 5.57 Runes</text>
+        <text class="s-t" x="30" y="94">• adapter-static SPA on S3 + CloudFront</text>
+        <text class="s-t" x="30" y="114">• Vite 8 · TypeScript 6 · pnpm 12 catalog</text>
+        <text class="s-t" x="30" y="134">• PWA service worker caches shell only</text>
+        <text class="s-m" x="30" y="156">CloudFront Function serves AASA direct</text>
+
+        <rect class="w2 s-box" x="332" y="24" width="296" height="156" rx="14"/>
+        <text class="s-h" x="348" y="50">UI, Charts &amp; Motion</text>
+        <text class="s-vit" x="348" y="72">Tailwind CSS 4.3 · shadcn-svelte 1.7</text>
+        <text class="s-t" x="348" y="94">• bits-ui 2.20 · lucide-svelte · cmdk-sv</text>
+        <text class="s-t" x="348" y="114">• LayerChart 2.9 (net worth, fan, mix)</text>
+        <text class="s-t" x="348" y="134">• lightweight-charts 5.2 (candles, RSI)</text>
+        <text class="s-m" x="348" y="156">Motion 14.0 · View Transitions · 25% gate</text>
+
+        <rect class="w3 s-box" x="650" y="24" width="296" height="156" rx="14"/>
+        <text class="s-h" x="666" y="50">TanStack &amp; Live SSE</text>
+        <text class="s-upt" x="666" y="72">@tanstack/svelte-query 6.3</text>
+        <text class="s-t" x="666" y="94">• table-core 9.3 (Holdings, Audit, Runs)</text>
+        <text class="s-t" x="666" y="114">• svelte-virtual 3.13 (90d chat &amp; audit)</text>
+        <text class="s-t" x="666" y="134">• svelte-form 1.33 + zod 4 (inline PATCH)</text>
+        <text class="s-m" x="666" y="156">fetch-event-source → queryClient.setQueryData</text>
+
+        <path class="s-line" d="M162 180 L162 212"/><path class="s-line" d="M480 180 L480 212"/><path class="s-line" d="M798 180 L798 212"/>
+
+        <rect class="w4 s-box2" x="14" y="212" width="932" height="146" rx="16"/>
+        <text class="s-h" x="32" y="240">Shared Cross-Door Library · web/src/lib/ (imported by ios/ via Metro #lib)</text>
+        <rect class="s-upbg" x="32" y="256" width="284" height="84" rx="10"/>
+        <text class="s-upt" x="46" y="278">openapi-typescript 7.x</text>
+        <text class="s-t" x="46" y="298">Generated from FastAPI app.openapi()</text>
+        <text class="s-m" x="46" y="318">web/src/lib/api-types.d.ts</text>
+
+        <rect class="s-blbg" x="334" y="256" width="288" height="84" rx="10"/>
+        <text class="s-blt" x="348" y="278">Card &amp; View-Model Contracts</text>
+        <text class="s-t" x="348" y="298">Versioned Card JSON · GBP/INR lakh/crore</text>
+        <text class="s-m" x="348" y="318">Privacy mode mask · query keys &amp; fetchers</text>
+
+        <rect class="s-ambg" x="640" y="256" width="288" height="84" rx="10"/>
+        <text class="s-amt" x="654" y="278">Automated Web Gates (CI)</text>
+        <text class="s-t" x="654" y="298">svelte-check · eslint 10 · vitest 4</text>
+        <text class="s-m" x="654" y="318">Playwright 390 &amp; 1440 + axe-core + parity</text>
+      </svg>
+      </div>
+      <figcaption>SvelteKit 3.1, Tailwind CSS 4.3, shadcn-svelte, LayerChart and TanStack Query/Table/Virtual/Form sit over web/src/lib/, whose OpenAPI types come straight from FastAPI.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="ios">
+  <div class="head">
+    <div class="kicker">4 · iOS tech stack (`ios/`)</div>
+    <h2>React Native 0.88 TypeScript shell + Swift 6 SwiftUI core at 120 Hz ProMotion</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>The iPhone and iPad app uses React Native 0.88 for the invisible plumbing — signing in, caching data offline, listening to the live SSE stream and sharing the TypeScript logic with the web app — while every screen, card, chart and Liquid Glass control you see and touch is built in native Apple SwiftUI running at 120 frames per second.</p>
+    </div>
+    <div class="copy tech">
+      <p>Built on the pattern proven in bong-panjika (`MA-165`, `MA-229`, `MA-265`): bare <strong>React Native 0.88.x</strong> (New Architecture, Fabric + TurboModules, Hermes, React 19.3, TypeScript 6, no Expo), with native dependencies managed exclusively via <strong>Swift Package Manager</strong> (never CocoaPods). The shell runs <strong>@tanstack/react-query 5.105.x</strong> over <code>#lib</code>, <strong>react-native-mmkv 4.3.x</strong> on <strong>react-native-nitro-modules 0.14.x</strong> (encrypted via Keychain), and <strong>react-native-reanimated 4.7.x</strong> + <strong>react-native-gesture-handler 2.32.x</strong>.</p>
+      <p>Each screen or card crosses the synchronous C++ Fabric bridge as one pre-formatted JSON view model into a <strong>UIHostingController</strong> running <strong>Swift 6.x</strong> (strict concurrency) on <strong>iOS and iPadOS 26</strong>: 1a Chat-first adaptive shell, native <strong>Swift Charts</strong> at 120 Hz with <code>.sensoryFeedback</code>, and <strong>Liquid Glass</strong> (<code>.glassEffect()</code>) on floating controls only.</p>
+    </div>
+    <figure class="fig" id="fig-ios">
+      <div class="scroll">
+      <svg class="anim d4" viewBox="0 0 960 380" role="img" aria-label="The iOS app architecture in ios/: a React Native 0.88 TypeScript shell with TanStack Query and MMKV on Nitro Modules, a synchronous Fabric C++ bridge passing one JSON view model, and a Swift 6 strict-concurrency SwiftUI core with Swift Charts at 120 Hz and Liquid Glass on controls.">
+        <rect class="i1 s-box" x="14" y="24" width="310" height="332" rx="14"/>
+        <text class="s-h" x="30" y="52">1 · React Native 0.88 Shell (TS)</text>
+        <text class="s-blt" x="30" y="74">New Architecture · Hermes · SPM only</text>
+        <rect class="s-box2" x="28" y="90" width="282" height="58" rx="10"/>
+        <text class="s-t" x="40" y="112">Shared #lib (from web/src/lib/)</text>
+        <text class="s-m" x="40" y="132">OpenAPI types · GBP/INR · query defs</text>
+        <rect class="s-box2" x="28" y="158" width="282" height="58" rx="10"/>
+        <text class="s-t" x="40" y="180">@tanstack/react-query 5.105</text>
+        <text class="s-m" x="40" y="200">+ SSE fetch stream &amp; Last-Event-ID</text>
+        <rect class="s-box2" x="28" y="226" width="282" height="58" rx="10"/>
+        <text class="s-t" x="40" y="248">react-native-mmkv 4.3 (Nitro)</text>
+        <text class="s-m" x="40" y="268">+ Keychain tokens · Reanimated 4.7</text>
+        <text class="s-s" x="30" y="312">Zero CocoaPods · Xcode 26 SPM</text>
+        <text class="s-m" x="30" y="332">MyPaisa Dev &amp; MyPaisa (TestFlight)</text>
+
+        <path class="s-line" d="M324 190 L556 190"/>
+        <rect class="i2 s-ambg" x="348" y="128" width="184" height="124" rx="14"/>
+        <text class="s-amt" x="440" y="156" text-anchor="middle">2 · Fabric C++ Bridge</text>
+        <text class="s-t" x="440" y="180" text-anchor="middle">UIViewRepresentable</text>
+        <text class="s-t" x="440" y="200" text-anchor="middle">UIHostingController</text>
+        <text class="s-m" x="440" y="224" text-anchor="middle">1 JSON view model / view</text>
+        <circle class="bridge s-co" cx="332" cy="190" r="8"/>
+
+        <rect class="i3 s-box" x="556" y="24" width="390" height="332" rx="14"/>
+        <text class="s-h" x="574" y="52">3 · Native SwiftUI Core (Swift 6)</text>
+        <text class="s-upt" x="574" y="74">iOS &amp; iPadOS 26 · 120 Hz ProMotion · Zero lag</text>
+        <rect class="s-upbg" x="572" y="90" width="358" height="58" rx="10"/>
+        <text class="s-upt" x="586" y="112">1a Chat-First Adaptive Shell</text>
+        <text class="s-t" x="586" y="132">TabView on iPhone · SplitView + chat ≥ 1133 pt</text>
+        <rect class="s-box2" x="572" y="158" width="358" height="58" rx="10"/>
+        <text class="s-t" x="586" y="180">Native SwiftUI Cards &amp; Swift Charts</text>
+        <text class="s-m" x="586" y="200">SectorMark · LineMark · AreaMark · 120 Hz scrub</text>
+        <rect class="s-box2" x="572" y="226" width="358" height="58" rx="10"/>
+        <text class="s-t" x="586" y="248">Warm Ledger + Liquid Glass Controls</text>
+        <text class="s-m" x="586" y="268">.glassEffect() on bars/composer · solid content</text>
+        <text class="s-s" x="574" y="312">AuthenticationServices · VisionKit · LocalAuth</text>
+        <text class="s-m" x="574" y="332">WidgetKit · AppIntents · ActivityKit (Phase 20)</text>
+      </svg>
+      </div>
+      <figcaption>React Native 0.88 handles state, offline MMKV caching and SSE in TypeScript; every visible screen, card and chart is Swift 6 SwiftUI across the Fabric bridge.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="backend">
+  <div class="head">
+    <div class="kicker">5 · Python 3.14 backend, FastAPI &amp; DynamoDB vs DocumentDB</div>
+    <h2>FastAPI on Mangum and Uvicorn + LWA, and a typed single-table DynamoDB repository with no DocumentDB</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p><strong>Are we doing DocumentDB? No.</strong> Even though MyPaisa's records are flexible documents ("kinds are data"), Amazon DocumentDB is an instance-based cluster that costs <strong>£75 to £110 a month</strong> just to sit idle across dev and prod, plus VPC NAT overhead — blowing past the entire £50/month budget before a single Claude call is made. DynamoDB stores nested JSON maps natively inside AWS's permanent free tier (<strong>£0.00/month</strong>), with atomic multi-row transactions for the hash-chained audit log, while S3 Parquet and DuckDB handle analytical SQL queries in memory for free.</p>
+      <p>Instead of a heavy ORM like PynamoDB that expects fixed columns, our Python 3.14 backend uses a clean 180-line repository built on <strong>Pydantic v2</strong>, <strong>boto3</strong>'s native serializer and <strong>mypy-boto3-dynamodb</strong> for 100% static type checking in <code>pyright</code>.</p>
+    </div>
+    <div class="copy tech">
+      <p>See <code>docs/RESEARCH.md</code> §6.2 and <code>ARCHITECTURE.md</code> §4.8: <code>src/mypaisa_agent/api/</code> defines the <strong>FastAPI 0.135+</strong> apps for <code>handlers/api.py</code> (<code>Mangum(app, lifespan="off")</code>) and <code>handlers/stream.py</code> (<code>Uvicorn</code> + Lambda Web Adapter 1.1 <code>StreamingResponse</code>). <code>src/mypaisa_agent/registry/repository.py</code> pairs <strong>Pydantic v2</strong> (<code>model_dump(mode="json")</code>, <code>model_validate()</code>) with <code>boto3.dynamodb.types.TypeSerializer</code> / <code>TypeDeserializer</code>, <strong>boto3-stubs[dynamodb]</strong> (<code>mypy-boto3-dynamodb</code>) and a <code>TransactWriteUnit</code> helper wrapping <code>transact_write_items</code> so every <code>Record</code> + <code>Event</code> + hash-chained <code>AuditEvent</code> + view update commits atomically.</p>
+    </div>
+    <figure class="fig" id="fig-backend">
+      <div class="scroll">
+      <svg class="anim d5" viewBox="0 0 960 400" role="img" aria-label="The Python 3.14 backend architecture: FastAPI on Mangum for api and Uvicorn with Lambda Web Adapter for stream, the typed single-table DynamoDB repository on Pydantic v2, boto3 TypeSerializer and mypy-boto3-dynamodb with TransactWriteUnit, S3 Parquet and DuckDB, and the comparison rejecting DocumentDB.">
+        <rect class="b1 s-box" x="14" y="24" width="290" height="352" rx="14"/>
+        <text class="s-h" x="30" y="52">1 · FastAPI 0.135+ (Python 3.14)</text>
+        <text class="s-blt" x="30" y="74">Pydantic v2 · OpenAPI 3.1 · OTel</text>
+        <rect class="s-blbg" x="28" y="90" width="262" height="74" rx="10"/>
+        <text class="s-blt" x="40" y="112">handlers/api.py (Buffered REST)</text>
+        <text class="s-t" x="40" y="132">Mangum(app, lifespan="off")</text>
+        <text class="s-m" x="40" y="150">/auth/* · /v1/chat/* · /v1/records/*</text>
+        <rect class="s-upbg" x="28" y="174" width="262" height="74" rx="10"/>
+        <text class="s-upt" x="40" y="196">handlers/stream.py (SSE Stream)</text>
+        <text class="s-t" x="40" y="216">Uvicorn + Lambda Web Adapter 1.1</text>
+        <text class="s-m" x="40" y="234">GET /v1/stream (response_stream)</text>
+        <rect class="s-box2" x="28" y="258" width="262" height="100" rx="10"/>
+        <text class="s-t" x="40" y="280">Shared Middleware &amp; Tooling</text>
+        <text class="s-s" x="40" y="300">• CorrelationMiddleware (trace + req id)</text>
+        <text class="s-s" x="40" y="320">• opentelemetry-instrumentation-fastapi</text>
+        <text class="s-m" x="40" y="342">• app.openapi() → openapi-typescript</text>
+
+        <path class="s-line" d="M304 200 L334 200"/>
+
+        <rect class="b2 s-box" x="334" y="24" width="312" height="352" rx="14"/>
+        <text class="s-h" x="350" y="52">2 · Typed DynamoDB Repository</text>
+        <text class="s-upt" x="350" y="74">registry/repository.py (~180 lines)</text>
+        <rect class="s-box2" x="348" y="90" width="284" height="74" rx="10"/>
+        <text class="s-t" x="360" y="112">Pydantic v2 + KindSpec Validator</text>
+        <text class="s-s" x="360" y="132">Dynamic attrs: dict[str, Any] checked</text>
+        <text class="s-m" x="360" y="150">against KindSpec.fields at runtime</text>
+        <rect class="s-box2" x="348" y="174" width="284" height="74" rx="10"/>
+        <text class="s-t" x="360" y="196">boto3 + mypy-boto3-dynamodb</text>
+        <text class="s-s" x="360" y="216">TypeSerializer · TypeDeserializer</text>
+        <text class="s-m" x="360" y="234">100% pyright strict · moto 5 compatible</text>
+        <rect class="s-upbg" x="348" y="258" width="284" height="100" rx="10"/>
+        <text class="s-upt" x="360" y="280">TransactWriteUnit (ACID)</text>
+        <text class="s-t" x="360" y="300">1 transact_write_items call commits:</text>
+        <text class="s-m" x="360" y="320">Record + Event + hash AuditEvent + View</text>
+        <text class="s-m" x="360" y="342">+ S3 Parquet (pyarrow) + DuckDB SQL</text>
+
+        <path class="s-line" d="M646 200 L674 200"/>
+
+        <rect class="b3 s-upbg" x="674" y="24" width="272" height="168" rx="14"/>
+        <text class="s-upt" x="690" y="52">DynamoDB + S3 + DuckDB</text>
+        <text class="s-h" x="690" y="76">£0.00 / mo (Chosen)</text>
+        <text class="s-t" x="690" y="100">• 25 GB + 25 WCU/RCU free forever</text>
+        <text class="s-t" x="690" y="120">• No VPC or NAT Gateway needed</text>
+        <text class="s-t" x="690" y="140">• 2–8 ms single-digit latency</text>
+        <text class="s-m" x="690" y="164">• Native nested Map/List documents</text>
+
+        <rect class="b4 s-albg" x="674" y="208" width="272" height="168" rx="14"/>
+        <text class="s-alt" x="690" y="236">Amazon DocumentDB</text>
+        <text class="s-h" x="690" y="260">£75–£110 / mo (Rejected)</text>
+        <text class="s-t" x="690" y="284">• 2 × db.t4g.medium (~$95/mo idle)</text>
+        <text class="s-t" x="690" y="304">• Requires VPC + endpoints (+$30/mo)</text>
+        <text class="s-t" x="690" y="324">• Connection pool limits on Lambda</text>
+        <text class="s-m" x="690" y="348">• Breaks the £50/mo total budget</text>
+      </svg>
+      </div>
+      <figcaption>FastAPI serves both REST and SSE; a thin typed repository on Pydantic v2, boto3 and mypy-boto3-dynamodb handles single-table DynamoDB at £0/mo, whereas DocumentDB would cost £75–£110/mo.</figcaption>
+    </figure>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Python DynamoDB option</th><th>Fit for dynamic <code>attrs</code></th><th><code>TransactWriteItems</code></th><th>Static typing (<code>pyright</code>)</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Thin typed repo on Pydantic v2 + <code>boto3</code> + <code>mypy-boto3-dynamodb</code></strong></td><td><strong>Native</strong> (<code>dict[str, Any]</code> + <code>KindSpec</code>)</td><td><strong>First-class</strong> (<code>TransactWriteUnit</code>)</td><td><strong>100% strict</strong></td><td><span class="pill on">Recommended (MA-265)</span></td></tr>
+          <tr><td><strong>2. PynamoDB 6.x</strong></td><td>Awkward (class-per-table ORM)</td><td>Verbose across polymorphic items</td><td>Partial stubs</td><td><span class="pill never">Not chosen</span></td></tr>
+          <tr><td><strong>3. <code>aioboto3</code></strong></td><td>Same as <code>boto3</code></td><td>Same as <code>boto3</code></td><td>Weaker wrapper types</td><td><span class="pill never">Not needed in Lambda</span></td></tr>
+          <tr><td><strong>4. Third-party Pydantic wrappers (<code>dydantic</code>)</strong></td><td>Good</td><td>Missing / incomplete</td><td>Good</td><td><span class="pill never">Unnecessary risk</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="agents">
+  <div class="head">
+    <div class="kicker">6 · Agent framework evaluation and recommendation</div>
+    <h2>A thin custom loop on the official Anthropic SDK, borrowing PydanticAI's `@tool` context pattern</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>We compared six ways to build MyPaisa's agents: our own thin loop on the official Anthropic SDK, PydanticAI, AWS Strands Agents, LangGraph, the Claude Agent SDK, and CrewAI/AutoGen. Because MyPaisa pauses and exits its AWS Lambda immediately whenever it asks you a question or shows a Confirm card (so you pay $0 while thinking), and because every tool call and every number must pass our own code fences, a thin 300-line loop on the official Anthropic SDK is cleaner, safer and cheaper than any heavy framework.</p>
+    </div>
+    <div class="copy tech">
+      <p>Recorded in <code>docs/RESEARCH.md</code> §6.3 and <code>ARCHITECTURE.md</code> §8: <code>src/mypaisa_agent/agent.py</code> uses the official <code>anthropic</code> SDK directly so prompt cache breakpoints (<code>cache_control: {"type": "ephemeral", "ttl": "1h"}</code>), adaptive thinking, server-side <code>web_search</code> / <code>web_fetch</code> with citations, Message Batches, and our five deterministic hooks (<code>PolicyGate</code>, <code>FigureCheck</code>, <code>SpendMeter</code>, <code>GenAISpan</code>, stateless <code>PendingAction</code> pause/resume) sit in plain sight with zero framework abstraction tax. From <strong>PydanticAI</strong> we borrow the typed <code>@tool</code> + <code>RunContext[Deps]</code> registration pattern; in Phase 18, the 9 specialist agents coordinate over <strong>AWS Step Functions</strong> and <strong>EventBridge</strong>.</p>
+    </div>
+    <figure class="fig" id="fig-agents">
+      <div class="scroll">
+      <svg class="anim d6" viewBox="0 0 960 400" role="img" aria-label="The MyPaisa agent loop architecture on the official Anthropic SDK with @tool RunContext, PolicyGate, stateless PendingAction pause and resume, FigureCheck, SpendMeter and GenAISpan, alongside the 6-framework scorecard.">
+        <rect class="a1 s-box" x="14" y="24" width="302" height="352" rx="14"/>
+        <text class="s-h" x="30" y="52">1 · Thin Anthropic SDK Loop</text>
+        <text class="s-vit" x="30" y="74">src/mypaisa_agent/agent.py (~300 lines)</text>
+        <rect class="s-vibg" x="28" y="90" width="274" height="58" rx="10"/>
+        <text class="s-vit" x="40" y="112">1-Hour Prompt Cache Prefix</text>
+        <text class="s-m" x="40" y="132">system + tools + rubric (ephemeral 1h)</text>
+        <rect class="s-box2" x="28" y="158" width="274" height="58" rx="10"/>
+        <text class="s-t" x="40" y="180">@tool + RunContext[Deps] Pattern</text>
+        <text class="s-m" x="40" y="200">Pydantic v2 strict JSON schema</text>
+        <rect class="s-box2" x="28" y="226" width="274" height="58" rx="10"/>
+        <text class="s-t" x="40" y="248">Opus 5.5 · Sonnet 5.5 · Haiku 5.5</text>
+        <text class="s-m" x="40" y="268">Adaptive thinking · Batches · Citations</text>
+        <text class="s-s" x="30" y="312">Zero LangChain / framework bloat</text>
+        <text class="s-m" x="30" y="332">Direct token &amp; cache_read accounting</text>
+
+        <path class="s-line" d="M316 200 L344 200"/>
+
+        <rect class="a2 s-box" x="344" y="24" width="290" height="352" rx="14"/>
+        <text class="s-h" x="360" y="52">2 · Deterministic Loop Hooks</text>
+        <text class="s-upt" x="360" y="74">Every step guarded &amp; traced in code</text>
+        <rect class="s-upbg" x="358" y="90" width="262" height="54" rx="10"/>
+        <text class="s-upt" x="370" y="112">PolicyGate (MA-247)</text>
+        <text class="s-m" x="370" y="130">manifest · scope · taint · caps</text>
+        <rect class="s-blbg" x="358" y="152" width="262" height="54" rx="10"/>
+        <text class="s-blt" x="370" y="174">Stateless PendingAction</text>
+        <text class="s-m" x="370" y="192">writes DynamoDB &amp; exits ($0 wait)</text>
+        <rect class="s-ambg" x="358" y="214" width="262" height="54" rx="10"/>
+        <text class="s-amt" x="370" y="236">FigureCheck + SpendMeter</text>
+        <text class="s-m" x="370" y="254">every number grounded · $160 cap</text>
+        <rect class="s-box2" x="358" y="276" width="262" height="82" rx="10"/>
+        <text class="s-t" x="370" y="298">Phase 18 · 9-Agent Team</text>
+        <text class="s-s" x="370" y="318">AWS Step Functions + EventBridge</text>
+        <text class="s-m" x="370" y="338">Per-agent IAM role &amp; budget share</text>
+
+        <path class="s-line" d="M634 200 L662 200"/>
+
+        <rect class="a3 s-box2" x="662" y="24" width="284" height="352" rx="14"/>
+        <text class="s-h" x="678" y="52">3 · Framework Scorecard</text>
+        <text class="s-s" x="678" y="72">Weighted across 7 MyPaisa criteria</text>
+        <rect class="a4 s-upbg" x="676" y="88" width="256" height="52" rx="10"/>
+        <text class="s-upt" x="688" y="110">1. Thin Anthropic SDK Loop</text>
+        <text class="s-m" x="688" y="128">10.0 / 10 · Chosen (MA-265)</text>
+        <rect class="s-box" x="676" y="148" width="256" height="44" rx="8"/>
+        <text class="s-t" x="688" y="168">2. PydanticAI <tspan class="s-m">(7.9 / 10)</tspan></text>
+        <text class="s-s" x="688" y="184">Borrow @tool RunContext pattern</text>
+        <rect class="s-box" x="676" y="200" width="256" height="40" rx="8"/>
+        <text class="s-t" x="688" y="224">3. AWS Strands Agents <tspan class="s-m">(7.1 / 10)</tspan></text>
+        <rect class="s-box" x="676" y="248" width="256" height="40" rx="8"/>
+        <text class="s-t" x="688" y="272">4. Claude Agent SDK <tspan class="s-m">(6.7 / 10)</tspan></text>
+        <rect class="s-box" x="676" y="296" width="256" height="34" rx="8"/>
+        <text class="s-s" x="688" y="318">5. LangGraph <tspan class="s-m">(5.7 / 10)</tspan></text>
+        <rect class="s-box" x="676" y="336" width="256" height="28" rx="8"/>
+        <text class="s-s" x="688" y="355">6. CrewAI / AutoGen <tspan class="s-m">(3.3 / 10)</tspan></text>
+      </svg>
+      </div>
+      <figcaption>The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge in Phase 18.</figcaption>
+    </figure>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Criterion (Weight)</th><th>1. Thin <code>anthropic</code> SDK</th><th>2. PydanticAI</th><th>3. AWS Strands</th><th>4. LangGraph</th><th>5. Claude Agent SDK</th><th>6. CrewAI / AutoGen</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Direct Anthropic API features</strong> (cache TTL, thinking, citations, batches) (20%)</td><td><strong>10 / 10</strong></td><td>8 / 10</td><td>7 / 10</td><td>6 / 10</td><td>9 / 10</td><td>4 / 10</td></tr>
+          <tr><td><strong>2. Deterministic guardrails</strong> (<code>PolicyGate</code>, taint, <code>FigureCheck</code>, <code>SpendMeter</code>) (20%)</td><td><strong>10 / 10</strong></td><td>9 / 10</td><td>8 / 10</td><td>7 / 10</td><td>7 / 10</td><td>3 / 10</td></tr>
+          <tr><td><strong>3. Stateless pause/resume</strong> (<code>PendingAction</code> in DynamoDB, $0 wait) (15%)</td><td><strong>10 / 10</strong></td><td>8 / 10</td><td>7 / 10</td><td>6 / 10</td><td>5 / 10</td><td>2 / 10</td></tr>
+          <tr><td><strong>4. OpenTelemetry GenAI v1.40 span fidelity</strong> (15%)</td><td><strong>10 / 10</strong></td><td>8 / 10</td><td>9 / 10</td><td>5 / 10</td><td>6 / 10</td><td>3 / 10</td></tr>
+          <tr><td><strong>5. Lambda cold-start &amp; image footprint</strong> (10%)</td><td><strong>10 / 10</strong></td><td>9 / 10</td><td>8 / 10</td><td>4 / 10</td><td>6 / 10</td><td>3 / 10</td></tr>
+          <tr><td><strong>6. Phase 18 9-agent isolation</strong> (IAM role &amp; cap per agent) (10%)</td><td><strong>10 / 10</strong> (SFN+EB)</td><td>6 / 10</td><td>6 / 10</td><td>5 / 10</td><td>6 / 10</td><td>4 / 10</td></tr>
+          <tr><td><strong>7. Inspect AI T0/T1/T2 offline replay compatibility</strong> (10%)</td><td><strong>10 / 10</strong></td><td>7 / 10</td><td>6 / 10</td><td>6 / 10</td><td>7 / 10</td><td>4 / 10</td></tr>
+          <tr><td><strong>Weighted Score</strong></td><td><strong>10.0 / 10</strong></td><td><strong>7.9 / 10</strong></td><td><strong>7.1 / 10</strong></td><td><strong>5.7 / 10</strong></td><td><strong>6.7 / 10</strong></td><td><strong>3.3 / 10</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="stories">
+  <div class="head">
+    <div class="kicker">7 · Jira stories</div>
+    <h2>Where the stack and observability are tracked and built</h2>
+  </div>
+  <div class="body">
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Story</th><th>Phase</th><th>What it delivers</th></tr></thead>
+        <tbody>
+          <tr><td class="k">MA-265</td><td>0</td><td>The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent framework options, and end-to-end FastAPI and LLM observability with costing, recorded in the repo and Confluence with block diagrams</td></tr>
+          <tr><td class="k">MA-24</td><td>0</td><td>Repository skeleton with Python 3.14, FastAPI, Mangum, OpenTelemetry FastAPI instrumentation and <code>boto3-stubs[dynamodb]</code></td></tr>
+          <tr><td class="k">MA-194</td><td>0</td><td>Web app skeleton in SvelteKit 3.1, Tailwind CSS 4, shadcn-svelte, TanStack and <code>openapi-typescript</code></td></tr>
+          <tr><td class="k">MA-165</td><td>0</td><td>iOS app skeleton in bare React Native 0.88 (New Architecture, SPM) with a Swift 6 SwiftUI core</td></tr>
+          <tr><td class="k">MA-198</td><td>0</td><td>Local laptop stack mounting the FastAPI <code>api</code> and <code>stream</code> apps and moto</td></tr>
+          <tr><td class="k">MA-230</td><td>0</td><td>End-to-end tracing and LLM observability recorded in <code>ARCHITECTURE.md</code> §10</td></tr>
+          <tr><td class="k">MA-231</td><td>0</td><td>CloudWatch watch tower in Terraform (<code>observability.tf</code>): log groups, Transaction Search, Application Signals, 8-panel dashboard, 12 alarms</td></tr>
+          <tr><td class="k">MA-266</td><td>1</td><td>FastAPI REST and SSE applications (<code>handlers/api</code> on Mangum, <code>handlers/stream</code> on Uvicorn + LWA 1.1), <code>CorrelationMiddleware</code>, OpenTelemetry route spans and generated OpenAPI TypeScript types</td></tr>
+          <tr><td class="k">MA-195</td><td>1</td><td>Streaming spike in dev proving the FastAPI + Uvicorn + Lambda Web Adapter 1.1 SSE path</td></tr>
+          <tr><td class="k">MA-31</td><td>1</td><td>The chat API routes on FastAPI and FIFO queue handoff</td></tr>
+          <tr><td class="k">MA-30</td><td>1</td><td>Live SSE stream delivery and replay at both doors</td></tr>
+          <tr><td class="k">MA-29</td><td>1</td><td><code>RunRecord</code>, Powertools Logger/Metrics and OpenTelemetry handler base</td></tr>
+          <tr><td class="k">MA-232</td><td>1</td><td>One W3C trace from both doors through FastAPI, SQS, the agent and push, plus the zero-PII leak test</td></tr>
+          <tr><td class="k">MA-233</td><td>1</td><td>OpenTelemetry GenAI v1.40 model and tool spans and the Claude panel</td></tr>
+          <tr><td class="k">MA-234</td><td>1</td><td>Client telemetry endpoint (<code>POST /v1/telemetry</code>) and panel</td></tr>
+          <tr><td class="k">MA-196</td><td>1</td><td>Activity screen at both doors reading <code>RunRecord</code></td></tr>
+          <tr><td class="k">MA-27</td><td>2</td><td>Dynamic single-table DynamoDB repository on Pydantic v2, <code>boto3</code> and <code>mypy-boto3-dynamodb</code> (no DocumentDB)</td></tr>
+          <tr><td class="k">MA-28</td><td>2</td><td>Atomic hash-chained <code>AuditEvent</code> in <code>TransactWriteUnit</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+<footer>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §6, <span class="mono">TECH_STACK.md</span> and <span class="mono">ARCHITECTURE.md</span> §3, §4.8, §8, §9.4, §10 in the MyPaisa repository, 28 Oct 2026 (MA-265, MA-266).</div>
+</footer>
+
+<script>
+(function(){
+  var main=document.getElementById('main');
+  var btns=document.querySelectorAll('.seg button');
+  function setMode(m){
+    main.setAttribute('data-mode',m);
+    btns.forEach(function(b){b.setAttribute('aria-checked',b.getAttribute('data-set')===m?'true':'false');});
+    try{localStorage.setItem('mp-ts-mode',m);}catch(e){}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){setMode(b.getAttribute('data-set'));});});
+  try{var saved=localStorage.getItem('mp-ts-mode');if(saved==='plain'||saved==='tech')setMode(saved);}catch(e){}
+  var pause=document.getElementById('pause');
+  pause.addEventListener('click',function(){
+    var on=main.getAttribute('data-paused')!=='true';
+    main.setAttribute('data-paused',on?'true':'false');
+    pause.setAttribute('aria-pressed',on?'true':'false');
+    pause.textContent=on?'Play the diagrams':'Pause the diagrams';
+  });
+})();
+</script>
