@@ -761,6 +761,20 @@ RECORD_CASES = [
      r"docs/confluence/guardrails\.html is stale"),
     ("the guardrails page with no Confluence id", "docs/confluence.json", lambda m: (m["pages"].pop("guardrails"), m)[1],
      r"'Guardrails and evals: how the agents are guarded and tested' has no Confluence id"),
+    # MA-274 review, round 1: the research-backed Confluence pages (stack, cicd, maestro) fail closed when docs/RESEARCH.md or their section is missing, retitled or empty.
+    ("docs/RESEARCH.md missing, so research-backed Confluence pages fail closed", "docs/RESEARCH.md", None,
+     r"confluence: docs/RESEARCH\.md is missing"),
+    ("RESEARCH 8 missing, so the maestro page fails closed", "docs/RESEARCH.md",
+     lambda s: s.replace("## 8. ", "## 88. ", 1),
+     r"maestro page: docs/RESEARCH\.md has no section 8"),
+    ("RESEARCH 8 retitled, so the maestro page would show another section", "docs/RESEARCH.md",
+     lambda s: s.replace("## 8. Local iOS & iPadOS testing strategy with Maestro", "## 8. Something else", 1),
+     r"maestro page: docs/RESEARCH\.md §8 is not 'Local iOS & iPadOS testing strategy with Maestro'"),
+    ("RESEARCH 8's body emptied", "docs/RESEARCH.md",
+     lambda s: re.sub(r"(?ms)^(## 8\. [^\n]*\n).*", r"\1", s),
+     r"maestro page: docs/RESEARCH\.md §8 has no body"),
+    ("the maestro page with no Confluence id", "docs/confluence.json", lambda m: (m["pages"].pop("maestro"), m)[1],
+     r"'Local iOS and iPadOS Maestro testing and private TestFlight beta plan' has no Confluence id"),
     ("a preview older than its boards", "docs/confluence.json",
      lambda m: (next(v for k, v in m["images"].items() if k.startswith("phase-05")).update({"source": "0"}), m)[1],
      r"preview phase-05-\S+ is older than its boards"),
@@ -785,7 +799,9 @@ def record_cases() -> int:
                 bad += 1
                 print(f"FAIL: the case {what!r} needs {rel}")
                 continue
-            if rel.endswith(".json"):
+            if mutate is None:
+                target.unlink()
+            elif rel.endswith(".json"):
                 target.write_text(json.dumps(mutate(json.loads(target.read_text())), indent=1, ensure_ascii=False) + "\n")
             else:
                 target.write_text(mutate(target.read_text()))
