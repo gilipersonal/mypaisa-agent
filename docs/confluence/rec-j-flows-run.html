@@ -18,7 +18,7 @@
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>api λ</strong> checks the assertion, calls Cognito&#x27;s <code>AdminUserGlobalSignOut</code>, raises Asha&#x27;s session epoch and deletes her devices&#x27; push tokens; an audit row records who, when and why</td></tr>
 <tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>Her next call from any device fails the epoch check, and an open stream closes within 60 s</td></tr>
 <tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Asha&#x27;s app returns to the welcome screen with one line: she was signed out</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Pause</strong> goes further: <code>AdminDisableUser</code> and the epoch end every session, in the app and in the browser, Apple, Google and passkey alike, and block signing back in. Her app and the web app show one line; only the owner restores it. The owner may pause their own account, after a warning.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Pause</strong> goes further: <code>AdminDisableUser</code> and the epoch end every session, in the app and in the browser, Apple, Google and passkey alike, and block signing back in. Her app and the web app show one line; only the owner restores it, from the Admin center. The owner cannot pause their own account, since nobody else could restore it; a lost phone of theirs is signed out from another device (Arun, 29 Oct 2026).</td></tr>
 <tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member (owner) to App</td><td><strong>Spend</strong>: you move the prod Claude ceiling, behind the same second check</td></tr>
 <tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>BudgetSettings</strong> in <strong>DynamoDB</strong> updated with an audit row; the next model call reads it. Lowering it below what is spent moves MyPaisa straight to that step, said before Confirm</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to App</td><td>A message in your chat confirms the change; alerts follow your routing to the Alerts page (in the app and the web app), push and email through <strong>SNS</strong></td></tr>
@@ -26,12 +26,12 @@
 </tbody>
 </table>
 <h3>👀 What the owner sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="19568e3a-36d7-43d0-a872-d0d44eb299e2" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-admin.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="b8b922fc-3f85-4fc0-8eeb-f47eb27a5f11" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-admin.png"></div>
 <figcaption>What the member sees: The Admin center, owner only (Agent Journey)</figcaption></figure>
 <ul><li><strong>People first.</strong> The unconfirmed device on top; each action with its consequence; destructive ones in crimson, never the coral primary.</li>
 <li><strong>The web app · Spend.</strong> Dollars for Claude, as the credit and Anthropic&#x27;s limit are, with pounds beside them; the AWS cap in pounds; where alerts go.</li>
 <li><strong>An approval.</strong> What changes, why, the cost and the budget left, the undo.</li>
-<li><strong>The member&#x27;s side.</strong> Signed out: the welcome screen and one line. Paused instead: signing in shows only &quot;Your MyPaisa account is paused. Only the household&#x27;s owner can restore it.&quot;</li>
+<li><strong>The member&#x27;s side.</strong> Signed out: the welcome screen and one line. Paused instead: signing in is refused and shows only &quot;The household’s owner has paused your access to MyPaisa.&quot;</li>
 </ul>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Owner only</strong></strong></p>

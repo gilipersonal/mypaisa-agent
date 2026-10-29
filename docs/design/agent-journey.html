@@ -995,7 +995,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>Every call</dt><dd>Token, member status and session epoch checked on every HTTP call and on the stream, so removing or pausing a member locks them out at once.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>The cookie, in the web app</dt><dd><code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>, set by <code>api.mypaisapp.com</code> for its own host; 30 days on a laptop. Page scripts never see a token.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Two environments</dt><dd>MyPaisa Dev and MyPaisa are separate apps, with their own bundle ids, sign-in settings and user pools, and each has its own web app. Tokens from dev are refused by prod; CORS admits only that environment's site.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>A second sign-in</dt><dd>From You, Sign-in methods, a member adds Apple or Google, or a passkey, to their own identity while signed in, so the person who proves it is the member. Every link and unlink is an audit row.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>A second sign-in</dt><dd>From You, Sign-in methods, a member adds Apple or Google, or a passkey, to their own identity while signed in, with a fresh sign-in on the new account and no second check (Arun, 29 Oct 2026). Every link and unlink is an audit row, and the first sign-in with it on a new device sends the new-device message.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg>Each device and browser</dt><dd>A <code>Device</code> row: name, model, last seen, push token; a browser session is listed beside them. A member signs their own out from You; the owner signs out one or all of a member's from the Admin center.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg>Face ID, two ways</dt><dd>The optional app lock (Face ID or the passcode on opening and after five minutes away) is a comfort on the device. The second check is the server's: a fresh sign-in bound to the action.</dd></div>
   </dl>
@@ -2173,7 +2173,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>api λ</b> checks the assertion, calls Cognito's <code>AdminUserGlobalSignOut</code>, raises Asha's session epoch and deletes her devices' push tokens; an <span class="sg">audit row</span> records who, when and why</span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Her next call from any device fails the epoch check, and an open stream closes within 60 s</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">Asha's app returns to the welcome screen with one line: she was signed out</span><span class="ln"></span></li>
-      <li class="st note" data-lanes="Note"><span class="box"><b>Pause</b> goes further: <code>AdminDisableUser</code> and the epoch end every session, in the app and in the browser, Apple, Google and passkey alike, and block signing back in. Her app and the web app show one line; only the owner restores it. The owner may pause their own account, after a warning.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box"><b>Pause</b> goes further: <code>AdminDisableUser</code> and the epoch end every session, in the app and in the browser, Apple, Google and passkey alike, and block signing back in. Her app and the web app show one line; only the owner restores it, from the Admin center. The owner cannot pause their own account, since nobody else could restore it; a lost phone of theirs is signed out from another device (Arun, 29 Oct 2026).</span></li>
       <li class="st mv fm toP" data-lanes="Member (owner) to App"><span class="lb"><b>Spend</b>: you move the prod Claude ceiling, behind the same second check</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>BudgetSettings</b> in <b>DynamoDB</b> updated with an audit row; the next model call reads it. Lowering it below what is spent moves MyPaisa straight to that step, said before Confirm</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">A message in your chat confirms the change; alerts follow your routing to the Alerts page (in the app and the web app), push and email through <b>SNS</b></span><span class="ln"></span></li>
@@ -2281,7 +2281,7 @@ footer.foot b { color: var(--mp-ink); }
           </div>
         </div>
       </div>
-      <figcaption><b>The member's side.</b> Signed out: the welcome screen and one line. Paused instead: signing in shows only "Your MyPaisa account is paused. Only the household's owner can restore it."</figcaption>
+      <figcaption><b>The member's side.</b> Signed out: the welcome screen and one line. Paused instead: signing in is refused and shows only "The household’s owner has paused your access to MyPaisa."</figcaption>
     </figure>
   </div>
 
