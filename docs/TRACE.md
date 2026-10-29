@@ -230,6 +230,10 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-95 | The Overview is complete at every door: liquid and locked, what is owed, this month's cash flow, by member and by country, maturing next and the largest assets | To Do | §12, §9.3 | picked | Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first; Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first, phone; iPhone v4 · Home.dc.html: iPhone · Home, net worth first; iPhone v4 · Home.dc.html: iPad · Whole wealth with the chat beside it |
 | MA-97 | Reports and exports are in place, mypaisapp.com points to the dashboard, and the old wealth tracker is retired | To Do | §12 | planned | Wealth.dc.html: Browser · Reports |
 | MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §12.1, §8, §23.2 | todo |  |
+| MA-111 | The owner fills prod's history from an Excel workbook sent in the chat | To Do | §12, §18.5, §22.2, §22.5 | todo |  |
+| MA-129 | E1: every behaviour is a versioned setting with bounds, and nothing changes it except through the settings service | To Do | §20.2 | none |  |
+| MA-276 | E9: the Budget forecast and the Projection are graded against every closed month, and their assumptions learn from the household's own history on the admin's Confirm | To Do | §20.9, §6.6, §4.9 | todo |  |
+| MA-277 | E10: MyPaisa learns what each member needs from how they use it, reorders on its own, and asks before changing anything it sends | To Do | §20.9, §10.1, §23.5 | todo |  |
 
 ## Phase 10: Prices and the engine (MA-11)
 
@@ -330,7 +334,6 @@ The rules are in `.claude/rules/plan-sync.md`.
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
 | MA-128 | The architecture records the agent team, the settings and approvals, the learning loop, self-healing and the new budgets | Done | §5.1, §6.4, §15, §15.1, §16, §17, §18.1, §19.2, §20 | none |  |
-| MA-129 | E1: every behaviour is a versioned setting with bounds, and nothing changes it except through the settings service | To Do | §20.2 | none |  |
 | MA-130 | E2: an admin desk in the owner's chat and the Admin center where agents ask questions and seek approval, and the admin gives instructions | To Do | §20.3, §23.5 | planned | Admin center 2.dc.html: Browser · Admin · Approvals; Admin center 2.dc.html: Browser · Admin · Approvals · Approve, the fresh check; Admin center 2.dc.html: Browser · Admin · Approvals · Approved; Admin center 2.dc.html: Browser · Admin · Settings |
 | MA-131 | E3: a data steward keeps prices flowing from free sources, repairs gaps, and asks before adding a paid one | To Do | §5.1, §19.2, §20 | none |  |
 | MA-132 | E4: every prediction is stored as made and graded every day against what prices actually did | To Do | §20.4, §20.6, §23.6 | none |  |
@@ -341,8 +344,6 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-146 | The ops warden replays dead-lettered work on its own once the cause is healthy, and opens an incident if it fails again | To Do | §20.5, §21.3 | none |  |
 | MA-235 | The daily run and every agent share one trace: Step Functions and the event bus carry it, a replay links to the run it repeats, an incident names its trace, and heartbeats are metrics | To Do | §10.8, §20.5, §21.3 | none |  |
 | MA-256 | Each team agent has its own tools and safety suite, and a change it proposes to a prompt, rule or model carries its eval results to the admin's approval | To Do | §23.5, §20.2, §20.3 | none |  |
-| MA-276 | E9: the Budget forecast and the Projection are graded against every closed month, and their assumptions learn from the household's own history on the admin's Confirm | To Do | §20.9, §6.6, §4.9 | todo |  |
-| MA-277 | E10: MyPaisa learns what each member needs from how they use it, reorders on its own, and asks before changing anything it sends | To Do | §20.9, §10.1, §23.5 | todo |  |
 
 ## Phase 19: Indian markets and the existing Indian portfolio (MA-147)
 

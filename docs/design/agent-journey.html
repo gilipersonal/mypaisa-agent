@@ -2821,7 +2821,7 @@ footer.foot b { color: var(--mp-ink); }
     <span class="flow-n">16</span>
     <h2 id="h-india-import">Importing the existing Indian portfolio, once</h2>
     <p class="lede">The household's Indian mutual funds, shares and ETFs arrive once, with their whole history, from the statements India already produces. Each file is kept first; code parses it; every holding is matched by ISIN; a dry run shows everything; one Confirm, with the second check, writes it all. Anything that does not match is listed, never guessed.</p>
-    <div class="meta"><span class="chip trig"><b>Trigger</b> you attach a CAS statement or a broker export in the chat</span><span class="chip">Phase 19 (IN2)</span><span class="chip">Needs IN1 and file keeping</span></div>
+    <div class="meta"><span class="chip trig"><b>Trigger</b> you attach a CAS statement or a broker export in the chat</span><span class="chip">Phase 19 (IN2)</span><span class="chip">Needs IN1, the Excel importer and file keeping</span></div>
   </div>
 
   <h3 class="blk">The files to send</h3>
@@ -2935,7 +2935,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>Kept before it is read</b><span>Every file goes to S3 first with a Document row and an audit row, and is never deleted after reading.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Parsed by code</b><span>A pinned open-source CAS parser, tested on synthetic statements. Claude reads only a file the parsers cannot.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Matched by ISIN, never guessed</b><span>A fund to its AMFI scheme code, a share or ETF to its <code>.NS</code> or <code>.BO</code> listing; anything unmatched is listed.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>A dry run, one Confirm, the second check</b><span>One summary card, Confirm with the second check, batch writes with audit rows under one import id, rollback by that id.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>A dry run, one Confirm, the second check</b><span>The Excel importer's safety: one summary card, Confirm with the second check, batch writes with audit rows.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Never twice, and undoable</b><span>Fingerprints stop the same statement adding twice; any import rolls back by its id.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><div><b>The password, once</b><span>Typed into a secure field, never into the chat; used in memory, never stored or logged.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Nothing personal in the records</b><span>No PAN, address or account number in any record, though the file is kept as sent.</span></div></div>
@@ -2945,6 +2945,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="keys">
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-152"><b>MA-152</b><span>IN2: The existing Indian portfolio is imported from a CAS statement or a broker export, with every past transaction, after one Confirm</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-151"><b>MA-151</b><span>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-111"><b>MA-111</b><span>The owner fills prod's history from an Excel workbook sent in the chat: the same dry run, Confirm and rollback</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-148"><b>MA-148</b><span>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-149"><b>MA-149</b><span>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-76"><b>MA-76</b><span>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server</span></a>
@@ -3804,7 +3805,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box">In one transaction: 22 lines in October's budget, £2,246 across 11 categories, each pointing to its file; the Barclaycard's £1,458 owed, due Fri 20 Nov; the merchant memory taught AMZN Mktp and PAYPAL *EBAY; and the <span class="sg">audit rows</span></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><span class="sg">A payment a statement shows answers its check-in</span>: the car loan's EMI of Tue 20 Oct, on autopay and listed in the weekly digest as assumed paid, is now confirmed by the statement, and so is the mortgage's of Thu 1 Oct</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to every door"><span class="lb">The card edits in place to saved; <code>records.changed</code> moves every door: net worth £457,951 → £456,493, now that the card's £1,458 is owed</span><span class="ln"></span></li>
-      <li class="st note" data-lanes="Note"><span class="box">A statement is routine, so it takes no second check; a CAS or broker import keeps its own (MA-152). An Indian bank's statement is read the same way, in rupees.</span></li>
+      <li class="st note" data-lanes="Note"><span class="box">A statement is routine, so it takes no second check; the Excel history importer, sent in the chat, keeps its own (MA-111). An Indian bank's statement is read the same way, in rupees.</span></li>
     </ol></div>
   </div></div>
 
@@ -3903,7 +3904,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Amber, never red</b><span>A line it is unsure of says so. Confirm keeps the guess, Change sets another, and the merchant memory learns either way.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>One Confirm</b><span>The whole statement is one review card; nothing is saved before Confirm.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Haiku names categories, never amounts</b><span>Every amount is the statement's own, and every total is summed by code.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>No bank connection, no second check</b><span>MyPaisa never connects to a bank. A statement is routine, so it takes no second check; a CAS or broker import keeps its own.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>No bank connection, no second check</b><span>MyPaisa never connects to a bank. A statement is routine, so it takes no second check; the Excel history importer keeps its own.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><div><b>It answers its own check-ins</b><span>A payment the statement shows confirms its check-in, so nobody is asked about it.</span></div></div>
   </div>
   <h3 class="blk">Built by</h3>

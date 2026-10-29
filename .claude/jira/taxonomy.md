@@ -79,7 +79,7 @@ and the SwiftUI pieces, each hosted through a Fabric component, in
 | Audit and Files, Search and the Admin center at both doors | MA-14 |
 | `calls/`, scoring | MA-15 |
 | `news/`, `events/` | MA-16 |
-| reports and exports, the cutover from the old wealth tracker (MA-97), the read-only SQL copy (MA-104) | MA-18 |
+| reports and exports, the cutover from the old wealth tracker (MA-97), the Excel history importer (MA-111), the read-only SQL copy (MA-104) | MA-18 |
 | `forecaster/`, the backtest lab | MA-117 |
 | `agents/`, settings, the admin desk, Step Functions | MA-127 |
 | `importers/` for Indian portfolio statements (a CAS, a broker export), the Indian price plugins beyond the minimal NAV pricing | MA-147 |

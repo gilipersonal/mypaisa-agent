@@ -741,7 +741,7 @@
 </table>
 <p>Order · about 3 to 4 weeks</p>
 <h4>IN1 first, then the rest</h4>
-<p><strong>IN1 · prices</strong>after phase 10→ <strong>IN2 · import</strong>with MA-148→ <strong>IN3 · views</strong>needs IN1 and IN2</p>
+<p><strong>IN1 · prices</strong>after phase 10→ <strong>IN2 · import</strong>with MA-111, MA-148→ <strong>IN3 · views</strong>needs IN1 and IN2</p>
 <p><strong>IN4 · engine, Forecaster</strong>after IN1; phase 17 for forecasts <strong>MA-156 · any currency</strong>phase 2, already planned</p>
 <p><strong>Tests:</strong> synthetic CAS statements and broker exports import exactly once; an unmatched ISIN is listed, not guessed; each Indian chain falls through to stale; INR and GBP views agree with the FX of the day; golden tests for the India basket.</p>
 </details><h2>🧩 What each story needs before it can start</h2>
@@ -776,8 +776,8 @@
 <p><strong>Money in any currency</strong>Checked against each holding&#x27;s currency, both waysMA-156</p>
 <h5>After phase 10</h5>
 <p><strong>IN1 · Indian prices</strong>The AMFI, mfapi.in and bhavcopy plugins; yfinance .NS and .BO; NSE&#x27;s calendarMA-151</p>
-<h5>After IN1 and file keeping</h5>
-<p><strong>IN2 · The import</strong>CAS and broker files, matched by ISIN, one Confirm; needs MA-148MA-152</p>
+<h5>After IN1, the importer and file keeping</h5>
+<p><strong>IN2 · The import</strong>CAS and broker files, matched by ISIN, one Confirm; needs MA-111 and MA-148MA-152</p>
 <h5>After IN1 and IN2</h5>
 <p><strong>IN3 · Accounts and views</strong>INR with GBP beside; wrapper-aware; the tax flag; designed firstMA-153</p>
 <h5>After IN1; phase 17 for forecasts</h5>

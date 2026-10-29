@@ -864,7 +864,7 @@ maths arrives.
   lines JSON-encoded) and only the strict schema out, each field with its
   source line, checked by code; a red-team set of poisoned statements,
   factsheets and merchant names proves no instruction in a file reaches a
-  tool or a reply, and each later importer (the CAS and broker files) adds its own poisoned
+  tool or a reply, and each later importer (CAS, Excel) adds its own poisoned
   cases.
 - **Kinds bring their own cases (MA-254, `ARCHITECTURE.md` §23.5):** each
   kind's field spec generates draft cases (phrasings, the four currencies, dates,
@@ -1353,17 +1353,61 @@ tracker at `mypaisapp.com` switched off.
   redirects to `dashboard.mypaisapp.com`, the old tracker's `dev.` and prod
   distributions are retired, and the zone moves from the old tracker's
   Terraform to this repository's.
+- **History import (MA-111, `ARCHITECTURE.md` §18.5):** one versioned Excel
+  template sent in the chat, a dry run, Confirm with the second check, batch
+  writes through the write service with audit rows, a fingerprint so a file
+  sent twice adds nothing, and rollback by import id. Tested on dev's
+  synthetic data first, then used to hydrate prod with the past investments
+  XIRR needs. Prod is filled only through the app: the chat, statements and
+  this importer.
+- **Any question about the money (MA-104, `ARCHITECTURE.md` §12.1):** a
+  nightly export of the household's events and views to Parquet in S3, and a
+  `query_ledger_sql` tool that runs read-only DuckDB over that household's
+  files only, for questions the structured `query_ledger` tool (MA-62)
+  cannot express; the figures come from the result, and the SQL is shown
+  under Technical; designed first.
+- **The household starts to learn, straight after the whole wealth (your
+  pick, 29 Oct 2026; `ARCHITECTURE.md` §20.2, §20.9).** Ahead of the market
+  side, so the Budget forecast and the Projection learn from your own months
+  as early as they can:
+  - **E1, settings (MA-129).** Every behaviour a versioned `Setting` with a
+    schema, a range, an automatic band and an approval rule; defaults in
+    `config/defaults.yaml`; one settings service; a minute's cache; a daily
+    snapshot to S3.
+  - **E9, the household's forecasts graded and tuned (MA-276,
+    `ARCHITECTURE.md` §20.9).** At each month close, that month's line of the
+    Budget forecast is graded against what happened, each gap traced to its
+    input. The tuner proposes a category's run rate, a category's own
+    inflation or a member's salary growth from at least 6 closed months, a
+    step at a time, and the admin's Confirm applies it as a new version of the
+    assumptions; the records, the plan and the arithmetic never move. The
+    Budget forecast tab shows each month's forecast beside its actual;
+    designed first.
+  - **E10, each member's needs learned from use (MA-277, `ARCHITECTURE.md`
+    §20.9).** From each member's own taps, answers, corrections and mutes,
+    never from text a file or a page brought in: the composer's chips and the
+    brief's sections ordered on their own inside a band; a merchant's
+    category, an alert threshold, a quiet hour or a usual answer proposed as a
+    card for that member's Confirm; a field corrected after a file kept as a
+    case; You lists what was learned, with a reset; designed first.
+  E10 starts with what exists by then (the chat's chips, the merchant
+  memory, check-in answers, corrections after a file) and learns the brief
+  and the alerts once phases 11 and 12 bring them.
 
 **Tests:** the importer (a wrong template version, a bad row, the same file
 twice, a rollback); every Overview figure matching the screen behind it; the
-viewer's masked figures; the INR and GBP views of the same household
-agreeing to the penny at the day's rate; `query_ledger_sql` reading only that
+viewer's masked figures; the GBP, INR, USD and EUR views of the same
+household agreeing to the penny at the day's rate; an agent unable to move
+a setting outside its band (MA-129); a month's grade read back the same from
+its stored run, no assumption proposed before 6 closed months or applied
+without the admin's Confirm, text a file or a page brought in teaching E10
+nothing, and one member's learning never reaching another (MA-276, MA-277); `query_ledger_sql` reading only that
 household's files; the apex redirect and the old distributions' retirement in
 the Terraform plan.
 
 **Exit:** the household's whole wealth is on prod, every figure entered
-through the chat, screenshots, statements or the CAS import, and corrected in place
-where needed; `mypaisapp.com` opens the dashboard, and the old tracker is
+through the chat, statements or the Excel importer, and corrected in place
+where needed; each closed month graded against its Budget forecast; `mypaisapp.com` opens the dashboard, and the old tracker is
 switched off.
 
 **Cost:** about £1 a month more in Claude for the wealth phases' flows;
@@ -1628,10 +1672,6 @@ admin's approval in the chat or the Admin center, every prediction graded daily,
 repairs made where they are safe, as `ARCHITECTURE.md` §20. Epic MA-127. For
 one household and its one admin, the owner.
 
-- **E1, settings (MA-129).** Every behaviour a versioned `Setting` with a
-  schema, a range, an automatic band and an approval rule; defaults in
-  `config/defaults.yaml`; one settings service; a minute's cache; a daily
-  snapshot to S3.
 - **E2, the admin desk (MA-130).** Agents' requests and questions, and
   the admin's instructions, in the admin's chat and the Admin center
   (Approvals, Settings, Agents, Incidents); approval with the second check;
@@ -1667,29 +1707,11 @@ one household and its one admin, the owner.
   suite; a `ChangeRequest` that changes a prompt, a rule, a threshold or a
   model carries the affected suites' results from dev, and a failing safety
   case blocks its approval.
-- **E9, the household's forecasts graded and tuned (MA-276,
-  `ARCHITECTURE.md` §20.9).** At each month close, that month's line of the
-  Budget forecast is graded against what happened, each gap traced to its
-  input. The tuner proposes a category's run rate, a category's own
-  inflation or a member's salary growth from at least 6 closed months, a
-  step at a time, and the admin's Confirm applies it as a new version of the
-  assumptions; the records, the plan and the arithmetic never move. The
-  Budget forecast tab shows each month's forecast beside its actual;
-  designed first.
-- **E10, each member's needs learned from use (MA-277, `ARCHITECTURE.md`
-  §20.9).** From each member's own taps, answers, corrections and mutes,
-  never from text a file or a page brought in: the composer's chips and the
-  brief's sections ordered on their own inside a band; a merchant's
-  category, an alert threshold, a quiet hour or a usual answer proposed as a
-  card for that member's Confirm; a field corrected after a file kept as a
-  case; You lists what was learned, with a reset; designed first.
-
-**Order.** E1 and E2 can come forward once the Admin center and the second
-check exist (phase 8, MA-102); E3 after phase 10; E4 and E5 once stances are
-graded (phase 13); E6 with the Forecaster (phase 17); E7 and E8 alongside.
-E9 and E10 need E1; E9 also needs closed months (phase 6) and the
-Projection's runs (phase 7). Whether they come forward with E1 and E2, ahead
-of the market side, is open on MA-276 and MA-277.
+**Order.** E1, the settings store, is built in phase 9 with E9 and E10, the
+household's learning (your pick, 29 Oct 2026); E2 can come forward once the
+Admin center and the second check exist (phase 8, MA-102); E3 after phase
+10; E4 and E5 once stances are graded (phase 13); E6 with the Forecaster
+(phase 17); E7 and E8 alongside.
 
 **Tests:** a member cannot reach the desk; approval without the second check
 is refused; an agent cannot move a setting outside its band; grading never
@@ -1697,13 +1719,10 @@ runs before a horizon; calibration's daily step limit and rollback;
 a challenger that does not beat the current version is never proposed;
 injected failures at each pipeline step recover idempotently or open an
 incident, and the trace shows the step and the incident names it (MA-235);
-metering by agent; a month's grade read back the same from its stored run;
-no assumption proposed before 6 closed months or applied without the admin's
-Confirm; text a file or a page brought in teaching E10 nothing, and one
-member's learning never reaching another (MA-276, MA-277).
+metering by agent.
 
 **Exit:** a month in which every change was either inside its band or
-approved by the admin, every prediction and every closed month was graded, calibration stayed
+approved by the admin, every prediction was graded, calibration stayed
 within tolerance, every failure was repaired or raised, and spend stayed
 inside the $200 credit for the agents and the cap for AWS and others.
 
@@ -1764,7 +1783,7 @@ Each story is designed first; privacy mode holds everywhere.
 - **Siri and Shortcuts (MA-178):** "How is the portfolio today?" answered
   with the total and the day's move; "Log money into MyPaisa" opens the
   guided flow; never a write without Confirm in the app.
-- **A Live Activity (MA-179):** an import (MA-152) followed on the
+- **A Live Activity (MA-179):** an import (MA-111, MA-152) followed on the
   Lock Screen and in the Dynamic Island, with no amounts.
 
 **Tests:** each widget, intent and the share extension from fixtures, in
@@ -1834,26 +1853,26 @@ How the dates are worked out:
 | 6 Budget: statements and monthly check-ins | 12.5 | 10 | Wed 8 Sep 2027 | Tue 21 Sep 2027 |
 | 7 Projection | 28 | 23 | Wed 22 Sep 2027 | Fri 22 Oct 2027 |
 | 8 Audit, search and the Admin center at every door | 28 | 23 | Mon 25 Oct 2027 | Wed 24 Nov 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 11 | 9 | Thu 25 Nov 2027 | Tue 7 Dec 2027 |
-| 10 Prices and the engine | 23 | 19 | Wed 8 Dec 2027 | Wed 12 Jan 2028 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Thu 13 Jan 2028 | Tue 1 Feb 2028 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Wed 2 Feb 2028 | Wed 23 Feb 2028 |
-| 13 Track record and calibration | 13 | 11 | Thu 24 Feb 2028 | Thu 9 Mar 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Fri 10 Mar 2028 | Mon 20 Mar 2028 |
-| 15 Stances go live | 5 | 4 | Tue 21 Mar 2028 | Fri 24 Mar 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 26 | 21 | Thu 25 Nov 2027 | Thu 23 Dec 2027 |
+| 10 Prices and the engine | 23 | 19 | Tue 4 Jan 2028 | Fri 28 Jan 2028 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Mon 31 Jan 2028 | Thu 17 Feb 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Fri 18 Feb 2028 | Fri 10 Mar 2028 |
+| 13 Track record and calibration | 13 | 11 | Mon 13 Mar 2028 | Mon 27 Mar 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 28 Mar 2028 | Wed 5 Apr 2028 |
+| 15 Stances go live | 5 | 4 | Thu 6 Apr 2028 | Tue 11 Apr 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Mon 27 Mar 2028 | Mon 8 May 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 37 | 30 | Tue 9 May 2028 | Tue 20 Jun 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Wed 21 Jun 2028 | Thu 6 Jul 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Fri 7 Jul 2028 | Tue 18 Jul 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Wed 12 Apr 2028 | Wed 24 May 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Thu 25 May 2028 | Thu 22 Jun 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Fri 23 Jun 2028 | Mon 10 Jul 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 11 Jul 2028 | Thu 20 Jul 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you
 want them:
 
 - F1 and F2 any time after phase 10;
-- E1 and E2 after phase 8;
-- IN1 after phase 10, and IN2 after phase 9;
+- E1, E9 and E10 in phase 9; E2 after phase 8;
+- IN1 after phase 10, and IN2 after phase 9's importer (MA-111);
 - phase 20 after phase 9.
 
 The table dates them in build order.
