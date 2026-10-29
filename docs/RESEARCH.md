@@ -1011,6 +1011,133 @@ Arun also asked on 29 Oct 2026: *"how I can get the app kept installed for 3 mon
 
 ---
 
+## 9. Optional AWS VPC enterprise lockdown, seven-layer data perimeter & three-tier costing (MA-283, MA-284)
+
+### 9.1 Scope & decision gate — optional, decided last after Phase 20 (`MA-283`, `MA-284`)
+
+By default across Phases 0 to 20, MyPaisa runs its serverless estate in `us-east-1` (`545595341442`) without custom VPCs (`enable_vpc_lockdown = false`), relying on strict per-environment IAM roles, explicit `env=prod` developer denies, `SigV4` and KMS encryption at rest, Cognito five-minute access tokens, and CloudFront Origin Access Control (`ARCHITECTURE.md` §14, §18.1) at **£3.50/month** across both environments.
+
+On 29 Oct 2026 (`MA-283`, `MA-284`), Arun asked to record the complete blueprint and deterministic costing for locking down the entire AWS estate inside isolated VPCs, with **Option 3B (Lean Zero-Trust VPC + CloudFront Pro bundled WAF on `prod`, +£24.86/month = +$32.32/month, bringing total AWS spend to ~£28.36/month inside the £50/month AWS cap)** marked as the **preferred** option, and all higher-cost managed/enterprise tiers (**Option 1**, **Option 2A**, **Option 2B**, and **Option 3A**) recorded side by side. **Whether to turn this VPC lockdown on is decided last, after Phase 20 completes.**
+
+Placing Lambda functions inside private subnets is only half of an enterprise lockdown: without coordinated ingress locks, AWS Data Perimeter resource/endpoint policies, outbound DNS/TLS-SNI filtering, and private CI/CD runners, either side doors remain open or deployments and presigned file links break. Sections 9.2 to 9.7 record all seven layers, the four serverless VPC operational gotchas, the safe five-step rollout order, and the deterministic `us-east-1` (`730 hours/month`, `$1.30 = £1.00`) cost model. The interactive explainer page with four animated block diagrams is `docs/design/aws-vpc-enterprise-lockdown.html`, mirrored to Confluence on the page **Optional AWS VPC enterprise lockdown, data perimeter and costing**.
+
+### 9.2 Layer 1 & Layer 2 — Dual-stack VPC topology, declarative blast-radius blocks & front-door ingress lockdown
+
+#### Layer 1 — Isolated Dual-Stack VPCs & Three Subnet Classes per AZ
+
+- **Environment separation:** Non-overlapping dual-stack (IPv4 + AWS-assigned `/56` IPv6) VPCs in `us-east-1`: `mypaisa-dev-vpc` (`10.10.0.0/16`, 1–2 AZs) and `mypaisa-prod-vpc` (`10.20.0.0/16`, 2 AZs, `us-east-1a` and `us-east-1b`), with **zero VPC peering** between `dev` and `prod` (or separate AWS Organizations accounts connected through a central Transit Gateway inspection hub in Option 1).
+- **Three subnet tiers per Availability Zone:**
+  - **Isolated (Zero-Egress) Subnets:** Route table contains local VPC routes and S3/DynamoDB Gateway Endpoint prefix lists *only* — `0.0.0.0/0` and `::/0` do not exist. Hosts deterministic compute (`engine`, `projection`, DB workers), quarantined file/PDF extractors (`ARCHITECTURE.md` §14, §23.2), and PrivateLink Interface Endpoint ENIs.
+  - **Private Egress Subnets:** Zero inbound internet route; outbound IPv6 traverses an Egress-Only Internet Gateway (`EIGW`, `$0/mo`) and outbound IPv4 traverses the environment's controlled NAT / TLS-SNI proxy (`api`, `stream`, `agent`, `auth`, `ingester`, `notifier`, and private `arm64` `CodeBuild` runners).
+  - **Perimeter Subnets:** Zero application compute ever sits here; holds only NAT Gateways, Graviton `t4g.nano` `fck-nat`/Envoy appliances, or AWS Network Firewall endpoints.
+- **Declarative account-level blast-radius controls (`$0.00/mo`):**
+  - Delete default VPCs across every AWS region and enforce an IAM/SCP region lock denying resource creation outside `us-east-1` (except global IAM, Route 53 and CloudFront control planes).
+  - Enable **AWS VPC Block Public Access (BPA)** (`Ingress-only` mode on egress VPCs; `Bidirectional` mode on any purely isolated VPC) so even an accidental Terraform route to an Internet Gateway cannot open public ingress.
+  - Enforce account-wide **S3 Block Public Access**, **EBS Snapshot Block Public Sharing**, and **IMDSv2-only** (`HttpTokens = required`, `HttpPutResponseHopLimit = 1`) on every EC2/CodeBuild node.
+
+#### Layer 2 — Front-Door Ingress Lockdown (Zero Direct Public Compute)
+
+- **Static Web Door (`dashboard.mypaisapp.com` / `dashboard-dev.mypaisapp.com`):** Private S3 buckets served exclusively through **CloudFront Origin Access Control (OAC)** (`SigV4` signed, S3 bucket policy locked with `aws:SourceArn` and `aws:SourceAccount = 545595341442`) plus a CloudFront `ResponseHeadersPolicy` enforcing strict Content-Security-Policy (SvelteKit script hashes), `Strict-Transport-Security`, `X-Content-Type-Options: nosniff` and `X-Frame-Options: DENY`.
+- **API & `/v1/stream` SSE Door (`api.mypaisapp.com` / `api-dev.mypaisapp.com`) — Two Architectural Patterns:**
+  - *Platform constraint:* **CloudFront VPC Origins** (`$0.00` extra CloudFront feature fee) connects CloudFront natively into private subnets for **Internal Application Load Balancers (ALB), Network Load Balancers (NLB), or EC2 instances**, *not* directly to a Private API Gateway (`execute-api` Interface VPC Endpoint).
+  - **Pattern A — 100% Private VPC Ingress via CloudFront VPC Origin + Internal ALB (Option 1):** `CloudFront + AWS WAF` -> `CloudFront VPC Origin` -> `Internal ALB` in private subnets (`sg-alb-internal` accepting TCP `443` solely from `com.amazonaws.global.cloudfront.origin-facing`) -> FastAPI/Lambda response streaming. Eliminates public API endpoints completely, at `$17.59/mo` (`£13.53/mo`) per environment's ALB.
+  - **Pattern B — Serverless Edge Lock without ALB Cost (Options 2A, 2B, 3A & Preferred Option 3B):** `CloudFront + AWS WAF` -> Regional API Gateway REST API (streaming `/v1/stream` SSE) with `disable_execute_api_endpoint = true`, **mTLS** (or a rotated custom origin secret verified before handler execution) and origin-facing prefix enforcement so direct internet calls bypassing CloudFront are rejected at the edge, while all Lambdas execute inside private VPC subnets at `$0.00/mo` ALB cost.
+- **Edge L7/L3/L4 Protection:** **CloudFront Flat-Rate Pro** (`$15.00/mo` = `£11.54/mo` on `prod`, paired with the `$0.00/mo` **CloudFront Free** flat-rate plan on `dev`) bundles CloudFront CDN delivery (`50 TB`, `10M` requests), **AWS WAF** (`AWSManagedRulesCommonRuleSet`, `AWSManagedRulesKnownBadInputsRuleSet`, `AWSManagedRulesAmazonIpReputationList`, per-IP rate-based flood rules, payload caps), Bot Management, and Shield DDoS protection with **zero overage billing** even during an attack.
+
+### 9.3 Layer 3 — Private AWS service backbone & three-way AWS Data Perimeter
+
+Once Lambdas and CodeBuild attach to private subnets, they lose public routes to AWS service endpoints:
+
+- **Gateway VPC Endpoints (`$0.00/hr`, `$0.00/GB` — always enabled in every option):** `com.amazonaws.us-east-1.s3` and `com.amazonaws.us-east-1.dynamodb` route 100% of household single-table DynamoDB traffic, S3 documents/exports, and ECR container-layer S3 reads privately over the AWS backbone at zero cost.
+- **Interface VPC Endpoints / AWS PrivateLink (`$0.01/hr/AZ` = `$7.30/mo` per endpoint per AZ + `$0.01/GB`) vs SigV4 TLS 1.3 via Allowlisted NAT:**
+  - Full PrivateLink coverage spans `ssm`, `kms`, `sqs`, `xray`, `logs`, `sts`, `sns`, `cognito-idp` (plus `ecr.api` and `ecr.dkr` in CI) — 26 endpoint-AZs across `prod` (2 AZs) and `dev` (1 AZ) in Option 1 (`$189.85/mo` = `£146.04/mo`), or 9 core endpoint-AZs (`ssm`, `kms`, `sqs`) in Option 2A (`$65.71/mo` = `£50.55/mo`).
+  - In **Option 2B, Option 3A, and Preferred Option 3B**, S3 and DynamoDB use free Gateway Endpoints while low-volume `SigV4`-signed TLS 1.3 control calls (`ssm`, `kms`, `sqs`, `xray`, `sns`, `cognito-idp`, `ce`) traverse the environment's allowlisted NAT/SNI proxy (`*.us-east-1.amazonaws.com`), saving **£50.55 to £146.04 every month** while keeping 100% of household tables and buckets locked to private Gateway Endpoints.
+- **Three-Way AWS Data Perimeter (`$0.00/mo` IAM & resource-policy enforcement):**
+  1. **Network Perimeter (`aws:SourceVpce` / `aws:SourceVpc`):** Resource-based policies on `mypaisa-<env>-*` S3 buckets, DynamoDB tables, KMS CMKs, and SQS queues explicitly `Deny` data-plane operations when `aws:SourceVpce` is not that environment's VPC endpoint (with explicit carve-outs solely for `aws:ViaAWSService = true`, the environment's `ci-*-deploy` role, and the bounded presigned S3 upload/download path in §9.5). Even if temporary Lambda IAM credentials were ever leaked, an attacker outside the VPC gets `403 AccessDenied`.
+  2. **Resource Perimeter (`aws:ResourceAccount`):** Policies attached directly to the S3 and DynamoDB Gateway Endpoints allow operations *only* where `aws:ResourceAccount = "545595341442"` (plus AWS-owned ECR layer buckets for container pulls), blocking a compromised dependency inside the VPC from writing household data into an external attacker's S3 bucket.
+  3. **Identity Perimeter (`aws:PrincipalAccount`):** VPC Endpoint policies accept requests *only* from IAM principals belonging to account `545595341442`.
+
+### 9.4 Layer 4 — Outbound (egress) lockdown, micro-segmentation & TLS-SNI / DNS walled garden
+
+MyPaisa requires outbound HTTPS (`TCP 443`) to a small, known set of external hosts and nowhere else:
+
+- **Runtime FQDN allowlist:** `api.anthropic.com` (Claude Messages, Batches, server tools), `appleid.apple.com`, `www.googleapis.com` and `oauth2.googleapis.com` (Apple/Google OIDC JWKS verification keys), `api.push.apple.com` and `api.sandbox.push.apple.com` (APNs), `fcm.googleapis.com`, `web.push.apple.com` and `updates.push.services.mozilla.com` (Web Push), `api.twelvedata.com`, `eodhd.com`, `query1.finance.yahoo.com`, `query2.finance.yahoo.com`, `www.amfiindia.com`, `api.mfapi.in` and `data-api.ecb.europa.eu` (market and ECB FX feeds), plus `*.amazonaws.com` when PrivateLink Interface Endpoints are omitted in Option 3.
+- **CI-only FQDN allowlist (scoped exclusively to CodeBuild's subnet/rule group, never runtime Lambdas):** `github.com`, `api.github.com`, `pypi.org`, `files.pythonhosted.org`, `registry.npmjs.org`, `objects.githubusercontent.com`, `dl-cdn.alpinelinux.org` / `deb.debian.org`.
+- **Micro-segmented Security Groups (aligned with Lambda Hyperplane ENI sharing):**
+  - `sg-vpce` (when Interface Endpoints are present): Inbound TCP `443` solely from `sg-lambda-isolated`, `sg-lambda-egress` and `sg-codebuild`; Outbound none.
+  - `sg-lambda-isolated` (rules engine, projection, DB jobs, quarantined file extractor): Outbound TCP `443` *only* to `sg-vpce` and the S3/DynamoDB managed prefix lists. Zero internet egress.
+  - `sg-lambda-egress` (`api`, `stream`, `agent`, `auth`, `ingester`, `notifier`): Outbound **TCP `443` only** to the NAT/SNI proxy and AWS prefix lists — explicitly dropping raw DNS (`UDP/TCP 53`), DNS-over-TLS (`853`), SSH (`22`) and SMTP (`25`) so workloads cannot bypass VPC DNS filtering via `8.8.8.8` or `1.1.1.1`.
+- **Default-Deny DNS + TLS-SNI Filtering:**
+  - **Route 53 Resolver DNS Firewall** runs in **walled-garden mode** (`$0.60` per million queries + `$0.0005` per custom domain/month ≈ **`$0.20/mo`**): priority rules `ALLOW` the exact runtime/CI domain lists above; priority `999` matches `*` with `BLOCK` (`NXDOMAIN`) and emits a CloudWatch alarm to SNS/Admin center on the first blocked lookup (an immediate canary for prompt-injection or supply-chain exfiltration).
+  - **Stopping raw-IP DNS bypass:** Option 1 uses **AWS Network Firewall** (`TLS_SNI` + `HTTP Host` + Suricata IPS at `$288.35/mo/AZ`). **Preferred Option 3B** pairs free **IPv6 EIGW** with an **auto-healing Graviton `t4g.nano` (`fck-nat` + Envoy transparent TLS-SNI filter)** in `dev` and `prod` (`$3.07` EC2 + `$3.65` Public IPv4 EIP + `$0.64` 8 GB `gp3` = **`$7.36/mo` = `£5.66/mo` per environment**), inspecting the TLS ClientHello `SNI` header on port `443` without decrypting payloads and dropping any raw-IP connection that carries an unlisted or missing SNI. *Honest trade-off:* a single `t4g.nano` in a `min=1, max=1` multi-AZ Auto Scaling Group takes ~60–90 seconds to replace on an instance or AZ fault (during which SQS FIFO queues hold and retry messages seamlessly per `ARCHITECTURE.md` §21), versus instant AZ-local failover on two `$36.50/mo` Managed NAT Gateways.
+
+### 9.5 Layer 5, Layer 6 & Layer 7 — Private CI/CD, zero-bastion access, telemetry & four serverless VPC gotchas
+
+#### Layer 5 — Private CI/CD Plane & Zero-Bastion Operator Access
+
+- **AWS CodeBuild inside VPC:** Attach the existing `arm64` CodeBuild project (`ARCHITECTURE.md` §18.4, `MA-237`) to `Private Egress` subnets. GitHub Actions (`ubuntu-24.04-arm`, 1x) authenticates via OIDC and triggers CodeBuild so image builds, `trivy image` scans, `terraform apply`, and `scripts/smoke.py` execute *inside* the VPC perimeter. Local laptop workflows (`MA-198` moto + local ASGI + `scripts/maestro_local.py --mode stub`) remain 100% local at £0/month, while `--mode dev-live` exercises `api-dev.mypaisapp.com` through the front CloudFront/WAF door exactly like a physical iPhone.
+- **Zero SSH (`22`) & Zero Public Bastions:** No EC2 instance ever opens inbound ports. Any break-glass diagnostic session uses **AWS Systems Manager (SSM) Session Manager** (`$0.00/hr` software fee, IAM + MFA enforced, every command audited to KMS-encrypted S3).
+
+#### Layer 6 — Network Telemetry, Threat Detection & Reachability Gates
+
+- **Enriched v5 VPC Flow Logs** (`pkt-srcaddr`, `pkt-dstaddr`, `flow-direction`, `traffic-path`, `sublocation-id`), **Route 53 Resolver Query & DNS Firewall Block Logs**, and **CloudFront/WAF logs** ship directly to a KMS-encrypted S3 log bucket (`$0.25/GB` vended-log delivery, half the `$0.50/GB` CloudWatch Logs ingestion rate) guarded by `aws:SourceArn` and `aws:SourceAccount` confused-deputy conditions and S3 Glacier lifecycle rules.
+- **Amazon GuardDuty** (`~$2.00–$3.50/mo` at household serverless volume) + **IAM External Access Analyzer (`$0.00`)** + optional **Security Hub CSPM** (`~$5.00/mo` in Option 1) + **VPC Reachability Analyzer** (`$0.10` per check in CI whenever `infra/` network files change, proving zero unintended path exists between `igw-*` and private Lambda ENIs).
+
+#### Layer 7 — Four Serverless VPC Operational Gotchas Addressed Up Front
+
+- **Lambda Hyperplane ENIs:** Lambda shares network interfaces per unique `(subnet, security_group)` pair (~65,000 connections per ENI), not per function. Reusing the two tier Security Groups (`sg-lambda-isolated`, `sg-lambda-egress`) keeps ENI count to 2–4 per VPC; first-time VPC attachment takes 2–3 minutes (`Pending`), idle ENIs reclaim after 14 days, and execution roles require `AWSLambdaVPCAccessExecutionRole`.
+- **In-container ADOT Collector vs Lambda `stdout`:** Built-in Lambda `stdout` CloudWatch Logs leave via the AWS Lambda service control plane for free without traversing your VPC, **whereas** the in-image ADOT OpenTelemetry collector (`ARCHITECTURE.md` §10.3, `MA-232`) exports traces from *inside* your container to `xray.us-east-1.amazonaws.com:443` — requiring either the `xray` PrivateLink endpoint (Option 1) or `xray.us-east-1.amazonaws.com` in the DNS Firewall + SNI allowlist (Options 2B/3A/3B).
+- **Cognito `cognito-idp` PrivateLink scope:** Amazon Cognito's `cognito-idp` Interface VPC Endpoint covers SDK/`Admin*` calls and direct/custom authentication (`InitiateAuth`, `RespondToAuthChallenge`) used by MyPaisa's `/auth/*` routes (not Cognito Hosted UI OAuth redirects, which MyPaisa does not use); Cognito's custom-auth trigger Lambdas still require allowlisted outbound `443` (with in-memory warm JWKS caching) to verify Apple (`appleid.apple.com`) and Google (`www.googleapis.com`) OIDC keys.
+- **Presigned S3 file uploads & five-minute Audit links (`ARCHITECTURE.md` §4.6, §18.5, `MA-31`, `MA-111`, `MA-149`):** Browser/iPhone uploads, five-minute Audit document previews, and `MA-111`'s 15-minute laptop `.xlsx` upload link connect to S3 from the member's client IP rather than `aws:SourceVpce`. Under the S3 Data Perimeter, either serve uploads/downloads via **CloudFront Signed URLs over OAC** (matching `aws:SourceArn` of the CloudFront distribution) or exempt *only* `s3:PutObject`/`s3:GetObject` signed by a dedicated no-other-permissions `mypaisa-<env>-presigner` role conditioned on `s3:signatureAge <= 900000` (15 minutes).
+
+### 9.6 Safe five-step zero-lockout rollout order (when opted into after Phase 20)
+
+1. **Step 1 — VPC Foundation & Alert-Only Telemetry (`dev` first):** Apply dual-stack VPCs, Isolated/Private-Egress/Perimeter subnets, VPC Block Public Access, S3 & DynamoDB Gateway Endpoints (without resource `Deny` policies yet), S3 v5 Flow Logs, and Route 53 DNS Firewall in **`ALERT` (log-only)** mode.
+2. **Step 2 — Egress Appliance & Private CI Plane:** Provision IPv6 EIGW + `t4g.nano` `fck-nat`/Envoy SNI proxy (or Managed NAT GW) and attach **AWS CodeBuild** to `Private Egress` subnets so CI builds and Terraform applies already originate inside the VPC before any resource `Deny` turns on.
+3. **Step 3 — Attach Lambdas by Security Tier:** Attach deterministic/quarantined Lambdas (`sg-lambda-isolated`) to `Isolated` subnets and external-calling Lambdas (`sg-lambda-egress`) to `Private Egress` subnets; run `scripts/smoke.py --env dev` to confirm cold-start latency (`< 300 ms` warm target) and unbroken X-Ray ADOT traces.
+4. **Step 4 — Front-Door Ingress Lock & Enforce DNS/SNI Egress:** Enable CloudFront Pro WAF (`prod`) / Free (`dev`), API Gateway `disable_execute_api_endpoint = true` + mTLS origin lock (or CloudFront VPC Origin -> Internal ALB), confirm zero unexpected domains appeared in Step 1's DNS Firewall alert logs, and switch DNS Firewall catch-all `*` from `ALERT` to **`BLOCK`**.
+5. **Step 5 — Enforce Three-Way Data Perimeter & Reachability Gate:** Enable `aws:SourceVpce` explicit `Deny` statements on S3, DynamoDB, KMS and SQS (with the presigned-URL / OAC and CI carve-outs verified in `dev`), promote to `prod` via GitHub CI approval with read-only prod smoke checks, and add the automated VPC Reachability Analyzer assertion.
+
+### 9.7 Deterministic `us-east-1` monthly & annual costing across all options (`$1.30 = £1.00`, `730 hrs/mo`)
+
+#### Unit rates in `us-east-1` (highlighting hidden fixed charges)
+
+| Component | `us-east-1` Unit Rate (USD) | Fixed Monthly Cost (`730 hrs`) |
+| --- | --- | ---: |
+| VPCs, Subnets, SGs, NACLs, **VPC Block Public Access**, **IPv6 EIGW** | Free | **$0.00** (£0.00) |
+| **S3 & DynamoDB Gateway VPC Endpoints** + Three-Way Data Perimeter Policies | Free | **$0.00** (£0.00) |
+| **Public IPv4 Address (EIP)** *(charged since Feb 2024 on every NAT GW / NAT EC2)* | `$0.005/hr` | **$3.65** (£2.81) |
+| **Managed AWS NAT Gateway** *(+ 1 EIP = `$36.50/mo` = `£28.08/mo` before data)* | `$0.045/hr` + `$0.045/GB` | **$32.85** (£25.27) |
+| **PrivateLink Interface VPC Endpoint** *(per service, per AZ)* | `$0.01/hr/AZ` + `$0.01/GB` | **$7.30** (£5.62) |
+| **Internal Application Load Balancer** *(base `$16.43` + `~0.2 LCU` `$1.17`)* | `$0.0225/hr` + `$0.008/LCU-hr` | **$17.59** (£13.53) |
+| **AWS Transit Gateway Attachment** *(per attached VPC)* | `$0.05/hr` + `$0.02/GB` | **$36.50** (£28.08) |
+| **AWS Network Firewall Endpoint** *(per AZ; waives 1:1 chained NAT GW fee, not EIP)* | `$0.395/hr/AZ` + `$0.065/GB` | **$288.35** (£221.81) |
+| **Graviton `t4g.nano` `fck-nat` / Envoy SNI Proxy** *(EC2 `$3.07` + 8 GB `gp3` `$0.64` + 1 EIP `$3.65`)* | `$0.0042/hr` + `$0.08/GB-mo` + `$0.005/hr` | **$7.36** (£5.66) |
+| **Route 53 Resolver DNS Firewall** | `$0.60/1M queries` + `$0.0005/domain-mo` | **~$0.20–$0.33** (£0.15–£0.25) |
+| **CloudFront Flat-Rate Plans** *(bundles CDN + AWS WAF + Bot + DDoS, 0 overages)* | Free (`$0/mo` `dev`) / Pro (`$15/mo` `prod`) | **$0.00 / $15.00** (£0.00 / £11.54) |
+
+#### Side-by-side comparison across all five VPC lockdown options (`dev` + `prod` combined)
+
+| Cost Line (`dev` + `prod`, `us-east-1`, `730 hrs/mo`) | Option 1: Bank-Grade Enterprise Hub & Spoke | Option 2A: AWS-Managed Serverless VPC (9 VPCEs) | Option 2B: AWS-Managed Serverless VPC (Gateway VPCEs) | Option 3A: Lean Zero-Trust VPC *(Lowest Cost)* | Option 3B: Lean Zero-Trust VPC + Prod WAF *(Preferred)* |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| VPCs, Zero-Egress Subnets, BPA, SGs, NACLs, IPv6 EIGW | $0.00 | $0.00 | $0.00 | $0.00 | $0.00 |
+| S3 & DynamoDB Gateway Endpoints + Three-Way Data Perimeter | $0.00 | $0.00 | $0.00 | $0.00 | $0.00 |
+| AWS Transit Gateway (3 VPC attachments + ~5 GB) | $109.60 | $0.00 | $0.00 | $0.00 | $0.00 |
+| Egress Inspection & NAT (incl. Public IPv4 EIPs) | $584.33 *(2-AZ ANFW + 2 EIPs)* | $109.64 *(3 NAT GWs: 1 dev, 2 prod)* | $73.14 *(2 NAT GWs: 1 dev, 1 prod)* | $14.71 *(2x `t4g.nano` ASG: dev + prod)* | $14.71 *(2x `t4g.nano` ASG: dev + prod)* |
+| PrivateLink Interface Endpoints (`$7.30/AZ-mo`) | $189.85 *(26 endpoint-AZs)* | $65.71 *(9 endpoint-AZs: ssm, kms, sqs)* | $0.00 *(SigV4 TLS via allowlisted NAT)* | $0.00 *(SigV4 TLS via allowlisted NAT)* | $0.00 *(SigV4 TLS via allowlisted NAT)* |
+| API Ingress Lock (`CF VPC Origin + 2 ALBs` vs `API GW mTLS`) | $35.19 *(2 Internal ALBs)* | $0.00 *(API GW mTLS lock)* | $0.00 *(API GW mTLS lock)* | $0.00 *(API GW mTLS lock)* | $0.00 *(API GW mTLS lock)* |
+| Edge WAF & DDoS (`2 standalone ACLs` vs `CloudFront Pro`) | $20.00 *(2 Web ACLs x 5 rules)* | $15.00 *(CF Free dev + Pro prod)* | $15.00 *(CF Free dev + Pro prod)* | $0.00 *(CF Free/PAYG + mTLS)* | $15.00 *(CF Free dev + Pro prod)* |
+| Route 53 Resolver DNS Firewall (default-deny `*` + allowlist) | $0.33 | $0.33 | $0.33 | $0.20 | $0.20 |
+| Enriched v5 Flow Logs to S3 + GuardDuty (+ Security Hub in Opt 1) | $9.59 | $3.05 | $3.05 | $2.41 | $2.41 |
+| **Added VPC Lockdown Cost / Month (USD)** | **$948.88/mo** | **$193.72/mo** | **$91.51/mo** | **$17.32/mo** | **$32.32/mo** |
+| **Added VPC Lockdown Cost / Month (GBP @ $1.30 = £1)** | **£729.91/mo** | **£149.01/mo** | **£70.39/mo** | **£13.32/mo** | **£24.86/mo** |
+| **Added VPC Lockdown Cost / Year (GBP)** | **£8,758.87/yr** | **£1,788.15/yr** | **£844.67/yr** | **£159.89/yr** | **£298.35/yr** |
+| **Total MyPaisa AWS Spend (Base £3.50 + VPC) vs £50/mo Cap** | **£733.41/mo** *(over by £683.41)* | **£152.51/mo** *(over by £102.51)* | **£73.89/mo** *(over by £23.89)* | **£16.82/mo** *(£33.18 headroom)* | **£28.36/mo** *(£21.64 headroom)* |
+
+- **Why Option 3 (3B with CloudFront Pro WAF at `+£24.86/mo`, or 3A leanest at `+£13.32/mo`) is Preferred:** In Option 1 (`£729.91/mo`), 92% of the spend goes to fixed hourly appliances (`£443.87` Network Firewall + `£146.04` 26 PrivateLink AZ-endpoints + `£84.31` Transit Gateway) designed to be amortised across dozens of enterprise accounts. **Option 3** captures the highest-leverage security controls for free or pennies — **zero-egress Isolated subnets (`£0`)**, **VPC Block Public Access (`£0`)**, **S3 & DynamoDB Gateway Endpoints with three-way `aws:SourceVpce` Data Perimeter `Deny` policies (`£0`)**, **Route 53 DNS Firewall default-deny (`£0.15/mo`)**, **IPv6 EIGW (`£0`)**, and **Graviton `t4g.nano` `fck-nat`/Envoy TLS-SNI filtering (`£11.32/mo` for both environments)** — keeping total monthly AWS spend (`£16.82/mo` in 3A or `£28.36/mo` with full `prod` AWS WAF/Bot/DDoS in 3B) comfortably inside the **£50/month** AWS cap of `ARCHITECTURE.md` §15.2.
+
+---
+
 ## Sources
 
 - Agentic Trading Desk: <https://github.com/Oft3r/agentic-trading-desk> (README, SKILL.md, `scripts/*.py`, `hooks/mandate-order-guard.sh`)
@@ -1035,3 +1162,4 @@ Arun also asked on 29 Oct 2026: *"how I can get the app kept installed for 3 mon
 - Finance: <https://arxiv.org/html/2508.05201>, <https://mlanthology.org/neurips/2025/ji2025neurips-phantom>, <https://handbook.fca.org.uk/handbook/PERG/8/30B.html>, <https://www.fca.org.uk/news/speeches/building-future-finance-age-ai>
 - Tools: <https://inspect.aisi.org.uk>, <https://www.promptfoo.dev/docs/usage/command-line/>, <https://deepeval.com/docs/metrics-tool-correctness>, <https://langfuse.com/pricing>, <https://www.braintrust.dev/pricing>
 - Maestro & iOS/iPadOS local testing & TestFlight: <https://docs.maestro.dev>, <https://developer.apple.com/testflight/>, <https://developer.apple.com/help/app-store-connect/test-a-beta-version/invite-internal-testers/>, <https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases>
+- AWS VPC Enterprise Lockdown, Data Perimeter & `us-east-1` Pricing: <https://aws.amazon.com/vpc/pricing/>, <https://aws.amazon.com/privatelink/pricing/>, <https://aws.amazon.com/network-firewall/pricing/>, <https://aws.amazon.com/cloudfront/pricing/>, <https://aws.amazon.com/route53/pricing/>, <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-block-public-access.html>, <https://aws.amazon.com/identity/data-perimeters-on-aws/>, <https://docs.aws.amazon.com/cognito/latest/developerguide/vpc-interface-endpoints.html>, <https://fck-nat.dev>
