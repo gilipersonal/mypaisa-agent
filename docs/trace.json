@@ -8440,6 +8440,13 @@
    "summary": "The taxonomy lists the phase epics, which path belongs to which, and the manual and design labels",
    "status": "Done",
    "notes": "Superseded by MA-155, which brings .claude/jira/taxonomy.md up to phase 13; its PR #21 can be closed unmerged"
+  },
+  {
+   "key": "MA-292",
+   "type": "Bug",
+   "summary": "The design-sync gate fails on every project since Claude Design appends a closing notice to its results",
+   "status": "In Progress",
+   "notes": "Repo tooling: scripts/design_sync.py cuts the standalone Claude Design server's closing notice from every result (found and fixed on MA-291's branch, 30 Oct 2026)"
   }
  ]
 }
