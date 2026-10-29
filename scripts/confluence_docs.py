@@ -1254,7 +1254,7 @@ def errors(ctx: Ctx | None = None) -> list[str]:
             out.append(f"confluence: docs/confluence/{slug_}.html is stale: run `python3 scripts/confluence_docs.py write`")
         elif rec.get("sha256") != sha(want):
             out.append(f"confluence: page {title!r} changed in the repo but is not published: publish it with /plan-sync")
-        elif rec.get("title") and rec.get("title") != title:  # a rename leaves the body alone (MA-275)
+        if path.exists() and rec.get("title") and rec.get("title") != title:  # a rename leaves the body alone (MA-275)
             out.append(f"confluence: page {title!r} was renamed in the repo but is still titled {rec['title']!r} in Confluence: publish it with /plan-sync")
     for f in PAGES.glob("*.html") if PAGES.exists() else []:
         if f.stem not in {s for s, _, _ in model}:
