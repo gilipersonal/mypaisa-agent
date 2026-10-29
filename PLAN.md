@@ -1346,10 +1346,13 @@ built with their records in phases 2 to 9.
   and closing an incident (MA-130, MA-135) join in phase 18; JSON limited to
   what that member may see.
 - **The owner's security actions (MA-102):** signing out or pausing any
-  member's devices from the Admin center.
+  member's devices from the Admin center. A paused member's sign-in is
+  refused with one line until the owner restores them, and the owner cannot
+  pause their own account (your call, 29 Oct 2026).
 - More than one way in (MA-77): a member adds a second sign-in, Apple or
-  Google, or a passkey, from You; the owner can unlink one from the Admin
-  center; every link, unlink and sign-in an audit row.
+  Google, or a passkey, from You, with a fresh sign-in on the new account
+  and no second check (your call, 29 Oct 2026); the owner can unlink one
+  from the Admin center; every link, unlink and sign-in an audit row.
 - **The judges, calibrated by the admin (MA-255, `ARCHITECTURE.md` §23.5):**
   each month, and whenever a judge, a prompt, a tool or the model changes,
   the Admin center offers about 30 runs with their transcripts and verdicts;

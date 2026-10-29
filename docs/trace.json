@@ -1576,16 +1576,14 @@
      "board": "iPhone · Sign-in methods"
     }
    ],
-   "notes": "Browser · Login has Apple, Google and a passkey (ARCHITECTURE.md §4.5, §9.4); redrawn for MA-185 in MA-161. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look. Moved to phase 1 with sign-in on MA-227 (Arun, 26 Oct 2026), so approving a new kind (MA-197, phase 2) can sit behind it.",
+   "notes": "Browser · Login has Apple, Google and a passkey (ARCHITECTURE.md §4.5, §9.4); redrawn for MA-185 in MA-161. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). The content and order Arun picked for the earlier boards carry over; only the iOS rendering awaits his look. Moved to phase 1 with sign-in on MA-227 (Arun, 26 Oct 2026), so approving a new kind (MA-197, phase 2) can sit behind it. Settled: Second check to add a sign-in: no, a fresh sign-in only (Arun, 29 Oct 2026). The member completes the new provider's sign-in from You, the link is an audit row, and the first sign-in with it on a device the member has not used before sends the new-device message (ARCHITECTURE 4.5, \"More than one way in\"); the board iPhone · Sign-in methods already draws it so.",
    "undrawn": [
     "the second check for a member who signs in only with Google: Google's sheet again, bound to the action (ARCHITECTURE 4.5)",
     "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)",
     "the new-device message: a push to the member's other devices and a chat card, \"Was this you?\", with Yes, it was me and No, sign it out; not confirmed in Members and devices until answered; and one line in the owner's chat with Open Admin center (ARCHITECTURE 4.5)",
     "its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279)"
    ],
-   "open": [
-    "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account) (asked on MA-77; it decides this story's exact list and its test that no other action asks)"
-   ]
+   "open": []
   },
   {
    "key": "MA-77",
@@ -1609,16 +1607,14 @@
      "board": "iPhone · Sign-in methods"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts.",
+   "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts. Settled: Second check to add a sign-in: no, a fresh sign-in only (Arun, 29 Oct 2026). The member completes the new provider's sign-in from You, the link is an audit row, and the first sign-in with it on a device the member has not used before sends the new-device message (ARCHITECTURE 4.5, \"More than one way in\"); the board iPhone · Sign-in methods already draws it so.",
    "undrawn": [
     "the message Asha gets when the owner unlinks one of her sign-ins (a change to her sign-in is never silent; the owner can only unlink, ARCHITECTURE 4.5)",
     "the Link a Google account page's refusal after a code, on the web's Telegram-era flow (Wealth): taken out with that flow, or redrawn for adding a second sign-in, as MA-185 lists it (fix made, waiting on MA-160)",
     "iPhone · Sign-in methods' Remove control, its Confirm, and its outcomes: removing the last method refused, and a method removed while a device uses it signing that device out; and adding a method already linked to someone else, refused",
     "its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279)"
    ],
-   "open": [
-    "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account)"
-   ]
+   "open": []
   },
   {
    "key": "MA-78",
@@ -2451,18 +2447,16 @@
      "board": "Browser · Admin · People · A household with only the owner"
     }
    ],
-   "notes": "Picked A · People first and the Telegram second check (Arun, 24 Oct 2026); its earlier boards stay as picked: Admin center (10), Telegram second check (5). B · Sessions first stays on the Admin center canvas as the record, not the spec. Also shown on boards drawn for other stories: Admin center 2 · Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2 · Browser · Admin · Alerts · Replay, the fresh check; Admin center 2 · Browser · Admin · Approvals · Approve, the fresh check. The owner's Restore and its log row, a failed fresh check and a household with only the owner were drawn in MA-158 (Admin center 3 · People) and are planned, so this story's own design-first round (In Progress) puts them through its options; it cannot reach In Review until they are picked and its open questions are settled. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
-   "open": [
-    "Signing back in after a pause: this story's acceptance says signing in with Google or the passkey restores the account, while the picked Flow 5.3 (and Admin center 3's boards) add a Restore tap after signing in. Neither can happen as drawn: ARCHITECTURE 4.5 pauses with Cognito's AdminDisableUser, and a disabled user cannot sign in at all, with Apple, Google or a passkey (one Cognito user per member, 16). Settle how a paused member, the owner included, gets back: the owner restores them from the Admin center, or pause uses the session epoch alone and leaves the Cognito user enabled.",
-    "Second check to add a sign-in: whether adding Apple, Google or a passkey to a member's identity needs the second check, as MA-77's description asks, while ARCHITECTURE 4.5 and the board iPhone · Sign-in methods ask only for a fresh sign-in with the new method and an audit row (a sign-in added on an unlocked phone is a way to keep the account) (asked on MA-77; it decides this story's acceptance that the check is asked on exactly the actions 4.5 lists and no others)"
-   ],
+   "notes": "Picked A · People first and the Telegram second check (Arun, 24 Oct 2026); its earlier boards stay as picked: Admin center (10), Telegram second check (5). B · Sessions first stays on the Admin center canvas as the record, not the spec. Also shown on boards drawn for other stories: Admin center 2 · Browser · Admin · Spend · Move the ceiling, the fresh check; Admin center 2 · Browser · Admin · Alerts · Replay, the fresh check; Admin center 2 · Browser · Admin · Approvals · Approve, the fresh check. The owner's Restore and its log row, a failed fresh check and a household with only the owner were drawn in MA-158 (Admin center 3 · People) and are planned, so this story's own design-first round (In Progress) puts them through its options; it cannot reach In Review until they are picked and its open questions are settled. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. Settled: Signing back in after a pause: the owner restores them (Arun, 29 Oct 2026). Pause disables the member's Cognito user, as ARCHITECTURE 4.5 says, so signing in is refused with Apple, Google or a passkey alike and shows one line, \"The household’s owner has paused your access to MyPaisa.\" Only the owner's Restore in the Admin center, behind the second check, lets them back in; there is no Restore tap after signing in. The owner cannot pause their own account, since nobody else could restore it; on a lost phone they sign it out, or sign out everywhere, from another device. This keeps Arun's first decision of 24 Oct (only the owner lifts a pause) and replaces his second (the owner pausing their own account and restoring it by signing in). Settled: Second check to add a sign-in: no, a fresh sign-in only (Arun, 29 Oct 2026). The member completes the new provider's sign-in from You, the link is an audit row, and the first sign-in with it on a device the member has not used before sends the new-device message (ARCHITECTURE 4.5, \"More than one way in\"); the board iPhone · Sign-in methods already draws it so.",
+   "open": [],
    "undrawn": [
     "the web Admin center's People boards redrawn for Apple, Google and passkeys: no Telegram account to pause or restore, no Telegram handle, chip or desktop session, and Flow 5.3's sign-in page (Admin center, Admin center 3; MA-161)",
     "iPhone · A member's Unlink a sign-in method action, behind the second check, and the message the member gets",
     "the new-device message: a push to the member's other devices and a chat card, \"Was this you?\", with Yes, it was me and No, sign it out; not confirmed in Members and devices until answered; and one line in the owner's chat with Open Admin center (ARCHITECTURE 4.5)",
     "the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161)",
     "The web page at a phone's width (below 600, the page alone as the web app shows it): Admin center 3 draws it at desktop width only, and the frames break there (MA-240's gate allows them until this is drawn)",
-    "its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279)"
+    "its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279)",
+    "the web Admin center with no Pause my account, its warning, Flow 5.3's sign-in page or the owner's own Restore and their log rows, since the owner cannot pause their own account; the owner's lost phone is signed out from You, or by Sign out everywhere, from another device (Arun, 29 Oct 2026; Admin center, Admin center 3; MA-279)"
    ]
   },
   {

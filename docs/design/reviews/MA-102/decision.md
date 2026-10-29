@@ -90,3 +90,21 @@ picked". The build follows A once MA-32 and MA-74 to MA-77 are in.
 
 Before the build, the picked option still needs its remaining states (design-first): the owner's Restore after
 signing back in, its log row, a failed fresh check, and a household with only the owner.
+
+## Settled (Arun, 29 Oct 2026)
+
+Two questions the trace held open, which kept this story from In Review:
+
+1. **Signing back in after a pause: the owner restores them.** Pause disables the member's Cognito user
+   (`AdminDisableUser`, `ARCHITECTURE.md` §4.5), so their sign-in is refused, with Apple, Google or a passkey
+   alike, and they see one line: "The household’s owner has paused your access to MyPaisa." Only the owner's
+   Restore in the Admin center, behind the second check, lets them back in (`AdminEnableUser`); there is no
+   Restore tap after signing in. This keeps decision 1 above (only the owner lifts a pause).
+   - It replaces decision 2: the owner cannot pause their own account, since nobody else could restore it.
+     When the owner's own phone is lost, they sign it out, or sign out everywhere, from another device.
+   - The web boards' Pause my account, its warning and Flow 5.3's sign-in page go when the web Admin center
+     is redrawn (MA-279); MA-102's undrawn list says so.
+2. **Adding a sign-in: no second check, a fresh sign-in only.** The member completes the new provider's
+   sign-in from You, the link is an audit row, and the first sign-in with it on a device the member has not
+   used before sends the new-device message (§4.5, "More than one way in"). The board iPhone · Sign-in
+   methods already draws it this way. MA-77's acceptance drops its second-check step.

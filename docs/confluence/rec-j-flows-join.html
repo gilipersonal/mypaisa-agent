@@ -145,7 +145,7 @@
 <p>Two environments</p>
 <p>MyPaisa Dev and MyPaisa are separate apps, with their own bundle ids, sign-in settings and user pools, and each has its own web app. Tokens from dev are refused by prod; CORS admits only that environment&#x27;s site.</p>
 <p>A second sign-in</p>
-<p>From You, Sign-in methods, a member adds Apple or Google, or a passkey, to their own identity while signed in, so the person who proves it is the member. Every link and unlink is an audit row.</p>
+<p>From You, Sign-in methods, a member adds Apple or Google, or a passkey, to their own identity while signed in, with a fresh sign-in on the new account and no second check (Arun, 29 Oct 2026). Every link and unlink is an audit row, and the first sign-in with it on a new device sends the new-device message.</p>
 <p>Each device and browser</p>
 <p>A <code>Device</code> row: name, model, last seen, push token; a browser session is listed beside them. A member signs their own out from You; the owner signs out one or all of a member&#x27;s from the Admin center.</p>
 <p>Face ID, two ways</p>
