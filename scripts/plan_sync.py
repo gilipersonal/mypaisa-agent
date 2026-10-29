@@ -803,7 +803,7 @@ RECORD_CASES = [
      lambda s: s.replace("## 23. Guardrails and evals", "## 23. Something else", 1),
      r"guardrails page: ARCHITECTURE §23 is not 'Guardrails and evals'"),
     ("ARCHITECTURE 23's body emptied", "ARCHITECTURE.md",
-     lambda s: re.sub(r"(?ms)^(## 23\. [^\n]*\n).*", r"\1", s), r"guardrails page: ARCHITECTURE §23 has no body"),
+     lambda s: re.sub(r"(?ms)^(## 23\. [^\n]*\n).*?(?=^## |\Z)", r"\1", s), r"guardrails page: ARCHITECTURE §23 has no body"),
     ("ARCHITECTURE 23 edited, its page not rewritten", "ARCHITECTURE.md", lambda s: s.replace("a random 10%", "a random 20%", 1),
      r"docs/confluence/guardrails\.html is stale"),
     ("the guardrails page with no Confluence id", "docs/confluence.json", lambda m: (m["pages"].pop("guardrails"), m)[1],
