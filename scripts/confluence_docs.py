@@ -78,6 +78,12 @@ MAESTRO_GIFS = [  # (gif in docs/design/maestro-ios-ipados-testing, tab title, c
     ("04-simctl-capabilities-phases.gif", "4 · simctl & Phases 0–20 (£0/mo)", "xcrun simctl and host staging drive Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos images, Local File Provider PDFs/workbooks and AX5 across Phases 0 to 20 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15."),
     ("05-private-testflight-90day-beta.gif", "5 · Private 90-day TestFlight beta", "testFlightInternalTestingOnly = true hard-locks MyPaisa off the public App Store while silent TestFlight Automatic Updates, least-privilege App Store Connect roles and a day-60 keepalive renew the 90-day (3-month) install window indefinitely."),
 ]
+VPC_GIFS = [  # (gif in docs/design/aws-vpc-enterprise-lockdown, tab title, caption): the optional AWS VPC enterprise lockdown & costing block diagrams, animated (MA-283, MA-284)
+    ("01-vpc-topology-ingress.gif", "1 · Dual-stack VPC & ingress", "Non-overlapping dual-stack dev and prod VPCs with VPC Block Public Access, zero-egress Isolated subnets for deterministic and quarantined functions, S3 OAC static web doors, and CloudFront Pro WAF + API Gateway mTLS origin lock ($0 ALB) vs CloudFront VPC Origin + Internal ALB."),
+    ("02-three-way-data-perimeter.gif", "2 · 3-way Data Perimeter", "Free S3 and DynamoDB Gateway Endpoints enforce PrincipalAccount, ResourceAccount and SourceVpce IAM perimeters at £0.00/month so stolen credentials fail outside the VPC and rogue code cannot exfiltrate to foreign S3, while bounded presigned/OAC carve-outs preserve 5-minute Audit previews and MA-111 .xlsx uploads."),
+    ("03-egress-dns-sni-ci.gif", "3 · DNS + TLS-SNI egress & CI", "Route 53 Resolver DNS Firewall default-deny allowlists + Graviton t4g.nano fck-nat/Envoy TLS-SNI filtering (£5.66/month/env) stop unlisted FQDNs and raw-IP bypasses while private arm64 CodeBuild runners, S3 v5 Flow Logs, GuardDuty and VPC Reachability Analyzer handle all four serverless VPC gotchas."),
+    ("04-five-option-cost-rollout.gif", "4 · 5-option costing & rollout", "Side-by-side us-east-1 costing across Option 1 (£729.91/mo), Option 2A (£149.01/mo), Option 2B (£70.39/mo), Option 3A (+£13.32/mo lowest cost) and Preferred Option 3B (+£24.86/mo with prod CloudFront Pro WAF, keeping total AWS spend ~£28.36/mo inside the £50/mo cap), decided last after Phase 20 in a five-step zero-lockout rollout."),
+]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
     ("01-overview.png", "System overview", "4ae817c6-847f-45f8-a10c-4509971c9c09", "§3"),
     ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§18"),
@@ -441,6 +447,7 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
             ("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability", "hub"),
             ("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture", "hub"),
             ("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan", "hub"),
+            ("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing", "hub"),
             ("explainers", "Explainers, the prototype and the architecture drawings", "hub"),
             ("sync", "How the plan, Jira, the designs, Confluence and the code stay in step", "hub")]
     import confluence_record  # noqa: PLC0415  (the architecture and journeys record, MA-257)
@@ -505,6 +512,8 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
         out[f"cicd-{gif}"] = {"page": "cicd", "file": ROOT / "docs" / "design" / "cicd-security-regression" / gif}
     for gif, _, _ in MAESTRO_GIFS:
         out[f"maestro-{gif}"] = {"page": "maestro", "file": ROOT / "docs" / "design" / "maestro-ios-ipados-testing" / gif}
+    for gif, _, _ in VPC_GIFS:
+        out[f"vpc-{gif}"] = {"page": "vpc", "file": ROOT / "docs" / "design" / "aws-vpc-enterprise-lockdown" / gif}
     import confluence_record  # noqa: PLC0415
     record = confluence_record.wanted_images(ctx)  # their sources are worked out there: a capture's recipe and its page
     # the pictures draw each phase's title and dates only, so an estimate that moves no date redraws nothing
@@ -836,6 +845,10 @@ def render_hub(ctx: Ctx) -> str:
                "The local Apple Silicon Maestro architecture (cloned simulator pool with flock isolation from interactive MCP), the React Native 0.88 + SwiftUI "
                "selector contract, the four-sub-band iOS and iPadOS adaptive matrix, the phase-by-phase rollout across Phases 0 to 20 at £0/month, and the "
                "100% private 90-day (3-month) evergreen TestFlight household beta plan (MA-167, MA-273, MA-274).</p>"),
+        cpanel("#FFEBE6", ":lock:", f"<h3>{ctx.link('vpc', 'Optional AWS VPC enterprise lockdown, data perimeter and costing')}</h3><p>"
+               "The optional end-of-roadmap seven-layer AWS VPC enterprise lockdown and three-way aws:SourceVpce Data Perimeter across dev and prod "
+               "(decided last after Phase 20, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) "
+               "and Preferred Option 3 (+£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod, staying inside the £50/mo AWS cap; MA-283, MA-284).</p>"),
         "<h2>🔗 The records behind it</h2><ul>"
         f'<li><strong>Jira</strong>: <a href="{JIRA}/jira/software/projects/MA/boards">project MA</a>, a phase epic per phase; '
         + jql_link("project = MA AND issuetype = Epic ORDER BY duedate", "the epics by due date") + "</li>"
@@ -1046,9 +1059,10 @@ def render_explainers(ctx: Ctx) -> str:
            f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a>, '
            f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
            f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}), '
-           f'<a href="{gh("docs/design/cicd-security-regression.html")}">cicd-security-regression.html</a> (the CI/CD pipeline, seven-layer security gate, smoke suite, phase-wise regression pyramid and runner cost analysis, MA-267 to MA-272; see {ctx.link("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture")}) and '
-           f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}); '
-           'the first five are also published as Claude artifacts below, while the stack, CI/CD and Maestro explainers embed their animated block diagrams directly on their Confluence pages.</p>',
+           f'<a href="{gh("docs/design/cicd-security-regression.html")}">cicd-security-regression.html</a> (the CI/CD pipeline, seven-layer security gate, smoke suite, phase-wise regression pyramid and runner cost analysis, MA-267 to MA-272; see {ctx.link("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture")}), '
+           f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}) and '
+           f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 20, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}); '
+           'the first five are also published as Claude artifacts below, while the stack, CI/CD, Maestro and VPC explainers embed their animated block diagrams directly on their Confluence pages.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
                + "</section>" for pair in (list(ARTIFACTS.items())[k:k + 2] for k in range(0, len(ARTIFACTS), 2))),
@@ -1121,6 +1135,7 @@ RESEARCH_SECTIONS = [  # (page slug, docs/RESEARCH.md section number, expected h
     ("stack", "6", "End-to-end AWS & LLM observability"),
     ("cicd", "7", "CI/CD pipeline, seven-layer vulnerability scanning"),
     ("maestro", "8", "Local iOS & iPadOS testing strategy with Maestro"),
+    ("vpc", "9", "Optional AWS VPC enterprise lockdown"),
 ]
 
 
@@ -1288,6 +1303,46 @@ def render_maestro(ctx: Ctx) -> str:
     return "".join(out) + footer(ctx)
 
 
+def render_vpc(ctx: Ctx) -> str:
+    """The optional end-of-roadmap seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing (MA-283, MA-284)."""
+    keys = {"MA-25", "MA-26", "MA-31", "MA-106", "MA-107", "MA-108", "MA-109", "MA-111", "MA-137", "MA-148", "MA-149", "MA-159", "MA-231", "MA-232", "MA-237", "MA-245", "MA-267", "MA-268", "MA-283", "MA-284"}
+    items = [i for i in ctx.items if i["key"] in keys]
+    items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
+    sec9 = research_text("9")
+    out = [
+        cpanel("#FFEBE6", ":lock:", '<p>Arun, 29 Oct 2026 (MA-283, MA-284): optional end-of-roadmap AWS VPC enterprise lockdown and seven-layer '
+               "data perimeter across dev and prod in <code>us-east-1</code> (<code>enable_vpc_lockdown = false</code> by default; serverless IAM/tag "
+               "isolation at £3.50/month stands across Phases 0 to 20, and whether to turn VPC lockdown on is <strong>decided last, after Phase 20</strong>). "
+               "Records all five costing options side by side — Option 1 Bank-Grade Hub &amp; Spoke (£729.91/month), Option 2A/2B AWS-Managed Serverless "
+               "NAT Gateway VPC (£149.01/month and £70.39/month), Option 3A Leanest Zero-Trust VPC (+£13.32/month), and <strong>Preferred Option 3B Lean "
+               "Zero-Trust VPC + CloudFront Pro bundled AWS WAF on prod (+£24.86/month = +$32.32/month, keeping total MyPaisa AWS spend at ~£28.36/month "
+               "inside the £50/month AWS cap)</strong> — together with the four serverless VPC operational gotchas and the five-step zero-lockout rollout. "
+               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §9, <a href="{gh("PLAN.md")}">PLAN.md</a> Phase 0 and Phase 20, and '
+               f'{arch_link("14", ctx.sections)}, {arch_link("15", ctx.sections)}, {arch_link("18.1", ctx.sections)} and {arch_link("18.4", ctx.sections)} of '
+               f'<a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
+               f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">docs/design/aws-vpc-enterprise-lockdown.html</a>.</p>'),
+        toc(),
+        "<h2>🎞️ Block diagrams (animated)</h2>"
+        f'<p>Four animated block diagrams captured from <a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">docs/design/aws-vpc-enterprise-lockdown.html</a> '
+        "(MA-284): browse them in the tabs below, or beside each section further down.</p>",
+        tabs([(title, image(ctx, f"vpc-{gif}", caption, 100)) for gif, title, caption in VPC_GIFS]),
+        "<h2>🏰 1. Dual-stack VPC topology, zero-egress Isolated subnets &amp; front-door ingress lockdown (Layers 1 &amp; 2)</h2>",
+        image(ctx, "vpc-01-vpc-topology-ingress.gif", VPC_GIFS[0][2], 100),
+        "<h2>🔐 2. Free S3 &amp; DynamoDB Gateway Endpoints, three-way Data Perimeter &amp; presigned S3 carve-out (Layer 3)</h2>",
+        image(ctx, "vpc-02-three-way-data-perimeter.gif", VPC_GIFS[1][2], 100),
+        "<h2>🛰️ 3. Walled-garden DNS + Graviton TLS-SNI egress proxy, private CodeBuild CI &amp; four serverless VPC gotchas (Layers 4–7)</h2>",
+        image(ctx, "vpc-03-egress-dns-sni-ci.gif", VPC_GIFS[2][2], 100),
+        "<h2>💷 4. Five-option us-east-1 costing comparison (Preferred Option 3) &amp; five-step zero-lockout rollout</h2>",
+        image(ctx, "vpc-04-five-option-cost-rollout.gif", VPC_GIFS[3][2], 100),
+        "<h2>📖 Full blueprint, seven-layer architecture, serverless gotchas &amp; five-option costing (docs/RESEARCH.md §9)</h2>",
+        md(sec9, shift=-1),
+        "<h2>🧩 The stories that record, join with or implement it</h2><p>Every story in the trace that records, joins with or optionally builds the VPC enterprise perimeter, in phase order (MA-283 sits in Phase 20, decided last).</p>",
+        story_rows(ctx, items),
+        jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
+    ]
+    return "".join(out) + footer(ctx)
+
+
 BLOCK_END = re.compile(r"(</(?:p|h[1-6]|table|thead|tbody|tr|ul|ol|li|div|figure|section|blockquote|pre)>)")
 
 
@@ -1314,7 +1369,7 @@ def render_body(ctx: Ctx, slug_: str) -> str:
         return render_screens(ctx)
     if slug_.startswith("screens-"):
         return render_area(ctx, next(a for a in AREAS if f"screens-{a[0]}" == slug_))
-    return {"decisions": render_decisions, "guardrails": render_guardrails, "stack": render_stack, "cicd": render_cicd, "maestro": render_maestro, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
+    return {"decisions": render_decisions, "guardrails": render_guardrails, "stack": render_stack, "cicd": render_cicd, "maestro": render_maestro, "vpc": render_vpc, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
 
 
 # ---------- check and the commands ----------

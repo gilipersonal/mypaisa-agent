@@ -8154,7 +8154,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The local iOS and iPadOS Maestro testing strategy, four-sub-band device matrix, phase-wise rollout and private 90-day TestFlight beta plan are recorded in the plan and Confluence with block diagrams",
-   "status": "In Review",
+   "status": "Done",
    "labels": [],
    "arch": [
     "9.1",
@@ -8279,6 +8279,48 @@
    "design": "todo",
    "boards": [],
    "notes": "Filed 29 Oct 2026 (MA-285) with no board yet: the Admin center's list of each agent's notes (read, correct, clear behind the second check) is drawn with /design-first in MA-279's consolidated Admin center before the story starts."
+  },
+  {
+   "key": "MA-283",
+   "type": "Story",
+   "epic": "MA-175",
+   "phase": 20,
+   "summary": "Optional AWS VPC enterprise lockdown and seven-layer data perimeter across dev and prod, decided last",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "14",
+    "15",
+    "18.1",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-284 (29 Oct 2026): optional end-of-roadmap go/no-go decision taken last, after Phase 20 (enable_vpc_lockdown = false by default; serverless IAM/tag isolation at GBP 3.50/month stands unless Arun opts in). Covers all seven enterprise VPC lockdown layers in us-east-1 across dev and prod, comparing Option 1 Bank-Grade Hub-and-Spoke (GBP 729.91/month), Option 2A/2B AWS-Managed Serverless NAT Gateway VPC (GBP 149.01/month and GBP 70.39/month), and Preferred Option 3B Lean Zero-Trust VPC (+GBP 24.86/month, bringing total AWS spend to ~GBP 28.36/month inside the GBP 50/month AWS cap; Option 3A without CloudFront Pro bundled WAF is +GBP 13.32/month): dual-stack non-overlapping VPCs with VPC Block Public Access and zero-egress Isolated subnets, CloudFront OAC + Pro WAF + API Gateway mTLS origin lock, free S3 and DynamoDB Gateway Endpoints with three-way aws:SourceVpce Data Perimeter Deny policies, IPv6 EIGW + auto-healing Graviton t4g.nano fck-nat / Envoy TLS-SNI egress proxy + Route 53 DNS Firewall default-deny allowlist, private arm64 CodeBuild runners, and S3 v5 VPC Flow Logs + GuardDuty + five-step zero-lockout rollout."
+  },
+  {
+   "key": "MA-284",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The optional AWS VPC enterprise lockdown plan, seven-layer data perimeter and three-tier costing are recorded in the plan and Confluence with block diagrams",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "14",
+    "15",
+    "18.1",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "code": [
+    "docs/design/aws-vpc-enterprise-lockdown.html",
+    "docs/design/aws-vpc-enterprise-lockdown/*.gif"
+   ],
+   "notes": "Arun, 29 Oct 2026: record the complete seven-layer AWS VPC enterprise lockdown and Data Perimeter plan and deterministic us-east-1 costing across all options (Option 1 Bank-Grade Hub-and-Spoke GBP 729.91/month, Option 2A/2B AWS-Managed Serverless VPC GBP 149.01/month and GBP 70.39/month, and Preferred Option 3A/3B Lean Zero-Trust VPC +GBP 13.32/month and +GBP 24.86/month inside the GBP 50/month AWS cap, decided last after Phase 20) in docs/RESEARCH.md 9, ARCHITECTURE.md 14, 15, 18.1 and 18.4, PLAN.md Phase 0 and Phase 20, docs/design/aws-vpc-enterprise-lockdown.html, its four animated GIFs in docs/design/aws-vpc-enterprise-lockdown/, and the Confluence page Optional AWS VPC enterprise lockdown, data perimeter and costing."
   }
  ],
  "others": [
