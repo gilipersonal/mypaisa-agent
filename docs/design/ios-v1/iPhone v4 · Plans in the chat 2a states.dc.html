@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone v4 · Plans in the chat 2a states</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a.dv-tid:hover { color: #fff; } a.dv-oid:hover { color: #1a1a1a; }
+          .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 10px; text-wrap: pretty; }
+          .plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 1100px; box-sizing: border-box; margin: 14px 0 0; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+          .plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.06); }
+          .bd-h { flex-wrap: wrap; }
+          .bd-note p { margin: 0; }
+          .bd-lead { max-width: 1100px; margin: 0; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .bd-oid { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 3px 8px; background: #1a1a1a; color: #fff; border-radius: 5px; }
+          .recb { font: 700 12px/16px -apple-system, system-ui, sans-serif; color: #FFFFFF; background: #1D7A3E; padding: 3px 10px; border-radius: 999px; }
+          .dv-col { display: flex; flex-direction: column; }
+          .z1 { position: relative; z-index: 1; }
+          .f1 { flex: 1; min-width: 0; }
+          .pp { margin: 0; text-wrap: pretty; }
+          .lg > * { position: relative; z-index: 1; }
+          .tnum { font-variant-numeric: tabular-nums; }
+          .nowrap { white-space: nowrap; }
+          /* the iPhone's chat tab, as iPhone v4 · Projection draws it */
+          .cwrap { position: absolute; inset: 0; display: flex; flex-direction: column; }
+          .cmp { bottom: 102px; }
+          .cmp .chips, .cb20 .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+          .cb { position: absolute; left: 0; right: 0; bottom: 210px; }
+          .cb.top { top: 10px; bottom: auto; }
+          .fadet { position: absolute; left: 0; right: 0; top: 0; height: 14px; z-index: 5; background: linear-gradient(180deg, var(--mp-bg), color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+          .strip .ai-mark { margin-top: 0; }
+          .chat > * { flex: none; }
+          /* the iPad in landscape, as iPad v4 · Budget, assets and debts draws it */
+          .scrn.srow { flex-direction: row; }
+          .sidebar.sb { width: 240px; box-sizing: border-box; }
+          .side-h.sh0 { padding-top: 4px; }
+          .main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+          .insp { width: 320px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+          .ipg { display: flex; flex-direction: column; gap: 14px; padding: 4px 18px 24px; }
+          .ipg > * { flex-shrink: 0; }
+          .largetitle.navt { padding: 0 4px; font-size: 28px; line-height: 34px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .navl { display: flex; align-items: center; gap: 4px; min-width: 0; }
+          .navr { display: flex; gap: 8px; flex: none; }
+          .sbar.sbar-r { justify-content: flex-end; }
+          .chfadet { position: absolute; left: 0; right: 0; top: 0; height: 150px; z-index: 10; pointer-events: none; background: linear-gradient(180deg, var(--mp-bg) 62%, color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+          .ichat { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 150px; overflow: hidden; }
+          .ichat.top { justify-content: flex-start; }
+          .ichat.top .chfadet { display: none; }
+          .cb20 { bottom: 20px; }
+          .daysep, .ai-meta { font-size: 13px; line-height: 18px; color: var(--mp-ink-2); }
+          /* the Projection beside the chat on iPad: its tabs, its controls, the fan */
+          .pk-tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--mp-line); padding: 0 4px; overflow-x: auto; scrollbar-width: none; }
+          .pk-tab { min-height: 44px; display: inline-flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap; flex: none; box-sizing: border-box; }
+          .pk-tab.on { color: var(--mp-ink); border-bottom-color: var(--mp-accent); }
+          .pk-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+          .pk-hz { width: 236px; }
+          .ccyseg { width: 150px; }
+          .segc { display: grid; place-items: center; }
+          .tmw { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+          .heroI { display: flex; flex-direction: column; gap: 6px; padding: 18px 20px 16px; }
+          .fanw { position: relative; margin-top: 22px; }
+          .fanbox > svg { height: 130px; }
+          .fband { stroke: none; }
+          .fline { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+          .onhero .fline { stroke: var(--mp-coral); }
+          .fgrid { stroke-width: 1; }
+          .onhero .fgrid { stroke: var(--mp-hero-ink-2); stroke-opacity: 0.3; }
+          .gy { position: absolute; left: 0; transform: translateY(-100%); padding-bottom: 2px; font: 500 12px/16px var(--mp-font); white-space: nowrap; }
+          .onhero .gy, .onhero .mp-chartaxis { color: var(--mp-hero-ink-2); }
+          .mp-chartaxis { margin-top: 8px; }
+          .mp-chartaxis > .ax0 { transform: none; }
+          .mp-chartaxis > .ax1 { transform: translateX(-100%); }
+          .rowc { padding-top: 8px; padding-bottom: 8px; min-height: 54px; }
+          .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+          .rowv { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: none; text-align: right; }
+          .lsub { display: flex; align-items: center; gap: 6px; }
+          .mk { width: 12px; display: inline-flex; justify-content: center; flex: none; }
+          .mk-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-chart-line); }
+          .mk-sq { width: 8px; height: 8px; border-radius: 2px; background: var(--mp-surface); box-shadow: 0 0 0 2px var(--mp-ink); }
+          .mk-tk { width: 2px; height: 11px; border-radius: 1px; background: var(--mp-ink); }
+          .sech { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 4px; margin-bottom: -6px; }
+          .newchip { color: var(--mp-add); background: var(--mp-add-bg); }
+          /* the cards this round adds to the chat: plain Warm ledger content, never glass */
+          .pk-qs { display: flex; flex-direction: column; gap: 14px; }
+          .pk-q { display: flex; flex-direction: column; gap: 8px; }
+          .pk-ql { font: 600 15px/20px var(--mp-font); color: var(--mp-ink); }
+          .pk-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+          .pk-chip { min-height: 44px; padding: 10px 14px; border-radius: 22px; display: inline-flex; align-items: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; max-width: 100%; }
+          .pk-chip.on { background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-accent); }
+          .pk-chip .ms { font-size: 18px; color: var(--mp-accent); }
+          .pk-chip.off { color: var(--mp-ink-2); }
+          .pk-chips.row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: -16px; padding-right: 16px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 20px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 20px), transparent); }
+          .pk-chips.row::-webkit-scrollbar { display: none; }
+          .pk-chips.row > .pk-chip { flex: none; white-space: nowrap; }
+          .pk-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+          .pk-tags .mp-chip { white-space: normal; }
+          .pk-tags .ms { font-size: 14px; }
+          .pk-mp3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr)); gap: 8px 12px; }
+          .pk-mp3 > div { display: flex; flex-direction: column; min-width: 0; }
+          .pk-v3 { font: 600 16px/21px var(--mp-font); font-variant-numeric: tabular-nums; color: var(--mp-ink); white-space: nowrap; }
+          .pk-mp { display: flex; flex-direction: column; }
+          .pk-mpr { display: flex; justify-content: space-between; align-items: flex-start; gap: 2px 12px; flex-wrap: wrap; padding: 8px 0; border-top: 1px solid var(--mp-line); }
+          .pk-mpr:first-child { border-top: 0; padding-top: 2px; }
+          .pk-mpy { display: flex; flex-direction: column; min-width: min(100%, 5.5em); }
+          .pk-mpv { display: flex; flex-direction: column; align-items: flex-end; text-align: right; margin-left: auto; }
+          .pk-sec { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+          .pk-bw { position: relative; margin-top: 16px; }
+          .pk-bars { position: relative; height: 56px; }
+          .pk-bars > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+          .pk-bar { position: absolute; background: var(--mp-meter); border-radius: 2px 2px 0 0; min-height: 2px; }
+          .pk-bar.neg { border-radius: 0 0 2px 2px; }
+          .pk-bar.flag { background: var(--mp-alert); }
+          .pk-fm { position: absolute; transform: translate(-50%, -100%); margin-top: -2px; font: 700 11px/11px var(--mp-font); color: var(--mp-alert); }
+          .pk-zero { stroke: var(--mp-ink-2); stroke-width: 1; }
+          .pk-before { fill: none; stroke: var(--mp-ink-2); stroke-width: 1.5; stroke-dasharray: 4 3; }
+          .oncard .fgrid { stroke: var(--mp-chart-grid); }
+          .oncard .gy, .oncard .mp-chartaxis { color: var(--mp-ink-2); }
+          .lgd { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); margin-top: 4px; }
+          .lgd > span { display: inline-flex; align-items: center; gap: 6px; }
+          .sw-bar { width: 10px; height: 10px; border-radius: 2px; background: var(--mp-meter); }
+          .sw-dash { width: 16px; height: 0; border-top: 2px dashed var(--mp-ink-2); }
+          .sw-flag { color: var(--mp-alert); font: 700 12px/12px var(--mp-font); }
+          .pk-flag { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-alert-bg); color: var(--mp-alert); font: 600 15px/20px var(--mp-font); }
+          .pk-flag .ms { font-size: 18px; margin-top: 1px; flex: none; }
+          .pk-ok { display: flex; gap: 8px; align-items: flex-start; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); }
+          .pk-ok .ms { font-size: 18px; color: var(--mp-up); margin-top: 1px; flex: none; }
+          .pk-ms { display: flex; gap: 10px; align-items: flex-start; }
+          .pk-ms .mp-icontile { margin-top: 1px; }
+          .pk-ways .ccard-b { padding-bottom: 6px; }
+          .pk-way { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--mp-line); }
+          .pk-wh { display: flex; gap: 10px; align-items: flex-start; }
+          .pk-rk { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; flex: none; font: 800 15px/1 var(--mp-font-round); background: var(--mp-surface-2); color: var(--mp-ink); }
+          .pk-rk.one { background: var(--mp-hero); color: var(--mp-hero-ink); }
+          .pk-chg { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+          .pk-chg > li { display: flex; gap: 8px; align-items: flex-start; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); }
+          .pk-chg > li > i { width: 6px; height: 6px; border-radius: 50%; background: var(--mp-ink-2); flex: none; margin-top: 7px; }
+          .pk-eff { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+          .pk-eff .mp-chip { white-space: normal; }
+          .wrapx { flex-wrap: wrap; }
+          .pk-more { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; border-top: 1px solid var(--mp-line); }
+          .pk-slot { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px 10px; align-items: start; padding: 9px 0; border-top: 1px solid var(--mp-line); }
+          .pk-slot:first-child { border-top: 0; padding-top: 2px; }
+          .pk-slot > .ms { font-size: 20px; margin-top: 1px; }
+          .pk-slot > .ms.ok { color: var(--mp-up); }
+          .pk-slot > .ms.ask { color: var(--mp-accent); }
+          .pk-slot > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+          .pk-div { display: flex; align-items: center; gap: 8px; font: 600 12px/16px var(--mp-font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-ink-2); padding-top: 4px; border-top: 1px solid var(--mp-line); padding-top: 12px; }
+          .pk-opts { display: flex; flex-direction: column; margin: 0 -8px; }
+          .pk-opt { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px 10px; padding: 12px 8px; border-radius: 12px; }
+          .pk-opt + .pk-opt { box-shadow: inset 0 1px 0 var(--mp-line); }
+          .pk-opt.sel { background: var(--mp-surface-2); }
+          .pk-opt.sel + .pk-opt { box-shadow: none; }
+          .pk-rad { width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--mp-ink-2); display: grid; place-items: center; margin-top: 1px; box-sizing: border-box; }
+          .pk-opt.sel .pk-rad { box-shadow: inset 0 0 0 2px var(--mp-accent); }
+          .pk-rad > i { width: 10px; height: 10px; border-radius: 50%; background: var(--mp-accent); display: block; }
+          .pk-opt > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+          .pk-pager { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; margin-right: -16px; padding-right: 16px; }
+          .pk-pager::-webkit-scrollbar { display: none; }
+          .pk-pc { flex: none; width: min(290px, 86%); display: flex; flex-direction: column; }
+          .pk-pc .ccard-b { flex: 1; }
+          .pk-dots { display: flex; gap: 6px; justify-content: center; align-items: center; }
+          .pk-dots > i { width: 7px; height: 7px; border-radius: 50%; background: var(--mp-track); display: block; }
+          .pk-dots > i.on { background: var(--mp-ink); }
+          .pk-mini { display: flex; flex-direction: column; }
+          .pk-mr { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 2px 10px; align-items: start; padding: 9px 0; border-top: 1px solid var(--mp-line); }
+          .pk-mr:first-child { border-top: 0; padding-top: 2px; }
+          .pk-mr > div { display: flex; flex-direction: column; min-width: 0; }
+          .pk-cmp { display: grid; grid-template-columns: minmax(96px, 0.8fr) repeat(3, minmax(0, 1fr)); }
+          .pk-cmp > div { padding: 10px 10px; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); color: var(--mp-ink); min-width: 0; overflow-wrap: anywhere; }
+          .pk-cmp > div.h { border-top: 0; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+          .pk-cmp > div.k { color: var(--mp-ink-2); font-size: 13px; line-height: 18px; padding-left: 0; }
+          .pk-cmp > div.n { font-variant-numeric: tabular-nums; font-weight: 600; }
+          .pk-cmp > div.a { border-top: 0; padding-top: 4px; }
+          .pk-cmp .cbtn { padding: 0 12px; }
+          .pk-sb { position: relative; height: 40px; }
+          .pk-sb > span { position: absolute; bottom: 0; background: var(--mp-meter); border-radius: 1px 1px 0 0; min-height: 2px; }
+          .pk-aud { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; border-top: 1px solid var(--mp-line); padding-top: 8px; }
+          .pk-aud > span:first-child { font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); min-width: 0; }
+          .pk-aud .cbtn { flex: none; }
+          .pk-done { display: flex; align-items: center; gap: 6px; }
+          .pk-tech { display: flex; flex-direction: column; gap: 3px; }
+          .down { color: var(--mp-down-quiet); }
+          .t-dark .mp-ink3 { color: var(--mp-ink-2); }
+        
+          /* round 2 (lane B): the generic card's extra blocks, the cash chart, the page beside, November's budget */
+          .pk-lock { display: flex; gap: 8px; align-items: flex-start; font: 400 15px/20px var(--mp-font); color: var(--mp-ink-2); }
+          .pk-lock .ms { font-size: 18px; flex: none; margin-top: 1px; }
+          .pk-fm.dn { transform: translate(-50%, 4px); margin-top: 0; }
+          .pk-cash { height: 92px; }
+          .pk-cash .gy { left: auto; right: 0; transform: translateY(-50%); padding-bottom: 0; }
+          .pk-mw { display: flex; flex-direction: column; gap: 6px; }
+          .pk-mw + .pk-mw { border-top: 1px solid var(--mp-line); padding-top: 12px; margin-top: 12px; }
+          .pk-mw .cbtn { align-self: flex-start; }
+          .pk-sum { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--mp-line); }
+          .pk-alrow .mp-sub { color: var(--mp-alert); }
+          .bpg { display: flex; flex-direction: column; gap: 14px; padding: 0 16px 160px; }
+          .bpg > * { flex-shrink: 0; }
+          .bsub { padding: 0 4px; margin-top: -10px; }
+          .bhero { display: flex; flex-direction: column; gap: 6px; padding: 18px 20px 16px; }
+          .bsplit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; margin-top: 8px; }
+          .bsplit > div { display: flex; flex-direction: column; min-width: 0; }
+          .bcard { display: flex; flex-direction: column; padding: 14px 16px; gap: 2px; }
+          .brow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--mp-line); }
+          .brow:first-of-type { border-top: 0; }
+          .brow > div { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+          .brow .bv { font: 600 15px/20px var(--mp-font); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+          .baud { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; padding: 8px 0 4px; }
+          .baud > span:first-child { font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); min-width: 0; }
+          .baud .cbtn { flex: none; }
+          .bhd { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-bottom: 6px; }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="intro" data-screen-label="iPhone v4 · Plans in the chat 2a states: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#intro">2a</a><span class="dv-tname">iPhone and iPad · 2a, a card per step: the states still to draw</span></div>
+        <p class="dv-intro">{{ intro1 }}</p>
+        <p class="dv-intro">{{ intro2 }}</p>
+        <div class="plan"><b>Jira</b><span class="plan-k">MA-264</span><span>this round</span><span class="plan-k">MA-263</span><span>rearranging the budget</span><span class="plan-k">MA-222</span><span>plan items by talking</span><span>ARCHITECTURE.md §6.6 (items 6 and 7), §8, §9.2, §4.5, §12</span><b>Picked 2a (28 Oct 2026).</b><span>Illustrative figures: docs/design/figures/future-plans-v4.json.</span></div>
+      </section>
+
+      <sc-for list="{{ boards }}" as="b" hint-placeholder-count="7">
+        <section class="bd" id="{{ b.anchor }}">
+          <div class="bd-h"><span class="bd-oid">{{ b.id }}</span><span class="bd-name">{{ b.name }}</span><span class="bd-keys">{{ b.keys }}</span></div>
+          <p class="bd-lead">{{ b.lead }}</p>
+          <div class="bd-row">
+            <sc-for list="{{ b.frames }}" as="f" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="{{ f.cap }}">
+                <div class="bd-theme">{{ f.cap }}</div>
+                <div class="dev {{ f.devc }} mp {{ f.cls }}">
+                  <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="island"></div></sc-if>
+                  <div class="scrn {{ f.scrc }}">
+
+                    <!-- ===== iPad: the glass sidebar and the Projection beside the chat ===== -->
+                    <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
+                      <div class="sidebar sb lg">
+                        <div class="side-h sh0">MyPaisa</div>
+                        <sc-for list="{{ padnav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+                        <sc-if value="{{ f.adm }}" hint-placeholder-val="{{ true }}"><div class="side-h">Admin</div><span class="side-i"><span class="ms">shield_person</span>Admin center</span></sc-if>
+                        <span class="side-i"><span class="ms">account_circle</span>You</span>
+                      </div>
+                      <div class="main">
+                        <div class="sbar"><span>{{ f.clock }} Thu 5 Nov</span><span></span></div>
+                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1">visibility</span></span></span></div>
+                        <div class="ipg">
+                          <div class="pk-tabs" role="tablist" aria-label="Projection"><span class="pk-tab on" role="tab" aria-selected="true">Net worth</span><span class="pk-tab" role="tab" aria-selected="false">Plans</span><span class="pk-tab" role="tab" aria-selected="false">Budget forecast</span></div>
+                          <div class="pk-ctl">
+                            <div class="mp-seg pk-hz" role="group" aria-label="Horizon"><span class="mp-seg-i segc">5 yrs</span><span class="mp-seg-i segc">10 yrs</span><span class="mp-seg-i segc on">20 yrs</span><span class="mp-seg-i segc">30 yrs</span></div>
+                            <div class="mp-seg ccyseg" role="group" aria-label="Currency"><span class="mp-seg-i segc on">£ GBP</span><span class="mp-seg-i segc">₹ INR</span></div>
+                            <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+                          </div>
+                          <sc-if value="{{ f.p.isFan }}" hint-placeholder-val="{{ true }}">
+                            <div class="mp-hero heroI">
+                              <span class="mp-foot mp-hero-2">Middle path in 2046 · run {{ f.p.run }}</span>
+                              <span class="mp-num-hero">{{ f.p.big }}</span>
+                              <span class="mp-foot mp-hero-2">From £456,747 today. 8 in 10 runs end between {{ f.p.lo }} and {{ f.p.hi }}.</span>
+                              <div class="fanw onhero">
+                                <div class="mp-chartbox fanbox" role="img" aria-label="{{ f.p.aria }}">
+                                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ f.p.grid }}" as="g" hint-placeholder-count="4"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><path class="fband" sc-camel-d="{{ f.p.band }}"></path><path class="fline" sc-camel-d="{{ f.p.line }}"></path></svg>
+                                  <sc-for list="{{ f.p.grid }}" as="g" hint-placeholder-count="4"><span class="gy" style="top: {{ g.top }}" data-mo="fade">{{ g.l }}</span></sc-for>
+                                </div>
+                                <div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 45.46%">2036</span><span class="ax1" style="left: 100%">2046</span></div>
+                              </div>
+                            </div>
+                            <div class="sech"><span class="mp-over mp-ink2">Milestones</span><span class="mp-foot mp-ink2">on the line above</span></div>
+                          </sc-if>
+                          <sc-if value="{{ f.p.isList }}" hint-placeholder-val="{{ false }}">
+                            <div class="pk-sum"><span class="mp-sub mp-w6">Middle path in 2046 <span class="tnum">{{ f.p.mid }}</span></span><span class="mp-foot mp-ink2">run {{ f.p.run }} · the fan is above</span></div>
+                            <div class="sech"><span class="mp-over mp-ink2">Milestones</span><span class="mp-foot mp-ink2">on the line</span></div>
+                          </sc-if>
+                          <div class="mp-group"><sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="mp-row rowc {{ m.alc }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ m.i }}</span></span><span class="grow"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span><span>{{ m.d }}</span></span></span><span class="rowv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></span></div></sc-for></div>
+                        </div>
+                        <div class="edge-bot"></div>
+                      </div>
+                    </sc-if>
+
+                    <!-- ===== the iPhone's Budget screen, pushed from Home: November with the School fees pot ===== -->
+                    <sc-if value="{{ f.bud }}" hint-placeholder-val="{{ false }}"><div class="cwrap">
+                      <div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="nav"><span class="gbtn lg"><span class="ms z1">chevron_left</span></span><span class="fx gap8"><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1">visibility</span></span><span class="gtext lg"><span class="ms z1">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+                      <div class="scroll"><div class="bpg">
+                        <div class="largetitle" style="padding: 0 4px">Budget</div>
+                        <div class="mp-foot mp-ink2 bsub">November 2026 · open · the plan, take-home</div>
+                        <div class="mp-hero bhero">
+                          <span class="mp-over mp-hero-2">Planned surplus · November</span>
+                          <span class="mp-num-hero">{{ bud.surplus }}</span>
+                          <span class="mp-sub mp-hero-2">{{ bud.was }}</span>
+                          <div class="bsplit"><sc-for list="{{ bud.split }}" as="s" hint-placeholder-count="4"><div><span class="mp-foot mp-hero-2">{{ s.l }}</span><span class="mp-t3 tnum">{{ s.v }}</span></div></sc-for></div>
+                        </div>
+                        <div class="mp-card bcard">
+                          <div class="bhd"><span class="mp-hl">November’s plan</span><span class="mp-foot mp-ink2">plan, a month</span></div>
+                          <div class="brow"><div><span class="mp-sub mp-w6">School fees pot</span><span class="mp-foot mp-ink2">{{ bud.potSub }}</span></div><div class="fx col gap4" style="align-items: flex-end"><span class="bv">£690</span><span class="mp-chip newchip">added 20:46</span></div></div>
+                          <div class="baud"><span>{{ bud.aud }}</span><span class="cbtn cbtn-ghost">Undo</span></div>
+                          <sc-for list="{{ bud.cats }}" as="r" hint-placeholder-count="12"><div class="brow"><div><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><span class="bv">{{ r.v }}</span></div></sc-for>
+                          <div class="brow"><div><span class="mp-sub mp-w6">Spending plan</span><span class="mp-foot mp-ink2">12 categories, the pot apart</span></div><span class="bv">£2,682</span></div>
+                        </div>
+                      </div><div class="fadet"></div></div>
+                      <div class="edge-bot"></div>
+                      <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsHome }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                    </div></sc-if>
+
+                    <!-- ===== the chat: the iPhone's Chat tab, or the column beside the iPad's screen ===== -->
+                    <sc-if value="{{ f.isChat }}" hint-placeholder-val="{{ true }}"><div class="chcol {{ f.chatc }}">
+                      <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}">
+                        <div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household, net worth</span><span class="strip-n">£456,747</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                      </sc-if>
+                      <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
+                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>
+                      </sc-if>
+                      <div class="chsc {{ f.scrollc }}"><sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="fadet"></div></sc-if><sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}"><div class="chfadet"></div></sc-if><div class="chat {{ f.chatpos }}" style="top: {{ f.top }}; margin-top: {{ f.mt }}">
+
+                        <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
+                          <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
+                          <sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me">{{ m.t }}</div></sc-if>
+                          <sc-if value="{{ m.isTime }}" hint-placeholder-val="{{ false }}"><div class="me-time">{{ m.t }}</div></sc-if>
+                          <sc-if value="{{ m.isAi }}" hint-placeholder-val="{{ true }}"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+                            <sc-if value="{{ m.hasText }}" hint-placeholder-val="{{ true }}"><div class="ai-text">{{ m.t }}</div></sc-if>
+                            <sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><div class="ai-meta">{{ m.meta }}</div></sc-if>
+                            <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ true }}"><div class="ccard">
+                              <div class="ccard-h">
+                                <sc-if value="{{ m.c.ok }}" hint-placeholder-val="{{ false }}"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>{{ m.c.over }}</span></sc-if>
+                                <sc-if value="{{ m.c.plain }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ m.c.over }}</span></sc-if>
+                                <span class="mp-hl">{{ m.c.title }}</span>
+                                <sc-if value="{{ m.c.hasSub }}" hint-placeholder-val="{{ true }}"><span class="mp-sub mp-ink2">{{ m.c.sub }}</span></sc-if>
+                              </div>
+                              <sc-if value="{{ m.c.hasBody }}" hint-placeholder-val="{{ true }}"><div class="ccard-b"><sc-for list="{{ m.c.blocks }}" as="k" hint-placeholder-count="3">
+                                <sc-if value="{{ k.isKv }}" hint-placeholder-val="{{ false }}"><div class="kv"><span>{{ k.k }}</span><span class="tnum">{{ k.v }}</span></div></sc-if>
+                                <sc-if value="{{ k.isQ }}" hint-placeholder-val="{{ false }}"><div class="pk-q"><span class="pk-ql">{{ k.q }}</span><div class="pk-chips"><sc-for list="{{ k.chips }}" as="ch" hint-placeholder-count="3"><span class="pk-chip {{ ch.c }}">{{ ch.t }}</span></sc-for></div></div></sc-if>
+                                <sc-if value="{{ k.isSec }}" hint-placeholder-val="{{ false }}"><div class="pk-sec"><span class="mp-over mp-ink2">{{ k.st }}</span><span class="mp-foot mp-ink2">{{ k.r }}</span></div></sc-if>
+                                <sc-if value="{{ k.isMp3 }}" hint-placeholder-val="{{ false }}"><div class="pk-mp3"><sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="3"><div><span class="mp-foot mp-ink2">{{ r.y }}</span><span class="pk-v3">{{ r.v }}</span><span class="mp-foot tnum {{ r.cc }}">{{ r.chg }}</span></div></sc-for></div></sc-if>
+                                <sc-if value="{{ k.isBars }}" hint-placeholder-val="{{ false }}"><div class="pk-bw oncard"><div class="pk-bars pk-cash" role="img" aria-label="{{ k.aria }}">
+                                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ k.grid }}" as="g" hint-placeholder-count="3"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><line class="pk-zero" x1="0" x2="100" sc-camel-y1="{{ k.zero }}" sc-camel-y2="{{ k.zero }}"></line></svg>
+                                  <sc-for list="{{ k.grid }}" as="g" hint-placeholder-count="3"><span class="gy" style="top: {{ g.top }}" data-mo="fade">{{ g.l }}</span></sc-for>
+                                  <sc-for list="{{ k.bars }}" as="r" hint-placeholder-count="14"><span class="pk-bar {{ r.c }}" data-mo="bary" style="left: {{ r.l }}; width: {{ r.w }}; top: {{ r.t }}; height: {{ r.h }}"></span></sc-for>
+                                  <sc-for list="{{ k.marks }}" as="r" hint-placeholder-count="9"><span class="pk-fm dn" style="left: {{ r.l }}; top: {{ r.t }}" data-mo="fade">▼</span></sc-for>
+                                </div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">{{ k.a0 }}</span><span style="left: {{ k.amx }}">{{ k.a1 }}</span><span class="ax1" style="left: {{ k.a2l }}">{{ k.a2 }}</span></div></div>
+                                <div class="lgd"><span><i class="sw-bar"></i>Cash at each month’s end</span><span><span class="sw-flag">▼</span>Below zero</span></div></sc-if>
+                                <sc-if value="{{ k.isFlag }}" hint-placeholder-val="{{ false }}"><div class="pk-flag" role="note"><span>{{ k.ft }}</span></div></sc-if>
+                                <sc-if value="{{ k.isOk }}" hint-placeholder-val="{{ false }}"><div class="pk-ok"><span class="ms ms-s ms-fill">check_circle</span><span>{{ k.ot }}</span></div></sc-if>
+                                <sc-if value="{{ k.isLock }}" hint-placeholder-val="{{ false }}"><div class="pk-lock"><span class="ms ms-s">lock</span><span>{{ k.lt }}</span></div></sc-if>
+                                <sc-if value="{{ k.isFoot }}" hint-placeholder-val="{{ false }}"><p class="pp mp-foot mp-ink2">{{ k.pt }}</p></sc-if>
+                                <sc-if value="{{ k.isChg }}" hint-placeholder-val="{{ false }}"><ul class="pk-chg"><sc-for list="{{ k.items }}" as="x" hint-placeholder-count="2"><li><i></i><span>{{ x }}</span></li></sc-for></ul></sc-if>
+                                <sc-if value="{{ k.isAud }}" hint-placeholder-val="{{ false }}"><div class="pk-aud"><span>{{ k.at }}</span><sc-if value="{{ k.undo }}" hint-placeholder-val="{{ true }}"><span class="cbtn cbtn-ghost">Undo</span></sc-if></div></sc-if>
+                              </sc-for></div></sc-if>
+                              <sc-if value="{{ m.c.hasWays }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ m.c.ways }}" as="w" hint-placeholder-count="3"><div class="pk-way">
+                                <div class="pk-wh"><span class="pk-rk {{ w.rk }}">{{ w.n }}</span><span class="mp-hl f1">{{ w.t }}</span></div>
+                                <sc-if value="{{ w.open }}" hint-placeholder-val="{{ true }}"><ul class="pk-chg"><sc-for list="{{ w.chg }}" as="x" hint-placeholder-count="2"><li><i></i><span>{{ x }}</span></li></sc-for></ul></sc-if>
+                                <div class="pk-eff"><sc-for list="{{ w.effs }}" as="e" hint-placeholder-count="2"><span class="mp-chip tnum {{ e.c }}">{{ e.t }}</span></sc-for></div>
+                                <sc-if value="{{ w.open }}" hint-placeholder-val="{{ true }}"><p class="pp mp-foot mp-ink2">{{ w.why }}</p></sc-if>
+                                <sc-if value="{{ w.canApply }}" hint-placeholder-val="{{ true }}"><div class="fx ac gap8 wrapx"><span class="cbtn {{ w.bc }}">Confirm this way</span><sc-if value="{{ w.shut }}" hint-placeholder-val="{{ false }}"><span class="cbtn cbtn-ghost">What changes</span></sc-if></div></sc-if>
+                              </div></sc-for></sc-if>
+                              <sc-if value="{{ m.c.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.c.acts }}" as="a" hint-placeholder-count="2"><span class="cbtn {{ a.c }}">{{ a.t }}</span></sc-for></div></sc-if>
+                              <sc-if value="{{ m.c.hasMore }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold"><span>{{ m.c.foldMore }}</span><span class="ms">expand_less</span></div><div class="pk-more"><sc-for list="{{ m.c.more }}" as="x" hint-placeholder-count="2"><div class="pk-mw"><span class="mp-sub mp-w6">{{ x.t }}</span><span class="mp-foot mp-ink2">{{ x.n }}</span><sc-if value="{{ x.hasBtn }}" hint-placeholder-val="{{ false }}"><span class="cbtn">{{ x.btn }}</span></sc-if></div></sc-for></div></sc-if>
+                              <sc-for list="{{ m.c.folds }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms">{{ fo.i }}</span></div></sc-for>
+                              <sc-if value="{{ m.c.hasTech }}" hint-placeholder-val="{{ false }}"><div class="ccard-tech pk-tech"><sc-for list="{{ m.c.tech }}" as="t" hint-placeholder-count="5"><span>{{ t }}</span></sc-for></div></sc-if>
+                              <sc-for list="{{ m.c.foldsB }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms">{{ fo.i }}</span></div></sc-for>
+                            </div></sc-if>
+                          </div></div></sc-if>
+                        </sc-for>
+                      </div></div>
+                      <div class="edge-bot"></div>
+                      <div class="composer {{ f.compc }}"><div class="chips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><span class="gchip lg"><span class="ms">{{ c.i }}</span><span>{{ c.l }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">{{ f.ph }}</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+                      <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsChat }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div></sc-if>
+                    </div></sc-if>
+                  </div>
+                  <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="homebar"></div></sc-if>
+                </div>
+              </div>
+            </sc-for>
+            <div class="bd-note"><sc-for list="{{ b.notes }}" as="n" hint-placeholder-count="4"><p><b>{{ n.h }}</b> {{ n.t }}</p></sc-for></div>
+          </div>
+        </section>
+      </sc-for>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          // Every figure is future-plans-v4.json's (make_future_plans.py, MA-264): runs R1 to R4, later, rearrange.more,
+          // evening2 (the Plans tab at 21:05 to 21:13, then the wedding), forecast.R2.months_2026 and forecast.W.
+          const gbp = (n) => (n < 0 ? '−' : '') + '£' + Math.abs(Math.round(n)).toLocaleString('en-GB');
+          const pc = (v) => v.toFixed(2) + '%';
+          const FAN = {"R1": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 516000, 599000, 681000], [2029, 532000, 635000, 748000], [2030, 548000, 685000, 819000], [2031, 542000, 701000, 863000], [2032, 571000, 753000, 943000], [2033, 608000, 803000, 1017000], [2034, 643000, 863000, 1089000], [2035, 693000, 931000, 1165000], [2036, 726000, 1002000, 1279000], [2037, 789000, 1048000, 1378000], [2038, 845000, 1123000, 1495000], [2039, 902000, 1192000, 1584000], [2040, 941000, 1279000, 1723000], [2041, 1035000, 1417000, 1913000], [2042, 1226000, 1592000, 2167000], [2043, 1395000, 1827000, 2575000], [2044, 1582000, 2042000, 2789000], [2045, 1755000, 2299000, 3187000], [2046, 1950000, 2580000, 3544000]], "R2": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 517000, 598000, 678000], [2029, 530000, 633000, 745000], [2030, 550000, 683000, 812000], [2031, 546000, 700000, 859000], [2032, 569000, 753000, 936000], [2033, 609000, 800000, 1011000], [2034, 653000, 861000, 1080000], [2035, 698000, 929000, 1160000], [2036, 729000, 1001000, 1263000], [2037, 792000, 1046000, 1363000], [2038, 849000, 1122000, 1478000], [2039, 900000, 1191000, 1574000], [2040, 942000, 1280000, 1702000], [2041, 1038000, 1415000, 1894000], [2042, 1219000, 1586000, 2150000], [2043, 1402000, 1822000, 2549000], [2044, 1575000, 2036000, 2779000], [2045, 1758000, 2298000, 3187000], [2046, 1949000, 2585000, 3546000]], "R3": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 520000, 601000, 681000], [2029, 543000, 646000, 757000], [2030, 572000, 706000, 835000], [2031, 579000, 734000, 892000], [2032, 612000, 796000, 984000], [2033, 667000, 860000, 1069000], [2034, 716000, 931000, 1158000], [2035, 771000, 1014000, 1252000], [2036, 827000, 1114000, 1378000], [2037, 894000, 1169000, 1512000], [2038, 962000, 1250000, 1639000], [2039, 1023000, 1363000, 1763000], [2040, 1091000, 1462000, 1929000], [2041, 1210000, 1624000, 2167000], [2042, 1417000, 1835000, 2463000], [2043, 1612000, 2089000, 2898000], [2044, 1765000, 2348000, 3201000], [2045, 1980000, 2634000, 3616000], [2046, 2188000, 2923000, 4058000]], "R4": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 520000, 601000, 681000], [2029, 543000, 646000, 757000], [2030, 572000, 706000, 835000], [2031, 579000, 734000, 892000], [2032, 613000, 796000, 984000], [2033, 667000, 860000, 1069000], [2034, 717000, 931000, 1158000], [2035, 772000, 1014000, 1252000], [2036, 827000, 1114000, 1378000], [2037, 894000, 1169000, 1512000], [2038, 962000, 1250000, 1639000], [2039, 1023000, 1363000, 1763000], [2040, 1091000, 1462000, 1929000], [2041, 1210000, 1624000, 2167000], [2042, 1417000, 1835000, 2463000], [2043, 1612000, 2089000, 2897000], [2044, 1766000, 2348000, 3201000], [2045, 1980000, 2634000, 3615000], [2046, 2188000, 2923000, 4058000]], "R7": [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 520000, 601000, 681000], [2029, 543000, 646000, 757000], [2030, 573000, 706000, 835000], [2031, 603000, 758000, 918000], [2032, 638000, 823000, 1011000], [2033, 697000, 887000, 1103000], [2034, 737000, 959000, 1203000], [2035, 793000, 1039000, 1291000], [2036, 855000, 1141000, 1428000], [2037, 911000, 1197000, 1548000], [2038, 987000, 1294000, 1683000], [2039, 1041000, 1398000, 1816000], [2040, 1159000, 1534000, 2029000], [2041, 1315000, 1748000, 2321000], [2042, 1522000, 1969000, 2635000], [2043, 1716000, 2238000, 3076000], [2044, 1875000, 2498000, 3418000], [2045, 2095000, 2779000, 3869000], [2046, 2298000, 3091000, 4296000]], "W": [[2026, 459000, 468000, 477000], [2027, 432000, 491000, 542000], [2028, 500000, 580000, 659000], [2029, 523000, 624000, 731000], [2030, 557000, 681000, 806000], [2031, 580000, 734000, 888000], [2032, 618000, 801000, 981000], [2033, 673000, 857000, 1068000], [2034, 720000, 933000, 1155000], [2035, 774000, 1012000, 1251000], [2036, 827000, 1110000, 1375000], [2037, 895000, 1169000, 1502000], [2038, 962000, 1258000, 1628000], [2039, 1025000, 1365000, 1759000], [2040, 1131000, 1501000, 1963000], [2041, 1282000, 1708000, 2247000], [2042, 1498000, 1937000, 2588000], [2043, 1692000, 2202000, 3003000], [2044, 1863000, 2460000, 3331000], [2045, 2057000, 2747000, 3765000], [2046, 2275000, 3040000, 4224000]]};
+          const CASH = [["Jan 2027", 21948], ["Feb 2027", 23878], ["Mar 2027", 8444], ["Apr 2027", 10665], ["May 2027", 12894], ["Jun 2027", -19871], ["Jul 2027", -17667], ["Aug 2027", -15462], ["Sep 2027", -13256], ["Oct 2027", -11050], ["Nov 2027", -8842], ["Dec 2027", -6633], ["Jan 2028", -4499], ["Feb 2028", -2363]];   // forecast.W: cash at each month's end, Jan 2027 to Feb 2028 (months_2027 and evening2.wedding.negative_months)
+          const START = 456747, NOW = 2026 + 10 / 12 + 4 / 30, SPAN = 2047 - NOW;   // Thu 5 Nov; each point is a year's end
+          const RUNAT = { R1: 'Thu 5 Nov 20:43', R2: 'Thu 5 Nov 20:46', R3: 'Thu 5 Nov 20:53', R4: 'Thu 5 Nov 20:59', R7: 'Thu 5 Nov 21:13', W: 'Thu 5 Nov 21:16' };
+          const fan = (run) => {
+            const rows = [[NOW, START, START, START]].concat(FAN[run].map((r) => [r[0] + 1, r[1], r[2], r[3]]));
+            const vmax = 4.5e6, step = 1e6;
+            const X = (t) => (t - NOW) / SPAN * 100, Y = (v) => 100 - v / vmax * 100;
+            const pt = (r, i) => X(r[0]).toFixed(2) + ',' + Y(r[i]).toFixed(2);
+            const grid = []; for (let g = step; g < vmax; g += step) grid.push({ y: Y(g).toFixed(2), top: pc(Y(g)), l: '£' + (g / 1e6) + 'm' });
+            const end = FAN[run][20];
+            return { band: 'M' + rows.map((r) => pt(r, 3)).join(' L') + ' L' + rows.slice().reverse().map((r) => pt(r, 1)).join(' L') + ' Z', line: 'M' + rows.map((r) => pt(r, 2)).join(' L'), grid,
+              big: gbp(end[2]), lo: gbp(end[1]), hi: gbp(end[3]),
+              aria: 'Net worth to 2046: the middle path from £456,747 today to ' + gbp(end[2]) + ', with 8 in 10 runs between ' + gbp(end[1]) + ' and ' + gbp(end[3]) + '; the milestones are listed below.' };
+          };
+          // the milestones each run puts on the line (household-v4.json's, and the evening's plans with the time each was added)
+          const M = {
+            saver: ['savings', 'Asha’s fixed-rate saver matures', '14 Dec 2026', '£10,460', 'mk-tk'],
+            pot: ['savings', 'School fees pot starts', 'Nov 2026 · plan item', '£690 a month', 'mk-sq', 'added 20:46'],
+            wed: ['celebration', 'Sister’s wedding', 'Mar 2027 · plan item', '−£20,000', 'mk-sq', 'added 21:16'],
+            ext: ['construction', 'Home extension', 'Jun 2027 · plan item', '−£35,000', 'mk-sq'],
+            cashlow: ['warning', 'Cash below zero', 'Jun 2027 to Feb 2028', '−£19,871 at worst', 'mk-tk', '', true],
+            isa: ['account_balance', 'Balanced (ISA) pays the shortfall', 'Jun 2027 · plan item', '£19,871', 'mk-sq', 'added 21:17'],
+            sal: ['work', 'Arun’s salary steps up', 'Sep 2028 · plan item', '£5,500 a month', 'mk-sq', 'added 20:53'],
+            fees: ['school', 'School fees start', 'Jan 2029 · plan item', '−£4,000 a month', 'mk-sq'],
+            car: ['directions_car', 'Car loan paid off', '20 Feb 2029', 'frees £347 a month', 'mk-dot'],
+            fd: ['account_balance', 'SBI FD matures', '10 Mar 2029', '₹6,17,538', 'mk-tk'],
+            hdfc: ['real_estate_agent', 'HDFC home loan closed with the SBI FD', 'Mar 2029 · plan item', 'frees ₹39,390 a month', 'mk-sq', 'added 20:59']
+          };
+          const ms = (keys, fresh) => keys.map((k) => { const m = M[k]; return { i: m[0], w: m[1], d: m[2], a: m[3], k: m[4], isNew: !!(fresh && fresh.indexOf(k) >= 0 && m[5]), nw: m[5] || '', alert: !!m[6] }; });
+          const MS = {
+            R1: ms(['saver', 'ext', 'fees', 'car', 'fd'], ['fees']),
+            R2: ms(['pot', 'saver', 'ext', 'fees', 'car', 'fd'], ['pot']),
+            R3: ms(['pot', 'saver', 'ext', 'sal', 'fees', 'car'], ['sal']),
+            R4: ms(['pot', 'saver', 'ext', 'sal', 'fees', 'hdfc'], ['hdfc']),
+            R7: ms(['pot', 'saver', 'ext', 'sal', 'fees', 'hdfc'], []),
+            W: ms(['pot', 'saver', 'wed', 'ext', 'cashlow', 'sal', 'fees'], ['wed']),
+            W1: ms(['pot', 'saver', 'wed', 'ext', 'isa', 'sal', 'fees'], ['isa'])
+          };
+          // the page beside the chat (iPad, the laptop): the fan first, or scrolled to the milestones, or November's budget
+          const MID = { R7: 3091000, W: 3040000, W1: 3041000 };   // evening2: plans_tab.R7, wedding.middle_path_after, wedding.options[0]
+          const page = (kind, run, at) => kind === 'fan'
+            ? Object.assign({ isFan: true, isList: false, isBud: false, run: at || RUNAT[run], ms: MS[run] }, fan(run))
+            : kind === 'list'
+              ? { isFan: false, isList: true, isBud: false, run: at, ms: MS[run], mid: gbp(MID[run]) }
+              : { isFan: false, isList: false, isBud: true };
+
+          // the generic card's blocks
+          const kv = (k, v, vc) => ({ isKv: true, k, v, vc: vc || '' });
+          const q = (t, chips, on) => ({ isQ: true, q: t, chips: chips.map((x, i) => ({ t: x, c: i === on ? 'on' : '' })) });
+          const sec = (st, r) => ({ isSec: true, st, r: r || '' });
+          const mp3 = (before, after) => ({ isMp3: true, rows: ['2031', '2036', '2046'].map((y) => {
+            const d = after[y] - before[y];
+            return { y, v: gbp(after[y]), chg: d === 0 ? 'unchanged' : (d > 0 ? '▲ ' : '▼ ') + gbp(Math.abs(d)), cc: d > 0 ? 'c-add' : (d < 0 ? 'down' : 'mp-ink2') };
+          }) });
+          const foot = (pt) => ({ isFoot: true, pt });
+          const flag = (ft) => ({ isFlag: true, ft });
+          const ok = (ot) => ({ isOk: true, ot });
+          const lock = (lt) => ({ isLock: true, lt });
+          const chg = (items) => ({ isChg: true, items });
+          const tags = (items) => ({ isTags: true, items });
+          const aud = (at, undo) => ({ isAud: true, at, undo: !!undo });
+          const card = (o) => Object.assign({ ok: false, plain: true, over: '', title: '', hasSub: false, sub: '', hasBody: false, blocks: null, hasWays: false, ways: null,
+            hasActs: false, acts: null, folds: [], hasMore: false, foldMore: '', more: null, hasTech: false, tech: null, foldsB: [] }, o,
+            { plain: !o.ok, hasSub: !!o.sub, hasBody: !!(o.blocks && o.blocks.length), hasWays: !!(o.ways && o.ways.length), hasActs: !!(o.acts && o.acts.length),
+              hasMore: !!(o.more && o.more.length), hasTech: !!(o.tech && o.tech.length) });
+          const btn = (t, c) => ({ t, c: c || '' });
+          const fold = (t, open) => ({ t, i: open ? 'expand_less' : 'expand_more' });
+
+          // the wedding's cash, each month's end (forecast.W), alert-coloured and marked ▼ below zero
+          const cashBars = (() => {
+            const VMAX = 26000, VMIN = -22000, Y = (v) => (VMAX - v) / (VMAX - VMIN) * 100, z = Y(0), n = CASH.length, w = 86 / n;
+            return { isBars: true, zero: z.toFixed(2),
+              bars: CASH.map((r, i) => ({ l: pc(i * w + w * 0.18), w: pc(w * 0.64), t: pc(r[1] >= 0 ? Y(r[1]) : z), h: pc(Math.abs(Y(r[1]) - z)), c: r[1] < 0 ? 'neg flag' : '' })),
+              marks: CASH.map((r, i) => ({ r, i })).filter((x) => x.r[1] < 0).map((x) => ({ l: pc(x.i * w + w / 2), t: pc(Y(x.r[1])) })),
+              grid: [[20000, '£20k'], [0, '£0'], [-20000, '−£20k']].map((g) => ({ y: Y(g[0]).toFixed(2), top: pc(Y(g[0])), l: g[1] })),
+              a0: 'Jan 2027', amx: pc(5 * w + w / 2), a1: 'Jun', a2: 'Feb 2028', a2l: pc(86),
+              aria: 'Cash at each month’s end with the wedding, Jan 2027 to Feb 2028: £21,948 in January, £8,444 after the wedding in March, then £19,871 below zero in June when the extension is paid, climbing back to £2,363 below zero by February 2028 and above zero in March 2028.' };
+          })();
+
+          // ---------- the states ----------
+          const day = { isDay: true, t: 'Today' };
+          const me = (t) => ({ isMe: true, t }), tm = (t) => ({ isTime: true, t });
+          const ai = (t, c, meta) => ({ isAi: true, hasText: !!t, t: t || '', hasCard: !!c, c: c || {}, hasMeta: !!meta, meta: meta || '' });
+          const W19 = '£19,058';
+          const WAYS1 = [
+            { n: '1', rk: 'one', t: 'Start a school fees pot this month', mp: '£2,585,000' },
+            { n: '2', rk: '', t: 'Spend less on holidays, eating out and shopping from Jan 2029', mp: '£2,703,000' },
+            { n: '3', rk: '', t: 'Take the gap from Balanced (ISA)', mp: '£2,582,000' }
+          ].map((w, i) => ({ n: w.n, rk: w.rk, t: w.t, open: false, chg: null, why: '', effs: [{ t: '2046 · ' + w.mp, c: 'mp-neutral' }, { t: '0 months under £500', c: 'newchip' }], canApply: true, bc: i ? '' : 'cbtn-primary', shut: false, lock: '' }));
+          // 20:44, the two more ways opened on the 20:43 card (rearrange.more)
+          const moreCard = card({ over: 'Cover the gap', title: 'Three ways, best fit first', sub: W19 + ' short, Jan 2029 to Feb 2035', ways: WAYS1,
+            foldMore: 'Two more ways', more: [
+              { t: 'Start the fees in Jan 2032 instead', n: 'Covers it, but only if the start date can move; school dates usually can’t. It moves a plan’s start, so it is way 4, not one of the first three.', btn: 'Confirm this way', hasBtn: true },
+              { t: 'Pause the Parag Parikh SIP (₹10,000 a month) from Jan 2029', n: 'Covers £3,436 of £19,058; not enough on its own, so it cannot be confirmed by itself.', btn: '', hasBtn: false }],
+            foldsB: [fold('Technical')] });
+          const S1 = [me('What are the other two?'), tm('20:44'), ai('Two more ways code found. Neither is in the first three: one moves the fees’ start, the other is too small on its own.', moreCard)];
+
+          // 20:47, the applied card, then November's budget
+          const appliedMini = card({ ok: true, over: 'Applied · way 1 of 3', title: 'Start a school fees pot this month', sub: '£690 a month, Nov 2026 to Dec 2028, drawn Jan 2029 to Feb 2035',
+            blocks: [kv('November’s planned surplus', '£2,636 → £1,946'), aud('Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat', true)],
+            acts: [btn('See November’s budget', '')] });
+          const S2 = [ai('Done. November’s budget now puts £690 into the School fees pot, and the Projection has run again.', appliedMini)];
+
+          // 20:52 to 20:53, the salary step: a change to an existing flow (later.salary_step)
+          const salQ = card({ over: 'Change to a flow', title: 'Arun’s salary', sub: 'Set to £5,500 a month from Sep 2028; it would be £4,778 by then. Take-home, as every amount is.',
+            blocks: [q('How does it grow after that?', ['Your own 4.8% a year, from Apr 2029', 'No growth', 'Another rate'], -1), q('Until when?', ['Until you retire at 60, Jan 2051', 'For a number of years'], -1)] });
+          const salImp = card({ over: 'Not saved yet', title: 'Arun’s salary, £5,500 a month from Sep 2028', sub: '+£722 a month on Aug 2028’s £4,778, then your own 4.8% each April, until Jan 2051',
+            blocks: [sec('Middle path', 'with the step'), mp3({ 2031: 700000, 2036: 1001000, 2046: 2585000 }, { 2031: 734000, 2036: 1114000, 2046: 2923000 }),
+              foot('Was £700,000 · £1,001,000 · £2,585,000'), ok('No month is flagged under your £500 floor. Cash stays above zero.')],
+            acts: [btn('Confirm', 'cbtn-primary'), btn('Change'), btn('Cancel', 'cbtn-ghost')], folds: [fold('Details and technical')] });
+          const salSaved = card({ ok: true, over: 'Added to the plan', title: 'Arun’s salary, £5,500 a month from Sep 2028', sub: 'Then 4.8% each April, until you retire at 60 · 2046 middle path ▲ £338,000',
+            blocks: [aud('Audit · Plan item added · Arun’s salary set to £5,500 a month from Sep 2028 · Arun · Thu 5 Nov 20:53 · in the chat', true)],
+            folds: [fold('Technical', true)],
+            tech: ['propose_plan_item → Arun’s salary · change_flow · income', 'target: commitment Salary · Arun · set to £5,500 a month · from Sep 2028', 'growth: member, 4.8% a year from Apr 2029 · until Jan 2051 (60)', 'version: none → 1', 'source_text: “my salary goes to £5,500 a month from Sep 2028”', 'Projection run 20:46 → 20:53 · 2046 middle path £2,585,000 → £2,923,000 (+£338,000)', 'Every figure is the engine’s.'] });
+          const S3a = [me('my salary goes to £5,500 a month from Sep 2028'), tm('20:52'), ai('I’ll change your salary from Sep 2028. Two things first.', salQ)];
+          const S3b = [me('Your own 4.8% a year, from Apr 2029'), me('Until you retire at 60, Jan 2051'), tm('20:52'), ai('', salImp)];
+          const S3c = [ai('', salImp), me('Confirm'), tm('20:53'), ai('Saved, with its audit row. The Projection has run again with it.', salSaved)];
+
+          // 20:58 to 20:59, the HDFC closure: an event on a record (later.hdfc_close)
+          const hdQ = card({ over: 'Event on a record', title: 'Close the HDFC home loan', sub: 'With the SBI FD when it matures, 10 Mar 2029; paid from: Fixed deposit · SBI, at maturity',
+            blocks: [q('The FD is more than the balance then. Where does the rest go?', ['Into cash', 'Into the NRE savings'], -1)] });
+          const hdImp = card({ over: 'Not saved yet', title: 'Close the HDFC home loan in Mar 2029', sub: 'The SBI FD’s ₹6,17,538 clears the ₹5,93,849 left then',
+            blocks: [kv('Left over, into cash', '₹23,689'), kv('The EMI stops after', 'Mar 2029, not Jul 2030'), kv('EMIs not paid', '16 × ₹39,390'),
+              sec('Middle path', 'with the closure'), mp3({ 2031: 734000, 2036: 1114000, 2046: 2923000 }, { 2031: 734000, 2036: 1114000, 2046: 2923000 }),
+              ok('No month is flagged under your £500 floor. Cash stays above zero.')],
+            acts: [btn('Confirm', 'cbtn-primary'), btn('Change'), btn('Cancel', 'cbtn-ghost')], folds: [fold('Details and technical')] });
+          const hdSaved = card({ ok: true, over: 'Added to the plan', title: 'Close the HDFC home loan in Mar 2029', sub: 'With the SBI FD; frees ₹39,390 a month, 16 EMIs early',
+            blocks: [aud('Audit · Plan item added · Close the HDFC home loan with the SBI FD, Mar 2029 · Arun · Thu 5 Nov 20:59 · in the chat', true)],
+            folds: [fold('Technical', true)],
+            tech: ['propose_plan_item → Close the HDFC home loan · record_event', 'target: record Home loan · HDFC (Pune flat) · prepay the balance', 'funded_from: Fixed deposit · SBI, at maturity (₹6,17,538)', 'Mar 2029: ₹5,93,849 cleared · ₹23,689 into cash · the ₹39,390 EMI stops', 'version: none → 1', 'source_text: “close my HDFC loan with the SBI FD when it matures”', 'Projection run 20:53 → 20:59 · 2046 middle path £2,923,000, unchanged', 'Every figure is the engine’s.'] });
+          const S4a = [me('close my HDFC loan with the SBI FD when it matures'), tm('20:58'), ai('That’s 10 Mar 2029. One thing first.', hdQ)];
+          const S4i = S4a.concat([me('Into cash'), tm('20:58'), ai('', hdImp)]);
+          const S4b = [me('Into cash'), tm('20:58'), ai('', hdImp), me('Confirm'), tm('20:59'), ai('Saved. The loan closes in Mar 2029 and its EMI stops; the Projection has run again.', hdSaved)];
+
+          // 21:15 to 21:18, the wedding: a one-off that leaves cash below zero (evening2.wedding)
+          const wedQ = card({ over: 'New plan item', title: 'Sister’s wedding', sub: '£20,000, once, in Mar 2027', blocks: [q('Paid from where?', ['The monthly budget, then cash', 'A pool you name'], -1)] });
+          const wedImp = card({ over: 'Not saved yet', title: 'Sister’s wedding, £20,000 in Mar 2027', sub: 'Once, from the monthly budget, then cash',
+            blocks: [sec('Middle path', 'with the wedding'), mp3({ 2031: 758000, 2036: 1141000, 2046: 3091000 }, { 2031: 734000, 2036: 1110000, 2046: 3040000 }),
+              sec('Cash', 'each month’s end'), cashBars,
+              flag('▼ Cash goes £19,871 below zero in Jun 2027, when the extension is paid; back above zero in Mar 2028'),
+              foot('No month is flagged under your £500 floor; it is cash that runs short.')],
+            acts: [btn('Confirm', 'cbtn-primary'), btn('Change'), btn('Cancel', 'cbtn-ghost')], folds: [fold('Details and technical')] });
+          const wedSaved = card({ ok: true, over: 'Added to the plan', title: 'Sister’s wedding, £20,000 in Mar 2027', sub: '2046 middle path ▼ £51,000 · cash below zero Jun 2027 to Feb 2028',
+            blocks: [aud('Audit · Plan item added · Sister’s wedding, £20,000 in Mar 2027 · Arun · Thu 5 Nov 21:16 · in the chat', true)] });
+          const WAYSC = (member) => [
+            { n: '1', rk: 'one', t: 'Take it from Balanced (ISA) when cash runs short', chg: ['Balanced (ISA) pays £19,871 in Jun 2027'], why: 'Nothing you spend or plan moves; the investments you would have kept pay for the wedding.', mp: '£3,041,000' },
+            { n: '2', rk: '', t: 'Move the home extension to Mar 2028', chg: ['Home extension: Jun 2027 → Mar 2028, still £35,000'], why: 'Only if the extension can wait; cash then covers both from the budget.', mp: '£3,041,000' },
+            { n: '3', rk: '', t: 'Pause the School fees pot until Jun 2027, and take the rest from Balanced', chg: ['School fees pot: £0 a month Nov 2026 to Jun 2027 (this month’s budget included), then £690 to Dec 2028', 'Balanced (ISA) pays £14,302 in Jun 2027'], why: 'The pot is more than the fees now need, since the salary step and the HDFC closure; it lends the wedding eight months.', mp: '£3,038,000' }
+          ].map((w, i) => ({ n: w.n, rk: w.rk, t: w.t, open: i === 0, chg: w.chg, why: w.why,
+            effs: [{ t: '2046 · ' + w.mp, c: 'mp-neutral' }, { t: 'Cash never below zero', c: 'newchip' }],
+            canApply: !member, bc: i ? '' : 'cbtn-primary', shut: i > 0, lock: '' }));
+          const waysCash = (member) => card({ over: member ? 'Ways code found' : 'Cover the shortfall', title: 'Three ways, best fit first', sub: '£19,871 short in Jun 2027, when the extension is paid; back above zero in Mar 2028',
+            ways: WAYSC(member), blocks: member ? [lock('Only Arun can apply a way. Nothing here is saved; ask him, or ask me what any of them does.')] : null,
+            foldsB: [fold('Technical')] });
+          const wedApplied = card({ ok: true, over: 'Applied · way 1 of 3', title: 'Take it from Balanced (ISA) when cash runs short', sub: 'Balanced (ISA) pays £19,871 in Jun 2027',
+            blocks: [kv('Cash in Jun 2027', '−£19,871 → £0'), kv('2046 middle path', '£3,040,000 → £3,041,000'),
+              aud('Audit · Plan item added · Balanced (ISA) pays the wedding’s shortfall, £19,871 in Jun 2027 · Arun · Thu 5 Nov 21:17 · in the chat', true)] });
+          const wedUndone = card({ over: 'Undone', title: 'Balanced (ISA) no longer pays the shortfall', sub: 'The wedding stays in the plan; cash is flagged again',
+            blocks: [aud('Audit · Undone · Balanced (ISA) paying the wedding’s shortfall · Arun · Thu 5 Nov 21:18 · in the chat', false),
+              flag('▼ Cash goes £19,871 below zero in Jun 2027; back above zero in Mar 2028')],
+            acts: [btn('See the three ways', '')] });
+          const S5a = [me('£20,000 for my sister’s wedding in Mar 2027'), tm('21:15'), ai('I’ll add that as a plan item. One thing first.', wedQ), me('The monthly budget, then cash'), tm('21:15'), ai('', wedImp)];
+          const S5b = [ai('', wedSaved), ai('Saved, with its audit row. It leaves cash £19,871 short in Jun 2027, when the extension is paid; code found three ways to cover it.', waysCash(false))];
+          const S5c = [ai('', wedSaved), me('Confirm way 1'), tm('21:17'), ai('Done. Balanced (ISA) covers June’s shortfall; the Projection has run again.', wedApplied)];
+          const S5d = [ai('', wedApplied), me('Undo'), tm('21:18'), ai('Undone. The wedding stays in the plan, and cash is flagged again in Jun 2027.', wedUndone)];
+
+          // 21:20, Asha, a member, in her own conversation
+          const refusePlan = card({ over: 'Not saved', title: 'Plans are Arun’s', sub: '£300 a month for your gym from January, your words',
+            blocks: [lock('Plan items are the admin’s alone; Arun adds them. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
+            acts: [btn('Show it as a what-if', 'cbtn-primary'), btn('Tell Arun', '')] });
+          const refuseAsm = card({ over: 'Not saved', title: 'The saved assumptions are Arun’s', sub: 'UK inflation is 2.5% a year, the prior Arun keeps',
+            blocks: [lock('Only Arun can change a saved assumption. Nothing is saved.'), foot('I can run a what-if at 3% for you; nothing in the plan moves.')],
+            acts: [btn('Show it at 3%', 'cbtn-primary')] });
+          const S6 = [day, me('Can we afford the wedding?'), tm('21:20'),
+            ai('It’s in Arun’s plan: £20,000 in Mar 2027. Cash goes £19,871 below zero in Jun 2027, when the extension is paid, and is back above zero in Mar 2028. These are the ways code found.', waysCash(true)),
+            me('Add £300 a month for my gym from January'), tm('21:21'), ai('', refusePlan),
+            me('Make UK inflation 3%'), tm('21:21'), ai('', refuseAsm)];
+
+          // 21:22, Arun, plans the engine cannot settle from his words
+          const askLoan = card({ over: 'Before I can set this up', title: 'Which loan, and how much exactly?', sub: '“about 2 cr” is not an amount the engine can use',
+            blocks: [q('Which loan?', ['Mortgage · Nationwide', 'Car loan · Close Brothers', 'Home loan · HDFC'], -1),
+              foot('The HDFC loan already closes in Mar 2029 with the SBI FD (added 20:59).'), foot('Then the exact amount, in rupees or pounds, and when.')] });
+          const noLoan = card({ over: 'No such loan', title: 'There’s no ICICI loan in your records', sub: 'Your loans: Mortgage · Nationwide, Car loan · Close Brothers, Home loan · HDFC',
+            blocks: [foot('If it is new, register it in the chat first (“add my ICICI loan”); then a plan can close it.')],
+            acts: [btn('Register a loan', ''), btn('One of these', '')] });
+          const S7 = [me('about 2 cr to close my loan'), tm('21:22'), ai('', askLoan), me('close my ICICI loan'), tm('21:22'), ai('', noLoan)];
+
+
+          // ---------- the frames ----------
+          const OFFS = {"iPhone · Plans in the chat 2a, the two more ways opened · 20:44 · Light": -635, "iPhone · Plans in the chat 2a, the salary step · 20:52, the questions · Light": 0, "iPhone · Plans in the chat 2a, the salary step · 20:52, the impact · Light": -582, "iPhone · Plans in the chat 2a, the salary step · 20:53, saved, technical · Dark": -571, "iPhone · Plans in the chat 2a, the HDFC closure · 20:58, the question · Light": 0, "iPhone · Plans in the chat 2a, the HDFC closure · 20:58, the impact · Light": -418, "iPhone · Plans in the chat 2a, the HDFC closure · 20:59, saved, technical · Dark": -771, "iPhone · Plans in the chat 2a, the wedding, cash below zero · 21:15, the question and the impact · Light": -572, "iPhone · Plans in the chat 2a, the wedding, cash below zero · 21:16, the ways to cover it · Light": -225, "iPhone · Plans in the chat 2a, the wedding, cash below zero · 21:16, the ways to cover it · Dark": -663, "iPhone · Plans in the chat 2a, the wedding, cash below zero · 21:17, way 1 applied · Light": -104, "iPhone · Plans in the chat 2a, the wedding, cash below zero · 21:18, undone · Dark": -232, "iPad · Plans in the chat 2a, the wedding, cash below zero · 21:16, the ways to cover it · Light": -263, "iPad · Plans in the chat 2a, the wedding, cash below zero · 21:16, the ways to cover it · Dark": -811, "iPhone · Plans in the chat 2a, Asha asks · 21:20 · Light": -40, "iPhone · Plans in the chat 2a, Asha asks · 21:21 · Dark": -1238, "iPad · Plans in the chat 2a, Asha asks · 21:20 · Light": -40, "iPad · Plans in the chat 2a, Asha asks · 21:21 · Dark": -1420, "iPhone · Plans in the chat 2a, plans it cannot set up · 21:22 · Light": 0, "iPhone · Plans in the chat 2a, plans it cannot set up · 21:22 · Dark": -236, "Browser · Plans in the chat 2a, the two more ways opened · 20:44 · Light": -537, "Browser · Plans in the chat 2a, the pot in the November budget · 20:47 · Light": 0, "Browser · Plans in the chat 2a, the pot in the November budget · 20:47 · Dark": 0, "Browser · Plans in the chat 2a, the salary step · 20:52, the questions · Light": 0, "Browser · Plans in the chat 2a, the salary step · 20:52, the impact · Light": -485, "Browser · Plans in the chat 2a, the salary step · 20:53, saved, technical · Dark": -493, "Browser · Plans in the chat 2a, the HDFC closure · 20:58, the question · Light": 0, "Browser · Plans in the chat 2a, the HDFC closure · 20:58, the impact · Light": -286, "Browser · Plans in the chat 2a, the HDFC closure · 20:59, saved, technical · Dark": -655, "Browser · Plans in the chat 2a, the wedding, cash below zero · 21:15, the question and the impact · Light": -460, "Browser · Plans in the chat 2a, the wedding, cash below zero · 21:16, the ways to cover it · Light": -225, "Browser · Plans in the chat 2a, the wedding, cash below zero · 21:16, the ways to cover it · Dark": -548, "Browser · Plans in the chat 2a, the wedding, cash below zero · 21:17, way 1 applied · Light": 0, "Browser · Plans in the chat 2a, the wedding, cash below zero · 21:18, undone · Dark": -121, "Browser · Plans in the chat 2a, the wedding, cash below zero, phone · 21:16, the ways to cover it · Light": -225, "Browser · Plans in the chat 2a, the wedding, cash below zero, phone · 21:16, the ways to cover it · Dark": -681, "Browser · Plans in the chat 2a, Asha asks · 21:20 · Light": -40, "Browser · Plans in the chat 2a, Asha asks · 21:21 · Dark": -1122, "Browser · Plans in the chat 2a, Asha asks, phone · 21:20 · Light": -40, "Browser · Plans in the chat 2a, Asha asks, phone · 21:21 · Dark": -1232, "Browser · Plans in the chat 2a, plans it cannot set up · 21:22 · Light": 0, "Browser · Plans in the chat 2a, plans it cannot set up · 21:22 · Dark": -107};   // where each frame's chat is scrolled to, measured from the rendered board (laneB/measure.js)
+          const at = (cap, top) => (OFFS[cap] !== undefined ? OFFS[cap] : top);
+          const T = [['Light', 't-light'], ['Dark', 't-dark']];
+          const CHIPS = [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((c) => ({ i: c[0], l: c[1] }));
+          const PADCHIPS = [['event', 'What’s due'], ['add_circle', 'Add anything']].map((c) => ({ i: c[0], l: c[1] }));
+          const msAl = (p) => (p.ms ? Object.assign({}, p, { ms: p.ms.map((m) => Object.assign({}, m, { alc: m.alert ? 'pk-alrow' : '' })) }) : p);
+          // the iPhone's Chat tab; `top` scrolls the chat to a point (in points from the top), none keeps its end in view
+          const iphone = (cap, th, clock, list, top0, top = at(cap + ' · ' + th[0], top0)) => ({ cap: cap + ' · ' + th[0], cls: th[1], devc: 'dev-iphone', scrc: '', phone: true, pad: false, bud: false, isChat: true,
+            chatc: 'cwrap', scrollc: 'scroll', chatpos: 'cb' + (top !== undefined ? ' top' : ''), top: top !== undefined ? top + 'px' : 'auto', mt: '0px', compc: 'cmp',
+            chips: CHIPS, ph: 'Ask MyPaisa', clock, msgs: list, p: {}, adm: true });
+          const ipad = (cap, th, clock, list, pg, o) => ({ cap: cap + ' · ' + th[0], cls: th[1], devc: 'dev-ipad-l ipad', scrc: 'srow', phone: false, pad: true, bud: false, isChat: true,
+            chatc: 'insp', scrollc: 'ichat top', chatpos: '', top: 'auto', mt: at(cap + ' · ' + th[0], o.top || 0) + 'px', compc: 'cb20', chips: PADCHIPS, ph: 'Message MyPaisa', clock, msgs: list, p: msAl(pg), adm: !o.member });
+          const budf = (cap, th) => ({ cap: cap + ' · ' + th[0], cls: th[1], devc: 'dev-iphone', scrc: '', phone: true, pad: false, bud: true, isChat: false, clock: '20:47', msgs: [], p: {}, adm: true });
+          // November's budget (forecast.R2.months_2026[0]; settings.categories for each plan's inflation key and currency)
+          const CATS = [['Bills and council tax', 420, 'UK 2.5% a year'], ['Groceries', 650, 'UK 2.5% a year'], ['Transport', 220, 'UK 2.5% a year'], ['Insurance', 85, 'UK 2.5% a year'],
+            ['Eating out', 180, 'UK 2.5% a year'], ['Shopping', 250, 'UK 2.5% a year'], ['Holidays', 400, 'UK 2.5% a year'], ['Health', 60, 'UK health 4% a year'],
+            ['Subscriptions', 45, 'UK 2.5% a year'], ['Giving', 50, 'UK 2.5% a year'], ['Family support, India', 222, '₹25,000 a month · India 5% a year'], ['Other', 100, 'UK 2.5% a year']];
+          const bud = { surplus: '£1,946', was: 'Was £2,636 before the School fees pot · 25.7% of take-home',
+            split: [['Income', '£7,560'], ['Spending plan', '£2,682'], ['EMIs and SIP', '£2,242'], ['School fees pot', '£690']].map((s) => ({ l: s[0], v: s[1] })),
+            potSub: '£690 a month to Dec 2028, drawn from Jan 2029 to Feb 2035; put in by a rearrangement',
+            aud: 'Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat',
+            cats: CATS.map((c) => ({ n: c[0], v: gbp(c[1]), s: c[2] })) };
+          const n1 = 'iPhone · Plans in the chat 2a, the two more ways opened';
+          const n2 = 'iPhone · Plans in the chat 2a, the pot in the November budget';
+          const n3 = 'iPhone · Plans in the chat 2a, the salary step';
+          const n4 = 'iPhone · Plans in the chat 2a, the HDFC closure';
+          const n5 = 'iPhone · Plans in the chat 2a, the wedding, cash below zero';
+          const n6 = 'iPhone · Plans in the chat 2a, Asha asks';
+          const n7 = 'iPhone · Plans in the chat 2a, plans it cannot set up';
+          const pad = (n) => n.replace('iPhone · ', 'iPad · ');
+          const asha = (f) => f;
+          const boards = [
+            { anchor: 's1', id: 'S1', name: 'iPhone · Plans in the chat 2a, the two more ways opened', keys: 'MA-263 · MA-264',
+              lead: 'At 20:44 Arun opens Two more ways on the 20:43 card: starting the fees in Jan 2032, which covers the gap only if the date can move, and pausing the SIP, which covers £3,436 of £19,058 and so has no Confirm of its own.',
+              frames: [iphone(n1 + ' · 20:44', T[0], '20:44', S1, -24)],
+              notes: [{ h: 'Draws (MA-263):', t: '“the two more ways opened (move the fees’ start, pause the SIP)”. The other half of that item, a rearrangement for cash, is S5.' }, { h: 'Figures:', t: 'rearrange.more in future-plans-v4.json, word for word.' }] },
+            { anchor: 's2', id: 'S2', name: 'iPhone · Plans in the chat 2a, the pot in the November budget', keys: 'MA-263 · MA-96 · MA-264',
+              lead: 'At 20:47, from the applied card’s See November’s budget: the Budget screen shows the School fees pot as a line of November’s plan, the planned surplus £2,636 → £1,946, and the change’s audit row with Undo.',
+              frames: [budf(n2 + ' · 20:47', T[0]), budf(n2 + ' · 20:47', T[1])],
+              notes: [{ h: 'Draws (MA-263):', t: '“the Budget screen’s November with the School fees pot line (this month’s budget changed by a rearrangement), at both doors”; the web door is Browser · Plans in the chat 2a, the pot in the November budget.' },
+                { h: 'Figures:', t: 'forecast.R2.months_2026[0]: income £7,560, spending plan £2,682, EMIs £2,153 and SIP £89 (£2,242), the pot £690, surplus £1,946, a savings rate of 25.7%.' },
+                { h: 'Nothing created here:', t: 'the pot came from the chat’s Confirm; the screen shows it, and Undo is the audit row’s, as on the card.' }] },
+            { anchor: 's3', id: 'S3', name: 'iPhone · Plans in the chat 2a, the salary step', keys: 'MA-222 · MA-264',
+              lead: 'At 20:52 Arun says “my salary goes to £5,500 a month from Sep 2028”: a change to an existing flow. MyPaisa asks how it grows and until when, shows the engine’s impact (R2 → R3), and at 20:53 saves it; the saved card’s Technical shows the audit row in full.',
+              frames: [iphone(n3 + ' · 20:52, the questions', T[0], '20:52', S3a, 0), iphone(n3 + ' · 20:52, the impact', T[0], '20:52', S3a.concat(S3b), -500), iphone(n3 + ' · 20:53, saved, technical', T[1], '20:53', S3c, -380)],
+              notes: [{ h: 'Draws (MA-222):', t: '“the change_flow (…) plan-item effects and fields (…)”: a change_flow on Salary · Arun, set to from a date, its growth (his own 4.8%, from the next April) and its end (until an age, 60); and “the plan item’s audit row on creation (…) showing the admin’s own words (source_text), the version before and after, and the ProjectionRun before and after with the 20-year net-worth change”.' },
+                { h: 'Figures:', t: 'later.salary_step: £4,778 in Aug 2028 → £5,500 (+£722); the middle path R2 → R3, 2031 £700,000 → £734,000, 2036 £1,001,000 → £1,114,000, 2046 £2,585,000 → £2,923,000.' },
+                { h: 'Amounts are take-home,', t: 'so nothing asks about tax (MA-261).' }] },
+            { anchor: 's4', id: 'S4', name: 'iPhone · Plans in the chat 2a, the HDFC closure', keys: 'MA-222 · MA-264',
+              lead: 'At 20:58 Arun says “close my HDFC loan with the SBI FD when it matures”: an event on a record, funded from a named pool. One question (where the rest goes), the engine’s impact, and at 20:59 it is saved.',
+              frames: [iphone(n4 + ' · 20:58, the question', T[0], '20:58', S4a, 0), iphone(n4 + ' · 20:58, the impact', T[0], '20:58', S4i, -300), iphone(n4 + ' · 20:59, saved, technical', T[1], '20:59', S4b, -330)],
+              notes: [{ h: 'Draws (MA-222):', t: '“the (…) record_event (…) plan-item effects and fields (…)”, with funded_from, the SBI FD at maturity. The docs’ “₹2 cr to close my SBI home loan” is said in this household’s figures: it has no SBI home loan, and ₹2 crore is thirteen times the HDFC balance.' },
+                { h: 'Figures:', t: 'later.hdfc_close: the FD’s ₹6,17,538 clears ₹5,93,849 in Mar 2029, ₹23,689 is left over, and the ₹39,390 EMI stops 16 EMIs early. The middle path does not move at 2031, 2036 or 2046 (R3 = R4 there).' }] },
+            { anchor: 's5', id: 'S5', name: 'iPhone · Plans in the chat 2a, the wedding, cash below zero', keys: 'MA-263 · MA-222 · MA-264',
+              lead: 'At 21:15 Arun adds “£20,000 for my sister’s wedding in Mar 2027”. Paid from the budget, then cash, it leaves cash £19,871 below zero in Jun 2027, when the extension is paid; so the ways are for cash, not the floor. At 21:17 he applies way 1; at 21:18 he undoes it, and the wedding stays, flagged again.',
+              frames: [iphone(n5 + ' · 21:15, the question and the impact', T[0], '21:15', S5a, -540), iphone(n5 + ' · 21:16, the ways to cover it', T[0], '21:16', S5b, -150),
+                iphone(n5 + ' · 21:16, the ways to cover it', T[1], '21:16', S5b, -470), iphone(n5 + ' · 21:17, way 1 applied', T[0], '21:17', S5c, -60),
+                iphone(n5 + ' · 21:18, undone', T[1], '21:18', S5d, -150),
+                ipad(pad(n5) + ' · 21:16, the ways to cover it', T[0], '21:16', S5b, page('list', 'W', 'Thu 5 Nov 21:16'), { top: -40 }),
+                ipad(pad(n5) + ' · 21:16, the ways to cover it', T[1], '21:16', S5b, page('list', 'W', 'Thu 5 Nov 21:16'), { top: -360 })],
+              notes: [{ h: 'Draws (MA-263):', t: '“(…) and a rearrangement offered because cash would go below zero rather than the floor”, and “Undo after a way is applied, and its audit row”.' },
+                { h: 'Figures:', t: 'evening2.wedding: the middle path R7 → W, 2046 £3,091,000 → £3,040,000; cash by month from forecast.W (Jan 2027 £21,948 to Feb 2028 −£2,363); the three ways, their changes and 2046’s middle path; the applied and undone audit rows.' },
+                { h: 'Before 21:15:', t: 'at 21:08 to 21:13 Arun paused, resumed, corrected and ended plans on the Plans tab (Plans tab 3a states), so the wedding starts from R7: School fees end Jul 2040, Replace the car ended.' },
+                { h: 'The iPad’s page', t: 'is the Net worth tab scrolled to its milestones, with the wedding on the line and cash below zero flagged among them.' }] },
+            { anchor: 's6', id: 'S6', name: 'iPhone · Plans in the chat 2a, Asha asks', keys: 'MA-263 · MA-222 · MA-264',
+              lead: 'At 21:20 Asha, a member, asks in her own conversation. She sees the wedding’s ways, with a lock where Confirm would be; asked to add a plan, and to change a saved assumption, MyPaisa refuses and offers a what-if instead. Nothing she does here is saved.',
+              frames: [asha(iphone(n6 + ' · 21:20', T[0], '21:20', S6, -60)), asha(iphone(n6 + ' · 21:21', T[1], '21:21', S6, -1020)),
+                asha(ipad(pad(n6) + ' · 21:20', T[0], '21:20', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), { top: -40, member: true })), asha(ipad(pad(n6) + ' · 21:21', T[1], '21:21', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), { top: -1000, member: true }))],
+              notes: [{ h: 'Draws (MA-263):', t: '“a member asking for ways to cover a shortfall: the options shown, nothing saved, at both doors”.' },
+                { h: 'Draws (MA-222):', t: '“refusal and validation outcomes in the chat and in place: plan items and saved assumptions refused to a member (…)”. In place, a member’s figures have no pencil (Plans tab 3a states).' },
+                { h: 'Asha’s words', t: 'are the board’s own, illustrative; the £300 and the 3% are hers, so nothing traces to the model. Her sidebar has no Admin center.' },
+                { h: 'Her page', t: 'is the Projection as Arun’s: W, the run at 21:18 after the undo (the same as 21:16’s).' }] },
+            { anchor: 's7', id: 'S7', name: 'iPhone · Plans in the chat 2a, plans it cannot set up', keys: 'MA-222 · MA-264',
+              lead: 'At 21:22 Arun tries two plans the engine cannot use as said: “about 2 cr to close my loan”, which is asked for the loan and the exact amount, and “close my ICICI loan”, answered with the loans he has.',
+              frames: [iphone(n7 + ' · 21:22', T[0], '21:22', S7, -10), iphone(n7 + ' · 21:22', T[1], '21:22', S7, -330)],
+              notes: [{ h: 'Draws (MA-222):', t: '“refusal and validation outcomes (…): (…) ambiguous or unresolvable plans (‘about 2 cr’, no end date, a loan that does not exist) asked or refused”. No end date is asked by round 1’s questions card (Until when?, with No end date as a chip).' },
+                { h: 'The loans', t: 'are household-v4.json’s: Mortgage · Nationwide, Car loan · Close Brothers, Home loan · HDFC (already closing in Mar 2029 from 20:59).' }] }
+          ];
+          const navFor = (on) => [['chat_bubble', 'Chat'], ['home', 'Home'], ['donut_small', 'Assets'], ['credit_card', 'Debts'], ['savings', 'Budget'], ['trending_up', 'Projection'], ['insights', 'Activity'], ['history', 'Audit']].map((i) => ({ icon: i[0], label: i[1], cls: i[1] === on ? 'on' : '' }));
+          return {
+            boards, bud, padnav: navFor('Projection'),
+            tabsChat: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '' })),
+            tabsHome: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Home' ? 'on' : '' })),
+            intro1: 'The picked 2a, a card per step (Arun, 28 Oct 2026), in the states MA-263 and MA-222 still had to draw. The evening of Thu 5 Nov 2026 goes on from round 1’s 20:46: the two more ways (20:44), the pot in November’s budget (20:47), Arun’s salary step (20:52) and the HDFC closure (20:58); after the Plans tab’s changes (21:08 to 21:13), the wedding that leaves cash short, a way applied and undone (21:15 to 21:18); Asha’s questions (21:20); and two plans MyPaisa cannot set up as said (21:22).',
+            intro2: 'iPhone at every state, and iPad in landscape with the Projection beside the chat for the wedding and for Asha, in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747 all evening.'
+          };
+
+        }
+      }
+    </script>
+  </body>
+</html>

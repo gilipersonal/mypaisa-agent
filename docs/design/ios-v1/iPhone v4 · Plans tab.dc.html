@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iPhone v4 · Plans tab</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+          html, body { margin: 0; background: #ECEAE6; }
+          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a.dv-tid:hover, a.plan-k:hover { color: #fff; }
+          .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
+          .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+          .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+          .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+          .dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0; text-wrap: pretty; }
+          .plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 1100px; box-sizing: border-box; margin: 14px 0 0; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+          .plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; text-decoration: none; }
+          .plan-s { font-weight: 700; color: #14171F; }
+          .bd { border-bottom: 1px solid rgba(0,0,0,.06); }
+          .bd-h { flex-wrap: wrap; }
+          .bd-note p { margin: 0; }
+          .bd-lead { max-width: 1100px; margin: 0; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+          .recb { font: 700 12px/16px -apple-system, system-ui, sans-serif; color: #FFFFFF; background: #1D7A3E; padding: 3px 10px; border-radius: 999px; }
+          .dv-col { display: flex; flex-direction: column; }
+          .z1 { position: relative; z-index: 1; }
+          .f1 { flex: 1; min-width: 0; }
+          .rtx { flex: 1; min-width: 0; }
+          .pp { margin: 0; text-wrap: pretty; }
+          .lg > * { position: relative; z-index: 1; }
+          /* the iPhone: pushed from Home, the large title, the content scrolling under the glass bars */
+          .pg { display: flex; flex-direction: column; gap: 14px; padding: 4px 16px 130px; }
+          .pg > * { flex-shrink: 0; }
+          .navr { display: flex; gap: 8px; flex: none; }
+          /* the iPad in landscape: the glass sidebar, the screen, the chat beside it (iPad v4 · Budget, assets and debts) */
+          .scrn.srow { flex-direction: row; }
+          .sidebar.sb { width: 240px; box-sizing: border-box; }
+          .side-h.sh0 { padding-top: 4px; }
+          .main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+          .insp { width: 320px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+          .ipg { display: flex; flex-direction: column; gap: 14px; padding: 4px 18px 24px; }
+          .ipg > * { flex-shrink: 0; }
+          .largetitle.navt { padding: 0 4px; font-size: 28px; line-height: 34px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .navl { display: flex; align-items: center; gap: 4px; min-width: 0; }
+          .meta4 { padding: 0 4px; margin-top: -8px; }
+          .sbar.sbar-r { justify-content: flex-end; }
+          .chfadet { position: absolute; left: 0; right: 0; top: 0; height: 150px; z-index: 10; pointer-events: none; background: linear-gradient(180deg, var(--mp-bg) 62%, color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+          .ichat { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 150px; overflow: hidden; }
+          .chat > * { flex: none; }
+          .cb20 { bottom: 20px; }
+          .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+          /* the Projection's chrome, the same in every option (MA-264's brief): tabs, then the horizon and the money */
+          .utabs { display: flex; gap: 4px; border-bottom: 1px solid var(--mp-line); overflow-x: auto; scrollbar-width: none; }
+          .utab { min-height: 44px; padding: 0 14px; border: 0; background: transparent; display: inline-flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; flex: none; box-shadow: inset 0 -3px 0 transparent; }
+          .utab.on { color: var(--mp-ink); box-shadow: inset 0 -3px 0 var(--mp-accent); }
+          .tabseg .mp-seg-i { padding: 0 4px; text-wrap: balance; line-height: 16px; }
+          .ctlrow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+          .hzseg { flex: 0 1 240px; min-width: 0; }
+          .hzseg .mp-seg-i, .ccyseg .mp-seg-i { padding: 0 4px; white-space: nowrap; }
+          .ccyseg { flex: 0 1 130px; min-width: 0; }
+          .ctlrow.cpt .hzseg { flex: 1 1 100%; }
+          .ctlrow.cpt .ccyseg { flex: 1 1 150px; }
+          .tmw { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+          /* the tab's own head: how many plans, the run they make, and Add in chat */
+          .sumc { display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 16px 18px; }
+          .sumc > .rtx { min-width: min(100%, 14em); }
+          /* 3a: each plan on a timeline */
+          .tl { container: tl / inline-size; display: flex; flex-direction: column; padding: 18px; }
+          .tlh { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; margin-bottom: 6px; }
+          .tl-axis, .tl-row { display: grid; grid-template-columns: minmax(9em, 0.42fr) minmax(0, 1fr) 44px; grid-template-areas: "n l m"; column-gap: 14px; }
+          .tl-axis { padding: 6px 0 4px; }
+          .tl-ax { grid-area: l; margin-top: 0; color: var(--mp-ink-2); }
+          .tl-ax > .ax0 { transform: none; }
+          .tl-ax > .ax1 { transform: translateX(-100%); }
+          .tl-row { align-items: center; min-height: 64px; padding: 8px 0; border-top: 1px solid var(--mp-line); box-sizing: border-box; }
+          .tl-n { grid-area: n; min-width: 0; display: flex; align-items: center; gap: 10px; }
+          .tl-n .mp-icontile { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+          .tl-t { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+          .tl-l { grid-area: l; position: relative; height: 30px; }
+          .tl-l::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--mp-line); }
+          .tl-l::after { content: ""; position: absolute; left: 0; top: 3px; bottom: 3px; width: 2px; border-radius: 1px; background: var(--mp-ink-2); }
+          .tl-g { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--mp-chart-grid); }
+          .tl-m { grid-area: m; justify-self: end; }
+          .tl-sel { background: var(--mp-surface-2); margin: 0 -18px; padding-left: 18px; padding-right: 18px; }
+          .tb { position: absolute; top: 50%; height: 12px; margin-top: -6px; border-radius: 6px; min-width: 6px; box-sizing: border-box; }
+          .tb.out { background: var(--mp-chart-line); }
+          .tb.in { background: var(--mp-chart-3); }
+          .tb.pot { background: var(--mp-chart-2); }
+          .tb.drawn { background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-chart-2); }
+          .tm { position: absolute; top: 50%; }
+          .tm.dia { width: 12px; height: 12px; margin: -6px 0 0 -6px; transform: rotate(45deg); border-radius: 2px; background: var(--mp-chart-line); }
+          .tm.evt { width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--mp-chart-5); box-shadow: 0 0 0 2px var(--mp-surface); }
+          .tm.tick { width: 2px; height: 14px; margin: -7px 0 0 -1px; border-radius: 1px; background: var(--mp-chart-3); }
+          .tm.step { width: 4px; height: 24px; margin: -12px 0 0 -2px; border-radius: 2px; background: var(--mp-chart-3); }
+          .tm.past { left: 100%; margin: -6px 0 0 3px; width: 0; height: 0; border-left: 8px solid var(--mp-ink-2); border-top: 6px solid transparent; border-bottom: 6px solid transparent; }   /* it runs past 2046: a mark in the gap after the lane */
+          .lgd2 { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font: 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .lgd2 > span { display: inline-flex; align-items: center; gap: 6px; }
+          .k-bar { width: 18px; height: 10px; border-radius: 5px; flex: none; }
+          .k-out { background: var(--mp-chart-line); }
+          .k-in { background: var(--mp-chart-3); }
+          .k-pot { background: var(--mp-chart-2); }
+          .k-dia { width: 9px; height: 9px; margin: 0 2px; transform: rotate(45deg); border-radius: 1.5px; background: var(--mp-chart-line); flex: none; }
+          .k-evt { width: 11px; height: 11px; border-radius: 50%; background: var(--mp-chart-5); flex: none; }
+          .k-tk { width: 2px; height: 12px; border-radius: 1px; background: var(--mp-chart-3); margin: 0 4px; flex: none; }
+          .k-step { width: 4px; height: 14px; border-radius: 2px; background: var(--mp-chart-3); margin: 0 3px; flex: none; }
+          .k-past { width: 0; height: 0; margin: 0 4px; border-left: 8px solid var(--mp-ink-2); border-top: 6px solid transparent; border-bottom: 6px solid transparent; flex: none; }
+          .tlfoot { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+          @container tl (max-width: 559px) {
+            .mp .tl-row { grid-template-columns: minmax(0, 1fr) 44px; grid-template-areas: "n m" "l l"; row-gap: 6px; }
+            .mp .tl-axis { grid-template-columns: minmax(0, 1fr); grid-template-areas: "l"; }
+            .mp .tl-axis > .tl-sp { display: none; }
+          }
+          .meet { padding: 18px; display: flex; flex-direction: column; gap: 4px; }
+          .mrow { display: grid; grid-template-columns: 5.6em minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 9px 0; }
+          .mrow + .mrow { border-top: 1px solid var(--mp-line); }
+          /* 3b: a timeline down the page */
+          .feed { container: fd / inline-size; display: flex; flex-direction: column; }
+          .fyear, .fitem { display: grid; grid-template-columns: 5.6em 22px minmax(0, 1fr); column-gap: 12px; }
+          .fyear { padding: 10px 0 6px; }
+          .fyear > .fdate { padding: 0; }
+          .fdate { padding-top: 18px; text-align: right; }
+          .fsp { position: relative; }
+          .fsp::before { content: ""; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--mp-line); }
+          .fnode { position: absolute; left: 11px; top: 26px; }
+          .fnode.dia { width: 12px; height: 12px; margin: -6px 0 0 -6px; transform: rotate(45deg); border-radius: 2px; background: var(--mp-chart-line); }
+          .fnode.evt { width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--mp-chart-5); box-shadow: 0 0 0 3px var(--mp-bg); }
+          .fnode.out, .fnode.in, .fnode.pot { width: 10px; height: 22px; margin: -11px 0 0 -5px; border-radius: 5px; }
+          .fnode.out { background: var(--mp-chart-line); }
+          .fnode.in { background: var(--mp-chart-3); }
+          .fnode.pot { background: var(--mp-chart-2); }
+          .fnode.step { width: 4px; height: 24px; margin: -12px 0 0 -2px; border-radius: 2px; background: var(--mp-chart-3); box-shadow: 0 0 0 3px var(--mp-bg); }
+          .fnode.end { width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--mp-bg); box-shadow: inset 0 0 0 2px var(--mp-chart-line); }
+          .fnode.hz { width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 3px; background: var(--mp-ink-2); }
+          .fcard { margin: 6px 0 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+          .fhead { display: flex; align-items: flex-start; gap: 10px; }
+          .fhead .mp-icontile { background: var(--mp-surface-2); color: var(--mp-ink-2); margin-top: 2px; }
+          .fhead > .rtx { display: flex; flex-direction: column; gap: 2px; }
+          .fwords { margin: 0; font: italic 400 15px/21px var(--mp-font); color: var(--mp-ink); text-wrap: pretty; }
+          .fpills { display: flex; flex-wrap: wrap; gap: 8px; }
+          .fnote { margin: 4px 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); display: flex; gap: 8px; align-items: flex-start; }
+          .fnote .ms { font-size: 18px; color: var(--mp-ink-2); margin-top: 1px; }
+          .fdin { display: none; }
+          @container fd (max-width: 459px) {
+            .mp .fitem, .mp .fyear { grid-template-columns: 22px minmax(0, 1fr); column-gap: 10px; }
+            .mp .fdate { display: none; }
+            .mp .fdin { display: inline; }
+          }
+          /* figures the admin corrects in place, as on the Projection boards */
+          .fig { font: 600 15px/20px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; }
+          .krow .fig { white-space: normal; }
+          .fig.ed { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 12px; border-radius: 12px; background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; max-width: 100%; white-space: normal; }
+          .fig.ed .ms { font-size: 16px; color: var(--mp-accent); }
+          .src { display: inline-flex; align-items: center; gap: 4px; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 999px; padding: 2px 8px 2px 6px; }
+          .src .ms { font-size: 14px; }
+          /* a plan opened: a sheet on iPhone, a form sheet on iPad; both solid, since they hold words and figures */
+          .shh { display: flex; align-items: center; gap: 10px; padding: 0 16px; }
+          .shh > .rtx { display: flex; flex-direction: column; gap: 2px; }
+          .shb { padding: 0 16px 24px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+          .shb > * { flex-shrink: 0; }
+          .fsheet { position: absolute; z-index: 50; left: 0; right: 0; margin: 0 auto; top: 56px; width: min(560px, calc(100% - 48px)); max-height: calc(100% - 96px); border-radius: 26px; background: var(--mp-bg); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; gap: 12px; padding: 16px 0 0; overflow: hidden; }
+          .qbox { padding: 12px 14px; border-radius: 14px; background: var(--mp-surface); display: flex; flex-direction: column; gap: 4px; }
+          .kcard { padding: 4px 16px; border-radius: 20px; background: var(--mp-surface); }
+          .krow { display: grid; grid-template-columns: minmax(5.5em, 0.8fr) minmax(0, 1.4fr); gap: 4px 12px; align-items: center; min-height: 52px; }
+          .krow + .krow { border-top: 1px solid var(--mp-line); }
+          .krow > :last-child { justify-self: start; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+          .eng { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 14px; background: var(--mp-surface); }
+          .acts { display: flex; flex-wrap: wrap; gap: 8px; }
+          .acts .cbtn { background: var(--mp-surface); }
+          .hist { display: flex; gap: 8px; align-items: flex-start; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .hist .ms { font-size: 16px; margin-top: 1px; }
+          .t-dark .mp-ink3 { color: var(--mp-ink-2); }
+        </style>
+      </helmet>
+
+      <section class="dv-turn" id="intro" data-screen-label="iPhone v4 · Plans tab: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#intro">3</a><span class="dv-tname">iPhone and iPad · the Plans tab: each future plan on a timeline</span></div>
+        <p class="dv-intro">MA-264's third question, in the app: the Projection's Plans tab on iPhone, pushed from Home in shell 1a with the Liquid Glass tab bar, and on iPad in landscape at 1180 with the glass sidebar and the chat beside it. Two options, each in light and dark, and each with a plan opened. Arun, the admin, at 21:05 on Thu 5 Nov: the school fees saved at 20:43, the school fees pot applied at 20:46, his salary step at 20:53 and the HDFC loan's closure at 20:59, beside the three plans of Sun 25 Oct. Every figure is from the figure set (docs/design/figures/future-plans-v4.json): the plans as saved, and the engine's run of 20:59 (R4). Nothing is created on the tab: a plan is made in the chat, and its figures are corrected in place. The browser boards are Web v4 · Plans tab.</p>
+        <div class="plan"><span class="plan-s">Jira</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-264">MA-264</a><span>the design round</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-224">MA-224</a><span>the Plans tab</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-222">MA-222</a><span>plan items</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-263">MA-263</a><span>the pot it applied</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-219">MA-219</a><span>the engine</span><span>ARCHITECTURE.md §6.6, §9.1, §9.3, §4.10</span><span class="plan-s">Planned.</span><span>Illustrative figures.</span></div>
+      </section>
+
+      <sc-for list="{{ boards }}" as="b" hint-placeholder-count="4">
+        <section class="bd" id="{{ b.anchor }}">
+          <sc-if value="{{ b.head }}"><div class="dv-thd"><span class="dv-tid">{{ b.head.n }}</span><span class="dv-tname">{{ b.head.t }}</span></div><p class="dv-intro">{{ b.head.p }}</p></sc-if>
+          <div class="bd-h"><span class="bd-id">{{ b.id }}</span><span class="bd-name">{{ b.name }}</span><sc-if value="{{ b.rec }}"><span class="recb">Recommended</span></sc-if><span class="bd-keys">{{ b.keys }}</span></div>
+          <p class="bd-lead">{{ b.lead }}</p>
+          <div class="bd-row">
+            <sc-for list="{{ b.frames }}" as="f" hint-placeholder-count="2">
+              <div class="dv-col" data-screen-label="{{ f.cap }}">
+                <div class="bd-theme">{{ f.cap }}</div>
+
+                <!-- ============ iPhone: the Projection pushed from Home ============ -->
+                <sc-if value="{{ f.phone }}">
+                  <div class="{{ f.root }}" data-screen-label="{{ f.cap }}">
+                    <div class="island"></div>
+                    <div class="scrn">
+                      <div class="sbar"><span>21:05</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                      <div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms">chevron_left</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                      <div class="largetitle">Projection</div>
+                      <div class="scroll"><div class="pg">
+                        <div class="mp-seg tabseg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
+                        <div class="ctlrow cpt">
+                          <div class="mp-seg hzseg" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button class="mp-seg-i {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
+                          <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true">£ GBP</button><button class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
+                          <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+                        </div>
+                        <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">7 plans · yours alone, as the admin</span><span class="mp-foot mp-ink2">{{ sumline }}</span></div><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>Add in chat</button></div>
+                        <sc-if value="{{ f.a }}">
+                          <div class="mp-card tl">
+                            <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
+                            <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
+                            <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
+                              <div class="tl-row {{ r.sel }}">
+                                <div class="tl-n"><span class="mp-icontile"><span class="ms ms-s">{{ r.i }}</span></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
+                                <div class="tl-l" role="img" aria-label="{{ r.aria }}">
+                                  <sc-for list="{{ grid }}" as="g" hint-placeholder-count="3"><span class="tl-g" style="left: {{ g }}"></span></sc-for>
+                                  <sc-for list="{{ r.bars }}" as="m" hint-placeholder-count="1"><span class="tb {{ m.c }}" style="left: {{ m.l }}; width: {{ m.w }}" data-mo="barx"></span></sc-for>
+                                  <sc-for list="{{ r.marks }}" as="m" hint-placeholder-count="1"><span class="tm {{ m.c }}" style="left: {{ m.l }}" data-mo="fade"></span></sc-for>
+                                  <sc-if value="{{ r.past }}"><span class="tm past" aria-hidden="true" data-mo="fade"></span></sc-if>
+                                </div>
+                                <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms">more_horiz</span></button>
+                              </div>
+                            </sc-for>
+                            <div class="lgd2"><span><i class="k-bar k-out"></i>Money out</span><span><i class="k-bar k-in"></i>Money in</span><span><i class="k-bar k-pot"></i>Into a pot</span><span><i class="k-dia"></i>Once</span><span><i class="k-tk"></i>Each March</span><span><i class="k-step"></i>A change from a date</span><span><i class="k-evt"></i>An event on a record</span><span><i class="k-past"></i>Runs past 2046</span></div>
+                            <p class="pp mp-foot mp-ink2 tlfoot">Tap a plan to correct its figures, pause it or end it. Nothing is added here: a new plan starts in the chat.</p>
+                          </div>
+                          <div class="mp-card meet"><div class="tlh"><span class="mp-hl">Where four plans meet</span><span class="mp-foot mp-ink2">Sep 2028 to Mar 2029, from the engine</span></div><sc-for list="{{ meet }}" as="m" hint-placeholder-count="4"><div class="mrow"><span class="mp-foot mp-w6 mp-ink2">{{ m.d }}</span><span class="mp-sub">{{ m.t }}</span></div></sc-for></div>
+                        </sc-if>
+                        <sc-if value="{{ f.b }}">
+                          <div class="feed">
+                            <sc-for list="{{ feed }}" as="e" hint-placeholder-count="10">
+                              <sc-if value="{{ e.isYear }}"><div class="fyear"><span class="fdate"></span><span class="fsp"></span><span class="mp-t3">{{ e.y }}</span></div></sc-if>
+                              <sc-if value="{{ e.isItem }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span>
+                                <div class="mp-card fcard">
+                                  <div class="fhead"><span class="mp-icontile"><span class="ms ms-s">{{ e.i }}</span></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><span class="ms">more_horiz</span></button></sc-if></div>
+                                  <sc-if value="{{ e.words }}"><p class="fwords">“{{ e.words }}”</p></sc-if>
+                                  <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed">{{ p }}<span class="ms">edit</span></span></sc-for></div></sc-if>
+                                  <span class="mp-foot mp-ink2">{{ e.foot }}</span>
+                                </div></div></sc-if>
+                              <sc-if value="{{ e.isNote }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span><div class="fnote"><span class="ms">{{ e.i }}</span><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div></div></sc-if>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <p class="pp mp-foot mp-ink2">Illustrative figures from the future-plans figure set.</p>
+                      </div></div>
+                      <div class="edge-bot"></div>
+                      <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                      <sc-if value="{{ f.sh }}">
+                        <div class="dim"></div>
+                        <div class="sheet full" role="dialog" aria-label="{{ f.sh.title }}" style="padding: 8px 0 0; gap: 12px">
+                          <div class="sheet-grab"></div>
+                          <div class="shh"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ f.sh.i }}</span></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="gbtn lg" aria-label="Close"><span class="ms z1">close</span></span></div>
+                          <div class="shb">
+                            <div class="qbox"><span class="mp-over mp-ink2">Your words</span><span class="fwords">“{{ f.sh.words }}”</span><span class="mp-foot mp-ink2">{{ f.sh.wmeta }}</span></div>
+                            <div class="kcard"><sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed">{{ r.v }}<span class="ms">edit</span></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><span class="ms">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-for></div>
+                            <div class="eng"><span class="mp-over mp-ink2">From the engine · run of 20:59</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for></div>
+                            <div class="acts"><span class="cbtn"><span class="ms">pause</span>Pause</span><span class="cbtn"><span class="ms">event_busy</span>End it</span><span class="cbtn"><span class="ms">chat_bubble</span>Ask in chat</span></div>
+                            <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms">fact_check</span><span>{{ h }}</span></div></sc-for></div>
+                          </div>
+                        </div>
+                      </sc-if>
+                      <div class="homebar"></div>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <!-- ============ iPad in landscape: the sidebar, the screen, the chat beside it ============ -->
+                <sc-if value="{{ f.pad }}">
+                  <div class="{{ f.root }}" data-screen-label="{{ f.cap }}">
+                    <div class="scrn srow">
+                      <div class="sidebar sb lg">
+                        <div class="side-h sh0">MyPaisa</div>
+                        <sc-for list="{{ side }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+                        <div class="side-h">Admin</div>
+                        <span class="side-i"><span class="ms">shield_person</span>Admin center</span>
+                        <span class="side-i"><span class="ms">account_circle</span>You</span>
+                      </div>
+                      <div class="main">
+                        <div class="sbar"><span>21:05 Thu 5 Nov</span><span></span></div>
+                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1">visibility</span></span></span></div>
+                        <div class="ipg">
+                          <div class="mp-foot mp-ink2 meta4">Seven plans, Arun’s · the engine’s run of Thu 5 Nov 20:59</div>
+                          <nav class="utabs" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="utab {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></nav>
+                          <div class="ctlrow">
+                            <div class="mp-seg hzseg" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button class="mp-seg-i {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
+                            <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true">£ GBP</button><button class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
+                            <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+                          </div>
+                          <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">7 plans · yours alone, as the admin</span><span class="mp-foot mp-ink2">{{ sumline }}</span></div><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>Add in chat</button></div>
+                          <sc-if value="{{ f.a }}">
+                            <div class="mp-card tl">
+                              <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
+                              <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
+                              <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
+                                <div class="tl-row {{ r.sel }}">
+                                  <div class="tl-n"><span class="mp-icontile"><span class="ms ms-s">{{ r.i }}</span></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
+                                  <div class="tl-l" role="img" aria-label="{{ r.aria }}">
+                                    <sc-for list="{{ grid }}" as="g" hint-placeholder-count="3"><span class="tl-g" style="left: {{ g }}"></span></sc-for>
+                                    <sc-for list="{{ r.bars }}" as="m" hint-placeholder-count="1"><span class="tb {{ m.c }}" style="left: {{ m.l }}; width: {{ m.w }}" data-mo="barx"></span></sc-for>
+                                    <sc-for list="{{ r.marks }}" as="m" hint-placeholder-count="1"><span class="tm {{ m.c }}" style="left: {{ m.l }}" data-mo="fade"></span></sc-for>
+                                    <sc-if value="{{ r.past }}"><span class="tm past" aria-hidden="true" data-mo="fade"></span></sc-if>
+                                  </div>
+                                  <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms">more_horiz</span></button>
+                                </div>
+                              </sc-for>
+                              <div class="lgd2"><span><i class="k-bar k-out"></i>Money out</span><span><i class="k-bar k-in"></i>Money in</span><span><i class="k-bar k-pot"></i>Into a pot</span><span><i class="k-dia"></i>Once</span><span><i class="k-tk"></i>Each March</span><span><i class="k-step"></i>A change from a date</span><span><i class="k-evt"></i>An event on a record</span><span><i class="k-past"></i>Runs past 2046</span></div>
+                              <p class="pp mp-foot mp-ink2 tlfoot">Tap a plan to correct its figures, pause it or end it. Nothing is added here: a new plan starts in the chat.</p>
+                            </div>
+                            <div class="mp-card meet"><div class="tlh"><span class="mp-hl">Where four plans meet</span><span class="mp-foot mp-ink2">Sep 2028 to Mar 2029, from the engine</span></div><sc-for list="{{ meet }}" as="m" hint-placeholder-count="4"><div class="mrow"><span class="mp-foot mp-w6 mp-ink2">{{ m.d }}</span><span class="mp-sub">{{ m.t }}</span></div></sc-for></div>
+                          </sc-if>
+                          <sc-if value="{{ f.b }}">
+                            <div class="feed">
+                              <sc-for list="{{ feed }}" as="e" hint-placeholder-count="10">
+                                <sc-if value="{{ e.isYear }}"><div class="fyear"><span class="fdate"></span><span class="fsp"></span><span class="mp-t3">{{ e.y }}</span></div></sc-if>
+                                <sc-if value="{{ e.isItem }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span>
+                                  <div class="mp-card fcard">
+                                    <div class="fhead"><span class="mp-icontile"><span class="ms ms-s">{{ e.i }}</span></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><span class="ms">more_horiz</span></button></sc-if></div>
+                                    <sc-if value="{{ e.words }}"><p class="fwords">“{{ e.words }}”</p></sc-if>
+                                    <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed">{{ p }}<span class="ms">edit</span></span></sc-for></div></sc-if>
+                                    <span class="mp-foot mp-ink2">{{ e.foot }}</span>
+                                  </div></div></sc-if>
+                                <sc-if value="{{ e.isNote }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span><div class="fnote"><span class="ms">{{ e.i }}</span><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div></div></sc-if>
+                              </sc-for>
+                            </div>
+                          </sc-if>
+                          <p class="pp mp-foot mp-ink2">Illustrative figures from the future-plans figure set.</p>
+                        </div>
+                        <div class="edge-bot"></div>
+                      </div>
+                      <div class="insp">
+                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>
+                        <div class="chfadet"></div>
+                        <div class="ichat"><div class="chat">
+                          <div class="daysep">Today</div>
+                          <div class="me">close my HDFC loan with the SBI FD when it matures</div>
+                          <div class="me-time">20:58</div>
+                          <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Saved. It closes the loan in Mar 2029, when the FD matures.</div>
+                            <div class="ccard"><div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:59 · in the chat</div></div>
+                          </div></div>
+                        </div></div>
+                        <div class="edge-bot"></div>
+                        <div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms">event</span><span>What’s due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask about the Projection</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>
+                      </div>
+                    </div>
+                    <sc-if value="{{ f.sh }}">
+                      <div class="dim"></div>
+                      <div class="fsheet" role="dialog" aria-label="{{ f.sh.title }}" data-mo="fade">
+                        <div class="shh"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ f.sh.i }}</span></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="mp-chip mp-neutral">Active</span><span class="gbtn lg" aria-label="Close"><span class="ms z1">close</span></span></div>
+                        <div class="shb">
+                          <div class="qbox"><span class="mp-over mp-ink2">Your words</span><span class="fwords">“{{ f.sh.words }}”</span><span class="mp-foot mp-ink2">{{ f.sh.wmeta }}</span></div>
+                          <div class="kcard"><sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed">{{ r.v }}<span class="ms">edit</span></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><span class="ms">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-for></div>
+                          <div class="eng"><span class="mp-over mp-ink2">From the engine · run of 20:59</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for></div>
+                          <div class="acts"><span class="cbtn"><span class="ms">pause</span>Pause</span><span class="cbtn"><span class="ms">event_busy</span>End it</span><span class="cbtn"><span class="ms">chat_bubble</span>Ask in chat</span></div>
+                          <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms">fact_check</span><span>{{ h }}</span></div></sc-for></div>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <div class="bd-note"><sc-for list="{{ b.notes }}" as="n" hint-placeholder-count="4"><p><b>{{ n.h }}</b> {{ n.t }}</p></sc-for></div>
+          </div>
+        </section>
+      </sc-for>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic {
+        renderVals() {
+          // Every figure is the figure set's (docs/design/figures/future-plans-v4.json): the plans as saved by 21:05 on
+          // Thu 5 Nov, and the engine's run of 20:59 (R4). The axis runs from today, Nov 2026, for 20 years (240 months).
+          // The plans and their marks are Web v4 · Plans tab's, figure for figure.
+          const SPAN = 240;
+          const at = (y, m, d) => ((y - 2026) * 12 + (m - 11) + (d ? (d - 1) / 30 : 0)) / SPAN * 100;
+          const pc = (v) => (Math.round(Math.min(Math.max(v, 0), 100) * 100) / 100) + '%';
+          const bar = (c, y0, m0, y1, m1) => ({ c, l: pc(at(y0, m0)), w: pc(at(y1, m1) - at(y0, m0)) });
+          const mark = (c, y, m, d) => ({ c, l: pc(at(y, m, d || 15)) });
+          const ticks = [];
+          for (let y = 2027; y <= 2046; y++) ticks.push(mark('tick', y, 3));
+          const rows = [
+            { id: 'pot', i: 'savings', name: 'School fees pot', sub: '£690 a month to Dec 2028, then tops up the surplus', bars: [bar('pot', 2026, 11, 2029, 1), bar('drawn', 2029, 1, 2029, 3)], marks: [], past: false,
+              aria: 'School fees pot: £690 a month from Nov 2026 to Dec 2028; it tops up the surplus by £1,361 in Jan and Feb 2029, and £17,238 stays in it.' },
+            { id: 'bonus', i: 'redeem', name: 'Asha’s annual bonus', sub: '+£3,000 each March, growing 3.5% a year', bars: [], marks: ticks, past: true,
+              aria: 'Asha’s annual bonus: £3,000 each March from 2027 to 2052, growing 3.5% a year; £5,767 in 2046.' },
+            { id: 'ext', i: 'construction', name: 'Home extension', sub: '−£35,000 once, Jun 2027', bars: [], marks: [mark('dia', 2027, 6)], past: false,
+              aria: 'Home extension: £35,000 once, in June 2027.' },
+            { id: 'sal', i: 'work', name: 'Arun’s salary', sub: 'Set to £5,500 a month from Sep 2028', bars: [bar('in', 2028, 9, 2046, 11)], marks: [mark('step', 2028, 9, 1)], past: true,
+              aria: 'Arun’s salary: set to £5,500 a month from September 2028, from £4,778, then growing 4.8% a year from April 2029.' },
+            { id: 'fees', i: 'school', name: 'School fees', sub: '−£4,000 a month, Jan 2029 to Jul 2041', bars: [bar('out', 2029, 1, 2041, 8)], marks: [], past: false,
+              aria: 'School fees: £4,000 a month from January 2029 to July 2041, growing 4.5% a year, £6,784 a month by July 2041.' },
+            { id: 'hdfc', i: 'real_estate_agent', name: 'Close the HDFC home loan', sub: 'With the SBI FD, Mar 2029', bars: [], marks: [mark('evt', 2029, 3, 10)], past: false,
+              aria: 'Close the HDFC home loan in March 2029 with the SBI fixed deposit: ₹5,93,849 cleared and the ₹39,390 EMI stops.' },
+            { id: 'car', i: 'directions_car', name: 'Replace the car', sub: '−£25,000 once, Jun 2031', bars: [], marks: [mark('dia', 2031, 6)], past: false,
+              aria: 'Replace the car: £25,000 once, in June 2031.' }
+          ];
+          const rowsFor = (sel) => rows.map((r) => Object.assign({}, r, { sel: r.id === sel ? 'tl-sel' : '', menu: 'More for ' + r.name + ': pause, end' }));
+          const axis = [['Today', 0, 'ax0'], ['2031', 25, ''], ['2036', 50, ''], ['2041', 75, ''], ['2046', 100, 'ax1']].map((a) => ({ l: a[0], left: pc(a[1]), c: a[2] }));
+          const meet = [
+            ['Sep 2028', 'Arun’s salary steps up to £5,500 a month, from £4,778.'],
+            ['Dec 2028', 'The school fees pot holds £18,512: £690 a month since Nov 2026, with its interest.'],
+            ['Jan 2029', 'School fees start, £4,000 a month; the pot tops the surplus up to your £500 floor: £681 in Jan, £680 in Feb.'],
+            ['Mar 2029', 'The SBI FD’s ₹6,17,538 closes the HDFC loan (₹5,93,849); its ₹39,390 EMI stops. From here the surplus stays above £500, and £17,238 stays in the pot.']
+          ].map((m) => ({ d: m[0], t: m[1] }));
+          const yr = (y) => ({ isYear: true, isItem: false, isNote: false, y });
+          const it = (o) => Object.assign({ isYear: false, isItem: true, isNote: false, menu: true, words: '', pills: [] }, o, { menuL: 'More for ' + o.t + ': pause, end', hasPills: !!(o.pills && o.pills.length) });
+          const note = (o) => Object.assign({ isYear: false, isItem: false, isNote: true }, o);
+          const feed = [
+            yr('2026'),
+            it({ date: 'Nov 2026', node: 'pot', i: 'savings', over: 'Starts · a pot', t: 'School fees pot', s: '£690 a month into the pot to Dec 2028; from Jan 2029 it tops the surplus up to your £500 floor.', pills: ['£690 a month', 'Nov 2026 to Dec 2028'], foot: 'Applied from the ways to cover the school fees · Thu 5 Nov 20:46' }),
+            yr('2027'),
+            it({ date: 'Mar 2027', node: 'in', i: 'redeem', over: 'Starts · each March', t: 'Asha’s annual bonus', s: '+£3,000 each March to Mar 2052, growing 3.5% a year: £5,767 by 2046.', words: 'Add Asha’s bonus to the plan: £3,000 every March from 2027 to 2052', pills: ['+£3,000', 'Mar 2027 to Mar 2052', '3.5% a year'], foot: 'Added Sun 25 Oct 20:15 · growth corrected Mon 26 Oct 10:44' }),
+            it({ date: 'Jun 2027', node: 'dia', i: 'construction', over: 'Once', t: 'Home extension', s: '−£35,000, paid from the surplus, then cash.', words: 'A £35,000 extension next June', pills: ['−£35,000', 'Jun 2027'], foot: 'Added Sun 25 Oct 20:09' }),
+            yr('2028'),
+            it({ date: 'Sep 2028', node: 'step', i: 'work', over: 'A change from a date', t: 'Arun’s salary', s: 'Set to £5,500 a month, from £4,778; growing 4.8% a year from Apr 2029.', words: 'my salary goes to £5,500 a month from Sep 2028', pills: ['£5,500 a month', 'Sep 2028'], foot: 'Added Thu 5 Nov 20:53' }),
+            note({ date: 'Dec 2028', node: 'hz', i: 'savings', t: 'The pot holds £18,512, from the engine.' }),
+            yr('2029'),
+            it({ date: 'Jan 2029', node: 'out', i: 'school', over: 'Starts · each month', t: 'School fees', s: '−£4,000 a month to Jul 2041, growing 4.5% a year: £48,000 in 2029.', words: '£4,000 a month from Jan 2029 for my kid’s schooling', pills: ['−£4,000 a month', 'Jan 2029 to Jul 2041', '4.5% a year', 'The monthly budget'], foot: 'Added Thu 5 Nov 20:43 · the pot tops up £681 in Jan and £680 in Feb' }),
+            it({ date: 'Mar 2029', node: 'evt', i: 'real_estate_agent', over: 'An event on a record', t: 'Close the HDFC home loan', s: 'The SBI FD’s ₹6,17,538 clears ₹5,93,849; ₹23,689 is left over, and the ₹39,390 EMI stops 16 months early.', words: 'close my HDFC loan with the SBI FD when it matures', pills: ['Mar 2029', 'Fixed deposit · SBI'], foot: 'Added Thu 5 Nov 20:59' }),
+            yr('2031'),
+            it({ date: 'Jun 2031', node: 'dia', i: 'directions_car', over: 'Once', t: 'Replace the car', s: '−£25,000, paid from the surplus, then cash.', words: 'New car around June 2031, £25k', pills: ['−£25,000', 'Jun 2031'], foot: 'Added Sun 25 Oct 20:12' }),
+            yr('2041'),
+            it({ date: 'Jul 2041', node: 'end', i: 'school', over: 'Ends', t: 'School fees end', s: '£6,784 a month by their last month; £789,759 from Jan 2029.', menu: false, foot: 'The end of the school fees above; correct it there.' }),
+            yr('2046'),
+            note({ date: 'Nov 2046', node: 'hz', i: 'flag', t: '20 years on: the middle path is £2,923,000. Asha’s bonus runs on to Mar 2052, and Arun’s salary to 2051.' })
+          ];
+          const fees = { i: 'school', title: 'School fees', eff: 'A new flow · money out · Education · for your kid',
+            words: '£4,000 a month from Jan 2029 for my kid’s schooling', wmeta: 'Arun · Thu 5 Nov 20:41 · in the chat',
+            rows: [{ k: 'Amount', v: '£4,000 a month', ed: true, ro: false, src: '', si: '' }, { k: 'Starts', v: 'Jan 2029', ed: true, ro: false, src: '', si: '' }, { k: 'Ends', v: 'Jul 2041', ed: true, ro: false, src: '', si: '' },
+              { k: 'Grows', v: '4.5% a year', ed: true, ro: false, src: 'Prior · UK school fees', si: 'public' }, { k: 'Paid from', v: 'The monthly budget', ed: true, ro: false, src: '', si: '' }],
+            eng: ['£48,000 in 2029; £6,784 a month by Jul 2041; £789,759 in all.', 'The school fees pot tops up £1,361 in Jan and Feb 2029.'],
+            hist: ['Plan item added · Arun · Thu 5 Nov 20:43 · in the chat', 'Covered by the school fees pot · Arun · Thu 5 Nov 20:46 · in the chat'] };
+          const hdfc = { i: 'real_estate_agent', title: 'Close the HDFC home loan', eff: 'An event on a record · Home loan · HDFC (Pune flat) · prepay the balance',
+            words: 'close my HDFC loan with the SBI FD when it matures', wmeta: 'Arun · Thu 5 Nov 20:58 · in the chat',
+            rows: [{ k: 'When', v: 'Mar 2029', ed: true, ro: false, src: 'The FD matures 10 Mar', si: 'event' }, { k: 'Paid from', v: 'Fixed deposit · SBI', ed: true, ro: false, src: '', si: '' }, { k: 'It pays', v: '₹5,93,849, the balance then', ed: false, ro: true, src: 'Engine', si: 'calculate' }],
+            eng: ['The FD’s ₹6,17,538 clears ₹5,93,849; ₹23,689 is left over, to cash.', 'The ₹39,390 EMI stops after March: 16 EMIs fewer, Apr 2029 to Jul 2030.'],
+            hist: ['Plan item added · Arun · Thu 5 Nov 20:59 · in the chat'] };
+          const T = [['Light', 't-light'], ['Dark', 't-dark']];
+          const iphone = (cap, o, t, sh) => ({ cap: cap + ' · ' + t[0], root: 'dev dev-iphone mp ' + t[1], phone: true, pad: false, a: !!o.a, b: !!o.b, sh: sh || null });
+          const ipad = (cap, o, t, sh) => ({ cap: cap + ' · ' + t[0], root: 'dev dev-ipad-l mp ipad ' + t[1], phone: false, pad: true, a: !!o.a, b: !!o.b, sh: sh || null });
+          const pair = (cap, o, door) => T.map((t) => door(cap, o, t));
+          const pA = 'iPhone · Plans tab 3a, bars on a timeline', dA = 'iPad · Plans tab 3a, bars on a timeline';
+          const pB = 'iPhone · Plans tab 3b, a timeline down the page', dB = 'iPad · Plans tab 3b, a timeline down the page';
+          const boards = [
+            { anchor: 'o3a', id: '3a', name: 'iPhone · Plans tab 3a, bars on a timeline', keys: 'MA-224 · MA-222 · MA-263', rec: true,
+              head: { n: '1', t: 'Two options for the Plans tab', p: 'Each is the whole tab for Arun at 21:05 on Thu 5 Nov, pushed from Home: the Projection’s chrome (Net worth · Plans · Budget forecast, the horizon at 20 years, £ or ₹ and Today’s money), how many plans and the run they make, then the plans. They differ in how the plans are laid out: across the years (3a) or down the page (3b). 3a is recommended.' },
+              lead: 'Each plan is a row with its name, and its lane under it across the 20 years: a bar for a flow, a mark for a one-off or an event, a step where a flow changes, a tick each March; an arrow where it runs past 2046. Recommended: ARCHITECTURE asks for each plan on a timeline, and the overlaps show at once. School fees opened in a sheet, in dark.',
+              frames: pair(pA, { a: true }, iphone).concat([Object.assign(iphone(pA, { a: true }, T[1], fees), { cap: pA + ' · School fees opened · Dark', sel: 'fees' })]),
+              notes: [{ h: 'Compact width:', t: 'each lane goes under its plan’s name, so all twenty years keep the screen’s width; the tabs and the horizon are segmented controls, each on its own row, with £ or ₹ and Today’s money under them.' },
+                { h: 'Glass is the controls only:', t: 'the back button, the eye, Ask and the tab bar; the cards, the lanes and the sheet are solid Warm ledger.' },
+                { h: 'The sheet', t: 'is solid, since it holds the admin’s words and the figures: every figure a pencil (corrected in place), Pause, End, Ask in chat, and its history. Nothing is created here.' },
+                { h: 'Shape first, colour second:', t: 'a bar, a diamond, a circle, a step, a tick; the colours repeat what the row’s words say.' }] },
+            { anchor: 'o3a-ipad', id: '3a', name: 'iPad · Plans tab 3a, bars on a timeline', keys: 'MA-224 · MA-222 · MA-263',
+              lead: 'iPad in landscape at 1180: the glass sidebar, the tab with each lane under its name, and the chat beside it with the evening’s last plan. Underneath, where four plans meet, from the engine.',
+              frames: pair(dA, { a: true }, ipad),
+              notes: [{ h: 'Regular width:', t: 'the tabs underline under the title, and the horizon, £ or ₹ and Today’s money share one row. With the chat beside it the card is under 560 pt, so each lane stays under its name, full width; from 900 to 1132 pt, the chat a sheet away, the lanes sit beside the names, as on the laptop.' },
+                { h: 'Where they meet', t: 'is the engine’s: £18,512 in the pot by Dec 2028, £1,361 drawn in Jan and Feb 2029, then £17,238 left once the salary step and the HDFC closure land. R4’s figures, the run of 20:59.' },
+                { h: 'The chat beside it', t: 'holds the evening’s last plan, the HDFC closure saved at 20:59; from 900 to 1132 pt it is a sheet away, as the size classes say.' }] },
+            { anchor: 'o3b', id: '3b', name: 'iPhone · Plans tab 3b, a timeline down the page', keys: 'MA-224 · MA-222 · MA-263',
+              lead: 'A feed in date order: a card for each plan where it starts, and for a recurring plan where it ends, with the admin’s own words and every figure as a pencil; on iPhone the date moves into each card’s overline.',
+              frames: pair(pB, { b: true }, iphone),
+              notes: [{ h: 'Reads like a story:', t: 'what happens when, in the admin’s words.' }, { h: 'The cost:', t: 'a recurring plan shows only at its start and end, so what runs at the same time is no longer side by side, and seven plans make a long scroll on a phone.' }] },
+            { anchor: 'o3b-ipad', id: '3b', name: 'iPad · Plans tab 3b, a timeline down the page', keys: 'MA-224 · MA-222 · MA-263',
+              lead: 'iPad in landscape: the date column, the spine with each plan’s shape, and the cards; the HDFC loan’s closure opened as a form sheet.',
+              frames: pair(dB, { b: true }, ipad).concat([Object.assign(ipad(dB, { b: true }, T[0], hdfc), { cap: dB + ' · Close the HDFC home loan opened · Light' })]),
+              notes: [{ h: 'An event on a record', t: 'shows what it does to the record, from the engine: the FD clears the balance, what is left goes to cash, and the EMI stops 16 months early.' }, { h: 'Its figures:', t: 'the month and the source are the admin’s, as pencils; the amount is the engine’s balance then, so it has no pencil.' }, { h: 'A form sheet,', t: 'solid and centred over the dimmed screen and chat; the sidebar and the chat wait behind it.' }] }
+          ];
+          boards.forEach((b) => b.frames.forEach((f) => { f.rows = rowsFor(f.sel || ''); }));
+          return {
+            boards, axis, meet, feed, grid: [pc(25), pc(50), pc(75)],
+            sumline: 'On them, the middle path reaches £2,923,000 in 2046; 8 in 10 runs end between £2,188,000 and £4,058,000.',
+            ptabs: ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l, on: l === 'Plans' ? 'on' : '', p: l === 'Plans' ? 'true' : 'false' })),
+            hz: ['5 yrs', '10 yrs', '20 yrs', '30 yrs'].map((l) => ({ l, on: l === '20 yrs' ? 'on' : '', p: l === '20 yrs' ? 'true' : 'false' })),
+            tabs: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Home' ? 'on' : '' })),
+            side: [['chat_bubble', 'Chat'], ['home', 'Home'], ['donut_small', 'Assets'], ['credit_card', 'Debts'], ['savings', 'Budget'], ['trending_up', 'Projection'], ['insights', 'Activity'], ['history', 'Audit']].map((i) => ({ icon: i[0], label: i[1], cls: i[1] === 'Projection' ? 'on' : '' }))
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

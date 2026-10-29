@@ -35,6 +35,8 @@
 .ptag { align-self: flex-start; }
 .pnote { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
 .pnote .ms { font-size: 18px; color: var(--mp-ink-2); }
+/* a flag code raises (MA-264): the alert colour, with ▼ and words, never colour alone */
+.pflag { padding: 10px 12px; border-radius: 12px; background: var(--mp-alert-bg); color: var(--mp-alert); font: 600 14px/19px var(--mp-font); text-wrap: pretty; }
 .plock { display: flex; gap: 8px; align-items: center; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
 .plock .ms { font-size: 18px; }
 .phdr { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-top: 8px; border-top: 1px solid var(--mp-line); }
@@ -152,6 +154,7 @@
 <sc-if value="{{ p.isP }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2 {{ p.cls }}">{{ p.t }}</span></sc-if>
 <sc-if value="{{ p.isStrong }}" hint-placeholder-val="{{ false }}"><span class="mp-hl">{{ p.t }}</span></sc-if>
 <sc-if value="{{ p.isNote }}" hint-placeholder-val="{{ false }}"><div class="pnote"><span class="ms">{{ p.icon }}</span><span>{{ p.t }}</span></div></sc-if>
+<sc-if value="{{ p.isFlag }}" hint-placeholder-val="{{ false }}"><div class="pflag">{{ p.t }}</div></sc-if>
 <sc-if value="{{ p.isLock }}" hint-placeholder-val="{{ false }}"><div class="plock"><span class="ms">lock</span><span>{{ p.t }}</span></div></sc-if>
 <sc-if value="{{ p.isHdr }}" hint-placeholder-val="{{ false }}"><div class="phdr"><span class="mp-over mp-ink2">{{ p.t }}</span><span class="mp-foot mp-ink2">{{ p.r }}</span></div></sc-if>
 <sc-if value="{{ p.isLine }}" hint-placeholder-val="{{ false }}"><div class="pline"><sc-if value="{{ p.hasIcon }}" hint-placeholder-val="{{ true }}"><span class="mp-icontile pl-ic"><span class="ms ms-s">{{ p.icon }}</span></span></sc-if><sc-if value="{{ p.hasLead }}" hint-placeholder-val="{{ false }}"><span class="pl-lead">{{ p.lead }}</span></sc-if><div class="grow"><span class="nm">{{ p.name }}</span><sc-if value="{{ p.hasSub }}" hint-placeholder-val="{{ true }}"><span class="sub mp-ink2">{{ p.sub }}</span></sc-if></div><span class="fx col gap4 ae"><span class="pv {{ p.vcls }}">{{ p.v }}</span><sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ p.tagCls }}">{{ p.tag }}</span></sc-if></span></div></sc-if>
