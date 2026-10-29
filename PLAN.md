@@ -489,6 +489,22 @@ Claude's:
   10x macOS multiplier trap) stays at £0.00 a month inside both free tiers
   (`docs/design/cicd-security-regression.html` and the Confluence page CI/CD,
   vulnerability scanning, smoke and regression architecture, MA-272).
+- **The optional AWS VPC enterprise lockdown, seven-layer data perimeter and
+  three-tier costing, recorded (MA-284, MA-283, `docs/RESEARCH.md` §9,
+  `ARCHITECTURE.md` §14, §15, §18.1, §18.4):** the complete seven-layer
+  enterprise VPC blueprint, the four serverless VPC operational gotchas
+  (Hyperplane ENI sharing, in-container ADOT X-Ray export, `cognito-idp`
+  PrivateLink vs Apple/Google JWKS egress, and presigned S3 upload / five-minute
+  Audit links under `aws:SourceVpce` Data Perimeter `Deny` rules), the
+  five-step zero-lockout rollout, and deterministic `us-east-1` costing across
+  Option 1 Bank-Grade Hub-and-Spoke (£729.91/month), Option 2A/2B AWS-Managed
+  Serverless NAT Gateway VPC (£149.01/month and £70.39/month), and **preferred
+  Option 3** Lean Zero-Trust VPC (+£13.32/month in 3A, or +£24.86/month in
+  preferred 3B with CloudFront Pro bundled AWS WAF on `prod`, keeping total AWS
+  spend at ~£16.82 to ~£28.36/month inside the £50/month AWS cap), decided last
+  after Phase 20 (`docs/design/aws-vpc-enterprise-lockdown.html` and the
+  Confluence page Optional AWS VPC enterprise lockdown, data perimeter and
+  costing).
 - **Review checks on their fix's own evidence (MA-282):** four fixed-finding
   checks that went stale on main once later work moved on (MA-240's
   drawn-size diff and Inside MyPaisa's track colours, MA-261's undrawn
@@ -1875,6 +1891,21 @@ Each story is designed first; privacy mode holds everywhere.
   guided flow; never a write without Confirm in the app.
 - **A Live Activity (MA-179):** an import (MA-111, MA-152) followed on the
   Lock Screen and in the Dynamic Island, with no amounts.
+- **Optional AWS VPC enterprise lockdown and data perimeter (MA-283, decided last):**
+  once Phase 20 is done, Arun decides whether to keep the £3.50/month
+  serverless IAM/tag baseline or turn on `enable_vpc_lockdown` across `dev` and
+  `prod` in `us-east-1` (`MA-284`, `docs/RESEARCH.md` §9): preferred Option 3
+  (`+£13.32/month` in leanest 3A, or `+£24.86/month` in 3B with CloudFront Pro
+  bundled AWS WAF on `prod`, keeping total AWS spend ~£16.82–£28.36/month
+  inside the £50/month AWS cap, versus Option 2B `£70.39/month`, Option 2A
+  `£149.01/month` and Option 1 `£729.91/month`) adds dual-stack VPCs with VPC
+  Block Public Access, zero-egress Isolated subnets for deterministic and
+  quarantined functions, free S3 and DynamoDB Gateway Endpoints with three-way
+  `aws:SourceVpce` Data Perimeter `Deny` policies, IPv6 EIGW, auto-healing
+  Graviton `t4g.nano` `fck-nat` / Envoy TLS-SNI egress proxies, Route 53
+  Resolver DNS Firewall default-deny allowlists, private `arm64` CodeBuild
+  runners, S3 v5 VPC Flow Logs and GuardDuty in a five-step zero-lockout
+  rollout.
 
 **Tests:** each widget, intent and the share extension from fixtures, in
 light, dark, tinted and clear, with privacy on; the extension signs in
@@ -1885,7 +1916,9 @@ WidgetKit snapshot checks (MA-273).
 **Exit:** the widget on your Lock Screen shows the household's day without
 opening the app, and hides it when privacy mode is on.
 
-**Cost:** £0.
+**Cost:** £0 (or +£13.32/month for Option 3A / +£24.86/month for preferred
+Option 3B if the optional `MA-283` VPC lockdown is switched on last, staying
+inside the £50/month AWS cap).
 
 ---
 

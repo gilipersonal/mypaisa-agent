@@ -2276,7 +2276,15 @@ screen would show. The audit log is append-only and hash-chained.
 The two environments share one AWS account and are kept apart by IAM: every
 Lambda role reaches only its own environment's resources; the developer's role
 works in dev and an explicit deny keeps it out of anything tagged `env=prod`;
-prod changes only through CI from `main`, after approval (§18). Secret values
+prod changes only through CI from `main`, after approval (§18). An optional
+seven-layer AWS VPC enterprise lockdown and three-way `aws:SourceVpce` Data
+Perimeter across `dev` and `prod` (`MA-283`, `MA-284`; `docs/RESEARCH.md` §9)
+is designed and costed across five options — Option 3 (Lean Zero-Trust VPC:
+`+£13.32/month` in 3A, or `+£24.86/month` in preferred 3B with CloudFront Pro
+bundled AWS WAF on `prod`, both inside §15.2's £50/month AWS cap) preferred
+over Option 2A/2B (`£149.01` / `£70.39/month`) and Option 1 (`£729.91/month`) —
+and is **decided last, after Phase 20** (`enable_vpc_lockdown = false` by
+default). Secret values
 live only in SSM, set by hand; Terraform creates the parameters with a
 write-only placeholder (`value_wo`), so no secret ever reaches its state: with
 `value`, the AWS provider would store the decrypted value on every refresh,
@@ -2303,8 +2311,16 @@ and that device are now the key to the app.
 
 Not in the table: the live evals in their own Console workspace (§23.7), up
 to $30 (about £23) in a month of prompt or tool changes and nothing in a
-quiet one, paid from the same credit; and the overnight judges, under $1
-inside prod's ceiling.
+quiet one, paid from the same credit; the overnight judges, under $1
+inside prod's ceiling; and the optional end-of-roadmap AWS VPC enterprise
+lockdown (`MA-283`, `MA-284`, decided last after Phase 20; `docs/RESEARCH.md`
+§9), where preferred Option 3 adds **+£13.32/month** (`+$17.32`, Option 3A) or
+**+£24.86/month** (`+$32.32`, Option 3B with CloudFront Pro bundled AWS WAF on
+`prod`), keeping total AWS spend (~£16.82 to ~£28.36/month) inside §15.2's
+£50/month AWS cap (versus £70.39/month for Option 2B Managed NAT Gateways,
+£149.01/month for Option 2A with 9 PrivateLink AZ-endpoints, and £729.91/month
+for Option 1 Bank-Grade Hub-and-Spoke with AWS Network Firewall and Transit
+Gateway).
 
 Two members on the standard setup: about £48, of which about £6 is Apple's developer membership and about £2.50 the watching of §10.9. The Claude lines are paid by
 the monthly API credit that comes with the Max 20x plan ($200 a month,
@@ -2513,7 +2529,7 @@ a daily digest instead.
 | Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; one OpenTelemetry trace from the door through the queues and the agent to the model and back, continued by every hop and never sampled; the AWS Lambda Layer for OpenTelemetry in the image, Transaction Search and Application Signals; model and tool spans in the open GenAI conventions, with no prompt, reply, figure or name in CloudWatch; Powertools for logs and metrics, not its Tracer; fifteen metrics, one dashboard per environment; alarms to the chat; an Activity page (§10; MA-230, 26 Oct 2026) | What the agent did and spent is visible without opening the AWS console, a message can be followed from the tap to the push, and the watching costs about £2.50 a month |
 | App sessions | In the web app, v2's `HttpOnly`, `SameSite=Strict` session cookie on the api's host. In the iOS app, Cognito tokens in the Keychain, this device only; five-minute access tokens, rotating refresh tokens; a `Device` row per signed-in device; the api's authorizer checks token, status and epoch on every call and when a stream opens, and the stream again every 60 seconds; the second check a fresh, server-verified assertion | Sign-out and pause take effect on the next request; nothing a lost phone holds outlives a sign-out |
 | Apple and Google sign-in | Native Sign in with Apple and Google's iOS SDK, one Google iOS client per environment; a second sign-in added from You while signed in | One identity per member across Apple, Google and passkeys; Apple's own button first, as its guidelines ask of an app that offers Google |
-| Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags; separate app builds (MyPaisa Dev, MyPaisa), Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
+| Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags by default (with an optional seven-layer VPC and three-way `aws:SourceVpce` Data Perimeter decided last after phase 20, MA-283, MA-284; `docs/RESEARCH.md` §9); separate app builds (MyPaisa Dev, MyPaisa), Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§18) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |
 | Claude budget | The agents' allowance is the Max 20x plan's $200 monthly credit across prod and dev ($160 and $40 by default, each a ceiling the admin moves); AWS and others have their own cap (£50); every step, action and alert route set in the Admin center (§15.2); a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); MyPaisa degrades to templates rather than going silent, and a runaway loop cannot spend a month |
 | Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
@@ -2594,7 +2610,17 @@ shared between the two except the account, the DNS zone and the certificate.
 environment's resources. The developer's role works in dev; an explicit deny
 keeps it out of anything tagged `env=prod`, so a slip on a laptop cannot touch
 the household's data. Tokens from one pool are refused by the other
-environment's api.
+environment's api. By default across phases 0 to 20 both environments run
+without custom VPCs (`enable_vpc_lockdown = false`, £3.50/month); an optional
+seven-layer VPC enterprise lockdown (`mypaisa-dev-vpc` `10.10.0.0/16` and
+`mypaisa-prod-vpc` `10.20.0.0/16` with zero peering, VPC Block Public Access,
+zero-egress Isolated subnets, free S3 and DynamoDB Gateway Endpoints with
+three-way `aws:SourceVpce` Data Perimeter `Deny` policies, IPv6 EIGW, and
+Graviton `t4g.nano` `fck-nat`/Envoy TLS-SNI egress proxies + Route 53 DNS
+Firewall default-deny allowlists — preferred Option 3 adding +£13.32/month in
+3A or +£24.86/month in 3B with CloudFront Pro bundled AWS WAF on `prod`, inside
+§15.2's £50/month AWS cap; `MA-283`, `MA-284`, `docs/RESEARCH.md` §9) is
+decided last, after phase 20.
 
 **Local development** runs the whole app on the laptop (MA-198): a moto server
 for DynamoDB, S3 and SQS (no Docker); the handlers behind one local ASGI app,
@@ -2690,7 +2716,13 @@ CodeBuild runner project and its service role, which alone pushes to ECR, the
 CodeConnections connection to GitHub, which Arun authorises once (MA-238),
 the one `mypaisa` ECR repository both environments pull from (scan on push;
 untagged images expire after a day and the last five tagged ones are kept),
-and a usage budget that warns at 80 of the free 100 build minutes. Actions are pinned
+and a usage budget that warns at 80 of the free 100 build minutes. If the
+optional `MA-283` VPC lockdown is turned on after phase 20 (`docs/RESEARCH.md`
+§9.5), the `arm64` CodeBuild runner attaches to `Private Egress` subnets so
+image builds, Terraform applies and smoke tests originate inside the VPC
+perimeter, and CI runs **VPC Reachability Analyzer** ($0.10 per check on
+`infra/` network diffs) to prove zero unintended path exists between an
+Internet Gateway and private Lambda ENIs. Actions are pinned
 to commit SHAs, workflows hold `contents: read` unless a step needs more, and
 runs of the same workflow on the same branch never overlap.
 
