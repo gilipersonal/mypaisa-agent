@@ -143,7 +143,9 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   axis labels thin where they would touch. A shared rule must leave every
   board as drawn: `node scripts/board_fit.js --diff <main> --expect
   review/MA-<n>/drawn-changes.json` compares every frame at its drawn size,
-  pixel by pixel, and fails on a change the story does not name.
+  pixel by pixel, and fails on a change the story does not name. Once the
+  story has merged, `--since <its merge>` leaves out, by name, each board a
+  later story redrew, and compares the rest through the shared files (MA-282).
 
 **The superseded record.** The Mini App boards, the Telegram chats and the
 Prototype's Telegram flows in MyPaisa app v1 (`app-v1/`), the Telegram kit in

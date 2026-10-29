@@ -8169,6 +8169,28 @@
     "docs/design/maestro-ios-ipados-testing.html",
     "docs/design/maestro-ios-ipados-testing/*.gif"
    ]
+  },
+  {
+   "key": "MA-282",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Four review ledger checks that went stale on main pass again on each fix's own evidence",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Found while settling MA-102 (29 Oct 2026): four fixed-finding checks failed on main at 568a466 although their fixes held, each reading a state later work moved on on purpose (lessons 3, 6 and 22 in .claude/rules/independent-review.md; lesson 40 records it). MA-261 r1-c4 renders every phase page and the story explorer with each phase's first UI story taken back to no boards (review/MA-261/check_r1_c4.py); MA-240 r2-35 compares Inside MyPaisa's --track colours with the published ones at d6e243f; MA-240 r0-6 and r1-3 run the drawn-size diff with --since 8e4b675 (MA-240's merge), a new board_fit.js option that leaves out, by name, each board a later story redrew and compares the rest through the shared files. review/MA-282/mutants.py puts each fault back in a scratch worktree and needs its check to fail for that reason. Estimated at half a day, which moves phase 0's end from 23 Dec 2026 to 4 Jan 2027 and each later phase by one to four days.",
+   "code": [
+    "review/MA-240/fixed.json",
+    "review/MA-240/drawn-changes.json",
+    "review/MA-261/fixed.json",
+    "review/MA-261/check_r1_c4.py",
+    "review/MA-282/mutants.py",
+    "scripts/board_fit.js"
+   ]
   }
  ],
  "others": [
