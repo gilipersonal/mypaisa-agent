@@ -50,8 +50,9 @@
   "finding": "Every guard leaves every board as drawn: at the drawn sizes the only changes are the ones review/MA-240/drawn-changes.json names, each a fix (round 1 found this false, and made it a command)",
   "check": {
    "type": "cmd",
-   "run": "node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json"
-  }
+   "run": "node scripts/board_fit.js --diff d6e243f --since 8e4b675 --expect review/MA-240/drawn-changes.json"
+  },
+  "amended": "MA-282, 29 Oct 2026: the diff against d6e243f failed once MA-261, MA-264 and MA-281 redrew boards on purpose (the Prototype's later steps, both Projection boards); --since 8e4b675 (MA-240's merge) now leaves out, by name, each board whose own file, or a file it alone loads, changed after MA-240, and compares every other board through the shared files where the guards are, against the same d6e243f and the same expectations"
  },
  {
   "id": "r1-1",
@@ -92,8 +93,9 @@
   "finding": "Guards moved drawn frames: every phone-door hero shrank to 36, the phone chat drawer narrowed to 300, the kit's toast specimens wrapped, two-column key-value grids fell to one and their pencils were orphaned, a button row's hint dropped under its button, the prototype's date card and a suggestion wrapped",
   "check": {
    "type": "cmd",
-   "run": "node scripts/board_fit.js --diff d6e243f --expect review/MA-240/drawn-changes.json"
-  }
+   "run": "node scripts/board_fit.js --diff d6e243f --since 8e4b675 --expect review/MA-240/drawn-changes.json"
+  },
+  "amended": "MA-282, 29 Oct 2026: the diff against d6e243f failed once MA-261, MA-264 and MA-281 redrew boards on purpose (the Prototype's later steps, both Projection boards); --since 8e4b675 (MA-240's merge) now leaves out, by name, each board whose own file, or a file it alone loads, changed after MA-240, and compares every other board through the shared files where the guards are, against the same d6e243f and the same expectations"
  },
  {
   "id": "r1-4",
@@ -697,8 +699,9 @@
   "finding": "Inside MyPaisa's source changed its track colours while the live page (NQecwzUjudjq1Kigri13g5) kept the old ones and no record named the change; MA-240 leaves the source as published (round 2: E6)",
   "check": {
    "type": "cmd",
-   "run": "git diff --quiet d6e243f -- docs/design/inside-mypaisa.html"
-  }
+   "run": "python3 -c \"import re,subprocess,sys; f='docs/design/inside-mypaisa.html'; g=lambda s: [v.strip().upper() for v in re.findall(r'--track\\s*:\\s*([^;]+);', s)]; a=g(subprocess.run(['git','show','d6e243f:'+f],capture_output=True,text=True).stdout); b=g(open(f).read()); print(a, b); sys.exit(0 if len(a)==3 and a==b else 1)\""
+  },
+  "amended": "MA-282, 29 Oct 2026: the whole-page diff against d6e243f failed once MA-245 and MA-261 changed the page's words on purpose; the check now compares only what the fix kept, the page's --track colours (light #CDCFD4, dark #454E5C in both dark blocks), with the published ones at d6e243f"
  },
  {
   "id": "r2-36",
