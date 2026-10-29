@@ -13,11 +13,11 @@
 :root{
   --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
   --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
-  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6; --hero-num:#FFAF9B;
   --coral:#FF6B4F; --accent:#C2381F; --on-accent:#FFFFFF;
   --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
   --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB; --violet:#6B3FB8; --violet-bg:#EEE7FA;
-  --track:#CDCFD4; --grid:#ECE8E2;
+  --track:#BEC1C8; --grid:#ECE8E2;
   --shadow:0 1px 2px rgba(20,23,31,.06),0 10px 30px rgba(20,23,31,.08);
   --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
   --f-body:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
@@ -27,11 +27,11 @@
   :root:not([data-theme="light"]){
     --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
     --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
-    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
-    --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6; --hero-num:#FFAF9B;
+    --coral:#FF7A5E; --accent:#FFAF9B; --on-accent:#1A0B06;
     --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
     --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
-    --track:#454E5C; --grid:#222B39;
+    --track:#485160; --grid:#222B39;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
     color-scheme:dark;
   }
@@ -39,11 +39,11 @@
 :root[data-theme="dark"]{
   --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
   --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
-  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
-  --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6; --hero-num:#FFAF9B;
+  --coral:#FF7A5E; --accent:#FFAF9B; --on-accent:#1A0B06;
   --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
   --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
-  --track:#454E5C; --grid:#222B39;
+  --track:#485160; --grid:#222B39;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
   color-scheme:dark;
 }
@@ -56,7 +56,7 @@ h2{font-size:clamp(24px,3.2vw,32px);font-weight:900;line-height:1.15}
 h3{font-size:18px;font-weight:800}
 p{margin:0}
 a{color:var(--accent)}
-code,.mono{font-family:var(--f-mono);font-size:.88em}
+code,.mono{font-family:var(--f-mono);font-size:.88em;overflow-wrap:anywhere}
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:6px}
 
 .mast{background:var(--hero);color:var(--hero-ink);padding-block:40px 36px}
@@ -65,15 +65,15 @@ code,.mono{font-family:var(--f-mono);font-size:.88em}
 .mast .lede{color:var(--hero-ink-2);font-size:17px;max-width:70ch;margin-top:16px}
 .rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
 .rules li{background:var(--hero-2);color:var(--hero-ink);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
-.rules li b{color:var(--coral);margin-right:6px;font-family:var(--f-mono);font-weight:500}
+.rules li b{color:var(--hero-num);margin-right:6px;font-family:var(--f-mono);font-weight:500}
 
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px}
 .seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
-.seg button{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button{display:inline-flex;align-items:center;min-height:44px;font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
 .seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
-.ghost{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.ghost{display:inline-flex;align-items:center;min-height:44px;font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
 .bar nav{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;margin-left:auto}
 .bar nav a{color:var(--ink-2);text-decoration:none}
 .bar nav a:hover{color:var(--accent)}
@@ -100,14 +100,14 @@ section:last-of-type{border-bottom:0}
 .s-s{fill:var(--ink-2);font:500 11.8px var(--f-body)}
 .s-m{fill:var(--ink-3);font:500 11.2px var(--f-mono)}
 .s-h{fill:var(--ink);font:800 14.5px var(--f-display)}
-.s-line{stroke:var(--track);stroke-width:2;fill:none}
-.s-dash{stroke:var(--track);stroke-width:2;fill:none;stroke-dasharray:5 5}
+.s-line{stroke:var(--ink-3);stroke-width:2;fill:none}
+.s-dash{stroke:var(--ink-3);stroke-width:2;fill:none;stroke-dasharray:5 5}
 .s-up{fill:var(--up)} .s-upbg{fill:var(--up-bg);stroke:var(--up);stroke-width:1.3}
 .s-al{fill:var(--alert)} .s-albg{fill:var(--alert-bg);stroke:var(--alert);stroke-width:1.3}
 .s-am{fill:var(--amber)} .s-ambg{fill:var(--amber-bg);stroke:var(--amber);stroke-width:1.3}
 .s-bl{fill:var(--blue)} .s-blbg{fill:var(--blue-bg);stroke:var(--blue);stroke-width:1.3}
 .s-vi{fill:var(--violet)} .s-vibg{fill:var(--violet-bg);stroke:var(--violet);stroke-width:1.3}
-.s-co{fill:var(--coral)} .s-tr{fill:var(--track)}
+.s-co{fill:var(--coral)} .s-tr{fill:var(--ink-3)}
 .s-upt{fill:var(--up);font:700 12.4px var(--f-body)}
 .s-alt{fill:var(--alert);font:700 12.4px var(--f-body)}
 .s-amt{fill:var(--amber);font:700 12.4px var(--f-body)}
@@ -146,8 +146,8 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 <div class="bar">
   <div class="wrap">
     <div class="seg" role="radiogroup" aria-label="Explanation depth">
-      <button type="button" role="radio" aria-checked="false" data-set="plain">Plain words</button>
-      <button type="button" role="radio" aria-checked="true" data-set="tech">Technical</button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-set="plain">Plain words</button>
+      <button type="button" role="radio" aria-checked="true" tabindex="0" data-set="tech">Technical</button>
     </div>
     <button type="button" class="ghost" id="pause" aria-pressed="false">Pause the diagrams</button>
     <nav aria-label="Sections">
@@ -214,7 +214,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="346" y="236">• MyPaisa-Maestro-iPad-1376  (+ Duo beta)</text>
         <rect class="s-box" x="334" y="258" width="344" height="50" rx="8"/>
         <text class="s-t" x="346" y="278">JUnit XML + HTML-DETAILED + PNGs</text>
-        <text class="s-m" x="346" y="294">maestro check-syntax on Linux CI (3s, 1x)</text>
+        <text class="s-m" x="346" y="294">maestro_local.py check-syntax (3s, 1x)</text>
         <rect class="step-ring" data-f1="1" x="332" y="56" width="348" height="192" rx="10"/>
 
         <line class="s-line" x1="692" y1="118" x2="710" y2="118"/>
@@ -289,15 +289,19 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="s-upbg" x="476" y="60" width="202" height="106" rx="8"/>
         <text class="s-upt" x="488" y="82">SwiftUI Cards (.contain)</text>
         <text class="s-m" x="488" y="102">mp.card.confirm (outer)</text>
-        <text class="s-m" x="488" y="118">├─ mp.card.confirm.accept</text>
-        <text class="s-m" x="488" y="134">├─ mp.card.confirm.cancel</text>
-        <text class="s-m" x="488" y="150">└─ mp.card.technical-fold</text>
+        <line class="s-line" x1="491" y1="108" x2="491" y2="148"/>
+        <line class="s-line" x1="491" y1="115" x2="496" y2="115"/>
+        <line class="s-line" x1="491" y1="131" x2="496" y2="131"/>
+        <line class="s-line" x1="491" y1="147" x2="496" y2="147"/>
+        <text class="s-m" x="500" y="118">mp.card.confirm.accept</text>
+        <text class="s-m" x="500" y="134">mp.card.confirm.cancel</text>
+        <text class="s-m" x="500" y="150">mp.card.technical-fold</text>
         <rect class="s-ambg" x="262" y="180" width="200" height="108" rx="8"/>
         <text class="s-amt" x="274" y="202">Swift Charts (MA-56)</text>
         <text class="s-m" x="274" y="222">mp.chart.net-worth</text>
         <text class="s-m" x="274" y="238">AXChartDescriptor +</text>
         <text class="s-m" x="274" y="254">.accessibilityValue</text>
-        <text class="s-m" x="274" y="270">("Latest £412,850")</text>
+        <text class="s-m" x="274" y="270">("Latest £444,951")</text>
         <rect class="s-blbg" x="476" y="180" width="202" height="108" rx="8"/>
         <text class="s-blt" x="488" y="202">Motion Determinism</text>
         <text class="s-m" x="488" y="222">MYPAISA_STATIC_MOTION=1</text>
@@ -334,7 +338,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 <section id="bands">
   <div class="head">
     <div class="kicker">3 · Four-sub-band adaptive width &amp; live rotation matrix (MA-163, MA-240, MA-273)</div>
-    <h2>Testing the chat beside every screen from about 1133 pt, a sheet away from 600 to 1133 pt, and a compact tab</h2>
+    <h2>Testing the chat beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)</h2>
   </div>
   <div class="body">
     <div class="copy plain">
@@ -352,12 +356,12 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-h" x="28" y="42">Band 1 · &lt;600 pt Compact</text>
         <text class="s-m" x="28" y="60">iPhone 375/402/440 · Slide Over</text>
         <rect class="s-blbg" x="28" y="74" width="228" height="142" rx="10"/>
-        <text class="s-blt" x="40" y="96">1 Column + Bottom Tab Bar</text>
-        <text class="s-m" x="40" y="116">[ Single Screen / Chat Tab ]</text>
-        <text class="s-m" x="40" y="140">┌──────────────────────┐</text>
-        <text class="s-m" x="40" y="156">│ Liquid Glass Tab Bar │</text>
-        <text class="s-m" x="40" y="172">└──────────────────────┘</text>
-        <text class="s-s" x="40" y="198">iPhone landscape stays compact!</text>
+        <text class="s-blt" x="40" y="95">1 Column + Bottom Tab Bar</text>
+        <rect class="s-box" x="40" y="104" width="204" height="44" rx="6"/>
+        <text class="s-m" x="52" y="130">Single Screen / Chat Tab</text>
+        <rect class="s-box2" x="40" y="152" width="204" height="26" rx="6"/>
+        <text class="s-m" x="52" y="169">Liquid Glass Tab Bar</text>
+        <text class="s-s" x="40" y="200">iPhone landscape stays compact</text>
         <rect class="s-upbg" x="28" y="228" width="228" height="72" rx="8"/>
         <text class="s-upt" x="38" y="248">assertVisible: mp.nav.tab-bar</text>
         <text class="s-m" x="38" y="266">notVisible: mp.nav.sidebar</text>
@@ -366,14 +370,16 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 
         <rect class="s-box2" x="284" y="16" width="252" height="298" rx="12"/>
         <text class="s-h" x="296" y="42">Band 2 · 600–899 pt</text>
-        <text class="s-m" x="296" y="60">iPad 744/834 Portrait · Duo Open</text>
+        <text class="s-m" x="296" y="60">iPad 744/834 Portrait · Duo</text>
         <rect class="s-vibg" x="296" y="74" width="228" height="142" rx="10"/>
-        <text class="s-vit" x="308" y="96">Top Bar + Chat as Sheet</text>
-        <text class="s-m" x="308" y="116">[ Top Collapsed Tab Bar ]</text>
-        <text class="s-m" x="308" y="138">[   Dashboard Screen    ]</text>
-        <text class="s-m" x="308" y="160">   ┌── mp.chat.sheet ──┐</text>
-        <text class="s-m" x="308" y="176">   │ Ask / ⌘K overlay  │</text>
-        <text class="s-s" x="308" y="198">2/3 Split View &amp; unfolded Duo</text>
+        <text class="s-vit" x="308" y="95">Top Bar + Chat as Sheet</text>
+        <rect class="s-box2" x="308" y="104" width="204" height="22" rx="5"/>
+        <text class="s-m" x="318" y="119">Top Collapsed Tab Bar</text>
+        <rect class="s-box" x="308" y="130" width="204" height="50" rx="6"/>
+        <text class="s-m" x="318" y="146">Dashboard Screen</text>
+        <rect class="s-vibg" x="336" y="152" width="168" height="24" rx="5"/>
+        <text class="s-m" x="346" y="168">mp.chat.sheet (Ask)</text>
+        <text class="s-s" x="308" y="200">2/3 Split View &amp; unfolded Duo</text>
         <rect class="s-upbg" x="296" y="228" width="228" height="72" rx="8"/>
         <text class="s-upt" x="306" y="248">assertVisible: mp.nav.top-tabs</text>
         <text class="s-m" x="306" y="266">notVisible: trailing-column</text>
@@ -382,14 +388,19 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 
         <rect class="s-box2" x="552" y="16" width="252" height="298" rx="12"/>
         <text class="s-h" x="564" y="42">Band 3 · 900–1132 pt</text>
-        <text class="s-m" x="564" y="60">13" iPad Upright 1032pt (MA-240)</text>
+        <text class="s-m" x="564" y="60">13-in iPad 1032pt (MA-240)</text>
         <rect class="s-ambg" x="564" y="74" width="228" height="142" rx="10"/>
-        <text class="s-amt" x="576" y="96">Sidebar + Screen + Sheet</text>
-        <text class="s-m" x="576" y="118">│Side│  Dashboard Screen</text>
-        <text class="s-m" x="576" y="138">│bar │  (wide, uncrushed!)</text>
-        <text class="s-m" x="576" y="160">│Chat│──► mp.chat.sheet</text>
-        <text class="s-s" x="576" y="186">Prevents 360–480pt crushed</text>
-        <text class="s-s" x="576" y="202">middle column (MA-240)</text>
+        <text class="s-amt" x="576" y="95">Sidebar + Screen + Sheet</text>
+        <rect class="s-box2" x="576" y="104" width="54" height="74" rx="6"/>
+        <text class="s-m" x="584" y="128">Side</text>
+        <text class="s-m" x="584" y="144">bar</text>
+        <rect class="s-box" x="634" y="104" width="146" height="74" rx="6"/>
+        <text class="s-m" x="642" y="123">Wide Screen</text>
+        <text class="s-m" x="642" y="139">(uncrushed)</text>
+        <rect class="s-ambg" x="648" y="148" width="126" height="24" rx="5"/>
+        <text class="s-m" x="656" y="164">mp.chat.sheet</text>
+        <text class="s-s" x="576" y="193">Prevents 360–480pt crushed</text>
+        <text class="s-s" x="576" y="208">middle column (MA-240)</text>
         <rect class="s-upbg" x="564" y="228" width="228" height="72" rx="8"/>
         <text class="s-upt" x="574" y="248">assertVisible: mp.nav.sidebar</text>
         <text class="s-m" x="574" y="266">notVisible: trailing-column</text>
@@ -398,22 +409,28 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 
         <rect class="s-box2" x="820" y="16" width="252" height="298" rx="12"/>
         <text class="s-h" x="832" y="42">Band 4 · ≥1133 pt Beside</text>
-        <text class="s-m" x="832" y="60">iPad Landscape 1133/1210/1376pt</text>
+        <text class="s-m" x="832" y="60">iPad 1133 / 1210 / 1376 pt</text>
         <rect class="s-upbg" x="832" y="74" width="228" height="142" rx="10"/>
-        <text class="s-upt" x="844" y="96">3 Columns: Chat Beside</text>
-        <text class="s-m" x="844" y="118">│Side│ Screen │ Trailing │</text>
-        <text class="s-m" x="844" y="138">│bar │  Home  │   Chat   │</text>
-        <text class="s-m" x="844" y="158">│    │ £412k  │  Column  │</text>
-        <text class="s-s" x="844" y="186">Confirm in chat updates Home</text>
-        <text class="s-s" x="844" y="202">beside it live via SSE</text>
+        <text class="s-upt" x="844" y="95">3 Columns: Chat Beside</text>
+        <rect class="s-box2" x="844" y="104" width="46" height="74" rx="6"/>
+        <text class="s-m" x="851" y="130">Side</text>
+        <text class="s-m" x="851" y="146">bar</text>
+        <rect class="s-box" x="894" y="104" width="76" height="74" rx="6"/>
+        <text class="s-m" x="902" y="130">Home</text>
+        <text class="s-m" x="902" y="148">£445k</text>
+        <rect class="s-upbg" x="974" y="104" width="74" height="74" rx="6"/>
+        <text class="s-m" x="982" y="130">Chat</text>
+        <text class="s-m" x="982" y="148">Beside</text>
+        <text class="s-s" x="844" y="193">Confirm in chat updates Home</text>
+        <text class="s-s" x="844" y="208">beside it live via SSE</text>
         <rect class="s-upbg" x="832" y="228" width="228" height="72" rx="8"/>
         <text class="s-upt" x="842" y="248">visible: sidebar + trailing</text>
         <text class="s-m" x="842" y="266">notVisible: mp.chat.sheet</text>
-        <text class="s-m" x="842" y="284">Guided-flow draft preserved!</text>
+        <text class="s-m" x="842" y="284">Composer &amp; draft preserved</text>
         <rect class="step-ring" data-f3="3" x="820" y="16" width="252" height="298" rx="12"/>
       </svg>
       </div>
-      <figcaption>Maestro tests all four width sub-bands and rotates 11-inch and 13-inch iPads mid-guided-flow across the 1133 pt threshold to verify zero lost input.</figcaption>
+      <figcaption>Maestro tests all four width sub-bands and rotates 11-inch and 13-inch iPads mid-flow across the 1133 pt threshold to verify zero lost input.</figcaption>
     </figure>
   </div>
 </section>
@@ -425,12 +442,12 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
   </div>
   <div class="body">
     <div class="copy plain">
-      <p>Maestro works hand-in-hand with Apple's simulator tools to trigger Face ID successes and failures, lock-screen push notifications (verifying zero pound or rupee amounts show under Privacy Mode), invite links, bank statement PDFs, and giant accessibility text across all 21 build phases for <strong>£0.00/month</strong>.</p>
+      <p>Maestro works hand-in-hand with Apple's simulator tools to trigger Face ID successes and failures, lock-screen push notifications (verifying zero pound or rupee amounts show under Privacy Mode), invite links, Photos screenshots and Files statement PDFs, and giant accessibility text across all 21 build phases for <strong>£0.00/month</strong>.</p>
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>System daemon bridges (<code>.maestro/scripts/*.js</code>):</strong> Trigger <code>BiometricKit</code> match/fail notifications for the Admin Center second check, <code>xcrun simctl push</code> APNs check-ins, <code>openLink</code> Universal Links, <code>addMedia</code> statements/screenshots, <code>simctl ui content_size AX5</code>, and local ASGI offline-queue drops.</li>
-        <li><strong>Cost math:</strong> Running 5 simulators on GitHub <code>macos-15</code> (<code>10x</code> multiplier) would burn 150–220 billed minutes per PR (~£42–£65/mo overage). Running <code>maestro check-syntax</code> on <code>ubuntu-24.04-arm</code> (<code>1x</code>, 3s) in CI and running the 5-simulator pool locally on Apple Silicon costs <strong>£0.00/month</strong>.</li>
+        <li><strong>System daemon bridges (<code>.maestro/scripts/*.js</code> → <code>127.0.0.1:8788</code>):</strong> <code>maestro_local.py</code>'s localhost HTTP bridge triggers <code>com.apple.BiometricKit_Sim.pearl.nomatch</code>/<code>.match</code> for the second check, <code>xcrun simctl push</code> APNs check-ins (<code>HDFC home loan EMI</code>), <code>openLink</code> Universal Links, Photos <code>addMedia</code> for images plus Local File Provider staging for <code>.pdf</code>/<code>.xlsx</code> documents (with <code>XCUITest</code> covering <code>⌘*</code> iPad shortcuts), <code>simctl ui content_size AX5</code>, and local ASGI offline-queue drops.</li>
+        <li><strong>Cost math:</strong> Running 5 simulators on GitHub <code>macos-15</code> (<code>10x</code> multiplier) would burn 150–220 billed minutes per PR (~£42–£65/mo overage). Running <code>python3 scripts/maestro_local.py check-syntax</code> on <code>ubuntu-24.04-arm</code> (<code>1x</code>, 3s) in CI and running the 5-simulator pool locally on Apple Silicon costs <strong>£0.00/month</strong>.</li>
       </ul>
     </div>
     <figure class="fig" id="fig-4">
@@ -440,7 +457,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-h" x="30" y="42">Native System Capability Bridges (simctl + Maestro)</text>
         <rect class="s-vibg" x="30" y="58" width="204" height="72" rx="8"/>
         <text class="s-vit" x="40" y="78">Face ID Second Check</text>
-        <text class="s-m" x="40" y="96">BiometricKit fail → 0 write</text>
+        <text class="s-m" x="40" y="96">BiometricKit_Sim fail → 0</text>
         <text class="s-m" x="40" y="112">retry match → AuditEvent</text>
         <rect class="s-blbg" x="246" y="58" width="204" height="72" rx="8"/>
         <text class="s-blt" x="256" y="78">APNs Push + Privacy</text>
@@ -449,22 +466,22 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="s-upbg" x="30" y="142" width="204" height="72" rx="8"/>
         <text class="s-upt" x="40" y="162">Universal Links &amp; Media</text>
         <text class="s-m" x="40" y="180">openLink /join/&lt;token&gt;</text>
-        <text class="s-m" x="40" y="196">addMedia PDF + Quick Look</text>
+        <text class="s-m" x="40" y="196">Photos addMedia + Files PDF</text>
         <rect class="s-ambg" x="246" y="142" width="204" height="72" rx="8"/>
         <text class="s-amt" x="256" y="162">AX5, Dark &amp; Offline Queue</text>
         <text class="s-m" x="256" y="180">simctl ui AX5 + dark 25%</text>
         <text class="s-m" x="256" y="196">MMKV queue → SSE flush</text>
         <rect class="s-box" x="30" y="226" width="420" height="74" rx="8"/>
-        <text class="s-upt" x="42" y="248">Cost Comparison (60 runs/month across 5 simulators)</text>
-        <text class="s-alt" x="42" y="268">✗ GH macos-15 (10x): ~180 billed mins/run → £42–£65/mo</text>
-        <text class="s-upt" x="42" y="286">✓ Local Apple Silicon + Linux check-syntax (3s): £0.00/mo</text>
+        <text class="s-upt" x="42" y="248">Cost Comparison (60 runs/month across 5 sims)</text>
+        <text class="s-alt" x="42" y="268">✗ GH macos-15 (10x): ~180m/run → £42–£65/mo</text>
+        <text class="s-upt" x="42" y="286">✓ Local Apple Silicon + Linux syntax (3s): £0/mo</text>
         <rect class="step-ring" data-f4="0" x="28" y="56" width="424" height="160" rx="10"/>
 
         <rect class="s-box2" x="482" y="16" width="462" height="298" rx="12"/>
         <text class="s-h" x="496" y="42">Phase-by-Phase Maestro Rollout (Phases 0 to 20)</text>
         <rect class="s-blbg" x="496" y="58" width="434" height="54" rx="8"/>
         <text class="s-blt" x="508" y="78">Phases 0–1 · Pool, Shell, Sign-In, SSE &amp; 4-Band Rotation</text>
-        <text class="s-m" x="508" y="96">p00_shell_smoke · p01_signin_chat_sse_3band · X-Ray dev-live</text>
+        <text class="s-m" x="508" y="96">p00_shell_smoke · p01_signin_chat_sse_4band · X-Ray dev-live</text>
         <rect class="s-upbg" x="496" y="120" width="434" height="58" rx="8"/>
         <text class="s-upt" x="508" y="140">Phases 2–6 · Whole-Wealth Records, FX, Check-Ins &amp; PDFs</text>
         <text class="s-m" x="508" y="158">Confirm/Cancel audit · INR/GBP · EMI push · Statement PDFs</text>
@@ -495,8 +512,8 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <div class="copy tech">
       <ul>
         <li><strong>Hard-locked privacy (<code>testFlightInternalTestingOnly = true</code>):</strong> Set in <code>ios/ExportOptions-Internal.plist</code> alongside <code>ITSAppUsesNonExemptEncryption = false</code> in <code>Info.plist</code>. Apple's servers permanently forbid External Testing groups, public invite links and public App Store submission, while skipping Beta App Review (live in 3–5 mins).</li>
-        <li><strong>Least-privilege groups &amp; Double Lock:</strong> Individual Developer accounts allow up to 50 additional App Store Connect team users (30 devices each). Family Apple IDs get <code>Customer Support</code> or <code>Marketing</code> scoped strictly to <code>MyPaisa</code> (<code>Household Beta</code> group); <code>MyPaisa Dev</code> stays Arun-only. Inside the app, Cognito + one-time <code>/join/&lt;token&gt;</code> links enforce a second identity lock.</li>
-        <li><strong>Rolling 90-day evergreen lifecycle (<code>MA-167</code>):</strong> TestFlight Automatic Updates install newer <code>CFBundleVersion</code> builds silently in place (preserving Keychain &amp; MMKV) and reset the 90-day clock. At <strong>day 60</strong> without an <code>ios/</code> commit, a scheduled keepalive rebuild (or Xcode Cloud's <strong>25 free compute hours/month</strong>) auto-uploads a fresh build, backed by a day-60 Admin alert and a day-75 <code>itms-beta://</code> banner.</li>
+        <li><strong>Least-privilege groups &amp; Double Lock:</strong> Individual Developer accounts allow up to 50 additional App Store Connect team users (30 devices each). Family Apple IDs get <code>Customer Support</code> or <code>Marketing</code> scoped strictly to <code>MyPaisa</code> (<code>Household Beta</code> group); <code>MyPaisa Dev</code> stays Arun-only, and the <code>.p8</code> App Store Connect API key lives in the <code>main</code>-only GitHub <code>dev</code> and <code>prod</code> environments. Inside the app, Cognito + single-use, 24-hour owner-created <code>/join/&lt;token&gt;</code> links enforce a second identity lock.</li>
+        <li><strong>Rolling 90-day evergreen lifecycle (<code>MA-167</code>):</strong> TestFlight Automatic Updates install newer <code>CFBundleVersion</code> builds silently in place (preserving Keychain &amp; MMKV) and reset the 90-day clock. At <strong>day 60</strong> without an <code>ios/</code> commit, a scheduled keepalive rebuild (or Xcode Cloud's <strong>25 free compute hours/month</strong>) auto-uploads a fresh build, backed by a day-60 alert (Phase 0 SNS watch-tower topic, joining §15.2's Admin alert router in Phase 8 <code>MA-137</code>), a client-side <code>MYPAISA_BUILD_EPOCH</code> day-75 Warm Ledger <code>itms-beta://</code> banner, and Phase 1's <code>GET /v1/app/minimum-version</code> hard update prompt.</li>
       </ul>
     </div>
     <figure class="fig" id="fig-5">
@@ -533,7 +550,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="352" y="220">25 free hrs/mo = 0 GH macOS mins!)</text>
         <rect class="s-albg" x="340" y="242" width="280" height="68" rx="8"/>
         <text class="s-alt" x="352" y="262">Day 75 · In-App Safety Banner</text>
-        <text class="s-m" x="352" y="280">/v1/app/minimum-version prompts</text>
+        <text class="s-m" x="352" y="280">MYPAISA_BUILD_EPOCH + min-ver</text>
         <text class="s-m" x="352" y="296">1-tap itms-beta:// before Day 90</text>
         <rect class="step-ring" data-f5="1" x="338" y="56" width="284" height="176" rx="10"/>
 
@@ -546,8 +563,8 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="678" y="130">(MyPaisa only; up to 30 devices)</text>
         <rect class="s-blbg" x="666" y="152" width="264" height="72" rx="8"/>
         <text class="s-blt" x="678" y="174">Lock 2 · Cognito Invite Gate</text>
-        <text class="s-m" x="678" y="192">No self-signup: requires 48h</text>
-        <text class="s-m" x="678" y="208">owner-approved /join/&lt;token&gt;</text>
+        <text class="s-m" x="678" y="192">No self-signup: single-use 24h</text>
+        <text class="s-m" x="678" y="208">owner-created /join/&lt;token&gt;</text>
         <rect class="s-upbg" x="666" y="236" width="264" height="74" rx="8"/>
         <text class="s-upt" x="678" y="258">Zero-SDK Beta Feedback</text>
         <text class="s-m" x="678" y="276">iOS Screenshot sheet (Privacy ON)</text>
@@ -575,12 +592,12 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <thead><tr><th>Story</th><th>Phase</th><th>What it delivers</th></tr></thead>
         <tbody>
           <tr><td class="k">MA-162</td><td>0</td><td>Apple Developer Program membership ($99/year, includes TestFlight Internal Testing and 25 free Xcode Cloud compute hours/month) and app IDs for <code>MyPaisa</code> and <code>MyPaisa Dev</code></td></tr>
-          <tr><td class="k">MA-164</td><td>0</td><td>APNs and Sign in with Apple keys in SSM, App Store Connect app records, least-privilege Household Beta internal testers and App Store Connect API key</td></tr>
-          <tr><td class="k">MA-165</td><td>0</td><td>React Native 0.88 shell + Swift 6 SwiftUI Fabric core, 120 Hz <code>PERFORMANCE.md</code> physical-device benches, and initial SwiftUI tests</td></tr>
-          <tr><td class="k">MA-166</td><td>0</td><td>Path-filtered CI build, Jest shell tests, XCUITest, light/dark + Large/AX5 snapshot tests and <code>performAccessibilityAudit()</code></td></tr>
-          <tr><td class="k">MA-167</td><td>0</td><td>Private TestFlight lanes (<code>testFlightInternalTestingOnly = true</code>, <code>ITSAppUsesNonExemptEncryption = false</code>), 90-day (3-month) silent updates, day-60 keepalive rebuild + alert, and day-75 <code>itms-beta://</code> prompt</td></tr>
-          <tr><td class="k">MA-273</td><td>0</td><td><code>.maestro/</code> workspace, <code>scripts/maestro_local.py</code> cloned simulator pool with <code>flock</code> isolation, shared <code>TestIDs.swift</code> ↔ <code>test-ids.ts</code>, 4-band rotation, <code>xcrun simctl</code> bridges and Phases 0–20 flows (£0/mo)</td></tr>
-          <tr><td class="k">MA-274</td><td>0</td><td>Local iOS and iPadOS Maestro testing strategy, 4-sub-band matrix, phase-wise rollout and private 90-day TestFlight beta plan recorded in the plan and Confluence with block diagrams</td></tr>
+          <tr><td class="k">MA-164</td><td>0</td><td>APNs and Sign in with Apple keys in SSM, App Store Connect app records (<code>MyPaisa Dev</code> Arun-only; <code>MyPaisa</code> least-privilege <code>Household Beta</code>), and App Store Connect API key in <code>main</code>-only <code>dev</code> and <code>prod</code> GitHub environments</td></tr>
+          <tr><td class="k">MA-165</td><td>0</td><td>React Native 0.88 shell + Swift 6 SwiftUI Fabric core, shared <code>TestIDs.swift</code> + <code>#if DEBUG</code> Maestro hooks, 120 Hz <code>PERFORMANCE.md</code> physical-device benches, and initial SwiftUI tests</td></tr>
+          <tr><td class="k">MA-166</td><td>0</td><td>Path-filtered CI build, Jest shell tests, XCUITest (including <code>⌘*</code> iPad shortcuts), light/dark + Large/AX5 snapshot tests and <code>performAccessibilityAudit()</code></td></tr>
+          <tr><td class="k">MA-167</td><td>0</td><td>Private TestFlight lanes (<code>testFlightInternalTestingOnly = true</code>, <code>ITSAppUsesNonExemptEncryption = false</code>), 90-day (3-month) silent updates, day-60 keepalive rebuild + SNS alert (joining Phase 8 §15.2), and day-75 <code>MYPAISA_BUILD_EPOCH</code> <code>itms-beta://</code> banner</td></tr>
+          <tr><td class="k">MA-273</td><td>0</td><td>Phase 0 <code>.maestro/</code> workspace, <code>scripts/maestro_local.py --up-to-phase &lt;N&gt;</code> cloned simulator pool with <code>flock</code> + localhost <code>simctl</code>/Files bridge, <code>TestIDs.swift</code> ↔ <code>test-ids.ts</code> parity + <code>check-syntax</code> CI gate, and <code>p00_shell_smoke.yaml</code> (with <code>p01..p20</code> joining phase by phase at £0/mo)</td></tr>
+          <tr><td class="k">MA-274</td><td>0</td><td>Local iOS and iPadOS Maestro testing strategy, four-sub-band device matrix, phase-wise rollout and private 90-day TestFlight beta plan recorded in the plan and Confluence with block diagrams</td></tr>
         </tbody>
       </table>
     </div>
@@ -590,20 +607,33 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 </div>
 </main>
 <footer>
-  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §8 and <span class="mono">ARCHITECTURE.md</span> §9.1, §9.5, §18.4 in the MyPaisa repository, 29 Oct 2026 (MA-167, MA-273, MA-274).</div>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §8 and <span class="mono">ARCHITECTURE.md</span> §9.1, §9.5, §15.2, §18.4 in the MyPaisa repository, 29 Oct 2026 (MA-167, MA-273, MA-274).</div>
 </footer>
 
 <script>
 (function(){
   var main=document.getElementById('main');
-  var btns=document.querySelectorAll('.seg button');
-  function setMode(m){
+  var btns=Array.prototype.slice.call(document.querySelectorAll('.seg button'));
+  function setMode(m,focus){
     main.setAttribute('data-mode',m);
-    btns.forEach(function(b){b.setAttribute('aria-checked',b.getAttribute('data-set')===m?'true':'false');});
+    btns.forEach(function(b){
+      var on=b.getAttribute('data-set')===m;
+      b.setAttribute('aria-checked',on?'true':'false');
+      b.setAttribute('tabindex',on?'0':'-1');
+      if(on&&focus)b.focus();
+    });
     try{localStorage.setItem('mp-maestro-mode',m);}catch(e){}
   }
-  btns.forEach(function(b){b.addEventListener('click',function(){setMode(b.getAttribute('data-set'));});});
-  try{var saved=localStorage.getItem('mp-maestro-mode');if(saved==='plain'||saved==='tech')setMode(saved);}catch(e){}
+  btns.forEach(function(b,idx){
+    b.addEventListener('click',function(){setMode(b.getAttribute('data-set'),false);});
+    b.addEventListener('keydown',function(e){
+      var next=-1;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(idx+1)%btns.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+btns.length)%btns.length;
+      if(next>=0){e.preventDefault();setMode(btns[next].getAttribute('data-set'),true);}
+    });
+  });
+  try{var saved=localStorage.getItem('mp-maestro-mode');if(saved==='plain'||saved==='tech')setMode(saved,false);}catch(e){}
 
   var step=0;
   var p1=[[311,90],[311,170],[701,118],[701,118],[701,248],[701,248]];

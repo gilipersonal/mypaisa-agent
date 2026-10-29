@@ -114,11 +114,11 @@ builds it, phase by phase:
 | `evals/` | Planned, phase 0 (MA-246): the eval cases as Inspect AI datasets on the seed household, their scorers and judges, the recordings T0 replays, and the safety, regression and capability suites; the manifest of every agent and tool is `src/mypaisa_agent/manifest.py` (`ARCHITECTURE.md` §23). |
 | `ios/` | The app (MA-165), a bare React Native 0.88 app with a native SwiftUI core, built the way bong-panjika is, its native dependencies through Swift Package Manager (MA-229): `package.json` and `src/`, the TypeScript shell (navigation through the system's tab bar and sidebar, the store, the api and SSE client with TanStack Query, sign-in, push registration, MMKV for the offline store; the shared models and query definitions imported from `web/src/lib/` by path); the Xcode project with the SwiftUI pieces, each hosted through a Fabric component and fed one JSON model (the chat timeline and its cards, the composer, the hero and the figure rows, inline edit, Swift Charts, sheets), in MyPaisa DS v1 "Warm ledger" (colour assets generated from `tokens.css`, Dynamic Type styles, the Liquid Glass controls); `PERFORMANCE.md` with its benches; Jest and XCUITest; from phase 20, the widgets and the share extension. Two configurations chosen by scheme: MyPaisa Dev against dev, MyPaisa against prod. Built from the boards in the MyPaisa iOS v1 project in Claude Design (`docs/design/README.md`). |
 | `web/` | The web app (MA-194, MA-199, MA-184, MA-185): SvelteKit 3 with Svelte 5 and `adapter-static`, a pnpm workspace on Smart Clearance's stack (Tailwind CSS 4 over the DS tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form; MA-229), in the MyPaisa DS v1 "Warm ledger" look, built from the browser boards in the MyPaisa app v1 project in Claude Design at desktop and at 390 (`docs/design/README.md`), with shadcn-svelte's charts on LayerChart and the shared motion (Motion 14, Svelte transitions, View Transitions; MA-182): the chat, Home and the dashboard as it grows, Audit and Files, Activity, Search and the owner's Admin center; `src/lib/` holds the card types, formatting and view models that the iOS app's shell imports too; a PWA whose service worker caches the shell only and never a figure, with Web Push once installed; served from its own S3 + CloudFront at `dashboard-dev.mypaisapp.com` and `dashboard.mypaisapp.com`, which also serve the iOS app's `apple-app-site-association` file and the invite page (MA-73). |
-| `.maestro/` | Planned, phase 0 (MA-273): the local iOS and iPadOS Maestro E2E workspace (`config.yaml`, `subflows/`, `scripts/` for `xcrun simctl` Face ID / APNs / network toggling, `fixtures/`, `screenshots/` and `flows/p00_*.yaml` to `p20_*.yaml`), driven locally across an isolated cloned simulator pool by `scripts/maestro_local.py` at £0/month and syntax-checked on Linux CI (`docs/RESEARCH.md` §8). |
+| `.maestro/` | Planned, phase 0 (MA-273): the local iOS and iPadOS Maestro E2E workspace (`config.yaml`, `subflows/`, `scripts/` for `xcrun simctl` Face ID / APNs / network toggling via `maestro_local.py`'s localhost bridge, `fixtures/` for Photos `addMedia` images and Local File Provider PDFs/workbooks, `screenshots/` and `flows/p00_*.yaml` to `p20_*.yaml`), driven locally across an isolated cloned simulator pool by `scripts/maestro_local.py` at £0/month and checked one file per invocation by `python3 scripts/maestro_local.py check-syntax` on Linux CI (`docs/RESEARCH.md` §8). |
 | `tests/` | pytest: golden files for every signal and for the wealth maths (the old tracker's cases, MA-105), property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
-| `scripts/` | The plan's checks today (`plan_sync.py`, `contrast_check.py`, `review_regress.py`); from phase 0, the local stack in `scripts/local/` (MA-198) and the seed, `scripts/seed.sh local` or `dev`, which loads the design figure set's illustrative household through the write service (MA-110). |
+| `scripts/` | The plan's checks today (`plan_sync.py`, `contrast_check.py`, `design_sync.py`, `board_fit.js`, `confluence_docs.py`, `roadmap.py`, `review_regress.py`); from phase 0, the local stack in `scripts/local/` (MA-198), the seed (`scripts/seed.sh local` or `dev`, which loads the design figure set's illustrative household through the write service, MA-110), `scripts/security_scan.py` (MA-267), `scripts/smoke.py` (MA-268), `scripts/regression.py` (MA-269), and `scripts/maestro_local.py` (MA-273). |
 | `infra/` | Every AWS resource, Terraform only: `modules/mypaisa` holds the stack once (the Lambdas and their images, the REST API with its streaming route, Cognito, the Scheduler rules, DynamoDB, S3, the web app's S3 and CloudFront, the DNS records, SSM parameters, the IAM roles, the budget and the alarms); `dev/` and `prod/` call it with their own settings and state; `bootstrap/` makes, once, the CI roles, the CodeBuild runner that builds the images and the ECR repository they go to (MA-237). `ARCHITECTURE.md` §18. |
-| `.github/workflows/` | The gates and a plan for both environments on every pull request, the iOS gates on a macOS runner when it touches `ios/` (MA-166), and svelte-check, eslint, vitest and Playwright when it touches `web/`; from `main`, build once, deploy dev, then prod after approval, and send MyPaisa Dev to TestFlight, then MyPaisa after the same approval (MA-167); a nightly drift check; all through OIDC. |
+| `.github/workflows/` | The gates and a plan for both environments on every pull request, the iOS gates on a macOS runner when it touches `ios/` (MA-166), and svelte-check, eslint, vitest and Playwright when it touches `web/`; from `main`, build once, deploy dev, then prod after approval, and send MyPaisa Dev (`environment: dev`, Arun only) to TestFlight, then MyPaisa (`environment: prod`, Household Beta) after the same approval, plus `testflight-keepalive.yml` renewing the 90-day TestFlight lease at day 60 (MA-167); a nightly drift check; all through OIDC. |
 | `docs/` | The mark, "Watcher" (MA-103): `mark.svg` and `mark-dark.svg` for light and dark grounds, `mark-animated.svg` and `mark-animated-dark.svg` for this page (the intro plays once, and Reduce Motion shows the final frame), `mark-small.svg` for 32 px and below and the favicon, `mark-icon.svg` and `mark-1024.png`, the source of the app icon (made in Icon Composer: default, dark, clear and tinted, MA-165), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the design pages as source and the Claude Design mirrors, the iOS boards in `ios-v1/` among them. |
 | `Dockerfile` | The container images for every Lambda, arm64, on the AWS Python 3.14 base, since pandas, numpy and pyarrow exceed the zip limit; the stream is its own build target, run through the Lambda Web Adapter. |
 
@@ -213,7 +213,7 @@ except these tools.
 | tflint | recent | the Terraform lint in [Tests](#tests) | `brew install tflint` |
 | Node | an LTS release | `web/` (SvelteKit) and the iOS app's React Native shell | `brew install node` |
 | Xcode | 26 or later | `ios/`: the iOS and iPadOS 26 SDK, the simulators, and swift-format, which comes in its toolchain (`xcrun swift-format`) | the Mac App Store |
-| Maestro | 2.11 or later (with Java 17+) | `.maestro/`: local multi-simulator iOS and iPadOS E2E flows across all four width bands (`scripts/maestro_local.py`, MA-273) | `curl -fsSL "https://get.maestro.mobile.dev" \| bash` |
+| Maestro | 2.11 or later (with OpenJDK 17+) | `.maestro/`: local multi-simulator iOS and iPadOS E2E flows across all four width sub-bands (`scripts/maestro_local.py`, MA-273) | `brew install openjdk && curl -fsSL "https://get.maestro.mobile.dev" \| bash` |
 | pnpm | 12 | the web app's workspace | `corepack enable` |
 | Playwright's Chromium | with `web/`'s packages | the web app's tests at phone (390) and laptop (1440) widths, in both themes | `npx playwright install chromium`, in `web/` |
 | playwright-core 1.63 with Chromium and WebKit | pinned in `scripts/package.json` | `node scripts/board_fit.js`, the boards measured at every size (MA-240) | `npm ci --prefix scripts`, then `npx --prefix scripts playwright-core install chromium webkit` |
@@ -263,10 +263,14 @@ Nothing here goes into AWS. Each id waits for step 4's apply to make its paramet
   with that environment's app id as its primary app id, with `dashboard.mypaisapp.com` (or `dashboard-dev.mypaisapp.com`)
   as its domain and return URL. It is the audience the verify trigger checks on a token from a browser. Note it for
   step 5.
-- **App Store Connect and TestFlight** (MA-164): an app record for MyPaisa Dev and one for MyPaisa, and the
-  household's members added as App Store Connect users and as internal testers of both, so TestFlight reaches them
-  with no App Review. An App Store Connect API key (App Manager) goes into the GitHub `prod` environment as a secret,
-  and nowhere else; the release workflow uses it to upload builds (MA-167).
+- **App Store Connect and TestFlight** (MA-164, MA-167): an app record for MyPaisa Dev (Internal Group `"Dev Dogfood"`,
+  Arun only) and one for MyPaisa (Internal Group `"Household Beta"`, Arun plus household members invited in App Store
+  Connect with least-privilege `Customer Support` or `Marketing` roles scoped strictly to `MyPaisa`, never `MyPaisa Dev`),
+  so TestFlight reaches them privately (`testFlightInternalTestingOnly = true`) with no Beta App Review and no public App
+  Store listing. An App Store Connect `.p8` API key goes into the `main`-only GitHub `dev` and `prod` environments as a
+  secret (MA-26, unreachable from pull-request branches and never stored on disk), and nowhere else; the release and
+  day-60 keepalive workflows use it to upload `MyPaisa Dev` in `environment: dev` and `MyPaisa` in `environment: prod`
+  after Arun's approval (MA-167).
 - **Two Google clients per environment** (MA-143): in the Google Cloud console, an OAuth client of type iOS for
   that environment's bundle id, and one of type Web application with `https://dashboard.mypaisapp.com` (or
   `https://dashboard-dev.mypaisapp.com`, and `http://localhost:5173`, the SvelteKit dev server, for local work on dev)
@@ -364,6 +368,7 @@ npm ci --prefix ios                           # the shell's packages, from the l
 npx --prefix ios react-native spm            # the native pieces, through Swift Package Manager (MA-229)
 npm test --prefix ios                         # Jest: the shell
 xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination "platform=iOS Simulator,name=iPhone 17 Pro"
+python3 scripts/maestro_local.py setup-pool && python3 scripts/maestro_local.py run --up-to-phase 0
 open ios/MyPaisa.xcodeproj                    # run MyPaisa Dev on a simulator or on your own iPhone or iPad
 ```
 
@@ -373,9 +378,13 @@ Developer Program and the app ids of step 3. The first person to sign in owns de
 others with one-time links (MA-32). Smoothness is measured on the phone, not the simulator: `ios/PERFORMANCE.md`
 holds the budgets and the benches.
 
-The household gets the app through TestFlight: a merge to `main` that touches `ios/` sends MyPaisa Dev there, and
-MyPaisa after your approval in the GitHub `prod` environment (MA-167). A TestFlight build lasts 90 days, so an alert
-at day 60 says when a new prod build is due.
+The household gets the app privately through TestFlight Internal Testing (`testFlightInternalTestingOnly = true`,
+`ITSAppUsesNonExemptEncryption = false`, zero public App Store listing): a merge to `main` that touches `ios/` sends
+MyPaisa Dev (`environment: dev`, Arun only) there after dev's smoke check passes, and MyPaisa (`environment: prod`,
+`"Household Beta"`) after your approval in the GitHub `prod` environment and prod's read-only smoke check (MA-167).
+Each TestFlight build runs for 90 days (3 months) with silent Automatic Updates preserving Keychain and MMKV, renewed
+at day 60 by `testflight-keepalive.yml` (or Xcode Cloud's 25 free compute hours a month) and guarded by a day-60 alert
+and a day-75 `itms-beta://` update banner (`docs/RESEARCH.md` §8.8).
 
 ### 8. The web app
 
@@ -442,6 +451,7 @@ for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
 python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check
 python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py
+python3 scripts/maestro_local.py check-syntax             # from phase 0 (MA-273): checks every .maestro/ YAML + TestIDs parity
 ```
 
 `plan_sync.py` keeps the plan, the trace, Jira's keys and the Claude Design mirror in step (MA-155), and refuses a
@@ -459,17 +469,21 @@ of every page at phone and laptop widths, in light and dark, with the sign-in co
 cd web && npm run check && npm run lint && npm test && npm run test:e2e
 ```
 
-A pull request that touches `ios/` also runs the app's gates on a macOS runner (MA-166):
+A pull request that touches `ios/` also runs the app's gates on a macOS runner (MA-166) and locally across the five
+cloned Apple Silicon simulators via `scripts/maestro_local.py` (MA-273):
 
 ```bash
 npm run lint --prefix ios && npm test --prefix ios
 xcrun swift-format lint --strict --recursive ios
 xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination "platform=iOS Simulator,name=iPhone 17 Pro"
 xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination "platform=iOS Simulator,name=iPad Air 11-inch (M3)"
+python3 scripts/maestro_local.py run --up-to-phase <N>
 ```
 
-They cover eslint and Jest for the shell, XCUITest for the flows, snapshot tests of every SwiftUI piece in light
-and dark at Large and AX5 text, and `performAccessibilityAudit()` in every screen's UI test. The
+They cover eslint and Jest for the shell, XCUITest for the flows and `⌘*` hardware keyboard shortcuts, snapshot tests
+of every SwiftUI piece in light and dark at Large and AX5 text, `performAccessibilityAudit()` in every screen's UI
+test, and local Maestro multi-simulator flows across all four width sub-bands (`<600`, `600–899`, `900–1132`, `≥1133 pt`),
+Face ID (`BiometricKit_Sim`), APNs push, Universal Links, Photos/Files and offline queue flush at £0/month. The
 `ios/PERFORMANCE.md` benches run on the phone, before a change and after it, not in CI.
 
 Live checks run on request and say what they cost first: a brief against the live API
@@ -482,8 +496,8 @@ Everything in the cloud is two sets of resources, dev and prod, in the wealth tr
 Terraform in `infra/` and read with the AWS MCP and the CLI. The rules (`.claude/rules/aws-changes.md`): every
 resource is Terraform, never made by hand; the AWS MCP reads and never changes; IAM is never edited in the console;
 plans are read in full before they are applied; prod is applied only by CI; no AWS key exists anywhere; every secret
-lives in SSM Parameter Store only, put by hand (the App Store Connect API key, a secret of the GitHub `prod`
-environment, is the one outside AWS); anything that adds cost is asked about first, with its price.
+lives in SSM Parameter Store only, put by hand (the App Store Connect `.p8` API key, a secret of the `main`-only GitHub
+`dev` and `prod` environments, is the one outside AWS; MA-26, MA-164); anything that adds cost is asked about first, with its price.
 
 ### The account
 

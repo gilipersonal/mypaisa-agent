@@ -1,0 +1,226 @@
+[
+ {
+  "id": "r1-a1",
+  "round": 1,
+  "finding": "render_maestro() closed </ol> on non-list lines inside a numbered section, splitting RESEARCH 8.8's four privacy layers into three <ol start=\"1\"> lists; the four layers now render as one contiguous <ol> (lane A)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import pathlib, re, xml.etree.ElementTree as ET; s = pathlib.Path('docs/confluence/maestro.html').read_text(); m = re.search(r'<h3>Four layers that keep the app 100% private[^<]*</h3>(.*?)(?:<h[23]>|\\Z)', s, re.S); assert m, 'missing 8.8 heading'; seg = m.group(1); assert seg.count('<ol>') == 1 and seg.count('</ol>') == 1 and '<ol start=' not in seg, seg[:400]; ol = ET.fromstring(re.search(r'<ol>.*</ol>', seg, re.S).group(0)); assert len(ol.findall('li')) == 4, len(ol.findall('li'))\""
+  }
+ },
+ {
+  "id": "r1-a2",
+  "round": 1,
+  "finding": "confluence_docs.py had no fail-closed structural check or mutated-repo selftest cases for RESEARCH 6, 7 and 8; research_errors() and RECORD_CASES now refuse missing/duplicate headings, empty sections and split numbered lists (lane A)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/plan_sync.py selftest"
+  }
+ },
+ {
+  "id": "r1-b1-c8a",
+  "round": 1,
+  "finding": "Two incompatible TestFlight privacy models were mixed (household members in both apps vs Arun-only MyPaisa Dev; .p8 key in prod only vs dev and prod); MyPaisa Dev is Arun-only and the .p8 key lives in the main-only GitHub dev and prod environments (lanes B and C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md",
+    "docs/RESEARCH.md",
+    "docs/trace.json",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "internal testers of both|in the GitHub `prod` environment as a secret, and nowhere else|GitHub `prod` environment only",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-b1-c8b",
+  "round": 1,
+  "finding": "README prerequisites omitted OpenJDK 17+, which Maestro 2.4.0 needs on macOS alongside Xcode and simctl (lane C)",
+  "check": {
+   "type": "grep",
+   "file": "README.md",
+   "pattern": "brew install openjdk",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-b1-c8c",
+  "round": 1,
+  "finding": "Jira MA-167, MA-273 and MA-274 carry the settled Arun-only MyPaisa Dev isolation and main-only dev/prod GitHub environment secret rule (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Jira MA-167, MA-273 and MA-274: MyPaisa Dev is installed by Arun only; household members are internal testers of MyPaisa (prod) only; the .p8 App Store Connect API key lives in the main-only GitHub dev and prod environments."
+  }
+ },
+ {
+  "id": "r1-b2-c7a",
+  "round": 1,
+  "finding": "Phase 0 and Phase 1 flows leaned on later phases (GET /v1/app/minimum-version and 15.2 alerts in Phase 0, mp.guided.option.monzo-isa in Phase 1); each capability now lands in the phase that builds its backing service or screen (lanes B and C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "docs/RESEARCH.md",
+    "docs/trace.json",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "mp\\.guided\\.option\\.monzo-isa|raises an Admin alert \\(§?15\\.2\\) and triggers",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-b2-c7b",
+  "round": 1,
+  "finding": "MA-167's trace row omitted ARCHITECTURE 15.2 even though the TestFlight 75-day renewal alert routes into 15.2 once Phase 8 lands (lane B)",
+  "check": {
+   "type": "trace",
+   "key": "MA-167",
+   "field": "arch",
+   "contains": "15.2"
+  }
+ },
+ {
+  "id": "r1-b2-c7c",
+  "round": 1,
+  "finding": "Jira MA-167 and MA-273 stage Phase 0 MYPAISA_BUILD_EPOCH + SNS, Phase 1 GET /v1/app/minimum-version, Phase 8 15.2 alert routing, and Phase 1 composer-draft rotation vs Phase 2 guided-card rotation (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Jira MA-167 and MA-273: Phase 0 embeds MYPAISA_BUILD_EPOCH and alerts via SNS, Phase 1 adds GET /v1/app/minimum-version, Phase 8 wires 15.2 routing, and Phase 1 rotation asserts composer-draft preservation."
+  }
+ },
+ {
+  "id": "r1-b3a",
+  "round": 1,
+  "finding": "PLAN.md Phases 0-20 Tests lines, ARCHITECTURE 9.1 and RESEARCH 7.4 did not carry the phase-by-phase Maestro packs and L1/L4 harness joins (lane B)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c 'import pathlib; plan = pathlib.Path(\"PLAN.md\").read_text(); arch = pathlib.Path(\"ARCHITECTURE.md\").read_text(); res = pathlib.Path(\"docs/RESEARCH.md\").read_text(); missing = [f\"p{i:02d}\" for i in range(21) if f\"`p{i:02d}\" not in plan]; assert not missing, missing; assert \"MA-273\" in arch.split(\"### 9.1 \")[1].split(\"### 9.2\")[0]; s74 = res.split(\"### 7.4 \")[1].split(\"### 7.5\")[0]; assert \"maestro_local.py check-syntax\" in s74 and \"MA-273\" in s74'"
+  }
+ },
+ {
+  "id": "r1-b3b",
+  "round": 1,
+  "finding": "Joined Jira stories (MA-164, MA-165, MA-166, MA-167, MA-137, MA-266, MA-269, MA-273, MA-274) and their Relates/Blocks links now carry the MA-274 rollout (lane B)",
+  "check": {
+   "type": "manual",
+   "what": "Jira MA-164, MA-165, MA-166, MA-167, MA-137, MA-266, MA-269, MA-273 and MA-274 carry the 29 Oct 2026 MA-274 alignment and their Relates/Blocks issue links."
+  }
+ },
+ {
+  "id": "r1-c1",
+  "round": 1,
+  "finding": "maestro check-syntax .maestro/flows/*.yaml fails when expanded to multiple files because Maestro 2.4.0 CheckSyntaxCommand takes one file per invocation; maestro_local.py check-syntax iterates files one by one (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "README.md",
+    "TECH_STACK.md",
+    "docs/RESEARCH.md",
+    "docs/trace.json",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "maestro check-syntax [^\\n`'\\\"]*\\*",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c2",
+  "round": 1,
+  "finding": "Flow Template 2 in RESEARCH 8.6 used invalid clearText and unescaped \"$150\" (which Maestro interpolates as ${150}); templates now use eraseText and \"\\$150\" and pass maestro check-syntax (lane C)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c 'import pathlib, shutil, subprocess; nl, bs = chr(10), chr(92); fence = \"```yaml\" + nl; s = pathlib.Path(\"docs/RESEARCH.md\").read_text().split(\"### 8.6 \")[1].split(\"### 8.7\")[0]; blocks = [p.split(\"```\")[0] for p in s.split(fence)[1:]]; assert len(blocks) >= 2, len(blocks); codes = [nl.join(ln for ln in b.splitlines() if not ln.lstrip().startswith(\"#\")) for b in blocks]; assert all(\"clearText\" not in c and all(c[k-1] == bs for k in range(1, len(c)) if c[k] == \"$\" and c[k+1:k+2].isdigit()) for c in codes); m = shutil.which(\"maestro\") or (\"/Users/arundutta/.maestro/bin/maestro\" if pathlib.Path(\"/Users/arundutta/.maestro/bin/maestro\").is_file() else None); [subprocess.run([m, \"check-syntax\", \"-\"], input=b, text=True, check=True, capture_output=True) for b in blocks] if m else None'"
+  }
+ },
+ {
+  "id": "r1-c3",
+  "round": 1,
+  "finding": "BiometricKit.matchingFailed/.matchingSucceeded are wrong Darwin notifications for Face ID simulator injection and Maestro YAML has no exec step; maestro_local.py posts com.apple.BiometricKit_Sim.pearl.nomatch/.match via a localhost HTTP bridge (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "docs/RESEARCH.md",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "BiometricKit\\.matchingFailed|BiometricKit\\.matchingSucceeded",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c4",
+  "round": 1,
+  "finding": "xcrun simctl addMedia rejects PDFs/XLSX and Maestro iOS cannot send Cmd+* modifiers; images use addMedia, PDFs/XLSX stage into the simulator Local File Provider container, and Cmd+* shortcuts run in XCUITest (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "docs/RESEARCH.md",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "Local File Provider",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c4b",
+  "round": 1,
+  "finding": "No record passes a .pdf or .xlsx file into xcrun simctl addMedia (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "docs/RESEARCH.md",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "addMedia PDF|simctl addMedia [^\\n;|&`]*\\.(?:pdf|xlsx)|addMedia:\\s*\\[[^\\]]*\\.(?:pdf|xlsx)",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c5",
+  "round": 1,
+  "finding": "Illustrative household figures in RESEARCH 8 and maestro-ios-ipados-testing.html drifted from household-v4.json (412,850, Priya, HDFC car loan); every figure now matches household-v4.json (444,951, Asha, HDFC home loan EMI, Paid, 39,390) (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "docs/RESEARCH.md",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "412,850|£412k|member_priya|tok_invite_priya|HDFC car loan",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c6",
+  "round": 1,
+  "finding": "Invite links were called 48-hour and approved behind the owner's second check, against ARCHITECTURE 6's single-use, 24-hour link created behind the owner's second check (lane C)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "docs/RESEARCH.md",
+    "docs/design/maestro-ios-ipados-testing.html"
+   ],
+   "pattern": "48-hour[^\\n]*join|48h[^\\n]*owner-approved|approved behind the owner's second check",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c9",
+  "round": 1,
+  "finding": "maestro-ios-ipados-testing.html failed WCAG 2.2 AA contrast (SVG connector lines/arrows, dark --accent, .rules li b, --track parity), overflowed at 320 px, used sub-44 px mode radios without arrow-key roving tabindex, paraphrased Lesson 23's width rule, and clipped Unicode box-drawing art inside SVGs (lane C)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c 'import pathlib, re, sys; sys.path.insert(0, \"scripts\"); import contrast_check as cc; h = pathlib.Path(\"docs/design/maestro-ios-ipados-testing.html\").read_text(); assert \"beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)\" in h; assert \"overflow-wrap:anywhere\" in h and \"min-height:44px\" in h and \"ArrowRight\" in h; assert \".s-line{stroke:var(--ink-3)\" in h and \".s-tr{fill:var(--ink-3)}\" in h; assert \"--track:#BEC1C8\" in h and \"--track:#485160\" in h; assert not re.search(r\"[┌─┐│└┘├►]\", h); assert cc.ratio(cc.rgba(\"#646A78\"), cc.rgba(\"#FFFFFF\")) >= 3.0 and cc.ratio(cc.rgba(\"#ADB6C4\"), cc.rgba(\"#151C27\")) >= 3.0; assert cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#151C27\")) >= 4.5 and cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#151C27\"), cc.DIM) >= 3.0; assert cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#1C2E4D\")) >= 4.5 and cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#1C2E4D\"), cc.DIM) >= 3.0; assert cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#233558\")) >= 4.5 and cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#233558\"), cc.DIM) >= 3.0'"
+  }
+ }
+]

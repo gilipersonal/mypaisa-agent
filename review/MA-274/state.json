@@ -1,0 +1,22 @@
+{
+ "deliverable": "[MA-274] Local iOS and iPadOS Maestro testing and private 90-day TestFlight beta plan",
+ "rounds": 1,
+ "reviewed_sha": "e21d1d4",
+ "history": [
+  {
+   "round": 1,
+   "date": "2026-10-29",
+   "reviewed_sha": "e21d1d4",
+   "range": "a81a979..e21d1d4 (everything)",
+   "asked": "Arun, 29 Oct 2026: \"review first\"",
+   "lanes": {
+    "A scripts and checks": 2,
+    "B the trace against Jira": 3,
+    "C the spec docs and explainer": 9
+   },
+   "blocking": 12,
+   "result": "not clean: render_maestro() split numbered lists interrupted by prose; confluence_docs.py had no fail-closed check or mutated-repo selftest for RESEARCH 6-8; MyPaisa Dev isolation and .p8 secret placement contradicted across records; Phase 0 and Phase 1 flows leaned on later phases; PLAN Phases 0-20, ARCHITECTURE 9.1, RESEARCH 7.4 and nine Jira stories/links missed joins; maestro check-syntax glob, Flow Template 2 syntax, BiometricKit_Sim Face ID bridge, simctl addMedia vs Files provider and XCUITest Cmd+*, household-v4.json figures, 24-hour invite links, and explainer contrast/320px/SVG/Lesson-23 fidelity needed fixes",
+   "fixed": "All 12 unique blocking findings (14 lane reports, with B1/C8 and B2/C7 overlapping) fixed in r1-* in review/MA-274/fixed.json, plus non-blocking explainer and Confluence polish; 5 explainer GIFs regenerated and re-uploaded to Confluence, 9 Jira stories and 10 issue links updated, and 28 Confluence pages + Story Explorer synced"
+  }
+ ]
+}

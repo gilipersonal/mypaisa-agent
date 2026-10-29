@@ -74,8 +74,8 @@ CICD_GIFS = [  # (gif in docs/design/cicd-security-regression, tab title, captio
 MAESTRO_GIFS = [  # (gif in docs/design/maestro-ios-ipados-testing, tab title, caption): the local Maestro & private 90-day TestFlight block diagrams, animated (MA-274)
     ("01-local-maestro-pool-mcp-cli.gif", "1 · Cloned pool & MCP isolation", "One Maestro owner per simulator prevents XCTest driver teardowns: interactive MCP sessions stay on standard Xcode simulators while scripts/maestro_local.py drives five cloned flock-locked simulators against stub (£0) or dev-live AWS."),
     ("02-rn-swiftui-fabric-selectors.gif", "2 · RN + SwiftUI mp.* selectors", "One shared mp.* ID schema generates web/src/lib/test-ids.ts and TestIDs.swift, while .accessibilityElement(children: .contain), UITabBarItem IDs and MYPAISA_STATIC_MOTION=1 keep SwiftUI and Liquid Glass controls deterministic."),
-    ("03-ios-ipados-4band-matrix.gif", "3 · 4-band width & rotation matrix", "Maestro tests all four width sub-bands (<600 pt compact, 600–899 pt top bar + sheet, 900–1132 pt MA-240 sidebar + sheet, and ≥1133 pt three-column chat-beside) and rotates iPads mid-guided-flow with zero lost input."),
-    ("04-simctl-capabilities-phases.gif", "4 · simctl & Phases 0–20 (£0/mo)", "xcrun simctl triggers Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos/PDFs and AX5 across Phases 0 to 20 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15."),
+    ("03-ios-ipados-4band-matrix.gif", "3 · 4-band width & rotation matrix", "Maestro tests all four width sub-bands (<600 pt compact, 600–899 pt top bar + sheet, 900–1132 pt MA-240 sidebar + sheet, and ≥1133 pt three-column chat-beside) and rotates iPads mid-flow with zero lost input."),
+    ("04-simctl-capabilities-phases.gif", "4 · simctl & Phases 0–20 (£0/mo)", "xcrun simctl and host staging drive Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos images, Local File Provider PDFs/workbooks and AX5 across Phases 0 to 20 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15."),
     ("05-private-testflight-90day-beta.gif", "5 · Private 90-day TestFlight beta", "testFlightInternalTestingOnly = true hard-locks MyPaisa off the public App Store while silent TestFlight Automatic Updates, least-privilege App Store Connect roles and a day-60 keepalive renew the 90-day (3-month) install window indefinitely."),
 ]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
@@ -1046,8 +1046,8 @@ def render_explainers(ctx: Ctx) -> str:
            f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
            f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}), '
            f'<a href="{gh("docs/design/cicd-security-regression.html")}">cicd-security-regression.html</a> (the CI/CD pipeline, seven-layer security gate, smoke suite, phase-wise regression pyramid and runner cost analysis, MA-267 to MA-272; see {ctx.link("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture")}) and '
-           f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}), '
-           'and published as Claude artifacts.</p>',
+           f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}); '
+           'the first five are also published as Claude artifacts below, while the stack, CI/CD and Maestro explainers embed their animated block diagrams directly on their Confluence pages.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
                + "</section>" for pair in (list(ARTIFACTS.items())[k:k + 2] for k in range(0, len(ARTIFACTS), 2))),
@@ -1116,12 +1116,23 @@ def render_guardrails(ctx: Ctx) -> str:
     return "".join(out) + footer(ctx)
 
 
-def research_text(num: str) -> str:
-    """docs/RESEARCH.md's top-level section NUM, without its ## heading."""
-    lines = (ROOT / "docs" / "RESEARCH.md").read_text().splitlines()
+RESEARCH_SECTIONS = [  # (page slug, docs/RESEARCH.md section number, expected heading prefix)
+    ("stack", "6", "End-to-end AWS & LLM observability"),
+    ("cicd", "7", "CI/CD pipeline, seven-layer vulnerability scanning"),
+    ("maestro", "8", "Local iOS & iPadOS testing strategy with Maestro"),
+]
+
+
+def research_section(num: str) -> tuple[str, str]:
+    """docs/RESEARCH.md's top-level section NUM: its heading's title and its body, up to the next top-level heading
+    (any `#` or `##` heading outside a code fence). ("", "") when docs/RESEARCH.md or section NUM is missing."""
+    path = ROOT / "docs" / "RESEARCH.md"
+    if not path.exists():
+        return "", ""
+    lines = path.read_text().splitlines()
     start = next((k for k, line in enumerate(lines) if re.match(rf"^## {re.escape(num)}\.? ", line)), None)
     if start is None:
-        return ""
+        return "", ""
     body, fenced = [], False
     for line in lines[start + 1:]:
         if line.startswith("```"):
@@ -1129,7 +1140,31 @@ def research_text(num: str) -> str:
         elif not fenced and re.match(r"^#{1,2} ", line):
             break
         body.append(line)
-    return "\n".join(body).strip().rstrip("-").strip()
+    title = re.sub(rf"^## {re.escape(num)}\.? ", "", lines[start]).strip()
+    return title, "\n".join(body).strip().rstrip("-").strip()
+
+
+def research_text(num: str) -> str:
+    """docs/RESEARCH.md's top-level section NUM, without its ## heading."""
+    return research_section(num)[1]
+
+
+def research_errors() -> list[str]:
+    """The research-backed pages (stack, cicd, maestro) fail closed when docs/RESEARCH.md or their section is missing, retitled or empty."""
+    path = ROOT / "docs" / "RESEARCH.md"
+    if not path.exists():
+        return ["confluence: docs/RESEARCH.md is missing"]
+    out = []
+    for page_slug, num, want in RESEARCH_SECTIONS:
+        title, body = research_section(num)
+        if not title:
+            out.append(f"confluence: {page_slug} page: docs/RESEARCH.md has no section {num}")
+            continue
+        if not title.startswith(want):
+            out.append(f"confluence: {page_slug} page: docs/RESEARCH.md §{num} is not {want!r} (it reads {title[:60]!r})")
+        if not re.search(rf"(?m)^### {re.escape(num)}\.1 ", body):
+            out.append(f"confluence: {page_slug} page: docs/RESEARCH.md §{num} has no body (no §{num}.1)")
+    return out
 
 
 def render_stack(ctx: Ctx) -> str:
@@ -1176,7 +1211,7 @@ def render_stack(ctx: Ctx) -> str:
 
 def render_cicd(ctx: Ctx) -> str:
     """The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis (MA-267 to MA-272)."""
-    keys = {"MA-267", "MA-268", "MA-269", "MA-270", "MA-271", "MA-272", "MA-273", "MA-274", "MA-24", "MA-25", "MA-26", "MA-107", "MA-108", "MA-110", "MA-165", "MA-166", "MA-167", "MA-194", "MA-198", "MA-231", "MA-232", "MA-237", "MA-238", "MA-246", "MA-247", "MA-248", "MA-249", "MA-250", "MA-251", "MA-266"}
+    keys = {"MA-267", "MA-268", "MA-269", "MA-270", "MA-271", "MA-272", "MA-273", "MA-274", "MA-24", "MA-25", "MA-26", "MA-107", "MA-108", "MA-110", "MA-164", "MA-165", "MA-166", "MA-167", "MA-194", "MA-198", "MA-231", "MA-232", "MA-237", "MA-238", "MA-246", "MA-247", "MA-248", "MA-249", "MA-250", "MA-251", "MA-266"}
     items = [i for i in ctx.items if i["key"] in keys]
     items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
     sec7 = research_text("7")
@@ -1213,7 +1248,7 @@ def render_cicd(ctx: Ctx) -> str:
 
 def render_maestro(ctx: Ctx) -> str:
     """The local iOS and iPadOS Maestro testing strategy, four-sub-band device matrix, phase-wise rollout and private 90-day TestFlight beta plan (MA-167, MA-273, MA-274)."""
-    keys = {"MA-162", "MA-163", "MA-164", "MA-165", "MA-166", "MA-167", "MA-170", "MA-171", "MA-173", "MA-181", "MA-198", "MA-232", "MA-240", "MA-268", "MA-269", "MA-273", "MA-274"}
+    keys = {"MA-20", "MA-107", "MA-110", "MA-137", "MA-142", "MA-162", "MA-163", "MA-164", "MA-165", "MA-166", "MA-167", "MA-168", "MA-170", "MA-171", "MA-173", "MA-181", "MA-182", "MA-194", "MA-198", "MA-232", "MA-240", "MA-266", "MA-268", "MA-269", "MA-273", "MA-274"}
     items = [i for i in ctx.items if i["key"] in keys]
     items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
     sec8 = research_text("8")
@@ -1221,7 +1256,7 @@ def render_maestro(ctx: Ctx) -> str:
         cpanel("#EAE6FF", ":iphone:", '<p>Arun, 29 Oct 2026 (MA-167, MA-273, MA-274): the local iOS and iPadOS testing strategy on Apple Silicon '
                "with Maestro (<code>scripts/maestro_local.py</code>, five cloned simulators guarded by <code>flock</code> so automated runs never collide "
                "with interactive Maestro MCP sessions, one shared <code>mp.*</code> ID schema across Playwright and SwiftUI, four adaptive width sub-bands "
-               "and live rotation across 1133 pt, <code>xcrun simctl</code> bridges for Face ID, APNs push, Universal Links, media and AX5, and a "
+               "and live rotation across 1133 pt, <code>xcrun simctl</code> and host Local File Provider bridges for Face ID, APNs push, Universal Links, Photos images, PDFs/workbooks and AX5, and a "
                "phase-by-phase rollout across Phases 0 to 20 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight "
                "household beta plan (<code>testFlightInternalTestingOnly = true</code>, least-privilege App Store Connect roles, silent overnight updates "
                "preserving Keychain and MMKV, and a day-60 keepalive rebuild). "
@@ -1293,6 +1328,7 @@ def errors(ctx: Ctx | None = None) -> list[str]:
         return out
     model = pages(ctx)
     out += guardrails_errors(ctx)
+    out += research_errors()
     import confluence_record  # noqa: PLC0415
     out += confluence_record.errors(ctx, {s for s, _, _ in model})
     recorded = ctx.manifest.get("pages", {})
