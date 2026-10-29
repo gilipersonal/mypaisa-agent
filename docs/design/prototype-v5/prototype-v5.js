@@ -291,6 +291,17 @@
     var tgt = c.step && c.step.target;
     if (tgt) root.querySelectorAll('.pframe [data-go]').forEach(function (e) { if (e.getAttribute('data-go') === tgt && !e.classList.contains('dim')) e.classList.add('pnext'); });
     fit(d);
+    /* the current chapter and step stay in view in their scrolling rows */
+    var keepInView = function () {
+      [['.pchaps', '.pch.on'], ['.psteps', '.pst.on']].forEach(function (q) {
+        var row = root.querySelector(q[0]), on = root.querySelector(q[1]);
+        if (row && on && (on.offsetLeft - row.offsetLeft < row.scrollLeft || on.offsetLeft - row.offsetLeft + on.offsetWidth > row.scrollLeft + row.clientWidth))
+          row.scrollLeft = Math.max(0, on.offsetLeft - row.offsetLeft - 48);
+      });
+    };
+    keepInView();
+    requestAnimationFrame(keepInView);
+    setTimeout(keepInView, 120);
     var same = key === lastKey;
     lastKey = key;
     root.querySelectorAll('.pscroll[data-scroll]').forEach(function (e) {
