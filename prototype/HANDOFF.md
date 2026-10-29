@@ -16,19 +16,20 @@ Deep links for any screen: `#door=web|phone|iphone|ipad&w=1180&theme=dark&viewer
 
 ## Done
 
-- **M0, records:** Jira MA-290 (In Progress), PLAN.md bullet in Phase 0, trace row, estimate 3 days in `docs/roadmap.json`, schedule and TRACE.md regenerated, Confluence pages regenerated (not yet published), decision record `docs/design/reviews/MA-290/decision.md`.
+- **M0, records:** Jira MA-290 (In Progress), PLAN.md bullet in Phase 0, trace row, estimate in `docs/roadmap.json` (now 0, built in the same session), schedule and TRACE.md regenerated, Confluence pages regenerated (not yet published), decision record `docs/design/reviews/MA-290/decision.md`.
 - **The demo ledger:** `docs/design/figures/make_demo_ledger.py` → `demo-ledger-v4.json`: 35 events, 42 runs, 2 files, the admin day, side branches, 12 board disagreements settled, asserts over its own data.
 - **M1, foundation:** the four doors, the width rule (`src/state/layout.ts`), the page and chat renderers on Prototype v4's own markup and styles (copied byte for byte with a drift check), the store and the one write path (`src/state/reduce.ts`), the chat engine, Home, totals computed and held to the figure set's five snapshots (`tests/totals.test.ts`), the walk gate (`e2e/walk.mjs`), the colour gate, CI (`.github/workflows/prototype.yml`) and the `prototype` gate in `.claude/jira-flow.json`.
 
-## In progress
+## Also done
 
-- **M2 to M5, five parallel lanes** (each its own `src/areas/<area>/` and `tests/<area>.test.ts`; the contract is `AREAS.md`): `records` (register, check-ins, Activity), `money` (assets, debts, budget, statements, month close), `future` (Projection, plans, Budget forecast, what-ifs), `audit` (Audit, Files, file viewer, Reports), `household` (Admin center, You, sign-in variants).
+- **M2 to M5, five parallel lanes** (Sonnet 5.5; each its own `src/areas/<area>/` and `tests/<area>.test.ts`, the contract in `AREAS.md`): `records`, `money`, `future`, `audit`, `household`. Merged; 196 tests pass.
+- **M6:** the walk, 22 steps (`src/presenter/steps.ts`), tested so jumping equals walking and each day lands on the figure set's totals; the joins fixed; `DISAGREEMENTS.md`, `README.md`. MA-290's trace row now cites only already-picked boards and its estimate is 0 (see the decision record).
 
 ## Next
 
-1. Merge the lanes' work (all in this worktree), run `npm run gate`, fix the joins.
-2. **M6:** the presenter script (`src/presenter/script.ts`) from the flows each lane reports; DISAGREEMENTS.md; README; the walk across every step.
-3. Publish the Confluence pages (`/plan-sync --confluence`), run the plan-sync and design-sync gates, `/autoship` to raise the PR, then ask Arun about the review and the merge.
+1. The full walk gate in both engines (`npm run walk`); fix or allow by name what it finds.
+2. Publish the 9 changed Confluence pages, the stories database and the phase 0 iOS preview (`/plan-sync --confluence`); run the plan-sync, contrast and design-sync gates.
+3. `/autoship`: raise the PR, then ask Arun about the review and the merge.
 
 ## Spend
 

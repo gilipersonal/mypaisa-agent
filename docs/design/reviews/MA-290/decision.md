@@ -33,8 +33,10 @@ Code app if the cap is reached (`prototype/HANDOFF.md`).
   the trace row's notes.
 - Areas with no web board (Register, You) show the iPhone cards in the web chat
   and the iPhone You screen at 390 until MA-279 draws them.
-- The boards it is built from are listed on MA-290's trace row; the plan is
-  `prototype/PLAN.md`.
+- MA-290's trace row cites only boards already picked by their own stories, so citing them changes no board's
+  state; the planned boards it also draws are named in the row's notes and in `prototype/PLAN.md` (the screens
+  table). The plan is `prototype/PLAN.md`; the disagreements found are in `prototype/DISAGREEMENTS.md`.
+- Its estimate in `docs/roadmap.json` is 0: it was built in the session that recorded it, so it moves no date.
 
 ## Builds on
 

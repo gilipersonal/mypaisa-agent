@@ -1970,27 +1970,27 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 50.25 (and 3.5 of yours) | 41 | Mon 2 Nov 2026 | Wed 6 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Thu 7 Jan 2027 | Wed 5 May 2027 |
-| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Thu 6 May 2027 | Thu 1 Jul 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Fri 2 Jul 2027 | Thu 22 Jul 2027 |
-| 4 Debts and check-ins | 19 | 16 | Fri 23 Jul 2027 | Fri 13 Aug 2027 |
-| 5 Investments, priced | 23 | 19 | Mon 16 Aug 2027 | Fri 10 Sep 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Mon 13 Sep 2027 | Fri 24 Sep 2027 |
-| 7 Projection | 28 | 23 | Mon 27 Sep 2027 | Wed 27 Oct 2027 |
-| 8 Audit, search and the Admin center at every door | 28 | 23 | Thu 28 Oct 2027 | Mon 29 Nov 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 26 | 21 | Tue 30 Nov 2027 | Thu 6 Jan 2028 |
-| 10 Prices and the engine | 23 | 19 | Fri 7 Jan 2028 | Wed 2 Feb 2028 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Thu 3 Feb 2028 | Tue 22 Feb 2028 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Wed 23 Feb 2028 | Wed 15 Mar 2028 |
-| 13 Track record and calibration | 13 | 11 | Thu 16 Mar 2028 | Thu 30 Mar 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Fri 31 Mar 2028 | Mon 10 Apr 2028 |
-| 15 Stances go live | 5 | 4 | Tue 11 Apr 2028 | Tue 18 Apr 2028 |
+| 0 Foundations at every door | 47.25 (and 3.5 of yours) | 38 | Mon 2 Nov 2026 | Wed 23 Dec 2026 |
+| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Mon 4 Jan 2027 | Thu 29 Apr 2027 |
+| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Fri 30 Apr 2027 | Mon 28 Jun 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Tue 29 Jun 2027 | Mon 19 Jul 2027 |
+| 4 Debts and check-ins | 19 | 16 | Tue 20 Jul 2027 | Tue 10 Aug 2027 |
+| 5 Investments, priced | 23 | 19 | Wed 11 Aug 2027 | Tue 7 Sep 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Wed 8 Sep 2027 | Tue 21 Sep 2027 |
+| 7 Projection | 28 | 23 | Wed 22 Sep 2027 | Fri 22 Oct 2027 |
+| 8 Audit, search and the Admin center at every door | 28 | 23 | Mon 25 Oct 2027 | Wed 24 Nov 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 26 | 21 | Thu 25 Nov 2027 | Thu 23 Dec 2027 |
+| 10 Prices and the engine | 23 | 19 | Tue 4 Jan 2028 | Fri 28 Jan 2028 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Mon 31 Jan 2028 | Thu 17 Feb 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Fri 18 Feb 2028 | Fri 10 Mar 2028 |
+| 13 Track record and calibration | 13 | 11 | Mon 13 Mar 2028 | Mon 27 Mar 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 28 Mar 2028 | Wed 5 Apr 2028 |
+| 15 Stances go live | 5 | 4 | Thu 6 Apr 2028 | Tue 11 Apr 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Wed 19 Apr 2028 | Tue 30 May 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Wed 31 May 2028 | Tue 27 Jun 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Wed 28 Jun 2028 | Thu 13 Jul 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Fri 14 Jul 2028 | Tue 25 Jul 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Wed 12 Apr 2028 | Wed 24 May 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Thu 25 May 2028 | Thu 22 Jun 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Fri 23 Jun 2028 | Mon 10 Jul 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 11 Jul 2028 | Thu 20 Jul 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you

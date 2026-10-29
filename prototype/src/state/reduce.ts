@@ -116,6 +116,7 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 /* ---------- events: the one write path ---------- */
 export function applyEvent(s: DemoState, ev: AuditRow & { payload?: any }, quiet = false): DemoState {
   if (s.applied.includes(ev.id)) return s;
+  s.undo = null; /* an Undo is offered for the last change only */
   const fn = APPLIERS[ev.kind];
   fn?.(s, ev);
   s.applied.push(ev.id);
