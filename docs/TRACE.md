@@ -230,7 +230,6 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-95 | The Overview is complete at every door: liquid and locked, what is owed, this month's cash flow, by member and by country, maturing next and the largest assets | To Do | §12, §9.3 | picked | Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first; Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first, phone; iPhone v4 · Home.dc.html: iPhone · Home, net worth first; iPhone v4 · Home.dc.html: iPad · Whole wealth with the chat beside it |
 | MA-97 | Reports and exports are in place, mypaisapp.com points to the dashboard, and the old wealth tracker is retired | To Do | §12 | planned | Wealth.dc.html: Browser · Reports |
 | MA-104 | Any question about the household's money gets an answer from a read-only SQL copy of the ledger | To Do | §12.1, §8, §23.2 | todo |  |
-| MA-111 | The owner fills prod's history from an Excel workbook sent in the chat | To Do | §12, §18.5, §22.2, §22.5 | todo |  |
 
 ## Phase 10: Prices and the engine (MA-11)
 
@@ -243,7 +242,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-47 | A proxy basket from each fund's top holdings estimates the day before the NAV lands | To Do | §5.1, §4.3 | none |  |
 | MA-48 | The desk's indicators are ported to pandas and match its own answers | To Do | §6.1 | none |  |
 | MA-49 | Trend, Momentum and Risk pillars and the flags score each holding | To Do | §6.2 | none |  |
-| MA-50 | The holder's cascade turns the pillars into ADD, HOLD, PAUSE, TRIM, REBALANCE or WATCH with a confidence | To Do | §6 | none |  |
+| MA-50 | The holder's cascade turns the pillars into Buy (ADD for a holding, BUY for a candidate not held), HOLD, PAUSE, TRIM, REBALANCE or WATCH, with a confidence | To Do | §6 | none |  |
 | MA-51 | US, UK and EU macro regimes feed each holding through its look-through weights | To Do | §6.2, §5.2 | none |  |
 | MA-52 | Forecast ranges by block bootstrap give each holding a likely range and P(fall greater than 5%) | To Do | §6.5 | none |  |
 | MA-53 | The ingest and engine jobs write signals and shadow stances every weekday by 07:10 | To Do | §5, §6.3 | none |  |

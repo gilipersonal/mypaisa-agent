@@ -86,7 +86,7 @@
 </table>
 <h2>16 · Importing the existing Indian portfolio, once</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The household&#x27;s Indian mutual funds, shares and ETFs arrive once, with their whole history, from the statements India already produces. Each file is kept first; code parses it; every holding is matched by ISIN; a dry run shows everything; one Confirm, with the second check, writes it all. Anything that does not match is listed, never guessed.</p>
-<p><em><strong>Trigger</strong> you attach a CAS statement or a broker export in the chat</em> <span data-type="status" data-color="blue">Phase 19 (IN2)</span> <em>Needs IN1, the Excel importer and file keeping</em></p>
+<p><em><strong>Trigger</strong> you attach a CAS statement or a broker export in the chat</em> <span data-type="status" data-color="blue">Phase 19 (IN2)</span> <span data-type="status" data-color="purple">Needs IN1 and file keeping</span></p>
 </div>
 <h3>📌 The files to send</h3>
 <p>Mutual funds, every fund house</p>
@@ -134,7 +134,7 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A dry run, one Confirm, the second check</strong></strong></p>
-<p>The Excel importer&#x27;s safety: one summary card, Confirm with the second check, batch writes with audit rows.</p>
+<p>One summary card, Confirm with the second check, batch writes with audit rows under one import id, rollback by that id.</p>
 </div>
 </div>
 </section>
@@ -157,7 +157,6 @@
 <h3>🧩 Built by</h3>
 <table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-152" data-card-appearance="inline"></a></td><td>IN2: The existing Indian portfolio is imported from a CAS statement or a broker export, with every past transaction, after one Confirm</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-151" data-card-appearance="inline"></a></td><td>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-111" data-card-appearance="inline"></a></td><td>The owner fills prod&#x27;s history from an Excel workbook sent in the chat: the same dry run, Confirm and rollback</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-148" data-card-appearance="inline"></a></td><td>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-149" data-card-appearance="inline"></a></td><td>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server</td></tr>

@@ -864,7 +864,7 @@ maths arrives.
   lines JSON-encoded) and only the strict schema out, each field with its
   source line, checked by code; a red-team set of poisoned statements,
   factsheets and merchant names proves no instruction in a file reaches a
-  tool or a reply, and each later importer (CAS, Excel) adds its own poisoned
+  tool or a reply, and each later importer (the CAS and broker files) adds its own poisoned
   cases.
 - **Kinds bring their own cases (MA-254, `ARCHITECTURE.md` §23.5):** each
   kind's field spec generates draft cases (phrasings, the four currencies, dates,
@@ -1353,19 +1353,6 @@ tracker at `mypaisapp.com` switched off.
   redirects to `dashboard.mypaisapp.com`, the old tracker's `dev.` and prod
   distributions are retired, and the zone moves from the old tracker's
   Terraform to this repository's.
-- **History import (MA-111, `ARCHITECTURE.md` §18.5):** one versioned Excel
-  template sent in the chat, a dry run, Confirm with the second check, batch
-  writes through the write service with audit rows, a fingerprint so a file
-  sent twice adds nothing, and rollback by import id. Tested on dev's
-  synthetic data first, then used to hydrate prod with the past investments
-  XIRR needs. Prod is filled only through the app: the chat, statements and
-  this importer.
-- **Any question about the money (MA-104, `ARCHITECTURE.md` §12.1):** a
-  nightly export of the household's events and views to Parquet in S3, and a
-  `query_ledger_sql` tool that runs read-only DuckDB over that household's
-  files only, for questions the structured `query_ledger` tool (MA-62)
-  cannot express; the figures come from the result, and the SQL is shown
-  under Technical; designed first.
 
 **Tests:** the importer (a wrong template version, a bad row, the same file
 twice, a rollback); every Overview figure matching the screen behind it; the
@@ -1375,7 +1362,7 @@ household's files; the apex redirect and the old distributions' retirement in
 the Terraform plan.
 
 **Exit:** the household's whole wealth is on prod, every figure entered
-through the chat, statements or the Excel importer, and corrected in place
+through the chat, screenshots, statements or the CAS import, and corrected in place
 where needed; `mypaisapp.com` opens the dashboard, and the old tracker is
 switched off.
 
@@ -1777,7 +1764,7 @@ Each story is designed first; privacy mode holds everywhere.
 - **Siri and Shortcuts (MA-178):** "How is the portfolio today?" answered
   with the total and the day's move; "Log money into MyPaisa" opens the
   guided flow; never a write without Confirm in the app.
-- **A Live Activity (MA-179):** an import (MA-111, MA-152) followed on the
+- **A Live Activity (MA-179):** an import (MA-152) followed on the
   Lock Screen and in the Dynamic Island, with no amounts.
 
 **Tests:** each widget, intent and the share extension from fixtures, in
@@ -1847,18 +1834,18 @@ How the dates are worked out:
 | 6 Budget: statements and monthly check-ins | 12.5 | 10 | Wed 8 Sep 2027 | Tue 21 Sep 2027 |
 | 7 Projection | 28 | 23 | Wed 22 Sep 2027 | Fri 22 Oct 2027 |
 | 8 Audit, search and the Admin center at every door | 28 | 23 | Mon 25 Oct 2027 | Wed 24 Nov 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 25 Nov 2027 | Fri 10 Dec 2027 |
-| 10 Prices and the engine | 22 | 18 | Mon 13 Dec 2027 | Fri 14 Jan 2028 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Mon 17 Jan 2028 | Thu 3 Feb 2028 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Fri 4 Feb 2028 | Fri 25 Feb 2028 |
-| 13 Track record and calibration | 13 | 11 | Mon 28 Feb 2028 | Mon 13 Mar 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 14 Mar 2028 | Wed 22 Mar 2028 |
-| 15 Stances go live | 5 | 4 | Thu 23 Mar 2028 | Tue 28 Mar 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 11 | 9 | Thu 25 Nov 2027 | Tue 7 Dec 2027 |
+| 10 Prices and the engine | 23 | 19 | Wed 8 Dec 2027 | Wed 12 Jan 2028 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Thu 13 Jan 2028 | Tue 1 Feb 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Wed 2 Feb 2028 | Wed 23 Feb 2028 |
+| 13 Track record and calibration | 13 | 11 | Thu 24 Feb 2028 | Thu 9 Mar 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Fri 10 Mar 2028 | Mon 20 Mar 2028 |
+| 15 Stances go live | 5 | 4 | Tue 21 Mar 2028 | Fri 24 Mar 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Wed 29 Mar 2028 | Wed 10 May 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 37 | 30 | Thu 11 May 2028 | Thu 22 Jun 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Fri 23 Jun 2028 | Mon 10 Jul 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 11 Jul 2028 | Thu 20 Jul 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Mon 27 Mar 2028 | Mon 8 May 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 37 | 30 | Tue 9 May 2028 | Tue 20 Jun 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Wed 21 Jun 2028 | Thu 6 Jul 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Fri 7 Jul 2028 | Tue 18 Jul 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you
@@ -1866,7 +1853,7 @@ want them:
 
 - F1 and F2 any time after phase 10;
 - E1 and E2 after phase 8;
-- IN1 after phase 10, and IN2 after phase 9's importer (MA-111);
+- IN1 after phase 10, and IN2 after phase 9;
 - phase 20 after phase 9.
 
 The table dates them in build order.

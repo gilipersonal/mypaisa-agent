@@ -426,8 +426,8 @@ center or the admin's chat (§20.3), an
 import's Confirm and rolling an import back (§18.5, §22.2), leaving the
 household (MA-172), approving a new kind (`propose_kind`, §4.8; Arun, 26 Oct
 2026, MA-197: a kind changes what every member can register), and nothing else. A bank or card statement sent for the
-budget is routine, not an import, so it needs no second check (§4.9); the Excel
-history importer keeps it. Plan items and saved Projection assumptions change
+budget is routine, not an import, so it needs no second check (§4.9); a CAS or
+broker import of past holdings keeps it (§22.2). Plan items and saved Projection assumptions change
 a plan, not the records, and need none either (§6.6). The app asks
 the api for a challenge bound to that action, then gets a fresh assertion:
 Sign in with Apple again (iOS shows a Face ID sheet), or, where the member has
@@ -741,8 +741,8 @@ file (§4.6), and then read:
   amber, and one Confirm;
 - a payment it shows answers its check-in.
 
-A statement is routine, so it takes no second check (§4.5); the Excel history
-importer keeps its own (§18.5).
+A statement is routine, so it takes no second check (§4.5); a CAS or broker
+import keeps its own (§22.2).
 
 **The month closes on the 1st** (phase 6, MA-220). A check-in shows last
 month's plan against actual per category, asks only for what no statement
@@ -930,12 +930,19 @@ always true for a position and false for a watchlist item.
 
 | Action | When | Framing |
 | --- | --- | --- |
-| **ADD** | Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated | Make this month's contribution here, or bring it forward |
+| **ADD**, shown as **Buy** | Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated | Buy more: make this month's contribution here, or bring it forward |
 | **HOLD** | Default for a holding with no triggers | Nothing to do |
 | **PAUSE** | Holding; exhaustion ≥ 2 or risk elevated or adverse macro | Keep what you have; delay new money until the next review |
 | **TRIM** | Holding; drift above target by more than the band, or relentless-bearish ≥ 3 with a death-cross, and the position is not protected | Rebalance toward target; never "sell everything" |
 | **REBALANCE** | Portfolio-level drift beyond the band | Move the next contributions, not the holdings, unless drift is large |
-| **WAIT / WATCH** | Not holding; a candidate | No entry trigger yet; the trigger that would change it |
+| **BUY** | Not holding; a candidate on the watchlist whose entry trigger is met: trend ≥ 0 and momentum ≥ 0, risk not elevated, data not stale | Start a position with new money, from the next contribution; never by selling another holding |
+| **WAIT / WATCH** | Not holding; a candidate with no entry trigger yet | The trigger that would change it to BUY |
+
+Every card says **Buy** for ADD and for BUY, so the household reads one word
+for buying (Arun, 29 Oct 2026, MA-275: signals "like hold, buy"); TRIM is the
+only call that sells, and only part, and nothing ever says "sell
+everything". A candidate is put on the watchlist from the chat ("watch the
+S&P 500 ETF"), a record with `holding` false, and is scored like a holding.
 
 Adverse macro and elevated risk tighten the framing and lower confidence; they
 never change the pillar numbers. Sentiment may tilt the action one notch only
@@ -2076,13 +2083,13 @@ What it has is worth keeping: well-tested TypeScript maths (`xirr.ts`,
 ported with its cases as golden fixtures and its screen list kept as the
 check on what the new dashboard covers (MA-105, phase 3); its screens are
 rebuilt here, on this backend, with a new design. The family's real data
-arrives through the chat, statements and the Excel history importer, never
-from the old tracker. The old repository is retired in phase 9 (MA-97). What
+arrives through the chat, its guided flows, screenshots and statements, and
+for India the CAS and broker imports, never from the old tracker. The old repository is retired in phase 9 (MA-97). What
 stays fixed:
 
 | | |
 | --- | --- |
-| **Create in the chat, correct in place** | Anything new (a record, an event, a kind, a plan item) is created only in the chat, with a Confirm tap and an audit row (§9.1): every property valuation, EMI, rent, maturity, prepayment and plan item. An existing figure its kind marks editable is corrected in place on any screen, through the same write service and with its audit row (§4.10). The api's data routes stay GET only, apart from the correction route, `PATCH /v1/records/{id}`. The Admin center holds only the owner's admin settings and operations (§9.3): the security actions, the ceiling and caps, replays, agents' requests and settings, incidents, each behind a second check. Years of history come in through the Excel importer, sent in the chat (MA-111). |
+| **Create in the chat, correct in place** | Anything new (a record, an event, a kind, a plan item) is created only in the chat, with a Confirm tap and an audit row (§9.1): every property valuation, EMI, rent, maturity, prepayment and plan item. An existing figure its kind marks editable is corrected in place on any screen, through the same write service and with its audit row (§4.10). The api's data routes stay GET only, apart from the correction route, `PATCH /v1/records/{id}`. The Admin center holds only the owner's admin settings and operations (§9.3): the security actions, the ceiling and caps, replays, agents' requests and settings, incidents, each behind a second check. Years of history come in through the chat too: the agent asks for past transactions when a return needs them (MA-215), and India's arrive in a CAS or broker export (MA-152). There is no spreadsheet importer (Arun, 29 Oct 2026, MA-275). |
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The first savings record of phase 2 and the household's property, deposits, policies, pensions, investments and loans are records of one structure (§4.8). |
 | **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Apple, Google or a passkey to sign in, through each environment's Cognito pool. |
 | **Four currencies** | GBP, INR, USD and EUR, from the ECB's daily rates, chosen per member for every figure (phase 3, Arun, 29 Oct 2026, MA-275); each record keeps its own currency. |
@@ -2123,7 +2130,7 @@ Order of work, as PLAN's phases:
 | 6 | Budget: statements and the check-in on the 1st |
 | 7 | The Projection (§6.6) |
 | 8 | Audit, Search and the Admin center at every door |
-| 9 | The whole dashboard: the Overview complete, reports and exports, the Excel history importer for prod (MA-111), the read-only SQL copy (§12.1), and the old tracker retired |
+| 9 | The whole dashboard: the Overview complete, reports and exports, the read-only SQL copy (§12.1), and the old tracker retired |
 
 Each phase ships pages over data that MyPaisa already maintains, so nothing is
 shown that cannot be created in the chat or corrected in place.
@@ -2498,7 +2505,7 @@ a daily digest instead.
 | Records | Kinds as data, records as documents, history as append-only events, figures as views; `Account`, `Position`, `Liability` and `Transaction` fold into Record and Event for the household's own records, and `Instrument` stays the shared market reference (§4.8) | "Keep the entire structure dynamic. This is not a traditional transaction SQL structure"; a new kind is data and a view is rebuilt, never migrated |
 | Writing | Create in the chat, correct in place: one write service validates against the kind and audits both; the api's one write route outside the chat takes only the fields a kind marks editable (§4.10) | "The UI should only allow editing existing figures by hand, no creation" |
 | Check-ins | Commitments and check-ins, decided by code with no LLM; the card shows exactly what a tap writes, so the tap is the Confirm, with Undo; several due at once on one card; autopay assumed and listed in a weekly digest (§4.9) | No forms and no nagging: the records stay current at about ten notifications a week |
-| Budget | Statements categorised (the merchant memory, then Haiku) plus a check-in on the 1st; a statement is routine and needs no second check, while the Excel history importer keeps its own (§4.9, §12) | Actuals without typing, and nothing counted twice |
+| Budget | Statements categorised (the merchant memory, then Haiku) plus a check-in on the 1st; a statement is routine and needs no second check, while a CAS or broker import keeps its own (§4.9, §22.2) | Actuals without typing, and nothing counted twice |
 | Projection | Code computes and the AI drives: returns shrunk toward priors by how much history there is, salary growth blended with the country's prior, inflation by country, each currency's drift against GBP from the inflation gap, deterministic then Monte Carlo, each run stored; plan items and saved assumptions the admin's alone (§6.6) | Forecast stays the market's word; every Projection figure comes from code and can be reproduced |
 | Live delivery | SSE on the api host at both doors, with a per-member event log for resume and push only where no stream is open, replacing the API Gateway WebSocket and its `live` host; a spike proves it first (§21.5) | The session cookie reaches the api host; one stream carries replies, cards, check-ins and record changes |
 | Documentation | Confluence (space mypaisaa-agent) is the readable copy of the plan: generated from the trace, PLAN, ARCHITECTURE, the roadmap, the decision records and the design mirror by `scripts/confluence_docs.py`, published through the Atlassian MCP, and checked with the other records by `scripts/plan_sync.py`; every story's estimate and every phase's dates live in `docs/roadmap.json`, and each phase epic's due date in Jira is its target end; each story names the code that builds it (MA-228) | Arun, 26 Oct 2026: the plan, Jira, the designs, the documents and the code stay the same and do not drift; one source for each fact, every copy generated from it and checked |
@@ -2588,8 +2595,9 @@ also use. A generator writes it through the write service, and
 the only way dev data is written. Arun's samples (statements, a CAS, a broker
 export, payslips, an LIC statement) stay outside the repo and shape the
 statement parsers, anonymised; nothing personal is committed. Prod starts
-empty and fills only through the app: the chat, statements, and for years of
-history the Excel importer (§18.5). No script writes to prod tables.
+empty and fills only through the app: the chat and its guided flows,
+screenshots, statements, and for India the CAS and broker imports (§18.5,
+§22.2). No script writes to prod tables.
 
 ### 18.2 Domains
 
@@ -2667,24 +2675,16 @@ and a usage budget that warns at 80 of the free 100 build minutes. Actions are p
 to commit SHAs, workflows hold `contents: read` unless a step needs more, and
 runs of the same workflow on the same branch never overlap.
 
-### 18.5 Hydrating prod: the Excel importer
+### 18.5 Hydrating prod: through the chat
 
-Prod starts empty, and years of past investments are needed for XIRR. They come
-in through one versioned Excel template (MA-111), sent in the chat as a file:
-
-1. MyPaisa reads the workbook and checks it against the template's version:
-   sheets, columns, types, dates, currencies, known holdings.
-2. A dry run shows what would be added, what is already there (matched by a
-   fingerprint of each row, so sending the same file twice adds nothing) and
-   every row it refuses, with the reason.
-3. Confirm, with the second check (MA-102), writes the rows in batches, each
-   with its audit row, under one import id.
-4. Any import can be rolled back by its id.
-
-The same importer works in dev against the seeded household, so it is tested
-before it ever touches prod. It is built in phase 9 (MA-111), for prod's years
-of history. The old wealth tracker holds no real data, so nothing is mapped
-from it; MA-105 ports its maths instead (§12).
+Prod starts empty and fills only through the app, the same way dev is
+tested: a sentence or a guided flow in the chat, a screenshot, a statement,
+and for India a CAS or broker export (§22.2), each shown on a card and
+written on Confirm with its audit row. A return that needs history makes the
+agent ask for the past transactions, or an estimate it marks as one
+(MA-215). There is no spreadsheet importer (Arun, 29 Oct 2026, MA-275: "I
+dont need excel importer"). The old wealth tracker holds no real data, so
+nothing is mapped from it; MA-105 ports its maths instead (§12).
 
 ---
 
@@ -3403,9 +3403,10 @@ The files are parsed by code (an open-source CAS parser, pinned and tested
 on synthetic statements); Claude reads only a file the parsers cannot. Each
 holding is matched by ISIN: a fund to its AMFI scheme code, a share or ETF
 to its `.NS` or `.BO` listing; anything unmatched is listed, never guessed.
-The import has the Excel importer's safety (§18.5, MA-111): a dry run, one
+The import is made safe on its own: a dry run, one
 summary card, fingerprints so the same statement never adds twice, Confirm
-with the second check, rollback by import id, and an audit row per change
+with the second check, batch writes through the write service under one
+import id, rollback by that id, and an audit row per change
 that names the file it came from. The file itself is kept in S3 like every
 other (§4.6, MA-148). A protected PDF's password is typed once into the
 app, which opens the file on the device and sends the statement's lines with
@@ -3443,8 +3444,8 @@ shown until its gates are passed.
 
 On the free path India costs nothing beyond a few more jobs a day inside the
 free tiers. A paid feed is a request to the admin with its price, counted
-inside the £50 cap (§15.2). IN1 comes first; IN2 needs IN1, the Excel
-importer (MA-111) and file keeping (MA-148); IN3 needs both; IN4 needs IN1
+inside the £50 cap (§15.2). IN1 comes first; IN2 needs IN1 and file
+keeping (MA-148), and brings its own import safety (§22.2); IN3 needs both; IN4 needs IN1
 and, for the Forecaster, phase 17.
 
 ---
@@ -3507,7 +3508,7 @@ detects it beats one that asks the model nicely. The layers, in that order:
 | --- | --- | --- |
 | **Least agency** | No tool can trade, delete data, read a secret or message anyone but the member it is answering (§8). Drafts write nothing; only Confirm, a check-in's tap or a Save in place commits, through the write service, and Confirm commits exactly the draft whose hash `PendingAction` holds (§4.10). The SQL copy is read only, and its DuckDB runs with external access off and its configuration locked, over views of the asker's own scope (§12.1). Admin actions sit behind the second check (§4.5). Each agent gets only the tools its manifest lists (§23.5). | §8, §12.1, MA-246, MA-256 |
 | **The policy gate** | Before every call of one of our own tools, in code: the tool is in the calling agent's manifest; the member's role and the household scope allow it (§4.5); the arguments match the strict schema and their ranges (an amount is the member's own text, parsed and typed by code, §4.7; only a typed override takes minor units and a currency code, §6.6); the run is under its tool-call cap and is not repeating the same call. It fails closed: an error or a timeout refuses the call. Each decision is an attribute on the tool's span and an entry in the `RunRecord`'s `checks`. Anthropic's server tools (`web_search`, `web_fetch`) run inside one API request, where no code can stop a call, so the gate acts on them between requests: they are given only to a call that holds no household figures (the "Why?" research and the review's sources get a holding's name and ISIN, never an amount), with `max_uses` set, and `web_fetch` reaches only links already in that conversation. | MA-247, MA-68 |
-| **Untrusted text, one way in** | Every third-party text (a file, a statement line, a CAS file, an Excel sheet, a fetched page, a search result, a news item, a merchant name) reaches a model only as data: inside a tool result, JSON-encoded and labelled with its source, or, for a PDF or a screenshot, as a labelled document or image block. The system prompt says such text is data, never instruction. Files are read by a quarantined extractor: its own model call, with no tools, whose only output is the strict schema with each field's source line and confidence, checked by code. The one-shot calls that read such text (statement categorisation, news tagging and scoring) also run with no tools and a strict schema. Once untrusted text is in a conversation, that conversation, and any note or summary drawn from it, loses every tool that sends data out, so nothing holds private data, untrusted text and a way out at once. | MA-253, MA-68, MA-247 |
+| **Untrusted text, one way in** | Every third-party text (a file, a statement line, a CAS file, a spreadsheet, a fetched page, a search result, a news item, a merchant name) reaches a model only as data: inside a tool result, JSON-encoded and labelled with its source, or, for a PDF or a screenshot, as a labelled document or image block. The system prompt says such text is data, never instruction. Files are read by a quarantined extractor: its own model call, with no tools, whose only output is the strict schema with each field's source line and confidence, checked by code. The one-shot calls that read such text (statement categorisation, news tagging and scoring) also run with no tools and a strict schema. Once untrusted text is in a conversation, that conversation, and any note or summary drawn from it, loses every tool that sends data out, so nothing holds private data, untrusted text and a way out at once. | MA-253, MA-68, MA-247 |
 | **Checks on what it says** | Every figure in a reply is matched against the conversation's tool results and the member's own words, after normalising the unit, the currency and the rounding; a miss regenerates once, then the plain template is sent (§1). A trade, tax advice, another household's data, a member's detail not shared with the asker, and "sell everything" get a plain refusal with the reason. A reply that names a record outside the asker's scope is refused. The doors render a reply as plain text and card fields, with no remote image and no link the reply invents (§14). Stance cards keep their "a view, not advice" line (§9.2). | MA-248, MA-249, MA-54, MA-92 |
 | **Limits** | The Claude ceiling and its ladder, the member, day and run guards (§15.1); a cap on tool calls per run; `/pause`. | §15.1, MA-247 |
 

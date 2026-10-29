@@ -117,7 +117,7 @@
 <li>Indicators The desk&#x27;s stack plus volatility, drawdown and momentum. Known-answer self-tests run first; a failing one blocks scoring that day.</li>
 <li>Four pillars Trend, momentum, macro and risk, each from −2 to +2.</li>
 <li>Flags Exhaustion, relentless-bearish, rebound, death-cross.</li>
-<li>The holder&#x27;s cascade ADD, HOLD, PAUSE, TRIM, REBALANCE or WAIT.</li>
+<li>The holder&#x27;s cascade ADD (shown as Buy), HOLD, PAUSE, TRIM, REBALANCE, and BUY or WATCH for a candidate not held.</li>
 <li>Confidence A percentage; below 55% the card says &quot;no clear view&quot;.</li>
 </ol>
 <h4>Indicators</h4>
@@ -146,12 +146,13 @@
 <p>The desk&#x27;s cascade rotated capital; this one accumulates with care. Adverse macro and elevated risk tighten the framing and lower confidence; they never change the pillar numbers. Sentiment may tilt the action one notch only when the price pillars do not contradict it. News alone never triggers a red alert.</p>
 <table data-layout="full-width"><thead><tr><th>Call</th><th>When</th><th>What it tells the household</th></tr>
 </thead>
-<tbody><tr><td>ADD</td><td>Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated</td><td>Make this month&#x27;s contribution here, or bring it forward</td></tr>
+<tbody><tr><td>ADD · shown as Buy</td><td>Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated</td><td>Buy more: make this month&#x27;s contribution here, or bring it forward</td></tr>
 <tr><td>HOLD</td><td>The default for a holding with no triggers</td><td>Nothing to do</td></tr>
 <tr><td>PAUSE</td><td>Holding; exhaustion ≥ 2, or risk elevated, or adverse macro</td><td>Keep what you have; delay new money until the next review</td></tr>
 <tr><td>TRIM</td><td>Holding; drift above target by more than the band, or relentless-bearish ≥ 3 with a death-cross, and not protected</td><td>Rebalance toward target; never &quot;sell everything&quot;</td></tr>
 <tr><td>REBALANCE</td><td>Portfolio-level drift beyond the band</td><td>Move the next contributions, not the holdings, unless drift is large</td></tr>
-<tr><td>WAIT / WATCH</td><td>Not holding; a candidate</td><td>No entry trigger yet, and the trigger that would change it</td></tr>
+<tr><td>BUY</td><td>Not holding; a candidate on the watchlist whose entry trigger is met</td><td>Start a position with new money, from the next contribution; never by selling another holding</td></tr>
+<tr><td>WAIT / WATCH</td><td>Not holding; a candidate with no entry trigger yet</td><td>The trigger that would change it to BUY</td></tr>
 </tbody>
 </table>
 <h4>The confidence score</h4>
@@ -740,7 +741,7 @@
 </table>
 <p>Order · about 3 to 4 weeks</p>
 <h4>IN1 first, then the rest</h4>
-<p><strong>IN1 · prices</strong>after phase 10→ <strong>IN2 · import</strong>with MA-111, MA-148→ <strong>IN3 · views</strong>needs IN1 and IN2</p>
+<p><strong>IN1 · prices</strong>after phase 10→ <strong>IN2 · import</strong>with MA-148→ <strong>IN3 · views</strong>needs IN1 and IN2</p>
 <p><strong>IN4 · engine, Forecaster</strong>after IN1; phase 17 for forecasts <strong>MA-156 · any currency</strong>phase 2, already planned</p>
 <p><strong>Tests:</strong> synthetic CAS statements and broker exports import exactly once; an unmatched ISIN is listed, not guessed; each Indian chain falls through to stale; INR and GBP views agree with the FX of the day; golden tests for the India basket.</p>
 </details><h2>🧩 What each story needs before it can start</h2>
@@ -775,8 +776,8 @@
 <p><strong>Money in any currency</strong>Checked against each holding&#x27;s currency, both waysMA-156</p>
 <h5>After phase 10</h5>
 <p><strong>IN1 · Indian prices</strong>The AMFI, mfapi.in and bhavcopy plugins; yfinance .NS and .BO; NSE&#x27;s calendarMA-151</p>
-<h5>After IN1, the importer and file keeping</h5>
-<p><strong>IN2 · The import</strong>CAS and broker files, matched by ISIN, one Confirm; needs MA-111 and MA-148MA-152</p>
+<h5>After IN1 and file keeping</h5>
+<p><strong>IN2 · The import</strong>CAS and broker files, matched by ISIN, one Confirm; needs MA-148MA-152</p>
 <h5>After IN1 and IN2</h5>
 <p><strong>IN3 · Accounts and views</strong>INR with GBP beside; wrapper-aware; the tax flag; designed firstMA-153</p>
 <h5>After IN1; phase 17 for forecasts</h5>
