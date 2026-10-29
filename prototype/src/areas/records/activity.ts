@@ -64,7 +64,7 @@ export function activityPage(s: DemoState, c: PageCtx): PageSpec {
   const cy = cycle(s);
   const runsC = card(s.clock === 'd1' ? "Today's runs" : `${dayLabel(DAY_ISO[s.clock])}'s runs`, `${runs.length} done${s.clock === 'd1' && !mine ? ' · 1 due' : ''} · ${usd(cost)}${s.clock === 'd1' ? ' so far' : ''}`, rows, 'runs');
   const cyc = card('Claude this cycle', `renews ${cy.renews}`, [
-    { k: 'meter', big: usd(cy.spent, 0), bsub: `of the ${usd(cy.ceiling, 0)} ceiling · ${cy.pct}%`, w: Math.max(cy.pct, 1) + '%', steps: c.compact ? [cy.steps[0]] : cy.steps, label: 'Claude spend this cycle' },
+    { k: 'meter', big: usd(cy.spent, 0), bsub: `of the ${usd(cy.ceiling, 0)} ceiling · ${cy.pct}%`, w: Math.max(cy.pct, 1) + '%', steps: c.compact ? [cy.steps[0]] : c.ios ? cy.steps.filter((t) => t < 100) : cy.steps, label: 'Claude spend this cycle' },
     p(cy.pct < cy.steps[0] ? `Step: Normal, under ${cy.steps[0]}%. Nothing is held back.` : `Step: past ${cy.steps[0]}%. Heavy work waits.`)]);
   const ctrls = c.web ? { whose: seg(["Everyone's runs", 'Mine'], mine ? 1 : 0, (i) => nav('activity', i ? { who: 'mine' } : undefined)) } : undefined;
   const whoSeg = !c.web && !c.asha ? seg(["Everyone's runs", 'Mine'], mine ? 1 : 0, (i) => nav('activity', i ? { who: 'mine' } : undefined)) : undefined;
