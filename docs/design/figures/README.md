@@ -213,3 +213,21 @@ from the surplus and then cash.
 - At 21:17 Arun applies the first way. At 21:18 he undoes it: the wedding stays saved, and cash is flagged again.
 - At 21:20 Asha sees that state: the Budget forecast with the cash flag, the Plans tab without pencils, and in her own
   chat the ways, with nothing she can apply.
+
+# The Forecaster's figures (MA-281)
+
+`forecaster-v4.json`, from `make_forecaster.py` (`python3 make_forecaster.py > forecaster-v4.json`), holds every figure
+the Forecaster's iOS boards show. It reads `household-v4.json` for the holdings and the clock and never changes it.
+
+- **The clock** is the household's: Mon 26 Oct 2026, prices at the Fri 23 Oct close. The Forecaster ran on Sat 24 Oct at
+  06:10 (model 2026.10, data to 30 Sep); the Saturday review went out at 09:00.
+- **In practice, week 5 of 8** for every holding: weeks 1 to 5 beat both the base rate and the rules engine; weeks 6 to 8
+  are graded on Fri 30 Oct, Fri 6 Nov and Fri 13 Nov. The rules engine is live.
+- **Charts are in percentages from the Fri 23 Oct close**, so they need no price levels: 60 trading days of candles for
+  the NASDAQ 100 ETF (Fri 31 Jul to Fri 23 Oct, the 31 Aug bank holiday left out), the Balanced fund's daily price
+  line (an OEIC has no candles), and the next four weeks' fan (Mon 26 Oct to Fri 20 Nov).
+- **Checked in the script:** the drivers take the usual 57% chance of being up to today's 52%; the mood's next four
+  weeks sum to 100%; four of the five walk-forward folds beat the base rate.
+- **The patterns** (F8, MA-280) are read from fixed bars: the double top's peaks on Thu 1 Oct and Wed 7 Oct with its
+  neckline at +6.5% broken on Wed 14 Oct, the support at −1% (the Wed 5 Aug low, tested on Thu 22 Oct; no low under
+  −1.2%), and a bearish engulfing on Tue 20 Oct that has no edge on this ETF and is named as not used.

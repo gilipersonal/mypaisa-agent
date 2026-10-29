@@ -3031,7 +3031,7 @@
      "board": "Browser · Forecaster · Proof"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. The Forecaster's confidence floor is not defined in ARCHITECTURE 19.7; the no clear view card draws a view too close to the usual to count. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
+   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. The Forecaster's confidence floor is not defined in ARCHITECTURE 19.7; the no clear view card draws a view too close to the usual to count. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. MA-281 (29 Oct 2026) draws its iOS screens in an options round (iPhone v4 · Forecast; iPhone v4 · Forecaster proof and chat), planned until Arun picks; the picked boards then replace the two iOS items in its undrawn list.",
    "open": [
     "Browser · Forecaster · Proof (Forecast.dc.html, F6) is drawn as a page reached from Track record, but ARCHITECTURE §19.6 and §19.7 describe no such page and MA-124's criteria do not name it: keep it (add it to §19.7 and MA-124) or drop the board."
    ],
@@ -7697,6 +7697,164 @@
    "design": "todo",
    "boards": [],
    "notes": "The design round that makes one design of the whole app (Arun, 29 Oct 2026: \"file gaps and make one consolidated design based on new app\"), filed from that day's board audit (MA-275): the first boards of 24 and 25 Oct (iPhone chat, dashboard, settings, sign-in, admin, audit and activity, iPad and foldable; Browser, Browser 2, Wealth, India, Responsive, Forecast, Admin center 2 and 3, Audit and files) were drawn on the investments-only household and before the shell pick, beside the v4 boards on the whole-wealth household; Home is drawn in both. Every live story that cites a first-generation board lists this redraw in its undrawn list (53 stories), and the seven with no web board list their web screens. No board yet: its boards are the redrawn screens themselves, drawn with /design-first, from docs/design/figures/household-v4.json, at desktop, 390, iPhone, iPad and the foldable in light and dark. Starts after MA-278 archives the Telegram files. Its redraw includes the Buy label for ADD and a candidate's BUY call wherever a stance shows (MA-64, MA-91)."
+  },
+  {
+   "key": "MA-281",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Design the stock Forecaster's screens in the app: a holding's Forecast with its patterns, the proof page and the chat's card, on iPhone, iPad and the foldable, before anything is built",
+   "status": "In Progress",
+   "labels": [
+    "design"
+   ],
+   "arch": [
+    "19.4",
+    "19.6",
+    "19.7",
+    "9.1",
+    "9.3"
+   ],
+   "ui": true,
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPad · Forecast · 1a · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPad · Forecast · 1a · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPad · Forecast · 1b · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPad · Forecast · 1b · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPad · Forecast · 1c · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPad · Forecast · 1c · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1a · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1a · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1a · scrolled"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1b · Patterns · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1b · Patterns · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1b · Similar · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1c · similar days open · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1c · the chart open · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecast.dc.html",
+     "board": "iPhone · Forecast · 1c · the chart open · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "Foldable · Forecast · folded · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "Foldable · Forecast · open · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Forecast · a fund · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Forecast · a fund · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Forecast · privacy on · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Forecaster · Proof · Dark"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Forecaster · Proof · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Forecaster · Proof · scrolled"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Saturday review · technical open · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Saturday review · the engines agree · Light"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Forecaster proof and chat.dc.html",
+     "board": "iPhone · Saturday review · the engines disagree · Dark"
+    }
+   ],
+   "notes": "Opened on 29 Oct 2026 after Arun saw the Forecaster's boards (\"show me the iOS and desktop UX designs for Stock forecasting here\") and chose \"Draw iOS boards first\": the stock Forecaster had browser boards only (app-v1 Forecast.dc.html, first generation) and its iOS screens were undrawn on MA-124. The options round, drawn 29 Oct 2026 from one figure set (docs/design/figures/forecaster-v4.json: MA-193's household, Asha's NASDAQ 100 ETF and Arun's Balanced fund at the Fri 23 Oct close, the Forecaster in practice, week 5 of 8): a holding's Forecast tab 1a The answer first (recommended), 1b The chart is the screen, 1c Questions, answered, each on iPhone and iPad in light and dark; and, shared by every option, the chat's card in the Saturday review (the engines agree, disagree, no clear view, technical open), the proof page, a fund's line patterns (no candles), privacy mode and the foldable folded and open. Planned until Arun picks (rule 3); the record is docs/design/reviews/MA-281/decision.md. The web app's Forecast boards are redrawn to the pick in MA-279.",
+   "undrawn": [
+    "the picked option's remaining states: loading, stale prices, a holding with no Forecaster yet (under 8 weeks of history), the Forecaster switched off, Dynamic Type at AX5 and Reduce Motion (drawn after the pick, before MA-124 starts)",
+    "each summary row's sheet (Market mood, Similar days, Event impacts, Main drivers, Technical) on iPhone and iPad"
+   ],
+   "code": []
   },
   {
    "key": "MA-259",

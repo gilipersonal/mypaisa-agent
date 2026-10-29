@@ -408,6 +408,16 @@ Claude's:
   impact and, when it leaves the household short, the rearrangement applied
   on Confirm (MA-222, MA-263), and the Plans tab (MA-224). You pick; the
   picked option's remaining states are drawn before those stories start.
+- **The Forecaster's screens in the app (MA-281):** the stock Forecaster's
+  screens (`ARCHITECTURE.md` §19.7) drawn for iPhone, iPad and the foldable
+  before anything is built, from one figure set
+  (`docs/design/figures/forecaster-v4.json`: MA-193's household, its NASDAQ
+  100 ETF and its Balanced fund at the Fri 23 Oct close). Two or three
+  options for a holding's Forecast tab, with the patterns F8 finds on its
+  candles (MA-280), in light and dark; the chat's card beside the rules
+  engine, the proof page, a fund's line patterns, privacy mode and the
+  foldable. You pick; the picked option's remaining states are drawn before
+  MA-124 starts, and the web app's Forecast boards follow the pick in MA-279.
 - **Your core requirements, recorded (MA-275, `ARCHITECTURE.md` §5.3, §6.6,
   §19.4, §20.4, §20.9):** your asks of 29 Oct 2026 written down. Every asset
   tracked across the UK and India, the US and Europe later, in four
