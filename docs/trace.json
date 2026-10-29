@@ -7501,7 +7501,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent framework options, and end-to-end FastAPI and LLM observability with costing are researched and recorded in Confluence with block diagrams",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "3",
@@ -7543,6 +7543,124 @@
    "design": "none",
    "boards": [],
    "notes": "Filed from MA-265 (28 Oct 2026): handlers/api on FastAPI behind Mangum and handlers/stream on FastAPI behind Uvicorn and the Lambda Web Adapter 1.1; CorrelationMiddleware binding trace_id, span_id, request_id, client_message_id and run_id and echoing x-mypaisa-trace-id and x-request-id; opentelemetry-instrumentation-fastapi setting http.route on every span; and openapi-typescript generating web/src/lib/api-types.d.ts from app.openapi(). Build time is covered by MA-195, MA-31, MA-30 and MA-232."
+  },
+  {
+   "key": "MA-267",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Every pull request, container build and weekly schedule runs the seven-layer vulnerability gate across secrets, SAST, dependencies, Terraform and arm64 ECR images",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "14",
+    "18.4",
+    "23.2"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-272 (28 Oct 2026): unifies gitleaks, ruff Bandit S rules, semgrep across Python/TypeScript/Swift, pip-audit, pnpm audit, trivy fs on ios/Package.resolved, trivy config on infra/, trivy image + ECR Basic Scan on push inside AWS CodeBuild arm1.small for both lambda and stream targets, and a weekly Monday 04:00 UTC CVE sweep with grouped Dependabot updates. Build time is covered by MA-25, MA-166, MA-194 and MA-237."
+  },
+  {
+   "key": "MA-268",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "A phase-progressive smoke runner checks every deployment in dev and prod, protects prod from synthetic writes, verifies the X-Ray trace in dev, and rolls back prod on failure",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "10.3",
+    "18.1",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-272 (28 Oct 2026): scripts/smoke.py --env dev|prod --up-to-phase N runs full synthetic round-trip and X-Ray trace assertions in dev and strictly read-only health, auth-perimeter and CloudWatch alarm checks in prod (never writing synthetic rows to prod tables, .claude/rules/aws-changes.md), triggering <5s Lambda live alias and CloudFront rollback on failure. Build time is covered by MA-107 and MA-232."
+  },
+  {
+   "key": "MA-269",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "A five-layer regression pyramid and path-filtered CI runner test units, OpenAPI contracts, moto integration, golden maths, web and iOS UI, and T0 agent replays inside the free minute tiers",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "9.4",
+    "9.5",
+    "18.4",
+    "23.3"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-272 (28 Oct 2026): scripts/regression.py across Layers 1 to 5 and the Option D path-filtered GitHub Actions (ubuntu-24.04-arm 1x + path-gated macos-15 / self-hosted Mac) and AWS CodeBuild arm1.small runner layout so monthly CI stays inside the 2,000 GitHub and 100 CodeBuild free minute tiers (£0/month). Build time is covered by MA-24, MA-25, MA-166, MA-194, MA-198 and MA-246."
+  },
+  {
+   "key": "MA-270",
+   "type": "Story",
+   "epic": "MA-187",
+   "phase": 2,
+   "summary": "A typed DynamoDB single-table repository wraps boto3 TypeSerializer, mypy-boto3-dynamodb and TransactWriteUnit with Pydantic v2 marshaling, scan guard and signed cursor pagination",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "4.1",
+    "4.6",
+    "4.7",
+    "4.8"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-265 and MA-272 (28 Oct 2026): src/mypaisa_agent/registry/ (keys.py, serde.py, client.py, uow.py, pagination.py) implementing the typed single-table DynamoDB repository on Pydantic v2, boto3 TypeSerializer/TypeDeserializer, mypy-boto3-dynamodb, ForbiddenScanError guard, HMAC-signed cursor pagination and TransactWriteUnit ahead of MA-27 and MA-28. Build time is covered by MA-27 and MA-28."
+  },
+  {
+   "key": "MA-271",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "A typed AnthropicAgentRunner loop manages four-breakpoint prompt caching, the Pydantic v2 tool registry, policy and figure hooks, and gen_ai OpenTelemetry spans",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "8",
+    "10.3",
+    "15.1",
+    "23.2"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-265 and MA-272 (28 Oct 2026): src/mypaisa_agent/agent/ (runner.py, tools.py, cache.py) implementing the ~250-line async tool-use loop on anthropic.AsyncAnthropic, four-breakpoint ephemeral prompt caching, @tool Pydantic v2 strict JSON Schema export, PolicyGate (MA-247) and FigureCheck (MA-248) hooks, and automatic gen_ai.* OTel spans (MA-233). Build time is covered by MA-31, MA-233, MA-247 and MA-248."
+  },
+  {
+   "key": "MA-272",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "10.3",
+    "14",
+    "18.1",
+    "18.4",
+    "23.2",
+    "23.3"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 28 Oct 2026: track setup and tech-debt stories (MA-267 to MA-271); design the phase-wise plan for vulnerability scanning, the smoke suite and the regression suite across Phases 0 to 20; design the GitHub Actions + AWS CodeBuild arm64 + ECR CI/CD pipeline for dev and prod; and model the GitHub Actions vs AWS CodeBuild runner costs and alternatives (Option D selected at £0/month). Delivered in docs/RESEARCH.md 7, ARCHITECTURE.md 18.4, PLAN.md, docs/design/cicd-security-regression.html, its four GIFs in docs/design/cicd-security-regression/, and the Confluence page CI/CD, vulnerability scanning, smoke and regression architecture.",
+   "code": [
+    "docs/design/cicd-security-regression.html",
+    "docs/design/cicd-security-regression/*.gif"
+   ]
   }
  ],
  "others": [

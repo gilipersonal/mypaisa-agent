@@ -65,6 +65,12 @@ STACK_GIFS = [  # (gif in docs/design/tech-stack-observability, tab title, capti
     ("05-backend-fastapi-dynamodb.gif", "5 · FastAPI & DynamoDB", "FastAPI serves both REST and SSE; a thin typed repository on Pydantic v2, boto3 and mypy-boto3-dynamodb handles single-table DynamoDB at £0/mo, whereas DocumentDB would cost £75–£110/mo."),
     ("06-agent-framework-architecture.gif", "6 · Agent loop & frameworks", "The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge in Phase 18."),
 ]
+CICD_GIFS = [  # (gif in docs/design/cicd-security-regression, tab title, caption): the CI/CD, security, smoke & regression block diagrams, animated (MA-272)
+    ("01-cicd-pipeline-dev-prod.gif", "1 · CI/CD pipeline (dev & prod)", "One arm64 container build on AWS CodeBuild is scanned with trivy image, pushed to ECR, auto-deployed to dev with smoke and X-Ray trace checks, and promoted by exact sha256 digest to prod after Arun approves."),
+    ("02-vulnerability-7-gates.gif", "2 · 7-layer security gate", "Seven open-source and free-tier security gates (gitleaks, ruff Bandit S + semgrep, pip-audit + pnpm audit + trivy fs, tflint + trivy config, trivy image + ECR scan, T0 taint/PII check, live 401/CSP + Monday sweep) block High/Critical CVEs at £0/month."),
+    ("03-smoke-and-rollback.gif", "3 · Smoke & <5s rollback", "scripts/smoke.py runs a full synthetic chat and X-Ray trace check in dev and a strictly read-only health/auth/alarm probe in prod (zero writes to prod tables), rewinding Lambda :live aliases in under five seconds on any fault."),
+    ("04-regression-pyramid-and-costs.gif", "4 · 5-layer regression & £0/mo cost", "The five-layer regression pyramid across Phases 0 to 20 and the Option D hybrid runner strategy keep both GitHub Actions (<2,000 free mins) and AWS CodeBuild (<100 free arm64 mins) at £0.00/month."),
+]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
     ("01-overview.png", "System overview", "4ae817c6-847f-45f8-a10c-4509971c9c09", "§3"),
     ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§18"),
@@ -425,6 +431,7 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
     out += [("decisions", "Design decisions and the UX choices kept", "hub"),
             ("guardrails", "Guardrails and evals: how the agents are guarded and tested", "hub"),
             ("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability", "hub"),
+            ("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture", "hub"),
             ("explainers", "Explainers, the prototype and the architecture drawings", "hub"),
             ("sync", "How the plan, Jira, the designs, Confluence and the code stay in step", "hub")]
     import confluence_record  # noqa: PLC0415  (the architecture and journeys record, MA-257)
@@ -485,6 +492,8 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
         out[f"guardrails-{gif}"] = {"page": "guardrails", "file": ROOT / "docs" / "design" / "guardrails-evals" / gif}
     for gif, _, _ in STACK_GIFS:
         out[f"stack-{gif}"] = {"page": "stack", "file": ROOT / "docs" / "design" / "tech-stack-observability" / gif}
+    for gif, _, _ in CICD_GIFS:
+        out[f"cicd-{gif}"] = {"page": "cicd", "file": ROOT / "docs" / "design" / "cicd-security-regression" / gif}
     import confluence_record  # noqa: PLC0415
     record = confluence_record.wanted_images(ctx)  # their sources are worked out there: a capture's recipe and its page
     # the pictures draw each phase's title and dates only, so an estimate that moves no date redraws nothing
@@ -809,6 +818,9 @@ def render_hub(ctx: Ctx) -> str:
         cpanel("#DEEBFF", ":hammer_and_wrench:", f"<h3>{ctx.link('stack', 'Tech stack, FastAPI, DynamoDB, agents and end-to-end observability')}</h3><p>"
                "The four-layer implementation stack (SvelteKit 3, TanStack and shadcn-svelte; React Native 0.88 and SwiftUI; Python 3.14, FastAPI and "
                "single-table DynamoDB versus DocumentDB; the agent framework comparison) and end-to-end tracing and LLM observability with monthly costing (MA-265, MA-266).</p>"),
+        cpanel("#FFFAE6", ":rocket:", f"<h3>{ctx.link('cicd', 'CI/CD, vulnerability scanning, smoke and regression architecture')}</h3><p>"
+               "The GitHub Actions + AWS CodeBuild arm64 + ECR delivery pipeline for dev and prod, the seven-layer vulnerability scanning gate, the "
+               "phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 20, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>"),
         "<h2>🔗 The records behind it</h2><ul>"
         f'<li><strong>Jira</strong>: <a href="{JIRA}/jira/software/projects/MA/boards">project MA</a>, a phase epic per phase; '
         + jql_link("project = MA AND issuetype = Epic ORDER BY duedate", "the epics by due date") + "</li>"
@@ -1017,8 +1029,9 @@ def render_explainers(ctx: Ctx) -> str:
            f'<a href="{gh("docs/design/architecture-v4.html")}">architecture-v4.html</a> (the same architecture, technical and animated, MA-244), '
            f'<a href="{gh("docs/design/agent-journey.html")}">agent-journey.html</a>, '
            f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a>, '
-           f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258) and '
-           f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}), '
+           f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
+           f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}) and '
+           f'<a href="{gh("docs/design/cicd-security-regression.html")}">cicd-security-regression.html</a> (the CI/CD pipeline, seven-layer security gate, smoke suite, phase-wise regression pyramid and runner cost analysis, MA-267 to MA-272; see {ctx.link("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture")}), '
            'and published as Claude artifacts.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
@@ -1106,7 +1119,7 @@ def research_text(num: str) -> str:
 
 def render_stack(ctx: Ctx) -> str:
     """The four-layer implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks, and end-to-end observability with costing (MA-265, MA-266)."""
-    keys = {"MA-265", "MA-266", "MA-24", "MA-194", "MA-165", "MA-198", "MA-230", "MA-231", "MA-195", "MA-31", "MA-30", "MA-29", "MA-232", "MA-233", "MA-234", "MA-196", "MA-27", "MA-28"}
+    keys = {"MA-265", "MA-266", "MA-270", "MA-271", "MA-24", "MA-194", "MA-165", "MA-198", "MA-230", "MA-231", "MA-195", "MA-31", "MA-30", "MA-29", "MA-232", "MA-233", "MA-234", "MA-196", "MA-27", "MA-28"}
     items = [i for i in ctx.items if i["key"] in keys]
     items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
     sec6 = research_text("6")
@@ -1146,6 +1159,43 @@ def render_stack(ctx: Ctx) -> str:
     return "".join(out) + footer(ctx)
 
 
+def render_cicd(ctx: Ctx) -> str:
+    """The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis (MA-267 to MA-272)."""
+    keys = {"MA-267", "MA-268", "MA-269", "MA-270", "MA-271", "MA-272", "MA-24", "MA-25", "MA-26", "MA-107", "MA-108", "MA-110", "MA-165", "MA-166", "MA-167", "MA-194", "MA-198", "MA-231", "MA-232", "MA-237", "MA-238", "MA-246", "MA-247", "MA-248", "MA-249", "MA-250", "MA-251", "MA-266"}
+    items = [i for i in ctx.items if i["key"] in keys]
+    items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
+    sec7 = research_text("7")
+    out = [
+        cpanel("#FFFAE6", ":rocket:", '<p>Arun, 28 Oct 2026 (MA-267 to MA-272): the end-to-end GitHub Actions + AWS CodeBuild arm64 + ECR delivery '
+               "pipeline for dev and prod, the seven-layer open-source vulnerability scanning gate, the phase-progressive smoke runner "
+               "(<code>scripts/smoke.py</code>) with prod read-only safety and under-five-second Lambda <code>:live</code> alias rollback, the five-layer "
+               "regression pyramid (<code>scripts/regression.py</code>) across Phases 0 to 20, and the GitHub Actions versus AWS CodeBuild runner cost "
+               "analysis showing how Option D stays at £0.00 a month inside both free tiers. "
+               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7 and '
+               f'{arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
+               f'<a href="{gh("docs/design/cicd-security-regression.html")}">docs/design/cicd-security-regression.html</a>.</p>'),
+        toc(),
+        "<h2>🎞️ Block diagrams (animated)</h2>"
+        f'<p>Four animated block diagrams captured from <a href="{gh("docs/design/cicd-security-regression.html")}">docs/design/cicd-security-regression.html</a> '
+        "(MA-272): browse them in the tabs below, or beside each section further down.</p>",
+        tabs([(title, image(ctx, f"cicd-{gif}", caption, 100)) for gif, title, caption in CICD_GIFS]),
+        "<h2>🚀 1. End-to-end CI/CD delivery pipeline (GitHub Actions, AWS CodeBuild arm64, ECR, dev &amp; prod)</h2>",
+        image(ctx, "cicd-01-cicd-pipeline-dev-prod.gif", CICD_GIFS[0][2], 100),
+        "<h2>🛡️ 2. Seven-layer vulnerability scanning gate (MA-267)</h2>",
+        image(ctx, "cicd-02-vulnerability-7-gates.gif", CICD_GIFS[1][2], 100),
+        "<h2>🧪 3. Phase-progressive smoke suite, prod read-only safety &amp; &lt;5s auto-rollback (MA-268)</h2>",
+        image(ctx, "cicd-03-smoke-and-rollback.gif", CICD_GIFS[2][2], 100),
+        "<h2>📐 4. Five-layer regression pyramid (Phases 0–20) &amp; £0/month runner cost analysis (MA-269)</h2>",
+        image(ctx, "cicd-04-regression-pyramid-and-costs.gif", CICD_GIFS[3][2], 100),
+        "<h2>📖 Full architecture, phase-wise matrix &amp; runner costing record (docs/RESEARCH.md §7)</h2>",
+        md(sec7, shift=-1),
+        "<h2>🧩 The stories that build it</h2><p>Every story in the trace that records or builds CI/CD, vulnerability scanning, smoke tests, regression suites and the repository/agent foundations, in phase order.</p>",
+        story_rows(ctx, items),
+        jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
+    ]
+    return "".join(out) + footer(ctx)
+
+
 BLOCK_END = re.compile(r"(</(?:p|h[1-6]|table|thead|tbody|tr|ul|ol|li|div|figure|section|blockquote|pre)>)")
 
 
@@ -1172,7 +1222,7 @@ def render_body(ctx: Ctx, slug_: str) -> str:
         return render_screens(ctx)
     if slug_.startswith("screens-"):
         return render_area(ctx, next(a for a in AREAS if f"screens-{a[0]}" == slug_))
-    return {"decisions": render_decisions, "guardrails": render_guardrails, "stack": render_stack, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
+    return {"decisions": render_decisions, "guardrails": render_guardrails, "stack": render_stack, "cicd": render_cicd, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
 
 
 # ---------- check and the commands ----------

@@ -143,11 +143,23 @@ Claude's:
   uv, ruff, pyright, pytest, pre-commit; FastAPI, Mangum,
   `opentelemetry-instrumentation-fastapi` and `boto3-stubs[dynamodb,s3,sqs,ssm,cognito-idp]`
   pinned in `pyproject.toml` (MA-265).
-- **The PR gates in GitHub Actions (MA-25):** ruff, pyright, pytest with
-  moto, `terraform fmt` and `validate`, tflint, the Terraform security scan,
-  gitleaks, pip-audit, `jira-key`, and a plan for both environments on every
-  PR touching `infra/`. The web gates join with the web skeleton (MA-194) and
-  the iOS gates with the iOS project (MA-166).
+- **The PR gates, seven-layer vulnerability scanning and the five-layer
+  regression pyramid (MA-25, MA-267, MA-269, `docs/RESEARCH.md` §7):** on
+  every PR (`ubuntu-24.04-arm`, 1x), ruff (lint + Bandit `S` SAST), pyright,
+  `semgrep` across Python, TypeScript and Swift, pytest (`scripts/regression.py`
+  L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3
+  golden financial maths and OTel PII-leak check), `openapi-typescript`
+  zero-diff contract check (MA-266), `terraform fmt` and `validate`, tflint,
+  `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`,
+  `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`,
+  `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
+  both environments on every PR touching `infra/`. The web visual/a11y gates
+  join on PRs touching `web/`, `cards/` or `docs/design/` (MA-194), and the
+  native SwiftUI Xcode Simulator gates (`macos-15` or a self-hosted Mac runner)
+  join on PRs touching `ios/` or `cards/` (MA-166), keeping monthly CI inside
+  the 2,000 free GitHub minutes (`docs/RESEARCH.md` §7.5). A weekly Monday
+  04:00 UTC schedule and grouped Dependabot updates catch newly disclosed CVEs
+  when no code changes (MA-267).
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the
@@ -175,11 +187,20 @@ Claude's:
   pushes them to the one ECR repository by the commit's sha; a pull request
   that changes the Dockerfile or the lock builds them without pushing. ECR
   keeps the last five tagged images, and a usage budget warns at 80 minutes.
-- **The release pipeline (MA-107, MA-167):** a merge to `main` builds the
-  Lambdas once (MA-237), deploys dev and runs the smoke tests, sends MyPaisa Dev to
-  TestFlight, then deploys prod after your approval behind each Lambda's
-  `live` alias, rolling back on a failed smoke test, and sends MyPaisa to
-  TestFlight. The nightly drift check follows (MA-108).
+- **The release pipeline and phase-progressive smoke runner (MA-107, MA-167,
+  MA-268):** a merge to `main` builds the Lambdas once on AWS CodeBuild's
+  arm64 runner and scans both targets with `trivy image --exit-code 1
+  --severity HIGH,CRITICAL --ignore-unfixed` (MA-237, MA-267), deploys dev and
+  runs `python3 scripts/smoke.py --env dev --up-to-phase <N>` (health, deep
+  read-only probe, OpenAPI `401` perimeter, synthetic sign-in, `/v1/stream`
+  SSE, scripted chat turn, `RunRecord` and unbroken X-Ray trace, MA-232,
+  MA-268), sends MyPaisa Dev to TestFlight, then deploys prod with the exact
+  same ECR `sha256` digests after your approval behind each Lambda's `live`
+  alias, running `python3 scripts/smoke.py --env prod` (strictly read-only,
+  zero synthetic writes to prod tables) and shifting every `live` alias back
+  to its previous version in under five seconds on failure, before syncing
+  prod's web app and sending MyPaisa to TestFlight. The nightly drift check
+  and Monday CVE sweep follow (MA-108, MA-267).
 - **The web app's skeleton (MA-194):** `web/` in SvelteKit 3.1 (Svelte 5
   runes, adapter-static, Vite 8, TypeScript 6), a pnpm 12 workspace with one
   catalog of versions, as Smart Clearance's frontend is built; a PWA whose
@@ -386,6 +407,23 @@ Claude's:
   month in dev and £2.46 a month in prod (`docs/design/tech-stack-observability.html`
   and the Confluence page Tech stack, FastAPI, DynamoDB, agents and
   end-to-end observability).
+- **The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite,
+  phase-wise regression matrix and GitHub Actions runner cost analysis
+  (MA-267, MA-268, MA-269, MA-272, `docs/RESEARCH.md` §7, `ARCHITECTURE.md`
+  §18.4):** the seven open-source security gates across secrets, SAST,
+  dependencies, Terraform and arm64 ECR images (`scripts/security_scan.py` and
+  the weekly Monday CVE sweep, MA-267); the phase-progressive smoke runner
+  (`scripts/smoke.py --env dev|prod --up-to-phase <N>`) with full synthetic
+  round-trip and X-Ray trace assertion in dev, read-only health/auth/alarm
+  verification in prod and under-five-second Lambda `live` alias rollback
+  (MA-268); the five-layer regression pyramid (`scripts/regression.py`) and
+  phase-wise test rollout from Phase 0 to Phase 20 (MA-269); and the 2026
+  GitHub Actions versus AWS CodeBuild runner cost model showing how Option D
+  (CodeBuild `arm1.small` for Docker builds, GitHub `ubuntu-24.04-arm` for
+  Linux gates and path-filtered Playwright, and split iOS testing to avoid the
+  10x macOS multiplier trap) stays at £0.00 a month inside both free tiers
+  (`docs/design/cicd-security-regression.html` and the Confluence page CI/CD,
+  vulnerability scanning, smoke and regression architecture, MA-272).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -551,7 +589,12 @@ arrives from phase 2.
   the tap to the push; every `StreamEvent` and push payload carries its
   `run_id` and `trace_id`; the leak test proves no prompt, figure, name or
   token reaches CloudWatch, and the dev smoke test asserts the trace.
-- **Every model call a span (MA-233):** one wrapper on every Anthropic call
+- **Every model call a span, and the typed `AnthropicAgentRunner` loop
+  (MA-233, MA-271, `ARCHITECTURE.md` §8, §10.3):** `src/mypaisa_agent/agent/`
+  runs the ~250-line async tool-use loop on `anthropic.AsyncAnthropic` with the
+  four-breakpoint prompt-cache assembler (`cache_control={"type": "ephemeral"}`
+  on system instructions, tools, household snapshot and history prefix) and the
+  `@tool` Pydantic v2 schema registry (MA-271); one wrapper on every Anthropic call
   sets the open GenAI attributes and MyPaisa's own (cost, feature, agent, the
   ladder's step, cache hit, time to the first token, refusal, fallback), and
   each tool call is a span with its outcome and sizes; the model panel shows
@@ -705,7 +748,8 @@ one write service. The simplest kinds come first (savings, cash, a
 property's value, a pension's value), so the whole path is proved before the
 maths arrives.
 
-- **One dynamic structure (MA-27, MA-265, `ARCHITECTURE.md` §4.1, §4.8).** Kinds are data.
+- **One dynamic structure and the typed DynamoDB repository (MA-27, MA-265,
+  MA-270, `ARCHITECTURE.md` §4.1, §4.8).** Kinds are data.
   Records are documents: `Record {kind, kind_version, owners[{member,
   share_pct}], country, ccy, liquidity, status, parent_id?, instrument_id?,
   attrs{}}`; an ISA account is a record and its funds are child records;
@@ -719,10 +763,12 @@ maths arrives.
   structure evolves with no migration. `Account`, `Position`, `Liability` and
   `Transaction` fold into Record and Event for the household's own records;
   there is no relational schema and no DocumentDB cluster (`docs/RESEARCH.md`
-  §6.2): `src/mypaisa_agent/registry/repository.py` is a thin typed
+  §6.2): `src/mypaisa_agent/registry/` (`keys.py`, `serde.py`, `client.py`,
+  `uow.py`, `pagination.py`, MA-270) is a thin typed
   repository on Pydantic v2 (`model_dump(mode="json")`,
   `model_validate()`), `boto3`'s `TypeSerializer` and `TypeDeserializer`,
-  `mypy-boto3-dynamodb` (`boto3-stubs[dynamodb]`) and a `TransactWriteUnit`
+  `mypy-boto3-dynamodb` (`boto3-stubs[dynamodb]`), a `ForbiddenScanError`
+  client guard, HMAC-signed cursor pagination, and a `TransactWriteUnit`
   builder. Every item is keyed by the household and
   carries `schema_version`. A record ends as `closed`, `matured` or `sold`,
   never deleted.

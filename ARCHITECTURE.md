@@ -634,12 +634,13 @@ phase 2 (MA-27, MA-28, MA-197) and every wealth phase after it adds only kinds.
 and Event for the household's own records. There is no relational schema:
 questions nobody planned for read the nightly Parquet exports of the events
 and views through DuckDB (§12.1, MA-104). In code (`src/mypaisa_agent/registry/`,
-MA-27, MA-28, MA-265), the single table is accessed through a thin typed
+MA-27, MA-28, MA-265, MA-270), the single table is accessed through a thin typed
 repository on Pydantic v2, `boto3` (`TypeSerializer` and `TypeDeserializer`
 with `Decimal` conversion at the wire boundary) and `mypy-boto3-dynamodb`
 (`boto3-stubs[dynamodb]`) under strict `pyright`, with a `TransactWriteUnit`
-builder that refuses to commit a mutation without its hash-chained `AuditEvent`
-and a client guard that refuses `Scan`. Amazon DocumentDB and ORM layers such
+builder that refuses to commit a mutation without its hash-chained `AuditEvent`,
+a client guard that refuses `Scan`, and HMAC-signed opaque cursor tokens for
+pagination. Amazon DocumentDB and ORM layers such
 as PynamoDB are not used: DocumentDB costs £75 to £110 a month across `dev` and
 `prod` and needs a VPC, whereas DynamoDB's native `Map` and `List` attributes,
 `TransactWriteItems` (up to 100 items) and single-table `Query` run inside the
@@ -1159,7 +1160,7 @@ Numbers computed, words synthesised, output via structured outputs.
 
 One Claude tool loop (Sonnet 5.5 for chat and cards, Haiku 5.5 for filters
 and scoring, Opus 5.5 for the Saturday review), written as a thin explicit
-Python loop directly on the `anthropic` SDK and Pydantic v2 (`@tool` with a
+Python loop (`AnthropicAgentRunner`, MA-271) directly on the `anthropic` SDK and Pydantic v2 (`@tool` with a
 typed `RunContext`, inspired by PydanticAI, rather than LangGraph or CrewAI;
 `docs/RESEARCH.md` §6.3, MA-265), with strict tools over the
 registry, the engine and the cards, through the Anthropic API with the key in
@@ -2617,20 +2618,20 @@ write-only placeholder (`value_wo`, §14), so no value reaches its state. The
 AWS MCP is for reading (describe, logs, metrics, costs) and never changes a
 resource (`.claude/rules/aws-changes.md`).
 
-**GitHub CI, as on smart-clearance** (MA-25, MA-107):
+**GitHub CI, as on smart-clearance** (MA-25, MA-107, MA-267, MA-268, MA-269, MA-272; `docs/RESEARCH.md` §7):
 
 | Stage | When | What |
 | --- | --- | --- |
-| Gates | every PR | ruff, pyright, pytest (AWS faked with moto), `terraform fmt` and `validate`, tflint, a security scan of the Terraform, gitleaks, pip-audit, the `jira-key` check |
-| Web gates | every PR touching `web/` | svelte-check, eslint, vitest, npm audit, and Playwright at 390 and 1440 in both themes, with `prefers-reduced-motion` both ways; the contrast gate (`scripts/contrast_check.py`) on every PR |
-| iOS gates | every PR touching `ios/` | on a macOS runner: Jest and the TypeScript checks for the shell; swift-format, build, XCUITest on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); the performance benches of §9.5 on the phone before a release |
-| Evals | every PR; live when it changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK; the full suite on a model-id change | T0: the recorded conversations replayed through the agent loop and its guards, and the coverage check; T1: the affected cases live in the `evals` workspace, three trials each, within $10 a run and $30 a month, a run stopped by its cap marked incomplete; T2: every case five times on the new model (§23.3; MA-246, MA-250, MA-251) |
+| Gates & regression (L1–L3) | every PR (`ubuntu-24.04-arm`, 1x) | ruff (lint + Bandit `S` SAST), pyright, `semgrep`, pytest (`scripts/regression.py` L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3 golden financial maths and OTel PII-leak gate), `openapi-typescript` zero-diff contract check (MA-266, MA-269), `terraform fmt` and `validate`, tflint, `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`, `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`, the `jira-key` check, and the iOS TypeScript shell `Jest` tests (MA-267, MA-269) |
+| Web gates (L4) | every PR touching `web/`, `cards/` or `docs/design/` (`ubuntu-24.04-arm`, 1x) | svelte-check, eslint (`eslint-plugin-security`), vitest, `board_fit.js` across 320 to 1920 px in Chromium and WebKit (MA-240), and Playwright at 390 and 1440 in both themes, with `prefers-reduced-motion` both ways and `@axe-core/playwright`; the contrast gate (`scripts/contrast_check.py`) on every PR |
+| iOS native gates (L4) | every PR touching `ios/` native Swift or `cards/`, and on `main` releases | on a macOS runner (`macos-15` or a self-hosted Mac runner, keeping monthly GitHub minutes inside the 2,000 free quota despite the 10x macOS multiplier, `docs/RESEARCH.md` §7.5, MA-269): swift-format, `semgrep` Swift rules, build, XCTest and XCUITest on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); the performance benches of §9.5 on the phone before a release |
+| Evals (L3 & L5) | every PR; live when it changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK; the full suite on a model-id change | T0: the recorded conversations replayed through the agent loop and its guards, and the coverage check; T1: the affected cases live in the `evals` workspace, three trials each, within $10 a run and $30 a month, a run stopped by its cap marked incomplete; T2: every case five times on the new model (§23.3; MA-246, MA-250, MA-251) |
 | Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
-| Build | merge to `main` | the Lambda images built once on AWS: the workflow's image job runs on AWS CodeBuild's arm64 runner (`codebuild-mypaisa-ci-image-…`, arm1.small, inside CodeBuild's free 100 minutes a month), builds the `lambda` and `stream` targets natively and pushes them to ECR by the commit's sha; the same digest goes to both environments (MA-237) |
-| Dev | after the build | apply dev, deploy, smoke tests against `api-dev`, which also assert one trace from `api` to `sender` through the X-Ray API (§10.3, MA-232) |
+| Build & image scan | merge to `main` | the Lambda images built once on AWS: the workflow's image job runs on AWS CodeBuild's arm64 runner (`codebuild-mypaisa-ci-image-…`, arm1.small, inside CodeBuild's free 100 minutes a month), builds the `lambda` and `stream` targets natively, runs `trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed` on both images (MA-267), and pushes them to ECR by the commit's sha (with ECR Basic Scanning on push); the same immutable `sha256` digest goes to both environments (MA-237) |
+| Dev & smoke | after the build | apply dev, deploy, run `python3 scripts/smoke.py --env dev --up-to-phase <N>` (MA-268) against `api-dev` and `dashboard-dev`: verifies `/v1/health`, `/v1/health?deep=1`, OpenAPI `401` perimeter, synthetic member sign-in, `/v1/stream` SSE, a scripted chat turn, the `RunRecord`, and one unbroken trace from `api` to `sender` through the X-Ray API (§10.3, MA-232) |
 | Dev app | after dev passes | the web app synced to dev's dashboard bucket and its CloudFront cache cleared; when `ios/` changed, MyPaisa Dev archived and uploaded to TestFlight (MA-167) |
-| Prod | after dev passes, T2 is green for the model ids it ships (§23.3), and Arun approves in the GitHub `prod` environment | apply prod, deploy behind each Lambda's `live` alias, smoke tests, automatic rollback to the previous version on failure; then the web app synced to prod's dashboard bucket and MyPaisa uploaded to TestFlight, so a new front end never meets an old api (MA-167) |
-| Drift | nightly | `terraform plan` for both environments; any difference is a message in the admin's chat (MA-108) |
+| Prod & auto-rollback | after dev passes, T2 is green for the model ids it ships (§23.3), and Arun approves in the GitHub `prod` environment | apply prod with the exact same ECR `sha256` digests verified in dev, deploy behind each Lambda's `live` alias, and run `python3 scripts/smoke.py --env prod --up-to-phase <N>` (strictly read-only — zero synthetic writes to prod tables, `.claude/rules/aws-changes.md`): verifies `/v1/health`, `/v1/health?deep=1`, OpenAPI `401` perimeter, CloudFront headers and zero error alarms; on failure, shifts every Lambda's `live` alias back to its previous version in under five seconds, restores the S3 web manifest and alerts via SNS (MA-107, MA-268); on pass, syncs the web app to prod's dashboard bucket and uploads MyPaisa to TestFlight, so a new front end never meets an old api (MA-167) |
+| Drift & weekly CVE sweep | nightly & Monday 04:00 UTC | nightly `terraform plan` for both environments (MA-108); every Monday at 04:00 UTC, full `pip-audit`, `pnpm audit`, `trivy fs` and `trivy image` scan against `main` and the live ECR images so newly disclosed CVEs are caught even when no code changes (MA-267) |
 
 CI reaches AWS through the account's GitHub OIDC provider with four roles:
 `ci-plan` (read only, any branch), `ci-evals` (the evals job on any pull
