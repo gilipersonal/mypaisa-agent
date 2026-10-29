@@ -749,6 +749,8 @@ RECORD_CASES = [
      r"app roadmap-gantt is older than its inputs"),
     ("the story explorer's rows edited by hand", "docs/confluence/stories.csv", lambda c: c.replace("MA-20,", "MA-20x,", 1),
      r"docs/confluence/stories\.csv is stale"),
+    ("a page renamed but not published", "docs/confluence.json", lambda m: (m["pages"]["phase-05"].update({"title": "Phase 5 · An old name"}), m)[1],
+     r"'Phase 5 · Investments, priced' was renamed in the repo but is still titled 'Phase 5 · An old name'"),
     ("the story explorer changed but not published", "docs/confluence.json",
      lambda m: (m["databases"]["stories"].update({"sha256": "0"}), m)[1], r"database stories changed in the repo but is not published"),
     # MA-245 review, round 1: the guardrails page shows ARCHITECTURE 23 and must fail closed when it cannot.

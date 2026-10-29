@@ -107,7 +107,7 @@
 <li><strong>Asks</strong> the admin for a new or reordered source, any paid feed, or a source&#x27;s terms.</li>
 </ul>
 </details><h2>📐 Fixed rules a person can check by hand</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="4415fbfa-889c-47b5-8569-61420032a89c" data-collection="contentId-1769493" data-alt="rec-j-market--market-s3.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="1b8e9306-bf1a-4e9d-83e0-3c8a00264256" data-collection="contentId-1769493" data-alt="rec-j-market--market-s3.png"></div>
 <figcaption>Fixed rules a person can check by hand (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>3</p>
 <p>The rules engine today</p>
@@ -117,7 +117,7 @@
 <li>Indicators The desk&#x27;s stack plus volatility, drawdown and momentum. Known-answer self-tests run first; a failing one blocks scoring that day.</li>
 <li>Four pillars Trend, momentum, macro and risk, each from −2 to +2.</li>
 <li>Flags Exhaustion, relentless-bearish, rebound, death-cross.</li>
-<li>The holder&#x27;s cascade ADD, HOLD, PAUSE, TRIM, REBALANCE or WAIT.</li>
+<li>The holder&#x27;s cascade ADD (shown as Buy), HOLD, PAUSE, TRIM, REBALANCE, and BUY or WATCH for a candidate not held.</li>
 <li>Confidence A percentage; below 55% the card says &quot;no clear view&quot;.</li>
 </ol>
 <h4>Indicators</h4>
@@ -146,12 +146,13 @@
 <p>The desk&#x27;s cascade rotated capital; this one accumulates with care. Adverse macro and elevated risk tighten the framing and lower confidence; they never change the pillar numbers. Sentiment may tilt the action one notch only when the price pillars do not contradict it. News alone never triggers a red alert.</p>
 <table data-layout="full-width"><thead><tr><th>Call</th><th>When</th><th>What it tells the household</th></tr>
 </thead>
-<tbody><tr><td>ADD</td><td>Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated</td><td>Make this month&#x27;s contribution here, or bring it forward</td></tr>
+<tbody><tr><td>ADD · shown as Buy</td><td>Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated</td><td>Buy more: make this month&#x27;s contribution here, or bring it forward</td></tr>
 <tr><td>HOLD</td><td>The default for a holding with no triggers</td><td>Nothing to do</td></tr>
 <tr><td>PAUSE</td><td>Holding; exhaustion ≥ 2, or risk elevated, or adverse macro</td><td>Keep what you have; delay new money until the next review</td></tr>
 <tr><td>TRIM</td><td>Holding; drift above target by more than the band, or relentless-bearish ≥ 3 with a death-cross, and not protected</td><td>Rebalance toward target; never &quot;sell everything&quot;</td></tr>
 <tr><td>REBALANCE</td><td>Portfolio-level drift beyond the band</td><td>Move the next contributions, not the holdings, unless drift is large</td></tr>
-<tr><td>WAIT / WATCH</td><td>Not holding; a candidate</td><td>No entry trigger yet, and the trigger that would change it</td></tr>
+<tr><td>BUY</td><td>Not holding; a candidate on the watchlist whose entry trigger is met</td><td>Start a position with new money, from the next contribution; never by selling another holding</td></tr>
+<tr><td>WAIT / WATCH</td><td>Not holding; a candidate with no entry trigger yet</td><td>The trigger that would change it to BUY</td></tr>
 </tbody>
 </table>
 <h4>The confidence score</h4>
@@ -616,7 +617,7 @@
 </table>
 <p>Figures as estimated in ARCHITECTURE §15 and §19.8, to be measured in the first months. The ceilings are guards against a bad month or a runaway loop, not a ration.</p>
 </details><h2>🇮🇳 India: Indian funds, shares and ETFs beside the UK ones</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0e30a441-18bf-4777-87a7-17fbae588028" data-collection="contentId-1769493" data-alt="rec-j-market--market-s12.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="3e27399a-38d9-4ecb-894d-d3a171da4129" data-collection="contentId-1769493" data-alt="rec-j-market--market-s12.png"></div>
 <figcaption>India: Indian funds, shares and ETFs beside the UK ones (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>12</p>
 <p>A second market, the same engines</p>
@@ -687,7 +688,7 @@
 <h4>FX in the picture</h4>
 <p>GBP base · INR beside · both stored</p>
 <h4>Every Indian figure twice</h4>
-<p>The base currency is GBP. Each member reads figures in GBP or INR; every Indian figure shows in rupees with its pounds beside it, and the household total is in pounds with the INR view one tap away. The stored value is always both: the native amount and its GBP equivalent on the day.</p>
+<p>The base currency is GBP. Each member reads figures in GBP, INR, USD or EUR; every Indian figure shows in rupees with its pounds beside it, and the household total is in pounds with the other three views one tap away. The stored value is always both: the native amount and its GBP equivalent on the day.</p>
 <table data-layout="full-width"><thead><tr><th>One Valuation row</th><th>Value</th></tr>
 </thead>
 <tbody><tr><td>Instrument</td><td>Nifty 50 ETF (NSE)</td></tr>

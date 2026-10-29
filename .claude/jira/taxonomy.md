@@ -32,7 +32,7 @@ MA-8 came before the epics and have none.
 | MA-9 | 0 | Accounts, keys, CI, a local stack and both doors' skeletons; standalone docs and design tasks |
 | MA-10 | 1 | The household signs in and talks to the agent at every door, and every run is visible |
 | MA-187 | 2 | The first record: one dynamic structure (kinds, records, events, views) and one write path |
-| MA-188 | 3 | Deposits, policies and two currencies |
+| MA-188 | 3 | Deposits, policies and four currencies |
 | MA-192 | 4 | Debts and check-ins |
 | MA-189 | 5 | Investments, priced |
 | MA-190 | 6 | Budget: statements and monthly check-ins |

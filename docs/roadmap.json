@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "about": "Estimates and dates for every phase (MA-228). An estimate is build days for one story at every door it touches: Claude builds, Arun reviews and tests. A phase's working days are its stories' build days, plus the buffer for review rounds, the demo and fixes, divided by how much runs side by side (the web app and the iOS app are built in parallel, as Arun asked on 26 Oct 2026). Arun's own tasks (label manual) run beside the lane and are due before their phase starts. Change a figure here, run `python3 scripts/roadmap.py write`, and the dates, PLAN's Timeline, the Confluence pages and the epics' due dates follow.",
  "start": "2026-11-02",
  "buffer": 0.2,
@@ -91,7 +91,7 @@
   "MA-47": 2,
   "MA-48": 3,
   "MA-49": 2,
-  "MA-50": 2,
+  "MA-50": 3,
   "MA-51": 2,
   "MA-52": 2,
   "MA-53": 2,
@@ -151,7 +151,6 @@
   "MA-108": 1,
   "MA-109": 5,
   "MA-110": 3,
-  "MA-111": 3,
   "MA-112": 0,
   "MA-113": 2,
   "MA-114": 2,
@@ -303,6 +302,13 @@
   "MA-270": 0,
   "MA-271": 0,
   "MA-272": 0,
+  "MA-275": 0,
+  "MA-276": 5,
+  "MA-277": 4,
+  "MA-278": 3,
+  "MA-279": 4,
+  "MA-280": 3,
+  "MA-111": 3,
   "MA-273": 0,
   "MA-274": 0
  },
@@ -310,11 +316,11 @@
   "0": {
    "epic": "MA-9",
    "title": "Foundations at every door",
-   "lane_days": 40.25,
+   "lane_days": 47.25,
    "arun_days": 3.5,
-   "working_days": 33,
+   "working_days": 38,
    "start": "2026-11-02",
-   "end": "2026-12-16"
+   "end": "2026-12-23"
   },
   "1": {
    "epic": "MA-10",
@@ -322,8 +328,8 @@
    "lane_days": 102.5,
    "arun_days": 0.5,
    "working_days": 82,
-   "start": "2026-12-17",
-   "end": "2027-04-22"
+   "start": "2027-01-04",
+   "end": "2027-04-29"
   },
   "2": {
    "epic": "MA-187",
@@ -331,17 +337,17 @@
    "lane_days": 49.5,
    "arun_days": 0,
    "working_days": 40,
-   "start": "2027-04-23",
-   "end": "2027-06-21"
+   "start": "2027-04-30",
+   "end": "2027-06-28"
   },
   "3": {
    "epic": "MA-188",
-   "title": "Deposits, policies and two currencies",
+   "title": "Deposits, policies and four currencies",
    "lane_days": 18,
    "arun_days": 0,
    "working_days": 15,
-   "start": "2027-06-22",
-   "end": "2027-07-12"
+   "start": "2027-06-29",
+   "end": "2027-07-19"
   },
   "4": {
    "epic": "MA-192",
@@ -349,8 +355,8 @@
    "lane_days": 19,
    "arun_days": 0,
    "working_days": 16,
-   "start": "2027-07-13",
-   "end": "2027-08-03"
+   "start": "2027-07-20",
+   "end": "2027-08-10"
   },
   "5": {
    "epic": "MA-189",
@@ -358,8 +364,8 @@
    "lane_days": 23,
    "arun_days": 0,
    "working_days": 19,
-   "start": "2027-08-04",
-   "end": "2027-08-31"
+   "start": "2027-08-11",
+   "end": "2027-09-07"
   },
   "6": {
    "epic": "MA-190",
@@ -367,8 +373,8 @@
    "lane_days": 12.5,
    "arun_days": 0,
    "working_days": 10,
-   "start": "2027-09-01",
-   "end": "2027-09-14"
+   "start": "2027-09-08",
+   "end": "2027-09-21"
   },
   "7": {
    "epic": "MA-191",
@@ -376,8 +382,8 @@
    "lane_days": 28.0,
    "arun_days": 0,
    "working_days": 23,
-   "start": "2027-09-15",
-   "end": "2027-10-15"
+   "start": "2027-09-22",
+   "end": "2027-10-22"
   },
   "8": {
    "epic": "MA-14",
@@ -385,26 +391,26 @@
    "lane_days": 28,
    "arun_days": 0,
    "working_days": 23,
-   "start": "2027-10-18",
-   "end": "2027-11-17"
+   "start": "2027-10-25",
+   "end": "2027-11-24"
   },
   "9": {
    "epic": "MA-18",
    "title": "The whole dashboard, and the old wealth tracker retired",
-   "lane_days": 14,
+   "lane_days": 26,
    "arun_days": 0,
-   "working_days": 12,
-   "start": "2027-11-18",
-   "end": "2027-12-03"
+   "working_days": 21,
+   "start": "2027-11-25",
+   "end": "2027-12-23"
   },
   "10": {
    "epic": "MA-11",
    "title": "Prices and the engine",
-   "lane_days": 22,
+   "lane_days": 23,
    "arun_days": 0,
-   "working_days": 18,
-   "start": "2027-12-06",
-   "end": "2028-01-07"
+   "working_days": 19,
+   "start": "2028-01-04",
+   "end": "2028-01-28"
   },
   "11": {
    "epic": "MA-12",
@@ -412,8 +418,8 @@
    "lane_days": 17,
    "arun_days": 0,
    "working_days": 14,
-   "start": "2028-01-10",
-   "end": "2028-01-27"
+   "start": "2028-01-31",
+   "end": "2028-02-17"
   },
   "12": {
    "epic": "MA-13",
@@ -421,8 +427,8 @@
    "lane_days": 19,
    "arun_days": 0,
    "working_days": 16,
-   "start": "2028-01-28",
-   "end": "2028-02-18"
+   "start": "2028-02-18",
+   "end": "2028-03-10"
   },
   "13": {
    "epic": "MA-15",
@@ -430,8 +436,8 @@
    "lane_days": 13,
    "arun_days": 0,
    "working_days": 11,
-   "start": "2028-02-21",
-   "end": "2028-03-06"
+   "start": "2028-03-13",
+   "end": "2028-03-27"
   },
   "14": {
    "epic": "MA-16",
@@ -439,8 +445,8 @@
    "lane_days": 8,
    "arun_days": 0,
    "working_days": 7,
-   "start": "2028-03-07",
-   "end": "2028-03-15"
+   "start": "2028-03-28",
+   "end": "2028-04-05"
   },
   "15": {
    "epic": "MA-17",
@@ -448,8 +454,8 @@
    "lane_days": 5,
    "arun_days": 0,
    "working_days": 4,
-   "start": "2028-03-16",
-   "end": "2028-03-21"
+   "start": "2028-04-06",
+   "end": "2028-04-11"
   },
   "16": {
    "epic": "MA-19",
@@ -462,20 +468,20 @@
   "17": {
    "epic": "MA-117",
    "title": "The Forecaster: a second engine beside the rules engine",
-   "lane_days": 32,
+   "lane_days": 35,
    "arun_days": 0,
-   "working_days": 26,
-   "start": "2028-03-22",
-   "end": "2028-04-28"
+   "working_days": 28,
+   "start": "2028-04-12",
+   "end": "2028-05-24"
   },
   "18": {
    "epic": "MA-127",
    "title": "The agent team: configured, approved, self-healing, self-learning",
-   "lane_days": 28,
+   "lane_days": 25,
    "arun_days": 0,
-   "working_days": 23,
-   "start": "2028-05-02",
-   "end": "2028-06-02"
+   "working_days": 20,
+   "start": "2028-05-25",
+   "end": "2028-06-22"
   },
   "19": {
    "epic": "MA-147",
@@ -483,8 +489,8 @@
    "lane_days": 14,
    "arun_days": 0,
    "working_days": 12,
-   "start": "2028-06-05",
-   "end": "2028-06-20"
+   "start": "2028-06-23",
+   "end": "2028-07-10"
   },
   "20": {
    "epic": "MA-175",
@@ -492,8 +498,8 @@
    "lane_days": 10,
    "arun_days": 0,
    "working_days": 8,
-   "start": "2028-06-21",
-   "end": "2028-06-30"
+   "start": "2028-07-11",
+   "end": "2028-07-20"
   }
  }
 }

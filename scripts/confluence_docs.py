@@ -108,7 +108,7 @@ AREAS = [
     ("budget", "Budget and statements",
      "Each member's income, a plan per category, plan against actual, statements read and categorised, and the month closed on the 1st.",
      ["Web v4 · Budget.dc.html", "iPhone v4 · Budget.dc.html"]),
-    ("projection", "Projection and Forecast",
+    ("projection", "Projection, Budget forecast and the stock Forecaster",
      "The Projection of the household's net worth over the years (the fan, its milestones and the editable assumptions), its Plans and Budget forecast tabs, a plan made in the admin's chat with the budget rearranged on Confirm (MA-264's options, Arun's picks 1a, 2a and 3a, and their states), and the Forecaster's view of a holding on the market side.",
      ["Web v4 · Projection.dc.html", "iPhone v4 · Projection.dc.html", "Web v4 · Budget forecast.dc.html",
       "iPhone v4 · Budget forecast.dc.html", "Web v4 · Plans in the chat.dc.html", "iPhone v4 · Plans in the chat.dc.html",
@@ -1346,6 +1346,8 @@ def errors(ctx: Ctx | None = None) -> list[str]:
             out.append(f"confluence: docs/confluence/{slug_}.html is stale: run `python3 scripts/confluence_docs.py write`")
         elif rec.get("sha256") != sha(want):
             out.append(f"confluence: page {title!r} changed in the repo but is not published: publish it with /plan-sync")
+        if path.exists() and rec.get("title") and rec.get("title") != title:  # a rename leaves the body alone (MA-275)
+            out.append(f"confluence: page {title!r} was renamed in the repo but is still titled {rec['title']!r} in Confluence: publish it with /plan-sync")
     for f in PAGES.glob("*.html") if PAGES.exists() else []:
         if f.stem not in {s for s, _, _ in model}:
             out.append(f"confluence: docs/confluence/{f.name} is no page the generator makes; remove it (and archive its page)")
@@ -1379,7 +1381,8 @@ def pending(ctx: Ctx) -> dict:
     return {
         "create": [{"slug": s, "title": t, "parent": p} for s, t, p in model if not rec.get(s, {}).get("id")],
         "publish": [{"slug": s, "title": t, "id": rec.get(s, {}).get("id")} for s, t, _ in model
-                    if (PAGES / f"{s}.html").exists() and rec.get(s, {}).get("sha256") != sha((PAGES / f"{s}.html").read_text())],
+                    if (PAGES / f"{s}.html").exists() and (rec.get(s, {}).get("sha256") != sha((PAGES / f"{s}.html").read_text())
+                                                           or rec.get(s, {}).get("title", t) != t)],
         "images": [{"name": n, "page": w["page"], "page_id": rec.get(w["page"], {}).get("id")} for n, w in wanted_images(ctx).items()
                    if not imgs.get(n, {}).get("media") or imgs[n].get("source") != w["source"]],
         "apps": [{"name": n, "page": pg, "page_id": rec.get(pg, {}).get("id")} for n, pg in APP_PAGE.items()

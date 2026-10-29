@@ -528,7 +528,7 @@ footer p { max-width: 90ch; }
     <div><q>My target is to minimize loss and grow money over time steadily.</q><small>Arun, 24 Oct 2026, on MA-117. Every part below is judged against this goal: fewer deep falls first, steady growth second.</small></div>
   </div>
   <div class="tiles">
-    <div class="tile"><h3>The rules engine</h3><span class="hk">Phase 10, live from phase 15</span><p>Fixed, transparent rules: indicators, four pillars, the holder's cascade and a confidence score. It calls ADD, HOLD, PAUSE, TRIM, REBALANCE or WAIT.</p></div>
+    <div class="tile"><h3>The rules engine</h3><span class="hk">Phase 10, live from phase 15</span><p>Fixed, transparent rules: indicators, four pillars, the holder's cascade and a confidence score. It calls ADD (shown as Buy), HOLD, PAUSE, TRIM, REBALANCE, and BUY or WATCH for a candidate not held.</p></div>
     <div class="tile"><h3>The Forecaster</h3><span class="hk">Phase 17 · epic MA-117</span><p>Five models, risk first and direction last, beside the rules engine and graded on the same record. It never replaces it.</p></div>
     <div class="tile"><h3>The agent team</h3><span class="hk">Phase 18 · epic MA-127</span><p>Grades every prediction daily, calibrates within small bounds, repairs the pipeline, and asks the admin for anything outside its band.</p></div>
     <div class="tile"><h3>India in the picture</h3><span class="hk">Phase 19 · epic MA-147</span><p>Indian funds, NSE and BSE shares and ETFs on free sources first, an India basket, Indian news, and the same gates for both engines.</p></div>
@@ -852,7 +852,7 @@ footer p { max-width: 90ch; }
     <li><h4>Indicators</h4><p>The desk's stack plus volatility, drawdown and momentum. Known-answer self-tests run first; a failing one blocks scoring that day.</p></li>
     <li><h4>Four pillars</h4><p>Trend, momentum, macro and risk, each from −2 to +2.</p></li>
     <li><h4>Flags</h4><p>Exhaustion, relentless-bearish, rebound, death-cross.</p></li>
-    <li><h4>The holder's cascade</h4><p>ADD, HOLD, PAUSE, TRIM, REBALANCE or WAIT.</p></li>
+    <li><h4>The holder's cascade</h4><p>ADD (shown as Buy), HOLD, PAUSE, TRIM, REBALANCE, and BUY or WATCH for a candidate not held.</p></li>
     <li class="hl"><h4>Confidence</h4><p>A percentage; below 55% the card says "no clear view".</p></li>
   </ol>
 
@@ -899,12 +899,13 @@ footer p { max-width: 90ch; }
       <table class="tbl">
         <thead><tr><th>Call</th><th>When</th><th>What it tells the household</th></tr></thead>
         <tbody>
-          <tr><td><span class="chip mp-add">ADD</span></td><td>Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated</td><td>Make this month's contribution here, or bring it forward</td></tr>
+          <tr><td><span class="chip mp-add">ADD · shown as Buy</span></td><td>Holding; trend ≥ 0 and momentum ≥ 0, or a rebound with healthy structure after a drawdown; risk not elevated</td><td>Buy more: make this month's contribution here, or bring it forward</td></tr>
           <tr><td><span class="chip mp-hold">HOLD</span></td><td>The default for a holding with no triggers</td><td>Nothing to do</td></tr>
           <tr><td><span class="chip mp-pause">PAUSE</span></td><td>Holding; exhaustion ≥ 2, or risk elevated, or adverse macro</td><td>Keep what you have; delay new money until the next review</td></tr>
           <tr><td><span class="chip mp-trim">TRIM</span></td><td>Holding; drift above target by more than the band, or relentless-bearish ≥ 3 with a death-cross, and not protected</td><td>Rebalance toward target; never "sell everything"</td></tr>
           <tr><td><span class="chip mp-reb">REBALANCE</span></td><td>Portfolio-level drift beyond the band</td><td>Move the next contributions, not the holdings, unless drift is large</td></tr>
-          <tr><td><span class="chip mp-watch">WAIT / WATCH</span></td><td>Not holding; a candidate</td><td>No entry trigger yet, and the trigger that would change it</td></tr>
+          <tr><td><span class="chip mp-add">BUY</span></td><td>Not holding; a candidate on the watchlist whose entry trigger is met</td><td>Start a position with new money, from the next contribution; never by selling another holding</td></tr>
+          <tr><td><span class="chip mp-watch">WAIT / WATCH</span></td><td>Not holding; a candidate with no entry trigger yet</td><td>The trigger that would change it to BUY</td></tr>
         </tbody>
       </table>
     </div>
@@ -1665,7 +1666,7 @@ footer p { max-width: 90ch; }
     <div class="card">
       <p class="over">GBP base · INR beside · both stored</p>
       <h3>Every Indian figure twice</h3>
-      <p class="small">The base currency is GBP. Each member reads figures in GBP or INR; every Indian figure shows in rupees with its pounds beside it, and the household total is in pounds with the INR view one tap away. The stored value is always both: the native amount and its GBP equivalent on the day.</p>
+      <p class="small">The base currency is GBP. Each member reads figures in GBP, INR, USD or EUR; every Indian figure shows in rupees with its pounds beside it, and the household total is in pounds with the other three views one tap away. The stored value is always both: the native amount and its GBP equivalent on the day.</p>
       <div class="tscroll" style="box-shadow:none">
         <table class="tbl">
           <thead><tr><th>One Valuation row</th><th class="n">Value</th></tr></thead>
