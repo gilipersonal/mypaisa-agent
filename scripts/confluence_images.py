@@ -205,6 +205,8 @@ def compose(ctx: cd.Ctx, captures: Path, out: Path) -> int:
             sheet(title, sub, board_tiles(ctx, captures, index, w["boards"])).save(out / name, quality=86, optimize=True)
         elif "file" in w:
             shutil.copy(w["file"], out / name)
+        elif "capture" in w:
+            continue  # a capture of an explainer page: scripts/confluence_capture.js makes it (MA-257), never this
         else:
             roadmap_png(ctx).save(out / name, optimize=True)
         made.append({"name": name, "page": w["page"], "bytes": (out / name).stat().st_size})
