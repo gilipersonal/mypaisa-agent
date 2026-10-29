@@ -1101,8 +1101,11 @@ does (rule 1).
    milestones) and one Confirm. Every number traces to the admin's words, a
    named prior or the engine.
 7. Rearranges the budget (MA-263). When a plan leaves cash below zero or the
-   surplus below the admin's floor, code works out the options with a
-   deterministic goal-seek (trim a category from a date, pause or reduce a
+   surplus below the admin's floor (a monthly surplus kept among the
+   Projection's assumptions, £500 to start, the admin's alone, holding while
+   anyone in the household earns a salary; in retirement only cash running
+   out is flagged; Arun, 28 Oct 2026, MA-264), code works out the options
+   with a deterministic goal-seek (trim a category from a date, pause or reduce a
    SIP, move a plan's start, draw from a named pool, change the surplus
    rule); `rearrange_budget` returns them and the agent ranks and explains
    them, each as an unsaved scenario card. The admin's Confirm applies one,
@@ -1124,11 +1127,14 @@ forecast, and ask what-ifs, but save nothing.
 
 **The screen** (§9.3, MA-224): the fan in GBP or INR, opening at 20 years
 with 5, 10, 20 and 30 to choose; milestones on the line (loans ending,
-maturities, plan items); the assumptions panel, each figure with its source
-and editable by the admin; the Plans tab, each plan corrected or paused in
-place by the admin, with Add in chat, since nothing is created in place; the
-Budget forecast tab (MA-262), each year expandable to its months and every
-figure opening its flows; scenario chips; Ask.
+maturities, plan items); the assumptions panel (the admin's floor among
+them), each figure with its source and editable by the admin; the Plans tab,
+each plan on a timeline, corrected or paused in place by the admin, with Add
+in chat, since nothing is created in place; the Budget forecast tab
+(MA-262), each year's leanest month against the floor first, each year
+expandable to its months and every figure opening its flows; scenario chips;
+Ask. MA-264 drew it; Arun picked the Budget forecast's 1a, the chat's 2a and
+the Plans tab's 3a on 28 Oct 2026 (`docs/design/reviews/MA-264/decision.md`).
 
 ---
 
@@ -1499,11 +1505,12 @@ marks editable is corrected in place (§4.10):
   (§12).
 - **Projection** (phase 7): the fan in GBP or INR, in today's money or not,
   opening at 20 years with 5, 10, 20 and 30 to choose; milestones on the line;
-  the assumptions panel, each figure with its source and editable by the
-  admin; the Plans tab (each plan on a timeline, corrected or paused in place
-  by the admin, Add in chat) and the Budget forecast tab (each year to the
-  horizon, expandable to months, every figure opening its flows); scenario
-  chips; Ask (§6.6).
+  the assumptions panel (the admin's floor among them), each figure with its
+  source and editable by the admin; the Plans tab (each plan on a timeline,
+  corrected or paused in place by the admin, Add in chat) and the Budget
+  forecast tab (each year to the horizon, its leanest month against the
+  floor first, expandable to months, every figure opening its flows);
+  scenario chips; Ask (§6.6).
 - **Correction in place** on any of these: tap a figure its kind marks
   editable, type the new value, see a before → after line, Save; it is saved
   as a `correction` event with its audit row (`via: inline_edit`). Nothing can

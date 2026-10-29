@@ -20,7 +20,7 @@ The re-plan behind it is MA-186 (PR #37): the decisions D1 to D12, the phases re
 
 ## One figure set first
 
-`docs/design/figures/household-v4.json`, from `make_household.py`, as lesson 13 asks.
+`docs/design/figures/household-v4.json`, from `make_household.py`, as lesson 13 asks. (MA-264, 28 Oct 2026: the Projection's runs moved to `make_future_plans.py`'s month-by-month ledger. The 26 Oct run is now £1,508,000 in 2036 and £6,626,000 in 2056, and the figures below are this round's yearly sketch.)
 
 - **The clock:** Mon 26 Oct 2026; prices at the Fri 23 Oct close; £1 = ₹112.50.
 - **The household:** Arun (admin) and Asha.

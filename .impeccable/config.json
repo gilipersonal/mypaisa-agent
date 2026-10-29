@@ -139,6 +139,636 @@
         ],
         "createdAt": "2026-10-28T00:51:39.018Z",
         "reason": "Claude (MA-258): the scan cannot read padding-block or max(16px, env()); sections have 36px of block padding, the bar's wrap 10px and 16px, and the table cells 10px 14px, so no text meets a box edge (a copy with longhand padding cleared the section hits)"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.661Z",
+        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.678Z",
+        "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.695Z",
+        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.712Z",
+        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.730Z",
+        "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.747Z",
+        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.764Z",
+        "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.781Z",
+        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.797Z",
+        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.814Z",
+        "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.831Z",
+        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.848Z",
+        "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.865Z",
+        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.882Z",
+        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.899Z",
+        "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.916Z",
+        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.933Z",
+        "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.949Z",
+        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.966Z",
+        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.982Z",
+        "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:09.999Z",
+        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.016Z",
+        "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.032Z",
+        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.049Z",
+        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.066Z",
+        "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.083Z",
+        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.101Z",
+        "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.118Z",
+        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.135Z",
+        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:16:10.151Z",
+        "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:23:44.480Z",
+        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab (Net worth, Plans, Budget forecast) that the brief draws on desktop and iPad; the selected plan row's left stripe was removed"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:23:44.603Z",
+        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab (Net worth, Plans, Budget forecast) that the brief draws on desktop and iPad; the selected plan row's left stripe was removed"
+      },
+      {
+        "rule": "nested-cards",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html"
+        ],
+        "createdAt": "2026-10-28T21:31:21.105Z",
+        "reason": "Claude (MA-264): 17 matches are the device bezel's box-shadow from the shared ios.css kit, on every iOS board; the 18th is the solid card inside 1c's glass sheet, which keeps figures and the sentence off the glass (glass carries labels only)"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Projection.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:35:30.485Z",
+        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab (Net worth, Plans, Budget forecast) that MA-264 added to 1a on desktop and iPad; no side stripe on a card or row"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Projection.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:35:30.502Z",
+        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab (Net worth, Plans, Budget forecast) that MA-264 added to 1a on desktop and iPad; no side stripe on a card or row"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.218Z",
+        "reason": "Claude (MA-264): the kit's controls (mp-seg, glass buttons, chips, the composer field, the tab bar's search), the empty state's 48 px icon tile and the chat column's 56 px header, each centring its content by design"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.238Z",
+        "reason": "Claude (MA-264): the canvas's board-id chip and the kit's 10 pt tab-bar labels (tokens.css .mp-tab)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.258Z",
+        "reason": "Claude (MA-264): the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.278Z",
+        "reason": "Claude (MA-264): the design canvas's backdrop behind the frames; the screens are DS v1 Warm ledger (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.299Z",
+        "reason": "Claude (MA-264): device and browser frames and scrollers clip their screen by design; board_fit measures every scroller for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.319Z",
+        "reason": "Claude (MA-264): the kit's controls (mp-seg, glass buttons, chips, the composer field, the tab bar's search), the empty state's 48 px icon tile and the chat column's 56 px header, each centring its content by design"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.338Z",
+        "reason": "Claude (MA-264): the canvas's board-id chip and the kit's 10 pt tab-bar labels (tokens.css .mp-tab)"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.358Z",
+        "reason": "Claude (MA-264): the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.378Z",
+        "reason": "Claude (MA-264): the design canvas's backdrop behind the frames; the screens are DS v1 Warm ledger (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.397Z",
+        "reason": "Claude (MA-264): device and browser frames and scrollers clip their screen by design; board_fit measures every scroller for cut content"
+      },
+      {
+        "rule": "nested-cards",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.415Z",
+        "reason": "Claude (MA-264): the device bezel's box-shadow from the shared ios.css kit, on every iOS board, and the solid card inside the trace's glass sheet (glass carries labels only)"
+      },
+      {
+        "rule": "repeated-container-text",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:38:17.434Z",
+        "reason": "Claude (MA-264): the tab bar's labels, one template placeholder repeated per tab"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.575Z",
+        "reason": "Claude (MA-264): the kit's controls (mp-seg, glass buttons, chips, icon tiles, the composer, the tab bar's search, card folds) and the frame roots, each centring its content by design"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.593Z",
+        "reason": "Claude (MA-264): the canvas's board-id chips (2a, 3a, the section numbers) and the kit's 10 pt tab-bar labels"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.611Z",
+        "reason": "Claude (MA-264): the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.628Z",
+        "reason": "Claude (MA-264): the design canvas's backdrop behind the frames; the screens are DS v1 Warm ledger (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.644Z",
+        "reason": "Claude (MA-264): device frames and scrollers clip their screen by design; board_fit measures every scroller for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.661Z",
+        "reason": "Claude (MA-264): the kit's controls (mp-seg, glass buttons, chips, icon tiles, the composer, the tab bar's search, card folds) and the frame roots, each centring its content by design"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.677Z",
+        "reason": "Claude (MA-264): the canvas's board-id chips (2a, 3a, the section numbers) and the kit's 10 pt tab-bar labels"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.695Z",
+        "reason": "Claude (MA-264): the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.712Z",
+        "reason": "Claude (MA-264): the design canvas's backdrop behind the frames; the screens are DS v1 Warm ledger (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.728Z",
+        "reason": "Claude (MA-264): device frames and scrollers clip their screen by design; board_fit measures every scroller for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.749Z",
+        "reason": "Claude (MA-264): the kit's controls (mp-seg, glass buttons, chips, icon tiles, the composer, the tab bar's search, card folds) and the frame roots, each centring its content by design"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.766Z",
+        "reason": "Claude (MA-264): the canvas's board-id chips (2a, 3a, the section numbers) and the kit's 10 pt tab-bar labels"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.783Z",
+        "reason": "Claude (MA-264): the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.800Z",
+        "reason": "Claude (MA-264): the design canvas's backdrop behind the frames; the screens are DS v1 Warm ledger (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.818Z",
+        "reason": "Claude (MA-264): device frames and scrollers clip their screen by design; board_fit measures every scroller for cut content"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.839Z",
+        "reason": "Claude (MA-264): the kit's controls (mp-seg, glass buttons, chips, icon tiles, the composer, the tab bar's search, card folds) and the frame roots, each centring its content by design"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.858Z",
+        "reason": "Claude (MA-264): the canvas's board-id chips (2a, 3a, the section numbers) and the kit's 10 pt tab-bar labels"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.877Z",
+        "reason": "Claude (MA-264): the canvas's board titles (26/32 display headings), not body text"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.895Z",
+        "reason": "Claude (MA-264): the design canvas's backdrop behind the frames; the screens are DS v1 Warm ledger (MA-101)"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.912Z",
+        "reason": "Claude (MA-264): device frames and scrollers clip their screen by design; board_fit measures every scroller for cut content"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.933Z",
+        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab; no side stripe on a card or row"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:39:48.950Z",
+        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab; no side stripe on a card or row"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "docs/design/app-v1/PrototypeV4Pages.dc.html"
+        ],
+        "createdAt": "2026-10-28T22:46:57.636Z",
+        "reason": "Claude (MA-264): the only match is the underline under the selected Projection tab (.utab.on::after) that MA-264 added to the prototype's Projection page; no side stripe on a card or row"
       }
     ]
   }

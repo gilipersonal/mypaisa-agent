@@ -376,6 +376,15 @@ Claude's:
   reaches the account, and the sync follows them; by 1 Dec without it, they
   stay in the repo alone (Arun's pick, MA-260;
   `docs/design/reviews/MA-259/decision.md`).
+- **The future-plans design (MA-264):** the screens MA-261's future plans
+  need, drawn before anything is built, from one figure set
+  (`docs/design/figures/future-plans-v4.json`: MA-193's household with its
+  plans and a month-by-month budget forecast ledger). Two or three options,
+  at desktop, 390, iPhone and iPad in light and dark, for the Budget forecast
+  tab (MA-262), a plan made in the admin's chat with its questions, its
+  impact and, when it leaves the household short, the rearrangement applied
+  on Confirm (MA-222, MA-263), and the Plans tab (MA-224). You pick; the
+  picked option's remaining states are drawn before those stories start.
 - **The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent
   framework options, and end-to-end FastAPI and LLM observability with
   costing (MA-265, `docs/RESEARCH.md` §6, `TECH_STACK.md`):** the full
@@ -1149,9 +1158,13 @@ Forecaster); **Projection** is the household's net worth over time, and
 - **The Budget forecast (MA-262, `ARCHITECTURE.md` §6.6, §9.3, §12):** each year to the horizon, expandable to
   its months: income by member, spend by category, EMIs, each plan item, the
   surplus, the savings rate and closing cash, in GBP or INR; any figure
-  opens the flows that make it; at both doors.
+  opens the flows that make it; the months below the admin's floor flagged
+  by code; at both doors.
 - **Rearranging the budget (MA-263, `ARCHITECTURE.md` §4.5, §4.10, §6.6, §8, §12):** when a plan leaves cash below zero or
-  the surplus below the admin's floor, code works out the options (trim a
+  the surplus below the admin's floor (a monthly surplus kept among the
+  Projection's assumptions, £500 to start, the admin's alone, holding while
+  anyone in the household earns a salary; in retirement only cash running
+  out is flagged; Arun, 28 Oct 2026, MA-264), code works out the options (trim a
   category from a date, pause a SIP, move a plan's start, draw from a named
   pool, change the surplus rule) and the agent ranks and explains them, each
   as an unsaved scenario card; the admin's Confirm applies one, as Claude
