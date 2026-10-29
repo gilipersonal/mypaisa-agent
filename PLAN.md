@@ -212,7 +212,7 @@ Claude's:
   carrying SvelteKit's hashes; an empty shell at 390 and 1440 in light and
   dark.
   `web/src/lib/` holds what both doors share, written once: the card types,
-  formatting in GBP and INR with lakh and crore, privacy masking and the view
+  formatting in GBP, INR, USD and EUR (rupees in lakh and crore), privacy masking and the view
   models, and the api client with its TanStack Query definitions and
   `api-types.d.ts` generated from FastAPI's `app.openapi()` by
   `openapi-typescript` (MA-265, MA-266). Its gates:
@@ -385,23 +385,36 @@ Claude's:
   impact and, when it leaves the household short, the rearrangement applied
   on Confirm (MA-222, MA-263), and the Plans tab (MA-224). You pick; the
   picked option's remaining states are drawn before those stories start.
-- **The whole app learns, and three words for three engines, recorded
-  (MA-275, `ARCHITECTURE.md` §6.6, §20.9):** your asks of 29 Oct 2026
-  written down. The stock investment forecast (real prediction, graded
-  against prices and switched off when it slips), the Budget forecast
-  (deterministic, worked out from the household's inputs, to the penny) and
-  the Projection (the same path, then a fan) are three things; and the whole
-  app learns from the household's own data, its forecasts graded at every
-  month close and each member's needs learned from use (MA-276, MA-277,
-  phase 18). Docs only; the questions it raised are open on the stories they
-  decide.
-- **No Telegram left in the live designs (MA-278):** the web boards that are
-  the web app's spec redrawn without their Telegram and Mini App frames, the
-  Telegram-only files and the Nocturne artboards dropped or archived as you
-  pick, the Telegram and Mini App rules taken out of `tokens.css`, every
-  trace row naming an iOS or web board, and `plan_sync.py check` refusing a
-  Telegram or Mini App frame in a live board file; it settles MA-160's
-  question the same way.
+- **Your core requirements, recorded (MA-275, `ARCHITECTURE.md` §5.3, §6.6,
+  §19.4, §20.4, §20.9):** your asks of 29 Oct 2026 written down. Every asset
+  tracked across the UK and India, the US and Europe later, in four
+  currencies (GBP, INR, USD, EUR; MA-213). The stock investment forecast
+  (real prediction, algorithm and pattern driven on candles, indicators,
+  news, events and sentiment, graded against prices, switched off when it
+  slips and challenged by new models as it learns; F8, MA-280), the Budget
+  forecast (deterministic, worked out from the household's inputs, to the
+  penny) and the Projection (the same path, then a fan) are three things;
+  and the whole app learns from the household's own data, its forecasts
+  graded at every month close and each member's needs learned from use
+  (MA-276, MA-277, phase 18). Everything through the chat and its controls,
+  every change and every run audited. Docs only; the questions still open
+  are on the stories they decide.
+- **No Telegram left in the live designs (MA-278):** as you said on 29 Oct
+  2026, nothing for Telegram: the Telegram-only files, the Mini App and the
+  Nocturne artboards moved out of the three live projects into an archive
+  project (nothing destroyed) and dropped from the repo copy; the Telegram
+  and Mini App rules taken out of `tokens.css`; every trace row naming an iOS
+  or web board; MA-68 and MA-114 saying "the agent"; and `plan_sync.py check`
+  refusing a Telegram or Mini App frame in a live board file. It settles
+  MA-160's question the same way.
+- **One consolidated design (MA-279):** every screen a story needs drawn
+  once, in the v4 design and the picked shell, on the whole-wealth household,
+  at every door: the web app at desktop and 390, iPhone, iPad and the
+  foldable, in light and dark; money in the four currencies. The first
+  boards of 24 and 25 Oct (drawn on the investments-only household, before
+  the shell pick) are redrawn and retired, Home is drawn once, and the seven
+  stories with no web board get theirs, with a web Register. Each story then
+  names one board per screen.
 - **The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent
   framework options, and end-to-end FastAPI and LLM observability with
   costing (MA-265, `docs/RESEARCH.md` §6, `TECH_STACK.md`):** the full
@@ -854,7 +867,7 @@ maths arrives.
   tool or a reply, and each later importer (CAS, Excel) adds its own poisoned
   cases.
 - **Kinds bring their own cases (MA-254, `ARCHITECTURE.md` §23.5):** each
-  kind's field spec generates draft cases (phrasings, both currencies, dates,
+  kind's field spec generates draft cases (phrasings, the four currencies, dates,
   a missing field), graded by code, so a new kind or field is tested in the
   evals job before the admin approves it; the golden set's registering,
   Confirm, cancel and correcting cases join here, graded on the draft and the
@@ -904,10 +917,10 @@ nothing more in AWS.
 
 ---
 
-## Phase 3 — Deposits, policies and two currencies
+## Phase 3 — Deposits, policies and four currencies
 
-What grows at a known rate, in both countries, and every figure in pounds or
-rupees.
+What grows at a known rate, in both countries, and every figure in pounds,
+rupees, dollars or euros.
 
 - **Deposits, savers and policies (MA-93):** fixed and recurring deposits,
   UK savers, PPF, EPF, NPS and policies such as LIC, in the UK and India,
@@ -928,9 +941,12 @@ rupees.
 - **ECB rates, rupees included (MA-44):** ECB FX rates and market calendars
   loaded daily, INR in the FX chain; the ECB-rate estimate for an amount in
   the wrong currency (MA-156) joins here.
-- **Pounds or rupees (MA-213):** net worth and every figure in GBP or INR, a
-  switch per member, with the ECB rate and its date shown; rupees in lakh and
-  crore; the two views agree to the penny at the day's rate.
+- **Four currencies (MA-213):** net worth and every figure in GBP, INR, USD
+  or EUR (your ask of 29 Oct 2026, MA-275), a switch per member, with the ECB
+  rate and its date shown; rupees in lakh and crore; the four views agree to
+  the penny at the day's rate. Records are in the UK and India today; one in
+  the US or the euro area is added as data (its kinds and priors) when it is
+  needed.
 - **What a maturity does (MA-202):** a check-in before and on the maturity
   date asks whether the deposit was renewed, paid out or moved; a renewal,
   with or without the interest, starts a successor record linked to the old
@@ -938,16 +954,16 @@ rupees.
 
 **Tests:** accrual for every deposit and policy kind against fixtures to the
 penny, the old tracker's cases included; the maturity timeline; the daily net
-worth; the ECB loader on recorded responses, rupees included; the GBP and
-INR views of the same household agreeing to the penny at the day's rate, with
-lakh and crore grouping; a maturity's check-in before and on the date; a
+worth; the ECB loader on recorded responses, rupees included; the GBP, INR,
+USD and EUR views of the same household agreeing to the penny at the day's
+rate, with lakh and crore grouping for rupees; a maturity's check-in before and on the date; a
 renewal starting its successor, and nothing deleted; Playwright and XCUITest
 for the currency switch.
 
 **Exit:** you register an SBI fixed deposit and a UK saver, a sentence each;
-both accrue to the penny and their maturities show on the dashboard; the ₹/£
-switch shows the household in rupees, in lakh and crore, or in pounds, with
-the ECB rate and its date.
+both accrue to the penny and their maturities show on the dashboard; the
+currency switch shows the household in pounds, rupees in lakh and crore,
+dollars or euros, with the ECB rate and its date.
 
 **Cost:** £0: ECB rates are free; nothing more in AWS.
 
@@ -1090,7 +1106,7 @@ household, filled from statements and one short check-in.
   income commitments; a monthly plan per category, the categories data you
   change by chat, EMIs and card payments from their commitments; the Budget
   screen with plan against actual per category, income, EMIs, the surplus and
-  the savings rate, per member and for the household, in GBP or INR. Income
+  the savings rate, per member and for the household, in GBP, INR, USD or EUR. Income
   commitments accept dated future changes and each category carries its
   inflation key, so phase 7's plan items can change them (MA-261); every
   amount is take-home, with no tax maths. The Projection that used to sit
@@ -1112,7 +1128,7 @@ and cards, in each format; every line categorised; transfers recognised, so
 nothing counts twice; a payment on a statement answering its check-in; one
 Confirm writing the month, and the file kept; the month closed on the 1st,
 asking only for what was not covered; plan against actual per category, per
-member and for the household, in GBP and INR; salary growth measured from
+member and for the household, in each of the four currencies; salary growth measured from
 its history.
 
 **Exit:** you send a bank statement in the chat; it comes back categorised,
@@ -1137,8 +1153,8 @@ then a fan; and `ForecastAssumptions` becomes `ProjectionAssumptions`.
 - **The engine (MA-219, `ARCHITECTURE.md` §6.6):** `wealth/projection.py`
   runs month by month to a horizon (twenty years by default; 5, 10, 20 or
   30), with a today's-money toggle, money in `Decimal`. Its inputs: each record's country, which sets its
-  inflation and wage-growth prior, with GBP/INR drifting with the
-  inflation gap; each member's current net salary, its growth blending the
+  inflation and wage-growth prior, each currency drifting against GBP with
+  its inflation gap; each member's current net salary, its growth blending the
   member's own measured history with the country's prior, weighted by the
   years of history; returns (contractual rates as given; a market asset's
   observed XIRR shrunk toward a long-run prior per asset class and country,
@@ -1177,7 +1193,7 @@ then a fan; and `ForecastAssumptions` becomes `ProjectionAssumptions`.
   change a plan, not the records.
 - **The Budget forecast (MA-262, `ARCHITECTURE.md` §6.6, §9.3, §12):** each year to the horizon, expandable to
   its months: income by member, spend by category, EMIs, each plan item, the
-  surplus, the savings rate and closing cash, in GBP or INR; any figure
+  surplus, the savings rate and closing cash, in GBP, INR, USD or EUR; any figure
   opens the flows that make it; the months below the admin's floor flagged
   by code; at both doors.
 - **Rearranging the budget (MA-263, `ARCHITECTURE.md` §4.5, §4.10, §6.6, §8, §12):** when a plan leaves cash below zero or
@@ -1199,7 +1215,7 @@ then a fan; and `ForecastAssumptions` becomes `ProjectionAssumptions`.
   engine's trace; and raises the trouble flags and milestones code computes.
   Members ask what-ifs but save nothing.
 - **The Projection screen (MA-224, `ARCHITECTURE.md` §6.6, §9.3, §12):** the fan in
-  GBP or INR, in today's money or not, opening at 20 years with 5, 10, 20 and
+  GBP, INR, USD or EUR, in today's money or not, opening at 20 years with 5, 10, 20 and
   30 to choose; milestones on the line (loans ending, maturities, plan
   items); the assumptions panel with each source, editable in place by the
   admin; a Plans tab (each plan on a timeline, corrected in place by the
@@ -1325,7 +1341,7 @@ The household's whole wealth on prod, complete at every door, and the old
 tracker at `mypaisapp.com` switched off.
 
 - **The Overview, complete (MA-95, `ARCHITECTURE.md` §12):** the hero (net
-  worth in GBP or INR, switchable per member, with the ECB rate and its date,
+  worth in GBP, INR, USD or EUR, switchable per member, with the ECB rate and its date,
   and the change since last month); liquid now, at maturity, and locked-in
   upside; where it sits; what is owed, and how it runs off; this month's cash
   flow; invested against owed, and where they cross; by member, and by
@@ -1581,17 +1597,29 @@ steady growth, so market mood and risk come first and direction last.
   from stressed holdings, with a trend filter, rebalancing bands and a
   drawdown budget the owner sets; shown as the suggested split on the
   first-of-the-month prompt.
+- **F8, patterns and the technical set (MA-280, `ARCHITECTURE.md` §19.4).**
+  Algorithm and pattern driven, as you asked on 29 Oct 2026: code finds
+  candlestick patterns (engulfing, hammer, doji, morning and evening star,
+  inside bars) and chart patterns (breakouts, support and resistance, double
+  tops and bottoms, head and shoulders, trend channels) on the daily candles
+  of ETFs, shares and commodity ETCs, and line patterns on an OEIC's daily
+  NAV, which has no candles; a wider indicator set (ADX, stochastics,
+  on-balance volume, Ichimoku, Donchian and Keltner channels); each pattern
+  measured per holding as an event study over ten years, fed to F3 and F5,
+  and shown on a card only where it has an edge.
 
 **Order.** F1 and F2 can start any time after phase 10, and F2 tests the
-rules engine early. F3 and F4 next (F4 needs phase 14's news), then F5; F6
+rules engine early. F3 and F4 next (F4 needs phase 14's news), with F8 beside
+them (it needs F1's candles and F2's lab), then F5; F6
 needs a holding's market view (phase 12, MA-183) and the track record (phase
 13); F7 needs F2 and F3.
 
 **Tests:** no feature used before the date it was known; a strategy that peeks
 at tomorrow caught by the lab; walk-forward folds with a gap and the last two
 years held out; calibration curves; a known-answer backtest to the penny; the
-event study against a hand-worked example; the switch-off; the card and the
-screen from fixtures, with snapshot tests.
+event study against a hand-worked example; each pattern detector against
+hand-marked charts, and no pattern reading a bar after its date (MA-280); the
+switch-off; the card and the screen from fixtures, with snapshot tests.
 
 **Exit:** over ten years of walk-forward tests and 8 live weeks, the risk
 forecasts beat the base rate; the steered contributions cut the worst fall and
@@ -1629,9 +1657,12 @@ one household and its one admin, the owner.
 - **E5, daily calibration (MA-133).** Maps refitted daily on a rolling
   window, at most two points a day per bucket, used only when better, on 10
   days' probation with automatic rollback.
-- **E6, challengers (MA-134).** Retrains, parameters and rule thresholds
-  tried over ten years and in shadow; promoted only on evidence and the
-  admin's approval; the old version restored if the new one slips.
+- **E6, challengers (MA-134).** Retrains, parameters, rule thresholds, new
+  patterns and features, and heavier model families (sequence models over
+  the candles and indicators, a wider ensemble) tried over ten years and in
+  shadow; promoted only on evidence and the admin's approval; the old version
+  restored if the new one slips. This is how the Forecaster grows over the
+  years (your ask of 29 Oct 2026: "self learning and self growing over time").
 - **E7, the ops warden (MA-135).** The daily run as one Step Functions state
   machine with retries; safe repairs on its own; an incident for the rest;
   heartbeats from every agent; dead-lettered work
@@ -1807,27 +1838,27 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 43.25 (and 3.5 of yours) | 35 | Mon 2 Nov 2026 | Fri 18 Dec 2026 |
-| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Mon 21 Dec 2026 | Mon 26 Apr 2027 |
-| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Tue 27 Apr 2027 | Wed 23 Jun 2027 |
-| 3 Deposits, policies and two currencies | 18 | 15 | Thu 24 Jun 2027 | Wed 14 Jul 2027 |
-| 4 Debts and check-ins | 19 | 16 | Thu 15 Jul 2027 | Thu 5 Aug 2027 |
-| 5 Investments, priced | 23 | 19 | Fri 6 Aug 2027 | Thu 2 Sep 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Fri 3 Sep 2027 | Thu 16 Sep 2027 |
-| 7 Projection | 28 | 23 | Fri 17 Sep 2027 | Tue 19 Oct 2027 |
-| 8 Audit, search and the Admin center at every door | 28 | 23 | Wed 20 Oct 2027 | Fri 19 Nov 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Mon 22 Nov 2027 | Tue 7 Dec 2027 |
-| 10 Prices and the engine | 22 | 18 | Wed 8 Dec 2027 | Tue 11 Jan 2028 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Wed 12 Jan 2028 | Mon 31 Jan 2028 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Tue 1 Feb 2028 | Tue 22 Feb 2028 |
-| 13 Track record and calibration | 13 | 11 | Wed 23 Feb 2028 | Wed 8 Mar 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Thu 9 Mar 2028 | Fri 17 Mar 2028 |
-| 15 Stances go live | 5 | 4 | Mon 20 Mar 2028 | Thu 23 Mar 2028 |
+| 0 Foundations at every door | 47.25 (and 3.5 of yours) | 38 | Mon 2 Nov 2026 | Wed 23 Dec 2026 |
+| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Mon 4 Jan 2027 | Thu 29 Apr 2027 |
+| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Fri 30 Apr 2027 | Mon 28 Jun 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Tue 29 Jun 2027 | Mon 19 Jul 2027 |
+| 4 Debts and check-ins | 19 | 16 | Tue 20 Jul 2027 | Tue 10 Aug 2027 |
+| 5 Investments, priced | 23 | 19 | Wed 11 Aug 2027 | Tue 7 Sep 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Wed 8 Sep 2027 | Tue 21 Sep 2027 |
+| 7 Projection | 28 | 23 | Wed 22 Sep 2027 | Fri 22 Oct 2027 |
+| 8 Audit, search and the Admin center at every door | 28 | 23 | Mon 25 Oct 2027 | Wed 24 Nov 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 25 Nov 2027 | Fri 10 Dec 2027 |
+| 10 Prices and the engine | 22 | 18 | Mon 13 Dec 2027 | Fri 14 Jan 2028 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Mon 17 Jan 2028 | Thu 3 Feb 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Fri 4 Feb 2028 | Fri 25 Feb 2028 |
+| 13 Track record and calibration | 13 | 11 | Mon 28 Feb 2028 | Mon 13 Mar 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 14 Mar 2028 | Wed 22 Mar 2028 |
+| 15 Stances go live | 5 | 4 | Thu 23 Mar 2028 | Tue 28 Mar 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Fri 24 Mar 2028 | Wed 3 May 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 37 | 30 | Thu 4 May 2028 | Thu 15 Jun 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Fri 16 Jun 2028 | Mon 3 Jul 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 4 Jul 2028 | Thu 13 Jul 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Wed 29 Mar 2028 | Wed 10 May 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 37 | 30 | Thu 11 May 2028 | Thu 22 Jun 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Fri 23 Jun 2028 | Mon 10 Jul 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 11 Jul 2028 | Thu 20 Jul 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you

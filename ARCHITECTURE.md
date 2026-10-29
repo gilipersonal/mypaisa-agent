@@ -139,7 +139,7 @@ Status: design only.
 **Destination.** The dashboard is MyPaisa, the household wealth tracker:
 assets of every kind (savings, property, deposits, policies, pensions, and
 investments in the UK and India), debts (loans, mortgages, cards, EMIs), the
-budget, the Projection with XIRR, reports, in GBP or INR. It is built first,
+budget, the Projection with XIRR, reports, in GBP, INR, USD or EUR. It is built first,
 in PLAN's phases 2 to 9, one layer per phase, each shipped at both doors and
 ending in a demo; §12 is the road. Anything new is created in the chat, and
 an existing figure is corrected in place (rule 4). The old
@@ -276,7 +276,7 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **Document** | `document_id`, `kind` (`factsheet` · `kiid` · `annual_report` · `screenshot` · `cas` · `broker_export` · `statement` · `payslip` · `spreadsheet` · `other`), `s3_key`, `sha256`, `mime`, `bytes`, `original_name`, `sent_by`, `sent_at`, `message_id`, `instrument_id?`, `import_id?`, `as_of`, `extracted` (JSON, with the source line for each figure), `confirmed_by_user` | **One row for every file a member sends, kept in S3 for good** (§4.6, MA-148). The factsheet is the source of look-through until a better feed exists. |
 | **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy` (always the position's), `amount_gbp`, `orig_amount?`, `orig_ccy?`, `fx_rate?`, `fx_source?` (`as_credited` · `ecb` · `statement`), `fx_date?` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. For the household's own records these are `Event`s of the record's kind (§4.8), with these fields in their payload; XIRR, payoff curves and the Projection are computed from them, so every money movement is recorded with its date. |
 | **Liability** | `account_id`, `kind` (`mortgage` · `loan` · `card`), `principal`, `rate`, `term_months`, `started_at`, `emi`, `schedule[]` (computed), `ccy` | A debt: the balance against the original plan, the interest and principal split, the payoff date. For the household's own records a mortgage, a loan or a card is a `Record` of a debt kind (§4.8) with dated terms (a floating-rate reset, a fixed rate that ends), a prepay mode (a shorter term or a lower EMI, by country), balance checkpoints and, for a card, revolving debt from its statements; its schedule is computed (§6.6). Phase 4. |
-| **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | A view, materialised from the records' events and the prices and rebuilt after a kind changes (§4.8); the series the dashboard and the Projection read. Phase 2, in GBP or INR from phase 3. |
+| **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | A view, materialised from the records' events and the prices and rebuilt after a kind changes (§4.8); the series the dashboard and the Projection read. Phase 2, in GBP, INR, USD or EUR from phase 3. |
 | **Budget**, **ProjectionAssumptions**, **ProjectionRun** | per member; per portfolio; per run: `inputs_hash`, `seed`, `engine_version`, `horizon`, `percentiles` (p10, p50, p90), `milestones[]` | Income with its history and dated future changes, a monthly plan per category (each with its `inflation_key`) and plan against actual, the actuals from statements and check-ins, every amount take-home (phase 6, §12, MA-96, MA-261); the assumption set the Projection runs on, each figure with its source, saved by the admin alone (§4.5); one row per Projection run, so any curve can be reproduced (§6.6, phase 7). `ForecastAssumptions` is renamed: Forecast stays the market's word (§19). |
 | **Kind** | `kind`, `version`, `fields[]` (typed; required, optional or derived; `editable` or not), `valuation` (a method from the library), `events[]`, `commitments[]` and `checkins[]` (templates), `grouping` {class, liquidity, country}, `presentation`, `status` (`proposed` · `approved`) | A kind of asset or debt, as data, versioned (§4.8). The admin approves a new one; it adds no screen, form or tool. |
 | **Record** | `portfolio_id`, `record_id`, `kind`, `kind_version`, `owners[]` ({member, share_pct}), `country`, `ccy`, `liquidity`, `status` (`open` · `closed` · `matured` · `sold`), `parent_id?`, `instrument_id?`, `attrs{}` | One thing the household owns or owes, as a document (§4.8). Never deleted; closing it is a status. |
@@ -887,8 +887,13 @@ uploaded or monthly from the page.
 ### 5.3 FX, calendars, time
 
 GBP base; USD, EUR and INR, all published daily by the ECB. Each member can
-read figures in GBP or INR; the stored value is always both the native
-amount and its GBP equivalent on the day. Money typed in one currency for a
+read every figure in any of four currencies, GBP, INR, USD or EUR (Arun,
+29 Oct 2026, MA-275: "The app should support 4 currencies"); the stored value
+is always both the native amount and its GBP equivalent on the day, and a
+rupee figure is grouped in lakh and crore. The household's records are in the
+UK and India today; a record in the US or the euro area is added the same way
+when one is needed: a country is data (its kinds, its inflation and
+wage-growth priors, §6.6), not code. Money typed in one currency for a
 holding in another is checked and converted as in §4.7. Exchange calendars XLON, XETR,
 XNYS. All schedules in `Europe/London`.
 
@@ -970,7 +975,7 @@ from the old wealth tracker's tested TypeScript maths (`xirr.ts`,
 `currency.ts`; 646 tests), ported with their cases as golden fixtures (MA-105,
 phase 3), and extends it:
 
-- **Net worth** (phase 2; in GBP or INR from phase 3): the daily series by
+- **Net worth** (phase 2; in GBP, INR, USD or EUR from phase 3): the daily series by
   member, category, currency and country, materialised from the events
   (§4.8); the crossover of assets over debts.
 - **Deposits and policies** (phase 3, MA-94): accrual at the stated rate to
@@ -1005,7 +1010,7 @@ sophisticated").
 
 | Word | What it answers | How it is worked out |
 | --- | --- | --- |
-| **Forecast**, the stock investment forecast | Where a holding is likely to go in the next four weeks: its chance of a deep fall, its likely range, the market's mood and its direction | Prediction, graded against what prices did: the rules engine's ranges (§6.5) and the Forecaster's models, trained on ten years of prices, the economy, market stress, news, events and sentiment (§19), each switched off when its live record slips. Phases 10, 13, 14 and 17 |
+| **Forecast**, the stock investment forecast | Where a holding is likely to go in the next four weeks: its chance of a deep fall, its likely range, the market's mood and its direction | Prediction, algorithm and pattern driven, graded against what prices did: the rules engine's ranges (§6.5) and the Forecaster's models, trained on ten years of prices and candles, technical indicators and chart patterns, the economy, market stress, news, events and sentiment (§19), each switched off when its live record slips and challenged by new ones as it learns (§20.4). Phases 10, 13, 14 and 17 |
 | **Budget forecast** | What comes in and goes out each month and year to the horizon: income by member, spend by category, EMIs, each plan item, the surplus and closing cash | Deterministic: worked out month by month from the household's inputs and circumstances (its records, commitments, plan items and assumptions), with no randomness and no model, so the same inputs give the same figures to the penny. It is read from the base path below, never from the fan. Phase 7, MA-262 |
 | **Projection** | Where the household's net worth is heading over 5 to 30 years | The same deterministic monthly path, then a Monte Carlo fan (p10, p50, p90) for the market returns, its seed stored. Phase 7, MA-219 |
 
@@ -1022,8 +1027,8 @@ shown or stored. Every amount is take-home: the engine does no tax maths
 
 - **Geography.** Each record's country sets its inflation (consumer prices,
   with category overrides such as education and health) and its wage-growth
-  prior. GBP/INR drifts each year by the gap
-  between the two countries' inflation.
+  prior. Each currency's rate against GBP drifts each year by the gap
+  between its country's inflation and the UK's.
 - **Income.** Each member's current net salary. Its growth blends the
   member's own measured history (the yearly growth over past years' salaries)
   with the country's wage-growth prior, weighted by how many years of history
@@ -1058,8 +1063,8 @@ steps up on each anniversary of a plan's start, fixed or at its category's
 prior (school fees, for instance). A one-off draws on `funded_from`; when
 none is named it is paid from the surplus and then cash in its currency
 first, and a pool running short is a flag, never silent borrowing. Each flow
-is kept in its own currency and converted at that month's projected GBP/INR
-rate.
+is kept in its own currency and converted at that month's projected rate
+for that currency.
 
 **What it puts out.**
 
@@ -1138,7 +1143,7 @@ and the Projection run before and after with the change it made to net worth
 at 20 years (MA-261). Members view the Projection, the plans and the Budget
 forecast, and ask what-ifs, but save nothing.
 
-**The screen** (§9.3, MA-224): the fan in GBP or INR, opening at 20 years
+**The screen** (§9.3, MA-224): the fan in GBP, INR, USD or EUR, opening at 20 years
 with 5, 10, 20 and 30 to choose; milestones on the line (loans ending,
 maturities, plan items); the assumptions panel (the admin's floor among
 them), each figure with its source and editable by the admin; the Plans tab,
@@ -1498,7 +1503,7 @@ The web app shows the same screens in a browser (§9.4).
 The screens, where anything new is made in the chat and a figure its kind
 marks editable is corrected in place (§4.10):
 
-- **Overview** (from phase 2, complete in phase 9): net worth in GBP or INR,
+- **Overview** (from phase 2, complete in phase 9): net worth in GBP, INR, USD or EUR,
   switchable per member, with the ECB rate and its date and the change since
   last month; liquid now, at maturity and locked-in upside; where it sits;
   what we owe and how it runs off; this month's cash flow; invested against
@@ -1514,9 +1519,9 @@ marks editable is corrected in place (§4.10):
   split, the end date, prepayment what-ifs from the engine, its events and
   its files.
 - **Budget** (phase 6): plan against actual per category, income, EMIs,
-  surplus and savings rate, per member and for the household, in GBP or INR
-  (§12).
-- **Projection** (phase 7): the fan in GBP or INR, in today's money or not,
+  surplus and savings rate, per member and for the household, in GBP, INR,
+  USD or EUR (§12).
+- **Projection** (phase 7): the fan in GBP, INR, USD or EUR, in today's money or not,
   opening at 20 years with 5, 10, 20 and 30 to choose; milestones on the line;
   the assumptions panel (the admin's floor among them), each figure with its
   source and editable by the admin; the Plans tab (each plan on a timeline,
@@ -1571,7 +1576,7 @@ MA-145); approving or rejecting an agent's request and rolling a setting back
 the Evals page, labelling runs for the judges, turning a failed run into a
 test case and moving the eval caps (§23.5, §23.7, MA-255). Each
 is behind the second check (§4.5), writes an audit row, and none changes the
-household's records. Privacy mode hides pounds and rupees here too. Each
+household's records. Privacy mode hides every amount here too. Each
 environment has its own api host (`api-dev`, `api`), with the stream on it
 (§21.5), and its own dashboard site (`dashboard-dev`, `dashboard`), §18.
 
@@ -1614,7 +1619,7 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   against its board.
 - **Shared code:** the card types, the OpenAPI 3.1 endpoint types generated from
   FastAPI via `openapi-typescript` (`web/src/lib/api-types.d.ts`, MA-266), the
-  formatting (GBP and INR with lakh and crore, privacy masking) and the view
+  formatting (GBP, INR, USD and EUR, rupees in lakh and crore, privacy masking) and the view
   models live in `web/src/lib/`, written once and imported by path by the iOS
   app's shell (§9.5).
 - **Sign-in** (MA-185): Sign in with Apple, Google or a passkey, as §4.5's
@@ -2080,7 +2085,7 @@ stays fixed:
 | **Create in the chat, correct in place** | Anything new (a record, an event, a kind, a plan item) is created only in the chat, with a Confirm tap and an audit row (§9.1): every property valuation, EMI, rent, maturity, prepayment and plan item. An existing figure its kind marks editable is corrected in place on any screen, through the same write service and with its audit row (§4.10). The api's data routes stay GET only, apart from the correction route, `PATCH /v1/records/{id}`. The Admin center holds only the owner's admin settings and operations (§9.3): the security actions, the ceiling and caps, replays, agents' requests and settings, incidents, each behind a second check. Years of history come in through the Excel importer, sent in the chat (MA-111). |
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§10). The first savings record of phase 2 and the household's property, deposits, policies, pensions, investments and loans are records of one structure (§4.8). |
 | **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Apple, Google or a passkey to sign in, through each environment's Cognito pool. |
-| **Two currencies** | GBP and INR side by side, from the ECB's daily rates, chosen per member (phase 3); USD and EUR for the holdings that trade in them. |
+| **Four currencies** | GBP, INR, USD and EUR, from the ECB's daily rates, chosen per member for every figure (phase 3, Arun, 29 Oct 2026, MA-275); each record keeps its own currency. |
 | **Numbers from code** | XIRR, schedules, net worth, the budget and the Projection from §6.6; Claude writes the words around them and answers "why is my net worth down this month?" from the same tools. |
 
 The screens, from the tracker's own list, and what each reads:
@@ -2105,14 +2110,14 @@ come from the commitments. The actuals come from statements, categorised and
 reviewed with one Confirm, and from the check-in on the 1st, which asks for
 what no statement covered (§4.9). Every amount is take-home, with no tax maths.
 The screen shows plan against actual per category, income, EMIs, surplus and
-savings rate, per member and for the household, in GBP or INR.
+savings rate, per member and for the household, in GBP, INR, USD or EUR.
 
 Order of work, as PLAN's phases:
 
 | Phase | Layer |
 | --- | --- |
 | 2 | The first record: the dynamic structure (§4.8), the write service with correction in place (§4.10), savings, cash, a property's value and a pension's value, and the first dashboard |
-| 3 | Deposits, policies and two currencies: the accrual kinds, the maturity outcomes, GBP or INR, and the old tracker's maths as golden fixtures |
+| 3 | Deposits, policies and four currencies: the accrual kinds, the maturity outcomes, GBP, INR, USD or EUR, and the old tracker's maths as golden fixtures |
 | 4 | Debts and check-ins: loans, mortgages, EMIs and cards; commitments and check-ins (§4.9); Debts and one loan |
 | 5 | Investments, priced: UK and Indian holdings, the minimal prices, XIRR, SIPs as commitments; Assets and one asset |
 | 6 | Budget: statements and the check-in on the 1st |
@@ -2494,7 +2499,7 @@ a daily digest instead.
 | Writing | Create in the chat, correct in place: one write service validates against the kind and audits both; the api's one write route outside the chat takes only the fields a kind marks editable (§4.10) | "The UI should only allow editing existing figures by hand, no creation" |
 | Check-ins | Commitments and check-ins, decided by code with no LLM; the card shows exactly what a tap writes, so the tap is the Confirm, with Undo; several due at once on one card; autopay assumed and listed in a weekly digest (§4.9) | No forms and no nagging: the records stay current at about ten notifications a week |
 | Budget | Statements categorised (the merchant memory, then Haiku) plus a check-in on the 1st; a statement is routine and needs no second check, while the Excel history importer keeps its own (§4.9, §12) | Actuals without typing, and nothing counted twice |
-| Projection | Code computes and the AI drives: returns shrunk toward priors by how much history there is, salary growth blended with the country's prior, inflation by country, GBP/INR drift from the inflation gap, deterministic then Monte Carlo, each run stored; plan items and saved assumptions the admin's alone (§6.6) | Forecast stays the market's word; every Projection figure comes from code and can be reproduced |
+| Projection | Code computes and the AI drives: returns shrunk toward priors by how much history there is, salary growth blended with the country's prior, inflation by country, each currency's drift against GBP from the inflation gap, deterministic then Monte Carlo, each run stored; plan items and saved assumptions the admin's alone (§6.6) | Forecast stays the market's word; every Projection figure comes from code and can be reproduced |
 | Live delivery | SSE on the api host at both doors, with a per-member event log for resume and push only where no stream is open, replacing the API Gateway WebSocket and its `live` host; a spike proves it first (§21.5) | The session cookie reaches the api host; one stream carries replies, cards, check-ins and record changes |
 | Documentation | Confluence (space mypaisaa-agent) is the readable copy of the plan: generated from the trace, PLAN, ARCHITECTURE, the roadmap, the decision records and the design mirror by `scripts/confluence_docs.py`, published through the Atlassian MCP, and checked with the other records by `scripts/plan_sync.py`; every story's estimate and every phase's dates live in `docs/roadmap.json`, and each phase epic's due date in Jira is its target end; each story names the code that builds it (MA-228) | Arun, 26 Oct 2026: the plan, Jira, the designs, the documents and the code stay the same and do not drift; one source for each fact, every copy generated from it and checked |
 | UI and app stack | The web app on Smart Clearance's stack: SvelteKit 3, Tailwind CSS 4 over the Warm ledger tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, Motion. The iOS shell on bong-panjika's: React Native 0.88, TanStack Query on the shared query definitions, Reanimated, MMKV on Nitro, with every pixel SwiftUI. Each at its latest; Swift Package Manager from day one; the api a REST API so the stream can stream (MA-229, 26 Oct 2026) | Arun: "Go with the latest and greatest ... for UI, I want what we used for Smart Clearance and bong-panjika, Tanstack, shadcn-ui, tailwind CSS"; two stacks already proven in his projects, one data layer for both doors |
@@ -2797,6 +2802,22 @@ every number; news alone never raises a red alert (§6.3).
 | Similar days | What followed the 30 days since 2015 most like today, after 5, 20 and 60 days | Nearest neighbours over a feature vector, the last 20 days left out | Good, and easy to explain |
 | Event impacts | How this holding moved after past rate surprises, inflation surprises, elections, conflict, tariffs, pandemics, earnings misses, OPEC+ decisions | Event studies: average move, spread, number of cases, confidence interval; under 8 cases marked low confidence | Fair |
 | Direction | The chance of being up in four weeks, the likely range (10th, 50th, 90th percentile) and the main drivers | Gradient-boosted trees combined with the four above, calibrated; conformal intervals for the range | Modest |
+| Patterns (F8, MA-280) | Which candlestick and chart patterns are on a holding's chart today, and what followed them on that holding over ten years | Detectors in code on the daily candles, each pattern's effect measured as an event study; the patterns and a wider indicator set are features of the risk and direction models | Fair, and only where a pattern's event study shows an edge |
+
+**Patterns and the technical set** (F8, MA-280; Arun, 29 Oct 2026: "Algorithm
+and pattern driven. feeding on candle and all sorts of technical charts").
+Code finds candlestick patterns (engulfing, hammer and shooting star, doji,
+morning and evening star, inside bars) and chart patterns (breakouts and
+breakdowns, support and resistance, double tops and bottoms, head and
+shoulders, trend channels) on the daily candles of ETFs, shares and commodity
+ETCs. An OEIC prices once a day with no candles (§19.1), so it gets only the
+line patterns on its NAV. Beside the rules engine's stack (§6.1) the
+Forecaster reads a wider technical set: ADX, the stochastic oscillator,
+on-balance volume and volume trends where there is volume, Ichimoku, and
+Donchian and Keltner channels. Each pattern's effect on each holding is an
+event study over ten years, point in time (average move after 5, 20 and 60
+days, spread, number of cases, confidence interval; under 8 cases marked low
+confidence), and a pattern reaches a card only where it shows an edge.
 
 Claude's part is the same as everywhere (§1): it files each day's news under
 the event types (Haiku, through Batches) and explains the result. Every
@@ -2869,7 +2890,8 @@ well under a dollar a month, inside the Claude ceiling of §15.1.
 ### 19.9 Order
 
 F1 (data) and F2 (the lab) can start any time after phase 10, and F2's first
-report tests the rules engine. F3 and F4 follow, F5 after them, F6 once a
+report tests the rules engine. F3 and F4 follow, with F8's patterns beside
+them (it needs F1's candles and F2's lab), F5 after them, F6 once a
 holding's market view and the track record exist (phases 12 and 13), F7 after
 F2 and F3. F2,
 F3 and F7 do most of the work for the goal; F5 is the least reliable piece.
@@ -2987,8 +3009,12 @@ what prices actually did:
    more than two points in a day. It then serves a probation of 10 trading
    days and is rolled back on its own if it does worse.
 3. **Change rules and models on evidence, with approval.** Challengers (the
-   monthly retrain, other parameters, rule thresholds within their ranges)
-   are tested over ten years and run live in shadow. One that beats the
+   monthly retrain, other parameters, rule thresholds within their ranges,
+   new patterns and features, and heavier model families such as sequence
+   models over the candles and indicators or a wider ensemble) are tested
+   over ten years and run live in shadow. That is how the Forecaster grows
+   (Arun, 29 Oct 2026: "self learning and self growing over time"): a new
+   model earns its place by its record, never by being newer. One that beats the
    current version in the held-out years and over 8 live weeks, by more than
    a margin, is proposed on the admin desk with the scores side by side.
    After a promotion the old version stays ready and is restored on its own
@@ -3617,7 +3643,7 @@ tool, agent, prompt file or kind template with no safety case, or with no
 capability or regression case; §8's Tools list is checked against it.
 
 **Kinds bring their own cases** (MA-254). Each kind template's field spec
-generates draft cases (varied phrasings, both currencies, dates in several
+generates draft cases (varied phrasings, the four currencies, dates in several
 forms, a missing field), graded by code. Approving a new kind or field runs
 its cases first in the evals job, on the seed household, and the approval
 card shows the result before Confirm (drawn with MA-197's boards).

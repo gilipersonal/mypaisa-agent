@@ -101,7 +101,7 @@ AREAS = [
     ("budget", "Budget and statements",
      "Each member's income, a plan per category, plan against actual, statements read and categorised, and the month closed on the 1st.",
      ["Web v4 · Budget.dc.html", "iPhone v4 · Budget.dc.html"]),
-    ("projection", "Projection and Forecast",
+    ("projection", "Projection, Budget forecast and the stock Forecaster",
      "The Projection of the household's net worth over the years (the fan, its milestones and the editable assumptions), its Plans and Budget forecast tabs, a plan made in the admin's chat with the budget rearranged on Confirm (MA-264's options, Arun's picks 1a, 2a and 3a, and their states), and the Forecaster's view of a holding on the market side.",
      ["Web v4 · Projection.dc.html", "iPhone v4 · Projection.dc.html", "Web v4 · Budget forecast.dc.html",
       "iPhone v4 · Budget forecast.dc.html", "Web v4 · Plans in the chat.dc.html", "iPhone v4 · Plans in the chat.dc.html",

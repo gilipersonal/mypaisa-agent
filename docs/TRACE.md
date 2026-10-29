@@ -75,8 +75,9 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-268 | A phase-progressive smoke runner checks every deployment in dev and prod, protects prod from synthetic writes, verifies the X-Ray trace in dev, and rolls back prod on failure | To Do | §10.3, §18.1, §18.4 | none |  |
 | MA-269 | A five-layer regression pyramid and path-filtered CI runner test units, OpenAPI contracts, moto integration, golden maths, web and iOS UI, and T0 agent replays inside the free minute tiers | To Do | §9.4, §9.5, §18.4, §23.3 | none |  |
 | MA-272 | The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams | In Progress | §10.3, §14, §18.1, §18.4, §23.2, §23.3 | none |  |
-| MA-275 | The plan records the whole app learning from the household's own data, the Telegram clean-up of the live designs, and what the stock forecast, the Budget forecast and the Projection each are | In Progress | §6.6, §19, §20.1, §20.6, §20.8, §20.9, §23.6, §4.1 | none |  |
+| MA-275 | The plan records Arun's core requirements: every asset in four currencies, a pattern-driven stock forecast, the whole app learning from the household's own data, one consolidated design with no Telegram, and what the stock forecast, the Budget forecast and the Projection each are | In Progress | §5.3, §6.6, §19, §19.4, §20.1, §20.4, §20.6, §20.8, §20.9, §23.6, §4.1, §12 | none |  |
 | MA-278 | No Telegram or Mini App is left in the live designs: the web boards show only the web app, the Telegram files are dropped or archived on Arun's word, and every record names only the iOS app and the web app | To Do | §9.4 | none |  |
+| MA-279 | One consolidated design at every door: every screen drawn once in the v4 design, on the whole-wealth household, for the web app, iPhone, iPad and the foldable, with the first-generation and Telegram-era boards retired | To Do | §9, §9.3, §9.4, §5.3 | todo |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
@@ -148,7 +149,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-254 | Each kind's field spec generates its own draft cases, so a new kind or field is tested before the admin approves it | To Do | §23.5, §4.8 | none |  |
 | MA-270 | A typed DynamoDB single-table repository wraps boto3 TypeSerializer, mypy-boto3-dynamodb and TransactWriteUnit with Pydantic v2 marshaling, scan guard and signed cursor pagination | To Do | §4.1, §4.6, §4.7, §4.8 | none |  |
 
-## Phase 3: Deposits, policies and two currencies (MA-188)
+## Phase 3: Deposits, policies and four currencies (MA-188)
 
 | Key | Summary | Status | Architecture | Design | Boards |
 | --- | --- | --- | --- | --- | --- |
@@ -157,7 +158,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-94 | Wealth maths for what accrues: deposit and policy accrual, the maturity timeline and the daily net worth, to the penny | To Do | §6.6 | none |  |
 | MA-105 | The old wealth tracker's tested maths and its screen list are ported as golden fixtures and a parity check | To Do | §18.5 | none |  |
 | MA-202 | A maturing deposit asks whether it was renewed, paid out or moved, and a renewal starts its successor record | To Do | §4.9 | planned | iPhone v4 · Check-ins.dc.html: iPhone · Check-in: the saver matures |
-| MA-213 | Net worth and every figure show in pounds or rupees at the day's ECB rate, at every door | To Do | §4.7, §5.3 | picked | Web v4 · Dashboard.dc.html: Browser · Dashboard, in rupees; Web v4 · Dashboard.dc.html: Browser · Dashboard, in rupees, phone; iPhone v4 · Home.dc.html: iPhone · Home, in rupees; Web v4 · Projection.dc.html: Browser · Projection, in rupees at 2026 prices; iPhone v4 · Projection.dc.html: iPhone · Projection, in rupees at 2026 prices |
+| MA-213 | Net worth and every figure show in pounds, rupees, dollars or euros at the day's ECB rate, at every door | To Do | §4.7, §5.3 | picked | Web v4 · Dashboard.dc.html: Browser · Dashboard, in rupees; Web v4 · Dashboard.dc.html: Browser · Dashboard, in rupees, phone; iPhone v4 · Home.dc.html: iPhone · Home, in rupees; Web v4 · Projection.dc.html: Browser · Projection, in rupees at 2026 prices; iPhone v4 · Projection.dc.html: iPhone · Projection, in rupees at 2026 prices |
 
 ## Phase 4: Debts and check-ins (MA-192)
 
@@ -323,6 +324,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-124 | F6: the Forecaster's view appears beside the rules engine in the chat and on the dashboard | To Do | §19.7 | planned | Forecast.dc.html: Browser · Holding · Forecast; Forecast.dc.html: Browser · Holding · Forecast · UK fund; Forecast.dc.html: Browser · Forecaster · Proof |
 | MA-125 | F7: monthly money and rebalancing are steered by risk to cut deep falls while growing steadily | To Do | §19.5 | todo |  |
 | MA-126 | The Forecaster's data sources, their prices and the news-to-holdings matching are written down | Done | §5.1, §15, §19, §19.2, §19.3 | none |  |
+| MA-280 | F8: candlestick and chart patterns and a wider set of technical indicators are found in code, measured against ten years of what followed, and fed to the Forecaster | To Do | §19.4, §19.2 | none |  |
 
 ## Phase 18: The agent team: configured, approved, self-healing, self-learning (MA-127)
 
