@@ -1,0 +1,31 @@
+{
+  "name": "mypaisa-prototype",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MA-290: a clickable demo of the whole MyPaisa app at every door, on stubbed household data. Not product code.",
+  "scripts": {
+    "boards": "node scripts/extract-board-css.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings false && node scripts/extract-board-css.mjs --check && node scripts/colours.mjs",
+    "test": "vitest run",
+    "walk": "node e2e/walk.mjs",
+    "gate": "npm run check && npm test && npm run build && npm run walk"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tsconfig/svelte": "^5.0.4",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.7",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@fontsource-variable/material-symbols-rounded": "^5.3.9",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/nunito": "^5.3.0"
+  }
+}

@@ -1,0 +1,60 @@
+/* Copied from docs/design/app-v1/Prototype v4.dc.html (sha256 54f2954ab52e0c727e1c3282c3bd03bbe2f6fdf1492037017f517595755c7b95) by scripts/extract-board-css.mjs. Never edit: change the board. */
+
+/* MyPaisa · Prototype v4 (MA-193). A clickable walk-through of the v4 boards at three doors: the browser at 1440
+   (Web v4 · Shell and chat, 1a), the phone's browser at 390, and the iPhone (shell 1a, Chat first, 402 × 874 as the
+   iPhone v4 boards draw it). One journey, one clock, one figure set; the bar above the frame is the prototype's own. */
+html, body { margin: 0; height: 100%; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+.pv4 { min-height: 100vh; display: flex; flex-direction: column; }
+.ptop { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 10px 20px 10px; background: #F9F8F6; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #14171F; position: relative; z-index: 5; }
+.prow1 { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
+.pname { font: 700 15px/20px -apple-system, "SF Pro Display", system-ui, sans-serif; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; margin-right: 6px; }
+.pkey { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; border-radius: 5px; background: #13213A; color: #FFFFFF; }
+.pgrp { display: flex; align-items: center; gap: 6px; }
+.plbl { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; text-transform: uppercase; letter-spacing: 0.04em; }
+.pseg { display: flex; background: #E6E2DC; border-radius: 9px; padding: 2px; gap: 2px; }
+.pseg .segw { display: contents; }
+.pseg button { min-height: 32px; border: 0; background: transparent; border-radius: 7px; padding: 0 12px; font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #4E5462; cursor: pointer; position: relative; }
+.pseg button.on { background: #FFFFFF; color: #14171F; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.pbtn { min-height: 34px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border-radius: 9px; border: 0; background: #E6E2DC; color: #14171F; font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; cursor: pointer; position: relative; }
+.pbtn .ms { font-size: 18px; }
+.pbtn.on { background: #13213A; color: #FFFFFF; }
+.pbtn.go { background: #C2381F; color: #FFFFFF; }
+.pf1 { flex: 1; }
+.psteps { display: flex; gap: 6px; flex-wrap: wrap; }
+.pst { min-height: 30px; display: inline-flex; align-items: center; gap: 6px; padding: 0 10px 0 4px; border-radius: 999px; border: 0; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1); color: #3D424D; font: 500 12.5px/16px -apple-system, "SF Pro Text", system-ui, sans-serif; cursor: pointer; }
+.pst b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #E6E2DC; color: #14171F; font: 700 11px/1 ui-monospace, Menlo, monospace; }
+.pst.done b { background: #D5E7DA; color: #125529; }
+.pst.on { background: #13213A; color: #FFFFFF; box-shadow: none; }
+.pst.on b { background: #FF6B4F; color: #13213A; }
+.pguide { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; min-height: 34px; }
+.pgt { font: 700 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #14171F; white-space: nowrap; }
+.pgh { flex: 1 1 360px; min-width: 0; font: 400 13.5px/19px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+.pgh b { color: #14171F; }
+.pstage { flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center; padding: 18px 16px 24px; }
+.pframe-wrap { position: relative; flex: none; }
+.pframe { position: absolute; transform-origin: 0 0; overflow: hidden; background: var(--mp-bg); }
+.pframe > .sc-host { height: 100%; }
+.fr-desk { border-radius: 12px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 20px 50px rgba(0, 0, 0, 0.14); }
+.fr-pweb { border-radius: 44px; box-shadow: 0 0 0 10px #1B1D22, 0 0 0 11.5px #3A3D44, 0 30px 60px rgba(0, 0, 0, 0.22); }
+.fr-ios { border-radius: 56px; box-shadow: 0 0 0 11px #1B1D22, 0 0 0 12.5px #3A3D44, 0 30px 70px rgba(0, 0, 0, 0.25); }
+.pdate { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); z-index: 90; display: flex; align-items: center; gap: 10px; padding: 16px 24px; border-radius: 22px; background: var(--mp-hero); color: var(--mp-hero-ink); font: 800 26px/32px var(--mp-font-round); letter-spacing: -0.02em; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); pointer-events: none; white-space: nowrap; }
+.pdate .ms { color: var(--mp-coral); font-size: 28px; }
+.ptoast { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); z-index: 95; max-width: 340px; width: max-content; text-align: center; pointer-events: none; }
+.fr-desk .ptoast { bottom: 36px; max-width: 520px; }
+/* shared: the masks, the arrivals, the guide's ring, small utilities */
+.privon .mny { background: var(--mp-mask); color: transparent !important; border-radius: 6px; }
+.privon .mp-hero .mny, .privon .me .mny { background: var(--mp-mask-hero); }
+.privon .lg .mny { background: var(--lg-mask); }
+.f1 { flex: 1; min-width: 0; }
+.ae { align-items: flex-end; }
+.bl { align-items: baseline; }
+.pnext { position: relative; outline: 2px solid var(--mp-focus, #2453C9); outline-offset: 3px; }
+.ptop .pnext { outline-color: #2453C9; }
+@media (prefers-reduced-motion: no-preference) {
+  .pnext::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 2px solid var(--mp-focus, #2453C9); pointer-events: none; opacity: 0; animation: pnpulse 1.4s cubic-bezier(0.22, 1, 0.36, 1) 6; }
+  .pin { animation: mo-rise var(--mo-base, 340ms) var(--mo-smooth, ease-out) both; }
+  .pdate { animation: pdin 1.7s ease both; }
+}
+@keyframes pnpulse { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.12); } }
+@keyframes pdin { 0% { opacity: 0; transform: translate(-50%, -40%); } 15% { opacity: 1; transform: translate(-50%, -50%); } 80% { opacity: 1; } 100% { opacity: 0; } }

@@ -242,3 +242,29 @@ the Forecaster's iOS boards show. It reads `household-v4.json` for the holdings 
   so no board shows it (ARCHITECTURE 19.4).
 - **In practice** the Forecaster shows on the holding's Forecast tab and in the Saturday review, labelled so, and in
   no weekday card or chat answer (Arun, 29 Oct 2026).
+
+## The demo's ledger (MA-290): `demo-ledger-v4.json`
+
+`make_demo_ledger.py` writes it (`python3 make_demo_ledger.py > demo-ledger-v4.json`). It holds what the clickable
+demo needs and the household lacks: the audit rows (`events`), Activity's runs with their steps, model calls and tools
+(`runs`), the two statements' files, each member's sign-in methods and devices, the Admin center's data (spend and the
+ceiling, the AWS cap, alerts and routing, approvals, agents, the incident, the dead-letter queue, people) and each
+member's settings. Lesson 38: every figure comes from `household-v4.json` or `future-plans-v4.json`, or is transcribed
+from Prototype v4 or a board (named in the data); the script asserts the data itself and fails loudly. **Every name and
+figure is illustrative; anything invented carries `"illustrative": true`.**
+
+- **Clock:** the household's, plus Sun 25 Oct (the FD and the first three plan items) and Fri 6 Nov (the Admin center's
+  day, 08:28 to 10:05). Each day has a `last_frame`; no event is later.
+- **Times** carry seconds, so no two events tie; the minute is the boards'. A Confirm that writes two audit rows (the
+  statements' car EMI, the school fees pot with November's budget) gives both rows one `group`.
+- **Events** run in order; each names its run, and each run lists its events. Only the sign-in and the fresh checks
+  (the security log) have no run.
+- **Spend** is the runs' own costs. Prototype v4's $18 on Mon 26 Oct 09:53 fixes the first cycle's base (derived, so
+  the day's $0.07 and the cycle's $18 both hold); the renewal is Tue 3 Nov, so the Admin center's Fri 6 Nov is the next
+  cycle and its spend is the runs alone. Members and agents add to it.
+- **Branches** hold the boards' side paths that the main path does not take (the EMI's Undo at 09:13, Prototype v4's Paid
+  off in full), so a click that leaves the path has its rows.
+- **People:** the owner is never paused and only the owner restores (MA-102, settled 29 Oct 2026).
+- **`disagreements`** lists each place the boards differ and the choice made (Prototype v4, then the v4 boards, then
+  the older; the household over all). Telegram on the Browser Admin boards is the superseded record, so alerts go to the
+  app, push and email.

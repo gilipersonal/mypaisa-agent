@@ -7798,6 +7798,381 @@
       "notes": "The design round that makes one design of the whole app (Arun, 29 Oct 2026: \"file gaps and make one consolidated design based on new app\"), filed from that day's board audit (MA-275): the first boards of 24 and 25 Oct (iPhone chat, dashboard, settings, sign-in, admin, audit and activity, iPad and foldable; Browser, Browser 2, Wealth, India, Responsive, Forecast, Admin center 2 and 3, Audit and files) were drawn on the investments-only household and before the shell pick, beside the v4 boards on the whole-wealth household; Home is drawn in both. Every live story that cites a first-generation board lists this redraw in its undrawn list (53 stories), and the seven with no web board list their web screens. No board yet: its boards are the redrawn screens themselves, drawn with /design-first, from docs/design/figures/household-v4.json, at desktop, 390, iPhone, iPad and the foldable in light and dark. Starts after MA-278 archives the Telegram files. Its redraw includes the Buy label for ADD and a candidate's BUY call wherever a stance shows (MA-64, MA-91). It redraws the web Forecast (Forecast.dc.html) to MA-281's 1a, the answer first, with F8's patterns on the candles, the proof page and 30 similar days (ARCHITECTURE 19.4, 19.7)."
     },
     {
+      "key": "MA-290",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "A clickable demo of the whole app at every door, on stubbed household data, built from the current boards",
+      "status": "In Progress",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "1",
+        "9",
+        "9.1",
+        "9.2",
+        "9.3",
+        "9.4"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Web v4 · Shell and chat.dc.html",
+          "board": "Browser · Shell 1a, Chat beside"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Shell and chat.dc.html",
+          "board": "Browser · Shell 1a, Chat beside, phone"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Shell and chat.dc.html",
+          "board": "Browser · Chat, a Confirm card"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Shell and chat.dc.html",
+          "board": "Browser · Activity"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Shell and chat.dc.html",
+          "board": "Browser · A run"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Shell and chat.dc.html",
+          "board": "Browser · Home moves live"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Dashboard.dc.html",
+          "board": "Browser · Dashboard, net worth first"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Dashboard.dc.html",
+          "board": "Browser · Dashboard, net worth first, phone"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Dashboard.dc.html",
+          "board": "Browser · Correct a figure in place"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Check-ins.dc.html",
+          "board": "Browser · Check-ins: several due at once"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Check-ins.dc.html",
+          "board": "Browser · Check-in: EMI paid, then Undo"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Assets and debts.dc.html",
+          "board": "Browser · Assets"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Assets and debts.dc.html",
+          "board": "Browser · An asset"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Assets and debts.dc.html",
+          "board": "Browser · Debts"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Assets and debts.dc.html",
+          "board": "Browser · A loan"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Budget.dc.html",
+          "board": "Browser · Budget"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Budget.dc.html",
+          "board": "Browser · Statement review"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Budget.dc.html",
+          "board": "Browser · Month-end check-in"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Budget forecast.dc.html",
+          "board": "Browser · Budget forecast 1a, the surplus first"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Projection.dc.html",
+          "board": "Browser · Projection, the fan first"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Projection.dc.html",
+          "board": "Browser · Projection, a what-if in the chat"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Plans in the chat.dc.html",
+          "board": "Browser · Plans in the chat 2a, a card per step"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 · Plans tab.dc.html",
+          "board": "Browser · Plans tab 3a, bars on a timeline"
+        },
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Browser · Audit with files"
+        },
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Browser · Files"
+        },
+        {
+          "project": "app",
+          "file": "Audit and files.dc.html",
+          "board": "Browser · File viewer"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Spend · Move the ceiling, the fresh check"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Approvals"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 2.dc.html",
+          "board": "Browser · Admin · Alerts"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 3.dc.html",
+          "board": "Browser · Admin · People · Restore Asha, the confirmation"
+        },
+        {
+          "project": "app",
+          "file": "Admin center 3.dc.html",
+          "board": "Browser · Admin · People · A failed fresh check"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone sign-in.dc.html",
+          "board": "iPhone · Welcome"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone sign-in.dc.html",
+          "board": "iPhone · Sign in with Apple"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone sign-in.dc.html",
+          "board": "iPhone · First-run setup"
+        },
+        {
+          "project": "ios",
+          "file": "Shell options.dc.html",
+          "board": "1a · Chat first"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Home.dc.html",
+          "board": "iPhone · Home, net worth first"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Home.dc.html",
+          "board": "iPad · Whole wealth with the chat beside it"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone chat.dc.html",
+          "board": "iPhone · Chat home"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone chat.dc.html",
+          "board": "iPhone · Confirm card"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone chat.dc.html",
+          "board": "iPhone · Attach a file"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Register.dc.html",
+          "board": "iPhone · Register a record: Monzo savings"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Register.dc.html",
+          "board": "iPhone · Register a fixed deposit: SBI"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Register.dc.html",
+          "board": "iPhone · Register a property: the Pune flat"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Register.dc.html",
+          "board": "iPhone · Register a loan part-way through: HDFC"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Register.dc.html",
+          "board": "iPhone · Register for another member: Asha's fund"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Check-ins.dc.html",
+          "board": "iPhone · Check-in card 1b, Paid as the Confirm"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Check-ins.dc.html",
+          "board": "iPhone · Check-in: a valuation due"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Check-ins.dc.html",
+          "board": "iPhone · Check-ins: several due at once"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Assets and debts.dc.html",
+          "board": "iPhone · Assets"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Assets and debts.dc.html",
+          "board": "iPhone · A loan"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Budget.dc.html",
+          "board": "iPhone · Budget"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Budget.dc.html",
+          "board": "iPhone · Statement review"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Projection.dc.html",
+          "board": "iPhone · Projection, milestones and plan items"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 · Projection.dc.html",
+          "board": "iPhone · Chat, a what-if"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone audit and activity.dc.html",
+          "board": "iPhone · Activity"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone audit and activity.dc.html",
+          "board": "iPhone · Audit"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone audit and activity.dc.html",
+          "board": "iPhone · Files"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone admin.dc.html",
+          "board": "iPhone · Admin center"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone admin.dc.html",
+          "board": "iPhone · Second check"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone admin.dc.html",
+          "board": "iPhone · Members and devices"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone settings.dc.html",
+          "board": "iPhone · You"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone settings.dc.html",
+          "board": "iPhone · Sign-in methods"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone settings.dc.html",
+          "board": "iPhone · Notifications and quiet hours"
+        },
+        {
+          "project": "ios",
+          "file": "iPad and foldable.dc.html",
+          "board": "iPad · Home with the chat beside it"
+        },
+        {
+          "project": "ios",
+          "file": "iPad and foldable.dc.html",
+          "board": "iPad · Split View, one third"
+        },
+        {
+          "project": "ios",
+          "file": "iPad and foldable.dc.html",
+          "board": "iPad · Admin center"
+        },
+        {
+          "project": "ios",
+          "file": "iPad v4 · Budget, assets and debts.dc.html",
+          "board": "iPad · Budget"
+        },
+        {
+          "project": "ios",
+          "file": "iPad v4 · Budget, assets and debts.dc.html",
+          "board": "iPad · Assets"
+        }
+      ],
+      "notes": "Arun, 29 Oct 2026: \"create working prototype for demo with stubbed UI data for the entire application end to end based on the UX design pieces we created\". Picked that day (docs/design/reviews/MA-290/decision.md): a standalone demo app in prototype/, not product code in web/; whole wealth plus admin (phases 0 to 9); four doors (desktop web 1440, phone web 390, iPhone, iPad); free roam with scripted chat flows plus a presenter mode; built in batch mode (foundations, four areas in parallel, the merge) under a $180 cap. The boards listed are the ones the demo is built from, one or more per area and door; it draws planned boards as drawn and picks none of them for their own stories (each still goes through /design-first). Figures from docs/design/figures/ (household-v4, future-plans-v4, and the new demo-ledger-v4 for audit rows, runs, files, devices and the Admin center). Builds on MA-193's Prototype v4; MA-279's redraw supersedes the pages with no web board.",
+      "code": [
+        "prototype/**",
+        "docs/design/figures/make_demo_ledger.py",
+        "docs/design/figures/demo-ledger-v4.json",
+        "docs/design/reviews/MA-290/decision.md"
+      ]
+    },
+    {
       "key": "MA-281",
       "type": "Story",
       "epic": "MA-9",

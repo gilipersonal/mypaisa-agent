@@ -1,0 +1,3418 @@
+{
+ "about": "The demo's ledger (MA-290): audit rows, Activity runs, files, sign-ins, devices, the Admin center's data and settings, on household-v4.json's clock. A design aid; every figure is illustrative. Times carry seconds so no two events tie; a row's minute is the boards'. Events with run null (sign-in, fresh checks) are security-log rows with no run.",
+ "clock": {
+  "today": "2026-10-26",
+  "days": [
+   {
+    "id": "d0",
+    "date": "2026-10-25",
+    "label": "Sun 25 Oct",
+    "last_frame": "20:15",
+    "note": "the day before the prototype starts: the SBI FD (replayed on Mon) and the first three plan items (Plans tab boards)"
+   },
+   {
+    "id": "d1",
+    "date": "2026-10-26",
+    "label": "Mon 26 Oct",
+    "last_frame": "10:44",
+    "note": "Prototype v4's Monday ends at 09:53; the Projection boards add the 10:40 and 10:44 corrections 'after every other frame'"
+   },
+   {
+    "id": "d2",
+    "date": "2026-11-01",
+    "label": "Sun 1 Nov",
+    "last_frame": "09:05"
+   },
+   {
+    "id": "d3",
+    "date": "2026-11-05",
+    "label": "Thu 5 Nov",
+    "last_frame": "10:26"
+   },
+   {
+    "id": "d3e",
+    "date": "2026-11-05",
+    "label": "Thu 5 Nov, evening",
+    "last_frame": "21:22",
+    "note": "future-plans-v4: evening 20:41 to 21:22"
+   },
+   {
+    "id": "d4",
+    "date": "2026-11-06",
+    "label": "Fri 6 Nov",
+    "last_frame": "10:05",
+    "note": "the Admin center's day (Browser Admin center 3's 08:28 to 10:05; iPhone admin's 'today' is Fri, renewal Tue 3 Nov)",
+    "illustrative": true
+   }
+  ]
+ },
+ "members": [
+  {
+   "id": "arun",
+   "name": "Arun",
+   "role": "owner",
+   "sign_in": [
+    "apple",
+    "google",
+    "passkey"
+   ],
+   "joined": "2026-09-04",
+   "status": "active",
+   "sign_in_since": {
+    "apple": "2026-09-04",
+    "google": "2026-10-12"
+   },
+   "devices": [
+    {
+     "id": "d-arun-iphone",
+     "name": "Arun's iPhone",
+     "model": "iPhone 17 Pro",
+     "kind": "iphone",
+     "last_seen": "2026-11-06T09:40",
+     "since": "2026-09-04"
+    },
+    {
+     "id": "d-arun-ipad",
+     "name": "Arun's iPad",
+     "model": "iPad Air",
+     "kind": "ipad",
+     "last_seen": "2026-11-06T07:20"
+    },
+    {
+     "id": "d-arun-mac",
+     "name": "Chrome on MacBook Air",
+     "kind": "browser",
+     "last_seen": "2026-11-06T10:05",
+     "where": "London, UK"
+    }
+   ]
+  },
+  {
+   "id": "asha",
+   "name": "Asha",
+   "role": "member",
+   "sign_in": [
+    "apple",
+    "google"
+   ],
+   "joined": "2026-09-06",
+   "status": "active",
+   "devices": [
+    {
+     "id": "d-asha-iphone",
+     "name": "Asha's iPhone",
+     "model": "iPhone 16",
+     "kind": "iphone",
+     "last_seen": "2026-11-06T08:02"
+    },
+    {
+     "id": "d-asha-ipad",
+     "name": "Asha's iPad",
+     "model": "iPad mini",
+     "kind": "ipad",
+     "last_seen": "2026-11-03T19:10",
+     "illustrative": true
+    }
+   ]
+  }
+ ],
+ "events": [
+  {
+   "id": "e-fd-register",
+   "at": "2026-10-25T10:03:00",
+   "day": "d0",
+   "actor": "arun",
+   "via": "chat",
+   "kind": "register",
+   "record": "sbi_fd",
+   "field": "value",
+   "before": null,
+   "after": 500000,
+   "ccy": "INR",
+   "summary": "Record added · Fixed deposit · SBI · Arun · Sun 25 Oct 10:03 · in the chat",
+   "run": "r-1196",
+   "file": null,
+   "note": "Prototype v4 s3 replays it; Audit row 'Sun 25 Oct, 10:03 · Record added · ₹5,00,000'"
+  },
+  {
+   "id": "e-plan-extension",
+   "at": "2026-10-25T20:09:00",
+   "day": "d0",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "extension",
+   "field": "amount",
+   "before": null,
+   "after": 35000,
+   "ccy": "GBP",
+   "summary": "Plan item added · Home extension, £35,000 in Jun 2027 · Arun · Sun 25 Oct 20:09 · in the chat",
+   "run": "r-1197",
+   "file": null
+  },
+  {
+   "id": "e-plan-car2",
+   "at": "2026-10-25T20:12:00",
+   "day": "d0",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "car2",
+   "field": "amount",
+   "before": null,
+   "after": 25000,
+   "ccy": "GBP",
+   "summary": "Plan item added · Replace the car, £25,000 in Jun 2031 · Arun · Sun 25 Oct 20:12 · in the chat",
+   "run": "r-1198",
+   "file": null
+  },
+  {
+   "id": "e-plan-bonus",
+   "at": "2026-10-25T20:15:00",
+   "day": "d0",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "bonus",
+   "field": "amount",
+   "before": null,
+   "after": 3000,
+   "ccy": "GBP",
+   "summary": "Plan item added · Asha's annual bonus, £3,000 every March from 2027 to 2052 · Arun · Sun 25 Oct 20:15 · in the chat",
+   "run": "r-1199",
+   "file": null
+  },
+  {
+   "id": "e-signin-arun",
+   "at": "2026-10-26T09:30:00",
+   "day": "d1",
+   "actor": "arun",
+   "via": "sign_in",
+   "kind": "sign_in",
+   "record": null,
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": null,
+   "summary": "Signed in with Apple · Chrome on MacBook Air · London, UK · Arun · Mon 26 Oct 09:30",
+   "run": null,
+   "file": null,
+   "device": "d-arun-mac",
+   "note": "Prototype v4: 'Arun · admin · signed in with Apple'; Admin center 3 draws 09:30 with Google (Prototype wins)"
+  },
+  {
+   "id": "e-monzo-register",
+   "at": "2026-10-26T09:41:20",
+   "day": "d1",
+   "actor": "arun",
+   "via": "chat",
+   "kind": "register",
+   "record": "monzo_savings",
+   "field": "value",
+   "before": null,
+   "after": 5000,
+   "ccy": "GBP",
+   "summary": "Record added · Instant access savings · Monzo · Arun · Mon 26 Oct 09:41 · in the chat",
+   "run": "r-1235",
+   "file": null
+  },
+  {
+   "id": "e-home-correction",
+   "at": "2026-10-26T09:52:00",
+   "day": "d1",
+   "actor": "arun",
+   "via": "inline_edit",
+   "kind": "correction",
+   "record": "home",
+   "field": "value",
+   "before": 415000,
+   "after": 428000,
+   "ccy": "GBP",
+   "summary": "Correction · Home, Reading · £415,000 → £428,000, your estimate · Arun · Mon 26 Oct 09:52 · in place",
+   "run": "r-1238",
+   "file": null
+  },
+  {
+   "id": "e-salary-growth",
+   "at": "2026-10-26T10:40:00",
+   "day": "d1",
+   "actor": "arun",
+   "via": "inline_edit",
+   "kind": "assumption_correct",
+   "record": "arun_salary_growth",
+   "field": "growth",
+   "before": 0.0417,
+   "after": 0.048,
+   "ccy": null,
+   "summary": "Arun's salary growth 4.17% → 4.8% · Arun · Mon 26 Oct 10:40 · edited in place",
+   "run": "r-1241",
+   "file": null
+  },
+  {
+   "id": "e-bonus-growth",
+   "at": "2026-10-26T10:44:00",
+   "day": "d1",
+   "actor": "arun",
+   "via": "inline_edit",
+   "kind": "plan_correct",
+   "record": "bonus",
+   "field": "growth",
+   "before": null,
+   "after": 0.035,
+   "ccy": null,
+   "summary": "Plan item corrected · Asha's annual bonus: growth none → 3.5% a year · Arun · Mon 26 Oct 10:44 · edited in place",
+   "run": "r-1242",
+   "file": null
+  },
+  {
+   "id": "e-file-barclay",
+   "at": "2026-11-01T08:40:00",
+   "day": "d2",
+   "actor": "arun",
+   "via": "file",
+   "kind": "file_received",
+   "record": "barclaycard_nov",
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": null,
+   "summary": "File kept · barclaycard-2026-11-01.pdf · Arun · Sun 1 Nov 08:40 · in the chat",
+   "run": "r-1262",
+   "file": "f-barclay"
+  },
+  {
+   "id": "e-file-monzo",
+   "at": "2026-11-01T08:40:05",
+   "day": "d2",
+   "actor": "arun",
+   "via": "file",
+   "kind": "file_received",
+   "record": "monzo_current_oct",
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": null,
+   "summary": "File kept · monzo-2026-10.csv · Arun · Sun 1 Nov 08:40 · in the chat",
+   "run": "r-1262",
+   "file": "f-monzo"
+  },
+  {
+   "id": "e-statements",
+   "at": "2026-11-01T08:44:00",
+   "day": "d2",
+   "actor": "arun",
+   "via": "statement",
+   "kind": "statement_confirm",
+   "record": "budget_oct",
+   "field": "spend",
+   "before": null,
+   "after": 2246,
+   "ccy": "GBP",
+   "summary": "Statements saved · 22 lines in October's budget · Arun · Sun 1 Nov 08:44 · in the chat",
+   "run": "r-1262",
+   "file": null,
+   "group": "c-statements",
+   "files": [
+    "f-barclay",
+    "f-monzo"
+   ]
+  },
+  {
+   "id": "e-emi-car",
+   "at": "2026-11-01T08:44:01",
+   "day": "d2",
+   "actor": "arun",
+   "via": "statement",
+   "kind": "emi_confirmed",
+   "record": "car",
+   "field": "emi",
+   "before": null,
+   "after": 346.55,
+   "ccy": "GBP",
+   "summary": "EMI confirmed · Car loan · Close Brothers · by the Monzo statement · Arun · Sun 1 Nov 08:44 · in the chat",
+   "run": "r-1262",
+   "file": "f-monzo",
+   "group": "c-statements",
+   "note": "the same Confirm also confirmed the mortgage's 1 Oct EMI (£1,456.46); the prototype's Audit shows only the car's row"
+  },
+  {
+   "id": "e-month-close",
+   "at": "2026-11-01T09:02:00",
+   "day": "d2",
+   "actor": "arun",
+   "via": "month_close",
+   "kind": "month_close",
+   "record": "budget_oct",
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": null,
+   "summary": "October closed · Budget · Nothing else · Arun · Sun 1 Nov 09:02 · on the check-in",
+   "run": "r-1263",
+   "file": null
+  },
+  {
+   "id": "e-emi-paid",
+   "at": "2026-11-05T09:12:00",
+   "day": "d3",
+   "actor": "arun",
+   "via": "check_in",
+   "kind": "check_in_paid",
+   "record": "hdfc",
+   "field": "emi",
+   "before": null,
+   "after": 39390,
+   "ccy": "INR",
+   "summary": "EMI paid · HDFC home loan · Arun · Thu 5 Nov 09:12 · on the check-in, with Undo",
+   "run": "r-1280",
+   "file": null
+  },
+  {
+   "id": "e-school-fees",
+   "at": "2026-11-05T20:43:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "schooling",
+   "field": "amount",
+   "before": null,
+   "after": 4000,
+   "ccy": "GBP",
+   "summary": "Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:43 · in the chat",
+   "run": "r-1290",
+   "file": null
+  },
+  {
+   "id": "e-school-pot",
+   "at": "2026-11-05T20:46:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "school_fees_pot",
+   "field": "amount",
+   "before": null,
+   "after": 690,
+   "ccy": "GBP",
+   "summary": "Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat · Undo",
+   "run": "r-1291",
+   "file": null,
+   "group": "c-pot"
+  },
+  {
+   "id": "e-budget-nov",
+   "at": "2026-11-05T20:46:01",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "budget_change",
+   "record": "budget_nov",
+   "field": "planned_surplus",
+   "before": 2636,
+   "after": 1946,
+   "ccy": "GBP",
+   "summary": "November's budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat · Undo",
+   "run": "r-1291",
+   "file": null,
+   "group": "c-pot"
+  },
+  {
+   "id": "e-salary-step",
+   "at": "2026-11-05T20:53:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "salary_step",
+   "field": "amount",
+   "before": null,
+   "after": 5500,
+   "ccy": "GBP",
+   "summary": "Plan item added · Arun's salary set to £5,500 a month from Sep 2028 · Arun · Thu 5 Nov 20:53 · in the chat",
+   "run": "r-1292",
+   "file": null
+  },
+  {
+   "id": "e-hdfc-close",
+   "at": "2026-11-05T20:59:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "hdfc_close",
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": "INR",
+   "summary": "Plan item added · Close the HDFC home loan with the SBI FD, Mar 2029 · Arun · Thu 5 Nov 20:59 · in the chat",
+   "run": "r-1293",
+   "file": null
+  },
+  {
+   "id": "e-car-pause",
+   "at": "2026-11-05T21:08:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "inline_edit",
+   "kind": "plan_pause",
+   "record": "car2",
+   "field": "status",
+   "before": "active",
+   "after": "paused",
+   "ccy": null,
+   "summary": "Plan item paused · Replace the car · v1 → v2 · Arun · Thu 5 Nov 21:08 · in place",
+   "run": "r-1294",
+   "file": null
+  },
+  {
+   "id": "e-car-resume",
+   "at": "2026-11-05T21:09:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "inline_edit",
+   "kind": "plan_resume",
+   "record": "car2",
+   "field": "status",
+   "before": "paused",
+   "after": "active",
+   "ccy": null,
+   "summary": "Plan item resumed · Replace the car · v2 → v3 · Arun · Thu 5 Nov 21:09 · in place",
+   "run": "r-1295",
+   "file": null
+  },
+  {
+   "id": "e-school-end",
+   "at": "2026-11-05T21:11:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "inline_edit",
+   "kind": "plan_correct",
+   "record": "schooling",
+   "field": "end",
+   "before": "2041-07",
+   "after": "2040-07",
+   "ccy": null,
+   "summary": "Plan item corrected · ends Jul 2041 → Jul 2040 · v1 → v2 · Arun · Thu 5 Nov 21:11 · in place",
+   "run": "r-1296",
+   "file": null
+  },
+  {
+   "id": "e-car-end",
+   "at": "2026-11-05T21:13:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "inline_edit",
+   "kind": "plan_end",
+   "record": "car2",
+   "field": "status",
+   "before": "active",
+   "after": "ended",
+   "ccy": null,
+   "summary": "Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Thu 5 Nov 21:13 · in place",
+   "run": "r-1297",
+   "file": null
+  },
+  {
+   "id": "e-wedding",
+   "at": "2026-11-05T21:16:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "wedding",
+   "field": "amount",
+   "before": null,
+   "after": 20000,
+   "ccy": "GBP",
+   "summary": "Plan item added · Sister's wedding, £20,000 in Mar 2027 · Arun · Thu 5 Nov 21:16 · in the chat",
+   "run": "r-1298",
+   "file": null
+  },
+  {
+   "id": "e-wedding-cover",
+   "at": "2026-11-05T21:17:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "plan_add",
+   "record": "wedding_cover",
+   "field": "amount",
+   "before": null,
+   "after": 19871,
+   "ccy": "GBP",
+   "summary": "Plan item added · Balanced (ISA) pays the wedding's shortfall, £19,871 in Jun 2027 · Arun · Thu 5 Nov 21:17 · in the chat · Undo",
+   "run": "r-1299",
+   "file": null
+  },
+  {
+   "id": "e-wedding-undo",
+   "at": "2026-11-05T21:18:00",
+   "day": "d3e",
+   "actor": "arun",
+   "via": "plan",
+   "kind": "undo",
+   "record": "wedding_cover",
+   "field": "amount",
+   "before": 19871,
+   "after": null,
+   "ccy": "GBP",
+   "summary": "Undone · Balanced (ISA) paying the wedding's shortfall · Arun · Thu 5 Nov 21:18 · in the chat",
+   "run": "r-1300",
+   "file": null
+  },
+  {
+   "id": "e-fresh-1",
+   "at": "2026-11-06T08:28:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "fresh_check",
+   "record": null,
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": null,
+   "summary": "Fresh check with passkey · good until 08:33 · Arun · Fri 6 Nov 08:28 · Passed",
+   "run": null,
+   "file": null
+  },
+  {
+   "id": "e-approve-cr26",
+   "at": "2026-11-06T08:29:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "admin_approve",
+   "record": "cr-26",
+   "field": "decision",
+   "before": "waiting",
+   "after": "approved",
+   "ccy": null,
+   "summary": "Approved · Promote the risk model v8 over v7 · cr-26 · passkey · Arun · Fri 6 Nov 08:29 · in the Admin center",
+   "run": "r-1314",
+   "file": null
+  },
+  {
+   "id": "e-replay",
+   "at": "2026-11-06T08:30:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "admin_replay",
+   "record": "mypaisa-prod-work",
+   "field": "dead_letters",
+   "before": 1,
+   "after": 0,
+   "ccy": null,
+   "summary": "Replayed 1 job · Ingest, NASDAQ 100 ETF · mypaisa-prod-work · Arun · Fri 6 Nov 08:30 · in the Admin center",
+   "run": "r-1315",
+   "file": null
+  },
+  {
+   "id": "e-ceiling",
+   "at": "2026-11-06T08:31:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "admin_ceiling",
+   "record": "prod_ceiling",
+   "field": "usd",
+   "before": 160,
+   "after": 50,
+   "ccy": "USD",
+   "summary": "Prod Claude ceiling $160 → $50 · Arun · Fri 6 Nov 08:31 · in the Admin center",
+   "run": "r-1316",
+   "file": null
+  },
+  {
+   "id": "e-fresh-fail",
+   "at": "2026-11-06T09:36:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "fresh_check_failed",
+   "record": null,
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": null,
+   "summary": "Fresh check with Google · Google signed in s•••@gmail.com, not your account. Nothing was changed. · Arun · Fri 6 Nov 09:36 · Failed",
+   "run": null,
+   "file": null
+  },
+  {
+   "id": "e-fresh-2",
+   "at": "2026-11-06T09:38:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "fresh_check",
+   "record": null,
+   "field": null,
+   "before": null,
+   "after": null,
+   "ccy": null,
+   "summary": "Fresh check with passkey · Arun · Fri 6 Nov 09:38 · Passed",
+   "run": null,
+   "file": null
+  },
+  {
+   "id": "e-pause-asha",
+   "at": "2026-11-06T09:40:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "admin_pause",
+   "record": "asha",
+   "field": "status",
+   "before": "active",
+   "after": "paused",
+   "ccy": null,
+   "summary": "Paused Asha's account · signed out everywhere: 2 sessions ended · Arun · Fri 6 Nov 09:40 · in the Admin center",
+   "run": "r-1317",
+   "file": null,
+   "target": "asha"
+  },
+  {
+   "id": "e-restore-asha",
+   "at": "2026-11-06T10:05:00",
+   "day": "d4",
+   "actor": "arun",
+   "via": "admin",
+   "kind": "admin_restore",
+   "record": "asha",
+   "field": "status",
+   "before": "paused",
+   "after": "active",
+   "ccy": null,
+   "summary": "Restored Asha's account · she signs in again on each device, Face ID or her PIN first · Arun · Fri 6 Nov 10:05 · in the Admin center",
+   "run": "r-1318",
+   "file": null,
+   "target": "asha"
+  }
+ ],
+ "runs": [
+  {
+   "id": "r-1196",
+   "at": "2026-10-25T10:02:40",
+   "trigger": "chat",
+   "title": "Chat · Arun, 10:02 · \"Fixed deposit in SBI\"",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 32,
+   "steps": [
+    {
+     "at": "10:02:40",
+     "label": "Arun wrote the FD sentence."
+    },
+    {
+     "at": "10:02:55",
+     "label": "draft_record typed the draft; whose and the interest option asked."
+    },
+    {
+     "at": "10:03:12",
+     "label": "Arun tapped Confirm; the record, its first event and the audit row were saved."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1268,
+     "out": 174,
+     "cached": 6668,
+     "cost_usd": 0.010334
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1266,
+     "out": 173,
+     "cached": 6666,
+     "cost_usd": 0.010333
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1266,
+     "out": 173,
+     "cached": 6666,
+     "cost_usd": 0.010333
+    }
+   ],
+   "tools": [
+    {
+     "name": "draft_record",
+     "ms": 85
+    },
+    {
+     "name": "ask_user",
+     "ms": 20
+    },
+    {
+     "name": "propose_change",
+     "ms": 105
+    }
+   ],
+   "cost_usd": 0.031,
+   "events": [
+    "e-fd-register"
+   ],
+   "outcome": "",
+   "illustrative": true
+  },
+  {
+   "id": "r-1197",
+   "at": "2026-10-25T20:08:30",
+   "trigger": "chat",
+   "title": "Chat · Arun, 20:08 · the home extension",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 35,
+   "steps": [
+    {
+     "at": "20:08:30",
+     "label": "Arun asked for a £35,000 extension next June."
+    },
+    {
+     "at": "20:09:05",
+     "label": "Confirm saved the plan item."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1300,
+     "out": 190,
+     "cached": 4500,
+     "cost_usd": 0.009
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1300,
+     "out": 190,
+     "cached": 4500,
+     "cost_usd": 0.009
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 90
+    }
+   ],
+   "cost_usd": 0.018,
+   "events": [
+    "e-plan-extension"
+   ],
+   "outcome": "",
+   "illustrative": true
+  },
+  {
+   "id": "r-1198",
+   "at": "2026-10-25T20:11:30",
+   "trigger": "chat",
+   "title": "Chat · Arun, 20:11 · replace the car",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 34,
+   "steps": [
+    {
+     "at": "20:11:30",
+     "label": "Arun asked for a new car around June 2031."
+    },
+    {
+     "at": "20:12:04",
+     "label": "Confirm saved the plan item."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1250,
+     "out": 180,
+     "cached": 4500,
+     "cost_usd": 0.0085
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1250,
+     "out": 180,
+     "cached": 4500,
+     "cost_usd": 0.0085
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 88
+    }
+   ],
+   "cost_usd": 0.017,
+   "events": [
+    "e-plan-car2"
+   ],
+   "outcome": "",
+   "illustrative": true
+  },
+  {
+   "id": "r-1199",
+   "at": "2026-10-25T20:14:30",
+   "trigger": "chat",
+   "title": "Chat · Arun, 20:14 · Asha's bonus",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 33,
+   "steps": [
+    {
+     "at": "20:14:30",
+     "label": "Arun asked to add Asha's bonus."
+    },
+    {
+     "at": "20:15:03",
+     "label": "Confirm saved the plan item."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1350,
+     "out": 200,
+     "cached": 4750,
+     "cost_usd": 0.0095
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1350,
+     "out": 200,
+     "cached": 4750,
+     "cost_usd": 0.0095
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 92
+    }
+   ],
+   "cost_usd": 0.019,
+   "events": [
+    "e-plan-bonus"
+   ],
+   "outcome": "",
+   "illustrative": true
+  },
+  {
+   "id": "r-1228",
+   "at": "2026-10-26T01:00:00",
+   "trigger": "schedule",
+   "title": "Nightly views",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 21,
+   "steps": [
+    {
+     "at": "01:00:00",
+     "label": "Trigger: the nightly schedule."
+    },
+    {
+     "at": "01:00:21",
+     "label": "Net worth, the budget month and what is due, rebuilt from the events."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1229",
+   "at": "2026-10-26T07:00:00",
+   "trigger": "schedule",
+   "title": "Prices",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 9,
+   "steps": [
+    {
+     "at": "07:00:00",
+     "label": "Trigger: the 07:00 schedule."
+    },
+    {
+     "at": "07:00:09",
+     "label": "6 of 6 priced at the Fri 23 Oct close, and the ECB rate."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1232",
+   "at": "2026-10-26T08:12:00",
+   "trigger": "chat",
+   "title": "Chat · Asha",
+   "status": "done",
+   "actor": "asha",
+   "agent": "concierge",
+   "duration_s": 7,
+   "steps": [
+    {
+     "at": "08:12:00",
+     "label": "Asha wrote to MyPaisa; her words stay hers."
+    },
+    {
+     "at": "08:12:07",
+     "label": "get_commitments read the views."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1250,
+     "out": 250,
+     "cached": 3000,
+     "cost_usd": 0.0095
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1250,
+     "out": 250,
+     "cached": 3000,
+     "cost_usd": 0.0095
+    }
+   ],
+   "tools": [
+    {
+     "name": "get_commitments",
+     "ms": 40
+    }
+   ],
+   "cost_usd": 0.019,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1233",
+   "at": "2026-10-26T09:00:00",
+   "trigger": "check_in",
+   "title": "Check-ins",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 2,
+   "steps": [
+    {
+     "at": "09:00:00",
+     "label": "Trigger: the 09:00 check-ins."
+    },
+    {
+     "at": "09:00:02",
+     "label": "1 card, 2 valuations (Home, Reading and Flat, Pune); sent with push, no amount."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1235",
+   "at": "2026-10-26T09:40:12",
+   "trigger": "chat",
+   "title": "Chat · Arun, 09:40 · \"£5,000 in Monzo savings\"",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 68,
+   "steps": [
+    {
+     "at": "09:40:12",
+     "label": "Trigger: Arun wrote \"£5,000 in Monzo savings\"."
+    },
+    {
+     "at": "09:40:15",
+     "label": "draft_record: code typed the draft against the savings account kind: Monzo, £5,000 in pounds, UK, instant access. Missing: whose."
+    },
+    {
+     "at": "09:40:16",
+     "label": "ask_user: \"Whose is it?\" with Arun, Asha and Joint."
+    },
+    {
+     "at": "09:40:58",
+     "label": "Answer: Arun tapped his own name."
+    },
+    {
+     "at": "09:41:01",
+     "label": "propose_change: the draft, hashed and held, owner Arun, all of it. The Confirm card went to the chat."
+    },
+    {
+     "at": "09:41:20",
+     "label": "Confirm: Arun tapped Confirm. The write service checked the hash, then saved the record, its first event and the audit row."
+    },
+    {
+     "at": "09:41:20",
+     "label": "Stream: records.changed went out; Home moved at every door."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "label": "drafted",
+     "in": 2310,
+     "cached": 6120,
+     "out": 196,
+     "ms": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Sonnet 5.5",
+     "label": "asked whose",
+     "in": 410,
+     "cached": 8430,
+     "out": 92,
+     "ms": 1200,
+     "cost_usd": 0.005
+    },
+    {
+     "model": "Sonnet 5.5",
+     "label": "proposed",
+     "in": 1060,
+     "cached": 8840,
+     "out": 238,
+     "ms": 2600,
+     "cost_usd": 0.009
+    }
+   ],
+   "tools": [
+    {
+     "name": "draft_record",
+     "ms": 80
+    },
+    {
+     "name": "ask_user",
+     "ms": 20
+    },
+    {
+     "name": "propose_change",
+     "ms": 110
+    }
+   ],
+   "cost_usd": 0.026,
+   "events": [
+    "e-monzo-register"
+   ],
+   "outcome": "Saved · audit row 09:41 · nothing retried",
+   "source": "Prototype v4 (prototype-v4-pages.js, the run page)"
+  },
+  {
+   "id": "r-1236",
+   "at": "2026-10-26T09:41:21",
+   "trigger": "event",
+   "title": "Views",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 2,
+   "steps": [
+    {
+     "at": "09:41:21",
+     "label": "Rebuilt after the new record; Home moved at every door."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1237",
+   "at": "2026-10-26T09:43:00",
+   "trigger": "chat",
+   "title": "Chat · Arun · \"What can we get at quickly now?\"",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 6,
+   "steps": [
+    {
+     "at": "09:43:00",
+     "label": "Arun asked what he can get at quickly."
+    },
+    {
+     "at": "09:43:06",
+     "label": "get_networth read the liquid view."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1150,
+     "out": 300,
+     "cached": 3500,
+     "cost_usd": 0.011
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1150,
+     "out": 300,
+     "cached": 3500,
+     "cost_usd": 0.011
+    }
+   ],
+   "tools": [
+    {
+     "name": "get_networth",
+     "ms": 35
+    }
+   ],
+   "cost_usd": 0.022,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1238",
+   "at": "2026-10-26T09:52:00",
+   "trigger": "event",
+   "title": "Views",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 2,
+   "steps": [
+    {
+     "at": "09:52:00",
+     "label": "Rebuilt after the correction to Home, Reading; Home moved at every door."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-home-correction"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1239",
+   "at": "2026-10-26T10:20:00",
+   "trigger": "chat",
+   "title": "Chat · Arun · what if £60,000 down on a second flat in June 2028",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 11,
+   "steps": [
+    {
+     "at": "10:20:00",
+     "label": "Arun asked the what-if."
+    },
+    {
+     "at": "10:20:09",
+     "label": "run_projection ran the override; nothing saved."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1100,
+     "out": 234,
+     "cached": 4000,
+     "cost_usd": 0.011334
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1100,
+     "out": 233,
+     "cached": 4000,
+     "cost_usd": 0.011333
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1100,
+     "out": 233,
+     "cached": 4000,
+     "cost_usd": 0.011333
+    }
+   ],
+   "tools": [
+    {
+     "name": "run_projection",
+     "ms": 1400
+    }
+   ],
+   "cost_usd": 0.034,
+   "events": [],
+   "outcome": "Done, not saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1241",
+   "at": "2026-10-26T10:40:00",
+   "trigger": "event",
+   "title": "Views",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 3,
+   "steps": [
+    {
+     "at": "10:40:00",
+     "label": "Rebuilt after Arun's salary growth went from 4.17% to 4.8%; the Projection ran again."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-salary-growth"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1242",
+   "at": "2026-10-26T10:44:00",
+   "trigger": "event",
+   "title": "Views",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 3,
+   "steps": [
+    {
+     "at": "10:44:00",
+     "label": "Rebuilt after Asha's bonus growth went from none to 3.5% a year; the Projection ran again."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-bonus-growth"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1262",
+   "at": "2026-11-01T08:40:00",
+   "trigger": "statement",
+   "title": "Chat · Arun · October's statements",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 240,
+   "steps": [
+    {
+     "at": "08:40:00",
+     "label": "Arun attached barclaycard-2026-11-01.pdf and monzo-2026-10.csv."
+    },
+    {
+     "at": "08:40:04",
+     "label": "Each file kept for good before anything reads it."
+    },
+    {
+     "at": "08:40:20",
+     "label": "extract_document read both: 22 lines, 5 recognised, 2 amber (AMZN Mktp, PAYPAL *EBAY)."
+    },
+    {
+     "at": "08:44:00",
+     "label": "Arun picked Shopping and Other, then tapped Confirm; the statements, the car loan's EMI and the card's £1,458 were saved."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 2300,
+     "out": 325,
+     "cached": 7500,
+     "cost_usd": 0.013
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 2300,
+     "out": 325,
+     "cached": 7500,
+     "cost_usd": 0.013
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 2300,
+     "out": 325,
+     "cached": 7500,
+     "cost_usd": 0.013
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 2300,
+     "out": 325,
+     "cached": 7500,
+     "cost_usd": 0.013
+    }
+   ],
+   "tools": [
+    {
+     "name": "extract_document",
+     "ms": 2200
+    },
+    {
+     "name": "propose_change",
+     "ms": 120
+    }
+   ],
+   "cost_usd": 0.052,
+   "events": [
+    "e-file-barclay",
+    "e-file-monzo",
+    "e-statements",
+    "e-emi-car"
+   ],
+   "outcome": "Saved · audit rows 08:44",
+   "illustrative": true
+  },
+  {
+   "id": "r-1263",
+   "at": "2026-11-01T09:00:00",
+   "trigger": "check_in",
+   "title": "Check-ins · close October's budget",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 2,
+   "steps": [
+    {
+     "at": "09:00:00",
+     "label": "Trigger: the month-end check-in, \"Anything not on a statement?\""
+    },
+    {
+     "at": "09:02:00",
+     "label": "Arun tapped Nothing else; October closed."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-month-close"
+   ],
+   "outcome": "Closed",
+   "illustrative": true
+  },
+  {
+   "id": "r-1264",
+   "at": "2026-11-01T09:03:00",
+   "trigger": "event",
+   "title": "Projection · R0",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 40,
+   "steps": [
+    {
+     "at": "09:03:00",
+     "label": "The engine ran the Projection after October closed (future-plans-v4 R0)."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1280",
+   "at": "2026-11-05T09:00:00",
+   "trigger": "check_in",
+   "title": "Check-ins · HDFC home loan EMI",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 2,
+   "steps": [
+    {
+     "at": "09:00:00",
+     "label": "Trigger: the 09:00 check-in, \"Was November's EMI of ₹39,390 paid?\""
+    },
+    {
+     "at": "09:12:00",
+     "label": "Arun tapped Paid; saved with Undo."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-emi-paid"
+   ],
+   "outcome": "Saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1281",
+   "at": "2026-11-05T09:12:05",
+   "trigger": "event",
+   "title": "Views",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 3,
+   "steps": [
+    {
+     "at": "09:12:05",
+     "label": "Rebuilt after the EMI; Home moved at every door."
+    },
+    {
+     "at": "09:13:00",
+     "label": "The engine's run R5N: the same figures as R0, the EMI was already in November's flows."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1283",
+   "at": "2026-11-05T10:20:00",
+   "trigger": "chat",
+   "title": "Chat · Arun · what if £60,000 down on a second flat in June 2028",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 11,
+   "steps": [
+    {
+     "at": "10:20:00",
+     "label": "Arun asked the what-if."
+    },
+    {
+     "at": "10:20:09",
+     "label": "run_projection ran it; Arun cancelled the plan item, nothing saved."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1100,
+     "out": 234,
+     "cached": 4000,
+     "cost_usd": 0.011334
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1100,
+     "out": 233,
+     "cached": 4000,
+     "cost_usd": 0.011333
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1100,
+     "out": 233,
+     "cached": 4000,
+     "cost_usd": 0.011333
+    }
+   ],
+   "tools": [
+    {
+     "name": "run_projection",
+     "ms": 1400
+    }
+   ],
+   "cost_usd": 0.034,
+   "events": [],
+   "outcome": "Done, not saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1284",
+   "at": "2026-11-05T10:26:00",
+   "trigger": "chat",
+   "title": "Chat · Asha · the same what-if",
+   "status": "done",
+   "actor": "asha",
+   "agent": "concierge",
+   "duration_s": 10,
+   "steps": [
+    {
+     "at": "10:26:00",
+     "label": "Asha asked the what-if; every edit control is hidden for her."
+    },
+    {
+     "at": "10:26:08",
+     "label": "run_projection ran it for her; unsaved."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1068,
+     "out": 218,
+     "cached": 3834,
+     "cost_usd": 0.010334
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1066,
+     "out": 216,
+     "cached": 3833,
+     "cost_usd": 0.010333
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1066,
+     "out": 216,
+     "cached": 3833,
+     "cost_usd": 0.010333
+    }
+   ],
+   "tools": [
+    {
+     "name": "run_projection",
+     "ms": 1350
+    }
+   ],
+   "cost_usd": 0.031,
+   "events": [],
+   "outcome": "Done, not saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1290",
+   "at": "2026-11-05T20:41:00",
+   "trigger": "chat",
+   "title": "Chat · Arun · school fees",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 140,
+   "steps": [
+    {
+     "at": "20:41:00",
+     "label": "Arun: £4,000 a month from Jan 2029 for my kid's schooling."
+    },
+    {
+     "at": "20:41:30",
+     "label": "Three questions answered: until Jul 2041, 4.5% a year, the monthly budget."
+    },
+    {
+     "at": "20:43:00",
+     "label": "Confirm saved the plan item; the engine ran R1."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1400,
+     "out": 268,
+     "cached": 5334,
+     "cost_usd": 0.013666
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1400,
+     "out": 266,
+     "cached": 5333,
+     "cost_usd": 0.013667
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1400,
+     "out": 266,
+     "cached": 5333,
+     "cost_usd": 0.013667
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 95
+    },
+    {
+     "name": "run_projection",
+     "ms": 1500
+    }
+   ],
+   "cost_usd": 0.041,
+   "events": [
+    "e-school-fees"
+   ],
+   "outcome": "Saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1291",
+   "at": "2026-11-05T20:43:30",
+   "trigger": "chat",
+   "title": "Chat · Arun · cover the school fees (option 1)",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 150,
+   "steps": [
+    {
+     "at": "20:43:30",
+     "label": "MyPaisa showed three ways to cover the gap."
+    },
+    {
+     "at": "20:46:00",
+     "label": "Arun confirmed option 1: the pot and November's budget change; the engine ran R2."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1450,
+     "out": 250,
+     "cached": 5500,
+     "cost_usd": 0.009
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1450,
+     "out": 250,
+     "cached": 5500,
+     "cost_usd": 0.009
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 95
+    }
+   ],
+   "cost_usd": 0.018,
+   "events": [
+    "e-school-pot",
+    "e-budget-nov"
+   ],
+   "outcome": "Saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1292",
+   "at": "2026-11-05T20:52:00",
+   "trigger": "chat",
+   "title": "Chat · Arun · salary to £5,500 from Sep 2028",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 60,
+   "steps": [
+    {
+     "at": "20:52:00",
+     "label": "Arun asked for the salary step."
+    },
+    {
+     "at": "20:53:00",
+     "label": "Confirm saved it; the engine ran R3."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1500,
+     "out": 250,
+     "cached": 5500,
+     "cost_usd": 0.011
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1500,
+     "out": 250,
+     "cached": 5500,
+     "cost_usd": 0.011
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 90
+    }
+   ],
+   "cost_usd": 0.022,
+   "events": [
+    "e-salary-step"
+   ],
+   "outcome": "Saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1293",
+   "at": "2026-11-05T20:58:00",
+   "trigger": "chat",
+   "title": "Chat · Arun · close HDFC with the SBI FD",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 62,
+   "steps": [
+    {
+     "at": "20:58:00",
+     "label": "Arun asked to close the HDFC loan with the SBI FD when it matures."
+    },
+    {
+     "at": "20:59:00",
+     "label": "Confirm saved it; the engine ran R4."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1300,
+     "out": 234,
+     "cached": 5000,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1300,
+     "out": 233,
+     "cached": 5000,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1300,
+     "out": 233,
+     "cached": 5000,
+     "cost_usd": 0.012
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 100
+    },
+    {
+     "name": "run_projection",
+     "ms": 1450
+    }
+   ],
+   "cost_usd": 0.036,
+   "events": [
+    "e-hdfc-close"
+   ],
+   "outcome": "Saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1294",
+   "at": "2026-11-05T21:08:00",
+   "trigger": "event",
+   "title": "Views · Replace the car paused",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 40,
+   "steps": [
+    {
+     "at": "21:08:00",
+     "label": "Engine run R5 after the pause."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-car-pause"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1295",
+   "at": "2026-11-05T21:09:00",
+   "trigger": "event",
+   "title": "Views · Replace the car resumed",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 40,
+   "steps": [
+    {
+     "at": "21:09:00",
+     "label": "Engine run R5b after the resume."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-car-resume"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1296",
+   "at": "2026-11-05T21:11:00",
+   "trigger": "event",
+   "title": "Views · School fees' end corrected",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 40,
+   "steps": [
+    {
+     "at": "21:11:00",
+     "label": "Engine run R6 after the correction."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-school-end"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1297",
+   "at": "2026-11-05T21:13:00",
+   "trigger": "event",
+   "title": "Views · Replace the car ended",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 40,
+   "steps": [
+    {
+     "at": "21:13:00",
+     "label": "Engine run R7 after the end."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-car-end"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1298",
+   "at": "2026-11-05T21:15:00",
+   "trigger": "chat",
+   "title": "Chat · Arun · the sister's wedding",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 60,
+   "steps": [
+    {
+     "at": "21:15:00",
+     "label": "Arun: £20,000 for my sister's wedding in Mar 2027."
+    },
+    {
+     "at": "21:16:00",
+     "label": "Confirm saved it; code flagged cash below zero from Jun 2027 and MyPaisa offered three ways to cover it."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1368,
+     "out": 250,
+     "cached": 5168,
+     "cost_usd": 0.013
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1366,
+     "out": 250,
+     "cached": 5166,
+     "cost_usd": 0.013
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1366,
+     "out": 250,
+     "cached": 5166,
+     "cost_usd": 0.013
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 95
+    },
+    {
+     "name": "run_projection",
+     "ms": 1500
+    }
+   ],
+   "cost_usd": 0.039,
+   "events": [
+    "e-wedding"
+   ],
+   "outcome": "Saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1299",
+   "at": "2026-11-05T21:16:30",
+   "trigger": "chat",
+   "title": "Chat · Arun · cover the wedding from Balanced (ISA)",
+   "status": "done",
+   "actor": "arun",
+   "agent": "concierge",
+   "duration_s": 30,
+   "steps": [
+    {
+     "at": "21:16:30",
+     "label": "Arun chose the first way."
+    },
+    {
+     "at": "21:17:00",
+     "label": "Confirm saved the cover."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1800,
+     "out": 300,
+     "cached": 6000,
+     "cost_usd": 0.008
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_plan_item",
+     "ms": 90
+    }
+   ],
+   "cost_usd": 0.008,
+   "events": [
+    "e-wedding-cover"
+   ],
+   "outcome": "Saved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1300",
+   "at": "2026-11-05T21:18:00",
+   "trigger": "event",
+   "title": "Views · the cover undone",
+   "status": "done",
+   "actor": null,
+   "agent": null,
+   "duration_s": 3,
+   "steps": [
+    {
+     "at": "21:18:00",
+     "label": "Undo wrote a reversal; cash is flagged again; the wedding stays saved."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-wedding-undo"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1310",
+   "at": "2026-11-06T03:00:00",
+   "trigger": "schedule",
+   "title": "News scout · 03:00",
+   "status": "failed",
+   "actor": null,
+   "agent": "news_scout",
+   "duration_s": 720,
+   "steps": [
+    {
+     "at": "03:00:00",
+     "label": "Trigger: the 03:00 schedule."
+    },
+    {
+     "at": "03:12:00",
+     "label": "The per-run guard stopped the run at 8 calls; no heartbeat since 03:12."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 191,
+     "cached": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 187,
+     "cached": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 187,
+     "cached": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 187,
+     "cached": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 187,
+     "cached": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 187,
+     "cached": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 187,
+     "cached": 2500,
+     "cost_usd": 0.012
+    },
+    {
+     "model": "Haiku 4.5",
+     "in": 1125,
+     "out": 187,
+     "cached": 2500,
+     "cost_usd": 0.012
+    }
+   ],
+   "tools": [
+    {
+     "name": "web_fetch",
+     "ms": 900
+    }
+   ],
+   "cost_usd": 0.096,
+   "events": [],
+   "outcome": "Stopped at the 8-call guard",
+   "illustrative": true
+  },
+  {
+   "id": "r-1311",
+   "at": "2026-11-06T06:30:00",
+   "trigger": "schedule",
+   "title": "Forecaster · the daily run",
+   "status": "done",
+   "actor": null,
+   "agent": "forecaster",
+   "duration_s": 300,
+   "steps": [
+    {
+     "at": "06:30:00",
+     "label": "Trigger: the daily run; it timed out once."
+    },
+    {
+     "at": "06:35:00",
+     "label": "Retried; finished on the second try."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1500,
+     "out": 300,
+     "cached": 4500,
+     "cost_usd": 0.017
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1500,
+     "out": 300,
+     "cached": 4500,
+     "cost_usd": 0.017
+    }
+   ],
+   "tools": [
+    {
+     "name": "run_projection",
+     "ms": 1400
+    }
+   ],
+   "cost_usd": 0.034,
+   "events": [],
+   "outcome": "Done on the second try",
+   "illustrative": true
+  },
+  {
+   "id": "r-1312",
+   "at": "2026-11-06T06:40:00",
+   "trigger": "schedule",
+   "title": "Grader and tuner · daily grading",
+   "status": "done",
+   "actor": null,
+   "agent": "grader_tuner",
+   "duration_s": 30,
+   "steps": [
+    {
+     "at": "06:40:00",
+     "label": "Trigger: the daily grading."
+    },
+    {
+     "at": "06:40:30",
+     "label": "Asked the owner to promote the risk model v8 over v7 (cr-26)."
+    }
+   ],
+   "model_calls": [
+    {
+     "model": "Sonnet 5.5",
+     "in": 1700,
+     "out": 350,
+     "cached": 5000,
+     "cost_usd": 0.0205
+    },
+    {
+     "model": "Sonnet 5.5",
+     "in": 1700,
+     "out": 350,
+     "cached": 5000,
+     "cost_usd": 0.0205
+    }
+   ],
+   "tools": [
+    {
+     "name": "propose_change",
+     "ms": 100
+    }
+   ],
+   "cost_usd": 0.041,
+   "events": [],
+   "outcome": "Asked you",
+   "illustrative": true
+  },
+  {
+   "id": "r-1313",
+   "at": "2026-11-06T07:00:00",
+   "trigger": "schedule",
+   "title": "Ingest · NASDAQ 100 ETF",
+   "status": "failed",
+   "actor": null,
+   "agent": "data_steward",
+   "duration_s": 3120,
+   "steps": [
+    {
+     "at": "07:00:00",
+     "label": "Trigger: the 07:00 ingest."
+    },
+    {
+     "at": "07:52:00",
+     "label": "Timed out at the source 5 times; the job went to the dead-letter queue."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [],
+   "outcome": "In the dead-letter queue",
+   "illustrative": true,
+   "tries": 5
+  },
+  {
+   "id": "r-1314",
+   "at": "2026-11-06T08:29:00",
+   "trigger": "admin",
+   "title": "Admin desk · approve cr-26",
+   "status": "done",
+   "actor": null,
+   "agent": "admin_desk",
+   "duration_s": 1,
+   "steps": [
+    {
+     "at": "08:29:00",
+     "label": "Arun approved: promote the risk model v8 over v7 (passkey)."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-approve-cr26"
+   ],
+   "outcome": "Approved",
+   "illustrative": true
+  },
+  {
+   "id": "r-1315",
+   "at": "2026-11-06T08:30:00",
+   "trigger": "admin",
+   "title": "Ops warden · replay the dead-letter queue",
+   "status": "replayed",
+   "actor": null,
+   "agent": "ops_warden",
+   "duration_s": 20,
+   "steps": [
+    {
+     "at": "08:30:00",
+     "label": "Arun tapped Replay; the fresh check named the queue and the count."
+    },
+    {
+     "at": "08:30:20",
+     "label": "The job ran: the NASDAQ 100 ETF is priced."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-replay"
+   ],
+   "outcome": "Replayed 1 job; it ran",
+   "illustrative": true
+  },
+  {
+   "id": "r-1316",
+   "at": "2026-11-06T08:31:00",
+   "trigger": "admin",
+   "title": "Admin desk · move the prod ceiling",
+   "status": "done",
+   "actor": null,
+   "agent": "admin_desk",
+   "duration_s": 1,
+   "steps": [
+    {
+     "at": "08:31:00",
+     "label": "Arun moved the prod Claude ceiling from $160 to $50; it takes effect on the next model call."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-ceiling"
+   ],
+   "outcome": "Done",
+   "illustrative": true
+  },
+  {
+   "id": "r-1317",
+   "at": "2026-11-06T09:40:00",
+   "trigger": "admin",
+   "title": "Admin desk · pause Asha",
+   "status": "done",
+   "actor": null,
+   "agent": "admin_desk",
+   "duration_s": 1,
+   "steps": [
+    {
+     "at": "09:40:00",
+     "label": "Arun paused Asha: signed out everywhere, 2 sessions ended; she and he were told."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-pause-asha"
+   ],
+   "outcome": "Paused",
+   "illustrative": true
+  },
+  {
+   "id": "r-1318",
+   "at": "2026-11-06T10:05:00",
+   "trigger": "admin",
+   "title": "Admin desk · restore Asha",
+   "status": "done",
+   "actor": null,
+   "agent": "admin_desk",
+   "duration_s": 1,
+   "steps": [
+    {
+     "at": "10:05:00",
+     "label": "Arun restored Asha; she signs in again on each device."
+    }
+   ],
+   "model_calls": [],
+   "tools": [],
+   "cost_usd": 0,
+   "events": [
+    "e-restore-asha"
+   ],
+   "outcome": "Restored",
+   "illustrative": true
+  }
+ ],
+ "files": [
+  {
+   "id": "f-barclay",
+   "name": "barclaycard-2026-11-01.pdf",
+   "kind": "pdf",
+   "bytes": 497664,
+   "pages": 4,
+   "received_at": "2026-11-01T08:40:00",
+   "from": "arun",
+   "via": "chat",
+   "statement": "barclaycard_nov",
+   "events": [
+    "e-file-barclay",
+    "e-statements"
+   ],
+   "source": "Prototype v4 'PDF · 4 pages · 486 KB' (486 KB read as 486 x 1024 bytes)",
+   "lines": 16
+  },
+  {
+   "id": "f-monzo",
+   "name": "monzo-2026-10.csv",
+   "kind": "csv",
+   "bytes": 417,
+   "bytes_illustrative": true,
+   "received_at": "2026-11-01T08:40:05",
+   "from": "arun",
+   "via": "chat",
+   "statement": "monzo_current_oct",
+   "events": [
+    "e-file-monzo",
+    "e-statements",
+    "e-emi-car"
+   ],
+   "source": "Prototype v4 'CSV · 11 lines'; its size is the CSV the household's own lines make",
+   "lines": 11
+  }
+ ],
+ "jobs": [
+  {
+   "name": "Nightly views",
+   "last": "2026-11-06T01:00",
+   "next": "2026-11-07T01:00",
+   "status": "ok"
+  },
+  {
+   "name": "Prices",
+   "last": "2026-11-06T07:00",
+   "next": "2026-11-06T21:00",
+   "status": "ok"
+  },
+  {
+   "name": "Morning brief",
+   "last": "2026-11-06T07:15",
+   "next": "2026-11-09T07:15",
+   "status": "ok",
+   "note": "weekdays; Fri 6 Nov to Mon 9 Nov"
+  },
+  {
+   "name": "Check-ins",
+   "last": "2026-11-06T09:00",
+   "next": "2026-11-10T09:00",
+   "status": "ok",
+   "note": "the next due is the Parag Parikh SIP on Tue 10 Nov",
+   "illustrative": true
+  },
+  {
+   "name": "Evening wrap",
+   "last": "2026-11-05T21:15",
+   "next": "2026-11-06T21:15",
+   "status": "ok"
+  },
+  {
+   "name": "Ingest, NASDAQ 100 ETF",
+   "last": "2026-11-06T07:52",
+   "next": "2026-11-06T08:30",
+   "status": "failed",
+   "note": "in the dead-letter queue until e-replay at 08:30"
+  },
+  {
+   "name": "News scout",
+   "last": "2026-11-06T03:00",
+   "next": "2026-11-07T03:00",
+   "status": "late",
+   "note": "stopped at the 8-call guard; silent since 03:12"
+  },
+  {
+   "name": "Weekly digest",
+   "last": "2026-10-31T09:00",
+   "next": "2026-11-07T09:00",
+   "status": "ok",
+   "note": "Saturdays"
+  }
+ ],
+ "admin": {
+  "about": "Admin center data on the demo's Fri 6 Nov (08:28 to 10:05). Spend is the ledger's own runs; every other figure is transcribed from Browser Admin center 2 and 3 and iPhone admin, with Telegram replaced by push (the web app is the spec).",
+  "spend": {
+   "clock": "d4 08:28, before the ceiling moved at 08:31",
+   "cycle": {
+    "renewal_day": 3,
+    "start": "2026-11-03",
+    "next_renewal": "2026-12-03",
+    "credit_usd": 200,
+    "hard_limit_usd": {
+     "prod": 200,
+     "dev": 200
+    },
+    "console_limits_usd": {
+     "prod": 160,
+     "dev": 40
+    },
+    "auto_reload": false,
+    "source": "iPhone admin 'renews Tue 3 Nov' and Prototype Activity 'renews 3 Nov'"
+   },
+   "snapshots": [
+    {
+     "as_of": "2026-10-26T09:53:00",
+     "clock": "d1 09:53, Prototype v4's Activity page",
+     "cycle_start": "2026-10-03",
+     "base_before_first_listed_run_usd": 17.848,
+     "runs_usd": 0.152,
+     "spent_usd": 18.0,
+     "ceiling_usd": 160,
+     "pct": 11,
+     "gbp_spent": 14,
+     "gbp_ceiling": 123
+    },
+    {
+     "as_of": "2026-11-06T08:28:00",
+     "clock": "d4 08:28, the Admin center's fresh check",
+     "cycle_start": "2026-11-03",
+     "base_before_first_listed_run_usd": 0.0,
+     "runs_usd": 0.4,
+     "spent_usd": 0.4,
+     "ceiling_usd": 160,
+     "pct": 0,
+     "gbp_spent": 0,
+     "gbp_ceiling": 123
+    }
+   ],
+   "usd_per_gbp": 1.3,
+   "prod": {
+    "as_of": "2026-11-06T08:28:00",
+    "clock": "d4 08:28, the Admin center's fresh check",
+    "cycle_start": "2026-11-03",
+    "base_before_first_listed_run_usd": 0.0,
+    "runs_usd": 0.4,
+    "spent_usd": 0.4,
+    "ceiling_usd": 160,
+    "pct": 0,
+    "gbp_spent": 0,
+    "gbp_ceiling": 123,
+    "step": "Normal, under 70%",
+    "steps_pct": [
+     70,
+     85,
+     95,
+     100
+    ],
+    "steps_usd": [
+     112.0,
+     136.0,
+     152.0,
+     160.0
+    ]
+   },
+   "dev": {
+    "spent_usd": 6.1,
+    "ceiling_usd": 40,
+    "pct": 15,
+    "illustrative": true,
+    "source": "Admin center 2 and 3 (dev serves synthetic data; its runs are not in this ledger)"
+   },
+   "members": [
+    {
+     "id": "arun",
+     "spent_usd": 0.198,
+     "share_pct": 60,
+     "share_usd": 96.0
+    },
+    {
+     "id": "asha",
+     "spent_usd": 0.031,
+     "share_pct": 60,
+     "share_usd": 96.0
+    },
+    {
+     "id": "household_jobs",
+     "spent_usd": 0.171,
+     "note": "no member's share"
+    }
+   ],
+   "agents": [
+    {
+     "id": "concierge",
+     "name": "Concierge",
+     "share_pct": 55,
+     "ceiling_usd": 88.0,
+     "spent_usd": 0.229
+    },
+    {
+     "id": "forecaster",
+     "name": "Forecaster explanations",
+     "share_pct": 10,
+     "ceiling_usd": 16.0,
+     "spent_usd": 0.034
+    },
+    {
+     "id": "news_scout",
+     "name": "News scout",
+     "share_pct": 10,
+     "ceiling_usd": 16.0,
+     "spent_usd": 0.096
+    },
+    {
+     "id": "grader_tuner",
+     "name": "Grader and tuner reviews",
+     "share_pct": 10,
+     "ceiling_usd": 16.0,
+     "spent_usd": 0.041
+    },
+    {
+     "id": "admin_desk",
+     "name": "Admin desk",
+     "share_pct": 5,
+     "ceiling_usd": 8.0,
+     "spent_usd": 0
+    },
+    {
+     "id": "data_steward",
+     "name": "Data steward and ops warden",
+     "share_pct": 5,
+     "ceiling_usd": 8.0,
+     "spent_usd": 0
+    },
+    {
+     "id": "reserve",
+     "name": "Reserve, the chat first",
+     "share_pct": 5,
+     "ceiling_usd": 8.0,
+     "spent_usd": 0
+    }
+   ],
+   "guards": {
+    "member_share_pct": 60,
+    "daily_multiple": 3,
+    "daily_guard_usd": 16.0,
+    "today_usd": 0.171,
+    "run_calls": 8
+   },
+   "ladder": [
+    {
+     "pct": 70,
+     "name": "A heads-up",
+     "does": "One message to you: what is spent, on what, and the days left. Nothing changes."
+    },
+    {
+     "pct": 85,
+     "name": "Savers",
+     "does": "No bull and bear debate, the Saturday review on Sonnet, three Why? searches a day, sentiment scoring paused."
+    },
+    {
+     "pct": 95,
+     "name": "Essentials only",
+     "does": "Chat on Haiku; the brief, the wrap and alerts as plain templates with the engine's numbers."
+    },
+    {
+     "pct": 100,
+     "name": "Templates only",
+     "does": "Claude stops until the renewal or until you raise the ceiling; buttons and guided flows still work."
+    }
+   ],
+   "after_ceiling_move": {
+    "event": "e-ceiling",
+    "from_usd": 160,
+    "to_usd": 50,
+    "spent_usd": 0.4,
+    "pct_of_new": 0.8,
+    "step": "Normal, under 70%",
+    "steps_usd": [
+     35.0,
+     42.5,
+     47.5,
+     50.0
+    ],
+    "member_share_usd": 30.0,
+    "daily_guard_usd": 5.0,
+    "tells": "an audit row and a push to you",
+    "takes_effect": "the next model call"
+   },
+   "refused_example": {
+    "asked_usd": 220,
+    "why": "above prod's hard limit, $200; nothing changes",
+    "source": "iPhone admin 'Above the hard limit: refused'"
+   }
+  },
+  "aws_cap": {
+   "cap_gbp": 50,
+   "range_gbp": [
+    10,
+    75
+   ],
+   "spent_gbp": 3,
+   "pct": 6,
+   "forecast_gbp": 3.2,
+   "steps": [
+    {
+     "pct": 50,
+     "gbp": 25,
+     "does": "You are told; also when the month's forecast passes the cap."
+    },
+    {
+     "pct": 80,
+     "gbp": 40,
+     "does": "Dev's schedules pause."
+    },
+    {
+     "pct": 100,
+     "gbp": 50,
+     "does": "Dev pauses; prod's back-fills, retraining and challengers pause."
+    }
+   ],
+   "never_stops": "the brief, alerts and the chat",
+   "flags": "none set",
+   "backstop": "AWS Budgets at £75, made by Terraform, shown not editable",
+   "paid_feeds": [
+    {
+     "name": "EODHD Historian",
+     "gbp_month": 19.99,
+     "request": "cr-27",
+     "from": "2026-12-01",
+     "illustrative": true
+    }
+   ],
+   "source": "iPhone admin '£3 of £50 · 6%', 'Forecast £3.20'; Admin center 2 and 3 steps"
+  },
+  "alerts": {
+   "channels": [
+    "app",
+    "push",
+    "email"
+   ],
+   "rows": [
+    {
+     "id": "a-incident-news",
+     "kind": "incident",
+     "title": "Incident · the news scout is silent",
+     "severity": "critical",
+     "at": "2026-11-06T06:12",
+     "status": "open",
+     "run": "r-1310",
+     "sent": "App, push (it rang through quiet hours) and email."
+    },
+    {
+     "id": "a-approval-cr26",
+     "kind": "approval",
+     "title": "Approval waiting · Promote the risk model v8 over v7?",
+     "severity": "waiting",
+     "at": "2026-11-06T06:40",
+     "status": "closed at 08:29 by e-approve-cr26",
+     "expires": "2026-11-13T06:40",
+     "run": "r-1312",
+     "sent": "App at once; push in tonight's digest; no email, as it is not critical."
+    },
+    {
+     "id": "a-failed-work",
+     "kind": "failed_work",
+     "title": "Failed work · prod",
+     "severity": "needs_you",
+     "at": "2026-11-06T07:52",
+     "status": "replayed at 08:30 by e-replay",
+     "run": "r-1313",
+     "queue": "mypaisa-prod-work",
+     "count": 1,
+     "oldest": "36 min, since 07:52 (at 08:28)",
+     "reason": "Timeout at the source",
+     "job": "Ingest, NASDAQ 100 ETF",
+     "tried": "5 times, 07:00 to 07:52",
+     "effect": "Until it runs, the NASDAQ 100 ETF shows Thursday's close, marked stale."
+    },
+    {
+     "id": "a-feed-silver",
+     "kind": "feed_stale",
+     "title": "Data feed stale · Physical Silver",
+     "severity": "closed",
+     "at": "2026-11-05T21:31",
+     "status": "closed",
+     "d": "yfinance was late; the chain failed over to FT at 21:40. Fixed on its own."
+    }
+   ],
+   "routing": [
+    {
+     "kind": "A Claude or AWS step; the forecast over the cap",
+     "severity": "Critical at 100% and over the cap",
+     "app": "all",
+     "push": "all",
+     "email": "all"
+    },
+    {
+     "kind": "An incident; an approval waiting",
+     "severity": "Incidents are critical",
+     "app": "all",
+     "push": "all",
+     "email": "critical"
+    },
+    {
+     "kind": "Failed work; a data feed stale",
+     "severity": "Never critical",
+     "app": "all",
+     "push": "all",
+     "email": "off"
+    },
+    {
+     "kind": "Holding alerts",
+     "severity": "Each member's own",
+     "app": "own",
+     "push": "own",
+     "email": "off"
+    }
+   ],
+   "quiet_hours": {
+    "from": "22:00",
+    "to": "07:00",
+    "channels": [
+     "push",
+     "email"
+    ],
+    "critical_breaks_through": true
+   },
+   "cooldown_hours": 6,
+   "cooldown_note": "Failed work: once per queue until it is replayed.",
+   "digest": {
+    "at": "19:00",
+    "where": "the app, by push",
+    "holds": "non-urgent alerts, waiting requests, what the system fixed on its own"
+   },
+   "email": {
+    "topic": "mypaisa-prod-admin-alerts",
+    "to": "y•••@gmail.com",
+    "free_per_month": 1000
+   },
+   "red_alerts_per_week_each": 2,
+   "queues": [
+    {
+     "name": "mypaisa-prod-outbox.fifo",
+     "tries": 5,
+     "backoff": "as long as the sender's retry-after asks"
+    },
+    {
+     "name": "mypaisa-prod-work",
+     "tries": 5,
+     "backoff_s": [
+      30,
+      1800
+     ],
+     "carries": "each ingest, news feed, document read, the engine, each brief"
+    }
+   ],
+   "source": "Browser Admin center 2 and 3 (Alerts), iPhone admin (alerts); dates moved to the demo's Fri 6 Nov"
+  },
+  "approvals": [
+   {
+    "id": "cr-26",
+    "from": "Grader and tuner",
+    "title": "Promote the risk model v8 over v7?",
+    "kind": "approval",
+    "created": "2026-11-06T06:40",
+    "expires": "2026-11-13T06:40",
+    "cost": "none",
+    "risk": "low",
+    "why": "v8 beats v7 in the held-out years and over 8 live weeks, by more than the margin.",
+    "undo": "v7 stays ready and comes back on its own if v8 slips.",
+    "status": "approved",
+    "decided": {
+     "at": "2026-11-06T08:29",
+     "by": "arun",
+     "how": "passkey",
+     "event": "e-approve-cr26"
+    }
+   },
+   {
+    "id": "q-isin",
+    "from": "Data steward",
+    "title": "Which is the Monzo Balanced fund's ISIN?",
+    "kind": "question",
+    "created": "2026-11-05T18:20",
+    "status": "waiting"
+   },
+   {
+    "id": "cr-27",
+    "from": "Data steward",
+    "title": "Switch on EODHD Historian at £19.99 a month",
+    "kind": "approval",
+    "status": "approved",
+    "decided": {
+     "at": "2026-11-06T08:05",
+     "by": "arun",
+     "how": "Face ID",
+     "event": null
+    },
+    "illustrative": true
+   },
+   {
+    "id": "cr-22",
+    "from": "News scout",
+    "title": "Add a Reddit forum as a news feed",
+    "kind": "approval",
+    "status": "rejected",
+    "decided": {
+     "at": "2026-11-03",
+     "by": "arun",
+     "how": "in the app",
+     "event": null,
+     "not_again_before": "2026-12-03"
+    },
+    "illustrative": true
+   }
+  ],
+  "agents": [
+   {
+    "id": "concierge",
+    "name": "Concierge",
+    "job": "Talks to members; routes your instructions",
+    "heartbeat": "2026-11-06T08:27",
+    "last": "2026-11-06T08:21",
+    "status": "running"
+   },
+   {
+    "id": "data_steward",
+    "name": "Data steward",
+    "job": "Keeps prices flowing from free sources",
+    "heartbeat": "2026-11-06T08:26",
+    "last": "2026-11-06T08:10",
+    "status": "running"
+   },
+   {
+    "id": "news_scout",
+    "name": "News scout",
+    "job": "Collects news, matches it to holdings",
+    "heartbeat": "2026-11-06T03:12",
+    "last": "2026-11-06T03:00",
+    "status": "incident"
+   },
+   {
+    "id": "analyst",
+    "name": "Analyst",
+    "job": "The rules engine",
+    "heartbeat": "2026-11-06T08:25",
+    "last": "2026-11-05T21:20",
+    "status": "running",
+    "model": "none"
+   },
+   {
+    "id": "forecaster",
+    "name": "Forecaster",
+    "job": "The risk and return models",
+    "heartbeat": "2026-11-06T08:25",
+    "last": "2026-11-06T06:30",
+    "status": "running"
+   },
+   {
+    "id": "grader_tuner",
+    "name": "Grader and tuner",
+    "job": "Grades daily, calibrates within bounds",
+    "heartbeat": "2026-11-06T08:24",
+    "last": "2026-11-06T06:40",
+    "status": "asked you"
+   },
+   {
+    "id": "ops_warden",
+    "name": "Ops warden",
+    "job": "Runs the daily pipeline and repairs it",
+    "heartbeat": "2026-11-06T08:27",
+    "last": "2026-11-06T08:20",
+    "status": "running"
+   },
+   {
+    "id": "budget_keeper",
+    "name": "Budget keeper",
+    "job": "The meter, the ladder and the guards",
+    "heartbeat": "2026-11-06T08:28",
+    "last": "2026-11-06T08:28",
+    "status": "running",
+    "model": "none"
+   },
+   {
+    "id": "admin_desk",
+    "name": "Admin desk",
+    "job": "Between the agents and you",
+    "heartbeat": "2026-11-06T08:27",
+    "last": "2026-11-06T08:05",
+    "status": "running"
+   }
+  ],
+  "incidents": [
+   {
+    "id": "inc-news-scout",
+    "agent": "news_scout",
+    "title": "The news scout is silent",
+    "opened": "2026-11-06T06:12",
+    "status": "open",
+    "run": "r-1310",
+    "tried": [
+     {
+      "at": "03:00",
+      "what": "The per-run guard stopped the run at 8 calls, as it should."
+     },
+     {
+      "at": "05:00",
+      "what": "The ops warden restarted it: it stopped again on the same story."
+     },
+     {
+      "at": "05:30",
+      "what": "Rolled back from v14 to v13, its last good version: stopped again."
+     },
+     {
+      "at": "06:12",
+      "what": "Raised to you: app, push (it rang through quiet hours) and email."
+     }
+    ],
+    "choices": [
+     {
+      "id": "skip",
+      "label": "Skip the story",
+      "does": "The story is marked bad and left out. A run costs about $0.05 of the scout's $16."
+     },
+     {
+      "id": "pause",
+      "label": "Pause until Mon",
+      "does": "No news matching until Mon 06:00; stances keep Thursday's events."
+     },
+     {
+      "id": "issue",
+      "label": "Open an issue",
+      "does": "The ops warden files it with the errors attached. Nothing changes in the app."
+     }
+    ],
+    "fixed_on_its_own": [
+     {
+      "at": "2026-11-05T21:40",
+      "what": "Physical Silver failed over to FT: yfinance was late; the next source in its chain answered."
+     },
+     {
+      "at": "2026-11-06T05:40",
+      "what": "A calibration map rolled back: Silver's map did worse on its probation, so the last good one is back."
+     },
+     {
+      "at": "2026-11-06T06:35",
+      "what": "The Forecaster's run retried: it timed out once at 06:30 and finished on the second try."
+     }
+    ]
+   }
+  ],
+  "dead_letters": [
+   {
+    "queue": "mypaisa-prod-work",
+    "count": 1,
+    "since": "2026-11-06T07:52",
+    "reason": "Timeout at the source",
+    "job": "Ingest, NASDAQ 100 ETF",
+    "tried": "5 times, 07:00 to 07:52",
+    "run": "r-1313",
+    "replayed_by": "e-replay",
+    "count_after": 0,
+    "again": {
+     "note": "Replayed, and failed again (Admin center 3): back to its queue, 5 more tries; nothing replays on its own, so a replay never loops.",
+     "branch_only": true
+    }
+   }
+  ],
+  "people": [
+   {
+    "id": "arun",
+    "role": "owner",
+    "status": "active",
+    "can_be_paused": false,
+    "sessions": 3
+   },
+   {
+    "id": "asha",
+    "role": "member",
+    "status": "active",
+    "can_be_paused": true,
+    "sessions": 0,
+    "history": [
+     {
+      "event": "e-pause-asha",
+      "status": "paused",
+      "sessions_ended": 2,
+      "devices_signed_out": [
+       "d-asha-iphone",
+       "d-asha-ipad"
+      ]
+     },
+     {
+      "event": "e-restore-asha",
+      "status": "active",
+      "by": "arun",
+      "note": "only the owner's Restore lets a paused member back in (MA-102, settled 29 Oct 2026)"
+     }
+    ]
+   }
+  ],
+  "invites": [
+   {
+    "role": "member",
+    "single_use": true,
+    "lasts_hours": 24,
+    "source": "iPhone admin, A4 (MA-32)"
+   }
+  ],
+  "settings_registry": [
+   {
+    "group": "Budgets",
+    "name": "Prod Claude ceiling",
+    "key": "budget.claude.prod.ceiling",
+    "value": "$160",
+    "after_events": "$50 at 08:31 (e-ceiling)",
+    "range": "$10 to $160",
+    "mode": "admin"
+   },
+   {
+    "group": "Budgets",
+    "name": "Ladder steps",
+    "key": "budget.claude.steps",
+    "value": "70, 85, 95, 100%",
+    "range": "any rising list",
+    "mode": "admin"
+   },
+   {
+    "group": "Budgets",
+    "name": "AWS and others cap",
+    "key": "budget.aws.cap",
+    "value": "£50",
+    "range": "£10 to £75",
+    "mode": "admin"
+   },
+   {
+    "group": "Data",
+    "name": "Price chain for OEICs",
+    "key": "data.chain.oeic",
+    "value": "EODHD first, 6 sources",
+    "range": "free sources, any order",
+    "band": "one place, 7 days",
+    "mode": "ask"
+   },
+   {
+    "group": "Data",
+    "name": "Price chain for London ETFs",
+    "key": "data.chain.lse_etf",
+    "value": "yfinance first, 4 sources",
+    "range": "free sources, any order",
+    "band": "one place, 7 days",
+    "mode": "ask"
+   },
+   {
+    "group": "Engine and learning",
+    "name": "Exhaustion flags for PAUSE",
+    "key": "engine.pause.exhaustion_min",
+    "value": "2",
+    "range": "1 to 4",
+    "mode": "tuner"
+   },
+   {
+    "group": "Engine and learning",
+    "name": "Calibration maps",
+    "key": "learn.calibration.map",
+    "value": "refitted today 05:40",
+    "band": "±2 points a day",
+    "mode": "auto"
+   },
+   {
+    "group": "Engine and learning",
+    "name": "Probation for a new map",
+    "key": "learn.calibration.probation",
+    "value": "10 trading days",
+    "range": "5 to 30",
+    "mode": "admin"
+   },
+   {
+    "group": "Alerts and queues",
+    "name": "Red alerts a week, each member",
+    "key": "alerts.red.per_week",
+    "value": "2",
+    "range": "0 to 5",
+    "mode": "admin"
+   },
+   {
+    "group": "Alerts and queues",
+    "name": "Work queue tries",
+    "key": "queue.work.max_tries",
+    "value": "5",
+    "range": "1 to 10",
+    "mode": "admin"
+   },
+   {
+    "group": "Alerts and queues",
+    "name": "Replays by the ops warden",
+    "key": "queue.replay.max",
+    "value": "3 a message",
+    "range": "0 to 5",
+    "mode": "admin"
+   }
+  ]
+ },
+ "settings": {
+  "arun": {
+   "privacy_mode": false,
+   "show_amounts_in_notifications": false,
+   "face_id_lock": {
+    "on": true,
+    "ask_again_after_minutes": 5
+   },
+   "mode": "simple",
+   "base_currency": "GBP",
+   "display_currency_pair": [
+    "GBP",
+    "INR"
+   ],
+   "notifications": {
+    "brief": "07:15 weekdays",
+    "wrap": "21:15",
+    "red_alerts": "time-sensitive, with sound, at most two a week",
+    "amber": "silent",
+    "weekly_digest": "Saturdays",
+    "quiet_hours": {
+     "from": "22:00",
+     "to": "07:00"
+    }
+   },
+   "paused": false,
+   "household_pause": {
+    "can_pause_or_resume": true,
+    "paused": false
+   },
+   "admin_center": true,
+   "second_check": "Sign in with Apple, then Face ID",
+   "source": "iPhone settings, iPhone sign-in, Prototype v4 'You' page"
+  },
+  "asha": {
+   "privacy_mode": false,
+   "show_amounts_in_notifications": false,
+   "face_id_lock": {
+    "on": true,
+    "ask_again_after_minutes": 5
+   },
+   "mode": "simple",
+   "base_currency": "GBP",
+   "display_currency_pair": [
+    "GBP",
+    "INR"
+   ],
+   "notifications": {
+    "brief": "07:15 weekdays",
+    "wrap": "21:15",
+    "red_alerts": "time-sensitive, with sound, at most two a week",
+    "amber": "silent",
+    "weekly_digest": "Saturdays",
+    "quiet_hours": {
+     "from": "22:00",
+     "to": "07:00"
+    }
+   },
+   "paused": false,
+   "household_pause": {
+    "can_pause_or_resume": false,
+    "paused": false
+   },
+   "admin_center": false,
+   "second_check": "Sign in with Apple, then Face ID or her PIN",
+   "illustrative": true,
+   "source": "the same screens as Arun's, as a member sees them (iPhone settings: only the owner pauses; a member can leave)"
+  }
+ },
+ "branches": [
+  {
+   "id": "b-emi-undo",
+   "after": "e-emi-paid",
+   "what": "Undo on the HDFC EMI card (Browser Check-ins K2, 4 of 4: 09:13). A reversal event, never a delete; Home rolls back to the figure before the EMI; Paid saves it again.",
+   "events": [
+    {
+     "id": "e-emi-undo",
+     "at": "2026-11-05T09:13:00",
+     "day": "d3",
+     "actor": "arun",
+     "via": "check_in",
+     "kind": "check_in_undo",
+     "record": "hdfc",
+     "field": "emi",
+     "before": 39390,
+     "after": null,
+     "ccy": "INR",
+     "summary": "Undone · EMI · HDFC home loan · the payment is reversed by a new event; both stay in the audit log · Arun · Thu 5 Nov 09:13 · on the check-in",
+     "run": "r-b1",
+     "file": null
+    }
+   ],
+   "runs": [
+    {
+     "id": "r-b1",
+     "at": "2026-11-05T09:13:00",
+     "trigger": "check_in",
+     "title": "Check-ins · Undo the EMI",
+     "status": "done",
+     "actor": null,
+     "agent": null,
+     "duration_s": 2,
+     "steps": [
+      {
+       "at": "09:13:00",
+       "label": "Arun tapped Undo; a reversal event was written, the card opened again."
+      }
+     ],
+     "model_calls": [],
+     "tools": [],
+     "cost_usd": 0,
+     "events": [
+      "e-emi-undo"
+     ],
+     "outcome": "Undone",
+     "illustrative": true
+    }
+   ]
+  },
+  {
+   "id": "b-paid-off",
+   "instead_of": "e-emi-paid",
+   "what": "Prototype v4's side branch at the 09:00 check-in: Something else, Paid off in full, the engine's figure, Today, Confirm; the loan closes (p1 to p5, 09:04 to 09:22). Taken instead of Paid.",
+   "events": [
+    {
+     "id": "e-hdfc-closed",
+     "at": "2026-11-05T09:22:00",
+     "day": "d3",
+     "actor": "arun",
+     "via": "check_in",
+     "kind": "debt_close",
+     "record": "hdfc",
+     "field": "balance",
+     "before": 1523976,
+     "after": 0,
+     "ccy": "INR",
+     "summary": "Loan closed · HDFC home loan · paid off ₹15,23,976, Thu 5 Nov · Arun · Thu 5 Nov 09:22 · on the check-in",
+     "run": "r-b2",
+     "file": null
+    }
+   ],
+   "runs": [
+    {
+     "id": "r-b2",
+     "at": "2026-11-05T09:19:00",
+     "trigger": "check_in",
+     "title": "Check-ins · HDFC paid off in full",
+     "status": "done",
+     "actor": null,
+     "agent": null,
+     "duration_s": 180,
+     "steps": [
+      {
+       "at": "09:19:00",
+       "label": "Something else: Paid off in full."
+      },
+      {
+       "at": "09:20:00",
+       "label": "Final amount: the engine's figure."
+      },
+      {
+       "at": "09:21:00",
+       "label": "Paid on Today."
+      },
+      {
+       "at": "09:22:00",
+       "label": "Confirm closed the loan; its check-ins ended."
+      }
+     ],
+     "model_calls": [],
+     "tools": [],
+     "cost_usd": 0,
+     "events": [
+      "e-hdfc-closed"
+     ],
+     "outcome": "Loan closed",
+     "illustrative": true
+    }
+   ]
+  }
+ ],
+ "disagreements": [
+  {
+   "what": "Arun's sign-in methods",
+   "boards": "Prototype v4 'signed in with Apple'; iPhone settings Apple, Google linked 12 Oct, passkey 'Not added'; Admin center 3 passkey 'Yes, on this Mac', Google at 09:30",
+   "chosen": "apple + google + passkey: Apple first (Prototype), Google as linked on both v4 boards, passkey as the Admin center's fresh checks need one; the sign-in event is Apple"
+  },
+  {
+   "what": "Who pauses whom",
+   "boards": "Admin center 3 draws the owner pausing and restoring their own account (09:50, 10:03)",
+   "chosen": "dropped: MA-102's settled answer (29 Oct 2026) is that the owner cannot pause their own account and only the owner's Restore lets a paused member back in; asserted in the script"
+  },
+  {
+   "what": "Telegram",
+   "boards": "Browser Admin center 2 and 3 route alerts, approvals and digests through Telegram",
+   "chosen": "push: the Telegram boards are the superseded record (plan-sync.md); channels are app, push, email as iPhone admin has them"
+  },
+  {
+   "what": "Cycle spend on Mon 26 Oct",
+   "boards": "Admin center 2 and 3: prod $41.20 of $160 (their own clock, Sat 31 Oct); Prototype v4 and iPhone admin: $18 of $160, 11%",
+   "chosen": "$18 at Mon 26 Oct 09:53 (Prototype); the ledger's runs add to a base derived from it; the Admin center's day is Fri 6 Nov, in the next cycle, so its spend is the ledger's runs alone"
+  },
+  {
+   "what": "Renewal day",
+   "boards": "Admin center 2: Claude stops 'until 1 Nov'; Admin center 3's dialog offers the 15th; Prototype and iPhone admin: renews Tue 3 Nov",
+   "chosen": "Tue 3 Nov, the 3rd of each month; the 15th is a dialog option, not applied"
+  },
+  {
+   "what": "The ceiling move",
+   "boards": "Browser Admin center 2: $160 to $50; iPhone admin: $160 to $180 at 09:40, past the credit",
+   "chosen": "$160 to $50 at 08:31 (the web app's Admin center); the iPhone's $180 and the refused $220 are in admin.spend as examples, not events"
+  },
+  {
+   "what": "The Admin center's day",
+   "boards": "Browser Admin center 2 and 3: Sat 31 Oct; iPhone admin: Fri 23 Oct",
+   "chosen": "Fri 6 Nov (iPhone admin's weekday kept; its renewal Tue 3 Nov kept); every Admin date moved to it, expiries kept as '7 days after'"
+  },
+  {
+   "what": "Pause time and sessions",
+   "boards": "Admin center 3: paused 09:40, restored 10:05, 3 sessions; iPhone admin: paused 09:38, 2 devices",
+   "chosen": "09:40 and 10:05 (the browser's), 2 sessions (the 4 devices of the v4 boards, so Asha has two)"
+  },
+  {
+   "what": "The EMI Undo",
+   "boards": "Prototype v4 main path: Paid at 09:12 and the audit keeps it; Browser Check-ins draws Undo at 09:13",
+   "chosen": "main path as Prototype v4; the Undo row is branch b-emi-undo, with the paid-off-in-full branch b-paid-off (Prototype v4's p1 to p5)"
+  },
+  {
+   "what": "Files",
+   "boards": "Audit and files, iPhone audit and activity: balanced-factsheet.pdf, screenshots, cas-statement-sep.pdf (older wealth-era boards)",
+   "chosen": "only the two statements the household story has; the older files belong to no event here"
+  },
+  {
+   "what": "Monzo CSV size",
+   "boards": "Prototype v4 says 'CSV · 11 lines' with no size",
+   "chosen": "size computed from the household's own 11 lines (illustrative bytes)"
+  },
+  {
+   "what": "School fees' middle path",
+   "boards": "future-plans conversation: -£1,317,000 at 20:43; the Plans in the chat page: -£1,312,000 with the pot",
+   "chosen": "the conversation's wording at 20:43; the pot's row is its own event at 20:46"
+  }
+ ]
+}

@@ -1,0 +1,86 @@
+/* Copied from docs/design/app-v1/PrototypeV4Web.dc.html (sha256 0a4afd1da598a1f47577fdbe1c3b8c3868e19c6799c443f8bbbd1d7c36136f6e) by scripts/extract-board-css.mjs. Never edit: change the board. */
+
+/* Prototype v4 · the web door, as Web v4 · Shell and chat draws option 1a, Chat beside: the sidebar, the page and the
+   chat as a column over about 1024 px; under it, the tab bar (Chat · Home · Activity · You) with the chat as a tab. */
+.pw { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--mp-bg); color: var(--mp-ink); }
+.pw .chrome { flex: none; height: 40px; display: flex; align-items: center; gap: 16px; padding: 0 16px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
+.pw .dots { display: flex; gap: 8px; width: 60px; }
+.pw .dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--mp-track); }
+.pw .url { margin: 0 auto; width: 460px; height: 28px; border-radius: 8px; background: var(--mp-surface); display: flex; align-items: center; justify-content: center; gap: 6px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+.pw .url .ms { font-size: 15px; }
+.pw .chrome-r { width: 60px; }
+.pw .sbar { flex: none; background: var(--mp-bg); }
+.pw .purl { flex: none; height: 36px; margin: 0 12px 8px; border-radius: 12px; background: var(--mp-surface-2); display: flex; align-items: center; justify-content: center; gap: 6px; font: 400 14px/18px var(--mp-font); color: var(--mp-ink-2); }
+.pw .purl .ms { font-size: 15px; }
+.pw .shl { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.pw .side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+.pw .brand { padding: 4px 8px 18px; }
+.pw .side-sep { height: 1px; background: var(--mp-line); margin: 8px 12px; }
+.pw .side-ft { padding: 0 12px 4px; }
+.pw .mp-side-i { border: 0; background: none; cursor: pointer; width: 100%; text-align: left; }
+.pw .mp-side-i.on { background: var(--mp-surface); }
+.pw .main { position: relative; overflow: hidden; background: var(--mp-bg); }
+.pw .pscroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.pw .mpm { display: block; flex: none; }
+.pw .mpm-coin { fill: var(--mp-hero); }
+.t-dark .mpm-coin { fill: var(--mp-hero-2); }
+.pw .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+.pw .mpm-dot { fill: var(--mp-coral); }
+.pw .mpm-ring { fill: none; stroke: var(--mp-hero-ink-2); }
+.pw .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+/* the chat column (1a) and the chat tab */
+.pw .chatcol { display: none; flex-direction: column; min-height: 0; background: var(--mp-bg); position: relative; }
+.pw .chd { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 12px 10px 20px; border-bottom: 1px solid var(--mp-line); }
+.pw .chwrap { flex: 1; min-height: 0; position: relative; }
+.pw .wstrip { display: none; flex: none; align-items: center; gap: 12px; margin: 6px 12px 0; padding: 9px 14px; border-radius: 18px; background: var(--mp-material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 0.5px var(--mp-line), var(--mp-shadow); border: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.pw .wstrip-n { font: 800 22px/26px var(--mp-font-round); letter-spacing: -0.02em; white-space: nowrap; }
+.pw .wsugg { flex: none; display: flex; gap: 8px; padding: 8px 12px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); }
+.pw .sg { flex: none; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; border-radius: 999px; box-sizing: border-box; border: 0; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); font: 600 14px/18px var(--mp-font); color: var(--mp-ink); white-space: nowrap; cursor: pointer; }
+.pw .sg .ms { font-size: 18px; color: var(--mp-accent); }
+.pw .sg.sug { background: var(--mp-hero); color: var(--mp-hero-ink); box-shadow: none; }
+.pw .sg.sug .ms { color: var(--mp-coral); }
+.pw .wcomp { flex: none; display: flex; align-items: flex-end; gap: 8px; padding: 2px 12px 14px; }
+.pw .wplus { width: 44px; height: 44px; margin-bottom: 4px; border-radius: 50%; display: grid; place-items: center; flex: none; border: 0; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); color: var(--mp-ink); cursor: pointer; }
+.pw .wfield { flex: 1; min-width: 0; min-height: 52px; display: flex; align-items: center; gap: 8px; padding: 0 4px 0 16px; border-radius: 26px; box-sizing: border-box; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); }
+.pw .wfield.att { flex-direction: column; align-items: stretch; gap: 4px; padding: 6px; }
+.pw .wfile { display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 14px; background: var(--mp-surface-2); min-width: 0; }
+.pw .wftile { width: 36px; height: 40px; border-radius: 8px; display: grid; place-items: center; flex: none; background: var(--mp-surface); color: var(--mp-accent); }
+.pw .wfname { font: 600 14px/19px var(--mp-font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pw .wfmeta { font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.pw .attline { display: flex; align-items: center; gap: 8px; padding-left: 10px; }
+.pw .win { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); padding: 0; }
+.pw .win::placeholder { color: var(--mp-ink-2); }
+.pw .wsend { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; border: 0; background: var(--mp-surface-2); color: var(--mp-ink-2); cursor: pointer; }
+.pw .wsend.on { background: var(--mp-accent); color: var(--mp-on-accent); }
+.pw .wtabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; }
+.pw .wtabs .tabw { display: contents; }
+.pw .mp-tab { font-size: 11px; line-height: 13px; }
+.pw .mp-tab:not(.on) { color: var(--mp-ink-2); }
+@container app (min-width: 1024px) {
+  .pw .sh-a .chatcol { display: flex; flex: none; width: clamp(340px, 28%, 420px); border-left: 1px solid var(--mp-line); }
+}
+@container app (max-width: 1023px) {
+  .pw .v-chat .main { display: none; }
+  .pw .v-chat .chatcol { display: flex; flex: 1; min-width: 0; padding-bottom: 76px; }
+  .pw .v-chat .chd { display: none; }
+  .pw .v-chat .wstrip { display: flex; }
+}
+/* sign-in (MA-185), as Browser · Sign in draws it */
+.pw .login { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+.pw .lhero { background: var(--mp-hero); color: var(--mp-hero-ink); padding: 24px 24px 28px; display: flex; flex-direction: column; gap: 18px; }
+.pw .tagline { font: 800 30px/36px var(--mp-font-round); letter-spacing: -0.03em; max-width: 480px; text-wrap: balance; margin: 0; }
+.pw .lform { display: flex; align-items: flex-start; justify-content: center; padding: 28px 24px; background: var(--mp-bg); }
+.pw .lbox { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 12px; }
+.pw .siwa { min-height: 50px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; font: 600 17px/22px var(--mp-font); border: 0; background: #000000; color: #FFFFFF; cursor: pointer; }
+.pw.t-dark .siwa { background: #FFFFFF; color: #000000; }
+.pw .siwa svg { width: 17px; height: 20px; fill: currentColor; margin-top: -2px; flex: none; }
+.pw .gsi { min-height: 50px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px; font: 500 16px/20px Roboto, var(--mp-font); letter-spacing: 0.01em; border: 0; background: #FFFFFF; color: #1F1F1F; box-shadow: inset 0 0 0 1px #747775; cursor: pointer; }
+.pw.t-dark .gsi { background: #131314; color: #E3E3E3; box-shadow: inset 0 0 0 1px #8E918F; }
+.pw .gsi svg { width: 20px; height: 20px; flex: none; }
+.pw .lnote { display: flex; gap: 10px; align-items: flex-start; }
+@container app (min-width: 760px) {
+  .pw .login { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr; }
+  .pw .lhero { padding: 56px 64px; justify-content: space-between; }
+  .pw .tagline { font-size: 44px; line-height: 50px; }
+  .pw .lform { align-items: center; }
+}
