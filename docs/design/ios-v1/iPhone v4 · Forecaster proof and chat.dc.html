@@ -80,15 +80,14 @@ a{color:#C2381F}a:hover{color:#8F2915}
 .fgrid{stroke:var(--mp-chart-grid);stroke-width:1}
 .mp .fmid{fill:none;stroke:var(--mp-chart-line);stroke-width:2;stroke-dasharray:4 3}
 .ftoday{stroke:var(--mp-ink-2);stroke-width:1;stroke-dasharray:2 3}
-.wk{stroke-width:1}
-.wk.up{stroke:var(--mp-up)}.wk.dn{stroke:var(--mp-down-quiet)}
+.cw.up{fill:var(--mp-up)}.cw.dn{fill:var(--mp-down-quiet)}
 .cb.up{fill:var(--mp-up)}.cb.dn{fill:var(--mp-down-quiet)}
 .navl{fill:none;stroke:var(--mp-ink);stroke-width:2;stroke-linejoin:round}
 .pneck{stroke:var(--mp-chart-4);stroke-width:2;stroke-dasharray:5 3}
 .psup,.ptrend{stroke:var(--mp-chart-2);stroke-width:2;stroke-dasharray:5 3}
 .sim{fill:none;stroke:var(--mp-chart-2);stroke-width:1;stroke-opacity:0.55}
 .yl{position:absolute;left:0;transform:translateY(-100%);padding-bottom:1px;font:500 11px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap}
-.fl{position:absolute;right:0;transform:translateY(-50%);font:600 11px/14px var(--mp-font);color:var(--mp-ink);background:var(--mp-surface);padding:0 3px;border-radius:4px;white-space:nowrap}
+.fl{position:absolute;right:0;transform:translateY(-50%);font:600 11px/14px var(--mp-font);color:var(--mp-ink);white-space:nowrap}
 .tdl{position:absolute;bottom:2px;transform:translateX(calc(-100% - 4px));font:500 11px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap}
 .pmk{position:absolute;transform:translate(-50%,-100%);font:600 11px/14px var(--mp-font);padding:1px 6px;border-radius:6px;background:var(--mp-surface);white-space:nowrap}
 .pmk-a{color:var(--mp-ink);box-shadow:inset 0 0 0 1.5px var(--mp-chart-4)}
@@ -204,19 +203,19 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="dev dev-iphone mp t-light"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
 <div class="strip lg"><div class="ai-mark z1"><i></i></div>
-<div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span><span class="strip-n">Sat 24 Oct, 09:00</span></div>
+<div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span><span class="mp-hl">Sat 24 Oct, 09:00</span></div>
 <span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
 <div class="scroll"><div class="fadet thin"></div>
 <div class="chat cpad" style="margin-top: -0px"><div class="daysep">Sat 24 Oct</div>
 <div class="ai"><div class="ai-mark"><i></i></div>
-<div class="ai-body"><div class="ai-text">Your Saturday review. The Forecaster is in practice for every holding, week 5 of 8, so it shows here and on each holding’s Forecast tab only, labelled so.</div>
-<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">The Forecaster · in practice · next 4 weeks</span><span class="mp-hl">NASDAQ 100 ETF</span></div>
+<div class="ai-body"><div class="ai-text">Your Saturday review. The Forecaster is in practice for every holding, week 5 of 8: until its 8 weeks are up it shows only here and on each holding’s Forecast tab, labelled so.</div>
+<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">NASDAQ 100 ETF</span></div>
 <div class="ccard-b"><div class="kv kvw"><span>Rules engine</span><span>PAUSE · 64%</span></div>
-<div class="kv kvw"><span>Chance up</span><span>52%</span></div>
 <div class="kv kvw"><span>Fall over 5%</span><span>21% (usually 12%)</span></div>
+<div class="kv kvw"><span>Chance up</span><span>52%</span></div>
 <div class="kv kvw"><span>Likely range</span><span><span class="nw">−7% … +6%</span></span></div>
 <div class="kv kvw"><span>Market mood</span><span>Stressed, since Sat 3 Oct</span></div>
-<div class="kv kvw"><span>Similar days</span><span>31 since 2015; 18 recovered within 4 weeks</span></div>
+<div class="kv kvw"><span>Similar days</span><span>30 since 2015; 18 recovered within 4 weeks</span></div>
 <div class="kv kvw"><span>Pattern</span><span>Double top: lower after 20 days in 6 of 9 cases</span></div>
 <div class="kv kvw"><span>Main drivers</span><span>momentum fading, US yields rising, chip export news</span></div>
 </div>
@@ -241,25 +240,53 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="dev dev-iphone mp t-dark"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
 <div class="strip lg"><div class="ai-mark z1"><i></i></div>
-<div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span><span class="strip-n">Sat 24 Oct, 09:00</span></div>
+<div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span><span class="mp-hl">Sat 24 Oct, 09:00</span></div>
 <span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
 <div class="scroll"><div class="fadet thin"></div>
 <div class="chat cpad" style="margin-top: -0px"><div class="ai"><div class="ai-mark"><i></i></div>
-<div class="ai-body"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">The Forecaster · in practice · next 4 weeks</span><span class="mp-hl">Robotics ETF</span></div>
+<div class="ai-body"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">Robotics ETF</span></div>
 <div class="ccard-b"><div class="dis"><span class="ms ms-s">call_split</span><span class="mp-foot"><b>The two engines disagree.</b> The rules engine says HOLD; the Forecaster sees a rougher month than usual (34% against a usual 15%).</span></div>
 <div class="kv kvw"><span>Rules engine</span><span>HOLD · 58%</span></div>
-<div class="kv kvw"><span>Chance up</span><span>44%</span></div>
 <div class="kv kvw"><span>Fall over 5%</span><span>34% (usually 15%)</span></div>
+<div class="kv kvw"><span>Chance up</span><span>44%</span></div>
 <div class="kv kvw"><span>Likely range</span><span><span class="nw">−11% … +7%</span></span></div>
 <div class="kv kvw"><span>Market mood</span><span>Stressed, since Sat 3 Oct</span></div>
-<div class="kv kvw"><span>Similar days</span><span>27 since 2015; 13 recovered within 4 weeks</span></div>
+<div class="kv kvw"><span>Similar days</span><span>30 since 2015; 13 recovered within 4 weeks</span></div>
 <div class="kv kvw"><span>Pattern</span><span>Breakdown below the Sep low: lower after 20 days in 7 of 10</span></div>
 <div class="kv kvw"><span>Main drivers</span><span>momentum fading, chip export news</span></div>
 </div>
 <div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Chart</span><span class="cbtn">Track record</span></div>
 <div class="ccard-fold"><span>Technical</span><span class="ms">expand_more</span></div>
 </div>
-<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">The Forecaster · in practice · next 4 weeks</span><span class="mp-hl">Silver ETC</span></div>
+<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">Silver ETC</span></div>
+<div class="ccard-b"><div class="kv"><span>Rules engine</span><span>HOLD · 62%</span></div>
+<div class="nov"><span class="ms">blur_on</span><span class="mp-sub mp-w6">No clear view</span></div>
+<p class="pp mp-foot mp-ink2">Its chances are too close to the usual to count: 50% up, and 18% against a usual 17% for a fall over 5%.</p></div>
+<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Track record</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="edge-bot"></div>
+<div class="composer cmpb"><div class="chips"><span class="gchip lg"><span class="ms">help</span><span>Why?</span></span><span class="gchip lg"><span class="ms">fact_check</span><span>Track record</span></span></div>
+<div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div>
+</div>
+<div class="edge-bot"></div>
+<div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div>
+<span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+</div>
+</div>
+</div>
+          <div class="dv-col" data-screen-label="iPhone · Saturday review · no clear view · Light"><div class="bd-theme">iPhone · Saturday review · no clear view · Light</div>
+<div class="dev dev-iphone mp t-light"><div class="island"></div>
+<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="strip lg"><div class="ai-mark z1"><i></i></div>
+<div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span><span class="mp-hl">Sat 24 Oct, 09:00</span></div>
+<span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+<div class="scroll"><div class="fadet thin"></div>
+<div class="chat cpad" style="margin-top: -0px"><div class="ai"><div class="ai-mark"><i></i></div>
+<div class="ai-body"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">Silver ETC</span></div>
 <div class="ccard-b"><div class="kv"><span>Rules engine</span><span>HOLD · 62%</span></div>
 <div class="nov"><span class="ms">blur_on</span><span class="mp-sub mp-w6">No clear view</span></div>
 <p class="pp mp-foot mp-ink2">Its chances are too close to the usual to count: 50% up, and 18% against a usual 17% for a fall over 5%.</p></div>
@@ -283,23 +310,23 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="dev dev-iphone mp t-light"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
 <div class="strip lg"><div class="ai-mark z1"><i></i></div>
-<div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span><span class="strip-n">Sat 24 Oct, 09:00</span></div>
+<div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span><span class="mp-hl">Sat 24 Oct, 09:00</span></div>
 <span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
 <div class="scroll"><div class="fadet thin"></div>
 <div class="chat cpad" style="margin-top: -330px"><div class="daysep">Sat 24 Oct</div>
 <div class="ai"><div class="ai-mark"><i></i></div>
-<div class="ai-body"><div class="ai-text">Your Saturday review. The Forecaster is in practice for every holding, week 5 of 8, so it shows here and on each holding’s Forecast tab only, labelled so.</div>
-<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">The Forecaster · in practice · next 4 weeks</span><span class="mp-hl">NASDAQ 100 ETF</span></div>
+<div class="ai-body"><div class="ai-text">Your Saturday review. The Forecaster is in practice for every holding, week 5 of 8: until its 8 weeks are up it shows only here and on each holding’s Forecast tab, labelled so.</div>
+<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">NASDAQ 100 ETF</span></div>
 <div class="ccard-b"><div class="kv kvw"><span>Rules engine</span><span>PAUSE · 64%</span></div>
-<div class="kv kvw"><span>Chance up</span><span>52%</span></div>
 <div class="kv kvw"><span>Fall over 5%</span><span>21% (usually 12%)</span></div>
+<div class="kv kvw"><span>Chance up</span><span>52%</span></div>
 <div class="kv kvw"><span>Likely range</span><span><span class="nw">−7% … +6%</span></span></div>
 <div class="kv kvw"><span>Market mood</span><span>Stressed, since Sat 3 Oct</span></div>
-<div class="kv kvw"><span>Similar days</span><span>31 since 2015; 18 recovered within 4 weeks</span></div>
+<div class="kv kvw"><span>Similar days</span><span>30 since 2015; 18 recovered within 4 weeks</span></div>
 <div class="kv kvw"><span>Pattern</span><span>Double top: lower after 20 days in 6 of 9 cases</span></div>
 <div class="kv kvw"><span>Main drivers</span><span>momentum fading, US yields rising, chip export news</span></div>
 </div>
-<div class="ccard-tech"><span>Forecast row · NASDAQ 100 ETF · Sat 24 Oct 06:10 · model 2026.10 · data to 30 Sep</span><span>direction 0.52 (calibrated, conformal range p10 −7.0 · p50 +0.3 · p90 +6.0)</span><span>risk P(fall &gt; 5%) 0.21 · base rate 0.12</span><span>mood stressed 0.71 · choppy 0.18 · falling 0.07 · calm 0.04</span><span>pattern double top · n 9 · 20d mean −2.1% · 6 of 9 lower</span><span>gate week 5 of 8 · W1 to W5 beat base rate and rules engine</span></div>
+<div class="ccard-tech"><span>Forecast row · NASDAQ 100 ETF · Sat 24 Oct 06:10 · model 2026.10 · trained on data to 30 Sep</span><span>direction 0.52 (calibrated, conformal range p10 −7.0 · p50 +0.3 · p90 +6.0)</span><span>risk P(fall &gt; 5%) 0.21 · base rate 0.12</span><span>mood stressed 0.71 · choppy 0.18 · falling 0.07 · calm 0.04</span><span>pattern double top · n 9 · 20d mean −2.1% · 6 of 9 lower</span><span>gate week 5 of 8 · W1 to W5 beat base rate and rules engine</span></div>
 <div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Chart</span><span class="cbtn">Track record</span></div>
 <div class="ccard-fold"><span>Technical</span><span class="ms">expand_less</span></div>
 </div>
@@ -324,7 +351,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
         <div class="dv-thd"><span class="dv-tid">C2</span><span class="dv-tname">How the Forecaster proves itself</span><span class="bd-keys">MA-120 · MA-123 · §19.6</span></div>
         <p class="bd-lead">Reached from the Track record tab or the Forecast tab’s chip: the lab’s first report (the rules engine over ten years), the walk-forward tests, the live gate and the switch-off.</p>
         <div class="bd-row">
-          <sc-for list="{{ p1 }}" as="t" hint-placeholder-count="3"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
+          <sc-for list="{{ p1 }}" as="t" hint-placeholder-count="4"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
 <div class="dev dev-iphone mp {{ t.c }}"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
 <div class="nav"><span class="gbtn lg" aria-label="Back to NASDAQ 100 ETF"><span class="ms z1">chevron_left</span></span><sc-if value="{{ t.small }}"><span class="navc">How it proves itself</span></sc-if>
@@ -333,7 +360,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 </sc-if>
 <div class="scroll"><sc-if value="{{ t.small }}"><div class="fadet"></div>
 </sc-if>
-<div class="pg" style="margin-top: {{ t.off }}"><div class="mp-foot mp-ink2 meta">A lab first, practice next, and an off switch · NASDAQ 100 ETF</div>
+<div class="pg" style="margin-top: {{ t.off }}"><div class="mp-foot mp-ink2 meta">A lab first, practice next, and an off switch · <span class="nw">NASDAQ 100 ETF</span></div>
 <div class="mp-card"><span class="mp-over mp-ink2">The backtest lab · Jan 2015 to Sep 2026</span><span class="mp-hl">Its first report: the rules engine over ten years</span><span class="mp-foot mp-ink2">Replayed one day at a time, with fees, next-day prices for funds and monthly contributions, against buy-and-hold and a simple trend rule. Calibration: the chance it said, then how often it came true.</span><div class="lt"><div class="lr lh"><span class="mp-foot mp-w6"></span><span class="mp-foot mp-w6">Rules engine</span><span class="mp-foot mp-w6">Buy and hold</span><span class="mp-foot mp-w6">Trend rule</span></div>
 <div class="lr"><span class="mp-foot mp-w6">Yearly growth</span><span class="mp-foot">8.9%</span><span class="mp-foot">9.6%</span><span class="mp-foot">7.8%</span></div>
 <div class="lr"><span class="mp-foot mp-w6">Worst fall</span><span class="mp-foot">−14%</span><span class="mp-foot">−31%</span><span class="mp-foot">−19%</span></div>
@@ -347,18 +374,18 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="fr"><span class="mp-sub mp-w6">Fold 3</span><span class="mp-foot mp-ink2">tests 2021</span><span class="mp-sub mp-up">✓ beat</span></div>
 <div class="fr"><span class="mp-sub mp-w6">Fold 4</span><span class="mp-foot mp-ink2">tests 2022</span><span class="mp-sub mp-dq">✗ missed</span></div>
 <div class="fr"><span class="mp-sub mp-w6">Fold 5</span><span class="mp-foot mp-ink2">tests 2023</span><span class="mp-sub mp-up">✓ beat</span></div>
-<div class="fr"><span class="mp-sub mp-w6">Final</span><span class="mp-foot mp-ink2">tests Nov 2024 to Oct 2026</span><span class="mp-sub mp-up">✓ beat</span></div>
+<div class="fr"><span class="mp-sub mp-w6">Final</span><span class="mp-foot mp-ink2">tests Oct 2024 to Sep 2026</span><span class="mp-sub mp-up">✓ beat</span></div>
 <span class="mp-foot mp-ink2">A model that does not beat the base rate in the final test is not used.</span></div>
 <div class="mp-card"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The live gate</span><span class="mp-chip mp-neutral"><span class="ms ms-s">science</span>In practice · week 5 of 8</span></div>
 <span class="mp-foot mp-ink2">8 live weeks beating both, graded each Friday: next on Fri 30 Oct, Fri 6 Nov, Fri 13 Nov.</span><div class="wks"><span class="wkc ok">✓ W1</span><span class="wkc ok">✓ W2</span><span class="wkc ok">✓ W3</span><span class="wkc ok">✓ W4</span><span class="wkc ok">✓ W5</span><span class="wkc tbd">W6</span><span class="wkc tbd">W7</span><span class="wkc tbd">W8</span></div>
 </div>
 <div class="sech"><span class="mp-over mp-ink2">The switch-off</span><span class="mp-foot mp-ink2">its status now</span></div>
-<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility_off</span></span><span class="grow"><span class="mp-sub mp-w6">Shadow, then practice <span class="mp-chip mp-neutral">now</span></span><span class="mp-foot mp-ink2">Graded every week; shown only on the Forecast tab and in the Saturday review, labelled in practice.</span></span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">science</span></span><span class="grow"><span class="mp-sub mp-w6">In practice <span class="mp-chip mp-neutral">now</span></span><span class="mp-foot mp-ink2">Graded every week; shown only on the holding’s Forecast tab and in the Saturday review, labelled in practice.</span></span></div>
 <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility</span></span><span class="grow"><span class="mp-sub mp-w6">Live</span><span class="mp-foot mp-ink2">After 8 live weeks beating both the base rate and the rules engine: the weekday cards too.</span></span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">power_settings_new</span></span><span class="grow"><span class="mp-sub mp-w6">Off</span><span class="mp-foot mp-ink2">Four weeks worse than the base rate: it switches itself off, and the owner is told in the chat.</span></span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">autorenew</span></span><span class="grow"><span class="mp-sub mp-w6">Retrained monthly</span><span class="mp-foot mp-ink2">Each version is a ModelVersion row with its test scores, and starts again in practice.</span></span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">power_settings_new</span></span><span class="grow"><span class="mp-sub mp-w6">Off</span><span class="mp-foot mp-ink2">Four weeks worse than the base rate: it switches itself off, and the owner is told.</span></span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">autorenew</span></span><span class="grow"><span class="mp-sub mp-w6">Retrained monthly</span><span class="mp-foot mp-ink2">Each version is a ModelVersion row with its test scores.</span></span></div>
 </div>
-<div class="mp-card"><span class="mp-hl">Models now</span><span class="mp-foot mp-ink2">version 2026.10 · data to 30 Sep</span><div class="kv"><span>Market mood · F3</span><span>in practice</span></div>
+<div class="mp-card"><span class="mp-hl">Models now</span><span class="mp-foot mp-ink2">version 2026.10 · trained on data to 30 Sep</span><div class="kv"><span>Market mood · F3</span><span>in practice</span></div>
 <div class="kv"><span>Four-week risk · F3</span><span>in practice</span></div>
 <div class="kv"><span>Similar days · F4</span><span>in practice</span></div>
 <div class="kv"><span>Event impacts · F4</span><span>in practice</span></div>
@@ -374,14 +401,14 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 </div>
 </div>
 </sc-for>
-          <div class="bd-note"><p><b>The lab ran first.</b> A model reaches practice only after its walk-forward tests, so the page has figures, unlike the web board’s first state.</p><p><b>Fold 4 missed</b> (2022) and is shown as missed; the final test, the last two years, decides.</p></div>
+          <div class="bd-note"><p><b>The lab ran first.</b> A model reaches practice only after its walk-forward tests, so the page has figures, unlike the web board’s first state.</p><p><b>Fold 4 missed</b> (2022) and is shown as missed; the final test, the last two years to Sep 2026, decides.</p><p><b>The stages</b> are ARCHITECTURE 19.6’s: in practice (the Forecast tab and the Saturday review only, Arun, 29 Oct 2026), live after 8 weeks beating both, off after four weeks worse than the base rate, retrained monthly.</p></div>
         </div>
       </section>
       <section class="bd" id="C3">
         <div class="dv-thd"><span class="dv-tid">C3</span><span class="dv-tname">A fund: line patterns on its price, never candles</span><span class="bd-keys">MA-280 · §19.1 · §19.4</span></div>
         <p class="bd-lead">Arun’s Balanced fund prices once a day, a day late, so the chart is its price line with the same fan, and F8 reads only the line patterns on it.</p>
         <div class="bd-row">
-          <sc-for list="{{ f1 }}" as="t" hint-placeholder-count="2"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
+          <sc-for list="{{ f1 }}" as="t" hint-placeholder-count="3"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
 <div class="dev dev-iphone mp {{ t.c }}"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
 <div class="nav"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1">chevron_left</span></span><sc-if value="{{ t.small }}"><span class="navc">Balanced</span></sc-if>
@@ -401,19 +428,19 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <span class="mp-sub">Nothing to do.</span><span class="agree mp-foot"><span class="ms ms-s">compare_arrows</span>Both lean the same way: steady, and the rules engine says HOLD.</span></div>
 </div>
 <div class="mp-card oncard"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The price, then the next 4 weeks</span><span class="mp-foot mp-ink2">60 trading days</span></div>
-<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="Balanced: a fund's daily price for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −3% and +4%, the middle +0.8%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="100" y1="85.0" y2="85.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="65.0" y2="65.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="45.0" y2="45.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="25.0" y2="25.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="5.0" y2="5.0"></line>
-<path class="fband" d="M77.25 45.0 L77.82 36.1 L78.96 32.4 L80.09 29.5 L81.23 27.1 L82.37 25.0 L83.51 23.1 L84.64 21.3 L85.78 19.7 L86.92 18.2 L88.06 16.7 L89.19 15.3 L90.33 14.0 L91.47 12.8 L92.61 11.5 L93.74 10.4 L94.88 9.2 L96.02 8.1 L97.16 7.1 L98.29 6.0 L99.43 5.0 L99.43 75.0 L98.29 74.2 L97.16 73.5 L96.02 72.7 L94.88 71.8 L93.74 71.0 L92.61 70.1 L91.47 69.2 L90.33 68.2 L89.19 67.2 L88.06 66.2 L86.92 65.1 L85.78 64.0 L84.64 62.7 L83.51 61.4 L82.37 60.0 L81.23 58.4 L80.09 56.6 L78.96 54.5 L77.82 51.7 L77.25 45.0 Z"></path>
-<path class="fband" d="M77.25 45.0 L77.82 39.6 L78.96 37.4 L80.09 35.7 L81.23 34.3 L82.37 33.0 L83.51 31.9 L84.64 30.8 L85.78 29.8 L86.92 28.9 L88.06 28.0 L89.19 27.2 L90.33 26.4 L91.47 25.7 L92.61 24.9 L93.74 24.2 L94.88 23.5 L96.02 22.9 L97.16 22.2 L98.29 21.6 L99.43 21.0 L99.43 57.0 L98.29 56.7 L97.16 56.4 L96.02 56.1 L94.88 55.7 L93.74 55.4 L92.61 55.0 L91.47 54.7 L90.33 54.3 L89.19 53.9 L88.06 53.5 L86.92 53.0 L85.78 52.6 L84.64 52.1 L83.51 51.6 L82.37 51.0 L81.23 50.4 L80.09 49.6 L78.96 48.8 L77.82 47.7 L77.25 45.0 Z"></path>
-<path class="fmid" d="M77.25 45.0 L77.82 44.6 L78.96 44.2 L80.09 43.8 L81.23 43.4 L82.37 43.0 L83.51 42.6 L84.64 42.2 L85.78 41.8 L86.92 41.4 L88.06 41.0 L89.19 40.6 L90.33 40.2 L91.47 39.8 L92.61 39.4 L93.74 39.0 L94.88 38.6 L96.02 38.2 L97.16 37.8 L98.29 37.4 L99.43 37.0"></path>
-<line class="ftoday" x1="77.25" x2="77.25" y1="0" y2="100"></line>
-<use href="#bal-nav"></use>
-<line class="ptrend" x1="18.67" x2="76.68" y1="77.5" y2="56.4"></line>
-</svg><span class="pmk pmk-b" style="left: 32.32%; top: 78.0%" data-mo="fade">Higher lows</span><span class="yl" style="top: 85.0%" data-mo="fade">−4%</span><span class="yl" style="top: 65.0%" data-mo="fade">−2%</span><span class="yl" style="top: 45.0%" data-mo="fade">0%</span><span class="yl" style="top: 25.0%" data-mo="fade">+2%</span><span class="yl" style="top: 5.0%" data-mo="fade">+4%</span><span class="fl" style="top: 5.0%" data-mo="fade">+4%</span><span class="fl" style="top: 75.0%" data-mo="fade">−3%</span><span class="tdl" style="left: 77.25%" data-mo="fade">Fri 23 Oct close</span></div>
-<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.71%">Aug</span><span style="left: 33.46%">Sep</span><span style="left: 58.48%">Oct</span><span style="left: 82.37%">Nov</span></div>
+<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="Balanced: a fund's daily price for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −3% and +4%, the middle +0.8%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="89" y1="85.0" y2="85.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="65.0" y2="65.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="45.0" y2="45.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="25.0" y2="25.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="5.0" y2="5.0"></line>
+<path class="fband" d="M69.0 45.0 L69.5 36.1 L70.5 32.4 L71.5 29.5 L72.5 27.1 L73.5 25.0 L74.5 23.1 L75.5 21.3 L76.5 19.7 L77.5 18.2 L78.5 16.7 L79.5 15.3 L80.5 14.0 L81.5 12.8 L82.5 11.5 L83.5 10.4 L84.5 9.2 L85.5 8.1 L86.5 7.1 L87.5 6.0 L88.5 5.0 L88.5 75.0 L87.5 74.2 L86.5 73.5 L85.5 72.7 L84.5 71.8 L83.5 71.0 L82.5 70.1 L81.5 69.2 L80.5 68.2 L79.5 67.2 L78.5 66.2 L77.5 65.1 L76.5 64.0 L75.5 62.7 L74.5 61.4 L73.5 60.0 L72.5 58.4 L71.5 56.6 L70.5 54.5 L69.5 51.7 L69.0 45.0 Z"></path>
+<path class="fband" d="M69.0 45.0 L69.5 39.6 L70.5 37.4 L71.5 35.7 L72.5 34.3 L73.5 33.0 L74.5 31.9 L75.5 30.8 L76.5 29.8 L77.5 28.9 L78.5 28.0 L79.5 27.2 L80.5 26.4 L81.5 25.7 L82.5 24.9 L83.5 24.2 L84.5 23.5 L85.5 22.9 L86.5 22.2 L87.5 21.6 L88.5 21.0 L88.5 57.0 L87.5 56.7 L86.5 56.4 L85.5 56.1 L84.5 55.7 L83.5 55.4 L82.5 55.0 L81.5 54.7 L80.5 54.3 L79.5 53.9 L78.5 53.5 L77.5 53.0 L76.5 52.6 L75.5 52.1 L74.5 51.6 L73.5 51.0 L72.5 50.4 L71.5 49.6 L70.5 48.8 L69.5 47.7 L69.0 45.0 Z"></path>
+<path class="fmid" d="M69.0 45.0 L69.5 44.6 L70.5 44.2 L71.5 43.8 L72.5 43.4 L73.5 43.0 L74.5 42.6 L75.5 42.2 L76.5 41.8 L77.5 41.4 L78.5 41.0 L79.5 40.6 L80.5 40.2 L81.5 39.8 L82.5 39.4 L83.5 39.0 L84.5 38.6 L85.5 38.2 L86.5 37.8 L87.5 37.4 L88.5 37.0"></path>
+<line class="ftoday" x1="69.0" x2="69.0" y1="0" y2="100"></line>
+<path class="navl" d="M9.5 71.0 L10.5 72.9 L11.5 72.5 L12.5 73.6 L13.5 73.0 L14.5 73.4 L15.5 75.9 L16.5 76.0 L17.5 76.0 L18.5 75.3 L19.5 75.1 L20.5 73.9 L21.5 71.4 L22.5 72.3 L23.5 70.4 L24.5 71.2 L25.5 68.8 L26.5 70.3 L27.5 67.9 L28.5 66.6 L29.5 67.2 L30.5 64.9 L31.5 64.5 L32.5 64.0 L33.5 64.4 L34.5 63.6 L35.5 64.1 L36.5 65.3 L37.5 66.7 L38.5 62.9 L39.5 65.0 L40.5 64.5 L41.5 64.5 L42.5 65.0 L43.5 65.2 L44.5 61.9 L45.5 62.3 L46.5 60.1 L47.5 60.6 L48.5 57.4 L49.5 56.1 L50.5 57.3 L51.5 56.1 L52.5 55.0 L53.5 54.0 L54.5 54.1 L55.5 57.1 L56.5 57.2 L57.5 58.6 L58.5 59.0 L59.5 56.5 L60.5 56.0 L61.5 55.5 L62.5 53.6 L63.5 52.8 L64.5 50.0 L65.5 49.7 L66.5 49.0 L67.5 44.9 L68.5 45.0"></path>
+<line class="ptrend" x1="17.5" x2="68.5" y1="76.0" y2="54.9"></line>
+</svg><span class="pmk pmk-b" style="left: 29.5%; top: 76.5%" data-mo="fade">Higher lows</span><span class="yl" style="top: 85.0%" data-mo="fade">−4%</span><span class="yl" style="top: 65.0%" data-mo="fade">−2%</span><span class="yl" style="top: 45.0%" data-mo="fade">0%</span><span class="yl" style="top: 25.0%" data-mo="fade">+2%</span><span class="yl" style="top: 5.0%" data-mo="fade">+4%</span><span class="fl" style="top: 5.0%" data-mo="fade">+4%</span><span class="fl" style="top: 75.0%" data-mo="fade">−3%</span><span class="tdl" style="left: 69.0%" data-mo="fade">Fri 23 Oct close</span></div>
+<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.5%">Aug</span><span style="left: 30.5%">Sep</span><span style="left: 52.5%">Oct</span><span style="left: 74.5%">Nov</span></div>
 <div class="lgd oncard"><span><i class="sw-navl"></i>Price, once a day</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pb"></i>trend line</span></div>
 </div>
 <div class="note inl"><span class="ms">info</span><span class="mp-foot mp-ink2">One price a day, a day late (next-day pricing): no candles, so only the line patterns on its price.</span></div>
@@ -422,7 +449,21 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="sech"><span class="mp-over mp-ink2">Patterns on its price</span><span class="mp-foot mp-ink2">line patterns only</span></div>
 <div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Higher lows since August</span><span class="mp-foot mp-ink2">A rising trend line through Wed 12 Aug, Fri 18 Sep and Fri 9 Oct</span><span class="mp-foot">Higher 20 days later in 8 of 12 cases since 2015 · average +0.9%</span></span><span class="ms chev">chevron_right</span></div>
 </div>
-<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
+<div class="sech"><span class="mp-over mp-ink2">Why it says so</span><span class="mp-foot mp-ink2">one tap for each</span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">mood</span></span><span class="grow"><span class="mp-sub mp-w6">Market mood</span><span class="mp-foot mp-ink2">Calm and rising since Tue 15 Sep · 64% it stays so over the next 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="grow"><span class="mp-sub mp-w6">Similar days</span><span class="mp-foot mp-ink2">30 since 2015 · 21 higher 4 weeks later</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">event</span></span><span class="grow"><span class="mp-sub mp-w6">Event impacts</span><span class="mp-foot mp-ink2">Rate surprise weighs most: −0.6% in the 4 weeks after, on average over 14 cases</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">tune</span></span><span class="grow"><span class="mp-sub mp-w6">Main drivers</span><span class="mp-foot mp-ink2">From a usual 58% chance of being up to 61%</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">show_chart</span></span><span class="grow"><span class="mp-sub mp-w6">Technical</span><span class="mp-foot mp-ink2">no candles or volume: its moving averages and the trend line on its price</span></span><span class="ms chev">chevron_right</span></div>
+</div>
+<div class="sech"><span class="mp-over mp-ink2">Track records</span><span class="mp-foot mp-ink2">side by side</span></div>
+<div class="trk"><div class="mp-card tc"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">Rules engine</span><span class="mp-chip mp-neutral">Live</span></div>
+<span class="mp-num-l">11 of 14</span><span class="mp-foot mp-ink2">HOLD calls held up, graded against waiting</span></div>
+<div class="mp-card tc"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">Forecaster</span><span class="mp-chip mp-neutral">In practice</span></div>
+<span class="mp-num-l">5 of 5</span><span class="mp-foot mp-ink2">weeks so far beat both the base rate and the rules engine</span><div class="wks"><span class="wkc ok">✓ W1</span><span class="wkc ok">✓ W2</span><span class="wkc ok">✓ W3</span><span class="wkc ok">✓ W4</span><span class="wkc ok">✓ W5</span><span class="wkc tbd">W6</span><span class="wkc tbd">W7</span><span class="wkc tbd">W8</span></div>
+</div>
+</div>
+<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, trained on data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
 </div>
 <div class="edge-bot"></div>
 <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div>
@@ -451,35 +492,34 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="f3c"><span class="mp-foot mp-hero-2">Up in 4 weeks</span><span class="f3n">52%</span><span class="mp-foot mp-hero-2">close to even</span></div>
 </div>
 <div class="rl rl-h"><div class="fx ac jb gap8 wrapr"><span class="mp-foot mp-hero-2">The rules engine, beside it</span><span class="mp-chip mp-pause">PAUSE · 64%</span></div>
-<span class="mp-sub">Keep what you have; hold the top-up.</span><span class="agree mp-foot"><span class="ms ms-s">compare_arrows</span>Both lean cautious: a fall over 5% is likelier than usual, and the rules engine says PAUSE.</span></div>
+<span class="mp-sub">Keep what you have; delay new money until the next review.</span><span class="agree mp-foot"><span class="ms ms-s">compare_arrows</span>Both lean cautious: a fall over 5% is likelier than usual, and the rules engine says PAUSE.</span></div>
 </div>
 <div class="mp-card oncard"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The chart, then the next 4 weeks</span><span class="mp-foot mp-ink2">60 trading days</span></div>
-<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="NASDAQ 100 ETF: daily candles for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −7% and +6%, the middle +0.3%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="100" y1="82.0" y2="82.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="62.0" y2="62.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="42.0" y2="42.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="22.0" y2="22.0"></line>
-<path class="fband" d="M77.25 62.0 L77.82 56.6 L78.96 54.4 L80.09 52.7 L81.23 51.3 L82.37 50.0 L83.51 48.8 L84.64 47.8 L85.78 46.8 L86.92 45.9 L88.06 45.0 L89.19 44.2 L90.33 43.4 L91.47 42.6 L92.61 41.9 L93.74 41.2 L94.88 40.5 L96.02 39.9 L97.16 39.2 L98.29 38.6 L99.43 38.0 L99.43 90.0 L98.29 89.3 L97.16 88.6 L96.02 87.8 L94.88 87.0 L93.74 86.2 L92.61 85.4 L91.47 84.6 L90.33 83.7 L89.19 82.8 L88.06 81.8 L86.92 80.8 L85.78 79.7 L84.64 78.6 L83.51 77.3 L82.37 76.0 L81.23 74.5 L80.09 72.8 L78.96 70.8 L77.82 68.3 L77.25 62.0 Z"></path>
-<path class="fband" d="M77.25 62.0 L77.82 59.0 L78.96 57.7 L80.09 56.7 L81.23 55.9 L82.37 55.2 L83.51 54.6 L84.64 54.0 L85.78 53.4 L86.92 52.9 L88.06 52.4 L89.19 51.9 L90.33 51.5 L91.47 51.0 L92.61 50.6 L93.74 50.2 L94.88 49.8 L96.02 49.5 L97.16 49.1 L98.29 48.8 L99.43 48.4 L99.43 74.8 L98.29 74.5 L97.16 74.2 L96.02 73.8 L94.88 73.4 L93.74 73.1 L92.61 72.7 L91.47 72.3 L90.33 71.9 L89.19 71.5 L88.06 71.0 L86.92 70.6 L85.78 70.1 L84.64 69.6 L83.51 69.0 L82.37 68.4 L81.23 67.7 L80.09 67.0 L78.96 66.0 L77.82 64.9 L77.25 62.0 Z"></path>
-<path class="fmid" d="M77.25 62.0 L77.82 62.0 L78.96 61.9 L80.09 61.8 L81.23 61.8 L82.37 61.7 L83.51 61.6 L84.64 61.6 L85.78 61.5 L86.92 61.5 L88.06 61.4 L89.19 61.4 L90.33 61.3 L91.47 61.2 L92.61 61.2 L93.74 61.1 L94.88 61.0 L96.02 61.0 L97.16 60.9 L98.29 60.8 L99.43 60.8"></path>
-<line class="ftoday" x1="77.25" x2="77.25" y1="0" y2="100"></line>
+<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="NASDAQ 100 ETF: daily candles for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −7% and +6%, the middle +0.3%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="89" y1="82.0" y2="82.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="62.0" y2="62.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="42.0" y2="42.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="22.0" y2="22.0"></line>
+<path class="fband" d="M69.0 62.0 L69.5 56.6 L70.5 54.4 L71.5 52.7 L72.5 51.3 L73.5 50.0 L74.5 48.8 L75.5 47.8 L76.5 46.8 L77.5 45.9 L78.5 45.0 L79.5 44.2 L80.5 43.4 L81.5 42.6 L82.5 41.9 L83.5 41.2 L84.5 40.5 L85.5 39.9 L86.5 39.2 L87.5 38.6 L88.5 38.0 L88.5 90.0 L87.5 89.3 L86.5 88.6 L85.5 87.8 L84.5 87.0 L83.5 86.2 L82.5 85.4 L81.5 84.6 L80.5 83.7 L79.5 82.8 L78.5 81.8 L77.5 80.8 L76.5 79.7 L75.5 78.6 L74.5 77.3 L73.5 76.0 L72.5 74.5 L71.5 72.8 L70.5 70.8 L69.5 68.3 L69.0 62.0 Z"></path>
+<path class="fband" d="M69.0 62.0 L69.5 59.0 L70.5 57.7 L71.5 56.7 L72.5 55.9 L73.5 55.2 L74.5 54.6 L75.5 54.0 L76.5 53.4 L77.5 52.9 L78.5 52.4 L79.5 51.9 L80.5 51.5 L81.5 51.0 L82.5 50.6 L83.5 50.2 L84.5 49.8 L85.5 49.5 L86.5 49.1 L87.5 48.8 L88.5 48.4 L88.5 74.8 L87.5 74.5 L86.5 74.2 L85.5 73.8 L84.5 73.4 L83.5 73.1 L82.5 72.7 L81.5 72.3 L80.5 71.9 L79.5 71.5 L78.5 71.0 L77.5 70.6 L76.5 70.1 L75.5 69.6 L74.5 69.0 L73.5 68.4 L72.5 67.7 L71.5 67.0 L70.5 66.0 L69.5 64.9 L69.0 62.0 Z"></path>
+<path class="fmid" d="M69.0 62.0 L69.5 62.0 L70.5 61.9 L71.5 61.8 L72.5 61.8 L73.5 61.7 L74.5 61.6 L75.5 61.6 L76.5 61.5 L77.5 61.5 L78.5 61.4 L79.5 61.4 L80.5 61.3 L81.5 61.2 L82.5 61.2 L83.5 61.1 L84.5 61.0 L85.5 61.0 L86.5 60.9 L87.5 60.8 L88.5 60.8"></path>
+<line class="ftoday" x1="69.0" x2="69.0" y1="0" y2="100"></line>
 <use href="#nq-candles"></use>
-<line class="pneck" x1="53.93" x2="69.86" y1="36.0" y2="36.0"></line>
-<line class="psup" x1="12.98" x2="77.25" y1="66.0" y2="66.0"></line>
-</svg><span class="pmk pmk-a" style="left: 60.75%; top: 11.6%" data-mo="fade">Double top</span><span class="ptick" style="left: 58.48%; top: 20.8%"></span><span class="ptick" style="left: 63.03%; top: 20.4%"></span><span class="pmk pmk-b" style="left: 34.59%; top: 69.6%" data-mo="fade">Support −1%</span><span class="yl" style="top: 82.0%" data-mo="fade">−5%</span><span class="yl" style="top: 62.0%" data-mo="fade">0%</span><span class="yl" style="top: 42.0%" data-mo="fade">+5%</span><span class="yl" style="top: 22.0%" data-mo="fade">+10%</span><span class="fl" style="top: 38.0%" data-mo="fade">+6%</span><span class="fl" style="top: 90.0%" data-mo="fade">−7%</span><span class="tdl" style="left: 77.25%" data-mo="fade">Fri 23 Oct close</span></div>
-<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.71%">Aug</span><span style="left: 33.46%">Sep</span><span style="left: 58.48%">Oct</span><span style="left: 82.37%">Nov</span></div>
+<line class="pneck" x1="50.5" x2="62.5" y1="37.2" y2="37.2"></line>
+<line class="psup" x1="12.5" x2="69.0" y1="66.6" y2="66.6"></line>
+</svg><span class="pmk pmk-a" style="left: 54.5%; top: 11.6%" data-mo="fade">Double top</span><span class="ptick" style="left: 52.5%; top: 20.8%"></span><span class="ptick" style="left: 56.5%; top: 20.4%"></span><span class="pmk pmk-b" style="left: 31.5%; top: 70.2%" data-mo="fade">Support −1%</span><span class="yl" style="top: 82.0%" data-mo="fade">−5%</span><span class="yl" style="top: 62.0%" data-mo="fade">0%</span><span class="yl" style="top: 42.0%" data-mo="fade">+5%</span><span class="yl" style="top: 22.0%" data-mo="fade">+10%</span><span class="fl" style="top: 38.0%" data-mo="fade">+6%</span><span class="fl" style="top: 90.0%" data-mo="fade">−7%</span><span class="tdl" style="left: 69.0%" data-mo="fade">Fri 23 Oct close</span></div>
+<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.5%">Aug</span><span style="left: 30.5%">Sep</span><span style="left: 52.5%">Oct</span><span style="left: 74.5%">Nov</span></div>
 <div class="lgd oncard"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span></div>
 </div>
 </div>
 <div class="chiprow"><span class="cbtn"><span class="ms">chat_bubble</span>Why? in the chat</span><span class="cbtn"><span class="ms">fact_check</span>How it proves itself</span></div>
 <div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>
-<div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.5% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Support near −1%</span><span class="mp-foot mp-ink2">The Wed 5 Aug low, tested Thu 22 Oct</span><span class="mp-foot">Held in 9 of 14 tests since 2015 · average +1.1% after 20 days</span></span><span class="ms chev">chevron_right</span></div>
 </div>
-<div class="note"><span class="ms">filter_alt_off</span><span class="mp-foot mp-ink2">Also found: a bearish engulfing on Tue 20 Oct. On this ETF it has no edge (23 cases, −0.3% after 5 days), so it is not used.</span></div>
 <div class="sech"><span class="mp-over mp-ink2">Why it says so</span><span class="mp-foot mp-ink2">one tap for each</span></div>
-<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">mood</span></span><span class="grow"><span class="mp-sub mp-w6">Market mood</span><span class="mp-foot mp-ink2">Stressed since Sat 3 Oct · 71% it stays so for 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="grow"><span class="mp-sub mp-w6">Similar days</span><span class="mp-foot mp-ink2">31 since 2015 · 18 recovered within 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">event</span></span><span class="grow"><span class="mp-sub mp-w6">Event impacts</span><span class="mp-foot mp-ink2">Tariffs hit it hardest: −2.6% on average over 11 cases</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">mood</span></span><span class="grow"><span class="mp-sub mp-w6">Market mood</span><span class="mp-foot mp-ink2">Stressed since Sat 3 Oct · 71% it stays so over the next 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="grow"><span class="mp-sub mp-w6">Similar days</span><span class="mp-foot mp-ink2">30 since 2015 · 18 higher 4 weeks later</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">event</span></span><span class="grow"><span class="mp-sub mp-w6">Event impacts</span><span class="mp-foot mp-ink2">Tariffs weighs most: −2.6% in the 4 weeks after, on average over 11 cases</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">tune</span></span><span class="grow"><span class="mp-sub mp-w6">Main drivers</span><span class="mp-foot mp-ink2">From a usual 57% chance of being up to 52%</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">candlestick_chart</span></span><span class="grow"><span class="mp-sub mp-w6">Technical</span><span class="mp-foot mp-ink2">ADX 27 · stochastic 18 · below the cloud since 15 Oct</span></span><span class="ms chev">chevron_right</span></div>
 </div>
@@ -490,7 +530,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <span class="mp-num-l">5 of 5</span><span class="mp-foot mp-ink2">weeks so far beat both the base rate and the rules engine</span><div class="wks"><span class="wkc ok">✓ W1</span><span class="wkc ok">✓ W2</span><span class="wkc ok">✓ W3</span><span class="wkc ok">✓ W4</span><span class="wkc ok">✓ W5</span><span class="wkc tbd">W6</span><span class="wkc tbd">W7</span><span class="wkc tbd">W8</span></div>
 </div>
 </div>
-<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
+<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, trained on data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
 </div>
 <div class="edge-bot"></div>
 <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div>
@@ -518,35 +558,34 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="f3c"><span class="mp-foot mp-hero-2">Up in 4 weeks</span><span class="f3n">52%</span><span class="mp-foot mp-hero-2">close to even</span></div>
 </div>
 <div class="rl rl-h"><div class="fx ac jb gap8 wrapr"><span class="mp-foot mp-hero-2">The rules engine, beside it</span><span class="mp-chip mp-pause">PAUSE · 64%</span></div>
-<span class="mp-sub">Keep what you have; hold the top-up.</span><span class="agree mp-foot"><span class="ms ms-s">compare_arrows</span>Both lean cautious: a fall over 5% is likelier than usual, and the rules engine says PAUSE.</span></div>
+<span class="mp-sub">Keep what you have; delay new money until the next review.</span><span class="agree mp-foot"><span class="ms ms-s">compare_arrows</span>Both lean cautious: a fall over 5% is likelier than usual, and the rules engine says PAUSE.</span></div>
 </div>
 <div class="mp-card oncard"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The chart, then the next 4 weeks</span><span class="mp-foot mp-ink2">60 trading days</span></div>
-<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="NASDAQ 100 ETF: daily candles for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −7% and +6%, the middle +0.3%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="100" y1="82.0" y2="82.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="62.0" y2="62.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="42.0" y2="42.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="22.0" y2="22.0"></line>
-<path class="fband" d="M77.25 62.0 L77.82 56.6 L78.96 54.4 L80.09 52.7 L81.23 51.3 L82.37 50.0 L83.51 48.8 L84.64 47.8 L85.78 46.8 L86.92 45.9 L88.06 45.0 L89.19 44.2 L90.33 43.4 L91.47 42.6 L92.61 41.9 L93.74 41.2 L94.88 40.5 L96.02 39.9 L97.16 39.2 L98.29 38.6 L99.43 38.0 L99.43 90.0 L98.29 89.3 L97.16 88.6 L96.02 87.8 L94.88 87.0 L93.74 86.2 L92.61 85.4 L91.47 84.6 L90.33 83.7 L89.19 82.8 L88.06 81.8 L86.92 80.8 L85.78 79.7 L84.64 78.6 L83.51 77.3 L82.37 76.0 L81.23 74.5 L80.09 72.8 L78.96 70.8 L77.82 68.3 L77.25 62.0 Z"></path>
-<path class="fband" d="M77.25 62.0 L77.82 59.0 L78.96 57.7 L80.09 56.7 L81.23 55.9 L82.37 55.2 L83.51 54.6 L84.64 54.0 L85.78 53.4 L86.92 52.9 L88.06 52.4 L89.19 51.9 L90.33 51.5 L91.47 51.0 L92.61 50.6 L93.74 50.2 L94.88 49.8 L96.02 49.5 L97.16 49.1 L98.29 48.8 L99.43 48.4 L99.43 74.8 L98.29 74.5 L97.16 74.2 L96.02 73.8 L94.88 73.4 L93.74 73.1 L92.61 72.7 L91.47 72.3 L90.33 71.9 L89.19 71.5 L88.06 71.0 L86.92 70.6 L85.78 70.1 L84.64 69.6 L83.51 69.0 L82.37 68.4 L81.23 67.7 L80.09 67.0 L78.96 66.0 L77.82 64.9 L77.25 62.0 Z"></path>
-<path class="fmid" d="M77.25 62.0 L77.82 62.0 L78.96 61.9 L80.09 61.8 L81.23 61.8 L82.37 61.7 L83.51 61.6 L84.64 61.6 L85.78 61.5 L86.92 61.5 L88.06 61.4 L89.19 61.4 L90.33 61.3 L91.47 61.2 L92.61 61.2 L93.74 61.1 L94.88 61.0 L96.02 61.0 L97.16 60.9 L98.29 60.8 L99.43 60.8"></path>
-<line class="ftoday" x1="77.25" x2="77.25" y1="0" y2="100"></line>
+<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="NASDAQ 100 ETF: daily candles for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −7% and +6%, the middle +0.3%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="89" y1="82.0" y2="82.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="62.0" y2="62.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="42.0" y2="42.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="22.0" y2="22.0"></line>
+<path class="fband" d="M69.0 62.0 L69.5 56.6 L70.5 54.4 L71.5 52.7 L72.5 51.3 L73.5 50.0 L74.5 48.8 L75.5 47.8 L76.5 46.8 L77.5 45.9 L78.5 45.0 L79.5 44.2 L80.5 43.4 L81.5 42.6 L82.5 41.9 L83.5 41.2 L84.5 40.5 L85.5 39.9 L86.5 39.2 L87.5 38.6 L88.5 38.0 L88.5 90.0 L87.5 89.3 L86.5 88.6 L85.5 87.8 L84.5 87.0 L83.5 86.2 L82.5 85.4 L81.5 84.6 L80.5 83.7 L79.5 82.8 L78.5 81.8 L77.5 80.8 L76.5 79.7 L75.5 78.6 L74.5 77.3 L73.5 76.0 L72.5 74.5 L71.5 72.8 L70.5 70.8 L69.5 68.3 L69.0 62.0 Z"></path>
+<path class="fband" d="M69.0 62.0 L69.5 59.0 L70.5 57.7 L71.5 56.7 L72.5 55.9 L73.5 55.2 L74.5 54.6 L75.5 54.0 L76.5 53.4 L77.5 52.9 L78.5 52.4 L79.5 51.9 L80.5 51.5 L81.5 51.0 L82.5 50.6 L83.5 50.2 L84.5 49.8 L85.5 49.5 L86.5 49.1 L87.5 48.8 L88.5 48.4 L88.5 74.8 L87.5 74.5 L86.5 74.2 L85.5 73.8 L84.5 73.4 L83.5 73.1 L82.5 72.7 L81.5 72.3 L80.5 71.9 L79.5 71.5 L78.5 71.0 L77.5 70.6 L76.5 70.1 L75.5 69.6 L74.5 69.0 L73.5 68.4 L72.5 67.7 L71.5 67.0 L70.5 66.0 L69.5 64.9 L69.0 62.0 Z"></path>
+<path class="fmid" d="M69.0 62.0 L69.5 62.0 L70.5 61.9 L71.5 61.8 L72.5 61.8 L73.5 61.7 L74.5 61.6 L75.5 61.6 L76.5 61.5 L77.5 61.5 L78.5 61.4 L79.5 61.4 L80.5 61.3 L81.5 61.2 L82.5 61.2 L83.5 61.1 L84.5 61.0 L85.5 61.0 L86.5 60.9 L87.5 60.8 L88.5 60.8"></path>
+<line class="ftoday" x1="69.0" x2="69.0" y1="0" y2="100"></line>
 <use href="#nq-candles"></use>
-<line class="pneck" x1="53.93" x2="69.86" y1="36.0" y2="36.0"></line>
-<line class="psup" x1="12.98" x2="77.25" y1="66.0" y2="66.0"></line>
-</svg><span class="pmk pmk-a" style="left: 60.75%; top: 11.6%" data-mo="fade">Double top</span><span class="ptick" style="left: 58.48%; top: 20.8%"></span><span class="ptick" style="left: 63.03%; top: 20.4%"></span><span class="pmk pmk-b" style="left: 34.59%; top: 69.6%" data-mo="fade">Support −1%</span><span class="yl" style="top: 82.0%" data-mo="fade">−5%</span><span class="yl" style="top: 62.0%" data-mo="fade">0%</span><span class="yl" style="top: 42.0%" data-mo="fade">+5%</span><span class="yl" style="top: 22.0%" data-mo="fade">+10%</span><span class="fl" style="top: 38.0%" data-mo="fade">+6%</span><span class="fl" style="top: 90.0%" data-mo="fade">−7%</span><span class="tdl" style="left: 77.25%" data-mo="fade">Fri 23 Oct close</span></div>
-<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.71%">Aug</span><span style="left: 33.46%">Sep</span><span style="left: 58.48%">Oct</span><span style="left: 82.37%">Nov</span></div>
+<line class="pneck" x1="50.5" x2="62.5" y1="37.2" y2="37.2"></line>
+<line class="psup" x1="12.5" x2="69.0" y1="66.6" y2="66.6"></line>
+</svg><span class="pmk pmk-a" style="left: 54.5%; top: 11.6%" data-mo="fade">Double top</span><span class="ptick" style="left: 52.5%; top: 20.8%"></span><span class="ptick" style="left: 56.5%; top: 20.4%"></span><span class="pmk pmk-b" style="left: 31.5%; top: 70.2%" data-mo="fade">Support −1%</span><span class="yl" style="top: 82.0%" data-mo="fade">−5%</span><span class="yl" style="top: 62.0%" data-mo="fade">0%</span><span class="yl" style="top: 42.0%" data-mo="fade">+5%</span><span class="yl" style="top: 22.0%" data-mo="fade">+10%</span><span class="fl" style="top: 38.0%" data-mo="fade">+6%</span><span class="fl" style="top: 90.0%" data-mo="fade">−7%</span><span class="tdl" style="left: 69.0%" data-mo="fade">Fri 23 Oct close</span></div>
+<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.5%">Aug</span><span style="left: 30.5%">Sep</span><span style="left: 52.5%">Oct</span><span style="left: 74.5%">Nov</span></div>
 <div class="lgd oncard"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span></div>
 </div>
 </div>
 <div class="chiprow"><span class="cbtn"><span class="ms">chat_bubble</span>Why? in the chat</span><span class="cbtn"><span class="ms">fact_check</span>How it proves itself</span></div>
 <div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>
-<div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.5% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Support near −1%</span><span class="mp-foot mp-ink2">The Wed 5 Aug low, tested Thu 22 Oct</span><span class="mp-foot">Held in 9 of 14 tests since 2015 · average +1.1% after 20 days</span></span><span class="ms chev">chevron_right</span></div>
 </div>
-<div class="note"><span class="ms">filter_alt_off</span><span class="mp-foot mp-ink2">Also found: a bearish engulfing on Tue 20 Oct. On this ETF it has no edge (23 cases, −0.3% after 5 days), so it is not used.</span></div>
 <div class="sech"><span class="mp-over mp-ink2">Why it says so</span><span class="mp-foot mp-ink2">one tap for each</span></div>
-<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">mood</span></span><span class="grow"><span class="mp-sub mp-w6">Market mood</span><span class="mp-foot mp-ink2">Stressed since Sat 3 Oct · 71% it stays so for 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="grow"><span class="mp-sub mp-w6">Similar days</span><span class="mp-foot mp-ink2">31 since 2015 · 18 recovered within 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">event</span></span><span class="grow"><span class="mp-sub mp-w6">Event impacts</span><span class="mp-foot mp-ink2">Tariffs hit it hardest: −2.6% on average over 11 cases</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">mood</span></span><span class="grow"><span class="mp-sub mp-w6">Market mood</span><span class="mp-foot mp-ink2">Stressed since Sat 3 Oct · 71% it stays so over the next 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="grow"><span class="mp-sub mp-w6">Similar days</span><span class="mp-foot mp-ink2">30 since 2015 · 18 higher 4 weeks later</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">event</span></span><span class="grow"><span class="mp-sub mp-w6">Event impacts</span><span class="mp-foot mp-ink2">Tariffs weighs most: −2.6% in the 4 weeks after, on average over 11 cases</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">tune</span></span><span class="grow"><span class="mp-sub mp-w6">Main drivers</span><span class="mp-foot mp-ink2">From a usual 57% chance of being up to 52%</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">candlestick_chart</span></span><span class="grow"><span class="mp-sub mp-w6">Technical</span><span class="mp-foot mp-ink2">ADX 27 · stochastic 18 · below the cloud since 15 Oct</span></span><span class="ms chev">chevron_right</span></div>
 </div>
@@ -557,7 +596,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <span class="mp-num-l">5 of 5</span><span class="mp-foot mp-ink2">weeks so far beat both the base rate and the rules engine</span><div class="wks"><span class="wkc ok">✓ W1</span><span class="wkc ok">✓ W2</span><span class="wkc ok">✓ W3</span><span class="wkc ok">✓ W4</span><span class="wkc ok">✓ W5</span><span class="wkc tbd">W6</span><span class="wkc tbd">W7</span><span class="wkc tbd">W8</span></div>
 </div>
 </div>
-<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
+<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, trained on data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
 </div>
 <div class="edge-bot"></div>
 <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div>
@@ -578,36 +617,35 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="f3c"><span class="mp-foot mp-hero-2">Up in 4 weeks</span><span class="f3n">52%</span><span class="mp-foot mp-hero-2">close to even</span></div>
 </div>
 <div class="rl rl-h"><div class="fx ac jb gap8 wrapr"><span class="mp-foot mp-hero-2">The rules engine, beside it</span><span class="mp-chip mp-pause">PAUSE · 64%</span></div>
-<span class="mp-sub">Keep what you have; hold the top-up.</span><span class="agree mp-foot"><span class="ms ms-s">compare_arrows</span>Both lean cautious: a fall over 5% is likelier than usual, and the rules engine says PAUSE.</span></div>
+<span class="mp-sub">Keep what you have; delay new money until the next review.</span><span class="agree mp-foot"><span class="ms ms-s">compare_arrows</span>Both lean cautious: a fall over 5% is likelier than usual, and the rules engine says PAUSE.</span></div>
 </div>
 <div class="mp-card oncard"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The chart, then the next 4 weeks</span><span class="mp-foot mp-ink2">60 trading days</span></div>
-<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="NASDAQ 100 ETF: daily candles for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −7% and +6%, the middle +0.3%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="100" y1="82.0" y2="82.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="62.0" y2="62.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="42.0" y2="42.0"></line>
-<line class="fgrid" x1="9" x2="100" y1="22.0" y2="22.0"></line>
-<path class="fband" d="M77.25 62.0 L77.82 56.6 L78.96 54.4 L80.09 52.7 L81.23 51.3 L82.37 50.0 L83.51 48.8 L84.64 47.8 L85.78 46.8 L86.92 45.9 L88.06 45.0 L89.19 44.2 L90.33 43.4 L91.47 42.6 L92.61 41.9 L93.74 41.2 L94.88 40.5 L96.02 39.9 L97.16 39.2 L98.29 38.6 L99.43 38.0 L99.43 90.0 L98.29 89.3 L97.16 88.6 L96.02 87.8 L94.88 87.0 L93.74 86.2 L92.61 85.4 L91.47 84.6 L90.33 83.7 L89.19 82.8 L88.06 81.8 L86.92 80.8 L85.78 79.7 L84.64 78.6 L83.51 77.3 L82.37 76.0 L81.23 74.5 L80.09 72.8 L78.96 70.8 L77.82 68.3 L77.25 62.0 Z"></path>
-<path class="fband" d="M77.25 62.0 L77.82 59.0 L78.96 57.7 L80.09 56.7 L81.23 55.9 L82.37 55.2 L83.51 54.6 L84.64 54.0 L85.78 53.4 L86.92 52.9 L88.06 52.4 L89.19 51.9 L90.33 51.5 L91.47 51.0 L92.61 50.6 L93.74 50.2 L94.88 49.8 L96.02 49.5 L97.16 49.1 L98.29 48.8 L99.43 48.4 L99.43 74.8 L98.29 74.5 L97.16 74.2 L96.02 73.8 L94.88 73.4 L93.74 73.1 L92.61 72.7 L91.47 72.3 L90.33 71.9 L89.19 71.5 L88.06 71.0 L86.92 70.6 L85.78 70.1 L84.64 69.6 L83.51 69.0 L82.37 68.4 L81.23 67.7 L80.09 67.0 L78.96 66.0 L77.82 64.9 L77.25 62.0 Z"></path>
-<path class="fmid" d="M77.25 62.0 L77.82 62.0 L78.96 61.9 L80.09 61.8 L81.23 61.8 L82.37 61.7 L83.51 61.6 L84.64 61.6 L85.78 61.5 L86.92 61.5 L88.06 61.4 L89.19 61.4 L90.33 61.3 L91.47 61.2 L92.61 61.2 L93.74 61.1 L94.88 61.0 L96.02 61.0 L97.16 60.9 L98.29 60.8 L99.43 60.8"></path>
-<line class="ftoday" x1="77.25" x2="77.25" y1="0" y2="100"></line>
+<div class="fcw" style="--ch: 200px"><div class="mp-chartbox fcbox" role="img" aria-label="NASDAQ 100 ETF: daily candles for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between −7% and +6%, the middle +0.3%."><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="fgrid" x1="9" x2="89" y1="82.0" y2="82.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="62.0" y2="62.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="42.0" y2="42.0"></line>
+<line class="fgrid" x1="9" x2="89" y1="22.0" y2="22.0"></line>
+<path class="fband" d="M69.0 62.0 L69.5 56.6 L70.5 54.4 L71.5 52.7 L72.5 51.3 L73.5 50.0 L74.5 48.8 L75.5 47.8 L76.5 46.8 L77.5 45.9 L78.5 45.0 L79.5 44.2 L80.5 43.4 L81.5 42.6 L82.5 41.9 L83.5 41.2 L84.5 40.5 L85.5 39.9 L86.5 39.2 L87.5 38.6 L88.5 38.0 L88.5 90.0 L87.5 89.3 L86.5 88.6 L85.5 87.8 L84.5 87.0 L83.5 86.2 L82.5 85.4 L81.5 84.6 L80.5 83.7 L79.5 82.8 L78.5 81.8 L77.5 80.8 L76.5 79.7 L75.5 78.6 L74.5 77.3 L73.5 76.0 L72.5 74.5 L71.5 72.8 L70.5 70.8 L69.5 68.3 L69.0 62.0 Z"></path>
+<path class="fband" d="M69.0 62.0 L69.5 59.0 L70.5 57.7 L71.5 56.7 L72.5 55.9 L73.5 55.2 L74.5 54.6 L75.5 54.0 L76.5 53.4 L77.5 52.9 L78.5 52.4 L79.5 51.9 L80.5 51.5 L81.5 51.0 L82.5 50.6 L83.5 50.2 L84.5 49.8 L85.5 49.5 L86.5 49.1 L87.5 48.8 L88.5 48.4 L88.5 74.8 L87.5 74.5 L86.5 74.2 L85.5 73.8 L84.5 73.4 L83.5 73.1 L82.5 72.7 L81.5 72.3 L80.5 71.9 L79.5 71.5 L78.5 71.0 L77.5 70.6 L76.5 70.1 L75.5 69.6 L74.5 69.0 L73.5 68.4 L72.5 67.7 L71.5 67.0 L70.5 66.0 L69.5 64.9 L69.0 62.0 Z"></path>
+<path class="fmid" d="M69.0 62.0 L69.5 62.0 L70.5 61.9 L71.5 61.8 L72.5 61.8 L73.5 61.7 L74.5 61.6 L75.5 61.6 L76.5 61.5 L77.5 61.5 L78.5 61.4 L79.5 61.4 L80.5 61.3 L81.5 61.2 L82.5 61.2 L83.5 61.1 L84.5 61.0 L85.5 61.0 L86.5 60.9 L87.5 60.8 L88.5 60.8"></path>
+<line class="ftoday" x1="69.0" x2="69.0" y1="0" y2="100"></line>
 <use href="#nq-candles"></use>
-<line class="pneck" x1="53.93" x2="69.86" y1="36.0" y2="36.0"></line>
-<line class="psup" x1="12.98" x2="77.25" y1="66.0" y2="66.0"></line>
-</svg><span class="pmk pmk-a" style="left: 60.75%; top: 11.6%" data-mo="fade">Double top</span><span class="ptick" style="left: 58.48%; top: 20.8%"></span><span class="ptick" style="left: 63.03%; top: 20.4%"></span><span class="pmk pmk-b" style="left: 34.59%; top: 69.6%" data-mo="fade">Support −1%</span><span class="yl" style="top: 82.0%" data-mo="fade">−5%</span><span class="yl" style="top: 62.0%" data-mo="fade">0%</span><span class="yl" style="top: 42.0%" data-mo="fade">+5%</span><span class="yl" style="top: 22.0%" data-mo="fade">+10%</span><span class="fl" style="top: 38.0%" data-mo="fade">+6%</span><span class="fl" style="top: 90.0%" data-mo="fade">−7%</span><span class="tdl" style="left: 77.25%" data-mo="fade">Fri 23 Oct close</span></div>
-<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.71%">Aug</span><span style="left: 33.46%">Sep</span><span style="left: 58.48%">Oct</span><span style="left: 82.37%">Nov</span></div>
+<line class="pneck" x1="50.5" x2="62.5" y1="37.2" y2="37.2"></line>
+<line class="psup" x1="12.5" x2="69.0" y1="66.6" y2="66.6"></line>
+</svg><span class="pmk pmk-a" style="left: 54.5%; top: 11.6%" data-mo="fade">Double top</span><span class="ptick" style="left: 52.5%; top: 20.8%"></span><span class="ptick" style="left: 56.5%; top: 20.4%"></span><span class="pmk pmk-b" style="left: 31.5%; top: 70.2%" data-mo="fade">Support −1%</span><span class="yl" style="top: 82.0%" data-mo="fade">−5%</span><span class="yl" style="top: 62.0%" data-mo="fade">0%</span><span class="yl" style="top: 42.0%" data-mo="fade">+5%</span><span class="yl" style="top: 22.0%" data-mo="fade">+10%</span><span class="fl" style="top: 38.0%" data-mo="fade">+6%</span><span class="fl" style="top: 90.0%" data-mo="fade">−7%</span><span class="tdl" style="left: 69.0%" data-mo="fade">Fri 23 Oct close</span></div>
+<div class="mp-chartaxis" aria-hidden="true"><span style="left: 10.5%">Aug</span><span style="left: 30.5%">Sep</span><span style="left: 52.5%">Oct</span><span style="left: 74.5%">Nov</span></div>
 <div class="lgd oncard"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span></div>
 </div>
 </div>
 <div class="chiprow"><span class="cbtn"><span class="ms">chat_bubble</span>Why? in the chat</span><span class="cbtn"><span class="ms">fact_check</span>How it proves itself</span></div>
 <div class="g2"><div class="dv-col gap14"><div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>
-<div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.5% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Support near −1%</span><span class="mp-foot mp-ink2">The Wed 5 Aug low, tested Thu 22 Oct</span><span class="mp-foot">Held in 9 of 14 tests since 2015 · average +1.1% after 20 days</span></span><span class="ms chev">chevron_right</span></div>
 </div>
-<div class="note"><span class="ms">filter_alt_off</span><span class="mp-foot mp-ink2">Also found: a bearish engulfing on Tue 20 Oct. On this ETF it has no edge (23 cases, −0.3% after 5 days), so it is not used.</span></div>
 </div>
 <div class="dv-col gap14"><div class="sech"><span class="mp-over mp-ink2">Why it says so</span><span class="mp-foot mp-ink2">one tap for each</span></div>
-<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">mood</span></span><span class="grow"><span class="mp-sub mp-w6">Market mood</span><span class="mp-foot mp-ink2">Stressed since Sat 3 Oct · 71% it stays so for 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="grow"><span class="mp-sub mp-w6">Similar days</span><span class="mp-foot mp-ink2">31 since 2015 · 18 recovered within 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
-<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">event</span></span><span class="grow"><span class="mp-sub mp-w6">Event impacts</span><span class="mp-foot mp-ink2">Tariffs hit it hardest: −2.6% on average over 11 cases</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-group"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">mood</span></span><span class="grow"><span class="mp-sub mp-w6">Market mood</span><span class="mp-foot mp-ink2">Stressed since Sat 3 Oct · 71% it stays so over the next 4 weeks</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="grow"><span class="mp-sub mp-w6">Similar days</span><span class="mp-foot mp-ink2">30 since 2015 · 18 higher 4 weeks later</span></span><span class="ms chev">chevron_right</span></div>
+<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">event</span></span><span class="grow"><span class="mp-sub mp-w6">Event impacts</span><span class="mp-foot mp-ink2">Tariffs weighs most: −2.6% in the 4 weeks after, on average over 11 cases</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">tune</span></span><span class="grow"><span class="mp-sub mp-w6">Main drivers</span><span class="mp-foot mp-ink2">From a usual 57% chance of being up to 52%</span></span><span class="ms chev">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">candlestick_chart</span></span><span class="grow"><span class="mp-sub mp-w6">Technical</span><span class="mp-foot mp-ink2">ADX 27 · stochastic 18 · below the cloud since 15 Oct</span></span><span class="ms chev">chevron_right</span></div>
 </div>
@@ -620,7 +658,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 </div>
 </div>
 </div>
-<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
+<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of Sat 24 Oct 06:10 (model 2026.10, trained on data to 30 Sep). Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p></div>
 </div>
 <div class="edge-bot"></div>
 </div>
@@ -629,128 +667,126 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
           <div class="bd-note"><p><b>Open,</b> the chart and its patterns sit beside the rows, as on iPad; the fold keeps the scroll.</p></div>
         </div>
       </section>
-      <svg class="mp sdefs" width="0" height="0" aria-hidden="true"><defs><g id="bal-nav"><path class="navl" d="M9.57 71.0 L10.71 72.9 L11.84 72.5 L12.98 73.6 L14.12 73.0 L15.26 73.4 L16.39 75.9 L17.53 76.0 L18.67 76.0 L19.81 75.3 L20.94 75.1 L22.08 73.9 L23.22 71.4 L24.36 72.3 L25.49 70.4 L26.63 71.2 L27.77 68.8 L28.91 70.3 L30.04 67.9 L31.18 66.6 L32.32 67.2 L33.46 64.9 L34.59 64.5 L35.73 64.0 L36.87 64.5 L38.01 64.1 L39.14 64.7 L40.28 66.0 L41.42 67.6 L42.56 63.9 L43.69 66.3 L44.83 66.0 L45.97 66.1 L47.11 66.7 L48.24 67.0 L49.38 63.3 L50.52 63.6 L51.66 61.3 L52.79 61.7 L53.93 58.3 L55.07 56.6 L56.21 57.6 L57.34 56.4 L58.48 55.1 L59.62 54.0 L60.76 54.1 L61.89 57.1 L63.03 57.2 L64.17 58.6 L65.31 59.0 L66.44 56.5 L67.58 56.0 L68.72 55.5 L69.86 53.6 L70.99 52.8 L72.13 50.0 L73.27 49.7 L74.41 49.0 L75.54 44.9 L76.68 45.0"></path>
-</g>
-<g id="nq-candles"><line class="wk up" x1="9.57" x2="9.57" y1="54.2" y2="59.0"></line>
-<rect class="cb up" x="9.15" y="55.6" width="0.84" height="1.3"></rect>
-<line class="wk dn" x1="10.71" x2="10.71" y1="54.4" y2="64.2"></line>
-<rect class="cb dn" x="10.29" y="55.7" width="0.84" height="7.1"></rect>
-<line class="wk dn" x1="11.84" x2="11.84" y1="62.1" y2="66.3"></line>
-<rect class="cb dn" x="11.42" y="63.4" width="0.84" height="1.4"></rect>
-<line class="wk dn" x1="12.98" x2="12.98" y1="63.6" y2="66.6"></line>
-<rect class="cb dn" x="12.56" y="64.2" width="0.84" height="1.8"></rect>
-<line class="wk up" x1="14.12" x2="14.12" y1="62.9" y2="66.6"></line>
-<rect class="cb up" x="13.7" y="64.8" width="0.84" height="2.0"></rect>
-<line class="wk up" x1="15.26" x2="15.26" y1="62.4" y2="66.6"></line>
-<rect class="cb up" x="14.84" y="64.6" width="0.84" height="1.1"></rect>
-<line class="wk up" x1="16.39" x2="16.39" y1="58.9" y2="64.9"></line>
-<rect class="cb up" x="15.97" y="60.4" width="0.84" height="3.8"></rect>
-<line class="wk up" x1="17.53" x2="17.53" y1="58.8" y2="61.9"></line>
-<rect class="cb up" x="17.11" y="60.1" width="0.84" height="1.3"></rect>
-<line class="wk dn" x1="18.67" x2="18.67" y1="59.9" y2="61.4"></line>
-<rect class="cb dn" x="18.25" y="60.7" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="19.81" x2="19.81" y1="56.0" y2="63.0"></line>
-<rect class="cb up" x="19.39" y="57.2" width="0.84" height="3.9"></rect>
-<line class="wk dn" x1="20.94" x2="20.94" y1="55.6" y2="59.8"></line>
-<rect class="cb dn" x="20.52" y="57.2" width="0.84" height="1.3"></rect>
-<line class="wk up" x1="22.08" x2="22.08" y1="51.8" y2="59.1"></line>
-<rect class="cb up" x="21.66" y="53.0" width="0.84" height="5.2"></rect>
-<line class="wk dn" x1="23.22" x2="23.22" y1="49.8" y2="54.4"></line>
-<rect class="cb dn" x="22.8" y="52.0" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="24.36" x2="24.36" y1="50.1" y2="52.9"></line>
-<rect class="cb up" x="23.94" y="51.0" width="0.84" height="1.1"></rect>
-<line class="wk up" x1="25.49" x2="25.49" y1="49.1" y2="53.2"></line>
-<rect class="cb up" x="25.07" y="49.6" width="0.84" height="1.9"></rect>
-<line class="wk up" x1="26.63" x2="26.63" y1="47.3" y2="50.9"></line>
-<rect class="cb up" x="26.21" y="49.2" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="27.77" x2="27.77" y1="45.2" y2="48.7"></line>
-<rect class="cb up" x="27.35" y="47.1" width="0.84" height="1.2"></rect>
-<line class="wk dn" x1="28.91" x2="28.91" y1="45.6" y2="50.0"></line>
-<rect class="cb dn" x="28.49" y="47.7" width="0.84" height="1.0"></rect>
-<line class="wk dn" x1="30.04" x2="30.04" y1="46.6" y2="48.7"></line>
-<rect class="cb dn" x="29.62" y="47.8" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="31.18" x2="31.18" y1="44.3" y2="48.8"></line>
-<rect class="cb up" x="30.76" y="46.1" width="0.84" height="1.8"></rect>
-<line class="wk up" x1="32.32" x2="32.32" y1="43.0" y2="49.0"></line>
-<rect class="cb up" x="31.9" y="44.0" width="0.84" height="2.9"></rect>
-<line class="wk dn" x1="33.46" x2="33.46" y1="42.8" y2="45.0"></line>
-<rect class="cb dn" x="33.04" y="43.4" width="0.84" height="0.8"></rect>
-<line class="wk up" x1="34.59" x2="34.59" y1="44.1" y2="46.8"></line>
-<rect class="cb up" x="34.17" y="44.6" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="35.73" x2="35.73" y1="40.5" y2="46.4"></line>
-<rect class="cb up" x="35.31" y="41.9" width="0.84" height="3.3"></rect>
-<line class="wk dn" x1="36.87" x2="36.87" y1="40.8" y2="45.4"></line>
-<rect class="cb dn" x="36.45" y="42.5" width="0.84" height="2.3"></rect>
-<line class="wk up" x1="38.01" x2="38.01" y1="41.0" y2="45.6"></line>
-<rect class="cb up" x="37.59" y="41.6" width="0.84" height="2.9"></rect>
-<line class="wk up" x1="39.14" x2="39.14" y1="40.9" y2="44.3"></line>
-<rect class="cb up" x="38.72" y="41.8" width="0.84" height="0.6"></rect>
-<line class="wk dn" x1="40.28" x2="40.28" y1="40.2" y2="43.2"></line>
-<rect class="cb dn" x="39.86" y="41.2" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="41.42" x2="41.42" y1="39.5" y2="43.7"></line>
-<rect class="cb up" x="41.0" y="40.6" width="0.84" height="1.2"></rect>
-<line class="wk up" x1="42.56" x2="42.56" y1="39.4" y2="42.5"></line>
-<rect class="cb up" x="42.14" y="40.0" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="43.69" x2="43.69" y1="36.9" y2="42.4"></line>
-<rect class="cb up" x="43.27" y="37.8" width="0.84" height="2.8"></rect>
-<line class="wk up" x1="44.83" x2="44.83" y1="34.4" y2="38.6"></line>
-<rect class="cb up" x="44.41" y="35.3" width="0.84" height="2.8"></rect>
-<line class="wk dn" x1="45.97" x2="45.97" y1="34.6" y2="37.8"></line>
-<rect class="cb dn" x="45.55" y="36.1" width="0.84" height="0.8"></rect>
-<line class="wk up" x1="47.11" x2="47.11" y1="33.4" y2="37.9"></line>
-<rect class="cb up" x="46.69" y="34.4" width="0.84" height="2.3"></rect>
-<line class="wk up" x1="48.24" x2="48.24" y1="32.0" y2="35.0"></line>
-<rect class="cb up" x="47.82" y="33.3" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="49.38" x2="49.38" y1="31.6" y2="33.2"></line>
-<rect class="cb up" x="48.96" y="32.4" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="50.52" x2="50.52" y1="28.7" y2="32.4"></line>
-<rect class="cb up" x="50.1" y="30.6" width="0.84" height="1.0"></rect>
-<line class="wk dn" x1="51.66" x2="51.66" y1="29.5" y2="34.1"></line>
-<rect class="cb dn" x="51.24" y="31.2" width="0.84" height="0.8"></rect>
-<line class="wk up" x1="52.79" x2="52.79" y1="28.9" y2="34.6"></line>
-<rect class="cb up" x="52.37" y="31.0" width="0.84" height="1.6"></rect>
-<line class="wk up" x1="53.93" x2="53.93" y1="28.3" y2="31.4"></line>
-<rect class="cb up" x="53.51" y="29.4" width="0.84" height="1.4"></rect>
-<line class="wk up" x1="55.07" x2="55.07" y1="23.6" y2="31.2"></line>
-<rect class="cb up" x="54.65" y="25.7" width="0.84" height="4.7"></rect>
-<line class="wk up" x1="56.21" x2="56.21" y1="24.4" y2="27.2"></line>
-<rect class="cb up" x="55.79" y="25.3" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="57.34" x2="57.34" y1="23.6" y2="25.8"></line>
-<rect class="cb up" x="56.92" y="24.5" width="0.84" height="0.6"></rect>
-<line class="wk up" x1="58.48" x2="58.48" y1="22.0" y2="26.4"></line>
-<rect class="cb up" x="58.06" y="23.6" width="0.84" height="2.0"></rect>
-<line class="wk dn" x1="59.62" x2="59.62" y1="22.6" y2="27.1"></line>
-<rect class="cb dn" x="59.2" y="23.2" width="0.84" height="3.1"></rect>
-<line class="wk dn" x1="60.76" x2="60.76" y1="24.3" y2="37.1"></line>
-<rect class="cb dn" x="60.34" y="26.2" width="0.84" height="9.4"></rect>
-<line class="wk up" x1="61.89" x2="61.89" y1="27.6" y2="36.8"></line>
-<rect class="cb up" x="61.47" y="29.7" width="0.84" height="6.3"></rect>
-<line class="wk up" x1="63.03" x2="63.03" y1="21.6" y2="26.0"></line>
-<rect class="cb up" x="62.61" y="23.2" width="0.84" height="2.0"></rect>
-<line class="wk dn" x1="64.17" x2="64.17" y1="23.3" y2="26.9"></line>
-<rect class="cb dn" x="63.75" y="24.2" width="0.84" height="1.5"></rect>
-<line class="wk up" x1="65.31" x2="65.31" y1="25.6" y2="27.6"></line>
-<rect class="cb up" x="64.89" y="26.4" width="0.84" height="0.6"></rect>
-<line class="wk dn" x1="66.44" x2="66.44" y1="25.6" y2="34.1"></line>
-<rect class="cb dn" x="66.02" y="26.2" width="0.84" height="6.8"></rect>
-<line class="wk dn" x1="67.58" x2="67.58" y1="30.1" y2="38.0"></line>
-<rect class="cb dn" x="67.16" y="32.2" width="0.84" height="4.2"></rect>
-<line class="wk dn" x1="68.72" x2="68.72" y1="33.6" y2="38.8"></line>
-<rect class="cb dn" x="68.3" y="34.4" width="0.84" height="3.6"></rect>
-<line class="wk dn" x1="69.86" x2="69.86" y1="36.2" y2="42.1"></line>
-<rect class="cb dn" x="69.44" y="37.6" width="0.84" height="3.9"></rect>
-<line class="wk dn" x1="70.99" x2="70.99" y1="42.0" y2="47.3"></line>
-<rect class="cb dn" x="70.57" y="42.4" width="0.84" height="2.8"></rect>
-<line class="wk up" x1="72.13" x2="72.13" y1="54.4" y2="58.8"></line>
-<rect class="cb up" x="71.71" y="56.4" width="0.84" height="1.6"></rect>
-<line class="wk dn" x1="73.27" x2="73.27" y1="54.0" y2="62.0"></line>
-<rect class="cb dn" x="72.85" y="54.8" width="0.84" height="6.4"></rect>
-<line class="wk dn" x1="74.41" x2="74.41" y1="60.4" y2="65.6"></line>
-<rect class="cb dn" x="73.99" y="61.6" width="0.84" height="2.8"></rect>
-<line class="wk dn" x1="75.54" x2="75.54" y1="62.8" y2="66.8"></line>
-<rect class="cb dn" x="75.12" y="64.0" width="0.84" height="1.6"></rect>
-<line class="wk up" x1="76.68" x2="76.68" y1="60.8" y2="66.0"></line>
-<rect class="cb up" x="76.26" y="62.0" width="0.84" height="3.2"></rect>
+      <svg class="mp sdefs" width="0" height="0" aria-hidden="true"><defs><g id="nq-candles"><rect class="cw up" x="9.38" y="54.2" width="0.24" height="4.8"></rect>
+<rect class="cb up" x="9.08" y="55.6" width="0.84" height="1.3"></rect>
+<rect class="cw dn" x="10.38" y="54.4" width="0.24" height="9.8"></rect>
+<rect class="cb dn" x="10.08" y="55.7" width="0.84" height="7.1"></rect>
+<rect class="cw dn" x="11.38" y="62.1" width="0.24" height="4.2"></rect>
+<rect class="cb dn" x="11.08" y="63.4" width="0.84" height="1.4"></rect>
+<rect class="cw dn" x="12.38" y="63.6" width="0.24" height="3.0"></rect>
+<rect class="cb dn" x="12.08" y="64.2" width="0.84" height="1.8"></rect>
+<rect class="cw up" x="13.38" y="64.2" width="0.24" height="2.2"></rect>
+<rect class="cb up" x="13.08" y="64.8" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="14.38" y="62.7" width="0.24" height="3.9"></rect>
+<rect class="cb up" x="14.08" y="64.6" width="0.84" height="1.0"></rect>
+<rect class="cw up" x="15.38" y="58.2" width="0.24" height="8.4"></rect>
+<rect class="cb up" x="15.08" y="60.4" width="0.84" height="5.1"></rect>
+<rect class="cw dn" x="16.38" y="58.6" width="0.24" height="2.2"></rect>
+<rect class="cb dn" x="16.08" y="60.1" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="17.38" y="59.6" width="0.24" height="2.0"></rect>
+<rect class="cb up" x="17.08" y="61.0" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="18.38" y="56.4" width="0.24" height="5.6"></rect>
+<rect class="cb up" x="18.08" y="57.2" width="0.84" height="4.4"></rect>
+<rect class="cw dn" x="19.38" y="56.1" width="0.24" height="4.3"></rect>
+<rect class="cb dn" x="19.08" y="57.3" width="0.84" height="1.2"></rect>
+<rect class="cw up" x="20.38" y="51.5" width="0.24" height="8.3"></rect>
+<rect class="cb up" x="20.08" y="53.0" width="0.84" height="5.5"></rect>
+<rect class="cw up" x="21.38" y="51.3" width="0.24" height="2.3"></rect>
+<rect class="cb up" x="21.08" y="52.5" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="22.38" y="48.8" width="0.24" height="4.6"></rect>
+<rect class="cb up" x="22.08" y="51.0" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="23.38" y="48.6" width="0.24" height="2.8"></rect>
+<rect class="cb up" x="23.08" y="49.6" width="0.84" height="1.0"></rect>
+<rect class="cw up" x="24.38" y="48.7" width="0.24" height="3.1"></rect>
+<rect class="cb up" x="24.08" y="49.2" width="0.84" height="0.8"></rect>
+<rect class="cw up" x="25.38" y="45.2" width="0.24" height="5.3"></rect>
+<rect class="cb up" x="25.08" y="47.1" width="0.84" height="2.3"></rect>
+<rect class="cw dn" x="26.38" y="44.2" width="0.24" height="4.9"></rect>
+<rect class="cb dn" x="26.08" y="46.2" width="0.84" height="2.5"></rect>
+<rect class="cw up" x="27.38" y="46.1" width="0.24" height="4.5"></rect>
+<rect class="cb up" x="27.08" y="48.2" width="0.84" height="1.1"></rect>
+<rect class="cw up" x="28.38" y="45.0" width="0.24" height="2.7"></rect>
+<rect class="cb up" x="28.08" y="46.1" width="0.84" height="1.1"></rect>
+<rect class="cw up" x="29.38" y="42.2" width="0.24" height="4.5"></rect>
+<rect class="cb up" x="29.08" y="44.0" width="0.84" height="1.8"></rect>
+<rect class="cw up" x="30.38" y="43.2" width="0.24" height="3.7"></rect>
+<rect class="cb up" x="30.08" y="44.2" width="0.84" height="0.6"></rect>
+<rect class="cw dn" x="31.38" y="43.0" width="0.24" height="2.4"></rect>
+<rect class="cb dn" x="31.08" y="43.6" width="0.84" height="1.0"></rect>
+<rect class="cw up" x="32.38" y="41.4" width="0.24" height="5.8"></rect>
+<rect class="cb up" x="32.08" y="41.9" width="0.84" height="3.5"></rect>
+<rect class="cw dn" x="33.38" y="41.1" width="0.24" height="4.9"></rect>
+<rect class="cb dn" x="33.08" y="42.5" width="0.84" height="2.3"></rect>
+<rect class="cw up" x="34.38" y="39.9" width="0.24" height="6.1"></rect>
+<rect class="cb up" x="34.08" y="41.6" width="0.84" height="3.8"></rect>
+<rect class="cw dn" x="35.38" y="40.7" width="0.24" height="2.2"></rect>
+<rect class="cb dn" x="35.08" y="41.3" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="36.38" y="40.3" width="0.24" height="4.2"></rect>
+<rect class="cb up" x="36.08" y="41.2" width="0.84" height="1.1"></rect>
+<rect class="cw up" x="37.38" y="39.6" width="0.24" height="3.0"></rect>
+<rect class="cb up" x="37.08" y="40.6" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="38.38" y="38.9" width="0.24" height="4.2"></rect>
+<rect class="cb up" x="38.08" y="40.0" width="0.84" height="1.2"></rect>
+<rect class="cw up" x="39.38" y="37.2" width="0.24" height="4.8"></rect>
+<rect class="cb up" x="39.08" y="37.8" width="0.84" height="2.0"></rect>
+<rect class="cw up" x="40.38" y="34.4" width="0.24" height="5.7"></rect>
+<rect class="cb up" x="40.08" y="35.3" width="0.84" height="3.0"></rect>
+<rect class="cw dn" x="41.38" y="34.7" width="0.24" height="2.7"></rect>
+<rect class="cb dn" x="41.08" y="35.6" width="0.84" height="1.3"></rect>
+<rect class="cw up" x="42.38" y="33.0" width="0.24" height="5.6"></rect>
+<rect class="cb up" x="42.08" y="34.4" width="0.84" height="3.3"></rect>
+<rect class="cw up" x="43.38" y="32.2" width="0.24" height="3.2"></rect>
+<rect class="cb up" x="43.08" y="33.3" width="0.84" height="0.9"></rect>
+<rect class="cw up" x="44.38" y="31.1" width="0.24" height="2.7"></rect>
+<rect class="cb up" x="44.08" y="32.4" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="45.38" y="29.8" width="0.24" height="2.5"></rect>
+<rect class="cb up" x="45.08" y="30.6" width="0.84" height="1.0"></rect>
+<rect class="cw dn" x="46.38" y="27.9" width="0.24" height="5.0"></rect>
+<rect class="cb dn" x="46.08" y="29.8" width="0.84" height="2.2"></rect>
+<rect class="cw up" x="47.38" y="29.3" width="0.24" height="5.5"></rect>
+<rect class="cb up" x="47.08" y="31.0" width="0.84" height="1.7"></rect>
+<rect class="cw up" x="48.38" y="27.3" width="0.24" height="6.3"></rect>
+<rect class="cb up" x="48.08" y="29.4" width="0.84" height="2.2"></rect>
+<rect class="cw up" x="49.38" y="24.5" width="0.24" height="5.3"></rect>
+<rect class="cb up" x="49.08" y="25.7" width="0.84" height="3.5"></rect>
+<rect class="cw up" x="50.38" y="23.2" width="0.24" height="4.2"></rect>
+<rect class="cb up" x="50.08" y="25.3" width="0.84" height="1.3"></rect>
+<rect class="cw up" x="51.38" y="23.6" width="0.24" height="3.2"></rect>
+<rect class="cb up" x="51.08" y="24.5" width="0.84" height="0.6"></rect>
+<rect class="cw up" x="52.38" y="22.0" width="0.24" height="4.4"></rect>
+<rect class="cb up" x="52.08" y="23.6" width="0.84" height="2.0"></rect>
+<rect class="cw dn" x="53.38" y="22.5" width="0.24" height="4.5"></rect>
+<rect class="cb dn" x="53.08" y="23.4" width="0.84" height="2.9"></rect>
+<rect class="cw dn" x="54.38" y="24.3" width="0.24" height="12.9"></rect>
+<rect class="cb dn" x="54.08" y="26.2" width="0.84" height="9.4"></rect>
+<rect class="cw up" x="55.38" y="29.2" width="0.24" height="6.8"></rect>
+<rect class="cb up" x="55.08" y="29.7" width="0.84" height="5.5"></rect>
+<rect class="cw up" x="56.38" y="21.6" width="0.24" height="4.4"></rect>
+<rect class="cb up" x="56.08" y="23.2" width="0.84" height="2.0"></rect>
+<rect class="cw dn" x="57.38" y="23.0" width="0.24" height="3.8"></rect>
+<rect class="cb dn" x="57.08" y="23.6" width="0.84" height="2.1"></rect>
+<rect class="cw dn" x="58.38" y="23.6" width="0.24" height="4.3"></rect>
+<rect class="cb dn" x="58.08" y="25.6" width="0.84" height="0.8"></rect>
+<rect class="cw dn" x="59.38" y="24.8" width="0.24" height="9.0"></rect>
+<rect class="cb dn" x="59.08" y="26.8" width="0.84" height="6.2"></rect>
+<rect class="cw dn" x="60.38" y="33.1" width="0.24" height="4.5"></rect>
+<rect class="cb dn" x="60.08" y="34.0" width="0.84" height="2.4"></rect>
+<rect class="cw dn" x="61.38" y="33.6" width="0.24" height="5.2"></rect>
+<rect class="cb dn" x="61.08" y="34.4" width="0.84" height="3.6"></rect>
+<rect class="cw dn" x="62.38" y="38.2" width="0.24" height="4.4"></rect>
+<rect class="cb dn" x="62.08" y="38.9" width="0.84" height="2.6"></rect>
+<rect class="cw dn" x="63.38" y="40.7" width="0.24" height="5.6"></rect>
+<rect class="cb dn" x="63.08" y="41.3" width="0.84" height="3.9"></rect>
+<rect class="cw up" x="64.38" y="54.4" width="0.24" height="4.4"></rect>
+<rect class="cb up" x="64.08" y="56.4" width="0.84" height="1.6"></rect>
+<rect class="cw dn" x="65.38" y="54.0" width="0.24" height="8.0"></rect>
+<rect class="cb dn" x="65.08" y="54.8" width="0.84" height="6.4"></rect>
+<rect class="cw dn" x="66.38" y="60.4" width="0.24" height="5.2"></rect>
+<rect class="cb dn" x="66.08" y="61.6" width="0.84" height="2.8"></rect>
+<rect class="cw dn" x="67.38" y="62.8" width="0.24" height="3.8"></rect>
+<rect class="cb dn" x="67.08" y="64.0" width="0.84" height="1.6"></rect>
+<rect class="cw up" x="68.38" y="60.8" width="0.24" height="5.2"></rect>
+<rect class="cb up" x="68.08" y="62.0" width="0.84" height="3.2"></rect>
 </g>
 </defs></svg>
     </x-dc>
@@ -758,8 +794,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
       class Component extends DCLogic {
         renderVals() {
           return {
-          p1: [{ anchor: 'p1-0', cap: 'iPhone · Forecaster · Proof · Light', c: 't-light', off: '0px', small: false, large: true }, { anchor: 'p1-1', cap: 'iPhone · Forecaster · Proof · Dark', c: 't-dark', off: '0px', small: false, large: true }, { anchor: 'p1-2', cap: 'iPhone · Forecaster · Proof · scrolled', c: 't-light', off: '-560px', small: true, large: false }],
-          f1: [{ anchor: 'f1-0', cap: 'iPhone · Forecast · a fund · Light', c: 't-light', off: '0px', small: false, large: true }, { anchor: 'f1-1', cap: 'iPhone · Forecast · a fund · Dark', c: 't-dark', off: '0px', small: false, large: true }],
+          p1: [{ anchor: 'p1-0', cap: 'iPhone · Forecaster · Proof · Light', c: 't-light', off: '0px', small: false, large: true }, { anchor: 'p1-1', cap: 'iPhone · Forecaster · Proof · Dark', c: 't-dark', off: '0px', small: false, large: true }, { anchor: 'p1-2', cap: 'iPhone · Forecaster · Proof · scrolled', c: 't-light', off: '-560px', small: true, large: false }, { anchor: 'p1-3', cap: 'iPhone · Forecaster · Proof · the switch-off', c: 't-light', off: '-1060px', small: true, large: false }],
+          f1: [{ anchor: 'f1-0', cap: 'iPhone · Forecast · a fund · Light', c: 't-light', off: '0px', small: false, large: true }, { anchor: 'f1-1', cap: 'iPhone · Forecast · a fund · Dark', c: 't-dark', off: '0px', small: false, large: true }, { anchor: 'f1-2', cap: 'iPhone · Forecast · a fund · scrolled', c: 't-light', off: '-1040px', small: true, large: false }],
           };
         }
       }

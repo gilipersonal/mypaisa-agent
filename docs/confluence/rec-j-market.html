@@ -4,7 +4,7 @@
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>🗺️ From free sources to a card the household reads</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d7307926-7968-4949-bdd8-fc1321d25d01" data-collection="contentId-1769493" data-alt="rec-j-market--market-map.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="a9acd508-9992-4f6b-9f25-e74f710987ed" data-collection="contentId-1769493" data-alt="rec-j-market--market-map.png"></div>
 <figcaption>From free sources to a card the household reads (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>0</p>
 <p>The whole market side in one drawing</p>
@@ -255,11 +255,11 @@
 </ul>
 <p>Each line names its holding and the measured past effect, all from code. Claude writes the sentence, not the number.</p>
 </details><h2>⚖️ Risk first, direction last</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c68c7d2d-31f3-41e1-9d8b-cca3837ddce5" data-collection="contentId-1769493" data-alt="rec-j-market--market-s5.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="20ced42a-8a33-401f-9269-6d177a024f10" data-collection="contentId-1769493" data-alt="rec-j-market--market-s5.png"></div>
 <figcaption>Risk first, direction last (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>5</p>
-<p>The Forecaster&#x27;s five models</p>
-<p>F3 MA-121F4 MA-122F5 MA-123epic MA-117</p>
+<p>The Forecaster&#x27;s six models</p>
+<p>F3 MA-121F4 MA-122F5 MA-123F8 MA-280epic MA-117</p>
 <p>A second engine beside the rules engine that learns from ten years of history. Each model answers one question over the next four weeks. Code makes every number, the event impacts included; Claude files each day&#x27;s news under the event types and explains the result. From phase 19 it takes the Indian holdings on the same terms, with ten years of their history from yfinance and mfapi.in, and shows nothing for them until its gates are passed.</p>
 <h4>1 · Market mood</h4>
 <p>F3 MA-121</p>
@@ -331,14 +331,27 @@
 <p>−3 pts</p>
 <p>Chip export news</p>
 <p>−2 pts</p>
+<p>Double top</p>
+<p>−2 pts</p>
 <p>Calm credit spreads</p>
 <p>+3 pts</p>
+<p>Support near −1%</p>
+<p>+2 pts</p>
 <p>Earnings season</p>
 <p>+1 pt</p>
 <p>IllustrativeBlue lifts the chance, amber lowers it.</p>
+<h4>6 · Patterns</h4>
+<p>F8 MA-280</p>
+<p>Asks</p>
+<p>Which candlestick and chart patterns are on this holding&#x27;s chart today, and what followed them on this holding over ten years?</p>
+<p>Method</p>
+<p>Detectors in code on the daily candles (engulfing, hammer and shooting star, doji, morning and evening star, inside bars; breakouts, support and resistance, double tops and bottoms, head and shoulders, trend channels), each pattern&#x27;s effect measured as an event study, point in time. A fund prices once a day, so it gets only the line patterns on its price. With ADX, stochastics, on-balance volume, Ichimoku and Donchian and Keltner channels, they are features of the risk and direction models.</p>
+<p>Trust</p>
+<p>Fair, and shown only where a pattern&#x27;s event study shows an edge</p>
+<p>IllustrativeNASDAQ 100 ETF: a double top (peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct) was lower 20 days later in 6 of 9 cases since 2015; support near −1% held in 9 of 14 tests.</p>
 <h4>How they combine and are calibrated</h4>
-<ol><li>Mood, risk, similar days, event impacts Each a calibrated answer of its own, written daily to <code>features/</code> and <code>predictions/</code>. S3 lake</li>
-<li>Direction combines them Gradient-boosted trees take the four as inputs, with the matched news as features.</li>
+<ol><li>Mood, risk, similar days, event impacts, patterns Each a calibrated answer of its own, written daily to <code>features/</code> and <code>predictions/</code>. S3 lake</li>
+<li>Direction combines them Gradient-boosted trees take the five as inputs, with the matched news as features.</li>
 <li>Calibration map Raw chances become calibrated ones, so a 70% means about 70%. The map is a <code>CalibrationMap</code> item. DynamoDB</li>
 <li>One Forecast row <code>p_up</code>, <code>p_fall_5</code>, range p10, p50, p90, mood, analogs, events, drivers, <code>model_version</code>.</li>
 <li>Sonnet explains It writes the &quot;Why?&quot; in plain words from the row. It never changes a number. Claude Sonnet</li>
@@ -354,7 +367,7 @@
 <li>Compute is a few dollars a month; Haiku filing the news is well under a dollar.</li>
 </ul>
 </details><h2>🃏 Both engines in one card, and one page per holding</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c28f57eb-2851-444a-86fe-0f9a283e2794" data-collection="contentId-1769493" data-alt="rec-j-market--market-s6.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="6c7a1ed1-2cdb-492a-99a0-edfd56b4408d" data-collection="contentId-1769493" data-alt="rec-j-market--market-s6.png"></div>
 <figcaption>Both engines in one card, and one page per holding (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>6</p>
 <p>Side by side</p>
@@ -363,7 +376,7 @@
 <p>£</p>
 <p>MyPaisachat · illustrative figures, §19.7</p>
 <p><strong>NASDAQ 100 ETF</strong></p>
-<p>Rules engine<strong>PAUSE · 64%</strong> Forecasternext 4 weeks Chance up52% Chance of −5%21% (usually 12%) Likely range−7% … +6% Market moodStressed, since 3 Oct Similar days31 since 2015; 18 recovered within 4 weeks Main driversmomentum fading, US yields rising, chip export news</p>
+<p>Rules engine<strong>PAUSE · 64%</strong> Forecasternext 4 weeks Chance up52% Chance of −5%21% (usually 12%) Likely range−7% … +6% Market moodStressed, since 3 Oct Similar days30 since 2015; 18 recovered within 4 weeks Main driversmomentum fading, US yields rising, chip export news</p>
 <p>07:16</p>
 <p>Why?ChartTrack record</p>
 <p>£</p>
@@ -386,7 +399,7 @@
 <p>Calm and risingChoppyStressed, since 3 OctNext 4 weeks: stressed 71%</p>
 <h5>Similar days, drawn over today&#x27;s chart</h5>
 <p>+10%−10%the last 40 daysmiddle</p>
-<p>31 similar days since 2015; 18 recovered within 4 weeks. Thin lines: what followed each one. Dashed: their middle.</p>
+<p>30 similar days since 2015; 18 recovered within 4 weeks. Thin lines: what followed each one. Dashed: their middle.</p>
 <h5>Event impacts, four weeks after</h5>
 <table data-layout="full-width"><thead><tr><th>Event</th><th>Cases</th><th>After</th></tr>
 </thead>
@@ -496,7 +509,7 @@
 <p>F2, F3 and F7 do most of the work for the goal: proof, risk, and the steering of new money. F5, direction, is the least reliable piece and does the least.</p>
 <p>Suggestions only. The app cannot trade, and every decision stays with the household.</p>
 </details><h2>🧪 A lab first, practice next, and an off switch</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="195888f3-0d34-48aa-ac1f-a3b2e22d346c" data-collection="contentId-1769493" data-alt="rec-j-market--market-s9.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ae62452a-ef4c-4b3a-b108-1af662099bb1" data-collection="contentId-1769493" data-alt="rec-j-market--market-s9.png"></div>
 <figcaption>A lab first, practice next, and an off switch (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>9</p>
 <p>How it proves itself</p>
@@ -532,12 +545,12 @@
 <tr><td>6 to 8</td><td>to come</td><td>to come</td></tr>
 </tbody>
 </table>
-<p>IllustrativeUntil the gate passes it appears only in the Saturday review, labelled &quot;in practice&quot;.</p>
+<p>IllustrativeUntil the gate passes it appears only on the holding&#x27;s Forecast tab and in the Saturday review, labelled &quot;in practice&quot;.</p>
 <h4>The switch-off</h4>
 <p>When its live record is worse than the base rate for four weeks, it switches itself off and the owner is told. Models retrain monthly; each version is a <code>ModelVersion</code> row with its test scores and its status.</p>
 <p><strong>shadow</strong>graded, not shown→ <strong>live</strong>after 8 weeks→ <strong>off</strong>4 weeks worse→ <strong>retrain</strong>monthly, to shadow</p>
 </details><h2>🔁 Nothing lost, everything retried, the rest raised</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="1a5265f9-b230-44a4-a8c8-a8bbdd5191aa" data-collection="contentId-1769493" data-alt="rec-j-market--market-s10.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0cab31e6-a67d-4054-8058-ee889beaf5a5" data-collection="contentId-1769493" data-alt="rec-j-market--market-s10.png"></div>
 <figcaption>Nothing lost, everything retried, the rest raised (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>10</p>
 <p>Self-healing on the market pipeline</p>
@@ -545,7 +558,7 @@
 <p>A bad minute at a data source, the Anthropic API or Apple&#x27;s push service costs a delay, never a day&#x27;s work. From phase 18 the daily run is one Step Functions state machine with retries and backoff on every step and idempotent writes, its jobs carried by the SQS work queue.</p>
 <ol><li>Ingest Prices, the economy, events, through each chain.</li>
 <li>Engine The rules: signals and stances.</li>
-<li>Forecaster The five models, one Forecast row per holding.</li>
+<li>Forecaster The six models, one Forecast row per holding.</li>
 <li>Grade Every prediction whose horizon has passed.</li>
 <li>Calibrate Within bounds, on probation.</li>
 <li>Brief Always attempted; late inputs go out labelled stale.</li>
@@ -617,7 +630,7 @@
 </table>
 <p>Figures as estimated in ARCHITECTURE §15 and §19.8, to be measured in the first months. The ceilings are guards against a bad month or a runaway loop, not a ration.</p>
 </details><h2>🇮🇳 India: Indian funds, shares and ETFs beside the UK ones</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="3e27399a-38d9-4ecb-894d-d3a171da4129" data-collection="contentId-1769493" data-alt="rec-j-market--market-s12.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="80378f0e-aa80-42f1-a6b7-41d18593e4b8" data-collection="contentId-1769493" data-alt="rec-j-market--market-s12.png"></div>
 <figcaption>India: Indian funds, shares and ETFs beside the UK ones (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>12</p>
 <p>A second market, the same engines</p>
@@ -684,7 +697,7 @@
 <p>Economic Times, Mint and Business Standard by RSS, NSE&#x27;s company announcements and GDELT&#x27;s India coverage go through the same steps as every story (section 4): Claude Haiku tags each one through Batches; code weighs it against each holding&#x27;s exposure map; a floor drops the faint. News alone never raises a red alert.</p>
 <h4>The Forecaster&#x27;s gates, for India too</h4>
 <p>The Forecaster takes the Indian holdings on the same terms: nothing is shown until its gates are passed. Its Indian forecasts need phase 17 (IN4).</p>
-<p><strong>lab</strong>ten years, walk-forward→ <strong>in practice</strong>Saturday review only→ <strong>live</strong>8 weeks beating both→ <strong>off</strong>4 weeks worse</p>
+<p><strong>lab</strong>ten years, walk-forward→ <strong>in practice</strong>Forecast tab and Saturday review→ <strong>live</strong>8 weeks beating both→ <strong>off</strong>4 weeks worse</p>
 <h4>FX in the picture</h4>
 <p>GBP base · INR beside · both stored</p>
 <h4>Every Indian figure twice</h4>

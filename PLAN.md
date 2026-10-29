@@ -408,6 +408,18 @@ Claude's:
   impact and, when it leaves the household short, the rearrangement applied
   on Confirm (MA-222, MA-263), and the Plans tab (MA-224). You pick; the
   picked option's remaining states are drawn before those stories start.
+- **The Forecaster's screens in the app (MA-281):** the stock Forecaster's
+  screens (`ARCHITECTURE.md` §19.7) drawn for iPhone, iPad and the foldable
+  before anything is built, from one figure set
+  (`docs/design/figures/forecaster-v4.json`: MA-193's household, its NASDAQ
+  100 ETF and its Balanced fund at the Fri 23 Oct close). Two or three
+  options for a holding's Forecast tab, with the patterns F8 finds on its
+  candles (MA-280), in light and dark; the chat's card beside the rules
+  engine, the proof page, a fund's line patterns, privacy mode and the
+  foldable. You picked 1a, the answer first (29 Oct 2026), and kept the
+  proof page; 1a's remaining states, each row's sheet and the proof page on
+  iPad are drawn before MA-124 starts, and the web app's Forecast boards
+  follow MA-281's 1a in MA-279.
 - **Your core requirements, recorded (MA-275, `ARCHITECTURE.md` §5.3, §6.6,
   §19.4, §20.4, §20.9):** your asks of 29 Oct 2026 written down. Every asset
   tracked across the UK and India, the US and Europe later, in four
@@ -1685,9 +1697,10 @@ steady growth, so market mood and risk come first and direction last.
   itself off when its live record slips.
 - **F6, the side-by-side view (MA-124).** Designed first: the chat's card
   beside the rules engine's call, with disagreement flagged, and a Forecast
-  screen per holding in the app; shown for a holding only after 8 live
-  weeks beating the base rate and the rules engine, in the Saturday review
-  until then.
+  screen per holding in the app, with its proof page; in weekday cards and
+  chat answers only after 8 live weeks beating the base rate and the rules
+  engine, and until then only on the holding's Forecast tab and in the
+  Saturday review, labelled in practice (your call, 29 Oct 2026).
 - **F7, risk-steered money (MA-125).** Contributions continue, tilted away
   from stressed holdings, with a trend filter, rebalancing bands and a
   drawdown budget the owner sets; shown as the suggested split on the
@@ -2010,7 +2023,7 @@ runs read by a person and their failure modes turned into checks or cases
 | An agent changes something it should not | One settings service enforcing schema, range and band; approval with the second check for anything outside the band; every change a version and an audit row; secrets and infrastructure out of agents' reach |
 | Self-tuning chases noise | Calibration moves at most two points a day with a probation and rollback; rules and models change only on weeks of evidence and the admin's approval |
 | Too many requests for the admin | Automatic bands for safe changes, a daily digest, incidents only when urgent, rejected requests not repeated within their period |
-| A Forecaster model that learned the past by heart | Walk-forward tests with a gap, the last two years held out, calibration checks, 8 live weeks before it is shown, and a switch-off when its record slips |
+| A Forecaster model that learned the past by heart | Walk-forward tests with a gap, the last two years held out, calibration checks, 8 live weeks before it reaches the weekday cards (until then only its Forecast tab and the Saturday review, labelled in practice), and a switch-off when its record slips |
 | Look-ahead: a backtest that saw the future | Every row stamped with the date it was known; the lab refuses a strategy that peeks at tomorrow |
 | Two engines disagreeing confuses the household | Both shown side by side with their track records; the disagreement is said out loud; the rules engine stays the default |
 | A message or a job is lost when something fails | Every hand-off through an SQS queue with retries and backoff; idempotent handlers; a dead-letter queue behind each with an alarm, a copy in S3, and replay by script, button or the ops warden |
