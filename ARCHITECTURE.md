@@ -2397,8 +2397,8 @@ made. The meter is reconciled weekly against the Console (§10).
 | --- | --- |
 | under 70% | Normal. |
 | 70% | One message to the owner: what is spent, on what, and the days left. Nothing changes. |
-| 85% | Savers: the bull/bear debate is skipped, the Saturday review runs on Sonnet instead of Opus, "Why?" searches are limited to three a day, and the nightly sentiment scoring pauses (stances keep the last index). The owner is told. |
-| 95% | Essentials only: chat answers on Haiku; the brief, the wrap and alerts go out as their plain templates with the engine's numbers; reading a factsheet or screenshot still works. The owner is told. |
+| 85% | Savers: the bull/bear debate is skipped, the Saturday review runs on Sonnet instead of Opus, "Why?" searches are limited to three a day, the nightly sentiment scoring pauses (stances keep the last index), and a memory note is written only when a member asks MyPaisa to remember (§24.6). The owner is told. |
+| 95% | Essentials only: chat answers on Haiku; the brief, the wrap and alerts go out as their plain templates with the engine's numbers; reading a factsheet or screenshot still works; memory notes are read and none is written (§24.6). The owner is told. |
 | 100% | Claude stops until the cycle renews or the owner raises the ceiling. Every card goes out as its plain template, buttons and guided flows work as before, and a typed message gets one line saying free text is back on the renewal day. |
 
 Alerts are never dropped at any step: a template needs no model. Raising the
@@ -2494,7 +2494,7 @@ a daily digest instead.
 | --- | --- | --- |
 | Engine | Port the desk's maths, rewrite its cascade | The maths is sound and self-tested; the cascade is for traders |
 | Files | Every file a member sends kept in S3 for good, with a `Document` row, linked from the audit log and opened from the Audit page (MA-148, MA-149) | Arun, 24 Oct 2026: "all the files and images I send should be stored on S3 and I should be able to view that in audit logs"; replaces deleting screenshots after extraction |
-| Caching and memory | Every agent gets both from the one runner (§24, MA-285): its calls marked for the cache in one frozen order with a lifetime per route, checked by a byte test, T1 and an alarm; and Claude's memory tool on MyPaisa's own `MemoryNote` store, scoped to the member, the household or the agent, through the policy gate, never holding a figure, a record, a setting or a secret | Arun, 29 Oct 2026: "I want automatic caching and memory enabled for all agents that will be built"; in the runner, no agent can forget either, and a broken cache or a poisoned note is caught by code, not by review |
+| Caching and memory | Every agent gets both from the one runner (§24, MA-285): its calls marked for the cache in one frozen order with a lifetime per route, checked by a byte test, T1 and an alarm; and Claude's memory tool on MyPaisa's own `MemoryNote` store, scoped to the member, the household or the agent, through the policy gate, never holding a figure, a record, a setting or a secret; a member's notes read in their own runs only, kept until forgotten, written on the agent's own and shown in Activity; the notes in the cached layer under hard caps, counted as their own feature and stepped down by the ladder | Arun, 29 Oct 2026: "I want automatic caching and memory enabled for all agents that will be built" and "go for all recommended options, I need the app to grow and remember me. But it should not exceed costs"; in the runner, no agent can forget either, and a broken cache or a poisoned note is caught by code, not by review |
 | Indian markets | Phase 19 (§22, MA-147): AMFI, mfapi.in, yfinance `.NS`/`.BO` and the bhavcopy, free first; the existing portfolio imported from a CAS or a broker export; Indian mutual funds are registered and priced from AMFI's NAV file earlier, in phase 5 | Arun's Indian mutual funds and shares, to be fed later |
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
@@ -2552,7 +2552,7 @@ a daily digest instead.
 - Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card).
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $200 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two dashboards' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
-- For §24 (MA-287, MA-288): whether the owner may also read a member's memory notes, as with shared detail; whether an unused note is also dropped after twelve months; and whether the agent writes notes on its own, each shown in Activity, or only when a member says "remember".
+- Settled 29 Oct 2026 (MA-287, MA-288): a member's memory notes are read only in that member's own runs; a note is kept until forgotten or the member leaves, with no expiry; the agent writes notes on its own, each shown in Activity, inside the caps, the ceiling and the ladder of §24.6.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101). Settled 26 Oct 2026 (MA-186): the apex `mypaisapp.com` redirects to `dashboard.mypaisapp.com` at the cutover in phase 9 (MA-97).
 - Settled 26 Oct 2026 (MA-229): the stream is a route of the api's REST API in API Gateway's streaming mode (§21.5); the Lambda Web Adapter 1.1 runs it as its own build target; the association file is served by a CloudFront Function, with no fallback to swallow it (§9.4); the iOS project is on Swift Package Manager from day one (§9.5).
 - Checked when the build phases start: the Lambda concurrency quotas for the streams [verify].
@@ -3911,9 +3911,12 @@ plain words about the person or the work:
 - **Through the policy gate.** Each command is checked like any tool call
   (§23.2): the scope is in the agent's manifest, the path is the member's own
   or the household's, and the run is under its limits. It fails closed.
-- **Read as data.** A run reads its notes with `view` after the cached prefix,
-  as a tool result labelled with its source, never as an instruction; notes
-  come after the prompt cache, so a new note never breaks it.
+- **Read as data, at the cached price.** The runner loads a run's notes once,
+  at its start, into the notes layer under the third breakpoint (§24.1),
+  labelled with their source and never as an instruction, so every later
+  message of the conversation reads them from the cache. A note written during
+  a run applies from the next run, which keeps the history append-only and the
+  prefix unbroken; `view` stays for a note outside that set.
 - **Untrusted text writes nothing.** A run that has read untrusted text (a
   file, a statement, a fetched page, a news item; §23.2) cannot write memory:
   the gate refuses every writing command in it, `delete` included, so a
@@ -3925,18 +3928,20 @@ plain words about the person or the work:
   forgotten with a Confirm; nothing is added there, since a new note comes
   only from the chat (MA-288, §4.10). Forgetting removes the note's text for
   good and keeps its audit row without it.
-- **Kept small.** Each scope has a cap, so reading it at a run's start stays
-  cheap; the agent tidies its notes with `str_replace`, and a write past the
-  cap is refused with the reason.
+- **Kept small.** Each scope has a cap (§24.6), so reading it stays cheap;
+  the agent tidies its notes with `str_replace`, and a write past the cap is
+  refused with the reason.
 - **For how long.** A member's notes go when the member forgets them or leaves
   the household (MA-172 deletes them); the household's and the agent's stay
   until corrected or cleared.
 
-Three questions are Arun's and are open on MA-287 and MA-288 (§17): whether
-the owner may also read a member's notes, as with shared detail; whether an
-unused note is also dropped after twelve months; and whether the agent writes
-notes on its own, each shown in Activity as it is written, or only when a
-member says "remember". The plan above assumes the first answer of each.
+Settled by Arun, 29 Oct 2026, on MA-287 and MA-288 ("go for all recommended
+options, I need the app to grow and remember me. But it should not exceed
+costs"): a member's notes are read only in that member's own runs, the owner
+included, who reads only the household's; a note is kept until the member
+forgets it or leaves the household, with no expiry; and the agent writes
+notes on its own, each shown in Activity as it is written, as well as when a
+member says "remember". The cost half is §24.6.
 
 ### 24.4 The agent team's notes (phase 18)
 
@@ -3969,13 +3974,41 @@ without editing it:
 Server-side compaction (beta `compact-2026-01-12`) is not needed at these
 sizes and is not used.
 
-### 24.6 The stories
+### 24.6 Within the budget
+
+Arun, 29 Oct 2026: "it should not exceed costs". Caching lowers the bill, and
+memory is held inside the same ceiling, ladder and guards as every other call
+(§15.1):
+
+- **Caching pays for itself.** A cache read costs a tenth of the input price
+  on Sonnet 5.5 and Haiku 5.5 ($0.20 against $2 a million tokens on Sonnet)
+  and a twentieth on Opus 5.5; the hour's write costs twice the input price,
+  once. The cache-read share's alarm (§24.1) catches a change that would
+  quietly raise the bill.
+- **Notes ride the cache.** Loaded once into the cached notes layer (§24.3),
+  a member's notes cost about half a penny to write at a conversation's start
+  and about a twentieth of a penny a message after it, at Sonnet 5.5's prices
+  and $1.30 to £1, beside the 1.5p to 3p a message costs (§8).
+- **Hard caps.** At most 2,000 tokens of a member's notes for one agent, 1,000
+  of the household's and 3,000 of an agent's own; at most two note writes in
+  a run, each counted in the run's eight-call guard (§15.1). A write past a
+  cap is refused with the reason, and the agent tidies instead.
+- **Counted.** Every memory read and write is costed into the cycle's
+  `SpendMonth` under its own feature, `memory`, and the model panel shows it
+  beside the rest.
+- **On the ladder.** From the 85% step (savers), the agent writes a note only
+  when a member asks it to remember; from the 95% step it reads notes and
+  writes none; at 100% Claude stops and the notes wait unchanged. Notes are
+  never dropped to save money: reading them cached is the cheapest part of a
+  conversation.
+
+### 24.7 The stories
 
 | Key | Phase | What |
 | --- | --- | --- |
 | MA-285 | 0 | This record |
 | MA-286 | 1 | Every agent's calls cached by the runner, with the byte test, T1's read check, the panel's share and its alarm |
-| MA-287 | 1 | The memory tool on `MemoryNote`, its scopes through the gate, the refusals, the audit and Activity line, and context editing for long runs |
+| MA-287 | 1 | The memory tool on `MemoryNote`, its scopes through the gate, the refusals, the audit and Activity line, the notes in the cached layer under their caps and the ladder, and context editing for long runs |
 | MA-288 | 1 | What MyPaisa remembers, in You at both doors: see, correct in place, forget (drawn with MA-277's list) |
 | MA-289 | 18 | The agent team's own notes, read first, never a setting, listed in the Admin center |
 

@@ -441,8 +441,11 @@ Claude's:
   route and checks that catch a broken cache; and Claude's memory tool on
   MyPaisa's own store, a member's notes theirs alone, never a figure, a
   record, a setting or a secret. Built in phase 1 (MA-286, MA-287, MA-288)
-  and for the agent team in phase 18 (MA-289). Docs only; three questions are
-  yours, on MA-287 and MA-288.
+  and for the agent team in phase 18 (MA-289). Docs only. Your answers of
+  29 Oct 2026: a member's notes theirs alone, kept until forgotten, written by
+  the agent on its own and shown in Activity, and never past the cost: the
+  notes ride the cache under hard caps and the ladder (`ARCHITECTURE.md`
+  §24.6).
 - **No Telegram left in the live designs (MA-278):** as you said on 29 Oct
   2026, nothing for Telegram: the Telegram-only files, the Mini App and the
   Nocturne artboards moved out of the three live projects into an archive
@@ -742,9 +745,12 @@ arrives from phase 2.
   through the policy gate; no amount, rate, account number, id, token or
   secret (refused in code), no record and no setting; a run that read a file
   or a page writes nothing; each write an audit row and one line in
-  Activity; leaving the household deletes the member's notes. Long runs drop
-  old tool results with server-side context editing, and the history is
-  never edited.
+  Activity; leaving the household deletes the member's notes. Within the
+  budget (§24.6): the notes loaded once into the cached layer, at most 2,000
+  tokens a member per agent, 1,000 for the household, two writes a run,
+  costed as their own `memory` feature, written only on request from the 85%
+  step and not at all from 95%. Long runs drop old tool results with
+  server-side context editing, and the history is never edited.
 - **What MyPaisa remembers (MA-288, `ARCHITECTURE.md` §24.3):** in You, at
   both doors, the member's own notes and the household's, each corrected in
   place with Save or forgotten with Confirm; nothing added there. Drawn with
