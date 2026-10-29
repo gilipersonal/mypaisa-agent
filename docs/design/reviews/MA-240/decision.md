@@ -152,6 +152,9 @@ these and the diff holds the rest.
   pixel apart is not a change, while one changed glyph (101 pixels and more at 3x), a 1 px rule taken away and a 2 px
   move are. Its selftest makes copies where a shared rule moves a drawn frame, takes a hairline away, changes one
   glyph and moves a box by 2 px, and expects each change, and compares an unchanged copy with itself and expects none.
+  Since MA-282 (29 Oct 2026) the fixed list runs it with `--since 8e4b675`, this story's merge: the boards later
+  stories redrew (the Prototype and both Projection boards, by MA-261) are left out by name, and every other board is
+  still compared against d6e243f through the shared files.
 - `scripts/contrast_check.py` measures the track on a card, the page, a fill, the add tint and the hero, the band on
   the hero and a card, the coral and the chart line on the band over the hero and over a card (a stacked ground,
   `band+hero`), and the accent on a raised fill and the add tint, in both themes; its selftest refuses the old track on

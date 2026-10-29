@@ -101,11 +101,10 @@
   "round": 1,
   "finding": "scripts/confluence_docs.py listed UI stories with design: 'todo' and no boards yet (including MA-262 and MA-263) under 'Back end, agent and infrastructure (no screen)' on phase pages and 'Back end' in stories.csv (lane C)",
   "check": {
-   "type": "grep",
-   "file": "docs/confluence/phase-07.html",
-   "pattern": "Screens still to draw \\(/design-first\\)</td><td><a href=\"https://duttaarun2015\\.atlassian\\.net/browse/MA-262\">MA-262</a>, <a href=\"https://duttaarun2015\\.atlassian\\.net/browse/MA-263\">MA-263</a></td>",
-   "present": true
-  }
+   "type": "cmd",
+   "run": "python3 review/MA-261/check_r1_c4.py"
+  },
+  "amended": "MA-282, 29 Oct 2026: the grep read phase 7's page for MA-262 and MA-263 under Screens still to draw, a row that emptied when MA-264 drew and picked them; the check now renders every phase page and the story explorer with each phase's first UI story taken back to no boards, and needs it under Screens still to draw and Still to draw, never Back end, while a story with no screen stays Back end"
  },
  {
   "id": "d1-admin-only",

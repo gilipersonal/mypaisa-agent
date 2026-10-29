@@ -8321,6 +8321,28 @@
     "docs/design/aws-vpc-enterprise-lockdown/*.gif"
    ],
    "notes": "Arun, 29 Oct 2026: record the complete seven-layer AWS VPC enterprise lockdown and Data Perimeter plan and deterministic us-east-1 costing across all options (Option 1 Bank-Grade Hub-and-Spoke GBP 729.91/month, Option 2A/2B AWS-Managed Serverless VPC GBP 149.01/month and GBP 70.39/month, and Preferred Option 3A/3B Lean Zero-Trust VPC +GBP 13.32/month and +GBP 24.86/month inside the GBP 50/month AWS cap, decided last after Phase 20) in docs/RESEARCH.md 9, ARCHITECTURE.md 14, 15, 18.1 and 18.4, PLAN.md Phase 0 and Phase 20, docs/design/aws-vpc-enterprise-lockdown.html, its four animated GIFs in docs/design/aws-vpc-enterprise-lockdown/, and the Confluence page Optional AWS VPC enterprise lockdown, data perimeter and costing."
+  },
+  {
+   "key": "MA-282",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Four review ledger checks that went stale on main pass again on each fix's own evidence",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Found while settling MA-102 (29 Oct 2026): four fixed-finding checks failed on main at 568a466 although their fixes held, each reading a state later work moved on on purpose (lessons 3, 6 and 22 in .claude/rules/independent-review.md; lesson 40 records it). MA-261 r1-c4 renders every phase page and the story explorer with each phase's first UI story taken back to no boards (review/MA-261/check_r1_c4.py); MA-240 r2-35 compares Inside MyPaisa's --track colours with the published ones at d6e243f; MA-240 r0-6 and r1-3 run the drawn-size diff with --since 8e4b675 (MA-240's merge), a new board_fit.js option that leaves out, by name, each board a later story redrew and compares the rest through the shared files. review/MA-282/mutants.py puts each fault back in a scratch worktree and needs its check to fail for that reason. Estimated at half a day, which moves phase 0's end from 23 Dec 2026 to 4 Jan 2027 and each later phase by one to four days.",
+   "code": [
+    "review/MA-240/fixed.json",
+    "review/MA-240/drawn-changes.json",
+    "review/MA-261/fixed.json",
+    "review/MA-261/check_r1_c4.py",
+    "review/MA-282/mutants.py",
+    "scripts/board_fit.js"
+   ]
   }
  ],
  "others": [

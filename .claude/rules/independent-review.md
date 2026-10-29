@@ -217,6 +217,10 @@ Added the day each was learned; reviewers check every item.
     the file names each drawn change the story means and why, a change it
     does not name fails, and so does a named one that no longer shows. A
     label that motion.js must thin at a frame's drawn size is a fault too.
+    Once it has merged, its ledger's diff adds `--since <the story's
+    merge>`: a board a later story redraws is left out by name and its own
+    story's diff answers for it, while every other board is still compared
+    through the shared files (MA-282).
 26. **Text on text is judged by the surfaces the two lines sit on, never by
     class names:** a line under a bar, a sheet, a toast or the chat's
     controls is the scroll edge; two lines on the same surface touching is a
@@ -294,3 +298,14 @@ Added the day each was learned; reviewers check every item.
       the "no clear view" card;
     - the proof page invented a shadow stage and a monthly restart;
     - similar days were counted 31 against §19.4's 30.
+
+40. **A check pinned to a past commit compares only what its fix holds:**
+    never a whole file or the whole mirror as it was then, which later work
+    changes on purpose. In MA-282, four checks failed on main while their
+    fixes held:
+    - a whole-page diff against d6e243f, once MA-245 and MA-261 changed
+      Inside MyPaisa's words (the fix kept only its track colours);
+    - the drawn-size diff, once MA-261, MA-264 and MA-281 redrew boards;
+    - a grep for two stories under "Screens still to draw", once MA-264
+      drew them (lesson 6: the renderer is tested on a story taken back to
+      no boards).

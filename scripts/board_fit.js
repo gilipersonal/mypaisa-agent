@@ -20,7 +20,7 @@
 //   node scripts/board_fit.js --sizes            also prints the sizes each frame is measured at
 //   node scripts/board_fit.js --selftest [--case <name>] [--engine <e>]   proves the gate refuses each fault it was
 //                                                 built for (in Chromium unless --engine says otherwise)
-//   node scripts/board_fit.js --diff <ref> --expect <file> [--out <dir>] [--engine <e>] [--only <pattern>]
+//   node scripts/board_fit.js --diff <ref> --expect <file> [--since <ref2>] [--out <dir>] [--engine <e>] [--only <pattern>]
 //                                                 every frame at its drawn size against <ref>'s mirror, pixel by pixel
 //
 // --diff renders each current board from the working tree and from <ref> (git archive) in Chromium and WebKit (both
@@ -29,7 +29,11 @@
 // the frame clips it. A frame that changed and that the expectation file does not name fails, and so does a named
 // change that no longer shows, so a shared rule cannot move a drawn screen unseen. The file's "neutral" CSS is put on
 // both sides first, so a token the story changed on purpose (a colour) does not hide a change in layout. --out keeps
-// both pictures of each changed frame for a reviewer to look at.
+// both pictures of each changed frame for a reviewer to look at. --since <ref2> (the story's merge) holds a story's
+// expectations to the boards as it left them (MA-282): a board redrawn after <ref2>, its own file or a file it alone
+// loads changed since, is left out and named in a NOTE, and its later story's own diff answers for it; the files
+// boards share (support.js, tokens.css, motion.js and motion.css, ios.css), where the guards are, are compared on
+// every board that is left. A --since that leaves no board to compare fails (exit 2).
 //
 // Needs playwright-core 1.63 with Chromium and WebKit, pinned in scripts/package.json: `npm ci --prefix scripts`, then
 // `npx --prefix scripts playwright-core install chromium webkit` (PLAYWRIGHT_CORE=<path> overrides). It fails closed:
@@ -594,17 +598,47 @@ async function selftest() {
   process.exit(wrong ? 1 : 0);
 }
 
+// the mirror's files a board loads (src and href, relative to the board), as paths in the mirror
+function loads(design, board) {
+  const html = fs.readFileSync(path.join(design, board), 'utf8');
+  const out = new Set();
+  for (const m of html.matchAll(/\b(?:src|href)\s*=\s*["']([^"'#?{}:]+)["']/g)) out.add(path.posix.normalize(path.posix.join(path.posix.dirname(board), m[1].trim())));
+  return [...out].filter((f) => fs.existsSync(path.join(design, f)));
+}
+
+// the boards of list redrawn since ref: the board's own file, or a file no other current board loads, differs between
+// ref and the working tree. Returns board -> the file that changed. A file two boards load is shared (the guards).
+function redrawnSince(ref, design, list, changedFiles) {
+  const { execFileSync } = require('child_process');
+  const changed = changedFiles || new Set(execFileSync('git', ['-C', ROOT, 'diff', '--no-renames', '--name-only', '-z', ref, '--', 'docs/design'], { maxBuffer: 1 << 28 })
+    .toString().split('\0').filter(Boolean).map((f) => f.replace(/^docs\/design\//, '')));
+  const uses = new Map();
+  for (const b of boards(design, '')) for (const f of loads(design, b)) uses.set(f, (uses.get(f) || 0) + 1);
+  const out = new Map();
+  for (const b of list) {
+    const c = [b, ...loads(design, b).filter((f) => (uses.get(f) || 0) <= 1)].find((f) => changed.has(f));
+    if (c) out.set(b, c);
+  }
+  return out;
+}
+
 async function diff(ref, expectFile, out) {
   if (!ref) { console.error('board_fit: --diff needs a ref'); process.exit(2); }
-  if (!boards(path.join(ROOT, 'docs', 'design')).length) { console.error(`board_fit: --only ${JSON.stringify(ONLY)} matches no board`); process.exit(2); }
+  const design = path.join(ROOT, 'docs', 'design');
+  if (!boards(design).length) { console.error(`board_fit: --only ${JSON.stringify(ONLY)} matches no board`); process.exit(2); }
   const engines = enginesOf('both');
   const expect = expectFile ? JSON.parse(fs.readFileSync(expectFile, 'utf8')) : { changes: [] };
+  const since = opt('--since');
+  if (args.includes('--since') && !since) { console.error('board_fit: --since needs a ref'); process.exit(2); }
+  const skip = since ? redrawnSince(since, design, boards(design)) : new Map();
+  for (const [b, f] of skip) console.log(`NOTE redrawn since ${since}, not compared: ${b} (${f} changed)`);
+  if (since && boards(design).every((b) => skip.has(b))) { console.error(`board_fit: --since ${since} leaves no board to compare`); process.exit(2); }
   const { execFileSync } = require('child_process');
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'board-diff-'));
   let res;
   try {
     execFileSync('tar', ['-x', '-C', tmp], { input: execFileSync('git', ['-C', ROOT, 'archive', ref, 'docs/design'], { maxBuffer: 1 << 30 }) });
-    res = await diffDirs(path.join(tmp, 'docs', 'design'), path.join(ROOT, 'docs', 'design'), expect.neutral || '', out, ONLY, engines, ref);
+    res = await diffDirs(path.join(tmp, 'docs', 'design'), design, expect.neutral || '', out, ONLY, engines, ref, new Set(skip.keys()));
   } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
   const { rows, list } = res;
   const meant = (r) => (expect.changes || []).find((c) => c.board.split('|').some((b) => r.board.endsWith(b)) && new RegExp(c.frames).test(r.label));
@@ -620,11 +654,11 @@ async function diff(ref, expectFile, out) {
 }
 
 // every frame of each current board in headDir against the same board in baseDir, at its drawn size and whole, at the
-// board's own pixel ratio, in each engine
-async function diffDirs(baseDir, headDir, neutral, out, only, engines, refName) {
+// board's own pixel ratio, in each engine; the boards in skip (those --since leaves out) are not compared
+async function diffDirs(baseDir, headDir, neutral, out, only, engines, refName, skip = new Set()) {
   const pw = playwright();
   const inBase = new Set(boards(baseDir, only));
-  const list = boards(headDir, only);
+  const list = boards(headDir, only).filter((b) => !skip.has(b));
   const rows = [];
   if (!list.length) return { rows, list };
   if (out) fs.mkdirSync(out, { recursive: true });
@@ -749,7 +783,7 @@ async function diffDirs(baseDir, headDir, neutral, out, only, engines, refName) 
   return { rows, list };
 }
 
-module.exports = { allowed, sizes, verdict, compare, decodePNG };   // for the fixed list's checks: require it to test one allowance or one size
+module.exports = { allowed, sizes, verdict, compare, decodePNG, loads, redrawnSince };   // for the fixed list's checks: require it to test one allowance or one size
 if (require.main === module) (async () => {
   if (args.includes('--selftest')) return selftest();
   if (args.includes('--diff')) return diff(opt('--diff'), opt('--expect'), opt('--out'));
