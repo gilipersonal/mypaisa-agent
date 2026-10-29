@@ -21,7 +21,7 @@
     var id = st.v.page;
     var asha = w.asha;
     var eye = { hasEye: true, eyeIcon: priv ? 'visibility_off' : 'visibility', eyeGo: A('priv') };
-    var noCtl = { hasWhose: false, whose: [], hasCcy: false, ccy: [], hasMonth: false, month: [], hasEye: false, eyeIcon: '', eyeGo: null, hasTm: false };
+    var noCtl = { hasWhose: false, whose: [], hasCcy: false, ccy: [], hasMonth: false, month: [], hasEye: false, eyeIcon: '', eyeGo: null, hasTm: false, hasHz: false, hz: [] };
     var pg = { id: id, title: '', sub: '', hasCrumb: false, crumb: '', crumbGo: A('pback'), hasHeadChip: false, headChip: '', ctrls: Object.assign({}, noCtl), cols: [], foot: 'Illustrative figures. Figures from the engine and the price registry.', isIos: !web };
     var F;
     /* the household's totals at this step (the figure set's; after the Thu 5 Nov EMI, derived) */
@@ -169,33 +169,38 @@
 
     else if (id === 'proj') {
       var editing = w.is('s8c'), admin = !asha;
-      pg.title = 'Projection'; pg.sub = 'Net worth over the next 30 years, in the pounds of each year · the engine\'s run, Mon 26 Oct 09:53';
-      pg.ctrls = Object.assign({}, noCtl, eye, { hasCcy: true, ccy: seg(['£ GBP', '₹ INR'], 0, T, A), hasTm: true });
-      var hp = hero({ over: 'Middle path in 2056', big: '£4,635,000', hasSub: true, sub: mp('From £457,951 on Mon 26 Oct. 8 in 10 of the engine\'s runs end between £3,156,000 and £7,141,000.'), hasChart: true, ch: M.charts.fan(!web), hasAnn: web, annL: '' });
+      pg.title = 'Projection'; pg.sub = 'Net worth over the next 20 years, in the pounds of each year · the engine\'s run after this morning\'s EMI, Thu 5 Nov';
+      /* MA-264: the three tabs, Net worth on screen, and the horizon opening at 20 years (MA-261) */
+      pg.tabs = [{ t: 'Net worth', on: true, go: A('x') }, { t: 'Plans', on: false, go: A('x') }, { t: 'Budget forecast', on: false, go: A('x') }];
+      pg.ctrls = Object.assign({}, noCtl, eye, { hasHz: true, hz: seg(['5 yrs', '10 yrs', '20 yrs', '30 yrs'], 2, T, A), hasCcy: true, ccy: seg(['£ GBP', '₹ INR'], 0, T, A), hasTm: true });
+      /* R5N in docs/design/figures/future-plans-v4.json: Thursday's run after the EMI, month by month (MA-264) */
+      var hp = hero({ over: 'Middle path in 2046', big: '£3,897,000', hasSub: true, sub: mp('From £456,747 today. 8 in 10 of the engine\'s runs end between £2,676,000 and £6,052,000.'), hasChart: true, ch: M.charts.fan(!web), hasAnn: web, annL: '' });
       var chipsB = { isChips: true, isCard: false, isHero: false, isFoot: false, chips: ['What if we buy a second flat?', 'What if the plan items fall away?', 'What moves the line most?'].map(function (t) { return { t: t, go: A('x:chip') }; }) };
       var ms = card('Milestones', 'from the records, on the line above', [
         ['savings', 'Asha\'s fixed-rate saver matures', '14 Dec 2026', '£10,460', 'tick'], ['percent', 'Mortgage fixed rate ends', '30 Jun 2028 · then a variable rate', '', 'tick'], ['directions_car', 'Car loan paid off', '20 Feb 2029 · frees £347 a month', '', 'dot'],
         ['account_balance', 'SBI FD matures', '10 Mar 2029', '₹6,17,538', 'tick'], ['home_work', 'HDFC home loan paid off', '5 Jul 2030 · frees ₹39,390 a month', '', 'dot'], ['shield', 'LIC policy matures', '28 Mar 2031', '', 'tick'],
-        ['home', 'Mortgage paid off', '1 Oct 2045 · frees £1,456 a month', '', 'dot'], ['elderly', 'Arun retires at 60', '1 Jan 2051', '', 'dot']].map(function (m) { return row({ icon: m[0], name: m[1], sub: m[2], v: m[3], mk: m[4] }); }));
-      var plans = card('Plan items', admin ? 'yours alone, as the admin' : 'Arun\'s, the admin\'s', [['construction', 'Home extension', 'Once, Jun 2027', '−£35,000'], ['redeem', 'Asha\'s annual bonus', 'Every March, 2027 to 2052', '+£3,000'], ['directions_car', 'Replace the car', 'Once, Jun 2031', '−£25,000']].map(function (x) { return { isPill: true, icon: x[0], name: x[1], sub: x[2], v: x[3], edit: admin, go: A('x:plan'), cls: '' }; })
+        ['home', 'Mortgage paid off', '1 Oct 2045 · frees £1,456 a month', '', 'dot']].map(function (m) { return row({ icon: m[0], name: m[1], sub: m[2], v: m[3], mk: m[4] }); }));
+      var plans = card('Plan items', admin ? 'yours alone, as the admin' : 'Arun\'s, the admin\'s', [['construction', 'Home extension', 'Once, Jun 2027', '−£35,000'], ['redeem', 'Asha\'s annual bonus', 'Every March, 2027 to 2052 · grows 3.5% a year', '+£3,000'], ['directions_car', 'Replace the car', 'Once, Jun 2031', '−£25,000']].map(function (x) { return { isPill: true, icon: x[0], name: x[1], sub: x[2], v: x[3], edit: admin, go: A('x:plan'), cls: '' }; })
         .concat(admin ? [{ isBtn: true, t: 'Add a plan item in the chat', icon: 'chat_bubble', go: A('x:chip'), cls: '' }] : [{ isLock: true, t: 'Plan items are Arun\'s, the admin\'s. Ask a what-if in the chat to try your own.' }]));
       var ASM = [['Returns', [['Parag Parikh Flexi Cap', 'History, shrunk to a prior', 'history', 'Its own 10.7% XIRR, toward India shares\' 9%: 3.8 years of history moves the long-run prior only a little.', '9.06%'], ['Balanced and the ETFs', 'Prior', 'public', 'Long-run UK shares.', '6%'], ['Home, Reading', 'Prior', 'public', 'Long-run UK property.', '3%'], ['Flat, Pune', 'Prior', 'public', 'Long-run India property.', '5%'], ['SBI fixed deposit', 'Contract', 'contract', 'Its own rate, to 10 Mar 2029.', '7.1%'], ['PPF', 'Contract', 'contract', 'The account\'s own rate.', '7.1%']]],
-        ['Pay, a year', [['Arun\'s salary growth', 'History and prior', 'history', 'His 4.8% a year since 2022, blended with the UK\'s 3.5%.', '4.17%', 'arun'], ['Asha\'s salary growth', 'History and prior', 'history', 'Her 3.5% a year since 2023, blended with the UK\'s 3.5%.', '3.5%']]],
-        ['Prices, a year', [['UK inflation', 'Prior', 'public', 'Long-run UK consumer prices.', '2.5%'], ['India inflation', 'Prior', 'public', 'Long-run India prices; the gap also drifts the rupee.', '5%']]]];
+        ['Pay, a year', [['Arun\'s salary growth', admin ? 'Set by you' : 'Set by Arun', 'person', 'His own 4.8% a year since 2022, without the UK\'s 3.5% blended in; set on Mon 26 Oct.', '4.8%', 'arun'], ['Asha\'s salary growth', 'History and prior', 'history', 'Her 3.5% a year since 2023, blended with the UK\'s 3.5%.', '3.5%']]],
+        ['Prices, a year', [['UK inflation', 'Prior', 'public', 'Long-run UK consumer prices.', '2.5%'], ['India inflation', 'Prior', 'public', 'Long-run India prices; the gap also drifts the rupee.', '5%']]],
+        /* Arun's floor, settled on MA-264 (28 Oct 2026): a monthly surplus among the assumptions, the admin's alone */
+        ['The budget', [[admin ? 'Your floor' : 'Arun\'s floor', admin ? 'Your setting' : 'Arun\'s setting', 'person', 'The monthly surplus kept. A plan that takes the surplus under it brings ways to cover it.', '£500', 'floor']]]];
       var aparts = [admin ? { isNote: true, icon: 'edit', t: 'Click a figure to correct it. Only you can, as the admin; each change is audited.', cls: '' } : { isLock: true, t: 'Arun keeps these figures. Ask in the chat to see what other figures would do.' }];
       ASM.forEach(function (gr) {
         aparts.push({ isSec: true, t: gr[0], r: '' });
         gr[1].forEach(function (a) {
           if (a[5] === 'arun' && editing && admin) {
             var ea = st.ea || '';
-            aparts.push({ isAsmEdit: true, name: a[0], sub: 'A year · now 4.17%, his history blended with a prior', val: ea, ph: '4.17', onType: api.type('ea'), onKey: api.key('asm:cancel'), fieldCls: T('asmfield'), hasAfter: !!ea, before: '4.17%', after: ea + '%', note: ea === '4.8' ? 'His own 4.8% a year since 2022, without the UK\'s 3.5% blended in.' : 'Type the rate you want the engine to use.', saveGo: A('asm:save'), cancelGo: A('asm:cancel'), cancelCls: T('asm:cancel'), kp: !web });
-          } else aparts.push({ isPill: true, isAsm: true, icon: '', name: a[0], tagT: a[1], tagI: a[2], sub: a[3], v: a[4], edit: admin, go: A(a[5] === 'arun' ? 'asm:arun' : 'x:asm'), cls: a[5] === 'arun' ? T('asm:arun') : '' });
+            aparts.push({ isAsmEdit: true, name: a[0], sub: 'A year · now 4.8%, set by you on Mon 26 Oct', val: ea, ph: '4.8', onType: api.type('ea'), onKey: api.key('asm:cancel'), fieldCls: T('asmfield'), hasAfter: !!ea, before: '4.8%', after: ea + '%', note: ea === '4.17' ? 'The blend of your 4.8% with the UK\'s 3.5%, the figure before you set yours.' : 'Type the rate you want the engine to use.', saveGo: A('asm:save'), cancelGo: A('asm:cancel'), cancelCls: T('asm:cancel'), kp: !web });
+          } else aparts.push({ isPill: true, isAsm: a[5] !== 'floor', icon: '', name: a[0], tagT: a[1], tagI: a[2], sub: a[3], v: a[4], edit: admin, go: A(a[5] === 'arun' ? 'asm:arun' : 'x:asm'), cls: a[5] === 'arun' ? T('asm:arun') : '' });
         });
       });
       var asm = card('Assumptions', 'each with its source', aparts);
       pg.cols = web ? [[hp, chipsB], [ms, plans], [asm]] : [[hp, chipsB, ms, plans, asm]];
       pg.colsCls = 'toprow';
-      pg.foot = 'Illustrative figures from the v4 figure set. A projection, not a promise: the engine\'s middle path is no more likely than the band around it.';
+      pg.foot = 'Illustrative figures from the v4 figure set, run month by month (future-plans-v4.json). A projection, not a promise: the engine\'s middle path is no more likely than the band around it.';
     }
 
     else if (id === 'act') {

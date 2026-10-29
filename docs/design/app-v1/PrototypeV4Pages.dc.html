@@ -23,6 +23,17 @@
 .ppage .pfoot { margin: 0; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); text-wrap: pretty; }
 .ppage .tmsw { display: inline-flex; align-items: center; gap: 8px; font: 600 15px/20px var(--mp-font); }
 .ppage .hchipx { align-self: flex-start; }
+/* the Projection's tabs (MA-264): underline tabs at the laptop, a segmented control on a phone */
+.ppage .phead.withtabs { flex-direction: column; align-items: stretch; }
+.ppage .ptabs .tseg { display: none; }
+.ppage .utabs { display: flex; gap: 4px; border-bottom: 1px solid var(--mp-line); overflow-x: auto; scrollbar-width: none; }
+.ppage .utab { position: relative; min-height: 44px; padding: 0 14px; border: 0; background: transparent; display: inline-flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; flex: none; cursor: pointer; }
+.ppage .utab.on { color: var(--mp-ink); }
+.ppage .utab.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; border-radius: 2px 2px 0 0; background: var(--mp-accent); }
+.ppage .tseg .mp-seg-i { white-space: nowrap; padding: 0 8px; }
+.pios .ptabs .utabs { display: none; }
+.pios .ptabs .tseg { display: flex; }
+@container app (max-width: 599px) { .ppage .ptabs .utabs { display: none; } .ppage .ptabs .tseg { display: flex; } }
 .pios .ppad { display: flex; flex-direction: column; gap: 16px; padding: 0 16px 150px; }
 .pios .phead { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin: 0 4px; }
 .pios .crumb { display: none; }
@@ -187,9 +198,11 @@
 <div class="ppage {{ doorCls }}">
 <div class="{{ padCls }}">
 <sc-if value="{{ pg.hasCrumb }}" hint-placeholder-val="{{ false }}"><button class="crumb" type="button" onclick="{{ pg.crumbGo }}"><span class="ms">chevron_left</span>{{ pg.crumb }}</button></sc-if>
-<header class="mp-pagehead phead">
+<header class="mp-pagehead phead {{ headCls }}">
 <div class="fx col gap4"><div class="ptitle">{{ pg.title }}</div><div class="mp-foot mp-ink2">{{ pg.sub }}</div></div>
+<sc-if value="{{ hasTabs }}" hint-placeholder-val="{{ false }}"><nav class="ptabs" aria-label="Projection"><div class="utabs" role="tablist"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button class="utab {{ t.cls }}" type="button" role="tab" aria-selected="{{ t.sel }}" onclick="{{ t.go }}">{{ t.t }}</button></sc-for></div><div class="mp-seg tseg" role="tablist"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><span class="segw"><button class="mp-seg-i {{ t.cls }}" type="button" role="tab" aria-selected="{{ t.sel }}" onclick="{{ t.go }}">{{ t.t }}</button></span></sc-for></div></nav></sc-if>
 <div class="hctl">
+<sc-if value="{{ pg.ctrls.hasHz }}" hint-placeholder-val="{{ false }}"><div class="mp-seg" role="group" aria-label="Horizon"><sc-for list="{{ pg.ctrls.hz }}" as="s" hint-placeholder-count="4"><span class="segw"><button class="mp-seg-i {{ s.cls }}" type="button" onclick="{{ s.go }}">{{ s.t }}</button></span></sc-for></div></sc-if>
 <sc-if value="{{ pg.ctrls.hasMonth }}" hint-placeholder-val="{{ false }}"><div class="mp-seg" role="group" aria-label="Month"><sc-for list="{{ pg.ctrls.month }}" as="s" hint-placeholder-count="3"><span class="segw"><button class="mp-seg-i {{ s.cls }}" type="button" onclick="{{ s.go }}">{{ s.t }}</button></span></sc-for></div></sc-if>
 <sc-if value="{{ pg.ctrls.hasWhose }}" hint-placeholder-val="{{ false }}"><div class="mp-seg" role="group" aria-label="Whose view"><sc-for list="{{ pg.ctrls.whose }}" as="s" hint-placeholder-count="3"><span class="segw"><button class="mp-seg-i {{ s.cls }}" type="button" onclick="{{ s.go }}">{{ s.t }}</button></span></sc-for></div></sc-if>
 <sc-if value="{{ pg.ctrls.hasCcy }}" hint-placeholder-val="{{ false }}"><div class="mp-seg" role="group" aria-label="Currency"><sc-for list="{{ pg.ctrls.ccy }}" as="s" hint-placeholder-count="2"><span class="segw"><button class="mp-seg-i {{ s.cls }}" type="button" onclick="{{ s.go }}">{{ s.t }}</button></span></sc-for></div></sc-if>
@@ -215,7 +228,7 @@
 <sc-for list="{{ bk.ch.ys }}" as="y" hint-placeholder-count="3"><span class="pc-y" style="top: {{ y.top }}">{{ y.t }}</span></sc-for>
 <sc-for list="{{ bk.ch.dots }}" as="d" hint-placeholder-count="4"><span class="pc-dot {{ d.cls }}" style="left: {{ d.l }}; top: {{ d.tp }}"></span></sc-for>
 <sc-for list="{{ bk.ch.lbls }}" as="l" hint-placeholder-count="2"><span class="pc-lbl {{ l.cls }}" style="left: {{ l.l }}; top: {{ l.tp }}">{{ l.t }}</span></sc-for>
-<sc-if value="{{ bk.ch.ann }}" hint-placeholder-val="{{ false }}"><span class="pc-ann" style="left: {{ bk.ch.annL }}"><b>2036</b> · middle path <b class="mny">£1,316,000</b><br />8 in 10: <span class="mny">£1,062,000</span> to <span class="mny">£1,641,000</span></span></sc-if>
+<sc-if value="{{ bk.ch.ann }}" hint-placeholder-val="{{ false }}"><span class="pc-ann" style="left: {{ bk.ch.annL }}"><b>{{ bk.ch.annY }}</b> · middle path <b class="mny">{{ bk.ch.annM }}</b><br />8 in 10: <span class="mny">{{ bk.ch.annLo }}</span> to <span class="mny">{{ bk.ch.annHi }}</span></span></sc-if>
 </div>
 <div class="pc-x"><sc-for list="{{ bk.ch.xs }}" as="x" hint-placeholder-count="4"><span class="{{ x.cls }}" style="left: {{ x.l }}">{{ x.t }}</span></sc-for></div>
 <div class="pc-leg"><sc-for list="{{ bk.ch.leg }}" as="g" hint-placeholder-count="4"><span class="fx ac gap6"><i class="pc-k {{ g.cls }}"></i>{{ g.t }}</span></sc-for></div></div>
@@ -300,7 +313,9 @@
 class Component extends DCLogic {
   renderVals() {
     const p = this.props || {}, pg = p.pg || { cols: [], ctrls: {} }, web = !!p.isWeb;
-    return { pg: pg, doorCls: web ? 'pweb' : 'pios', padCls: web ? 'mp-pagepad' : 'ppad', colsCls: pg.colsCls || '', showEye: web && !!(pg.ctrls && pg.ctrls.hasEye) };
+    const tabs = (pg.tabs || []).map((t) => ({ t: t.t, cls: t.on ? 'on' : '', sel: t.on ? 'true' : 'false', go: t.go }));
+    return { pg: pg, doorCls: web ? 'pweb' : 'pios', padCls: web ? 'mp-pagepad' : 'ppad', colsCls: pg.colsCls || '', showEye: web && !!(pg.ctrls && pg.ctrls.hasEye),
+      hasTabs: tabs.length > 0, tabs: tabs, headCls: tabs.length ? 'withtabs' : '' };
   }
 }
 </script>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Web v4 · Budget forecast</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="motion.css" />
+<script src="motion.js"></script>
+<style>
+html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+/* canvas */
+.dv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(0,0,0,.08); }
+.dv-thd { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; margin: 0 0 8px; }
+.dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+a.dv-tid:hover { color: #fff; }
+.dv-tname { font: 700 22px/28px -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+.dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; margin: 0 0 14px; text-wrap: pretty; }
+.recb { font: 700 12px/16px -apple-system, system-ui, sans-serif; color: #FFFFFF; background: #1D7A3E; padding: 3px 10px; border-radius: 999px; }
+.dv-keys { font: 600 12px/16px ui-monospace, Menlo, monospace; color: #5A606C; }
+.plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 1100px; box-sizing: border-box; margin: 0 0 28px; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+.plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; text-decoration: none; }
+a.plan-k:hover { color: #FFFFFF; background: #233558; }
+.plan-s { font-weight: 700; color: #14171F; }
+.idx { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 6px 24px; max-width: 1100px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; }
+.idx a { color: #14171F; font-weight: 600; text-decoration: none; }
+.dv-cap { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; margin: 0 0 8px; white-space: nowrap; }
+.dv-row { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.bnotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px 32px; max-width: 1300px; margin: 28px 0 0; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
+.bnotes b { color: #14171F; }
+/* the frame: one markup at every width; the page and the chat are siblings in the shell (as Web v4 · Budget) */
+.frame { position: relative; overflow: hidden; border-radius: 14px; outline: 1px solid rgba(0,0,0,.12); filter: drop-shadow(0 20px 50px rgba(0,0,0,.14)); flex: none; }   /* the canvas frame: an outline and a drop shadow, so it is no card around the page's cards */
+.shell { height: 100%; }
+.side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
+.brand { padding: 4px 8px 18px; }
+.navlbl { padding: 14px 12px 4px; }
+.side-ft { padding: 0 12px 4px; }
+.mainc { container: app / inline-size; overflow: hidden; background: var(--mp-bg); }
+.tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; }
+.t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
+.mpm { display: block; flex: none; }
+.mpm-coin { fill: var(--mp-hero); }
+.t-dark .mpm-coin { fill: var(--mp-hero-2); }
+.mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
+.mpm-dot { fill: var(--mp-coral); }
+@container app (min-width: 600px) { .crumb { display: none !important; } }
+.crumb { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -8px 0 -10px; color: var(--mp-accent); font: 600 15px/20px var(--mp-font); text-decoration: none; }
+/* the chat column: beside the page from 1024, a tab below */
+.chatcol { display: none; flex-direction: column; width: 420px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); position: relative; }
+@container app (min-width: 1024px) { .chatcol { display: flex; } }
+.chead { flex: none; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); }
+.cscroll { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.chat { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; flex-direction: column; gap: 14px; padding: 0 16px; }
+.daysep { align-self: center; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); padding: 2px 0; }
+.me { align-self: flex-end; max-width: 84%; background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 20px 20px 6px 20px; padding: 10px 14px; font: 400 16px/21px var(--mp-font); }
+.me-time { align-self: flex-end; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); margin-top: -10px; }
+.ai { display: flex; gap: 10px; align-items: flex-start; }
+.ai-mark { width: 28px; height: 28px; border-radius: 50%; background: var(--mp-hero); display: grid; place-items: center; flex: none; margin-top: 2px; }
+.ai-mark i { width: 12px; height: 12px; border-radius: 50%; background: var(--mp-coral); box-shadow: 0 0 0 3px var(--mp-hero), 0 0 0 4.5px var(--mp-coral); display: block; }
+.ai-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.ai-text { font: 400 16px/23px var(--mp-font); color: var(--mp-ink); text-wrap: pretty; }
+.ccard { background: var(--mp-surface); border-radius: var(--mp-r-card); box-shadow: var(--mp-shadow); overflow: hidden; }
+.ccard-h { padding: 14px 16px 10px; display: flex; flex-direction: column; gap: 4px; }
+.ccard-tech { background: var(--mp-surface-2); padding: 12px 16px; font: 400 13px/19px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); }
+.cbtn { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); cursor: pointer; }
+.cbtn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
+.cbtn .ms { font-size: 18px; }
+.cmpw { flex: none; display: flex; gap: 8px; align-items: center; padding: 10px 12px 14px; border-top: 1px solid var(--mp-line); background: var(--mp-bg); }
+.cfw { flex: 1; min-width: 0; min-height: 44px; border-radius: 22px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; padding: 0 16px; font: 400 16px/21px var(--mp-font); color: var(--mp-ink-2); }
+.grow1 { flex: 1; min-width: 0; }
+.nowrap { white-space: nowrap; }
+.tr { text-align: right; }
+.wrap { flex-wrap: wrap; }
+.pp { margin: 0; text-wrap: pretty; }
+.cpad { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+/* ---------- the Projection's chrome (MA-264's brief, the same in every option): tabs, horizon, money ---------- */
+.ptabs-sg { width: 100%; }
+.ptabs-ul { display: none; gap: 4px; border-bottom: 1px solid var(--mp-line); margin-top: -4px; }
+.ptu { min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; text-decoration: none; }
+.ptu.on { color: var(--mp-ink); border-bottom-color: var(--mp-accent); }
+@container app (min-width: 600px) { .ptabs-ul { display: flex; } .ptabs-sg { display: none; } }
+.ctls { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.sg-h { flex: 1 1 100%; }
+.sg-c { flex: none; }
+.sg-c .mp-seg-i { padding: 0 12px; white-space: nowrap; }
+@container app (min-width: 600px) { .sg-h { flex: 0 1 340px; } }
+.tmw { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+.ptab-meta { margin-top: -6px; }
+.phead { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+/* ---------- the surplus chart (1a): each year's leanest month against Arun's floor ---------- */
+.bch { position: relative; padding-left: 44px; margin-top: 4px; }
+.bplot { position: relative; height: 176px; }
+.bgl { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--mp-chart-grid); }
+.bgl.zero { border-top: 1px solid var(--mp-ink-2); }
+.bgl.floor { border-top: 2px dashed var(--mp-ink); }
+.byl { position: absolute; left: -44px; width: 38px; text-align: right; transform: translateY(50%); font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; }
+.byl.bot { transform: none; }
+.byl.fl { color: var(--mp-ink); font-weight: 700; }
+.bcols { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); }
+.bc { position: relative; }
+.bb { position: absolute; left: 18%; right: 18%; min-height: 3px; border-radius: 3px; }
+.bb.ok { background: var(--mp-meter); }
+.bb.lo { background: var(--mp-alert); }
+.bb.sel { box-shadow: 0 0 0 2px var(--mp-surface), 0 0 0 4px var(--mp-ink); }
+.bb.cap { border-radius: 0 0 3px 3px; }
+.bb.cap::after { content: ""; position: absolute; left: -3px; right: -3px; top: 8px; height: 4px; background: var(--mp-surface); transform: skewY(-24deg); }
+.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 11px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
+.bch .mp-chartaxis { margin-top: 2px; }
+.blgd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+.blgd > span { display: inline-flex; align-items: center; gap: 6px; }
+.k-ok { width: 10px; height: 12px; border-radius: 2px; background: var(--mp-meter); }
+.k-lo { width: 10px; height: 12px; border-radius: 2px; background: var(--mp-alert); }
+.k-fl { width: 18px; height: 0; border-top: 2px dashed var(--mp-ink); }
+.k-sel { width: 10px; height: 12px; border-radius: 2px; box-shadow: inset 0 0 0 2px var(--mp-ink); }
+.flagl { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.c-alert { color: var(--mp-alert); }
+/* ---------- a year's lines: they add up to its surplus ---------- */
+.yl { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-top: 1px solid var(--mp-line); }
+.yl > .grow1 { display: flex; flex-direction: column; gap: 2px; }
+.yl .fig { font: 600 15px/20px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.yl.tap .fig { text-decoration: underline dotted var(--mp-ink-2); text-underline-offset: 4px; }
+.yl.tot { border-top: 2px solid var(--mp-ink); padding-top: 12px; }
+.yl.tot .fig { font: 800 20px/24px var(--mp-font-round); }
+.yl.pl .ms { font-size: 16px; color: var(--mp-ink-2); }
+.ytrace { display: flex; flex-direction: column; gap: 4px; margin: 4px 0 0; padding: 0; }
+/* the year's figures and the summary sit on their card's own surface: rows and plain figures, never tiles in a card */
+.kvs { display: flex; flex-direction: column; }
+.kt { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--mp-line); min-width: 0; }
+.sumg .kt { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px; padding: 0; border-top: 0; }
+.btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+/* months of a year */
+.mtab { display: grid; grid-template-columns: minmax(64px, auto) minmax(0, 1fr) auto; column-gap: 12px; align-items: baseline; }
+.mt { padding: 8px 0; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); min-width: 0; }
+.mt.fig { font-weight: 600; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mt.note { font-size: 13px; line-height: 18px; color: var(--mp-ink-2); }
+/* a trace: the flows that make a figure */
+.trl { display: flex; align-items: baseline; gap: 12px; padding: 8px 0; border-top: 1px solid var(--mp-line); }
+.trl > .grow1 { display: flex; flex-direction: column; gap: 1px; }
+.trl .fig { font: 600 15px/20px var(--mp-font); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.srcchip { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 999px; padding: 2px 8px 2px 6px; }
+.srcchip .ms { font-size: 14px; }
+/* ---------- year by year (1b) ---------- */
+.yr { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--mp-line); min-height: 44px; box-sizing: border-box; flex-wrap: wrap; }
+.yr > .grow1 { display: flex; flex-direction: column; gap: 2px; min-width: min(100%, 9em); }
+.yr .fig { font: 600 17px/22px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; margin-left: auto; }
+.yr .chev { color: var(--mp-ink-2); font-size: 20px; }
+.yr.open { border-top: 2px solid var(--mp-ink); }
+.yopen { display: flex; flex-direction: column; gap: 12px; padding: 0 0 14px; }
+.yo2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 8px 28px; align-items: start; }
+.ymon { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; border-top: 1px solid var(--mp-line); }
+.sumg { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px 16px; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+/* ---------- the ledger table (1c) ---------- */
+.ltw { position: relative; container: ltw / inline-size; }
+.ltsc { overflow-x: auto; scrollbar-width: none; }
+.ltsc::-webkit-scrollbar { display: none; }
+.lt { display: grid; grid-template-columns: 76px repeat(7, minmax(84px, 1fr)); min-width: 664px; }
+.lt > span { padding: 8px 8px; border-top: 1px solid var(--mp-line); font: 400 14px/19px var(--mp-font); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; background: var(--mp-surface); }
+.lt > .lh { font: 600 12px/16px var(--mp-font); letter-spacing: 0.02em; text-transform: uppercase; color: var(--mp-ink-2); border-top: 0; padding-top: 0; white-space: normal; align-self: end; }
+.lt > .ly { text-align: left; position: sticky; left: 0; z-index: 1; font-weight: 600; box-shadow: 1px 0 0 var(--mp-line); }
+.lt .lysub { display: block; font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.lt > .sel { background: var(--mp-surface-2); }
+.lt > .flg .lysub { color: var(--mp-alert); }
+@container ltw (max-width: 663px) { .ltfade { display: block; } }
+.lt > .w6 { font-weight: 700; }
+.ltfade { display: none; position: absolute; top: 0; bottom: 0; right: 0; width: 28px; pointer-events: none; background: linear-gradient(90deg, color-mix(in srgb, var(--mp-surface) 0%, transparent), var(--mp-surface)); }
+.pop { position: absolute; z-index: 4; width: min(300px, 100%); left: clamp(0px, var(--px, 0px), calc(100% - min(300px, 100%))); box-sizing: border-box; padding: 14px 16px; border-radius: 16px; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line), 0 18px 40px rgba(0, 0, 0, 0.22); display: flex; flex-direction: column; gap: 8px; }
+@container ltw (max-width: 663px) { .popar { display: none; } }
+.popar { position: absolute; top: -7px; left: calc(50% - 7px); width: 14px; height: 14px; background: var(--mp-surface); transform: rotate(45deg); box-shadow: -1px -1px 0 var(--mp-line); }
+.psheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 8; padding: 8px 16px 28px; border-radius: 16px 16px 0 0; background: var(--mp-surface); box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.22); display: flex; flex-direction: column; gap: 8px; }
+.pscrim { position: absolute; inset: 0; z-index: 7; background: rgba(5, 8, 14, 0.32); }
+.grab { width: 36px; height: 5px; border-radius: 3px; background: var(--mp-line); margin: 0 auto 4px; }
+.frame .mp-mask { color: transparent; }
+</style>
+</helmet>
+
+<section class="dv-turn" id="w0" data-screen-label="Web v4 · Budget forecast: intro">
+<div class="dv-thd"><a class="dv-tid" href="#w0">F</a><span class="dv-tname">The Budget forecast tab, at the web door: three options</span></div>
+<p class="dv-intro">{{ intro1 }}</p>
+<p class="dv-intro">{{ intro2 }}</p>
+<div class="plan"><sc-for list="{{ allKeys }}" as="kk" hint-placeholder-count="3"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>ARCHITECTURE.md §6.6, §9.3, §12</span><span class="plan-s">Planned.</span><span>Illustrative figures from future-plans-v4.json, run R1.</span></div>
+<div class="idx"><sc-for list="{{ index }}" as="ix" hint-placeholder-count="3"><span><a href="#{{ ix.id }}">{{ ix.tag }} · {{ ix.name }}</a></span></sc-for></div>
+</section>
+
+<sc-for list="{{ boards }}" as="bd" hint-placeholder-count="3">
+<section class="dv-turn" id="{{ bd.id }}">
+<div class="dv-thd"><a class="dv-tid" href="#{{ bd.id }}">{{ bd.tag }}</a><span class="dv-tname">{{ bd.name }}</span><sc-if value="{{ bd.rec }}" hint-placeholder-val="{{ false }}"><span class="recb">Recommended</span></sc-if><span class="dv-keys">{{ bd.keyline }}</span></div>
+<p class="dv-intro">{{ bd.intro }}</p>
+<div class="plan"><sc-for list="{{ bd.keys }}" as="kk" hint-placeholder-count="2"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>{{ bd.arch }}</span><span class="plan-s">Planned.</span><span>Illustrative figures.</span></div>
+<div class="dv-row">
+<sc-for list="{{ bd.frames }}" as="f" hint-placeholder-count="2">
+<div>
+<p class="dv-cap">{{ f.cap }}</p>
+<div class="frame mp-app mp {{ f.cls }}" style="width: {{ f.w }}px; height: {{ f.h }}px" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
+<div class="mp-shell shell">
+<aside class="mp-shell-side mp-side side" aria-label="MyPaisa">
+<div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="38.6" cy="9.4" r="4.2"></circle></svg><span class="mp-hl">MyPaisa</span></div>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#w0" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<div class="grow1"></div>
+<div class="mp-foot mp-ink2 side-ft">Arun · admin</div>
+</aside>
+<main class="mp-shell-main mainc">
+<div class="mp-pagepad" style="margin-top: {{ f.off }}">
+<a class="crumb mp-only-compact" href="#w0"><span class="ms ms-s">arrow_back_ios_new</span>Home</a>
+<header class="phead"><div class="grow1"><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ meta }}</div></div><button class="iconbtn" aria-label="Privacy mode: hide amounts" aria-pressed="false"><span class="ms">visibility</span></button></header>
+<nav class="ptabs-ul" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><a class="ptu {{ t.on }}" href="#w0" aria-current="{{ t.cur }}">{{ t.l }}</a></sc-for></nav>
+<div class="mp-seg ptabs-sg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
+<div class="ctls">
+<div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
+<div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false">₹ INR</button></div>
+<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+</div>
+
+<!-- ============ 1a: the surplus first ============ -->
+<sc-if value="{{ f.o.a }}" hint-placeholder-val="{{ true }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">Your leanest month, each year</span><span class="mp-foot mp-ink2">2027 to 2046 · against your floor</span></div>
+<div class="flagl"><span class="mp-chip chip-s mp-alertchip">▼ Below your floor</span><span class="mp-foot">{{ gapLine }}</span></div>
+<div class="bch" role="img" aria-label="{{ chart.aria }}">
+<div class="bplot">
+<sc-for list="{{ chart.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}">{{ g.l }}</span></sc-for>
+<div class="bcols"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
+</div>
+<div class="bflags" aria-hidden="true"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><span>{{ b.flag }}</span></sc-for></div>
+<div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ chart.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
+</div>
+<div class="blgd"><span><i class="k-ok"></i>At or above your floor</span><span><i class="k-lo"></i>▼ Below it</span><span><i class="k-fl"></i>Your floor, £500 a month</span><span><i class="k-sel"></i>2029, below</span></div>
+<p class="pp mp-foot mp-ink2">{{ chart.capNote }}</p>
+</div>
+<div class="mp-cols">
+<div class="mp-col">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-t2">2029</span><span class="mp-chip chip-s mp-alertchip">▼ 11 months below your floor</span></div>
+<span class="mp-foot mp-ink2 ptab-meta">Jan to Dec, in pounds of 2029 · tap a figure to see what makes it</span>
+<div>
+<sc-for list="{{ y29.lines }}" as="l" hint-placeholder-count="5"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig">{{ l.v }}</span></div></sc-for>
+<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">the lines above, added</span></div><span class="fig c-alert">{{ y29.sur }}</span></div>
+</div>
+<div class="kvs"><sc-for list="{{ y29.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6">{{ t.v }}</span></div></sc-for></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms">chat_bubble</span>Ways to cover it</button></div>
+</div>
+<sc-if value="{{ f.months }}" hint-placeholder-val="{{ true }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">2029, month by month</span><span class="mp-foot mp-ink2">the surplus each month</span></div>
+<div class="mtab"><sc-for list="{{ months }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
+</div>
+</sc-if>
+</div>
+<div class="mp-col">
+<div class="mp-card cpad">
+<div class="fx col gap4"><span class="mp-over mp-ink2">The flows behind a figure</span><span class="mp-hl">2029's spending, −£34,722</span></div>
+<span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
+<div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
+<div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
+<span class="srcchip"><span class="ms">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ 1b: year by year ============ -->
+<sc-if value="{{ f.o.b }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">The next 20 years, 2027 to 2046</span><span class="mp-chip chip-s mp-alertchip">▼ 50 months below your floor</span></div>
+<div class="sumg"><sc-for list="{{ sums }}" as="t" hint-placeholder-count="4"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}">{{ t.v }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div></sc-for></div>
+</div>
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">Year by year</span><span class="mp-foot mp-ink2">the surplus, after everything planned</span></div>
+<div>
+<sc-for list="{{ years }}" as="y" hint-placeholder-count="21">
+<div class="yr {{ y.open }}"><div class="grow1"><span class="fx ac gap8 wrap"><span class="mp-sub mp-w6">{{ y.l }}</span><sc-if value="{{ y.flag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-alertchip">{{ y.flag }}</span></sc-if></span><span class="mp-foot mp-ink2">{{ y.s }}</span><sc-if value="{{ y.note }}" hint-placeholder-val="{{ false }}"><span class="mp-foot">{{ y.note }}</span></sc-if></div><span class="fig {{ y.c }}">{{ y.v }}</span><span class="ms chev" aria-hidden="true">{{ y.chev }}</span></div>
+<sc-if value="{{ y.isOpen }}" hint-placeholder-val="{{ false }}">
+<div class="yopen">
+<div class="yo2">
+<div>
+<sc-for list="{{ y29.lines }}" as="l" hint-placeholder-count="5"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span>
+<sc-if value="{{ l.tr }}" hint-placeholder-val="{{ false }}"><div class="ytrace"><span class="mp-over mp-ink2">What makes it</span><sc-for list="{{ feeTrace }}" as="t" hint-placeholder-count="3"><span class="mp-foot">{{ t }}</span></sc-for></div></sc-if>
+</div><span class="fig">{{ l.v }}</span></div></sc-for>
+<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">savings rate −1.2% · cash £35,168 at the end of December</span></div><span class="fig c-alert">{{ y29.sur }}</span></div>
+</div>
+<div class="ymon">
+<div class="fx jb ac gap8 wrap"><span class="mp-sub mp-w6">Months</span><span class="mp-foot mp-ink2">one level down</span></div>
+<div class="mtab"><sc-for list="{{ months }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
+</div>
+</div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms">chat_bubble</span>Ways to cover it</button></div>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ 1c: the ledger table ============ -->
+<sc-if value="{{ f.o.c }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">Each year, line by line</span><span class="mp-chip chip-s mp-alertchip">▼ 50 months below your floor</span></div>
+<span class="mp-foot mp-ink2 ptab-meta">{{ f.tblHint }}</span>
+<div class="ltw">
+<div class="ltsc" data-sx="{{ f.sx }}"><div class="lt" role="table" aria-label="The budget forecast, each year to 2046">
+<sc-for list="{{ thead }}" as="h" hint-placeholder-count="8"><span class="lh {{ h.c }}">{{ h.l }}</span></sc-for>
+<sc-for list="{{ tcells }}" as="c" hint-placeholder-count="40"><span class="{{ c.c }}">{{ c.v }}<sc-if value="{{ c.sub }}" hint-placeholder-val="{{ false }}"><span class="lysub">{{ c.sub }}</span></sc-if></span></sc-for>
+</div></div>
+<div class="ltfade"></div>
+<sc-if value="{{ f.pop }}" hint-placeholder-val="{{ false }}">
+<div class="pop popover" style="{{ f.popPos }}" role="dialog" aria-label="2029's surplus, line by line">
+<span class="popar"></span>
+<div class="fx col gap2"><span class="mp-over mp-ink2">2029 · the flows behind it</span><span class="mp-hl">Surplus <span class="c-alert">−£1,285</span></span></div>
+<div><sc-for list="{{ popLines }}" as="t" hint-placeholder-count="5"><div class="trl"><div class="grow1"><span class="mp-foot mp-w6">{{ t.n }}</span></div><span class="fig mp-foot">{{ t.v }}</span></div></sc-for></div>
+<span class="mp-foot mp-ink2">Below your floor in 11 months: every month but March, when Asha's bonus lands.</span>
+<div class="btnrow"><button class="cbtn" type="button">Months</button><button class="cbtn cbtn-primary" type="button">Ways to cover it</button></div>
+</div>
+</sc-if>
+</div>
+<p class="pp mp-foot mp-ink2">Plans are the ones that recur. A one-off is paid from cash, below the surplus: the extension, −£35,000 in 2027, and the new car, −£25,000 in 2031. Maturities go into cash too.</p>
+</div>
+</sc-if>
+
+<p class="pp mp-foot mp-ink2">Illustrative figures from the future-plans figure set, the engine's run of Thu 5 Nov 20:43. A forecast of the budget, not a promise.</p>
+</div>
+</main>
+<aside class="chatcol" aria-label="Chat">
+<div class="chead"><div class="ai-mark"><i></i></div><span class="mp-hl grow1">Chat</span><span class="mp-foot mp-ink2">Arun</span></div>
+<div class="cscroll">
+<div class="chat">
+<div class="daysep">Today</div>
+<div class="me">£4,000 a month from Jan 2029 for my kid's schooling</div>
+<div class="me-time">20:41</div>
+<div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+<div class="ccard"><div class="ccard-h"><span class="fx ac gap6 mp-over c-add"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, growing 4.5% a year</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div></div>
+<div class="ai-text">It leaves your surplus below your £500 floor in 50 months, Jan 2029 to Feb 2035. Cash stays above zero. The Budget forecast beside this shows where.</div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms">chat_bubble</span>Ways to cover it</button></div>
+</div></div>
+</div>
+</div>
+<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms">add</span></button><span class="cfw">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms">arrow_upward</span></button></div>
+</aside>
+</div>
+<sc-if value="{{ f.sheet }}" hint-placeholder-val="{{ false }}">
+<div class="pscrim"></div>
+<div class="psheet" role="dialog" aria-label="2029's surplus, line by line">
+<div class="grab"></div>
+<div class="fx jb ac gap8"><div class="fx col gap2"><span class="mp-over mp-ink2">2029 · the flows behind it</span><span class="mp-hl">Surplus <span class="c-alert">−£1,285</span></span></div><button class="iconbtn" aria-label="Close"><span class="ms">close</span></button></div>
+<div><sc-for list="{{ popLines }}" as="t" hint-placeholder-count="5"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for></div>
+<span class="mp-foot mp-ink2">Below your floor in 11 months: every month but March, when Asha's bonus lands.</span>
+<div class="btnrow"><button class="cbtn" type="button">Months</button><button class="cbtn cbtn-primary" type="button">Ways to cover it</button></div>
+</div>
+</sc-if>
+<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+</div>
+</div>
+</sc-for>
+</div>
+<div class="bnotes"><sc-for list="{{ bd.notes }}" as="n" hint-placeholder-count="4"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
+</section>
+</sc-for>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{}'>
+class Component extends DCLogic {
+/* the phone's table is drawn scrolled to the surplus column Arun tapped */
+componentDidMount() { setTimeout(() => document.querySelectorAll('.ltsc[data-sx]').forEach((e) => { const v = Number(e.getAttribute('data-sx')); if (v) e.scrollLeft = v; }), 0); }
+renderVals() {
+/* the figure set: future-plans-v4.json, run R1 (Thu 5 Nov 20:43, after the school fees are saved), years 2026 to 2046.
+   Y rows: [year, span, income, spending, EMIs + SIP + LIC premium, recurring plans, surplus, savings rate, closing cash,
+   months below the floor, leanest month, one-offs from cash, maturities into cash]. Every year's lines sum to its surplus. */
+const D = {"floor":500,"run":"Thu 5 Nov 20:43","Y":[[2026,"Nov–Dec",15120,5364,4484,0,5272,0.349,21405,0,2636,{},{"Fixed-rate saver":10460}],[2027,"Jan–Dec",96602,33027,27196,0,36379,0.377,23423,0,2563,{"Home extension":-35000},{}],[2028,"Jan–Dec",100666,33864,27064,0,39738,0.395,30240,0,2825,{},{}],[2029,"Jan–Dec",104906,34722,23469,-48000,-1285,-0.012,35168,11,-903,{},{"Fixed deposit · SBI":5189}],[2030,"Jan–Dec",109330,35602,21057,-50160,2511,0.023,38783,11,-453,{},{}],[2031,"Jan–Dec",113944,36505,18432,-52417,6590,0.058,33952,11,-26,{"Replace the car":-25000},{"PPF · SBI":7330,"LIC Jeevan Anand":5057}],[2032,"Jan–Dec",118759,37431,18409,-54776,8143,0.069,43258,11,81,{},{}],[2033,"Jan–Dec",123782,38380,18387,-57241,9774,0.079,54501,2,193,{},{}],[2034,"Jan–Dec",129023,39354,18366,-59817,11486,0.089,58745,2,311,{},{}],[2035,"Jan–Dec",134492,40353,18345,-62508,13286,0.099,60579,2,436,{},{}],[2036,"Jan–Dec",140198,41377,18324,-65321,15176,0.108,62487,0,568,{},{}],[2037,"Jan–Dec",146152,42427,18304,-68261,17160,0.117,64472,0,705,{},{}],[2038,"Jan–Dec",152366,43505,18284,-71333,19244,0.126,66536,0,851,{},{}],[2039,"Jan–Dec",158851,44609,18265,-74543,21434,0.135,68683,0,1003,{},{}],[2040,"Jan–Dec",165618,45743,18246,-77897,23732,0.143,70917,0,1164,{},{}],[2041,"Jan–Dec",172681,46905,18228,-47485,60063,0.348,32541,0,1333,{},{}],[2042,"Jan–Dec",180052,48097,18210,0,113745,0.632,33127,0,8599,{},{}],[2043,"Jan–Dec",187746,49320,18193,0,120233,0.64,33729,0,9105,{},{}],[2044,"Jan–Dec",195776,50574,18176,0,127026,0.649,34347,0,9635,{},{}],[2045,"Jan–Dec",204159,51860,13833,0,138466,0.678,26243,0,10191,{},{}],[2046,"Jan–Dec",212908,53179,665,0,159064,0.747,26894,0,12228,{},{}]],"M":[["Jan 2029",8212,2896,2219,-4000,-903,29412,1,{}],["Feb 2029",8212,2896,2219,-4000,-903,28583,1,{}],["Mar 2029",11425,2895,2224,-4000,2306,36149,0,{"Fixed deposit · SBI":5189}],["Apr 2029",8563,2895,1871,-4000,-203,36037,1,{}],["May 2029",8563,2894,1870,-4000,-201,35926,1,{}],["Jun 2029",8563,2894,1869,-4000,-200,35816,1,{}],["Jul 2029",8562,2893,1868,-4000,-199,35706,1,{}],["Aug 2029",8562,2893,1867,-4000,-198,35597,1,{}],["Sep 2029",8562,2892,1866,-4000,-196,35489,1,{}],["Oct 2029",8561,2892,1866,-4000,-197,35381,1,{}],["Nov 2029",8561,2891,1865,-4000,-195,35274,1,{}],["Dec 2029",8560,2891,1865,-4000,-196,35168,1,{}]],"y29":{"income":{"Arun":59395,"Asha":40236,"Pune rent":2061,"Asha's bonus":3214},"spend":{"Bills and council tax":5428,"Groceries":8400,"Transport":2843,"Insurance":1098,"Eating out":2326,"Shopping":3231,"Holidays":5169,"Health":810,"Subscriptions":581,"Giving":646,"Family support, India":2898,"Other":1292},"emis":{"Mortgage · Nationwide":17478,"Car loan · Close Brothers":693,"Home loan · HDFC":3944},"sip":1001,"premium":353,"plans":{"School fees":-48000},"surplus":-1285,"rate":-0.012,"cash":35168,"below":11,"mat":{"Fixed deposit · SBI":5189}},"cats":[["Bills and council tax","UK",420,"GBP"],["Groceries","UK",650,"GBP"],["Transport","UK",220,"GBP"],["Insurance","UK",85,"GBP"],["Eating out","UK",180,"GBP"],["Shopping","UK",250,"GBP"],["Holidays","UK",400,"GBP"],["Health","UK health",60,"GBP"],["Subscriptions","UK",45,"GBP"],["Giving","UK",50,"GBP"],["Family support, India","India",25000,"INR"],["Other","UK",100,"GBP"]],"audit":"Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:43 · in the chat · 2046 middle path −£1,317,000","gap":{"months":50,"first":"Jan 2029","last":"Feb 2035"},"fan":[[2031,542000,701000,863000],[2036,726000,1002000,1279000],[2046,1950000,2580000,3544000]]};
+const gbp = (n) => (n < 0 ? '−£' : '£') + Math.abs(Math.round(n)).toLocaleString('en-GB');
+const pc1 = (x) => (x < 0 ? '−' : '') + (Math.round(Math.abs(x) * 1000) / 10).toFixed(1) + '%';
+const sum = (o) => Object.keys(o).reduce((a, k) => a + o[k], 0);
+const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
+const N2 = (a) => a.map((n) => ({ b: n[0], t: n[1] }));
+const Y = D.Y, y29 = D.y29, YR = (y) => Y.find((r) => r[0] === y);
+
+/* the chart: each year's leanest month, so the floor line means what it says; the axis is capped at £4,000 a month so
+   the lean years read, and the five years past it are named under the chart */
+const LO = -1000, HI = 4000, yp = (v) => (Math.max(LO, Math.min(HI, v)) - LO) / (HI - LO) * 100;
+const z = yp(0);
+const bars = Y.filter((r) => r[0] >= 2027).map((r) => {
+  const v = r[10], flag = r[9] > 0, t = yp(v);
+  const st = v >= 0 ? 'bottom: ' + z.toFixed(2) + '%; height: ' + (t - z).toFixed(2) + '%' : 'top: ' + (100 - z).toFixed(2) + '%; height: ' + (z - t).toFixed(2) + '%';
+  return { cls: (flag ? 'lo' : 'ok') + (r[0] === 2029 ? ' sel' : '') + (v > HI ? ' cap' : ''), st: st, mo: v >= 0 ? 'bary' : 'fade', flag: flag ? '▼' : '' };
+});
+const capped = Y.filter((r) => r[0] >= 2027 && r[10] > HI);
+const chart = {
+  bars: bars,
+  grid: [[HI, '£4k', '', ''], [2000, '£2k', '', ''], [D.floor, '£500', 'floor', 'fl'], [0, '£0', 'zero', ''], [LO, '−£1k', '', 'bot']].map((g) => ({ y: yp(g[0]).toFixed(2) + '%', l: g[1], c: g[2], lc: g[3] })),
+  axis: [[0, '2027'], [4, '2031'], [9, '2036'], [14, '2041'], [19, '2046']].map((a) => ({ left: ((a[0] + 0.5) / 20 * 100).toFixed(2) + '%', l: a[1] })),
+  capNote: capped[0][0] + ' to ' + capped[capped.length - 1][0] + ' run past £4,000: their leanest months are ' + gbp(capped[0][10]) + ' to ' + gbp(capped[capped.length - 1][10]) + ', once the school fees end in Jul 2041.',
+  aria: 'The leanest month of each year from 2027 to 2046 against your £500 floor. Below it from 2029 to 2035: ' + Y.filter((r) => r[9] > 0).map((r) => r[0] + ' ' + gbp(r[10])).join(', ') + '. From 2036 every month is above it.'
+};
+const gapLine = 'in ' + D.gap.months + ' months, ' + D.gap.first + ' to ' + D.gap.last;
+
+/* 2029's lines: they add up to its surplus */
+const em = y29.emis;
+const lines = [
+  { k: 'Income', s: Object.keys(y29.income).map((k) => k + ' ' + gbp(y29.income[k])).join(' · '), v: gbp(sum(y29.income)), c: '' },
+  { k: 'Spending', s: '12 categories, each with its inflation key', v: gbp(-sum(y29.spend)), c: 'tap' },
+  { k: 'EMIs', s: 'Mortgage ' + gbp(em['Mortgage · Nationwide']) + ' · Car loan ' + gbp(em['Car loan · Close Brothers']) + ', its last in Feb · HDFC ' + gbp(em['Home loan · HDFC']), v: gbp(-sum(em)), c: '' },
+  { k: 'SIP and LIC’s premium', s: 'Parag Parikh ' + gbp(y29.sip) + ' · LIC ' + gbp(y29.premium) + ' in March', v: gbp(-(y29.sip + y29.premium)), c: '' },
+  { k: 'School fees', s: 'Your plan, saved at 20:43 · £4,000 a month', v: gbp(sum(y29.plans)), c: 'pl', tr: true }
+];
+const check = sum(y29.income) - sum(y29.spend) - sum(em) - y29.sip - y29.premium + sum(y29.plans);
+if (check !== y29.surplus) throw new Error('2029 lines do not add up: ' + check);
+const Y29 = { lines: lines, sur: gbp(y29.surplus),
+  kts: [{ k: 'Savings rate', v: pc1(y29.rate) }, { k: 'Cash, end of December', v: gbp(y29.cash) }, { k: 'Leanest month', v: 'Jan, ' + gbp(D.M[0][5]) }] };
+const NOTE = { 'Feb 2029': 'the car loan’s last EMI', 'Mar 2029': 'Asha’s bonus; the SBI FD pays £5,189 into cash', 'Apr 2029': 'pay rises' };
+const months = D.M.map((m) => ({ l: m[0].slice(0, 3), n: NOTE[m[0]] || (m[7] ? 'below your floor' : ''), v: (m[7] ? '▼ ' : '') + gbp(m[5]), c: m[7] ? 'c-alert' : '' }));
+/* the trace behind 2029's spending: each category's plan, grown by its key */
+const KEY = { 'UK': 'UK 2.5% a year', 'UK health': 'UK health 4% a year', 'India': 'India 5% a year, at each month’s rate' };
+const trace = D.cats.map((c) => ({ n: c[0], s: (c[3] === 'INR' ? '₹' + c[2].toLocaleString('en-IN') : '£' + c[2]) + ' a month in 2026 · ' + KEY[c[1]], v: gbp(-y29.spend[c[0]]) }));
+if (sum(y29.spend) !== 34722) throw new Error('spending');
+const feeTrace = ['£4,000 a month × 12 = £48,000, from your words at 20:41: “£4,000 a month from Jan 2029 for my kid’s schooling”.', 'It grows 4.5% a year from Jan 2030, the UK school-fees prior you chose: £50,160 in 2030.', 'It ends in Jul 2041, the date you gave.'];
+
+/* 1b: the years */
+const yNote = { 2026: 'Asha’s saver pays £10,460 into cash in December', 2027: 'The extension, −£35,000, paid from cash in June', 2031: 'The new car, −£25,000 from cash; the PPF and LIC pay £12,387 into cash', 2041: 'The school fees end in July', 2045: 'The mortgage’s last payment, in October' };
+const years = Y.map((r) => ({ l: r[0] + (r[1] === 'Nov–Dec' ? ' · Nov to Dec' : ''), s: 'savings rate ' + pc1(r[7]) + ' · cash ' + gbp(r[8]), v: (r[6] < 0 ? '▼ ' : '') + gbp(r[6]), c: r[6] < 0 ? 'c-alert' : '',
+  flag: r[9] ? '▼ ' + (r[9] === 2 ? 'Jan and Feb' : r[9] + ' months') : '', note: yNote[r[0]] || '', isOpen: r[0] === 2029, open: r[0] === 2029 ? 'open' : '', chev: r[0] === 2029 ? 'expand_less' : 'chevron_right' }));
+const minRate = Y.filter((r) => r[0] >= 2027).reduce((a, r) => (r[7] < a[7] ? r : a));
+const sums = [
+  { k: 'Below your floor', v: D.gap.months + ' months', s: D.gap.first + ' to ' + D.gap.last, c: 'c-alert' },
+  { k: 'Leanest month', v: gbp(D.M[0][5]), s: 'Jan 2029, the fees’ first', c: 'c-alert' },
+  { k: 'Lowest savings rate', v: pc1(minRate[7]), s: 'in ' + minRate[0], c: '' },
+  { k: 'Cash', v: 'Above zero', s: 'every month to 2046', c: '' }
+];
+
+/* 1c: the table */
+const thead = [['Year', 'ly'], ['Income', ''], ['Spending', ''], ['EMIs and SIP', ''], ['Plans', ''], ['Surplus', 'w6'], ['Savings rate', ''], ['Closing cash', '']].map((h) => ({ l: h[0], c: h[1] }));
+const tcells = [];
+Y.forEach((r) => {
+  const sel = r[0] === 2029 ? ' sel' : '';
+  tcells.push({ v: String(r[0]), c: 'ly' + sel + (r[9] ? ' flg' : ''), sub: r[1] === 'Nov–Dec' ? 'Nov to Dec' : (r[9] ? '▼ ' + (r[9] === 2 ? 'Jan, Feb' : r[9] + ' months') : '') });
+  [gbp(r[2]), gbp(-r[3]), gbp(-r[4]), r[5] ? gbp(r[5]) : '–'].forEach((v) => tcells.push({ v: v, c: sel.trim(), sub: '' }));
+  tcells.push({ v: (r[6] < 0 ? '▼ ' : '') + gbp(r[6]), c: 'w6' + sel + (r[6] < 0 ? ' c-alert' : ''), sub: '' });
+  tcells.push({ v: pc1(r[7]), c: sel.trim(), sub: '' });
+  tcells.push({ v: gbp(r[8]), c: sel.trim(), sub: '' });
+});
+const popLines = [['Income', gbp(sum(y29.income))], ['Spending', gbp(-sum(y29.spend))], ['EMIs and SIP', gbp(-(sum(em) + y29.sip + y29.premium))], ['School fees', gbp(sum(y29.plans))]].map((p) => ({ n: p[0], v: p[1] }));
+
+/* the shell */
+const navDefs = [['ho', 'home', 'Home'], ['as', 'account_balance_wallet', 'Assets'], ['db', 'credit_card', 'Debts'], ['bu', 'event_note', 'Budget'], ['pj', 'show_chart', 'Projection'], ['L', '', 'Records'], ['ac', 'history', 'Activity'], ['au', 'fact_check', 'Audit'], ['fi', 'folder', 'Files']];
+const nav = navDefs.map((d) => ({ isI: d[0] !== 'L', isL: d[0] === 'L', icon: d[1], label: d[2], cls: d[0] === 'pj' ? 'on' : '', fill: d[0] === 'pj' ? 'ms-fill' : '', cur: d[0] === 'pj' ? 'page' : null }));
+const tabs = [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ icon: t[0], label: t[1], on: t[1] === 'Home' ? 'on' : '', fill: t[1] === 'Home' ? 'ms-fill' : '', cur: t[1] === 'Home' ? 'page' : null }));
+const ptabs = ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l: l, on: l === 'Budget forecast' ? 'on' : '', p: l === 'Budget forecast' ? 'true' : 'false', cur: l === 'Budget forecast' ? 'page' : null }));
+const horizon = ['5 yrs', '10 yrs', '20 yrs', '30 yrs'].map((l) => ({ l: l, on: l === '20 yrs' ? 'on' : '', p: l === '20 yrs' ? 'true' : 'false' }));
+const TH = { Light: 't-light', Dark: 't-dark' };
+const FR = (name, door, theme, w, h, o) => Object.assign({ cap: name + ' · ' + door + ' · ' + theme, cls: TH[theme], w: w, h: h, o: o, months: true, mIcon: 'expand_less', mLabel: 'Hide the months', pop: false, sheet: false, popPos: '', tblHint: '', off: '0px', sx: '0' }, o.x || {});
+const four = (name, o, hD, hP, xD, xP) => [FR(name, 'desktop', 'Light', 1440, hD, Object.assign({}, o, { x: xD })), FR(name, 'desktop', 'Dark', 1440, hD, Object.assign({}, o, { x: xD })), FR(name, 'phone, 390', 'Light', 390, hP, Object.assign({}, o, { x: xP })), FR(name, 'phone, 390', 'Dark', 390, hP, Object.assign({}, o, { x: xP }))];
+const ARCH = 'ARCHITECTURE.md §6.6 (what it puts out), §9.3 (the Projection), §12';
+const boards = [
+{ id: 'f1a', tag: '1a', name: 'Browser · Budget forecast 1a, the surplus first', rec: true, keyline: 'MA-262 · MA-224', arch: ARCH, keys: [key('MA-262'), key('MA-224')],
+  intro: 'The shape first, as the Projection’s 1a puts the fan first: each year’s leanest month as a bar against Arun’s £500 floor, the years below it in crimson with ▼, then the selected year, 2029, as lines that add up to its surplus, its months, and the flows behind a figure he tapped. Ways to cover it opens the chat.',
+  frames: four('Browser · Budget forecast 1a, the surplus first', { a: true }, 2230, 3330, {}, {}),
+  notes: N2([['Recommended.', 'Where the budget gets tight shows at a glance, at every width, and the detail is one tap away (the summary first). It is the Projection’s 1a, the shape first, so the three tabs read alike.'], ['The leanest month, not the year’s total.', 'A year can clear £6,000 and still dip under £500 in January (2033 to 2035), so each bar is the year’s leanest month and the floor line means what it says. The year’s total is in its card.'], ['A capped axis, said so.', 'The axis stops at £4,000 a month so the lean years read; 2042 to 2046 run past it, marked with a break and named under the chart.'], ['The figures:', 'R1 in future-plans-v4.json: 2029’s income £104,906, spending −£34,722, EMIs −£22,115, SIP and LIC −£1,354 and school fees −£48,000 add up to −£1,285. The months are the same run’s; each month’s lines add up to its surplus.'], ['The chat beside it', 'shows the plan saved at 20:43 and the sentence before the ways to cover it; that card is question 2’s, on Web v4 · Plans in the chat.']]) },
+{ id: 'f1b', tag: '1b', name: 'Browser · Budget forecast 1b, year by year', rec: false, keyline: 'MA-262 · MA-224', arch: ARCH, keys: [key('MA-262'), key('MA-224')],
+  intro: 'A summary of the twenty years, then a list: each year with its surplus, savings rate and closing cash, a ▼ chip on 2029 to 2035. 2029 opens in place to its lines and its months, and its school fees open to the flows behind them.',
+  frames: four('Browser · Budget forecast 1b, year by year', { b: true }, 2830, 4070, {}, {}),
+  notes: N2([['The list is the summary.', 'Every year’s figure is in words and numbers; nothing to read off a chart, and it reflows to AX5 and a 320 screen.'], ['The cost:', 'twenty-one rows before you see where it gets better; the turn in 2041, when the fees end, is a figure among figures, not a shape.'], ['The trace', 'opens under the line it explains: the school fees, £4,000 a month × 12, from Arun’s own words and the prior he chose.']]) },
+{ id: 'f1c', tag: '1c', name: 'Browser · Budget forecast 1c, the ledger table', rec: false, keyline: 'MA-262 · MA-224', arch: ARCH, keys: [key('MA-262'), key('MA-224')],
+  intro: 'A table, years as rows: income, spending, EMIs and SIP, plans, surplus, savings rate and closing cash. The year stays put while the table scrolls sideways. A cell opens its flows in a popover at the desktop and a sheet on the phone; here, 2029’s surplus.',
+  frames: [FR('Browser · Budget forecast 1c, the ledger table', 'desktop', 'Light', 1440, 1470, { c: true, x: { pop: true, popPos: 'top: 216px; --px: 309px', tblHint: 'Click a figure to see the flows that make it.' } }), FR('Browser · Budget forecast 1c, the ledger table', 'desktop', 'Dark', 1440, 1470, { c: true, x: { pop: true, popPos: 'top: 216px; --px: 309px', tblHint: 'Click a figure to see the flows that make it.' } }), FR('Browser · Budget forecast 1c, the ledger table', 'phone, 390', 'Light', 390, 844, { c: true, x: { sheet: true, off: '-300px', sx: '336', tblHint: 'Scroll sideways for every column; tap a figure to see the flows that make it.' } }), FR('Browser · Budget forecast 1c, the ledger table', 'phone, 390', 'Dark', 390, 844, { c: true, x: { sheet: true, off: '-300px', sx: '336', tblHint: 'Scroll sideways for every column; tap a figure to see the flows that make it.' } })],
+  notes: N2([['A ledger, as the old tracker’s Excel was.', 'Every figure of twenty years on one surface, for someone who reads tables.'], ['The cost, said plainly:', 'on a phone four of eight columns show at once and the rest are a sideways scroll; the summary-first rule bends, since the detail comes first.'], ['The popover', 'sits beside the table at the desktop so the row it explains stays in view; the phone’s sheet covers it.']]) }
+];
+const index = boards.map((b) => ({ id: b.id, tag: b.tag, name: b.name }));
+return {
+  intro1: 'Thu 5 Nov 2026, 20:43. Arun has just saved the school fees, £4,000 a month from Jan 2029, in the chat beside the page. The Projection opens on its new Budget forecast tab (MA-262): each year to the horizon, 20 years by default, with what comes in and what goes out, every figure traced to the flows that make it, and the years below his £500 floor flagged by code.',
+  intro2: 'Three options, each at the desktop with the chat beside it and at 390, in light and dark. They show the same figures (run R1) and differ in what comes first: the shape (1a), the list (1b) or the table (1c). The chrome above them is the same in every option and on the Plans tab: Net worth · Plans · Budget forecast, the horizon (5, 10, 20 or 30 years), pounds or rupees, and today’s money.',
+  allKeys: [key('MA-262'), key('MA-224'), key('MA-264')], index: index,
+  boards: boards, nav: nav, tabs: tabs, ptabs: ptabs, horizon: horizon,
+  meta: 'Each year to 2046, in pounds of each year · the engine’s run, ' + D.run,
+  gapLine: gapLine, chart: chart, y29: Y29, months: months, trace: trace, feeTrace: feeTrace,
+  years: years, sums: sums, thead: thead, tcells: tcells, popLines: popLines
+};
+}
+}
+</script>
+</body>
+</html>

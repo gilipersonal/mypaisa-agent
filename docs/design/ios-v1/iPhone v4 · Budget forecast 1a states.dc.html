@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>iPhone v4 · Budget forecast 1a states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="ios.css" />
+<link rel="stylesheet" href="motion.css" />
+<script src="motion.js"></script>
+<style>
+html, body { margin: 0; background: #ECEAE6; }
+a { color: #C2381F; } a:hover { color: #8F2915; }
+.dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
+.dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
+.dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
+a.dv-tid:hover { color: #fff; }
+.dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
+.dv-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0 0 12px; text-wrap: pretty; }
+.plan { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 1100px; box-sizing: border-box; padding: 10px 14px; border-radius: 12px; background: #F9F8F6; border: 1px solid rgba(0,0,0,.1); font: 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+.plan-k { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 4px 8px; border-radius: 5px; background: #13213A; color: #FFFFFF; text-decoration: none; }
+a.plan-k:hover { color: #FFFFFF; background: #233558; }
+.plan-s { font-weight: 700; color: #14171F; }
+.idx { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 6px 24px; max-width: 1100px; margin-top: 14px; font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; }
+.idx a { color: #14171F; font-weight: 600; text-decoration: none; }
+.recb { font: 700 12px/16px -apple-system, system-ui, sans-serif; color: #FFFFFF; background: #1D7A3E; padding: 3px 10px; border-radius: 999px; }
+.dv-col { display: flex; flex-direction: column; }
+.bd-intro { max-width: 1100px; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; margin: 0; text-wrap: pretty; }
+.bd-note p { margin: 0; }
+.z1 { position: relative; z-index: 1; }
+.grow1 { flex: 1; min-width: 0; }
+.nowrap { white-space: nowrap; }
+.wrap { flex-wrap: wrap; }
+.pp { margin: 0; text-wrap: pretty; }
+.lg > * { position: relative; z-index: 1; }
+.cpad { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+/* ---------- the iPhone: the Projection pushed from Home, the glass tab bar ---------- */
+.pg { display: flex; flex-direction: column; gap: 14px; padding: 0 16px 130px; }
+.pg > * { flex-shrink: 0; }
+.pg .largetitle { padding: 0 4px; }
+.navm { display: flex; gap: 8px; }
+.navc { position: absolute; left: 70px; right: 120px; text-align: center; font: 600 17px/22px var(--mp-font); pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.etp { top: 86px; height: 60px; }
+/* ---------- the iPad in landscape, as iPad v4 · Budget, assets and debts: the glass sidebar, the screen, the chat beside it ---------- */
+.scrn.srow { flex-direction: row; }
+.sidebar.sb { width: 240px; box-sizing: border-box; }
+.side-h.sh0 { padding-top: 4px; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.insp { width: 320px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.ipg { display: flex; flex-direction: column; gap: 14px; padding: 4px 18px 40px; }
+.ipg > * { flex-shrink: 0; }
+.largetitle.navt { padding: 0 4px; font-size: 28px; line-height: 34px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.navl { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.navr { display: flex; gap: 8px; flex: none; }
+.meta4 { padding: 0 4px; margin-top: -8px; }
+.sbar.sbar-r { justify-content: flex-end; }
+.chfadet { position: absolute; left: 0; right: 0; top: 0; height: 150px; z-index: 10; pointer-events: none; background: linear-gradient(180deg, var(--mp-bg) 62%, color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
+.ichat { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 150px; overflow: hidden; }
+.chat > * { flex: none; }
+.daysep, .ai-meta { font-size: 13px; line-height: 18px; color: var(--mp-ink-2); }
+.cb20 { bottom: 20px; }
+.chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
+.c-add { color: var(--mp-add); }
+/* ---------- the Projection's chrome (MA-264's brief): tabs, horizon, money ---------- */
+.ptabs-ul { display: flex; gap: 4px; border-bottom: 1px solid var(--mp-line); }
+.ptu { min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.ptu.on { color: var(--mp-ink); border-bottom-color: var(--mp-accent); }
+.ctls { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.sg-h { flex: 1 1 100%; }
+.ipad .sg-h { flex: 0 1 320px; }
+.sg-c { flex: none; }
+.sg-c .mp-seg-i { padding: 0 12px; white-space: nowrap; }
+.tmw { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+.ptab-meta { margin-top: -6px; }
+/* the trace's sheet on the iPhone (1c): its chrome is glass and carries labels only; the figures sit on a solid card in it */
+.tsheet { gap: 10px; }
+.tsheet .tbody { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px 14px; }
+/* ---------- the surplus chart (1a): each year's leanest month against Arun's floor ---------- */
+.bch { position: relative; padding-left: 44px; margin-top: 4px; }
+.bplot { position: relative; height: 176px; }
+.bgl { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--mp-chart-grid); }
+.bgl.zero { border-top: 1px solid var(--mp-ink-2); }
+.bgl.floor { border-top: 2px dashed var(--mp-ink); }
+.byl { position: absolute; left: -44px; width: 38px; text-align: right; transform: translateY(50%); font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; }
+.byl.bot { transform: none; }
+.byl.fl { color: var(--mp-ink); font-weight: 700; }
+.bcols { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); }
+.bc { position: relative; }
+.bb { position: absolute; left: 18%; right: 18%; min-height: 3px; border-radius: 3px; }
+.bb.ok { background: var(--mp-meter); }
+.bb.lo { background: var(--mp-alert); }
+.bb.sel { box-shadow: 0 0 0 2px var(--mp-surface), 0 0 0 4px var(--mp-ink); }
+.bb.cap { border-radius: 0 0 3px 3px; }
+.bb.cap::after { content: ""; position: absolute; left: -3px; right: -3px; top: 8px; height: 4px; background: var(--mp-surface); transform: skewY(-24deg); }
+.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 11px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
+.bch .mp-chartaxis { margin-top: 2px; }
+.blgd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+.blgd > span { display: inline-flex; align-items: center; gap: 6px; }
+.k-ok { width: 10px; height: 12px; border-radius: 2px; background: var(--mp-meter); }
+.k-lo { width: 10px; height: 12px; border-radius: 2px; background: var(--mp-alert); }
+.k-fl { width: 18px; height: 0; border-top: 2px dashed var(--mp-ink); }
+.k-sel { width: 10px; height: 12px; border-radius: 2px; box-shadow: inset 0 0 0 2px var(--mp-ink); }
+.flagl { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.c-alert { color: var(--mp-alert); }
+/* ---------- a year's lines: they add up to its surplus ---------- */
+.yl { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-top: 1px solid var(--mp-line); }
+.yl > .grow1 { display: flex; flex-direction: column; gap: 2px; }
+.yl .fig { font: 600 15px/20px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.yl.tap .fig { text-decoration: underline dotted var(--mp-ink-2); text-underline-offset: 4px; }
+.yl.tot { border-top: 2px solid var(--mp-ink); padding-top: 12px; }
+.yl.tot .fig { font: 800 20px/24px var(--mp-font-round); }
+.yl.pl .ms { font-size: 16px; color: var(--mp-ink-2); }
+.ytrace { display: flex; flex-direction: column; gap: 4px; margin: 4px 0 0; padding: 0; }
+/* the year's figures and the summary sit on their card's own surface: rows and plain figures, never tiles in a card */
+.kvs { display: flex; flex-direction: column; }
+.kt { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--mp-line); min-width: 0; }
+.sumg .kt { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px; padding: 0; border-top: 0; }
+.btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+/* months of a year */
+.mtab { display: grid; grid-template-columns: minmax(64px, auto) minmax(0, 1fr) auto; column-gap: 12px; align-items: baseline; }
+.mt { padding: 8px 0; border-top: 1px solid var(--mp-line); font: 400 15px/20px var(--mp-font); min-width: 0; }
+.mt.fig { font-weight: 600; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mt.note { font-size: 13px; line-height: 18px; color: var(--mp-ink-2); }
+/* a trace: the flows that make a figure */
+.trl { display: flex; align-items: baseline; gap: 12px; padding: 8px 0; border-top: 1px solid var(--mp-line); }
+.trl > .grow1 { display: flex; flex-direction: column; gap: 1px; }
+.trl .fig { font: 600 15px/20px var(--mp-font); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.srcchip { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 999px; padding: 2px 8px 2px 6px; }
+.srcchip .ms { font-size: 14px; }
+/* ---------- year by year (1b) ---------- */
+.yr { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--mp-line); min-height: 44px; box-sizing: border-box; flex-wrap: wrap; }
+.yr > .grow1 { display: flex; flex-direction: column; gap: 2px; min-width: min(100%, 9em); }
+.yr .fig { font: 600 17px/22px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; margin-left: auto; }
+.yr .chev { color: var(--mp-ink-2); font-size: 20px; }
+.yr.open { border-top: 2px solid var(--mp-ink); }
+.yopen { display: flex; flex-direction: column; gap: 12px; padding: 0 0 14px; }
+.yo2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 8px 28px; align-items: start; }
+.ymon { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; border-top: 1px solid var(--mp-line); }
+.sumg { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px 16px; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+/* ---------- the ledger table (1c) ---------- */
+.ltw { position: relative; container: ltw / inline-size; }
+.ltsc { overflow-x: auto; scrollbar-width: none; }
+.ltsc::-webkit-scrollbar { display: none; }
+.lt { display: grid; grid-template-columns: 76px repeat(7, minmax(84px, 1fr)); min-width: 664px; }
+.lt > span { padding: 8px 8px; border-top: 1px solid var(--mp-line); font: 400 14px/19px var(--mp-font); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; background: var(--mp-surface); }
+.lt > .lh { font: 600 12px/16px var(--mp-font); letter-spacing: 0.02em; text-transform: uppercase; color: var(--mp-ink-2); border-top: 0; padding-top: 0; white-space: normal; align-self: end; }
+.lt > .ly { text-align: left; position: sticky; left: 0; z-index: 1; font-weight: 600; box-shadow: 1px 0 0 var(--mp-line); }
+.lt .lysub { display: block; font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+.lt > .sel { background: var(--mp-surface-2); }
+.lt > .flg .lysub { color: var(--mp-alert); }
+@container ltw (max-width: 663px) { .ltfade { display: block; } }
+.lt > .w6 { font-weight: 700; }
+.ltfade { display: none; position: absolute; top: 0; bottom: 0; right: 0; width: 28px; pointer-events: none; background: linear-gradient(90deg, color-mix(in srgb, var(--mp-surface) 0%, transparent), var(--mp-surface)); }
+.pop { position: absolute; z-index: 4; width: min(300px, 100%); left: clamp(0px, var(--px, 0px), calc(100% - min(300px, 100%))); box-sizing: border-box; padding: 14px 16px; border-radius: 16px; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line), 0 18px 40px rgba(0, 0, 0, 0.22); display: flex; flex-direction: column; gap: 8px; }
+@container ltw (max-width: 663px) { .popar { display: none; } }
+.popar { position: absolute; top: -7px; left: calc(50% - 7px); width: 14px; height: 14px; background: var(--mp-surface); transform: rotate(45deg); box-shadow: -1px -1px 0 var(--mp-line); }
+.psheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 8; padding: 8px 16px 28px; border-radius: 16px 16px 0 0; background: var(--mp-surface); box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.22); display: flex; flex-direction: column; gap: 8px; }
+.pscrim { position: absolute; inset: 0; z-index: 7; background: rgba(5, 8, 14, 0.32); }
+.grab { width: 36px; height: 5px; border-radius: 3px; background: var(--mp-line); margin: 0 auto 4px; }
+
+.mp-mask { color: transparent; }
+
+/* ---------- lane A (round 2): the 1a's remaining states ---------- */
+.mk { display: inline; }
+.stk { display: flex; flex-direction: column; gap: 14px; }
+.chip-n { background: var(--mp-surface-2); color: var(--mp-ink); }
+.mk.mp-mask { display: inline-block; min-width: 56px; }
+.byl .mk.mp-mask { min-width: 32px; }
+.bch.wide { padding-left: 60px; }
+.bch.wide .byl { left: -60px; width: 54px; }
+.bcols, .bflags, .cstrip { grid-template-columns: var(--cols); }
+.ftk { position: absolute; left: 6%; right: 6%; height: 0; border-top: 2px dashed var(--mp-ink); z-index: 2; }
+.cstrip { display: grid; height: 14px; margin-top: 4px; gap: 0 2px; }
+.cstrip > span { border-radius: 2px; }
+.cstrip > .neg { background: var(--mp-alert); }
+.k-cash { width: 14px; height: 8px; border-radius: 2px; background: var(--mp-alert); }
+.bb.rt { background: var(--mp-ink-2); }
+.k-rt { width: 10px; height: 12px; border-radius: 2px; background: var(--mp-ink-2); }
+.k-ftk { width: 14px; height: 0; border-top: 2px dashed var(--mp-ink); }
+.banner { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: var(--mp-r-card); background: var(--mp-surface); box-shadow: inset 0 0 0 1.5px var(--mp-line); }
+.banner .ms { font-size: 22px; margin-top: 1px; color: var(--mp-ink-2); }
+.banner.err { box-shadow: inset 0 0 0 1.5px var(--mp-alert); }
+.banner.err .ms { color: var(--mp-alert); }
+.banner > .grow1 { display: flex; flex-direction: column; gap: 6px; }
+.pbar { height: 6px; border-radius: 3px; background: var(--mp-track); overflow: hidden; }
+.pbar > span { display: block; height: 100%; width: 62%; border-radius: 3px; background: var(--mp-meter); }
+.stale { opacity: 0.55; }
+.empty { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 22px 20px 20px; }
+.empty .eico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--mp-surface-2); }
+.empty .eico .ms { font-size: 26px; color: var(--mp-ink-2); }
+.empty ul { margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 4px; }
+.lockl { display: flex; align-items: flex-start; gap: 8px; }
+.lockl .ms { font-size: 18px; color: var(--mp-ink-2); margin-top: 1px; }
+.bl { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-top: 1px solid var(--mp-line); }
+.bl > .grow1 { display: flex; flex-direction: column; gap: 2px; }
+.bl .fig { font: 600 15px/20px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.blh { padding-top: 10px; }
+.tsheet2 { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; max-height: 91%; display: flex; flex-direction: column; gap: 8px; padding: 8px 16px 30px; border-radius: 22px 22px 0 0; background: var(--mp-surface); box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.22); overflow: hidden; }
+.tsheet2 .tsh { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tsheet2 .tsc { overflow: hidden; }
+.tsheet2 .trl { padding: 6px 0; }
+.dimx { position: absolute; inset: 0; z-index: 29; background: rgba(5, 8, 14, 0.32); }
+</style>
+</helmet>
+
+<section class="dv-turn" id="d0" data-screen-label="iPhone v4 · Budget forecast 1a states: intro">
+<div class="dv-thd"><a class="dv-tid" href="#d0">F</a><span class="dv-tname">The Budget forecast 1a, on iPhone and iPad: its remaining states</span></div>
+<p class="dv-intro">{{ intro1 }}</p>
+<p class="dv-intro">{{ intro2 }}</p>
+<div class="plan"><sc-for list="{{ allKeys }}" as="kk" hint-placeholder-count="3"><a class="plan-k" href="{{ kk.href }}">{{ kk.k }}</a></sc-for><span>ARCHITECTURE.md §6.6, §9.1, §9.3, §12</span><span class="plan-s">Picked: 1a, the surplus first.</span><span>Illustrative figures from future-plans-v4.json.</span></div>
+<div class="idx"><sc-for list="{{ index }}" as="ix" hint-placeholder-count="10"><span><a href="#{{ ix.id }}">{{ ix.tag }} · {{ ix.name }}</a></span></sc-for></div>
+</section>
+
+<sc-for list="{{ boards }}" as="bd" hint-placeholder-count="10">
+<section class="bd" id="{{ bd.id }}">
+<div class="bd-h"><span class="bd-id">{{ bd.tag }}</span><span class="bd-name">{{ bd.name }}</span><span class="bd-keys">{{ bd.keyline }}</span></div>
+<p class="bd-intro">{{ bd.intro }}</p>
+<div class="bd-row">
+<sc-for list="{{ bd.frames }}" as="f" hint-placeholder-count="2">
+<div class="dv-col">
+<div class="bd-theme">{{ f.cap }}</div>
+<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}">
+<div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ f.cap }}">
+<div class="island"></div>
+<div class="scrn">
+<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms">chevron_left</span></span><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Projection</span></sc-if><span class="navm"><span class="gbtn lg" aria-label="{{ f.v.eyeL }}"><span class="ms">{{ f.v.eye }}</span></span><sc-if value="{{ f.top }}" hint-placeholder-val="{{ true }}"><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></sc-if><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="gbtn lg" aria-label="Ask"><span class="ms">chat_bubble</span></span></sc-if></span></div>
+<sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top"></div></sc-if>
+<div class="scroll"><div class="pg" style="margin-top: {{ f.off }}">
+<div class="largetitle">Projection</div>
+<div class="mp-seg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
+<div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ f.v.hz }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
+<div class="ctls"><div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><sc-for list="{{ f.v.cur }}" as="t" hint-placeholder-count="2"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div><span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.v.tm }}" role="switch" aria-checked="{{ f.v.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span></div>
+
+<sc-if value="{{ f.v.banner }}" hint-placeholder-val="{{ false }}">
+<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
+</sc-if>
+<sc-if value="{{ f.v.empty }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card empty">
+<span class="eico"><span class="ms">event_note</span></span>
+<span class="mp-hl">No budget yet, so nothing to forecast</span>
+<span class="mp-sub mp-ink2">The forecast is built from each member's take-home pay, a monthly plan for each category and the household's EMIs. Tell MyPaisa in the chat, in your own words:</span>
+<ul class="mp-sub"><li>“My take-home is £4,350 a month”</li><li>“Plan £650 a month for groceries”</li><li>or send a payslip or a bank statement</li></ul>
+<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms">chat_bubble</span>Set up the budget in the chat</button></div>
+<span class="mp-foot mp-ink2">Nothing is created here: the chat asks, you confirm, and the forecast fills in.</span>
+</div>
+</sc-if>
+<sc-if value="{{ f.v.full }}" hint-placeholder-val="{{ true }}">
+<div class="stk {{ f.v.dim }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">{{ f.v.ch.title }}</span><span class="mp-foot mp-ink2">{{ f.v.ch.sub }}</span></div>
+<sc-for list="{{ f.v.ch.chips }}" as="c" hint-placeholder-count="1"><div class="flagl"><span class="mp-chip chip-s {{ c.c }}">{{ c.t }}</span><span class="mp-foot">{{ c.s }}</span></div></sc-for>
+<div class="bch {{ f.v.ch.wide }}" role="img" aria-label="{{ f.v.ch.aria }}" style="--cols: {{ f.v.ch.cols }}">
+<div class="bplot">
+<sc-for list="{{ f.v.ch.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}"><span class="mk {{ g.m }}">{{ g.l }}</span></span></sc-for>
+<div class="bcols"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><sc-if value="{{ b.ft }}" hint-placeholder-val="{{ false }}"><span class="ftk" style="{{ b.ft }}"></span></sc-if><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
+</div>
+<div class="bflags" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span>{{ b.flag }}</span></sc-for></div>
+<sc-if value="{{ f.v.ch.cash }}" hint-placeholder-val="{{ false }}"><div class="cstrip" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span class="cs {{ b.cash }}"></span></sc-for></div></sc-if>
+<div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ f.v.ch.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
+</div>
+<div class="blgd"><sc-for list="{{ f.v.ch.lgd }}" as="l" hint-placeholder-count="4"><span><i class="lk {{ l.k }}"></i>{{ l.t }}</span></sc-for></div>
+<sc-for list="{{ f.v.ch.notes }}" as="n" hint-placeholder-count="1"><p class="pp mp-foot mp-ink2">{{ n }}</p></sc-for>
+</div>
+<div class="mp-cols">
+<div class="mp-col">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-t2">{{ f.v.yr.title }}</span><span class="mp-chip chip-s {{ f.v.yr.chipC }}">{{ f.v.yr.chip }}</span></div>
+<span class="mp-foot mp-ink2 ptab-meta">{{ f.v.yr.meta }}</span>
+<div>
+<sc-for list="{{ f.v.yr.lines }}" as="l" hint-placeholder-count="6"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for>
+<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">{{ f.v.yr.totS }}</span></div><span class="fig {{ f.v.yr.totC }}"><span class="mk {{ f.v.yr.totM }}">{{ f.v.yr.tot }}</span></span></div>
+</div>
+<sc-if value="{{ f.v.yr.below }}" hint-placeholder-val="{{ false }}"><div><div class="blh"><span class="mp-over mp-ink2">Paid from cash</span></div><sc-for list="{{ f.v.yr.below }}" as="l" hint-placeholder-count="3"><div class="bl"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig {{ l.c }}"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for></div></sc-if>
+<div class="kvs"><sc-for list="{{ f.v.yr.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for></div>
+<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
+<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
+</div>
+</div>
+<div class="mp-col">
+<sc-if value="{{ f.v.mo }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">{{ f.v.mo.title }}</span><span class="mp-foot mp-ink2">{{ f.v.mo.sub }}</span></div>
+<div class="mtab"><sc-for list="{{ f.v.mo.rows }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
+</div>
+</sc-if>
+<sc-if value="{{ f.v.pl }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx col gap4"><span class="mp-over mp-ink2">The way you applied</span><span class="mp-hl">The School fees pot, year by year</span></div>
+<span class="mp-foot mp-ink2">{{ f.v.pl.sub }}</span>
+<div class="mtab"><sc-for list="{{ f.v.pl.rows }}" as="m" hint-placeholder-count="10"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig"><span class="mk {{ m.m }}">{{ m.v }}</span></span></sc-for></div>
+<sc-for list="{{ f.v.pl.tots }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ f.v.tr }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx col gap4"><span class="mp-over mp-ink2">What makes it</span><span class="mp-hl">2029's spending, −£34,722</span></div>
+<span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
+<div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
+<div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
+<span class="srcchip"><span class="ms">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+</sc-if>
+<p class="pp mp-foot mp-ink2">{{ f.v.foot }}</p>
+
+</div></div>
+<sc-if value="{{ f.sheet }}" hint-placeholder-val="{{ false }}">
+<div class="dimx"></div>
+<div class="tsheet2" role="dialog" aria-label="2029's spending, the flows behind it">
+<div class="grab"></div>
+<div class="tsh"><div class="fx col gap2"><span class="mp-over mp-ink2">What makes it</span><span class="mp-hl">2029's spending, −£34,722</span></div><span class="gbtn lg" aria-label="Close"><span class="ms z1">close</span></span></div>
+<span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January; added up, they make the figure you tapped.</span>
+<div class="tsc"><sc-for list="{{ traceS }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
+<div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
+</div>
+</sc-if>
+<sc-if value="{{ f.dock }}" hint-placeholder-val="{{ true }}"><div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ itabs }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div></sc-if>
+<div class="homebar"></div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
+<div class="dev dev-ipad-l mp ipad {{ f.cls }}" data-screen-label="{{ f.cap }}">
+<div class="scrn srow">
+<div class="sidebar sb lg">
+<div class="side-h sh0">MyPaisa</div>
+<sc-for list="{{ snav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+<sc-if value="{{ f.v.admin }}" hint-placeholder-val="{{ true }}"><div class="side-h">Admin</div><span class="side-i"><span class="ms">shield_person</span>Admin center</span></sc-if>
+<span class="side-i"><span class="ms">account_circle</span>You</span>
+</div>
+<div class="main">
+<div class="sbar"><span>{{ f.clockPad }}</span><span></span></div>
+<div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="{{ f.v.eyeL }}"><span class="ms z1">{{ f.v.eye }}</span></span></span></div>
+<sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top etp"></div></sc-if>
+<div class="scroll"><div class="ipg" style="margin-top: {{ f.off }}">
+<div class="mp-foot mp-ink2 meta4">{{ f.v.meta }}</div>
+<nav class="ptabs-ul" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><span class="ptu {{ t.on }}">{{ t.l }}</span></sc-for></nav>
+<div class="ctls">
+<div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ f.v.hz }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
+<div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><sc-for list="{{ f.v.cur }}" as="t" hint-placeholder-count="2"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
+<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.v.tm }}" role="switch" aria-checked="{{ f.v.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+</div>
+
+<sc-if value="{{ f.v.banner }}" hint-placeholder-val="{{ false }}">
+<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
+</sc-if>
+<sc-if value="{{ f.v.empty }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card empty">
+<span class="eico"><span class="ms">event_note</span></span>
+<span class="mp-hl">No budget yet, so nothing to forecast</span>
+<span class="mp-sub mp-ink2">The forecast is built from each member's take-home pay, a monthly plan for each category and the household's EMIs. Tell MyPaisa in the chat, in your own words:</span>
+<ul class="mp-sub"><li>“My take-home is £4,350 a month”</li><li>“Plan £650 a month for groceries”</li><li>or send a payslip or a bank statement</li></ul>
+<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms">chat_bubble</span>Set up the budget in the chat</button></div>
+<span class="mp-foot mp-ink2">Nothing is created here: the chat asks, you confirm, and the forecast fills in.</span>
+</div>
+</sc-if>
+<sc-if value="{{ f.v.full }}" hint-placeholder-val="{{ true }}">
+<div class="stk {{ f.v.dim }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">{{ f.v.ch.title }}</span><span class="mp-foot mp-ink2">{{ f.v.ch.sub }}</span></div>
+<sc-for list="{{ f.v.ch.chips }}" as="c" hint-placeholder-count="1"><div class="flagl"><span class="mp-chip chip-s {{ c.c }}">{{ c.t }}</span><span class="mp-foot">{{ c.s }}</span></div></sc-for>
+<div class="bch {{ f.v.ch.wide }}" role="img" aria-label="{{ f.v.ch.aria }}" style="--cols: {{ f.v.ch.cols }}">
+<div class="bplot">
+<sc-for list="{{ f.v.ch.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}"><span class="mk {{ g.m }}">{{ g.l }}</span></span></sc-for>
+<div class="bcols"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><sc-if value="{{ b.ft }}" hint-placeholder-val="{{ false }}"><span class="ftk" style="{{ b.ft }}"></span></sc-if><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
+</div>
+<div class="bflags" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span>{{ b.flag }}</span></sc-for></div>
+<sc-if value="{{ f.v.ch.cash }}" hint-placeholder-val="{{ false }}"><div class="cstrip" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span class="cs {{ b.cash }}"></span></sc-for></div></sc-if>
+<div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ f.v.ch.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
+</div>
+<div class="blgd"><sc-for list="{{ f.v.ch.lgd }}" as="l" hint-placeholder-count="4"><span><i class="lk {{ l.k }}"></i>{{ l.t }}</span></sc-for></div>
+<sc-for list="{{ f.v.ch.notes }}" as="n" hint-placeholder-count="1"><p class="pp mp-foot mp-ink2">{{ n }}</p></sc-for>
+</div>
+<div class="mp-cols">
+<div class="mp-col">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-t2">{{ f.v.yr.title }}</span><span class="mp-chip chip-s {{ f.v.yr.chipC }}">{{ f.v.yr.chip }}</span></div>
+<span class="mp-foot mp-ink2 ptab-meta">{{ f.v.yr.meta }}</span>
+<div>
+<sc-for list="{{ f.v.yr.lines }}" as="l" hint-placeholder-count="6"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for>
+<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">{{ f.v.yr.totS }}</span></div><span class="fig {{ f.v.yr.totC }}"><span class="mk {{ f.v.yr.totM }}">{{ f.v.yr.tot }}</span></span></div>
+</div>
+<sc-if value="{{ f.v.yr.below }}" hint-placeholder-val="{{ false }}"><div><div class="blh"><span class="mp-over mp-ink2">Paid from cash</span></div><sc-for list="{{ f.v.yr.below }}" as="l" hint-placeholder-count="3"><div class="bl"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig {{ l.c }}"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for></div></sc-if>
+<div class="kvs"><sc-for list="{{ f.v.yr.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for></div>
+<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
+<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
+</div>
+</div>
+<div class="mp-col">
+<sc-if value="{{ f.v.mo }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx jb ac gap8 wrap"><span class="mp-hl">{{ f.v.mo.title }}</span><span class="mp-foot mp-ink2">{{ f.v.mo.sub }}</span></div>
+<div class="mtab"><sc-for list="{{ f.v.mo.rows }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
+</div>
+</sc-if>
+<sc-if value="{{ f.v.pl }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx col gap4"><span class="mp-over mp-ink2">The way you applied</span><span class="mp-hl">The School fees pot, year by year</span></div>
+<span class="mp-foot mp-ink2">{{ f.v.pl.sub }}</span>
+<div class="mtab"><sc-for list="{{ f.v.pl.rows }}" as="m" hint-placeholder-count="10"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig"><span class="mk {{ m.m }}">{{ m.v }}</span></span></sc-for></div>
+<sc-for list="{{ f.v.pl.tots }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ f.v.tr }}" hint-placeholder-val="{{ false }}">
+<div class="mp-card cpad">
+<div class="fx col gap4"><span class="mp-over mp-ink2">What makes it</span><span class="mp-hl">2029's spending, −£34,722</span></div>
+<span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
+<div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
+<div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
+<span class="srcchip"><span class="ms">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+</sc-if>
+<p class="pp mp-foot mp-ink2">{{ f.v.foot }}</p>
+
+</div></div>
+<div class="edge-bot"></div>
+</div>
+<div class="insp">
+<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>
+<div class="chfadet"></div>
+<div class="ichat"><div class="chat">
+<sc-for list="{{ f.v.chat }}" as="c" hint-placeholder-count="3">
+<sc-if value="{{ c.day }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ c.day }}</div></sc-if>
+<sc-if value="{{ c.me }}" hint-placeholder-val="{{ false }}"><div class="me">{{ c.me }}</div><div class="me-time">{{ c.t }}</div></sc-if>
+<sc-if value="{{ c.ai }}" hint-placeholder-val="{{ false }}"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
+<sc-if value="{{ c.card }}" hint-placeholder-val="{{ false }}"><div class="ccard"><div class="ccard-h"><span class="fx ac gap6 mp-over c-add"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ c.card.over }}</span><span class="mp-hl">{{ c.card.title }}</span><span class="mp-sub mp-ink2">{{ c.card.sub }}</span></div><sc-for list="{{ c.card.tech }}" as="tt" hint-placeholder-count="2"><div class="ccard-tech">{{ tt }}</div></sc-for></div></sc-if>
+<sc-if value="{{ c.text }}" hint-placeholder-val="{{ false }}"><div class="ai-text">{{ c.text }}</div></sc-if>
+</div></div></sc-if>
+</sc-for>
+</div></div>
+<div class="edge-bot"></div>
+<div class="composer cb20"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="2"><span class="gchip lg"><span class="ms">{{ c.i }}</span><span>{{ c.t }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<div class="bd-note"><sc-for list="{{ bd.notes }}" as="n" hint-placeholder-count="3"><p><b>{{ n.b }}</b> {{ n.t }}</p></sc-for></div>
+</div>
+</section>
+</sc-for>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{}'>
+class Component extends DCLogic {
+renderVals() {
+
+/* The figure set: future-plans-v4.json (MA-264). R2 is the run of Thu 5 Nov 20:46, after the School fees pot is applied;
+   W is the evening at 21:19, after the wedding is saved and its way undone; R1 (20:43) gives 2029's spending trace.
+   Y rows are each year's figures as the JSON gives them; every year's lines add up to its surplus, in pounds of each
+   year. In rupees and in today's money each line is converted with the year's factor (the average projected rate, or
+   UK inflation's deflator) and rounded, and the surplus shown is the sum of the lines shown. */
+const D = {"floor":500,"R2":{"run":"Thu 5 Nov 20:46","Y":[{"y":2026,"span":"Nov–Dec","inc":15120,"sp":5364,"em":4306,"sip":178,"prem":0,"pl":0,"toPot":1380,"fromPot":0,"fromInv":0,"sur":3892,"rate":0.257,"cash":20023,"below":0,"low":1946,"fx":112.61,"defl":1.0,"cashNeg":null},{"y":2027,"span":"Jan–Dec","inc":96602,"sp":33027,"em":25775,"sip":1051,"prem":370,"pl":0,"toPot":8280,"fromPot":0,"fromInv":0,"sur":28099,"rate":0.291,"cash":13604,"below":0,"low":1873,"fx":114.21,"defl":0.9756,"cashNeg":null},{"y":2028,"span":"Jan–Dec","inc":100666,"sp":33864,"em":25676,"sip":1026,"prem":362,"pl":0,"toPot":8280,"fromPot":0,"fromInv":0,"sur":31458,"rate":0.312,"cash":30240,"below":0,"low":2135,"fx":117.0,"defl":0.9518,"cashNeg":null},{"y":2029,"span":"Jan–Dec","inc":104906,"sp":34722,"em":22115,"sip":1001,"prem":353,"pl":-48000,"toPot":0,"fromPot":9090,"fromInv":0,"sur":7805,"rate":0.074,"cash":44396,"below":0,"low":498,"fx":119.85,"defl":0.9286,"cashNeg":null},{"y":2030,"span":"Jan–Dec","inc":109330,"sp":35602,"em":19735,"sip":977,"prem":345,"pl":-50160,"toPot":0,"fromPot":5520,"fromInv":0,"sur":8031,"rate":0.073,"cash":53907,"below":0,"low":500,"fx":122.77,"defl":0.906,"cashNeg":null},{"y":2031,"span":"Jan–Dec","inc":113944,"sp":36505,"em":17478,"sip":954,"prem":0,"pl":-52417,"toPot":0,"fromPot":2326,"fromInv":0,"sur":8916,"rate":0.078,"cash":51903,"below":0,"low":500,"fx":125.77,"defl":0.8839,"cashNeg":null},{"y":2032,"span":"Jan–Dec","inc":118759,"sp":37431,"em":17478,"sip":931,"prem":0,"pl":-54776,"toPot":0,"fromPot":1001,"fromInv":0,"sur":9144,"rate":0.077,"cash":55286,"below":0,"low":499,"fx":128.83,"defl":0.8623,"cashNeg":null},{"y":2033,"span":"Jan–Dec","inc":123782,"sp":38380,"em":17478,"sip":909,"prem":0,"pl":-57241,"toPot":0,"fromPot":614,"fromInv":0,"sur":10388,"rate":0.084,"cash":56981,"below":0,"low":500,"fx":131.98,"defl":0.8413,"cashNeg":null},{"y":2034,"span":"Jan–Dec","inc":129023,"sp":39354,"em":17478,"sip":888,"prem":0,"pl":-59817,"toPot":0,"fromPot":377,"fromInv":0,"sur":11863,"rate":0.092,"cash":58745,"below":0,"low":500,"fx":135.2,"defl":0.8207,"cashNeg":null},{"y":2035,"span":"Jan–Dec","inc":134492,"sp":40353,"em":17478,"sip":867,"prem":0,"pl":-62508,"toPot":0,"fromPot":128,"fromInv":0,"sur":13414,"rate":0.1,"cash":60579,"below":0,"low":500,"fx":138.49,"defl":0.8007,"cashNeg":null},{"y":2036,"span":"Jan–Dec","inc":140198,"sp":41377,"em":17478,"sip":846,"prem":0,"pl":-65321,"toPot":0,"fromPot":0,"fromInv":0,"sur":15176,"rate":0.108,"cash":62487,"below":0,"low":568,"fx":141.87,"defl":0.7812,"cashNeg":null},{"y":2037,"span":"Jan–Dec","inc":146152,"sp":42427,"em":17478,"sip":826,"prem":0,"pl":-68261,"toPot":0,"fromPot":0,"fromInv":0,"sur":17160,"rate":0.117,"cash":64472,"below":0,"low":705,"fx":145.33,"defl":0.7621,"cashNeg":null},{"y":2038,"span":"Jan–Dec","inc":152366,"sp":43505,"em":17478,"sip":806,"prem":0,"pl":-71333,"toPot":0,"fromPot":0,"fromInv":0,"sur":19244,"rate":0.126,"cash":66536,"below":0,"low":851,"fx":148.88,"defl":0.7436,"cashNeg":null},{"y":2039,"span":"Jan–Dec","inc":158851,"sp":44609,"em":17478,"sip":787,"prem":0,"pl":-74543,"toPot":0,"fromPot":0,"fromInv":0,"sur":21434,"rate":0.135,"cash":68683,"below":0,"low":1003,"fx":152.51,"defl":0.7254,"cashNeg":null},{"y":2040,"span":"Jan–Dec","inc":165618,"sp":45743,"em":17478,"sip":768,"prem":0,"pl":-77897,"toPot":0,"fromPot":0,"fromInv":0,"sur":23732,"rate":0.143,"cash":70917,"below":0,"low":1164,"fx":156.23,"defl":0.7077,"cashNeg":null},{"y":2041,"span":"Jan–Dec","inc":172681,"sp":46905,"em":17478,"sip":750,"prem":0,"pl":-47485,"toPot":0,"fromPot":0,"fromInv":0,"sur":60063,"rate":0.348,"cash":32541,"below":0,"low":1333,"fx":160.04,"defl":0.6905,"cashNeg":null},{"y":2042,"span":"Jan–Dec","inc":180052,"sp":48097,"em":17478,"sip":732,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":113745,"rate":0.632,"cash":33127,"below":0,"low":8599,"fx":163.94,"defl":0.6736,"cashNeg":null},{"y":2043,"span":"Jan–Dec","inc":187746,"sp":49320,"em":17478,"sip":715,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":120233,"rate":0.64,"cash":33729,"below":0,"low":9105,"fx":167.94,"defl":0.6572,"cashNeg":null},{"y":2044,"span":"Jan–Dec","inc":195776,"sp":50574,"em":17478,"sip":698,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":127026,"rate":0.649,"cash":34347,"below":0,"low":9635,"fx":172.03,"defl":0.6412,"cashNeg":null},{"y":2045,"span":"Jan–Dec","inc":204159,"sp":51860,"em":13152,"sip":681,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":138466,"rate":0.678,"cash":26243,"below":0,"low":10191,"fx":176.23,"defl":0.6255,"cashNeg":null},{"y":2046,"span":"Jan–Dec","inc":212908,"sp":53179,"em":0,"sip":665,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":159064,"rate":0.747,"cash":26894,"below":0,"low":12228,"fx":180.53,"defl":0.6103,"cashNeg":null},{"y":2047,"span":"Jan–Dec","inc":222042,"sp":54532,"em":0,"sip":649,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":166861,"rate":0.751,"cash":27562,"below":0,"low":12836,"fx":184.93,"defl":0.5954,"cashNeg":null},{"y":2048,"span":"Jan–Dec","inc":231577,"sp":55920,"em":0,"sip":633,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":175024,"rate":0.756,"cash":28248,"below":0,"low":13475,"fx":189.44,"defl":0.5809,"cashNeg":null},{"y":2049,"span":"Jan–Dec","inc":241531,"sp":57344,"em":0,"sip":618,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":183569,"rate":0.76,"cash":28952,"below":0,"low":14143,"fx":194.06,"defl":0.5667,"cashNeg":null},{"y":2050,"span":"Jan–Dec","inc":251923,"sp":58804,"em":0,"sip":604,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":192515,"rate":0.764,"cash":29674,"below":0,"low":14842,"fx":198.8,"defl":0.5529,"cashNeg":null},{"y":2051,"span":"Jan–Dec","inc":110411,"sp":60302,"em":0,"sip":589,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":49520,"rate":0.449,"cash":30415,"below":0,"low":3350,"fx":203.65,"defl":0.5394,"cashNeg":null},{"y":2052,"span":"Jan–Dec","inc":114002,"sp":61838,"em":0,"sip":575,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":51589,"rate":0.453,"cash":31175,"below":0,"low":3496,"fx":208.61,"defl":0.5262,"cashNeg":null},{"y":2053,"span":"Jan–Dec","inc":24295,"sp":63414,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":39119,"sur":0,"rate":0.0,"cash":31678,"below":0,"low":-1,"fx":213.7,"defl":0.5134,"cashNeg":null},{"y":2054,"span":"Jan–Dec","inc":24766,"sp":65031,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":40264,"sur":-1,"rate":-0.0,"cash":32486,"below":0,"low":0,"fx":218.91,"defl":0.5009,"cashNeg":null},{"y":2055,"span":"Jan–Dec","inc":25247,"sp":66689,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":41442,"sur":0,"rate":0.0,"cash":33314,"below":0,"low":0,"fx":224.25,"defl":0.4887,"cashNeg":null},{"y":2056,"span":"Jan–Dec","inc":25736,"sp":68390,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":42653,"sur":-1,"rate":-0.0,"cash":34164,"below":0,"low":0,"fx":229.72,"defl":0.4767,"cashNeg":null}],"y29":{"income":{"Arun":59395,"Asha":40236,"Pune rent":2061,"Asha's bonus":3214},"spend":{"Bills and council tax":5428,"Groceries":8400,"Transport":2843,"Insurance":1098,"Eating out":2326,"Shopping":3231,"Holidays":5169,"Health":810,"Subscriptions":581,"Giving":646,"Family support, India":2898,"Other":1292},"emis":{"Mortgage · Nationwide":17478,"Car loan · Close Brothers":693,"Home loan · HDFC":3944},"sip":1001,"prem":353,"plans":{"School fees":-48000},"toPot":0,"fromPot":9090,"fromInv":0,"sur":7805,"rate":0.074,"cash":44396,"below":0,"fx":119.85,"defl":0.9286,"oneOffs":{},"mats":{"Fixed deposit · SBI":5189}}},"W":{"Y":[{"y":2026,"span":"Nov–Dec","inc":15120,"sp":5364,"em":4306,"sip":178,"prem":0,"pl":0,"toPot":1380,"fromPot":0,"fromInv":0,"sur":3892,"rate":0.257,"cash":20023,"below":0,"low":1946,"fx":112.61,"defl":1.0,"cashNeg":null},{"y":2027,"span":"Jan–Dec","inc":96602,"sp":33027,"em":25775,"sip":1051,"prem":370,"pl":0,"toPot":8280,"fromPot":0,"fromInv":0,"sur":28099,"rate":0.291,"cash":-6633,"below":0,"low":1873,"fx":114.21,"defl":0.9756,"cashNeg":"Jun 2027"},{"y":2028,"span":"Jan–Dec","inc":103556,"sp":33864,"em":25676,"sip":1026,"prem":362,"pl":0,"toPot":8280,"fromPot":0,"fromInv":0,"sur":34348,"rate":0.332,"cash":28008,"below":0,"low":2135,"fx":117.0,"defl":0.9518,"cashNeg":"Jan 2028"},{"y":2029,"span":"Jan–Dec","inc":113887,"sp":34722,"em":19165,"sip":1001,"prem":353,"pl":-48000,"toPot":0,"fromPot":1361,"fromInv":0,"sur":12007,"rate":0.105,"cash":41245,"below":0,"low":499,"fx":119.85,"defl":0.9286,"cashNeg":null},{"y":2030,"span":"Jan–Dec","inc":118741,"sp":35602,"em":17478,"sip":977,"prem":345,"pl":-50160,"toPot":0,"fromPot":0,"fromInv":0,"sur":14179,"rate":0.119,"cash":52087,"below":0,"low":629,"fx":122.77,"defl":0.906,"cashNeg":null},{"y":2031,"span":"Jan–Dec","inc":123808,"sp":36505,"em":17478,"sip":954,"prem":0,"pl":-52417,"toPot":0,"fromPot":0,"fromInv":0,"sur":16454,"rate":0.133,"cash":53655,"below":0,"low":768,"fx":125.77,"defl":0.8839,"cashNeg":null},{"y":2032,"span":"Jan–Dec","inc":129096,"sp":37431,"em":17478,"sip":931,"prem":0,"pl":-54776,"toPot":0,"fromPot":0,"fromInv":0,"sur":18480,"rate":0.143,"cash":55286,"below":0,"low":912,"fx":128.83,"defl":0.8623,"cashNeg":null},{"y":2033,"span":"Jan–Dec","inc":134615,"sp":38380,"em":17478,"sip":909,"prem":0,"pl":-57241,"toPot":0,"fromPot":0,"fromInv":0,"sur":20607,"rate":0.153,"cash":56981,"below":0,"low":1065,"fx":131.98,"defl":0.8413,"cashNeg":null},{"y":2034,"span":"Jan–Dec","inc":140376,"sp":39354,"em":17478,"sip":888,"prem":0,"pl":-59817,"toPot":0,"fromPot":0,"fromInv":0,"sur":22839,"rate":0.163,"cash":58745,"below":0,"low":1224,"fx":135.2,"defl":0.8207,"cashNeg":null},{"y":2035,"span":"Jan–Dec","inc":146389,"sp":40353,"em":17478,"sip":867,"prem":0,"pl":-62508,"toPot":0,"fromPot":0,"fromInv":0,"sur":25183,"rate":0.172,"cash":60579,"below":0,"low":1393,"fx":138.49,"defl":0.8007,"cashNeg":null},{"y":2036,"span":"Jan–Dec","inc":152667,"sp":41377,"em":17478,"sip":846,"prem":0,"pl":-65321,"toPot":0,"fromPot":0,"fromInv":0,"sur":27645,"rate":0.181,"cash":62487,"below":0,"low":1571,"fx":141.87,"defl":0.7812,"cashNeg":null},{"y":2037,"span":"Jan–Dec","inc":159220,"sp":42427,"em":17478,"sip":826,"prem":0,"pl":-68261,"toPot":0,"fromPot":0,"fromInv":0,"sur":30228,"rate":0.19,"cash":64472,"below":0,"low":1756,"fx":145.33,"defl":0.7621,"cashNeg":null},{"y":2038,"span":"Jan–Dec","inc":166061,"sp":43505,"em":17478,"sip":806,"prem":0,"pl":-71333,"toPot":0,"fromPot":0,"fromInv":0,"sur":32939,"rate":0.198,"cash":66536,"below":0,"low":1952,"fx":148.88,"defl":0.7436,"cashNeg":null},{"y":2039,"span":"Jan–Dec","inc":173203,"sp":44609,"em":17478,"sip":787,"prem":0,"pl":-74543,"toPot":0,"fromPot":0,"fromInv":0,"sur":35786,"rate":0.207,"cash":68683,"below":0,"low":2158,"fx":152.51,"defl":0.7254,"cashNeg":null},{"y":2040,"span":"Jan–Dec","inc":180659,"sp":45743,"em":17478,"sip":768,"prem":0,"pl":-45440,"toPot":0,"fromPot":0,"fromInv":0,"sur":71230,"rate":0.394,"cash":31969,"below":0,"low":2374,"fx":156.23,"defl":0.7077,"cashNeg":null},{"y":2041,"span":"Jan–Dec","inc":188444,"sp":46905,"em":17478,"sip":750,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":123311,"rate":0.654,"cash":32541,"below":0,"low":9385,"fx":160.04,"defl":0.6905,"cashNeg":null},{"y":2042,"span":"Jan–Dec","inc":196572,"sp":48097,"em":17478,"sip":732,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":130265,"rate":0.663,"cash":33127,"below":0,"low":9928,"fx":163.94,"defl":0.6736,"cashNeg":null},{"y":2043,"span":"Jan–Dec","inc":205058,"sp":49320,"em":17478,"sip":715,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":137545,"rate":0.671,"cash":33729,"below":0,"low":10498,"fx":167.94,"defl":0.6572,"cashNeg":null},{"y":2044,"span":"Jan–Dec","inc":213920,"sp":50574,"em":17478,"sip":698,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":145170,"rate":0.679,"cash":34347,"below":0,"low":11094,"fx":172.03,"defl":0.6412,"cashNeg":null},{"y":2045,"span":"Jan–Dec","inc":223173,"sp":51860,"em":13152,"sip":681,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":157480,"rate":0.706,"cash":26243,"below":0,"low":11720,"fx":176.23,"defl":0.6255,"cashNeg":null},{"y":2046,"span":"Jan–Dec","inc":232836,"sp":53179,"em":0,"sip":665,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":178992,"rate":0.769,"cash":26894,"below":0,"low":13830,"fx":180.53,"defl":0.6103,"cashNeg":null}],"y27":{"income":{"Arun":54079,"Asha":37561,"Pune rent":1962,"Asha's bonus":3000},"spend":{"Bills and council tax":5166,"Groceries":7995,"Transport":2706,"Insurance":1045,"Eating out":2214,"Shopping":3075,"Holidays":4920,"Health":749,"Subscriptions":554,"Giving":615,"Family support, India":2758,"Other":1230},"emis":{"Mortgage · Nationwide":17477,"Car loan · Close Brothers":4159,"Home loan · HDFC":4139},"sip":1051,"prem":370,"plans":{},"toPot":8280,"fromPot":0,"fromInv":0,"sur":28099,"rate":0.291,"cash":-6633,"below":0,"fx":114.21,"defl":0.9756,"oneOffs":{"Sister's wedding":-20000,"Home extension":-35000},"mats":{}},"m27":[["Jan 2027",1873,21948],["Feb 2027",1876,23878],["Mar 2027",4507,8444],["Apr 2027",2201,10665],["May 2027",2202,12894],["Jun 2027",2203,-19871],["Jul 2027",2204,-17667],["Aug 2027",2205,-15462],["Sep 2027",2206,-13256],["Oct 2027",2207,-11050],["Nov 2027",2208,-8842],["Dec 2027",2208,-6633]],"short":["Jun 2027",-19871],"back":"Mar 2028","wedding":"£20,000 for my sister's wedding in Mar 2027"},"R1":{"run":"Thu 5 Nov 20:43","spend29":{"Bills and council tax":5428,"Groceries":8400,"Transport":2843,"Insurance":1098,"Eating out":2326,"Shopping":3231,"Holidays":5169,"Health":810,"Subscriptions":581,"Giving":646,"Family support, India":2898,"Other":1292},"cats":[["Bills and council tax","UK",420,"GBP"],["Groceries","UK",650,"GBP"],["Transport","UK",220,"GBP"],["Insurance","UK",85,"GBP"],["Eating out","UK",180,"GBP"],["Shopping","UK",250,"GBP"],["Holidays","UK",400,"GBP"],["Health","UK health",60,"GBP"],["Subscriptions","UK",45,"GBP"],["Giving","UK",50,"GBP"],["Family support, India","India",25000,"INR"],["Other","UK",100,"GBP"]]},"pot":{"amt":690,"audit":["Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat · Undo","November's budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat · Undo"],"drawLast":"Feb 2035"},"salary":"my salary goes to £5,500 a month from Sep 2028","floorTo":2052,"gap":{"first":"Jan 2029","last":"Feb 2035"}};
+const gbp = (n) => (n < 0 ? '−£' : '£') + Math.abs(Math.round(n)).toLocaleString('en-GB');
+const inr = (n) => { const s = String(Math.round(Math.abs(n))); const a = s.slice(-3), r = s.slice(0, -3); return (n < 0 ? '−' : '') + '₹' + (r ? r.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' : '') + a; };
+const pc1 = (x) => (x < 0 ? '−' : '') + (Math.round(Math.abs(x) * 1000) / 10).toFixed(1) + '%';
+const sum = (o) => Object.keys(o).reduce((a, k) => a + o[k], 0);
+const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
+const N2 = (a) => a.map((n) => ({ b: n[0], t: n[1] }));
+const MODES = {
+  gbp: { f: () => 1, fmt: gbp, unit: 'pounds of each year' },
+  inr: { f: (r) => r.fx, fmt: inr, unit: 'rupees, at each year’s projected rate' },
+  today: { f: (r) => r.defl, fmt: gbp, unit: 'today’s pounds, UK prices of 2026' }
+};
+const FLOOR = D.floor;
+
+/* the chart: each year's leanest month against the floor; the horizon picks how many years */
+const chart = (Y, o) => {
+  const M = MODES[o.mode], n = o.years, rows = Y.filter((r) => r.y >= 2027 && r.y <= 2026 + n);
+  const inrM = o.mode === 'inr';
+  const LO = inrM ? -100000 : -1000, HI = inrM ? 600000 : 4000;
+  const yp = (v) => (Math.max(LO, Math.min(HI, v)) - LO) / (HI - LO) * 100, z = yp(0);
+  const retired = rows.some((r) => r.y > D.floorTo);
+  const line = o.mode === 'gbp' && !retired;
+  const bars = rows.map((r) => {
+    const v = Math.round(r.low * M.f(r)), t = yp(v), fl = FLOOR * M.f(r), flag = r.below > 0;
+    const st = v >= 0 ? 'bottom: ' + z.toFixed(2) + '%; height: ' + (t - z).toFixed(2) + '%' : 'top: ' + (100 - z).toFixed(2) + '%; height: ' + (z - t).toFixed(2) + '%';
+    const rt = r.y > D.floorTo;
+    return { cls: (rt ? 'rt' : (flag ? 'lo' : 'ok')) + (r.y === o.sel ? ' sel' : '') + (v > HI ? ' cap' : ''), st: st, mo: v >= 0 ? 'bary' : 'fade', flag: flag ? '▼' : '',
+      ft: line || rt ? '' : 'bottom: ' + yp(fl).toFixed(2) + '%', cash: r.cashNeg ? 'neg' : '' };
+  });
+  const lab = inrM ? [[HI, '₹6 lakh'], [300000, '₹3 lakh'], [0, '₹0'], [LO, '−₹1 lakh']] : [[HI, '£4k'], [2000, '£2k'], [0, '£0'], [LO, '−£1k']];
+  const grid = lab.map((g) => ({ y: yp(g[0]).toFixed(2) + '%', l: g[1], c: g[0] === 0 ? 'zero' : '', lc: g[0] === LO ? 'bot' : '', m: o.priv ? 'mp-mask' : '' }));
+  if (line) grid.splice(2, 0, { y: yp(FLOOR).toFixed(2) + '%', l: '£500', c: 'floor', lc: 'fl', m: o.priv ? 'mp-mask' : '' });
+  const ticks = { 5: [0, 1, 2, 3, 4], 10: [0, 3, 6, 9], 20: [0, 4, 9, 14, 19], 30: [0, 9, 19, 29] }[n];
+  const axis = ticks.map((i) => ({ left: ((i + 0.5) / n * 100).toFixed(2) + '%', l: String(rows[i].y) }));
+  const capped = rows.filter((r) => Math.round(r.low * M.f(r)) > HI);
+  const yf = o.whose ? o.whose + ' floor' : 'your floor', Yf = o.whose ? o.whose + ' floor' : 'Your floor';
+  const lgd = [{ k: 'k-ok', t: 'At or above ' + yf }, { k: 'k-lo', t: '▼ Below it' }, { k: line ? 'k-fl' : 'k-ftk', t: o.priv ? Yf : (line ? Yf + ', £500 a month' : (retired ? Yf + ', £500 a month, while anyone earns a salary' : (inrM ? Yf + ', £500 a month at each year’s rate' : Yf + ', £500, in today’s money'))) }];
+  if (retired) lgd.push({ k: 'k-rt', t: 'Both retired: no floor' });
+  if (o.sel) lgd.push({ k: 'k-sel', t: o.sel + ', selected' });
+  if (o.cash) lgd.push({ k: 'k-cash', t: 'Cash below zero in the year' });
+  const notes = [];
+  if (capped.length && !o.priv) notes.push(capped[0].y + (capped.length > 1 ? ' to ' + capped[capped.length - 1].y : '') + ' run past ' + (inrM ? '₹6 lakh' : '£4,000') + ' a month at their leanest, so they are drawn with a break.');
+  if (o.notes) notes.push.apply(notes, o.notes);
+  const sub = (rows[0].y) + ' to ' + rows[rows.length - 1].y + ' · against ' + yf;
+  return { title: 'Your leanest month, each year', sub: sub, chips: o.chips || [], wide: inrM ? 'wide' : '', cols: 'repeat(' + n + ', minmax(0, 1fr))',
+    bars: bars, grid: grid, axis: axis, lgd: lgd, notes: notes, cash: !!o.cash,
+    aria: 'The leanest month of each year from ' + rows[0].y + ' to ' + rows[rows.length - 1].y + ', in ' + M.unit + ', against your £500 floor. ' + (o.aria || '') };
+};
+
+/* a year's card: its lines add up to its surplus, in the mode's money */
+const yearCard = (dd, o) => {
+  const M = MODES[o.mode], k = M.f(dd), fmt = M.fmt, P = o.priv;
+  const cv = (x) => Math.round(x * k);
+  const L = [];
+  const named = (obj) => Object.keys(obj).map((n) => P ? n : n + ' ' + fmt(cv(obj[n]))).join(' · ');
+  L.push({ k: 'Income', s: named(dd.income), n: cv(sum(dd.income)) });
+  L.push({ k: 'Spending', s: '12 categories, each with its inflation key', n: -cv(sum(dd.spend)), c: 'tap' });
+  const SHORT = { 'Mortgage · Nationwide': 'Mortgage', 'Car loan · Close Brothers': 'Car loan', 'Home loan · HDFC': 'HDFC' };
+  const emisS = {}; Object.keys(dd.emis).forEach((n) => { emisS[SHORT[n] || n] = dd.emis[n]; });
+  L.push({ k: 'EMIs', s: P ? Object.keys(emisS).join(' · ') : named(emisS), n: -cv(sum(dd.emis)) });
+  L.push({ k: 'SIP and LIC’s premium', s: P ? 'Parag Parikh · LIC in March' : 'Parag Parikh ' + fmt(cv(dd.sip)) + ' · LIC ' + fmt(cv(dd.prem)) + ' in March', n: -(cv(dd.sip) + cv(dd.prem)) });
+  Object.keys(dd.plans).forEach((p) => L.push({ k: p, s: P ? 'Your plan, saved at 20:43' : 'Your plan, saved at 20:43 · £4,000 a month', n: cv(dd.plans[p]), c: 'pl' }));
+  if (dd.toPot) L.push({ k: 'Into the School fees pot', s: P ? 'Nov 2026 to Dec 2028' : '£690 a month, Nov 2026 to Dec 2028', n: -cv(dd.toPot), c: 'pl' });
+  if (dd.fromPot) L.push({ k: 'From the School fees pot', s: 'tops the surplus up to your floor, ' + D.gap.first + ' to ' + D.pot.drawLast, n: cv(dd.fromPot), c: 'pl' });
+  const tot = L.reduce((a, l) => a + l.n, 0);
+  if (o.mode === 'gbp' && tot !== dd.sur) throw new Error('lines do not add up: ' + tot + ' ' + dd.sur);
+  const m = P ? 'mp-mask' : '';
+  const lines = L.map((l) => ({ k: l.k, s: l.s, v: fmt(l.n), c: l.c || '', m: m }));
+  const below = o.below ? o.below.map((b) => ({ k: b[0], s: b[1], v: fmt(cv(b[2])), c: b[2] < 0 && b[3] ? 'c-alert' : '', m: m })) : null;
+  return { title: o.title, chip: o.chip, chipC: o.chipC || 'chip-n', meta: o.meta, lines: lines, tot: fmt(tot), totC: tot < 0 ? 'c-alert' : '', totM: m, totS: o.totS || 'the lines above, added',
+    below: below, kts: (o.kts || []).map((t) => ({ k: t[0], v: t[1], c: t[2] || '', m: t[3] === false ? '' : m })), btns: o.btns, lock: o.lock || '' };
+};
+
+const R2 = D.R2.Y, Wy = D.W.Y, R2y = (y) => R2.find((r) => r.y === y);
+const y29 = D.R2.y29;
+const hzL = (n) => ['5 yrs', '10 yrs', '20 yrs', '30 yrs'].map((l) => ({ l: l, on: l === n + ' yrs' ? 'on' : '', p: l === n + ' yrs' ? 'true' : 'false' }));
+const curL = (inrOn) => [['£ GBP', !inrOn], ['₹ INR', inrOn]].map((c) => ({ l: c[0], on: c[1] ? 'on' : '', p: c[1] ? 'true' : 'false' }));
+const YMETA = { gbp: 'in pounds of 2029', inr: 'in rupees, at 2029’s projected rate', today: 'in today’s pounds' };
+const potCard = (mode, priv) => yearCard(y29, { mode: mode, priv: priv, title: '2029', chip: 'At your floor all year', chipC: 'chip-n',
+  meta: 'Jan to Dec, ' + YMETA[mode] + ' · tap a figure to see what makes it',
+  totS: 'the lines above, added; the pot tops 11 months up to your floor',
+  kts: [['Savings rate', pc1(y29.rate), '', false], ['Cash, end of December', MODES[mode].fmt(Math.round(y29.cash * MODES[mode].f(y29)))], ['Months below your floor', 'None', '', false]],
+  btns: [{ c: '', i: 'expand_more', t: 'Show the months' }] });
+const potChat = [{ day: 'Today' }, { me: '£4,000 a month from Jan 2029 for my kid’s schooling', t: '20:41' },
+  { ai: true, card: { over: 'Applied, with Undo', title: 'School fees pot', sub: '£690 a month, Nov 2026 to Dec 2028; from Jan 2029 it tops your surplus up to your £500 floor', tech: D.pot.audit }, text: 'Done. The Budget forecast beside this shows no month below your floor now.' }];
+const salaryChat = [{ day: 'Today' }, { me: D.salary, t: '20:52' },
+  { ai: true, card: { over: 'Added to the plan', title: 'Arun’s salary, £5,500 a month from Sep 2028', sub: 'Then 4.8% each April, until you retire at 60 · 2046 middle path ▲ £338,000', tech: ['Audit · Plan item added · Arun’s salary set to £5,500 a month from Sep 2028 · Arun · Thu 5 Nov 20:53 · in the chat'] }, text: 'Saved. The Projection is running again with it.' }];
+const potNote = 'The pot: £690 a month into it, Nov 2026 to Dec 2028 (−£1,380 in 2026, −£8,280 in 2027 and 2028); out of it to the floor from Jan 2029 to ' + D.pot.drawLast + '.';
+const potAria = 'No year below the floor: the pot keeps 2029 to 2035 at £500 in their lean months.';
+const potLedger = (mode, priv) => {
+  const M = MODES[mode], m = priv ? 'mp-mask' : '';
+  const rows = R2.filter((r) => r.toPot || r.fromPot).map((r) => { const n = r.toPot ? -Math.round(r.toPot * M.f(r)) : Math.round(r.fromPot * M.f(r));
+    return { l: String(r.y), n: r.toPot ? (r.y === 2026 ? 'into it, Nov and Dec' : 'into it, £690 a month') : 'out of it, to your floor', v: (n > 0 ? '+' : '') + M.fmt(n), x: n, m: m }; });
+  const into = -rows.filter((r) => r.x < 0).reduce((a, r) => a + r.x, 0), out = rows.filter((r) => r.x > 0).reduce((a, r) => a + r.x, 0);
+  if (priv) rows.forEach((r) => { r.n = r.n.replace(', £690 a month', ''); });
+  return { rows: rows, sub: mode === 'gbp' ? 'What goes into the pot from the budget, and what it pays back when the fees push a month below your floor.' : 'Each year at its factor, as the lines beside it.',
+    tots: [{ k: 'Into the pot', v: M.fmt(into), m: m }, { k: 'Out of it, to ' + D.pot.drawLast, v: M.fmt(out), m: m }, { k: mode === 'gbp' ? 'The difference, its interest at 3%' : 'The difference: its interest, and the factor moving between the years', v: M.fmt(out - into), m: m }] };
+};
+const base = (o) => Object.assign({ pl: false, who: 'Arun · admin', chatWho: 'Arun', admin: true, eye: 'visibility', eyeL: 'Privacy mode: hide amounts', eyeP: 'false', hz: hzL(20), cur: curL(false), tm: '', tmA: 'false', banner: false, empty: false, full: true, dim: '', mo: false, tr: false, chat: potChat }, o);
+
+const V = {
+  pot: base({ pl: potLedger('gbp', false), meta: 'Each year to 2046, in pounds of each year · the engine’s run, ' + D.R2.run,
+    ch: chart(R2, { mode: 'gbp', years: 20, sel: 2029, aria: potAria, notes: [potNote] }), yr: potCard('gbp', false),
+    foot: 'Illustrative figures from the future-plans figure set, the engine’s run of Thu 5 Nov 20:46, after the pot. A forecast of the budget, not a promise.' }),
+  inr: base({ pl: potLedger('inr', false), meta: 'Each year to 2046, in rupees at each year’s projected rate · the engine’s run, ' + D.R2.run, cur: curL(true),
+    ch: chart(R2, { mode: 'inr', years: 20, sel: 2029, aria: potAria, notes: ['In rupees, each year at its average projected rate (£1 = ₹112.50 today, drifting with the inflation gap), so the £500 floor is a dash on each bar: ₹' + Math.round(FLOOR * R2y(2029).fx).toLocaleString('en-IN') + ' in 2029.'] }),
+    yr: potCard('inr', false), foot: 'Illustrative figures. Each line is the engine’s pounds at the year’s average projected rate, rounded to the rupee; the surplus is those lines added.' }),
+  today: base({ pl: potLedger('today', false), meta: 'Each year to 2046, in today’s pounds · the engine’s run, ' + D.R2.run, tm: 'on', tmA: 'true',
+    ch: chart(R2, { mode: 'today', years: 20, sel: 2029, aria: potAria, notes: ['In today’s money: each year’s pounds at UK prices of 2026 (2.5% a year), so your £500 floor shrinks in today’s money as prices rise: a dash on each bar, £' + Math.round(FLOOR * R2y(2029).defl) + ' in 2029 and £' + Math.round(FLOOR * R2y(2046).defl) + ' in 2046.'] }),
+    yr: potCard('today', false), foot: 'Illustrative figures. Each line is the engine’s pounds × the year’s deflator, rounded; the surplus is those lines added.' }),
+  h5: base({ pl: potLedger('gbp', false), meta: 'Each year to 2031, in pounds of each year · the engine’s run, ' + D.R2.run, hz: hzL(5),
+    ch: chart(R2, { mode: 'gbp', years: 5, sel: 2029, aria: potAria, notes: ['Five years: the pot fills to Dec 2028, then tops 2029 to 2031 up to your floor.'] }), yr: potCard('gbp', false),
+    foot: 'Illustrative figures, the engine’s run of Thu 5 Nov 20:46.' }),
+  h10: base({ pl: potLedger('gbp', false), meta: 'Each year to 2036, in pounds of each year · the engine’s run, ' + D.R2.run, hz: hzL(10),
+    ch: chart(R2, { mode: 'gbp', years: 10, sel: 2029, aria: potAria, notes: ['Ten years: the pot’s last top-up is in ' + D.pot.drawLast + '; 2036 is the first year the fees leave every month above your floor on their own.'] }), yr: potCard('gbp', false),
+    foot: 'Illustrative figures, the engine’s run of Thu 5 Nov 20:46.' }),
+  h30: base({ pl: potLedger('gbp', false), meta: 'Each year to 2056, in pounds of each year · the engine’s run, ' + D.R2.run, hz: hzL(30),
+    ch: chart(R2, { mode: 'gbp', years: 30, sel: 2029, aria: 'Your floor holds while either of you earns a salary, to 2052. From 2053, with both of you retired, the surplus sits at £0 and no year is flagged; cash stays above zero.',
+      notes: ['Arun retires in Jan 2051 and Asha in Jan 2053. Your floor holds while either of you earns a salary, to Dec 2052. From 2053 your pensions pay 4% of their pots a year and Balanced (ISA) pays the rest of the budget, so the surplus sits at £0: those years carry no floor, and only cash running out would be flagged. Cash stays above zero to 2056.'] }), yr: potCard('gbp', false),
+    foot: 'Illustrative figures, the engine’s run of Thu 5 Nov 20:46. Pensions and Balanced paying the budget in retirement are the figure set’s assumptions.' }),
+  priv: base({ pl: potLedger('gbp', true), meta: 'Each year to 2046 · the engine’s run, ' + D.R2.run, eye: 'visibility_off', eyeL: 'Privacy mode is on: show amounts', eyeP: 'true',
+    ch: chart(R2, { mode: 'gbp', years: 20, sel: 2029, priv: true, aria: 'Amounts hidden. ' + potAria }), yr: potCard('gbp', true),
+    foot: 'Privacy mode hides every amount; the bars keep their shape and the words stay.' }),
+  load: base({ pl: potLedger('gbp', false), meta: 'Running again · showing the run of ' + D.R2.run, dim: 'stale', chat: salaryChat,
+    banner: { c: '', i: 'progress_activity', t: 'Running again with your salary step', s: 'Saved at 20:53. The figures below are the run of 20:46 until the new one lands, in a few seconds.', bar: true, btns: false },
+    ch: chart(R2, { mode: 'gbp', years: 20, sel: 2029, aria: potAria }), yr: potCard('gbp', false), foot: 'The last run stays on screen, dimmed, while the engine runs again; nothing moves until the new run is whole.' }),
+  err: base({ pl: potLedger('gbp', false), meta: 'Showing the run of ' + D.R2.run, chat: salaryChat,
+    banner: { c: 'err', i: 'error', t: 'The new run did not finish', s: 'Your salary step is saved; the forecast still shows the run of 20:46. Try again, or ask in the chat.', bar: false,
+      btns: [{ c: 'cbtn-primary', i: 'refresh', t: 'Try again' }, { c: '', i: 'chat_bubble', t: 'Ask in the chat' }] },
+    ch: chart(R2, { mode: 'gbp', years: 20, sel: 2029, aria: potAria }), yr: potCard('gbp', false), foot: 'Nothing is lost: the plan is saved and the last whole run stays, with its time.' }),
+  empty: base({ meta: 'No budget yet', who: 'Admin', chatWho: 'You', full: false, empty: true,
+    chat: [{ day: 'Today' }, { ai: true, text: 'Hello. Tell me what comes in and what goes out each month, in your own words, or send a payslip or a statement, and I’ll set up your budget for you to confirm.' }],
+    foot: 'An illustrative household before its first budget; nothing on this tab is made here.' }),
+  asha: base({ meta: 'Each year to 2046, in pounds of each year · the engine’s run, Thu 5 Nov 21:18', who: 'Asha · member', chatWho: 'Asha', admin: false,
+    chat: [{ day: 'Today' }, { ai: true, text: 'Hi Asha. Ask me anything about the household’s plans; Arun keeps them.' }],
+    ch: chart(Wy, { mode: 'gbp', years: 20, sel: 2027, cash: true, whose: 'Arun’s', chips: [{ c: 'mp-alertchip', t: '▼ Cash below zero', s: D.W.short[0] + ' to Feb 2028, at worst ' + gbp(D.W.short[1]) + ' in ' + D.W.short[0] }],
+      aria: 'No year below the floor. Cash goes below zero from ' + D.W.short[0] + ' to Feb 2028, when the extension is paid after the wedding.',
+      notes: ['The wedding, £20,000 in Mar 2027, and the extension, £35,000 in Jun 2027, are paid from cash, which runs out in ' + D.W.short[0] + ' and is back above zero in ' + D.W.back + '.'] }),
+    yr: yearCard(D.W.y27, { mode: 'gbp', title: '2027', chip: '▼ Cash below zero from Jun', chipC: 'mp-alertchip', meta: 'Jan to Dec, in pounds of 2027 · tap a figure to see what makes it',
+      below: [['Sister’s wedding', 'March, Arun’s plan, from cash', D.W.y27.oneOffs['Sister’s wedding'] !== undefined ? D.W.y27.oneOffs['Sister’s wedding'] : D.W.y27.oneOffs['Sister\'s wedding'], true], ['Home extension', 'June, from cash', D.W.y27.oneOffs['Home extension'], true], ['Cash, end of December', 'after the surplus and both one-offs', D.W.y27.cash, true]],
+      kts: [['Savings rate', pc1(D.W.y27.rate), '', false], ['Months below Arun’s floor', 'None', '', false]],
+      lock: 'Plans and the ways to cover them are Arun’s. You can ask about them in the chat.', btns: [{ c: '', i: 'chat_bubble', t: 'Ask about it in the chat' }] }),
+    mo: { title: '2027, month by month', sub: 'cash at the end of each month',
+      rows: D.W.m27.map((m) => ({ l: m[0].slice(0, 3), n: m[0] === 'Mar 2027' ? 'Wedding paid' : (m[0] === 'Jun 2027' ? 'Extension paid' : (m[2] < 0 ? 'Below zero' : '')), v: (m[2] < 0 ? '▼ ' : '') + gbp(m[2]), c: m[2] < 0 ? 'c-alert' : '' })) },
+    foot: 'Illustrative figures, the engine’s run of Thu 5 Nov 21:18, after Arun undid the way he had applied.' }),
+  trace: base({ meta: 'Each year to 2046, in pounds of each year · the engine’s run, ' + D.R1.run, tr: true })
+};
+/* the trace state (20:43, R1): the picked board's own view, with its trace open */
+V.empty.ch = V.pot.ch; V.empty.yr = V.pot.yr;
+
+const KEY = { 'UK': 'UK 2.5% a year', 'UK health': 'UK health 4% a year', 'India': 'India 5% a year, at each month’s rate' };
+const trace = D.R1.cats.map((c) => ({ n: c[0], s: (c[3] === 'INR' ? '₹' + c[2].toLocaleString('en-IN') : '£' + c[2]) + ' a month in 2026 · ' + KEY[c[1]], v: gbp(-D.R1.spend29[c[0]]) }));
+if (sum(D.R1.spend29) !== 34722) throw new Error('spending');
+const KS = { 'UK': 'UK 2.5%', 'UK health': 'UK health 4%', 'India': 'India 5%' };
+const traceS = D.R1.cats.map((c) => ({ n: c[0], s: (c[3] === 'INR' ? '₹' + c[2].toLocaleString('en-IN') : '£' + c[2]) + ' a month in 2026 · ' + KS[c[1]], v: gbp(-D.R1.spend29[c[0]]) }));
+const ptabs = ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l: l, on: l === 'Budget forecast' ? 'on' : '', p: l === 'Budget forecast' ? 'true' : 'false', cur: l === 'Budget forecast' ? 'page' : null }));
+
+const R1Y = [{"y":2026,"span":"Nov–Dec","inc":15120,"sp":5364,"em":4306,"sip":178,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":5272,"rate":0.349,"cash":21405,"below":0,"low":2636,"fx":112.61,"defl":1.0,"cashNeg":null},{"y":2027,"span":"Jan–Dec","inc":96602,"sp":33027,"em":25775,"sip":1051,"prem":370,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":36379,"rate":0.377,"cash":23423,"below":0,"low":2563,"fx":114.21,"defl":0.9756,"cashNeg":null},{"y":2028,"span":"Jan–Dec","inc":100666,"sp":33864,"em":25676,"sip":1026,"prem":362,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":39738,"rate":0.395,"cash":30240,"below":0,"low":2825,"fx":117.0,"defl":0.9518,"cashNeg":null},{"y":2029,"span":"Jan–Dec","inc":104906,"sp":34722,"em":22115,"sip":1001,"prem":353,"pl":-48000,"toPot":0,"fromPot":0,"fromInv":0,"sur":-1285,"rate":-0.012,"cash":35168,"below":11,"low":-903,"fx":119.85,"defl":0.9286,"cashNeg":null},{"y":2030,"span":"Jan–Dec","inc":109330,"sp":35602,"em":19735,"sip":977,"prem":345,"pl":-50160,"toPot":0,"fromPot":0,"fromInv":0,"sur":2511,"rate":0.023,"cash":38783,"below":11,"low":-453,"fx":122.77,"defl":0.906,"cashNeg":null},{"y":2031,"span":"Jan–Dec","inc":113944,"sp":36505,"em":17478,"sip":954,"prem":0,"pl":-52417,"toPot":0,"fromPot":0,"fromInv":0,"sur":6590,"rate":0.058,"cash":33952,"below":11,"low":-26,"fx":125.77,"defl":0.8839,"cashNeg":null},{"y":2032,"span":"Jan–Dec","inc":118759,"sp":37431,"em":17478,"sip":931,"prem":0,"pl":-54776,"toPot":0,"fromPot":0,"fromInv":0,"sur":8143,"rate":0.069,"cash":43258,"below":11,"low":81,"fx":128.83,"defl":0.8623,"cashNeg":null},{"y":2033,"span":"Jan–Dec","inc":123782,"sp":38380,"em":17478,"sip":909,"prem":0,"pl":-57241,"toPot":0,"fromPot":0,"fromInv":0,"sur":9774,"rate":0.079,"cash":54501,"below":2,"low":193,"fx":131.98,"defl":0.8413,"cashNeg":null},{"y":2034,"span":"Jan–Dec","inc":129023,"sp":39354,"em":17478,"sip":888,"prem":0,"pl":-59817,"toPot":0,"fromPot":0,"fromInv":0,"sur":11486,"rate":0.089,"cash":58745,"below":2,"low":311,"fx":135.2,"defl":0.8207,"cashNeg":null},{"y":2035,"span":"Jan–Dec","inc":134492,"sp":40353,"em":17478,"sip":867,"prem":0,"pl":-62508,"toPot":0,"fromPot":0,"fromInv":0,"sur":13286,"rate":0.099,"cash":60579,"below":2,"low":436,"fx":138.49,"defl":0.8007,"cashNeg":null},{"y":2036,"span":"Jan–Dec","inc":140198,"sp":41377,"em":17478,"sip":846,"prem":0,"pl":-65321,"toPot":0,"fromPot":0,"fromInv":0,"sur":15176,"rate":0.108,"cash":62487,"below":0,"low":568,"fx":141.87,"defl":0.7812,"cashNeg":null},{"y":2037,"span":"Jan–Dec","inc":146152,"sp":42427,"em":17478,"sip":826,"prem":0,"pl":-68261,"toPot":0,"fromPot":0,"fromInv":0,"sur":17160,"rate":0.117,"cash":64472,"below":0,"low":705,"fx":145.33,"defl":0.7621,"cashNeg":null},{"y":2038,"span":"Jan–Dec","inc":152366,"sp":43505,"em":17478,"sip":806,"prem":0,"pl":-71333,"toPot":0,"fromPot":0,"fromInv":0,"sur":19244,"rate":0.126,"cash":66536,"below":0,"low":851,"fx":148.88,"defl":0.7436,"cashNeg":null},{"y":2039,"span":"Jan–Dec","inc":158851,"sp":44609,"em":17478,"sip":787,"prem":0,"pl":-74543,"toPot":0,"fromPot":0,"fromInv":0,"sur":21434,"rate":0.135,"cash":68683,"below":0,"low":1003,"fx":152.51,"defl":0.7254,"cashNeg":null},{"y":2040,"span":"Jan–Dec","inc":165618,"sp":45743,"em":17478,"sip":768,"prem":0,"pl":-77897,"toPot":0,"fromPot":0,"fromInv":0,"sur":23732,"rate":0.143,"cash":70917,"below":0,"low":1164,"fx":156.23,"defl":0.7077,"cashNeg":null},{"y":2041,"span":"Jan–Dec","inc":172681,"sp":46905,"em":17478,"sip":750,"prem":0,"pl":-47485,"toPot":0,"fromPot":0,"fromInv":0,"sur":60063,"rate":0.348,"cash":32541,"below":0,"low":1333,"fx":160.04,"defl":0.6905,"cashNeg":null},{"y":2042,"span":"Jan–Dec","inc":180052,"sp":48097,"em":17478,"sip":732,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":113745,"rate":0.632,"cash":33127,"below":0,"low":8599,"fx":163.94,"defl":0.6736,"cashNeg":null},{"y":2043,"span":"Jan–Dec","inc":187746,"sp":49320,"em":17478,"sip":715,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":120233,"rate":0.64,"cash":33729,"below":0,"low":9105,"fx":167.94,"defl":0.6572,"cashNeg":null},{"y":2044,"span":"Jan–Dec","inc":195776,"sp":50574,"em":17478,"sip":698,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":127026,"rate":0.649,"cash":34347,"below":0,"low":9635,"fx":172.03,"defl":0.6412,"cashNeg":null},{"y":2045,"span":"Jan–Dec","inc":204159,"sp":51860,"em":13152,"sip":681,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":138466,"rate":0.678,"cash":26243,"below":0,"low":10191,"fx":176.23,"defl":0.6255,"cashNeg":null},{"y":2046,"span":"Jan–Dec","inc":212908,"sp":53179,"em":0,"sip":665,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":159064,"rate":0.747,"cash":26894,"below":0,"low":12228,"fx":180.53,"defl":0.6103,"cashNeg":null},{"y":2047,"span":"Jan–Dec","inc":222042,"sp":54532,"em":0,"sip":649,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":166861,"rate":0.751,"cash":27562,"below":0,"low":12836,"fx":184.93,"defl":0.5954,"cashNeg":null},{"y":2048,"span":"Jan–Dec","inc":231577,"sp":55920,"em":0,"sip":633,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":175024,"rate":0.756,"cash":28248,"below":0,"low":13475,"fx":189.44,"defl":0.5809,"cashNeg":null},{"y":2049,"span":"Jan–Dec","inc":241531,"sp":57344,"em":0,"sip":618,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":183569,"rate":0.76,"cash":28952,"below":0,"low":14143,"fx":194.06,"defl":0.5667,"cashNeg":null},{"y":2050,"span":"Jan–Dec","inc":251923,"sp":58804,"em":0,"sip":604,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":192515,"rate":0.764,"cash":29674,"below":0,"low":14842,"fx":198.8,"defl":0.5529,"cashNeg":null},{"y":2051,"span":"Jan–Dec","inc":110411,"sp":60302,"em":0,"sip":589,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":49520,"rate":0.449,"cash":30415,"below":0,"low":3350,"fx":203.65,"defl":0.5394,"cashNeg":null},{"y":2052,"span":"Jan–Dec","inc":114002,"sp":61838,"em":0,"sip":575,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":0,"sur":51589,"rate":0.453,"cash":31175,"below":0,"low":3496,"fx":208.61,"defl":0.5262,"cashNeg":null},{"y":2053,"span":"Jan–Dec","inc":24295,"sp":63414,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":39119,"sur":0,"rate":0.0,"cash":31678,"below":0,"low":-1,"fx":213.7,"defl":0.5134,"cashNeg":null},{"y":2054,"span":"Jan–Dec","inc":24766,"sp":65031,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":40264,"sur":-1,"rate":-0.0,"cash":32486,"below":0,"low":0,"fx":218.91,"defl":0.5009,"cashNeg":null},{"y":2055,"span":"Jan–Dec","inc":25247,"sp":66689,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":41442,"sur":0,"rate":0.0,"cash":33314,"below":0,"low":0,"fx":224.25,"defl":0.4887,"cashNeg":null},{"y":2056,"span":"Jan–Dec","inc":25736,"sp":68390,"em":0,"sip":0,"prem":0,"pl":0,"toPot":0,"fromPot":0,"fromInv":42653,"sur":-1,"rate":-0.0,"cash":34164,"below":0,"low":0,"fx":229.72,"defl":0.4767,"cashNeg":null}], r1d = {"income":{"Arun":59395,"Asha":40236,"Pune rent":2061,"Asha's bonus":3214},"spend":{"Bills and council tax":5428,"Groceries":8400,"Transport":2843,"Insurance":1098,"Eating out":2326,"Shopping":3231,"Holidays":5169,"Health":810,"Subscriptions":581,"Giving":646,"Family support, India":2898,"Other":1292},"emis":{"Mortgage · Nationwide":17478,"Car loan · Close Brothers":693,"Home loan · HDFC":3944},"sip":1001,"prem":353,"plans":{"School fees":-48000},"toPot":0,"fromPot":0,"fromInv":0,"sur":-1285,"rate":-0.012,"cash":35168,"below":11,"fx":119.85,"defl":0.9286,"oneOffs":{},"mats":{"Fixed deposit · SBI":5189}};
+V.trace.ch = chart(R1Y, { mode: 'gbp', years: 20, sel: 2029, chips: [{ c: 'mp-alertchip', t: '▼ Below your floor', s: 'in 50 months, Jan 2029 to Feb 2035' }],
+  aria: 'Below the floor from 2029 to 2035, before the pot.' });
+V.trace.chat = [{ day: 'Today' }, { me: '£4,000 a month from Jan 2029 for my kid’s schooling', t: '20:41' }, { ai: true, card: { over: 'Added to the plan', title: 'School fees', sub: '£4,000 a month, Jan 2029 to Jul 2041, growing 4.5% a year', tech: ['Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat'] }, text: 'It leaves your surplus below your £500 floor in 50 months, Jan 2029 to Feb 2035. Cash stays above zero.' }];
+V.trace.yr = yearCard(r1d, { mode: 'gbp', title: '2029', chip: '▼ 11 months below your floor', chipC: 'mp-alertchip', meta: 'Jan to Dec, in pounds of 2029 · tap a figure to see what makes it',
+  kts: [['Savings rate', pc1(r1d.rate), '', false], ['Cash, end of December', gbp(r1d.cash)]], btns: [{ c: '', i: 'expand_more', t: 'Show the months' }, { c: 'cbtn-primary', i: 'chat_bubble', t: 'Ways to cover it' }] });
+V.trace.foot = 'Illustrative figures from the future-plans figure set, the engine’s run of Thu 5 Nov 20:43.';
+
+const snavAll = [['chat_bubble', 'Chat'], ['home', 'Home'], ['donut_small', 'Assets'], ['credit_card', 'Debts'], ['savings', 'Budget'], ['trending_up', 'Projection'], ['insights', 'Activity'], ['history', 'Audit']];
+const snav = snavAll.map((i) => ({ icon: i[0], label: i[1], cls: i[1] === 'Projection' ? 'on' : '' }));
+const itabs = [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Home' ? 'on' : '' }));
+const TH = { Light: 't-light', Dark: 't-dark' };
+const O = {"iPhone · Budget forecast 1a, after the pot · Light": "-560px", "iPhone · Budget forecast 1a, after the pot · Dark": "-560px", "iPad · Budget forecast 1a, after the pot · landscape · Light": "-420px", "iPad · Budget forecast 1a, after the pot · landscape · Dark": "-420px", "iPhone · Budget forecast 1a, privacy on · Light": "-300px", "iPhone · Budget forecast 1a, privacy on · Dark": "-300px", "iPhone · Budget forecast 1a, as Asha sees it · Light": "-560px", "iPhone · Budget forecast 1a, as Asha sees it · Dark": "-1000px", "iPad · Budget forecast 1a, as Asha sees it · landscape · Light": "-480px", "iPad · Budget forecast 1a, the trace on iPhone and iPad · landscape · Dark": "-1100px"};
+const fb = { phone: false, pad: false, sheet: false, dock: true, off: '0px', top: true, scrolled: false };
+const PH = (name, theme, v, clock, x) => { const cap = (x && x.cap) || name + ' · ' + theme; return Object.assign({}, fb, { cap: cap, cls: TH[theme], phone: true, v: v, clock: clock }, O[cap] ? { off: O[cap], scrolled: O[cap] !== '0px', top: O[cap] === '0px' } : {}, x || {}); };
+const PD = (name, theme, v, clock, x) => { const cap = (x && x.cap) || name.replace('iPhone · ', 'iPad · ') + ' · landscape · ' + theme; return Object.assign({}, fb, { cap: cap, cls: TH[theme], pad: true, v: v, clockPad: clock + ' Thu 5 Nov' }, O[cap] ? { off: O[cap], scrolled: O[cap] !== '0px' } : {}, x || {}); };
+const B = (id, tag, name, intro, draws, frames, notes) => ({ id: id, tag: tag, name: name, keyline: 'MA-262 · MA-224', intro: intro + ' ' + draws, frames: frames, notes: N2(notes) });
+const n1 = 'iPhone · Budget forecast 1a, after the pot', n2 = 'iPhone · Budget forecast 1a, in rupees', n3 = 'iPhone · Budget forecast 1a, in today’s money', n4 = 'iPhone · Budget forecast 1a, at 5, 10 and 30 years', n5 = 'iPhone · Budget forecast 1a, privacy on', n6 = 'iPhone · Budget forecast 1a, loading', n7 = 'iPhone · Budget forecast 1a, error', n8 = 'iPhone · Budget forecast 1a, empty', n9 = 'iPhone · Budget forecast 1a, as Asha sees it', n10 = 'iPhone · Budget forecast 1a, the trace on iPhone and iPad';
+const asha = Object.assign({}, V.asha);
+const boards = [
+{ id: 'i1', tag: 'S1', name: 'iPhone · Budget forecast 1a, after the pot', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:47, after Arun applied the School fees pot (the run of 20:46): no year below his floor; 2029 shows the pot’s line. Draws: “the Budget forecast after a rearrangement (the School fees pot’s lines, no flags)”.',
+  frames: [PH(n1, 'Light', V.pot, '20:47'), PH(n1, 'Dark', V.pot, '20:47'), PD(n1, 'Light', V.pot, '20:47'), PD(n1, 'Dark', V.pot, '20:47')],
+  notes: N2([['The pot’s lines', 'sit with the plans: into it in 2026 to 2028, out of it from 2029. 2029’s lines add up to £7,805.'], ['The same figures as the web door:', 'R2 in future-plans-v4.json.']]) },
+{ id: 'i2', tag: 'S2', name: 'iPhone · Budget forecast 1a, in rupees', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:48: ₹ INR on, each year at its average projected rate; the floor a dash on each bar. Draws: “the Budget forecast in INR, in today’s money, and at 5, 10 and 30 years” (rupees).',
+  frames: [PH(n2, 'Light', V.inr, '20:48'), PH(n2, 'Dark', V.inr, '20:48')], notes: N2([['Derived:', 'each year’s pounds × fx_avg, rounded to the rupee; the surplus is the lines shown, added.']]) },
+{ id: 'i3', tag: 'S3', name: 'iPhone · Budget forecast 1a, in today’s money', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:48: Today’s money on, UK prices of 2026; the floor shrinks in today’s money, a dash on each bar. Draws: “the Budget forecast in INR, in today’s money, and at 5, 10 and 30 years” (today’s money).',
+  frames: [PD(n3, 'Light', V.today, '20:48'), PD(n3, 'Dark', V.today, '20:48')], notes: N2([['Derived:', 'each year’s pounds × its deflator (2.5% a year from 2026), rounded.']]) },
+{ id: 'i4', tag: 'S4', name: 'iPhone · Budget forecast 1a, at 5, 10 and 30 years', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:49 and 20:50: the horizon picks how far the chart runs; at 30 years it reaches retirement. Draws: “the Budget forecast in INR, in today’s money, and at 5, 10 and 30 years” (the horizons).',
+  frames: [PH(n4, 'Light', V.h5, '20:49', { cap: n4 + ' · 5 years · Light' }), PH(n4, 'Dark', V.h10, '20:49', { cap: n4 + ' · 10 years · Dark' }), PD(n4, 'Light', V.h30, '20:50', { cap: 'iPad · Budget forecast 1a, at 5, 10 and 30 years · 30 years · landscape · Light' })],
+  notes: N2([['At 30 years,', 'from 2053, with both retired, pensions and Balanced pay the budget and the surplus sits at £0; the floor holds only while someone earns a salary, so those years are grey and not flagged, and cash stays above zero.']]) },
+{ id: 'i5', tag: 'S5', name: 'iPhone · Budget forecast 1a, privacy on', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:51: every amount masked; the bars keep their shape. Draws: “the Budget forecast with privacy on, at both doors”.',
+  frames: [PH(n5, 'Light', V.priv, '20:51'), PH(n5, 'Dark', V.priv, '20:51')], notes: N2([['Masks keep their place,', 'and the app switcher shows only the mark.']]) },
+{ id: 'i6', tag: 'S6', name: 'iPhone · Budget forecast 1a, loading', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:53: the run after the salary step; the last run stays, dimmed, with a still bar. Draws: “the Budget forecast after a rearrangement (the School fees pot’s lines, no flags), and its loading, empty and error states” (loading).',
+  frames: [PH(n6, 'Light', V.load, '20:53'), PH(n6, 'Dark', V.load, '20:53')], notes: N2([['No looping spinner;', 'the bar is still, and Reduce Motion changes nothing here.']]) },
+{ id: 'i7', tag: 'S7', name: 'iPhone · Budget forecast 1a, error', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:53, if the run had failed: the last whole run stays with its time; Try again, or Ask in the chat. Illustrative. Draws: “the Budget forecast after a rearrangement (the School fees pot’s lines, no flags), and its loading, empty and error states” (error).',
+  frames: [PD(n7, 'Light', V.err, '20:53'), PD(n7, 'Dark', V.err, '20:53')], notes: N2([['On iPad', 'the chat beside it shows the saved salary step.']]) },
+{ id: 'i8', tag: 'S8', name: 'iPhone · Budget forecast 1a, empty', keyline: 'MA-262 · MA-224', intro: 'A household with no budget yet: the tab says what it needs and opens the chat. Illustrative, not this household’s evening. Draws: “the Budget forecast after a rearrangement (the School fees pot’s lines, no flags), and its loading, empty and error states” (empty).',
+  frames: [PH(n8, 'Light', V.empty, '09:30'), PH(n8, 'Dark', V.empty, '09:30')], notes: N2([['Create in the chat,', 'never on the tab.']]) },
+{ id: 'i9', tag: 'S9', name: 'iPhone · Budget forecast 1a, as Asha sees it', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 21:19, Asha’s session: cash below zero from Jun 2027 after the wedding and the extension; every figure, no Ways to cover it. Draws: “the Budget forecast as Asha sees it: the same figures, no Ways to cover it”.',
+  frames: [PH(n9, 'Light', asha, '21:19'), PH(n9, 'Dark', asha, '21:19'), PD(n9, 'Light', asha, '21:19')], notes: N2([['A cash flag,', 'a strip under the bars and a chip; the year card shows the one-offs paid from cash and the closing cash.'], ['No Admin in her sidebar,', 'and Ask about it opens her own chat.']]) },
+{ id: 'i10', tag: 'S10', name: 'iPhone · Budget forecast 1a, the trace on iPhone and iPad', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:43, the picked board’s moment: Arun taps 2029’s spending. On iPhone its flows open in a sheet; on iPad, where the screen beside the sidebar and the chat is one column, the trace card opens under 2029’s lines. Draws: “1a’s trace on iPhone and iPad (drawn at the desktop only; below the fold on iOS)”.',
+  frames: [PH(n10, 'Light', V.trace, '20:43', { sheet: true, dock: false, cap: n10 + ' · the sheet · Light' }), PD(n10, 'Dark', V.trace, '20:43', { cap: 'iPad · Budget forecast 1a, the trace on iPhone and iPad · landscape · Dark' })],
+  notes: N2([['A solid sheet:', 'it holds figures and a sentence, so it is a content sheet, not glass; its grabber and Close are its controls.'], ['The figures:', 'R1’s 2029 spending, each category from October’s plan grown by its key, adding to −£34,722, as at the desktop.']]) }
+];
+V.trace.tr = true;
+
+const index = boards.map((b) => ({ id: b.id, tag: b.tag, name: b.name }));
+return {
+  intro1: 'The remaining states of the picked Budget forecast, 1a the surplus first (MA-262), on iPhone (pushed from Home, the glass tab bar) and on iPad in landscape (the glass sidebar, the screen, the chat beside it), through the rest of Thu 5 Nov: after the pot, rupees and today’s money, 5, 10 and 30 years, privacy, loading and error, Asha’s view, and 1a’s trace on both devices. The empty state is a household before its first budget.',
+  intro2: 'The same figures as Web v4 · Budget forecast 1a states, from future-plans-v4.json. Glass only on controls; the chart, the cards and the trace sheet are solid Warm ledger.',
+  allKeys: [key('MA-262'), key('MA-224'), key('MA-264')], index: index, boards: boards, snav: snav, itabs: itabs, ptabs: ptabs, trace: trace, traceS: traceS,
+  cchips: [['event', 'What’s due'], ['add_circle', 'Add anything']].map((c) => ({ i: c[0], t: c[1] }))
+};
+}
+}
+</script>
+</body>
+</html>
