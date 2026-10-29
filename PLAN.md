@@ -35,7 +35,7 @@ through the flows end to end:
 (MA-141), and [Inside MyPaisa](https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5) explains the whole of it in
 plain words, from the first screen to the chatbot and the agent team
 (MA-239), and [MyPaisa Architecture v4](https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9) draws it technically, with
-every agent and the Claude model it uses (MA-244), and [MyPaisa Guardrails and Evals](https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT) shows how the agents are guarded and tested, plainly or technically (MA-258). Every phase is an epic in Jira project MA, and every deliverable
+every agent and the Claude model it uses (MA-244), [MyPaisa Guardrails and Evals](https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT) shows how the agents are guarded and tested, plainly or technically (MA-258), and [MyPaisa Tech Stack and Observability](docs/design/tech-stack-observability.html) sets out the four-layer implementation stack, FastAPI, DynamoDB versus DocumentDB, the agent framework comparison, and end-to-end tracing and LLM observability with costing (MA-265). Every phase is an epic in Jira project MA, and every deliverable
 below is a story or task under it. Each phase ends with a demo you can click
 at both doors and an update to the agent-journey page, so you can follow the
 agent as it is built.
@@ -140,7 +140,9 @@ Claude's:
 - **The app icons (MA-20, MA-142)** from the 1c Watcher mark
   (`docs/mark-1024.png`, MA-103): MyPaisa, and MyPaisa Dev with its DEV band.
 - **The repository skeleton (MA-24):** `CLAUDE.md` with the working rules;
-  uv, ruff, pyright, pytest, pre-commit.
+  uv, ruff, pyright, pytest, pre-commit; FastAPI, Mangum,
+  `opentelemetry-instrumentation-fastapi` and `boto3-stubs[dynamodb,s3,sqs,ssm,cognito-idp]`
+  pinned in `pyproject.toml` (MA-265).
 - **The PR gates in GitHub Actions (MA-25):** ruff, pyright, pytest with
   moto, `terraform fmt` and `validate`, tflint, the Terraform security scan,
   gitleaks, pip-audit, `jira-key`, and a plan for both environments on every
@@ -190,7 +192,9 @@ Claude's:
   dark.
   `web/src/lib/` holds what both doors share, written once: the card types,
   formatting in GBP and INR with lakh and crore, privacy masking and the view
-  models, and the api client with its TanStack Query definitions. Its gates:
+  models, and the api client with its TanStack Query definitions and
+  `api-types.d.ts` generated from FastAPI's `app.openapi()` by
+  `openapi-typescript` (MA-265, MA-266). Its gates:
   svelte-check, eslint, vitest, Playwright screenshots at 390 and 1440 in
   both themes with axe and a pixel parity check against the boards, pnpm
   audit.
@@ -215,8 +219,9 @@ Claude's:
   XCUITest, snapshot and accessibility checks for the SwiftUI pieces) and the
   TestFlight lanes (MA-167).
 - **The local stack (MA-198):** the whole app on the laptop: a moto server for
-  DynamoDB, S3 and SQS (no Docker); the handlers behind one local ASGI app,
-  the SSE stream included; the SvelteKit dev server and the iOS simulator
+  DynamoDB, S3 and SQS (no Docker); the FastAPI `api` and `stream` apps and
+  worker handlers mounted behind one local Uvicorn ASGI app, the SSE stream
+  included (MA-265, MA-266); the SvelteKit dev server and the iOS simulator
   pointed at it; a localhost-only sign-in stub, compiled out of every
   deployed build. The agent runs against the dev Claude key, or in a scripted
   mode that replays recorded conversations, which UI work, the end-to-end
@@ -359,6 +364,28 @@ Claude's:
   impact and, when it leaves the household short, the rearrangement applied
   on Confirm (MA-222, MA-263), and the Plans tab (MA-224). You pick; the
   picked option's remaining states are drawn before those stories start.
+- **The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent
+  framework options, and end-to-end FastAPI and LLM observability with
+  costing (MA-265, `docs/RESEARCH.md` §6, `TECH_STACK.md`):** the full
+  four-layer stack recorded across `web/` (SvelteKit 3.1, Svelte 5 runes,
+  Tailwind CSS 4.3, shadcn-svelte 1.7 on bits-ui 2.20, TanStack Query 6.3,
+  Table 9.3, Virtual 3.13 and Form 1.33, LayerChart 2.9, lightweight-charts
+  5.2, Motion 14, `openapi-typescript`), `ios/` (bare React Native 0.88 on
+  New Architecture, Fabric and Hermes with Swift Package Manager, TanStack
+  Query 5.105, MMKV 4.3 on Nitro Modules, Reanimated 4.7, and a Swift 6
+  strict-concurrency SwiftUI core with Swift Charts at 120 Hz and Liquid
+  Glass on controls), the Python 3.14 backend (FastAPI on Mangum for `api`
+  and Uvicorn behind Lambda Web Adapter 1.1 for `stream`, Pydantic v2, and a
+  typed single-table DynamoDB repository on `boto3` `TypeSerializer` /
+  `TypeDeserializer` + `mypy-boto3-dynamodb` + `TransactWriteUnit`, why
+  DocumentDB is rejected at £75 to £110 a month versus £0 in DynamoDB's free
+  tier), the six agent framework options compared with a thin custom loop on
+  the official `anthropic` SDK + Pydantic v2 + Step Functions and EventBridge
+  recommended, and end-to-end request-id, W3C `traceparent` and OpenTelemetry
+  GenAI observability across FastAPI, SQS, Claude and SSE costed at £0.03 a
+  month in dev and £2.46 a month in prod (`docs/design/tech-stack-observability.html`
+  and the Confluence page Tech stack, FastAPI, DynamoDB, agents and
+  end-to-end observability).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -400,14 +427,28 @@ speaks through this chat (`ARCHITECTURE.md` §9). The stream is proved first,
 with a spike, because both doors are built on it. What the chat records
 arrives from phase 2.
 
-- **The stream, proved first (MA-195).** A spike in dev: a Starlette app on
-  Uvicorn behind the Lambda Web Adapter 1.1 (`response_stream`), as its own
-  build target of the same Dockerfile; the stream on the api host, so the
-  session cookie and the authorizer reach it, as a route of the api's REST
-  API in API Gateway's streaming mode (MA-229). It passes when the first token delta reaches a browser
-  and the iOS app in under a second, a killed connection resumes with nothing
-  lost or repeated, and the cost per open hour is measured and put to you
-  before any apply.
+- **The stream, proved first (MA-195).** A spike in dev: the `stream` FastAPI
+  app (`StreamingResponse`, MA-266) on Uvicorn behind the Lambda Web Adapter
+  1.1 (`response_stream`), as its own build target of the same Dockerfile;
+  the stream on the api host, so the session cookie and the authorizer reach
+  it, as a route of the api's REST API in API Gateway's streaming mode
+  (MA-229). It passes when the first token delta reaches a browser and the
+  iOS app in under a second, a killed connection resumes with nothing lost or
+  repeated, and the cost per open hour is measured and put to you before any
+  apply.
+- **The FastAPI REST application and correlation middleware (MA-266,
+  `ARCHITECTURE.md` §9.4, §10.2, §10.3):** `handlers/api` on FastAPI behind
+  Mangum (`lifespan="off"`) and `handlers/stream` on FastAPI behind Uvicorn
+  and the Lambda Web Adapter 1.1; typed Pydantic v2 `RequestModel` and
+  `ResponseModel` classes for every `/auth/*` and `/v1/*` route;
+  `CorrelationMiddleware` binding `trace_id`, `span_id`, `request_id` (API
+  Gateway's `aws_request_id` or `x-request-id`), `client_message_id`,
+  `run_id`, `household_id` and `member_id` onto the Powertools Logger and the
+  active OpenTelemetry span and echoing `x-mypaisa-trace-id` and
+  `x-request-id` on every response and stream handshake;
+  `opentelemetry-instrumentation-fastapi` setting `http.route` on every span
+  for CloudWatch Application Signals; and `pnpm generate:api` generating
+  `web/src/lib/api-types.d.ts` from `app.openapi()` for both doors.
 - **Identity on AWS from day one (MA-109, MA-32, MA-168, `ARCHITECTURE.md`
   §4.5):** a Cognito user pool per environment (Essentials); Sign in with
   Apple and Google, their identity tokens verified by custom-auth Lambda
@@ -436,17 +477,20 @@ arrives from phase 2.
   sign-in in this phase (Arun, 26 Oct 2026), so approving a new kind can sit
   behind it from phase 2 (MA-197); the Admin center (phase 8) and the imports
   (phase 9) reuse it.
-- **The api at `api(-dev).mypaisapp.com` (MA-31, MA-75, MA-144):** `/auth/nonce`, `/auth/apple`,
+- **The api at `api(-dev).mypaisapp.com` (MA-31, MA-75, MA-144, MA-266):** `/auth/nonce`, `/auth/apple`,
   `/auth/google`, `/auth/passkey/options` and `/auth/passkey` (the web app's
   passkey sign-in, MA-109), `/v1/chat/messages` and `/v1/chat/actions` (each
   with the client's id), `/v1/chat/turns`, `/v1/uploads` (a presigned upload
-  into the documents bucket), `/v1/devices` and `/v1/stream`; the authorizer
+  into the documents bucket), `/v1/devices` and `/v1/stream`, served by the
+  FastAPI application with typed Pydantic v2 schemas and correlation headers
+  (MA-266); the authorizer
   checks the access token or the session cookie, the member's status and
   session epoch on every call and on the stream. The app and the web app
   reach each environment through it, and the dev build runs against dev or
   the laptop.
-- **The stream at both doors (MA-30):** Server-Sent Events from
-  `/v1/stream` on the api host. Replies stream in as they are written; cards,
+- **The stream at both doors (MA-30, MA-266):** Server-Sent Events from
+  `/v1/stream` on the api host, served by the FastAPI `stream` app on Uvicorn
+  behind the Lambda Web Adapter 1.1. Replies stream in as they are written; cards,
   check-ins and `records.changed` arrive on the same stream, so a change
   confirmed on the phone moves the laptop's dashboard. A per-member sequence
   and an event log kept at least seven days: `Last-Event-ID`, or `?after=`
@@ -499,9 +543,11 @@ arrives from phase 2.
   Layer for OpenTelemetry in the image) wired in the handler base, with the
   correlation keys on every log line and span; the error alarm per function
   to the owner.
-- **One trace from the door to the model and back (MA-232):** both doors send
-  a `traceparent` with every action; the api, the queues, the agent, the
-  sender, the stream and push continue it, so one message is one trace from
+- **One trace from the door to the model and back (MA-232, MA-266):** both doors send
+  a `traceparent` with every action; FastAPI's `CorrelationMiddleware` and
+  `opentelemetry-instrumentation-fastapi` on `api` and `stream`, the queues,
+  the agent, the sender and push continue it and echo `x-mypaisa-trace-id`
+  and `x-request-id`, so one message is one trace from
   the tap to the push; every `StreamEvent` and push payload carries its
   `run_id` and `trace_id`; the leak test proves no prompt, figure, name or
   token reaches CloudWatch, and the dev smoke test asserts the trace.
@@ -580,7 +626,10 @@ arrives from phase 2.
   member's Apple Account and Google account, and a passcode with Face ID on
   each device.
 
-**Tests:** the spike's written report (MA-195); the chat api's security (no
+**Tests:** the spike's written report (MA-195); the FastAPI route schemas,
+`x-mypaisa-trace-id` and `x-request-id` correlation headers, OpenTelemetry
+`http.route` span attributes and `openapi-typescript` schema parity (MA-266);
+the chat api's security (no
 token, an expired token, a token from the other environment, a paused
 member) and the session cookie (missing, expired, from the other
 environment, after sign out everywhere); CORS from another origin; one
@@ -656,7 +705,7 @@ one write service. The simplest kinds come first (savings, cash, a
 property's value, a pension's value), so the whole path is proved before the
 maths arrives.
 
-- **One dynamic structure (MA-27, `ARCHITECTURE.md` §4.1).** Kinds are data.
+- **One dynamic structure (MA-27, MA-265, `ARCHITECTURE.md` §4.1, §4.8).** Kinds are data.
   Records are documents: `Record {kind, kind_version, owners[{member,
   share_pct}], country, ccy, liquidity, status, parent_id?, instrument_id?,
   attrs{}}`; an ISA account is a record and its funds are child records;
@@ -669,7 +718,12 @@ maths arrives.
   are materialised from events and rebuilt after a spec change, so the
   structure evolves with no migration. `Account`, `Position`, `Liability` and
   `Transaction` fold into Record and Event for the household's own records;
-  there is no relational schema. Every item is keyed by the household and
+  there is no relational schema and no DocumentDB cluster (`docs/RESEARCH.md`
+  §6.2): `src/mypaisa_agent/registry/repository.py` is a thin typed
+  repository on Pydantic v2 (`model_dump(mode="json")`,
+  `model_validate()`), `boto3`'s `TypeSerializer` and `TypeDeserializer`,
+  `mypy-boto3-dynamodb` (`boto3-stubs[dynamodb]`) and a `TransactWriteUnit`
+  builder. Every item is keyed by the household and
   carries `schema_version`. A record ends as `closed`, `matured` or `sold`,
   never deleted.
 - **Kind specs and the draft tools (MA-197, `ARCHITECTURE.md` §8).** A
@@ -703,8 +757,9 @@ maths arrives.
   member gets only what they may see, the JSON limited to it, and
   `PATCH /v1/records/{id}` accepts a correction only to a figure the kind
   marks editable.
-- **The audit log from day one (MA-28, MA-40, `ARCHITECTURE.md` §4.6):** an
-  `AuditEvent` row in the same transaction as every record change,
+- **The audit log from day one (MA-28, MA-40, MA-265, `ARCHITECTURE.md` §4.6):** an
+  `AuditEvent` row in the same `transact_write_items` call as every record
+  change (`TransactWriteUnit` in `registry/repository.py`),
   hash-chained; `get_audit` and "what changed this week?" in the chat.
 - **The first kinds (MA-203):** savings, cash, a property's value and a
   pension's value, each registered from one sentence or a screenshot, for any

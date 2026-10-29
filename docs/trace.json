@@ -7494,6 +7494,55 @@
    "design": "none",
    "boards": [],
    "notes": "Filed from MA-259 (28 Oct 2026). Settled: A, through Anthropic's Move to Claude; B by 1 Dec 2026 if it has not come (Arun, 28 Oct 2026, \"Wait for Move\"; docs/design/reviews/MA-259/decision.md, The pick). Moving the boards by hand was tried and dropped: 41 of the 55 board files are taller than a Design canvas frame's 8,000 px, and a trial canvas cut iOS kit off. Estimated at two days. Due 1 Dec 2026."
+  },
+  {
+   "key": "MA-265",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent framework options, and end-to-end FastAPI and LLM observability with costing are researched and recorded in Confluence with block diagrams",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "3",
+    "4.8",
+    "8",
+    "9.4",
+    "9.5",
+    "10.2",
+    "10.3",
+    "13",
+    "21.5"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 28 Oct 2026: research and plan end-to-end AWS monitoring, tracing and LLM/API observability (including the FastAPI REST APIs) with costing analysis; record the four-layer implementation stack (SvelteKit 3, TanStack, shadcn-svelte; React Native 0.88 and SwiftUI; Python 3.14, FastAPI and single-table DynamoDB vs DocumentDB; agent framework options and recommendation); track as Jira stories and document in Confluence with block diagrams. Delivered in docs/RESEARCH.md 6, TECH_STACK.md, ARCHITECTURE.md, PLAN.md, docs/design/tech-stack-observability.html, its six GIFs in docs/design/tech-stack-observability/, and the Confluence page Tech stack, FastAPI, DynamoDB, agents and end-to-end observability.",
+   "code": [
+    "docs/design/tech-stack-observability.html",
+    "docs/design/tech-stack-observability/*.gif"
+   ]
+  },
+  {
+   "key": "MA-266",
+   "type": "Story",
+   "epic": "MA-10",
+   "phase": 1,
+   "summary": "The api and stream Lambdas run FastAPI with Pydantic v2, request-id and trace correlation middleware, OpenTelemetry route spans, and generated OpenAPI TypeScript types shared by both doors",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "3",
+    "9.4",
+    "10.2",
+    "10.3",
+    "13",
+    "21.5"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-265 (28 Oct 2026): handlers/api on FastAPI behind Mangum and handlers/stream on FastAPI behind Uvicorn and the Lambda Web Adapter 1.1; CorrelationMiddleware binding trace_id, span_id, request_id, client_message_id and run_id and echoing x-mypaisa-trace-id and x-request-id; opentelemetry-instrumentation-fastapi setting http.route on every span; and openapi-typescript generating web/src/lib/api-types.d.ts from app.openapi(). Build time is covered by MA-195, MA-31, MA-30 and MA-232."
   }
  ],
  "others": [

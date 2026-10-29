@@ -222,12 +222,14 @@ The other six pages zoom into one part each and are drawn in their sections.
 
 ![System overview, Lucid page 1](docs/design/lucid/01-overview.png)
 
-One container image and a handful of handlers: `api` (the chat routes, the
-data routes, the one correction route and the owner's admin routes), `agent`,
+One container image and a handful of handlers: `api` (a FastAPI app wrapped in
+`Mangum` for the chat routes, the data routes, the one correction route and the
+owner's admin routes, MA-265, MA-266), `agent`,
 `sender`, `worker` (which runs each background job by its type: ingest,
 engine, news, scoring, documents, briefs, check-ins, the nightly views and
-Projection runs), `stream` (the SSE stream on the api host, a separate build
-target of the same Dockerfile through the Lambda Web Adapter, §21.5), the
+Projection runs), `stream` (the SSE stream on the api host, a FastAPI app on
+Uvicorn as a separate build target of the same Dockerfile through the Lambda
+Web Adapter 1.1, §21.5, MA-266), the
 authorizer and the Cognito triggers.
 Nothing waits on anything else directly:
 your messages, MyPaisa's replies and every background job travel through SQS
@@ -631,7 +633,17 @@ phase 2 (MA-27, MA-28, MA-197) and every wealth phase after it adds only kinds.
 `Account`, `Position`, `Liability` and `Transaction` (§4.1) fold into Record
 and Event for the household's own records. There is no relational schema:
 questions nobody planned for read the nightly Parquet exports of the events
-and views through DuckDB (§12.1, MA-104).
+and views through DuckDB (§12.1, MA-104). In code (`src/mypaisa_agent/registry/`,
+MA-27, MA-28, MA-265), the single table is accessed through a thin typed
+repository on Pydantic v2, `boto3` (`TypeSerializer` and `TypeDeserializer`
+with `Decimal` conversion at the wire boundary) and `mypy-boto3-dynamodb`
+(`boto3-stubs[dynamodb]`) under strict `pyright`, with a `TransactWriteUnit`
+builder that refuses to commit a mutation without its hash-chained `AuditEvent`
+and a client guard that refuses `Scan`. Amazon DocumentDB and ORM layers such
+as PynamoDB are not used: DocumentDB costs £75 to £110 a month across `dev` and
+`prod` and needs a VPC, whereas DynamoDB's native `Map` and `List` attributes,
+`TransactWriteItems` (up to 100 items) and single-table `Query` run inside the
+free tier over stateless HTTPS (`docs/RESEARCH.md` §6.2).
 
 The model covers these cases:
 
@@ -1146,7 +1158,10 @@ Numbers computed, words synthesised, output via structured outputs.
 ## 8. The agent
 
 One Claude tool loop (Sonnet 5.5 for chat and cards, Haiku 5.5 for filters
-and scoring, Opus 5.5 for the Saturday review), with strict tools over the
+and scoring, Opus 5.5 for the Saturday review), written as a thin explicit
+Python loop directly on the `anthropic` SDK and Pydantic v2 (`@tool` with a
+typed `RunContext`, inspired by PydanticAI, rather than LangGraph or CrewAI;
+`docs/RESEARCH.md` §6.3, MA-265), with strict tools over the
 registry, the engine and the cards, through the Anthropic API with the key in
 SSM. Prompt caching on the system prompt, the tool list and the card rubrics.
 Anthropic's server-side web search and web fetch (with citations) serve the
@@ -1583,9 +1598,11 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   market side's price charts; Motion 14 and Svelte transitions. Tests:
   Vitest 5, Playwright 1.64 with axe, and a pixel parity check of each screen
   against its board.
-- **Shared code:** the card types, the formatting (GBP and INR with lakh and
-  crore, privacy masking) and the view models live in `web/src/lib/`, written
-  once and imported by path by the iOS app's shell (§9.5).
+- **Shared code:** the card types, the OpenAPI 3.1 endpoint types generated from
+  FastAPI via `openapi-typescript` (`web/src/lib/api-types.d.ts`, MA-266), the
+  formatting (GBP and INR with lakh and crore, privacy masking) and the view
+  models live in `web/src/lib/`, written once and imported by path by the iOS
+  app's shell (§9.5).
 - **Sign-in** (MA-185): Sign in with Apple, Google or a passkey, as §4.5's
   browser row; the api sets the `HttpOnly`, `Secure`, `SameSite=Strict` session
   cookie for its own host (thirty days on a laptop), with five-minute access
@@ -1731,7 +1748,7 @@ to start a fresh trace of its own.
 | Hop | Who carries it | How |
 | --- | --- | --- |
 | A tap or a sentence at a door | the iOS app, the web app | a new W3C `traceparent` per action, sent as a header on the call and kept beside the `client_message_id` in the door's own ring of events (MA-232, MA-234) |
-| API Gateway to `api` | API Gateway, the api | API Gateway's tracing on; the api adopts the door's trace, answers `202` with `x-mypaisa-trace-id`, and writes the trace id into its access log line |
+| API Gateway to `api` | API Gateway, the FastAPI `api` | API Gateway's tracing on; FastAPI's `CorrelationMiddleware` and `opentelemetry-instrumentation-fastapi` adopt the door's `traceparent` and API Gateway's `request_id`, record a span per route template (`http.route`) for Application Signals, answer `202` with `x-mypaisa-trace-id` and `x-request-id` (on errors and `422` validations too, MA-266), and write the trace id and request id into the access and application log lines |
 | `api` to `updates.fifo` to `agent` | SQS, Lambda | the header rides the message as its `AWSTraceHeader` system attribute, outside the size quota, and Lambda's SQS event source continues it with no code |
 | Inside the agent | the agent | one span per model call (§10.4), per tool call, per DynamoDB, S3 and SQS call and per push, each with `run_id`, the member's hash and the conversation id as attributes |
 | `agent` to `outbox.fifo` to `sender`, then the stream log, Apple push and Web Push | SQS, Lambda, the sender | the same header; the sender's append and each push are spans, and every `StreamEvent` and push payload carries the `run_id` and `trace_id` of the run that made it in its envelope, and nothing else of the trace (§21.5) |
@@ -1742,7 +1759,7 @@ to start a fresh trace of its own.
 | A release (§18.4) | CI | every span and log line carries `build` (the git sha) and the alias version as resource attributes, and the release writes a `RunRecord` of trigger `deploy`, so a change in behaviour lines up with the deploy that made it |
 
 **The correlation keys**, the same names everywhere: `trace_id`, `span_id`,
-`run_id`, `member` (a hash of the member id; never the id, a name or an
+`run_id`, `request_id` (on HTTP routes), `member` (a hash of the member id; never the id, a name or an
 address), `client_message_id`, `conversation_id`, `job_id`, `env`, `build`,
 `version`, `door` and `app_version`.
 
@@ -1773,11 +1790,11 @@ arrive": the sender's span and the door's event on the same trace.
   nothing of the GenAI conventions. The log formatter adds the OpenTelemetry
   `trace_id` and `span_id` to every line, so Transaction Search and
   Application Signals join the logs to the trace.
-- **Cold start.** The layer enables only the AWS SDK and HTTP instrumentations
-  by default, which is all the handlers need (boto3; httpx to the Anthropic
+- **Cold start.** The layer enables only the AWS SDK, FastAPI (`opentelemetry-instrumentation-fastapi` on `api` and `stream`, MA-266) and HTTP instrumentations
+  by default, which is all the handlers need (FastAPI; boto3; httpx to the Anthropic
   API and to APNs). The `api` is the latency-sensitive function: MA-232
   measures its cold start with the layer and keeps it under 300 ms [verify];
-  if it cannot, the api keeps those two instrumentations and nothing more.
+  if it cannot, the api keeps those instrumentations and nothing more.
 - **The doors carry no SDK.** A `traceparent` is sixteen random bytes and a
   version byte; each door makes one per action and sends it. What the door
   observed goes through `POST /v1/telemetry` (MA-234), a route of the api like
@@ -2139,9 +2156,9 @@ pensions since 2024") are answered without a database running all month:
 | **The app** | **One app for iOS and iPadOS 26 (Liquid Glass): a React Native shell (bare React Native 0.88, the New Architecture, Hermes, TypeScript, no Expo, Swift Package Manager) with a native SwiftUI core in Swift 6, every piece a member looks at hosted through Fabric and fed one formatted JSON model (§9.5); Swift Charts; AuthenticationServices (Sign in with Apple, passkeys) and Google Sign-In for iOS; LocalAuthentication for the app lock; UserNotifications; VisionKit, PhotosUI and Quick Look for files; Jest for the shell, swift-format, XCUITest, snapshot and accessibility tests for the SwiftUI pieces, and a `PERFORMANCE.md` with its benches; TestFlight (§9, §18.4)** |
 | Charts | **Swift Charts in the app and shadcn-svelte's charts on LayerChart in the web app (lightweight-charts for the market side's price charts), from the engine's series; no image is drawn on the server** |
 | **Identity** | **Amazon Cognito (Essentials), one user pool per environment: Sign in with Apple and Google verified in custom-auth Lambdas, passkeys; five-minute access tokens in the Keychain** |
-| **Records** | **Kinds as data, records as documents, append-only events and materialised views in the one DynamoDB table (§4.8); one write service for the chat's Confirm and the correction in place (§4.10); nightly Parquet exports read with DuckDB (§12.1)** |
+| **Records** | **Kinds as data, records as documents, append-only events and materialised views in the one DynamoDB table, through a thin typed repository on Pydantic v2, `boto3` and `mypy-boto3-dynamodb` with `TransactWriteUnit` (§4.8, MA-265; no DocumentDB); one write service for the chat's Confirm and the correction in place (§4.10); nightly Parquet exports read with DuckDB (§12.1)** |
 | **Wealth maths** | **`wealth/`: XIRR, accrual, loan schedules, the budget and the Projection, deterministic then Monte Carlo, with the old tracker's tested cases as golden fixtures (§6.6)** |
-| Runtime | Lambda container image, arm64; **handlers `api`, `agent`, `sender`, `worker` (each job by its type), `stream` (a separate build target of the same Dockerfile, through the Lambda Web Adapter), the authorizer and the Cognito triggers** |
+| Runtime | Lambda container image, arm64; **handlers `api` (FastAPI on `Mangum`, MA-266), `agent`, `sender`, `worker` (each job by its type), `stream` (FastAPI on Uvicorn as a separate build target of the same Dockerfile, through the Lambda Web Adapter 1.1, MA-229, MA-266), the authorizer and the Cognito triggers** |
 | **Delivery to the doors** | **SSE on the api host: the sender appends to each member's stream log, the stream sends it to every open door, and Apple push (HTTP/2 with a token key) and Web Push reach a device with no fresh presence (§21.5)** |
 | **Queues** | **SQS: a FIFO queue in (one lane per member), a FIFO queue out (one lane per member), a work queue for background jobs, and a dead-letter queue behind each, with alarms and replay (§21)** |
 | Scheduling, storage, secrets, infra, CI | EventBridge Scheduler, DynamoDB + S3, SSM, Terraform only, GitHub Actions with OIDC; **dev and prod as two isolated copies in one account (§18)** |
@@ -3161,10 +3178,11 @@ the iOS app and Web Push the installed web app (§11). Built in phase 1
   below fits, and a 5-minute idle timeout, which the 15-second heartbeat
   keeps open. The api is a REST API, not an HTTP API, because only REST APIs
   stream (MA-229).
-- **The function:** a Starlette app on Uvicorn behind the Lambda Web Adapter
-  1.1, with `AWS_LWA_INVOKE_MODE=response_stream`, built as its own target of
-  the same Dockerfile, since the adapter would otherwise take over the other
-  handlers (MA-229).
+- **The function:** a FastAPI app (`StreamingResponse`, `text/event-stream`) on
+  Uvicorn behind the Lambda Web Adapter 1.1, with
+  `AWS_LWA_INVOKE_MODE=response_stream`, built as its own target of the same
+  Dockerfile, since the adapter would otherwise take over the other handlers
+  (MA-229, MA-266).
 - **Order and resume:** a per-member sequence counter and an event log,
   `StreamEvent`, kept at least seven days (§4.1). The sender appends each
   finished message, card, card edit, check-in and record change. A door
