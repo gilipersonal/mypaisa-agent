@@ -90,10 +90,9 @@ function step(s: DemoState, a: Action): DemoState {
       const act = s.chat.active; if (!act) return s;
       const flow = FLOWS[act.id]; const beat = flat(flow, s, act.ans)[act.i] as any;
       if (!beat || !('confirm' in beat)) return s;
-      act.confirmedAt = s.time;
       act.ans['$confirmed' + act.i] = true;
       for (const x of beat.onConfirm(s, act.ans)) s = step(s, x);
-      const a2 = s.chat.active; if (a2) { a2.i++; }
+      const a2 = s.chat.active; if (a2) { a2.confirmedAt = s.time; a2.i++; }  /* the saved card shows the event's own time */
       return advance(s);
     }
     case 'flow.cancel': {

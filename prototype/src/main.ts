@@ -10,6 +10,7 @@ import './styles/boards/v4-pages.css';
 import './styles/boards/v4-chat.css';
 import './styles/app.css';
 import './areas';
+import './presenter/steps';
 import { mount } from 'svelte';
 import App from './ui/App.svelte';
 

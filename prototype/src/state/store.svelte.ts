@@ -16,6 +16,8 @@ class Store {
     persist(this.s);
   };
   replace(s: DemoState) { this.s = s; }
+  /** a plain copy of the state (the reducer clones, and a $state proxy cannot be cloned) */
+  snap(): DemoState { return $state.snapshot(this.s) as DemoState; }
 }
 export const store = new Store();
 export const dispatch = store.dispatch;

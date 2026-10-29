@@ -28,7 +28,14 @@ html, body { margin: 0; height: 100%; background: var(--mp-bg); }
 @keyframes mp-demo-pulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--mp-coral) 55%, transparent); } 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--mp-coral) 0%, transparent); } }
 @media (prefers-reduced-motion: reduce) { .pv4 .walk .pulse { animation: none; } }
 .pw .mtab { display: flex; flex-direction: column; }
-.pw .mtr, .pi .mtr { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; padding: 10px 0; border: 0; border-top: 1px solid var(--mp-line); background: none; text-align: left; font: 400 14px/19px var(--mp-font); color: var(--mp-ink); cursor: pointer; }
+.pw .mtr, .pi .mtr { display: grid; grid-auto-flow: column; grid-template-columns: minmax(0, 2fr); grid-auto-columns: minmax(0, 1fr); gap: 8px; padding: 10px 0; border: 0; border-top: 1px solid var(--mp-line); background: none; text-align: left; font: 400 14px/19px var(--mp-font); color: var(--mp-ink); cursor: pointer; }
 .pw .mth, .pi .mth { font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); border-top: 0; cursor: default; }
 .wdemo { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }
 .wdemo input { width: 120px; }
+/* the budget's rows and the due rows are buttons here (they open a correction or a check-in); the boards draw divs */
+.pw button.bud, .pi button.bud, .pw button.drow, .pi button.drow { width: 100%; background: none; border-style: solid; border-color: var(--mp-line); border-width: 1px 0 0; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.pw .ttl + button.drow, .pi .ttl + button.drow { border-top-width: 0; }
+.pw .prow-m > span, .pi .prow-m > span { overflow-wrap: break-word; }
+/* a row's name keeps room for a few words; a long value wraps instead of crushing it */
+.pw .prow-m, .pi .prow-m { min-width: min(9em, 45%); }
+.pw .prow-v, .pi .prow-v { flex: 0 1 auto; min-width: 0; text-align: right; }

@@ -13,13 +13,14 @@ export function stateAt(i: number, base: DemoState): DemoState {
   return s;
 }
 export function jumpTo(i: number) {
-  store.replace(stateAt(Math.max(0, Math.min(i, STEPS.length - 1)), store.s));
+  store.replace(stateAt(Math.max(0, Math.min(i, STEPS.length - 1)), store.snap()));
 }
 /** Continue: finish what the step does if the presenter has not, then go to the next. */
 export function continueStep() {
-  const s = store.s; const i = s.presenter.step; const st = STEPS[i];
+  const s = store.snap(); const i = s.presenter.step; const st = STEPS[i];
   if (!st) return;
-  const walked = st.run.every((a) => a.type !== 'event' || s.applied.includes(a.id));
+  const exp: string[] = (st as any).expect ?? [];
+  const walked = exp.length > 0 && exp.every((id) => s.applied.includes(id));
   let next = walked ? s : reduce(s, st.run);
   if (i + 1 < STEPS.length) next = reduce(next, [...STEPS[i + 1].enter, { type: 'presenter', patch: { step: i + 1 } }, ...(STEPS[i + 1].door ? [{ type: 'door', door: STEPS[i + 1].door }] : [])]);
   store.replace(next);
