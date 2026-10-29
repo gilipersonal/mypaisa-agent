@@ -9,7 +9,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "check": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings false && node scripts/extract-board-css.mjs --check && node scripts/colours.mjs",
+    "check": "svelte-check --tsconfig ./tsconfig.json && node scripts/extract-board-css.mjs --check && node scripts/colours.mjs --selftest && node scripts/colours.mjs",
     "test": "vitest run",
     "walk": "node e2e/walk.mjs",
     "gate": "npm run check && npm test && npm run build && npm run walk"

@@ -57,6 +57,12 @@
       "cwd": ".",
       "run": "npm ci --prefix scripts --silent --no-audit --no-fund && node scripts/board_fit.js --selftest && node scripts/board_fit.js",
       "paths": ["docs/design/**", "scripts/board_fit*"]
+    },
+    {
+      "name": "prototype",
+      "cwd": ".",
+      "run": "python3 docs/design/figures/make_demo_ledger.py | diff - docs/design/figures/demo-ledger-v4.json && npm ci --prefix prototype --silent --no-audit --no-fund && npm --prefix prototype run gate",
+      "paths": ["prototype/**", "docs/design/figures/**", "docs/design/ds-v1/*.css", "docs/design/app-v1/support.js", "docs/design/app-v1/Prototype*", "docs/design/app-v1/prototype-v4*"]
     }
   ],
   "work": {

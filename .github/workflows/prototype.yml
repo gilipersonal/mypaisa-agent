@@ -1,0 +1,22 @@
+name: prototype
+# MA-290: the demo's gates, on every PR that touches it or what it is built from.
+on:
+  pull_request:
+    paths: ['prototype/**', 'docs/design/figures/**', 'docs/design/ds-v1/*.css', 'docs/design/app-v1/Prototype*', 'docs/design/app-v1/prototype-v4*', 'docs/design/app-v1/support.js', 'scripts/board_fit_page.js', '.github/workflows/prototype.yml']
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: The demo ledger is its generator's output, and its asserts hold
+        run: python3 docs/design/figures/make_demo_ledger.py | diff - docs/design/figures/demo-ledger-v4.json
+      - run: npm ci --prefix prototype --no-audit --no-fund
+      - run: npm ci --prefix scripts --no-audit --no-fund
+      - run: npx --prefix scripts playwright-core install --with-deps chromium webkit
+      - name: Types, board styles, colours, tests, build, the walk
+        run: npm --prefix prototype run gate
