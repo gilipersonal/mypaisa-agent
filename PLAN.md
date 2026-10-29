@@ -1354,7 +1354,9 @@ tracker at `mypaisapp.com` switched off.
   distributions are retired, and the zone moves from the old tracker's
   Terraform to this repository's.
 - **History import (MA-111, `ARCHITECTURE.md` §18.5):** one versioned Excel
-  template sent in the chat, a dry run, Confirm with the second check, batch
+  template sent in the chat, from the app, the web app, or Claude Code on
+  your laptop through a one-time upload link you open in the app (your pick,
+  29 Oct 2026), a dry run, Confirm with the second check, batch
   writes through the write service with audit rows, a fingerprint so a file
   sent twice adds nothing, and rollback by import id. Tested on dev's
   synthetic data first, then used to hydrate prod with the past investments

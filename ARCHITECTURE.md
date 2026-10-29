@@ -2677,7 +2677,9 @@ runs of the same workflow on the same branch never overlap.
 ### 18.5 Hydrating prod: the Excel importer
 
 Prod starts empty, and years of past investments are needed for XIRR. They come
-in through one versioned Excel template (MA-111), sent in the chat as a file:
+in through one versioned Excel template (MA-111), sent in the chat as a file,
+from the app or the web app, or uploaded into the chat by Claude Code on the
+owner's laptop through a one-time link (below):
 
 1. MyPaisa reads the workbook and checks it against the template's version:
    sheets, columns, types, dates, currencies, known holdings.
@@ -2690,9 +2692,22 @@ in through one versioned Excel template (MA-111), sent in the chat as a file:
 
 The template carries the years of investment history; the budget and the
 plans are set up through the chat, not imported (Arun, 29 Oct 2026, MA-275).
-How the workbook reaches the chat when Arun prepares it with Claude Code on
-the laptop is open on MA-111 ("I still want to hydrate prod through excel,
-by providing it to chat using claude code"). The same importer works in dev
+**From Claude Code, through a one-time link** (Arun, 29 Oct 2026, MA-275: "I
+still want to hydrate prod through excel, by providing it to chat using claude
+code", then "Claude Code uploads it"). The owner prepares the workbook with
+Claude Code on the laptop, then taps **Upload from my laptop** in the chat. The
+app shows a one-time link, the owner's alone: it accepts one `.xlsx` of at
+most 20 MB within 15 minutes, through the chat API's presigned upload into
+the documents bucket (§4.6, MA-31), and then expires. Claude Code sends the
+workbook to it with one command; the link carries no credential beyond that
+one upload, and Claude Code never signs in to the household. The file lands
+in the owner's chat as if the owner had sent it, with its `Document` row and
+an audit row naming the link, and the importer's dry-run card follows there.
+Nothing is written until the owner confirms that card in the app with the
+second check, exactly as for a file sent from the phone; a link used twice,
+late or by anyone else adds nothing. The workbook's cells are untrusted text
+like any file's (§23.2): parsed in code, never read as instructions. The
+same importer works in dev
 against the seeded household, so it is tested before it ever touches prod. It is built in phase 9 (MA-111), for prod's years
 of history. The old wealth tracker holds no real data, so nothing is mapped
 from it; MA-105 ports its maths instead (§12).
