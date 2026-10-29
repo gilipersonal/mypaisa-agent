@@ -84,12 +84,17 @@ Yours:
   apply: in the AWS console's Connections, update the pending connection and
   install the AWS Connector for GitHub app on this repository only, so
   CodeBuild's runner can take the image builds.
-- **Apple's keys and records (MA-164).** An APNs key and a Sign in with Apple
+- **Apple's keys and records (MA-164, MA-167).** An APNs key and a Sign in with Apple
   key per environment, put by hand into `/mypaisa-agent/<env>/apple/apns_key`
   and `.../apple/siwa_key` after the apply that made their parameters (the
   second signs the revocation of a leaving member's Apple token, MA-172); App
-  Store Connect records for both apps with you and your wife as internal
-  testers; an App Store Connect API key in the GitHub `prod` environment only.
+  Store Connect records for both apps (`MyPaisa Dev` Internal Group `"Dev Dogfood"`
+  for you alone, and `MyPaisa` Internal Group `"Household Beta"` with your wife
+  and household members invited under least-privilege `Customer Support` or
+  `Marketing` roles scoped strictly to `MyPaisa`, never `MyPaisa Dev`); an App
+  Store Connect `.p8` API key stored in the `main`-only GitHub `dev` and `prod`
+  environments (MA-26, unreachable from pull-request branches and never written
+  to disk).
 - **Claude API access from the plan (MA-21).** Link a Claude Console
   organisation to your Max or Team plan (claude.ai Settings → Billing → API
   credits; 7 days on the plan first; the link cannot be moved later without
@@ -144,20 +149,23 @@ Claude's:
   `opentelemetry-instrumentation-fastapi` and `boto3-stubs[dynamodb,s3,sqs,ssm,cognito-idp]`
   pinned in `pyproject.toml` (MA-265).
 - **The PR gates, seven-layer vulnerability scanning and the five-layer
-  regression pyramid (MA-25, MA-267, MA-269, `docs/RESEARCH.md` §7):** on
+  regression pyramid (MA-25, MA-267, MA-269, MA-273, `docs/RESEARCH.md` §7, §8):** on
   every PR (`ubuntu-24.04-arm`, 1x), ruff (lint + Bandit `S` SAST), pyright,
   `semgrep` across Python, TypeScript and Swift, pytest (`scripts/regression.py`
   L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3
   golden financial maths and OTel PII-leak check), `openapi-typescript`
-  zero-diff contract check (MA-266), `terraform fmt` and `validate`, tflint,
+  zero-diff contract check (MA-266), `python3 scripts/maestro_local.py check-syntax`
+  and `TestIDs.swift` ↔ `web/src/lib/test-ids.ts` selector parity (MA-273),
+  `terraform fmt` and `validate`, tflint,
   `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`,
   `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`,
   `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
   both environments on every PR touching `infra/`. The web visual/a11y gates
   join on PRs touching `web/`, `cards/` or `docs/design/` (MA-194), and the
-  native SwiftUI Xcode Simulator gates (`macos-15` or a self-hosted Mac runner)
+  native SwiftUI Xcode Simulator gates (`macos-15` or a self-hosted Mac runner,
+  paired locally on Apple Silicon with `scripts/maestro_local.py`, MA-273)
   join on PRs touching `ios/` or `cards/` (MA-166), keeping monthly CI inside
-  the 2,000 free GitHub minutes (`docs/RESEARCH.md` §7.5). A weekly Monday
+  the 2,000 free GitHub minutes (`docs/RESEARCH.md` §7.5, §8.7). A weekly Monday
   04:00 UTC schedule and grouped Dependabot updates catch newly disclosed CVEs
   when no code changes (MA-267).
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
@@ -219,7 +227,8 @@ Claude's:
   svelte-check, eslint, vitest, Playwright screenshots at 390 and 1440 in
   both themes with axe and a pixel parity check against the boards, pnpm
   audit.
-- **The iOS app (MA-165, MA-166, MA-167):** `ios/`, a React Native shell
+- **The iOS app (MA-165, MA-166, MA-167, MA-273, MA-274, `ARCHITECTURE.md` §9.1,
+  §9.5, §15.2, §18.4):** `ios/`, a React Native shell
   with a native SwiftUI core, as bong-panjika is built: bare React Native
   0.88 with React 19.3, New Architecture, Hermes, TypeScript, no Expo, its
   native dependencies through Swift Package Manager from day one, never
@@ -237,8 +246,22 @@ Claude's:
   benches, measured on the phone: no dropped frames at 120 Hz scrolling the
   chat and the dashboard and as cards arrive, a chart scrub at 120 Hz, and a
   launch budget. Its CI on a macOS runner (MA-166: Jest for the shell;
-  XCUITest, snapshot and accessibility checks for the SwiftUI pieces) and the
-  TestFlight lanes (MA-167).
+  XCUITest including `⌘*` keyboard shortcuts, snapshot and accessibility checks
+  for the SwiftUI pieces), its local multi-simulator Maestro workspace `.maestro/`
+  and cloned simulator runner `scripts/maestro_local.py` across all four adaptive
+  width sub-bands, `TestIDs.swift` ↔ `test-ids.ts` parity and `xcrun simctl` plus
+  Local File Provider capabilities at £0/month with
+  `python3 scripts/maestro_local.py check-syntax` on Linux CI (MA-273, MA-274;
+  `docs/RESEARCH.md` §8), and its private TestFlight Internal Testing lanes
+  (`testFlightInternalTestingOnly = true`, `ITSAppUsesNonExemptEncryption = false`,
+  `MyPaisa Dev` uploaded in `environment: dev` for you alone and `MyPaisa` in
+  `environment: prod` for `"Household Beta"` after your approval, 90-day /
+  3-month untethered household installs renewed silently in place via Automatic
+  Updates and a day-60 evergreen keepalive rebuild without ever listing on the
+  public App Store, plus a day-60 SNS alert from phase 0 joining §15.2's alert
+  router in phase 8, a day-75 `itms-beta://` banner from phase 0 and
+  `GET /v1/app/minimum-version` on FastAPI from phase 1; MA-167, MA-266,
+  `docs/RESEARCH.md` §8.8).
 - **The local stack (MA-198):** the whole app on the laptop: a moto server for
   DynamoDB, S3 and SQS (no Docker); the FastAPI `api` and `stream` apps and
   worker handlers mounted behind one local Uvicorn ASGI app, the SSE stream
@@ -460,13 +483,17 @@ Claude's:
 **Tests:** the skeleton's gates on the empty project; `terraform validate`
 and a plan for both environments; the web shell's Playwright screenshots at
 390 and 1440 in both themes, with the association file served, not swallowed
-by the fallback (MA-194); the iOS shell's Jest and XCUITest runs and its first
-bench (MA-165, MA-166); the scripted journey end to end on the local stack at
-both doors (MA-198); the seed refusing to run against prod (MA-110); the dev
-dashboard rendering with every widget bound, and a test invocation of the
-skeleton Lambda showing in Transaction Search within five minutes (MA-231);
-the coverage check refusing a copy with a tool, then a prompt, that has no
-case (MA-246).
+by the fallback (MA-194); the iOS shell's Jest and XCUITest runs, its first
+bench (MA-165, MA-166), `maestro_local.py selftest`, `maestro_local.py check-syntax`,
+`TestIDs.swift` ↔ `test-ids.ts` parity and `p00_shell_smoke.yaml` across the five
+cloned Apple Silicon simulators (`375`, `402`, `834`, `1032`, `1376 pt`, MA-273),
+and `ExportOptions-Internal.plist` (`testFlightInternalTestingOnly = true`) plus
+Release `#if DEBUG` strip checks (MA-167); the scripted journey end to end on
+the local stack at both doors (MA-198); the seed refusing to run against prod
+(MA-110); the dev dashboard rendering with every widget bound, and a test
+invocation of the skeleton Lambda showing in Transaction Search within five
+minutes (MA-231); the coverage check refusing a copy with a tool, then a
+prompt, that has no case (MA-246).
 
 **Exit:** `terraform plan` runs clean for dev and prod from CI through OIDC;
 the gates run on every PR, the web gates on every PR that touches `web/` and
@@ -737,7 +764,11 @@ incomplete (MA-250); a fixture model-id change holding a release until T2
 passes (MA-251); a rate pushed past its band alerting once, and a flagged run
 judged overnight (MA-252); in the app, Jest for the shell and
 XCUITest, snapshot and accessibility checks of every screen and card (iPhone
-and iPad, light and dark, Large and AX5, privacy on) (MA-166); in the web
+and iPad, light and dark, Large and AX5, privacy on) (MA-166) plus local Maestro
+`p01` flows across all four width sub-bands, `1032 ↔ 1376 pt` mid-draft rotation,
+Universal Link `/join/<token>`, simulated APNs push and `--mode dev-live` X-Ray
+trace verification (MA-273), and `GET /v1/app/minimum-version` prompt check
+(MA-167, MA-266); in the web
 app, svelte-check, vitest, Playwright at 390 and 1440 in both themes, an axe
 audit, and the service worker caching no figure.
 
@@ -901,7 +932,9 @@ real factsheets and three screenshots (fixtures with expected JSON); the
 currency parser on every form (£ $ € ₹, codes, words, lakh and crore) and a
 rupee amount against a pound record never saved as pounds; schema migration
 on a v0 item; every data route against each role and member status;
-Playwright and XCUITest for the in-place edit; the iOS scroll bench at 120 Hz
+Playwright and XCUITest for the in-place edit, plus local Maestro `p02` flows
+(registering by chat, Confirm vs Cancel, inline edit moving SSE across iPhone `402`
+and iPad `1376`, and currency mismatch `1b`, MA-273); the iOS scroll bench at 120 Hz
 with no dropped frames; every poisoned file passing all three trials with no
 tool reached (MA-253); each kind's generated cases in the regression suite
 (MA-254).
@@ -957,8 +990,10 @@ penny, the old tracker's cases included; the maturity timeline; the daily net
 worth; the ECB loader on recorded responses, rupees included; the GBP, INR,
 USD and EUR views of the same household agreeing to the penny at the day's
 rate, with lakh and crore grouping for rupees; a maturity's check-in before and on the date; a
-renewal starting its successor, and nothing deleted; Playwright and XCUITest
-for the currency switch.
+renewal starting its successor, and nothing deleted; Playwright, XCUITest and
+local Maestro `p03` flows (`320 pt` Display Zoom rupee hero fit, the currency
+switch across GBP, INR, USD and EUR with lakh/crore grouping and privacy
+masks, MA-273) for the currency switch.
 
 **Exit:** you register an SBI fixed deposit and a UK saver, a sentence each;
 both accrue to the penny and their maturities show on the dashboard; the
@@ -1022,7 +1057,8 @@ ending the commitment; several due on one card; a joint record's payer asked
 and the other owner told; no amount on the lock screen; an autopay
 commitment assumed paid and listed in the digest; notifications near ten a
 week on the seeded household; a card payment counted as a transfer; the Debts
-and one-loan screens at both doors.
+and one-loan screens at both doors, including local Maestro `p04` simulated APNs
+EMI check-in tap (`Paid, ₹39,390`) and offline queue flush (MA-273).
 
 **Exit:** you register an HDFC car loan from a sentence; MyPaisa computes the
 EMI, the schedule and the end date; when the EMI falls due the check-in card
@@ -1085,7 +1121,9 @@ penny, the old tracker's cases included, and the reason given when it cannot
 be computed, with hypothesis; a typed transaction through Confirm; a fixture
 per investment kind, each holding inside its account; an estimate labelled
 wherever the return shows; a SIP instalment written as a buy, with its
-step-up; the Assets and one-asset screens at both doors.
+step-up; the Assets and one-asset screens at both doors, including local Maestro
+`p05` Photos `addMedia` valuation screenshot extraction and XIRR Technical fold
+(MA-273).
 
 **Exit:** an ISA fund, an Indian mutual fund and a share are registered
 through the chat and priced every day; each shows its XIRR with its working,
@@ -1129,7 +1167,9 @@ nothing counts twice; a payment on a statement answering its check-in; one
 Confirm writing the month, and the file kept; the month closed on the 1st,
 asking only for what was not covered; plan against actual per category, per
 member and for the household, in each of the four currencies; salary growth measured from
-its history.
+its history; local Maestro `p06` Local File Provider PDF statement upload via
+`Files` picker, category review card and month close on iPhone `402` and iPad
+`1032` upright (MA-273).
 
 **Exit:** you send a bank statement in the chat; it comes back categorised,
 transfers recognised, uncertain lines in amber, for one Confirm; the Budget
@@ -1233,7 +1273,9 @@ schooling, the salary step, the loan closed and its EMI freed); every month,
 opening cash plus its flows equals closing cash; a paused plan changes
 nothing; the goal-seek's options on hand-computed cases; eval cases for the
 three sentences and ambiguous ones (no end date, "about 2 cr", a loan that
-does not exist); the Projection screen at both doors.
+does not exist); the Projection screen at both doors, including local Maestro
+`p07` fan scrub, `1a` Budget forecast, `2a` chat plan rearrangement and `3a`
+Plans tab on iPhone `402` and iPad `1376` (MA-273).
 
 **Exit:** the Projection screen shows the fan with its milestones; you ask a
 what-if and see an unsaved scenario; as the admin you say "£4,000 a month
@@ -1322,7 +1364,9 @@ finding a record, a change, a file and a past answer; a judge below 0.8 on
 its true-positive or true-negative rate dropping to advisory, and a labelled failure becoming a case on the seed
 household (MA-255); snapshot tests of every
 screen on iPhone, iPad and the foldable sizes in both themes, at Large and
-AX5, with privacy on, and the accessibility audit; in the web app,
+AX5, with privacy on, and the accessibility audit, plus local Maestro `p08`
+Quick Look file preview, Search tab and Admin center `BiometricKit_Sim` Face ID
+second-check mismatch refusal and retry match (MA-273); in the web app,
 Playwright screenshots at 390 and 1440 in both themes.
 
 **Exit:** you open the Admin center on your iPhone, on the laptop and in a
@@ -1405,7 +1449,9 @@ its stored run, no assumption proposed before 6 closed months or applied
 without the admin's Confirm, text a file or a page brought in teaching E10
 nothing, and one member's learning never reaching another (MA-276, MA-277); `query_ledger_sql` reading only that
 household's files; the apex redirect and the old distributions' retirement in
-the Terraform plan.
+the Terraform plan; local Maestro `p09` whole-wealth cross-band sweep (`320` to
+`1376 pt`), Dynamic Type `AX5`, Dark 25%-brightness `assertScreenshot` and Local
+File Provider Excel workbook upload (MA-273).
 
 **Exit:** the household's whole wealth is on prod, every figure entered
 through the chat, statements or the Excel importer, and corrected in place
@@ -1455,7 +1501,8 @@ responses (same `Bars` shape, pounds not pence, the stale rule, idempotence
 per date, a clean failure when the vendor is down), with the recordings
 refreshed only by a deliberate command; golden files for every indicator and pillar; property test that
 local + FX = total; cascade cases for each action; macro regime cases from
-the desk's synthetic generator; self-test gate.
+the desk's synthetic generator; self-test gate; local Maestro `p10` Activity
+price-freshness and source-comparison view check (MA-273).
 
 **Exit:** five trading days of signals landing by 07:10 that match a manual
 spot check; the desk's own test cases pass on the port.
@@ -1488,7 +1535,8 @@ Claude starts writing on top of numbers that already work.
 **Tests:** the figure check catching an invented number in a brief and a card; alert state machine with
 frozen time; spend driven through each step of the ladder with frozen time,
 checking which calls are made and on which model; card rendering from recorded Claude responses; chart snapshot
-tests.
+tests and local Maestro `p11` brief/wrap cards, time-sensitive red alert push,
+Swift Charts `AXChartDescriptor` summary and Technical glossary tap (MA-273).
 
 **Exit:** two weeks of briefs; no alert fires twice in its cooldown; a
 layman reads the top of a card and understands it without the bottom.
@@ -1515,7 +1563,8 @@ You can ask anything about what you hold.
 
 **Tests:** each card against fixtures; scripted conversations on recorded
 responses; the judge never overrides the cascade's action; search results
-containing instructions are not acted on.
+containing instructions are not acted on; local Maestro `p12` Holding Profile,
+Overlap, Bear-vs-Bull and Scenario card flows across iPhone and iPad (MA-273).
 
 **Exit:** ten real questions answered with sources; the overlap review on
 your two funds shows the shared holdings and currency exposure.
@@ -1537,7 +1586,8 @@ your two funds shows the shared holdings and currency exposure.
   the browser (MA-78).
 
 **Tests:** grader on synthetic histories; calibration maths on hand-computed
-cases; recalibration only after 8 weeks of evidence.
+cases; recalibration only after 8 weeks of evidence; local Maestro `p13` Overlap
+and Scorecard flows across iPhone `402` and iPad `1376` (MA-273).
 
 **Exit:** four Saturday reviews delivered; the reliability table shows
 whether 70% means 70%.
@@ -1552,6 +1602,10 @@ whether 70% means 70%.
   the brief, `get_events` and `get_sentiment` tools.
 - Sentiment tilt in the cascade, one notch, only when price pillars agree.
 
+**Tests:** RSS deduplication, article scoring on recorded Haiku batches, event
+calendar windowing, and local Maestro `p14` event calendar and brief sentiment
+line rendering (MA-273).
+
 **Exit:** three weeks of indices; 30 scored articles spot-checked.
 
 **Cost:** about £17 a month cumulative (£37 with EODHD).
@@ -1565,6 +1619,10 @@ whether 70% means 70%.
 - Stance chips on the Portfolio card and in the brief; `/calls`.
 - Guardrail review: no "sell everything" path exists; protected positions
   filtered; top-up suggestions capped by your preference.
+
+**Tests:** 8-week go-live gate boundary cases, protected-position filtering,
+and local Maestro `p15` live stance chips on the Portfolio card and `/calls`
+flow (MA-273).
 
 **Exit:** the gate passes, or the review says why it has not and stances stay
 in the Saturday review.
@@ -1582,6 +1640,10 @@ Adding an iShares ETF from Monzo's "Build your own" range or, later, a share:
 - For a share: the `valuation-snapshot` and `earnings-analysis` cards and a
   fundamentals source that covers the LSE; £59.99 a month more (£49.99 paid
   yearly) if EODHD Fundamentals is used. Decide then, not now.
+
+**Tests:** kind spec approval behind the second check, price-source chain
+verification, and local Maestro `p16` new holding kind registration and card
+rendering (MA-273).
 
 ---
 
@@ -1652,7 +1714,9 @@ at tomorrow caught by the lab; walk-forward folds with a gap and the last two
 years held out; calibration curves; a known-answer backtest to the penny; the
 event study against a hand-worked example; each pattern detector against
 hand-marked charts, and no pattern reading a bar after its date (MA-280); the
-switch-off; the card and the screen from fixtures, with snapshot tests.
+switch-off; the card and the screen from fixtures, with snapshot tests and local
+Maestro `p17` side-by-side Forecaster vs rules-engine card and screen flows
+(MA-273).
 
 **Exit:** over ten years of walk-forward tests and 8 live weeks, the risk
 forecasts beat the base rate; the steered contributions cut the worst fall and
@@ -1721,7 +1785,8 @@ runs before a horizon; calibration's daily step limit and rollback;
 a challenger that does not beat the current version is never proposed;
 injected failures at each pipeline step recover idempotently or open an
 incident, and the trace shows the step and the incident names it (MA-235);
-metering by agent.
+metering by agent; local Maestro `p18` Admin desk Approvals, Settings, Agents
+and Incidents flows behind `BiometricKit_Sim` Face ID (MA-273).
 
 **Exit:** a month in which every change was either inside its band or
 approved by the admin, every prediction was graded, calibration stayed
@@ -1761,7 +1826,8 @@ every day from then; IN1 adds the history and the other sources.
 **Tests:** synthetic CAS statements and broker exports import exactly once;
 an unmatched ISIN is listed, not guessed; each Indian chain falls through to
 stale; INR and GBP views agree with the FX of the day; golden tests for the
-India basket.
+India basket; local Maestro `p19` Local File Provider CAMS/KFintech CAS PDF
+import behind Face ID and INR/GBP demat/folio views (MA-273).
 
 **Exit:** a member sends their CAS and broker export, taps Confirm once, and
 the Indian holdings with their history appear in the brief and on the dashboard
@@ -1790,7 +1856,9 @@ Each story is designed first; privacy mode holds everywhere.
 
 **Tests:** each widget, intent and the share extension from fixtures, in
 light, dark, tinted and clear, with privacy on; the extension signs in
-through the shared Keychain group and refuses when signed out.
+through the shared Keychain group and refuses when signed out; local Maestro
+`p20` Safari/Files Share Sheet to `MyPaisa Dev`, App Intents deep links and
+WidgetKit snapshot checks (MA-273).
 
 **Exit:** the widget on your Lock Screen shows the household's day without
 opening the app, and hides it when privacy mode is on.
@@ -1892,11 +1960,13 @@ for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
 # when web/ changed (MA-194): svelte-check, eslint, vitest, Playwright at 390 and 1440 in both themes, npm audit
 (cd web && npm run check && npm run lint && npm test && npm run test:e2e && npm audit)
-# when ios/ changed (MA-165, MA-166): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks for the SwiftUI pieces
+# when ios/ changed (MA-165, MA-166, MA-273): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks; Maestro syntax + local 5-simulator matrix
+python3 scripts/maestro_local.py check-syntax
 npm run lint --prefix ios && npm test --prefix ios
 xcrun swift-format lint --strict --recursive ios
 xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 xcodebuild test -project ios/MyPaisa.xcodeproj -scheme "MyPaisa Dev" -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M3)'
+python3 scripts/maestro_local.py run --up-to-phase <N>
 ```
 
 Plus: golden tests for any engine or wealth maths change, the old tracker's
@@ -1934,7 +2004,7 @@ runs read by a person and their failure modes turned into checks or cases
 | CocoaPods trunk goes read-only on 2 Dec 2026 | Settled (MA-229): the iOS project starts on Swift Package Manager with React Native 0.88 (opt-in, hardened in 0.88) and never uses CocoaPods; a native library that cannot build with it is replaced (MA-165) |
 | The React Native shell is not smooth enough | Every piece a member looks at is SwiftUI, fed one formatted model; `PERFORMANCE.md` benches on the phone: no dropped frames at 120 Hz scrolling the chat and the dashboard and as cards arrive, a chart scrub at 120 Hz, a launch budget (MA-165) |
 | The web app's fallback swallows the iOS association file | Settled (MA-229): there is no S3 error-page fallback; a CloudFront Function sends only extension-less page paths to the shell, and the file is served as itself with `Content-Type: application/json`, with a test for it (MA-73, MA-194) |
-| A new app meets an old api, or a TestFlight build expires | The api states its minimum app version and an older app asks to update; prod's Lambdas go live before the prod app; an alert at day 60 of a build's 90 (MA-167) |
+| A new app meets an old api, or a TestFlight build expires | From phase 1 the FastAPI api states its minimum app version (`GET /v1/app/minimum-version`, MA-266) and an older app asks to update; prod's Lambdas go live and pass read-only smoke before the prod app uploads; `testflight-keepalive.yml` (or Xcode Cloud's 25 free compute hours a month) rebuilds at day 60 of a build's 90, backed by a day-60 alert and a day-75 `itms-beta://` update banner (MA-167) |
 | A card the app does not know yet | Every card carries a plain line; an unknown type or newer version shows it with "Update MyPaisa to see this card" (MA-174) |
 | Alert fatigue, or too many check-ins | Weekly red budget, cooldowns, repeat filter; autopay assumed and a weekly digest, about ten notifications a week (MA-211) |
 | An agent changes something it should not | One settings service enforcing schema, range and band; approval with the second check for anything outside the band; every change a version and an audit row; secrets and infrastructure out of agents' reach |

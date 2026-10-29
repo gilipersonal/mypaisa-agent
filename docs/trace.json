@@ -3410,7 +3410,7 @@
      "board": "Browser · Admin · Alerts · Replayed, and failed again"
     }
    ],
-   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. Editing the ceiling per environment and the warning past the credit are MA-116's (its Spend boards S.1 and S.2 and its undrawn list), not repeated here. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. Admin center 3's Spend and Alerts pages add entry buttons and a Queues card that Admin center 2 does not have; reconcile the two in the options round. Each agent's share is MA-136's (phase 18). Admin center 3's Spend page leaves out five things Admin center 2 has (the Each agent's share card, the An agent guard, the paid-feeds line, the line that the meter was checked against the Console, the Every budget setting link); Admin center 2 stays the spec for them until the options round reconciles the two. Its S.8 edits the step percentages; what each step does is set on Change the AWS cap, its steps and actions. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards.",
+   "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. Editing the ceiling per environment and the warning past the credit are MA-116's (its Spend boards S.1 and S.2 and its undrawn list), not repeated here. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. Admin center 3's Spend and Alerts pages add entry buttons and a Queues card that Admin center 2 does not have; reconcile the two in the options round. Each agent's share is MA-136's (phase 18). Admin center 3's Spend page leaves out five things Admin center 2 has (the Each agent's share card, the An agent guard, the paid-feeds line, the line that the meter was checked against the Console, the Every budget setting link); Admin center 2 stays the spec for them until the options round reconciles the two. Its S.8 edits the step percentages; what each step does is set on Change the AWS cap, its steps and actions. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. MA-274 (29 Oct 2026): the day-60 TestFlight build-age alert (raised via MA-231's SNS watch-tower topic in Phase 0 MA-167) joins ARCHITECTURE 15.2's alert table and this story's Admin center alert router (app, push, email).",
    "undrawn": [
     "the routing board's holding-alert email cell off by default with an explicit Include holding values in email switch (the board locks it off; fix made, waiting on MA-160)",
     "Admin center 3 · Telegram · Daily digest, its h1 replay line agreeing with the replay boards: 3 replayed, 2 ran, 1 failed again (fix made, waiting on MA-160)",
@@ -4046,7 +4046,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "MA-274 (29 Oct 2026): MyPaisa Dev (com.mypaisapp.agent.dev, Dev Dogfood group) stays Arun-only, while invited household Apple IDs get least-privilege Customer Support or Marketing roles scoped strictly to MyPaisa (com.mypaisapp.agent, Household Beta group); the .p8 App Store Connect API key lives in the main-only GitHub dev and prod environments (never on disk, unreachable from PR branches) so release.yml's pre-approval MyPaisa Dev upload, testflight-keepalive.yml and the approved prod MyPaisa upload authenticate cleanly."
   },
   {
    "key": "MA-165",
@@ -4064,7 +4064,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "MA-274 (29 Oct 2026): carries ios/MyPaisaCore/Testing/TestIDs.swift (shared with web/src/lib/test-ids.ts), .accessibilityElement(children: .contain) on interactive SwiftUI cards and Swift Charts, UITabBarItem.accessibilityIdentifier on Liquid Glass tabs, MYPAISA_BUILD_EPOCH in Info.plist, and #if DEBUG hooks (MYPAISA_API_URL, MYPAISA_STATIC_MOTION, MYPAISA_VIEWPORT_WIDTH) stripped from Release (MA-273)."
   },
   {
    "key": "MA-166",
@@ -4081,7 +4081,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "MA-274 (29 Oct 2026): XCUITest covers iPad hardware keyboard shortcuts (Cmd+K, Cmd+1..5, Cmd+F via XCUIKeyModifierCommand) alongside performAccessibilityAudit() and snapshot tests, pairing with MA-273's local Maestro 5-simulator runner."
   },
   {
    "key": "MA-167",
@@ -4094,12 +4094,14 @@
     "design"
    ],
    "arch": [
+    "9.5",
+    "15.2",
     "18.4"
    ],
    "ui": true,
    "design": "todo",
    "boards": [],
-   "notes": "Its one screen is the app's prompt to update when TestFlight has a newer build or the running one is about to expire; it is drawn in MyPaisa iOS v1 with /design-first before the story starts."
+   "notes": "Its two UI states - (a) a dismissible day-75 Warm Ledger build-expiry banner with a 1-tap itms-beta:// action driven offline in Phase 0 by compiled MYPAISA_BUILD_EPOCH in Info.plist, and (b) a hard minimum-version update prompt once Phase 1's FastAPI GET /v1/app/minimum-version (MA-266) lands - are drawn in MyPaisa iOS v1 with /design-first before the story starts. MA-274 (29 Oct 2026): exports set testFlightInternalTestingOnly = true and ITSAppUsesNonExemptEncryption = false so builds stay strictly private in App Store Connect Internal Testing (never on the public App Store), run untethered for 90 days (3 months) with silent Automatic Updates preserving Keychain and MMKV, and renew automatically at day 60 via keepalive rebuild; day-60 build-age alerts notify via MA-231's SNS watch-tower topic in Phase 0 and join ARCHITECTURE 15.2's Admin center alert router in Phase 8 (MA-137; docs/RESEARCH.md 8.8)."
   },
   {
    "key": "MA-168",
@@ -7773,7 +7775,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Filed from MA-265 (28 Oct 2026): handlers/api on FastAPI behind Mangum and handlers/stream on FastAPI behind Uvicorn and the Lambda Web Adapter 1.1; CorrelationMiddleware binding trace_id, span_id, request_id, client_message_id and run_id and echoing x-mypaisa-trace-id and x-request-id; opentelemetry-instrumentation-fastapi setting http.route on every span; and openapi-typescript generating web/src/lib/api-types.d.ts from app.openapi(). Build time is covered by MA-195, MA-31, MA-30 and MA-232."
+   "notes": "Filed from MA-265 (28 Oct 2026): handlers/api on FastAPI behind Mangum and handlers/stream on FastAPI behind Uvicorn and the Lambda Web Adapter 1.1; CorrelationMiddleware binding trace_id, span_id, request_id, client_message_id and run_id and echoing x-mypaisa-trace-id and x-request-id; opentelemetry-instrumentation-fastapi setting http.route on every span; and openapi-typescript generating web/src/lib/api-types.d.ts from app.openapi(). Build time is covered by MA-195, MA-31, MA-30 and MA-232. MA-274 (29 Oct 2026): also serves GET /v1/app/minimum-version with latest build metadata from Phase 1 for MA-167's hard minimum-version update prompt."
   },
   {
    "key": "MA-267",
@@ -7828,7 +7830,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Filed from MA-272 (28 Oct 2026): scripts/regression.py across Layers 1 to 5 and the Option D path-filtered GitHub Actions (ubuntu-24.04-arm 1x + path-gated macos-15 / self-hosted Mac) and AWS CodeBuild arm1.small runner layout so monthly CI stays inside the 2,000 GitHub and 100 CodeBuild free minute tiers (£0/month). Build time is covered by MA-24, MA-25, MA-166, MA-194, MA-198 and MA-246."
+   "notes": "Filed from MA-272 (28 Oct 2026): scripts/regression.py across Layers 1 to 5 and the Option D path-filtered GitHub Actions (ubuntu-24.04-arm 1x + path-gated macos-15 / self-hosted Mac) and AWS CodeBuild arm1.small runner layout so monthly CI stays inside the 2,000 GitHub and 100 CodeBuild free minute tiers (£0/month); Layer 1 includes python3 scripts/maestro_local.py check-syntax and TestIDs.swift <-> web/src/lib/test-ids.ts selector parity on Linux (1x), while Layer 4 pairs path-gated iOS XCUITest/Snapshot/AX5 with local Apple Silicon scripts/maestro_local.py (MA-273). Build time is covered by MA-24, MA-25, MA-166, MA-194, MA-198 and MA-246."
   },
   {
    "key": "MA-270",
@@ -7874,7 +7876,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "10.3",
@@ -7891,6 +7893,47 @@
    "code": [
     "docs/design/cicd-security-regression.html",
     "docs/design/cicd-security-regression/*.gif"
+   ]
+  },
+  {
+   "key": "MA-273",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "A local Maestro workspace and multi-simulator runner test the iOS and iPadOS app across compact, sheet-away and chat-beside size bands, system capabilities and phase flows",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "9.1",
+    "9.5",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-274 (29 Oct 2026): Phase 0 delivers .maestro/config.yaml, scripts/maestro_local.py --up-to-phase <N> isolated cloned simulator pool (MyPaisa-Maestro-iPhone-375, iPhone-402, iPad-834, iPad-1032, iPad-1376 + optional iPhone Duo, flock-locked per UDID with localhost simctl BiometricKit_Sim/APNs/network bridge and Local File Provider PDF/workbook staging so automated runs never collide with interactive Maestro MCP), shared mp.* TestIDs.swift and web/src/lib/test-ids.ts selector parity + maestro_local.py check-syntax on Linux CI (1x), and flows/p00_shell_smoke.yaml across all four simulator width sub-bands (<600, 600-899, 900-1132, >=1133 pt) at GBP 0.00/month; flows p01 to p20 (including Mode B api-dev X-Ray trace verification, Face ID second check, Universal Links, APNs privacy redaction, Photos addMedia + Files PDFs and live iPad rotation) join phase by phase in Phases 1 to 20. Build time is covered by MA-165, MA-166 and MA-269."
+  },
+  {
+   "key": "MA-274",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The local iOS and iPadOS Maestro testing strategy, four-sub-band device matrix, phase-wise rollout and private 90-day TestFlight beta plan are recorded in the plan and Confluence with block diagrams",
+   "status": "In Review",
+   "labels": [],
+   "arch": [
+    "9.1",
+    "9.5",
+    "15.2",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 29 Oct 2026: design and record the local iOS and iPadOS Maestro testing strategy and Phase 0 to 20 rollout plan on Confluence with block diagrams, together with how to keep MyPaisa privately installed for 3 months (90 days) and rolling indefinitely on household iPhones and iPads via TestFlight Internal Testing (testFlightInternalTestingOnly = true, silent Automatic Updates preserving Keychain and MMKV, day-60 keepalive renewal, zero App Store listing). Delivered in docs/RESEARCH.md 7.4 and 8, ARCHITECTURE.md 9.1, 9.5, 15.2 and 18.4, PLAN.md, TECH_STACK.md, README.md, docs/design/maestro-ios-ipados-testing.html, its five GIFs in docs/design/maestro-ios-ipados-testing/, and the Confluence page Local iOS and iPadOS Maestro testing and private TestFlight beta plan.",
+   "code": [
+    "docs/design/maestro-ios-ipados-testing.html",
+    "docs/design/maestro-ios-ipados-testing/*.gif"
    ]
   }
  ],

@@ -1397,7 +1397,11 @@ the chat fell to about 360 to 480 pt, too narrow for the screens as drawn, so th
 any guided flow. With a hardware keyboard, Return sends, ⌘K focuses the
 composer, ⌘1 to ⌘5 open the sections and ⌘F searches. Every screen works from
 xSmall to AX5 Dynamic Type, with VoiceOver, Increase Contrast, Reduce
-Transparency and Reduce Motion (MA-181).
+Transparency and Reduce Motion (MA-181). Local multi-simulator Maestro flows
+(`.maestro/` and `scripts/maestro_local.py`, MA-273, MA-274; §9.5, §18.4,
+`docs/RESEARCH.md` §8) verify all four width sub-bands and live rotation across
+1133 pt on Apple Silicon, while `XCUITest` exercises the hardware keyboard `⌘*`
+shortcuts (MA-166).
 
 **Legible at 25% brightness** (MA-181). Arun, 25 Oct 2026: "the text and
 component should be clearly visible even in 25% mobile brightness". Every
@@ -1696,8 +1700,19 @@ Monzo". It follows bong-panjika's `frontend-native-apple`, with its
     cards arrive;
   - a chart scrub at 120 Hz;
   - a launch budget.
-- **Tests** (MA-166): Jest for the shell; XCUITest, snapshot and
-  accessibility checks for the SwiftUI pieces.
+- **Tests** (MA-166, MA-273, MA-274; `docs/RESEARCH.md` §8): Jest for the shell; XCUITest, snapshot and
+  accessibility checks for the SwiftUI pieces; and a local Maestro workspace
+  (`.maestro/` driven by `scripts/maestro_local.py` across an isolated cloned
+  simulator pool so automated runs never collide with interactive Maestro MCP
+  sessions) sharing one canonical `mp.*` selector dictionary (`TestIDs.swift`
+  and `web/src/lib/test-ids.ts`), `.accessibilityElement(children: .contain)` on
+  every interactive card and Swift Chart, `MYPAISA_STATIC_MOTION=1` for
+  deterministic spring settling, and `xcrun simctl` plus host Local File Provider
+  harnesses (via `maestro_local.py`'s localhost bridge) for Face ID
+  (`BiometricKit_Sim`), Universal Links, simulated APNs push, Photos `addMedia`
+  images, Local File Provider PDFs and workbooks, `AX5` Dynamic Type, offline
+  queue flush, and live rotation across all four width sub-bands (`⌘*` hardware
+  keyboard shortcuts run in `XCUITest`).
 - **The shell's libraries** (MA-229, bong-panjika's, at their latest):
   TanStack Query 5.105 for React on the same query core as the web app, using
   the query definitions in `web/src/lib/`; Reanimated 4.7 with Worklets 0.13
@@ -2447,6 +2462,7 @@ the hard limit is a pull request.
 | Claude or AWS step reached, forecast over the cap | yes | yes | yes |
 | Incident, an approval waiting (§20.3) | yes | yes | critical only |
 | Data feed stale, a job failed | yes | yes | no |
+| TestFlight build reaching day 60 of 90 (MA-167) | yes | yes | yes (SNS from phase 0; app and push join here in phase 8) |
 | Holding alerts (§11) | members' own, as today | members' own, as today | no |
 
 - **App:** the Alerts screen in the Admin center and its badge, for the admin
@@ -2643,19 +2659,19 @@ write-only placeholder (`value_wo`, §14), so no value reaches its state. The
 AWS MCP is for reading (describe, logs, metrics, costs) and never changes a
 resource (`.claude/rules/aws-changes.md`).
 
-**GitHub CI, as on smart-clearance** (MA-25, MA-107, MA-267, MA-268, MA-269, MA-272; `docs/RESEARCH.md` §7):
+**GitHub CI, as on smart-clearance** (MA-25, MA-107, MA-267, MA-268, MA-269, MA-272, MA-273, MA-274; `docs/RESEARCH.md` §7, §8):
 
 | Stage | When | What |
 | --- | --- | --- |
-| Gates & regression (L1–L3) | every PR (`ubuntu-24.04-arm`, 1x) | ruff (lint + Bandit `S` SAST), pyright, `semgrep`, pytest (`scripts/regression.py` L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3 golden financial maths and OTel PII-leak gate), `openapi-typescript` zero-diff contract check (MA-266, MA-269), `terraform fmt` and `validate`, tflint, `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`, `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`, the `jira-key` check, and the iOS TypeScript shell `Jest` tests (MA-267, MA-269) |
+| Gates & regression (L1–L3) | every PR (`ubuntu-24.04-arm`, 1x) | ruff (lint + Bandit `S` SAST), pyright, `semgrep`, pytest (`scripts/regression.py` L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3 golden financial maths and OTel PII-leak gate), `openapi-typescript` zero-diff contract check (MA-266, MA-269), `python3 scripts/maestro_local.py check-syntax` (checking `.maestro/subflows/*.yaml` and `.maestro/flows/*.yaml` one file per invocation) and `TestIDs.swift` ↔ `test-ids.ts` selector parity (MA-273), `terraform fmt` and `validate`, tflint, `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`, `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`, the `jira-key` check, and the iOS TypeScript shell `Jest` tests (MA-267, MA-269) |
 | Web gates (L4) | every PR touching `web/`, `cards/` or `docs/design/` (`ubuntu-24.04-arm`, 1x) | svelte-check, eslint (`eslint-plugin-security`), vitest, `board_fit.js` across 320 to 1920 px in Chromium and WebKit (MA-240), and Playwright at 390 and 1440 in both themes, with `prefers-reduced-motion` both ways and `@axe-core/playwright`; the contrast gate (`scripts/contrast_check.py`) on every PR |
-| iOS native gates (L4) | every PR touching `ios/` native Swift or `cards/`, and on `main` releases | on a macOS runner (`macos-15` or a self-hosted Mac runner, keeping monthly GitHub minutes inside the 2,000 free quota despite the 10x macOS multiplier, `docs/RESEARCH.md` §7.5, MA-269): swift-format, `semgrep` Swift rules, build, XCTest and XCUITest on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); the performance benches of §9.5 on the phone before a release |
+| iOS native gates (L4) | every PR touching `ios/` native Swift or `cards/`, and on `main` releases | on a macOS runner (`macos-15` or a self-hosted Mac runner, keeping monthly GitHub minutes inside the 2,000 free quota despite the 10x macOS multiplier, `docs/RESEARCH.md` §7.5, MA-269): swift-format, `semgrep` Swift rules, build, XCTest and XCUITest (including `⌘*` keyboard shortcuts) on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); locally on Apple Silicon at £0/month (`scripts/maestro_local.py`, MA-273, `docs/RESEARCH.md` §8), the full multi-simulator Maestro E2E matrix across all four width sub-bands, `xcrun simctl` and Local File Provider Face ID / APNs / Universal Links / Photos / Files / offline flows, and `--mode dev-live` X-Ray trace verification; the performance benches of §9.5 on the phone before a release |
 | Evals (L3 & L5) | every PR; live when it changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK; the full suite on a model-id change | T0: the recorded conversations replayed through the agent loop and its guards, and the coverage check; T1: the affected cases live in the `evals` workspace, three trials each, within $10 a run and $30 a month, a run stopped by its cap marked incomplete; T2: every case five times on the new model (§23.3; MA-246, MA-250, MA-251) |
 | Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
 | Build & image scan | merge to `main` | the Lambda images built once on AWS: the workflow's image job runs on AWS CodeBuild's arm64 runner (`codebuild-mypaisa-ci-image-…`, arm1.small, inside CodeBuild's free 100 minutes a month), builds the `lambda` and `stream` targets natively, runs `trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed` on both images (MA-267), and pushes them to ECR by the commit's sha (with ECR Basic Scanning on push); the same immutable `sha256` digest goes to both environments (MA-237) |
 | Dev & smoke | after the build | apply dev, deploy, run `python3 scripts/smoke.py --env dev --up-to-phase <N>` (MA-268) against `api-dev` and `dashboard-dev`: verifies `/v1/health`, `/v1/health?deep=1`, OpenAPI `401` perimeter, synthetic member sign-in, `/v1/stream` SSE, a scripted chat turn, the `RunRecord`, and one unbroken trace from `api` to `sender` through the X-Ray API (§10.3, MA-232) |
-| Dev app | after dev passes | the web app synced to dev's dashboard bucket and its CloudFront cache cleared; when `ios/` changed, MyPaisa Dev archived and uploaded to TestFlight (MA-167) |
-| Prod & auto-rollback | after dev passes, T2 is green for the model ids it ships (§23.3), and Arun approves in the GitHub `prod` environment | apply prod with the exact same ECR `sha256` digests verified in dev, deploy behind each Lambda's `live` alias, and run `python3 scripts/smoke.py --env prod --up-to-phase <N>` (strictly read-only — zero synthetic writes to prod tables, `.claude/rules/aws-changes.md`): verifies `/v1/health`, `/v1/health?deep=1`, OpenAPI `401` perimeter, CloudFront headers and zero error alarms; on failure, shifts every Lambda's `live` alias back to its previous version in under five seconds, restores the S3 web manifest and alerts via SNS (MA-107, MA-268); on pass, syncs the web app to prod's dashboard bucket and uploads MyPaisa to TestFlight, so a new front end never meets an old api (MA-167) |
+| Dev app | after dev passes (`environment: dev`, `main` only) | the web app synced to dev's dashboard bucket and its CloudFront cache cleared; when `ios/` changed, MyPaisa Dev archived with `testFlightInternalTestingOnly = true` and `ITSAppUsesNonExemptEncryption = false` (permanently locked to App Store Connect Internal Testing, `"Dev Dogfood"` group for Arun only, zero Beta App Review) and uploaded to TestFlight using the App Store Connect `.p8` API key stored in the `main`-only GitHub `dev` and `prod` environments (MA-26, MA-164, MA-167, MA-274) |
+| Prod & auto-rollback | after dev passes, T2 is green for the model ids it ships (§23.3), and Arun approves in the GitHub `prod` environment | apply prod with the exact same ECR `sha256` digests verified in dev, deploy behind each Lambda's `live` alias, and run `python3 scripts/smoke.py --env prod --up-to-phase <N>` (strictly read-only — zero synthetic writes to prod tables, `.claude/rules/aws-changes.md`): verifies `/v1/health`, `/v1/health?deep=1`, OpenAPI `401` perimeter, CloudFront headers and zero error alarms; on failure, shifts every Lambda's `live` alias back to its previous version in under five seconds, restores the S3 web manifest and alerts via SNS (MA-107, MA-268); on pass, syncs the web app to prod's dashboard bucket and uploads MyPaisa (`testFlightInternalTestingOnly = true`, `"Household Beta"` Internal Group with least-privilege `Customer Support` or `Marketing` App Store Connect roles scoped strictly to `MyPaisa`, so the app stays 100% private and never enters public App Store distribution) to TestFlight, so a new front end never meets an old api; every TestFlight build runs for 90 days (3 months) with silent in-place automatic updates preserving Keychain and MMKV, renewed at day 60 by `testflight-keepalive.yml` on `main` (or Xcode Cloud's 25 free compute hours a month) and guarded by a day-60 SNS email alert from phase 0 (MA-231, joining §15.2's Admin alert router in phase 8, MA-137), a client-side `MYPAISA_BUILD_EPOCH` day-75 `itms-beta://` expiry banner from phase 0, and `GET /v1/app/minimum-version` on FastAPI from phase 1 (MA-167, MA-266, MA-274; `docs/RESEARCH.md` §8.8) |
 | Drift & weekly CVE sweep | nightly & Monday 04:00 UTC | nightly `terraform plan` for both environments (MA-108); every Monday at 04:00 UTC, full `pip-audit`, `pnpm audit`, `trivy fs` and `trivy image` scan against `main` and the live ECR images so newly disclosed CVEs are caught even when no code changes (MA-267) |
 
 CI reaches AWS through the account's GitHub OIDC provider with four roles:

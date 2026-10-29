@@ -35,7 +35,7 @@
 <li><strong>IN3, accounts and views (MA-153).</strong> <code>demat</code>, <code>mf_folio</code>, <code>nre</code>, <code>nro</code>; INR with GBP beside it; wrapper-aware suggestions; the reporting-fund tax flag; rupees and pounds checked against each holding&#x27;s currency both ways (MA-156); designed first.</li>
 <li><strong>IN4, the engine and the Forecaster (MA-154).</strong> The India basket, Indian news and disclosures, the RBI&#x27;s calendar; the Forecaster&#x27;s gates as in phase 17.</li>
 </ul>
-<p><strong>Tests:</strong> synthetic CAS statements and broker exports import exactly once; an unmatched ISIN is listed, not guessed; each Indian chain falls through to stale; INR and GBP views agree with the FX of the day; golden tests for the India basket.</p>
+<p><strong>Tests:</strong> synthetic CAS statements and broker exports import exactly once; an unmatched ISIN is listed, not guessed; each Indian chain falls through to stale; INR and GBP views agree with the FX of the day; golden tests for the India basket; local Maestro <code>p19</code> Local File Provider CAMS/KFintech CAS PDF import behind Face ID and INR/GBP demat/folio views (MA-273).</p>
 <p><strong>Exit:</strong> a member sends their CAS and broker export, taps Confirm once, and the Indian holdings with their history appear in the brief and on the dashboard in INR and GBP, with the files they came from open from the Audit page.</p>
 <p><strong>Cost:</strong> £0 on the free path; a paid feed only on the admin&#x27;s approval.</p>
 </div>

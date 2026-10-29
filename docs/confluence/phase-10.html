@@ -38,7 +38,7 @@
 <li>Forecast ranges by block bootstrap.</li>
 <li><code>ingest</code> and <code>engine</code> Lambdas on the 07:00 / 21:00 schedule; Signals and Stances written daily (stances in shadow).</li>
 </ul>
-<p><strong>Tests:</strong> the plugin contract suite, run against every plugin on recorded responses (same <code>Bars</code> shape, pounds not pence, the stale rule, idempotence per date, a clean failure when the vendor is down), with the recordings refreshed only by a deliberate command; golden files for every indicator and pillar; property test that local + FX = total; cascade cases for each action; macro regime cases from the desk&#x27;s synthetic generator; self-test gate.</p>
+<p><strong>Tests:</strong> the plugin contract suite, run against every plugin on recorded responses (same <code>Bars</code> shape, pounds not pence, the stale rule, idempotence per date, a clean failure when the vendor is down), with the recordings refreshed only by a deliberate command; golden files for every indicator and pillar; property test that local + FX = total; cascade cases for each action; macro regime cases from the desk&#x27;s synthetic generator; self-test gate; local Maestro <code>p10</code> Activity price-freshness and source-comparison view check (MA-273).</p>
 <p><strong>Exit:</strong> five trading days of signals landing by 07:10 that match a manual spot check; the desk&#x27;s own test cases pass on the port.</p>
 <p><strong>Cost:</strong> £0.10 (£20 more with EODHD Historian).</p>
 </div>
