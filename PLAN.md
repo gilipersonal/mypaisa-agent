@@ -385,6 +385,23 @@ Claude's:
   impact and, when it leaves the household short, the rearrangement applied
   on Confirm (MA-222, MA-263), and the Plans tab (MA-224). You pick; the
   picked option's remaining states are drawn before those stories start.
+- **The whole app learns, and three words for three engines, recorded
+  (MA-275, `ARCHITECTURE.md` §6.6, §20.9):** your asks of 29 Oct 2026
+  written down. The stock investment forecast (real prediction, graded
+  against prices and switched off when it slips), the Budget forecast
+  (deterministic, worked out from the household's inputs, to the penny) and
+  the Projection (the same path, then a fan) are three things; and the whole
+  app learns from the household's own data, its forecasts graded at every
+  month close and each member's needs learned from use (MA-276, MA-277,
+  phase 18). Docs only; the questions it raised are open on the stories they
+  decide.
+- **No Telegram left in the live designs (MA-278):** the web boards that are
+  the web app's spec redrawn without their Telegram and Mini App frames, the
+  Telegram-only files and the Nocturne artboards dropped or archived as you
+  pick, the Telegram and Mini App rules taken out of `tokens.css`, every
+  trace row naming an iOS or web board, and `plan_sync.py check` refusing a
+  Telegram or Mini App frame in a live board file; it settles MA-160's
+  question the same way.
 - **The implementation stack, FastAPI, DynamoDB vs DocumentDB, the agent
   framework options, and end-to-end FastAPI and LLM observability with
   costing (MA-265, `docs/RESEARCH.md` §6, `TECH_STACK.md`):** the full
@@ -1110,9 +1127,12 @@ ceiling; nothing more in AWS.
 ## Phase 7 — Projection
 
 Where the household's net worth is heading over the years, computed by code
-and steered by the agent. **Forecast** stays the market's word (MA-52, the
-Forecaster); **Projection** is the household's net worth over time, and
-`ForecastAssumptions` becomes `ProjectionAssumptions`.
+and steered by the agent. Three words, three engines (`ARCHITECTURE.md` §6.6,
+MA-275): the **stock investment forecast** is the market's, real prediction
+graded against prices (MA-52, the Forecaster); the **Budget forecast** is
+deterministic, worked out from the household's inputs to the penny (MA-262);
+the **Projection** is the household's net worth over time, the same path and
+then a fan; and `ForecastAssumptions` becomes `ProjectionAssumptions`.
 
 - **The engine (MA-219, `ARCHITECTURE.md` §6.6):** `wealth/projection.py`
   runs month by month to a horizon (twenty years by default; 5, 10, 20 or
@@ -1629,10 +1649,29 @@ one household and its one admin, the owner.
   suite; a `ChangeRequest` that changes a prompt, a rule, a threshold or a
   model carries the affected suites' results from dev, and a failing safety
   case blocks its approval.
+- **E9, the household's forecasts graded and tuned (MA-276,
+  `ARCHITECTURE.md` §20.9).** At each month close, that month's line of the
+  Budget forecast is graded against what happened, each gap traced to its
+  input. The tuner proposes a category's run rate, a category's own
+  inflation or a member's salary growth from at least 6 closed months, a
+  step at a time, and the admin's Confirm applies it as a new version of the
+  assumptions; the records, the plan and the arithmetic never move. The
+  Budget forecast tab shows each month's forecast beside its actual;
+  designed first.
+- **E10, each member's needs learned from use (MA-277, `ARCHITECTURE.md`
+  §20.9).** From each member's own taps, answers, corrections and mutes,
+  never from text a file or a page brought in: the composer's chips and the
+  brief's sections ordered on their own inside a band; a merchant's
+  category, an alert threshold, a quiet hour or a usual answer proposed as a
+  card for that member's Confirm; a field corrected after a file kept as a
+  case; You lists what was learned, with a reset; designed first.
 
 **Order.** E1 and E2 can come forward once the Admin center and the second
 check exist (phase 8, MA-102); E3 after phase 10; E4 and E5 once stances are
 graded (phase 13); E6 with the Forecaster (phase 17); E7 and E8 alongside.
+E9 and E10 need E1; E9 also needs closed months (phase 6) and the
+Projection's runs (phase 7). Whether they come forward with E1 and E2, ahead
+of the market side, is open on MA-276 and MA-277.
 
 **Tests:** a member cannot reach the desk; approval without the second check
 is refused; an agent cannot move a setting outside its band; grading never
@@ -1640,10 +1679,13 @@ runs before a horizon; calibration's daily step limit and rollback;
 a challenger that does not beat the current version is never proposed;
 injected failures at each pipeline step recover idempotently or open an
 incident, and the trace shows the step and the incident names it (MA-235);
-metering by agent.
+metering by agent; a month's grade read back the same from its stored run;
+no assumption proposed before 6 closed months or applied without the admin's
+Confirm; text a file or a page brought in teaching E10 nothing, and one
+member's learning never reaching another (MA-276, MA-277).
 
 **Exit:** a month in which every change was either inside its band or
-approved by the admin, every prediction was graded, calibration stayed
+approved by the admin, every prediction and every closed month was graded, calibration stayed
 within tolerance, every failure was repaired or raised, and spend stayed
 inside the $200 credit for the agents and the cap for AWS and others.
 
@@ -1765,27 +1807,27 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 40.25 (and 3.5 of yours) | 33 | Mon 2 Nov 2026 | Wed 16 Dec 2026 |
-| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Thu 17 Dec 2026 | Thu 22 Apr 2027 |
-| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Fri 23 Apr 2027 | Mon 21 Jun 2027 |
-| 3 Deposits, policies and two currencies | 18 | 15 | Tue 22 Jun 2027 | Mon 12 Jul 2027 |
-| 4 Debts and check-ins | 19 | 16 | Tue 13 Jul 2027 | Tue 3 Aug 2027 |
-| 5 Investments, priced | 23 | 19 | Wed 4 Aug 2027 | Tue 31 Aug 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Wed 1 Sep 2027 | Tue 14 Sep 2027 |
-| 7 Projection | 28 | 23 | Wed 15 Sep 2027 | Fri 15 Oct 2027 |
-| 8 Audit, search and the Admin center at every door | 28 | 23 | Mon 18 Oct 2027 | Wed 17 Nov 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Thu 18 Nov 2027 | Fri 3 Dec 2027 |
-| 10 Prices and the engine | 22 | 18 | Mon 6 Dec 2027 | Fri 7 Jan 2028 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Mon 10 Jan 2028 | Thu 27 Jan 2028 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Fri 28 Jan 2028 | Fri 18 Feb 2028 |
-| 13 Track record and calibration | 13 | 11 | Mon 21 Feb 2028 | Mon 6 Mar 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Tue 7 Mar 2028 | Wed 15 Mar 2028 |
-| 15 Stances go live | 5 | 4 | Thu 16 Mar 2028 | Tue 21 Mar 2028 |
+| 0 Foundations at every door | 43.25 (and 3.5 of yours) | 35 | Mon 2 Nov 2026 | Fri 18 Dec 2026 |
+| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Mon 21 Dec 2026 | Mon 26 Apr 2027 |
+| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Tue 27 Apr 2027 | Wed 23 Jun 2027 |
+| 3 Deposits, policies and two currencies | 18 | 15 | Thu 24 Jun 2027 | Wed 14 Jul 2027 |
+| 4 Debts and check-ins | 19 | 16 | Thu 15 Jul 2027 | Thu 5 Aug 2027 |
+| 5 Investments, priced | 23 | 19 | Fri 6 Aug 2027 | Thu 2 Sep 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Fri 3 Sep 2027 | Thu 16 Sep 2027 |
+| 7 Projection | 28 | 23 | Fri 17 Sep 2027 | Tue 19 Oct 2027 |
+| 8 Audit, search and the Admin center at every door | 28 | 23 | Wed 20 Oct 2027 | Fri 19 Nov 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 14 | 12 | Mon 22 Nov 2027 | Tue 7 Dec 2027 |
+| 10 Prices and the engine | 22 | 18 | Wed 8 Dec 2027 | Tue 11 Jan 2028 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Wed 12 Jan 2028 | Mon 31 Jan 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Tue 1 Feb 2028 | Tue 22 Feb 2028 |
+| 13 Track record and calibration | 13 | 11 | Wed 23 Feb 2028 | Wed 8 Mar 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Thu 9 Mar 2028 | Fri 17 Mar 2028 |
+| 15 Stances go live | 5 | 4 | Mon 20 Mar 2028 | Thu 23 Mar 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Wed 22 Mar 2028 | Fri 28 Apr 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 28 | 23 | Tue 2 May 2028 | Fri 2 Jun 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Mon 5 Jun 2028 | Tue 20 Jun 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Wed 21 Jun 2028 | Fri 30 Jun 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 32 | 26 | Fri 24 Mar 2028 | Wed 3 May 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 37 | 30 | Thu 4 May 2028 | Thu 15 Jun 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Fri 16 Jun 2028 | Mon 3 Jul 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 4 Jul 2028 | Thu 13 Jul 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you

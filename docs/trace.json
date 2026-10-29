@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "claude_design": {
   "app": {
    "id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7",
@@ -832,7 +832,10 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": ""
+   "notes": "",
+   "open": [
+    "Buy and sell wording: Arun asked on 29 Oct 2026 (MA-275) for signals \"like hold, buy\" on the OEICs, ETFs and shares; the cascade (ARCHITECTURE 6.3) says ADD for buying more of a holding, TRIM and never \"sell everything\", and only WAIT or WATCH for a fund or share the household does not hold. Keep the six actions as they are, show ADD as \"Buy\" on the cards, or add a buy call for a candidate not held (and a sell beside TRIM)?"
+   ]
   },
   {
    "key": "MA-51",
@@ -1212,7 +1215,10 @@
      "board": "iPhone · Why? sheet"
     }
    ],
-   "notes": "Picked boards: Telegram kit · 2 · Stance card; Telegram chats · a · Friday’s wrap, then Monday morning: brief, stance, why. The holding-profile card was drawn in MA-158 (Research cards · Holding profile card) and is planned, so its options round covers it. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first)."
+   "notes": "Picked boards: Telegram kit · 2 · Stance card; Telegram chats · a · Friday’s wrap, then Monday morning: brief, stance, why. The holding-profile card was drawn in MA-158 (Research cards · Holding profile card) and is planned, so its options round covers it. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 9.4); these are its iOS boards, planned until Arun picks (/design-first).",
+   "open": [
+    "Buy and sell wording: Arun asked on 29 Oct 2026 (MA-275) for signals \"like hold, buy\" on the OEICs, ETFs and shares; the cascade (ARCHITECTURE 6.3) says ADD for buying more of a holding, TRIM and never \"sell everything\", and only WAIT or WATCH for a fund or share the household does not hold. Keep the six actions as they are, show ADD as \"Buy\" on the cards, or add a buy call for a candidate not held (and a sell beside TRIM)?"
+   ]
   },
   {
    "key": "MA-65",
@@ -1883,6 +1889,9 @@
    "undrawn": [
     "the live stance chip",
     "the /calls list in the chat"
+   ],
+   "open": [
+    "Buy and sell wording: Arun asked on 29 Oct 2026 (MA-275) for signals \"like hold, buy\" on the OEICs, ETFs and shares; the cascade (ARCHITECTURE 6.3) says ADD for buying more of a holding, TRIM and never \"sell everything\", and only WAIT or WATCH for a fund or share the household does not hold. Keep the six actions as they are, show ADD as \"Buy\" on the cards, or add a buy call for a candidate not held (and a sell beside TRIM)?"
    ]
   },
   {
@@ -2847,7 +2856,10 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Its output is shown on Forecast · Browser · Holding · Forecast (drawn for the stories with UI)."
+   "notes": "Its output is shown on Forecast · Browser · Holding · Forecast (drawn for the stories with UI).",
+   "open": [
+    "How sophisticated the stock forecast's models are: Arun, 29 Oct 2026 (MA-275): \"STOCK INVESTMENT forecast has to be real prediction algorithms sophisticated\". ARCHITECTURE 19.4 plans a regime model for the market's mood, a volatility model with gradient-boosted trees for risk, nearest-neighbour similar days, event studies and a calibrated direction model with conformal ranges, each proved walk-forward and switched off when it slips. Keep that set, or add heavier models (deep sequence models such as a temporal fusion transformer, or a wider ensemble) under the same proof?"
+   ]
   },
   {
    "key": "MA-122",
@@ -2864,7 +2876,10 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Its output is shown on Forecast · Browser · Holding · Forecast (drawn for the stories with UI)."
+   "notes": "Its output is shown on Forecast · Browser · Holding · Forecast (drawn for the stories with UI).",
+   "open": [
+    "How sophisticated the stock forecast's models are: Arun, 29 Oct 2026 (MA-275): \"STOCK INVESTMENT forecast has to be real prediction algorithms sophisticated\". ARCHITECTURE 19.4 plans a regime model for the market's mood, a volatility model with gradient-boosted trees for risk, nearest-neighbour similar days, event studies and a calibrated direction model with conformal ranges, each proved walk-forward and switched off when it slips. Keep that set, or add heavier models (deep sequence models such as a temporal fusion transformer, or a wider ensemble) under the same proof?"
+   ]
   },
   {
    "key": "MA-123",
@@ -2880,7 +2895,10 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Its output is shown on Forecast · Browser · Holding · Forecast; Forecast · Browser · Forecaster · Proof (drawn for the stories with UI). Shown on Forecast · Browser · Holding · Forecast (MA-124); the Proof page is an open question on MA-124."
+   "notes": "Its output is shown on Forecast · Browser · Holding · Forecast; Forecast · Browser · Forecaster · Proof (drawn for the stories with UI). Shown on Forecast · Browser · Holding · Forecast (MA-124); the Proof page is an open question on MA-124.",
+   "open": [
+    "How sophisticated the stock forecast's models are: Arun, 29 Oct 2026 (MA-275): \"STOCK INVESTMENT forecast has to be real prediction algorithms sophisticated\". ARCHITECTURE 19.4 plans a regime model for the market's mood, a volatility model with gradient-boosted trees for risk, nearest-neighbour similar days, event studies and a calibrated direction model with conformal ranges, each proved walk-forward and switched off when it slips. Keep that set, or add heavier models (deep sequence models such as a temporal fusion transformer, or a wider ensemble) under the same proof?"
+   ]
   },
   {
    "key": "MA-124",
@@ -3806,7 +3824,7 @@
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Design upkeep, tracked here. The edits to Chat basics, Research cards, Admin center 3, Wealth and the Prototype are made and checked, and wait in docs/design/reviews/MA-158/round-1-pending/ because the files are too large for Claude Design's inline write from a session. Most of them fix Telegram boards that MA-161 superseded, so whether they still land there is open (the question above, commented on the issue). Until it is settled, the undrawn items that name MA-160 on MA-32, MA-37, MA-63, MA-69, MA-77, MA-116, MA-124, MA-130, MA-137 and MA-156 stay listed: each is drawn on its story's iOS board (or the web app's browser board) before that story starts, whichever way the question goes.",
+   "notes": "Design upkeep, tracked here. The edits to Chat basics, Research cards, Admin center 3, Wealth and the Prototype are made and checked, and wait in docs/design/reviews/MA-158/round-1-pending/ because the files are too large for Claude Design's inline write from a session. Most of them fix Telegram boards that MA-161 superseded, so whether they still land there is open (the question above, commented on the issue). Until it is settled, the undrawn items that name MA-160 on MA-32, MA-37, MA-63, MA-69, MA-77, MA-116, MA-124, MA-130, MA-137 and MA-156 stay listed: each is drawn on its story's iOS board (or the web app's browser board) before that story starts, whichever way the question goes. MA-278 (29 Oct 2026) takes the whole Telegram clean-up of the live designs; its question and this one are settled together.",
    "open": [
     "Telegram-era boards: whether the superseded Telegram boards in MyPaisa app v1 are still updated with these fixes, or the fixes move to the iOS boards in MyPaisa iOS v1 and the Telegram files stay as the record (MA-161)"
    ]
@@ -7033,6 +7051,52 @@
    "notes": ""
   },
   {
+   "key": "MA-276",
+   "type": "Story",
+   "epic": "MA-127",
+   "phase": 18,
+   "summary": "E9: the Budget forecast and the Projection are graded against every closed month, and their assumptions learn from the household's own history on the admin's Confirm",
+   "status": "To Do",
+   "labels": [
+    "design"
+   ],
+   "arch": [
+    "20.9",
+    "6.6",
+    "4.9"
+   ],
+   "ui": true,
+   "design": "todo",
+   "boards": [],
+   "notes": "Filed 29 Oct 2026 (MA-275) with no board yet: the tuner's proposal card in the admin's chat and on the Projection's assumptions panel, and the Budget forecast tab's forecast beside actual for each closed month, at desktop, 390, iPhone and iPad in light and dark, are drawn with /design-first before the story starts.",
+   "open": [
+    "When it is built: in phase 18 with the rest of the learning loop, after the market side, or brought forward with E1 and E2 (MA-129, MA-130) to straight after phase 9, so the household's own months are learned from before the market side is built (Arun, 29 Oct 2026, MA-275)?"
+   ]
+  },
+  {
+   "key": "MA-277",
+   "type": "Story",
+   "epic": "MA-127",
+   "phase": 18,
+   "summary": "E10: MyPaisa learns what each member needs from how they use it, reorders on its own, and asks before changing anything it sends",
+   "status": "To Do",
+   "labels": [
+    "design"
+   ],
+   "arch": [
+    "20.9",
+    "10.1",
+    "23.5"
+   ],
+   "ui": true,
+   "design": "todo",
+   "boards": [],
+   "notes": "Filed 29 Oct 2026 (MA-275) with no board yet: the preference card a pattern proposes, You's list of what was learned with its reset, and the Admin center's view of the household's learning, at desktop, 390, iPhone and iPad in light and dark, are drawn with /design-first before the story starts.",
+   "open": [
+    "When it is built: in phase 18 with the rest of the learning loop, after the market side, or brought forward with E1 and E2 (MA-129, MA-130) to straight after phase 9, so the household's own months are learned from before the market side is built (Arun, 29 Oct 2026, MA-275)?"
+   ]
+  },
+  {
    "key": "MA-257",
    "type": "Task",
    "epic": "MA-9",
@@ -7463,6 +7527,48 @@
     }
    ],
    "notes": "Opened on 28 Oct 2026 after MA-261 (PR #56): \"start the design of the new screens\". The options round, drawn 28 Oct 2026 from one figure set (docs/design/figures/future-plans-v4.json, Thu 5 Nov 20:41 to 21:22, moved from Mon 2 Nov by Arun on 28 Oct 2026): the Budget forecast tab 1a The surplus first (recommended), 1b Year by year, 1c The ledger table (MA-262); a plan made in the admin's chat 2a A card per step (recommended), 2b One card that grows, 2c Compare side by side (MA-222, MA-263, MA-223); the Plans tab 3a Bars on a timeline (recommended), 3b A timeline down the page (MA-224); each at desktop, 390, iPhone and iPad, light and dark. Planned until Arun picks (rule 3); the record is docs/design/reviews/MA-264/decision.md. Picked on MA-264 (Arun, 28 Oct 2026): the Budget forecast 1a The surplus first, the chat's 2a A card per step, the Plans tab 3a Bars on a timeline (docs/design/reviews/MA-264/decision.md). The options not picked stay on this row as the record. Arun's floor settled with the pick (MA-262, MA-263). Round 2 (28 Oct 2026, Arun's yes): the picked options' remaining states, drawn from the regenerated figure set (the 26 Oct run and the rest of the evening to 21:22); the v4 Projection boards, Prototype v4 and the Agent Journey moved to the month-by-month runs; every undrawn item of MA-262, MA-263, MA-222 and MA-224 drawn. Round 3 (Arun, 28 Oct 2026): the evening moved to Thu 5 Nov, after Prototype v4's Thursday, which now shows that day's run; the floor holds only while anyone earns a salary; the Agent Journey is republished with the PR."
+  },
+  {
+   "key": "MA-275",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The plan records the whole app learning from the household's own data, the Telegram clean-up of the live designs, and what the stock forecast, the Budget forecast and the Projection each are",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "6.6",
+    "19",
+    "20.1",
+    "20.6",
+    "20.8",
+    "20.9",
+    "23.6",
+    "4.1"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 29 Oct 2026, after an audit of the plan: the stock investment forecast, the Budget forecast and the Projection are three different things (the Budget forecast deterministic from the household's inputs, the stock forecast real prediction); the entire app is to learn from the household's needs and from the data kept in DynamoDB and S3; and every design is for the iOS app or the web app in a browser, none for Telegram. Docs only: ARCHITECTURE 6.6 (three words, three engines), 19, 4.1, 20.1, 20.6, 20.8, 20.9 (new) and 23.6; PLAN's phases 0, 7 and 18; the trace, the roadmap and Confluence. Filed MA-276 (E9), MA-277 (E10) and MA-278 (the Telegram clean-up); the questions raised are open on MA-50, MA-64 and MA-91 (buy and sell wording), MA-121, MA-122 and MA-123 (how sophisticated the stock forecast is), MA-276 and MA-277 (when they are built) and MA-278 (drop or archive the Telegram files)."
+  },
+  {
+   "key": "MA-278",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "No Telegram or Mini App is left in the live designs: the web boards show only the web app, the Telegram files are dropped or archived on Arun's word, and every record names only the iOS app and the web app",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "9.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Design upkeep, filed 29 Oct 2026 (MA-275) from that day's audit. The plan docs and Jira mention Telegram only as history; the designs do not: the Telegram kit, Telegram chats, Telegram admin, Telegram second check and Mini App files and docs/design/dashboard/ are kept as a superseded record; the web files that are the web app's spec still carry Telegram and Mini App frames (Research cards, Admin center, Admin center 2 and 3, Chat basics, Wealth, India, Forecast, Audit and files, Currency check, the Prototype, Responsive); MA-30, MA-91, MA-94, MA-125, MA-148, MA-151 and MA-153 name a Telegram or Mini App board as where their output is drawn; tokens.css in the three projects keeps Telegram and Mini App rules; MA-68 and MA-114 say \"the bot\". MA-160's open question is settled with this one's.",
+   "open": [
+    "Telegram files: drop the Telegram kit (its three files in MyPaisa DS v1), Telegram chats, Telegram admin, Telegram second check and Mini App (MyPaisa app v1) and docs/design/dashboard/ from Claude Design and the repo for good (design_sync.py pull --drop), or move them into an archive project kept apart from the three live ones?"
+   ]
   },
   {
    "key": "MA-259",

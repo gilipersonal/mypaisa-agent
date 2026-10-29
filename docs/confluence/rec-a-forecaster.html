@@ -6,8 +6,8 @@
 <p>ARCHITECTURE.md as written, in full, below.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":jigsaw:" data-color="#E3FCEF"><p><strong>11 stories</strong></p>
-<p>Cite these sections, in phases 17, 18, 19.</p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":jigsaw:" data-color="#E3FCEF"><p><strong>12 stories</strong></p>
+<p>Cite these sections, in phases 0, 17, 18, 19.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":frame_photo:" data-color="#FFFAE6"><p><strong>3 pictures</strong></p>
@@ -26,7 +26,7 @@
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="12cae7b5-eb82-423f-aba2-cf7742a2a832" data-collection="contentId-1704037" data-alt="rec-a-forecaster--lucid-06-market-agent.png"></div>
 <figcaption>The market agent and the learning loop, Lucid page 6</figcaption></figure>
 <p>Page 6: free data in, the rules engine and the Forecaster side by side, calibration, the card, and the daily learning loop of §20.4 below them. <a href="https://lucid.app/lucidchart/6f1b4c75-353c-49e5-b6e7-29fd2c18d356/edit">Open it in Lucid</a>. Arun, 24 Oct 2026 (MA-117): &quot;My target is to minimize loss and grow money over time steadily ... another agent which will give really predictive recommendation side by side with the one you are building ... I want this view of web dashboard as well as integration with my Telegram app.&quot;</p>
-<p>The rules engine of §6 stays as it is: transparent, fixed rules that a person can check by hand. The Forecaster is a second engine beside it that learns from ten years of history, gives its own view of each holding, and is graded on the same track record. It never replaces the rules engine and never trades. (It is not the Projection of §6.6, the household&#x27;s net worth over the years.)</p>
+<p>The rules engine of §6 stays as it is: transparent, fixed rules that a person can check by hand. The Forecaster is a second engine beside it that learns from ten years of history, gives its own view of each holding, and is graded on the same track record. It never replaces the rules engine and never trades. (It is neither the Budget forecast nor the Projection of §6.6, which work out the household&#x27;s own money deterministically; the three are set side by side there.)</p>
 <h3>19.1 What can and cannot be forecast</h3>
 <table><thead><tr><th>Can</th><th>Cannot</th></tr>
 </thead>
@@ -105,10 +105,11 @@ Forecaster     next 4 weeks
 <h3>19.9 Order</h3>
 <p>F1 (data) and F2 (the lab) can start any time after phase 10, and F2&#x27;s first report tests the rules engine. F3 and F4 follow, F5 after them, F6 once a holding&#x27;s market view and the track record exist (phases 12 and 13), F7 after F2 and F3. F2, F3 and F7 do most of the work for the goal; F5 is the least reliable piece. The bounds of §4.5 hold: this is software for one household; sharing its calls with other households would start to look like regulated advice.</p>
 <h2>🧩 The stories that build it</h2>
-<p>Every story whose trace row cites §19, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-118%2C%20MA-119%2C%20MA-121%2C%20MA-122%2C%20MA-123%2C%20MA-124%2C%20MA-125%2C%20MA-126%2C%20MA-128%2C%20MA-131%2C%20MA-154%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>
+<p>Every story whose trace row cites §19, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-275%2C%20MA-118%2C%20MA-119%2C%20MA-121%2C%20MA-122%2C%20MA-123%2C%20MA-124%2C%20MA-125%2C%20MA-126%2C%20MA-128%2C%20MA-131%2C%20MA-154%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>
 <table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
 </thead>
-<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-118" data-card-appearance="inline"></a></td><td>The architecture records the Forecaster, a second engine beside the rules engine</td><td>Task</td><td>0</td><td data-background="#E3FCEF"><span data-type="status" data-color="green">Done</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§16, §17, §19</td></tr>
+<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-275" data-card-appearance="inline"></a></td><td>The plan records the whole app learning from the household&#x27;s own data, the Telegram clean-up of the live designs, and what the stock forecast, the Budget forecast and the Projection each are</td><td>Task</td><td>0</td><td data-background="#FFFAE6"><span data-type="status" data-color="yellow">In Progress</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§6.6, §19, §20.1, §20.6, §20.8, §20.9, §23.6, §4.1</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-118" data-card-appearance="inline"></a></td><td>The architecture records the Forecaster, a second engine beside the rules engine</td><td>Task</td><td>0</td><td data-background="#E3FCEF"><span data-type="status" data-color="green">Done</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§16, §17, §19</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-119" data-card-appearance="inline"></a></td><td>F1: ten years of point-in-time market, economy and world-event data sit in one queryable store</td><td>Story</td><td>8</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§19.2</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-121" data-card-appearance="inline"></a></td><td>F3: the Forecaster names the market&#x27;s mood and forecasts the next four weeks&#x27; risk</td><td>Story</td><td>5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§19.4</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-122" data-card-appearance="inline"></a></td><td>F4: similar past days and a library of event impacts explain what usually happened next</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§19.3, §19.4</td></tr>

@@ -292,6 +292,7 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from the admin, and what they could not fix themselves (§20.3, §20.5). |
 | **ScoreDaily** | `model`, `instrument_id`, `mood`, `date`, the day's graded count, hit rate, Brier score, log loss, range coverage, rolling 30, 90 and 365-day values | The learning loop's daily scoreboard (§20.4); the full outcomes live in S3. |
 | **CalibrationMap** | `model`, `version`, `buckets[]` (said vs seen), `fitted_on`, `window`, `status` (`probation` · `live` · `rolled_back`) | The map from raw confidence to calibrated confidence (§20.4). |
+| **MonthGrade**, **LearnedProposal**, **MemberSignal** | per closed month and line: `month`, `line` (a member's income, a category, an EMI, a plan item, the surplus, closing cash), `forecast`, `actual`, `gap`, `traces_to`, `run_id`; per proposal: `target` (an assumption or a member's preference), `member_id?`, `from`, `to`, `evidence`, `status` (`proposed` · `applied` · `rejected` · `offered_back`); per member and day: counts of what they asked, opened, tapped, corrected and muted, never text | The household's learning (§20.9): each closed month graded against the Budget forecast, the tuner's proposals, and the counts each member's orders and preference cards are learned from. |
 | **ModelVersion** | `name`, `version`, `trained_at`, `data_through`, `s3_key`, `walk_forward` {brier, log_loss, vs_base_rate}, `live` {brier, weeks, vs_rules_engine}, `status` (`shadow` · `live` · `off`) | Which Forecaster model made a forecast, how it tested, and whether it may be shown (§19.6). |
 | **MacroRegime** | `date`, per-basket composites and regimes | Shared by all instruments. |
 | **AlertState**, **Decision**, **ChatTurn** | per member | A member's chat memory, decisions and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§8). |
@@ -996,10 +997,22 @@ phase 3), and extends it:
   surplus and savings rate, per member and for the household (§12).
 - **The Projection** (phase 7), below.
 
-**Projection, not forecast.** Forecast stays the market's word: a holding's
-next four weeks (§6.5, §19). The Projection is the household's net worth over
-the years (MA-191). `ForecastAssumptions` becomes `ProjectionAssumptions`, and
-each run is a `ProjectionRun` (§4.1).
+**Three words, three engines** (Arun, 29 Oct 2026, MA-275: "STOCK INVESTMENT
+forecast and BUDGET FORECAST and PROJECTION are different, budget forecast
+will need to deterministic algo based on inputs and current circumstances of
+users, STOCK INVESTMENT forecast has to be real prediction algorithms
+sophisticated").
+
+| Word | What it answers | How it is worked out |
+| --- | --- | --- |
+| **Forecast**, the stock investment forecast | Where a holding is likely to go in the next four weeks: its chance of a deep fall, its likely range, the market's mood and its direction | Prediction, graded against what prices did: the rules engine's ranges (§6.5) and the Forecaster's models, trained on ten years of prices, the economy, market stress, news, events and sentiment (§19), each switched off when its live record slips. Phases 10, 13, 14 and 17 |
+| **Budget forecast** | What comes in and goes out each month and year to the horizon: income by member, spend by category, EMIs, each plan item, the surplus and closing cash | Deterministic: worked out month by month from the household's inputs and circumstances (its records, commitments, plan items and assumptions), with no randomness and no model, so the same inputs give the same figures to the penny. It is read from the base path below, never from the fan. Phase 7, MA-262 |
+| **Projection** | Where the household's net worth is heading over 5 to 30 years | The same deterministic monthly path, then a Monte Carlo fan (p10, p50, p90) for the market returns, its seed stored. Phase 7, MA-219 |
+
+The Budget forecast and the Projection learn only through their inputs: the
+household's own closed months tune their assumptions on the admin's Confirm
+(§20.9), and the arithmetic stays the same. `ForecastAssumptions` becomes
+`ProjectionAssumptions`, and each run is a `ProjectionRun` (§4.1).
 
 **The engine** (`wealth/projection.py`, MA-219) runs month by month to a
 horizon (20 years by default; the screen offers 5, 10, 20 and 30), with a
@@ -2685,8 +2698,9 @@ The rules engine of §6 stays as it is: transparent, fixed rules that a person
 can check by hand. The Forecaster is a second engine beside it that learns
 from ten years of history, gives its own view of each holding, and is graded
 on the same track record. It never replaces the rules engine and never trades.
-(It is not the Projection of §6.6, the household's net worth over the
-years.)
+(It is neither the Budget forecast nor the Projection of §6.6, which work out
+the household's own money deterministically; the three are set side by side
+there.)
 
 ### 19.1 What can and cannot be forecast
 
@@ -2890,7 +2904,7 @@ settings allow; anything else is a request to the admin.
 | **News scout** | Collects news and events, tags them, matches them to holdings (§19.3) | Haiku through Batches; code scores | Tags and matches | A new feed or event type |
 | **Analyst** | The rules engine (§6) | Code only | Runs daily | Any rule threshold change (through the tuner) |
 | **Forecaster** | The models of §19 | Code; Sonnet writes the explanations | Runs daily; switches itself off when its record slips | Promotions (through the tuner) |
-| **Grader and tuner** | The learning loop (§20.4) | Code; Sonnet writes the weekly and monthly reviews | Grades daily, moves calibration within bounds, rolls back a worse map | Promoting a challenger, any change to rules or models |
+| **Grader and tuner** | The learning loops: prices (§20.4), and the household's own months and use (§20.9) | Code; Sonnet writes the weekly and monthly reviews | Grades daily, moves calibration within bounds, rolls back a worse map; grades each closed month; orders a member's chips and brief inside their band | Promoting a challenger, any change to rules or models, and every household assumption it proposes (a member's own preferences go to that member) |
 | **Ops warden** | Runs the daily pipeline and repairs it (§20.5) | Code; Haiku summarises incidents | Retries, catches up, rolls back to the last good version | Anything it cannot fix: an incident |
 | **Budget keeper** | The meter, the ladder and the guards (§15.1) | Code | Steps down and back up | Ceilings and shares are the admin's |
 | **Admin desk** | The one channel between agents and the admin (§20.3) | Code; Haiku turns the admin's words into a request | Queues, batches, reminds, expires | It is the asking |
@@ -3029,10 +3043,12 @@ Parquet, queried with DuckDB:
 | `outcomes/model=/dt=` | Every grade | For good |
 | `models/<name>/<version>/`, `calibration/` | Model files, training notes, test reports, calibration maps | For good |
 | `reports/`, `config/snapshots/` | Backtests, reviews, the daily settings snapshot | For good |
+| `household/<household>/learning/` | The household's month grades, proposals and each member's daily counts (§20.9), never message text; under the household's prefix and encrypted, as the ledger export is (§12.1) | For good |
 
 **DynamoDB**, the state, small and fast: `Setting` and `ConfigVersion`,
 `ChangeRequest`, `AdminQuestion` and `Incident`, `ScoreDaily`,
 `CalibrationMap`, `ModelVersion`, the latest `Forecast` and `Stance` rows,
+`MonthGrade`, `LearnedProposal` and `MemberSignal` (§20.9),
 `BudgetSettings` and `SpendMonth`, beside the registry of §4. A household's
 whole history stays in the low gigabytes, so storage costs pennies.
 
@@ -3070,8 +3086,108 @@ rest and can come forward once the Admin center and the second check exist
 (phase 8 and MA-102). The data steward (E3) follows phase 10's sources;
 grading and calibration (E4, E5) can start as soon as there are graded
 stances (phase 13); challengers (E6) need the Forecaster (phase 17); the ops
-warden (E7) and the agent budgets (E8) come with them. One household, its
-one admin, and nothing shared: the bounds of §4.5 stand.
+warden (E7) and the agent budgets (E8) come with them. The household's
+learning (E9, E10, §20.9) needs the settings store (E1); E9 also needs closed
+months (phase 6, MA-220) and the Projection's runs (phase 7), and E10 the
+runs of phase 1. Whether they come forward with E1 and E2, ahead of the
+market side, is open on MA-276 and MA-277. One household, its one admin, and
+nothing shared: the bounds of §4.5 stand.
+
+### 20.9 The household learns too: its forecasts graded each month, its needs learned from use (E9, E10; MA-276, MA-277)
+
+Arun, 29 Oct 2026 (MA-275): "I need the entire app to be self learning based
+on my needs, the data tracked in database and S3 storage for all processing
+to calibrate and tune the system."
+
+§20.4 learns from prices. The household side learns the same way from its own
+records: what it forecast is kept as made, graded when the truth arrives, and
+changed only on evidence, a step at a time, with the admin, or the member it
+concerns, deciding. The three rules of §20 hold, and so does rule 1: code
+works out every grade and every proposed value, and Claude explains them.
+Learning changes inputs, orders and defaults, never a record, a figure, the
+budget plan or the engine's arithmetic.
+
+**The household's forecasts, graded every month (E9, MA-276).**
+
+1. **Kept as made.** The `ProjectionRun` current on the 1st of each month
+   already holds its inputs hash, seed and engine version (§6.6), so that
+   month's line of the Budget forecast can be read back exactly as it was.
+2. **Graded at the month close.** When a month closes (§4.9, MA-220), code
+   compares that line with what happened: income by member, spend by
+   category, EMIs, each plan item, the surplus and closing cash. Each gap is
+   a `MonthGrade` row: the forecast, the actual, the gap in money and as a
+   percentage, and the input it traces to (a category over its plan, a
+   salary that changed, a category's prices rising faster than its
+   country's, a spend no plan held). Once a year the Projection's net worth
+   from twelve months earlier is graded the same way. A late statement
+   regrades its month with a new row; none is overwritten.
+3. **Proposed from the household's own history.** Each month the tuner
+   refits the inputs that are estimates, never the household's facts:
+   - each category's run rate against its plan;
+   - each category's own inflation, blended with its country's prior by the
+     years of history behind it, as returns are (§6.6);
+   - each member's salary growth, which §6.6 already blends with its prior,
+     now checked against what was paid.
+
+   A value is proposed only with at least 6 closed months behind it, only if
+   it would have forecast the months in its window (the last 12, or as many
+   as have closed) better than the current value by more than a margin, and
+   only a step at a time. The window, the
+   minimum, the margin and the step are settings (§20.2).
+4. **Decided by the admin.** A proposal is a card in the admin's chat and on
+   the Projection's assumptions panel (illustrative figures):
+
+   ```
+   The tuner suggests
+   Groceries ran over its £450 plan in 7 of the last 9 months, by about £70.
+   Use £520 a month for Groceries in the Budget forecast from December?
+   The plan stays £450. Surplus: £1,180 a month becomes £1,110.
+   It would have forecast those 9 months £390 closer than the plan did.
+   Undo: back to the plan's £450; nothing else changes.
+   [Use £520] [Keep the plan] [Why?]
+   ```
+
+   Assumptions are the admin's alone (§6.6), so it is applied only on the
+   admin's Confirm, as a new version of `ProjectionAssumptions` with its
+   audit row and Undo; like a plan item it changes a plan, not the records,
+   so it needs no second check (§4.5). Members see proposals and cannot
+   apply them. A rejected proposal is not offered again for the period its
+   setting names; an applied one whose next three months grade worse than
+   the value it replaced is offered back.
+5. **Shown.** The Budget forecast tab shows each closed month's forecast
+   beside its actual, and the admin's monthly note (§20.4) says how close the
+   last twelve months came. Designed first, with `/design-first`, before the
+   story starts.
+
+**What each member needs, learned from use (E10, MA-277).** MyPaisa already
+records what each member asks, opens, taps, confirms, corrects, cancels and
+mutes (the run records of §10.1 and the audit log of §4.6). From those it
+keeps daily counts per member, never message text, and learns:
+
+| Learned | From | How it changes |
+| --- | --- | --- |
+| The order of the composer's chips and of each screen's Ask | What the member asks most | On its own, inside its band: an order, never a new chip |
+| The order of the brief's sections | What the member opens first | On its own, inside its band; nothing is dropped |
+| A merchant's category | A category the member corrects on a statement's review card | With that card's Confirm, which writes the correction to the merchant memory (§4.9, MA-218) |
+| An alert threshold, a quiet hour, a check-in's usual answer | An alert muted five times; the same answer three months running | Proposed as a preference card, saved only on that member's Confirm (rule 4, MA-69) |
+| A case for the file reader | A field the member corrects on a Confirm card after a file | Rewritten onto the synthetic household as a case, and a regression case on the admin's Confirm behind the second check (§23.5) |
+
+- **Each member's learning is their own** (§4.5): one member's habits never
+  reorder another's screens; the admin sees the household's in the Admin
+  center.
+- **Only the member's own actions teach it.** Text that a file, a page, a
+  search or the news brought in teaches it nothing (§23.2), so a planted line
+  cannot train it.
+- **Nothing it sends changes without a Confirm**, and nothing outside its
+  band changes at all. You lists what was learned, with a reset. Designed
+  first, with `/design-first`, before the story starts.
+
+**Where it lives.** `MonthGrade`, `LearnedProposal` and `MemberSignal` in
+DynamoDB (§4.1); their snapshots in Parquet under
+`household/<household>/learning/` in the lake (§20.6), encrypted and kept for
+good, read with DuckDB by the tuner and never by another household's query.
+Its own settings bound it (§20.2), and its jobs run at each month close and
+nightly (§23.6).
 
 ---
 
@@ -3524,6 +3640,8 @@ and one drawn from an incident never leaves T1.
 | Job | When | Why it runs then |
 | --- | --- | --- |
 | Grading predictions and calibrating confidence (§20.4) | daily, after the close | Its ground truth, the day's prices, is new every day: it scores outcomes as they arrive, not a fixed set |
+| Grading the household's forecasts and proposing its assumptions (§20.9) | at each month close | Its ground truth, a closed month, arrives once a month |
+| Counting each member's use (§20.9) | nightly | It reads the day's runs and taps, and changes only orders inside their band |
 | The overnight judges and the rates (§23.4) | nightly, compared a week at a time | They read the day's new runs |
 | The admin's calibration (§23.5) | monthly, and on every change | People are the slow, expensive grader, kept for checking the fast ones |
 | The golden set (§23.3) | **never on a timer** | What it tests changes only through a pull request; what changes without one is the online checks' to watch |

@@ -75,6 +75,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-268 | A phase-progressive smoke runner checks every deployment in dev and prod, protects prod from synthetic writes, verifies the X-Ray trace in dev, and rolls back prod on failure | To Do | §10.3, §18.1, §18.4 | none |  |
 | MA-269 | A five-layer regression pyramid and path-filtered CI runner test units, OpenAPI contracts, moto integration, golden maths, web and iOS UI, and T0 agent replays inside the free minute tiers | To Do | §9.4, §9.5, §18.4, §23.3 | none |  |
 | MA-272 | The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams | In Progress | §10.3, §14, §18.1, §18.4, §23.2, §23.3 | none |  |
+| MA-275 | The plan records the whole app learning from the household's own data, the Telegram clean-up of the live designs, and what the stock forecast, the Budget forecast and the Projection each are | In Progress | §6.6, §19, §20.1, §20.6, §20.8, §20.9, §23.6, §4.1 | none |  |
+| MA-278 | No Telegram or Mini App is left in the live designs: the web boards show only the web app, the Telegram files are dropped or archived on Arun's word, and every record names only the iOS app and the web app | To Do | §9.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
@@ -338,6 +340,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-146 | The ops warden replays dead-lettered work on its own once the cause is healthy, and opens an incident if it fails again | To Do | §20.5, §21.3 | none |  |
 | MA-235 | The daily run and every agent share one trace: Step Functions and the event bus carry it, a replay links to the run it repeats, an incident names its trace, and heartbeats are metrics | To Do | §10.8, §20.5, §21.3 | none |  |
 | MA-256 | Each team agent has its own tools and safety suite, and a change it proposes to a prompt, rule or model carries its eval results to the admin's approval | To Do | §23.5, §20.2, §20.3 | none |  |
+| MA-276 | E9: the Budget forecast and the Projection are graded against every closed month, and their assumptions learn from the household's own history on the admin's Confirm | To Do | §20.9, §6.6, §4.9 | todo |  |
+| MA-277 | E10: MyPaisa learns what each member needs from how they use it, reorders on its own, and asks before changing anything it sends | To Do | §20.9, §10.1, §23.5 | todo |  |
 
 ## Phase 19: Indian markets and the existing Indian portfolio (MA-147)
 
