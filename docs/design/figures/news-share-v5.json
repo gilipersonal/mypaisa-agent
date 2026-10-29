@@ -1,0 +1,817 @@
+{
+ "about": "Prototype v5's news, events and sentiment (phase 14) and its new kinds of holding (phase 16), MA-291. Illustrative.",
+ "clock": {
+  "today": "Mon 26 Oct 2026",
+  "prices": "Fri 23 Oct close",
+  "brief": "07:15",
+  "scored": "Mon 26 Oct 08:32",
+  "sent": "Mon 26 Oct 08:33",
+  "window": "Mon 26 Oct to Fri 20 Nov",
+  "rules_live_from": "Mon 9 Nov",
+  "rules_live_iso": "2026-11-09"
+ },
+ "news": {
+  "collected": 214,
+  "duplicates": 61,
+  "skipped": 1,
+  "skipped_why": "the story the night's run stopped on, left out at 08:31 (inc-7)",
+  "scored": 152,
+  "floor": 0.05,
+  "matched": 3,
+  "by": "Haiku, through Batches",
+  "stories": [
+   {
+    "id": "chips",
+    "headline": "US adds chipmaking tools to its export curbs on China",
+    "published": "Sat 24 Oct 14:05",
+    "event": "Tariffs",
+    "entities": [
+     "Nvidia",
+     "Broadcom",
+     "Applied Materials",
+     "chipmakers",
+     "US",
+     "China"
+    ],
+    "matches": [
+     {
+      "holding": "nasdaq",
+      "name": "NASDAQ 100 ETF",
+      "weight": 0.19,
+      "direction": -0.7,
+      "via": "chipmakers are 19% of it (Nvidia, Broadcom and others)",
+      "past": {
+       "event": "Tariffs",
+       "cases": 11,
+       "avg": -2.6,
+       "low": false
+      }
+     },
+     {
+      "holding": "robotics",
+      "name": "Robotics ETF",
+      "weight": 0.16,
+      "direction": -0.7,
+      "via": "chipmakers are 16% of it",
+      "past": {
+       "event": "Tariffs",
+       "cases": 11,
+       "avg": -3.4,
+       "low": false
+      }
+     }
+    ],
+    "under_floor": [
+     {
+      "holding": "balanced",
+      "name": "Balanced",
+      "weight": 0.03,
+      "direction": -0.7,
+      "via": "chipmakers are 3% of it"
+     }
+    ],
+    "matched": true,
+    "main": "nasdaq"
+   },
+   {
+    "id": "yields",
+    "headline": "The US 10-year yield ends the week at a three-month high; markets trim bets on a cut on Wednesday",
+    "published": "Fri 23 Oct 22:10",
+    "event": "Rate surprise",
+    "entities": [
+     "Federal Reserve",
+     "US Treasury yields",
+     "US dollar"
+    ],
+    "matches": [
+     {
+      "holding": "nasdaq",
+      "name": "NASDAQ 100 ETF",
+      "weight": 1.0,
+      "direction": -0.3,
+      "via": "all of it is in US dollars, in US shares",
+      "past": {
+       "event": "Rate surprise",
+       "cases": 14,
+       "avg": -2.1,
+       "low": false
+      }
+     },
+     {
+      "holding": "balanced",
+      "name": "Balanced",
+      "weight": 0.58,
+      "direction": -0.3,
+      "via": "58% of it is in US dollars underneath, shares and bonds",
+      "past": {
+       "event": "Rate surprise",
+       "cases": 14,
+       "avg": -0.6,
+       "low": false
+      }
+     },
+     {
+      "holding": "robotics",
+      "name": "Robotics ETF",
+      "weight": 0.48,
+      "direction": -0.3,
+      "via": "48% of it is in US dollars",
+      "past": {
+       "event": "Rate surprise",
+       "cases": 14,
+       "avg": -2.6,
+       "low": false
+      }
+     },
+     {
+      "holding": "silver",
+      "name": "Silver ETC",
+      "weight": 0.4,
+      "direction": -0.3,
+      "via": "real yields and the dollar are 2 of its 5 drivers",
+      "past": {
+       "event": "Rate surprise",
+       "cases": 14,
+       "avg": -1.8,
+       "low": false
+      }
+     }
+    ],
+    "under_floor": [],
+    "matched": true,
+    "main": "nasdaq"
+   },
+   {
+    "id": "shipping",
+    "headline": "Attacks on shipping in the Red Sea resume; insurers raise their rates",
+    "published": "Sun 25 Oct 19:40",
+    "event": "Conflict",
+    "entities": [
+     "Red Sea",
+     "shipping",
+     "oil",
+     "geopolitical stress"
+    ],
+    "matches": [
+     {
+      "holding": "silver",
+      "name": "Silver ETC",
+      "weight": 0.2,
+      "direction": 0.6,
+      "via": "geopolitical stress is 1 of its 5 drivers",
+      "past": {
+       "event": "Conflict",
+       "cases": 9,
+       "avg": 1.9,
+       "low": false
+      }
+     }
+    ],
+    "under_floor": [
+     {
+      "holding": "balanced",
+      "name": "Balanced",
+      "weight": 0.03,
+      "direction": -0.4,
+      "via": "shipping and energy are 3% of it"
+     },
+     {
+      "holding": "nasdaq",
+      "name": "NASDAQ 100 ETF",
+      "weight": 0.01,
+      "direction": -0.4,
+      "via": ""
+     },
+     {
+      "holding": "robotics",
+      "name": "Robotics ETF",
+      "weight": 0.01,
+      "direction": -0.4,
+      "via": ""
+     }
+    ],
+    "matched": true,
+    "main": "silver"
+   },
+   {
+    "id": "retail",
+    "headline": "UK retail sales beat forecasts in September",
+    "published": "Fri 23 Oct 07:00",
+    "event": "none",
+    "entities": [
+     "UK",
+     "retailers"
+    ],
+    "matches": [],
+    "under_floor": [
+     {
+      "holding": "balanced",
+      "name": "Balanced",
+      "weight": 0.04,
+      "direction": 0.3,
+      "via": "UK shops are 4% of it"
+     }
+    ],
+    "matched": false,
+    "main": null
+   }
+  ],
+  "study": {
+   "nasdaq": {
+    "Tariffs": {
+     "cases": 11,
+     "avg": -2.6,
+     "low": false
+    },
+    "Rate surprise": {
+     "cases": 14,
+     "avg": -2.1,
+     "low": false
+    },
+    "Inflation surprise": {
+     "cases": 22,
+     "avg": -1.4,
+     "low": false
+    },
+    "Conflict": {
+     "cases": 9,
+     "avg": -1.2,
+     "low": false
+    },
+    "Earnings miss": {
+     "cases": 31,
+     "avg": -0.6,
+     "low": false
+    },
+    "OPEC+ decision": {
+     "cases": 16,
+     "avg": -0.2,
+     "low": false
+    },
+    "Election": {
+     "cases": 6,
+     "avg": 0.8,
+     "low": true
+    }
+   },
+   "balanced": {
+    "Rate surprise": {
+     "cases": 14,
+     "avg": -0.6,
+     "low": false
+    }
+   },
+   "robotics": {
+    "Tariffs": {
+     "cases": 11,
+     "avg": -3.4,
+     "low": false
+    },
+    "Rate surprise": {
+     "cases": 14,
+     "avg": -2.6,
+     "low": false
+    }
+   },
+   "silver": {
+    "Rate surprise": {
+     "cases": 14,
+     "avg": -1.8,
+     "low": false
+    },
+    "Conflict": {
+     "cases": 9,
+     "avg": 1.9,
+     "low": false
+    }
+   }
+  }
+ },
+ "sentiment": {
+  "today": -0.3,
+  "by_holding": {
+   "balanced": -0.3,
+   "nasdaq": -0.36,
+   "robotics": -0.4,
+   "silver": 0.0
+  },
+  "history": [
+   {
+    "d": "2026-10-05",
+    "day": "Mon 5 Oct",
+    "v": 0.14
+   },
+   {
+    "d": "2026-10-06",
+    "day": "Tue 6 Oct",
+    "v": 0.11
+   },
+   {
+    "d": "2026-10-07",
+    "day": "Wed 7 Oct",
+    "v": 0.08
+   },
+   {
+    "d": "2026-10-08",
+    "day": "Thu 8 Oct",
+    "v": 0.02
+   },
+   {
+    "d": "2026-10-09",
+    "day": "Fri 9 Oct",
+    "v": -0.04
+   },
+   {
+    "d": "2026-10-12",
+    "day": "Mon 12 Oct",
+    "v": -0.09
+   },
+   {
+    "d": "2026-10-13",
+    "day": "Tue 13 Oct",
+    "v": -0.12
+   },
+   {
+    "d": "2026-10-14",
+    "day": "Wed 14 Oct",
+    "v": -0.18
+   },
+   {
+    "d": "2026-10-15",
+    "day": "Thu 15 Oct",
+    "v": -0.16
+   },
+   {
+    "d": "2026-10-16",
+    "day": "Fri 16 Oct",
+    "v": -0.21
+   },
+   {
+    "d": "2026-10-19",
+    "day": "Mon 19 Oct",
+    "v": -0.19
+   },
+   {
+    "d": "2026-10-20",
+    "day": "Tue 20 Oct",
+    "v": -0.24
+   },
+   {
+    "d": "2026-10-21",
+    "day": "Wed 21 Oct",
+    "v": -0.22
+   },
+   {
+    "d": "2026-10-22",
+    "day": "Thu 22 Oct",
+    "v": -0.27
+   },
+   {
+    "d": "2026-10-23",
+    "day": "Fri 23 Oct",
+    "v": -0.25
+   },
+   {
+    "d": "2026-10-26",
+    "day": "Mon 26 Oct",
+    "v": -0.3
+   }
+  ],
+  "tilt": [
+   {
+    "holding": "nasdaq",
+    "name": "NASDAQ 100 ETF",
+    "stance": "PAUSE",
+    "conf": 64,
+    "news": -0.36,
+    "lean": -1,
+    "would_be": "PAUSE",
+    "why": "the news and the price pillars both lean down: one notch, and PAUSE is already as far as a tilt goes"
+   },
+   {
+    "holding": "robotics",
+    "name": "Robotics ETF",
+    "stance": "HOLD",
+    "conf": 58,
+    "news": -0.4,
+    "lean": -1,
+    "would_be": "PAUSE",
+    "why": "the news and the price pillars both lean down: one notch, HOLD would be PAUSE"
+   },
+   {
+    "holding": "balanced",
+    "name": "Balanced",
+    "stance": "HOLD",
+    "conf": 71,
+    "news": -0.3,
+    "lean": 1,
+    "would_be": "HOLD",
+    "why": "the news leans down, but trend and momentum lean up: no tilt"
+   },
+   {
+    "holding": "silver",
+    "name": "Silver ETC",
+    "stance": "HOLD",
+    "conf": 62,
+    "news": 0.0,
+    "lean": 0,
+    "would_be": "HOLD",
+    "why": "the news cancels out: nothing to tilt"
+   }
+  ],
+  "notch": [
+   "ADD",
+   "HOLD",
+   "PAUSE"
+  ],
+  "weights": "each holding by its value at the Fri 23 Oct close"
+ },
+ "events": [
+  {
+   "d": "2026-10-28",
+   "tm": "18:00",
+   "kind": "FOMC",
+   "t": "FOMC: the Fed's rate decision",
+   "touches": [
+    "nasdaq",
+    "robotics",
+    "balanced",
+    "silver"
+   ],
+   "why": "it moves US rates and the dollar, under all four of your funds and ETFs",
+   "past": {
+    "holding": "nasdaq",
+    "name": "NASDAQ 100 ETF",
+    "event": "Rate surprise",
+    "cases": 14,
+    "avg": -2.1,
+    "low": false
+   },
+   "day": "Wed 28 Oct"
+  },
+  {
+   "d": "2026-10-28",
+   "tm": "after the US close",
+   "kind": "Earnings",
+   "t": "Results: Microsoft, Alphabet and Meta",
+   "touches": [
+    "nasdaq"
+   ],
+   "why": "three of the NASDAQ 100 ETF's top holdings, 18% of it",
+   "past": {
+    "holding": "nasdaq",
+    "name": "NASDAQ 100 ETF",
+    "event": "Earnings miss",
+    "cases": 31,
+    "avg": -0.6,
+    "low": false
+   },
+   "day": "Wed 28 Oct"
+  },
+  {
+   "d": "2026-10-29",
+   "tm": "13:15",
+   "kind": "ECB",
+   "t": "ECB: the euro area's rate decision",
+   "touches": [
+    "balanced",
+    "robotics"
+   ],
+   "why": "it moves the euro, under Balanced's European shares and bonds",
+   "past": {
+    "holding": "balanced",
+    "name": "Balanced",
+    "event": "Rate surprise",
+    "cases": 14,
+    "avg": -0.6,
+    "low": false
+   },
+   "day": "Thu 29 Oct"
+  },
+  {
+   "d": "2026-10-29",
+   "tm": "after the US close",
+   "kind": "Earnings",
+   "t": "Results: Apple and Amazon",
+   "touches": [
+    "nasdaq"
+   ],
+   "why": "two of the NASDAQ 100 ETF's top holdings, 14% of it",
+   "past": {
+    "holding": "nasdaq",
+    "name": "NASDAQ 100 ETF",
+    "event": "Earnings miss",
+    "cases": 31,
+    "avg": -0.6,
+    "low": false
+   },
+   "day": "Thu 29 Oct"
+  },
+  {
+   "d": "2026-11-03",
+   "tm": "all day",
+   "kind": "Election",
+   "t": "US midterm elections",
+   "touches": [
+    "nasdaq",
+    "robotics"
+   ],
+   "why": "US shares and the dollar",
+   "past": {
+    "holding": "nasdaq",
+    "name": "NASDAQ 100 ETF",
+    "event": "Election",
+    "cases": 6,
+    "avg": 0.8,
+    "low": true
+   },
+   "day": "Tue 3 Nov"
+  },
+  {
+   "d": "2026-11-05",
+   "tm": "12:00",
+   "kind": "MPC",
+   "t": "MPC: the Bank of England's rate decision",
+   "touches": [
+    "balanced",
+    "nasdaq",
+    "robotics",
+    "silver"
+   ],
+   "why": "it moves the pound, so the 79% of your funds and ETFs held abroad underneath, and every rupee",
+   "past": {
+    "holding": "balanced",
+    "name": "Balanced",
+    "event": "Rate surprise",
+    "cases": 14,
+    "avg": -0.6,
+    "low": false
+   },
+   "day": "Thu 5 Nov"
+  },
+  {
+   "d": "2026-11-12",
+   "tm": "13:30",
+   "kind": "CPI",
+   "t": "US inflation (CPI), October",
+   "touches": [
+    "nasdaq",
+    "robotics",
+    "silver"
+   ],
+   "why": "it moves US rates",
+   "past": {
+    "holding": "nasdaq",
+    "name": "NASDAQ 100 ETF",
+    "event": "Inflation surprise",
+    "cases": 22,
+    "avg": -1.4,
+    "low": false
+   },
+   "day": "Thu 12 Nov"
+  },
+  {
+   "d": "2026-11-18",
+   "tm": "after the US close",
+   "kind": "Earnings",
+   "t": "Results: Nvidia",
+   "touches": [
+    "nasdaq",
+    "robotics"
+   ],
+   "why": "the NASDAQ 100 ETF's largest holding, 9% of it, and a chipmaker the Robotics ETF holds",
+   "past": {
+    "holding": "nasdaq",
+    "name": "NASDAQ 100 ETF",
+    "event": "Earnings miss",
+    "cases": 31,
+    "avg": -0.6,
+    "low": false
+   },
+   "day": "Wed 18 Nov"
+  }
+ ],
+ "later": [
+  {
+   "d": "2027-01-14",
+   "day": "Thu 14 Jan",
+   "kind": "Earnings",
+   "t": "Results: Infosys",
+   "touches": [
+    "infosys"
+   ],
+   "why": "your one share; results block changes to its call for the two sessions after: Fri 15 Jan and Mon 18 Jan"
+  }
+ ],
+ "etf": {
+  "id": "nasdaq",
+  "full": "iShares NASDAQ 100 UCITS ETF",
+  "owner": "Asha",
+  "wrapper": "ISA",
+  "value_gbp": 512,
+  "kind": "etf",
+  "isin": "IE00B53SZB19",
+  "line": "CNX1",
+  "venue": "London",
+  "ccy": "GBP",
+  "other_line": "CNDX, in US dollars",
+  "chain": [
+   "yfinance (CNX1.L)",
+   "Twelve Data's free tier",
+   "iShares' own page"
+  ],
+  "fallback": "the last price, marked stale",
+  "paid": "EODHD only if every free source fails and the admin approves",
+  "check": "iShares' NAV each day: more than 0.2% apart is shown on Activity",
+  "look_through": "iShares' holdings file, daily: US large-cap shares, about half in the top ten, all in US dollars",
+  "charge": "0.30% a year",
+  "added": "from Monzo's “Build your own” range: /add read the ISIN and the ticker off its factsheet and asked which line",
+  "like_funds": "the same chain, checks and flags as Balanced: a late or disagreeing price is marked provisional and shown on Activity, never guessed",
+  "priced": "Fri 23 Oct close"
+ },
+ "kind": {
+  "kind": "stock",
+  "version": 1,
+  "proposed": "Sun 25 Oct 17:41",
+  "approved": "Sun 25 Oct 17:42",
+  "by": "Arun",
+  "check": "a fresh Sign in with Apple, with Face ID",
+  "tool": "propose_kind",
+  "rows": [
+   [
+    "Price",
+    "the exchange's close, daily (NSE for Infosys)"
+   ],
+   [
+    "Look-through",
+    "the company itself: its sector, its country, its currency"
+   ],
+   [
+    "Engine",
+    "every pillar, and Valuation; the valuation and earnings cards"
+   ],
+   [
+    "Temperament",
+    "cautious: single-name risk raises the bar for Buy, and results block changes to its call for two sessions"
+   ],
+   [
+    "Events",
+    "bought, sold, dividend, split, bonus"
+   ]
+  ]
+ },
+ "infosys": {
+  "id": "infosys",
+  "name": "Infosys",
+  "exchange": "NSE",
+  "owner": "Arun",
+  "account": "Demat · Zerodha",
+  "units": 120,
+  "price": 1480.5,
+  "value_inr": 177660,
+  "value_gbp": 1579,
+  "priced": "Fri 23 Oct close",
+  "registered": "Sun 25 Oct 17:43",
+  "generated": "Sun 25 Oct 17:43",
+  "valuation": {
+   "verdict": "fair",
+   "scale": [
+    "very_cheap",
+    "cheap",
+    "fair",
+    "expensive",
+    "very_expensive"
+   ],
+   "pillar": 0,
+   "metrics": {
+    "pe": 22.3,
+    "ps": 3.35,
+    "pb": 6.3,
+    "ev_ebitda": 13.1,
+    "fcf_yield": 5.1,
+    "roe": 28,
+    "net_margin": 15.0,
+    "debt_to_equity": 0.09
+   },
+   "sector": {
+    "pe": 24.0,
+    "ps": 3.6,
+    "ev_ebitda": 15.0,
+    "fcf_yield": 4.6
+   },
+   "sector_name": "Indian IT services (the median of the five largest)",
+   "mean_rel": 0.91,
+   "one_liner": "Priced a little below Indian IT services on every measure: fair, not cheap."
+  },
+  "earnings": {
+   "verdict": "consistent",
+   "scale": [
+    "strong_compounder",
+    "consistent",
+    "mixed",
+    "volatile",
+    "deteriorating"
+   ],
+   "quarters": [
+    {
+     "q": "Q3 FY25",
+     "d": "2025-01-16",
+     "day": "Thu 16 Jan 2025",
+     "revenue_cr": 41764,
+     "eps": 15.43,
+     "est": 15.1,
+     "beat": true
+    },
+    {
+     "q": "Q4 FY25",
+     "d": "2025-04-17",
+     "day": "Thu 17 Apr 2025",
+     "revenue_cr": 40925,
+     "eps": 16.98,
+     "est": 16.2,
+     "beat": true
+    },
+    {
+     "q": "Q1 FY26",
+     "d": "2025-07-17",
+     "day": "Thu 17 Jul 2025",
+     "revenue_cr": 42279,
+     "eps": 16.43,
+     "est": 16.05,
+     "beat": true
+    },
+    {
+     "q": "Q2 FY26",
+     "d": "2025-10-16",
+     "day": "Thu 16 Oct 2025",
+     "revenue_cr": 44490,
+     "eps": 17.76,
+     "est": 17.95,
+     "beat": false
+    },
+    {
+     "q": "Q3 FY26",
+     "d": "2026-01-15",
+     "day": "Thu 15 Jan 2026",
+     "revenue_cr": 45120,
+     "eps": 16.1,
+     "est": 17.3,
+     "beat": false
+    },
+    {
+     "q": "Q4 FY26",
+     "d": "2026-04-16",
+     "day": "Thu 16 Apr 2026",
+     "revenue_cr": 44610,
+     "eps": 17.2,
+     "est": 17.05,
+     "beat": true
+    },
+    {
+     "q": "Q1 FY27",
+     "d": "2026-07-16",
+     "day": "Thu 16 Jul 2026",
+     "revenue_cr": 46050,
+     "eps": 16.3,
+     "est": 16.1,
+     "beat": true
+    },
+    {
+     "q": "Q2 FY27",
+     "d": "2026-10-15",
+     "day": "Thu 15 Oct",
+     "revenue_cr": 47620,
+     "eps": 16.7,
+     "est": 16.5,
+     "beat": true
+    }
+   ],
+   "beats": 6,
+   "of": 8,
+   "eps_ttm": 66.3,
+   "revenue_ttm_cr": 183400,
+   "revenue_growth": 8.2,
+   "last": {
+    "q": "Q2 FY27",
+    "day": "Thu 15 Oct",
+    "blocked": [
+     "Fri 16 Oct",
+     "Mon 19 Oct"
+    ]
+   },
+   "next": {
+    "day": "Thu 14 Jan",
+    "note": "expected, to be confirmed by the company",
+    "blocked": [
+     "Fri 15 Jan",
+     "Mon 18 Jan"
+    ]
+   },
+   "one_liner": "Beat the estimate in 6 of the last 8 quarters; revenue up 8.2% on the year before."
+  },
+  "sources": {
+   "price": "NSE's close, Fri 23 Oct (yfinance INFY.NS)",
+   "fundamentals": "not chosen yet: PLAN phase 16 decides the source when this card is built (EODHD Fundamentals would be £59.99 a month)"
+  }
+ }
+}

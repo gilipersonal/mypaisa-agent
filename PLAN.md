@@ -472,8 +472,9 @@ Claude's:
   and the Forecaster, each holding gets a stance with its pillars and
   confidence (ADD shown as Buy; a signal, never a trade), every call is
   graded on the track record, and the agent team proposes a rule or model
-  change on that evidence for the admin to approve. A design record in
-  `docs/design/` (Prototype v5 in MyPaisa app v1), not product code. The
+  change on that evidence for the admin to approve. A design record kept in
+  the repo (`docs/design/prototype-v5/`, outside the three Claude Design
+  copies), not product code, walked through as a private Artifact. The
   screens never drawn, or drawn before the wealth merge, are drawn into it
   in the v4 design and the picks already made, each marked Draft, not
   picked; your picks from it go into the boards through MA-279.

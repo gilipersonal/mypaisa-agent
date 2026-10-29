@@ -84,7 +84,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-282 | Four review ledger checks that went stale on main pass again on each fix's own evidence | In Progress |  | none |  |
 | MA-284 | The optional AWS VPC enterprise lockdown plan, seven-layer data perimeter and three-tier costing are recorded in the plan and Confluence with block diagrams | In Progress | §14, §15, §18.1, §18.4 | none |  |
 | MA-285 | Caching and memory for every agent are planned: ARCHITECTURE 24, the stories by phase and their Confluence page | In Progress | §24, §4.1, §8, §15.1, §16, §17, §23.2 | none |  |
-| MA-291 | Prototype v5: one clickable walk-through of the whole journey, phases 0 to 20, at every door, with stubbed figures | In Progress | §9, §9.3, §9.4, §6, §19.7, §20.4 | todo |  |
+| MA-291 | Prototype v5: one clickable walk-through of the whole journey, phases 0 to 20, at every door, with stubbed figures | In Progress | §9, §9.3, §9.4, §6, §19.7, §20.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

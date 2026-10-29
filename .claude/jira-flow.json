@@ -57,6 +57,12 @@
       "cwd": ".",
       "run": "npm ci --prefix scripts --silent --no-audit --no-fund && node scripts/board_fit.js --selftest && node scripts/board_fit.js",
       "paths": ["docs/design/**", "scripts/board_fit*"]
+    },
+    {
+      "name": "prototype-v5",
+      "cwd": ".",
+      "run": "npm ci --prefix scripts --silent --no-audit --no-fund && node scripts/prototype_smoke.js --selftest && python3 docs/design/figures/make_prototype_v5.py --check && node scripts/prototype_smoke.js && node scripts/prototype_smoke.js --priv",
+      "paths": ["docs/design/prototype-v5/**", "docs/design/figures/**", "scripts/prototype_smoke.js", "ARCHITECTURE.md"]
     }
   ],
   "work": {
