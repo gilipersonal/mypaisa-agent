@@ -83,6 +83,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-281 | Design the stock Forecaster's screens in the app: a holding's Forecast with its patterns, the proof page and the chat's card, on iPhone, iPad and the foldable, before anything is built | In Progress | §19.4, §19.6, §19.7, §9.1, §9.3 | picked | iPhone v4 · Forecast.dc.html: iPad · Forecast · 1a · Dark; iPhone v4 · Forecast.dc.html: iPad · Forecast · 1a · Light; iPhone v4 · Forecast.dc.html: iPad · Forecast · 1a · scrolled; iPhone v4 · Forecast.dc.html: iPhone · Forecast · 1a · Dark; iPhone v4 · Forecast.dc.html: iPhone · Forecast · 1a · Light; iPhone v4 · Forecast.dc.html: iPhone · Forecast · 1a · scrolled; iPhone v4 · Forecast.dc.html: iPhone · Forecast · 1a · scrolled to the track records; iPhone v4 · Forecaster proof and chat.dc.html: Foldable · Forecast · folded · Light; iPhone v4 · Forecaster proof and chat.dc.html: Foldable · Forecast · open · Light; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecast · a fund · Dark; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecast · a fund · Light; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecast · a fund · scrolled; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecast · privacy on · Dark; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecaster · Proof · Dark; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecaster · Proof · Light; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecaster · Proof · scrolled; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Forecaster · Proof · the switch-off; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Saturday review · no clear view · Light; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Saturday review · technical open · Light; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Saturday review · the engines agree · Light; iPhone v4 · Forecaster proof and chat.dc.html: iPhone · Saturday review · the engines disagree · Dark |
 | MA-282 | Four review ledger checks that went stale on main pass again on each fix's own evidence | In Progress |  | none |  |
 | MA-284 | The optional AWS VPC enterprise lockdown plan, seven-layer data perimeter and three-tier costing are recorded in the plan and Confluence with block diagrams | In Progress | §14, §15, §18.1, §18.4 | none |  |
+| MA-285 | Caching and memory for every agent are planned: ARCHITECTURE 24, the stories by phase and their Confluence page | In Progress | §24, §4.1, §8, §15.1, §16, §17, §23.2 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
@@ -129,7 +130,10 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-251 | A model change waits for the full suite, five trials on the new model, before the release ships it | To Do | §23.3, §18.4 | none |  |
 | MA-252 | Every live run is checked by code, every flagged run and a random 10% are judged overnight, and only a rate that leaves its band raises an alert | To Do | §23.4, §10.1, §10.6, §15.2, §10.4 | none |  |
 | MA-266 | The api and stream Lambdas run FastAPI with Pydantic v2, request-id and trace correlation middleware, OpenTelemetry route spans, and generated OpenAPI TypeScript types shared by both doors | To Do | §3, §9.4, §10.2, §10.3, §13, §21.5 | none |  |
-| MA-271 | A typed AnthropicAgentRunner loop manages four-breakpoint prompt caching, the Pydantic v2 tool registry, policy and figure hooks, and gen_ai OpenTelemetry spans | To Do | §8, §10.3, §15.1, §23.2 | none |  |
+| MA-271 | A typed AnthropicAgentRunner loop manages prompt caching for every agent (three explicit breakpoints and automatic caching for the tail), the Pydantic v2 tool registry, policy and figure hooks, and gen_ai OpenTelemetry spans | To Do | §8, §10.3, §15.1, §23.2, §24.1 | none |  |
+| MA-286 | Every agent's model calls are cached automatically: a frozen prefix, a lifetime per route, automatic caching for the tail, and an alarm when reads fall | To Do | §24.1, §24.6, §8, §10.4, §15.1, §23.3 | none |  |
+| MA-287 | Every agent keeps memory across runs through Claude's memory tool on MyPaisa's own store, scoped, guarded and audited, and long runs stay lean | To Do | §24.2, §24.3, §24.5, §24.6, §4.1, §8, §15.1, §23.2 | none |  |
+| MA-288 | A member sees what MyPaisa remembers about them and corrects or forgets it, in You, at both doors | To Do | §24.3, §4.10, §9 | todo |  |
 
 ## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 
@@ -349,6 +353,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-146 | The ops warden replays dead-lettered work on its own once the cause is healthy, and opens an incident if it fails again | To Do | §20.5, §21.3 | none |  |
 | MA-235 | The daily run and every agent share one trace: Step Functions and the event bus carry it, a replay links to the run it repeats, an incident names its trace, and heartbeats are metrics | To Do | §10.8, §20.5, §21.3 | none |  |
 | MA-256 | Each team agent has its own tools and safety suite, and a change it proposes to a prompt, rule or model carries its eval results to the admin's approval | To Do | §23.5, §20.2, §20.3 | none |  |
+| MA-289 | Each agent of the team keeps notes of what it tried, what worked and what the admin decided, read at the start of each run and never a second settings store | To Do | §24.4, §20.1, §20.2, §20.3 | todo |  |
 
 ## Phase 19: Indian markets and the existing Indian portfolio (MA-147)
 

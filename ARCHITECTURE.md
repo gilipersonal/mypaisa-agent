@@ -303,6 +303,7 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **PendingAction** | `member_id`, `flow_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `register_record` · `record_event` · `checkin` · `statement` · `plan_item` · `rearrange_budget` · `settings` · `confirm`), `step`, `collected` (the answers so far), `draft_hash?`, `message_id`, `expires_at` (24 h) | The state of the guided flows: what MyPaisa is waiting for from this member. Several can be open at once, keyed by flow id, so a check-in arriving mid-way does not wipe a half-registered FD. A draft (§4.8) is hashed here, and Confirm commits exactly that draft. The next message or tap resumes its flow; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `cas` · `broker_export` · `statement` · `checkin` · `inline_edit` · `agent_proposal` · `schedule` · `migration`), `document_id?` (the file a change came from), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained like the calls ledger, so a missing or edited row shows. See §4.6. |
 | **RunRecord** | `run_id`, `trace_id`, `build`, `version`, `function`, `trigger` (`message` · `action` · `schedule:<name>` · `alarm` · `deploy`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output, cache-read and cache-write tokens, cost, ms, time to the first token, stop reason, refused or fell back), `tool_calls[]` (name, ms, ok, error class, input and output sizes, the truncated input and output), `messages_sent`, `checks[]` (the policy gate's decisions, the figure check, the member's signals; §23.4), `outcome`, `error?` | What one run of any Lambda did and cost, and the trace it is on. 90-day TTL. Activity at every door and the cost guard rails read these; the only place a tool's input and output are kept outside `ChatTurn`. See §10. |
+| **MemoryNote** | `agent`, `scope` (`member` · `household` · `self`), `member_id?`, `path` (under `/memories/<agent>/`), `text`, `written_by` (the run), `created_at`, `updated_at` | One file of an agent's memory, read and written only through Claude's memory tool and the policy gate; never a figure, a record, a setting or a secret; each write an audit row; a member's notes deleted when they forget them or leave (§24). |
 | **EvalResult**, **EvalLabel** | `run_id` or `case_id`, `judge`, `judge_version`, `verdict` (`pass` · `fail` · `unknown`), `reason`, `flags[]`, `at`; the admin's `label` per failure mode with a one-line critique, the labelled run's transcript, `labelled_at` | A judge's verdict on a live run or a case, and the admin's own reading that calibrates it (§23.4, §23.5). A label keeps its run's transcript past the run's ninety days, so a changed judge is measured again on the same runs. Kept beside the runs, in the household's own table, and stored nowhere else. |
 
 Signals and macro regimes are per instrument and shared by everyone who holds
@@ -1193,7 +1194,8 @@ Python loop (`AnthropicAgentRunner`, MA-271) directly on the `anthropic` SDK and
 typed `RunContext`, inspired by PydanticAI, rather than LangGraph or CrewAI;
 `docs/RESEARCH.md` §6.3, MA-265), with strict tools over the
 registry, the engine and the cards, through the Anthropic API with the key in
-SSM. Prompt caching on the system prompt, the tool list and the card rubrics.
+SSM. Prompt caching on the system prompt, the tool list and the card rubrics;
+every agent's caching and memory come from this runner (§24).
 Anthropic's server-side web search and web fetch (with citations) serve the
 "Why?" button and the Saturday review, in a call of their own that holds a
 holding's name and ISIN but no household figure (§23.2); the nightly sentiment scoring goes
@@ -1277,7 +1279,7 @@ does not repeat itself.
 (Anthropic's server tools), `extract_document(s3_key, schema)`, `propose_change(entity,
 patch)` (saved only after Confirm), `log_decision`, `chart_series(id, days)` (the series a card's chart is drawn from), `ask_user(question, options[])` (ends
 the turn with a question; the answer resumes it through `PendingAction`) and
-`get_audit(filter)` (what changed, for "what did I change last week?"). For
+`get_audit(filter)` (what changed, for "what did I change last week?"); and `memory` (Claude's memory tool, on MyPaisa's own store, within the scopes its manifest grants, §24). For
 the household's records (§4.8): `list_kinds` and `describe_kind` (what can be
 registered, and a kind's fields); `draft_record(kind, fields)` and
 `draft_event(record, type, fields)` (each field a name and the member's own
@@ -2411,8 +2413,8 @@ made. The meter is reconciled weekly against the Console (§10).
 | --- | --- |
 | under 70% | Normal. |
 | 70% | One message to the owner: what is spent, on what, and the days left. Nothing changes. |
-| 85% | Savers: the bull/bear debate is skipped, the Saturday review runs on Sonnet instead of Opus, "Why?" searches are limited to three a day, and the nightly sentiment scoring pauses (stances keep the last index). The owner is told. |
-| 95% | Essentials only: chat answers on Haiku; the brief, the wrap and alerts go out as their plain templates with the engine's numbers; reading a factsheet or screenshot still works. The owner is told. |
+| 85% | Savers: the bull/bear debate is skipped, the Saturday review runs on Sonnet instead of Opus, "Why?" searches are limited to three a day, the nightly sentiment scoring pauses (stances keep the last index), and a memory note is written only when a member asks MyPaisa to remember (§24.6). The owner is told. |
+| 95% | Essentials only: chat answers on Haiku; the brief, the wrap and alerts go out as their plain templates with the engine's numbers; reading a factsheet or screenshot still works; memory notes are read and none is written (§24.6). The owner is told. |
 | 100% | Claude stops until the cycle renews or the owner raises the ceiling. Every card goes out as its plain template, buttons and guided flows work as before, and a typed message gets one line saying free text is back on the renewal day. |
 
 Alerts are never dropped at any step: a template needs no model. Raising the
@@ -2508,6 +2510,7 @@ a daily digest instead.
 | --- | --- | --- |
 | Engine | Port the desk's maths, rewrite its cascade | The maths is sound and self-tested; the cascade is for traders |
 | Files | Every file a member sends kept in S3 for good, with a `Document` row, linked from the audit log and opened from the Audit page (MA-148, MA-149) | Arun, 24 Oct 2026: "all the files and images I send should be stored on S3 and I should be able to view that in audit logs"; replaces deleting screenshots after extraction |
+| Caching and memory | Every agent gets both from the one runner (§24, MA-285): its calls marked for the cache in one frozen order with a lifetime per route, checked by a byte test, T1 and an alarm; and Claude's memory tool on MyPaisa's own `MemoryNote` store, scoped to the member, the household or the agent, through the policy gate, never holding a figure, a record, a setting or a secret; a member's notes read in their own runs only, kept until forgotten, written on the agent's own and shown in Activity; the notes in the cached layer under hard caps, counted as their own feature and stepped down by the ladder | Arun, 29 Oct 2026: "I want automatic caching and memory enabled for all agents that will be built" and "go for all recommended options, I need the app to grow and remember me. But it should not exceed costs"; in the runner, no agent can forget either, and a broken cache or a poisoned note is caught by code, not by review |
 | Indian markets | Phase 19 (§22, MA-147): AMFI, mfapi.in, yfinance `.NS`/`.BO` and the bhavcopy, free first; the existing portfolio imported from a CAS or a broker export; Indian mutual funds are registered and priced from AMFI's NAV file earlier, in phase 5 | Arun's Indian mutual funds and shares, to be fed later |
 | Research cards | Toolbelt shapes, fund-first content | Same skeleton reads well; funds need different questions |
 | Orchestration | One tool loop + a two-call debate, not an agent graph | One household; cost without accuracy otherwise |
@@ -2565,6 +2568,7 @@ a daily digest instead.
 - Whether Claude spend should ever go past the plan's $200 credit (a full £200 is about $260; the extra needs a card).
 - The day the plan's API credit renews each month, so the ceiling's cycle starts on it; and whether to buy Console credits if the prod ceiling is ever raised past what the $200 credit covers with dev's share taken out (§15.1).
 - Whether the CloudFront free flat-rate plan covers the two dashboards' distributions beside the tracker's; if not, they run on pay-as-you-go, which at this traffic is pennies.
+- Settled 29 Oct 2026 (MA-287, MA-288): a member's memory notes are read only in that member's own runs; a note is kept until forgotten or the member leaves, with no expiry; the agent writes notes on its own, each shown in Activity, inside the caps, the ceiling and the ladder of §24.6.
 - For §12: which members report in INR (the redesigned screens use MyPaisa DS v1, picked on MA-101). Settled 26 Oct 2026 (MA-186): the apex `mypaisapp.com` redirects to `dashboard.mypaisapp.com` at the cutover in phase 9 (MA-97).
 - Settled 26 Oct 2026 (MA-229): the stream is a route of the api's REST API in API Gateway's streaming mode (§21.5); the Lambda Web Adapter 1.1 runs it as its own build target; the association file is served by a CloudFront Function, with no fallback to swallow it (§9.4); the iOS project is on Swift Package Manager from day one (§9.5).
 - Checked when the build phases start: the Lambda concurrency quotas for the streams [verify].
@@ -3621,7 +3625,7 @@ OWASP Top 10 for Agentic Applications (2026):
 | Misinformation (LLM09) | The figure check; strict structured outputs for cards; the plain template on failure |
 | Excessive agency, tool misuse, privilege abuse (LLM06, ASI02, ASI03) | Least agency; the manifest; the gate; admin tools enforced in code; the second check |
 | Unexpected code execution (ASI05) | The SQL is the only code the model writes: read only, external access off, its configuration locked, over the asker's views, at most 10 seconds and 10,000 rows (§12.1) |
-| Memory and context poisoning (ASI06) | A conversation that has read untrusted text, and every note and summary drawn from it, keeps no outbound tool; the merchant memory and `propose_kind` change only after a member's Confirm or the admin's approval; a team proposal drawn from uploaded or fetched text says so (MA-256) |
+| Memory and context poisoning (ASI06) | A conversation that has read untrusted text, and every note and summary drawn from it, keeps no outbound tool; such a run writes no memory note, and a note is read as data after the cached prefix (§24.3); the merchant memory and `propose_kind` change only after a member's Confirm or the admin's approval; a team proposal drawn from uploaded or fetched text says so (MA-256) |
 | Insecure inter-agent communication (ASI07) | The agents of §20 talk only through the event bus and the settings service, every message typed and checked like a tool call; no agent takes another's text as an instruction |
 | Human-agent trust exploitation (ASI09) | A Confirm card shows exactly what a tap writes, with code's figures; an import and every admin action also need the second check |
 | Unbounded consumption (LLM10) | The ceiling, its guards and the tool-call cap |
@@ -3812,3 +3816,239 @@ MA-107 (the release waits for T2), MA-104 (the locked DuckDB), MA-113 (the
 `evals` feature and its cap), MA-37 (the extractor's output), MA-197 and
 MA-130 (the eval results on their approval cards), and MA-132 and MA-133
 (daily on purpose, §23.6).
+
+## 24. Caching and memory for every agent (MA-285)
+
+Arun, 29 Oct 2026: "I want automatic caching and memory enabled for all
+agents that will be built". Every agent calls Claude through one runner
+(`AnthropicAgentRunner`, MA-271, §8), so both come from the runner, once, and
+an agent gets them by being built on it: no agent's own code adds a cache
+mark or a memory store. Each agent's manifest (MA-246, §23.5) says only what
+differs: its cache lifetime and the memory scopes it may read and write.
+
+| Layer | What it keeps | Where | For how long |
+| --- | --- | --- | --- |
+| **The prompt cache** (§24.1) | The fixed part of each call: tools, system prompt, card rubrics, the household's layer | Anthropic's cache, per workspace and per model | 5 minutes or an hour after the last read |
+| **The conversation** (§8, MA-115) | Every message, sent only while its conversation is open; one-line notes on recent ones | `ChatTurn` rows | Ninety days |
+| **Memory notes** (§24.2, §24.3) | What an agent should keep in mind between runs, in plain words | `MemoryNote` rows, through Claude's memory tool | Until forgotten |
+| **Within a run** (§24.5) | Only what the run still needs | The request, trimmed on Anthropic's side | The run |
+
+The records are none of these: the registry holds every figure and record,
+written only through Confirm, a check-in's tap or a Save in place (§4.10);
+the settings store holds every behaviour (§20.2); the merchant memory stays
+the registry's (§4.9). A note or a cached prompt never stands in for any of
+them.
+
+### 24.1 The prompt cache: on for every call, checked on every change
+
+The runner builds every request in one order, frozen per agent version, and
+marks it for the cache, so a call pays full price only for what changed since
+the last one. The rules follow from the cache being a prefix match: any byte
+that changes ends the cache at that point.
+
+- **One order.** Tools, sorted by name and serialised deterministically, then
+  the system prompt, then the messages. Nothing that changes per member, per
+  day or per request comes before the first breakpoint: no date, no member's
+  name, no id, no figure, no unsorted JSON, no tool added for one member.
+- **Dynamic context after the cache.** Today's date, the member's name, role
+  and mode, privacy mode and the spend ladder's step reach the model as a
+  mid-conversation system message, after the cached prefix (Sonnet 5.5, Opus
+  5.5 and Haiku 5.5 take one with no beta header). It is also the operator's
+  own channel, which a member's text cannot forge.
+- **Breakpoints.** At most three explicit breakpoints, one per stable layer:
+  the tools and system prompt together, the household's layer, then the
+  conversation notes (§8). The request's top-level automatic caching
+  (`cache_control` on the request) takes the conversation's tail, the fourth
+  of the four slots the API allows. A one-shot call with no history keeps the
+  first breakpoint alone.
+- **A lifetime per route,** named in the agent's manifest from how far apart
+  its calls start: under five minutes takes the 5-minute cache, which every
+  call refreshes; five to sixty minutes takes the hour, whose write costs
+  twice the input price against a tenth for each read; a longer gap takes
+  neither and pays one cold call. The chat's fixed part takes the hour, since
+  household messages come minutes apart (§8), and its tail five minutes; a
+  daily or weekly run (the Saturday review, the agent team's runs) takes five
+  minutes within the run. A longer lifetime always sits before a shorter one.
+- **One model per loop.** A cache belongs to one model, so a loop never
+  changes model mid-run; a cheaper step (a Haiku filter, a summary) is its
+  own call. Effort and thinking settings are pinned per route for the same
+  reason.
+- **Batches and server tools.** The nightly scoring and the overnight judges
+  (§23.4) mark their shared instructions in every batch item; a hit inside a
+  batch is likely, not certain. A web search or fetch call adds its own cache
+  write after its results, which is expected.
+- **No warming.** The household's traffic is light, so no call is sent only
+  to fill the cache; the first message of the hour pays the write. This is
+  revisited if a first message's time to the first token passes its budget
+  (§10.4).
+- **The size floor.** A prefix under 512 tokens (on the 5.5 models) is never
+  cached and costs nothing extra; a manifest whose fixed part is that small
+  says so rather than marking it.
+
+**Checked, because a broken cache fails silently.** Requests keep succeeding
+and only the bill grows, so caching is tested where it can break:
+
+1. A unit test builds every agent's request twice (two members, two days, two
+   runs) and asserts the bytes before the first breakpoint are identical; a
+   manifest with no lifetime, or more than three explicit breakpoints, fails
+   the build.
+2. T1 (§23.3) sends each changed agent's request twice in the evals workspace
+   and expects `cache_read_input_tokens` above zero on the second.
+3. Every `RunRecord` keeps each call's cache read and write tokens (§10.1);
+   the model panel shows the cache-read share per agent, and an alarm fires
+   once when an agent's share leaves its band for a day (MA-233).
+4. In dev, cache diagnostics (beta `cache-diagnosis-2026-04-07`, on the
+   Anthropic API only) names where a broken prefix first differs.
+5. The Console's caching analytics for each workspace (dev, prod and the
+   evals) is the second place to look; each workspace has its own cache, so a
+   prompt shared across them is cached once in each.
+
+### 24.2 Memory notes: what an agent may keep
+
+Every agent gets Claude's memory tool (`memory_20250818`) from the runner.
+Its six commands (`view`, `create`, `str_replace`, `insert`, `delete`,
+`rename`) work on a `/memories` directory that is MyPaisa's own store, not a
+disk: each file is a `MemoryNote` row in the one table (§4.1). A note holds
+plain words about the person or the work:
+
+- what a member asked MyPaisa to keep in mind ("remember that I am saving
+  for a car next year"), how they like answers, what they are planning or
+  waiting for;
+- for the agent team (phase 18): what it tried, what worked, a source's
+  quirks, why the admin approved or rejected a request (§20.3, MA-289).
+
+**What a note never holds.**
+
+- **A figure or a record.** No amount, balance, rate, percentage, date of a
+  payment, account or card number, id, token or secret: the write handler
+  refuses each in code, with the reason. A note may name a record ("the car
+  loan"), and the agent looks its figures up with the tools when it needs
+  them. The figure check (§23.2) matches a reply's figures only against the
+  run's tool results and the member's own words, so a figure from a note
+  cannot reach a reply even if one were written.
+- **A setting.** "Asha asked for fewer pings" may be a note; changing her
+  ping budget is still her settings card. A note never changes behaviour on
+  its own (§20.2).
+- **Another member's detail.** A member's notes hold only what that member
+  said or did.
+
+### 24.3 Whose notes, and who sees them
+
+| Scope | Path | Read by | Written by |
+| --- | --- | --- | --- |
+| A member's own | `/memories/<agent>/members/<member_id>/` | That member's runs only | That member's runs |
+| The household's | `/memories/<agent>/household/` | Every member's runs, so it holds nothing private | Any member's run; corrected or forgotten by the owner |
+| The agent's own | `/memories/<agent>/self/` | That agent's runs | That agent; the admin corrects or clears it (MA-289) |
+
+- **Through the policy gate.** Each command is checked like any tool call
+  (§23.2): the scope is in the agent's manifest, the path is the member's own
+  or the household's, and the run is under its limits. It fails closed.
+- **Read as data, at the cached price.** The runner loads a run's notes once,
+  at its start, into the notes layer under the third breakpoint (§24.1),
+  labelled with their source and never as an instruction, so every later
+  message of the conversation reads them from the cache. A note written during
+  a run applies from the next run, which keeps the history append-only and the
+  prefix unbroken; `view` stays for a note outside that set.
+- **Untrusted text writes nothing.** A run that has read untrusted text (a
+  file, a statement, a fetched page, a news item; §23.2) cannot write memory:
+  the gate refuses every writing command in it, `delete` included, so a
+  poisoned page can neither plant a note nor erase one.
+- **Seen and audited.** Every write is an audit row (`memory.write`, the path,
+  the run) and one line in Activity, "MyPaisa noted: ...". In You, What
+  MyPaisa remembers lists the member's own notes and the household's, each
+  corrected in place (a before and after with Save, `via: inline_edit`) or
+  forgotten with a Confirm; nothing is added there, since a new note comes
+  only from the chat (MA-288, §4.10). Forgetting removes the note's text for
+  good and keeps its audit row without it.
+- **Kept small.** Each scope has a cap (§24.6), so reading it stays cheap;
+  the agent tidies its notes with `str_replace`, and a write past the cap is
+  refused with the reason.
+- **For how long.** A member's notes go when the member forgets them or leaves
+  the household (MA-172 deletes them); the household's and the agent's stay
+  until corrected or cleared.
+
+Settled by Arun, 29 Oct 2026, on MA-287 and MA-288 ("go for all recommended
+options, I need the app to grow and remember me. But it should not exceed
+costs"): a member's notes are read only in that member's own runs, the owner
+included, who reads only the household's; a note is kept until the member
+forgets it or leaves the household, with no expiry; and the agent writes
+notes on its own, each shown in Activity as it is written, as well as when a
+member says "remember". The cost half is §24.6.
+
+### 24.4 The agent team's notes (phase 18)
+
+Each agent of §20.1 keeps its own `self` notes: the data steward a source's
+quirks and outages, the news scout the feeds that went bad, the Forecaster
+what its explanations got wrong, the grader and tuner why each change request
+was approved or rejected (so a rejected request is not proposed again within
+its setting's period), the ops warden each incident and the fix that worked,
+the admin desk how the admin likes requests batched. A run reads them first.
+A note never changes behaviour: that is a setting inside its band, or a
+change request the admin approves (§20.2, §20.3). The Admin center lists
+each agent's notes for the admin to read, correct or clear, behind the
+second check with an audit row (MA-289).
+
+### 24.5 Within a run: kept lean, never edited
+
+The 5.5 models tie their thinking to the conversation as it was sent, so a
+stored history is never edited or trimmed (§8). Two things keep a run small
+without editing it:
+
+- **A long tool run** (the Saturday review, an ops repair, a long import)
+  uses server-side context editing (`clear_tool_uses_20250919`, beta
+  `context-management-2025-06-27`): the API drops old tool results from what
+  the model reads, and the history as sent is unchanged, so it is not an
+  edit.
+- **A long conversation** starts afresh from a summary past about 50,000
+  tokens (§8), the plain shape that replays no earlier turn or thinking; it
+  costs one cold cache, once.
+
+Server-side compaction (beta `compact-2026-01-12`) is not needed at these
+sizes and is not used.
+
+### 24.6 Within the budget
+
+Arun, 29 Oct 2026: "it should not exceed costs". Caching lowers the bill, and
+memory is held inside the same ceiling, ladder and guards as every other call
+(§15.1):
+
+- **Caching pays for itself.** A cache read costs a tenth of the input price
+  on Sonnet 5.5 and Haiku 5.5 ($0.20 against $2 a million tokens on Sonnet)
+  and a twentieth on Opus 5.5; the hour's write costs twice the input price,
+  once. The cache-read share's alarm (§24.1) catches a change that would
+  quietly raise the bill.
+- **Notes ride the cache.** Loaded once into the cached notes layer (§24.3),
+  a member's notes cost about half a penny to write at a conversation's start
+  and about a twentieth of a penny a message after it, at Sonnet 5.5's prices
+  and $1.30 to £1, beside the 1.5p to 3p a message costs (§8).
+- **Hard caps.** At most 2,000 tokens of a member's notes for one agent, 1,000
+  of the household's and 3,000 of an agent's own; at most two note writes in
+  a run, each counted in the run's eight-call guard (§15.1). A write past a
+  cap is refused with the reason, and the agent tidies instead.
+- **Counted.** Every memory read and write is costed into the cycle's
+  `SpendMonth` under its own feature, `memory`, and the model panel shows it
+  beside the rest.
+- **On the ladder.** From the 85% step (savers), the agent writes a note only
+  when a member asks it to remember; from the 95% step it reads notes and
+  writes none; at 100% Claude stops and the notes wait unchanged. Notes are
+  never dropped to save money: reading them cached is the cheapest part of a
+  conversation.
+
+### 24.7 The stories
+
+| Key | Phase | What |
+| --- | --- | --- |
+| MA-285 | 0 | This record |
+| MA-286 | 1 | Every agent's calls cached by the runner, with the byte test, T1's read check, the panel's share and its alarm |
+| MA-287 | 1 | The memory tool on `MemoryNote`, its scopes through the gate, the refusals, the audit and Activity line, the notes in the cached layer under their caps and the ladder, and context editing for long runs |
+| MA-288 | 1 | What MyPaisa remembers, in You at both doors: see, correct in place, forget (drawn with MA-277's list) |
+| MA-289 | 18 | The agent team's own notes, read first, never a setting, listed in the Admin center |
+
+Earlier stories this changes: MA-271 (three explicit breakpoints and the
+request's automatic caching for the tail, in place of four explicit ones),
+MA-246 (each manifest names its cache lifetime and memory scopes), MA-247
+(the gate checks every memory command and refuses writes after untrusted
+text), MA-250 (the golden set's cache and memory cases), MA-233 (the
+cache-read share per agent and its alarm), MA-172 (leaving deletes the
+member's notes), MA-277 (its list in You drawn in one round with MA-288's
+page) and MA-256 (each team agent's memory scope in its manifest).
