@@ -273,3 +273,24 @@ Added the day each was learned; reviewers check every item.
     combined with structured outputs, and a PDF reaches the model as a document
     block, not as text in a tool result (MA-245 round 1).
 
+37. **A chart draws every stroke in its own SVG:** a shared def drawn with
+    `<use>` into a chart stretched by `preserveAspectRatio="none"` escapes the
+    kit's non-scaling-stroke rule, so its strokes stretch with the box. In
+    MA-281 round 1, every candle's wick drew wider than its body, and both
+    board gates passed. A shared def in a stretched chart holds filled shapes
+    only; `plan_sync.py check` refuses one that draws lines or paths, and its
+    selftest proves it on a mutated board.
+38. **A figure set checks its own data, not typed-in numbers** (lesson 3, for
+    the design aids). In MA-281 round 1, `make_forecaster.py` asserted
+    `57 + … == 52` on literals while the neckline sat above the trough, a
+    close broke it a day before the stated break, a bar opened under its low,
+    and the similar days' middle was +1.7% against the +1.8% shown. Each claim
+    a board makes about the figures is asserted over the figures themselves.
+39. **Every part the acceptance names is in a frame, and no frame states a
+    rule the docs lack:** a part below the fold gets its own scrolled frame,
+    and a stage, a count or a rule on a board comes from ARCHITECTURE. In
+    MA-281 round 1:
+    - nothing showed the picked option's track records, the fund's rows, or
+      the "no clear view" card;
+    - the proof page invented a shadow stage and a monthly restart;
+    - similar days were counted 31 against §19.4's 30.

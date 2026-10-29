@@ -118,7 +118,7 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   judges' calibration and growth through the manifest.
 - **[MyPaisa Market Agent](https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb)**:
   the market side end to end: free data, the rules engine, news matched to
-  holdings, the Forecaster's five models, both engines side by side, the
+  holdings, the Forecaster's six models (F8's patterns among them), both engines side by side, the
   daily learning loop, the strategy layer, how it proves itself,
   self-healing and the budgets.
 - Earlier pages, kept for reference: the
@@ -2513,7 +2513,7 @@ a daily digest instead.
 | Claude budget | The agents' allowance is the Max 20x plan's $200 monthly credit across prod and dev ($160 and $40 by default, each a ceiling the admin moves); AWS and others have their own cap (£50); every step, action and alert route set in the Admin center (§15.2); a ladder steps down at 85% and 95% and stops at 100%, with guards per member, per day and per run; the Console workspace limit is the hard backstop (§15.1, MA-112) | Arun's budget (24 Oct 2026); MyPaisa degrades to templates rather than going silent, and a runaway loop cannot spend a month |
 | Chat memory | Every message kept ninety days, only the current conversation sent, with notes on recent ones; history append-only (§8, MA-115) | Pennies a message instead of a cost that grows every day |
 | Delivery | Terraform only; the AWS MCP reads; GitHub CI builds once, deploys dev, then prod after approval, with smoke tests and rollback; a nightly drift check (§18) | Every change is reviewed, repeatable and visible; nothing in prod changes by hand |
-| Forecaster | A second engine, phase 17, beside the rules engine and never replacing it: market mood and risk first, direction last; shown for a holding only after 8 live weeks beating the base rate and the rules engine; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
+| Forecaster | A second engine, phase 17, beside the rules engine and never replacing it: market mood and risk first, direction last; in weekday cards and chat answers only after 8 live weeks beating the base rate and the rules engine, and until then only on the holding's Forecast tab and in the Saturday review, labelled in practice; switches itself off when its record slips (§19, MA-117) | Arun's goal is fewer deep falls and steady growth; risk can be forecast, short-term direction mostly cannot, and an engine that has not proved itself should not speak |
 | Queues | SQS between every part that could fail: messages in and replies out through FIFO queues with one lane per member, background jobs through a work queue, retries with backoff, idempotent handlers, a dead-letter queue behind each with an alarm and replay (§21, MA-138) | Arun: "resilient and self heal with retries from Queues"; nothing a member sends, nothing MyPaisa sends and no day's work is lost to a bad minute somewhere else |
 | Agent team | Narrow agents (data, news, the rules engine, the Forecaster, grading and tuning, operations, the chat, the admin desk), each with its own tools, model and budget share; every behaviour a setting; any change outside a setting's automatic band only on the admin's approval, in the chat or the Admin center; daily grading and bounded daily recalibration; self-repair within bounds, an incident otherwise (§20, MA-127) | Arun's goals: everything configurable, nothing changed without asking, a system that learns from its own record and fixes what it safely can |
 | Destination | The dashboard is MyPaisa, the whole wealth tracker, built first (phases 2 to 9) at both doors: anything new is created in the chat and an existing figure corrected in place, through one write service; the old tracker's maths and screen list are ported, and it is retired in phase 9 (MA-186, 26 Oct 2026) | One backend, one audit trail, one identity, one place to secure writes; the old tracker held no real data, so nothing is migrated |
@@ -2887,9 +2887,10 @@ engine's.
   a gap so no window overlaps; the last two years are held back for a final
   test. A model that does not beat the base rate there is not used.
 - **Practice first.** Every forecast is a `Forecast` row, graded when its four
-  weeks are up. For each holding the Forecaster appears in weekday cards only
-  after 8 live weeks beating both the base rate and the rules engine; until
-  then it appears only in the Saturday review, labelled "in practice".
+  weeks are up. For each holding the Forecaster appears in weekday cards and
+  chat answers only after 8 live weeks beating both the base rate and the
+  rules engine; until then it appears only on that holding's Forecast tab and
+  in the Saturday review, labelled "in practice" (Arun, 29 Oct 2026, MA-281).
 - **It switches itself off** when its live record is worse than the base rate
   for four weeks, and the owner is told. Models are retrained monthly; each
   version is a `ModelVersion` row with its test scores.
@@ -2906,7 +2907,7 @@ Forecaster     next 4 weeks
   Chance of −5%      21%   (usually 12%)
   Likely range       −7% … +6%
   Market mood        Stressed, since 3 Oct
-  Similar days       31 since 2015; 18 recovered within 4 weeks
+  Similar days       30 since 2015; 18 recovered within 4 weeks
   Main drivers       momentum fading, US yields rising, chip export news
 [Why?] [Chart] [Track record]
 ```
@@ -2915,14 +2916,20 @@ When the two engines disagree, the card says so; below the confidence floor
 it says "no clear view". On the dashboard, a Forecast screen per holding: a fan
 chart of the likely range, the mood timeline, the similar days drawn over
 today's chart, the event-impact table, the main drivers, candles for ETFs and
-shares, and both engines' track records side by side. Both are designed first
+shares, and both engines' track records side by side. From the Forecast tab
+and the Track record, a proof page per holding shows how the Forecaster earns
+its place (§19.6): the lab's report, the walk-forward tests, the live gate and
+the switch-off (Arun kept it, 29 Oct 2026, MA-281). All are designed first
 (design-first), with privacy mode and both themes. The app's screen is MA-281's
 1a, picked on 29 Oct 2026: the answer first (the chance of a fall over 5%, the
 likely range, then the chance of being up), the rules engine's call under it,
 then the candles with the fan and the patterns F8 finds marked on them, each
-pattern with what followed it on that holding, a row per model and both track
-records; a fund shows its price line and line patterns only. The web app's
-Forecast follows it in MA-279.
+pattern with what followed it on that holding, then one row per model (the
+mood, the similar days, the event impacts, the drivers and the technical set),
+each opening its sheet with the timeline, chart or table above, and both track
+records. A fund draws the same fan over its daily price line, with line
+patterns only and no candles. The web app's Forecast follows MA-281's 1a in
+MA-279.
 
 ### 19.8 Where it runs and what it costs
 

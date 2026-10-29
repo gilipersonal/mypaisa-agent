@@ -376,6 +376,38 @@ _RETIRED_TOOLS = ("read_file", "read_image", "render_chart")  # Telegram-era nam
 _MOTION_NEEDS = {"label": "mp-chartlbl", "dot": "mp-chartdot"}
 
 
+def stroke_errors(text: str) -> list[str]:
+    """Each <use> that draws a shared SVG def holding a line or a path (a line, path, polyline, polygon, circle or
+    ellipse). The copy is drawn from a def outside the chart's own SVG, so the kit's non-scaling-stroke rule never
+    reaches it, and under preserveAspectRatio="none" its strokes stretch with the box (MA-281 review, round 1: every
+    candle's wick drew wider than its body). In a stretched SVG a shared def holds filled rects only; strokes belong
+    in the chart's own SVG. A <use> there of a def the board does not hold is refused too. An SVG scaled evenly (the
+    logo, an icon) is not stretched, so its <use> is left alone."""
+    defs = {}
+    for m in re.finditer(r"""<(g|symbol)\b[^>]*\bid\s*=\s*["']([^"']+)["'][^>]*>""", text):
+        depth, i = 1, m.end()
+        for t in re.finditer(r"<(/?)(g|symbol)\b[^>]*>", text[i:]):   # to the def's own closing tag, nested groups included
+            depth += -1 if t.group(1) else 1
+            if depth == 0:
+                defs[m.group(2)] = text[i:i + t.start()]
+                break
+        else:
+            defs[m.group(2)] = text[i:]
+    bad = []
+    # Only an SVG stretched to its box draws a <use> wrong: a mark scaled evenly (a logo, an icon) keeps its strokes.
+    stretched = "".join(m.group(1) for m in re.finditer(
+        r"""<svg\b[^>]*\spreserveAspectRatio\s*=\s*["']?none["']?[^>]*>(.*?)</svg>""", text, re.S | re.I))
+    for m in re.finditer(r"""<use\b[^>]*?\s(?:xlink:)?href\s*=\s*["']?#([^"'\s>]+)""", stretched):
+        if "{{" in m.group(1):
+            continue  # an id the template fills in cannot be read here
+        body = defs.get(m.group(1))
+        if body is None:
+            bad.append(f"a <use> of #{m.group(1)}, which it does not define")
+        elif re.search(r"<(line|path|polyline|polygon|circle|ellipse)\b", body):
+            bad.append(f"a <use> of #{m.group(1)}, a shared def that draws lines or paths (draw them in the chart's own SVG)")
+    return sorted(set(bad))
+
+
 def motion_errors(text: str) -> list[str]:
     """Each element a board gives the label or dot motion role without the class whose transform that role's keyframe
     ends on: the arrival would leave it moved by half its size or more (MA-161 review, round 2: chart axes and a dot
@@ -521,6 +553,8 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
                     errors.append(f"board tool: {proj['dir']}/{name} names {d!r}, which ARCHITECTURE 8's Tools do not define")
                 for d in motion_errors(path.read_text()):
                     errors.append(f"board motion: {proj['dir']}/{name} has {d}: the settled arrival would move it")
+                for d in stroke_errors(path.read_text()):
+                    errors.append(f"board stroke: {proj['dir']}/{name} has {d}: its strokes stretch with the chart")
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -640,6 +674,17 @@ TOOL_CASES = [
 ]
 
 # Motion roles the check must accept and refuse (MA-161 review, round 2, e3).
+STROKE_CASES = [  # MA-281 review, round 1: a shared def under a stretched viewBox
+    ('<svg><defs><g id="c"><rect class="cb" x="1" y="1" width="1" height="2"></rect></g></defs></svg><svg viewBox="0 0 100 100" preserveAspectRatio="none"><use href="#c"></use></svg>', True),
+    ('<svg><defs><g id="c"><line class="wk" x1="1" x2="1" y1="0" y2="9"></line></g></defs></svg><svg viewBox="0 0 100 100" preserveAspectRatio="none"><use href="#c"></use></svg>', False),
+    ('<svg><defs><g id="c"><path d="M0 0 L9 9"></path></g></defs></svg><svg preserveAspectRatio="none"><use xlink:href="#c"></use></svg>', False),
+    ("<svg><defs><g id='c'><g><rect></rect></g><polyline points='0,0 1,1'></polyline></g></defs></svg><svg preserveAspectRatio='none'><use href='#c'></use></svg>", False),
+    ('<svg><defs><symbol id="c"><circle r="2"></circle></symbol></defs></svg><svg preserveAspectRatio=none><use href="#c"></use></svg>', False),
+    ('<svg preserveAspectRatio="none"><use href="#nowhere"></use></svg>', False),
+    ('<svg preserveAspectRatio="none"><path class="sim" d="M0 0 L9 9"></path></svg>', True),
+    ('<svg><defs><g id="mark"><path d="M0 0 L9 9"></path></g></defs></svg><svg viewBox="0 0 24 24"><use href="#mark"></use></svg>', True),
+    ('<svg preserveAspectRatio="none"><use href="#m{{ t.id }}"></use></svg>', True),
+]
 MOTION_CASES = [
     ('<span class="mp-chartlbl" data-mo="label">', True), ('<div class="mp-chartdot x" data-mo="dot">', True),
     ('<div class="hax" data-mo="label">', False), ('<div data-mo="dot" class="edot">', False),
@@ -844,6 +889,11 @@ def selftest(trace: dict) -> int:
     if not {"extract_document", "chart_series", "propose_change"} <= agent_tools():
         bad += 1
         print("FAIL: ARCHITECTURE 8's Tools paragraph could not be read")
+    for text, want in STROKE_CASES:
+        got = not stroke_errors(text)
+        if got != want:
+            bad += 1
+            print(f"FAIL: stroke {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
     for text, want in MOTION_CASES:
         got = not motion_errors(text)
         if got != want:
@@ -882,9 +932,17 @@ def selftest(trace: dict) -> int:
             else:
                 bad += 1
                 print("FAIL: the mutated-board selftest needs 'chart_series' in iPhone audit and activity.dc.html")
+            stroke_board = root / "docs/design/ios-v1/iPhone v4 · Forecast.dc.html"
+            if stroke_board.exists() and '<rect class="cw' in stroke_board.read_text():
+                stroke_board.write_text(stroke_board.read_text().replace('<rect class="cw', '<line class="cw', 1))  # a stroked wick in the shared def
+                rec = m["ios"]["files"][stroke_board.name]
+                rec["bytes"], rec["sha256"] = stroke_board.stat().st_size, sha256(stroke_board)
+            else:
+                bad += 1
+                print("FAIL: the mutated-board selftest needs a shared candle def (<rect class=\"cw\") in iPhone v4 · Forecast.dc.html")
             (root / "docs/design/claude-design.json").write_text(json.dumps(m, indent=2) + "\n")
             r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
-            for what in ("board date", "board motion", "board tool"):
+            for what in ("board date", "board motion", "board tool", "board stroke"):
                 if r.returncode == 0 or what not in r.stdout:
                     bad += 1
                     print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")
@@ -903,7 +961,7 @@ def selftest(trace: dict) -> int:
     else:
         bad += design_sync.selftest()
     # The review ledgers read this line: keep "tool names and one mutated board, <n> wrong" as it is.
-    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles, {len(TOOL_CASES)} tool names and one mutated board, {bad} wrong, counting {len(RECORD_CASES)} mutated records")
+    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles, {len(STROKE_CASES)} shared strokes, {len(TOOL_CASES)} tool names and one mutated board, {bad} wrong, counting {len(RECORD_CASES)} mutated records")
     return 1 if bad else 0
 
 

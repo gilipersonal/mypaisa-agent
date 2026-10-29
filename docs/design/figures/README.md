@@ -220,14 +220,25 @@ from the surplus and then cash.
 the Forecaster's iOS boards show. It reads `household-v4.json` for the holdings and the clock and never changes it.
 
 - **The clock** is the household's: Mon 26 Oct 2026, prices at the Fri 23 Oct close. The Forecaster ran on Sat 24 Oct at
-  06:10 (model 2026.10, data to 30 Sep); the Saturday review went out at 09:00.
+  06:10 (model 2026.10, trained on data to 30 Sep); the Saturday review went out at 09:00.
 - **In practice, week 5 of 8** for every holding: weeks 1 to 5 beat both the base rate and the rules engine; weeks 6 to 8
   are graded on Fri 30 Oct, Fri 6 Nov and Fri 13 Nov. The rules engine is live.
 - **Charts are in percentages from the Fri 23 Oct close**, so they need no price levels: 60 trading days of candles for
   the NASDAQ 100 ETF (Fri 31 Jul to Fri 23 Oct, the 31 Aug bank holiday left out), the Balanced fund's daily price
   line (an OEIC has no candles), and the next four weeks' fan (Mon 26 Oct to Fri 20 Nov).
-- **Checked in the script:** the drivers take the usual 57% chance of being up to today's 52%; the mood's next four
-  weeks sum to 100%; four of the five walk-forward folds beat the base rate.
-- **The patterns** (F8, MA-280) are read from fixed bars: the double top's peaks on Thu 1 Oct and Wed 7 Oct with its
-  neckline at +6.5% broken on Wed 14 Oct, the support at −1% (the Wed 5 Aug low, tested on Thu 22 Oct; no low under
-  −1.2%), and a bearish engulfing on Tue 20 Oct that has no edge on this ETF and is named as not used.
+- **Checked in the script, over its own data:**
+  - every bar is a bar (low ≤ open and close ≤ high);
+  - the two highest highs are the double top's peaks, Thu 1 Oct and Wed 7 Oct. The neckline is the trough's low
+    between them (+6.2%, Mon 5 Oct), and the first close under it is Wed 14 Oct;
+  - the support (−1.15%, the Wed 5 Aug low) holds on every bar and no close is under −1%. Thu 22 Oct comes back to it;
+  - the 30 similar days (as ARCHITECTURE 19.4 counts them) have 18 that ended higher and a middle of +1.8%. Their
+    paths are in the figure set;
+  - the fan's four-week end is each headline;
+  - each holding's drivers take its usual chance of being up to today's, and its mood's next four weeks sum to 100%;
+  - four of the five walk-forward folds beat the base rate, and nothing in the lab or the final test runs past Sep 2026;
+  - the fund's trend line passes through its three lows;
+  - the next three Fridays are the gate's next three weeks.
+- **The patterns** (F8, MA-280) are read from fixed bars. A bearish engulfing on Tue 20 Oct has no edge on this ETF,
+  so no board shows it (ARCHITECTURE 19.4).
+- **In practice** the Forecaster shows on the holding's Forecast tab and in the Saturday review, labelled so, and in
+  no weekday card or chat answer (Arun, 29 Oct 2026).

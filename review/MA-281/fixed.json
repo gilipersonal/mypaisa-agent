@@ -1,0 +1,145 @@
+[
+ {
+  "id": "r1-1",
+  "round": 1,
+  "finding": "The candles were drawn through a shared SVG def outside the chart's own SVG, so the kit's non-scaling-stroke rule never reached the wicks and each drew wider than its body; wicks are now filled rects and every stroked mark sits in the chart's SVG, and plan_sync.py check refuses a stretched chart's <use> of a def that draws lines or paths (lanes boards and scripts)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p, pathlib; assert not p.stroke_errors(pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecast.dc.html').read_text()); assert not p.stroke_errors(pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecaster proof and chat.dc.html').read_text()); assert p.stroke_errors('<svg><defs><g id=c><line></line></g></defs></svg><svg preserveAspectRatio=none><use href=#c></use></svg>')\""
+  }
+ },
+ {
+  "id": "r1-2",
+  "round": 1,
+  "finding": "The figure set's claims did not hold in its own data (the neckline above the trough, a close under it before the stated break, an open under its low, the support level, a similar-days middle of +1.7%); make_forecaster.py now asserts each over its data and reproduces the committed figure set (lanes boards, scripts and trace)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 docs/design/figures/make_forecaster.py | cmp - docs/design/figures/forecaster-v4.json"
+  }
+ },
+ {
+  "id": "r1-3",
+  "round": 1,
+  "finding": "The canvases must be what the figure set builds; build_boards.py --check fails when a mirrored canvas differs from the build (lane scripts)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 docs/design/reviews/MA-281/build_boards.py --check"
+  }
+ },
+ {
+  "id": "r1-4",
+  "round": 1,
+  "finding": "The proof page invented two rules (a version restarting practice each month, a shadow stage) and its final test ran past the data to 30 Sep; it now uses ARCHITECTURE 19.6's stages and the final test is Oct 2024 to Sep 2026 (lanes boards, scripts and trace)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json, pathlib; t = pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecaster proof and chat.dc.html').read_text(); assert 'starts again in practice' not in t and 'Shadow, then practice' not in t and 'tests Oct 2024 to Sep 2026' in t; d = json.load(open('docs/design/figures/forecaster-v4.json')); assert d['proof']['folds'][-1][1] == 'Oct 2024 to Sep 2026'\""
+  }
+ },
+ {
+  "id": "r1-5",
+  "round": 1,
+  "finding": "A pattern with no edge was shown ('Also found: a bearish engulfing'), against ARCHITECTURE 19.4; it is no longer drawn on any frame (lane boards)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import pathlib; assert all('Also found:' not in pathlib.Path(f).read_text() for f in ('docs/design/ios-v1/iPhone v4 · Forecast.dc.html', 'docs/design/ios-v1/iPhone v4 · Forecaster proof and chat.dc.html'))\""
+  }
+ },
+ {
+  "id": "r1-6",
+  "round": 1,
+  "finding": "Parts the acceptance needs were in no frame (1a's track records on iPhone and iPad, the fund's patterns, rows and track records, the no-clear-view card, the proof page's switch-off); each now has its frame, and the fund carries both track records (lane boards)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import sys, pathlib; sys.path.insert(0,'scripts'); import plan_sync as p; a = p.captions(pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecast.dc.html')); b = p.captions(pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecaster proof and chat.dc.html')); need_a = {'iPhone · Forecast · 1a · scrolled to the track records', 'iPad · Forecast · 1a · scrolled'}; need_b = {'iPhone · Forecast · a fund · scrolled', 'iPhone · Saturday review · no clear view · Light', 'iPhone · Forecaster · Proof · the switch-off'}; assert need_a <= a and need_b <= b, (need_a - a, need_b - b); assert 'HOLD calls held up' in pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecaster proof and chat.dc.html').read_text()\""
+  }
+ },
+ {
+  "id": "r1-7",
+  "round": 1,
+  "finding": "Owner decision (Arun, 29 Oct 2026): while in practice the Forecaster also shows on the holding's Forecast tab, labelled in practice, and in no weekday card or chat answer; ARCHITECTURE 19.6, the glossary, PLAN F6 and its risk row and the Market Agent page say so, and the iPad's weekday chat answer carries no Forecaster figures (lanes boards and trace)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import pathlib, re; A = ' '.join(pathlib.Path('ARCHITECTURE.md').read_text().split()); P = ' '.join(pathlib.Path('PLAN.md').read_text().split()); M = pathlib.Path('docs/design/market-agent.html').read_text(); assert \\\"only on that holding's Forecast tab and in the Saturday review\\\" in A; assert \\\"only on the holding's Forecast tab and in the Saturday review, labelled in practice\\\" in P; assert 'appears only in the Saturday review, labelled' not in M; assert 'The Forecaster’s figures for the next four weeks' not in pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecast.dc.html').read_text()\""
+  }
+ },
+ {
+  "id": "r1-8",
+  "round": 1,
+  "finding": "Owner decision (Arun, 29 Oct 2026): the proof page stays; ARCHITECTURE 19.7 names it, MA-124's open question is settled with a Settled: note, and MA-120's notes no longer call it open (lanes boards and trace)",
+  "check": {
+   "type": "trace",
+   "key": "MA-124",
+   "field": "open",
+   "value": []
+  }
+ },
+ {
+  "id": "r1-9",
+  "round": 1,
+  "finding": "ARCHITECTURE 19.7 names the proof page (lane trace)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import pathlib; A = ' '.join(pathlib.Path('ARCHITECTURE.md').read_text().split()); assert 'a proof page per holding shows how the Forecaster earns its place' in A\""
+  }
+ },
+ {
+  "id": "r1-10",
+  "round": 1,
+  "finding": "Similar days counted 31 against ARCHITECTURE 19.4's 30; the figure set, §19.7's example card and the Market Agent page now say 30, and the web board's 31 is listed for MA-279 (lanes trace and boards)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json, pathlib; assert json.load(open('docs/design/figures/forecaster-v4.json'))['nasdaq']['similar']['n'] == 30; assert '31 since 2015' not in pathlib.Path('ARCHITECTURE.md').read_text() and '31 similar days' not in pathlib.Path('docs/design/market-agent.html').read_text() and '31 since 2015' not in pathlib.Path('docs/design/market-agent.html').read_text()\""
+  }
+ },
+ {
+  "id": "r1-11",
+  "round": 1,
+  "finding": "The range's end labels sat over the fan's tips on a surface fill; they now sit in a right gutter with no fill, and the builder asserts the fan ends inside the plot (lane boards)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import pathlib, re; t = pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecast.dc.html').read_text(); rule = re.search(r'\\.fl\\{[^}]*\\}', t).group(0); assert 'background' not in rule, rule\""
+  }
+ },
+ {
+  "id": "r1-12",
+  "round": 1,
+  "finding": "MA-281's trace row named no code, which fails the check once it is In Review; it names its figure set, its script and its review folder (lane trace)",
+  "check": {
+   "type": "trace",
+   "key": "MA-281",
+   "field": "code",
+   "value": [
+    "docs/design/figures/forecaster-v4.json",
+    "docs/design/figures/make_forecaster.py",
+    "docs/design/reviews/MA-281/"
+   ]
+  }
+ },
+ {
+  "id": "r1-13",
+  "round": 1,
+  "finding": "MA-124 is picked for its app spec, its Drawn: notes name the boards that draw each item, its proof item says iPad, and its undrawn list adds the error state, a long name and a no-clear-view Forecast tab (lane trace)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json; r = {x['key']: x for x in json.load(open('docs/trace.json'))['items']}['MA-124']; assert r['design'] == 'picked'; assert 'on iPhone · Forecast · 1a · Light, Dark' in r['notes'] and 'on iPhone · Forecaster · Proof' in r['notes']; assert \\\"the Forecaster's proof screen on iPad\\\" in r['undrawn'] and any(u.startswith(\\\"1a's error state\\\") for u in r['undrawn'])\""
+  }
+ },
+ {
+  "id": "r1-14",
+  "round": 1,
+  "finding": "The Market Agent page never named F8's patterns; it now shows six models with Patterns (F8, MA-280) and the drivers the boards show (lane scripts, via the explainer republish)",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import pathlib; M = pathlib.Path('docs/design/market-agent.html').read_text(); assert '6 · Patterns' in M and 'F8 MA-280' in M and 'five models' not in M.lower()\""
+  }
+ },
+ {
+  "id": "r1-15",
+  "round": 1,
+  "finding": "Jira MA-124's description, MA-281's acceptance and MA-279's description were updated for the pick and both decisions, with issue links between MA-281, MA-124, MA-279 and MA-280 (lane trace)",
+  "check": {
+   "type": "manual",
+   "what": "Read Jira MA-124, MA-281 and MA-279: the pick, the in-practice decision and the proof page appear in their descriptions, and MA-281 links to MA-124, MA-279 and MA-280."
+  }
+ }
+]

@@ -258,8 +258,8 @@
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c68c7d2d-31f3-41e1-9d8b-cca3837ddce5" data-collection="contentId-1769493" data-alt="rec-j-market--market-s5.png"></div>
 <figcaption>Risk first, direction last (Market Agent)</figcaption></figure>
 <details><summary>The words of this section</summary><p>5</p>
-<p>The Forecaster&#x27;s five models</p>
-<p>F3 MA-121F4 MA-122F5 MA-123epic MA-117</p>
+<p>The Forecaster&#x27;s six models</p>
+<p>F3 MA-121F4 MA-122F5 MA-123F8 MA-280epic MA-117</p>
 <p>A second engine beside the rules engine that learns from ten years of history. Each model answers one question over the next four weeks. Code makes every number, the event impacts included; Claude files each day&#x27;s news under the event types and explains the result. From phase 19 it takes the Indian holdings on the same terms, with ten years of their history from yfinance and mfapi.in, and shows nothing for them until its gates are passed.</p>
 <h4>1 · Market mood</h4>
 <p>F3 MA-121</p>
@@ -331,14 +331,27 @@
 <p>−3 pts</p>
 <p>Chip export news</p>
 <p>−2 pts</p>
+<p>Double top</p>
+<p>−2 pts</p>
 <p>Calm credit spreads</p>
 <p>+3 pts</p>
+<p>Support near −1%</p>
+<p>+2 pts</p>
 <p>Earnings season</p>
 <p>+1 pt</p>
 <p>IllustrativeBlue lifts the chance, amber lowers it.</p>
+<h4>6 · Patterns</h4>
+<p>F8 MA-280</p>
+<p>Asks</p>
+<p>Which candlestick and chart patterns are on this holding&#x27;s chart today, and what followed them on this holding over ten years?</p>
+<p>Method</p>
+<p>Detectors in code on the daily candles (engulfing, hammer and shooting star, doji, morning and evening star, inside bars; breakouts, support and resistance, double tops and bottoms, head and shoulders, trend channels), each pattern&#x27;s effect measured as an event study, point in time. A fund prices once a day, so it gets only the line patterns on its price. With ADX, stochastics, on-balance volume, Ichimoku and Donchian and Keltner channels, they are features of the risk and direction models.</p>
+<p>Trust</p>
+<p>Fair, and shown only where a pattern&#x27;s event study shows an edge</p>
+<p>IllustrativeNASDAQ 100 ETF: a double top (peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct) was lower 20 days later in 6 of 9 cases since 2015; support near −1% held in 9 of 14 tests.</p>
 <h4>How they combine and are calibrated</h4>
-<ol><li>Mood, risk, similar days, event impacts Each a calibrated answer of its own, written daily to <code>features/</code> and <code>predictions/</code>. S3 lake</li>
-<li>Direction combines them Gradient-boosted trees take the four as inputs, with the matched news as features.</li>
+<ol><li>Mood, risk, similar days, event impacts, patterns Each a calibrated answer of its own, written daily to <code>features/</code> and <code>predictions/</code>. S3 lake</li>
+<li>Direction combines them Gradient-boosted trees take the five as inputs, with the matched news as features.</li>
 <li>Calibration map Raw chances become calibrated ones, so a 70% means about 70%. The map is a <code>CalibrationMap</code> item. DynamoDB</li>
 <li>One Forecast row <code>p_up</code>, <code>p_fall_5</code>, range p10, p50, p90, mood, analogs, events, drivers, <code>model_version</code>.</li>
 <li>Sonnet explains It writes the &quot;Why?&quot; in plain words from the row. It never changes a number. Claude Sonnet</li>
@@ -363,7 +376,7 @@
 <p>£</p>
 <p>MyPaisachat · illustrative figures, §19.7</p>
 <p><strong>NASDAQ 100 ETF</strong></p>
-<p>Rules engine<strong>PAUSE · 64%</strong> Forecasternext 4 weeks Chance up52% Chance of −5%21% (usually 12%) Likely range−7% … +6% Market moodStressed, since 3 Oct Similar days31 since 2015; 18 recovered within 4 weeks Main driversmomentum fading, US yields rising, chip export news</p>
+<p>Rules engine<strong>PAUSE · 64%</strong> Forecasternext 4 weeks Chance up52% Chance of −5%21% (usually 12%) Likely range−7% … +6% Market moodStressed, since 3 Oct Similar days30 since 2015; 18 recovered within 4 weeks Main driversmomentum fading, US yields rising, chip export news</p>
 <p>07:16</p>
 <p>Why?ChartTrack record</p>
 <p>£</p>
@@ -386,7 +399,7 @@
 <p>Calm and risingChoppyStressed, since 3 OctNext 4 weeks: stressed 71%</p>
 <h5>Similar days, drawn over today&#x27;s chart</h5>
 <p>+10%−10%the last 40 daysmiddle</p>
-<p>31 similar days since 2015; 18 recovered within 4 weeks. Thin lines: what followed each one. Dashed: their middle.</p>
+<p>30 similar days since 2015; 18 recovered within 4 weeks. Thin lines: what followed each one. Dashed: their middle.</p>
 <h5>Event impacts, four weeks after</h5>
 <table data-layout="full-width"><thead><tr><th>Event</th><th>Cases</th><th>After</th></tr>
 </thead>
@@ -532,7 +545,7 @@
 <tr><td>6 to 8</td><td>to come</td><td>to come</td></tr>
 </tbody>
 </table>
-<p>IllustrativeUntil the gate passes it appears only in the Saturday review, labelled &quot;in practice&quot;.</p>
+<p>IllustrativeUntil the gate passes it appears only on the holding&#x27;s Forecast tab and in the Saturday review, labelled &quot;in practice&quot;.</p>
 <h4>The switch-off</h4>
 <p>When its live record is worse than the base rate for four weeks, it switches itself off and the owner is told. Models retrain monthly; each version is a <code>ModelVersion</code> row with its test scores and its status.</p>
 <p><strong>shadow</strong>graded, not shown→ <strong>live</strong>after 8 weeks→ <strong>off</strong>4 weeks worse→ <strong>retrain</strong>monthly, to shadow</p>
@@ -545,7 +558,7 @@
 <p>A bad minute at a data source, the Anthropic API or Apple&#x27;s push service costs a delay, never a day&#x27;s work. From phase 18 the daily run is one Step Functions state machine with retries and backoff on every step and idempotent writes, its jobs carried by the SQS work queue.</p>
 <ol><li>Ingest Prices, the economy, events, through each chain.</li>
 <li>Engine The rules: signals and stances.</li>
-<li>Forecaster The five models, one Forecast row per holding.</li>
+<li>Forecaster The six models, one Forecast row per holding.</li>
 <li>Grade Every prediction whose horizon has passed.</li>
 <li>Calibrate Within bounds, on probation.</li>
 <li>Brief Always attempted; late inputs go out labelled stale.</li>
@@ -684,7 +697,7 @@
 <p>Economic Times, Mint and Business Standard by RSS, NSE&#x27;s company announcements and GDELT&#x27;s India coverage go through the same steps as every story (section 4): Claude Haiku tags each one through Batches; code weighs it against each holding&#x27;s exposure map; a floor drops the faint. News alone never raises a red alert.</p>
 <h4>The Forecaster&#x27;s gates, for India too</h4>
 <p>The Forecaster takes the Indian holdings on the same terms: nothing is shown until its gates are passed. Its Indian forecasts need phase 17 (IN4).</p>
-<p><strong>lab</strong>ten years, walk-forward→ <strong>in practice</strong>Saturday review only→ <strong>live</strong>8 weeks beating both→ <strong>off</strong>4 weeks worse</p>
+<p><strong>lab</strong>ten years, walk-forward→ <strong>in practice</strong>Forecast tab and Saturday review→ <strong>live</strong>8 weeks beating both→ <strong>off</strong>4 weeks worse</p>
 <h4>FX in the picture</h4>
 <p>GBP base · INR beside · both stored</p>
 <h4>Every Indian figure twice</h4>

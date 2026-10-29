@@ -1,0 +1,26 @@
+{
+ "deliverable": "[MA-281] Design the stock Forecaster's screens in the app: 1a the answer first, with its patterns, proof page and chat card",
+ "rounds": 1,
+ "reviewed_sha": "cb82291",
+ "history": [
+  {
+   "round": 1,
+   "date": "2026-10-29",
+   "reviewed_sha": "cb82291",
+   "range": "origin/main...cb82291 (everything, the two canvases included)",
+   "asked": "Arun, 29 Oct 2026: \"Yes..\" to the merge question (review first, then merge)",
+   "lanes": {
+    "A the boards and the design mirror": 12,
+    "B the trace, Jira and the spec": 12,
+    "C the scripts and the generated pages": 9
+   },
+   "blocking": 33,
+   "result": "not clean: candles drawn through a shared def whose wicks stretched; the neckline, support, one bar and the similar days' middle not matching the data; the proof page inventing two rules and testing past its data; parts of 1a, the fund and the no-clear-view card in no frame; a pattern with no edge shown; range labels over the fan's tips; the in-practice rule and the proof page's existence needing Arun; Jira and trace records not changed for the pick",
+   "decisions": [
+    "Arun, 29 Oct 2026: in practice the Forecaster also shows on the holding's Forecast tab, labelled in practice (ARCHITECTURE 19.6, PLAN F6 changed)",
+    "Arun, 29 Oct 2026: the proof page stays (ARCHITECTURE 19.7 names it)"
+   ],
+   "fixed": "All blocking findings fixed as r1-1 to r1-15 in review/MA-281/fixed.json (lanes overlapping on the candles, the figures, the proof page and the in-practice rule); a new plan_sync.py check refuses a stretched chart's <use> of a def drawing lines or paths; build_boards.py --check and make_forecaster.py's asserts hold the boards to the figure set; lessons 37 to 39 added"
+  }
+ ]
+}

@@ -6,7 +6,8 @@ A design aid: it writes two Claude Design canvases into the iOS mirror, byte for
   docs/design/ios-v1/iPhone v4 · Forecast.dc.html                 the options round: 1a, 1b and 1c on iPhone and iPad
   docs/design/ios-v1/iPhone v4 · Forecaster proof and chat.dc.html the screens every option shares
 
-Run: python3 docs/design/reviews/MA-281/build_boards.py
+Run: python3 docs/design/reviews/MA-281/build_boards.py           (writes both canvases)
+     python3 docs/design/reviews/MA-281/build_boards.py --check   (fails if the mirror's copies are not what it builds)
 The boards use the kit as it is (tokens.css, ios.css, motion.css and motion.js); every colour is a token.
 """
 from __future__ import annotations
@@ -47,88 +48,80 @@ def ymap(v: float, lo: float, hi: float) -> float:
 
 def candle_chart(kind: str = "candles", layer: str = "patterns", h: int = 200, legend: bool = True, fund: bool = False) -> str:
     """The last 60 trading days and the next four weeks. kind: candles (an ETF) or line (a fund's daily price).
-    layer: patterns (the patterns F8 found), similar (similar days over today's chart), range (the fan alone)."""
+    layer: patterns (the patterns F8 found), similar (similar days over today's chart), range (the fan alone).
+
+    The SVG stretches to its box (preserveAspectRatio none), so every stroked mark is drawn in the chart's own SVG, where
+    the kit's non-scaling-stroke rule reaches it; the candles a canvas shares through <use> are filled rects only."""
     data = B["nav"] if fund else N["candles"]
     fanp = B["fan"] if fund else N["fan"]
     lo, hi = (-5.5, 4.5) if fund else (-9.5, 15.5)
     grid = [-4, -2, 0, 2, 4] if fund else [-5, 0, 5, 10]
     n_hist, n_fwd = len(data), len(fanp)
     span = n_hist + n_fwd
-    gut = 9  # the y labels' gutter, so no candle sits under a label
-    xs = lambda i: round(gut + (i + 0.5) / span * (100 - gut), 2)  # noqa: E731
-    x_today = round(gut + n_hist / span * (100 - gut), 2)
+    gut, rgut = 9, 11  # the y labels' gutter on the left and the range's end labels' gutter on the right, both clear of marks
+    xs = lambda i: round(gut + (i + 0.5) / span * (100 - gut - rgut), 2)  # noqa: E731
+    x_today = round(gut + n_hist / span * (100 - gut - rgut), 2)
+    assert xs(span - 1) < 100 - rgut
     svg = []
     for g in grid:
-        svg.append(f'<line class="fgrid" x1="{gut}" x2="100" y1="{ymap(g, lo, hi)}" y2="{ymap(g, lo, hi)}"></line>')
+        svg.append(f'<line class="fgrid" x1="{gut}" x2="{100 - rgut}" y1="{ymap(g, lo, hi)}" y2="{ymap(g, lo, hi)}"></line>')
     # the fan: the 8 in 10 band, the middle half over it, and the middle
-    top = [(x_today, ymap(0, lo, hi))] + [(xs(n_hist + i), ymap(f["p90"], lo, hi)) for i, f in enumerate(fanp)]
-    bot = [(xs(n_hist + i), ymap(f["p10"], lo, hi)) for i, f in enumerate(fanp)][::-1] + [(x_today, ymap(0, lo, hi))]
     if layer != "similar":
-        svg.append('<path class="fband" d="M' + " L".join(f"{x} {y}" for x, y in top + bot) + ' Z"></path>')
-    top = [(x_today, ymap(0, lo, hi))] + [(xs(n_hist + i), ymap(f["p75"], lo, hi)) for i, f in enumerate(fanp)]
-    bot = [(xs(n_hist + i), ymap(f["p25"], lo, hi)) for i, f in enumerate(fanp)][::-1] + [(x_today, ymap(0, lo, hi))]
-    if layer != "similar":
-        svg.append('<path class="fband" d="M' + " L".join(f"{x} {y}" for x, y in top + bot) + ' Z"></path>')
-    mid = [(x_today, ymap(0, lo, hi))] + [(xs(n_hist + i), ymap(f["p50"] if layer != "similar" else N["similar"]["mid"] * (i + 1) / n_fwd, lo, hi)) for i, f in enumerate(fanp)]
+        for a, b in (("p90", "p10"), ("p75", "p25")):
+            top = [(x_today, ymap(0, lo, hi))] + [(xs(n_hist + i), ymap(f[a], lo, hi)) for i, f in enumerate(fanp)]
+            bot = [(xs(n_hist + i), ymap(f[b], lo, hi)) for i, f in enumerate(fanp)][::-1] + [(x_today, ymap(0, lo, hi))]
+            svg.append('<path class="fband" d="M' + " L".join(f"{x} {y}" for x, y in top + bot) + ' Z"></path>')
+        mid = [(x_today, ymap(0, lo, hi))] + [(xs(n_hist + i), ymap(f["p50"], lo, hi)) for i, f in enumerate(fanp)]
+    else:
+        mid = [(x_today, ymap(0, lo, hi))] + [(xs(n_hist + i - 1), ymap(N["similar"]["mid"] * i / n_fwd, lo, hi)) for i in range(2, n_fwd + 1, 2)]
     svg.append('<path class="fmid" d="M' + " L".join(f"{x} {y}" for x, y in mid) + '"></path>')
     svg.append(f'<line class="ftoday" x1="{x_today}" x2="{x_today}" y1="0" y2="100"></line>')
     lbl = []
     if fund:
         pts = " L".join(f"{xs(i)} {ymap(d['nav'], lo, hi)}" for i, d in enumerate(data))
-        DEFS.setdefault("bal-nav", f'<path class="navl" d="M{pts}"></path>')
-        svg.append('<use href="#bal-nav"></use>')
-        if layer == "patterns":  # the rising trend line through the three higher lows
-            idx = [i for i, d in enumerate(data) if d["day"] in ("Wed 12 Aug", "Fri 18 Sep", "Fri 9 Oct")]
-            a, b = idx[0], idx[-1]
-            ya, yb = data[a]["nav"] - 0.15, data[b]["nav"] - 0.15
-            slope = (yb - ya) / (b - a)
-            y_end = ya + slope * (n_hist - 1 - a)
-            svg.append(f'<line class="ptrend" x1="{xs(a)}" x2="{xs(n_hist - 1)}" y1="{ymap(ya, lo, hi)}" y2="{ymap(y_end, lo, hi)}"></line>')
-            lbl.append(f'<span class="pmk pmk-b" style="left: {xs(a + 12)}%; top: {ymap(ya + slope * 12 - 0.55, lo, hi)}%" data-mo="fade">Higher lows</span>')
+        svg.append(f'<path class="navl" d="M{pts}"></path>')
+        if layer == "patterns":  # the rising trend line through the three higher lows (the figure set checks it passes through them)
+            t = B["trend"]
+            days = [d["day"] for d in data]
+            a, b = days.index(t["from"]), days.index(t["to"])
+            slope = (t["y_to"] - t["y_from"]) / (b - a)
+            y_end = t["y_from"] + slope * (n_hist - 1 - a)
+            svg.append(f'<line class="ptrend" x1="{xs(a)}" x2="{xs(n_hist - 1)}" y1="{ymap(t["y_from"], lo, hi)}" y2="{ymap(y_end, lo, hi)}"></line>')
+            lbl.append(f'<span class="pmk pmk-b" style="left: {xs(a + 12)}%; top: {ymap(t["y_from"] + slope * 12 - 0.55, lo, hi)}%" data-mo="fade">Higher lows</span>')
     else:
-        if "nq-candles" not in DEFS:
+        if "nq-candles" not in DEFS:  # filled rects only: a body and a thin wick per bar
             g = []
             for i, c in enumerate(data):
                 cls = "up" if c["up"] else "dn"
                 x = xs(i)
-                g.append(f'<line class="wk {cls}" x1="{x}" x2="{x}" y1="{ymap(c["h"], lo, hi)}" y2="{ymap(c["l"], lo, hi)}"></line>')
+                yh, yl = ymap(c["h"], lo, hi), ymap(c["l"], lo, hi)
+                g.append(f'<rect class="cw {cls}" x="{round(x - 0.12, 2)}" y="{yh}" width="0.24" height="{round(max(yl - yh, 0.6), 1)}"></rect>')
                 y1, y2 = ymap(max(c["o"], c["c"]), lo, hi), ymap(min(c["o"], c["c"]), lo, hi)
-                hgt = max(round(y2 - y1, 1), 0.6)
-                g.append(f'<rect class="cb {cls}" x="{round(x - 0.42, 2)}" y="{y1}" width="0.84" height="{hgt}"></rect>')
+                g.append(f'<rect class="cb {cls}" x="{round(x - 0.42, 2)}" y="{y1}" width="0.84" height="{max(round(y2 - y1, 1), 0.6)}"></rect>')
             DEFS["nq-candles"] = "".join(g)
         svg.append('<use href="#nq-candles"></use>')
         if layer == "patterns":
             days = [c["day"] for c in data]
             p1, p2, br = days.index("Thu 1 Oct"), days.index("Wed 7 Oct"), days.index("Wed 14 Oct")
             sup = days.index("Wed 5 Aug")
-            svg.append(f'<line class="pneck" x1="{xs(p1 - 4)}" x2="{xs(br + 1)}" y1="{ymap(6.5, lo, hi)}" y2="{ymap(6.5, lo, hi)}"></line>')
-            svg.append(f'<line class="psup" x1="{xs(sup)}" x2="{x_today}" y1="{ymap(-1.0, lo, hi)}" y2="{ymap(-1.0, lo, hi)}"></line>')
+            neck, support = N["neckline"], N["support"]
+            svg.append(f'<line class="pneck" x1="{xs(p1 - 2)}" x2="{xs(br + 1)}" y1="{ymap(neck, lo, hi)}" y2="{ymap(neck, lo, hi)}"></line>')
+            svg.append(f'<line class="psup" x1="{xs(sup)}" x2="{x_today}" y1="{ymap(support, lo, hi)}" y2="{ymap(support, lo, hi)}"></line>')
             lbl.append(f'<span class="pmk pmk-a" style="left: {round((xs(p1) + xs(p2)) / 2, 2)}%; top: {ymap(12.6, lo, hi)}%" data-mo="fade">Double top</span>')
             lbl.append(f'<span class="ptick" style="left: {xs(p1)}%; top: {ymap(10.3, lo, hi)}%"></span><span class="ptick" style="left: {xs(p2)}%; top: {ymap(10.4, lo, hi)}%"></span>')
-            lbl.append(f'<span class="pmk pmk-b" style="left: {xs(22)}%; top: {ymap(-1.9, lo, hi)}%" data-mo="fade">Support −1%</span>')
-        if layer == "similar" and "nq-sim" in DEFS:
-            svg.append('<use href="#nq-sim"></use>')
-        elif layer == "similar":
-            sim = []
-            rnd = random.Random(31)
-            ends = sorted([round(rnd.uniform(-7.5, -0.4), 1) for _ in range(13)] + [round(rnd.uniform(0.3, 7.0), 1) for _ in range(17)] + [1.8])
-            ends[15] = 1.8
-            for k, e in enumerate(ends):
-                pts = [(x_today, ymap(0, lo, hi))]
-                v = 0.0
-                for i in range(2, n_fwd + 1, 2):
-                    target = e * i / n_fwd
-                    v = target + math.sin(i * 0.9 + k) * 0.7 * (1 - i / n_fwd)
-                    pts.append((xs(n_hist + i - 1), ymap(v, lo, hi)))
-                sim.append('<path class="sim" d="M' + " L".join(f"{x} {y}" for x, y in pts) + '"></path>')
-            DEFS["nq-sim"] = "".join(sim)
-            svg.append('<use href="#nq-sim"></use>')
+            lbl.append(f'<span class="pmk pmk-b" style="left: {xs(22)}%; top: {ymap(support - 0.9, lo, hi)}%" data-mo="fade">Support −1%</span>')
+        if layer == "similar":  # the 30 similar days from the figure set, each from Friday's close, every other trading day
+            for pts in N["similar"]["paths"]:
+                xy = [(x_today, ymap(pts[0], lo, hi))] + [(xs(n_hist + i - 1), ymap(v, lo, hi)) for i, v in zip(range(2, n_fwd + 1, 2), pts[1:])]
+                svg.append('<path class="sim" d="M' + " L".join(f"{x} {y}" for x, y in xy) + '"></path>')
     for g in grid:
         lbl.append(f'<span class="yl" style="top: {ymap(g, lo, hi)}%" data-mo="fade">{pc(g)}</span>')
     f_last = fanp[-1]
     if layer != "similar":
         lbl.append(f'<span class="fl" style="top: {ymap(f_last["p90"], lo, hi)}%" data-mo="fade">{pc(f_last["p90"])}</span>')
         lbl.append(f'<span class="fl" style="top: {ymap(f_last["p10"], lo, hi)}%" data-mo="fade">{pc(f_last["p10"])}</span>')
+    else:
+        lbl.append(f'<span class="fl" style="top: {ymap(N["similar"]["mid"], lo, hi)}%" data-mo="fade">{pc(N["similar"]["mid"], 1)}</span>')
     lbl.append(f'<span class="tdl" style="left: {x_today}%" data-mo="fade">Fri 23 Oct close</span>')
     first = {}
     for i, c in enumerate(data):
@@ -137,10 +130,17 @@ def candle_chart(kind: str = "candles", layer: str = "patterns", h: int = 200, l
     items = list(first.items())
     months = [(m, i) for k, (m, i) in enumerate(items) if i < n_hist - 6 and (k + 1 == len(items) or items[k + 1][1] - i >= 4)]  # a month of a day or two gets no label
     ax = [f'<span style="left: {xs(i)}%">{m}</span>' for m, i in months]
-    ax.append(f'<span style="left: {xs(n_hist + 4)}%">Nov</span>')
-    what = "a fund's daily price" if fund else "daily candles"
-    aria = (f"{'Balanced' if fund else 'NASDAQ 100 ETF'}: {what} for the last 60 trading days to Fri 23 Oct, then the next four weeks: "
-            f"8 times in 10 it ends between {pc(f_last['p10'])} and {pc(f_last['p90'])}, the middle {pc(f_last['p50'], 1)}.")
+    nov = next(i for i, f in enumerate(fanp) if f["d"].startswith("2026-11"))   # Mon 2 Nov, the first trading day of November
+    ax.append(f'<span style="left: {xs(n_hist + nov)}%">Nov</span>')
+    who = "Balanced" if fund else "NASDAQ 100 ETF"
+    if layer == "similar":
+        s = N["similar"]
+        aria = (f"{who}: daily candles for the last 60 trading days to Fri 23 Oct, then the {s['n']} most similar days since {s['since']} "
+                f"drawn from Friday's close over four weeks: {s['recovered']} ended higher, the middle {pc(s['mid'], 1)}.")
+    else:
+        what = "a fund's daily price" if fund else "daily candles"
+        aria = (f"{who}: {what} for the last 60 trading days to Fri 23 Oct, then the next four weeks: "
+                f"8 times in 10 it ends between {pc(f_last['p10'])} and {pc(f_last['p90'])}, the middle {pc(f_last['p50'], 1)}.")
     leg = []
     if legend:
         if fund:
@@ -174,7 +174,7 @@ def three_figs(h: dict, compact: bool = False) -> str:
     cells = [
         ("A fall over 5%", f'{h["fall5"]}%', f'usually {h["fall5_usual"]}%'),
         ("Likely range", f'{pc(h["lo"])} … {pc(h["hi"])}', "8 in 10 end inside"),  # nowrap in .f3n
-        ("Up in 4 weeks", f'{h["up"]}%', "close to even" if abs(h["up"] - 50) <= 5 else "more likely than not"),
+        ("Up in 4 weeks", f'{h["up"]}%', "close to even" if abs(h["up"] - 50) <= 5 else ("more likely than not" if h["up"] > 50 else "less likely than not")),
     ]
     return '<div class="fig3' + (" cpt" if compact else "") + '">' + "".join(
         f'<div class="f3c"><span class="mp-foot mp-hero-2">{a}</span><span class="f3n">{b}</span><span class="mp-foot mp-hero-2">{c}</span></div>'
@@ -205,39 +205,38 @@ def pattern_rows(fund: bool = False) -> str:
     return '<div class="mp-group">' + "".join(rows) + "</div>"
 
 
-def found_not_used() -> str:
-    p = next(x for x in N["patterns"] if not x["edge"])
-    return (f'<div class="note"><span class="ms">filter_alt_off</span><span class="mp-foot mp-ink2">Also found: a {p["name"].lower()} on {p["where"]}. '
-            f'On this ETF it has no edge ({p["cases"]} cases, {pc(p["avg"], 1)} after {p["after"]}), so it is not used.</span></div>')
-
-
-def summary_rows() -> str:
-    m, s = N["mood"], N["similar"]
-    ev = N["events"][0]
-    t = N["technical"]
+def summary_rows(fund: bool = False) -> str:
+    """One row per model, each opening its sheet (the sheets are drawn before MA-124 starts). A pattern with no edge is
+    never shown (ARCHITECTURE 19.4)."""
+    x = B if fund else N
+    m, s = x["mood"], x["similar"]
+    ev = x["events"][0]
+    tech = x["technical"] if fund else f'ADX {N["technical"]["adx"]} · stochastic {N["technical"]["stoch"]} · {N["technical"]["ichimoku"]}'
     rows = [
-        ("mood", "Market mood", f'{m["now"]} since {m["since"]} · {m["next"][0][1]}% it stays so for 4 weeks'),
-        ("history", "Similar days", f'{s["n"]} since {s["since"]} · {s["recovered"]} recovered within 4 weeks'),
-        ("event", "Event impacts", f'{ev[0]} hit it hardest: {pc(ev[2], 1)} on average over {ev[1]} cases'),
-        ("tune", "Main drivers", f'From a usual {N["usual_up"]}% chance of being up to {N["headline"]["up"]}%'),
-        ("candlestick_chart", "Technical", f'ADX {t["adx"]} · stochastic {t["stoch"]} · {t["ichimoku"]}'),
+        ("mood", "Market mood", f'{m["now"]} since {m["since"]} · {m["next"][0][1]}% it stays so over the next 4 weeks'),
+        ("history", "Similar days", f'{s["n"]} since {s["since"]} · {s["recovered"]} higher 4 weeks later'),
+        ("event", "Event impacts", f'{ev[0]} weighs most: {pc(ev[2], 1)} in the 4 weeks after, on average over {ev[1]} cases'),
+        ("tune", "Main drivers", f'From a usual {x["usual_up"]}% chance of being up to {x["headline"]["up"]}%'),
+        ("candlestick_chart" if not fund else "show_chart", "Technical", tech),
     ]
     return '<div class="mp-group">' + "".join(
         f'<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{i}</span></span><span class="grow"><span class="mp-sub mp-w6">{a}</span>'
         f'<span class="mp-foot mp-ink2">{b}</span></span><span class="ms chev">chevron_right</span></div>' for i, a, b in rows) + "</div>"
 
 
-def tracks() -> str:
-    tr = N["track"]
-    wk = "".join(f'<span class="wkc {"ok" if b else "tbd"}">{"✓ " if b else ""}W{k + 1}</span>' for k, b in enumerate(tr["fc"]["beat"]))
+def tracks(fund: bool = False) -> str:
+    tr = (B if fund else N)["track"]
+    beat = tr["fc"]["beat"]
+    graded = [b for b in beat if b is not None]
+    wk = "".join(f'<span class="wkc {"ok" if b else "tbd"}">{"✓ " if b else ""}W{k + 1}</span>' for k, b in enumerate(beat))
     return (f'<div class="trk"><div class="mp-card tc"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">Rules engine</span><span class="mp-chip mp-neutral">Live</span></div>'
-            f'<span class="mp-num-l">{tr["rules"]["held"]} of {tr["rules"]["of"]}</span><span class="mp-foot mp-ink2">calls on this holding held up, graded against waiting</span></div>'
+            f'<span class="mp-num-l">{tr["rules"]["held"]} of {tr["rules"]["of"]}</span><span class="mp-foot mp-ink2">{tr["rules"]["what"].split(" (")[0]}, graded against waiting</span></div>'
             f'<div class="mp-card tc"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">Forecaster</span><span class="mp-chip mp-neutral">In practice</span></div>'
-            f'<span class="mp-num-l">5 of 5</span><span class="mp-foot mp-ink2">weeks so far beat both the base rate and the rules engine</span><div class="wks">{wk}</div></div></div>')
+            f'<span class="mp-num-l">{sum(graded)} of {len(graded)}</span><span class="mp-foot mp-ink2">weeks so far beat both the base rate and the rules engine</span><div class="wks">{wk}</div></div></div>')
 
 
 def footer() -> str:
-    return (f'<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of {N["run"]} (model {N["model"]}, data to {N["data_to"]}). '
+    return (f'<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the Forecast row of {N["run"]} (model {N["model"]}, trained on data to {N["data_to"]}). '
             'Claude only puts them into words. A view, not advice: MyPaisa cannot trade. Illustrative figures (forecaster-v4.json).</p>')
 
 
@@ -252,7 +251,8 @@ def seg_tabs(on: str = "Forecast") -> str:
 
 
 def meta(priv: bool = False, fund: bool = False) -> str:
-    v = '<span class="mp-mask">£22,925</span>' if (priv and fund) else ('<span class="mp-mask">£512</span>' if priv else ("£22,925" if fund else "£512"))
+    amount = f'£{(B if fund else N)["value_gbp"]:,}'
+    v = f'<span class="mp-mask">{amount}</span>' if priv else amount
     who = f'{B["full"]} · Arun · ISA' if fund else f'{N["full"]} · Asha · ISA'
     return f'<div class="mp-foot mp-ink2 meta">{who} · {v}</div>'
 
@@ -308,7 +308,7 @@ def body_1a(priv: bool = False, scrolled: bool = False, wide: bool = False) -> s
             f'{three_figs(h)}{rules_line(h, N["rules"], N["agree"])}</div>')
     chart = (f'<div class="mp-card oncard"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The chart, then the next 4 weeks</span><span class="mp-foot mp-ink2">60 trading days</span></div>'
              f'{candle_chart()}</div>')
-    pats = f'<div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>{pattern_rows()}{found_not_used()}'
+    pats = f'<div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>{pattern_rows()}'
     more = f'<div class="sech"><span class="mp-over mp-ink2">Why it says so</span><span class="mp-foot mp-ink2">one tap for each</span></div>{summary_rows()}'
     tr = f'<div class="sech"><span class="mp-over mp-ink2">Track records</span><span class="mp-foot mp-ink2">side by side</span></div>{tracks()}'
     if wide:
@@ -329,7 +329,7 @@ def body_1b(layer: str = "patterns", wide: bool = False) -> str:
     ch_layer = "range" if layer == "events" else layer
     chart = f'<div class="mp-card oncard tall">{lay}{candle_chart(layer=ch_layer, h=250 if not wide else 300)}</div>'
     if layer == "patterns":
-        panel = f'<div class="sech"><span class="mp-over mp-ink2">On the chart now</span><span class="mp-foot mp-ink2">2 with an edge</span></div>{pattern_rows()}{found_not_used()}'
+        panel = f'<div class="sech"><span class="mp-over mp-ink2">On the chart now</span><span class="mp-foot mp-ink2">2 with an edge</span></div>{pattern_rows()}'
     elif layer == "similar":
         s = N["similar"]
         panel = (f'<div class="mp-card"><span class="mp-hl">{s["recovered"]} of {s["n"]} recovered within 4 weeks</span><span class="mp-foot mp-ink2">The {s["n"]} days since {s["since"]} most like today, '
@@ -379,7 +379,9 @@ def body_fund(wide: bool = False) -> str:
     chart = (f'<div class="mp-card oncard"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The price, then the next 4 weeks</span><span class="mp-foot mp-ink2">60 trading days</span></div>'
              f'{candle_chart(kind="line", fund=True)}<div class="note inl"><span class="ms">info</span><span class="mp-foot mp-ink2">{B["nav_note"]}</span></div></div>')
     pats = f'<div class="sech"><span class="mp-over mp-ink2">Patterns on its price</span><span class="mp-foot mp-ink2">line patterns only</span></div>{pattern_rows(fund=True)}'
-    return f'{meta(fund=True)}{seg_tabs()}{hero}{chart}{ask_chips()}{pats}{footer()}'
+    more = f'<div class="sech"><span class="mp-over mp-ink2">Why it says so</span><span class="mp-foot mp-ink2">one tap for each</span></div>{summary_rows(fund=True)}'
+    tr = f'<div class="sech"><span class="mp-over mp-ink2">Track records</span><span class="mp-foot mp-ink2">side by side</span></div>{tracks(fund=True)}'
+    return f'{meta(fund=True)}{seg_tabs()}{hero}{chart}{ask_chips()}{pats}{more}{tr}{footer()}'
 
 
 # ------------------------------------------------------------------ frames
@@ -416,9 +418,10 @@ def chat_column(q: str, a: str, chips: tuple[str, str] = ("Why?", "Track record"
             '<div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask about this holding</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div></div>')
 
 
-CHAT_A = ("The Forecaster’s figures for the next four weeks: a 21% chance of a fall over 5%, against a usual 12%. The market’s mood has been "
-          "stressed since Sat 3 Oct, and code found a double top on the chart; of the 9 double tops on this ETF since 2015, it was lower 20 days "
-          "later 6 times. The rules engine says PAUSE · 64%, so the two lean the same way. It is in practice, week 5 of 8. A view, not advice.")
+CHAT_Q = "Why is my NASDAQ ETF on PAUSE?"
+CHAT_A = (f"The rules engine says {N['rules']['stance']} · {N['rules']['conf']}%: {N['rules']['line'][0].lower() + N['rules']['line'][1:]}. "
+          "Why? opens its pillars. The Forecaster is still in practice on this ETF, week 5 of 8, so its own view shows only on this "
+          "holding’s Forecast tab and in Saturday’s review, labelled in practice, never in the chat. A view, not advice.")
 
 
 def ipad(cap: str, theme: str, body: str, title: str = "NASDAQ 100 ETF") -> str:
@@ -428,7 +431,7 @@ def ipad(cap: str, theme: str, body: str, title: str = "NASDAQ 100 ETF") -> str:
             f'<div class="main"><div class="sbar"><span>9:41 Mon 26 Oct</span><span></span></div>'
             f'<div class="nav"><span class="navl"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1">chevron_left</span></span><span class="largetitle navt">{title}</span></span>'
             '<span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1">visibility</span></span></span></div>'
-            f'<div class="scroll"><div class="ipg">{body}</div></div><div class="edge-bot"></div></div>{chat_column("Why is the Forecaster cautious on my NASDAQ ETF?", CHAT_A)}</div></div></div>')
+            f'<div class="scroll"><div class="ipg" style="margin-top: @@OFF@@">{body}</div></div><div class="edge-bot"></div></div>{chat_column(CHAT_Q, CHAT_A)}</div></div></div>')
 
 
 def fold(cap: str, theme: str, body: str, open_: bool) -> str:
@@ -468,7 +471,7 @@ def iphone_t(body: str, title: str = "NASDAQ 100 ETF", priv: bool = False, back:
 
 def ipad_t(body: str, title: str = "NASDAQ 100 ETF") -> str:
     one = ipad("@@CAP@@", "@@TH@@", body, title)
-    return one.replace("@@CAP@@", "{{ t.cap }}").replace("@@TH@@", "{{ t.c }}")
+    return one.replace("@@CAP@@", "{{ t.cap }}").replace("@@TH@@", "{{ t.c }}").replace("@@OFF@@", "{{ t.off }}")
 
 
 def logic() -> str:
@@ -486,34 +489,34 @@ def logic() -> str:
 # ------------------------------------------------------------------ the chat's card and the proof page
 def chat_card(c: dict, tech: bool = False) -> str:
     if c["state"] == "no_view":
-        return (f'<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">The Forecaster · in practice · next 4 weeks</span><span class="mp-hl">{c["name"]}</span></div>'
+        return (f'<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">{c["name"]}</span></div>'
                 f'<div class="ccard-b"><div class="kv"><span>Rules engine</span><span>{c["rules"]}</span></div><div class="nov"><span class="ms">blur_on</span><span class="mp-sub mp-w6">No clear view</span></div>'
                 f'<p class="pp mp-foot mp-ink2">{c["why"]}</p></div><div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Track record</span></div></div>')
     flag = ""
     if c["state"] == "disagree":
         flag = (f'<div class="dis"><span class="ms ms-s">call_split</span><span class="mp-foot"><b>The two engines disagree.</b> The rules engine says HOLD; the Forecaster sees a rougher month '
                 f'than usual ({c["fall5"]}% against a usual {c["usual"]}%).</span></div>')
-    rows = [("Rules engine", c["rules"]), ("Chance up", f'{c["up"]}%'), ("Fall over 5%", f'{c["fall5"]}% (usually {c["usual"]}%)'),
+    rows = [("Rules engine", c["rules"]), ("Fall over 5%", f'{c["fall5"]}% (usually {c["usual"]}%)'), ("Chance up", f'{c["up"]}%'),
             ("Likely range", f'<span class="nw">{pc(c["lo"])} … {pc(c["hi"])}</span>'), ("Market mood", c["mood"]), ("Similar days", c["similar"]), ("Pattern", c["pattern"]), ("Main drivers", c["drivers"])]
     kv = "".join(f'<div class="kv kvw"><span>{a}</span><span>{b}</span></div>' for a, b in rows)
     techb = ""
     if tech:
-        techb = ('<div class="ccard-tech"><span>Forecast row · NASDAQ 100 ETF · Sat 24 Oct 06:10 · model 2026.10 · data to 30 Sep</span>'
+        techb = ('<div class="ccard-tech"><span>Forecast row · NASDAQ 100 ETF · Sat 24 Oct 06:10 · model 2026.10 · trained on data to 30 Sep</span>'
                  '<span>direction 0.52 (calibrated, conformal range p10 −7.0 · p50 +0.3 · p90 +6.0)</span><span>risk P(fall &gt; 5%) 0.21 · base rate 0.12</span>'
                  '<span>mood stressed 0.71 · choppy 0.18 · falling 0.07 · calm 0.04</span><span>pattern double top · n 9 · 20d mean −2.1% · 6 of 9 lower</span>'
                  '<span>gate week 5 of 8 · W1 to W5 beat base rate and rules engine</span></div>')
-    return (f'<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">The Forecaster · in practice · next 4 weeks</span><span class="mp-hl">{c["name"]}</span></div>'
+    return (f'<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">{c["name"]}</span></div>'
             f'<div class="ccard-b">{flag}{kv}</div>{techb}<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Chart</span><span class="cbtn">Track record</span></div>'
             f'<div class="ccard-fold"><span>Technical</span><span class="ms">{"expand_less" if tech else "expand_more"}</span></div></div>')
 
 
 def chat_frame(cap: str, theme: str, cards: list[str], off: int = 0, lead: bool = True) -> str:
     head = ('<div class="daysep">Sat 24 Oct</div><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Your Saturday review. The Forecaster is in '
-            'practice for every holding, week 5 of 8, so it shows here and on each holding’s Forecast tab only, labelled so.</div>' if lead else
+            'practice for every holding, week 5 of 8: until its 8 weeks are up it shows only here and on each holding’s Forecast tab, labelled so.</div>' if lead else
             '<div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">')
     return (f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div><div class="dev dev-iphone mp {theme}"><div class="island"></div><div class="scrn">'
             f'<div class="sbar"><span>9:41</span>{SB}</div><div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span>'
-            f'<span class="strip-n">Sat 24 Oct, 09:00</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>'
+            f'<span class="mp-hl">Sat 24 Oct, 09:00</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>'
             f'<div class="scroll"><div class="fadet thin"></div><div class="chat cpad" style="margin-top: -{off}px">{head}{"".join(cards)}</div></div></div></div>'
             '<div class="edge-bot"></div><div class="composer cmpb"><div class="chips"><span class="gchip lg"><span class="ms">help</span><span>Why?</span></span><span class="gchip lg"><span class="ms">fact_check</span><span>Track record</span></span></div>'
             '<div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>'
@@ -526,14 +529,14 @@ def body_proof() -> str:
     rows = "".join('<div class="lr">' + "".join(f'<span class="mp-foot{" mp-w6" if k == 0 else ""}">{v}</span>' for k, v in enumerate(r)) + "</div>" for r in lab["rows"])
     folds = "".join(f'<div class="fr"><span class="mp-sub mp-w6">{a}</span><span class="mp-foot mp-ink2">tests {b}</span><span class="mp-sub {"mp-up" if ok else "mp-dq"}">{"✓ beat" if ok else "✗ missed"}</span></div>' for a, b, ok in P["folds"])
     wk = "".join(f'<span class="wkc {"ok" if b else "tbd"}">{"✓ " if b else ""}W{k + 1}</span>' for k, b in enumerate(N["track"]["fc"]["beat"]))
-    steps = [("visibility_off", "Shadow, then practice", "Graded every week; shown only on the Forecast tab and in the Saturday review, labelled in practice.", True),
+    steps = [("science", "In practice", "Graded every week; shown only on the holding’s Forecast tab and in the Saturday review, labelled in practice.", True),
              ("visibility", "Live", "After 8 live weeks beating both the base rate and the rules engine: the weekday cards too.", False),
-             ("power_settings_new", "Off", "Four weeks worse than the base rate: it switches itself off, and the owner is told in the chat.", False),
-             ("autorenew", "Retrained monthly", "Each version is a ModelVersion row with its test scores, and starts again in practice.", False)]
+             ("power_settings_new", "Off", "Four weeks worse than the base rate: it switches itself off, and the owner is told.", False),
+             ("autorenew", "Retrained monthly", "Each version is a ModelVersion row with its test scores.", False)]
     st = "".join(f'<div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{i}</span></span><span class="grow"><span class="mp-sub mp-w6">{a}{" <span class=\"mp-chip mp-neutral\">now</span>" if now else ""}</span>'
                  f'<span class="mp-foot mp-ink2">{b}</span></span></div>' for i, a, b, now in steps)
     mods = "".join(f'<div class="kv"><span>{a} · {b}</span><span>{c}</span></div>' for a, b, c in P["models"])
-    return (f'<div class="mp-foot mp-ink2 meta">A lab first, practice next, and an off switch · NASDAQ 100 ETF</div>'
+    return (f'<div class="mp-foot mp-ink2 meta">A lab first, practice next, and an off switch · <span class="nw">NASDAQ 100 ETF</span></div>'
             f'<div class="mp-card"><span class="mp-over mp-ink2">The backtest lab · {lab["span"]}</span><span class="mp-hl">Its first report: the rules engine over ten years</span>'
             '<span class="mp-foot mp-ink2">Replayed one day at a time, with fees, next-day prices for funds and monthly contributions, against buy-and-hold and a simple trend rule. Calibration: the chance it said, then how often it came true.</span>'
             f'<div class="lt"><div class="lr lh">{th}</div>{rows}</div></div>'
@@ -541,7 +544,7 @@ def body_proof() -> str:
             '<span class="mp-foot mp-ink2">A model that does not beat the base rate in the final test is not used.</span></div>'
             f'<div class="mp-card"><div class="fx ac jb gap8 wrapr"><span class="mp-hl">The live gate</span>{chip_practice()}</div><span class="mp-foot mp-ink2">8 live weeks beating both, graded each Friday: next on {", ".join(P["gate"]["next"])}.</span><div class="wks">{wk}</div></div>'
             f'<div class="sech"><span class="mp-over mp-ink2">The switch-off</span><span class="mp-foot mp-ink2">its status now</span></div><div class="mp-group">{st}</div>'
-            f'<div class="mp-card"><span class="mp-hl">Models now</span><span class="mp-foot mp-ink2">version {N["model"]} · data to {N["data_to"]}</span>{mods}</div>'
+            f'<div class="mp-card"><span class="mp-hl">Models now</span><span class="mp-foot mp-ink2">version {N["model"]} · trained on data to {N["data_to"]}</span>{mods}</div>'
             '<p class="pp mp-foot mp-ink2 endn">Every figure comes from code: the lab’s report and the Forecast rows. Illustrative figures (forecaster-v4.json).</p>')
 
 
@@ -612,15 +615,14 @@ CSS = """
           .fgrid { stroke: var(--mp-chart-grid); stroke-width: 1; }
           .mp .fmid { fill: none; stroke: var(--mp-chart-line); stroke-width: 2; stroke-dasharray: 4 3; }
           .ftoday { stroke: var(--mp-ink-2); stroke-width: 1; stroke-dasharray: 2 3; }
-          .wk { stroke-width: 1; }
-          .wk.up { stroke: var(--mp-up); } .wk.dn { stroke: var(--mp-down-quiet); }
+          .cw.up { fill: var(--mp-up); } .cw.dn { fill: var(--mp-down-quiet); }
           .cb.up { fill: var(--mp-up); } .cb.dn { fill: var(--mp-down-quiet); }
           .navl { fill: none; stroke: var(--mp-ink); stroke-width: 2; stroke-linejoin: round; }
           .pneck { stroke: var(--mp-chart-4); stroke-width: 2; stroke-dasharray: 5 3; }
           .psup, .ptrend { stroke: var(--mp-chart-2); stroke-width: 2; stroke-dasharray: 5 3; }
           .sim { fill: none; stroke: var(--mp-chart-2); stroke-width: 1; stroke-opacity: 0.55; }
           .yl { position: absolute; left: 0; transform: translateY(-100%); padding-bottom: 1px; font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; }
-          .fl { position: absolute; right: 0; transform: translateY(-50%); font: 600 11px/14px var(--mp-font); color: var(--mp-ink); background: var(--mp-surface); padding: 0 3px; border-radius: 4px; white-space: nowrap; }
+          .fl { position: absolute; right: 0; transform: translateY(-50%); font: 600 11px/14px var(--mp-font); color: var(--mp-ink); white-space: nowrap; }
           .tdl { position: absolute; bottom: 2px; transform: translateX(calc(-100% - 4px)); font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; }
           .pmk { position: absolute; transform: translate(-50%, -100%); font: 600 11px/14px var(--mp-font); padding: 1px 6px; border-radius: 6px; background: var(--mp-surface); white-space: nowrap; }
           .pmk-a { color: var(--mp-ink); box-shadow: inset 0 0 0 1.5px var(--mp-chart-4); }
@@ -800,13 +802,13 @@ def options_file() -> str:
     out.append(board("1a", "The answer first", "MA-124 · MA-280 · §19.7",
                      "A navy hero with the three figures, risk first, and the rules engine’s call under them; then the candles with the fan of the next four weeks and the "
                      "patterns marked on them; the patterns, each with what followed it on this ETF; then one row for each model and the two track records.",
-                     [group("a1", [("iPhone · Forecast · 1a · Light", LT, 0), ("iPhone · Forecast · 1a · Dark", DK, 0), ("iPhone · Forecast · 1a · scrolled", LT, 620)], iphone_t(body_1a())),
-                      group("a2", [("iPad · Forecast · 1a · Light", LT, 0), ("iPad · Forecast · 1a · Dark", DK, 0)], ipad_t(body_1a(wide=True)))],
+                     [group("a1", [("iPhone · Forecast · 1a · Light", LT, 0), ("iPhone · Forecast · 1a · Dark", DK, 0), ("iPhone · Forecast · 1a · scrolled", LT, 620), ("iPhone · Forecast · 1a · scrolled to the track records", LT, 1230)], iphone_t(body_1a())),
+                      group("a2", [("iPad · Forecast · 1a · Light", LT, 0), ("iPad · Forecast · 1a · Dark", DK, 0), ("iPad · Forecast · 1a · scrolled", LT, 600)], ipad_t(body_1a(wide=True)))],
                      [("Picked (Arun, 29 Oct 2026), as recommended:", "it answers the member’s question in the first screen, the summary first and the detail a tap away, as every other v4 screen does; the chart and its patterns sit just under it."),
                       ("Risk first.", "The chance of a fall over 5% leads, then the likely range, then direction, the order of §19.4’s trust and of the goal."),
-                      ("Patterns.", "Only patterns whose event study on this ETF shows an edge are marked; the rest are named once, under the list, as found and not used."),
-                      ("Each row", "opens its sheet: the mood timeline, similar days over today’s chart, the event-impact table, the drivers and the wider technical set (drawn on the next canvas)."),
-                      ("iPad", "puts the chart and its patterns beside the rows; the chat stays beside the screen from 1133 pt.")], rec=True))
+                      ("Patterns.", "Only patterns whose event study on this ETF shows an edge are marked and listed (ARCHITECTURE 19.4); one with no edge, such as Tue 20 Oct’s bearish engulfing, is not shown at all."),
+                      ("Each row", "opens its sheet: the mood timeline, similar days over today’s chart, the event-impact table, the drivers and the wider technical set (each sheet is drawn before MA-124 starts)."),
+                      ("iPad", "puts the patterns beside the rows under a full-width chart; the chat sits beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over).")], rec=True))
     out.append(board("1b", "The chart is the screen", "MA-124 · MA-280 · §19.7",
                      "Three small figures and the rules engine’s call in one strip, then a tall chart with a layer for each model: Range, Patterns, Similar days, Events. "
                      "The layer changes what is drawn on the candles and the panel under them.",
@@ -843,6 +845,7 @@ def shared_file() -> str:
                      "call first; a disagreement is flagged in words; a view too close to the usual says “no clear view”.",
                      [chat_frame("iPhone · Saturday review · the engines agree · Light", LT, [chat_card(c[0])]),
                       chat_frame("iPhone · Saturday review · the engines disagree · Dark", DK, [chat_card(c[1]), chat_card(c[2])], lead=False),
+                      chat_frame("iPhone · Saturday review · no clear view · Light", LT, [chat_card(c[2])], lead=False),
                       chat_frame("iPhone · Saturday review · technical open · Light", LT, [chat_card(c[0], tech=True)], off=330)],
                      [("Disagreement", "is a sentence, not a colour: the amber note says which way each engine leans."),
                       ("No clear view", "is drawn when the chances sit too close to the usual to count; the confidence floor itself is MA-123’s to set (§19.7)."),
@@ -850,12 +853,13 @@ def shared_file() -> str:
     out.append(board("C2", "How the Forecaster proves itself", "MA-120 · MA-123 · §19.6",
                      "Reached from the Track record tab or the Forecast tab’s chip: the lab’s first report (the rules engine over ten years), the walk-forward tests, the live "
                      "gate and the switch-off.",
-                     [group("p1", [("iPhone · Forecaster · Proof · Light", LT, 0), ("iPhone · Forecaster · Proof · Dark", DK, 0), ("iPhone · Forecaster · Proof · scrolled", LT, 560)], iphone_t(body_proof(), title="How it proves itself", back="NASDAQ 100 ETF"))],
+                     [group("p1", [("iPhone · Forecaster · Proof · Light", LT, 0), ("iPhone · Forecaster · Proof · Dark", DK, 0), ("iPhone · Forecaster · Proof · scrolled", LT, 560), ("iPhone · Forecaster · Proof · the switch-off", LT, 1060)], iphone_t(body_proof(), title="How it proves itself", back="NASDAQ 100 ETF"))],
                      [("The lab ran first.", "A model reaches practice only after its walk-forward tests, so the page has figures, unlike the web board’s first state."),
-                      ("Fold 4 missed", "(2022) and is shown as missed; the final test, the last two years, decides.")]))
+                      ("Fold 4 missed", "(2022) and is shown as missed; the final test, the last two years to Sep 2026, decides."),
+                      ("The stages", "are ARCHITECTURE 19.6’s: in practice (the Forecast tab and the Saturday review only, Arun, 29 Oct 2026), live after 8 weeks beating both, off after four weeks worse than the base rate, retrained monthly.")]))
     out.append(board("C3", "A fund: line patterns on its price, never candles", "MA-280 · §19.1 · §19.4",
                      "Arun’s Balanced fund prices once a day, a day late, so the chart is its price line with the same fan, and F8 reads only the line patterns on it.",
-                     [group("f1", [("iPhone · Forecast · a fund · Light", LT, 0), ("iPhone · Forecast · a fund · Dark", DK, 0)], iphone_t(body_fund(), title="Balanced"))],
+                     [group("f1", [("iPhone · Forecast · a fund · Light", LT, 0), ("iPhone · Forecast · a fund · Dark", DK, 0), ("iPhone · Forecast · a fund · scrolled", LT, 1040)], iphone_t(body_fund(), title="Balanced"))],
                      [("Same screen,", "same order: only the chart and its patterns change.")]))
     out.append(board("C4", "Privacy mode", "MA-124 · §9.1",
                      "Privacy hides pounds: the holding’s value under its name. The forecast is in percentages, so it stays; the app switcher shows only the mark.",
@@ -877,6 +881,12 @@ def lines(html: str) -> str:
 
 
 if __name__ == "__main__":
-    (OUT / "iPhone v4 · Forecast.dc.html").write_text(lines(options_file()))
-    (OUT / "iPhone v4 · Forecaster proof and chat.dc.html").write_text(lines(shared_file()))
+    import sys
+    built = {"iPhone v4 · Forecast.dc.html": lines(options_file()), "iPhone v4 · Forecaster proof and chat.dc.html": lines(shared_file())}
+    if sys.argv[1:] == ["--check"]:   # the mirror's copies are what this builds from the figure set, byte for byte
+        stale = [name for name, text in built.items() if not (OUT / name).is_file() or (OUT / name).read_text() != text]
+        print("build_boards: " + (f"{', '.join(stale)} not what the figure set builds" if stale else "both canvases match the build"))
+        sys.exit(1 if stale else 0)
+    for name, text in built.items():
+        (OUT / name).write_text(text)
     print("wrote", OUT / "iPhone v4 · Forecast.dc.html", OUT / "iPhone v4 · Forecaster proof and chat.dc.html")
