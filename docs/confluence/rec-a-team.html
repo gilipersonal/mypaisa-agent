@@ -6,7 +6,7 @@
 <p>ARCHITECTURE.md as written, in full, below.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":jigsaw:" data-color="#E3FCEF"><p><strong>22 stories</strong></p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":jigsaw:" data-color="#E3FCEF"><p><strong>23 stories</strong></p>
 <p>Cite these sections, in phases 0, 7, 9, 18.</p>
 </div>
 </div>
@@ -148,7 +148,7 @@ Undo: back to the plan&#x27;s £450; nothing else changes.
 </ul>
 <p><strong>Where it lives.</strong> <code>MonthGrade</code>, <code>LearnedProposal</code> and <code>MemberSignal</code> in DynamoDB (§4.1); their snapshots in Parquet under <code>household/&lt;household&gt;/learning/</code> in the lake (§20.6), encrypted and kept for good, read with DuckDB by the tuner and never by another household&#x27;s query. Its own settings bound it (§20.2), and its jobs run at each month close and nightly (§23.6).</p>
 <h2>🧩 The stories that build it</h2>
-<p>Every story whose trace row cites §20, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-107%2C%20MA-108%2C%20MA-138%2C%20MA-239%2C%20MA-244%2C%20MA-245%2C%20MA-275%2C%20MA-221%2C%20MA-129%2C%20MA-276%2C%20MA-277%2C%20MA-128%2C%20MA-130%2C%20MA-131%2C%20MA-132%2C%20MA-133%2C%20MA-134%2C%20MA-135%2C%20MA-136%2C%20MA-146%2C%20MA-235%2C%20MA-256%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>
+<p>Every story whose trace row cites §20, with its estimate, status and design. <a href="https://duttaarun2015.atlassian.net/issues/?jql=project%20%3D%20MA%20AND%20key%20in%20%28MA-107%2C%20MA-108%2C%20MA-138%2C%20MA-239%2C%20MA-244%2C%20MA-245%2C%20MA-275%2C%20MA-221%2C%20MA-129%2C%20MA-276%2C%20MA-277%2C%20MA-128%2C%20MA-130%2C%20MA-131%2C%20MA-132%2C%20MA-133%2C%20MA-134%2C%20MA-135%2C%20MA-136%2C%20MA-146%2C%20MA-235%2C%20MA-256%2C%20MA-289%29%20ORDER%20BY%20key">Open them in Jira</a>.</p>
 <table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
 </thead>
 <tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-107" data-card-appearance="inline"></a></td><td>Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§18.4, §20.5, §23.3</td></tr>
@@ -173,6 +173,7 @@ Undo: back to the plan&#x27;s £450; nothing else changes.
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-146" data-card-appearance="inline"></a></td><td>The ops warden replays dead-lettered work on its own once the cause is healthy, and opens an incident if it fails again</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§20.5, §21.3</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-235" data-card-appearance="inline"></a></td><td>The daily run and every agent share one trace: Step Functions and the event bus carry it, a replay links to the run it repeats, an incident names its trace, and heartbeats are metrics</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§10.8, §20.5, §21.3</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-256" data-card-appearance="inline"></a></td><td>Each team agent has its own tools and safety suite, and a change it proposes to a prompt, rule or model carries its eval results to the admin&#x27;s approval</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§23.5, §20.2, §20.3</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-289" data-card-appearance="inline"></a></td><td>Each agent of the team keeps notes of what it tried, what worked and what the admin decided, read at the start of each run and never a second settings store</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§24.4, §20.1, §20.2, §20.3</td></tr>
 </tbody>
 </table>
 <h2>🔗 The explainer pages</h2>

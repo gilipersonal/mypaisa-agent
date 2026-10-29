@@ -492,6 +492,9 @@ ARCH = [
     ("rec-a-india", "🇮🇳", ":flag_in:", "#FFFAE6", "Indian markets",
      "Indian shares, ETFs and mutual funds beside the UK ones: free sources first, the existing portfolio imported once, accounts and currency, and the engine and the Forecaster for India.",
      ["22"], ["market-s12"], ["MyPaisa Market Agent", "MyPaisa Agent Journey"]),
+    ("rec-a-memory", "🧠", ":brain:", "#E6FCFF", "Caching and memory for every agent",
+     "Every agent gets both from the one runner: each call cached in one frozen order with a lifetime per route and checks that catch a broken cache, and Claude's memory tool on MyPaisa's own store, a member's notes theirs alone, never a figure, a record, a setting or a secret.",
+     ["24"], [], []),
 ]
 FLOW_GROUPS = [  # (slug, emoji, colour, title, flow ids), in the Agent Journey's own order
     ("rec-j-flows-join", "🔑", "#FFEBE6", "Joining and signing in", ["invite", "signin"]),

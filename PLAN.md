@@ -434,6 +434,18 @@ Claude's:
   (MA-276, MA-277, phase 18). Everything through the chat and its controls,
   every change and every run audited. Docs only; the questions still open
   are on the stories they decide.
+- **Caching and memory for every agent, planned (MA-285, `ARCHITECTURE.md`
+  §24):** your ask of 29 Oct 2026 written down. Every agent calls Claude
+  through the one runner, so its caching and its memory come from there:
+  each call marked for the cache in one frozen order, with a lifetime per
+  route and checks that catch a broken cache; and Claude's memory tool on
+  MyPaisa's own store, a member's notes theirs alone, never a figure, a
+  record, a setting or a secret. Built in phase 1 (MA-286, MA-287, MA-288)
+  and for the agent team in phase 18 (MA-289). Docs only. Your answers of
+  29 Oct 2026: a member's notes theirs alone, kept until forgotten, written by
+  the agent on its own and shown in Activity, and never past the cost: the
+  notes ride the cache under hard caps and the ladder (`ARCHITECTURE.md`
+  §24.6).
 - **No Telegram left in the live designs (MA-278):** as you said on 29 Oct
   2026, nothing for Telegram: the Telegram-only files, the Mini App and the
   Nocturne artboards moved out of the three live projects into an archive
@@ -690,8 +702,9 @@ arrives from phase 2.
 - **Every model call a span, and the typed `AnthropicAgentRunner` loop
   (MA-233, MA-271, `ARCHITECTURE.md` §8, §10.3):** `src/mypaisa_agent/agent/`
   runs the ~250-line async tool-use loop on `anthropic.AsyncAnthropic` with the
-  four-breakpoint prompt-cache assembler (`cache_control={"type": "ephemeral"}`
-  on system instructions, tools, household snapshot and history prefix) and the
+  prompt-cache assembler (at most three explicit `cache_control` breakpoints,
+  on the tools and system prompt together, the household's layer and the
+  notes, and the request's automatic caching for the tail; §24.1) and the
   `@tool` Pydantic v2 schema registry (MA-271); one wrapper on every Anthropic call
   sets the open GenAI attributes and MyPaisa's own (cost, feature, agent, the
   ladder's step, cache hit, time to the first token, refusal, fallback), and
@@ -744,6 +757,34 @@ arrives from phase 2.
   waiting; a new one starts from the cached fixed part (one-hour TTL) and
   Haiku's one-line notes on recent conversations; past about 50,000 tokens it
   starts afresh from a summary.
+- **Every agent's calls cached (MA-286, `ARCHITECTURE.md` §24.1):** the
+  runner marks every request of every agent, so none forgets: tools sorted
+  and serialised the same way every time, then the system prompt, with no
+  date, name, id or figure before the cache; the date, the member and the
+  ladder's step after it, as a system message; a lifetime per route in each
+  agent's manifest (the chat's fixed part an hour, a run's calls five
+  minutes); one model per loop. A byte test fails the build when a prefix
+  would change between two members or two days, T1 expects a cache read on
+  the second identical call, and the model panel's cache-read share per
+  agent alarms once when it falls out of its band.
+- **Every agent's memory (MA-287, `ARCHITECTURE.md` §24.2, §24.3, §24.5):**
+  Claude's memory tool on MyPaisa's own `MemoryNote` rows, for every agent
+  the runner builds; a member's notes read only in that member's runs, the
+  household's in everyone's, the agent's own in its runs; every command
+  through the policy gate; no amount, rate, account number, id, token or
+  secret (refused in code), no record and no setting; a run that read a file
+  or a page writes nothing; each write an audit row and one line in
+  Activity; leaving the household deletes the member's notes. Within the
+  budget (§24.6): the notes loaded once into the cached layer, at most 2,000
+  tokens a member per agent, 1,000 for the household, two writes a run,
+  costed as their own `memory` feature, written only on request from the 85%
+  step and not at all from 95%. Long runs drop old tool results with
+  server-side context editing, and the history is never edited.
+- **What MyPaisa remembers (MA-288, `ARCHITECTURE.md` §24.3):** in You, at
+  both doors, the member's own notes and the household's, each corrected in
+  place with Save or forgotten with Confirm; nothing added there. Drawn with
+  `/design-first`, in one round with MA-277's list of what was learned,
+  before it starts.
 - **Every file kept (MA-148):** every file and image a member sends kept in
   S3 for good, before anything reads it, with a `Document` row and an audit
   row; every change made from a file names it.
@@ -790,7 +831,12 @@ mocked push service); the meter costing recorded `usage` blocks to the cent,
 a concurrent add, the 100% stop and each guard, and a cycle rolling over on
 the renewal day; the stored history replaying byte for byte, a conversation
 closing at thirty minutes but not while a question waits, and
-`cache_read_input_tokens` above zero on the second message; a `RunRecord` on
+`cache_read_input_tokens` above zero on the second message; every agent's
+request byte-identical before its first breakpoint across two members and
+two days, and a manifest with no cache lifetime refused (MA-286); a note
+recalled in the member's next conversation and never in another member's, an
+amount, an account number and a token refused, a run that read a file
+writing nothing, and each write an audit row (MA-287); a `RunRecord` on
 success and on failure, shown in Activity; one message's trace from `api` to
 `sender` through the X-Ray API in dev, with the model, tool and push spans on
 it (MA-232); the leak test, no prompt, reply, amount, name, token or account
@@ -826,7 +872,10 @@ user in prod; MyPaisa Dev runs on seeded data from TestFlight, and against
 the laptop from the simulator; a merge reaches prod, and MyPaisa reaches your
 phones, only after your approval; a pull request that changes the chat's
 prompt shows its golden-set result before it can merge, and Activity
-lists the runs the judges read overnight.
+lists the runs the judges read overnight; you ask MyPaisa to remember
+something, it uses it in your next conversation and not in your wife's, and
+you see it in You and make it forget; the model panel shows every agent's
+cache reads.
 
 **Cost:** about £0.50 (a few Claude calls), and about £2.50 a month of
 CloudWatch in prod for the spans, Application Signals and the metrics and
@@ -1818,6 +1867,12 @@ one household and its one admin, the owner.
   suite; a `ChangeRequest` that changes a prompt, a rule, a threshold or a
   model carries the affected suites' results from dev, and a failing safety
   case blocks its approval.
+- **Each agent's own notes (MA-289, `ARCHITECTURE.md` §24.4):** every agent
+  of the team keeps notes on its own work through phase 1's memory: a
+  source's quirks, an incident and the fix that worked, why you approved or
+  rejected a request, so a rejected one is not proposed again within its
+  period; read at the start of each run, never a setting, and listed in the
+  Admin center for you to read, correct or clear behind the second check.
 **Order.** E1, the settings store, is built in phase 9 with E9 and E10, the
 household's learning (your pick, 29 Oct 2026); E2 can come forward once the
 Admin center and the second check exist (phase 8, MA-102); E3 after phase
@@ -1977,26 +2032,26 @@ How the dates are worked out:
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
 | 0 Foundations at every door | 47.75 (and 3.5 of yours) | 39 | Mon 2 Nov 2026 | Mon 4 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 102.5 (and 0.5 of yours) | 82 | Tue 5 Jan 2027 | Fri 30 Apr 2027 |
-| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Tue 4 May 2027 | Tue 29 Jun 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Wed 30 Jun 2027 | Tue 20 Jul 2027 |
-| 4 Debts and check-ins | 19 | 16 | Wed 21 Jul 2027 | Wed 11 Aug 2027 |
-| 5 Investments, priced | 23 | 19 | Thu 12 Aug 2027 | Wed 8 Sep 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Thu 9 Sep 2027 | Wed 22 Sep 2027 |
-| 7 Projection | 28 | 23 | Thu 23 Sep 2027 | Mon 25 Oct 2027 |
-| 8 Audit, search and the Admin center at every door | 28 | 23 | Tue 26 Oct 2027 | Thu 25 Nov 2027 |
-| 9 The whole dashboard, and the old wealth tracker retired | 26 | 21 | Fri 26 Nov 2027 | Tue 4 Jan 2028 |
-| 10 Prices and the engine | 23 | 19 | Wed 5 Jan 2028 | Mon 31 Jan 2028 |
-| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Tue 1 Feb 2028 | Fri 18 Feb 2028 |
-| 12 Ask anything: research cards and scenarios | 19 | 16 | Mon 21 Feb 2028 | Mon 13 Mar 2028 |
-| 13 Track record and calibration | 13 | 11 | Tue 14 Mar 2028 | Tue 28 Mar 2028 |
-| 14 News, events, sentiment (shadow) | 8 | 7 | Wed 29 Mar 2028 | Thu 6 Apr 2028 |
-| 15 Stances go live | 5 | 4 | Fri 7 Apr 2028 | Wed 12 Apr 2028 |
+| 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Tue 5 Jan 2027 | Tue 11 May 2027 |
+| 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Wed 12 May 2027 | Wed 7 Jul 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Thu 8 Jul 2027 | Wed 28 Jul 2027 |
+| 4 Debts and check-ins | 19 | 16 | Thu 29 Jul 2027 | Thu 19 Aug 2027 |
+| 5 Investments, priced | 23 | 19 | Fri 20 Aug 2027 | Thu 16 Sep 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Fri 17 Sep 2027 | Thu 30 Sep 2027 |
+| 7 Projection | 28 | 23 | Fri 1 Oct 2027 | Tue 2 Nov 2027 |
+| 8 Audit, search and the Admin center at every door | 28 | 23 | Wed 3 Nov 2027 | Fri 3 Dec 2027 |
+| 9 The whole dashboard, and the old wealth tracker retired | 26 | 21 | Mon 6 Dec 2027 | Wed 12 Jan 2028 |
+| 10 Prices and the engine | 23 | 19 | Thu 13 Jan 2028 | Tue 8 Feb 2028 |
+| 11 Briefs, alerts, charts, technical mode | 17 | 14 | Wed 9 Feb 2028 | Mon 28 Feb 2028 |
+| 12 Ask anything: research cards and scenarios | 19 | 16 | Tue 29 Feb 2028 | Tue 21 Mar 2028 |
+| 13 Track record and calibration | 13 | 11 | Wed 22 Mar 2028 | Wed 5 Apr 2028 |
+| 14 News, events, sentiment (shadow) | 8 | 7 | Thu 6 Apr 2028 | Tue 18 Apr 2028 |
+| 15 Stances go live | 5 | 4 | Wed 19 Apr 2028 | Mon 24 Apr 2028 |
 | 16 New kinds of holding (when you add one) | 5 | 4 | When a new kind is added | |
-| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Thu 13 Apr 2028 | Thu 25 May 2028 |
-| 18 The agent team: configured, approved, self-healing, self-learning | 25 | 20 | Fri 26 May 2028 | Fri 23 Jun 2028 |
-| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Mon 26 Jun 2028 | Tue 11 Jul 2028 |
-| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Wed 12 Jul 2028 | Fri 21 Jul 2028 |
+| 17 The Forecaster: a second engine beside the rules engine | 35 | 28 | Tue 25 Apr 2028 | Mon 5 Jun 2028 |
+| 18 The agent team: configured, approved, self-healing, self-learning | 27 | 22 | Tue 6 Jun 2028 | Wed 5 Jul 2028 |
+| 19 Indian markets and the existing Indian portfolio | 14 | 12 | Thu 6 Jul 2028 | Fri 21 Jul 2028 |
+| 20 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Mon 24 Jul 2028 | Wed 2 Aug 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 17 to 20 can start sooner if you
