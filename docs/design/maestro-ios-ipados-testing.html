@@ -1,0 +1,646 @@
+<title>MyPaisa Local iOS &amp; iPadOS Maestro Testing and Private TestFlight Beta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: a navy masthead states the five local iOS/iPadOS Maestro & private TestFlight picks; below it, five sections
+   with animated SVG block diagrams and phase tables covering: (1) One Maestro Owner Per Device cloned simulator pool &
+   dual backend modes, (2) React Native 0.88 Fabric + Swift 6 SwiftUI + Liquid Glass mp.* selector contract,
+   (3) Four-sub-band iOS & iPadOS adaptive width & live rotation matrix, (4) xcrun simctl capability playbook &
+   Phases 0-20 rollout at £0.00/mo, and (5) Private 90-day (3-month) evergreen TestFlight household beta testing.
+   MyPaisa DS v1, "Warm ledger" (MA-167, MA-273, MA-274). */
+:root{
+  --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
+  --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
+  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF6B4F; --accent:#C2381F; --on-accent:#FFFFFF;
+  --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
+  --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB; --violet:#6B3FB8; --violet-bg:#EEE7FA;
+  --track:#CDCFD4; --grid:#ECE8E2;
+  --shadow:0 1px 2px rgba(20,23,31,.06),0 10px 30px rgba(20,23,31,.08);
+  --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+    --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+    --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+    --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+    --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+    --track:#454E5C; --grid:#222B39;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+  --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+  --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+  --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+  --track:#454E5C; --grid:#222B39;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(24px,3.2vw,32px);font-weight:900;line-height:1.15}
+h3{font-size:18px;font-weight:800}
+p{margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:6px}
+
+.mast{background:var(--hero);color:var(--hero-ink);padding-block:40px 36px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-ink-2);font-weight:600}
+.mast h1{font-size:clamp(30px,5vw,48px);font-weight:900;line-height:1.06;margin-top:10px;max-width:25ch}
+.mast .lede{color:var(--hero-ink-2);font-size:17px;max-width:70ch;margin-top:16px}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.rules li{background:var(--hero-2);color:var(--hero-ink);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.rules li b{color:var(--coral);margin-right:6px;font-family:var(--f-mono);font-weight:500}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.ghost{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.bar nav{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;margin-left:auto}
+.bar nav a{color:var(--ink-2);text-decoration:none}
+.bar nav a:hover{color:var(--accent)}
+
+main{padding-block:12px 56px}
+section{padding-block:36px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.head{display:flex;flex-direction:column;gap:8px;max-width:74ch}
+.kicker{font:600 12px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.body{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin-top:18px}
+.copy{display:flex;flex-direction:column;gap:12px;max-width:72ch;color:var(--ink-2)}
+.copy strong{color:var(--ink)}
+.copy ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+[data-mode="plain"] .tech,[data-mode="tech"] .plain{display:none!important}
+
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;margin:0}
+.fig .scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:720px;height:auto}
+.fig figcaption{font-size:13px;color:var(--ink-3);margin-top:8px}
+
+.s-box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.s-box2{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.s-t{fill:var(--ink);font:600 13px var(--f-body)}
+.s-s{fill:var(--ink-2);font:500 11.8px var(--f-body)}
+.s-m{fill:var(--ink-3);font:500 11.2px var(--f-mono)}
+.s-h{fill:var(--ink);font:800 14.5px var(--f-display)}
+.s-line{stroke:var(--track);stroke-width:2;fill:none}
+.s-dash{stroke:var(--track);stroke-width:2;fill:none;stroke-dasharray:5 5}
+.s-up{fill:var(--up)} .s-upbg{fill:var(--up-bg);stroke:var(--up);stroke-width:1.3}
+.s-al{fill:var(--alert)} .s-albg{fill:var(--alert-bg);stroke:var(--alert);stroke-width:1.3}
+.s-am{fill:var(--amber)} .s-ambg{fill:var(--amber-bg);stroke:var(--amber);stroke-width:1.3}
+.s-bl{fill:var(--blue)} .s-blbg{fill:var(--blue-bg);stroke:var(--blue);stroke-width:1.3}
+.s-vi{fill:var(--violet)} .s-vibg{fill:var(--violet-bg);stroke:var(--violet);stroke-width:1.3}
+.s-co{fill:var(--coral)} .s-tr{fill:var(--track)}
+.s-upt{fill:var(--up);font:700 12.4px var(--f-body)}
+.s-alt{fill:var(--alert);font:700 12.4px var(--f-body)}
+.s-amt{fill:var(--amber);font:700 12.4px var(--f-body)}
+.s-blt{fill:var(--blue);font:700 12.4px var(--f-body)}
+.s-vit{fill:var(--violet);font:700 12.4px var(--f-body)}
+
+.step-ring{fill:none;stroke:var(--coral);stroke-width:3;opacity:0;transition:opacity .15s linear}
+.step-ring.is-on{opacity:1}
+.pkt{fill:var(--coral);stroke:#FFFFFF;stroke-width:1.5}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--surface-2);font-weight:700;color:var(--ink)}
+tr:last-child td{border-bottom:0}
+td.k{font-family:var(--f-mono);font-weight:600;white-space:nowrap;color:var(--accent)}
+
+footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);font-size:13px}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="eyebrow">MyPaisa iOS &amp; iPadOS Quality · MA-167, MA-273, MA-274</div>
+    <h1>Local Maestro Testing &amp; Private 90-Day TestFlight Beta</h1>
+    <p class="lede">Every iPhone, iPad and foldable flow is tested locally on Apple Silicon across four width bands and Apple system capabilities at <strong>£0.00/month</strong> without colliding with interactive Maestro MCP sessions—and kept privately installed on household iPhones and iPads across rolling <strong>90-day (3-month)</strong> TestFlight Internal Testing windows without ever appearing on the public App Store.</p>
+    <ul class="rules">
+      <li><b>01</b>One Maestro owner per device: MCP interactive vs cloned flock CLI pool</li>
+      <li><b>02</b>Shared mp.* TestIDs.swift ↔ test-ids.ts + .accessibilityElement(.contain)</li>
+      <li><b>03</b>4 width bands (&lt;600, 600–899, 900–1132 MA-240, ≥1133 pt) + live rotation</li>
+      <li><b>04</b>xcrun simctl Face ID, APNs push, Universal Links &amp; AX5 across Phases 0–20 (£0/mo)</li>
+      <li><b>05</b>testFlightInternalTestingOnly = true: 100% private 90-day rolling beta</li>
+    </ul>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="seg" role="radiogroup" aria-label="Explanation depth">
+      <button type="button" role="radio" aria-checked="false" data-set="plain">Plain words</button>
+      <button type="button" role="radio" aria-checked="true" data-set="tech">Technical</button>
+    </div>
+    <button type="button" class="ghost" id="pause" aria-pressed="false">Pause the diagrams</button>
+    <nav aria-label="Sections">
+      <a href="#pool">1 · Cloned pool &amp; MCP</a>
+      <a href="#fabric">2 · RN + SwiftUI selectors</a>
+      <a href="#bands">3 · 4-band matrix</a>
+      <a href="#simctl">4 · simctl &amp; Phases 0–20</a>
+      <a href="#testflight">5 · 90-day TestFlight</a>
+    </nav>
+  </div>
+</div>
+
+<main id="main" data-mode="tech">
+<div class="wrap">
+
+<section id="pool">
+  <div class="head">
+    <div class="kicker">1 · Local Apple Silicon pool &amp; dual backends (MA-273, MA-198, MA-232)</div>
+    <h2>One Maestro owner per simulator: interactive MCP stays live while cloned CLI simulators run headlessly</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Maestro can inspect screens interactively while we build, or run full automated test suites—but if both touch the same iPhone simulator at once, the automated run wipes your login and disconnects the live inspector. So our local runner clones five dedicated background simulators for automated runs and leaves your normal Xcode simulator untouched.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Why isolation is mandatory:</strong> Every <code>maestro --device &lt;UDID&gt; test</code> CLI run reinstalls <code>maestro-driver-ios</code> (killing any attached <code>maestro</code> MCP XCTest socket) and runs <code>clearState: true</code>. <code>scripts/maestro_local.py setup-pool</code> clones 5 dedicated simulators (<code>MyPaisa-Maestro-iPhone-375</code>, <code>iPhone-402</code>, <code>iPad-834</code>, <code>iPad-1032</code>, <code>iPad-1376</code> + optional <code>Duo</code>), boots them headlessly via <code>xcrun simctl boot</code>, and guards each UDID with <code>fcntl.flock</code> (<code>/tmp/mypaisa-maestro-&lt;UDID&gt;.lock</code>).</li>
+        <li><strong>Two backend modes:</strong> Mode A (<code>--mode stub</code>, default, £0) drives the local FastAPI + <code>moto</code> + T0 recorded Claude SSE server (<code>MYPAISA_API_URL=http://127.0.0.1:8787</code>, compiled inside <code>#if DEBUG</code> only). Mode B (<code>--mode dev-live</code>) runs <code>MyPaisa Dev</code> against <code>api-dev.mypaisapp.com</code> and asserts an unbroken mobile-to-Claude X-Ray trace (<code>MA-232</code>).</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-1">
+      <div class="scroll">
+      <svg id="svg-1" viewBox="0 0 1000 340" role="img" aria-label="One Maestro owner per device isolation between interactive Maestro MCP and cloned flock-locked CLI simulator pool">
+        <rect class="s-box2" x="16" y="16" width="286" height="308" rx="12"/>
+        <text class="s-h" x="30" y="42">A · Interactive Pool (MCP Only)</text>
+        <rect class="s-blbg" x="30" y="58" width="258" height="62" rx="8"/>
+        <text class="s-blt" x="42" y="80">Maestro MCP + Viewer (:10001)</text>
+        <text class="s-m" x="42" y="98">inspect_screen · run · screenshot</text>
+        <text class="s-m" x="42" y="112">Live hierarchy exploration</text>
+        <rect class="s-box" x="30" y="134" width="258" height="74" rx="8"/>
+        <text class="s-t" x="42" y="156">Standard Xcode Simulators</text>
+        <text class="s-m" x="42" y="174">iPhone 18 Pro · iPad Pro 11"</text>
+        <text class="s-upt" x="42" y="194">✓ Never wiped by CLI runs</text>
+        <rect class="s-albg" x="30" y="222" width="258" height="86" rx="8"/>
+        <text class="s-alt" x="42" y="244">Hard Isolation Boundary</text>
+        <text class="s-s" x="42" y="264">CLI refuses non-MyPaisa-Maestro-*</text>
+        <text class="s-m" x="42" y="282">Prevents XCTest driver teardown</text>
+        <text class="s-m" x="42" y="298">&amp; clearKeychain collisions</text>
+        <rect class="step-ring" data-f1="0" x="28" y="56" width="262" height="154" rx="10"/>
+
+        <line class="s-dash" x1="311" y1="70" x2="311" y2="290"/>
+
+        <rect class="s-box2" x="320" y="16" width="372" height="308" rx="12"/>
+        <text class="s-h" x="334" y="42">B · Automated CLI Pool (maestro_local.py)</text>
+        <rect class="s-vibg" x="334" y="58" width="344" height="54" rx="8"/>
+        <text class="s-vit" x="346" y="78">Per-UDID flock + Headless simctl boot</text>
+        <text class="s-m" x="346" y="96">/tmp/mypaisa-maestro-&lt;UDID&gt;.lock · 09:41 bar</text>
+        <rect class="s-upbg" x="334" y="124" width="344" height="122" rx="8"/>
+        <text class="s-upt" x="346" y="146">5 Cloned Simulators (Apple Silicon GPU)</text>
+        <text class="s-m" x="346" y="166">• MyPaisa-Maestro-iPhone-375 (320/375 pt)</text>
+        <text class="s-m" x="346" y="184">• MyPaisa-Maestro-iPhone-402 (portrait/land)</text>
+        <text class="s-m" x="346" y="202">• MyPaisa-Maestro-iPad-834   (834 ↔ 1210 pt)</text>
+        <text class="s-m" x="346" y="220">• MyPaisa-Maestro-iPad-1032  (MA-240 sheet)</text>
+        <text class="s-m" x="346" y="236">• MyPaisa-Maestro-iPad-1376  (+ Duo beta)</text>
+        <rect class="s-box" x="334" y="258" width="344" height="50" rx="8"/>
+        <text class="s-t" x="346" y="278">JUnit XML + HTML-DETAILED + PNGs</text>
+        <text class="s-m" x="346" y="294">maestro check-syntax on Linux CI (3s, 1x)</text>
+        <rect class="step-ring" data-f1="1" x="332" y="56" width="348" height="192" rx="10"/>
+
+        <line class="s-line" x1="692" y1="118" x2="710" y2="118"/>
+        <line class="s-line" x1="692" y1="248" x2="710" y2="248"/>
+
+        <rect class="s-box2" x="710" y="16" width="274" height="308" rx="12"/>
+        <text class="s-h" x="724" y="42">C · Dual Backend Modes</text>
+        <rect class="s-upbg" x="724" y="58" width="246" height="118" rx="8"/>
+        <text class="s-upt" x="736" y="80">Mode A · --mode stub (£0)</text>
+        <text class="s-s" x="736" y="98">Local FastAPI + moto + T0 SSE</text>
+        <text class="s-m" x="736" y="118">127.0.0.1:8787 (#if DEBUG only)</text>
+        <text class="s-m" x="736" y="136">household-v4.json seeded</text>
+        <text class="s-m" x="736" y="154">/__test/network offline toggle</text>
+        <rect class="s-ambg" x="724" y="190" width="246" height="118" rx="8"/>
+        <text class="s-amt" x="736" y="212">Mode B · --mode dev-live</text>
+        <text class="s-s" x="736" y="230">api-dev.mypaisapp.com (AWS)</text>
+        <text class="s-m" x="736" y="250">Real Cognito + API GW SSE</text>
+        <text class="s-m" x="736" y="268">Reads x-mypaisa-trace-id</text>
+        <text class="s-m" x="736" y="286">Verifies X-Ray trace (MA-232)</text>
+        <rect class="step-ring" data-f1="2" x="722" y="56" width="250" height="122" rx="10"/>
+        <rect class="step-ring" data-f1="3" x="722" y="188" width="250" height="122" rx="10"/>
+
+        <circle id="pkt-1" class="pkt" cx="311" cy="90" r="6"/>
+      </svg>
+      </div>
+      <figcaption>One Maestro owner per simulator prevents XCTest driver teardowns; Mode A runs 100% offline against local FastAPI + moto, while Mode B proves live AWS X-Ray traces.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="fabric">
+  <div class="head">
+    <div class="kicker">2 · Hybrid React Native 0.88 + Swift 6 SwiftUI selector contract (MA-165, MA-273)</div>
+    <h2>One canonical mp.* ID dictionary across Playwright and Maestro, with unmerged SwiftUI card trees</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>SwiftUI normally bundles an entire card into one lump for screen readers, which hides buttons like <strong>Confirm</strong>, <strong>Cancel</strong>, and <strong>Technical</strong> from automated tests. Our SwiftUI cards keep their children distinct, share the exact same ID names as the web app, and freeze number-rolling animations during functional tests so tests never flake.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Shared ID schema:</strong> Generates both <code>web/src/lib/test-ids.ts</code> (Playwright) and <code>ios/MyPaisaCore/Testing/TestIDs.swift</code> (React Native <code>testID</code> + SwiftUI <code>.accessibilityIdentifier</code>), checked in L1 CI against every <code>id:</code> in <code>.maestro/flows/*.yaml</code>.</li>
+        <li><strong>Unmerged SwiftUI &amp; Liquid Glass:</strong> Every Warm Ledger card and row sets <code>.accessibilityElement(children: .contain)</code> (never <code>.combine</code>); Fabric sets <code>UITabBarItem.accessibilityIdentifier</code> so tabs work even when iOS 26 collapses labels on scroll; Swift Charts expose both <code>AXChartDescriptor</code> and deterministic <code>.accessibilityValue</code> summaries; <code>MYPAISA_STATIC_MOTION=1</code> settles springs and <code>numericText</code> rolls immediately.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-2">
+      <div class="scroll">
+      <svg id="svg-2" viewBox="0 0 960 320" role="img" aria-label="Shared test-ids.ts and TestIDs.swift contract across React Native 0.88 Fabric and Swift 6 SwiftUI into Maestro XCTest hierarchy">
+        <rect class="s-box2" x="16" y="16" width="214" height="288" rx="12"/>
+        <text class="s-h" x="30" y="42">1 · Shared ID Contract</text>
+        <rect class="s-blbg" x="30" y="60" width="186" height="72" rx="8"/>
+        <text class="s-blt" x="40" y="82">web/src/lib/test-ids.ts</text>
+        <text class="s-m" x="40" y="100">SvelteKit data-testid</text>
+        <text class="s-m" x="40" y="116">Checked by Playwright</text>
+        <rect class="s-vibg" x="30" y="144" width="186" height="74" rx="8"/>
+        <text class="s-vit" x="40" y="166">TestIDs.swift</text>
+        <text class="s-m" x="40" y="184">RN testID + SwiftUI</text>
+        <text class="s-m" x="40" y="200">.accessibilityIdentifier</text>
+        <rect class="s-upbg" x="30" y="230" width="186" height="58" rx="8"/>
+        <text class="s-upt" x="40" y="252">L1 Parity Gate (3s)</text>
+        <text class="s-m" x="40" y="270">Refuses unknown mp.* IDs</text>
+        <rect class="step-ring" data-f2="0" x="28" y="58" width="190" height="232" rx="10"/>
+
+        <rect class="s-box2" x="248" y="16" width="444" height="288" rx="12"/>
+        <text class="s-h" x="262" y="42">2 · RN 0.88 Shell + Fabric C++ + Swift 6 SwiftUI Core</text>
+        <rect class="s-box" x="262" y="60" width="200" height="106" rx="8"/>
+        <text class="s-t" x="274" y="82">RN 0.88 Fabric Shell</text>
+        <text class="s-m" x="274" y="102">UITabBarItem IDs:</text>
+        <text class="s-m" x="274" y="118">mp.tab.chat / home / you</text>
+        <text class="s-m" x="274" y="136">Works when Liquid Glass</text>
+        <text class="s-m" x="274" y="152">collapses tab labels</text>
+        <rect class="s-upbg" x="476" y="60" width="202" height="106" rx="8"/>
+        <text class="s-upt" x="488" y="82">SwiftUI Cards (.contain)</text>
+        <text class="s-m" x="488" y="102">mp.card.confirm (outer)</text>
+        <text class="s-m" x="488" y="118">├─ mp.card.confirm.accept</text>
+        <text class="s-m" x="488" y="134">├─ mp.card.confirm.cancel</text>
+        <text class="s-m" x="488" y="150">└─ mp.card.technical-fold</text>
+        <rect class="s-ambg" x="262" y="180" width="200" height="108" rx="8"/>
+        <text class="s-amt" x="274" y="202">Swift Charts (MA-56)</text>
+        <text class="s-m" x="274" y="222">mp.chart.net-worth</text>
+        <text class="s-m" x="274" y="238">AXChartDescriptor +</text>
+        <text class="s-m" x="274" y="254">.accessibilityValue</text>
+        <text class="s-m" x="274" y="270">("Latest £412,850")</text>
+        <rect class="s-blbg" x="476" y="180" width="202" height="108" rx="8"/>
+        <text class="s-blt" x="488" y="202">Motion Determinism</text>
+        <text class="s-m" x="488" y="222">MYPAISA_STATIC_MOTION=1</text>
+        <text class="s-m" x="488" y="238">Settles springs &amp; digit</text>
+        <text class="s-m" x="488" y="254">rolls (like ?static=1);</text>
+        <text class="s-m" x="488" y="270">@motion tests springs</text>
+        <rect class="step-ring" data-f2="1" x="260" y="58" width="420" height="232" rx="10"/>
+
+        <rect class="s-box2" x="710" y="16" width="234" height="288" rx="12"/>
+        <text class="s-h" x="724" y="42">3 · Maestro XCTest Tree</text>
+        <rect class="s-upbg" x="724" y="60" width="206" height="228" rx="8"/>
+        <text class="s-upt" x="736" y="84">maestro-driver-ios</text>
+        <text class="s-m" x="736" y="106">- tapOn:</text>
+        <text class="s-m" x="736" y="122">    id: mp.tab.chat</text>
+        <text class="s-m" x="736" y="142">- assertVisible:</text>
+        <text class="s-m" x="736" y="158">    id: mp.card.confirm</text>
+        <text class="s-m" x="736" y="178">- tapOn:</text>
+        <text class="s-m" x="736" y="194">    id: mp.card.confirm.accept</text>
+        <text class="s-upt" x="736" y="224">✓ Zero coordinate taps</text>
+        <text class="s-upt" x="736" y="244">✓ Zero mid-roll flakes</text>
+        <text class="s-upt" x="736" y="264">✓ Works Light/Dark/AX5</text>
+        <rect class="step-ring" data-f2="2" x="722" y="58" width="210" height="232" rx="10"/>
+
+        <line class="s-line" x1="230" y1="160" x2="248" y2="160"/>
+        <line class="s-line" x1="692" y1="160" x2="710" y2="160"/>
+        <circle id="pkt-2" class="pkt" cx="239" cy="160" r="6"/>
+      </svg>
+      </div>
+      <figcaption>.accessibilityElement(children: .contain) and UITabBarItem identifiers keep every SwiftUI card button and Liquid Glass control addressable by canonical mp.* ID.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="bands">
+  <div class="head">
+    <div class="kicker">3 · Four-sub-band adaptive width &amp; live rotation matrix (MA-163, MA-240, MA-273)</div>
+    <h2>Testing the chat beside every screen from about 1133 pt, a sheet away from 600 to 1133 pt, and a compact tab</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>The app adapts strictly by window width: the chat sits beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). Maestro rotates iPads mid-conversation to prove that moving between a sheet and a side column never drops what you typed.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Exact boundary coverage:</strong> In addition to the 5 physical device geometries (<code>375</code>, <code>402</code>, <code>834</code>, <code>1032</code>, <code>1376 pt</code> + <code>Duo</code>), <code>#if DEBUG</code> honours <code>MYPAISA_VIEWPORT_WIDTH</code> at <code>320</code> (Display Zoom / Slide Over), <code>599</code>, <code>600</code>, <code>899</code>, <code>900</code>, <code>1132</code> and <code>1133 pt</code>, guarding the <code>MA-240</code> 13-inch upright rule where three columns would crush the middle screen.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-3">
+      <div class="scroll">
+      <svg id="svg-3" viewBox="0 0 1088 330" role="img" aria-label="Four width sub-bands tested locally by Maestro across iPhone, Slide Over, iPad portrait, 13-inch iPad upright MA-240, and iPad landscape 3-column chat-beside">
+        <rect class="s-box2" x="16" y="16" width="252" height="298" rx="12"/>
+        <text class="s-h" x="28" y="42">Band 1 · &lt;600 pt Compact</text>
+        <text class="s-m" x="28" y="60">iPhone 375/402/440 · Slide Over</text>
+        <rect class="s-blbg" x="28" y="74" width="228" height="142" rx="10"/>
+        <text class="s-blt" x="40" y="96">1 Column + Bottom Tab Bar</text>
+        <text class="s-m" x="40" y="116">[ Single Screen / Chat Tab ]</text>
+        <text class="s-m" x="40" y="140">┌──────────────────────┐</text>
+        <text class="s-m" x="40" y="156">│ Liquid Glass Tab Bar │</text>
+        <text class="s-m" x="40" y="172">└──────────────────────┘</text>
+        <text class="s-s" x="40" y="198">iPhone landscape stays compact!</text>
+        <rect class="s-upbg" x="28" y="228" width="228" height="72" rx="8"/>
+        <text class="s-upt" x="38" y="248">assertVisible: mp.nav.tab-bar</text>
+        <text class="s-m" x="38" y="266">notVisible: mp.nav.sidebar</text>
+        <text class="s-m" x="38" y="284">320pt Display Zoom rupee fit</text>
+        <rect class="step-ring" data-f3="0" x="16" y="16" width="252" height="298" rx="12"/>
+
+        <rect class="s-box2" x="284" y="16" width="252" height="298" rx="12"/>
+        <text class="s-h" x="296" y="42">Band 2 · 600–899 pt</text>
+        <text class="s-m" x="296" y="60">iPad 744/834 Portrait · Duo Open</text>
+        <rect class="s-vibg" x="296" y="74" width="228" height="142" rx="10"/>
+        <text class="s-vit" x="308" y="96">Top Bar + Chat as Sheet</text>
+        <text class="s-m" x="308" y="116">[ Top Collapsed Tab Bar ]</text>
+        <text class="s-m" x="308" y="138">[   Dashboard Screen    ]</text>
+        <text class="s-m" x="308" y="160">   ┌── mp.chat.sheet ──┐</text>
+        <text class="s-m" x="308" y="176">   │ Ask / ⌘K overlay  │</text>
+        <text class="s-s" x="308" y="198">2/3 Split View &amp; unfolded Duo</text>
+        <rect class="s-upbg" x="296" y="228" width="228" height="72" rx="8"/>
+        <text class="s-upt" x="306" y="248">assertVisible: mp.nav.top-tabs</text>
+        <text class="s-m" x="306" y="266">notVisible: trailing-column</text>
+        <text class="s-m" x="306" y="284">Tap Ask → mp.chat.sheet</text>
+        <rect class="step-ring" data-f3="1" x="284" y="16" width="252" height="298" rx="12"/>
+
+        <rect class="s-box2" x="552" y="16" width="252" height="298" rx="12"/>
+        <text class="s-h" x="564" y="42">Band 3 · 900–1132 pt</text>
+        <text class="s-m" x="564" y="60">13" iPad Upright 1032pt (MA-240)</text>
+        <rect class="s-ambg" x="564" y="74" width="228" height="142" rx="10"/>
+        <text class="s-amt" x="576" y="96">Sidebar + Screen + Sheet</text>
+        <text class="s-m" x="576" y="118">│Side│  Dashboard Screen</text>
+        <text class="s-m" x="576" y="138">│bar │  (wide, uncrushed!)</text>
+        <text class="s-m" x="576" y="160">│Chat│──► mp.chat.sheet</text>
+        <text class="s-s" x="576" y="186">Prevents 360–480pt crushed</text>
+        <text class="s-s" x="576" y="202">middle column (MA-240)</text>
+        <rect class="s-upbg" x="564" y="228" width="228" height="72" rx="8"/>
+        <text class="s-upt" x="574" y="248">assertVisible: mp.nav.sidebar</text>
+        <text class="s-m" x="574" y="266">notVisible: trailing-column</text>
+        <text class="s-m" x="574" y="284">Rotate ↻ morphs to Band 4</text>
+        <rect class="step-ring" data-f3="2" x="552" y="16" width="252" height="298" rx="12"/>
+
+        <rect class="s-box2" x="820" y="16" width="252" height="298" rx="12"/>
+        <text class="s-h" x="832" y="42">Band 4 · ≥1133 pt Beside</text>
+        <text class="s-m" x="832" y="60">iPad Landscape 1133/1210/1376pt</text>
+        <rect class="s-upbg" x="832" y="74" width="228" height="142" rx="10"/>
+        <text class="s-upt" x="844" y="96">3 Columns: Chat Beside</text>
+        <text class="s-m" x="844" y="118">│Side│ Screen │ Trailing │</text>
+        <text class="s-m" x="844" y="138">│bar │  Home  │   Chat   │</text>
+        <text class="s-m" x="844" y="158">│    │ £412k  │  Column  │</text>
+        <text class="s-s" x="844" y="186">Confirm in chat updates Home</text>
+        <text class="s-s" x="844" y="202">beside it live via SSE</text>
+        <rect class="s-upbg" x="832" y="228" width="228" height="72" rx="8"/>
+        <text class="s-upt" x="842" y="248">visible: sidebar + trailing</text>
+        <text class="s-m" x="842" y="266">notVisible: mp.chat.sheet</text>
+        <text class="s-m" x="842" y="284">Guided-flow draft preserved!</text>
+        <rect class="step-ring" data-f3="3" x="820" y="16" width="252" height="298" rx="12"/>
+      </svg>
+      </div>
+      <figcaption>Maestro tests all four width sub-bands and rotates 11-inch and 13-inch iPads mid-guided-flow across the 1133 pt threshold to verify zero lost input.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="simctl">
+  <div class="head">
+    <div class="kicker">4 · xcrun simctl capabilities &amp; Phases 0–20 rollout at £0.00/month (MA-269, MA-273)</div>
+    <h2>Face ID, APNs push, Universal Links, Photos/PDFs and AX5 locally—saving £42–£65/mo of macos-15 minutes</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Maestro works hand-in-hand with Apple's simulator tools to trigger Face ID successes and failures, lock-screen push notifications (verifying zero pound or rupee amounts show under Privacy Mode), invite links, bank statement PDFs, and giant accessibility text across all 21 build phases for <strong>£0.00/month</strong>.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>System daemon bridges (<code>.maestro/scripts/*.js</code>):</strong> Trigger <code>BiometricKit</code> match/fail notifications for the Admin Center second check, <code>xcrun simctl push</code> APNs check-ins, <code>openLink</code> Universal Links, <code>addMedia</code> statements/screenshots, <code>simctl ui content_size AX5</code>, and local ASGI offline-queue drops.</li>
+        <li><strong>Cost math:</strong> Running 5 simulators on GitHub <code>macos-15</code> (<code>10x</code> multiplier) would burn 150–220 billed minutes per PR (~£42–£65/mo overage). Running <code>maestro check-syntax</code> on <code>ubuntu-24.04-arm</code> (<code>1x</code>, 3s) in CI and running the 5-simulator pool locally on Apple Silicon costs <strong>£0.00/month</strong>.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-4">
+      <div class="scroll">
+      <svg id="svg-4" viewBox="0 0 960 330" role="img" aria-label="xcrun simctl capability bridges and Phase 0 to 20 Maestro rollout at zero monthly cost">
+        <rect class="s-box2" x="16" y="16" width="448" height="298" rx="12"/>
+        <text class="s-h" x="30" y="42">Native System Capability Bridges (simctl + Maestro)</text>
+        <rect class="s-vibg" x="30" y="58" width="204" height="72" rx="8"/>
+        <text class="s-vit" x="40" y="78">Face ID Second Check</text>
+        <text class="s-m" x="40" y="96">BiometricKit fail → 0 write</text>
+        <text class="s-m" x="40" y="112">retry match → AuditEvent</text>
+        <rect class="s-blbg" x="246" y="58" width="204" height="72" rx="8"/>
+        <text class="s-blt" x="256" y="78">APNs Push + Privacy</text>
+        <text class="s-m" x="256" y="96">simctl push .apns payload</text>
+        <text class="s-m" x="256" y="112">0 £/₹ on Lock Screen</text>
+        <rect class="s-upbg" x="30" y="142" width="204" height="72" rx="8"/>
+        <text class="s-upt" x="40" y="162">Universal Links &amp; Media</text>
+        <text class="s-m" x="40" y="180">openLink /join/&lt;token&gt;</text>
+        <text class="s-m" x="40" y="196">addMedia PDF + Quick Look</text>
+        <rect class="s-ambg" x="246" y="142" width="204" height="72" rx="8"/>
+        <text class="s-amt" x="256" y="162">AX5, Dark &amp; Offline Queue</text>
+        <text class="s-m" x="256" y="180">simctl ui AX5 + dark 25%</text>
+        <text class="s-m" x="256" y="196">MMKV queue → SSE flush</text>
+        <rect class="s-box" x="30" y="226" width="420" height="74" rx="8"/>
+        <text class="s-upt" x="42" y="248">Cost Comparison (60 runs/month across 5 simulators)</text>
+        <text class="s-alt" x="42" y="268">✗ GH macos-15 (10x): ~180 billed mins/run → £42–£65/mo</text>
+        <text class="s-upt" x="42" y="286">✓ Local Apple Silicon + Linux check-syntax (3s): £0.00/mo</text>
+        <rect class="step-ring" data-f4="0" x="28" y="56" width="424" height="160" rx="10"/>
+
+        <rect class="s-box2" x="482" y="16" width="462" height="298" rx="12"/>
+        <text class="s-h" x="496" y="42">Phase-by-Phase Maestro Rollout (Phases 0 to 20)</text>
+        <rect class="s-blbg" x="496" y="58" width="434" height="54" rx="8"/>
+        <text class="s-blt" x="508" y="78">Phases 0–1 · Pool, Shell, Sign-In, SSE &amp; 4-Band Rotation</text>
+        <text class="s-m" x="508" y="96">p00_shell_smoke · p01_signin_chat_sse_3band · X-Ray dev-live</text>
+        <rect class="s-upbg" x="496" y="120" width="434" height="58" rx="8"/>
+        <text class="s-upt" x="508" y="140">Phases 2–6 · Whole-Wealth Records, FX, Check-Ins &amp; PDFs</text>
+        <text class="s-m" x="508" y="158">Confirm/Cancel audit · INR/GBP · EMI push · Statement PDFs</text>
+        <rect class="s-vibg" x="496" y="186" width="434" height="58" rx="8"/>
+        <text class="s-vit" x="508" y="206">Phases 7–9 · Projection Plans (1a/2a/3a), Face ID &amp; AX5</text>
+        <text class="s-m" x="508" y="224">Fan scrub · Quick Look · Admin 2nd check · Full AX5 sweep</text>
+        <rect class="s-ambg" x="496" y="252" width="434" height="48" rx="8"/>
+        <text class="s-amt" x="508" y="272">Phases 10–20 · Market Briefs, Charts, Agents, India &amp; Widgets</text>
+        <text class="s-m" x="508" y="288">Swift Charts · CAS import · Safari Share Sheet → MyPaisa</text>
+        <rect class="step-ring" data-f4="1" x="494" y="56" width="438" height="124" rx="10"/>
+        <rect class="step-ring" data-f4="2" x="494" y="184" width="438" height="118" rx="10"/>
+      </svg>
+      </div>
+      <figcaption>Every phase ships its .maestro/flows/pNN_*.yaml flow alongside its SwiftUI views, syntax-checked in 3 seconds on Linux CI and executed locally at £0/month.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="testflight">
+  <div class="head">
+    <div class="kicker">5 · Private 90-day (3-month) TestFlight &amp; evergreen household beta (MA-162, MA-164, MA-167)</div>
+    <h2>Keep MyPaisa installed for 3 months—and rolling indefinitely—with 100% hard-locked privacy</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Installing straight from Xcode with a cable expires after 7 days. With the $99/year Apple Developer Program, every TestFlight upload runs untethered on your family's iPhones and iPads for a full <strong>90 days (3 months)</strong>, updates silently overnight without losing your login or offline cache, renews itself automatically at day 60 so it never expires, and is locked to <strong>Internal Testing Only</strong> so it can never appear on the public App Store.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Hard-locked privacy (<code>testFlightInternalTestingOnly = true</code>):</strong> Set in <code>ios/ExportOptions-Internal.plist</code> alongside <code>ITSAppUsesNonExemptEncryption = false</code> in <code>Info.plist</code>. Apple's servers permanently forbid External Testing groups, public invite links and public App Store submission, while skipping Beta App Review (live in 3–5 mins).</li>
+        <li><strong>Least-privilege groups &amp; Double Lock:</strong> Individual Developer accounts allow up to 50 additional App Store Connect team users (30 devices each). Family Apple IDs get <code>Customer Support</code> or <code>Marketing</code> scoped strictly to <code>MyPaisa</code> (<code>Household Beta</code> group); <code>MyPaisa Dev</code> stays Arun-only. Inside the app, Cognito + one-time <code>/join/&lt;token&gt;</code> links enforce a second identity lock.</li>
+        <li><strong>Rolling 90-day evergreen lifecycle (<code>MA-167</code>):</strong> TestFlight Automatic Updates install newer <code>CFBundleVersion</code> builds silently in place (preserving Keychain &amp; MMKV) and reset the 90-day clock. At <strong>day 60</strong> without an <code>ios/</code> commit, a scheduled keepalive rebuild (or Xcode Cloud's <strong>25 free compute hours/month</strong>) auto-uploads a fresh build, backed by a day-60 Admin alert and a day-75 <code>itms-beta://</code> banner.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-5">
+      <div class="scroll">
+      <svg id="svg-5" viewBox="0 0 960 340" role="img" aria-label="Private 90-day TestFlight internal testing architecture, double-locked privacy, silent automatic updates and day-60 evergreen renewal">
+        <rect class="s-box2" x="16" y="16" width="292" height="308" rx="12"/>
+        <text class="s-h" x="30" y="42">1 · Hard-Locked Private Upload</text>
+        <rect class="s-vibg" x="30" y="58" width="264" height="82" rx="8"/>
+        <text class="s-vit" x="42" y="80">ExportOptions-Internal.plist</text>
+        <text class="s-m" x="42" y="98">testFlightInternalTestingOnly: true</text>
+        <text class="s-m" x="42" y="114">ITSAppUsesNonExemptEncryption: NO</text>
+        <text class="s-upt" x="42" y="130">✓ Blocks public links &amp; App Store</text>
+        <rect class="s-blbg" x="30" y="152" width="264" height="74" rx="8"/>
+        <text class="s-blt" x="42" y="174">MyPaisa Dev (.agent.dev)</text>
+        <text class="s-m" x="42" y="192">Group: Dev Dogfood (Arun only)</text>
+        <text class="s-m" x="42" y="208">Auto on main → live in ~4 mins</text>
+        <rect class="s-upbg" x="30" y="238" width="264" height="72" rx="8"/>
+        <text class="s-upt" x="42" y="260">MyPaisa (.agent · Household)</text>
+        <text class="s-m" x="42" y="278">After prod smoke + Arun approval</text>
+        <text class="s-m" x="42" y="294">Zero Beta App Review wait</text>
+        <rect class="step-ring" data-f5="0" x="28" y="56" width="268" height="256" rx="10"/>
+
+        <rect class="s-box2" x="326" y="16" width="308" height="308" rx="12"/>
+        <text class="s-h" x="340" y="42">2 · 90-Day (3-Month) Evergreen Clock</text>
+        <rect class="s-upbg" x="340" y="58" width="280" height="78" rx="8"/>
+        <text class="s-upt" x="352" y="80">Day 0 → 90 Full Days Untethered</text>
+        <text class="s-s" x="352" y="98">TestFlight Automatic Updates: ON</text>
+        <text class="s-m" x="352" y="116">Silent Wi-Fi updates keep Keychain</text>
+        <text class="s-m" x="352" y="130">&amp; MMKV cache + reset clock to 90d</text>
+        <rect class="s-ambg" x="340" y="148" width="280" height="82" rx="8"/>
+        <text class="s-amt" x="352" y="170">Day 60 · Auto-Keepalive Rebuild</text>
+        <text class="s-m" x="352" y="188">Checks ASC API /v1/builds age;</text>
+        <text class="s-m" x="352" y="204">bumps CFBundleVersion (Xcode Cloud</text>
+        <text class="s-m" x="352" y="220">25 free hrs/mo = 0 GH macOS mins!)</text>
+        <rect class="s-albg" x="340" y="242" width="280" height="68" rx="8"/>
+        <text class="s-alt" x="352" y="262">Day 75 · In-App Safety Banner</text>
+        <text class="s-m" x="352" y="280">/v1/app/minimum-version prompts</text>
+        <text class="s-m" x="352" y="296">1-tap itms-beta:// before Day 90</text>
+        <rect class="step-ring" data-f5="1" x="338" y="56" width="284" height="176" rx="10"/>
+
+        <rect class="s-box2" x="652" y="16" width="292" height="308" rx="12"/>
+        <text class="s-h" x="666" y="42">3 · Double Lock &amp; Beta Loop</text>
+        <rect class="s-box" x="666" y="58" width="264" height="82" rx="8"/>
+        <text class="s-t" x="678" y="80">Lock 1 · App Store Connect Role</text>
+        <text class="s-m" x="678" y="98">Family Apple IDs invited as</text>
+        <text class="s-m" x="678" y="114">Customer Support / Marketing</text>
+        <text class="s-m" x="678" y="130">(MyPaisa only; up to 30 devices)</text>
+        <rect class="s-blbg" x="666" y="152" width="264" height="72" rx="8"/>
+        <text class="s-blt" x="678" y="174">Lock 2 · Cognito Invite Gate</text>
+        <text class="s-m" x="678" y="192">No self-signup: requires 48h</text>
+        <text class="s-m" x="678" y="208">owner-approved /join/&lt;token&gt;</text>
+        <rect class="s-upbg" x="666" y="236" width="264" height="74" rx="8"/>
+        <text class="s-upt" x="678" y="258">Zero-SDK Beta Feedback</text>
+        <text class="s-m" x="678" y="276">iOS Screenshot sheet (Privacy ON)</text>
+        <text class="s-m" x="678" y="292">+ dSYM crashes/hangs in Organizer</text>
+        <rect class="step-ring" data-f5="2" x="664" y="56" width="268" height="256" rx="10"/>
+
+        <line class="s-line" x1="308" y1="188" x2="326" y2="188"/>
+        <line class="s-line" x1="634" y1="188" x2="652" y2="188"/>
+        <circle id="pkt-5" class="pkt" cx="317" cy="188" r="6"/>
+      </svg>
+      </div>
+      <figcaption>testFlightInternalTestingOnly = true keeps MyPaisa 100% off the public App Store while silent Automatic Updates and a day-60 keepalive renew the 90-day install window indefinitely.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="stories">
+  <div class="head">
+    <div class="kicker">6 · Traced Jira stories</div>
+    <h2>Where local Maestro testing and private 90-day TestFlight distribution are tracked</h2>
+  </div>
+  <div class="body">
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Story</th><th>Phase</th><th>What it delivers</th></tr></thead>
+        <tbody>
+          <tr><td class="k">MA-162</td><td>0</td><td>Apple Developer Program membership ($99/year, includes TestFlight Internal Testing and 25 free Xcode Cloud compute hours/month) and app IDs for <code>MyPaisa</code> and <code>MyPaisa Dev</code></td></tr>
+          <tr><td class="k">MA-164</td><td>0</td><td>APNs and Sign in with Apple keys in SSM, App Store Connect app records, least-privilege Household Beta internal testers and App Store Connect API key</td></tr>
+          <tr><td class="k">MA-165</td><td>0</td><td>React Native 0.88 shell + Swift 6 SwiftUI Fabric core, 120 Hz <code>PERFORMANCE.md</code> physical-device benches, and initial SwiftUI tests</td></tr>
+          <tr><td class="k">MA-166</td><td>0</td><td>Path-filtered CI build, Jest shell tests, XCUITest, light/dark + Large/AX5 snapshot tests and <code>performAccessibilityAudit()</code></td></tr>
+          <tr><td class="k">MA-167</td><td>0</td><td>Private TestFlight lanes (<code>testFlightInternalTestingOnly = true</code>, <code>ITSAppUsesNonExemptEncryption = false</code>), 90-day (3-month) silent updates, day-60 keepalive rebuild + alert, and day-75 <code>itms-beta://</code> prompt</td></tr>
+          <tr><td class="k">MA-273</td><td>0</td><td><code>.maestro/</code> workspace, <code>scripts/maestro_local.py</code> cloned simulator pool with <code>flock</code> isolation, shared <code>TestIDs.swift</code> ↔ <code>test-ids.ts</code>, 4-band rotation, <code>xcrun simctl</code> bridges and Phases 0–20 flows (£0/mo)</td></tr>
+          <tr><td class="k">MA-274</td><td>0</td><td>Local iOS and iPadOS Maestro testing strategy, 4-sub-band matrix, phase-wise rollout and private 90-day TestFlight beta plan recorded in the plan and Confluence with block diagrams</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+<footer>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §8 and <span class="mono">ARCHITECTURE.md</span> §9.1, §9.5, §18.4 in the MyPaisa repository, 29 Oct 2026 (MA-167, MA-273, MA-274).</div>
+</footer>
+
+<script>
+(function(){
+  var main=document.getElementById('main');
+  var btns=document.querySelectorAll('.seg button');
+  function setMode(m){
+    main.setAttribute('data-mode',m);
+    btns.forEach(function(b){b.setAttribute('aria-checked',b.getAttribute('data-set')===m?'true':'false');});
+    try{localStorage.setItem('mp-maestro-mode',m);}catch(e){}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){setMode(b.getAttribute('data-set'));});});
+  try{var saved=localStorage.getItem('mp-maestro-mode');if(saved==='plain'||saved==='tech')setMode(saved);}catch(e){}
+
+  var step=0;
+  var p1=[[311,90],[311,170],[701,118],[701,118],[701,248],[701,248]];
+  var p2=[[239,96],[239,160],[469,113],[469,234],[701,160],[701,220]];
+  var p5=[[317,100],[317,188],[317,274],[643,100],[643,188],[643,274]];
+
+  function applyStep(k){
+    step=((k%12)+12)%12;
+    var f1=Math.floor(step/3)%4;
+    var f2=Math.floor(step/4)%3;
+    var f3=Math.floor(step/3)%4;
+    var f4=Math.floor(step/4)%3;
+    var f5=Math.floor(step/4)%3;
+    document.querySelectorAll('[data-f1]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f1'))===f1);});
+    document.querySelectorAll('[data-f2]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f2'))===f2);});
+    document.querySelectorAll('[data-f3]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f3'))===f3);});
+    document.querySelectorAll('[data-f4]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f4'))===f4);});
+    document.querySelectorAll('[data-f5]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f5'))===f5);});
+    var c1=p1[step%p1.length], c2=p2[step%p2.length], c5=p5[step%p5.length];
+    var e1=document.getElementById('pkt-1'), e2=document.getElementById('pkt-2'), e5=document.getElementById('pkt-5');
+    if(e1){e1.setAttribute('cx',c1[0]);e1.setAttribute('cy',c1[1]);}
+    if(e2){e2.setAttribute('cx',c2[0]);e2.setAttribute('cy',c2[1]);}
+    if(e5){e5.setAttribute('cx',c5[0]);e5.setAttribute('cy',c5[1]);}
+  }
+  window.setDiagramStep=applyStep;
+  applyStep(0);
+
+  var timer=setInterval(function(){
+    if(main.getAttribute('data-paused')!=='true') applyStep(step+1);
+  },550);
+
+  var pause=document.getElementById('pause');
+  pause.addEventListener('click',function(){
+    var on=main.getAttribute('data-paused')!=='true';
+    main.setAttribute('data-paused',on?'true':'false');
+    pause.setAttribute('aria-pressed',on?'true':'false');
+    pause.textContent=on?'Play the diagrams':'Pause the diagrams';
+  });
+})();
+</script>

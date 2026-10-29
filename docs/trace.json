@@ -3972,7 +3972,7 @@
    "ui": true,
    "design": "todo",
    "boards": [],
-   "notes": "Its one screen is the app's prompt to update when TestFlight has a newer build or the running one is about to expire; it is drawn in MyPaisa iOS v1 with /design-first before the story starts."
+   "notes": "Its one screen is the app's prompt to update when TestFlight has a newer build or the running one is about to expire; it is drawn in MyPaisa iOS v1 with /design-first before the story starts. MA-274 (29 Oct 2026): exports set testFlightInternalTestingOnly = true and ITSAppUsesNonExemptEncryption = false so builds stay strictly private in App Store Connect Internal Testing (never on the public App Store), run untethered for 90 days (3 months) with silent Automatic Updates preserving Keychain and MMKV, and renew automatically at day 60 via keepalive rebuild (docs/RESEARCH.md 8.8)."
   },
   {
    "key": "MA-168",
@@ -7643,7 +7643,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "10.3",
@@ -7660,6 +7660,46 @@
    "code": [
     "docs/design/cicd-security-regression.html",
     "docs/design/cicd-security-regression/*.gif"
+   ]
+  },
+  {
+   "key": "MA-273",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "A local Maestro workspace and multi-simulator runner test the iOS and iPadOS app across compact, sheet-away and chat-beside size bands, system capabilities and phase flows",
+   "status": "To Do",
+   "labels": [],
+   "arch": [
+    "9.1",
+    "9.5",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Filed from MA-274 (29 Oct 2026): .maestro/ workspace and scripts/maestro_local.py isolated cloned simulator pool (MyPaisa-Maestro-iPhone-375, iPhone-402, iPad-834, iPad-1032, iPad-1376 + optional iPhone Duo, flock-locked per UDID so automated runs never collide with interactive Maestro MCP), shared mp.* TestIDs.swift and web/src/lib/test-ids.ts selector contract with .accessibilityElement(children: .contain), MYPAISA_STATIC_MOTION=1, xcrun simctl Face ID BiometricKit / Universal Links / APNs push / addMedia / AX5 Dynamic Type / offline queue flush across all four adaptive width bands at GBP 0.00/month, and maestro check-syntax on Linux CI. Build time is covered by MA-165, MA-166 and MA-269."
+  },
+  {
+   "key": "MA-274",
+   "type": "Task",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "The local iOS and iPadOS Maestro testing strategy, three-band device matrix, phase-wise rollout and private 90-day TestFlight beta plan are recorded in the plan and Confluence with block diagrams",
+   "status": "In Progress",
+   "labels": [],
+   "arch": [
+    "9.1",
+    "9.5",
+    "18.4"
+   ],
+   "ui": false,
+   "design": "none",
+   "boards": [],
+   "notes": "Arun, 29 Oct 2026: design and record the local iOS and iPadOS Maestro testing strategy and Phase 0 to 20 rollout plan on Confluence with block diagrams, together with how to keep MyPaisa privately installed for 3 months (90 days) and rolling indefinitely on household iPhones and iPads via TestFlight Internal Testing (testFlightInternalTestingOnly = true, silent Automatic Updates preserving Keychain and MMKV, day-60 keepalive renewal, zero App Store listing). Delivered in docs/RESEARCH.md 8, ARCHITECTURE.md 9.5 and 18.4, PLAN.md, TECH_STACK.md, README.md, docs/design/maestro-ios-ipados-testing.html, its five GIFs in docs/design/maestro-ios-ipados-testing/, and the Confluence page Local iOS and iPadOS Maestro testing and private TestFlight beta plan.",
+   "code": [
+    "docs/design/maestro-ios-ipados-testing.html",
+    "docs/design/maestro-ios-ipados-testing/*.gif"
    ]
   }
  ],

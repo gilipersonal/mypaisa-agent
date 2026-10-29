@@ -1,0 +1,348 @@
+<div data-type="panel-custom" data-icon=":iphone:" data-color="#EAE6FF"><p>Arun, 29 Oct 2026 (MA-167, MA-273, MA-274): the local iOS and iPadOS testing strategy on Apple Silicon with Maestro (<code>scripts/maestro_local.py</code>, five cloned simulators guarded by <code>flock</code> so automated runs never collide with interactive Maestro MCP sessions, one shared <code>mp.*</code> ID schema across Playwright and SwiftUI, four adaptive width sub-bands and live rotation across 1133 pt, <code>xcrun simctl</code> bridges for Face ID, APNs push, Universal Links, media and AX5, and a phase-by-phase rollout across Phases 0 to 20 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight household beta plan (<code>testFlightInternalTestingOnly = true</code>, least-privilege App Store Connect roles, silent overnight updates preserving Keychain and MMKV, and a day-60 keepalive rebuild). The sources are <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/RESEARCH.md">docs/RESEARCH.md</a> §8, <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/TECH_STACK.md">TECH_STACK.md</a> §2 and §4, and <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#91-the-shell-the-chat-and-the-size-classes">§9.1</a>, <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#95-the-ios-apps-build-a-react-native-shell-with-a-native-swiftui-core">§9.5</a> and <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md#184-delivery">§18.4</a> of <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a>; the interactive explainer page is <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/maestro-ios-ipados-testing.html">docs/design/maestro-ios-ipados-testing.html</a>.</p>
+</div>
+<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{"macroParams":{"maxLevel":{"value":"2"}},"macroMetadata":{"schemaVersion":{"value":"1"},"title":"Table of Contents"}}'></div>
+<h2>🎞️ Block diagrams (animated)</h2>
+<p>Five animated block diagrams captured from <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/maestro-ios-ipados-testing.html">docs/design/maestro-ios-ipados-testing.html</a> (MA-274): browse them in the tabs below, or beside each section further down.</p>
+<div data-type="multi-bodied-extension" data-extension-key="native-tabs" data-extension-type="com.atlassian.confluence.native" data-parameters='{&quot;tabs&quot;: [{&quot;id&quot;: &quot;tab1&quot;, &quot;title&quot;: &quot;1 \u00b7 Cloned pool &amp; MCP isolation&quot;}, {&quot;id&quot;: &quot;tab2&quot;, &quot;title&quot;: &quot;2 \u00b7 RN + SwiftUI mp.* selectors&quot;}, {&quot;id&quot;: &quot;tab3&quot;, &quot;title&quot;: &quot;3 \u00b7 4-band width &amp; rotation matrix&quot;}, {&quot;id&quot;: &quot;tab4&quot;, &quot;title&quot;: &quot;4 \u00b7 simctl &amp; Phases 0\u201320 (\u00a30/mo)&quot;}, {&quot;id&quot;: &quot;tab5&quot;, &quot;title&quot;: &quot;5 \u00b7 Private 90-day TestFlight beta&quot;}]}'><div data-type="extension-frame"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="f97e2876-d2af-4750-b478-7bf65cd564f5" data-collection="contentId-2818197" data-alt="maestro-01-local-maestro-pool-mcp-cli.gif"></div>
+<figcaption>One Maestro owner per simulator prevents XCTest driver teardowns: interactive MCP sessions stay on standard Xcode simulators while scripts/maestro_local.py drives five cloned flock-locked simulators against stub (£0) or dev-live AWS.</figcaption></figure>
+</div>
+<div data-type="extension-frame"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0f83151f-7add-4dcd-8a46-a3652822f2b2" data-collection="contentId-2818197" data-alt="maestro-02-rn-swiftui-fabric-selectors.gif"></div>
+<figcaption>One shared mp.* ID schema generates web/src/lib/test-ids.ts and TestIDs.swift, while .accessibilityElement(children: .contain), UITabBarItem IDs and MYPAISA_STATIC_MOTION=1 keep SwiftUI and Liquid Glass controls deterministic.</figcaption></figure>
+</div>
+<div data-type="extension-frame"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ab90b5fc-8a6d-43b0-90b6-8e049feceae4" data-collection="contentId-2818197" data-alt="maestro-03-ios-ipados-4band-matrix.gif"></div>
+<figcaption>Maestro tests all four width sub-bands (&lt;600 pt compact, 600–899 pt top bar + sheet, 900–1132 pt MA-240 sidebar + sheet, and ≥1133 pt three-column chat-beside) and rotates iPads mid-guided-flow with zero lost input.</figcaption></figure>
+</div>
+<div data-type="extension-frame"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="8616b5c7-b17f-4167-8197-4ef8a143d4bb" data-collection="contentId-2818197" data-alt="maestro-04-simctl-capabilities-phases.gif"></div>
+<figcaption>xcrun simctl triggers Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos/PDFs and AX5 across Phases 0 to 20 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15.</figcaption></figure>
+</div>
+<div data-type="extension-frame"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="425fb20a-1aaf-409e-b286-d3778254ed13" data-collection="contentId-2818197" data-alt="maestro-05-private-testflight-90day-beta.gif"></div>
+<figcaption>testFlightInternalTestingOnly = true hard-locks MyPaisa off the public App Store while silent TestFlight Automatic Updates, least-privilege App Store Connect roles and a day-60 keepalive renew the 90-day (3-month) install window indefinitely.</figcaption></figure>
+</div>
+</div>
+<h2>🖥️ 1. Local Apple Silicon Maestro pool, MCP isolation &amp; dual backend modes</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="f97e2876-d2af-4750-b478-7bf65cd564f5" data-collection="contentId-2818197" data-alt="maestro-01-local-maestro-pool-mcp-cli.gif"></div>
+<figcaption>One Maestro owner per simulator prevents XCTest driver teardowns: interactive MCP sessions stay on standard Xcode simulators while scripts/maestro_local.py drives five cloned flock-locked simulators against stub (£0) or dev-live AWS.</figcaption></figure>
+<h2>🧬 2. React Native 0.88 Fabric + Swift 6 SwiftUI + Liquid Glass selector contract</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0f83151f-7add-4dcd-8a46-a3652822f2b2" data-collection="contentId-2818197" data-alt="maestro-02-rn-swiftui-fabric-selectors.gif"></div>
+<figcaption>One shared mp.* ID schema generates web/src/lib/test-ids.ts and TestIDs.swift, while .accessibilityElement(children: .contain), UITabBarItem IDs and MYPAISA_STATIC_MOTION=1 keep SwiftUI and Liquid Glass controls deterministic.</figcaption></figure>
+<h2>📐 3. Four-sub-band iOS &amp; iPadOS adaptive width &amp; live rotation matrix (MA-240)</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ab90b5fc-8a6d-43b0-90b6-8e049feceae4" data-collection="contentId-2818197" data-alt="maestro-03-ios-ipados-4band-matrix.gif"></div>
+<figcaption>Maestro tests all four width sub-bands (&lt;600 pt compact, 600–899 pt top bar + sheet, 900–1132 pt MA-240 sidebar + sheet, and ≥1133 pt three-column chat-beside) and rotates iPads mid-guided-flow with zero lost input.</figcaption></figure>
+<h2>⚙️ 4. xcrun simctl system capability bridges &amp; Phases 0–20 rollout at £0.00/month</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="8616b5c7-b17f-4167-8197-4ef8a143d4bb" data-collection="contentId-2818197" data-alt="maestro-04-simctl-capabilities-phases.gif"></div>
+<figcaption>xcrun simctl triggers Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos/PDFs and AX5 across Phases 0 to 20 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15.</figcaption></figure>
+<h2>✈️ 5. Private 90-day (3-month) TestFlight Internal Testing &amp; evergreen beta lifecycle</h2>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="425fb20a-1aaf-409e-b286-d3778254ed13" data-collection="contentId-2818197" data-alt="maestro-05-private-testflight-90day-beta.gif"></div>
+<figcaption>testFlightInternalTestingOnly = true hard-locks MyPaisa off the public App Store while silent TestFlight Automatic Updates, least-privilege App Store Connect roles and a day-60 keepalive renew the 90-day (3-month) install window indefinitely.</figcaption></figure>
+<h2>📖 Full strategy, phase-wise plan &amp; private 90-day TestFlight guide (docs/RESEARCH.md §8)</h2>
+<p>Arun asked on 29 Oct 2026 (<code>MA-273</code>, <code>MA-274</code>) for:</p>
+<ol><li>A detailed strategy and phase-by-phase plan for <strong>local iOS and iPadOS end-to-end testing using Maestro</strong> on this Apple Silicon Mac across Phases 0 to 20.</li>
+<li>How to keep <strong>MyPaisa privately installed on physical iPhones and iPads for 3 months (90 days) — and rolling indefinitely — using TestFlight</strong> for household beta testing without ever publishing the app to the public App Store (<code>MA-162</code>, <code>MA-164</code>, <code>MA-167</code>).</li>
+</ol>
+<h2>8.1 Local Apple Silicon architecture, Maestro MCP vs. CLI one-owner-per-device rule &amp; cloned simulator pool</h2>
+<p>Verified on this Apple Silicon Mac on 29 Oct 2026:</p>
+<ul><li><strong>Maestro CLI &amp; Studio:</strong> <code>maestro 2.11.0</code> (<code>~/.maestro/bin/maestro</code>), <code>Maestro Studio 0.9.5</code>, <code>openjdk 25.0.4.1</code>.</li>
+<li><strong>Maestro MCP server:</strong> connected (<code>maestro</code>: <code>list_devices</code>, <code>inspect_screen</code>, <code>take_screenshot</code>, <code>run</code>, <code>cheat_sheet</code>, <code>open_maestro_viewer</code> on <code>http://127.0.0.1:10001/</code>).</li>
+<li><strong>Xcode &amp; runtimes:</strong> <code>Xcode 27.0 (Build 27A266a)</code> with local iOS and iPadOS simulator runtimes <code>26.5</code>, <code>27.0</code>, <code>27.1</code> (including <code>iPhone Duo</code>) and <code>27.2</code>, covering every iPhone (<code>375 pt</code>, <code>402 pt</code>, <code>440 pt</code>), foldable (<code>iPhone Duo</code>), and iPad (<code>744 x 1133 pt</code> mini, <code>820 x 1180 pt</code> iPad, <code>834 x 1210 pt</code> 11-inch Pro, <code>1032 x 1376 pt</code> 13-inch Pro).</li>
+</ul>
+<h3>The &quot;one Maestro owner per device&quot; isolation rule</h3>
+<p>Every <code>maestro --device &lt;UDID&gt; test</code> CLI invocation uninstalls, reinstalls and restarts the XCTest driver (<code>maestro-driver-ios</code>) on that target simulator. If an interactive <code>maestro</code> MCP server (or another session&#x27;s Maestro process) is already attached to that same simulator UDID, the CLI run tears down its XCTest socket (<code>TimeoutException: Device &lt;UDID&gt; became unreachable during setPermissions</code>), and <code>launchApp: { clearState: true, clearKeychain: true }</code> wipes the developer&#x27;s interactive login and cached household state.</p>
+<p>To eliminate device collisions permanently, <code>scripts/maestro_local.py</code> (<code>MA-273</code>) enforces <strong>strict simulator pool separation</strong>:</p>
+<ol><li><strong>Interactive pool (Xcode&#x27;s standard simulators, owned by <code>maestro</code> MCP &amp; Simulator.app):</strong> used by developers and coding agents for live <code>inspect_screen</code> hierarchy checks, ad-hoc <code>run</code> YAML steps, and visual debugging in Maestro Viewer (<code>127.0.0.1:10001</code>).</li>
+<li><strong>Automated CLI pool (five dedicated cloned simulators, owned exclusively by <code>scripts/maestro_local.py</code>):</strong> created once by <code>python3 scripts/maestro_local.py setup-pool</code> via <code>xcrun simctl clone</code>:<ul><li><code>MyPaisa-Maestro-iPhone-375</code> (<code>iPhone 11 Pro</code>, compact narrow + Display Zoom <code>320 pt</code> override)</li>
+<li><code>MyPaisa-Maestro-iPhone-402</code> (<code>iPhone 18 Pro</code>, standard iPhone portrait <code>402 pt</code> &amp; landscape <code>874 pt</code>)</li>
+<li><code>MyPaisa-Maestro-iPad-834</code> (<code>iPad Pro 11-inch (M5)</code>, portrait <code>834 pt</code> sheet-away &amp; landscape <code>1210 pt</code> chat-beside)</li>
+<li><code>MyPaisa-Maestro-iPad-1032</code> (<code>iPad Pro 13-inch (M5)</code>, upright portrait <code>1032 pt</code> <code>MA-240</code> sheet-away band)</li>
+<li><code>MyPaisa-Maestro-iPad-1376</code> (<code>iPad Pro 13-inch (M5)</code>, landscape <code>1376 pt</code> 3-column chat-beside band)</li>
+<li>Optional <code>MyPaisa-Maestro-Duo</code> (<code>iPhone Duo</code> under <code>DEVELOPER_DIR=/Applications/Xcode-beta.app/Contents/Developer</code> when installed).</li>
+</ul>
+</li>
+<li><strong>Headless boot &amp; per-UDID <code>flock</code> mutex:</strong> <code>scripts/maestro_local.py</code> boots only the needed cloned UDIDs headlessly via <code>xcrun simctl boot &lt;UDID&gt;</code> (without opening GUI windows in <code>Simulator.app</code>), sets <code>xcrun simctl status_bar &lt;UDID&gt; override --time &quot;09:41&quot; --batteryState charged --batteryLevel 100</code> for deterministic screenshots, and acquires an exclusive <code>fcntl.flock</code> lock at <code>/tmp/mypaisa-maestro-&lt;UDID&gt;.lock</code> before invoking <code>maestro --device &lt;UDID&gt; test</code>.</li>
+</ol>
+<table><thead><tr><th>Workflow</th><th>Tooling</th><th>Target simulator</th><th>When to use</th></tr>
+</thead>
+<tbody><tr><td><strong>Authoring &amp; debugging a screen or card</strong></td><td><code>maestro</code> MCP (<code>inspect_screen</code>, <code>run</code>, <code>take_screenshot</code>, <code>open_maestro_viewer</code>)</td><td>Standard Xcode simulator (<code>iPhone 18 Pro</code>, <code>iPad Pro 11-inch</code>)</td><td>Exploring the SwiftUI accessibility hierarchy, tuning <code>TestIDs.swift</code>, checking Liquid Glass contrast or fixing a layout bug interactively</td></tr>
+<tr><td><strong>Automated phase &amp; regression suite</strong></td><td><code>python3 scripts/maestro_local.py run --up-to-phase &lt;N&gt;</code> (<code>maestro</code> CLI)</td><td>Cloned <code>MyPaisa-Maestro-*</code> pool (<code>flock</code>-locked, headless)</td><td>Pre-PR local verification of <code>ios/</code> changes, 4-sub-band responsive layout checks, <code>simctl</code> system capability flows, and JUnit + HTML reports</td></tr>
+<tr><td><strong>Every pull request on Linux CI</strong></td><td><code>maestro check-syntax .maestro/flows/*.yaml</code> + <code>TestIDs</code> parity check</td><td>None (<code>ubuntu-24.04-arm</code>, <code>1x</code>, ~3 seconds)</td><td>Fast static validation that every YAML flow parses cleanly and every <code>mp.*</code> ID referenced in <code>.maestro/</code> exists in <code>TestIDs.swift</code> and <code>test-ids.ts</code></td></tr>
+</tbody>
+</table>
+<h2>8.2 React Native 0.88 Fabric + Swift 6 SwiftUI + Liquid Glass accessibility &amp; selector contract</h2>
+<p>MyPaisa&#x27;s iOS app (<code>ARCHITECTURE.md</code> §9.5, <code>MA-165</code>, <code>MA-229</code>) uses a <strong>bare React Native 0.88 TypeScript shell</strong> (New Architecture, Fabric, Hermes, <code>UITabBar</code> / sidebar navigation, TanStack Query, SSE client, MMKV store) hosting <strong>Swift 6 SwiftUI views</strong> across Fabric C++ components for every visible piece (chat timeline, Warm Ledger cards, composer, hero, figure rows, inline edit, Swift Charts, sheets).</p>
+<p>Because Maestro on iOS reads the live <code>XCTest</code> accessibility tree (<code>XCUIElement</code>), hybrid React Native + SwiftUI apps suffer from three classic pitfalls unless designed around an explicit contract:</p>
+<ol><li><strong>SwiftUI container merging:</strong> by default, SwiftUI <code>Button</code>, <code>NavigationLink</code> and grouped <code>VStack</code>/<code>HStack</code> cards merge their children into one combined accessibility element, hiding <code>[Confirm]</code>, <code>[Edit]</code>, <code>[Cancel]</code> and the <code>Technical</code> disclosure button from Maestro.</li>
+<li><strong>Liquid Glass collapsing labels:</strong> iOS 26&#x27;s Liquid Glass <code>UITabBar</code> shrinks unselected or scrolled tab items to icon-only pills, breaking text-based <code>tapOn: &quot;Home&quot;</code> selectors after a timeline scroll.</li>
+<li><strong>Spring &amp; <code>numericText</code> digit-roll races:</strong> SwiftUI&#x27;s <code>.smooth</code> arrival springs and <code>numericText</code> rolling counters (<code>MA-182</code>) cause transient mid-roll strings if Maestro asserts figures while an animation is in flight.</li>
+</ol>
+<p>MyPaisa enforces five mandatory selector rules from Phase 0 (<code>MA-165</code>, <code>MA-273</code>):</p>
+<table><thead><tr><th>Rule</th><th>Implementation in <code>ios/</code> and <code>web/src/lib/</code></th><th>Why Maestro needs it</th></tr>
+</thead>
+<tbody><tr><td><strong>1. Shared canonical selector dictionary (<code>mp.*</code>)</strong></td><td>One schema generates <code>web/src/lib/test-ids.ts</code> (used by SvelteKit <code>data-testid</code> and Playwright) and <code>ios/MyPaisaCore/Testing/TestIDs.swift</code> (used by React Native <code>testID</code> and SwiftUI <code>.accessibilityIdentifier()</code>), checked for 1:1 parity in L1 unit gates (<code>mp.tab.chat</code>, <code>mp.nav.sidebar</code>, <code>mp.chat.composer</code>, <code>mp.card.confirm.accept</code>, <code>mp.card.technical-fold</code>, <code>mp.hero.net-worth</code>, <code>mp.admin.second-check</code>).</td><td>Renaming a test ID without updating <code>.maestro/flows/</code> fails the fast 3-second Linux PR gate before a simulator even boots.</td></tr>
+<tr><td><strong>2. <code>.accessibilityElement(children: .contain)</code> on every card &amp; row</strong></td><td>Every SwiftUI Warm Ledger card, guided-flow chip group, inline-edit row and partial sheet applies <code>.accessibilityElement(children: .contain)</code> + <code>.accessibilityIdentifier(TestIDs.Card.confirm)</code> on the outer container, never <code>.combine</code>.</td><td>Preserves both the card container ID and every child button (<code>mp.card.confirm.accept</code>, <code>mp.card.confirm.cancel</code>, <code>mp.card.technical-fold</code>) as distinct tappable nodes in <code>maestro hierarchy</code>.</td></tr>
+<tr><td><strong>3. Swift Charts dual exposure (<code>AXChartDescriptor</code> + summary value)</strong></td><td>Every Swift Chart (<code>MA-56</code>) exposes <code>AXChartDescriptor</code> for VoiceOver audio graphs and sets <code>.accessibilityIdentifier(TestIDs.Chart.netWorth)</code> plus <code>.accessibilityValue(&quot;Latest £412,850, horizon 12 months&quot;)</code> on its wrapper.</td><td>Allows Maestro <code>assertVisible</code> to verify rendered chart bounds and deterministic data summaries without brittle OCR on curved SVG/Metal paths, while <code>XCUITest</code> audits full <code>AXChartDescriptor</code> compliance.</td></tr>
+<tr><td><strong>4. Liquid Glass <code>UITabBarItem</code> &amp; toolbar IDs</strong></td><td>Fabric&#x27;s native <code>UITabBarItem</code> and <code>UIBarButtonItem</code> instances set <code>.accessibilityIdentifier</code> (<code>mp.tab.chat</code>, <code>mp.tab.home</code>, <code>mp.tab.activity</code>, <code>mp.tab.you</code>, <code>mp.tab.search</code>, <code>mp.strip.household</code>).</td><td><code>tapOn: { id: &quot;mp.tab.home&quot; }</code> succeeds regardless of whether iOS 26&#x27;s Liquid Glass bar is expanded or collapsed after scrolling.</td></tr>
+<tr><td><strong>5. Deterministic motion flag (<code>MYPAISA_STATIC_MOTION=1</code>)</strong></td><td>Functional Maestro flows launch with <code>arguments: { MYPAISA_STATIC_MOTION: &quot;1&quot; }</code>, which disables spring travel and <code>numericText</code> digit rolling (the native equivalent of <code>?static=1</code> on the Claude Design boards, Lesson 11). Dedicated <code>@motion</code> flows omit it and test <code>Reduce Motion</code> (<code>xcrun simctl</code>).</td><td>Eliminates flaky <code>waitForAnimationToEnd</code> timeouts and mid-roll number mismatches across 100% of functional flows while still testing real spring choreography in <code>@motion</code> flows.</td></tr>
+</tbody>
+</table>
+<h2>8.3 iOS &amp; iPadOS four-sub-band adaptive width, orientation &amp; multitasking matrix</h2>
+<p>Per <code>ARCHITECTURE.md</code> §9.1 and Lesson 23 (<code>MA-163</code>, <code>MA-240</code>), the app lays itself out strictly by window width (with the single exception that an iPhone is always compact in either orientation): <strong>beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)</strong>.</p>
+<p><code>scripts/maestro_local.py</code> verifies all four width sub-bands, live orientation changes, and multitasking boundaries:</p>
+<table><thead><tr><th>Sub-band</th><th>Window width</th><th>Cloned simulator / harness</th><th>Orientation / mode</th><th>Mandatory Maestro assertions (<code>assertVisible</code> / <code>assertNotVisible</code>)</th></tr>
+</thead>
+<tbody><tr><td><strong>Band 1: Compact</strong></td><td><code>&lt; 600 pt</code> (and every iPhone in any orientation)</td><td><code>MyPaisa-Maestro-iPhone-375</code>, <code>MyPaisa-Maestro-iPhone-402</code> (+ <code>iPhone 18 Pro Max</code> <code>440 pt</code>, <code>Duo</code> folded, and <code>MYPAISA_VIEWPORT_WIDTH=320</code> Display Zoom / Slide Over &amp; <code>599</code> 1/3 Split View)</td><td><code>PORTRAIT</code> and <code>LANDSCAPE_LEFT</code></td><td><code>mp.nav.tab-bar</code> <strong>visible</strong>; <code>mp.nav.sidebar</code> <strong>notVisible</strong>; <code>mp.chat.trailing-column</code> <strong>notVisible</strong>; on iPhone <code>setOrientation: LANDSCAPE_LEFT</code>, <code>mp.nav.tab-bar</code> stays <strong>visible</strong> (the iPhone landscape exception, Lesson 23); tapping <code>mp.strip.household</code> opens Home sheet.</td></tr>
+<tr><td><strong>Band 2: Regular, narrow</strong></td><td><code>600 to 899 pt</code></td><td><code>MyPaisa-Maestro-iPad-834</code> (<code>834 x 1210 pt</code>) in <code>PORTRAIT</code> (<code>834 pt</code>), <code>iPad mini</code> <code>PORTRAIT</code> (<code>744 pt</code>), <code>Duo</code> unfolded (<code>~880 pt</code>), and <code>MYPAISA_VIEWPORT_WIDTH=600</code> &amp; <code>899</code> (2/3 Split View)</td><td><code>PORTRAIT</code></td><td>Collapsed top bar <code>mp.nav.top-tabs</code> <strong>visible</strong>; <code>mp.chat.trailing-column</code> <strong>notVisible</strong>; tapping <code>mp.action.ask</code> opens <code>mp.chat.sheet</code> over the screen without losing underlying scroll position.</td></tr>
+<tr><td><strong>Band 3: Regular, wide (<code>MA-240</code>)</strong></td><td><code>900 to 1132 pt</code></td><td><code>MyPaisa-Maestro-iPad-1032</code> (<code>1032 x 1376 pt</code> 13-inch iPad upright) and <code>MYPAISA_VIEWPORT_WIDTH=900</code> &amp; <code>1132</code> (Stage Manager)</td><td><code>PORTRAIT</code></td><td><code>mp.nav.sidebar</code> <strong>visible</strong> beside the screen; <code>mp.chat.trailing-column</code> <strong>notVisible</strong> (preventing the 360 to 480 pt crushed middle column caught in <code>MA-240</code>); tapping <code>Chat</code> or <code>Ask</code> opens <code>mp.chat.sheet</code>.</td></tr>
+<tr><td><strong>Band 4: Regular, widest</strong></td><td><code>&gt;= 1133 pt</code></td><td><code>MyPaisa-Maestro-iPad-834</code> in <code>LANDSCAPE_LEFT</code> (<code>1210 pt</code>), <code>MyPaisa-Maestro-iPad-1376</code> in <code>LANDSCAPE_LEFT</code> (<code>1376 pt</code>), <code>iPad mini</code> landscape (<code>1133 pt</code>), and <code>MYPAISA_VIEWPORT_WIDTH=1133</code></td><td><code>LANDSCAPE_LEFT</code></td><td>All three columns simultaneously <strong>visible</strong>: <code>mp.nav.sidebar</code> + active dashboard screen + <code>mp.chat.trailing-column</code>; <code>mp.chat.sheet</code> <strong>notVisible</strong>.</td></tr>
+<tr><td><strong>Live transition continuity</strong></td><td><code>834 &lt;-&gt; 1210 pt</code> and <code>1032 &lt;-&gt; 1376 pt</code></td><td><code>MyPaisa-Maestro-iPad-834</code> &amp; <code>MyPaisa-Maestro-iPad-1032</code></td><td>Mid-flow <code>PORTRAIT -&gt; LANDSCAPE_LEFT -&gt; PORTRAIT</code></td><td>Start a guided flow (<code>Log money</code>) inside <code>mp.chat.sheet</code> in portrait, answer step 1, rotate to landscape (<code>&gt;= 1133 pt</code>), assert the active guided-flow card and typed draft appear inside <code>mp.chat.trailing-column</code> with zero reload, rotate back to portrait, and tap <code>Confirm</code>.</td></tr>
+</tbody>
+</table>
+<p><em>Note on deterministic iPadOS Split View / Slide Over boundary testing:</em> Apple&#x27;s <code>xcrun simctl</code> has no public CLI command to drag iPadOS multitasking dividers reliably without fragile coordinate drags on SpringBoard. In <code>#if DEBUG</code> builds only, <code>MyPaisa Dev</code> honours <code>MYPAISA_VIEWPORT_WIDTH=&lt;points&gt;</code> in <code>launchApp.arguments</code>, constraining the root SwiftUI scene container and horizontal size class to exact boundary widths (<code>320</code>, <code>599</code>, <code>600</code>, <code>899</code>, <code>900</code>, <code>1132</code>, <code>1133 pt</code>), mirroring <code>scripts/board_fit.js</code> (<code>MA-240</code>, Lesson 29).</p>
+<h2>8.4 Dual backend modes: hermetic local FastAPI + SSE stub vs. live api-dev + X-Ray trace check</h2>
+<p><code>scripts/maestro_local.py</code> runs the same <code>.maestro/</code> workspace in two backend modes:</p>
+<ol><li><strong>Mode A — Hermetic local stub (<code>--mode stub</code>, default for 95% of runs, offline, £0.00):</strong><ul><li><code>scripts/maestro_local.py</code> starts the local FastAPI <code>api</code> + <code>stream</code> Uvicorn server (<code>MA-198</code>, <code>MA-266</code>) backed by in-memory <code>moto</code> DynamoDB/S3/SQS seeded with <code>docs/design/figures/household-v4.json</code> (<code>MA-110</code>, Lesson 13) and T0 deterministic recorded Claude SSE streams (<code>MA-246</code>).</li>
+<li>Passes <code>MYPAISA_API_URL: &quot;http://127.0.0.1:8787&quot;</code>, <code>MYPAISA_AUTH_STUB: &quot;owner_arun&quot;</code> (or <code>&quot;member_priya&quot;</code>, <code>&quot;viewer_guest&quot;</code>), and <code>MYPAISA_STATIC_MOTION: &quot;1&quot;</code> via <code>launchApp.arguments</code>.</li>
+<li><strong>Compile-time safety fence:</strong> <code>MYPAISA_API_URL</code>, <code>MYPAISA_AUTH_STUB</code> and <code>MYPAISA_VIEWPORT_WIDTH</code> are compiled strictly inside <code>#if DEBUG</code> in Swift and <code>__DEV__</code> in React Native; an L1 security check verifies those symbols do not exist in the Release <code>MyPaisa</code> binary.</li>
+<li><strong>Offline cache &amp; queue-flush simulation (<code>MA-173</code>):</strong> never toggles macOS Wi-Fi (which would disrupt the developer&#x27;s Mac). Instead, a Maestro <code>runScript</code> step calls <code>http://127.0.0.1:8787/__test/network?mode=offline</code> so the local server drops SSE and returns connection errors; the flow asserts cached Home figures display their <code>&quot;as of&quot;</code> badge, <code>Confirm</code> buttons disable cleanly, a typed chat message queues locally in MMKV, and restoring <code>?mode=online</code> flushes the message and resumes <code>/v1/stream</code> from <code>Last-Event-ID</code>.</li>
+</ul>
+</li>
+<li><strong>Mode B — Live <code>dev</code> AWS integration (<code>--mode dev-live</code>, pre-release &amp; post-deploy check):</strong><ul><li>Launches <code>com.mypaisapp.agent.dev</code> (<code>MyPaisa Dev</code>) pointed at <code>https://api-dev.mypaisapp.com</code> with a short-lived Cognito dev test session minted via <code>agent-toolkit</code>.</li>
+<li>Executes <code>@smoke-dev</code> flows (real API Gateway TLS, Cognito authorizer, <code>/v1/stream</code> response streaming, live chat turn, Activity screen <code>RunRecord</code>), extracts <code>x-mypaisa-trace-id</code> from the Activity run detail sheet, and calls <code>scripts/smoke.py --verify-trace &lt;trace_id&gt;</code> (<code>MA-232</code>, <code>MA-268</code>) to confirm an unbroken mobile-to-Lambda-to-Claude X-Ray trace.</li>
+</ul>
+</li>
+</ol>
+<h2>8.5 Native iOS &amp; iPadOS system capability simulation playbook (xcrun simctl + Maestro)</h2>
+<p>Maestro&#x27;s native YAML commands cover taps, swipes, permissions, orientation, media injection and deep links; for Apple system daemons that live outside XCTest (Face ID <code>BiometricKit</code>, simulated APNs payloads, Dynamic Type <code>AX5</code>, light/dark appearance), Maestro&#x27;s <code>runScript</code> invokes small host-side wrappers around <code>xcrun simctl</code> targeting the active cloned <code>&lt;UDID&gt;</code>:</p>
+<table><thead><tr><th>iOS / iPadOS capability</th><th>Story</th><th>How <code>scripts/maestro_local.py</code> &amp; Maestro drive it locally</th><th>What the flow asserts</th></tr>
+</thead>
+<tbody><tr><td><strong>Face ID second check &amp; App Lock (match &amp; mismatch)</strong></td><td><code>MA-76</code>, <code>MA-102</code>, <code>MA-171</code></td><td>Before launch, <code>notifyutil -p com.apple.BiometricKit.enrollmentChanged</code> + enrolled flag; when <code>mp.admin.second-check</code> prompts, <code>runScript: scripts/biometrics.js</code> fires <code>com.apple.BiometricKit.matchingFailed</code> first, then <code>matchingSucceeded</code> on retry</td><td>Mismatch refuses the Admin center change and writes zero <code>AuditEvent</code>; retry match completes the fresh server-verified assertion and appends the hash-chained <code>AuditEvent</code>.</td></tr>
+<tr><td><strong>Universal Links &amp; one-time household invite</strong></td><td><code>MA-73</code>, <code>MA-102</code>, <code>MA-168</code></td><td><code>openLink: { link: &quot;https://dashboard-dev.mypaisapp.com/join/tok_invite_priya&quot;, autoVerify: true }</code></td><td>Opens straight into <code>mp.auth.invite-sheet</code> (<code>Joining from an invite</code>); expired or already-used token shows the clean refusal card.</td></tr>
+<tr><td><strong>APNs push &amp; Lock Screen privacy redaction</strong></td><td><code>MA-170</code>, <code>MA-181</code></td><td>App enables Privacy Mode (<code>/privacy</code>), presses <code>Home</code>, and <code>runScript: scripts/push.js</code> runs <code>xcrun simctl push &lt;UDID&gt; com.mypaisapp.agent.dev fixtures/push_emi_checkin.apns</code></td><td>Notification banner displays <code>&quot;HDFC car loan: November check-in due&quot;</code> with <strong>zero currency amounts</strong> on the Lock Screen; tapping the banner opens the exact check-in card in the chat.</td></tr>
+<tr><td><strong>Photos, VisionKit scan stub &amp; PDF statements</strong></td><td><code>MA-37</code>, <code>MA-148</code>, <code>MA-149</code>, <code>MA-208</code></td><td><code>addMedia: [&quot;fixtures/monzo_isa_factsheet.png&quot;, &quot;fixtures/barclays_oct_statement.pdf&quot;]</code>, then tap <code>mp.chat.attach</code> -&gt; Photos / Files</td><td>File uploads to S3 (<code>Document</code> row written before extraction, Lesson 15), extraction Confirm card renders with source-line citations, and tapping the row in <code>Audit</code> opens native <code>Quick Look</code>.</td></tr>
+<tr><td><strong>Dynamic Type (<code>xSmall</code> to <code>AX5</code>) &amp; Dark / 25% brightness</strong></td><td><code>MA-181</code>, <code>MA-240</code></td><td><code>xcrun simctl ui &lt;UDID&gt; content_size accessibility-extra-extra-extra-large</code> (<code>AX5</code>) and <code>xcrun simctl ui &lt;UDID&gt; appearance dark</code></td><td>Multi-column figure rows stack vertically at <code>AX5</code> without clipping <code>[Confirm]</code>, <code>[Edit]</code> or rupee/pound heroes; <code>assertScreenshot</code> (<code>98%</code> threshold) guards Warm Ledger dark contrast.</td></tr>
+<tr><td><strong>iPad hardware keyboard shortcuts</strong></td><td><code>MA-163</code></td><td><code>pressKey</code> / <code>XCUIKeyboardKey</code> commands on <code>MyPaisa-Maestro-iPad-1376</code></td><td><code>Cmd+K</code> focuses <code>mp.chat.composer</code>, <code>Return</code> sends message, <code>Cmd+1</code> to <code>Cmd+5</code> switch sections, <code>Cmd+F</code> opens Search.</td></tr>
+</tbody>
+</table>
+<h2>8.6 <code>.maestro/</code> workspace blueprint, tag taxonomy &amp; concrete YAML flow templates</h2>
+<p>Planned repository layout introduced in Phase 0 (<code>MA-273</code>):</p>
+<pre><code>.maestro/
+  config.yaml                         # appId defaults, flow ordering, global env defaults, executiontags
+  subflows/
+    launch_seeded.yaml                # launchApp with MYPAISA_API_URL, MYPAISA_AUTH_STUB, MYPAISA_STATIC_MOTION=1
+    sign_in_owner.yaml                # Sign in as Arun (owner) or verify existing Keychain session
+    sign_in_member.yaml               # Sign in as Priya (member, household overview + own detail only)
+    assert_compact_shell.yaml         # Assert &lt;600pt tab bar visible, sidebar &amp; trailing chat hidden
+    assert_sheet_shell.yaml           # Assert 600-1132pt chat sheet behaviour, trailing chat hidden
+    assert_beside_shell.yaml          # Assert &gt;=1133pt 3-column sidebar + screen + trailing chat visible
+  scripts/
+    biometrics.js                     # Calls host webhook on maestro_local.py to trigger simctl BiometricKit match/fail
+    push.js                           # Triggers xcrun simctl push &lt;UDID&gt; with named fixture payload
+    network_mode.js                   # Toggles local FastAPI stub between online and offline modes
+  fixtures/
+    push_emi_checkin.apns             # Simulated APNs check-in payload (redacted &amp; unredacted variants)
+    push_red_alert.apns               # Time-sensitive red alert payload
+    monzo_isa_valuation.png           # Synthetic screenshot fixture matching household-v4.json
+    barclays_oct_statement.pdf        # Synthetic statement PDF fixture
+  screenshots/                        # Golden baselines for assertScreenshot (light/dark, 402pt/834pt/1032pt/1376pt)
+  flows/
+    p00_shell_smoke.yaml              # Phase 0: boot, Warm Ledger tokens, empty shell across all 4 width bands
+    p01_signin_chat_sse_3band.yaml    # Phase 1: Apple/Google sign-in, invite link, SSE stream, 4-band rotation, push
+    p02_register_record_edit.yaml     # Phase 2: register savings by chat, Confirm, audit row, inline edit moves SSE
+    p03_deposits_fx_inr_gbp.yaml      # Phase 3: FD/RD/PPF, GBP &lt;-&gt; INR lakh/crore toggle, currency mismatch 1b
+    p04_debts_checkins_push.yaml      # Phase 4: loan registration, APNs due check-in tap -&gt; Paid, offline queue
+    p05_investments_priced.yaml       # Phase 5: ISA/SIP/RSU, XIRR fold, valuation screenshot addMedia
+    p06_budget_statements.yaml        # Phase 6: PDF statement upload, category review card, month close
+    p07_projection_plans.yaml         # Phase 7: Projection fan scrub, 1a Budget forecast, 2a chat plan, 3a Plans tab
+    p08_audit_search_admin_faceid.yaml# Phase 8: Quick Look file preview, Search tab, Admin Center Face ID 2nd check
+    p09_full_wealth_accessibility.yaml# Phase 9: whole-wealth journey at AX5 Dynamic Type + Dark + Privacy Mode
+    p10_to_p20_market_and_widgets.yaml# Phases 10-20: briefs, Swift Charts, stances, agents, India CAS, widgets/share</code></pre>
+<h3>Concrete flow template 1 — iPad 4-sub-band width rule &amp; live mid-flow rotation (<code>p01_ipad_rotation_continuity.yaml</code>)</h3>
+<pre><code>appId: com.mypaisapp.agent.dev
+tags:
+  - p01
+  - layout-3band
+  - smoke
+---
+- setOrientation: PORTRAIT
+- runFlow: ../subflows/launch_seeded.yaml
+# On iPad Pro 13-inch upright (1032 pt, Band 3 MA-240): sidebar + screen visible, chat trailing column hidden
+- assertVisible:
+    id: &quot;mp.nav.sidebar&quot;
+- assertNotVisible:
+    id: &quot;mp.chat.trailing-column&quot;
+- tapOn:
+    id: &quot;mp.sidebar.chat&quot;
+- assertVisible:
+    id: &quot;mp.chat.sheet&quot;
+# Start a guided flow inside the portrait sheet
+- tapOn:
+    id: &quot;mp.chip.log-money&quot;
+- assertVisible:
+    id: &quot;mp.guided.card&quot;
+- tapOn:
+    id: &quot;mp.guided.option.monzo-isa&quot;
+# Rotate live past 1133 pt (1376 pt landscape, Band 4): sheet morphs into trailing column with state intact
+- setOrientation: LANDSCAPE_LEFT
+- assertNotVisible:
+    id: &quot;mp.chat.sheet&quot;
+- assertVisible:
+    id: &quot;mp.chat.trailing-column&quot;
+- assertVisible:
+    id: &quot;mp.guided.amount-input&quot;
+- inputText: &quot;200&quot;
+# Rotate back to 1032 pt upright: trailing column returns to sheet without losing the £200 draft
+- setOrientation: PORTRAIT
+- assertVisible:
+    id: &quot;mp.chat.sheet&quot;
+- assertVisible: &quot;£200&quot;</code></pre>
+<h3>Concrete flow template 2 — Admin Center Face ID second check (mismatch refusal then match &amp; audit row)</h3>
+<pre><code>appId: com.mypaisapp.agent.dev
+tags:
+  - p08
+  - biometrics
+---
+- runFlow: ../subflows/launch_seeded.yaml
+- tapOn:
+    id: &quot;mp.tab.you&quot;
+- tapOn:
+    id: &quot;mp.you.admin-center&quot;
+- tapOn:
+    id: &quot;mp.admin.claude-ceiling-edit&quot;
+- clearText
+- inputText: &quot;150&quot;
+- tapOn:
+    id: &quot;mp.admin.save-with-second-check&quot;
+- assertVisible:
+    id: &quot;mp.admin.second-check-sheet&quot;
+# 1. Simulate Face ID failure -&gt; change must be refused and ceiling must remain $160
+- runScript:
+    file: ../scripts/biometrics.js
+    env:
+      RESULT: &quot;fail&quot;
+- assertVisible:
+    id: &quot;mp.admin.second-check-failed&quot;
+- tapOn:
+    id: &quot;mp.admin.second-check-retry&quot;
+# 2. Simulate Face ID match -&gt; server verifies assertion and writes AuditEvent
+- runScript:
+    file: ../scripts/biometrics.js
+    env:
+      RESULT: &quot;match&quot;
+- assertVisible: &quot;$150&quot;
+- tapOn:
+    id: &quot;mp.admin.view-audit-row&quot;
+- assertVisible: &quot;Claude monthly ceiling: $160 -&gt; $150&quot;</code></pre>
+<h2>8.7 Phase-wise Maestro rollout plan (Phases 0 to 20) &amp; local-vs-CI cost analysis (£0.00/month)</h2>
+<p>Every phase adds its Maestro flows alongside the SwiftUI pieces it ships (<code>plan-sync</code> rule 10 traces each story&#x27;s <code>.maestro/flows/p&lt;NN&gt;_*.yaml</code> path):</p>
+<table><thead><tr><th>Phase</th><th>Epic</th><th>New local Maestro iOS &amp; iPadOS flows added</th><th>Simulators &amp; capabilities exercised</th><th>Local wall-clock</th></tr>
+</thead>
+<tbody><tr><td><strong>Phase 0</strong></td><td><code>MA-9</code></td><td><code>scripts/maestro_local.py</code> cloned pool (<code>setup-pool</code>, <code>run</code>, <code>selftest</code>), <code>TestIDs.swift</code> &lt;-&gt; <code>test-ids.ts</code> generator, <code>p00_shell_smoke.yaml</code> (Warm Ledger light/dark, empty shell across all 4 width bands, <code>assertScreenshot</code> baseline).</td><td>All 5 cloned simulators (<code>375</code>, <code>402</code>, <code>834</code>, <code>1032</code>, <code>1376 pt</code>), light &amp; dark</td><td>~45 s</td></tr>
+<tr><td><strong>Phase 1</strong></td><td><code>MA-10</code></td><td>Sign in with Apple/Google stub, Universal Link <code>/join/&lt;token&gt;</code> invite (<code>openLink</code>), 1a Chat-first shell, streaming SSE reply, <code>PORTRAIT &lt;-&gt; LANDSCAPE_LEFT</code> rotation continuity, APNs push (<code>simctl push</code>), Activity <code>RunRecord</code> + <code>--mode dev-live</code> X-Ray trace check.</td><td>iPhone <code>402</code> (portrait + landscape), iPad <code>834</code>, <code>1032</code>, <code>1376</code>, <code>openLink</code>, <code>simctl push</code></td><td>~1.5 min</td></tr>
+<tr><td><strong>Phase 2</strong></td><td><code>MA-187</code></td><td>Register first savings record by talking, missing-field guided chip card, <code>[Confirm]</code> vs <code>[Cancel]</code> (asserting zero write on Cancel, Lesson 9), hash-chained Audit row, in-place figure correction (<code>PATCH /v1/records/{id}</code>), currency mismatch <code>1b</code> card (<code>MA-156</code>).</td><td>iPhone <code>402</code>, iPad <code>1376</code> chat-beside (seeing Home total move live on Confirm)</td><td>+45 s</td></tr>
+<tr><td><strong>Phase 3</strong></td><td><code>MA-188</code></td><td>Fixed/recurring deposits, PPF, life policy, GBP &lt;-&gt; INR display toggle (<code>lakh</code>/<code>crore</code> formatting), privacy mask (<code>••••</code>) across hero, cards and sheets.</td><td>iPhone <code>375</code> (<code>320 pt</code> Display Zoom rupee hero fit, Lesson 24), iPhone <code>402</code></td><td>+35 s</td></tr>
+<tr><td><strong>Phase 4</strong></td><td><code>MA-192</code></td><td>Mortgage, loan and credit-card registration, simulated APNs EMI check-in push -&gt; one-tap <code>Paid, £410</code>, offline cache &amp; queued message flush (<code>MA-173</code>).</td><td>iPhone <code>402</code>, <code>simctl push</code>, local stub <code>offline -&gt; online</code> toggle</td><td>+45 s</td></tr>
+<tr><td><strong>Phase 5</strong></td><td><code>MA-189</code></td><td>Monzo ISA, SIP, pension and RSU registration, <code>addMedia</code> valuation screenshot extraction -&gt; Confirm card, holding screen XIRR Technical fold.</td><td>iPhone <code>402</code>, iPad <code>834</code>, <code>addMedia</code> Photos picker</td><td>+40 s</td></tr>
+<tr><td><strong>Phase 6</strong></td><td><code>MA-190</code></td><td><code>addMedia</code> PDF bank/card statement upload, multi-line category review card, internal transfer detection, 1st-of-month budget close check-in.</td><td>iPhone <code>402</code>, iPad <code>1032</code> upright (<code>MA-240</code>), <code>addMedia</code> Files picker</td><td>+45 s</td></tr>
+<tr><td><strong>Phase 7</strong></td><td><code>MA-191</code></td><td>Projection fan chart scrub, editable assumptions, <code>1a</code> Budget forecast tab, <code>2a</code> chat future-plan flow with budget rearrangement on Confirm, <code>3a</code> Plans tab (<code>MA-264</code>).</td><td>iPhone <code>402</code>, iPad <code>1376</code> 3-column (chat what-if moving Projection fan live)</td><td>+50 s</td></tr>
+<tr><td><strong>Phase 8</strong></td><td><code>MA-14</code></td><td>Audit log filter + <code>Quick Look</code> original file preview (<code>MA-149</code>), iOS 26 Search tab, Admin Center behind Face ID <code>BiometricKit</code> match &amp; mismatch (<code>MA-76</code>, <code>MA-137</code>, <code>MA-145</code> DLQ Replay).</td><td>iPhone <code>402</code>, iPad <code>1376</code>, <code>BiometricKit</code> match/fail, hardware keyboard <code>Cmd+F</code></td><td>+50 s</td></tr>
+<tr><td><strong>Phase 9</strong></td><td><code>MA-18</code></td><td>Full whole-wealth cross-band sweep (<code>320 pt</code> to <code>1376 pt</code>), Dynamic Type <code>AX5</code> audit across every tab/sheet, Dark Mode 25% brightness <code>assertScreenshot</code>, Excel hydration workbook upload (<code>MA-111</code>).</td><td>All 5 cloned simulators + <code>Duo</code>, <code>AX5</code>, Light &amp; Dark, Privacy Mode</td><td>+1.5 min</td></tr>
+<tr><td><strong>Phases 10–15</strong></td><td><code>MA-11</code>..<code>MA-17</code></td><td>Weekday 07:15 brief &amp; 21:15 wrap cards, time-sensitive red alert push, Swift Charts horizon shading &amp; Technical glossary tap, Holding Profile / Overlap / Bear-vs-Bull / Scenario cards, Scorecard &amp; live stances.</td><td>iPhone <code>402</code>, iPad <code>1376</code>, <code>simctl push</code>, Swift Charts <code>AXChartDescriptor</code></td><td>+1.5 min</td></tr>
+<tr><td><strong>Phases 16–19</strong></td><td><code>MA-19</code>..<code>MA-147</code></td><td>New holding kind spec approval behind Face ID, Forecaster dual-engine card (<code>MA-117</code>), Phase 18 9-agent incident/budget desk (<code>MA-127</code>), India CAMS/KFintech CAS PDF import &amp; NSE/AMFI INR/GBP views (<code>MA-147</code>).</td><td>iPhone <code>402</code>, iPad <code>1376</code>, <code>addMedia</code> CAS PDF, <code>BiometricKit</code></td><td>+1.2 min</td></tr>
+<tr><td><strong>Phase 20</strong></td><td><code>MA-175</code></td><td>Home Screen / Lock Screen WidgetKit snapshots, Share Sheet extension (<code>Share a statement or screenshot to MyPaisa</code> from Safari/Files via Maestro system UI flow), App Intents / Siri shortcut deep links, Live Activities.</td><td>iPhone <code>402</code> (<code>appId: com.apple.mobilesafari</code> -&gt; Share Sheet -&gt; <code>MyPaisa Dev</code>)</td><td>+1.0 min</td></tr>
+</tbody>
+</table>
+<h3>Cost comparison: why full Maestro multi-simulator runs belong locally on Apple Silicon</h3>
+<table><thead><tr><th>Execution venue for the 5-simulator Maestro matrix</th><th>Per-run wall-clock</th><th>Billed CI minutes / run</th><th>Monthly cost (40 PRs / ~60 runs)</th><th>Verdict</th></tr>
+</thead>
+<tbody><tr><td><strong>GitHub Actions <code>macos-15</code> (<code>10x</code> minute multiplier)</strong></td><td>~15–22 min (cold simulator boot + XCTest driver install x 5 devices)</td><td><strong>150 to 220 billed mins / run</strong></td><td><strong>~£42 to £65 / month</strong> over the 2,000 free minute quota</td><td><strong>Rejected</strong> for full multi-device Maestro matrices — burns the entire monthly free tier in ~10 PRs.</td></tr>
+<tr><td><strong>Maestro Cloud (<code>maestro cloud</code>)</strong></td><td>~6 min (parallel cloud iOS VMs)</td><td>Hosted SaaS plan</td><td><strong>$250+ / month</strong> (~£195/mo)</td><td><strong>Rejected</strong> — 4x the entire £50/month MyPaisa infrastructure budget (<code>ARCHITECTURE.md</code> §15.2).</td></tr>
+<tr><td><strong>Selected (<code>MA-273</code>): Local Apple Silicon cloned pool (<code>scripts/maestro_local.py</code>) + Linux CI <code>maestro check-syntax</code> (<code>1x</code>) + path-gated <code>XCTest</code> (<code>MA-269</code>)</strong></td><td><strong>~2 min smoke / ~8 min full</strong> (warm <code>DerivedData</code> + pre-cloned simulators on M-series Mac); <strong>3 s</strong> on Linux CI</td><td><strong>0.05 billed mins / PR</strong> on <code>ubuntu-24.04-arm</code> (<code>1x</code>)</td><td><strong>£0.00 / month</strong></td><td><strong>Selected</strong> — instant local feedback across all 4 width bands, zero cloud simulator bills, and GitHub free minutes stay untouched.</td></tr>
+</tbody>
+</table>
+<h2>8.8 Keeping MyPaisa installed for 3 months (and rolling indefinitely) via private TestFlight &amp; household beta testing (MA-162, MA-164, MA-167)</h2>
+<p>Arun also asked on 29 Oct 2026: <em>&quot;how I can get the app kept installed for 3 months using TestFlight and beta test and keep it private and do beta testing&quot;</em>.</p>
+<h3>Why TestFlight is the exact mechanism for a 3-month (90-day) untethered install</h3>
+<table><thead><tr><th>iOS installation method</th><th>How long the app stays runnable on iPhone / iPad</th><th>Privacy &amp; operational trade-offs</th></tr>
+</thead>
+<tbody><tr><td><strong>Free personal Xcode cable install</strong> (no $99/yr program)</td><td><strong>7 days only</strong> — hard-crashes on launch on day 8 until plugged back into the Mac and re-signed; no APNs push, no Sign in with Apple, no Associated Domains</td><td>Unusable for daily household wealth tracking or family devices.</td></tr>
+<tr><td><strong>Ad Hoc provisioning profile</strong> ($99/yr program)</td><td>Up to certificate/profile expiry (1 year), <strong>but</strong> requires manually collecting every family iPhone/iPad hardware UDID, regenerating profiles on new devices, and hosting an <code>.ipa</code> manifest with no automatic background updates or screenshot feedback</td><td>High manual friction; no silent background updates or native beta feedback sheet.</td></tr>
+<tr><td><strong>TestFlight Internal Testing (<code>MA-162</code>, <code>MA-164</code>, <code>MA-167</code> — Selected)</strong></td><td><strong>90 days (3 months) per uploaded build</strong>, untethered anywhere in the world — and <strong>every new build uploaded resets the 90-day clock back to 90 days</strong> silently in the background via TestFlight Automatic Updates</td><td><strong>Zero App Review wait</strong> (live in ~3–5 minutes), <strong>100% private</strong> (<code>testFlightInternalTestingOnly</code>), silent updates keep Keychain &amp; MMKV data intact, built-in screenshot feedback &amp; crash logs, included in the $99/yr Apple Developer Program (<strong>£0 extra</strong>).</td></tr>
+</tbody>
+</table>
+<h3>Four layers that keep the app 100% private (never on the public App Store)</h3>
+<ol><li><strong>Zero obligation to ever publish on the App Store:</strong> Creating the <code>MyPaisa</code> (<code>com.mypaisapp.agent</code>) and <code>MyPaisa Dev</code> (<code>com.mypaisapp.agent.dev</code>) app records in App Store Connect (<code>MA-164</code>) creates <strong>no public listing</strong> and makes nothing searchable on the App Store. You never fill out public App Store distribution or click <em>Submit for Review</em>; private household apps can live on TestFlight Internal Testing indefinitely.</li>
+<li><strong>Cryptographic Internal-Only lock (<code>testFlightInternalTestingOnly = true</code>):</strong> Every archive exported for TestFlight uses <code>ios/ExportOptions-Internal.plist</code>:</li>
+</ol>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;method&lt;/key&gt;
+    &lt;string&gt;app-store-connect&lt;/string&gt;
+    &lt;key&gt;destination&lt;/key&gt;
+    &lt;string&gt;upload&lt;/string&gt;
+    &lt;key&gt;manageAppVersionAndBuildNumber&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;testFlightInternalTestingOnly&lt;/key&gt;
+    &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</code></pre>
+<p>When <code>testFlightInternalTestingOnly</code> is <code>&lt;true/&gt;</code>, Apple&#x27;s ingestion servers permanently lock that binary to <strong>Internal Testing only</strong>: it <strong>cannot</strong> be added to an External Testing group, <strong>cannot</strong> generate a public TestFlight invitation link, and <strong>cannot</strong> be submitted to the public App Store, even by mistake in the web console. Setting <code>&lt;key&gt;ITSAppUsesNonExemptEncryption&lt;/key&gt;&lt;false/&gt;</code> in <code>Info.plist</code> (MyPaisa uses only standard OS HTTPS/TLS and CryptoKit/WebAuthn) also clears Apple&#x27;s Export Compliance gate automatically so builds go live in 3 to 5 minutes with <strong>zero Beta App Review</strong> (human Apple reviewers never open or test internal builds).</p>
+<ol><li><strong>Least-privilege App Store Connect team roles (Individual Developer Account):</strong><ul><li>An Individual Apple Developer Program account ($99/year, <code>MA-162</code>) lets Arun invite up to <strong>50 additional users</strong> in <strong>App Store Connect -&gt; Users and Access</strong> (up to 100 internal testers per app, up to <strong>30 devices</strong> — iPhones and iPads — per tester).</li>
+<li>Invite each household member&#x27;s Apple ID email with the <strong><code>Customer Support</code></strong> or <strong><code>Marketing</code></strong> role, <strong>scoped strictly to the <code>MyPaisa</code> app</strong> (never <code>Admin</code> or <code>Developer</code>, and zero visibility into <code>MyPaisa Dev</code>, signing certificates, or API keys).</li>
+<li>Two isolated internal groups run side-by-side on Arun&#x27;s devices:<ul><li><strong><code>MyPaisa Dev</code> (<code>com.mypaisapp.agent.dev</code> -&gt; Internal Group <code>&quot;Dev Dogfood&quot;</code>, Arun only):</strong> auto-uploaded on merges to <code>main</code> after <code>dev</code> smoke tests pass; talks exclusively to <code>api-dev.mypaisapp.com</code> (synthetic seed household).</li>
+<li><strong><code>MyPaisa</code> (<code>com.mypaisapp.agent</code> -&gt; Internal Group <code>&quot;Household Beta&quot;</code>, Arun + invited family members):</strong> uploaded only after Arun approves <code>prod</code> and <code>prod</code> read-only smoke tests pass; talks to <code>api.mypaisapp.com</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Double Lock — Apple ID distribution lock + MyPaisa Cognito invite lock:</strong> Even if someone gained access to an invited device&#x27;s TestFlight app, the app itself has no self-signup (<code>ARCHITECTURE.md</code> §4.5, <code>MA-102</code>, <code>MA-109</code>, <code>MA-168</code>): <code>api.mypaisapp.com</code> refuses every Sign in with Apple or Google token unless that identity belongs to the owner or redeemed a one-time, 48-hour <code>/join/&lt;token&gt;</code> household invite link approved behind the owner&#x27;s second check.</li>
+</ol>
+<h3>Keeping the app installed for 3 months — and rolling seamlessly past 90 days with zero data loss</h3>
+<ol><li><strong>First install (one-time 2-minute setup per family iPhone / iPad):</strong><ul><li>Install Apple&#x27;s free <strong>TestFlight</strong> app from the App Store, accept the App Store Connect email invite, tap <strong>Install</strong> on <code>MyPaisa</code>, and ensure <strong>Automatic Updates -&gt; On</strong> is enabled on the app&#x27;s TestFlight page.</li>
+<li>From that moment, the installed build runs for a full <strong>90 days (3 months)</strong> with full APNs push, Sign in with Apple, passkeys, Universal Links and Face ID.</li>
+</ul>
+</li>
+<li><strong>Silent in-place renewal (Keychain &amp; offline MMKV preserved):</strong><ul><li>Whenever CI uploads a newer monotonic build number (<code>CFBundleVersion</code>, e.g., <code>20261215.1</code>), App Store Connect&#x27;s <em>&quot;Enable automatic distribution&quot;</em> pushes it immediately to the Internal Group, and iOS silently updates <code>MyPaisa</code> overnight when the device is locked on Wi-Fi.</li>
+<li>Because the bundle identifier (<code>com.mypaisapp.agent</code>) and Apple Team ID remain identical, <strong>iOS preserves the Keychain refresh token, passkey credentials, push token, and MMKV offline store</strong> across every update, while resetting the build expiration clock back to <strong>90 full days remaining</strong>.</li>
+</ul>
+</li>
+<li><strong>Automated Day-60 Evergreen Keepalive + Day-75 In-App Safety Net (<code>MA-167</code>):</strong><ul><li>During active phase development, merges touching <code>ios/</code> naturally reset the 90-day timer every few days or weeks.</li>
+<li>Once the app stabilises (so 60 days might pass with zero <code>ios/</code> commits), a scheduled keepalive check (<code>.github/workflows/testflight-keepalive.yml</code> querying App Store Connect REST API <code>GET /v1/builds?filter[app]=&lt;id&gt;&amp;sort=-uploadedDate</code> with the <code>.p8</code> App Store Connect API key from <code>MA-164</code> — or a monthly scheduled <strong>Xcode Cloud</strong> workflow using the <strong>25 free compute hours/month</strong> included with the $99/yr Apple Developer Program, costing <strong>0 GitHub Actions macOS minutes</strong>) checks the age of the live <code>MyPaisa</code> and <code>MyPaisa Dev</code> builds.</li>
+<li>At <strong>day 60</strong> (30 days before Apple&#x27;s 90-day cutoff), if no newer build was uploaded, the workflow automatically archives <code>main</code> with an incremented <code>CFBundleVersion</code> and uploads it with <code>testFlightInternalTestingOnly = true</code>, renewing the 3-month lease automatically and notifying Arun.</li>
+<li><strong>Belt-and-braces backstop (<code>MA-167</code>):</strong> If the keepalive workflow ever failed, day 60 fires an Admin alert (<code>§15.2</code>) to Arun&#x27;s app, push and email. And if a family member accidentally turned off TestFlight Automatic Updates on their phone, the app compares its compiled <code>MYPAISA_BUILD_EPOCH</code> and <code>GET /v1/app/minimum-version</code> on launch: from <strong>day 75</strong> (<code>&lt;= 15 days left</code>), it displays a Warm Ledger update banner with a one-tap <code>itms-beta://</code> button opening TestFlight directly, so no device ever hits day 90&#x27;s launch stop unwarned.</li>
+</ul>
+</li>
+</ol>
+<h3>Structured household beta testing &amp; zero-SDK diagnostics loop</h3>
+<ol><li><strong>Stage 1 — Local Maestro gate (<code>£0/mo</code>):</strong> Before opening a PR on <code>ios/</code>, <code>python3 scripts/maestro_local.py run --up-to-phase &lt;N&gt;</code> verifies the change across all 5 cloned simulators (compact, sheet-away, 13-inch upright <code>MA-240</code>, 3-column chat-beside, Face ID, push, <code>AX5</code>).</li>
+<li><strong>Stage 2 — <code>MyPaisa Dev</code> physical-device dogfooding (Arun only):</strong> Merge to <code>main</code> deploys <code>dev</code>, passes <code>scripts/smoke.py --env dev</code>, and auto-pushes <code>MyPaisa Dev</code> to Arun&#x27;s iPhone and iPad via TestFlight (~5 min). Arun verifies real 120 Hz ProMotion scrolling/chart scrubbing (<code>ios/PERFORMANCE.md</code> benches), real Face ID hardware, cellular handoff and real APNs delivery against synthetic dev data.</li>
+<li><strong>Stage 3 — <code>MyPaisa</code> Household Beta promotion:</strong> Arun approves the GitHub <code>prod</code> environment; <code>prod</code> Lambdas deploy and pass read-only smoke checks first (<code>MA-268</code>), then <code>MyPaisa</code> uploads to the <code>&quot;Household Beta&quot;</code> Internal Group so a new app never meets an old API (<code>MA-167</code>).</li>
+<li><strong>Native TestFlight feedback &amp; crash/hang telemetry (no third-party SDKs):</strong><ul><li><strong>Screenshot + note feedback:</strong> Taking a screenshot on iPhone or iPad (Side + Volume Up) inside a TestFlight build surfaces iOS&#x27;s native <strong>&quot;Share Beta Feedback&quot;</strong> button — family testers can circle a visual glitch and type a note that lands straight in App Store Connect and Xcode Organizer (and is queryable via App Store Connect API <code>/v1/betaFeedbackScreenshotSubmissions</code>). <em>Household privacy rule:</em> toggle <strong>Privacy Mode</strong> on first (<code>/privacy</code> or header pill, masking amounts as <code>••••</code>) before sending a TestFlight screenshot so real balances are never sent to Apple&#x27;s feedback portal.</li>
+<li><strong>Crash, hang &amp; MetricKit reports:</strong> <code>xcodebuild -exportArchive</code> uploads <code>dSYM</code> debug symbols automatically; symbolicated crash stacks, main-thread hangs, 120 Hz scroll hitches and launch-time regressions appear natively in <strong>Xcode Organizer</strong> at <strong>£0/month</strong>, without adding Sentry, Firebase Crashlytics or any third-party telemetry SDK that could touch household PII.</li>
+</ul>
+</li>
+</ol>
+<h2>🧩 The stories that build it</h2>
+<p>Every story in the trace that records or builds local iOS and iPadOS Maestro testing and private 90-day TestFlight distribution, in phase order.</p>
+<table data-layout="full-width"><thead><tr><th>Story</th><th>What it delivers</th><th>Type</th><th>Days</th><th>Status</th><th>Design</th><th>Boards</th><th>Architecture</th></tr>
+</thead>
+<tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-162" data-card-appearance="inline"></a></td><td>Arun joins the Apple Developer Program ($99 a year) and registers the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains</td><td>Task (yours)</td><td>0.5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§15, §18.1</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-164" data-card-appearance="inline"></a></td><td>An APNs key per environment is in SSM, and the App Store Connect app records, TestFlight testers and API key exist</td><td>Task (yours)</td><td>0.5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§14, §18.4</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-165" data-card-appearance="inline"></a></td><td>The iOS app builds as a React Native shell with a native SwiftUI core: its first SwiftUI piece, its performance bench and its tests</td><td>Story</td><td>5</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§9, §13, §9.5</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-166" data-card-appearance="inline"></a></td><td>CI builds and tests the iOS app on every pull request that touches it, with snapshot and accessibility checks</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§18.4, §9.5</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-167" data-card-appearance="inline"></a></td><td>A merge to main sends MyPaisa Dev to TestFlight, and MyPaisa after Arun approves, with an alert before a build expires</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#FFEBE6"><span data-type="status" data-color="red">todo</span></td><td></td><td>§18.4</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-198" data-card-appearance="inline"></a></td><td>A local stack runs the whole app on the laptop, with a scripted agent that replays recorded conversations</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§13, §18.1, §23.3</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-240" data-card-appearance="inline"></a></td><td>Every board stays whole at every supported screen size and legible at 25% brightness</td><td>Task</td><td>0</td><td data-background="#FFFAE6"><span data-type="status" data-color="yellow">In Progress</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§9.1, §9.4</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-268" data-card-appearance="inline"></a></td><td>A phase-progressive smoke runner checks every deployment in dev and prod, protects prod from synthetic writes, verifies the X-Ray trace in dev, and rolls back prod on failure</td><td>Story</td><td>0</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§10.3, §18.1, §18.4</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-269" data-card-appearance="inline"></a></td><td>A five-layer regression pyramid and path-filtered CI runner test units, OpenAPI contracts, moto integration, golden maths, web and iOS UI, and T0 agent replays inside the free minute tiers</td><td>Story</td><td>0</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§9.4, §9.5, §18.4, §23.3</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-273" data-card-appearance="inline"></a></td><td>A local Maestro workspace and multi-simulator runner test the iOS and iPadOS app across compact, sheet-away and chat-beside size bands, system capabilities and phase flows</td><td>Story</td><td>0</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§9.1, §9.5, §18.4</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-274" data-card-appearance="inline"></a></td><td>The local iOS and iPadOS Maestro testing strategy, three-band device matrix, phase-wise rollout and private 90-day TestFlight beta plan are recorded in the plan and Confluence with block diagrams</td><td>Task</td><td>0</td><td data-background="#FFFAE6"><span data-type="status" data-color="yellow">In Progress</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§9.1, §9.5, §18.4</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-163" data-card-appearance="inline"></a></td><td>The app&#x27;s shell, 1a Chat first: tabs on iPhone, the chat beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#E3FCEF"><span data-type="status" data-color="green">picked</span></td><td>6</td><td>§9, §9.1</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-170" data-card-appearance="inline"></a></td><td>Apple push reaches each member&#x27;s devices when the app is closed, with no amounts on the lock screen unless they choose</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>4</td><td>§9.1, §11, §21</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-171" data-card-appearance="inline"></a></td><td>Privacy in the app: privacy mode hides amounts everywhere, the app switcher shows nothing, and Face ID can lock the app</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>7</td><td>§9.1, §14</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-173" data-card-appearance="inline"></a></td><td>Offline, the app shows the last figures with their time, keeps what is typed and sends it once back online</td><td>Story</td><td>2</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>3</td><td>§9.1</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-181" data-card-appearance="inline"></a></td><td>Every screen works with VoiceOver, Dynamic Type up to AX5, Increase Contrast, Reduce Transparency and Reduce Motion, and stays legible in light and dark at 25% brightness</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td data-background="#DEEBFF"><span data-type="status" data-color="blue">planned</span></td><td>1</td><td>§9.1</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-232" data-card-appearance="inline"></a></td><td>One trace follows a message from the door through the api, the queues and the agent to the model and back to every door, shared by every log line, span and RunRecord</td><td>Story</td><td>3</td><td><span data-type="status" data-color="neutral">To Do</span></td><td><span data-type="status" data-color="neutral">none</span></td><td></td><td>§10.2, §10.3, §21, §21.5</td></tr>
+</tbody>
+</table>
+<div data-type="extension" data-extension-key="jira" data-extension-type="com.atlassian.confluence.macro.core" data-layout="wide" data-parameters='{&quot;macroParams&quot;: {&quot;jqlQuery&quot;: {&quot;value&quot;: &quot;project = MA AND key in (MA-162, MA-164, MA-165, MA-166, MA-167, MA-198, MA-240, MA-268, MA-269, MA-273, MA-274, MA-163, MA-170, MA-171, MA-173, MA-181, MA-232) ORDER BY key&quot;}, &quot;showSummary&quot;: {&quot;value&quot;: &quot;true&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Jira&quot;}}'></div>
+<hr><p style="font-size: 14px"><em>Generated from the repo by scripts/confluence_docs.py (MA-228) from docs/trace.json, PLAN.md, docs/roadmap.json, the design decision records and the Claude Design mirror. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

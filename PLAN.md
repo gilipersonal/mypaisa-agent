@@ -219,7 +219,7 @@ Claude's:
   svelte-check, eslint, vitest, Playwright screenshots at 390 and 1440 in
   both themes with axe and a pixel parity check against the boards, pnpm
   audit.
-- **The iOS app (MA-165, MA-166, MA-167):** `ios/`, a React Native shell
+- **The iOS app (MA-165, MA-166, MA-167, MA-273, MA-274):** `ios/`, a React Native shell
   with a native SwiftUI core, as bong-panjika is built: bare React Native
   0.88 with React 19.3, New Architecture, Hermes, TypeScript, no Expo, its
   native dependencies through Swift Package Manager from day one, never
@@ -237,8 +237,16 @@ Claude's:
   benches, measured on the phone: no dropped frames at 120 Hz scrolling the
   chat and the dashboard and as cards arrive, a chart scrub at 120 Hz, and a
   launch budget. Its CI on a macOS runner (MA-166: Jest for the shell;
-  XCUITest, snapshot and accessibility checks for the SwiftUI pieces) and the
-  TestFlight lanes (MA-167).
+  XCUITest, snapshot and accessibility checks for the SwiftUI pieces), its
+  local multi-simulator Maestro workspace `.maestro/` and cloned simulator
+  runner `scripts/maestro_local.py` across all four adaptive width bands,
+  `TestIDs.swift` ↔ `test-ids.ts` parity and `xcrun simctl` capabilities at
+  £0/month with `maestro check-syntax` on Linux CI (MA-273, MA-274;
+  `docs/RESEARCH.md` §8), and its private TestFlight Internal Testing lanes
+  (`testFlightInternalTestingOnly = true`, 90-day / 3-month untethered
+  household installs renewed silently in place via Automatic Updates and a
+  day-60 evergreen keepalive rebuild without ever listing on the public App
+  Store, MA-167, `docs/RESEARCH.md` §8.8).
 - **The local stack (MA-198):** the whole app on the laptop: a moto server for
   DynamoDB, S3 and SQS (no Docker); the FastAPI `api` and `stream` apps and
   worker handlers mounted behind one local Uvicorn ASGI app, the SSE stream

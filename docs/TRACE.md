@@ -74,7 +74,9 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-267 | Every pull request, container build and weekly schedule runs the seven-layer vulnerability gate across secrets, SAST, dependencies, Terraform and arm64 ECR images | To Do | §14, §18.4, §23.2 | none |  |
 | MA-268 | A phase-progressive smoke runner checks every deployment in dev and prod, protects prod from synthetic writes, verifies the X-Ray trace in dev, and rolls back prod on failure | To Do | §10.3, §18.1, §18.4 | none |  |
 | MA-269 | A five-layer regression pyramid and path-filtered CI runner test units, OpenAPI contracts, moto integration, golden maths, web and iOS UI, and T0 agent replays inside the free minute tiers | To Do | §9.4, §9.5, §18.4, §23.3 | none |  |
-| MA-272 | The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams | In Progress | §10.3, §14, §18.1, §18.4, §23.2, §23.3 | none |  |
+| MA-272 | The CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis are recorded in the plan and Confluence with block diagrams | Done | §10.3, §14, §18.1, §18.4, §23.2, §23.3 | none |  |
+| MA-273 | A local Maestro workspace and multi-simulator runner test the iOS and iPadOS app across compact, sheet-away and chat-beside size bands, system capabilities and phase flows | To Do | §9.1, §9.5, §18.4 | none |  |
+| MA-274 | The local iOS and iPadOS Maestro testing strategy, three-band device matrix, phase-wise rollout and private 90-day TestFlight beta plan are recorded in the plan and Confluence with block diagrams | In Progress | §9.1, §9.5, §18.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
