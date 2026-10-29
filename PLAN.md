@@ -416,8 +416,9 @@ Claude's:
   options for a holding's Forecast tab, with the patterns F8 finds on its
   candles (MA-280), in light and dark; the chat's card beside the rules
   engine, the proof page, a fund's line patterns, privacy mode and the
-  foldable. You pick; the picked option's remaining states are drawn before
-  MA-124 starts, and the web app's Forecast boards follow the pick in MA-279.
+  foldable. You picked 1a, the answer first (29 Oct 2026); its remaining
+  states are drawn before MA-124 starts, and the web app's Forecast boards
+  follow it in MA-279.
 - **Your core requirements, recorded (MA-275, `ARCHITECTURE.md` §5.3, §6.6,
   §19.4, §20.4, §20.9):** your asks of 29 Oct 2026 written down. Every asset
   tracked across the UK and India, the US and Europe later, in four

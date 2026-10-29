@@ -29,6 +29,7 @@ a{color:#C2381F}a:hover{color:#8F2915}
 .bd-note p{margin:0}
 .bd-lead{max-width:1100px;margin:0;font:15px/22px -apple-system,"SF Pro Text",system-ui,sans-serif;color:#3D424D;text-wrap:pretty}
 .recb{font:700 12px/16px -apple-system,system-ui,sans-serif;color:#FFFFFF;background:#1D7A3E;padding:3px 10px;border-radius:999px}
+.nopk{font:700 12px/16px -apple-system,system-ui,sans-serif;color:#3D424D;background:#DCD9D3;padding:3px 10px;border-radius:999px}
 .dv-col{display:flex;flex-direction:column}
 .gap14{gap:14px}
 .z1{position:relative;z-index:1}
@@ -192,11 +193,11 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
       </helmet>
       <section class="dv-turn" id="intro" data-screen-label="iPhone and iPad · a holding’s Forecast: three options: intro">
         <div class="dv-thd"><a class="dv-tid" href="#intro">F</a><span class="dv-tname">iPhone and iPad · a holding’s Forecast: three options</span></div>
-        <p class="dv-intro">The stock Forecaster (ARCHITECTURE §19) on a holding’s screen, drawn for the app for the first time, in shell 1a with the Liquid Glass tab bar, and on iPad with the sidebar and the chat beside it. Asha’s NASDAQ 100 ETF, at the Fri 23 Oct close, the Forecaster in practice, week 5 of 8. Three answers to one screen: <b>1a</b> the answer first, then the chart and its patterns, then why; <b>1b</b> the chart is the screen, with a layer for each model; <b>1c</b> the questions a member asks, each answered in one line and opened in place. Every option keeps the rules engine’s call beside the Forecaster’s, risk before direction (the goal is fewer deep falls), and the patterns F8 finds on the candles (MA-280), only where they show an edge. Figures are illustrative and come from one set. Planned until Arun picks.</p>
+        <p class="dv-intro">The stock Forecaster (ARCHITECTURE §19) on a holding’s screen, drawn for the app for the first time, in shell 1a with the Liquid Glass tab bar, and on iPad with the sidebar and the chat beside it. Asha’s NASDAQ 100 ETF, at the Fri 23 Oct close, the Forecaster in practice, week 5 of 8. Three answers to one screen: <b>1a</b> the answer first, then the chart and its patterns, then why; <b>1b</b> the chart is the screen, with a layer for each model; <b>1c</b> the questions a member asks, each answered in one line and opened in place. Every option keeps the rules engine’s call beside the Forecaster’s, risk before direction (the goal is fewer deep falls), and the patterns F8 finds on the candles (MA-280), only where they show an edge. Figures are illustrative and come from one set. Arun picked <b>1a</b> on 29 Oct 2026; 1b and 1c stay here as the record.</p>
         <div class="plan"><b>Jira</b><span class="plan-k">MA-281</span><span>this round</span><span class="plan-k">MA-124</span><span>F6, the side-by-side view</span><span class="plan-k">MA-280</span><span>F8, patterns</span><span class="plan-k">MA-121</span><span class="plan-k">MA-122</span><span class="plan-k">MA-123</span><span>the models</span><span class="plan-k">MA-120</span><span>the lab</span><b>Spec</b><span>ARCHITECTURE §19.4, §19.6, §19.7, §9.1, §9.3</span><b>Figures</b><span>docs/design/figures/forecaster-v4.json</span></div>
       </section>
       <section class="bd" id="1a">
-        <div class="dv-thd"><span class="dv-tid">1a</span><span class="dv-tname">The answer first</span><span class="recb">Recommended</span><span class="bd-keys">MA-124 · MA-280 · §19.7</span></div>
+        <div class="dv-thd"><span class="dv-tid">1a</span><span class="dv-tname">The answer first</span><span class="recb">Picked · Arun, 29 Oct 2026</span><span class="bd-keys">MA-124 · MA-280 · §19.7</span></div>
         <p class="bd-lead">A navy hero with the three figures, risk first, and the rules engine’s call under them; then the candles with the fan of the next four weeks and the patterns marked on them; the patterns, each with what followed it on this ETF; then one row for each model and the two track records.</p>
         <div class="bd-row">
           <sc-for list="{{ a1 }}" as="t" hint-placeholder-count="3"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
@@ -345,11 +346,11 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 </div>
 </div>
 </sc-for>
-          <div class="bd-note"><p><b>Recommended:</b> it answers the member’s question in the first screen, the summary first and the detail a tap away, as every other v4 screen does; the chart and its patterns sit just under it.</p><p><b>Risk first.</b> The chance of a fall over 5% leads, then the likely range, then direction, the order of §19.4’s trust and of the goal.</p><p><b>Patterns.</b> Only patterns whose event study on this ETF shows an edge are marked; the rest are named once, under the list, as found and not used.</p><p><b>Each row</b> opens its sheet: the mood timeline, similar days over today’s chart, the event-impact table, the drivers and the wider technical set (drawn on the next canvas).</p><p><b>iPad</b> puts the chart and its patterns beside the rows; the chat stays beside the screen from 1133 pt.</p></div>
+          <div class="bd-note"><p><b>Picked (Arun, 29 Oct 2026), as recommended:</b> it answers the member’s question in the first screen, the summary first and the detail a tap away, as every other v4 screen does; the chart and its patterns sit just under it.</p><p><b>Risk first.</b> The chance of a fall over 5% leads, then the likely range, then direction, the order of §19.4’s trust and of the goal.</p><p><b>Patterns.</b> Only patterns whose event study on this ETF shows an edge are marked; the rest are named once, under the list, as found and not used.</p><p><b>Each row</b> opens its sheet: the mood timeline, similar days over today’s chart, the event-impact table, the drivers and the wider technical set (drawn on the next canvas).</p><p><b>iPad</b> puts the chart and its patterns beside the rows; the chat stays beside the screen from 1133 pt.</p></div>
         </div>
       </section>
       <section class="bd" id="1b">
-        <div class="dv-thd"><span class="dv-tid">1b</span><span class="dv-tname">The chart is the screen</span><span class="bd-keys">MA-124 · MA-280 · §19.7</span></div>
+        <div class="dv-thd"><span class="dv-tid">1b</span><span class="dv-tname">The chart is the screen</span><span class="nopk">Not picked</span><span class="bd-keys">MA-124 · MA-280 · §19.7</span></div>
         <p class="bd-lead">Three small figures and the rules engine’s call in one strip, then a tall chart with a layer for each model: Range, Patterns, Similar days, Events. The layer changes what is drawn on the candles and the panel under them.</p>
         <div class="bd-row">
           <sc-for list="{{ b1 }}" as="t" hint-placeholder-count="2"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
@@ -549,7 +550,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
         </div>
       </section>
       <section class="bd" id="1c">
-        <div class="dv-thd"><span class="dv-tid">1c</span><span class="dv-tname">Questions, answered</span><span class="bd-keys">MA-124 · MA-280 · §19.7</span></div>
+        <div class="dv-thd"><span class="dv-tid">1c</span><span class="dv-tname">Questions, answered</span><span class="nopk">Not picked</span><span class="bd-keys">MA-124 · MA-280 · §19.7</span></div>
         <p class="bd-lead">The Forecaster’s view as the questions a member asks, each answered in one line with its figure; a tap opens the answer in place, with its chart.</p>
         <div class="bd-row">
           <sc-for list="{{ c1 }}" as="t" hint-placeholder-count="2"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
@@ -882,7 +883,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <path class="sim" d="M77.25 62.0 L78.96 58.3 L81.23 54.6 L83.51 55.1 L85.78 51.6 L88.06 46.7 L90.33 45.2 L92.61 43.2 L94.88 39.4 L97.16 36.6 L99.43 34.0"></path>
 </g>
 </defs></svg>
-      <section class="dv-turn" id="next"><p class="dv-intro">Try next: “1a, with 1b’s layers on its chart” · “1c’s sentence above 1a’s figures” · “new directions”. The screens every option shares (the chat’s card, the proof page, a fund, privacy and the foldable) are on iPhone v4 · Forecaster proof and chat.</p></section>
+      <section class="dv-turn" id="next"><p class="dv-intro">Next: 1a’s remaining states (loading, stale prices, a holding with no Forecaster yet, the Forecaster switched off, AX5 and Reduce Motion) and each row’s sheet are drawn before MA-124 starts; the web app’s Forecast follows 1a in MA-279. The screens every option shares (the chat’s card, the proof page, a fund, privacy and the foldable) are on iPhone v4 · Forecaster proof and chat.</p></section>
     </x-dc>
     <script type="text/x-dc" data-dc-script data-props='{}'>
       class Component extends DCLogic {

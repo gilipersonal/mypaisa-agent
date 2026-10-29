@@ -2916,7 +2916,13 @@ it says "no clear view". On the dashboard, a Forecast screen per holding: a fan
 chart of the likely range, the mood timeline, the similar days drawn over
 today's chart, the event-impact table, the main drivers, candles for ETFs and
 shares, and both engines' track records side by side. Both are designed first
-(design-first), with privacy mode and both themes.
+(design-first), with privacy mode and both themes. The app's screen is MA-281's
+1a, picked on 29 Oct 2026: the answer first (the chance of a fall over 5%, the
+likely range, then the chance of being up), the rules engine's call under it,
+then the candles with the fan and the patterns F8 finds marked on them, each
+pattern with what followed it on that holding, a row per model and both track
+records; a fund shows its price line and line patterns only. The web app's
+Forecast follows it in MA-279.
 
 ### 19.8 Where it runs and what it costs
 

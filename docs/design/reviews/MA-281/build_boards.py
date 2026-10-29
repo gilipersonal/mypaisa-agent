@@ -561,6 +561,7 @@ CSS = """
           .bd-note p { margin: 0; }
           .bd-lead { max-width: 1100px; margin: 0; font: 15px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
           .recb { font: 700 12px/16px -apple-system, system-ui, sans-serif; color: #FFFFFF; background: #1D7A3E; padding: 3px 10px; border-radius: 999px; }
+          .nopk { font: 700 12px/16px -apple-system, system-ui, sans-serif; color: #3D424D; background: #DCD9D3; padding: 3px 10px; border-radius: 999px; }
           .dv-col { display: flex; flex-direction: column; }
           .gap14 { gap: 14px; }
           .z1 { position: relative; z-index: 1; }
@@ -766,10 +767,10 @@ TAIL = """    </x-dc>
 """
 
 
-def board(num: str, name: str, keys: str, lead: str, frames: list[str], notes: list[tuple[str, str]], rec: bool = False, anchor: str = "") -> str:
+def board(num: str, name: str, keys: str, lead: str, frames: list[str], notes: list[tuple[str, str]], rec: bool = False, anchor: str = "", tag: str = "") -> str:
     nt = "".join(f"<p><b>{a}</b> {b}</p>" for a, b in notes)
     return (f'      <section class="bd" id="{anchor or num}">\n        <div class="dv-thd"><span class="dv-tid">{num}</span><span class="dv-tname">{name}</span>'
-            + ('<span class="recb">Recommended</span>' if rec else "") + f'<span class="bd-keys">{keys}</span></div>\n'
+            + ('<span class="recb">Picked · Arun, 29 Oct 2026</span>' if rec else "") + (f'<span class="nopk">{tag}</span>' if tag else "") + f'<span class="bd-keys">{keys}</span></div>\n'
             f'        <p class="bd-lead">{lead}</p>\n        <div class="bd-row">\n' + "\n".join("          " + f for f in frames)
             + f'\n          <div class="bd-note">{nt}</div>\n        </div>\n      </section>\n')
 
@@ -794,14 +795,14 @@ def options_file() -> str:
              "Three answers to one screen: <b>1a</b> the answer first, then the chart and its patterns, then why; <b>1b</b> the chart is the screen, with a layer for "
              "each model; <b>1c</b> the questions a member asks, each answered in one line and opened in place. Every option keeps the rules engine’s call beside the "
              "Forecaster’s, risk before direction (the goal is fewer deep falls), and the patterns F8 finds on the candles (MA-280), only where they show an edge. "
-             "Figures are illustrative and come from one set. Planned until Arun picks.")
+             "Figures are illustrative and come from one set. Arun picked <b>1a</b> on 29 Oct 2026; 1b and 1c stay here as the record.")
     out = [HEAD.format(title="iPhone v4 · Forecast", css=mini(CSS)), turn("F", "iPhone and iPad · a holding’s Forecast: three options", intro, PLAN)]
     out.append(board("1a", "The answer first", "MA-124 · MA-280 · §19.7",
                      "A navy hero with the three figures, risk first, and the rules engine’s call under them; then the candles with the fan of the next four weeks and the "
                      "patterns marked on them; the patterns, each with what followed it on this ETF; then one row for each model and the two track records.",
                      [group("a1", [("iPhone · Forecast · 1a · Light", LT, 0), ("iPhone · Forecast · 1a · Dark", DK, 0), ("iPhone · Forecast · 1a · scrolled", LT, 620)], iphone_t(body_1a())),
                       group("a2", [("iPad · Forecast · 1a · Light", LT, 0), ("iPad · Forecast · 1a · Dark", DK, 0)], ipad_t(body_1a(wide=True)))],
-                     [("Recommended:", "it answers the member’s question in the first screen, the summary first and the detail a tap away, as every other v4 screen does; the chart and its patterns sit just under it."),
+                     [("Picked (Arun, 29 Oct 2026), as recommended:", "it answers the member’s question in the first screen, the summary first and the detail a tap away, as every other v4 screen does; the chart and its patterns sit just under it."),
                       ("Risk first.", "The chance of a fall over 5% leads, then the likely range, then direction, the order of §19.4’s trust and of the goal."),
                       ("Patterns.", "Only patterns whose event study on this ETF shows an edge are marked; the rest are named once, under the list, as found and not used."),
                       ("Each row", "opens its sheet: the mood timeline, similar days over today’s chart, the event-impact table, the drivers and the wider technical set (drawn on the next canvas)."),
@@ -814,7 +815,7 @@ def options_file() -> str:
                       group("b2", [("iPad · Forecast · 1b · Light", LT, 0), ("iPad · Forecast · 1b · Dark", DK, 0)], ipad_t(body_1b("patterns", wide=True)))],
                      [("For", "a member who reads charts: everything the models say is on the candles, one layer at a time."),
                       ("Against:", "the answer is three small tiles; a layman has to know what a layer is before the screen tells them anything."),
-                      ("iPad", "puts the layer’s panel beside the chart.")]))
+                      ("iPad", "puts the layer’s panel beside the chart.")], tag="Not picked"))
     out.append(board("1c", "Questions, answered", "MA-124 · MA-280 · §19.7",
                      "The Forecaster’s view as the questions a member asks, each answered in one line with its figure; a tap opens the answer in place, with its chart.",
                      [group("c1", [("iPhone · Forecast · 1c · the chart open · Light", LT, 0), ("iPhone · Forecast · 1c · the chart open · Dark", DK, 0)], iphone_t(body_1c("chart"))),
@@ -822,9 +823,9 @@ def options_file() -> str:
                       group("c2", [("iPad · Forecast · 1c · Light", LT, 0), ("iPad · Forecast · 1c · Dark", DK, 0)], ipad_t(body_1c("chart", wide=True)))],
                      [("For", "the plainest reading: a sentence first, then one answer per question, each with the number it rests on."),
                       ("Against:", "the chart is one tap down, and the figures are read in a list rather than side by side."),
-                      ("The sentence", "is fixed wording chosen by code from the figures, never written by the model (§1).")]))
+                      ("The sentence", "is fixed wording chosen by code from the figures, never written by the model (§1).")], tag="Not picked"))
     out.append(defs_block())
-    out.append('      <section class="dv-turn" id="next"><p class="dv-intro">Try next: “1a, with 1b’s layers on its chart” · “1c’s sentence above 1a’s figures” · “new directions”. '
+    out.append('      <section class="dv-turn" id="next"><p class="dv-intro">Next: 1a’s remaining states (loading, stale prices, a holding with no Forecaster yet, the Forecaster switched off, AX5 and Reduce Motion) and each row’s sheet are drawn before MA-124 starts; the web app’s Forecast follows 1a in MA-279. '
                'The screens every option shares (the chat’s card, the proof page, a fund, privacy and the foldable) are on iPhone v4 · Forecaster proof and chat.</p></section>\n')
     out.append(TAIL.replace("@@LISTS@@", logic()))
     return "".join(out)
@@ -833,7 +834,7 @@ def options_file() -> str:
 def shared_file() -> str:
     DEFS.clear()
     LISTS.clear()
-    intro = ("What every option of iPhone v4 · Forecast shares, drawn in 1a’s style and restyled to the pick: the Forecaster’s card in the chat beside the rules engine, "
+    intro = ("What every option of iPhone v4 · Forecast shares, drawn in the style of 1a, which Arun picked on 29 Oct 2026: the Forecaster’s card in the chat beside the rules engine, "
              "with the two engines agreeing, disagreeing and “no clear view”; the proof page; a fund, which has no candles; privacy mode; and the foldable, folded and open.")
     out = [HEAD.format(title="iPhone v4 · Forecaster proof and chat", css=mini(CSS)), turn("G", "iPhone · the Forecaster’s card, its proof, a fund and the foldable", intro, PLAN)]
     c = R["cards"]

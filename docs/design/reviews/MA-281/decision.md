@@ -82,7 +82,7 @@ Shared by every option, drawn in 1a's style and restyled to the pick:
 
 ## Not drawn yet
 
-These are listed on MA-281's trace row and drawn after the pick, before MA-124 starts:
+These are listed on MA-124's trace row (moved there from MA-281 at the pick) and drawn before MA-124 starts:
 - the picked option's remaining states: loading, stale prices, a holding with no Forecaster yet, the Forecaster
   switched off, AX5 and Reduce Motion;
 - each summary row's sheet.
@@ -91,4 +91,13 @@ The web app's Forecast boards are redrawn to the pick in MA-279.
 
 ## The pick
 
-Waiting for Arun.
+**1a · The answer first**, Arun, 29 Oct 2026 ("Pick 1a"), after a side-by-side comparison of the three.
+
+- The canvases mark 1a picked, and 1b and 1c not picked; they stay as the record.
+- The shared screens are drawn in 1a's style already, so they stand as drawn.
+- `ARCHITECTURE.md` §19.7 names the picked screen and PLAN's MA-281 bullet records the pick.
+- In the trace, MA-281 is `picked` with 1a's boards and the shared boards.
+- MA-124 lists the same boards as its app spec. Its iOS and F8-pattern undrawn items are cleared with `Drawn:` notes.
+  1a's remaining states and each row's sheet move to MA-124's undrawn list, so MA-124 cannot start before they are
+  drawn. The proof screen on iPad also stays listed there.
+- The web app's Forecast boards stay planned until MA-279 redraws them to 1a.
