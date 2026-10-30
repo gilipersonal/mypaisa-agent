@@ -7943,9 +7943,9 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 28 Oct 2026: \"On Claude Code, I should be able to sync my claude design with the docs/design ones; they should not drift.\" scripts/design_sync.py (pull, check, selftest) reads the three projects through the claude-design connector by running Claude Code headless and writes each file byte for byte; the design-sync gate and the PR hook run its check, and plan_sync.py selftest runs its offline cases. The drift on 28 Oct 2026 (app's support.js changed in Claude Design, DS v1's five _ds/ files never copied) is in docs/design/reviews/MA-259/drift.md and was pulled. Standalone Claude Design closes by 14 Dec 2026: the options and the recommendation are in docs/design/reviews/MA-259/decision.md, for Arun to pick; the move is MA-260.",
+      "notes": "Arun, 28 Oct 2026: \"On Claude Code, I should be able to sync my claude design with the docs/design ones; they should not drift.\" scripts/design_sync.py (pull, check, selftest) reads the three projects through the claude-design connector by running Claude Code headless and writes each file byte for byte; the design-sync gate and the PR hook run its check, and plan_sync.py selftest runs its offline cases. The drift on 28 Oct 2026 (app's support.js changed in Claude Design, DS v1's five _ds/ files never copied) is in docs/design/reviews/MA-259/drift.md and was pulled. Standalone Claude Design closes by 14 Dec 2026: the options and the recommendation are in docs/design/reviews/MA-259/decision.md, for Arun to pick; the move is MA-260. MA-296 (30 Oct 2026) retired scripts/design_sync.py with the boards' record; this row's code is its decision record.",
       "code": [
-        "scripts/design_sync.py"
+        "docs/design/reviews/MA-259/"
       ]
     },
     {
@@ -7960,12 +7960,8 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-259 (28 Oct 2026), first to follow the boards into Claude with Move to Claude. Settled again on 30 Oct 2026: B, now (Arun: \"for all future design use Local folder and then Claude Artifact. Claude Design is going away, so no need to push to claude design\"; docs/design/reviews/MA-259/decision.md, The pick, changed). The boards are drawn in the repo, their folders kept; scripts/design_sync.py keeps only record, check and published; each design round is a private Artifact and the whole set the MyPaisa Boards Artifact (https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g), republished and stamped whenever a board changes; the rules, skills, docs and the Confluence links say so. The lanes' contract: docs/design/reviews/MA-260/contract.md.",
+      "notes": "Filed from MA-259 (28 Oct 2026), first to follow the boards into Claude with Move to Claude. Settled again on 30 Oct 2026: B, now (Arun: \"for all future design use Local folder and then Claude Artifact. Claude Design is going away, so no need to push to claude design\"; docs/design/reviews/MA-259/decision.md, The pick, changed). The boards are drawn in the repo, their folders kept; scripts/design_sync.py keeps only record, check and published; each design round is a private Artifact and the whole set the MyPaisa Boards Artifact (https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g), republished and stamped whenever a board changes; the rules, skills, docs and the Confluence links say so. The lanes' contract: docs/design/reviews/MA-260/contract.md. MA-296 (30 Oct 2026, Arun: \"I dont need claude-design sync anymore\") retired the record, the stamp, scripts/design_sync.py, scripts/boards_page/ and the MyPaisa Boards Artifact; git is the boards' only record, and each design round is still a private Artifact.",
       "code": [
-        "scripts/design_sync.py",
-        "scripts/boards_page/",
-        "docs/design/claude-design.json",
-        "docs/design/boards-artifact.json",
         "docs/design/reviews/MA-260/"
       ]
     },
@@ -8550,8 +8546,8 @@
       "key": "MA-296",
       "type": "Task",
       "summary": "Retire design_sync, claude-design.json and the MyPaisa Boards Artifact stamp; boards live directly in docs/design/",
-      "status": "To Do",
-      "notes": "Repo tooling: Arun (30 Oct 2026, on MA-295): \"I dont need claude-design sync anymore\"; retires scripts/design_sync.py, scripts/boards_page/, docs/design/claude-design.json, docs/design/boards-artifact.json and the MyPaisa Boards Artifact republishing step (including .claude/hooks/plan_sync_hook.py from Claude Code)"
+      "status": "In Progress",
+      "notes": "Repo tooling: Arun (30 Oct 2026, on MA-295): \"I dont need claude-design sync anymore\"; retires scripts/design_sync.py, scripts/boards_page/, docs/design/claude-design.json, docs/design/boards-artifact.json and the MyPaisa Boards Artifact republishing step (including .claude/hooks/plan_sync_hook.py from Claude Code); the boards are read from their folders by scripts/plan_sync.py check, which keeps refusing a cited board file that is gone and a board folder the trace names that is gone; Confluence links each board to its file on GitHub; each design round's options stay a private Claude Artifact (Arun, 30 Oct 2026)."
     }
   ]
 }

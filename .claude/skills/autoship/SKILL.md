@@ -32,20 +32,11 @@ Uncommitted files that belong to another story are left alone and named.
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured". The `plan-sync` gate
-   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) always applies, and so does
-   the `design-sync` gate (`python3 scripts/design_sync.py check`: every board
-   file matches its record, and the MyPaisa Boards Artifact was published after
-   the record last changed). Before them, when the story drew or changed a
-   board: `python3 scripts/design_sync.py record`; then rebuild the Boards
-   Artifact with `python3 scripts/boards_page/build.py docs/design <out-dir>`
-   (an out-dir outside the repo), read it with the Artifact tool
-   (`action: read`, https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g) and
-   republish `<out-dir>/index.html` to that same URL with `root: docs/design`
-   and `files` from `<out-dir>/files.json`; then
-   `python3 scripts/design_sync.py published` stamps it. Every time, run
+   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) always applies; it reads
+   the boards as they are on disk (git is their only record, MA-296). Every time, run
    `/plan-sync --confluence`, so every page the change re-rendered is
    published; and if the story changed a board, a phase or a story, run
-   `/plan-sync MA-<n>` too, so the trace, the board record, Confluence and
+   `/plan-sync MA-<n>` too, so the trace, Confluence and
    Jira agree before the PR.
 2. **No review yet.** The independent review from `~/.claude/CLAUDE.md` is
    opt-in in this repo and offered at the merge question (step 3,

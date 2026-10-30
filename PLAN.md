@@ -395,13 +395,12 @@ Claude's:
   byte (MA-259). Standalone Claude Design closes by 14 Dec 2026, and on
   30 Oct 2026 you chose: "for all future design use Local folder and then
   Claude Artifact. Claude Design is going away, so no need to push to claude
-  design". So the boards are drawn in the repo, their folders kept;
-  `python3 scripts/design_sync.py record` writes each file's size and hash
-  into the record and `check` fails before every PR (a gate and the PR hook)
-  on any file that differs from it. You review each design round as a private
-  Claude Artifact, and the whole set in the MyPaisa Boards Artifact,
-  republished whenever a board changes (MA-260;
-  `docs/design/reviews/MA-259/decision.md`).
+  design". So the boards are drawn in the repo, their folders kept, and
+  you review each design round as a private Claude Artifact (MA-260;
+  `docs/design/reviews/MA-259/decision.md`). Since MA-296 (30 Oct 2026, "I
+  dont need claude-design sync anymore") git is the boards' only record:
+  no record file, no whole-set Boards Artifact to republish, and
+  `python3 scripts/plan_sync.py check` reads every board as it is on disk.
 - **The future-plans design (MA-264):** the screens MA-261's future plans
   need, drawn before anything is built, from one figure set
   (`docs/design/figures/future-plans-v4.json`: MA-193's household with its

@@ -590,10 +590,10 @@
    "F",
    "E"
   ],
-  "finding": "MA-241's pick was not recorded the same way everywhere: the board's plan strip still said Options, not picked and B's badge Option, decision.md said the board was not in Claude Design, and the board as picked must be the copy in Claude Design (round 2: E5, F1)",
+  "finding": "MA-241's pick was not recorded the same way everywhere: the board's plan strip still said Options, not picked and B's badge Option, decision.md said the board was not in Claude Design, and the board as picked must be the copy in Claude Design (round 2: E5, F1); since MA-296 git is the board's only record, so the check reads the board in docs/design/ds-v1/ itself, as picked",
   "check": {
    "type": "cmd",
-   "run": "python3 -I -c 'import hashlib, json, re\np = \"docs/design/ds-v1/Kind icons.dc.html\"\nb = open(p, encoding=\"utf-8\").read()\nd = open(\"docs/design/reviews/MA-241/decision.md\", encoding=\"utf-8\").read()\no = {x[\"tid\"]: x for x in json.loads(re.search(r\"const K = (\\{.*?\\});\\n\", b, re.S).group(1))[\"options\"]}\nassert o[\"B\"].get(\"picked\") is True and not o[\"B\"].get(\"notRec\") and not o[\"A\"].get(\"picked\") and not o[\"C\"].get(\"picked\"), \"B is not the one option badged Picked\"\nassert re.search(r\"class=\\\"plan-s\\\">Picked: B\\b\", b) and not re.search(r\"not\\s+picked\", b, re.I), \"the plan strip does not say Picked: B\"\nassert not re.search(r\"not\\s+written\\s+to\\s+Claude\\s+Design|does\\s+not\\s+record\\s+it|unrecorded\\s+mirror\\s+file|no\\s+claude\\.ai/design\\s+link\", d, re.I), \"decision.md says the board is not in Claude Design\"\nassert \"https://claude.ai/design/p/2f7310cd-e56a-4d13-8339-8fc637249c9a?file=Kind+icons.dc.html\" in d, \"decision.md has no link to the board\"\nm = json.load(open(\"docs/design/claude-design.json\"))[\"ds\"][\"files\"][\"Kind icons.dc.html\"]\nassert hashlib.sha256(open(p, \"rb\").read()).hexdigest() == m[\"sha256\"], \"the board as picked is not the one claude-design.json records (its hash differs; since MA-260 the record is kept in the repo)\"'"
+   "run": "python3 -I -c 'import json, re\np = \"docs/design/ds-v1/Kind icons.dc.html\"\nb = open(p, encoding=\"utf-8\").read()\nd = open(\"docs/design/reviews/MA-241/decision.md\", encoding=\"utf-8\").read()\no = {x[\"tid\"]: x for x in json.loads(re.search(r\"const K = (\\{.*?\\});\\n\", b, re.S).group(1))[\"options\"]}\nassert o[\"B\"].get(\"picked\") is True and not o[\"B\"].get(\"notRec\") and not o[\"A\"].get(\"picked\") and not o[\"C\"].get(\"picked\"), \"B is not the one option badged Picked\"\nassert re.search(r\"class=\\\"plan-s\\\">Picked: B\\b\", b) and not re.search(r\"not\\s+picked\", b, re.I), \"the plan strip does not say Picked: B\"\nassert not re.search(r\"not\\s+written\\s+to\\s+Claude\\s+Design|does\\s+not\\s+record\\s+it|unrecorded\\s+mirror\\s+file|no\\s+claude\\.ai/design\\s+link\", d, re.I), \"decision.md says the board is not in Claude Design\"\nassert \"https://claude.ai/design/p/2f7310cd-e56a-4d13-8339-8fc637249c9a?file=Kind+icons.dc.html\" in d, \"decision.md has no link to the board\"'"
   }
  },
  {
@@ -606,7 +606,7 @@
   "finding": "Jira MA-241's description still read 2 or 3 options and Arun picks one, with the pick only in a comment, and the comment said the board goes to Claude Design after MA-240's review (round 2: E5, F1)",
   "check": {
    "type": "manual",
-   "what": "Jira MA-241's description names the pick (B, Settings squircles, Arun 27 Oct 2026, A was recommended), links the board (MyPaisa DS v1, Kind icons: its Claude Design link as written then, or since MA-260 the MyPaisa Boards Artifact's #ds-kind-icons), lists the open questions and the remaining states the trace row lists, and no comment says the board is still to go to Claude Design."
+   "what": "Jira MA-241's description names the pick (B, Settings squircles, Arun 27 Oct 2026, A was recommended), links the board (MyPaisa DS v1, Kind icons: its Claude Design link as written then, or since MA-260 the MyPaisa Boards Artifact's #ds-kind-icons, retired by MA-296, so any link to the board then stands), lists the open questions and the remaining states the trace row lists, and no comment says the board is still to go to Claude Design."
   }
  },
  {

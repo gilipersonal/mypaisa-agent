@@ -2,13 +2,13 @@
 """This repo's plan-sync hooks (MA-228); .claude/settings.json runs them, in this repo only.
 
     plan_sync_hook.py after-edit   PostToolUse on Edit|Write|MultiEdit: after an edit to a record (the trace, the
-                                   roadmap, PLAN, ARCHITECTURE, the boards and their record, the Confluence pages, the code),
+                                   roadmap, PLAN, ARCHITECTURE, the boards, the Confluence pages, the code),
                                    run the check and tell the session about drift the edit introduced
-    plan_sync_hook.py before-pr    PreToolUse on Bash: refuse `gh pr create` and `gh pr ready` while the check fails, or
-                                   while scripts/design_sync.py check fails: a board in docs/design/ that differs from its
-                                   record, or a MyPaisa Boards Artifact published before the boards last changed (MA-260)
+    plan_sync_hook.py before-pr    PreToolUse on Bash: refuse `gh pr create` and `gh pr ready` while the check fails,
+                                   says nothing of why, or cannot run (the boards are read from docs/design/ by the check
+                                   itself; MA-296 retired their separate record and the Boards Artifact's stamp)
     plan_sync_hook.py selftest     offline: each hook finds the checkout a call acts on (a worktree, not main beside it),
-                                   and the PR hook refuses while the boards' check fails or cannot run
+                                   and the PR hook refuses while the check fails or cannot run
     plan_sync_hook.py new-work     UserPromptSubmit: when the prompt talks about a new design or feature, remind the
                                    session that it gets a Jira issue and its Confluence page in the same change
 
@@ -30,7 +30,7 @@ from pathlib import Path
 
 ROOT = Path(os.environ.get("CLAUDE_PROJECT_DIR") or Path(__file__).resolve().parents[2])
 RECORDS = re.compile(r"^(docs/trace\.json|docs/roadmap\.json|docs/confluence|docs/design/|PLAN\.md|ARCHITECTURE\.md|TECH_STACK\.md|README\.md"
-                     r"|scripts/(plan_sync|roadmap|confluence_docs|design_sync)\.py|web/|ios/|src/|infra/)")
+                     r"|scripts/(plan_sync|roadmap|confluence_docs)\.py|web/|ios/|src/|infra/)")
 NEW_WORK = re.compile(r"\b(new (feature|screen|page|flow|design|card|story|kind)|redesign|design (a|the|for|new)|feature|mock-?up|wireframe"
                       r"|ux|ui change|board|add (a|an|the) .{0,40}(screen|page|button|card|chart|flow|tab)|can we (have|add|build)"
                       r"|i (want|need) (a|an|the|to see))\b", re.I)
@@ -69,8 +69,8 @@ def pr_checkout(before: str, cwd: str | None) -> Path:
 
 
 def selftest() -> int:
-    """Offline: the hooks find the checkout a call acts on, and the PR hook refuses a PR while the boards' check fails
-    (MA-260), in throwaway repos; plan_sync.py selftest runs it."""
+    """Offline: the hooks find the checkout a call acts on, and the PR hook refuses a PR while the check fails or cannot
+    run (MA-260, MA-296), in throwaway repos; plan_sync.py selftest runs it."""
     bad = 0
     with tempfile.TemporaryDirectory() as t:
         main, wt, other = Path(t) / "main", Path(t) / "main" / ".claude" / "worktrees" / "a b", Path(t) / "plain"
@@ -93,25 +93,21 @@ def selftest() -> int:
             if got.resolve() != want.resolve():
                 bad += 1
                 print(f"FAIL: plan-sync hook, {what}: chose {got}, not {want}")
-        # The PR hook runs the boards' offline check in that checkout and fails closed (MA-260): a stand-in check that
-        # passes, one that reports drift, one that exits without a word, and none at all.
+        # The PR hook runs the check in that checkout and fails closed (MA-260; MA-296 folded the boards' check into it):
+        # a stand-in check that passes, one that reports drift, one that exits without a word, and one that cannot run.
         gate = Path(t) / "gate"
         (gate / "scripts").mkdir(parents=True)
-        (gate / "scripts" / "plan_sync.py").write_text("import sys\nsys.exit(0)\n")
         subprocess.run(["git", "init", "-q", str(gate)], check=True)
         raise_pr, ready_pr = "gh pr " + "create -t x", "git add -A && gh pr " + "ready 7"
         stand_ins = [
-            ("a clean check", "import sys\nprint('design-sync: 1 files recorded, 0 drift')\nsys.exit(0)\n", raise_pr, 0),
-            ("a board out of its record", "import sys\nprint('DRIFT: boards: x is 2 bytes, recorded 1')\nsys.exit(1)\n", raise_pr, 2),
+            ("a clean check", "import sys\nprint('plan-sync: 1 items, 0 drift, 0 notes')\nsys.exit(0)\n", raise_pr, 0),
+            ("a board out of step", "import sys\nprint('DRIFT: board date: x says Thu 23 Oct, a wrong weekday')\nsys.exit(1)\n", raise_pr, 2),
             ("a check that exits without a word", "import sys\nsys.exit(3)\n", ready_pr, 2),
-            ("no check at all", None, raise_pr, 2),
+            ("a check that cannot run", "import sys\nthis is not python\n", raise_pr, 2),
             ("a command that raises no PR", "import sys\nsys.exit(1)\n", "echo notes > notes.txt", 0),
         ]
         for what, body, cmd, want in stand_ins:
-            ds = gate / "scripts" / "design_sync.py"
-            ds.unlink(missing_ok=True)
-            if body is not None:
-                ds.write_text(body)
+            (gate / "scripts" / "plan_sync.py").write_text(body)
             with contextlib.redirect_stderr(io.StringIO()):
                 got = before_pr({"tool_input": {"command": cmd}, "cwd": str(gate)})
             if got != want:
@@ -122,20 +118,15 @@ def selftest() -> int:
 
 
 def drift(root: Path = ROOT) -> tuple[int, list[str]]:
-    r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True, cwd=root, timeout=120)
-    return r.returncode, [ln[len("DRIFT: "):] for ln in r.stdout.splitlines() if ln.startswith("DRIFT: ")]
-
-
-def design_drift(root: Path = ROOT) -> tuple[int, list[str]]:
-    """The boards against their record and the Boards Artifact's stamp, offline (MA-260). Fails closed: a check that
-    cannot run, or exits without saying why, is drift too."""
+    """The check's drift, offline, boards included. Fails closed (MA-260): a check that cannot run, runs too long, or
+    exits without saying why, is drift too."""
     try:
-        r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "design_sync.py"), "check"], capture_output=True, text=True,
+        r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True,
                            cwd=root, timeout=120)
     except subprocess.TimeoutExpired:
-        return 1, ["boards: the check took over 120 s"]
+        return 1, ["the check took over 120 s"]
     lines = [ln[len("DRIFT: "):] for ln in r.stdout.splitlines() if ln.startswith("DRIFT: ")]
-    return r.returncode, lines or ([f"boards: the check exited {r.returncode}: {(r.stderr or r.stdout).strip()[-300:]}"] if r.returncode else [])
+    return r.returncode, lines or ([f"the check exited {r.returncode}: {(r.stderr or r.stdout).strip()[-300:]}"] if r.returncode else [])
 
 
 def say(event: str, text: str) -> None:
@@ -177,17 +168,10 @@ def before_pr(data: dict) -> int:
         return 0
     root = pr_checkout(cmd[:m.start()], data.get("cwd"))
     code, lines = drift(root)
-    if code != 0:
-        print(f"plan-sync check reports {len(lines)} drift; the plan, Jira, the designs, Confluence and the code must agree before a PR "
-              "(.claude/rules/plan-sync.md). First items:\n- " + "\n- ".join(lines[:10]), file=sys.stderr)
-        return 2
-    code, lines = design_drift(root)
     if code == 0:
         return 0
-    print(f"design-sync check reports {len(lines)} drift: before a PR every board in docs/design/ matches its record and the MyPaisa "
-          "Boards Artifact was published after the last change. After a board edit: `python3 scripts/design_sync.py record`, rebuild "
-          "and republish the Boards Artifact, then `python3 scripts/design_sync.py published` (.claude/rules/plan-sync.md, rule 7). "
-          "First items:\n- " + "\n- ".join(lines[:10]), file=sys.stderr)
+    print(f"plan-sync check reports {len(lines)} drift; the plan, Jira, the designs, Confluence and the code must agree before a PR "
+          "(.claude/rules/plan-sync.md). First items:\n- " + "\n- ".join(lines[:10]), file=sys.stderr)
     return 2
 
 

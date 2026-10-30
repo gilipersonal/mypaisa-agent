@@ -68,13 +68,13 @@ def tile(src: Path | None, w: int, max_h: int, title: str, sub: str, state: str)
             im.paste(fade, (0, max_h - 120), fade)
     else:
         im, cut = Image.new("RGB", (w, 240), BG), False
-        ImageDraw.Draw(im).text((24, 100), "Not captured: open it in MyPaisa Boards", font=f2, fill=INK3)
+        ImageDraw.Draw(im).text((24, 100), "Not captured: open its file in docs/design/", font=f2, fill=INK3)
     card = Image.new("RGB", (w, im.height + cap_h), CARD)
     card.paste(im, (0, 0))
     d = ImageDraw.Draw(card)
     y = im.height + 14
     if cut:
-        d.text((16, im.height - 34), "continues in MyPaisa Boards", font=f2, fill=INK2)
+        d.text((16, im.height - 34), "continues in its file in docs/design/", font=f2, fill=INK2)
     d.line([(0, im.height), (w, im.height)], fill=LINE, width=2)
     for ln in lines:
         d.text((16, y), ln, font=f1, fill=INK)

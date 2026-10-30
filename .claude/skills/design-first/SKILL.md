@@ -43,8 +43,7 @@ with one obvious fix. When unsure whether something is a design change, treat it
     (`docs/design/ds-v1/`); for the web app, the browser boards in MyPaisa app v1 (`docs/design/app-v1/`:
     `Browser · ...`, at desktop and at 390; the whole-wealth boards and the clickable prototype are drawn on MA-193);
     the Mini App and Telegram boards in `app-v1/` and the Nocturne artboards in `docs/design/dashboard/` are the
-    superseded record, read only for a flow Arun already picked; every board is also in the MyPaisa Boards Artifact
-    (https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g), as Arun sees it; `agent-journey.html` and `market-agent.html`
+    superseded record, read only for a flow Arun already picked; `agent-journey.html` and `market-agent.html`
     for the explainers;
   - earlier reviews for the same surface in `docs/design/reviews/` (`MA-161/decision.md` for the shell, the size
     classes and Liquid Glass).
@@ -217,23 +216,19 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   for the app, `ios.css`. A design that is not a board set, such as a prototype, gets its own folder under
   `docs/design/` and loads the shared files from a board folder (`../app-v1/tokens.css`, as `prototype-v5/` does);
   the board gate must list it among its repo-only boards, or it is never measured.
-- **Recording.** After drawing or editing, run `python3 scripts/design_sync.py record`: it writes each board file's
-  bytes and sha256 into `docs/design/claude-design.json`, and `python3 scripts/design_sync.py check` then passes. A
-  file removed on purpose is forgotten only with `python3 scripts/design_sync.py record --drop <dir>/<file>`, and every
-  trace row that names its boards changes in the same change.
+- **No record to write.** Git is the boards' only record (MA-296): there is no record file to update after drawing.
+  A file removed on purpose takes every trace row that names its boards with it, in the same change
+  (`python3 scripts/plan_sync.py check` refuses a cited board that is gone).
 - **`tokens.css` and the motion files are copied** from `ds-v1/` into `ios-v1/` and `app-v1/`, with `ios.css`, byte
-  for byte, after every change, and recorded (`record`): each board loads the copy beside it. A snapshot of
+  for byte, after every change: each board loads the copy beside it. A snapshot of
   `tokens.css` goes into `docs/design/reviews/MA-<n>/` at the end of the round, as its record. `docs/design/ds-v1/`
   is the source; once `ios/` exists, its colour assets are generated from it (MA-165). A token change is measured
   before it is copied: change `ds-v1/` and run `python3 scripts/contrast_check.py --report`, where every pair
-  must pass and only the copies not yet made may fail; after the copies and `record` the whole gate
+  must pass and only the copies not yet made may fail; after the copies the whole gate
   (`--selftest`, then the plain run) passes.
-- **Where Arun looks: private Claude Artifacts.** Each round is published as one (step 3). The whole set is the
-  MyPaisa Boards Artifact, https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g; a board's own link adds `#<id>`, the
-  folder's prefix (`ios`, `app`, `ds`) and the file name without `.dc.html`, lower case, every run of other
-  characters one hyphen (`#ios-iphone-v4-home` for `ios-v1/iPhone v4 · Home.dc.html`). When a board changes, it is
-  rebuilt with `python3 scripts/boards_page/build.py docs/design <out-dir>`, republished to the same URL and stamped
-  with `python3 scripts/design_sync.py published` before the PR (`/autoship` does it); `check` fails until then.
+- **Where Arun looks: a private Claude Artifact per round.** Each round is published as one (step 3), and its link
+  goes in the round's `decision.md`. There is no whole-set Artifact to republish when a board changes (MA-296 retired
+  the MyPaisa Boards Artifact); a board is otherwise linked by its file in the repo.
 - **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in
   Arun's words, the round's Artifact link, the options with rationale and trade-offs, what the build would touch, the
   glitches found and fixed, the pick and its date), the round's host page (`options.html`, step 3) and `tokens.css`.
@@ -274,9 +269,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **The pick.** Record it in `decision.md` and on the MA issue. Then keep the plan in sync (`.claude/rules/plan-sync.md`):
   in `docs/trace.json` set the story's `design` to `picked` and list the picked boards (each board's note names its
   Jira keys), clear each `undrawn` item this round drew and say `Drawn: <the item, as it was listed>` in the notes;
-  run `python3 scripts/design_sync.py record` for the boards this round drew or changed in `docs/design/ios-v1/`,
-  `app-v1/` or `ds-v1/`; then `python3 scripts/plan_sync.py render` and `check`. The MyPaisa Boards Artifact is
-  rebuilt, republished and stamped before the PR (`/autoship`, step 1).
+  then `python3 scripts/plan_sync.py render` and `check`.
   - "None of these", or feedback, means another round: back to step 1, in the same folders as new files or a new
     vN, published again to the round's Artifact.
 
@@ -285,7 +278,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **When.** Only after Arun picks an option in the current request. Build that option only.
 - **How.** On the same branch:
   1. Update the spec first when the pick changes it: the boards at every size class in `docs/design/ios-v1/` and the
-     browser boards in `docs/design/app-v1/`, recorded with `python3 scripts/design_sync.py record`, or the example
+     browser boards in `docs/design/app-v1/`, or the example
      cards in `ARCHITECTURE.md` §9.2. Republishing an explainer page's artifact is Arun's call; ask.
   2. Build with impeccable, comp-led when the pick includes an approved comp: `ios/` for the app (the React Native
      shell in TypeScript, and every piece a member looks at in SwiftUI, hosted through a Fabric component and fed one
@@ -303,5 +296,5 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
      text; Playwright screenshots of the web app at 390 and 1440 in both themes; or the card as each door draws it.
 - **Then ship with `/autoship`.** In this repo the PR, In Review and the checks go without asking; only the merge into
   `main` asks (`.claude/rules/ship-autopilot.md`).
-- **Afterwards.** The boards stay in `docs/design/`, recorded in `claude-design.json` and shown in the MyPaisa Boards
-  Artifact, and the record in `docs/design/reviews/`.
+- **Afterwards.** The boards stay in `docs/design/`, with git as their record, and the round's record in
+  `docs/design/reviews/`.
