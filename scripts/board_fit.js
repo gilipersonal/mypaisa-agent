@@ -130,15 +130,26 @@ function serve(root) {
 }
 
 const REPO_BOARDS = ['prototype-v5/Prototype v5.dc.html'];
-// the current boards: every .dc.html the boards' record lists (docs/design/claude-design.json, MA-260) but the superseded
-// record and the prototype's parts, and the boards outside the three board folders
-// base: the tree of an older ref a diff compares against, where a repo-only board added since is simply absent (MA-293)
+// every file under a folder, as paths relative to it, in a stable order
+function filesUnder(base, rel = '') {
+  const out = [];
+  for (const e of fs.readdirSync(path.join(base, rel), { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    const r = rel ? rel + '/' + e.name : e.name;
+    if (e.isDirectory()) out.push(...filesUnder(base, r)); else if (e.isFile()) out.push(r);
+  }
+  return out;
+}
+
+// the current boards: every .dc.html in the three board folders, read from disk (git is their only record since MA-296),
+// but the superseded record and the prototype's parts, and the boards outside the three board folders
+// base: the tree of an older ref a diff compares against, where a board added since is simply absent (MA-293)
 function boards(design, only = ONLY, base = false) {
-  const rec = JSON.parse(fs.readFileSync(path.join(design, 'claude-design.json'), 'utf8'));
-  const dirs = { app: 'app-v1', ios: 'ios-v1', ds: 'ds-v1' };
   const skip = new RegExp(ALLOW.superseded.pattern);
   const out = [];
-  for (const [p, d] of Object.entries(dirs)) for (const f of Object.keys(rec[p].files)) if (f.endsWith('.dc.html') && !skip.test(f)) out.push(d + '/' + f);
+  for (const d of ['app-v1', 'ios-v1', 'ds-v1']) {
+    if (!fs.existsSync(path.join(design, d))) throw new Error('board_fit: the board folder ' + d + ' is missing');  // fails closed
+    for (const f of filesUnder(path.join(design, d))) if (f.endsWith('.dc.html') && !skip.test(f)) out.push(d + '/' + f);
+  }
   // the design records with a folder of their own, outside the three board folders (MA-291: Prototype v5, docs/design/prototype-v5/)
   for (const b of REPO_BOARDS) if (fs.existsSync(path.join(design, b))) out.push(b); else if (!base) throw new Error('board_fit: ' + b + ' is listed but missing');
   return out.filter((b) => !only || new RegExp(only).test(b)).sort();

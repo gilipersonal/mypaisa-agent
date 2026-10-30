@@ -3,8 +3,7 @@
 
 Confluence (space mypaisaa-agent) is the fifth record beside PLAN.md and ARCHITECTURE.md, Jira, the boards in
 docs/design/ and the code (.claude/rules/plan-sync.md). Every page is rendered here from docs/trace.json, PLAN.md,
-ARCHITECTURE.md, docs/roadmap.json, the design decision records and the boards' record (docs/design/claude-design.json),
-written to docs/confluence/<page>.html, and
+ARCHITECTURE.md, docs/roadmap.json, the design decision records and the boards in docs/design/, written to docs/confluence/<page>.html, and
 published through the Atlassian MCP by /plan-sync. docs/confluence.json records each page's id, the version
 published and the hash of the HTML sent, and each board preview's media id and the boards it shows.
 
@@ -33,7 +32,6 @@ import roadmap  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 TRACE = ROOT / "docs" / "trace.json"
-MIRROR = ROOT / "docs" / "design" / "claude-design.json"  # the boards' record; the name is history (MA-260)
 PLAN = ROOT / "PLAN.md"
 MANIFEST = ROOT / "docs" / "confluence.json"
 PAGES = ROOT / "docs" / "confluence"
@@ -42,7 +40,6 @@ REVIEWS = ROOT / "docs" / "design" / "reviews"
 JIRA = "https://duttaarun2015.atlassian.net"
 CLOUD_ID = "81c51173-bbea-4905-bbc5-1a880fa348bb"
 GITHUB = "https://github.com/gilipersonal/mypaisa-agent/blob/main/"
-BOARDS = "https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g"  # the MyPaisa Boards Artifact; a board opens at #<id> (MA-260)
 ARTIFACTS = {
     "Inside MyPaisa": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
     "MyPaisa Architecture v4": "https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9",
@@ -152,7 +149,8 @@ SHEET_MAX = 16  # boards in one phase preview; a screen area's file takes up to 
 FILE_SHEET_MAX = 24
 PLATFORMS = {"web": ("web", "phone"), "ios": ("iphone", "ipad"), "system": ("system",)}
 PLATFORM_NAMES = {"web": "The web app", "ios": "The iOS app", "system": "The design system"}
-LAYOUT = "sheet-v2"  # bump to recompose every preview (v2, MA-260: the captions name MyPaisa Boards and the repo, not Claude Design)
+LAYOUT = "sheet-v2"  # bump to recompose every preview (v2, MA-260: the captions name MyPaisa Boards and the repo, not Claude Design;
+# MA-296's captions name the board's file in docs/design/, and reach each preview as its boards change, unbumped)
 DECISIONS = ["MA-193", "MA-161", "MA-156", "MA-102", "MA-103", "MA-101"]
 # The parts of a decision record copied to Confluence: the request, the options, the boards and the pick.
 DECISION_PARTS = ("The request", "What changes, in one table", "Where the designs are", "The boards", "The options",
@@ -199,17 +197,9 @@ def date(iso: str | None) -> str:
     return f'<time datetime="{iso}">{roadmap.fmt(iso)}</time>' if iso else ""
 
 
-def board_id(folder: str, file: str) -> str:
-    """A board file's id in the MyPaisa Boards Artifact: the folder's prefix (ios, app, ds) and the file name without
-    .dc.html, lower case, every run of other characters one hyphen (`ios-iphone-v4-home`). The same rule as
-    scripts/boards_page/build.py's board_id, which fails its build if the two ever differ."""
-    name = file.removesuffix(".dc.html")
-    return re.sub(r"[^a-z0-9]+", "-", (Path(folder).name.split("-")[0] + " " + name).lower()).strip("-")
-
-
 def board_url(trace: dict, project: str, file: str) -> str:
-    """The link that opens one board file in the MyPaisa Boards Artifact."""
-    return f'{BOARDS}#{board_id(trace["claude_design"][project]["dir"], file)}'
+    """The link that opens one board file: the file in the repo on GitHub, its only home and record since MA-296."""
+    return gh(f'{trace["claude_design"][project]["dir"]}/{file}')
 
 
 def gh(path: str) -> str:
@@ -399,7 +389,6 @@ class Ctx:
     def __init__(self) -> None:
         self.trace = load(TRACE)
         self.rm = load(roadmap.ROADMAP)
-        self.mirror = load(MIRROR)
         self.manifest = load(MANIFEST) if MANIFEST.exists() else {"pages": {}, "images": {}}
         self.sections = arch_sections()
         self.plan = plan_sections()
@@ -422,7 +411,10 @@ class Ctx:
         return f'<a href="{url}">{esc(text)}</a>' if url else esc(text)
 
     def file_sha(self, project: str, file: str) -> str:
-        return self.mirror.get(project, {}).get("files", {}).get(file, {}).get("sha256", "")
+        """A board file's sha256 as it is on disk (MA-296: no record beside the boards); a file that is gone has none,
+        so a preview of it is stale."""
+        path = ROOT / self.trace["claude_design"].get(project, {}).get("dir", "") / file
+        return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else ""
 
 
 def door_of(board: str, project: str) -> str:
@@ -863,7 +855,7 @@ def render_hub(ctx: Ctx) -> str:
         + jql_link("project = MA AND issuetype = Epic ORDER BY duedate", "the epics by due date") + "</li>"
         f'<li><strong>The plan</strong>: <a href="{gh("PLAN.md")}">PLAN.md</a>, <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>, '
         f'<a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a>, <a href="{gh("docs/TRACE.md")}">the trace</a>, <a href="{gh("docs/roadmap.json")}">the estimates</a></li>'
-        f'<li><strong>The boards</strong>: <a href="{BOARDS}">MyPaisa Boards</a>, every board in one private Claude Artifact; drawn in '
+        f'<li><strong>The boards</strong>: drawn and kept in the repo, in '
         f'<a href="{gh("docs/design/app-v1")}">MyPaisa app v1</a> (the web app), <a href="{gh("docs/design/ios-v1")}">MyPaisa iOS v1</a> (iPhone and iPad) '
         f'and <a href="{gh("docs/design/ds-v1")}">MyPaisa DS v1</a> (the design system)</li>'
         + "".join(f'<li><strong>{esc(t)}</strong>: <a href="{u}" data-card-appearance="inline"></a></li>' for t, u in ARTIFACTS.items())
@@ -1007,9 +999,9 @@ def render_screens(ctx: Ctx) -> str:
         states = [board_state(ctx, r) for r in refs]
         out.append(f"<tr><td>{ctx.link('screens-' + a[0], a[1])}</td><td>{len(a[3])}</td><td>{len(refs)}</td>"
                    + cell(str(states.count("picked")), "#E3FCEF") + cell(str(states.count("planned")), "#DEEBFF") + "</tr>")
-    out.append(f'</tbody></table><h2>The boards</h2><p>Every board is in <a href="{BOARDS}">MyPaisa Boards</a>, a private Claude Artifact '
-               "that lists them by set and opens each beside the list. They are drawn and edited in the repo (MA-260); before 30 Oct 2026 "
-               "they were drawn in standalone Claude Design and copied in.</p><ul>" + "".join(
+    out.append('</tbody></table><h2>The boards</h2><p>Every board is drawn, edited and kept in the repo, in the folders below, and git is '
+               "its history (MA-260, MA-296); before 30 Oct 2026 they were drawn in standalone Claude Design and copied in. Each design round's "
+               "options are shown to Arun as a private Claude Artifact to pick from.</p><ul>" + "".join(
         f'<li><a href="{gh(v["dir"])}">{esc(v["name"])}</a> ({esc(v["dir"])}/)</li>' for v in ctx.trace["claude_design"].values()) + "</ul>")
     return "".join(out) + footer(ctx)
 
@@ -1023,7 +1015,7 @@ def render_area(ctx: Ctx, area: tuple) -> str:
         if not refs:
             continue
         project = refs[0][0]
-        body = [f'<p><a href="{board_url(ctx.trace, project, f)}">Open in MyPaisa Boards</a> · {esc(ctx.trace["claude_design"][project]["name"])}'
+        body = [f'<p><a href="{board_url(ctx.trace, project, f)}">Open the board file</a> · {esc(ctx.trace["claude_design"][project]["name"])}'
                 + (" · superseded by MA-161, kept as the record" if f in SUPERSEDED_FILES else "") + "</p>"]
         body += [image(ctx, name, f"{f.removesuffix('.dc.html')}: {len(b)} boards") for name, ff, b in file_sheets(ctx, key) if ff == f]
         body.append("<table><thead><tr><th>Board</th><th>State</th><th>Stories</th><th>Phase</th></tr></thead><tbody>")
@@ -1099,9 +1091,8 @@ def render_sync(ctx: Ctx) -> str:
         f'<tr><td data-background="#EAE6FF">The plan</td><td><a href="{gh("PLAN.md")}">PLAN.md</a>, <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>, '
         f'<a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a>, <a href="{gh("docs/roadmap.json")}">docs/roadmap.json</a></td><td>What is built, in which phase, to which design, and when</td></tr>'
         '<tr><td data-background="#DEEBFF">Jira</td><td>Project MA: an epic per phase, a story or task per deliverable</td><td>Who does what, its status, each epic\'s due date</td></tr>'
-        '<tr><td data-background="#FFFAE6">The designs</td><td>The boards, drawn and edited in docs/design/ (MyPaisa app v1, iOS v1, DS v1), each file\'s size and '
-        'sha256 in docs/design/claude-design.json; reviewed as private Claude Artifacts, the whole set in '
-        f'<a href="{BOARDS}">MyPaisa Boards</a></td><td>What a member sees</td></tr>'
+        '<tr><td data-background="#FFFAE6">The designs</td><td>The boards, drawn, edited and kept in docs/design/ (MyPaisa app v1, iOS v1, DS v1), '
+        'git their history; each design round\'s options reviewed as a private Claude Artifact</td><td>What a member sees</td></tr>'
         '<tr><td data-background="#E3FCEF">Confluence</td><td>This space, rendered from the repo into docs/confluence/</td><td>The plan as one readable tree, phase by phase and screen by screen</td></tr>'
         f'<tr><td data-background="#FFEBE6">The code</td><td>web/, ios/, src/, infra/, and each story\'s code paths in <a href="{gh("docs/trace.json")}">the trace</a></td><td>What was built, traced to its story</td></tr>'
         "</tbody></table>",
@@ -1111,11 +1102,10 @@ def render_sync(ctx: Ctx) -> str:
         "<li><strong>The live side.</strong> <code>/plan-sync</code> compares each page's version here, each epic's due date and every story's key, epic, labels and status in Jira, and fixes or files what differs.</li>"
         '<li><strong>The designs, in the repo</strong> (MA-260). Arun, 30 Oct 2026: "for all future design use Local folder and then Claude '
         'Artifact. Claude Design is going away, so no need to push to claude design". The boards are drawn and edited in docs/design/, and '
-        "nothing is read from or written to Claude Design again. <code>python3 scripts/design_sync.py record</code> writes each board file's size "
-        "and sha256 into the record; <code>check</code>, offline, fails on a file that no longer matches its record, a file the record does not "
-        "list, a recorded file that is gone, or a MyPaisa Boards Artifact published before the boards changed. It runs before every PR, as a gate, "
-        "in the PR hook and in CI. Each design round's options are published as a private Claude Artifact for Arun to look at, comment on and pick "
-        f'from, and the whole set is republished to <a href="{BOARDS}">MyPaisa Boards</a>, at the same link, whenever a board changes. Until 30 Oct '
+        "nothing is read from or written to Claude Design again. Git is the boards' only record (MA-296: \"I dont need claude-design sync "
+        "anymore\"): there is no record file to update and no whole-set Artifact to republish; <code>python3 scripts/plan_sync.py check</code> "
+        "reads every board as it is on disk. Each design round's options are published as a private Claude Artifact for Arun to look at, "
+        "comment on and pick from. Until 30 Oct "
         "2026 the boards were drawn in standalone Claude Design, which closes by 14 Dec 2026, and copied in (MA-259); the choice is recorded "
         "in docs/design/reviews/MA-259/decision.md.</li>"
         "<li><strong>The hooks</strong>, in this repo only. After an edit to a record, the check runs and reports drift at once. Raising a PR with drift is refused. When a new design or feature is discussed, the session is reminded to file its Jira issue and its Confluence page in the same change.</li></ul>",

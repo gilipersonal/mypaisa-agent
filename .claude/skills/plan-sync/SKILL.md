@@ -1,14 +1,14 @@
 ---
 name: plan-sync
-description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates), with the boards in docs/design/ (MyPaisa iOS v1, DS v1 and app v1: each file against its record in claude-design.json, and the MyPaisa Boards Artifact's stamp) and with the Confluence space mypaisaa-agent (pages, versions, board previews); record changed boards and republish the Boards Artifact, publish the pages rendered from the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
+description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates), with the boards in docs/design/ (MyPaisa iOS v1, DS v1 and app v1, read as they are on disk; git is their only record) and with the Confluence space mypaisaa-agent (pages, versions, board previews); publish the pages rendered from the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
 ---
 
 # Plan sync
 
 The rule is `.claude/rules/plan-sync.md`; the trace's schema is
 `reference/trace-schema.md` in this skill. This skill is the half of the
-check that needs Jira, Confluence and the Artifact tool; `scripts/plan_sync.py`
-and `scripts/design_sync.py` are the repo-side half and run as gates.
+check that needs Jira and Confluence; `scripts/plan_sync.py` is the
+repo-side half and runs as a gate.
 
 Arguments: `MA-<n>` (one story, before it starts), `--all` (everything; the
 default), `--jira`, `--design` or `--confluence` (one side only).
@@ -19,11 +19,10 @@ transitions in `.claude/jira-flow.json`. The board folders in
 copies of Claude Design's projects (`ios`: MyPaisa iOS v1, the app's screens
 since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the web app's
 browser boards, its spec, beside the superseded Mini App and Telegram boards).
-The MyPaisa Boards Artifact: https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g.
 Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
 `mcp__atlassian__editJiraIssue`, `mcp__atlassian__createJiraIssue`,
 `mcp__atlassian__addOrEditJiraIssueComment` (the boards are read by
-`scripts/design_sync.py`, offline, no tool to load), and for Confluence (space `mypaisaag`, id
+`scripts/plan_sync.py`, offline, no tool to load), and for Confluence (space `mypaisaag`, id
 `196872`) `mcp__atlassian__getConfluenceContent`,
 `mcp__atlassian__createConfluenceContent`,
 `mcp__atlassian__updateConfluenceContent` and `mcp__atlassian__executeWrite`
@@ -55,31 +54,20 @@ page.
 Never delete or close an issue. Creating, editing and commenting need no
 asking in this repo (`.claude/rules/ship-autopilot.md`).
 
-## 2. The boards against their record and the Boards Artifact
+## 2. The boards
 
-The boards are drawn in the repo and nowhere else (rule 7, MA-260). One
-command compares them with their record, offline (the `design-sync` gate, the
-PR hook and CI run it too):
-
-```bash
-python3 scripts/design_sync.py check
-```
-
-It reads every board folder under `claude_design` and
-`docs/design/claude-design.json`, and fails on a board file whose bytes no
-longer match its record, a file in a board folder the record does not list, a
-recorded file missing, and a MyPaisa Boards Artifact published before the
-record last changed (the stamp in `docs/design/boards-artifact.json`). Then,
-by hand:
+The boards are drawn in the repo and nowhere else, and git is their only
+record (rule 7, MA-260, MA-296). `python3 scripts/plan_sync.py check` reads
+every board folder under `claude_design` as it is on disk. Then, by hand,
+against the branch's changes (`git diff main --stat -- docs/design/`):
 
 | Found | Do |
 | --- | --- |
-| A board file changed or new | Read its diff (`git diff`). If a design round drew it, `python3 scripts/design_sync.py record`; if nobody can say where it came from, ask Arun. Read its boards' notes (each board names its Jira keys) and update those rows' `boards`; a new file's boards are mapped to rows the same way |
-| A recorded file missing | Ask Arun whether it was meant. If it was, `python3 scripts/design_sync.py record --drop <dir>/<file>` forgets it, and every row that names its boards is changed in the same change |
-| The Boards Artifact older than the record | `python3 scripts/boards_page/build.py docs/design <out-dir>` (an out-dir outside the repo, such as the session's scratchpad); read the Boards Artifact with the Artifact tool (`action: read`, its URL), then publish `<out-dir>/index.html` to that URL with `root: docs/design` and `files` from `<out-dir>/files.json`; then `python3 scripts/design_sync.py published` |
+| A board file changed or new | Read its diff. If nobody can say where it came from, ask Arun. Read its boards' notes (each board names its Jira keys) and update those rows' `boards`; a new file's boards are mapped to rows the same way |
+| A board file deleted | Ask Arun whether it was meant. If it was, every row that names its boards is changed in the same change (check refuses a cited board that is gone) |
 | A board whose note names a key not in the trace | Report it; fix the note or the trace |
 
-Record and publish only; never redraw a board from this skill. Designs change
+Map only; never redraw a board from this skill. Designs change
 through `/design-first`.
 
 ## 2b. Confluence against `docs/confluence.json`
@@ -160,8 +148,7 @@ is reported and archived by Arun.
   the wrong element (`fade` in place of `label` or `dot`, or `!important` on a
   chart label's or dot's own transform), or a tool ARCHITECTURE §8 does not
   define (the right name, or the tool added to §8 first). A board is fixed in
-  its folder, through `/design-first`, then recorded with
-  `python3 scripts/design_sync.py record`.
+  its folder, through `/design-first`.
 
 ## 4. For one story about to start (`MA-<n>`)
 
@@ -177,13 +164,13 @@ key, and say what it printed:
   ledgers look for these two notes.
 - `todo` with UI: stop. The story needs `/design-first` before any code.
 - `planned`: run `/design-first` on its boards (2 or 3 options, Arun picks),
-  then set `picked` and record the boards (`python3 scripts/design_sync.py record`).
+  then set `picked`.
 - `picked`: build to the boards; list them in the plan for `/jira-flow:work`.
 
 ## 5. Report
 
 One block: what drifted (Jira, the boards, Confluence, repo), what was fixed, what was
 filed (keys), what needs Arun (a missing issue to confirm, a deleted file).
-Commit the trace, `TRACE.md`, the board record and the Boards Artifact's stamp on
+Commit the trace and `TRACE.md` on
 the story branch as `MA-<n>: Sync the trace with Jira and the boards`; they ship
 with that story's PR.

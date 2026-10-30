@@ -377,7 +377,7 @@ def main(argv: list[str]) -> int:
         print(f"FAIL {why}")
     for path in copies():
         bad += 1
-        print(f"FAIL {path} differs from docs/design/ds-v1/ (copy it from there, then `python3 scripts/design_sync.py record`)")
+        print(f"FAIL {path} differs from docs/design/ds-v1/ (copy it from there)")
     print(f"contrast: {bad} pair{'s' if bad != 1 else ''} below the limits or copies out of step")
     return 1 if bad else 0
 

@@ -59,35 +59,15 @@ hand.
 | `code` | Optional list of the repo paths that build the story, globs allowed (`web/src/lib/chat/**`, `ios/MyPaisa/Chat/`, `src/mypaisa/agent/tools.py`). Required once a Story is In Review or Done; every path must match something. A file under `web/`, `ios/`, `src/` or `infra/` that no story claims is reported (MA-228) |
 | `others[]` | Issues with no phase epic (repo tooling such as MA-1 to MA-8, a superseded task): `key`, `type`, `summary`, `status`, `notes`. Listed so the docs may cite them; they carry no sections or boards |
 
-## The board record: `docs/design/claude-design.json`
+## The boards: no record beside them
 
-The repo's record of every board file since MA-260 (30 Oct 2026); the name is
-history, from when it held each file's Claude Design etag. Per board folder
-under `claude_design`, its `dir` and, per file, its `bytes` and `sha256`:
-
-```json
-{"ios": {"dir": "docs/design/ios-v1", "files": {"iPhone chat.dc.html": {"bytes": 96715, "sha256": "…"}}},
- "ds":  {"dir": "docs/design/ds-v1",  "files": {"tokens.css": {"bytes": 24316, "sha256": "…"}}},
- "app": {"dir": "docs/design/app-v1", "files": {"Browser.dc.html": {"bytes": 55222, "sha256": "…"}}}}
-```
-
-`python3 scripts/design_sync.py record` writes it after boards are drawn or
-edited (a file gone is forgotten only with `record --drop <dir>/<file>`), and
-`python3 scripts/design_sync.py check` fails on a file whose bytes no longer
-match, a file in a board folder the record does not list, and a recorded file
-missing. A board drawn or changed is checked against the trace's `boards` in
-the same change.
-
-## The MyPaisa Boards Artifact: `docs/design/boards-artifact.json`
-
-Every board, as Arun sees it, at https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g
-(a board's own link adds `#<id>`: the folder's prefix and the file name
-without `.dc.html`, lower case, every run of other characters one hyphen,
-as `#ios-iphone-v4-home`). `python3 scripts/boards_page/build.py docs/design <out-dir>`
-builds it, the Artifact tool republishes it to the same URL, and
-`python3 scripts/design_sync.py published` stamps this file with its `url`,
-the record's sha256 at that publish and the date. `check` fails while the
-stamp is older than the record.
+Git is the boards' only record (MA-296, 30 Oct 2026). `check` reads every
+`.html` file in each board folder under `claude_design` as it is on disk, and
+refuses a cited board file that is missing and a board folder that is not in
+the repo. A board drawn or changed is checked against the trace's `boards` in
+the same change. `docs/design/claude-design.json` (each file's bytes and
+sha256, MA-260) and the MyPaisa Boards Artifact with its stamp,
+`docs/design/boards-artifact.json`, were retired by MA-296.
 
 ## The roadmap: `docs/roadmap.json`
 
