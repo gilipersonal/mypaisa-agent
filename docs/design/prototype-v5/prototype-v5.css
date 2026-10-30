@@ -246,3 +246,86 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 @container wf (max-width: 359px) { .mp-num-hero { font-size: 34px; line-height: 38px; } }
 @container af (max-width: 359px) { .mp-num-hero { font-size: 34px; line-height: 38px; } }
 
+/* ---------- MA-295: chart redesign options (A · Pulse, B · Editorial, C · Modular) & interactive scrub ---------- */
+.mp [data-scrub] { cursor: crosshair; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.mp5-scrub { display: none; position: absolute; inset: 0; pointer-events: none; z-index: 18; }
+.mp5-scrub.on { display: block; }
+.mp5-scrub-line { position: absolute; top: 0; bottom: 0; width: 1.5px; margin-left: -0.75px; background: var(--mp-accent); opacity: 0.78; }
+.mp-hero .mp5-scrub-line, .fhero .mp5-scrub-line { background: var(--mp-coral); opacity: 0.9; }
+.mp5-scrub-dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--mp-accent); box-shadow: 0 0 0 3px var(--mp-surface); }
+.mp-hero .mp5-scrub-dot, .fhero .mp5-scrub-dot { background: var(--mp-coral); box-shadow: 0 0 0 3px var(--mp-hero); }
+.mp5-scrub-tip { position: absolute; top: 4px; padding: 5px 9px; border-radius: 9px; background: var(--mp-hero); color: var(--mp-hero-ink); box-shadow: var(--mp-shadow); font: 600 11.5px/15px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; gap: 1px; z-index: 19; }
+.mp-hero .mp5-scrub-tip, .fhero .mp5-scrub-tip { background: var(--mp-surface); color: var(--mp-ink); }
+.mp5-scrub-tip .sk { font: 500 10.5px/13px var(--mp-font); color: var(--mp-hero-ink-2); }
+.mp-hero .mp5-scrub-tip .sk, .fhero .mp5-scrub-tip .sk { color: var(--mp-ink-2); }
+.privon .mp-hero .mp5-scrub-tip .mny, .privon .fhero .mp5-scrub-tip .mny { background: var(--mp-mask); }
+
+/* Y-axis left rail inside K.line (A, B, C) */
+.mp5-yl { position: absolute; left: 0; transform: translateY(-50%); font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; }
+.mp-hero .mp5-yl { color: var(--mp-hero-ink-2); }
+
+/* End-beacon and editorial ring dots */
+.charts-a .mp-chartdot.beacon { width: 9px; height: 9px; background: var(--mp-chart-line); box-shadow: 0 0 0 4px color-mix(in srgb, var(--mp-chart-line) 24%, transparent); }
+.charts-a .mp-hero .mp-chartdot.beacon { background: var(--mp-coral); box-shadow: 0 0 0 5px color-mix(in srgb, var(--mp-coral) 28%, transparent); }
+.charts-b .mp-chartdot { width: 8px; height: 8px; background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-chart-line); }
+.charts-b .mp-hero .mp-chartdot { background: var(--mp-hero); box-shadow: inset 0 0 0 2px var(--mp-coral); }
+.charts-c .mp-chartdot { width: 8px; height: 8px; border-radius: 3px; }
+
+/* Option B & C chart stat strips (static flow above .mp-chartbox, never covering chart labels) */
+.mp5-cstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 6px 12px; margin-bottom: 6px; }
+.mp5-cstat { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.mp5-cstat-k { font: 600 10.5px/14px var(--mp-font); color: var(--mp-ink-2); text-transform: uppercase; letter-spacing: 0.04em; }
+.mp5-cstat-v { font: 700 15px/19px var(--mp-font-round); color: var(--mp-ink); font-variant-numeric: tabular-nums; }
+.mp-hero .mp5-cstat-k { color: var(--mp-hero-ink-2); }
+.mp-hero .mp5-cstat-v { color: var(--mp-hero-ink); }
+.charts-b .mp5-cstats { padding-bottom: 8px; border-bottom: 1px solid var(--mp-line); }
+.charts-b .mp-hero .mp5-cstats { border-bottom-color: var(--mp-hero-2); }
+.charts-b .mp5-cstat + .mp5-cstat { padding-left: 10px; box-shadow: inset 1px 0 0 var(--mp-line); }
+.charts-b .mp-hero .mp5-cstat + .mp5-cstat { box-shadow: inset 1px 0 0 var(--mp-hero-2); }
+.charts-c .mp5-cstat { background: var(--mp-surface-2); border-radius: 10px; padding: 6px 9px; }
+.charts-c .mp-hero .mp5-cstat { background: var(--mp-hero-2); }
+
+/* Bars: Option A sculpted capsule, Option B bullet meter, Option C 10-cell modular blocks */
+.charts-a .bar { height: 10px; border-radius: 999px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); position: relative; overflow: hidden; }
+.charts-a .bar > i { border-radius: 999px; }
+.mp5-bartick { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--mp-ink); border-radius: 1px; z-index: 2; }
+.charts-b .bar.bar-bullet { height: 12px; border-radius: 4px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); position: relative; overflow: visible; display: flex; align-items: center; padding: 0 2px; box-sizing: border-box; }
+.charts-b .bar.bar-bullet > i { height: 6px; border-radius: 2px; }
+.mp5-segbar { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px; height: 10px; }
+.mp5-segbar > i { display: block; height: 100%; border-radius: 2.5px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); }
+.mp5-segbar > i.on { background: var(--mp-chart-line); box-shadow: none; }
+.mp5-segbar.b2 > i.on { background: var(--mp-chart-2); }
+.mp5-segbar.b3 > i.on { background: var(--mp-chart-3); }
+.mp5-segbar.b4 > i.on, .mp5-segbar.over > i.on { background: var(--mp-chart-4); }
+.mp5-segbar.b5 > i.on { background: var(--mp-chart-5); }
+.mp5-segbar.grey > i.on { background: var(--mp-ink-2); }
+.mp5-segbar > i.over { background: var(--mp-chart-4); box-shadow: none; }
+
+/* Pillars: Option A diverging centre spine, Option B scale dots, Option C 5-cell bento matrix */
+.mp5-pil-a { display: inline-flex; align-items: center; gap: 3px; }
+.mp5-pil-a b { width: 2px; height: 14px; border-radius: 1px; background: var(--mp-ink-2); display: block; margin: 0 1px; }
+.mp5-pil-a i { width: 15px; height: 9px; border-radius: 999px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); display: block; }
+.mp5-pil-a i.on { background: var(--mp-pillar-for); box-shadow: none; }
+.mp5-pil-a i.neg { background: var(--mp-pillar-against); box-shadow: none; }
+.mp5-pil-b { display: inline-flex; align-items: center; gap: 6px; position: relative; padding: 0 2px; }
+.mp5-pil-b::before { content: ""; position: absolute; left: 4px; right: 4px; top: 50%; height: 1.5px; margin-top: -0.75px; background: var(--mp-line); }
+.mp5-pil-b i { position: relative; z-index: 1; width: 8px; height: 8px; border-radius: 50%; background: var(--mp-surface); box-shadow: inset 0 0 0 1.5px var(--mp-ink-3); display: block; }
+.mp5-pil-b i.zero { width: 6px; height: 6px; background: var(--mp-ink-3); box-shadow: none; }
+.mp5-pil-b i.on { width: 11px; height: 11px; background: var(--mp-pillar-for); box-shadow: 0 0 0 2px var(--mp-surface); }
+.mp5-pil-b i.neg { width: 11px; height: 11px; background: var(--mp-pillar-against); box-shadow: 0 0 0 2px var(--mp-surface); }
+.mp5-pil-c { display: inline-grid; grid-template-columns: repeat(5, 16px); gap: 2px; }
+.mp5-pil-c i { height: 12px; border-radius: 3px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); display: block; }
+.mp5-pil-c i.zero { background: var(--mp-surface-2); }
+.mp5-pil-c i.on { background: var(--mp-pillar-for); box-shadow: none; }
+.mp5-pil-c i.neg { background: var(--mp-pillar-against); box-shadow: none; }
+
+/* Option C proportional SVG donut ring */
+.mp5-donut-wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.mp5-donut-wrap > .mp5-donut-side { flex: 1 1 220px; min-width: 0; }
+.mp5-donut { position: relative; width: 86px; height: 86px; flex: none; display: grid; place-items: center; }
+.mp5-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.mp5-donut-c { position: absolute; inset: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; pointer-events: none; }
+.mp5-donut-v { font: 800 15px/17px var(--mp-font-round); color: var(--mp-ink); font-variant-numeric: tabular-nums; }
+.mp5-donut-k { font: 600 10px/12px var(--mp-font); color: var(--mp-ink-2); text-transform: uppercase; letter-spacing: 0.03em; }
+
+

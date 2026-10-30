@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MA-295 Design Review · Dashboard &amp; App Chart Redesign</title>
+  <style>
+    :root {
+      --bg: #F6F4F1; --surface: #FFFFFF; --surface-2: #F0EDE8; --line: #E4E0DA;
+      --ink: #14171F; --ink-2: #4E5462; --ink-3: #646A78;
+      --hero: #13213A; --hero-2: #1C2E4D; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6;
+      --coral: #FF6B4F; --accent: #C2381F; --focus: #2453C9;
+      --rec-bg: #F8F5F0;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+      --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+      --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+      --shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
+    }
+    :root[data-theme="dark"] {
+      --bg: #0A0F18; --surface: #151C27; --surface-2: #1E2633; --line: #283141;
+      --ink: #F3F5F8; --ink-2: #AEB6C4; --ink-3: #8D96A6;
+      --hero: #1A2944; --hero-2: #233558; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6;
+      --coral: #FF7A5E; --accent: #FF7A5E; --focus: #8FB0FF;
+      --rec-bg: #1A2332;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+    .wrap { max-width: 1460px; margin: 0 auto; padding: 28px 24px 72px; display: flex; flex-direction: column; gap: 32px; }
+    a { color: var(--accent); text-underline-offset: 2px; }
+    h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.015em; }
+    p { margin: 0; text-wrap: pretty; }
+    .hero { background: var(--hero); color: var(--hero-ink); border-radius: 24px; padding: 28px 34px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .hero::after { content: ""; position: absolute; left: 34px; right: 34px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--coral); }
+    .eyebrow { font: 600 11px/15px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--hero-ink-2); }
+    .hero h1 { font-size: clamp(24px, 3vw, 34px); line-height: 1.15; }
+    .hero p { color: var(--hero-ink-2); max-width: 82ch; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font: 600 13px/18px var(--font); text-decoration: none; background: var(--hero-2); color: var(--hero-ink); border: 1px solid rgba(255,255,255,0.14); cursor: pointer; }
+    .btn.pri { background: var(--coral); color: #13213A; border-color: transparent; }
+
+    .toolbar { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; box-shadow: var(--shadow); position: sticky; top: 12px; z-index: 20; }
+    .tgrp { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+    .tlbl { font: 600 11px/14px var(--font-mono); text-transform: uppercase; color: var(--ink-3); margin-right: 4px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: 600 12.5px/16px var(--font); padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+    .pill.on { background: var(--hero); color: var(--hero-ink); border-color: var(--hero); }
+
+    .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
+    @media (max-width: 1180px) { .trio { grid-template-columns: minmax(0, 1fr); } }
+    .ocard { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); }
+    .ocard.rec { box-shadow: inset 0 0 0 2px var(--coral), var(--shadow); }
+    .ohead { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .oid { font: 700 12px/16px var(--font-mono); padding: 3px 8px; border-radius: 6px; background: var(--surface-2); }
+    .obadge { font: 700 11px/14px var(--font-mono); padding: 4px 9px; border-radius: 999px; background: var(--hero); color: var(--hero-ink); }
+    .odesc { font-size: 13.5px; line-height: 19px; color: var(--ink-2); }
+    .frame-wrap { width: 100%; height: 690px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+    .frame-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px 26px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
+    .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+    table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; line-height: 20px; }
+    th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+    tr:last-child th, tr:last-child td { border-bottom: 0; }
+    thead th { font: 600 12px/16px var(--font-mono); color: var(--ink-3); background: var(--surface-2); }
+    tbody th { width: 18%; font-weight: 600; }
+    td.rec-col { background: var(--rec-bg); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <span class="eyebrow">MA-295 · Design Review · Phase 0 · Picked: 1a Monzo Pulse (30 Oct 2026)</span>
+      <h1>Lively Dashboard &amp; Analytical Charts (Apple HIG + Monzo Craft)</h1>
+      <p>Three complete visual &amp; interactive chart directions built on <b>Warm ledger (tokens.css)</b> across Prototype v5, DS v1, iOS v1 and Web v4. Arun picked <b>1a · Monzo Pulse</b> on 30 Oct 2026; 1b and 1c stay here and on the canvases as the record. Hover or drag inside any live preview below to test progressive-disclosure scrubbing, or switch screens, doors, theme and privacy across all three options in lockstep.</p>
+      <div class="links">
+        <a class="btn pri" id="lnk-pv5" href="../../prototype-v5/Prototype%20v5.dc.html?charts=a">Open Prototype v5 (1a Picked)</a>
+        <a class="btn" id="lnk-ds" href="../../ds-v1/Chart%20options.dc.html">Open DS v1 · Chart options</a>
+        <a class="btn" id="lnk-ios" href="../../ios-v1/iPhone%20v4%20%C2%B7%20Chart%20options.dc.html">Open iOS v1 · iPhone &amp; iPad board</a>
+        <a class="btn" id="lnk-web" href="../../app-v1/Web%20v4%20%C2%B7%20Chart%20options.dc.html">Open Web v4 · Desktop &amp; Phone board</a>
+      </div>
+    </header>
+
+    <div class="toolbar" role="region" aria-label="Live comparison controls">
+      <div class="tgrp" id="grp-step">
+        <span class="tlbl">Screen</span>
+        <button class="pill on" data-step="p2-saved">Home &amp; Pulse</button>
+        <button class="pill" data-step="p6-close">Budget Pace</button>
+        <button class="pill" data-step="p7-fan">20-Yr Projection Fan</button>
+        <button class="pill" data-step="p10-overview">Holding &amp; Pillars</button>
+        <button class="pill" data-step="p17-forecast">Market Candles &amp; Fan</button>
+      </div>
+      <div class="tgrp" id="grp-door">
+        <span class="tlbl">Door</span>
+        <button class="pill on" data-door="ios">iPhone</button>
+        <button class="pill" data-door="desk">Desktop</button>
+        <button class="pill" data-door="ipad">iPad</button>
+        <button class="pill" data-door="pweb">Phone web</button>
+      </div>
+      <div class="tgrp">
+        <span class="tlbl">Appearance</span>
+        <button class="pill on" id="btn-light">Light</button>
+        <button class="pill" id="btn-dark">Dark</button>
+        <button class="pill" id="btn-priv">Privacy: Off</button>
+      </div>
+    </div>
+
+    <section class="trio" aria-label="Three live options side by side">
+      <article class="ocard rec">
+        <div class="ohead">
+          <div><span class="oid">1a</span> <strong>Monzo Pulse</strong></div>
+          <span class="obadge">Picked · 30 Oct 2026</span>
+        </div>
+        <p class="odesc">Monotone cubic splines with warm coral area wash &amp; live endpoint beacon dot; recorded 5-day Home hero pulse; sculpted capsule meters with vertical 100%-plan ticks; zero-spine diverging pillars; rounded candles + pointer/touch scrub pill.</p>
+        <div class="frame-wrap"><iframe id="if-a" title="Option 1a Monzo Pulse live preview"></iframe></div>
+      </article>
+
+      <article class="ocard">
+        <div class="ohead">
+          <div><span class="oid">1b</span> <strong>Apple Health Editorial</strong></div>
+          <span class="oid">Not picked · record</span>
+        </div>
+        <p class="odesc">Crisp editorial hairline grids and left Y-axis ticks; three-stat summary header strip (LOW / LATEST / HIGH) above every chart; hollow data markers; bullet-graph plan benchmarks; and hollow-up / filled-down candles.</p>
+        <div class="frame-wrap"><iframe id="if-b" title="Option 1b Apple Health Editorial live preview"></iframe></div>
+      </article>
+
+      <article class="ocard">
+        <div class="ohead">
+          <div><span class="oid">1c</span> <strong>Monzo Modular Bento</strong></div>
+          <span class="oid">Not picked · record</span>
+        </div>
+        <p class="odesc">Proportional 5-day recorded column bars on the Home hero; ring/donut UK-India split (76% / 24%); 10-cell quantized pot pace meters; chip-badged diverging pillars; and a 24px Daily Swing Rhythm Sub-Strip beneath the candles.</p>
+        <div class="frame-wrap"><iframe id="if-c" title="Option 1c Monzo Modular Bento live preview"></iframe></div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Side-by-side trade-offs</h2>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Chart family</th>
+              <th>1a · Monzo Pulse (Picked)</th>
+              <th>1b · Apple Health Editorial (Not picked)</th>
+              <th>1c · Monzo Modular Bento (Not picked)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Home hero &amp; net worth</th>
+              <td class="rec-col">Smooth monotone spline over recorded 5-day trajectory (Thu 22 Oct £439,958 → Mon 26 Oct £444,951) with coral gradient wash and live beacon dot.</td>
+              <td>Hairline range rules + hollow start/day markers with explicit low/high range caption.</td>
+              <td>5 proportional rounded column bars (36%..100%) highlighting Monday's +£5,000 Monzo savings step in coral.</td>
+            </tr>
+            <tr>
+              <th>Budget &amp; wealth meters</th>
+              <td class="rec-col">Sculpted capsule tracks with vertical 100%-plan tick marks and ▲/▼ variance words.</td>
+              <td>Bullet-graph target bars + 3-stat summary strip above categories.</td>
+              <td>10-cell quantized Monzo pot meters + ring/donut composition card (76% UK · 24% India).</td>
+            </tr>
+            <tr>
+              <th>20-yr Projection fan &amp; surplus</th>
+              <td class="rec-col">Smooth monotone conformal fan (`--mp-band`), dashed single-rate reference, rounded surplus columns with amber dot cue on below-floor years.</td>
+              <td>Linear editorial fan with left Y-axis pound benchmarks (`£1.5m`, `£3m`, `£4.5m`) and crisp rectangular columns.</td>
+              <td>Smooth bento fan paired with 3-tile P10 / P50 / P90 summary strip and rounded modular columns.</td>
+            </tr>
+            <tr>
+              <th>Market candles &amp; stance pillars</th>
+              <td class="rec-col">Rounded candles + dual-band smooth conformal fan + zero-spine diverging pillars.</td>
+              <td>Hollow-up / filled-down candles (HIG non-colour distinction) + editorial split pillars.</td>
+              <td>Rounded candles paired with a 24px Daily Swing Rhythm Sub-Strip (high − low volatility) + chip-badged pillars.</td>
+            </tr>
+            <tr>
+              <th>HIG &amp; Warm ledger guardrails</th>
+              <td class="rec-col">100% pure `tokens.css` variables; 44pt touch scrub targets; masked in Privacy mode; 0 contrast or fit faults across 320–1920 px.</td>
+              <td>Same guardrails; highest density of resting axis labels.</td>
+              <td>Same guardrails; highest modular card variety, quantized ~10% meter steps at rest.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var BASE = /\/reviews\/MA-295\//.test(location.pathname) ? '../../' : '';
+      var state = { step: 'p2-saved', door: 'ios', theme: 'light', priv: false };
+      function syncLinks() {
+        document.getElementById('lnk-pv5').href = BASE + 'prototype-v5/Prototype%20v5.dc.html?charts=a&door=' + state.door + '&theme=' + state.theme + '&at=' + state.step + (state.priv ? '&priv=1' : '');
+        document.getElementById('lnk-ds').href = BASE + 'ds-v1/Chart%20options.dc.html';
+        document.getElementById('lnk-ios').href = BASE + 'ios-v1/iPhone%20v4%20%C2%B7%20Chart%20options.dc.html';
+        document.getElementById('lnk-web').href = BASE + 'app-v1/Web%20v4%20%C2%B7%20Chart%20options.dc.html';
+      }
+      function syncFrames() {
+        ['a', 'b', 'c'].forEach(function (m) {
+          var url = BASE + 'prototype-v5/Prototype%20v5.dc.html?embed=1&charts=' + m + '&door=' + state.door + '&theme=' + state.theme + '&at=' + state.step + (state.priv ? '&priv=1' : '');
+          var el = document.getElementById('if-' + m);
+          if (el && el.getAttribute('data-url') !== url) {
+            el.setAttribute('data-url', url);
+            el.src = url;
+          }
+        });
+        syncLinks();
+      }
+      document.getElementById('grp-step').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-step]');
+        if (!b) return;
+        state.step = b.getAttribute('data-step');
+        this.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === b); });
+        syncFrames();
+      });
+      document.getElementById('grp-door').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-door]');
+        if (!b) return;
+        state.door = b.getAttribute('data-door');
+        this.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === b); });
+        syncFrames();
+      });
+      document.getElementById('btn-light').addEventListener('click', function () {
+        state.theme = 'light';
+        document.documentElement.setAttribute('data-theme', 'light');
+        this.classList.add('on');
+        document.getElementById('btn-dark').classList.remove('on');
+        syncFrames();
+      });
+      document.getElementById('btn-dark').addEventListener('click', function () {
+        state.theme = 'dark';
+        document.documentElement.setAttribute('data-theme', 'dark');
+        this.classList.add('on');
+        document.getElementById('btn-light').classList.remove('on');
+        syncFrames();
+      });
+      document.getElementById('btn-priv').addEventListener('click', function () {
+        state.priv = !state.priv;
+        this.classList.toggle('on', state.priv);
+        this.textContent = 'Privacy: ' + (state.priv ? 'On' : 'Off');
+        syncFrames();
+      });
+      syncFrames();
+    })();
+  </script>
+</body>
+</html>

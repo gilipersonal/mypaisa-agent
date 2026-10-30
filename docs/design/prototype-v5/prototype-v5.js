@@ -118,10 +118,18 @@
   MP5.world = world;
 
   /* ---------- state ---------- */
-  var st = { door: 'desk', dark: false, priv: false, viewer: 'arun', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null };
+  var CHARTS = [['a', 'A · Pulse'], ['b', 'B · Editorial'], ['c', 'C · Modular'], ['classic', 'Classic']];
+  var st = { door: 'desk', dark: false, priv: false, charts: 'a', viewer: 'arun', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null };
   MP5.state = function () { return st; };
-  function load() { try { var s = JSON.parse(localStorage.getItem('mp5') || '{}'); ['door', 'dark'].forEach(function (k) { if (s[k] != null) st[k] = s[k]; }); if (!door(st.door) || door(st.door).id !== st.door) st.door = 'desk'; } catch (e) { } }
-  function save() { try { localStorage.setItem('mp5', JSON.stringify({ door: st.door, dark: st.dark })); } catch (e) { } }
+  function load() {
+    try {
+      var s = JSON.parse(localStorage.getItem('mp5') || '{}');
+      ['door', 'dark', 'charts'].forEach(function (k) { if (s[k] != null) st[k] = s[k]; });
+      if (!door(st.door) || door(st.door).id !== st.door) st.door = 'desk';
+      if (['a', 'b', 'c', 'classic'].indexOf(st.charts) < 0) st.charts = 'a';
+    } catch (e) { }
+  }
+  function save() { try { localStorage.setItem('mp5', JSON.stringify({ door: st.door, dark: st.dark, charts: st.charts })); } catch (e) { } }
 
   function chapters() { return MP5.chapters.slice().sort(function (a, b) { return (a.order || 0) - (b.order || 0); }); }
   function cur() { var cs = chapters(); var ch = cs[st.ci] || cs[0]; return { cs: cs, ch: ch, step: ch ? ch.steps[Math.min(st.si, ch.steps.length - 1)] : null }; }
@@ -132,7 +140,7 @@
     var t = iso(step && step.d, step && step.tm);
     var ctx = {
       door: d.id, web: !!d.web, app: !!d.app, compact: !!d.compact, wide: !!d.wide, narrow: !!d.narrow,
-      dark: st.dark, priv: st.priv, viewer: st.viewer, isAdmin: st.viewer === 'arun', who: st.viewer === 'arun' ? 'Arun' : 'Asha',
+      dark: st.dark, priv: st.priv, charts: st.charts, viewer: st.viewer, isAdmin: st.viewer === 'arun', who: st.viewer === 'arun' ? 'Arun' : 'Asha',
       t: t, d: step ? step.d : '', tm: step ? step.tm : '', step: step, ch: ch, W: world(t), D: window.MP5D || {}, K: K,
       open: st.open, view: st.view, MP5: MP5
     };
@@ -202,7 +210,7 @@
     });
     return h + '</nav>';
   }
-  function themeCls() { return 'mp' + (st.dark ? ' t-dark' : ' t-light') + (st.priv ? ' privon' : ''); }
+  function themeCls() { return 'mp' + (st.dark ? ' t-dark' : ' t-light') + (st.priv ? ' privon' : '') + ' charts-' + st.charts; }
   function overlays(ctx) {
     var h = '';
     var sheet = ctx.step && ctx.step.sheet ? ctx.step.sheet(ctx) : null;
@@ -260,6 +268,7 @@
     var h = '<header class="ptop"><div class="prow"><span class="pname"><span class="pkey">MA-291</span>MyPaisa · Prototype v5</span>';
     h += '<span class="pgrp"><span class="plbl">Door</span><span class="pseg" role="group" aria-label="Door">' + DOORS.map(function (d) { return '<button type="button" class="' + (d.id === st.door ? 'on' : '') + '" data-go="door:' + d.id + '">' + d.t + '</button>'; }).join('') + '</span></span>';
     h += '<span class="pgrp"><span class="plbl">Theme</span><span class="pseg" role="group" aria-label="Theme"><button type="button" class="' + (!st.dark ? 'on' : '') + '" data-go="theme:light">Light</button><button type="button" class="' + (st.dark ? 'on' : '') + '" data-go="theme:dark">Dark</button></span></span>';
+    h += '<span class="pgrp"><span class="plbl">Charts</span><span class="pseg" role="group" aria-label="Charts">' + CHARTS.map(function (m) { return '<button type="button" class="' + (m[0] === st.charts ? 'on' : '') + '" data-go="charts:' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</span></span>';
     h += '<button type="button" class="pbtn' + (st.priv ? ' on' : '') + '" aria-pressed="' + st.priv + '" data-go="priv"><span class="ms">' + (st.priv ? 'visibility_off' : 'visibility') + '</span>Privacy</button>';
     h += '<span class="pgrp"><span class="plbl">Viewer</span><span class="pseg" role="group" aria-label="Viewer"><button type="button" class="' + (st.viewer === 'arun' ? 'on' : '') + '" data-go="viewer:arun">Arun</button><button type="button" class="' + (st.viewer === 'asha' ? 'on' : '') + '" data-go="viewer:asha">Asha</button></span></span>';
     h += '<span class="pf1"></span><button type="button" class="pbtn" data-go="restart"><span class="ms">restart_alt</span>Restart</button></div>';
@@ -285,7 +294,7 @@
     var pid = pageId(ctx), p = drawPage(ctx, pid);
     var focus = st.pane || (c.step && c.step.focus) || (c.step && c.step.page ? 'page' : 'chat');
     var frame = (d.web ? frameWeb : frameApp)(ctx, p, focus, d);
-    var key = st.ci + ':' + st.si + ':' + st.door + ':' + pid + ':' + focus;
+    var key = st.ci + ':' + st.si + ':' + st.door + ':' + pid + ':' + focus + ':' + st.charts;
     var keep = {};
     if (key === lastKey) root.querySelectorAll('.pscroll[data-scroll]').forEach(function (e) { keep[e.getAttribute('data-scroll')] = e.scrollTop; });
     root.innerHTML = '<div class="pv5">' + topBar(c, ctx) + '<main class="pstage"><div class="pwrap"><div class="pframe" data-screen-label="' + K.esc(d.t + ' · ' + c.ch.title + ' · ' + (c.step ? c.step.t : '')) + '">' + frame + '</div></div></main></div>';
@@ -347,6 +356,7 @@
     if (!key) return;
     if (key.indexOf('door:') === 0) { st.door = key.slice(5); st.pane = null; save(); }
     else if (key === 'theme:dark' || key === 'theme:light') { st.dark = key === 'theme:dark'; save(); }
+    else if (key.indexOf('charts:') === 0) { var cm = key.slice(7); if (['a', 'b', 'c', 'classic'].indexOf(cm) >= 0) { st.charts = cm; save(); } }
     else if (key === 'priv') st.priv = !st.priv;
     else if (key.indexOf('viewer:') === 0) st.viewer = key.slice(7);
     else if (key.indexOf('ch:') === 0) goStep(+key.slice(3), 0);
@@ -373,13 +383,82 @@
   MP5.act = act;
   MP5.go = function (ci, si) { goStep(ci, si); render(); };
 
+  function showScrub(box, clientX) {
+    var raw = box.getAttribute('data-scrub'), ui = box.querySelector('.mp5-scrub');
+    if (!raw || !ui) return;
+    var pts;
+    try { pts = JSON.parse(raw); } catch (e) { return; }
+    if (!pts || !pts.length) return;
+    var r = box.getBoundingClientRect();
+    if (!r.width) return;
+    var px = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+    var best = pts[0], bd = Math.abs(pts[0].x - px);
+    for (var i = 1; i < pts.length; i++) {
+      var dist = Math.abs(pts[i].x - px);
+      if (dist < bd) { bd = dist; best = pts[i]; }
+    }
+    var line = ui.querySelector('.mp5-scrub-line'), dot = ui.querySelector('.mp5-scrub-dot'), tip = ui.querySelector('.mp5-scrub-tip');
+    if (line) line.style.left = best.x.toFixed(2) + '%';
+    if (dot) {
+      if (best.y != null) { dot.style.display = 'block'; dot.style.left = best.x.toFixed(2) + '%'; dot.style.top = best.y.toFixed(2) + '%'; }
+      else dot.style.display = 'none';
+    }
+    if (tip) {
+      var val = best.v != null ? K.money(best.v, best.ccy || 'GBP', best.sign ? { sign: true } : null) : (best.vt ? K.esc(best.vt) : '');
+      var sub = best.lo != null && best.hi != null
+        ? '8 in 10: ' + K.money(best.lo, best.ccy || 'GBP') + ' to ' + K.money(best.hi, best.ccy || 'GBP')
+        : (best.s ? K.esc(best.s) : '');
+      tip.innerHTML = (best.k ? '<span class="sk">' + K.esc(best.k) + '</span>' : '') +
+        (val ? '<span>' + val + '</span>' : '') +
+        (sub ? '<span class="sk">' + sub + '</span>' : '');
+      var tx = Math.max(3, Math.min(97, best.x));
+      tip.style.left = tx.toFixed(1) + '%';
+      tip.style.transform = 'translateX(-' + tx.toFixed(1) + '%)';
+    }
+    ui.classList.add('on');
+  }
+  function hideScrub(box) {
+    if (!box) return;
+    var ui = box.querySelector('.mp5-scrub');
+    if (!ui) return;
+    ui.classList.remove('on');
+    var tip = ui.querySelector('.mp5-scrub-tip');
+    if (tip) tip.innerHTML = '';
+  }
+
   MP5.mount = function (el) {
     if (root === el) return;
     root = el;
     load();
     var q = /[?&]at=([\w-]+)/.exec(location.search);
     if (q) { var all = MP5.allSteps(); for (var i = 0; i < all.length; i++) if (all[i].id === q[1]) { st.ci = all[i].ci; st.si = all[i].si; } }
+    var qc = /[?&]charts=(a|b|c|classic)\b/.exec(location.search);
+    if (qc) st.charts = qc[1];
+    var qd = /[?&]door=([^&#]+)/.exec(location.search);
+    if (qd) {
+      var rawD = decodeURIComponent(qd[1]).toLowerCase();
+      DOORS.forEach(function (d) { if (d.id.toLowerCase() === rawD || d.t.toLowerCase() === rawD) st.door = d.id; });
+    }
+    var qt = /[?&]theme=(dark|light)\b/.exec(location.search);
+    if (qt) st.dark = qt[1] === 'dark';
+    if (/[?&]priv=1\b/.test(location.search)) st.priv = true;
     root.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t && root.contains(t)) { e.preventDefault(); act(t.getAttribute('data-go')); } });
+    if (location.search.indexOf('static=1') < 0) {
+      var activeBox = null;
+      root.addEventListener('pointermove', function (e) {
+        var b = e.target.closest && e.target.closest('[data-scrub]');
+        if (activeBox && activeBox !== b) hideScrub(activeBox);
+        activeBox = b;
+        if (b && root.contains(b)) showScrub(b, e.clientX);
+      });
+      root.addEventListener('pointerdown', function (e) {
+        var b = e.target.closest && e.target.closest('[data-scrub]');
+        if (activeBox && activeBox !== b) hideScrub(activeBox);
+        activeBox = b;
+        if (b && root.contains(b)) showScrub(b, e.clientX);
+      });
+      root.addEventListener('pointerleave', function () { if (activeBox) { hideScrub(activeBox); activeBox = null; } });
+    }
     var rt = null;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { fit(door(st.door)); }, 60); });
     goStep(st.ci, st.si);

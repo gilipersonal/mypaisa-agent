@@ -36,7 +36,10 @@
       '.pv5-engine .pe-calr{display:flex;flex-direction:column;gap:6px}',
       '.pv5-engine .pe-calbar{position:relative;height:12px;border-radius:999px;background:var(--mp-track);box-shadow:inset 0 0 0 1px var(--mp-line)}',
       '.pv5-engine .pe-calbar>i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--mp-chart-line)}',
-      '.pv5-engine .pe-calbar>b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--mp-ink)}',
+      '.pv5-engine .pe-calbar>b,.pv5-engine .pe-calseg>b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--mp-ink);z-index:2}',
+      '.charts-b .pv5-engine .pe-calbar{border-radius:4px}',
+      '.charts-b .pv5-engine .pe-calbar>i{top:3px;bottom:3px;left:2px;border-radius:2px}',
+      '.pv5-engine .pe-calseg{position:relative}',
       '.pv5-engine .pe-legend{display:flex;gap:14px;flex-wrap:wrap;font:400 13px/18px var(--mp-font);color:var(--mp-ink-2)}',
       '.pv5-engine .pe-legend i{display:inline-block;width:14px;height:8px;border-radius:4px;background:var(--mp-chart-line);margin-right:6px;vertical-align:1px}',
       '.pv5-engine .pe-legend i.tick{width:3px;height:14px;border-radius:2px;background:var(--mp-ink);vertical-align:-2px}',
@@ -189,11 +192,21 @@
 
   /* ---------- the chart: 60 days of closes, then the engine's one-month range ahead ---------- */
   function holdingChart(ctx, k) {
-    var e = E(), i1 = idxAt(ctx), i0 = Math.max(0, i1 - 59), s = e.series[k], base = s[i1];
-    var pts = [], lo = 1e9, hi = -1e9;
-    for (var i = i0; i <= i1; i++) { var v = ((1 + s[i] / 100) / (1 + base / 100) - 1) * 100; pts.push([i - i0, v]); lo = Math.min(lo, v); hi = Math.max(hi, v); }
-    var R = e.range_1m[k], x0 = i1 - i0, bandHi = [], bandLo = [], hz = [];
-    for (var t = 0; t <= 21; t += 3) { var f = Math.sqrt(t / 21); bandHi.push([x0 + t, R.p90 * f]); bandLo.push([x0 + t, R.p10 * f]); }
+    var e = E(), i1 = idxAt(ctx), i0 = Math.max(0, i1 - 59), s = e.series[k], base = s[i1], m = K.mode();
+    var pts = [], scrub = [], lo = 1e9, hi = -1e9, minC = 1e9, maxC = -1e9;
+    for (var i = i0; i <= i1; i++) {
+      var v = ((1 + s[i] / 100) / (1 + base / 100) - 1) * 100;
+      pts.push([i - i0, v]);
+      lo = Math.min(lo, v); hi = Math.max(hi, v);
+      minC = Math.min(minC, v); maxC = Math.max(maxC, v);
+      scrub.push({ x: i - i0, y: v, k: e.days[i], vt: sgnPct(v) + ' vs ' + closeLbl(ctx), s: SHORT[k] + ' close' });
+    }
+    var R = e.range_1m[k], x0 = i1 - i0, bandHi = [], bandLo = [];
+    for (var t = 0; t <= 21; t += 3) {
+      var f = Math.sqrt(t / 21);
+      bandHi.push([x0 + t, R.p90 * f]); bandLo.push([x0 + t, R.p10 * f]);
+      if (t > 0) scrub.push({ x: x0 + t, y: ((R.p10 + R.p90) / 2) * f, k: '+' + t + ' trading days', vt: sgnPct(R.p10 * f) + ' to ' + sgnPct(R.p90 * f), s: '8 in 10 range ahead' });
+    }
     lo = Math.min(lo, R.p10); hi = Math.max(hi, R.p90);
     /* room above the line for the close's label, and no axis label in the top band, where it would meet the card's title */
     var span = hi - lo; lo -= span * 0.08; hi += span * 0.24;
@@ -209,7 +222,14 @@
       bands: [{ hi: bandHi, lo: bandLo }],
       vlines: [{ x: x0, t: closeLbl(ctx) + ' close' }],
       series: [{ pts: pts }],
+      area: m === 'a',
       dots: [{ x: x0, y: 0 }],
+      stats: [
+        { k: '60d range', v: sgnPct(minC) + ' to ' + sgnPct(maxC) },
+        { k: closeLbl(ctx) + ' close', v: STU(st.s) + ' ' + st.c + '%' },
+        { k: '1m 80% cone', v: sgnPct(R.p10) + ' to ' + sgnPct(R.p90) }
+      ],
+      scrub: scrub,
       label: SHORT[k] + ': 60 trading days to the ' + closeLbl(ctx) + ' close, then the engine’s one-month range, ' + sgnPct(R.p10) + ' to ' + sgnPct(R.p90) + '. Stance ' + STU(st.s) + ' ' + st.c + '%.'
     }) + '<div class="pe-legend"><span><i></i>the closes, % from ' + closeLbl(ctx) + '</span><span><i class="band"></i>8 in 10 end inside, a month on</span></div>';
   }
@@ -414,10 +434,12 @@
 
   /* ---------- page: track (the household's Track record) ---------- */
   function calibration(ctx) {
-    var sc = score(ctx);
+    var sc = score(ctx), m = K.mode();
     var rows = sc.buckets.map(function (b) {
-      return '<div class="pe-calr"><div class="pe-jb mp-sub"><span>Said ' + b.t + '</span><span class="mp-num" style="font-weight:600">' + b.rate + '% held up · ' + b.held + ' of ' + b.calls + '</span></div>' +
-        '<div class="pe-calbar" role="img" aria-label="Said ' + b.said + '% on average, held up ' + b.rate + '%"><i style="width:' + b.rate + '%"></i><b style="left:' + b.said + '%"></b></div></div>';
+      var bar = m === 'c'
+        ? '<div class="pe-calseg" role="img" aria-label="Said ' + b.said + '% on average, held up ' + b.rate + '%">' + K.bar(b.rate / 100) + '<b style="left:' + b.said + '%"></b></div>'
+        : '<div class="pe-calbar" role="img" aria-label="Said ' + b.said + '% on average, held up ' + b.rate + '%"><i style="width:' + b.rate + '%"></i><b style="left:' + b.said + '%"></b></div>';
+      return '<div class="pe-calr"><div class="pe-jb mp-sub"><span>Said ' + b.t + '</span><span class="mp-num" style="font-weight:600">' + b.rate + '% held up · ' + b.held + ' of ' + b.calls + '</span></div>' + bar + '</div>';
     }).join('');
     var mid = sc.buckets[1];
     return '<div class="pe-cal" id="eng-calib">' + rows + '</div><div class="pe-legend"><span><i></i>held up</span><span><i class="tick"></i>what it said, on average</span></div>' +

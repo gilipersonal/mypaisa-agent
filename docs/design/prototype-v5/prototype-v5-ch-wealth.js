@@ -156,7 +156,41 @@
       '.pv5-wealth .apple { min-height: 50px; border: 0; border-radius: 14px; background: var(--mp-ink); color: var(--mp-bg); font: 600 17px/22px var(--mp-font); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }',
       '.pv5-wealth .rep { display: flex; gap: 12px; align-items: center; padding: 10px 0; }',
       '.pv5-wealth .rep + .rep { box-shadow: inset 0 1px 0 var(--mp-line); }',
-      '.pv5-wealth .fmt { border: 0; border-radius: 10px; min-height: 44px; min-width: 52px; padding: 0 10px; background: var(--mp-surface-2); color: var(--mp-accent); font: 600 13px/18px var(--mp-font); cursor: pointer; }'
+      '.pv5-wealth .fmt { border: 0; border-radius: 10px; min-height: 44px; min-width: 52px; padding: 0 10px; background: var(--mp-surface-2); color: var(--mp-accent); font: 600 13px/18px var(--mp-font); cursor: pointer; }',
+      /* MA-295: chart redesign options A · Pulse, B · Editorial, C · Modular */
+      '.pv5-wealth .hpulse { margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--mp-hero-2); display: flex; flex-direction: column; gap: 6px; }',
+      '.pv5-wealth .hpulse-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; font: 600 12px/16px var(--mp-font); color: var(--mp-hero-ink-2); }',
+      '.pv5-wealth .hpulse-bars { position: relative; display: flex; gap: 6px; height: 58px; align-items: flex-end; padding: 6px 0 0; box-sizing: border-box; }',
+      '.pv5-wealth .hpulse-col { flex: 1 1 0; min-width: 0; border-radius: 5px 5px 2px 2px; background: var(--mp-hero-2); box-shadow: inset 0 2px 0 var(--mp-hero-ink-2); min-height: 14px; display: block; }',
+      '.pv5-wealth .hpulse-col.now { background: color-mix(in srgb, var(--mp-coral) 38%, var(--mp-hero-2)); box-shadow: inset 0 3px 0 var(--mp-coral); }',
+      '.pv5-wealth .hb-pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; background: var(--mp-surface-2); color: var(--mp-ink-2); font: 600 11.5px/16px var(--mp-font); font-variant-numeric: tabular-nums; margin-left: 6px; vertical-align: 1px; }',
+      '.charts-a .pv5-wealth .stack { gap: 4px; height: 14px; background: transparent; border-radius: 0; overflow: visible; }',
+      '.charts-a .pv5-wealth .stack > i { border-radius: 999px; }',
+      '.charts-b .pv5-wealth .stack { height: 14px; border-radius: 4px; padding: 2px; gap: 2px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); box-sizing: border-box; }',
+      '.charts-b .pv5-wealth .stack > i { border-radius: 2px; }',
+      '.charts-a .pv5-wealth .k-band, .charts-b .pv5-wealth .k-band, .charts-c .pv5-wealth .k-band { background: var(--mp-band); box-shadow: none; }',
+      '.charts-a .pv5-wealth .runs { height: 10px; box-shadow: inset 0 0 0 1px var(--mp-line); overflow: visible; }',
+      '.charts-a .pv5-wealth .runs > i.r1 { background: var(--mp-chart-2); } .charts-a .pv5-wealth .runs > i.r2 { background: var(--mp-chart-4); } .charts-a .pv5-wealth .runs > i.r3 { background: var(--mp-chart-line); }',
+      '.pv5-wealth .runs-dot { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--mp-surface); box-shadow: inset 0 0 0 2.5px var(--mp-chart-line); }',
+      '.pv5-wealth .runs-dot.r1 { box-shadow: inset 0 0 0 2.5px var(--mp-chart-2); } .pv5-wealth .runs-dot.r2 { box-shadow: inset 0 0 0 2.5px var(--mp-chart-4); }',
+      '.charts-b .pv5-wealth .runs { height: 12px; border-radius: 4px; box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; padding: 0 2px; box-sizing: border-box; overflow: visible; }',
+      '.charts-b .pv5-wealth .runs > i { top: 3px; bottom: 3px; border-radius: 2px; background: var(--mp-chart-line); }',
+      '.pv5-wealth .runs-tick { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--mp-ink); border-radius: 1px; }',
+      '.charts-a .pv5-wealth .lean, .charts-b .pv5-wealth .lean, .charts-c .pv5-wealth .lean { height: 214px; margin: 10px 0 0 42px; }',
+      '.charts-a .pv5-wealth .lean-x, .charts-b .pv5-wealth .lean-x, .charts-c .pv5-wealth .lean-x { margin-left: 42px; }',
+      '.charts-a .pv5-wealth .lean-y, .charts-b .pv5-wealth .lean-y, .charts-c .pv5-wealth .lean-y { left: -42px; width: 36px; text-align: right; }',
+      '.charts-a .pv5-wealth .lean-bar { width: 3.4%; border-radius: 999px 999px 3px 3px; }',
+      '.charts-a .pv5-wealth .lean-bar.neg { border-radius: 3px 3px 999px 999px; }',
+      '.charts-a .pv5-wealth .lean-bar.low, .charts-c .pv5-wealth .lean-bar.low { background: var(--mp-chart-4); }',
+      '.charts-b .pv5-wealth .lean-line:not(.lean-floor) { border-top-style: dashed; }',
+      '.pv5-wealth .lean-stem { position: absolute; width: 2px; transform: translateX(-50%); background: var(--mp-chart-line); border-radius: 1px; }',
+      '.pv5-wealth .lean-stem.low { background: var(--mp-chart-4); } .pv5-wealth .lean-stem.past { opacity: 0.55; }',
+      '.pv5-wealth .lean-dot { position: absolute; width: 8px; height: 8px; transform: translate(-50%, 50%); border-radius: 50%; background: var(--mp-chart-line); box-shadow: 0 0 0 2px var(--mp-surface); }',
+      '.pv5-wealth .lean-dot.low { background: var(--mp-surface); box-shadow: inset 0 0 0 2.5px var(--mp-chart-4); }',
+      '.pv5-wealth .lean-dot.sel, .pv5-wealth .lean-bar.sel { box-shadow: 0 0 0 2px var(--mp-focus); }',
+      '.pv5-wealth .lean-slot { position: absolute; top: 0; bottom: 0; width: 3.6%; transform: translateX(-50%); background: var(--mp-surface-2); border-radius: 3px; opacity: 0.55; }',
+      '.charts-c .pv5-wealth .lean-bar { width: 3.6%; border-radius: 3px 3px 0 0; box-shadow: inset 0 3px 0 var(--mp-ink); }',
+      '.charts-c .pv5-wealth .lean-bar.neg { border-radius: 0 0 3px 3px; box-shadow: inset 0 -3px 0 var(--mp-ink); }'
     ].join('\n');
     document.head.appendChild(css);
   }
@@ -180,8 +214,11 @@
   function wrap(html) { return '<div class="pv5-wealth fx col g16">' + html + '</div>'; }
   function wc(html) { return '<div class="pv5-wealth fx col g10">' + html + '</div>'; }
   function pct(a, b) { return Math.round((a / b) * 100) + '%'; }
-  function hb(t, v, frac, sub, cls) {
-    return '<div class="hb"><div class="hb-top"><span class="hb-t">' + t + '</span><span class="hb-v">' + v + '</span></div>' + K.bar(frac, cls) + (sub ? '<span class="mp-foot mp-ink2">' + sub + '</span>' : '') + '</div>';
+  function hb(t, v, frac, sub, cls, opts) {
+    var m = K.mode(), o = opts || {};
+    var pill = m === 'a' && o.pill ? '<span class="hb-pill">' + o.pill + '</span>' : '';
+    var barOpts = m === 'b' && o.tick != null ? { tick: o.tick } : o.barOpts || null;
+    return '<div class="hb"><div class="hb-top"><span class="hb-t">' + t + pill + '</span><span class="hb-v">' + v + '</span></div>' + K.bar(frac, cls, barOpts) + (sub ? '<span class="mp-foot mp-ink2">' + sub + '</span>' : '') + '</div>';
   }
   function cells(list) { return '<div class="cells">' + list.map(function (c) { return '<div class="cell"><span class="cell-k">' + c[0] + '</span><span class="cell-v">' + c[1] + '</span>' + (c[2] ? '<span class="cell-s">' + c[2] + '</span>' : '') + '</div>'; }).join('') + '</div>'; }
   function lead(t) { return '<span class="mp-row-lead" style="background:var(--mp-surface-2);color:var(--mp-ink)">' + t + '</span>'; }
@@ -307,6 +344,68 @@
     var inr = ctx.has('inr');
     return K.seg([{ t: '£ GBP', on: !inr, go: inr ? 'fold:inr' : null }, { t: '₹ INR', on: inr, go: inr ? null : 'fold:inr' }]);
   }
+  function heroPulse(ctx) {
+    var m = K.mode();
+    if (m === 'classic') return '';
+    var inr = ctx.has('inr'), ccy = inr ? 'INR' : 'GBP';
+    var MS = [
+      ['2026-10-22T18:00', 'Thu 22 Oct', 'Thu 22 Oct close'],
+      ['2026-10-23T21:00', 'Fri 23 Oct', 'Fri 23 Oct close'],
+      ['2026-10-25T21:00', 'Sun 25 Oct', 'Setup complete'],
+      ['2026-10-26T09:41', 'Mon 26 Oct · 09:41', 'Monzo savings added'],
+      ['2026-10-26T09:52', 'Mon 26 Oct · 09:52', 'Home estimate corrected'],
+      ['2026-11-01T08:44', 'Sun 1 Nov', 'Barclaycard statement'],
+      ['2026-11-05T09:12', 'Thu 5 Nov', 'HDFC EMI paid'],
+      ['2026-11-07T09:00', 'Sat 7 Nov', 'Fri 6 Nov close']
+    ].filter(function (x) { return x[0] <= ctx.t; });
+    if (!MS.length || MS[MS.length - 1][0] < ctx.t) MS.push([ctx.t, ctx.d || 'Now', 'Current ledger']);
+    var pts = MS.map(function (x, i) {
+      var Wx = x[0] === ctx.t ? ctx.W : M.world(x[0]);
+      var val = inr ? Wx.T.net_inr : Wx.T.net_gbp;
+      return { i: i, k: x[1], s: x[2], v: val };
+    });
+    if (pts.length < 2) return '';
+    var vals = pts.map(function (p) { return p.v; });
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), span = Math.max(hi - lo, (hi || 1) * 0.008);
+    var first = pts[0], last = pts[pts.length - 1], diff = last.v - first.v;
+    var diffFmt = (diff >= 0 ? '▲ ' : '▼ ') + (inr ? ri(Math.abs(diff)) : g(Math.abs(diff)));
+    var T = ctx.W.T, M2 = function (n) { return inr ? ri(n * FX) : g(n); };
+    if (m === 'c') {
+      var scrubC = pts.map(function (p, idx) {
+        var cx = ((idx + 0.5) / pts.length) * 100;
+        var hPct = 36 + ((p.v - lo) / span) * 64;
+        return { x: +cx.toFixed(2), y: +(100 - hPct).toFixed(2), k: p.k, v: p.v, ccy: ccy, s: p.s };
+      });
+      var cols = pts.map(function (p, idx) {
+        var hPct = 36 + ((p.v - lo) / span) * 64;
+        return '<i class="hpulse-col' + (idx === pts.length - 1 ? ' now' : '') + '" style="height:' + hPct.toFixed(1) + '%"></i>';
+      }).join('');
+      return '<div class="hpulse">' + K.chartStats([
+        { k: 'We own', v: M2(T.own_gbp) },
+        { k: 'We owe', v: M2(T.owe_gbp) },
+        { k: 'Liquid now', v: M2(T.liquid_gbp) }
+      ], 'c') + '<div class="hpulse-h"><span>Recorded trajectory · ' + pts.length + ' milestones</span><span>' + diffFmt + ' since ' + first.k.split(' · ')[0] + '</span></div>' +
+        '<div class="hpulse-bars" role="img" aria-label="Recorded net worth across ' + pts.length + ' ledger milestones" data-scrub="' + K.esc(JSON.stringify(scrubC)) + '">' + cols + K.scrubBox() + '</div>' +
+        '<div class="axis5" style="color:var(--mp-hero-ink-2)"><span>' + first.k.split(' · ')[0] + '</span><span>' + last.k.split(' · ')[0] + '</span></div></div>';
+    }
+    var linePts = pts.map(function (p) { return [p.i, p.v]; });
+    var dots = pts.map(function (p, idx) { return { x: p.i, y: p.v, beacon: m === 'a' && idx === pts.length - 1 }; });
+    var scrubL = pts.map(function (p) { return { x: p.i, y: p.v, k: p.k, v: p.v, ccy: ccy, s: p.s }; });
+    var statsB = m === 'b' ? [
+      { k: 'At setup', v: inr ? ri(pts[0].v) : g(pts[0].v) },
+      { k: 'Recorded move', v: diffFmt },
+      { k: 'Liquid now', v: M2(T.liquid_gbp) }
+    ] : null;
+    return '<div class="hpulse">' + (m === 'a' ? '<div class="hpulse-h"><span>Recorded trajectory</span><span>' + diffFmt + ' since ' + first.k.split(' · ')[0] + '</span></div>' : '') +
+      K.line({
+        x0: 0, x1: pts.length - 1, y0: lo - span * 0.22, y1: hi + span * 0.25, h: '76px',
+        padL: 2.2, padR: 97.8, grid: [lo, hi], gridColor: 'var(--mp-hero-2)',
+        series: [{ pts: linePts, color: 'var(--mp-coral)', w: m === 'a' ? 2.5 : 2 }],
+        dots: dots, areaOp: 0.28, stats: statsB, scrub: scrubL,
+        xLabels: [{ x: 0, t: first.k.split(' · ')[0] }, { x: pts.length - 1, t: last.k.split(' · ')[0] }],
+        label: 'Recorded household net worth from ' + first.k + ' to ' + last.k
+      }) + '</div>';
+  }
   function homeHero(ctx) {
     var T = ctx.W.T, inr = ctx.has('inr');
     var top = '<div class="heroseg">' + K.seg([{ t: 'Household', on: true }, { t: 'Me' }, { t: 'Asha' }]) + ccySeg(ctx, true) + '</div>';
@@ -316,29 +415,44 @@
     var extra = (deltaLine(ctx) ? deltaLine(ctx) : '') +
       '<span class="mp-foot mp-hero-2">' + K.ms('currency_exchange') + ' ' + RATE() + ' · ECB reference rate, Fri 23 Oct · prices at the ' + ctx.W.pricesAt + '</span>' +
       (inr ? '<span class="mp-foot mp-hero-2">In rupees: India’s records as they are, the UK’s at ' + RATE() + '. Dollars and euros come in the same switch, at the day’s ECB rate.</span>' : '') +
-      (live ? '<span class="mp-foot mp-hero-2">' + live + '</span>' : '');
+      (live ? '<span class="mp-foot mp-hero-2">' + live + '</span>' : '') +
+      heroPulse(ctx);
     return K.hero({ top: top, k: 'Household net worth', v: inr ? ri(T.net_inr) : g(T.net_gbp), extra: extra, id: 'w-hero' });
   }
   function homeCards(ctx) {
-    var T = ctx.W.T, list = records(ctx), D = debts(ctx), inr = ctx.has('inr');
+    var T = ctx.W.T, list = records(ctx), D = debts(ctx), inr = ctx.has('inr'), m = K.mode();
     var M2 = function (n) { return inr ? ri(n * FX) : g(n); };
     var n = list.length, nUK = list.filter(function (a) { return a.country === 'UK'; }).length;
     var own = T.own_gbp, owe = T.owe_gbp, net = T.net_gbp;
     var cards = [];
+    var ownOweRows = hb('We own', M2(own), 1, n + ' assets in the UK and India', '', { pill: '100%', tick: net / own }) +
+      hb('We owe', M2(owe), owe / own, '3 loans and a card', 'grey', { pill: pct(owe, own) });
     cards.push(K.card({ t: 'What we own and owe', r: '<span class="mp-foot mp-ink2">' + pct(owe, own) + ' of what we own is owed</span>', body:
-      hb('We own', M2(own), 1, n + ' assets in the UK and India') + hb('We owe', M2(owe), owe / own, '3 loans and a card', 'grey') }));
+      m === 'c'
+        ? '<div class="mp5-donut-wrap">' + K.donut([{ v: net, color: 'var(--mp-chart-line)' }, { v: owe, color: 'var(--mp-ink-3)' }], pct(net, own), 'net') + '<div class="mp5-donut-side">' + ownOweRows + '</div></div>'
+        : ownOweRows }));
     var uk = T.by_country_gbp.UK, ind = T.by_country_gbp.IN;
+    var countryRows = hb('United Kingdom', inr ? ri(T.net_inr - indiaInr(ctx)) : g(uk), uk / net, pct(uk, net) + ' · ' + nUK + ' assets, 3 debts, held in pounds', '', { pill: pct(uk, net), tick: 0.5 }) +
+      hb('India', inr ? ri(indiaInr(ctx)) : g(ind), ind / net, pct(ind, net) + ' · 7 assets, 1 loan, held in rupees: ' + ri(indiaInr(ctx)), m === 'c' ? 'b2' : '', { pill: pct(ind, net), tick: 0.5 });
     cards.push(K.card({ t: 'By country', r: '<span class="mp-foot mp-ink2">' + (inr ? 'in rupees' : 'in pounds') + '</span>', body:
-      hb('United Kingdom', inr ? ri(T.net_inr - indiaInr(ctx)) : g(uk), uk / net, pct(uk, net) + ' · ' + nUK + ' assets, 3 debts, held in pounds') +
-      hb('India', inr ? ri(indiaInr(ctx)) : g(ind), ind / net, pct(ind, net) + ' · 7 assets, 1 loan, held in rupees: ' + ri(indiaInr(ctx))) }));
+      m === 'c'
+        ? '<div class="mp5-donut-wrap">' + K.donut([{ v: uk, color: 'var(--mp-chart-line)' }, { v: ind, color: 'var(--mp-chart-2)' }], pct(uk, net), 'UK') + '<div class="mp5-donut-side">' + countryRows + '</div></div>'
+        : countryRows }));
     var bm = T.by_member_gbp;
+    var memberRows = hb('Arun', M2(bm.arun), bm.arun / net, pct(bm.arun, net) + ' · his own records and his half of the joint ones', '', { pill: pct(bm.arun, net), tick: 0.5 }) +
+      hb('Asha', inr ? ri(T.net_inr - rhe(bm.arun * FX)) : g(bm.asha), bm.asha / net, pct(bm.asha, net) + ' · her own records and her half of the joint ones', m === 'c' ? 'b5' : '', { pill: pct(bm.asha, net), tick: 0.5 });
     cards.push(K.card({ t: 'By member', r: '<span class="mp-foot mp-ink2">joint records by share</span>', body:
-      hb('Arun', M2(bm.arun), bm.arun / net, pct(bm.arun, net) + ' · his own records and his half of the joint ones') +
-      hb('Asha', inr ? ri(T.net_inr - rhe(bm.arun * FX)) : g(bm.asha), bm.asha / net, pct(bm.asha, net) + ' · her own records and her half of the joint ones') +
+      (m === 'c'
+        ? '<div class="mp5-donut-wrap">' + K.donut([{ v: bm.arun, color: 'var(--mp-chart-line)' }, { v: bm.asha, color: 'var(--mp-chart-5)' }], pct(bm.arun, net), 'Arun') + '<div class="mp5-donut-side">' + memberRows + '</div></div>'
+        : memberRows) +
       K.foot('Joint: Home, Reading, the Pune flat, the mortgage and the Monzo pot, 50% each.') }));
     var liq = T.liquid_gbp, fix = groupSum(list, 'fix'), lock = own - liq - fix;
+    var liqTop = m === 'c'
+      ? '<div class="mp5-donut-wrap" style="margin-bottom:6px">' + K.donut([{ v: liq, color: 'var(--mp-chart-line)' }, { v: fix, color: 'var(--mp-chart-2)' }, { v: lock, color: 'var(--mp-chart-3)' }], pct(liq, own), 'liquid') +
+        '<div class="mp5-donut-side">' + K.chartStats([{ k: 'Liquid', v: pct(liq, own) }, { k: 'Fixed', v: pct(fix, own) }, { k: 'Locked', v: pct(lock, own) }], 'c') + '</div></div>'
+      : '<div class="stack"><i class="c1" style="width:' + (liq / own * 100).toFixed(1) + '%"></i><i class="c2" style="width:' + (fix / own * 100).toFixed(1) + '%"></i><i class="c3" style="width:' + (lock / own * 100).toFixed(1) + '%"></i></div>';
     cards.push(K.card({ t: 'Liquid and locked', r: '<span class="mp-foot mp-ink2">' + pct(lock, own) + ' is locked</span>', body:
-      '<div class="stack"><i class="c1" style="width:' + (liq / own * 100).toFixed(1) + '%"></i><i class="c2" style="width:' + (fix / own * 100).toFixed(1) + '%"></i><i class="c3" style="width:' + (lock / own * 100).toFixed(1) + '%"></i></div>' +
+      liqTop +
       K.list([
         K.row({ lead: '<span class="sw c1"></span>', t: 'Liquid now', s: list.filter(function (a) { return a.liq === 'liquid'; }).length + ' records: cash, savings, funds and shares', v: M2(liq) }),
         K.row({ lead: '<span class="sw c2"></span>', t: 'Fixed term', s: '4 pay out at maturity; next the saver, ' + g(10460) + ' on Mon 14 Dec', v: M2(fix) }),
@@ -368,9 +482,15 @@
     var runs = [['Car loan · Close Brothers', g(D.car), 'UK · Arun · ' + g(347) + ' a month', 'paid off Tue 20 Feb 2029', 2029.13],
       ['Home loan · HDFC, the Pune flat', ri(D.hdfcInr), 'India · Arun · ' + ri(39390) + ' a month', 'paid off Fri 5 Jul 2030', 2030.5],
       ['Mortgage · Nationwide', g(D.mortgage), 'UK · joint 50% each · fixed 4.39% to 30 Jun 2028 · ' + g(1456) + ' a month', 'paid off Sun 1 Oct 2045', 2045.75]];
-    cards.push(K.card({ t: 'What we owe, and how it runs off', r: '<span class="mp-foot mp-ink2">' + M2(owe) + ' in all</span>', body: runs.map(function (x) {
+    cards.push(K.card({ t: 'What we owe, and how it runs off', r: '<span class="mp-foot mp-ink2">' + M2(owe) + ' in all</span>', body: runs.map(function (x, idx) {
+      var frac = (x[4] - 2026.82) / span, wPct = (frac * 100).toFixed(1);
+      var barHtml;
+      if (m === 'c') barHtml = K.bar(frac, idx === 0 ? 'b2' : idx === 1 ? 'b4' : '');
+      else if (m === 'a') barHtml = '<div class="runs"><i class="r' + (idx + 1) + '" style="width:' + wPct + '%"></i><span class="runs-dot r' + (idx + 1) + '" style="left:' + Math.min(98.5, +wPct) + '%"></span></div>';
+      else if (m === 'b') barHtml = '<div class="runs"><i style="width:' + wPct + '%"></i><span class="runs-tick" style="left:' + Math.min(98.5, +wPct) + '%"></span></div>';
+      else barHtml = '<div class="runs"><i style="width:' + wPct + '%"></i></div>';
       return '<div class="fx col g4" style="padding:6px 0"><div class="hb-top"><span class="hb-t">' + x[0] + '</span><span class="hb-v">' + x[1] + '</span></div><span class="mp-foot mp-ink2">' + x[2] + '</span>' +
-        '<div class="runs"><i style="width:' + ((x[4] - 2026.82) / span * 100).toFixed(1) + '%"></i></div><span class="mp-foot">' + x[3] + '</span></div>';
+        barHtml + '<span class="mp-foot">' + x[3] + '</span></div>';
     }).join('') + '<div class="axis5"><span>Now</span><span>2030</span><span>2035</span><span>2040</span><span>Oct 2045</span></div>' +
       K.foot(ctx.W.octClosed ? 'Barclaycard: the statement of Sun 1 Nov, ' + g(1458) + ', is owed until it is paid, due Fri 20 Nov. Each loan frees its payment when it ends.' : 'Barclaycard: nothing owed; October’s ' + g(1240) + ' was paid in full on Tue 20 Oct. Each loan frees its payment when it ends.') }));
     cards.push(K.card({ t: 'Maturing next', r: '<span class="mp-foot mp-ink2">what the fixed terms pay</span>', body: K.list([
@@ -423,17 +543,33 @@
   function homeChart(corrected) {
     var pts = [[2021.46, 330000], [2026.33, 330000], [2026.33, 415000], [2026.82, 415000]];
     if (corrected) pts = pts.concat([[2026.82, 428000], [2026.9, 428000]]); else pts.push([2026.9, 415000]);
+    var curV = corrected ? 428000 : 415000;
     return K.line({ x0: 2021.46, x1: 2026.9, y0: 0, y1: 470000, h: '130px', grid: [400000], label: 'Home, Reading: its value as recorded, a step at each valuation',
       series: [{ pts: pts, color: 'var(--mp-chart-line)' }], dots: [{ x: 2021.46, y: 330000 }, { x: 2026.33, y: 415000 }].concat(corrected ? [{ x: 2026.9, y: 428000 }] : []),
+      stats: [{ k: 'Bought Jun 2021', v: g(330000) }, { k: 'Apr 2026', v: g(415000) }, { k: 'Oct 2026', v: g(curV) }],
+      scrub: [
+        { x: 2021.46, y: 330000, k: 'Fri 18 Jun 2021', v: 330000, ccy: 'GBP', s: 'Bought, joint 50% each' },
+        { x: 2026.33, y: 415000, k: 'Thu 30 Apr 2026', v: 415000, ccy: 'GBP', s: 'Valuation in the chat' },
+        { x: 2026.9, y: curV, k: 'Mon 26 Oct 2026', v: curV, ccy: 'GBP', s: corrected ? 'Your estimate, corrected in place' : 'As valued Thu 30 Apr' }
+      ],
       yLabels: [{ y: 400000, t: mny('£400k') }], xLabels: [{ x: 2021.46, t: 'Jun 2021' }, { x: 2024, t: '2024' }, { x: 2026.9, t: 'Oct 2026' }] }) +
       '<div class="legend"><span><i class="k-line"></i>Value as recorded, a step at each valuation</span></div>';
   }
   function fdChart() {
-    var pts = [], P = 500000, r = 0.071 / 4;
-    for (var q = 0; q <= 12; q++) pts.push([2026.19 + q / 4, P * Math.pow(1 + r, q)]);
+    var pts = [], P = 500000, r = 0.071 / 4, scrub = [];
+    for (var q = 0; q <= 12; q++) {
+      var xq = 2026.19 + q / 4, vq = P * Math.pow(1 + r, q);
+      pts.push([xq, vq]);
+      scrub.push({ x: xq, y: vq, k: 'Quarter ' + q + (q === 0 ? ' · Mar 2026' : q === 12 ? ' · Mar 2029' : ''), v: Math.round(vq), ccy: 'INR', s: q <= 2 ? 'Accrued so far' : 'Projected at 7.1% quarterly' });
+    }
+    scrub.push({ x: 2026.82, y: 517908, k: 'Oct 2026 · today', v: 517908, ccy: 'INR', s: 'Accrued to today' });
+    scrub.sort(function (a, b) { return a.x - b.x; });
     return K.line({ x0: 2026.19, x1: 2029.19, y0: 450000, y1: 640000, h: '120px', grid: [500000, 600000], label: 'SBI fixed deposit, compounding quarterly to maturity',
       series: [{ pts: pts.filter(function (p) { return p[0] <= 2026.82; }).concat([[2026.82, 517908]]), color: 'var(--mp-chart-line)' }, { pts: [[2026.82, 517908]].concat(pts.filter(function (p) { return p[0] > 2026.82; })), color: 'var(--mp-ink-3)', dash: true }],
-      dots: [{ x: 2026.82, y: 517908 }, { x: 2029.19, y: 617538 }], yLabels: [{ y: 500000, t: mny('₹5 lakh') }, { y: 600000, t: mny('₹6 lakh') }],
+      dots: [{ x: 2026.82, y: 517908 }, { x: 2029.19, y: 617538 }],
+      stats: [{ k: 'Put in', v: ri(500000) }, { k: 'Accrued now', v: ri(517908) }, { k: 'Mar 2029', v: ri(617538) }],
+      scrub: scrub,
+      yLabels: [{ y: 500000, t: mny('₹5 lakh') }, { y: 600000, t: mny('₹6 lakh') }],
       xLabels: [{ x: 2026.19, t: 'Mar 2026' }, { x: 2027.19, t: '2027' }, { x: 2028.19, t: '2028' }, { x: 2029.19, t: 'Mar 2029' }] }) +
       '<div class="legend"><span><i class="k-line"></i>Accrued so far</span><span><i class="k-dash"></i>To maturity, at 7.1%, quarterly</span></div>';
   }
@@ -546,16 +682,24 @@
       body: wrap(hero + K.card({ t: 'The loans and the card', r: '<span class="mp-foot mp-ink2">tap one to open it</span>', body: K.list(rows) }) + K.note('chat', 'A new loan starts in the chat; a figure is corrected on its loan’s page.') + K.foot(ILLUS)) };
   });
   function hdfcChart(after) {
-    var r = 0.085 / 12, E = 39389.58, P0 = 4000000, paid = [], plan = [], now = after ? 136 : 135;
-    for (var k = 0; k <= 180; k += 3) {
-      var bal = Math.max(0, P0 * Math.pow(1 + r, k) - E * (Math.pow(1 + r, k) - 1) / r), x = 2015.58 + k / 12;
-      if (k <= now) paid.push([x, bal]);
-      if (k >= now - (now % 3)) plan.push([x, bal]);
+    var r = 0.085 / 12, E = 39389.58, P0 = 4000000, paid = [], plan = [], scrub = [], now = after ? 136 : 135;
+    for (var k = 0; k <= 180; k += 12) {
+      var balY = Math.max(0, P0 * Math.pow(1 + r, k) - E * (Math.pow(1 + r, k) - 1) / r), xY = 2015.58 + k / 12;
+      scrub.push({ x: xY, y: balY, k: String(Math.round(xY)) + ' · EMI ' + k + ' of 180', v: Math.round(balY), ccy: 'INR', s: k <= now ? 'Paid down so far' : 'Scheduled balance' });
+    }
+    for (var k2 = 0; k2 <= 180; k2 += 3) {
+      var bal = Math.max(0, P0 * Math.pow(1 + r, k2) - E * (Math.pow(1 + r, k2) - 1) / r), x = 2015.58 + k2 / 12;
+      if (k2 <= now) paid.push([x, bal]);
+      if (k2 >= now - (now % 3)) plan.push([x, bal]);
     }
     var nb = after ? 1484586.73 : 1513257.4, nx = 2015.58 + now / 12;
     paid.push([nx, nb]); plan.unshift([nx, nb]);
+    scrub.push({ x: nx, y: nb, k: (after ? 'Thu 5 Nov 2026' : 'Oct 2026') + ' · EMI ' + now, v: Math.round(nb), ccy: 'INR', s: 'Current remaining balance' });
+    scrub.sort(function (a, b) { return a.x - b.x; });
     return K.line({ x0: 2015.58, x1: 2030.5, y0: 0, y1: 4200000, h: '150px', grid: [1000000, 2000000, 3000000], label: 'HDFC home loan: the balance as paid, and the original plan',
       series: [{ pts: paid, color: 'var(--mp-chart-line)' }, { pts: plan, color: 'var(--mp-ink-3)', dash: true }], dots: [{ x: nx, y: nb }],
+      stats: [{ k: 'Borrowed', v: ri(4000000) }, { k: 'Left now', v: ri(Math.round(nb)) }, { k: 'Ends', v: 'Jul 2030' }],
+      scrub: scrub,
       yLabels: [{ y: 1000000, t: mny('₹10 lakh') }, { y: 2000000, t: mny('₹20 lakh') }, { y: 3000000, t: mny('₹30 lakh') }],
       xLabels: [{ x: 2015.58, t: '2015' }, { x: 2020, t: '2020' }, { x: 2025, t: '2025' }, { x: 2030.5, t: '2030' }] }) +
       '<div class="legend"><span><i class="k-line"></i>Balance, as paid</span><span><i class="k-dash"></i>The original plan</span></div>';
@@ -605,10 +749,16 @@
       extra: '<div class="hstats"><div class="hstat"><span class="hstat-k">Income</span><span class="hstat-v">' + g(B.income_gbp) + '</span><span class="hstat-s">salaries and rent</span></div><div class="hstat"><span class="hstat-k">EMIs</span><span class="hstat-v">' + g(B.emis_gbp) + '</span><span class="hstat-s">3 loans</span></div><div class="hstat"><span class="hstat-k">SIP</span><span class="hstat-v">' + g(B.sip_gbp) + '</span><span class="hstat-s">1 fund</span></div><div class="hstat"><span class="hstat-k">Spending</span><span class="hstat-v">' + g(B.spend_actual) + '</span><span class="hstat-s">of ' + g(B.spend_plan) + ' planned</span></div></div>' })
       : K.hero({ k: 'October · open · planned surplus', v: g(B.surplus_plan), s: waiting ? 'Spending comes from your statements: two are waiting for your Confirm in the chat.' : 'Spending comes from October’s statements, sent in the chat on the 1st.',
         extra: '<div class="hstats"><div class="hstat"><span class="hstat-k">Income</span><span class="hstat-v">' + g(B.income_gbp) + '</span><span class="hstat-s">expected</span></div><div class="hstat"><span class="hstat-k">EMIs</span><span class="hstat-v">' + g(B.emis_gbp) + '</span><span class="hstat-s">3 loans</span></div><div class="hstat"><span class="hstat-k">SIP</span><span class="hstat-v">' + g(B.sip_gbp) + '</span><span class="hstat-s">1 fund</span></div><div class="hstat"><span class="hstat-k">Spending</span><span class="hstat-v">not yet</span><span class="hstat-s">plan ' + g(B.spend_plan) + '</span></div></div>' });
+    var bMode = K.mode();
     var rows = B.plan.map(function (c) {
-      var d = c.actual - c.plan;
+      var d = c.actual - c.plan, barH = '';
+      if (done) {
+        if (bMode === 'classic') barH = K.bar(Math.min(1, c.actual / c.plan), d > 0 ? 'over' : '');
+        else if (d > 0) barH = K.bar(1, bMode === 'c' ? '' : 'over', { tick: c.plan / c.actual, overFrom: c.plan / c.actual });
+        else barH = K.bar(c.actual / (c.plan || 1), '', bMode === 'b' ? { tick: 1 } : null);
+      }
       return '<div class="bud"><span class="mp-sub" style="font-weight:600">' + c.category + '</span><span class="mp-sub mp-num tr">' + (done ? g(c.actual) + ' <span class="mp-ink2">of ' + g(c.plan) + '</span>' : '<span class="mp-ink2">plan ' + g(c.plan) + '</span>') + '</span>' +
-        (done ? K.bar(Math.min(1, c.actual / c.plan), d > 0 ? 'over' : '') + '<span class="mp-foot ' + (d > 0 ? '' : 'mp-ink2') + '">' + (d > 0 ? '▲ ' + g(d) + ' over' : d < 0 ? '▼ ' + g(-d) + ' under' : 'on plan') + '</span>' : '') + '</div>';
+        (done ? barH + '<span class="mp-foot ' + (d > 0 ? '' : 'mp-ink2') + '">' + (d > 0 ? '▲ ' + g(d) + ' over' : d < 0 ? '▼ ' + g(-d) + ' under' : 'on plan') + '</span>' : '') + '</div>';
     }).join('');
     var pa = K.card({ t: 'Plan against actual', r: '<span class="mp-foot mp-ink2">' + (done ? g(B.spend_actual) + ' of ' + g(B.spend_plan) : 'plan ' + g(B.spend_plan)) + '</span>', id: 'w-pa', body: K.foot('Tap a plan figure to correct it.') + rows +
       K.foot(done ? 'From the Barclaycard statement of Sun 1 Nov and Monzo’s for October: 22 lines.' : 'Actuals come in when you confirm October’s statements in the chat.') +
@@ -654,14 +804,23 @@
     return list.sort(function (x, y) { return order.indexOf(x.id) - order.indexOf(y.id); });
   }
   function fanChart(ctx, run, compact) {
-    var nowY = NOWY[ctx.t.slice(0, 10)] || 2026.85, net = ctx.W.T.net_gbp;
+    var m = K.mode(), nowY = NOWY[ctx.t.slice(0, 10)] || 2026.85, net = ctx.W.T.net_gbp;
     var yrs = run.fan.filter(function (r) { return r.year >= 2027 && r.year <= 2046; });
     var mid = [[nowY, net]].concat(yrs.map(function (r) { return [r.year, r.p50]; })), lo = [[nowY, net]].concat(yrs.map(function (r) { return [r.year, r.p10]; })), hi = [[nowY, net]].concat(yrs.map(function (r) { return [r.year, r.p90]; }));
     var top = Math.max.apply(null, hi.map(function (p) { return p[1]; })) * 1.08;
     var ys = [2000000, 4000000, 6000000].filter(function (v) { return v < top; });
-    return K.line({ x0: nowY, x1: 2046, y0: 0, y1: top, h: compact ? '170px' : '240px', grid: ys, label: 'The Projection: the middle path and 8 in 10 of the engine’s runs, to 2046',
-      bands: [{ lo: lo, hi: hi, color: 'var(--mp-hero-area)' }], series: [{ pts: mid, color: 'var(--mp-coral)', w: 2.5 }],
+    var f36 = fanAt(run, 2036), f46 = fanAt(run, 2046);
+    var scrub = [{ x: nowY, y: net, k: 'Today', v: net, ccy: 'GBP', s: 'Recorded net worth' }].concat(yrs.map(function (r) {
+      return { x: r.year, y: r.p50, k: String(r.year), v: r.p50, lo: r.p10, hi: r.p90, ccy: 'GBP' };
+    }));
+    return K.line({ x0: nowY, x1: 2046, y0: 0, y1: top, h: compact ? '170px' : '240px', grid: ys,
+      gridColor: m === 'classic' ? null : 'var(--mp-hero-2)',
+      label: 'The Projection: the middle path and 8 in 10 of the engine’s runs, to 2046',
+      bands: [{ lo: lo, hi: hi, color: m === 'classic' ? 'var(--mp-hero-area)' : 'var(--mp-band)' }],
+      series: [{ pts: mid, color: 'var(--mp-coral)', w: 2.5 }],
       dots: [{ x: 2029.13, y: interp(mid, 2029.13) }, { x: 2030.5, y: interp(mid, 2030.5) }, { x: 2045.75, y: interp(mid, 2045.75) }],
+      stats: [{ k: 'Today', v: g(net) }, { k: '2036 middle', v: g(f36 ? f36.p50 : net) }, { k: '2046 spread', v: f46 ? g(f46.p10) + ' to ' + g(f46.p90) : g(net) }],
+      scrub: scrub,
       yLabels: ys.map(function (v) { return { y: v, t: mny('£' + v / 1e6 + 'm') }; }),
       xLabels: (compact ? [[nowY, 'Today'], [2036, '2036'], [2046, '2046']] : [[nowY, 'Today'], [2031, '2031'], [2036, '2036'], [2041, '2041'], [2046, '2046']]).map(function (x) { return { x: x[0], t: x[1] }; }) }) +
       '<div class="legend"><span><i class="k-line"></i>Middle path</span><span><i class="k-band"></i>8 in 10 runs</span><span>● A loan ends</span></div>';
@@ -750,22 +909,40 @@
   function forecastTab(ctx) {
     var FR = forecastRun(ctx), years = ((FR.f || {}).years || []).filter(function (y) { return y.year >= 2027 && y.year <= 2046; });
     if (!years.length) return K.card({ body: K.note('hourglass_empty', 'The Budget forecast runs once the month’s budget is set.') });
-    var floor = 500, top = 4000, bot = -1000, H = function (v) { return (Math.max(bot, Math.min(top, v)) - bot) / (top - bot) * 100; };
+    var m = K.mode(), floor = 500, top = 4000, bot = -1000, H = function (v) { return (Math.max(bot, Math.min(top, v)) - bot) / (top - bot) * 100; };
     var X = function (i) { return (i + 0.5) / years.length * 100; };
     var below = years.filter(function (y) { return y.below_floor > 0; }), nBelow = below.reduce(function (s, y) { return s + y.below_floor; }, 0);
     var sel = years.filter(function (y) { return y.year === 2029; })[0];
     var bars = years.map(function (y, i) {
       var v = y.lowest_surplus, z = H(0), h = H(v), cls = v < 0 ? 'neg low' : y.below_floor ? 'low' : v > top ? 'past' : '';   /* the engine's flag, on exact figures: a pot-topped month can show £498 to £501 unflagged */
-      var style = v >= 0 ? 'left:' + X(i).toFixed(2) + '%;bottom:' + z.toFixed(1) + '%;height:' + Math.max(1, h - z).toFixed(1) + '%' : 'left:' + X(i).toFixed(2) + '%;bottom:' + h.toFixed(1) + '%;height:' + (z - h).toFixed(1) + '%';
-      return '<i class="lean-bar ' + cls + (y.year === 2029 ? ' sel' : '') + '" style="' + style + '" title="' + y.year + '"></i>' + (y.below_floor ? '<span class="lean-mk" style="left:' + X(i).toFixed(2) + '%;bottom:calc(' + Math.max(h, H(0)).toFixed(1) + '% + 2px)">▼</span>' : '');
+      var mk = y.below_floor ? '<span class="lean-mk" style="left:' + X(i).toFixed(2) + '%;bottom:calc(' + Math.max(h, H(0)).toFixed(1) + '% + ' + (m === 'b' ? '6px' : '2px') + ')">▼</span>' : '';
+      if (m === 'b') {
+        var stStyle = v >= 0 ? 'left:' + X(i).toFixed(2) + '%;bottom:' + z.toFixed(1) + '%;height:' + Math.max(1, h - z).toFixed(1) + '%' : 'left:' + X(i).toFixed(2) + '%;bottom:' + h.toFixed(1) + '%;height:' + Math.max(1, z - h).toFixed(1) + '%';
+        return '<i class="lean-stem ' + cls + '" style="' + stStyle + '"></i><i class="lean-dot ' + cls + (y.year === 2029 ? ' sel' : '') + '" style="left:' + X(i).toFixed(2) + '%;bottom:' + h.toFixed(1) + '%" title="' + y.year + '"></i>' + mk;
+      }
+      var slot = m === 'c' ? '<i class="lean-slot" style="left:' + X(i).toFixed(2) + '%"></i>' : '';
+      var style = v >= 0 ? 'left:' + X(i).toFixed(2) + '%;bottom:' + z.toFixed(1) + '%;height:' + Math.max(1.5, h - z).toFixed(1) + '%' : 'left:' + X(i).toFixed(2) + '%;bottom:' + h.toFixed(1) + '%;height:' + Math.max(1.5, z - h).toFixed(1) + '%';
+      return slot + '<i class="lean-bar ' + cls + (y.year === 2029 ? ' sel' : '') + '" style="' + style + '" title="' + y.year + '"></i>' + mk;
     }).join('');
-    var grid = [[4000, '£4k'], [2000, '£2k'], [0, '£0'], [-1000, '−£1k']].map(function (l) { return '<span class="lean-line" style="bottom:' + H(l[0]).toFixed(1) + '%"></span><span class="lean-y" style="top:' + (100 - H(l[0])).toFixed(1) + '%">' + mny(l[1]) + '</span>'; }).join('') +
-      '<span class="lean-line lean-floor" style="bottom:' + H(floor).toFixed(1) + '%"></span><span class="lean-y" style="top:' + (100 - H(floor)).toFixed(1) + '%;color:var(--mp-pause)">' + mny('£500') + '</span>';
+    var grid = [[4000, '£4k'], [2000, '£2k'], [0, '£0'], [-1000, '−£1k']].map(function (l) {
+      var tf = (m !== 'classic' && l[0] === 0) ? ';transform:translateY(-22%)' : '';
+      return '<span class="lean-line" style="bottom:' + H(l[0]).toFixed(1) + '%"></span><span class="lean-y" style="top:' + (100 - H(l[0])).toFixed(1) + '%' + tf + '">' + mny(l[1]) + '</span>';
+    }).join('') +
+      '<span class="lean-line lean-floor" style="bottom:' + H(floor).toFixed(1) + '%"></span><span class="lean-y" style="top:' + (100 - H(floor)).toFixed(1) + '%;color:var(--mp-pause)' + (m !== 'classic' ? ';transform:translateY(-78%)' : '') + '">' + mny('£500') + '</span>';
+    var scrubLean = m === 'classic' ? '' : ' data-scrub="' + K.esc(JSON.stringify(years.map(function (y, i) {
+      return { x: +X(i).toFixed(2), y: +(100 - H(y.lowest_surplus)).toFixed(2), k: y.year + ' · leanest ' + y.lowest_month.slice(0, 3), v: y.lowest_surplus, ccy: 'GBP', sign: true, s: y.below_floor ? y.below_floor + ' mo below floor' : 'All 12 mo at or above floor' };
+    }))) + '"';
+    var statsHtml = K.chartStats([
+      { k: 'Monthly floor', v: g(floor) },
+      { k: 'Below floor', v: nBelow ? nBelow + ' months' : '0 months' },
+      { k: '2029 leanest', v: sel ? sel.lowest_month.slice(0, 3) + ' · ' + sg(sel.lowest_surplus) : 'n/a' }
+    ], m);
     var xs = '<div class="lean-x">' + [0, 4, 9, 14, 19].filter(function (i) { return years[i]; }).map(function (i) { return '<span style="left:' + X(i).toFixed(2) + '%">' + years[i].year + '</span>'; }).join('') + '</div>';
     var past = years.filter(function (y) { return y.lowest_surplus > top; });
+    var lowSw = (m === 'a' || m === 'b' || m === 'c') ? 'var(--mp-chart-4)' : 'var(--mp-ink-3)';
     var chart = K.card({ t: 'Your leanest month, each year', r: nBelow ? K.chip('▼ ' + nBelow + ' months below your floor', 'mp-pause') : K.chip('No month below your floor', 'mp-add'), id: 'w-lean', body:
-      '<span class="mp-foot mp-ink2">2027 to 2046 · against your ' + mny('£500') + ' floor · the engine’s run of ' + FR.when + '</span><div class="lean">' + grid + bars + '</div>' + xs +
-      '<div class="legend" style="margin-top:8px"><span><i class="sw c1"></i>At or above your floor</span><span><i class="sw" style="background:var(--mp-ink-3)"></i>▼ Below it</span><span><i class="k-dash" style="border-color:var(--mp-pause)"></i>Your floor, ' + mny('£500') + ' a month</span></div>' +
+      '<span class="mp-foot mp-ink2">2027 to 2046 · against your ' + mny('£500') + ' floor · the engine’s run of ' + FR.when + '</span>' + statsHtml + '<div class="lean"' + scrubLean + '>' + grid + bars + (m === 'classic' ? '' : K.scrubBox()) + '</div>' + xs +
+      '<div class="legend" style="margin-top:8px"><span><i class="sw c1"></i>At or above your floor</span><span><i class="sw" style="background:' + lowSw + '"></i>▼ Below it</span><span><i class="k-dash" style="border-color:var(--mp-pause)"></i>Your floor, ' + mny('£500') + ' a month</span></div>' +
       (past.length ? K.foot(past[0].year + ' to ' + past[past.length - 1].year + ' run past ' + mny('£4,000') + ': their leanest months are ' + g(past[0].lowest_surplus) + ' to ' + g(past[past.length - 1].lowest_surplus) + (FR.k === 'R0' ? '.' : ', once the school fees end in Jul 2041.')) : '') });
     var yr = '';
     if (sel) {

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-29",
+ "updated": "2026-10-30",
  "about": "Estimates and dates for every phase (MA-228). An estimate is build days for one story at every door it touches: Claude builds, Arun reviews and tests. A phase's working days are its stories' build days, plus the buffer for review rounds, the demo and fixes, divided by how much runs side by side (the web app and the iOS app are built in parallel, as Arun asked on 26 Oct 2026). Arun's own tasks (label manual) run beside the lane and are due before their phase starts. Change a figure here, run `python3 scripts/roadmap.py write`, and the dates, PLAN's Timeline, the Confluence pages and the epics' due dates follow.",
  "start": "2026-11-02",
  "buffer": 0.2,
@@ -320,7 +320,8 @@
   "MA-283": 0,
   "MA-284": 0,
   "MA-282": 0.5,
-  "MA-291": 3
+  "MA-291": 3,
+  "MA-295": 0
  },
  "schedule": {
   "0": {
