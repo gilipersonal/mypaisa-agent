@@ -151,7 +151,7 @@ SHEET_MAX = 16  # boards in one phase preview; a screen area's file takes up to 
 FILE_SHEET_MAX = 24
 PLATFORMS = {"web": ("web", "phone"), "ios": ("iphone", "ipad"), "system": ("system",)}
 PLATFORM_NAMES = {"web": "The web app", "ios": "The iOS app", "system": "The design system"}
-LAYOUT = "sheet-v1"  # bump to recompose every preview
+LAYOUT = "sheet-v2"  # bump to recompose every preview (v2, MA-260: the captions name MyPaisa Boards and the repo, not Claude Design)
 DECISIONS = ["MA-193", "MA-161", "MA-156", "MA-102", "MA-103", "MA-101"]
 # The parts of a decision record copied to Confluence: the request, the options, the boards and the pick.
 DECISION_PARTS = ("The request", "What changes, in one table", "Where the designs are", "The boards", "The options",
