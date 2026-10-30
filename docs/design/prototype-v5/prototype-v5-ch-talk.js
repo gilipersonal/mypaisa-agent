@@ -30,9 +30,12 @@
     '.pv5-talk-ar>.f1{display:flex;flex-direction:column;gap:3px;min-width:0}',
     '.pv5-talk-init{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--mp-surface-2);color:var(--mp-ink);font:700 12px/1 var(--mp-font)}',
     '.pv5-talk-init.mk{background:var(--mp-hero);color:var(--mp-hero-ink)}',
-    '.pv5-talk-file{display:flex;gap:10px;align-items:center;padding:8px 8px 8px 10px;border-radius:12px;background:var(--mp-surface-2);margin-top:4px;min-width:0}',
-    '.pv5-talk-file .f1{display:flex;flex-direction:column;min-width:0}',
-    '.pv5-talk-file .mp-btn{flex:none}',
+    '.pv5-talk-file{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;padding:8px 8px 8px 10px;border-radius:12px;background:var(--mp-surface-2);margin-top:4px;min-width:0}',
+    '.pv5-talk-file .f1{display:flex;flex-direction:column;min-width:0;flex:1 1 110px}',
+    '.pv5-talk-file .mp-btn{flex:none;margin-left:auto}',
+    '.pv5-talk-ar.pv5-talk-wr{flex-wrap:wrap}',
+    '.pv5-talk-ar.pv5-talk-wr>.f1{flex:1 1 150px}',
+    '.pv5-talk-ar.pv5-talk-wr>.mp-btn{margin-left:auto}',
     '.pv5-talk-thumb{width:40px;height:40px;border-radius:8px;flex:none;display:grid;place-items:center;color:var(--mp-ink-2);background:repeating-linear-gradient(135deg,var(--mp-surface) 0 6px,var(--mp-line) 6px 8px)}',
     '.pv5-talk-thumb.doc{background:var(--mp-surface)}',
     '.pv5-talk-flt{display:flex;gap:8px;flex-wrap:wrap}',
@@ -105,18 +108,18 @@
     '@container wf (min-width: 700px){.sheet:has(>.pv5-talk-dlg){left:24px;right:24px;max-width:440px;margin:0 auto;top:50%;bottom:auto;transform:translateY(-50%);border-radius:24px;padding:22px;background:var(--mp-surface);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:var(--mp-shadow)}.sheet:has(>.pv5-talk-dlg)::before,.sheet:has(>.pv5-talk-dlg)>.sheet-grab{display:none}.sheet:has(>.pv5-talk-dlg) .pv5-talk-box{background:var(--mp-surface-2)}}',
     '@container af (min-width: 600px){.sheet:has(>.pv5-talk-dlg){left:24px;right:24px;max-width:460px;margin:0 auto;top:50%;bottom:auto;transform:translateY(-50%);border-radius:30px;padding:22px}.sheet:has(>.pv5-talk-dlg)>.sheet-grab{display:none}}',
     /* the iOS system screens: the home screen (phase 0) and the lock screen (a push, phase 1) */
-    '.pv5-talk-sys{position:absolute;inset:0;color:var(--mp-hero-ink);overflow:hidden}',
+    '.pv5-talk-sys{position:absolute;inset:0;color:var(--mp-hero-ink);overflow:hidden;display:flex;flex-direction:column}',
     '.dev:has(.pv5-talk-sys)>.sbar{color:var(--mp-hero-ink)}',
     '.dev:has(.pv5-talk-sys)>.homebar{background:var(--mp-hero-ink)}',
-    '.pv5-talk-hs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:22px 8px;padding:96px 22px 0;max-width:720px;margin:0 auto;align-content:start}',
+    '.pv5-talk-hs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:22px 8px;padding:96px 22px 0;width:100%;max-width:720px;margin:0 auto;align-content:start;box-sizing:border-box;flex:none}',
     '.pv5-talk-hs .pv5-talk-app{display:flex;flex-direction:column;align-items:center;gap:6px;font:500 13px/16px var(--mp-font);color:var(--mp-hero-ink);border:0;background:transparent;padding:0;cursor:pointer;min-height:44px}',
     '.pv5-talk-ic{width:77px;height:77px;position:relative;flex:none}',
     '.pv5-talk-ic>.appicon{position:absolute;left:0;top:0;transform:scale(.6417);transform-origin:0 0}',
     '.pv5-talk-ph{width:77px;height:77px;border-radius:18px;background:var(--lg-fill);box-shadow:var(--lg-edge)}',
-    '.pv5-talk-hs-note{position:absolute;left:16px;right:16px;bottom:120px;display:flex;justify-content:center}',
+    '.pv5-talk-hs-note{margin-top:auto;padding:24px 16px 112px;display:flex;justify-content:center}',
     '.pv5-talk-hs-note>div{max-width:420px;border-radius:22px;padding:12px 14px;font:500 14px/19px var(--mp-font);display:flex;flex-direction:column;gap:6px;align-items:flex-start}',
-    '.pv5-talk-lock{display:flex;flex-direction:column;align-items:center;padding:86px 14px 0;gap:6px}',
-    '.pv5-talk-lock .lock-time{color:var(--mp-hero-ink)}',
+    '.pv5-talk-lock{display:flex;flex-direction:column;align-items:center;padding:86px 14px 0;gap:6px;flex:none}',
+    '.pv5-talk-lock .lock-time{color:var(--mp-hero-ink);margin-top:12px;line-height:1.05}',
     '.pv5-talk-lock .notif.lg{width:100%;max-width:440px;margin-top:22px;border:0;text-align:left;cursor:pointer;font:inherit}',
     '.pv5-talk-lock .notif-b{color:var(--lg-ink)}',
     '.pv5-talk-lock .notif-ic .ai-mark{margin:0}',
@@ -294,7 +297,7 @@
     return '<div class="pv5-talk-sys lock"><div class="pv5-talk-hs">' +
       '<button type="button" class="pv5-talk-app"' + K.go('sys:open') + '><span class="pv5-talk-ic">' + appIcon(false) + '</span><span>MyPaisa</span></button>' +
       '<button type="button" class="pv5-talk-app"' + K.go('sys:dev') + '><span class="pv5-talk-ic">' + appIcon(true) + '</span><span>MyPaisa Dev</span></button>' +
-      ph('Mail') + ph('Calendar') + ph('Photos') + ph('Maps') + ph('Notes') + ph('Settings') + '</div>' +
+      ph('Mail') + ph('Calendar') + ph('Photos') + ph('Settings') + '</div>' +
       '<div class="pv5-talk-hs-note"><div class="lg">' + '<span class="z1">MyPaisa holds the household’s records; MyPaisa Dev runs on synthetic data, from TestFlight, with its DEV band.</span><span class="z1">' + DRAFT + '</span></div></div></div>';
   }
   M.page('you', function (ctx, args) {
@@ -545,7 +548,7 @@
     var fs = D.files.filter(function (f) { return f.sent <= c && (!asha || f.by === 'asha'); });
     var rows = fs.map(function (f) {
       var fed = f.fed.map(function (x) { return x.rec + ': ' + (x.before != null ? G(x.before) + ' → ' + G(x.after) : x.what.toLowerCase()); }).join('; ');
-      return '<div class="pv5-talk-ar"><span class="pv5-talk-thumb' + (f.img ? '' : ' doc') + '">' + K.ms(f.icon) + '</span><div class="f1"><span class="mp-sub" style="font-weight:600;overflow-wrap:anywhere">' + f.name + '</span>' +
+      return '<div class="pv5-talk-ar pv5-talk-wr"><span class="pv5-talk-thumb' + (f.img ? '' : ' doc') + '">' + K.ms(f.icon) + '</span><div class="f1"><span class="mp-sub" style="font-weight:600;overflow-wrap:anywhere">' + f.name + '</span>' +
         '<span class="mp-foot mp-ink2">' + f.kind + ' · ' + kb(f.kb) + ' · ' + mem(f.by).name + ', ' + dlabel(f.sent) + '</span><span class="mp-foot">Fed ' + f.fed.length + (f.fed.length === 1 ? ' change: ' : ' changes: ') + fed + '</span></div>' +
         K.btn('Open', 'nav:file/' + f.id, 'tinted small', 'visibility') + '</div>';
     }).join('');

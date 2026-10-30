@@ -16,6 +16,7 @@
 //
 //   node scripts/board_fit.js                    every current board and the prototype, in Chromium and WebKit
 //   node scripts/board_fit.js --engine webkit --only "iPhone v4"   a subset (a pattern on the board's path), in one engine
+//   node scripts/board_fit.js --only "Prototype v5" --steps "^14"   Prototype v5's chapters whose bar label matches (a re-check)
 //   node scripts/board_fit.js --json <file>      also writes every row it measured (allowed ones marked) to <file>
 //   node scripts/board_fit.js --sizes            also prints the sizes each frame is measured at
 //   node scripts/board_fit.js --selftest [--case <name>] [--engine <e>]   proves the gate refuses each fault it was
@@ -71,6 +72,8 @@ const enginesOf = (dflt) => {
 };
 const JOBS = +opt('--jobs', Math.max(2, Math.min(6, os.cpus().length - 2)));
 const ONLY = opt('--only', '');
+// Prototype v5 only: walk just the chapters whose bar label matches (a quick re-check of a fix; the gate walks them all)
+const STEPS = opt('--steps', '');
 const dprOf = (board) => (board.startsWith('ios-v1/') ? 3 : 2);
 
 // the sizes of each class, from the frame's drawn size
@@ -360,6 +363,7 @@ async function walkPrototype5(page, board, engine) {
       const chapters = await page.evaluate(() => document.querySelectorAll('.pchaps .pch').length);
       if (!chapters) add({ board, engine, size: 'drawn', label: door, type: 'did-not-render', text: 'no chapters', el: '' });
       for (let c = 0; c < chapters; c++) {
+        if (STEPS && !new RegExp(STEPS).test(await page.evaluate((c) => document.querySelectorAll('.pchaps .pch')[c].textContent.trim(), c))) continue;
         await page.evaluate((c) => document.querySelectorAll('.pchaps .pch')[c].click(), c);
         const steps = await page.evaluate(() => document.querySelectorAll('.psteps button').length);
         for (let s = 0; s < steps; s++) {

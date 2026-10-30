@@ -119,7 +119,8 @@
       '.pv5-wealth .lane-x > div { position: relative; height: 16px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }',
       '.pv5-wealth .lane-x span { position: absolute; transform: translateX(-50%); white-space: nowrap; }',
       '.pv5-wealth .lane-x span:first-child { transform: none; } .pv5-wealth .lane-x span:last-child { transform: translateX(-100%); }',
-      '@container (max-width: 420px) { .pv5-wealth .lane, .pv5-wealth .lane-x { grid-template-columns: 1fr; } .pv5-wealth .lane-x > div:first-child { display: none; } }',
+      /* a lane stacks (its name, then its bar) whenever the card is too narrow for the name beside a readable bar */
+      '@container (max-width: 600px) { .pv5-wealth .lane, .pv5-wealth .lane-x { grid-template-columns: minmax(0, 1fr); gap: 6px; } .pv5-wealth .lane-x > div:first-child { display: none; } }',
       /* chat-card pieces */
       '.pv5-wealth .way { border-radius: 14px; background: var(--mp-surface-2); padding: 12px; display: flex; flex-direction: column; gap: 6px; }',
       '.pv5-wealth .way-h { display: flex; gap: 10px; align-items: flex-start; }',

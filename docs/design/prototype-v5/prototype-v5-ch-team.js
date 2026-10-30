@@ -72,7 +72,10 @@
     '.pv5-team-wg-h { display: flex; align-items: center; gap: 6px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); }',
     '.pv5-team-wg-v { font: 800 30px/34px var(--mp-font-round); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }',
     '.pv5-team-wg-hid { font: 700 22px/28px var(--mp-font-round); color: var(--mp-ink-2); display: flex; align-items: center; gap: 8px; }',
-    '.pv5-team-grid { display: grid; grid-template-columns: repeat(var(--pv5-team-n), minmax(0, 1fr)); gap: 20px 0; }',
+    '.pv5-team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 20px 4px; }',
+    '.pv5-team-hrow { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }',
+    '.pv5-team-hrow > .pv5-team-grid { flex: 1 1 320px; min-width: 0; }',
+    '.pv5-team-lk .lock-time { margin-top: 12px; line-height: 1.04; }',
     '.pv5-team-app { display: flex; flex-direction: column; align-items: center; gap: 6px; font: 500 12px/14px var(--mp-font); color: var(--mp-hero-ink); border: 0; background: transparent; padding: 0; cursor: pointer; min-width: 0; }',
     '.pv5-team-ink .pv5-team-app { color: var(--mp-ink); }',
     '.pv5-team-ico { width: 60px; height: 60px; border-radius: 15px; display: grid; place-items: center; background: var(--mp-surface); color: var(--mp-ink-2); box-shadow: var(--mp-shadow); }',
@@ -557,17 +560,17 @@
   function homeScreen(ctx, o) {
     o = o || {};
     var n = ctx.door === 'ios' ? 4 : ctx.door === 'ipad' ? 7 : 5;
-    var wgW = ctx.door === 'ios' ? 'auto' : '360px';
+    var wgW = ctx.door === 'ios' ? 'auto' : 'min(360px, 100%)';
     var widget = '<button type="button" class="widget lg pv5-team-wg" id="pv5-team-widget" style="width:' + wgW + '"' + K.go(o.widgetKey || 'next') + '>' + widgetBody(ctx, o.hidden) + '</button>';
     var cols = ctx.door === 'ipad' ? n - 2 : n;
     var icons = APPS.slice(0, cols * 2 - 1).map(function (a) { return appIcon(a); });
     icons.splice(Math.min(icons.length, cols + 1), 0, appIcon('mp'));
     var dock = '<div class="lg pv5-team-dock">' + DOCK.map(function (a) { return appIcon(a, null, true); }).join('') + '</div>';
-    var pad = ctx.door === 'ios' ? '12px 22px 0' : '28px 60px 0';
+    var pad = ctx.door === 'ios' ? '12px 22px 0' : '28px max(24px, 5%) 0';
     var inner = '<div class="pv5-team-scr">' + sbar(ctx, true) + '<div class="fx col g16 f1" style="padding:' + pad + '">' +
-      (ctx.door === 'ipad' ? '<div class="fx g16" style="align-items:flex-start">' + '<div class="fx col g16">' + widget + '</div><div class="pv5-team-grid f1" style="--pv5-team-n:' + (n - 2) + '">' + icons.join('') + '</div></div>'
-        : widget + '<div class="pv5-team-grid" style="--pv5-team-n:' + n + '">' + icons.join('') + '</div>') +
-      '</div><div style="padding:0 ' + (ctx.door === 'ios' ? '10px 26px' : '160px 22px') + '">' + dock + '</div></div>';
+      (ctx.door === 'ipad' ? '<div class="pv5-team-hrow">' + widget + '<div class="pv5-team-grid">' + icons.join('') + '</div></div>'
+        : widget + '<div class="pv5-team-grid">' + icons.join('') + '</div>') +
+      '</div><div style="padding:0 ' + (ctx.door === 'ios' ? '10px 26px' : 'max(22px, 13%) 22px') + '">' + dock + '</div></div>';
     return inner;
   }
   function lockScreen(ctx, o) {
@@ -576,7 +579,7 @@
     var big = ctx.door !== 'ios';
     var inner = '<div class="pv5-team-scr">' + sbar(ctx, false) +
       '<div class="pv5-team-lk">' + K.ms(o.open ? 'lock_open' : 'lock') + '<span class="lock-date">' + date + '</span><span class="lock-time"' + (big ? ' style="font-size:120px"' : '') + '>' + ctx.tm.replace(/^0/, '') + '</span></div>' +
-      (o.widget ? '<div style="padding:14px 0 0;display:flex;justify-content:center"><button type="button" class="widget lg pv5-team-wg" id="pv5-team-lockwg" style="width:' + (big ? '360px' : 'calc(100% - 64px)') + '"' + K.go('next') + '>' + widgetBody(ctx, o.hidden) + '</button></div>' : '') +
+      (o.widget ? '<div style="padding:14px 0 0;display:flex;justify-content:center"><button type="button" class="widget lg pv5-team-wg" id="pv5-team-lockwg" style="width:' + (big ? 'min(360px, calc(100% - 64px))' : 'calc(100% - 64px)') + '"' + K.go('next') + '>' + widgetBody(ctx, o.hidden) + '</button></div>' : '') +
       '<div class="f1"></div>' + (o.bottom || '') +
       '<div class="fx jb" style="padding:0 46px 44px">' + '<span class="pv5-team-lkb lg">' + K.ms('flashlight_on') + '</span><span class="pv5-team-lkb lg">' + K.ms('photo_camera') + '</span></div></div>';
     return inner;
@@ -607,7 +610,7 @@
   }
   function sysLive(ctx) {
     var L = D().beyond.live;
-    var la = '<div class="pv5-team-la lg" style="margin:0 ' + (ctx.door === 'ios' ? '12px' : 'auto') + ' 22px;' + (ctx.door === 'ios' ? '' : 'width:420px') + '">' +
+    var la = '<div class="pv5-team-la lg" style="margin:0 ' + (ctx.door === 'ios' ? '12px' : 'auto') + ' 22px;' + (ctx.door === 'ios' ? '' : 'width:min(420px, calc(100% - 24px))') + '">' +
       '<div class="fx ac jb"><span class="pv5-team-wg-h"><span class="pv5-team-mark"></span>MyPaisa · Import</span><span class="mp-foot mp-ink2">Step ' + L.step + ' of ' + L.steps.length + '</span></div>' +
       '<span class="mp-hl" style="overflow-wrap:anywhere">' + K.esc(L.file) + '</span>' +
       '<div class="pv5-team-steps">' + L.steps.map(function (s, i) { return '<i class="' + (i < L.step ? 'on' : '') + '"></i>'; }).join('') + '</div>' +

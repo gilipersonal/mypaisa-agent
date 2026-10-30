@@ -227,7 +227,8 @@
       '<div class="w-scroll pscroll" data-scroll="chat">' + drawChat(ctx) + '</div>' + composer(ctx, 'w-comp') + '</aside>';
     var body = '<div class="bw-body">' + sideWeb(ctx, p.key) + '<main class="w-main pscroll" data-scroll="page"><div class="w-page">' + pageHead(ctx, p) + p.body + '</div></main>' +
       chat + '<button type="button" class="w-ask mp-btn mp-btn-primary"' + K.go('tab:chat') + '>' + K.ms('chat_bubble') + '<span>Ask</span></button>' + tabs + overlays(ctx) + '</div>';
-    var url = 'dashboard.mypaisapp.com' + (p.key === 'home' ? '' : '/' + K.esc(p.id));
+    /* a phone's browser shows the site's name only, as Safari and Chrome do on a phone; a laptop's shows the path */
+    var url = 'dashboard.mypaisapp.com' + (d.id === 'pweb' || p.key === 'home' ? '' : '/' + K.esc(p.id));
     return '<div class="bw wf ' + (d.id === 'pweb' ? 'ph-web ' : '') + 'pane-' + pane + ' ' + themeCls() + '"><div class="bw-bar">' + (d.id === 'pweb' ? '' : '<span class="bw-dots"><i></i><i></i><i></i></span>') +
       '<span class="bw-url">' + K.ms('lock') + url + '</span></div>' + body + '</div>';
   }

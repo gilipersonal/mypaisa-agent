@@ -81,13 +81,15 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .w-chat-h { height: 56px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 12px 0 16px; border-bottom: 1px solid var(--mp-line); font: 600 15px/20px var(--mp-font); }
 .w-chat-h .ai-mark { margin: 0; }
 .w-close { display: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: var(--mp-surface-2); color: var(--mp-ink); cursor: pointer; place-items: center; }
-.w-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 0 150px; }
+.w-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 0 210px; }
 .w-scroll .chat { padding: 8px 14px 0; }
 .w-comp { position: absolute; left: 10px; right: 10px; bottom: 12px; display: flex; flex-direction: column; gap: 8px; z-index: 5; }
 .w-comp .cfield { background: var(--mp-surface); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
 .w-comp .gchip { background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line); }
 .w-comp .cplus { background: var(--mp-surface); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
-.w-comp .chips { flex-wrap: nowrap; overflow: hidden; }
+.w-comp .chips { flex-wrap: wrap; overflow: visible; }
+/* the composer's shortcuts wrap rather than run off the edge: a chip cut by the edge is a clip (the board gate) */
+.af .composer .chips { flex-wrap: wrap; overflow: visible; }
 .w-ask { display: none; position: absolute; right: 20px; bottom: 20px; z-index: 35; box-shadow: var(--mp-shadow); }
 .w-tabs { display: none; position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; }
 .w-tabs .mp-tabbar { border-top: 1px solid var(--mp-line); }
@@ -136,7 +138,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .ip-nav { position: absolute; left: 0; right: 0; top: 0; z-index: 20; display: flex; align-items: center; gap: 8px; padding: 8px 14px; }
 .ip-chat { width: 380px; flex: none; position: relative; border-left: 1px solid var(--mp-line); background: var(--mp-bg); }
 .af .strip { position: absolute; left: 0; right: 0; top: 8px; border: 0; width: auto; cursor: pointer; text-align: left; font: inherit; color: inherit; }
-.ip-chat .pchatpad { padding: 72px 0 150px; }
+.ip-chat .pchatpad { padding: 72px 0 210px; }
 .af .composer { bottom: 14px; }
 .ap-edge { display: none; }
 .ap-close { display: none; position: absolute; top: 14px; left: 14px; z-index: 30; }
@@ -170,7 +172,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
   .pane-chat .ap-close { display: none; }
   .pane-chat .ip-chat .strip { left: 0; }
   .af .strip { top: 58px; }
-  .ip-chat .pchatpad { padding: 116px 0 240px; }
+  .ip-chat .pchatpad { padding: 116px 0 290px; }
   .af .composer { bottom: 106px; }
   .pane-chat .ip-main { visibility: hidden; }
 }
@@ -234,3 +236,9 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .tabsx button.on { background: var(--mp-seg-on); color: var(--mp-ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .lockscreen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding: 70px 14px 0; gap: 10px; }
 .widget { border-radius: 22px; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+
+/* a hero figure in a window under 360 (an iPhone in Display Zoom, a phone's browser at 320) steps down a size, so
+   ₹5,15,19,488 still fits; the figure is never cut (the board gate's clip) */
+@container wf (max-width: 359px) { .mp-num-hero { font-size: 34px; line-height: 38px; } }
+@container af (max-width: 359px) { .mp-num-hero { font-size: 34px; line-height: 38px; } }
+

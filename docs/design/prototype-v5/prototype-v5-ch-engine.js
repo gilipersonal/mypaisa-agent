@@ -45,7 +45,9 @@
       '.pv5-engine .pe-tr:last-child{box-shadow:none}',
       '.pv5-engine .pe-tr .f1{min-width:150px}',
       '.pv5-engine .pe-out{display:inline-flex;align-items:center;gap:4px;font:600 14px/18px var(--mp-font);white-space:nowrap}',
-      '.pv5-engine .pe-out .ms{font-size:18px}',
+      '.pv5-engine .pe-out .ms{font-size:18px;line-height:1}',
+      '.pv5-engine .pe-res,.pv5-ecard .pe-res{display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right;flex:none;max-width:100%}',
+      '.pv5-engine .pe-res>.mp-foot,.pv5-ecard .pe-res>.mp-foot{white-space:normal}',
       '.pv5-engine .pe-banner{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--mp-r-card);background:var(--mp-pause-bg);color:var(--mp-ink)}',
       '.pv5-engine .pe-banner>.ms{color:var(--mp-pause);font-size:22px;flex:none}',
       '.pv5-engine .pe-src{display:flex;flex-direction:column;gap:4px;font:400 13px/18px ui-monospace,"SF Mono",Menlo,monospace;color:var(--mp-ink-2)}',
@@ -79,7 +81,7 @@
       '.pv5-ecard .pe-gate span{min-width:30px;height:24px;padding:0 3px;box-sizing:border-box;border-radius:6px;display:grid;place-items:center;font:600 11px/1 var(--mp-font);background:var(--mp-track);color:var(--mp-ink-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
       '.pv5-ecard .pe-gate span.on{background:var(--mp-add-bg);color:var(--mp-add);box-shadow:none}',
       '.pv5-ecard .pe-out{display:inline-flex;align-items:center;gap:4px;font:600 14px/18px var(--mp-font);white-space:nowrap}',
-      '.pv5-ecard .pe-out .ms{font-size:16px}',
+      '.pv5-ecard .pe-out .ms{font-size:16px;line-height:1}',
       '.pv5-elock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:64px 12px 40px;box-sizing:border-box;overflow:hidden}',
       '.pv5-elock .lock-date{margin-top:6px}',
       '.pv5-elock .pe-stack{width:100%;max-width:420px;display:flex;flex-direction:column;gap:8px;margin-top:auto;margin-bottom:60px}',
@@ -427,7 +429,7 @@
       var res = g.graded ? g.held + ' of ' + g.graded + (g.move != null ? ' · ' + sgnPct(g.move) + ' over 2 weeks' : '') : g.n + ' open · graded ' + (g.due || 'later');
       return '<div class="pe-tr">' + lead(g.k) + '<div class="f1 fx col"><span class="mp-sub" style="font-weight:600">' + SHORT[g.k] + '</span><span class="mp-foot mp-ink2">' + g.from + (g.to !== g.from ? ' to ' + g.to : '') + '</span></div>' +
         '<span class="pe-row">' + K.stance(g.stance) + '<span class="mp-foot mp-ink2">' + conf + '</span></span>' +
-        '<div class="fx col tr" style="min-width:' + (compact ? 120 : 150) + 'px">' + outcomeChip(g.outcome) + '<span class="mp-foot mp-ink2">' + res + '</span></div></div>';
+        '<div class="pe-res" style="min-width:' + (compact ? 120 : 150) + 'px">' + outcomeChip(g.outcome) + '<span class="mp-foot mp-ink2">' + res + '</span></div></div>';
     }).join('');
   }
   M.page('track', function (ctx) {
@@ -508,9 +510,9 @@
     var rows = UK.map(function (k) {
       var by = b.d6 ? { gbp: b.by[k].day_gbp, pct: b.by[k].day_pct } : b.by[k];
       var s = stanceNow(ctx, k);
-      return K.row({ lead: lead(k), t: NAME[k], s: K.move(by.gbp, by.pct, { dp: Math.abs(by.pct) < 0.1 ? 2 : 1 }) + ' on Friday', v: K.gbp(val(ctx, k)), vs: live ? K.stance(s.s, s.c) : '<span class="mp-foot mp-ink2">no stance line until the gate</span>', go: 'nav:holding/' + k });
+      return K.row({ lead: lead(k), t: NAME[k], s: K.move(by.gbp, by.pct, { dp: Math.abs(by.pct) < 0.1 ? 2 : 1 }) + ' on Friday', v: K.gbp(val(ctx, k)), vs: live ? K.stance(s.s, s.c) : null, go: 'nav:holding/' + k });
     });
-    var hold = K.card({ t: live ? 'Holdings, with their stances' : 'Holdings', r: live ? K.chip(K.ms('bolt') + 'Stances live', 'mp-add') : K.shadow('Stances in shadow · week ' + gateWeek(ctx) + ' of 8'), body: K.list(rows) });
+    var hold = K.card({ t: live ? 'Holdings, with their stances' : 'Holdings', r: live ? K.chip(K.ms('bolt') + 'Stances live', 'mp-add') : K.shadow('Stances in shadow · week ' + gateWeek(ctx) + ' of 8'), body: K.list(rows) + (live ? '' : K.foot('No stance line in the brief until the gate: the stances stay in shadow, in the Saturday review.')) });
     var open = ctx.has('brieftech');
     var tech = K.card({ body: '<button type="button" class="btn-reset pe-fold"' + K.go('fold:brieftech') + '><span>Technical</span>' + K.ms(open ? 'expand_less' : 'expand_more') + '</button>' + (open ? '<div class="pe-src" style="margin-top:6px">' + briefTech(ctx).split('<br>').map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>' : '') });
     return { title: 'Today', sub: 'The brief as a screen · written once for the household and once for each member who wants one', chip: K.draft(),
