@@ -109,4 +109,30 @@ later if Arun wants one.
 
 ## Status
 
-In progress. The glitch review, the gates and the pick are recorded below as they happen.
+Built, 30 Oct 2026: 117 steps in 21 chapters, phases 0 to 20, by five builders working in parallel to one contract
+(`contract.md`) on one core, then integrated. Published as a private Artifact for the walk-through:
+https://claude.ai/artifact/QWqsst7hKcuN5VtYozhucR (a `#<step id>` link opens a step, e.g. `#p17-forecast`).
+
+**The glitch review.** Each builder read every step's screenshot at desk, iPhone and iPad in light; the integrator
+read every step at phone web and iPad in dark and at the foldable in light (contact sheets), and the screens the
+fixes touched. Found and fixed: the core's square charts, a chat card's fold padding, the chat's last line under the
+iPhone composer, the wrong tab lit, the viewer carried over from an Asha step, the Fri 23 Oct strip before Friday's
+close, Friday's move disagreeing between two figure sets (now the engine's own, ▲ £55), the Saturday review's two
+halves not joined, and the composer's chips showing the chat through them.
+
+**The gates.**
+- prototype-v5 (`scripts/prototype_smoke.js`, new): selftest 11 of 11; every step at the five doors in light and dark
+  (1,170 frames) and with privacy on (585 frames): 0 faults; the figure set current.
+- board-fit: the first full walk found 54 faults in Prototype v5 at sizes other than the drawn one (the iPad home
+  screen at 600, the news and Forecast tiles at 1133, the composer's chips, a phone's URL bar, a rupee hero at 320,
+  the lock screens' date and time, an Audit file row); all fixed, and the full walk of Prototype v5 in Chromium and
+  WebKit is clean (0 faults). Every other board was clean in the first full walk.
+- design-sync: was failing for every PR in the repo, because the standalone Claude Design server now appends a
+  closing notice to every result; fixed (MA-292) with three selftest readings that fail without the fix; 3 projects,
+  102 files, 0 drift.
+- contrast: selftest 0 wrong; 0 pairs below the limits.
+- plan-sync: 5 drift left, all of the Confluence kind: the hub, the phases page, phase 0, the two doors page and the
+  story explorer were published by MA-290's branch (its PR #67 closed unmerged) after the versions this branch
+  records; publishing over them would undo MA-290's changes, so they wait for Arun's word on MA-290.
+
+The pick: none yet. Arun walks the prototype and picks screens; each pick goes into the boards through MA-279.
