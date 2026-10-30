@@ -89,6 +89,10 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .w-comp .cplus { background: var(--mp-surface); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
 .w-comp .chips { flex-wrap: wrap; overflow: visible; }
 /* the composer's shortcuts wrap rather than run off the edge: a chip cut by the edge is a clip (the board gate) */
+/* the composer floats over the chat's scroll edge: a fade of the ground behind it, so no line of the chat shows between
+   its chips (the glass bar's scroll-edge effect, as edge-bot draws it on the iPhone) */
+.w-comp::before, .af .composer::before { content: ""; position: absolute; left: -12px; right: -12px; top: -28px; bottom: -14px; z-index: -1; pointer-events: none;
+  background: linear-gradient(0deg, var(--mp-bg) 72%, color-mix(in srgb, var(--mp-bg) 0%, transparent)); }
 .af .composer .chips { flex-wrap: wrap; overflow: visible; }
 .w-ask { display: none; position: absolute; right: 20px; bottom: 20px; z-index: 35; box-shadow: var(--mp-shadow); }
 .w-tabs { display: none; position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; }
