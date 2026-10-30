@@ -3,16 +3,18 @@
 
 The repo-side half of the plan-sync check. It reads docs/trace.json (the
 schema is in .claude/skills/plan-sync/reference/trace-schema.md) against
-ARCHITECTURE.md, PLAN.md, the other docs, the Claude Design mirror, the
-roadmap (scripts/roadmap.py), the Confluence pages rendered from them
-(scripts/confluence_docs.py) and the code each story names. The Jira, Claude
-Design and live Confluence halves need their MCP tools and live in /plan-sync.
+ARCHITECTURE.md, PLAN.md, the other docs, the boards in docs/design/ and their
+record (docs/design/claude-design.json, written by scripts/design_sync.py
+record), the roadmap (scripts/roadmap.py), the Confluence pages rendered from
+them (scripts/confluence_docs.py) and the code each story names. The Jira and
+live Confluence halves need their MCP tools and live in /plan-sync; the MyPaisa
+Boards Artifact's stamp is scripts/design_sync.py check's (MA-260).
 
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
     python3 scripts/plan_sync.py start MA-149  # what a story needs before work starts
     python3 scripts/plan_sync.py selftest      # board names, dates and motion roles against known cases, check on a mutated board,
-                                               # and scripts/design_sync.py's offline selftest (CI)
+                                               # the plan-sync hook's selftest and scripts/design_sync.py's (CI)
 """
 from __future__ import annotations
 
@@ -37,6 +39,8 @@ PLAN = ROOT / "PLAN.md"
 CITING = [ARCH, PLAN, ROOT / "TECH_STACK.md", ROOT / "README.md", ROOT / "docs" / "design" / "README.md"]
 KEY = re.compile(r"\bMA-(\d+)\b")
 DESIGN_STATES = {"none", "planned", "picked", "todo"}
+# Never a board file, and never recorded: the Finder's folder settings (MA-260; design_sync.py record leaves them out too).
+NOT_BOARDS = {".DS_Store"}
 CODE_DIRS = ("web", "ios", "src", "infra")  # where product code lives; a file there should belong to a story's code
 
 
@@ -251,13 +255,14 @@ def item_findings(it: dict, ctx: dict) -> tuple[list[str], list[str]]:
             continue
         path = ROOT / proj["dir"] / b["file"]
         if not path.is_file():
-            errors.append(f"{k}: board file {proj['dir']}/{b['file']} is not in the repo mirror")
+            errors.append(f"{k}: board file {proj['dir']}/{b['file']} is not in the repo")
             continue
         meta = ctx["mirror"].get(b["project"], {}).get("files", {}).get(b["file"])
         if meta is None:
-            errors.append(f"{k}: {b['file']} is not recorded in docs/design/claude-design.json")
-        elif (meta.get("bytes") is not None and path.stat().st_size != meta["bytes"]) or (meta.get("sha256") and sha256(path) != meta["sha256"]):
-            errors.append(f"{k}: {proj['dir']}/{b['file']} differs from the copy recorded in claude-design.json; copy it again")
+            errors.append(f"{k}: {b['file']} is not recorded in docs/design/claude-design.json; run `python3 scripts/design_sync.py record`")
+        elif path.stat().st_size != meta.get("bytes") or sha256(path) != meta.get("sha256"):
+            errors.append(f"{k}: {proj['dir']}/{b['file']} differs from its record in claude-design.json; record it "
+                          "(`python3 scripts/design_sync.py record`) if the edit is meant")
         if not b.get("board") or not board_ok(b["board"], b["file"], path):
             errors.append(f"{k}: no board captioned {b.get('board')!r} in {proj['dir']}/{b['file']}")
     return errors, warnings
@@ -303,17 +308,39 @@ def shape_errors(trace: dict) -> list[str]:
     return errors
 
 
-def mirror_errors(mirror: object) -> list[str]:
-    """docs/design/claude-design.json: {project: {"files": {name: {etag, bytes, sha256}}}}."""
+def mirror_errors(mirror: object, strict: bool = True) -> list[str]:
+    """docs/design/claude-design.json, the repo's record of every board file since MA-260:
+    {"about": text, project: {"dir": text, "files": {name: {"bytes": n, "sha256": hex}}}}. Strict, it refuses an entry
+    without its bytes or sha256 (a record that cannot be compared fails, never passes) and any other field, an etag
+    left from Claude Design included; scripts/design_sync.py record reads a record loosely, to rewrite it."""
     if not isinstance(mirror, dict):
         return ["docs/design/claude-design.json must hold an object"]
     errors = []
     for proj, meta in mirror.items():
+        if proj == "about":
+            errors += [] if isinstance(meta, str) else ["claude-design.json: about must be text"]
+            continue
         files = meta.get("files") if isinstance(meta, dict) else None
         if not isinstance(files, dict):
             errors.append(f"claude-design.json: {proj} needs a files object")
             continue
         errors += [f"claude-design.json: {proj}/{name} must be an object" for name, e in files.items() if not isinstance(e, dict)]
+        if not strict:
+            continue
+        if not isinstance(meta.get("dir"), str) or not meta["dir"]:
+            errors.append(f"claude-design.json: {proj} needs its dir")
+        if extra := sorted(set(meta) - {"dir", "files"}):
+            errors.append(f"claude-design.json: {proj} has fields the record does not keep ({', '.join(extra)}); run `python3 scripts/design_sync.py record`")
+        for name, e in files.items():
+            if not isinstance(e, dict):
+                continue
+            if not isinstance(e.get("bytes"), int) or isinstance(e.get("bytes"), bool) or e["bytes"] < 0:
+                errors.append(f"claude-design.json: {proj}/{name} needs its bytes")
+            if not isinstance(e.get("sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", e["sha256"]):
+                errors.append(f"claude-design.json: {proj}/{name} needs its sha256")
+            if extra := sorted(set(e) - {"bytes", "sha256"}):
+                errors.append(f"claude-design.json: {proj}/{name} has fields the record does not keep ({', '.join(extra)}); "
+                              "run `python3 scripts/design_sync.py record`")
     return errors
 
 
@@ -459,29 +486,47 @@ def motion_errors(text: str) -> list[str]:
     return sorted(set(bad))
 
 
+RECORD_IT = "record it (`python3 scripts/design_sync.py record`) if the edit is meant, else restore it"
+
+
 def disk_errors(projects: dict, mirror: dict, root: Path = ROOT) -> list[str]:
-    """The copies on disk against docs/design/claude-design.json: nothing unrecorded, nothing missing, every copy's bytes
-    and sha256 as recorded. scripts/design_sync.py checks the record against Claude Design and calls this too."""
+    """The boards on disk against their record, docs/design/claude-design.json (MA-260): every folder the trace's
+    claude_design names is recorded under the same dir, and no other; nothing on disk unrecorded, nothing recorded
+    missing, every file's bytes and sha256 as recorded. scripts/design_sync.py check runs this and the Boards Artifact's
+    stamp."""
     errors = []
+    for proj_key, meta in mirror.items():
+        if proj_key == "about" or not isinstance(meta, dict):
+            continue
+        if proj_key not in projects:
+            errors.append(f"boards: claude-design.json records {proj_key}, which docs/trace.json's claude_design does not name")
+        elif isinstance(projects[proj_key], dict) and meta.get("dir") != projects[proj_key].get("dir"):
+            errors.append(f"boards: claude-design.json gives {proj_key} the dir {meta.get('dir')!r}, docs/trace.json's claude_design "
+                          f"{projects[proj_key].get('dir')!r}")
     for proj_key, proj in projects.items():
         if not isinstance(proj, dict) or not isinstance(proj.get("dir"), str):
             errors.append(f"claude_design.{proj_key} needs a dir")
             continue
+        if proj_key not in mirror:
+            errors.append(f"boards: docs/trace.json's claude_design names {proj_key}, which claude-design.json does not record; "
+                          "run `python3 scripts/design_sync.py record`")
         recorded = mirror.get(proj_key, {}).get("files", {})
         base = root / proj["dir"]
         if base.is_dir():
             for f in sorted(base.rglob("*")):
                 rel = f.relative_to(base).as_posix()
-                if f.is_file() and rel not in recorded:
-                    errors.append(f"mirror: {proj['dir']}/{rel} is not recorded in docs/design/claude-design.json")
+                if f.is_file() and rel not in recorded and f.name not in NOT_BOARDS:
+                    errors.append(f"boards: {proj['dir']}/{rel} is not recorded in docs/design/claude-design.json; run "
+                                  "`python3 scripts/design_sync.py record`")
         for name, meta in recorded.items():
             path = base / name
             if not path.is_file():
-                errors.append(f"mirror: {proj['dir']}/{name} is recorded but missing")
-            elif meta.get("bytes") is not None and path.stat().st_size != meta["bytes"]:
-                errors.append(f"mirror: {proj['dir']}/{name} is {path.stat().st_size} bytes, recorded {meta['bytes']}; copy it again")
-            elif meta.get("sha256") and sha256(path) != meta["sha256"]:
-                errors.append(f"mirror: {proj['dir']}/{name} differs from the copy recorded in claude-design.json; copy it again")
+                errors.append(f"boards: {proj['dir']}/{name} is recorded but missing; restore it, or if it was meant to go, "
+                              f"`python3 scripts/design_sync.py record --drop {proj['dir']}/{name}`")
+            elif path.stat().st_size != meta.get("bytes"):
+                errors.append(f"boards: {proj['dir']}/{name} is {path.stat().st_size} bytes, recorded {meta.get('bytes')}; {RECORD_IT}")
+            elif sha256(path) != meta.get("sha256"):
+                errors.append(f"boards: {proj['dir']}/{name} differs from its record in claude-design.json (the same size); {RECORD_IT}")
     return errors
 
 
@@ -539,7 +584,7 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             if f"MA-{n}" not in keys:
                 errors.append(f"{doc.relative_to(ROOT)} cites MA-{n}, which is not in the trace")
 
-    # The mirror matches what is on disk, and nothing on disk is unrecorded (Claude Design's side: scripts/design_sync.py).
+    # The boards on disk match their record, and nothing on disk is unrecorded (the Boards Artifact's stamp: scripts/design_sync.py check).
     errors += disk_errors(ctx["projects"], ctx["mirror"])
     for proj_key, proj in ctx["projects"].items():
         if not isinstance(proj, dict) or not isinstance(proj.get("dir"), str):
@@ -836,6 +881,13 @@ RECORD_CASES = [
     ("a preview older than its boards", "docs/confluence.json",
      lambda m: (next(v for k, v in m["images"].items() if k.startswith("phase-05")).update({"source": "0"}), m)[1],
      r"preview phase-05-\S+ is older than its boards"),
+    # MA-260: the boards are the repo's own, and claude-design.json their record; check refuses a board out of it.
+    ("a board edited without recording it", "docs/design/ios-v1/motion.css", lambda t: t + "/* edited, not recorded */\n",
+     r"boards: docs/design/ios-v1/motion\.css is \d+ bytes, recorded \d+; record it"),
+    ("a board file nobody recorded", "docs/design/claude-design.json", lambda m: (m["ds"]["files"].pop("README.md"), m)[1],
+     r"boards: docs/design/ds-v1/README\.md is not recorded in docs/design/claude-design\.json"),
+    ("a recorded board file gone", "docs/design/ds-v1/README.md", None,
+     r"boards: docs/design/ds-v1/README\.md is recorded but missing; restore it, or .*record --drop docs/design/ds-v1/README\.md"),
 ]
 
 
@@ -880,7 +932,7 @@ def selftest(trace: dict) -> int:
     for proj, file, board, want in BOARD_CASES:
         if proj not in dirs or not (ROOT / dirs[proj] / file).is_file():
             bad += 1
-            print(f"DRIFT: selftest needs {proj}/{file}, which the trace or the mirror does not have")
+            print(f"DRIFT: selftest needs {proj}/{file}, which the trace or docs/design/ does not have")
             continue
         got = board_ok(board, file, ROOT / dirs[proj] / file)
         if got != want:
@@ -910,7 +962,7 @@ def selftest(trace: dict) -> int:
         if got != want:
             bad += 1
             print(f"FAIL: motion {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    # The date check bites inside `check` itself: a copy of the repo with one mirrored board given a wrong weekday
+    # The date check bites inside `check` itself: a copy of the repo with one board given a wrong weekday
     # (its bytes and sha256 recorded, so only the date is wrong) must be refused, naming the board date.
     board = "docs/design/ios-v1/iPhone chat.dc.html"
     with tempfile.TemporaryDirectory() as tmp:
@@ -963,7 +1015,7 @@ def selftest(trace: dict) -> int:
     r = subprocess.run([sys.executable, "-I", str(hook), "selftest"], capture_output=True, text=True) if hook.is_file() else None
     print(r.stdout.strip() if r else "FAIL: the plan-sync hook selftest cannot run: .claude/hooks/plan_sync_hook.py is missing")
     bad += 0 if r and r.returncode == 0 else 1
-    # MA-259: Claude Design against the mirror, offline, against a stand-in built from the mirror (it prints its own line).
+    # MA-260: the boards' record and the Boards Artifact's stamp, each refusal on a mutated copy (it prints its own line).
     try:
         import design_sync  # noqa: PLC0415
     except ImportError as e:  # fails closed, as the roadmap and Confluence checks do

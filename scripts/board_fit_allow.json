@@ -1,5 +1,5 @@
 {
- "about": "What scripts/board_fit.js does not count as a fault, and why (MA-240). Each allowance names its board (the end of its mirror path), the fault types, a regular expression on the text and, where it holds only there, the sizes (or `below`, every measured width under it, never the drawn size), a regular expression on the frame's label and one on the element's path. An allowance that matches nothing is reported, so the list stays true. Change a board to fix a fault; add an allowance only for what is drawn on purpose or what an open issue carries, with its reason.",
+ "about": "What scripts/board_fit.js does not count as a fault, and why (MA-240). Each allowance names its board (the end of its path under docs/design/), the fault types, a regular expression on the text and, where it holds only there, the sizes (or `below`, every measured width under it, never the drawn size), a regular expression on the frame's label and one on the element's path. An allowance that matches nothing is reported, so the list stays true. Change a board to fix a fault; add an allowance only for what is drawn on purpose or what an open issue carries, with its reason.",
  "superseded": {
   "pattern": "^(Telegram |Mini App|Prototype\\.dc|PrototypeV4|Chat basics|Currency check)",
   "frames": "^(Mini App|Telegram)",
@@ -94,7 +94,7 @@
    ],
    "frames": "^iPhone · Car loan · (light|dark)$",
    "text": "^2026$",
-   "why": "The Car loan axis draws 2026 on Mar 2025 (0.2 px apart); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels in Claude Design would remove this allowance."
+   "why": "The Car loan axis draws 2026 on Mar 2025 (0.2 px apart); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels on the board would remove this allowance."
   },
   {
    "board": "Web v4 · Assets and debts.dc.html",
@@ -103,7 +103,7 @@
    ],
    "frames": "^Browser · Car loan, phone · (Light|Dark)$",
    "text": "^2026$",
-   "why": "The Car loan axis draws 2026 on Mar 2025 (overlapping); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels in Claude Design would remove this allowance."
+   "why": "The Car loan axis draws 2026 on Mar 2025 (overlapping); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels on the board would remove this allowance."
   },
   {
    "board": "Forecast.dc.html|Admin center 2.dc.html|Admin center 3.dc.html|Browser.dc.html|Browser 2.dc.html|Wealth.dc.html",

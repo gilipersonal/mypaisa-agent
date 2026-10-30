@@ -184,3 +184,20 @@ none was missed.
 - So: the current sync stays until Move to Claude reaches the account; then the projects are moved
   and the sync follows them (MA-260). If it has not come by 1 Dec 2026, MA-260 does B instead, before
   14 Dec.
+
+## The pick, changed (30 Oct 2026)
+
+**B, now.** Arun, 30 Oct 2026: "for all future design use Local folder and then Claude Artifact. Claude Design is
+going away, so no need to push to claude design".
+
+- The day before, MA-291's Prototype v5 was drawn in the repo and shown as a private Artifact, the first design made
+  that way: the connector writes only inline file contents, and the prototype is about a megabyte.
+- The same day the standalone server began appending a closing notice to every result, which broke the sync's
+  parsing (MA-292, fixed).
+- Move to Claude had reached the account by then (Claude's Design page offers "Move again"), but a moved project's
+  canvas holds at most 8,000 px a frame, as above; Arun chose not to wait on it.
+- MA-260 carries B out: the boards are drawn in the repo, their three folders kept; `design_sync.py` keeps only its
+  repo half (`record`, `check`, `published`); Arun reviews each round as a private Artifact and the whole set in the
+  MyPaisa Boards Artifact; every record that named Claude Design as where the boards are drawn says so
+  (`docs/design/reviews/MA-260/contract.md`). Past review records keep the links they were written with.
+

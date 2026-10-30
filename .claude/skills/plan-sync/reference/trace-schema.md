@@ -1,8 +1,8 @@
 # The trace: `docs/trace.json`
 
 One file ties every planned piece of work to where it is described and where
-it is drawn. `scripts/plan_sync.py check` reads it against the repo;
-`/plan-sync` reads it against Jira and Claude Design. `docs/TRACE.md` is
+it is drawn. `scripts/plan_sync.py check` reads it against the repo and its
+boards; `/plan-sync` reads it against Jira. `docs/TRACE.md` is
 rendered from it (`python3 scripts/plan_sync.py render`) and never edited by
 hand.
 
@@ -43,6 +43,7 @@ hand.
 
 | Field | Meaning |
 | --- | --- |
+| `claude_design` | The board folders: per key (`ios`, `ds`, `app`, the keys `boards[].project` names) the set's `name` and its `dir` under `docs/design/`. The name is history: until 30 Oct 2026 these were the three Claude Design projects the boards were copied from, and an `id`, where one is still listed, is that project's id there. Since MA-260 the boards are drawn in these folders and nowhere else |
 | `phases[]` | One row per PLAN.md phase: its number, its Jira epic, its title, and the exact PLAN.md heading line |
 | `items[].key` | The Jira key. Every story, task and bug under a phase epic is listed; epics are listed only in `phases` |
 | `type` | `Story`, `Task` or `Bug`, as in Jira |
@@ -51,28 +52,42 @@ hand.
 | `arch` | The ARCHITECTURE.md sections the work follows, as numbers (`"4.6"`, `"19.7"`, `"22"`); each must be a heading |
 | `ui` | `true` when the work changes what a member sees: a screen, card, button, flow, chart or notification in the iOS app, or a page of the web app |
 | `design` | `none` (no UI), `planned` (a board exists, not yet put through design-first's options round), `picked` (Arun picked an option; the board is the spec), `todo` (UI with no board yet; a failure unless `notes` says why) |
-| `boards[]` | Where the screens are drawn: `project` is a key of `claude_design`, `file` a file in that project (mirrored under its `dir`), `board` the board's name on the canvas (`iPhone · Home, household`, `Foldable · Open`, `Browser · Audit`) |
+| `boards[]` | Where the screens are drawn: `project` is a key of `claude_design`, `file` a file in that board folder (its `dir`), `board` the board's name on the canvas (`iPhone · Home, household`, `Foldable · Open`, `Browser · Audit`) |
 | `notes` | Anything a reader needs: why a UI item has no board yet, which option was picked, what supersedes what |
 | `open` | Optional list of questions that must be settled before the work starts, such as a board that disagrees with the docs. `start` refuses while it is not empty; settle it with Arun, change the boards, docs and Jira together, then clear it, and say in the notes `Settled: <the question's words up to its first colon>` with the answer (the review ledgers look for it) |
-| `undrawn` | Optional list of screens the story needs that have no board yet, when some of its screens are drawn, or board fixes made but not yet in Claude Design (each naming the issue that lands them, such as MA-160). `start` refuses while it is not empty; draw them (MA-158, `/design-first`), add their boards, then clear each item, and say in the notes `Drawn: <the item, as it was listed>` with the board that draws it (the review ledgers look for it) |
+| `undrawn` | Optional list of screens the story needs that have no board yet, when some of its screens are drawn, or board fixes not made in the same change (each naming the issue that lands them, such as MA-160). `start` refuses while it is not empty; draw them (MA-158, `/design-first`), add their boards, then clear each item, and say in the notes `Drawn: <the item, as it was listed>` with the board that draws it (the review ledgers look for it) |
 | `code` | Optional list of the repo paths that build the story, globs allowed (`web/src/lib/chat/**`, `ios/MyPaisa/Chat/`, `src/mypaisa/agent/tools.py`). Required once a Story is In Review or Done; every path must match something. A file under `web/`, `ios/`, `src/` or `infra/` that no story claims is reported (MA-228) |
 | `others[]` | Issues with no phase epic (repo tooling such as MA-1 to MA-8, a superseded task): `key`, `type`, `summary`, `status`, `notes`. Listed so the docs may cite them; they carry no sections or boards |
 
-## The mirror: `docs/design/claude-design.json`
+## The board record: `docs/design/claude-design.json`
 
-Every file in every Claude Design project under `claude_design`, except the project's `.thumbnail` preview image, is copied, decoded, into its `dir`
-with the etag Claude Design reported when it was copied:
+The repo's record of every board file since MA-260 (30 Oct 2026); the name is
+history, from when it held each file's Claude Design etag. Per board folder
+under `claude_design`, its `dir` and, per file, its `bytes` and `sha256`:
 
 ```json
-{"ios": {"files": {"iPhone chat.dc.html": {"etag": "1792971901594793", "bytes": 96715, "sha256": "…"}}},
- "ds":  {"files": {"tokens.css": {"etag": "1792972941065279", "bytes": 24316, "sha256": "…"}}},
- "app": {"files": {"Browser.dc.html": {"etag": "1792976170240588", "bytes": 55222, "sha256": "…"}}}}
+{"ios": {"dir": "docs/design/ios-v1", "files": {"iPhone chat.dc.html": {"bytes": 96715, "sha256": "…"}}},
+ "ds":  {"dir": "docs/design/ds-v1",  "files": {"tokens.css": {"bytes": 24316, "sha256": "…"}}},
+ "app": {"dir": "docs/design/app-v1", "files": {"Browser.dc.html": {"bytes": 55222, "sha256": "…"}}}}
 ```
 
-A file whose Claude Design etag differs from the recorded one has changed
-there and must be copied again (and its boards checked against the trace).
-`python3 scripts/design_sync.py pull` copies and records every such file;
-`check` fails while any file is new, changed or gone on either side (MA-259).
+`python3 scripts/design_sync.py record` writes it after boards are drawn or
+edited (a file gone is forgotten only with `record --drop <dir>/<file>`), and
+`python3 scripts/design_sync.py check` fails on a file whose bytes no longer
+match, a file in a board folder the record does not list, and a recorded file
+missing. A board drawn or changed is checked against the trace's `boards` in
+the same change.
+
+## The MyPaisa Boards Artifact: `docs/design/boards-artifact.json`
+
+Every board, as Arun sees it, at https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g
+(a board's own link adds `#<id>`: the folder's prefix and the file name
+without `.dc.html`, lower case, every run of other characters one hyphen,
+as `#ios-iphone-v4-home`). `python3 scripts/boards_page/build.py docs/design <out-dir>`
+builds it, the Artifact tool republishes it to the same URL, and
+`python3 scripts/design_sync.py published` stamps this file with its `url`,
+the record's sha256 at that publish and the date. `check` fails while the
+stamp is older than the record.
 
 ## The roadmap: `docs/roadmap.json`
 

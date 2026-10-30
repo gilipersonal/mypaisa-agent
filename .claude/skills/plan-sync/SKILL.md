@@ -1,26 +1,29 @@
 ---
 name: plan-sync
-description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates), with the Claude Design projects MyPaisa iOS v1, MyPaisa DS v1 and MyPaisa app v1 (files, etags, boards) and with the Confluence space mypaisaa-agent (pages, versions, board previews); copy changed boards into the repo, publish the pages rendered from the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
+description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates), with the boards in docs/design/ (MyPaisa iOS v1, DS v1 and app v1: each file against its record in claude-design.json, and the MyPaisa Boards Artifact's stamp) and with the Confluence space mypaisaa-agent (pages, versions, board previews); record changed boards and republish the Boards Artifact, publish the pages rendered from the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
 ---
 
 # Plan sync
 
 The rule is `.claude/rules/plan-sync.md`; the trace's schema is
 `reference/trace-schema.md` in this skill. This skill is the half of the
-check that needs Jira and Claude Design; `scripts/plan_sync.py` is the
-repo-side half and runs as a gate.
+check that needs Jira, Confluence and the Artifact tool; `scripts/plan_sync.py`
+and `scripts/design_sync.py` are the repo-side half and run as gates.
 
 Arguments: `MA-<n>` (one story, before it starts), `--all` (everything; the
 default), `--jira`, `--design` or `--confluence` (one side only).
 
 Ids: Jira cloudId `81c51173-bbea-4905-bbc5-1a880fa348bb`, project `MA`,
-transitions in `.claude/jira-flow.json`. Claude Design projects in
-`docs/trace.json` under `claude_design` (`ios`: MyPaisa iOS v1, the app's
-screens since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the web app's
-browser boards, its spec, beside the superseded Mini App and Telegram boards). Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
+transitions in `.claude/jira-flow.json`. The board folders in
+`docs/trace.json` under `claude_design`, a name kept from when they were
+copies of Claude Design's projects (`ios`: MyPaisa iOS v1, the app's screens
+since MA-161; `ds`: MyPaisa DS v1; `app`: MyPaisa app v1, the web app's
+browser boards, its spec, beside the superseded Mini App and Telegram boards).
+The MyPaisa Boards Artifact: https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g.
+Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
 `mcp__atlassian__editJiraIssue`, `mcp__atlassian__createJiraIssue`,
-`mcp__atlassian__addOrEditJiraIssueComment` (Claude Design is read by
-`scripts/design_sync.py`, no tool to load), and for Confluence (space `mypaisaaag`, id
+`mcp__atlassian__addOrEditJiraIssueComment` (the boards are read by
+`scripts/design_sync.py`, offline, no tool to load), and for Confluence (space `mypaisaag`, id
 `196872`) `mcp__atlassian__getConfluenceContent`,
 `mcp__atlassian__createConfluenceContent`,
 `mcp__atlassian__updateConfluenceContent` and `mcp__atlassian__executeWrite`
@@ -52,37 +55,32 @@ page.
 Never delete or close an issue. Creating, editing and commenting need no
 asking in this repo (`.claude/rules/ship-autopilot.md`).
 
-## 2. Claude Design against the mirror
+## 2. The boards against their record and the Boards Artifact
 
-One command does the copying (MA-259); it reads the projects under
-`claude_design` through the claude-design connector by running Claude Code
-headless, read-only, and writes each file byte for byte:
+The boards are drawn in the repo and nowhere else (rule 7, MA-260). One
+command compares them with their record, offline (the `design-sync` gate, the
+PR hook and CI run it too):
 
 ```bash
-python3 scripts/design_sync.py pull
+python3 scripts/design_sync.py check
 ```
 
-It lists every project (depth -1), copies each file that is new, whose etag
-or size moved, or whose copy on disk differs from its record, checks each
-copy's decoded length and etag against the listing, and only then writes the
-copies and their etag, bytes and sha256 into `docs/design/claude-design.json`;
-any failure writes nothing. It ends with the check, which must say `0 drift`.
-`python3 scripts/design_sync.py check` is the same comparison without copying
-(the `design-sync` gate and the PR hook run it). A 403 means the connector's
-login lapsed: Arun runs `/design-login` in an interactive `claude` terminal
-(not the desktop app).
-
-Then, by hand:
+It reads every board folder under `claude_design` and
+`docs/design/claude-design.json`, and fails on a board file whose bytes no
+longer match its record, a file in a board folder the record does not list, a
+recorded file missing, and a MyPaisa Boards Artifact published before the
+record last changed (the stamp in `docs/design/boards-artifact.json`). Then,
+by hand:
 
 | Found | Do |
 | --- | --- |
-| A file the pull copied (`copied ...`) | Read its boards' notes (each board names its Jira keys) and update those rows' `boards`; a new file's boards are mapped to rows the same way |
-| A file gone from Claude Design (`gone from Claude Design`) | The copy is kept and the check keeps failing: ask Arun whether it was meant. If it was, `python3 scripts/design_sync.py pull --drop <project>/<file>` removes the copy and its record, and every row that names its boards is changed in the same change |
+| A board file changed or new | Read its diff (`git diff`). If a design round drew it, `python3 scripts/design_sync.py record`; if nobody can say where it came from, ask Arun. Read its boards' notes (each board names its Jira keys) and update those rows' `boards`; a new file's boards are mapped to rows the same way |
+| A recorded file missing | Ask Arun whether it was meant. If it was, `python3 scripts/design_sync.py record --drop <dir>/<file>` forgets it, and every row that names its boards is changed in the same change |
+| The Boards Artifact older than the record | `python3 scripts/boards_page/build.py docs/design <out-dir>` (an out-dir outside the repo, such as the session's scratchpad); read the Boards Artifact with the Artifact tool (`action: read`, its URL), then publish `<out-dir>/index.html` to that URL with `root: docs/design` and `files` from `<out-dir>/files.json`; then `python3 scripts/design_sync.py published` |
 | A board whose note names a key not in the trace | Report it; fix the note or the trace |
 
-Copy only; never write to Claude Design from this skill. Designs change
-through `/design-first`. Never edit a mirrored copy: its bytes and sha256 must
-match Claude Design's, and the check refuses one that does not.
+Record and publish only; never redraw a board from this skill. Designs change
+through `/design-first`.
 
 ## 2b. Confluence against `docs/confluence.json`
 
@@ -102,7 +100,7 @@ made in Confluence.
    - `images`: previews to upload. When a board changed, capture the boards
      first: `node .claude/skills/plan-sync/scripts/capture_boards.js <repo> <want.json> <captures>`
      (`PLAYWRIGHT_CORE` names a playwright-core install; want.json maps each
-     mirrored file to its boards), then
+     board file to its boards), then
      `python3 scripts/confluence_docs.py images <captures> <previews>`. Per
      page, `createConfluenceAttachment` returns a short-lived media token;
      upload each file with it to
@@ -161,9 +159,9 @@ is reported and archived by Arun.
   will draw it), a board date with a wrong weekday or a board motion role on
   the wrong element (`fade` in place of `label` or `dot`, or `!important` on a
   chart label's or dot's own transform), or a tool ARCHITECTURE §8 does not
-  define (the right name, or the tool added to §8 first); fix the board in
-  Claude Design, through `/design-first`, then copy it again; never edit the
-  mirrored copy, whose bytes and sha256 must match Claude Design's).
+  define (the right name, or the tool added to §8 first). A board is fixed in
+  its folder, through `/design-first`, then recorded with
+  `python3 scripts/design_sync.py record`.
 
 ## 4. For one story about to start (`MA-<n>`)
 
@@ -179,13 +177,13 @@ key, and say what it printed:
   ledgers look for these two notes.
 - `todo` with UI: stop. The story needs `/design-first` before any code.
 - `planned`: run `/design-first` on its boards (2 or 3 options, Arun picks),
-  then set `picked` and copy the board again.
+  then set `picked` and record the boards (`python3 scripts/design_sync.py record`).
 - `picked`: build to the boards; list them in the plan for `/jira-flow:work`.
 
 ## 5. Report
 
-One block: what drifted (Jira, Claude Design, Confluence, repo), what was fixed, what was
+One block: what drifted (Jira, the boards, Confluence, repo), what was fixed, what was
 filed (keys), what needs Arun (a missing issue to confirm, a deleted file).
-Commit the trace, `TRACE.md` and mirror changes on the story branch as
-`MA-<n>: Sync the trace with Jira and Claude Design`; they ship with that
-story's PR.
+Commit the trace, `TRACE.md`, the board record and the Boards Artifact's stamp on
+the story branch as `MA-<n>: Sync the trace with Jira and the boards`; they ship
+with that story's PR.

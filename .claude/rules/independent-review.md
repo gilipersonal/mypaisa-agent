@@ -24,7 +24,7 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   `python3 scripts/contrast_check.py --selftest` and `python3 scripts/contrast_check.py`, the story's other gates, and `python3 scripts/review_regress.py MA-<n>`.
 - **Lanes:** scripts and checks; the trace against Jira; the spec docs
   (`ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `README.md`, the explainer
-  pages); the rules and skills; the boards and the design mirror when they
+  pages); the rules and skills; the boards and their record when they
   change. All in one message, each blind to the making.
 - **Scope of each round** (Arun, 26 Oct 2026: "make sure for each review round
   you are only reviewing the fixes made in previous round, MAX 5 rounds"):
@@ -65,7 +65,7 @@ Added the day each was learned; reviewers check every item.
 6. **A fixed-list check on a to-do list passes once the item is done, and only
    then.** "Still listed as undrawn" broke the moment MA-158 drew the screens.
    The check is "listed, or that item's own evidence": the boards that draw it
-   (`or_drawn` names the file and the boards), the fixed text in its mirrored
+   (`or_drawn` names the file and the boards), the fixed text in its
    board, or the row's notes saying `Drawn: <the item, as it was listed>` or
    `Settled: <the question's words up to its first colon>` (the trace schema's
    convention; its needle is the item's or question's opening words). Never a
@@ -87,7 +87,7 @@ Added the day each was learned; reviewers check every item.
    with the second check where ARCHITECTURE asks for one, cancelling included, and no state is drawn that the
    docs make impossible** (PR #35 round 1: "Leave it out saves the rest" with
    no Confirm; an invite cancelled at once; "already linked" on a page nobody
-   is signed in to). A board fix that cannot reach Claude Design goes into
+   is signed in to). A board fix not made in the same change goes into
    each affected story's `undrawn` list, naming the issue that carries it
    (MA-160).
 10. **Illustrative figures add up, on every board and across boards:** a list
@@ -300,7 +300,7 @@ Added the day each was learned; reviewers check every item.
     - similar days were counted 31 against §19.4's 30.
 
 40. **A check pinned to a past commit compares only what its fix holds:**
-    never a whole file or the whole mirror as it was then, which later work
+    never a whole file or every board as it was then, which later work
     changes on purpose. In MA-282, four checks failed on main while their
     fixes held:
     - a whole-page diff against d6e243f, once MA-245 and MA-261 changed

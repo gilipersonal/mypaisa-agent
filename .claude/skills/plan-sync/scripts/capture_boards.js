@@ -1,6 +1,6 @@
-// Capture every board the trace cites as a PNG, from the repo's design mirror, served on localhost (MA-228).
+// Capture every board the trace cites as a PNG, from the boards in docs/design, served on localhost (MA-228).
 // usage: node capture_boards.js <repo root> <want.json> <out dir>
-// want.json maps "<mirror dir>/<file>" to the board names to capture; the out dir gets one PNG per board and an
+// want.json maps "<board dir>/<file>" to the board names to capture; the out dir gets one PNG per board and an
 // index.json, which `python3 scripts/confluence_docs.py images <out dir> <previews dir>` composes into the previews.
 // Needs playwright-core and its Chromium: `require('playwright-core')`, or PLAYWRIGHT_CORE=<path to playwright-core>.
 const { chromium } = require(process.env.PLAYWRIGHT_CORE || 'playwright-core');

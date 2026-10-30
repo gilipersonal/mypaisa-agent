@@ -1,6 +1,6 @@
 // Every board stays whole at every size a member can have (MA-240).
 //
-// Renders each current board in the design mirror the way Claude Design does (support.js, ?static=1 so motion lands at
+// Renders each current board in docs/design/ the way its own canvas runtime draws it (support.js, ?static=1 so motion lands at
 // once), at the screen's own pixel ratio (3 for the iOS boards, 2 for the rest), and resizes every device and browser
 // frame through the real sizes of its class: an iPhone from 320 (Display Zoom) to 440 and in landscape, an iPad or
 // foldable window from 600 to 1366 (a landscape iPad also at 960x744, 1024x1366, 1032x1376, 1080x810 and 1100x744,
@@ -22,7 +22,7 @@
 //   node scripts/board_fit.js --selftest [--case <name>] [--engine <e>]   proves the gate refuses each fault it was
 //                                                 built for (in Chromium unless --engine says otherwise)
 //   node scripts/board_fit.js --diff <ref> --expect <file> [--since <ref2>] [--out <dir>] [--engine <e>] [--only <pattern>]
-//                                                 every frame at its drawn size against <ref>'s mirror, pixel by pixel
+//                                                 every frame at its drawn size against <ref>'s boards, pixel by pixel
 //
 // --diff renders each current board from the working tree and from <ref> (git archive) in Chromium and WebKit (both
 // unless --engine says one), at the board's own pixel ratio, and compares every frame, and every step of Prototype v4,
@@ -130,15 +130,17 @@ function serve(root) {
 }
 
 const REPO_BOARDS = ['prototype-v5/Prototype v5.dc.html'];
-// the current boards: every .dc.html in the mirror but the superseded record and the prototype's parts, and the repo's own
-function boards(design, only = ONLY) {
+// the current boards: every .dc.html the boards' record lists (docs/design/claude-design.json, MA-260) but the superseded
+// record and the prototype's parts, and the boards outside the three board folders
+// base: the tree of an older ref a diff compares against, where a repo-only board added since is simply absent (MA-293)
+function boards(design, only = ONLY, base = false) {
   const rec = JSON.parse(fs.readFileSync(path.join(design, 'claude-design.json'), 'utf8'));
   const dirs = { app: 'app-v1', ios: 'ios-v1', ds: 'ds-v1' };
   const skip = new RegExp(ALLOW.superseded.pattern);
   const out = [];
   for (const [p, d] of Object.entries(dirs)) for (const f of Object.keys(rec[p].files)) if (f.endsWith('.dc.html') && !skip.test(f)) out.push(d + '/' + f);
-  // the boards kept in the repo alone, outside the three mirrored projects (MA-291: Prototype v5, docs/design/prototype-v5/)
-  for (const b of REPO_BOARDS) if (fs.existsSync(path.join(design, b))) out.push(b); else throw new Error('board_fit: ' + b + ' is listed but missing');
+  // the design records with a folder of their own, outside the three board folders (MA-291: Prototype v5, docs/design/prototype-v5/)
+  for (const b of REPO_BOARDS) if (fs.existsSync(path.join(design, b))) out.push(b); else if (!base) throw new Error('board_fit: ' + b + ' is listed but missing');
   return out.filter((b) => !only || new RegExp(only).test(b)).sort();
 }
 
@@ -548,7 +550,7 @@ function compare(x, y, d) {
 }
 
 async function selftest() {
-  // each case makes one fault in a copy of the mirror and expects the gate's verdict (the rows report() counts as
+  // each case makes one fault in a copy of docs/design/ and expects the gate's verdict (the rows report() counts as
   // faults) to refuse it for that reason: its fault type and, where a case says, its size, its text and its frame; the
   // baseline copy, unchanged, must pass the same boards
   const BUDGET = 'ios-v1/iPhone v4 · Budget.dc.html';
@@ -657,7 +659,7 @@ async function selftest() {
         });
       } finally { await browser.close(); }
       for (const c of diffs) {
-        const rows = (await diffDirs(path.join(ROOT, 'docs', 'design'), copy(c.mutate, null, c.file), '', null, 'iPhone v4 · Budget', [engine], 'the mirror')).rows;
+        const rows = (await diffDirs(path.join(ROOT, 'docs', 'design'), copy(c.mutate, null, c.file), '', null, 'iPhone v4 · Budget', [engine], 'the boards')).rows;
         const ok = c.seen ? rows.length > 0 : rows.length === 0;
         console.log(`${ok ? 'ok  ' : 'FAIL'} selftest ${c.name} (${engine}): ${rows.length} frames changed${rows.length ? ' (' + rows.slice(0, 2).map((r) => r.label + ' ' + r.what).join('; ') + ')' : ''}`);
         wrong += ok ? 0 : 1;
@@ -668,7 +670,7 @@ async function selftest() {
   process.exit(wrong ? 1 : 0);
 }
 
-// the mirror's files a board loads (src and href, relative to the board), as paths in the mirror
+// the files in docs/design/ a board loads (src and href, relative to the board), as paths under docs/design/
 function loads(design, board) {
   const html = fs.readFileSync(path.join(design, board), 'utf8');
   const out = new Set();
@@ -727,7 +729,7 @@ async function diff(ref, expectFile, out) {
 // board's own pixel ratio, in each engine; the boards in skip (those --since leaves out) are not compared
 async function diffDirs(baseDir, headDir, neutral, out, only, engines, refName, skip = new Set()) {
   const pw = playwright();
-  const inBase = new Set(boards(baseDir, only));
+  const inBase = new Set(boards(baseDir, only, true));
   const list = boards(headDir, only).filter((b) => !skip.has(b));
   const rows = [];
   if (!list.length) return { rows, list };

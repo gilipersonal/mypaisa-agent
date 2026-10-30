@@ -1,33 +1,39 @@
 #!/usr/bin/env python3
-"""The Claude Design boards and the repo's mirror of them stay the same (MA-259).
+"""The boards in docs/design/, their record and the MyPaisa Boards Artifact stay the same (MA-260).
 
-Boards are drawn in Claude Design and copied into docs/design/ (rule 7, .claude/rules/plan-sync.md);
-docs/design/claude-design.json records the etag, bytes and sha256 of every copy. This script reads the projects named
-under `claude_design` in docs/trace.json through the claude-design connector, by running Claude Code headless
-(`claude -p` on Haiku, which may call only list_files and read_file), and takes the connector's own result from Claude
-Code's output, so no board passes through a model's hands: the bytes written are the bytes Claude Design holds.
+Since 30 Oct 2026 the boards are drawn and edited in the repo and nowhere else (MA-259's option B): in the folders
+docs/trace.json's `claude_design` names (docs/design/ios-v1/, ds-v1/ and app-v1/; the key, the folders' names and the
+record's file name were standalone Claude Design's, and are history). Nothing here reads from or writes to Claude
+Design. docs/design/claude-design.json is the repo's record of every file in those folders: per project its `dir` and,
+per file, its `bytes` and `sha256`. Arun looks at the whole set in the MyPaisa Boards Artifact (BOARDS_ARTIFACT below),
+built by scripts/boards_page/build.py and republished to the same link whenever a board changes, before the PR;
+docs/design/boards-artifact.json stamps the record it was published from.
 
-    python3 scripts/design_sync.py check       # fail on any difference between Claude Design, the record and the copies
-    python3 scripts/design_sync.py pull        # copy every new or changed file, record it, then check
-    python3 scripts/design_sync.py pull --drop app/Old.dc.html   # a file gone from Claude Design that Arun says was meant to go
-    python3 scripts/design_sync.py selftest    # offline, against a stand-in Claude Design (plan_sync.py selftest runs it)
+    python3 scripts/design_sync.py record      # after drawing or editing boards: record each file's bytes and sha256, add new files
+    python3 scripts/design_sync.py record --drop docs/design/app-v1/Old.dc.html   # forget a recorded file that is meant to be gone
+    python3 scripts/design_sync.py check       # offline: the files, their record and the Boards Artifact's stamp agree
+    python3 scripts/design_sync.py published   # after republishing the Boards Artifact: stamp it with the record
+    python3 scripts/design_sync.py selftest    # each refusal on a mutated copy (plan_sync.py selftest runs it)
 
-It fails closed: a project it cannot list, a result it cannot read, a copy whose decoded length is not the listed size
-or whose etag moved while it was read is a failure, and pull then writes nothing. A 403 from the connector means the
-login lapsed: run /design-login in an interactive `claude` terminal (not the desktop app). Every file of every project
-is mirrored except the `.thumbnail` preview image Claude Design writes itself. A file gone from Claude Design is never
-deleted here: check reports it until Arun says it was meant to go, then `pull --drop <project>/<file>` removes the copy
-and its record. Standalone Claude Design closes by 14 Dec 2026 (docs/design/reviews/MA-259/decision.md).
+`check` (the design-sync gate in .claude/jira-flow.json, the PR hook and CI) fails closed. It fails on a file whose
+bytes or sha256 no longer match its record, a file in a board folder the record does not list, a recorded file that is
+missing, a record it cannot read or that holds anything but its about line, each project's dir and each file's bytes
+and sha256 (an etag left from Claude Design included), a project the trace and the record do not agree on, and a
+missing or unreadable stamp, or one older than the record (its record_sha256 is not the record file's sha256 now):
+"the MyPaisa Boards Artifact was published before these boards changed: rebuild and republish it". `record` writes
+nothing unless it can record every file: a recorded file that is gone stays recorded, and check reports it, until Arun
+says it was meant to go and `record --drop <dir>/<file>` (the path from the repo's top, as check prints it) forgets it;
+a --drop of a file still on disk, or of one the record does not list, is refused. `published` refuses to stamp boards
+that are not recorded. The Finder's .DS_Store is never a board and never recorded. The board-level checks (names,
+dates, motion roles, tools, strokes) are scripts/plan_sync.py check's.
 """
 from __future__ import annotations
 
-import concurrent.futures
+import datetime
 import hashlib
 import json
-import os
 import re
 import shutil
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -36,156 +42,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import plan_sync  # noqa: E402
 
 ROOT = plan_sync.ROOT
-IGNORED = {".thumbnail"}  # the project's preview image, written by Claude Design itself; the trace schema leaves it out
-MCP = {"mcpServers": {"claude-design": {"type": "http", "url": "https://api.anthropic.com/v1/design/mcp"}}}
-LIST, READ = "mcp__claude-design__list_files", "mcp__claude-design__read_file"
-WRITES = [f"mcp__claude-design__{t}" for t in ("write_files", "delete_files", "copy_files", "finalize_plan", "create_project",
-                                               "create_support_js", "put_conversation", "ack_comments", "add_member",
-                                               "remove_member", "update_member_role", "update_sharing")]
-MODEL = os.environ.get("DESIGN_SYNC_MODEL", "haiku")
-# Dollars a headless call may spend. A listing or a read costs about $0.004 on Haiku (28 Oct 2026): the result is saved
-# to a file, not shown to the model (MAX_MCP_OUTPUT_TOKENS), so a board's size does not change the price. A call that
-# reaches the cap stops, and the step fails closed.
-BUDGET = "0.10"
-WORKERS = 4
-SAVED = re.compile(r"Output has been saved to (/\S+?\.txt)")
-LOGIN = "the connector's login lapsed or was refused: run /design-login in an interactive `claude` terminal (not the desktop app), then run this again"
+RECORD = Path("docs/design/claude-design.json")
+STAMP = Path("docs/design/boards-artifact.json")
+BOARDS_ARTIFACT = "https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g"
+ABOUT = "The repo's record of every board file since MA-260 (30 Oct 2026); the name is history."
+STAMP_ABOUT = ("The MyPaisa Boards Artifact was last published from docs/design/claude-design.json as it was when its sha256 "
+               "was record_sha256; written by `python3 scripts/design_sync.py published` (MA-260).")
+STALE = "the MyPaisa Boards Artifact was published before these boards changed: rebuild and republish it"
+REPUBLISH = (f"`python3 scripts/boards_page/build.py docs/design <out-dir>`, publish <out-dir>/index.html with the Artifact tool "
+             f"to {BOARDS_ARTIFACT} (root docs/design, the files in <out-dir>/files.json), then "
+             "`python3 scripts/design_sync.py published`")
+NOT_BOARDS = plan_sync.NOT_BOARDS
 
 
 class SyncError(Exception):
     pass
-
-
-def escape(text: str) -> str:
-    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-
-
-def decode(body: str) -> str:
-    """read_file escapes & < > and nothing else; one pass, so '&amp;lt;' stays '&lt;'."""
-    if bad := re.search(r"[<>]|&(?!(?:amp|lt|gt);)", body):
-        raise SyncError(f"an unescaped {bad.group(0)!r} in a read_file body: the connector's escaping is not what this script reads")
-    return re.sub(r"&(amp|lt|gt);", lambda m: {"amp": "&", "lt": "<", "gt": ">"}[m.group(1)], body)
-
-
-def unwrap(text: str) -> tuple[dict, str]:
-    """A read_file result: its wrapper's attributes, and the decoded body (the file's text, or the window's)."""
-    head, sep, rest = text.partition("\n")
-    m = re.fullmatch(r"<untrusted-project-content((?:\s+[a-z_]+(?:=\"[^\"]*\")?)*)\s*>", head)
-    end = rest.rfind("\n</untrusted-project-content>")
-    if not sep or not m or end < 0:
-        raise SyncError(f"a read_file result with no untrusted-project-content wrapper: {text[:160]!r}")
-    attrs = dict(re.findall(r"([a-z_]+)=\"([^\"]*)\"", m.group(1)))
-    if re.search(r"\btruncated_line\b", m.group(1)):
-        attrs["truncated_line"] = attrs.get("truncated_line", "")
-    return attrs, decode(rest[:end])
-
-
-# Since 29 Oct 2026 the standalone Claude Design server appends a closing notice to every result ("Notice: this MCP
-# server belongs to standalone Claude Design ... stop working no later than December 14, 2026 ..."), after the listing's
-# JSON or after read_file's closing tag; it is the server's, never the project's, so it is cut before anything reads
-# the result, or a listing would not parse and a copy would not be byte for byte (MA-291).
-NOTICE = re.compile(r"\s*Notice: this MCP server belongs to standalone Claude Design\b.*\Z", re.S)
-
-
-def unnotice(text: str) -> str:
-    """The result without the server's closing notice."""
-    return NOTICE.sub("", text)
-
-
-def result_text(stream: str, tool: str, args: dict, saved_base: Path) -> str:
-    """The text one connector call returned, from `claude -p --output-format stream-json --verbose`.
-
-    Claude Code saves a result too long for the model's context to a file and says where; that file holds the result
-    exactly (its text, or a JSON list of text blocks)."""
-    uses: dict[str, tuple[object, object]] = {}
-    results: dict[str, dict] = {}
-    final: dict = {}
-    for line in stream.splitlines():
-        try:
-            o = json.loads(line)
-        except ValueError:
-            continue
-        msg = o.get("message") if isinstance(o.get("message"), dict) else {}
-        content = msg.get("content") if isinstance(msg.get("content"), list) else []
-        if o.get("type") == "assistant":
-            uses.update({b["id"]: (b.get("name"), b.get("input")) for b in content if isinstance(b, dict) and b.get("type") == "tool_use"})
-        elif o.get("type") == "user":
-            results.update({b.get("tool_use_id"): b for b in content if isinstance(b, dict) and b.get("type") == "tool_result"})
-        elif o.get("type") == "result":
-            final = o
-    calls = [i for i, (name, _) in uses.items() if name == tool]
-    if len(calls) != 1:
-        said = str(final.get("result") or final.get("subtype") or "no result")[:200]
-        raise SyncError(f"{tool} was called {len(calls)} times, not once (Claude Code said: {said})")
-    if uses[calls[0]][1] != args:
-        raise SyncError(f"{tool} was called with {uses[calls[0]][1]}, not {args}")
-    block = results.get(calls[0])
-    if block is None:
-        raise SyncError(f"{tool} returned nothing")
-    c = block.get("content")
-    text = c if isinstance(c, str) else "".join(x.get("text", "") for x in c or [] if isinstance(x, dict) and x.get("type") == "text")
-    text = unnotice(text)
-    if m := SAVED.search(text):
-        path = Path(m.group(1))
-        if not path.resolve().is_relative_to(saved_base.resolve()) or not path.is_file():
-            raise SyncError(f"{tool}: the saved result {path} is not a file under {saved_base}")
-        text = path.read_text()
-        try:
-            blocks = json.loads(text)   # a saved list of text blocks: the notice is inside the last block, so cut it after the join
-        except ValueError:
-            return unnotice(text)
-        if isinstance(blocks, list) and blocks and all(isinstance(b, dict) and b.get("type") == "text" for b in blocks):
-            return unnotice("".join(b["text"] for b in blocks))
-        return unnotice(text)
-    if block.get("is_error") or text.startswith("Error"):
-        login = re.search(r"\b(401|403)\b|forbidden|unauthori[sz]ed|log ?in|authenticat", text, re.I)
-        raise SyncError(f"{tool}: {text[:300]}" + (f" ({LOGIN})" if login else ""))
-    return text
-
-
-class Headless:
-    """Claude Design through the claude-design connector, by Claude Code headless: read-only, one call per request."""
-
-    def __init__(self) -> None:
-        self.claude = os.environ.get("DESIGN_SYNC_CLAUDE") or shutil.which("claude")
-        # A fixed folder outside the repo, so this repo's hooks and CLAUDE.md stay out of the headless session.
-        self.cwd = Path(tempfile.gettempdir()) / "mypaisa-design-sync"
-        self.saved_base = Path.home() / ".claude"
-
-    def _call(self, tool: str, args: dict) -> str:
-        if not self.claude:
-            raise SyncError("the claude CLI is not on PATH; the sync runs Claude Code headless (set DESIGN_SYNC_CLAUDE to its path)")
-        self.cwd.mkdir(exist_ok=True)
-        prompt = (f"Call the tool {tool} exactly once with exactly these arguments: {json.dumps(args)}. "
-                  "Call no other tool, do not read or describe the result, then reply with the single word DONE.")
-        cmd = [self.claude, "-p", prompt, "--strict-mcp-config", "--mcp-config", json.dumps(MCP), "--allowedTools", tool,
-               "--disallowedTools", *WRITES, "--tools", "", "--permission-mode", "dontAsk", "--no-session-persistence",
-               "--output-format", "stream-json", "--verbose", "--model", MODEL, "--max-budget-usd", BUDGET]
-        last: SyncError | None = None
-        for _ in range(2):  # a model that called the tool wrongly gets one more try; a refused login does not
-            try:
-                r = subprocess.run(cmd, capture_output=True, text=True, cwd=self.cwd, timeout=240,
-                                   env=dict(os.environ, MAX_MCP_OUTPUT_TOKENS="1000"))
-            except subprocess.TimeoutExpired:
-                last = SyncError(f"{tool} {args} took over 240 s")
-                continue
-            try:
-                return result_text(r.stdout, tool, args, self.saved_base)
-            except SyncError as e:
-                last = e if r.returncode == 0 else SyncError(f"{e} (claude exited {r.returncode}: {r.stderr.strip()[:200]})")
-                if LOGIN in str(e):
-                    break
-        raise last or SyncError(f"{tool} {args} failed")
-
-    def list(self, project_id: str) -> list[dict]:
-        text = self._call(LIST, {"project_id": project_id, "depth": -1})
-        try:
-            return json.loads(text)
-        except ValueError:
-            raise SyncError(f"the listing of {project_id} is not JSON: {text[:200]!r}") from None
-
-    def read(self, project_id: str, path: str, offset: int | None = None) -> str:
-        return self._call(READ, {"project_id": project_id, "path": path} | ({"offset": offset} if offset else {}))
 
 
 def load(path: Path) -> dict:
@@ -196,427 +67,392 @@ def load(path: Path) -> dict:
 
 
 def projects(root: Path) -> dict[str, dict]:
+    """The board folders, from docs/trace.json's claude_design: {key: {dir, ...}}; each dir under docs/design/."""
     projs = load(root / "docs" / "trace.json").get("claude_design")
     if not isinstance(projs, dict) or not projs or not all(
-            isinstance(p, dict) and all(isinstance(p.get(f), str) and p.get(f) for f in ("id", "name", "dir")) for p in projs.values()):
-        raise SyncError("docs/trace.json's claude_design must name each project's id, name and dir")
+            isinstance(p, dict) and isinstance(p.get("dir"), str) and re.fullmatch(r"docs/design/[^/.][^/]*", p["dir"])
+            for p in projs.values()):
+        raise SyncError("docs/trace.json's claude_design must name each board folder's dir, a folder in docs/design/")
     return projs
 
 
-def listing(conn, proj: dict) -> dict[str, dict]:
-    """A project's files as Claude Design lists them, the preview image left out: {path: {etag, size}}."""
+def files_on_disk(root: Path, d: str) -> dict[str, Path]:
+    base = root / d
+    return {f.relative_to(base).as_posix(): f for f in sorted(base.rglob("*"))
+            if f.is_file() and f.name not in NOT_BOARDS} if base.is_dir() else {}
+
+
+def entry(path: Path) -> dict:
+    data = path.read_bytes()
+    return {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+
+
+def dump(record: dict) -> str:
+    """The record as record writes it: the about line, then each project's dir and its files in name order."""
+    out = {"about": record.get("about", ABOUT)}
+    for k in sorted(k for k in record if k != "about"):
+        out[k] = {"dir": record[k]["dir"], "files": dict(sorted(record[k]["files"].items()))}
+    return json.dumps(out, indent=2, ensure_ascii=False) + "\n"
+
+
+def stamp_errors(root: Path) -> list[str]:
+    """The Boards Artifact's stamp against the record as it is on disk."""
+    if not (root / RECORD).is_file():
+        return [f"boards: {RECORD} is missing, so no stamp can match it"]
     try:
-        entries = conn.list(proj["id"])
+        stamp = load(root / STAMP)
     except SyncError as e:
-        raise SyncError(f"cannot list {proj['name']} ({proj['id']}): {e}") from None
-    if not isinstance(entries, list):
-        raise SyncError(f"the listing of {proj['name']} is not a list")
-    files = {}
-    for e in entries:
-        if not isinstance(e, dict) or not isinstance(e.get("path"), str) or e.get("type") not in ("file", "directory"):
-            raise SyncError(f"the listing of {proj['name']} has an entry this script cannot read: {e!r}")
-        if e["type"] == "directory":
-            raise SyncError(f"the listing of {proj['name']} rolled {e['path']} up as a directory; depth -1 lists every file")
-        if not isinstance(e.get("etag"), str) or not e["etag"] or not isinstance(e.get("size"), int):
-            raise SyncError(f"the listing of {proj['name']} gives {e['path']} no etag or size")
-        if e["path"] not in IGNORED:
-            files[e["path"]] = {"etag": e["etag"], "size": e["size"]}
-    return files
+        if not (root / STAMP).exists():
+            return [f"boards: {STAMP} is missing: publish the MyPaisa Boards Artifact ({REPUBLISH})"]
+        return [f"boards: {e}"]
+    if not isinstance(stamp, dict):
+        return [f"boards: {STAMP} must hold an object"]
+    errors = []
+    if stamp.get("url") != BOARDS_ARTIFACT:
+        errors.append(f"boards: {STAMP} stamps {stamp.get('url')!r}, not the MyPaisa Boards Artifact ({BOARDS_ARTIFACT})")
+    if not isinstance(stamp.get("record_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", stamp["record_sha256"]):
+        errors.append(f"boards: {STAMP} has no record_sha256")
+    try:
+        datetime.date.fromisoformat(stamp.get("date"))
+    except (TypeError, ValueError):
+        errors.append(f"boards: {STAMP} has no date (YYYY-MM-DD)")
+    if not errors and stamp["record_sha256"] != plan_sync.sha256(root / RECORD):
+        errors.append(f"boards: {STALE} ({REPUBLISH})")
+    return errors
 
 
-def listings(conn, projs: dict) -> dict[str, dict[str, dict]]:
-    with concurrent.futures.ThreadPoolExecutor(WORKERS) as pool:
-        futures = {k: pool.submit(listing, conn, p) for k, p in projs.items()}
-    out, errors = {}, []
-    for k, f in futures.items():
-        try:
-            out[k] = f.result()
-        except SyncError as e:
-            errors.append(str(e))
-    if errors:
-        raise SyncError("; ".join(errors))
-    return out
+def record_errors(root: Path) -> tuple[dict, dict, list[str]]:
+    """The trace's board folders, the record, and every way the files on disk differ from it (plan_sync.disk_errors)."""
+    projs, record = projects(root), load(root / RECORD)
+    errors = plan_sync.mirror_errors(record)
+    return projs, record, errors or plan_sync.disk_errors(projs, record, root)
 
 
-def drift(projs: dict, mirror: dict, live: dict, root: Path) -> list[str]:
-    """Every difference between Claude Design, docs/design/claude-design.json and the copies on disk."""
-    errors = [f"design: claude-design.json records {k}, which docs/trace.json's claude_design does not name"
-              for k in mirror if k not in projs]
-    for key, proj in projs.items():
-        rec, files, d = mirror.get(key, {}).get("files", {}), live[key], proj["dir"]
-        for p in sorted(set(files) - set(rec)):
-            errors.append(f"design: {d}/{p} is new in Claude Design ({proj['name']}); run `python3 scripts/design_sync.py pull`")
-        for p in sorted(set(rec) - set(files)):
-            errors.append(f"design: {d}/{p} is gone from Claude Design ({proj['name']}); the copy is kept: ask Arun, and once he "
-                          f"says it was meant, `python3 scripts/design_sync.py pull --drop {key}/{p}`")
-        for p in sorted(set(rec) & set(files)):
-            if files[p]["etag"] != rec[p].get("etag"):
-                errors.append(f"design: {d}/{p} changed in Claude Design (etag {rec[p].get('etag')} -> {files[p]['etag']}); "
-                              "run `python3 scripts/design_sync.py pull`")
-            elif files[p]["size"] != rec[p].get("bytes"):
-                errors.append(f"design: {d}/{p} is {files[p]['size']} bytes in Claude Design, recorded {rec[p].get('bytes')} at the "
-                              "same etag; run `python3 scripts/design_sync.py pull`")
-    return errors + [f"design: {e}" for e in plan_sync.disk_errors(projs, mirror, root)]
-
-
-def fetch(conn, proj: dict, path: str, entry: dict) -> bytes:
-    """One file, byte for byte, window by window past read_file's 256 KiB cap; its length and etag as listed."""
-    parts, offset = [], None
-    while True:
-        attrs, body = unwrap(conn.read(proj["id"], path, offset))
-        if attrs.get("path") != path:
-            raise SyncError(f"{path}: read_file answered for {attrs.get('path')!r}")
-        if attrs.get("etag") != entry["etag"]:
-            raise SyncError(f"{path} changed while it was copied (etag {entry['etag']} listed, {attrs.get('etag')} read); run pull again")
-        if "truncated_line" in attrs:
-            raise SyncError(f"{path} has a line over read_file's 256 KiB cap, which it cannot return whole")
-        parts.append(body)
-        if "lines" not in attrs:
-            break
-        try:
-            first, last = (int(n) for n in attrs["lines"].split("-"))
-            total = int(attrs["total_lines"])
-        except (KeyError, ValueError):
-            raise SyncError(f"{path}: a window this script cannot read: lines={attrs.get('lines')!r} total_lines={attrs.get('total_lines')!r}") from None
-        if first != (offset or 1) or last < first:
-            raise SyncError(f"{path}: asked for line {offset or 1}, read_file returned lines {first}-{last}")
-        if last >= total:
-            break
-        offset = last + 1
-    data = "".join(parts).encode()
-    if len(data) != entry["size"]:
-        raise SyncError(f"{path}: decoded {len(data)} bytes, Claude Design lists {entry['size']}")
-    return data
-
-
-def _dump(mirror: dict) -> str:
-    return json.dumps({k: {**v, "files": dict(sorted(v.get("files", {}).items()))} for k, v in mirror.items()},
-                      indent=2, ensure_ascii=False) + "\n"
-
-
-def report(lines: list[str], errors: list[str], live: dict | None, out=print) -> int:
+def report(lines: list[str], errors: list[str], files: int | None, out=print) -> int:
     for ln in lines:
         out(ln)
     for e in errors:
         out(f"DRIFT: {e}")
-    files = sum(len(v) for v in (live or {}).values())
-    out(f"design-sync: {len(live or {})} projects, {files} files in Claude Design, {len(errors)} drift")
+    out(f"design-sync: {'?' if files is None else files} files recorded, {len(errors)} drift")
     return 1 if errors else 0
 
 
-def check(conn, root: Path = ROOT, out=print) -> int:
+def check(root: Path = ROOT, out=print) -> int:
     try:
-        projs = projects(root)
-        mirror = load(root / "docs" / "design" / "claude-design.json")
-        live = listings(conn, projs)
+        _, record, errors = record_errors(root)
     except SyncError as e:
-        return report([], [f"design: {e}"], None, out)
-    return report([], drift(projs, mirror, live, root), live, out)
+        return report([], [f"boards: {e}"], None, out)
+    files = sum(len(v.get("files", {})) for k, v in record.items() if k != "about" and isinstance(v, dict))
+    return report([], errors + stamp_errors(root), files, out)
 
 
-def pull(conn, root: Path = ROOT, drop: tuple[str, ...] = (), out=print) -> int:
-    """Copy every file that is new, changed, or not as recorded on disk; write nothing unless every copy is whole."""
-    mirror_path = root / "docs" / "design" / "claude-design.json"
+def _drop_target(arg: str, projs: dict) -> tuple[str, str] | None:
+    """`--drop docs/design/app-v1/Old.dc.html` (or `app-v1/Old.dc.html`): the project key and the file's name in it."""
+    path = arg if arg.startswith("docs/") else f"docs/design/{arg}"
+    for k, p in projs.items():
+        if path.startswith(p["dir"] + "/"):
+            return k, path[len(p["dir"]) + 1:]
+    return None
+
+
+def record(root: Path = ROOT, drop: tuple[str, ...] = (), out=print) -> int:
+    """Record every file in every board folder; write nothing unless every recorded file is there or dropped as asked."""
+    path = root / RECORD
     try:
-        projs = projects(root)
-        mirror = load(mirror_path)
-        live = listings(conn, projs)
+        projs, old = projects(root), load(path)
     except SyncError as e:
-        return report(["pull: nothing written"], [f"design: {e}"], None, out)
-    todo = []
-    for key, proj in projs.items():
-        rec = mirror.get(key, {}).get("files", {})
-        for p, e in live[key].items():
-            r, path = rec.get(p) or {}, root / proj["dir"] / p
-            if (r.get("etag") != e["etag"] or r.get("bytes") != e["size"] or not path.is_file()
-                    or path.stat().st_size != r.get("bytes") or plan_sync.sha256(path) != r.get("sha256")):
-                todo.append((key, p, e))
-    problems, drops = [], []
-    for d in drop:
-        key, _, p = d.partition("/")
-        if key not in projs or p not in mirror.get(key, {}).get("files", {}):
-            problems.append(f"--drop {d}: no such recorded file (use <project>/<file>, the project one of {', '.join(projs)})")
-        elif p in live[key]:
-            problems.append(f"--drop {d}: still in Claude Design, so it is not dropped")
-        else:
-            drops.append((key, p))
-    with concurrent.futures.ThreadPoolExecutor(WORKERS) as pool:
-        futures = {(k, p): pool.submit(fetch, conn, projs[k], p, e) for k, p, e in todo}
-    copies = {}
-    for (k, p), f in futures.items():
-        try:
-            copies[(k, p)] = f.result()
-        except SyncError as e:
-            problems.append(f"{projs[k]['dir']}/{p}: {e}")
+        return report(["record: nothing written"], [f"boards: {e}"], None, out)
+    problems = plan_sync.mirror_errors(old, strict=False)
+    problems += [f"claude-design.json records {k}, which docs/trace.json's claude_design does not name; name it there, or remove "
+                 "it from the record by hand" for k in (old if isinstance(old, dict) else {}) if k != "about" and k not in projs]
     if problems:
-        return report(["pull: nothing written"], [f"design: {e}" for e in problems], live, out)
-    lines = []
-    for (k, p), data in copies.items():
-        path, old = root / projs[k]["dir"] / p, mirror.get(k, {}).get("files", {}).get(p)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(data)
-        new = {"etag": live[k][p]["etag"], "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
-        mirror.setdefault(k, {}).setdefault("files", {})[p] = new
-        lines.append(f"copied {projs[k]['dir']}/{p}: " + (f"etag {old.get('etag')} -> {new['etag']}, {old.get('bytes')} -> {new['bytes']} bytes"
-                                                         if old else f"new, {new['bytes']} bytes"))
-    for k, p in drops:
-        (root / projs[k]["dir"] / p).unlink(missing_ok=True)
-        del mirror[k]["files"][p]
-        lines.append(f"dropped {projs[k]['dir']}/{p}: gone from Claude Design, and Arun said it was meant to go")
-    if copies or drops:
-        mirror_path.write_text(_dump(mirror))
-    lines.append(f"pull: {len(copies)} copied, {len(drops)} dropped")
-    return report(lines, drift(projs, mirror, live, root), live, out)
+        return report(["record: nothing written"], [f"boards: {e}" for e in problems], None, out)
+    drops = set()
+    for d in drop:
+        t = _drop_target(d, projs)
+        if t is None or t[1] not in old.get(t[0], {}).get("files", {}):
+            problems.append(f"--drop {d}: no such recorded file (use <dir>/<file>, the dir one of {', '.join(p['dir'] for p in projs.values())})")
+        elif (root / projs[t[0]]["dir"] / t[1]).exists():
+            problems.append(f"--drop {d}: still in the repo, so it is not dropped (delete it first, if it is meant to go)")
+        else:
+            drops.add(t)
+    new, lines, counts = {"about": ABOUT}, [], {"new": 0, "changed": 0, "dropped": 0}
+    for k, p in projs.items():
+        was, disk = old.get(k, {}).get("files", {}), files_on_disk(root, p["dir"])
+        for name in sorted(set(was) - set(disk)):
+            if (k, name) in drops:
+                counts["dropped"] += 1
+                lines.append(f"dropped {p['dir']}/{name}: gone from the repo, and dropped as asked")
+            else:
+                problems.append(f"{p['dir']}/{name} is recorded but gone from the repo; restore it, or if it was meant to go, "
+                                f"`python3 scripts/design_sync.py record --drop {p['dir']}/{name}`")
+        files = {}
+        for name, f in disk.items():
+            files[name] = e = entry(f)
+            before = was.get(name) or {}
+            if not before:
+                counts["new"] += 1
+                lines.append(f"recorded {p['dir']}/{name}: new, {e['bytes']} bytes")
+            elif (before.get("bytes"), before.get("sha256")) != (e["bytes"], e["sha256"]):
+                counts["changed"] += 1
+                lines.append(f"recorded {p['dir']}/{name}: " + (f"{before.get('bytes')} -> {e['bytes']} bytes" if before.get("bytes") != e["bytes"]
+                                                               else "the same size, a new sha256"))
+        new[k] = {"dir": p["dir"], "files": files}
+    if problems:
+        return report(["record: nothing written"], [f"boards: {e}" for e in problems], None, out)
+    text = dump(new)
+    rewritten = text != path.read_text()
+    if rewritten:
+        path.write_text(text)
+    lines.append(f"record: {counts['new']} new, {counts['changed']} changed, {counts['dropped']} dropped"
+                 + ("" if rewritten else "; the record is unchanged"))
+    _, _, errors = record_errors(root)  # by construction nothing, unless a file moved while it was read
+    lines += [f"next: {e.removeprefix('boards: ')}" for e in stamp_errors(root)]  # the stamp is published's, after the republish
+    return report(lines, errors, sum(len(v["files"]) for k, v in new.items() if k != "about"), out)
+
+
+def published(root: Path = ROOT, today: str | None = None, out=print) -> int:
+    """Stamp docs/design/boards-artifact.json with the record the Boards Artifact was just published from."""
+    try:
+        _, _, errors = record_errors(root)
+    except SyncError as e:
+        errors = [f"boards: {e}"]
+    if errors:
+        return report(["published: nothing stamped; the Boards Artifact is built from the files on disk, so record them first "
+                       "(`python3 scripts/design_sync.py record`), republish, then stamp"], errors, None, out)
+    digest = plan_sync.sha256(root / RECORD)
+    stamp = {"about": STAMP_ABOUT, "url": BOARDS_ARTIFACT, "record_sha256": digest,
+             "date": today or datetime.date.today().isoformat()}
+    (root / STAMP).write_text(json.dumps(stamp, indent=2) + "\n")
+    return report([f"published: stamped {STAMP}: {BOARDS_ARTIFACT}, the record {digest[:12]}, {stamp['date']}"], [],
+                  sum(len(v["files"]) for k, v in load(root / RECORD).items() if k != "about"), out)
 
 
 # ----------------------------------------------------------------------------------------------------------- selftest
+# Each case mutates a fresh copy of the board folders, a record and a stamp built for the copy (by this harness, not by
+# record or published), runs one command and expects its exit code, its words and what must hold after. The first case
+# proves the copy itself makes no drift, so a refusal is the command's and not the harness's (lesson 16); the words of
+# a refusal end with the drift count where one fault is made, so a case passes on its own fault only.
 
-class Fake:
-    """A stand-in Claude Design, built from the repo's own mirror, answering as the connector does (escaping, the
-    wrapper, windows past a cap). `reads` makes a read answer differently from the listing; `sizes` makes the listing
-    give another size; `down` refuses to list a project, as a lapsed login does."""
-
-    def __init__(self, projs: dict, mirror: dict, root: Path) -> None:
-        self.ids = {k: p["id"] for k, p in projs.items()}
-        self.files = {p["id"]: {name: [meta["etag"], (root / p["dir"] / name).read_text()]
-                                for name, meta in mirror[k]["files"].items()} for k, p in projs.items()}
-        for files in self.files.values():
-            files[".thumbnail"] = ["1", "\x89PNG preview, never copied"]
-        self.reads: dict[str, tuple[str, str]] = {}
-        self.sizes: dict[str, int] = {}
-        self.down: set[str] = set()
-        self.cap: int | None = None
-
-    def text(self, key: str, path: str) -> str:
-        return self.files[self.ids[key]][path][1]
-
-    def move(self, key: str, path: str, text: str | None = None) -> None:
-        """The file changes in Claude Design: a new etag, and new text."""
-        etag, old = self.files[self.ids[key]][path]
-        self.files[self.ids[key]][path] = ["9" + etag, old + "/* moved */\n" if text is None else text]
-
-    def list(self, project_id: str) -> list[dict]:
-        if project_id in self.down:
-            raise SyncError(f"Error: 403 Forbidden ({LOGIN})")
-        return [{"path": p, "type": "file", "size": self.sizes.get(p, len(t.encode())), "etag": e} for p, (e, t) in self.files[project_id].items()]
-
-    def read(self, project_id: str, path: str, offset: int | None = None) -> str:
-        etag, text = self.reads.get(path) or self.files[project_id][path]
-        note = "\n(The body above is HTML-entity-escaped: &amp; &lt; &gt; stand for & < >.)"
-        if self.cap is None or (offset is None and len(text.encode()) <= self.cap):
-            return f'<untrusted-project-content path="{path}" etag="{etag}">\n{escape(text)}\n</untrusted-project-content>{note}'
-        lines, start = text.splitlines(keepends=True), offset or 1
-        chunk, size, last = "", 0, start - 1
-        for ln in lines[start - 1:]:
-            if size + len(ln.encode()) > self.cap:
-                break
-            chunk, size, last = chunk + ln, size + len(ln.encode()), last + 1
-        if last < start:  # one line alone over the cap: read_file returns part of it and says so
-            return (f'<untrusted-project-content path="{path}" etag="{etag}" lines="{start}-{start}" total_lines="{len(lines)}" '
-                    f'truncated_line>\n{escape(lines[start - 1][:self.cap])}\n</untrusted-project-content>{note}')
-        return (f'<untrusted-project-content path="{path}" etag="{etag}" lines="{start}-{last}" total_lines="{len(lines)}">\n'
-                f'{escape(chunk)}\n</untrusted-project-content>{note}')
+TRICKY = "a &lt; b & c <x> &amp; &gt; ₹ 1,00,000\n" * 3
 
 
-def _stream(tool: str, args: dict, content: object, is_error: bool = False, calls: int = 1) -> str:
-    """What `claude -p --output-format stream-json --verbose` prints around one connector call."""
-    out = [{"type": "system", "subtype": "init"}]
-    for i in range(calls):
-        out.append({"type": "assistant", "message": {"content": [{"type": "tool_use", "id": f"t{i}", "name": tool, "input": args}]}})
-        out.append({"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": f"t{i}", "content": content, "is_error": is_error}]}})
-    out.append({"type": "result", "subtype": "success", "result": "DONE"})
-    return "\n".join(json.dumps(o) for o in out)
+def _write(root: Path, rel: str, text: str) -> None:
+    (root / rel).parent.mkdir(parents=True, exist_ok=True)
+    (root / rel).write_text(text)
 
 
-def _record(root: Path) -> dict:
-    return json.loads((root / "docs/design/claude-design.json").read_text())
+def _edit_record(root: Path, change, restamp: bool = True) -> None:
+    """Change the copy's record by hand, then (restamp) stamp it again, so only the change itself can be refused."""
+    rec = json.loads((root / RECORD).read_text())
+    change(rec)
+    (root / RECORD).write_text(json.dumps(rec, indent=2, ensure_ascii=False) + "\n")
+    if restamp:
+        _stamp(root)
 
 
-def _as_listed(key: str, path: str):
-    """After: the copy on disk is the stand-in's text exactly, and its record says so."""
-    def ok(root: Path, before: str, fake: Fake) -> bool:
-        want = fake.text(key, path).encode()
-        rec = _record(root)[key]["files"].get(path, {})
-        disk = root / projects(root)[key]["dir"] / path
-        return (disk.is_file() and disk.read_bytes() == want and rec.get("bytes") == len(want)
-                and rec.get("sha256") == hashlib.sha256(want).hexdigest() and rec.get("etag") == fake.files[fake.ids[key]][path][0])
+def _stamp(root: Path, **kw: object) -> None:
+    digest = hashlib.sha256((root / RECORD).read_bytes()).hexdigest()
+    (root / STAMP).write_text(json.dumps({"url": BOARDS_ARTIFACT, "record_sha256": digest, "date": "2026-10-30"} | kw) + "\n")
+
+
+def _entry(path: Path) -> dict:
+    data = path.read_bytes()
+    return {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+
+
+def _same_size(root: Path, rel: str) -> None:
+    """An edit that keeps the file's size: its first letter swapped for another."""
+    data = bytearray((root / rel).read_bytes())
+    i = next(i for i, b in enumerate(data) if chr(b).isalpha())
+    data[i] = ord("Q") if data[i] != ord("Q") else ord("R")
+    (root / rel).write_bytes(bytes(data))
+
+
+def _unchanged(root: Path, before: dict) -> bool:
+    return all((root / p).read_bytes() == b for p, b in before.items())
+
+
+def _recorded(rel: str):
+    """After: the record holds the file's bytes and sha256 exactly, as this harness reads them."""
+    def ok(root: Path, before: dict) -> bool:
+        k = next(k for k, p in projects(root).items() if rel.startswith(p["dir"] + "/"))
+        return json.loads((root / RECORD).read_text())[k]["files"].get(rel.split("/", 3)[3]) == _entry(root / rel)
     return ok
 
 
-def _kept(key: str, path: str, wanted: bool = True):
-    """After: the copy and its record are both still there (or, wanted False, both gone)."""
-    def ok(root: Path, before: str, fake: Fake) -> bool:
-        there = (path in _record(root)[key]["files"], (root / projects(root)[key]["dir"] / path).exists())
-        return there == (wanted, wanted)
+def _listed(rel: str, wanted: bool):
+    def ok(root: Path, before: dict) -> bool:
+        k = next(k for k, p in projects(root).items() if rel.startswith(p["dir"] + "/"))
+        return (rel.split("/", 3)[3] in json.loads((root / RECORD).read_text())[k]["files"]) == wanted
     return ok
 
 
-def _unchanged(root: Path, before: str, fake: Fake) -> bool:
-    return (root / "docs/design/claude-design.json").read_text() == before
+def _stamped(root: Path, before: dict) -> bool:
+    s = json.loads((root / STAMP).read_text())
+    lines: list[str] = []
+    return (s.get("url") == BOARDS_ARTIFACT and s.get("date") == "2026-10-31"
+            and s.get("record_sha256") == hashlib.sha256((root / RECORD).read_bytes()).hexdigest() and check(root, lines.append) == 0)
+
+
+def _migrated(root: Path, before: dict) -> bool:
+    """After an old record: the same files, sizes and hashes, the dirs and the about line, and no etag anywhere."""
+    old, new, projs = json.loads(before[RECORD].decode()), json.loads((root / RECORD).read_text()), projects(root)
+    same = all({n: {"bytes": e["bytes"], "sha256": e["sha256"]} for n, e in old[k]["files"].items()} == new[k]["files"]
+               and new[k]["dir"] == projs[k]["dir"] for k in old)
+    return same and new.get("about") == ABOUT and "etag" not in (root / RECORD).read_text() and set(new) == set(old) | {"about"}
+
+
+A = "docs/design/app-v1"
+MINI, SUPPORT, MOTION = f"{A}/Mini App.dc.html", f"{A}/support.js", "docs/design/ios-v1/motion.css"
 
 
 def _cases() -> list[tuple]:
-    """(what the case breaks, how it mutates the stand-in or the repo, pull's --drop, the command, its exit code, the
-    words it must print, what must hold after). Each runs on a fresh copy."""
-    tricky = "a &lt; b & c <x> &amp; &gt; \u20b9 1,00,000\n" * 3
-
-    def disk(root: Path, rel: str, text: str) -> None:
-        (root / rel).write_text(text)
-
-    def short(f: Fake) -> None:  # the read returns one byte fewer than the listing gives
-        f.move("app", "support.js", tricky)
-        f.reads["support.js"] = (f.files[f.ids["app"]]["support.js"][0], tricky[:-1])
-
-    def raced(f: Fake) -> None:  # the file moves again between the listing and the read
-        f.move("app", "support.js")
-        f.reads["support.js"] = ("77", f.text("app", "support.js"))
-
-    def raw(f: Fake) -> None:  # the connector stops escaping a <
-        f.move("app", "support.js", tricky)
-        orig = f.read
-        f.read = lambda *a: orig(*a).replace("&lt;x", "<x", 1)
-
-    def capped(f: Fake, cap: int) -> None:
-        f.cap = cap
-        f.move("ios", "iPad and foldable.dc.html")
+    """(what the case breaks, how it mutates the copy, the command and its arguments, its exit code, the words it must
+    print, what must hold after)."""
+    def etags(rec: dict) -> None:  # the record as MA-259 wrote it: an etag on every file, no dirs, no about line
+        rec.pop("about")
+        for v in rec.values():
+            v.pop("dir")
+            for i, e in enumerate(v["files"].values()):
+                e["etag"] = str(1792975804472508 + i)
 
     return [
-        ("nothing: Claude Design and the mirror the same", lambda f, r: None, (), "check", 0, r", 0 drift", _unchanged),
-        ("an etag moved in Claude Design", lambda f, r: f.move("app", "support.js"), (), "check", 1,
-         r"app-v1/support\.js changed in Claude Design", _unchanged),
-        ("a file new in Claude Design", lambda f, r: f.files[f.ids["app"]].__setitem__("New board.dc.html", ["5", "<p>new</p>\n"]), (),
-         "check", 1, r"app-v1/New board\.dc\.html is new in Claude Design", _unchanged),
-        ("a file gone from Claude Design", lambda f, r: f.files[f.ids["app"]].pop("Mini App.dc.html"), (), "check", 1,
-         r"app-v1/Mini App\.dc\.html is gone from Claude Design", _unchanged),
-        ("a listed size that disagrees at the same etag", lambda f, r: f.sizes.__setitem__("motion.css", 7), (), "check", 1,
-         r"motion\.css is 7 bytes in Claude Design, recorded \d+ at the same etag", _unchanged),
-        ("a copy edited in the repo", lambda f, r: disk(r, "docs/design/ios-v1/motion.css", "/* edited */\n"), (), "check", 1,
-         r"ios-v1/motion\.css is \d+ bytes, recorded \d+; copy it again", _unchanged),
-        ("a file in the mirror nobody recorded", lambda f, r: disk(r, "docs/design/ds-v1/stray.css", "a{}\n"), (), "check", 1,
-         r"ds-v1/stray\.css is not recorded", _unchanged),
-        ("a project Claude Design will not list (a lapsed login)", lambda f, r: f.down.add(f.ids["ios"]), (), "check", 1,
-         r"cannot list MyPaisa iOS v1 .*design-login", _unchanged),
-        ("pull: a changed file copied byte for byte, entities and all", lambda f, r: f.move("app", "support.js", tricky), (), "pull", 0,
-         r"copied docs/design/app-v1/support\.js: etag .*, 0 drift", _as_listed("app", "support.js")),
-        ("pull: a new file in a new folder", lambda f, r: f.files[f.ids["ios"]].__setitem__("_ds/x/new.css", ["5", tricky]), (), "pull", 0,
-         r"copied docs/design/ios-v1/_ds/x/new\.css: new, \d+ bytes.*, 0 drift", _as_listed("ios", "_ds/x/new.css")),
-        ("pull: a copy edited in the repo is copied again", lambda f, r: disk(r, "docs/design/ios-v1/motion.css", "/* edited */\n"), (),
-         "pull", 0, r"copied docs/design/ios-v1/motion\.css.*, 0 drift", _as_listed("ios", "motion.css")),
-        ("pull: a body one byte short", lambda f, r: short(f), (), "pull", 1, r"nothing written.*decoded \d+ bytes, Claude Design lists \d+",
+        ("nothing: the files, the record and the stamp agree", lambda r: None, ("check",), 0, r"\d+ files recorded, 0 drift", _unchanged),
+        # The record against the files (kept from MA-259's check: a copy edited, a file nobody recorded, a file gone).
+        ("a board edited without recording it", lambda r: _write(r, MOTION, (r / MOTION).read_text() + "/* edited */\n"), ("check",), 1,
+         r"ios-v1/motion\.css is \d+ bytes, recorded \d+; record it.*, 1 drift", _unchanged),
+        ("a board edited without recording it, its size the same", lambda r: _same_size(r, MOTION), ("check",), 1,
+         r"ios-v1/motion\.css differs from its record .*the same size.*, 1 drift", _unchanged),
+        ("a file in a board folder the record does not list", lambda r: _write(r, "docs/design/ds-v1/x/stray.css", "a{}\n"), ("check",), 1,
+         r"ds-v1/x/stray\.css is not recorded.*, 1 drift", _unchanged),
+        ("a recorded file missing", lambda r: (r / MINI).unlink(), ("check",), 1,
+         r"app-v1/Mini App\.dc\.html is recorded but missing; .*record --drop docs/design/app-v1/Mini App\.dc\.html.*, 1 drift", _unchanged),
+        ("a record whose size disagrees with the file, its sha256 the same",
+         lambda r: _edit_record(r, lambda m: m["ios"]["files"]["motion.css"].update(bytes=7)), ("check",), 1,
+         r"ios-v1/motion\.css is \d+ bytes, recorded 7.*, 1 drift", _unchanged),
+        # The record itself, which fails closed (new in MA-260).
+        ("a record entry with no sha256", lambda r: _edit_record(r, lambda m: m["ios"]["files"]["motion.css"].pop("sha256")), ("check",), 1,
+         r"ios/motion\.css needs its sha256.*, 1 drift", _unchanged),
+        ("a record still carrying an etag", lambda r: _edit_record(r, lambda m: m["ios"]["files"]["motion.css"].update(etag="1")), ("check",), 1,
+         r"ios/motion\.css has fields the record does not keep \(etag\).*, 1 drift", _unchanged),
+        ("a record that cannot be read", lambda r: _write(r, str(RECORD), "{"), ("check",), 1, r"claude-design\.json cannot be read", _unchanged),
+        ("a project the trace does not name", lambda r: _edit_record(r, lambda m: m.update(old={"dir": "docs/design/old-v1", "files": {}})),
+         ("check",), 1, r"records old, which docs/trace\.json's claude_design does not name.*, 1 drift", _unchanged),
+        ("a project whose dir the trace and the record disagree on", lambda r: _edit_record(r, lambda m: m["ds"].update(dir="docs/design/ds-v2")),
+         ("check",), 1, r"gives ds the dir 'docs/design/ds-v2', docs/trace\.json's claude_design 'docs/design/ds-v1'.*, 1 drift", _unchanged),
+        ("a project the trace names and the record lacks", lambda r: _edit_record(r, lambda m: m.pop("ds")), ("check",), 1,
+         r"names ds, which claude-design\.json does not record", _unchanged),
+        ("a trace with no board folders", lambda r: _write(r, "docs/trace.json", "{}"), ("check",), 1, r"claude_design must name each", _unchanged),
+        ("a Finder .DS_Store is no board", lambda r: _write(r, "docs/design/ios-v1/.DS_Store", "x"), ("check",), 0, r", 0 drift", _unchanged),
+        # The Boards Artifact's stamp (new in MA-260).
+        ("the stamp missing", lambda r: (r / STAMP).unlink(), ("check",), 1, r"boards-artifact\.json is missing: publish.*, 1 drift", _unchanged),
+        ("the stamp older than the record (a board changed and recorded since)",
+         lambda r: _write(r, MOTION, "/* moved */\n") or _edit_record(r, lambda m: m["ios"]["files"].__setitem__("motion.css", _entry(r / MOTION)), restamp=False),
+         ("check",), 1, rf"{re.escape(STALE)} \(.*, 1 drift", _unchanged),
+        ("a stamp for another Artifact", lambda r: _stamp(r, url="https://claude.ai/artifact/other"), ("check",), 1,
+         r"stamps 'https://claude\.ai/artifact/other', not the MyPaisa Boards Artifact.*, 1 drift", _unchanged),
+        ("a stamp with no date", lambda r: _stamp(r, date="soon"), ("check",), 1, r"has no date.*, 1 drift", _unchanged),
+        ("a stamp that cannot be read", lambda r: _write(r, str(STAMP), "{"), ("check",), 1, r"boards-artifact\.json cannot be read.*, 1 drift",
          _unchanged),
-        ("pull: a file that changed while it was read", lambda f, r: raced(f), (), "pull", 1, r"nothing written.*changed while it was copied",
-         _unchanged),
-        ("pull: a file gone from Claude Design is kept", lambda f, r: f.files[f.ids["app"]].pop("Mini App.dc.html"), (), "pull", 1,
-         r"Mini App\.dc\.html is gone from Claude Design", _kept("app", "Mini App.dc.html")),
-        ("pull --drop: Arun said it was meant to go", lambda f, r: f.files[f.ids["app"]].pop("Mini App.dc.html"), ("app/Mini App.dc.html",),
-         "pull", 0, r"dropped docs/design/app-v1/Mini App\.dc\.html.*, 0 drift", _kept("app", "Mini App.dc.html", False)),
-        ("pull --drop: a file still in Claude Design", lambda f, r: None, ("app/Mini App.dc.html",), "pull", 1,
-         r"nothing written.*still in Claude Design", _unchanged),
-        ("pull: a file past the cap, window by window", lambda f, r: capped(f, 4096), (), "pull", 0,
-         r"copied docs/design/ios-v1/iPad and foldable\.dc\.html.*, 0 drift", _as_listed("ios", "iPad and foldable.dc.html")),
-        ("pull: a line longer than the cap", lambda f, r: capped(f, 40), (), "pull", 1, r"nothing written.*a line over", _unchanged),
-        ("pull: a body with a raw <", lambda f, r: raw(f), (), "pull", 1, r"nothing written.*unescaped '<'", _unchanged),
+        # record
+        ("record: an edited board recorded exactly, entities and the rupee too", lambda r: _write(r, SUPPORT, TRICKY), ("record",), 0,
+         rf"recorded {re.escape(SUPPORT)}: \d+ -> \d+ bytes\nrecord: 0 new, 1 changed, 0 dropped\nnext: {re.escape(STALE)}.*, 0 drift", _recorded(SUPPORT)),
+        ("record: an edit that keeps the size", lambda r: _same_size(r, MOTION), ("record",), 0,
+         rf"recorded {re.escape(MOTION)}: the same size, a new sha256\n.*, 0 drift", _recorded(MOTION)),
+        ("record: a new file in a new folder", lambda r: _write(r, "docs/design/ios-v1/_ds/x/new.css", TRICKY), ("record",), 0,
+         r"recorded docs/design/ios-v1/_ds/x/new\.css: new, \d+ bytes\nrecord: 1 new, 0 changed.*, 0 drift", _recorded("docs/design/ios-v1/_ds/x/new.css")),
+        ("record: nothing changed, nothing written", lambda r: None, ("record",), 0, r"record: 0 new, 0 changed, 0 dropped; the record is unchanged\n"
+         r"design-sync: \d+ files recorded, 0 drift$", _unchanged),
+        ("record: a Finder .DS_Store is not recorded", lambda r: _write(r, "docs/design/ios-v1/.DS_Store", "x"), ("record",), 0,
+         r"record: 0 new, 0 changed, 0 dropped; the record is unchanged", _listed("docs/design/ios-v1/.DS_Store", False)),
+        ("record: a recorded file gone is kept, and nothing written though another changed",
+         lambda r: (r / MINI).unlink() or _write(r, SUPPORT, TRICKY), ("record",), 1,
+         r"nothing written.*Mini App\.dc\.html is recorded but gone from the repo; .*--drop docs/design/app-v1/Mini App\.dc\.html", _unchanged),
+        ("record --drop: a file gone, and meant to go", lambda r: (r / MINI).unlink(), ("record", "--drop", MINI), 0,
+         rf"dropped {re.escape(MINI)}: gone from the repo, and dropped as asked\nrecord: 0 new, 0 changed, 1 dropped.*, 0 drift", _listed(MINI, False)),
+        ("record --drop: the path inside docs/design", lambda r: (r / MINI).unlink(), ("record", "--drop", "app-v1/Mini App.dc.html"), 0,
+         r"record: 0 new, 0 changed, 1 dropped", _listed(MINI, False)),
+        ("record --drop: a file still in the repo", lambda r: None, ("record", "--drop", MINI), 1, r"nothing written.*still in the repo", _unchanged),
+        ("record --drop: a file the record does not list", lambda r: None, ("record", "--drop", f"{A}/Nope.dc.html"), 1,
+         r"nothing written.*--drop docs/design/app-v1/Nope\.dc\.html: no such recorded file", _unchanged),
+        ("record: an old record, with etags and no dirs, rewritten with every size and hash kept",
+         lambda r: _edit_record(r, etags, restamp=False), ("record",), 0, r"record: 0 new, 0 changed, 0 dropped\n", _migrated),
+        ("record: a project the trace does not name is not forgotten",
+         lambda r: _edit_record(r, lambda m: m.update(old={"dir": "docs/design/old-v1", "files": {"a.css": {"bytes": 1, "sha256": "0" * 64}}})),
+         ("record",), 1, r"nothing written.*records old, which docs/trace\.json's claude_design does not name", _unchanged),
+        ("record: a record that cannot be read", lambda r: _write(r, str(RECORD), "{"), ("record",), 1, r"nothing written.*cannot be read", _unchanged),
+        # published
+        ("published: stamps the record, and check passes",
+         lambda r: _write(r, SUPPORT, TRICKY) or _edit_record(r, lambda m: m["app"]["files"].__setitem__("support.js", _entry(r / SUPPORT)), restamp=False),
+         ("published",), 0, r"published: stamped docs/design/boards-artifact\.json: https://claude\.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g", _stamped),
+        ("published: a board not recorded is not stamped", lambda r: _write(r, SUPPORT, TRICKY), ("published",), 1,
+         r"nothing stamped.*app-v1/support\.js is \d+ bytes, recorded \d+", _unchanged),
     ]
 
 
-def _fixture(tmp: Path) -> tuple[Path, Fake]:
+def _fixture(tmp: Path) -> Path:
+    """A copy of the board folders with a record and a stamp this harness builds itself, so the selftest proves the
+    commands whatever state the repo's own record is in."""
     root = tmp / "repo"
-    (root / "docs" / "design").mkdir(parents=True)
     projs = projects(ROOT)
+    (root / "docs" / "design").mkdir(parents=True)
     (root / "docs" / "trace.json").write_text(json.dumps({"claude_design": projs}))
-    shutil.copy(ROOT / "docs" / "design" / "claude-design.json", root / "docs" / "design" / "claude-design.json")
-    for p in projs.values():
-        shutil.copytree(ROOT / p["dir"], root / p["dir"])
-    return root, Fake(projs, load(root / "docs" / "design" / "claude-design.json"), root)
-
-
-_NOTICE = ("Notice: this MCP server belongs to standalone Claude Design (claude.ai/design). All its tools, the reading ones included, "
-           "stop working no later than December 14, 2026, because Claude Design now lives in Claude. Details: https://support.claude.com/en/articles/17440474")
-
-
-def _readings(tmp: Path) -> tuple[int, int]:
-    """Reading Claude Code's output, and decoding read_file's escaping: (cases, wrong)."""
-    bad = 0
-    args = {"project_id": "p", "depth": -1}
-    base = tmp / "claude"
-    saved = base / "tool-results" / "mcp-claude-design-read_file-1.txt"
-    saved.parent.mkdir(parents=True)
-    saved.write_text('<untrusted-project-content path="a" etag="1">\nx &amp;lt; y\n</untrusted-project-content>')
-    blocks = base / "tool-results" / "blocks.txt"
-    blocks.write_text(json.dumps([{"type": "text", "text": "[1, 2]"}]))
-    noticed = base / "tool-results" / "noticed.txt"
-    noticed.write_text(json.dumps([{"type": "text", "text": '[{"path": "a"}]' + _NOTICE}]))
-    outside = tmp / "elsewhere.txt"
-    outside.write_text("x")
-    streams = [
-        ("an inline result", _stream(LIST, args, [{"type": "text", "text": "[]"}]), "[]"),
-        ("a result saved to a file", _stream(LIST, args, f"Error: result (9 characters) exceeds maximum allowed tokens. Output has been saved to {saved} in chunks", True),
-         saved.read_text()),
-        ("a saved list of text blocks", _stream(LIST, args, f"Output has been saved to {blocks}", True), "[1, 2]"),
-        ("a 403", _stream(LIST, args, "Error: 403 Forbidden", True), SyncError("design-login")),
-        ("no call made", _stream(LIST, args, "", calls=0), SyncError("called 0 times")),
-        ("two calls made", _stream(LIST, args, "[]", calls=2), SyncError("called 2 times")),
-        ("other arguments", _stream(LIST, {"project_id": "p"}, "[]"), SyncError("was called with")),
-        ("a saved file outside Claude Code's folder", _stream(LIST, args, f"Output has been saved to {outside}", True), SyncError("is not a file under")),
-        ("a listing with the server's closing notice", _stream(LIST, args, [{"type": "text", "text": '[{"path": "a"}]' + _NOTICE}]), '[{"path": "a"}]'),
-        ("a saved list of text blocks with the notice in its last block", _stream(LIST, args, f"Output has been saved to {noticed}", True), '[{"path": "a"}]'),
-        ("a read with the server's closing notice after its tag", _stream(LIST, args, '<untrusted-project-content path="a" etag="1">\nx\n</untrusted-project-content>\n' + _NOTICE),
-         '<untrusted-project-content path="a" etag="1">\nx\n</untrusted-project-content>'),
-    ]
-    for what, stream, want in streams:
-        try:
-            got = result_text(stream, LIST, args, base)
-            ok = not isinstance(want, SyncError) and got == want
-        except SyncError as e:
-            got, ok = str(e), isinstance(want, SyncError) and str(want) in str(e)
-        if not ok:
-            bad += 1
-            print(f"FAIL: design-sync reading {what}: got {str(got)[:120]!r}")
-    decodes = [("a &amp;lt; b", "a &lt; b"), ("&lt;&gt;&amp;", "<>&"), ("\u20b9 1,00,000", "\u20b9 1,00,000")]
-    for body, want in decodes:
-        if decode(body) != want:
-            bad += 1
-            print(f"FAIL: design-sync decoded {body!r} as {decode(body)!r}, not {want!r}")
-    return len(streams) + len(decodes), bad
+    rec: dict = {"about": ABOUT}
+    for k, p in projs.items():
+        shutil.copytree(ROOT / p["dir"], root / p["dir"], ignore=shutil.ignore_patterns(*NOT_BOARDS))
+        base = root / p["dir"]
+        rec[k] = {"dir": p["dir"], "files": {f.relative_to(base).as_posix(): {"bytes": len(f.read_bytes()), "sha256": hashlib.sha256(f.read_bytes()).hexdigest()}
+                                             for f in sorted(base.rglob("*")) if f.is_file()}}
+    (root / RECORD).write_text(json.dumps(rec, indent=2, ensure_ascii=False) + "\n")
+    _stamp(root)
+    return root
 
 
 def selftest() -> int:
-    """Each case mutates a fresh copy (the stand-in Claude Design, or the repo) and expects its exit code and words; the
-    first case proves the copy itself makes no drift, so a refusal is the check's and not the harness's."""
-    cases = _cases()
-    with tempfile.TemporaryDirectory() as t:
-        readings, bad = _readings(Path(t))
-    for what, mutate, drop, command, code_wanted, words, after in cases:
+    cases, bad = _cases(), 0
+    for what, mutate, args, code_wanted, words, after in cases:
         with tempfile.TemporaryDirectory() as t:
             try:
-                root, fake = _fixture(Path(t))
-            except (SyncError, OSError, UnicodeDecodeError, KeyError) as e:
-                print(f"FAIL: the design-sync selftest cannot build its stand-in from the mirror: {e}")
+                root = _fixture(Path(t))
+            except (SyncError, OSError, ValueError, KeyError) as e:
+                print(f"FAIL: the design-sync selftest cannot build its copy of the boards: {e}")
                 return 1
-            mutate(fake, root)
-            before = (root / "docs/design/claude-design.json").read_text()
+            mutate(root)
+            before = {p: (root / p).read_bytes() for p in (RECORD, STAMP) if (root / p).exists()}
             lines: list[str] = []
             try:
-                code = check(fake, root, lines.append) if command == "check" else pull(fake, root, drop, lines.append)
+                code = run(list(args), root, lines.append, today="2026-10-31")
             except Exception as e:  # noqa: BLE001 - a crash is a failure the case names, not one that stops the selftest
-                code, lines = f"a crash ({type(e).__name__}: {e})", lines
+                code = f"a crash ({type(e).__name__}: {e})"
             text = "\n".join(lines)
-            if code != code_wanted or not re.search(words, text, re.S) or not after(root, before, fake):
+            if code != code_wanted or not re.search(words, text, re.S) or not after(root, before):
                 bad += 1
-                print(f"FAIL: design-sync {command} on {what}: exit {code}, wanted {code_wanted} and {words!r}; got: {text[-300:]!r}")
-    print(f"design-sync selftest: {len(cases)} mutated copies and {readings} readings, {bad} wrong")
+                print(f"FAIL: design-sync {' '.join(args)} on {what}: exit {code}, wanted {code_wanted} and {words!r}; got: {text[-400:]!r}")
+    print(f"design-sync selftest: {len(cases)} mutated copies, {bad} wrong")
     return 1 if bad else 0
 
 
+def run(args: list[str], root: Path = ROOT, out=print, today: str | None = None) -> int | None:
+    """One command, or None when the arguments are not one."""
+    cmd, rest = (args[0] if args else ""), args[1:]
+    if cmd == "record" and len(rest) % 2 == 0 and all(a == "--drop" for a in rest[::2]):
+        return record(root, tuple(rest[1::2]), out)
+    if not rest and cmd == "check":
+        return check(root, out)
+    if not rest and cmd == "published":
+        return published(root, today, out)
+    return None
+
+
 def main(argv: list[str]) -> int:
-    cmd = argv[1] if len(argv) > 1 else ""
-    if cmd == "selftest":
+    if argv[1:] == ["selftest"]:
         return selftest()
-    drop = tuple(argv[i + 1] for i, a in enumerate(argv) if a == "--drop" and i + 1 < len(argv))
-    if cmd not in ("check", "pull") or (drop and cmd != "pull") or len(argv) != 2 + 2 * len(drop):
+    code = run(argv[1:])
+    if code is None:
         print(__doc__)
         return 2
-    return check(Headless()) if cmd == "check" else pull(Headless(), drop=drop)
+    return code
 
 
 if __name__ == "__main__":
