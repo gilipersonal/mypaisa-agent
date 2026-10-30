@@ -96,7 +96,7 @@ and the SwiftUI pieces, each hosted through a Fabric component, in
 | Label | Means |
 | --- | --- |
 | `manual` | Arun does it by hand (an account, a key, an export); no PR |
-| `design` | The story changes what a member sees: `ui: true` in the trace, boards in Claude Design (or a note, and MA-158, while they are still to draw), and `/design-first` before code |
+| `design` | The story changes what a member sees: `ui: true` in the trace, boards in `docs/design/` (or a note, and MA-158, while they are still to draw), and `/design-first` before code |
 
 Bugs are type `Bug` and also carry the `bug` label so one JQL
 covers them.

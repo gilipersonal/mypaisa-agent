@@ -30,7 +30,7 @@ this repo on any change just before you merge the PR. just for this Repo".
      the deliverable, never the maker's notes). The lanes here: (a) scripts and
      checks; (b) the trace against Jira; (c) the spec docs (`ARCHITECTURE.md`,
      `PLAN.md`, `TECH_STACK.md`, `README.md`, the explainer pages); (d) the
-     rules and skills; (e) the boards and the design mirror, when the PR
+     rules and skills; (e) the boards and their record, when the PR
      changes them. Each reports on its part and the joins into it; their
      findings are merged into one list.
   3. **Round 1 covers everything; later rounds cover the delta**

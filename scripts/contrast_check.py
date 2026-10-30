@@ -28,7 +28,7 @@ room's reflected light (the 0.05) does not, which is how a phone at 25% looks in
 (where dimmed contrast barely falls) or direct sun (which needs full brightness anyway).
 
 The gate fails closed: a missing tokens file, theme block, ios.css or glass fill is a failure, not a skip, and so is
-a mirrored copy of tokens.css, ios.css, motion.css or motion.js (docs/design/ios-v1/, app-v1/) that differs from
+a board folder's copy of tokens.css, ios.css, motion.css or motion.js (docs/design/ios-v1/, app-v1/) that differs from
 ds-v1's, since the boards load those copies.
 """
 from __future__ import annotations
@@ -214,7 +214,7 @@ def strays() -> list[str]:
 
 
 def copies() -> list[str]:
-    """Each mirrored copy of a shared file that is missing or differs from ds-v1's."""
+    """Each board folder's copy of a shared file that is missing or differs from ds-v1's."""
     bad = []
     for name, projects in COPIES.items():
         src = DESIGN / "ds-v1" / name
@@ -226,7 +226,7 @@ def copies() -> list[str]:
 
 
 # Faults the gate must refuse, each made on a copy of the files (MA-161 review, round 1, findings a1 to a3). The copy
-# first gets ds-v1's shared files in every board project, so a case tests the gate, not the mirror's state today.
+# first gets ds-v1's shared files in every board folder, so a case tests the gate, not the copies' state today.
 SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce; a None pattern deletes the file)
     "dark-glass-thin-reordered": ("ds-v1/ios.css", r"\.t-dark\.mp, \.t-dark \.mp \{\n  --lg-fill: [^;]+;", ".t-dark .mp, .t-dark.mp {\n  --lg-fill: rgba(24, 30, 40, 0.05);", r"t-dark .* on glass"),
     "light-glass-thin": ("ds-v1/ios.css", r"(\.mp \{\n(?:.*\n)*?  --lg-fill: )[^;]+;", r"\1rgba(255, 255, 255, 0.30);", r"t-light .* on glass"),
@@ -269,8 +269,8 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
 
 def mutate(root: Path, rel: str | None, pat: str | None, rep: str | None, before_copy: bool) -> bool:
     """Make one fault in the copy under root. A DS v1 file is changed first and then copied into every board project,
-    as Claude Design's copy_files would, so the copies agree and only the fault itself can fail the gate; a board
-    project's own copy is changed after the copy, so it differs."""
+    as copying a DS v1 change into the board folders does, so the copies agree and only the fault itself can fail the gate;
+    a board folder's own copy is changed after the copy, so it differs."""
     design = root / "docs" / "design"
     ok = True
     if rel and before_copy:
@@ -377,7 +377,7 @@ def main(argv: list[str]) -> int:
         print(f"FAIL {why}")
     for path in copies():
         bad += 1
-        print(f"FAIL {path} differs from docs/design/ds-v1/ (copy it from DS v1 in Claude Design, then re-mirror)")
+        print(f"FAIL {path} differs from docs/design/ds-v1/ (copy it from there, then `python3 scripts/design_sync.py record`)")
     print(f"contrast: {bad} pair{'s' if bad != 1 else ''} below the limits or copies out of step")
     return 1 if bad else 0
 

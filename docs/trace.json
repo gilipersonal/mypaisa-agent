@@ -7953,14 +7953,21 @@
    "type": "Task",
    "epic": "MA-9",
    "phase": 0,
-   "summary": "The boards move into Claude with Anthropic's Move to Claude before standalone Claude Design closes on 14 Dec 2026, and the sync and its check follow them; by 1 Dec without it, the boards stay in the repo alone",
-   "status": "To Do",
+   "summary": "Designs are drawn in the repo and shown as Claude Artifacts; nothing is written to Claude Design, and its sync, gate and hook keep only their repo half",
+   "status": "In Progress",
    "labels": [],
    "arch": [],
    "ui": false,
    "design": "none",
    "boards": [],
-   "notes": "Filed from MA-259 (28 Oct 2026). Settled: A, through Anthropic's Move to Claude; B by 1 Dec 2026 if it has not come (Arun, 28 Oct 2026, \"Wait for Move\"; docs/design/reviews/MA-259/decision.md, The pick). Moving the boards by hand was tried and dropped: 41 of the 55 board files are taller than a Design canvas frame's 8,000 px, and a trial canvas cut iOS kit off. Estimated at two days. Due 1 Dec 2026."
+   "notes": "Filed from MA-259 (28 Oct 2026), first to follow the boards into Claude with Move to Claude. Settled again on 30 Oct 2026: B, now (Arun: \"for all future design use Local folder and then Claude Artifact. Claude Design is going away, so no need to push to claude design\"; docs/design/reviews/MA-259/decision.md, The pick, changed). The boards are drawn in the repo, their folders kept; scripts/design_sync.py keeps only record, check and published; each design round is a private Artifact and the whole set the MyPaisa Boards Artifact (https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g), republished and stamped whenever a board changes; the rules, skills, docs and the Confluence links say so. The lanes' contract: docs/design/reviews/MA-260/contract.md.",
+   "code": [
+    "scripts/design_sync.py",
+    "scripts/boards_page/",
+    "docs/design/claude-design.json",
+    "docs/design/boards-artifact.json",
+    "docs/design/reviews/MA-260/"
+   ]
   },
   {
    "key": "MA-265",
@@ -8350,7 +8357,7 @@
    "epic": "MA-9",
    "phase": 0,
    "summary": "Prototype v5: one clickable walk-through of the whole journey, phases 0 to 20, at every door, with stubbed figures",
-   "status": "In Progress",
+   "status": "Done",
    "labels": [],
    "arch": [
     "9",
@@ -8445,15 +8452,22 @@
    "key": "MA-292",
    "type": "Bug",
    "summary": "The design-sync gate fails on every project since Claude Design appends a closing notice to its results",
-   "status": "In Progress",
+   "status": "Done",
    "notes": "Repo tooling: scripts/design_sync.py cuts the standalone Claude Design server's closing notice from every result (found and fixed on MA-291's branch, 30 Oct 2026)"
   },
   {
    "key": "MA-290",
    "type": "Story",
    "summary": "A clickable demo of the whole app at every door, on stubbed household data, built from the current boards",
-   "status": "To Do",
-   "notes": "Superseded by MA-291 (Arun, 30 Oct 2026: \"Replace MA-290\"): its PR #67 was closed unmerged on 29 Oct and nothing of it is on main; its branch MA-290-demo-prototype is left as it is, and the Confluence items it published from that branch are republished from main's records"
+   "status": "Done",
+   "notes": "Superseded by MA-291 and closed (Arun, 30 Oct 2026: \"Replace MA-290\", then \"Close MA-290\"): its PR #67 was closed unmerged on 29 Oct and nothing of it is on main; its branch MA-290-demo-prototype is left as it is, and the Confluence items it published from that branch are republished from main's records"
+  },
+  {
+   "key": "MA-293",
+   "type": "Bug",
+   "summary": "The board gate's diff crashes against any ref from before Prototype v5, so three of MA-240's ledger checks fail",
+   "status": "In Progress",
+   "notes": "Repo tooling: scripts/board_fit.js lets a diff's base tree lack a repo-only board added since, while the tree being checked still fails closed without it (found and fixed on MA-260's branch, 30 Oct 2026)"
   }
  ]
 }

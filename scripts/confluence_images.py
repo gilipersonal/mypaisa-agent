@@ -68,13 +68,13 @@ def tile(src: Path | None, w: int, max_h: int, title: str, sub: str, state: str)
             im.paste(fade, (0, max_h - 120), fade)
     else:
         im, cut = Image.new("RGB", (w, 240), BG), False
-        ImageDraw.Draw(im).text((24, 100), "Not captured: open it in Claude Design", font=f2, fill=INK3)
+        ImageDraw.Draw(im).text((24, 100), "Not captured: open it in MyPaisa Boards", font=f2, fill=INK3)
     card = Image.new("RGB", (w, im.height + cap_h), CARD)
     card.paste(im, (0, 0))
     d = ImageDraw.Draw(card)
     y = im.height + 14
     if cut:
-        d.text((16, im.height - 34), "continues in Claude Design", font=f2, fill=INK2)
+        d.text((16, im.height - 34), "continues in MyPaisa Boards", font=f2, fill=INK2)
     d.line([(0, im.height), (w, im.height)], fill=LINE, width=2)
     for ln in lines:
         d.text((16, y), ln, font=f1, fill=INK)
@@ -198,7 +198,7 @@ def compose(ctx: cd.Ctx, captures: Path, out: Path) -> int:
                 n, plat = int(name.split("-")[1]), name.split("-")[2].split(".")[0]
                 p = next(p for p in ctx.phases if p["phase"] == n)
                 title = f"Phase {n} · {p['title']}"
-                sub = f"{cd.PLATFORM_NAMES[plat]}: each story's first board, light and dark, from Claude Design"
+                sub = f"{cd.PLATFORM_NAMES[plat]}: each story's first board, light and dark, from the repo's boards"
             else:
                 f = w["boards"][0][1]
                 title, sub = f.removesuffix(".dc.html"), f"{ctx.trace['claude_design'][w['boards'][0][0]]['name']} · every board a story cites"
