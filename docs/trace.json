@@ -8548,6 +8548,13 @@
       "summary": "Retire design_sync, claude-design.json and the MyPaisa Boards Artifact stamp; boards live directly in docs/design/",
       "status": "In Progress",
       "notes": "Repo tooling: Arun (30 Oct 2026, on MA-295): \"I dont need claude-design sync anymore\"; retires scripts/design_sync.py, scripts/boards_page/, docs/design/claude-design.json, docs/design/boards-artifact.json and the MyPaisa Boards Artifact republishing step (including .claude/hooks/plan_sync_hook.py from Claude Code); the boards are read from their folders by scripts/plan_sync.py check, which keeps refusing a cited board file that is gone and a board folder the trace names that is gone; Confluence links each board to its file on GitHub; each design round's options stay a private Claude Artifact (Arun, 30 Oct 2026)."
+    },
+    {
+      "key": "MA-297",
+      "type": "Task",
+      "summary": "A design round run in Antigravity shows its options as a local page, since only Claude can publish an Artifact",
+      "status": "In Progress",
+      "notes": "Repo tooling: Arun, 30 Oct 2026, planning a full impeccable design review in Google Antigravity (agy), chose \"local page\" for rounds run there. Rule 7 of .claude/rules/plan-sync.md and /design-first say a round in Claude Code is a private Claude Artifact and a round in Antigravity serves the same options.html on localhost, its path in decision.md; Antigravity's .agents/ copy is refreshed with agy-bridge after the merge."
     }
   ]
 }

@@ -16,7 +16,8 @@ Every new UI or UX change to MyPaisa is designed before it is built, in four ste
 2. **Review every page for glitches** before Arun sees it (Arun, MA-101: "Make sure the designs are reviewed properly
    for any kind of glitches, this app will be adaptive and responsive"): render it locally, look at it in light and
    dark and at every size class, fix, look again.
-3. **Publish the round as a private Claude Artifact**, give Arun its link and ask for the pick.
+3. **Publish the round as a private Claude Artifact**, give Arun its link and ask for the pick. A round run in
+   Google Antigravity, which cannot publish a Claude Artifact, shows its options as a local page instead (MA-297).
 4. **Arun picks one option.** Build only that option, and only after the pick, made in the current request.
 
 Changes that touch no design skip this: a typo, a broken link, data, a backend change a member never sees, or a bug
@@ -226,11 +227,12 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   before it is copied: change `ds-v1/` and run `python3 scripts/contrast_check.py --report`, where every pair
   must pass and only the copies not yet made may fail; after the copies the whole gate
   (`--selftest`, then the plain run) passes.
-- **Where Arun looks: a private Claude Artifact per round.** Each round is published as one (step 3), and its link
-  goes in the round's `decision.md`. There is no whole-set Artifact to republish when a board changes (MA-296 retired
+- **Where Arun looks: a private Claude Artifact per round** in Claude Code, **a local page** in Antigravity. Each round
+  is published as an Artifact (step 3) and its link goes in the round's `decision.md`; a round run in Antigravity
+  shows the same host page on localhost instead, and `decision.md` names its path (MA-297). There is no whole-set Artifact to republish when a board changes (MA-296 retired
   the MyPaisa Boards Artifact); a board is otherwise linked by its file in the repo.
 - **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in
-  Arun's words, the round's Artifact link, the options with rationale and trade-offs, what the build would touch, the
+  Arun's words, the round's Artifact link or, for a round run in Antigravity, its local page, the options with rationale and trade-offs, what the build would touch, the
   glitches found and fixed, the pick and its date), the round's host page (`options.html`, step 3) and `tokens.css`.
 
 ## 3. Review for glitches, publish the round, then get the pick
@@ -261,17 +263,27 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
      one-sentence `description`. A later round on the same story republishes the same host page to the same link.
 - **Asking.**
   1. Give Arun the Artifact's link (`https://claude.ai/artifact/...`; never a claude.ai/design link or a localhost
-     URL), write it into `decision.md`, and comment it on the MA issue.
+     URL), write it into `decision.md`, and comment it on the MA issue. In Antigravity, see "A round run in
+     Antigravity" below instead.
   2. Ask for the pick with `AskUserQuestion`: one choice per option, the recommended one first, plus "None of these:
      rework".
   3. Read the comments Arun leaves on the Artifact with the ArtifactComments tool (load it with ToolSearch), and
      answer each once handled; a comment that asks for a change is feedback, which means another round (below).
+- **A round run in Antigravity** (Arun, 30 Oct 2026, MA-297: rounds there use "local page"). Antigravity cannot
+  publish a Claude Artifact, so the host page is shown locally and everything else about the round stays the same:
+  1. Write the same host page, `docs/design/reviews/MA-<n>/options.html`, but link each board relative to the page
+     (`../../ios-v1/<file>.dc.html`), as MA-295's does.
+  2. Serve `docs/design/` on localhost (`python3 -m http.server 8765 -d docs/design`), give Arun
+     `http://localhost:8765/reviews/MA-<n>/options.html`, write the page's repo path into `decision.md`, and comment
+     it on the MA issue.
+  3. Ask for the pick in words, one choice per option, the recommended one first, plus "None of these: rework". His
+     comments come in the conversation, not on an Artifact.
 - **The pick.** Record it in `decision.md` and on the MA issue. Then keep the plan in sync (`.claude/rules/plan-sync.md`):
   in `docs/trace.json` set the story's `design` to `picked` and list the picked boards (each board's note names its
   Jira keys), clear each `undrawn` item this round drew and say `Drawn: <the item, as it was listed>` in the notes;
   then `python3 scripts/plan_sync.py render` and `check`.
   - "None of these", or feedback, means another round: back to step 1, in the same folders as new files or a new
-    vN, published again to the round's Artifact.
+    vN, published again to the round's Artifact (or shown again on the round's local page in Antigravity).
 
 ## 4. Build the picked option
 

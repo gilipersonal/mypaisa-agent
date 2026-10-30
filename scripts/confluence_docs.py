@@ -1001,7 +1001,7 @@ def render_screens(ctx: Ctx) -> str:
                    + cell(str(states.count("picked")), "#E3FCEF") + cell(str(states.count("planned")), "#DEEBFF") + "</tr>")
     out.append('</tbody></table><h2>The boards</h2><p>Every board is drawn, edited and kept in the repo, in the folders below, and git is '
                "its history (MA-260, MA-296); before 30 Oct 2026 they were drawn in standalone Claude Design and copied in. Each design round's "
-               "options are shown to Arun as a private Claude Artifact to pick from.</p><ul>" + "".join(
+               "options are shown to Arun as a private Claude Artifact to pick from, or on a local page for a round run in Antigravity (MA-297).</p><ul>" + "".join(
         f'<li><a href="{gh(v["dir"])}">{esc(v["name"])}</a> ({esc(v["dir"])}/)</li>' for v in ctx.trace["claude_design"].values()) + "</ul>")
     return "".join(out) + footer(ctx)
 
@@ -1092,7 +1092,7 @@ def render_sync(ctx: Ctx) -> str:
         f'<a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a>, <a href="{gh("docs/roadmap.json")}">docs/roadmap.json</a></td><td>What is built, in which phase, to which design, and when</td></tr>'
         '<tr><td data-background="#DEEBFF">Jira</td><td>Project MA: an epic per phase, a story or task per deliverable</td><td>Who does what, its status, each epic\'s due date</td></tr>'
         '<tr><td data-background="#FFFAE6">The designs</td><td>The boards, drawn, edited and kept in docs/design/ (MyPaisa app v1, iOS v1, DS v1), '
-        'git their history; each design round\'s options reviewed as a private Claude Artifact</td><td>What a member sees</td></tr>'
+        'git their history; each design round\'s options reviewed as a private Claude Artifact, or on a local page for a round run in Antigravity (MA-297)</td><td>What a member sees</td></tr>'
         '<tr><td data-background="#E3FCEF">Confluence</td><td>This space, rendered from the repo into docs/confluence/</td><td>The plan as one readable tree, phase by phase and screen by screen</td></tr>'
         f'<tr><td data-background="#FFEBE6">The code</td><td>web/, ios/, src/, infra/, and each story\'s code paths in <a href="{gh("docs/trace.json")}">the trace</a></td><td>What was built, traced to its story</td></tr>'
         "</tbody></table>",
@@ -1105,7 +1105,7 @@ def render_sync(ctx: Ctx) -> str:
         "nothing is read from or written to Claude Design again. Git is the boards' only record (MA-296: \"I dont need claude-design sync "
         "anymore\"): there is no record file to update and no whole-set Artifact to republish; <code>python3 scripts/plan_sync.py check</code> "
         "reads every board as it is on disk. Each design round's options are published as a private Claude Artifact for Arun to look at, "
-        "comment on and pick from. Until 30 Oct "
+        "comment on and pick from; a round run in Google Antigravity, which cannot publish one, shows the same page locally (MA-297). Until 30 Oct "
         "2026 the boards were drawn in standalone Claude Design, which closes by 14 Dec 2026, and copied in (MA-259); the choice is recorded "
         "in docs/design/reviews/MA-259/decision.md.</li>"
         "<li><strong>The hooks</strong>, in this repo only. After an edit to a record, the check runs and reports drift at once. Raising a PR with drift is refused. When a new design or feature is discussed, the session is reminded to file its Jira issue and its Confluence page in the same change.</li></ul>",

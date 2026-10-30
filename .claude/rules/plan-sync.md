@@ -14,7 +14,7 @@ check says so before any story starts and before any PR.
 | --- | --- | --- |
 | The plan | `PLAN.md` (phases), `ARCHITECTURE.md` (how), `TECH_STACK.md` (with what), `docs/roadmap.json` (each story's estimate, each phase's dates) | What is built, in which phase, to which design, and when |
 | Jira | project MA: a phase epic per PLAN phase, a story or task per deliverable; each phase epic's due date is its target end | Who does what, its status, and when |
-| The designs | The repo, three board folders: `docs/design/ios-v1/` (MyPaisa iOS v1, the app's screens, from MA-161), `docs/design/ds-v1/` (MyPaisa DS v1, the system and its iOS kit) and `docs/design/app-v1/` (MyPaisa app v1, the web app's browser boards, its spec; its Mini App and Telegram boards are the superseded record), git their only record; a record that is not a board set in its own folder (`docs/design/prototype-v5/`). Arun sees each design round's options as a private Claude Artifact | What a member sees |
+| The designs | The repo, three board folders: `docs/design/ios-v1/` (MyPaisa iOS v1, the app's screens, from MA-161), `docs/design/ds-v1/` (MyPaisa DS v1, the system and its iOS kit) and `docs/design/app-v1/` (MyPaisa app v1, the web app's browser boards, its spec; its Mini App and Telegram boards are the superseded record), git their only record; a record that is not a board set in its own folder (`docs/design/prototype-v5/`). Arun sees each design round's options as a private Claude Artifact, or as a local page for a round run in Antigravity | What a member sees |
 | The trace | `docs/trace.json`, rendered to `docs/TRACE.md` | Which story follows which ARCHITECTURE section and which boards, and which code builds it |
 | Confluence | Space mypaisaa-agent: the hub, the roadmap, a page per phase, a page per screen area, the design decisions, the explainers. Rendered by `scripts/confluence_docs.py` into `docs/confluence/`; page ids, versions and previews in `docs/confluence.json` | The plan as one readable tree, phase by phase and screen by screen |
 | The code | `web/`, `ios/`, `src/`, `infra/`, named per story in the trace's `code` paths | What was built, traced to its story |
@@ -56,7 +56,10 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    Arun, 30 Oct 2026: "I dont need claude-design sync anymore"):
    `python3 scripts/plan_sync.py check` reads every board as it is on disk.
    Arun reviews each `/design-first` round as a private Claude Artifact: the
-   round publishes its options as one and gives him its link. A board is
+   round publishes its options as one and gives him its link. A round run in
+   Google Antigravity, which cannot publish a Claude Artifact, shows the same
+   options page on localhost instead, and its `decision.md` names the page
+   (MA-297, Arun, 30 Oct 2026). A board is
    linked by its file in the repo (on GitHub, in Confluence). The MyPaisa
    Boards Artifact, `scripts/design_sync.py`, `scripts/boards_page/`,
    `docs/design/claude-design.json` and `docs/design/boards-artifact.json`
