@@ -1,0 +1,151 @@
+{
+ "about": "Prototype v5's wealth figures (MA-291) that the v4 sets do not hold: written by make_wealth.py from household-v4.json and future-plans-v4.json, every claim asserted over them. Illustrative.",
+ "ppfas_sip": {
+  "count": 46,
+  "amount": 10000,
+  "day": 10,
+  "first": "Tue 10 Jan 2023",
+  "last": "Sat 10 Oct 2026",
+  "invested": 460000,
+  "value": 561995,
+  "gain": 101995,
+  "xirr": 0.1068,
+  "xirr_pct": 10.7,
+  "next": "Tue 10 Nov",
+  "units": 6437.512,
+  "nav": 87.3
+ },
+ "import": {
+  "file": "mypaisa-history-v1.xlsx",
+  "template": "v1",
+  "sheet": "Transactions",
+  "rows": 51,
+  "already": 46,
+  "already_what": "Parag Parikh's SIPs, matched by each row's fingerprint",
+  "add": [
+   {
+    "date": "Mon 14 Mar 2022",
+    "units": 50,
+    "price": 1742.3,
+    "amount": 87115.0
+   },
+   {
+    "date": "Wed 15 Mar 2023",
+    "units": 40,
+    "price": 1402.65,
+    "amount": 56106.0
+   },
+   {
+    "date": "Mon 10 Jun 2024",
+    "units": 30,
+    "price": 1489.2,
+    "amount": 44676.0
+   }
+  ],
+  "add_n": 3,
+  "add_cost": 187897.0,
+  "refused": [
+   {
+    "row": 50,
+    "what": "Balanced · Fri 1 Mar 2024 · a buy",
+    "amount_inr": 20000,
+    "why": "Balanced is held in pounds, so a rupee amount can't go into it"
+   },
+   {
+    "row": 51,
+    "what": "NASDAQ 100 ETF · Mon 16 Nov 2026 · a buy",
+    "amount_gbp": 100,
+    "why": "dated after today, Fri 6 Nov"
+   }
+  ],
+  "refused_n": 2,
+  "infosys_xirr_pct": -1.5,
+  "infosys_value": 177660,
+  "infosys_gain": -10237.0,
+  "when": "Fri 6 Nov 21:04",
+  "link": "Fri 6 Nov 21:02, one upload within 15 minutes"
+ },
+ "tuner": {
+  "when": "Thu 1 Apr 2027",
+  "closed": 6,
+  "months": [
+   {
+    "m": "Oct 2026",
+    "plan": 650,
+    "actual": 702
+   },
+   {
+    "m": "Nov 2026",
+    "plan": 650,
+    "actual": 698
+   },
+   {
+    "m": "Dec 2026",
+    "plan": 650,
+    "actual": 741
+   },
+   {
+    "m": "Jan 2027",
+    "plan": 666,
+    "actual": 712
+   },
+   {
+    "m": "Feb 2027",
+    "plan": 666,
+    "actual": 705
+   },
+   {
+    "m": "Mar 2027",
+    "plan": 666,
+    "actual": 719
+   }
+  ],
+  "n_over": 6,
+  "mean_over": 55,
+  "plan_now": 666,
+  "plan_2026": 650,
+  "proposal": 720,
+  "closer": 262,
+  "err_plan": 329,
+  "err_new": 67,
+  "margin": 50,
+  "step_pct": 10,
+  "surplus_month": "Apr 2027",
+  "surplus_now": 2201,
+  "surplus_new": 2147,
+  "march": {
+   "forecast_spend": 2754,
+   "actual_spend": 2412,
+   "forecast_surplus": 4507,
+   "actual_surplus": 4849,
+   "gaps": [
+    {
+     "cat": "Holidays",
+     "gap": -410,
+     "forecast": 410,
+     "actual": 0
+    },
+    {
+     "cat": "Groceries",
+     "gap": 53,
+     "forecast": 666,
+     "actual": 719
+    },
+    {
+     "cat": "Eating out",
+     "gap": 22,
+     "forecast": 185,
+     "actual": 207
+    },
+    {
+     "cat": "Other",
+     "gap": -7,
+     "forecast": 103,
+     "actual": 96
+    }
+   ],
+   "income": 10559,
+   "emis": 2150
+  }
+ }
+}

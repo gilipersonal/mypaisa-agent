@@ -80,6 +80,18 @@ def unwrap(text: str) -> tuple[dict, str]:
     return attrs, decode(rest[:end])
 
 
+# Since 29 Oct 2026 the standalone Claude Design server appends a closing notice to every result ("Notice: this MCP
+# server belongs to standalone Claude Design ... stop working no later than December 14, 2026 ..."), after the listing's
+# JSON or after read_file's closing tag; it is the server's, never the project's, so it is cut before anything reads
+# the result, or a listing would not parse and a copy would not be byte for byte (MA-291).
+NOTICE = re.compile(r"\s*Notice: this MCP server belongs to standalone Claude Design\b.*\Z", re.S)
+
+
+def unnotice(text: str) -> str:
+    """The result without the server's closing notice."""
+    return NOTICE.sub("", text)
+
+
 def result_text(stream: str, tool: str, args: dict, saved_base: Path) -> str:
     """The text one connector call returned, from `claude -p --output-format stream-json --verbose`.
 
@@ -112,18 +124,19 @@ def result_text(stream: str, tool: str, args: dict, saved_base: Path) -> str:
         raise SyncError(f"{tool} returned nothing")
     c = block.get("content")
     text = c if isinstance(c, str) else "".join(x.get("text", "") for x in c or [] if isinstance(x, dict) and x.get("type") == "text")
+    text = unnotice(text)
     if m := SAVED.search(text):
         path = Path(m.group(1))
         if not path.resolve().is_relative_to(saved_base.resolve()) or not path.is_file():
             raise SyncError(f"{tool}: the saved result {path} is not a file under {saved_base}")
         text = path.read_text()
         try:
-            blocks = json.loads(text)
+            blocks = json.loads(text)   # a saved list of text blocks: the notice is inside the last block, so cut it after the join
         except ValueError:
-            return text
+            return unnotice(text)
         if isinstance(blocks, list) and blocks and all(isinstance(b, dict) and b.get("type") == "text" for b in blocks):
-            return "".join(b["text"] for b in blocks)
-        return text
+            return unnotice("".join(b["text"] for b in blocks))
+        return unnotice(text)
     if block.get("is_error") or text.startswith("Error"):
         login = re.search(r"\b(401|403)\b|forbidden|unauthori[sz]ed|log ?in|authenticat", text, re.I)
         raise SyncError(f"{tool}: {text[:300]}" + (f" ({LOGIN})" if login else ""))
@@ -517,6 +530,10 @@ def _fixture(tmp: Path) -> tuple[Path, Fake]:
     return root, Fake(projs, load(root / "docs" / "design" / "claude-design.json"), root)
 
 
+_NOTICE = ("Notice: this MCP server belongs to standalone Claude Design (claude.ai/design). All its tools, the reading ones included, "
+           "stop working no later than December 14, 2026, because Claude Design now lives in Claude. Details: https://support.claude.com/en/articles/17440474")
+
+
 def _readings(tmp: Path) -> tuple[int, int]:
     """Reading Claude Code's output, and decoding read_file's escaping: (cases, wrong)."""
     bad = 0
@@ -527,6 +544,8 @@ def _readings(tmp: Path) -> tuple[int, int]:
     saved.write_text('<untrusted-project-content path="a" etag="1">\nx &amp;lt; y\n</untrusted-project-content>')
     blocks = base / "tool-results" / "blocks.txt"
     blocks.write_text(json.dumps([{"type": "text", "text": "[1, 2]"}]))
+    noticed = base / "tool-results" / "noticed.txt"
+    noticed.write_text(json.dumps([{"type": "text", "text": '[{"path": "a"}]' + _NOTICE}]))
     outside = tmp / "elsewhere.txt"
     outside.write_text("x")
     streams = [
@@ -539,6 +558,10 @@ def _readings(tmp: Path) -> tuple[int, int]:
         ("two calls made", _stream(LIST, args, "[]", calls=2), SyncError("called 2 times")),
         ("other arguments", _stream(LIST, {"project_id": "p"}, "[]"), SyncError("was called with")),
         ("a saved file outside Claude Code's folder", _stream(LIST, args, f"Output has been saved to {outside}", True), SyncError("is not a file under")),
+        ("a listing with the server's closing notice", _stream(LIST, args, [{"type": "text", "text": '[{"path": "a"}]' + _NOTICE}]), '[{"path": "a"}]'),
+        ("a saved list of text blocks with the notice in its last block", _stream(LIST, args, f"Output has been saved to {noticed}", True), '[{"path": "a"}]'),
+        ("a read with the server's closing notice after its tag", _stream(LIST, args, '<untrusted-project-content path="a" etag="1">\nx\n</untrusted-project-content>\n' + _NOTICE),
+         '<untrusted-project-content path="a" etag="1">\nx\n</untrusted-project-content>'),
     ]
     for what, stream, want in streams:
         try:

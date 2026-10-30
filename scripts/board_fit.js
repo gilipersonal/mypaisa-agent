@@ -16,6 +16,7 @@
 //
 //   node scripts/board_fit.js                    every current board and the prototype, in Chromium and WebKit
 //   node scripts/board_fit.js --engine webkit --only "iPhone v4"   a subset (a pattern on the board's path), in one engine
+//   node scripts/board_fit.js --only "Prototype v5" --steps "^14"   Prototype v5's chapters whose bar label matches (a re-check)
 //   node scripts/board_fit.js --json <file>      also writes every row it measured (allowed ones marked) to <file>
 //   node scripts/board_fit.js --sizes            also prints the sizes each frame is measured at
 //   node scripts/board_fit.js --selftest [--case <name>] [--engine <e>]   proves the gate refuses each fault it was
@@ -71,6 +72,8 @@ const enginesOf = (dflt) => {
 };
 const JOBS = +opt('--jobs', Math.max(2, Math.min(6, os.cpus().length - 2)));
 const ONLY = opt('--only', '');
+// Prototype v5 only: walk just the chapters whose bar label matches (a quick re-check of a fix; the gate walks them all)
+const STEPS = opt('--steps', '');
 const dprOf = (board) => (board.startsWith('ios-v1/') ? 3 : 2);
 
 // the sizes of each class, from the frame's drawn size
@@ -107,6 +110,11 @@ function heightAt(m, W) {
 const nestedSizes = (m) => { const out = []; for (let w = 600; w < m.w; w += 50) out.push([w, m.h]); out.push([m.w, m.h]); return out; };
 const PROTO = { 'Desktop': [[768, 1024], [900, 700], [1024, 700], [1280, 800], [1440, 900], [1920, 1080]], 'Phone web': [[320, 568], [360, 740], [390, 844], [430, 932]], 'iPhone': [[320, 568], [375, 667], [402, 874], [440, 956]] };
 const PROTO_RANGE = { 'Desktop': [768, 1920], 'Phone web': [320, 430], 'iPhone': [320, 440] };
+// Prototype v5 (MA-291): five doors, each laid out by its own width (container queries), so each is measured across
+// its whole class: the web from 768, the phone's browser and the iPhone from 320, an iPad or foldable window from 600
+const PROTO5 = { 'Desktop': [[768, 1024], [1024, 768], [1133, 800], [1280, 800], [1440, 900], [1920, 1080]], 'Phone web': [[320, 568], [360, 740], [390, 844], [430, 932]],
+  'iPhone': [[320, 568], [375, 667], [402, 874], [440, 956]], 'iPad': [[600, 800], [820, 1180], [1024, 768], [1133, 744], [1180, 820], [1366, 1024]], 'Foldable': [[600, 900], [750, 1000], [880, 1036]] };
+const PROTO5_RANGE = { 'Desktop': [768, 1920], 'Phone web': [320, 430], 'iPhone': [320, 440], 'iPad': [600, 1366], 'Foldable': [600, 880] };
 
 function serve(root) {
   const dir = path.resolve(root) + path.sep;
@@ -121,13 +129,16 @@ function serve(root) {
   return new Promise((ok) => server.listen(0, '127.0.0.1', () => ok({ server, port: server.address().port })));
 }
 
-// the current boards: every .dc.html in the mirror but the superseded record and the prototype's parts
+const REPO_BOARDS = ['prototype-v5/Prototype v5.dc.html'];
+// the current boards: every .dc.html in the mirror but the superseded record and the prototype's parts, and the repo's own
 function boards(design, only = ONLY) {
   const rec = JSON.parse(fs.readFileSync(path.join(design, 'claude-design.json'), 'utf8'));
   const dirs = { app: 'app-v1', ios: 'ios-v1', ds: 'ds-v1' };
   const skip = new RegExp(ALLOW.superseded.pattern);
   const out = [];
   for (const [p, d] of Object.entries(dirs)) for (const f of Object.keys(rec[p].files)) if (f.endsWith('.dc.html') && !skip.test(f)) out.push(d + '/' + f);
+  // the boards kept in the repo alone, outside the three mirrored projects (MA-291: Prototype v5, docs/design/prototype-v5/)
+  for (const b of REPO_BOARDS) if (fs.existsSync(path.join(design, b))) out.push(b); else throw new Error('board_fit: ' + b + ' is listed but missing');
   return out.filter((b) => !only || new RegExp(only).test(b)).sort();
 }
 
@@ -223,10 +234,10 @@ async function scanBoardOnce(browser, port, board, engine) {
     for (const h of holes) fail('a template value never resolved and renders as nothing: ' + h);
     for (const e of await runtimeErrors(page, logged)) fail(e);
     for (const q of await page.evaluate(() => window.__fit.unreadQueries())) fail('a container query the gate cannot read: ' + q);
-    if (board.endsWith('Prototype v4.dc.html')) {
+    if (board.endsWith('Prototype v4.dc.html') || board.endsWith('Prototype v5.dc.html')) {
       // the prototype mounts its parts after the canvas settles: wait for its controls
       await page.waitForFunction(() => document.querySelectorAll('.pseg button').length && document.querySelectorAll('.psteps button').length, null, { timeout: 30000 });
-      const walked = await walkPrototype(page, board, engine);
+      const walked = board.endsWith('Prototype v5.dc.html') ? await walkPrototype5(page, board, engine) : await walkPrototype(page, board, engine);
       for (const e of await runtimeErrors(page, logged)) fail(e);
       return rows.concat(walked);
     }
@@ -329,6 +340,65 @@ async function walkPrototype(page, board, engine) {
           await measure(page, [0], (i, scans, part) => scans.forEach((sc, n) => { if (sc) faultsOf(sc).forEach((f) => add({ board, engine, size, label, part: part || (n ? 'scrolled' : ''), ...f })); }));
         }
         await page.evaluate((orig) => window.__fit.frames()[0].setAttribute('style', orig), orig);
+      }
+    }
+  }
+  return rows;
+}
+
+// Prototype v5 (MA-291): every chapter (one per phase) and every step, at its five doors, light and dark. Every step is
+// measured at its drawn size in both themes; each chapter's first step is also measured across its door's whole class
+// (the sizes above, and one below and at each container query's threshold), in light, since a theme changes no layout:
+// about a hundred steps at every size in both engines would take hours, and every step of a chapter shares its frames.
+async function walkPrototype5(page, board, engine) {
+  const rows = [];
+  const seen = new Set();
+  const add = (r) => { const k = [r.size, r.label, r.type, r.text, r.el].join('|'); if (!seen.has(k)) { seen.add(k); rows.push(r); } };
+  const click = (sel, text) => page.evaluate(([sel, text]) => { const b = [...document.querySelectorAll(sel)].find((x) => x.textContent.trim() === text); if (!b) throw new Error('no button ' + text); b.click(); }, [sel, text]);
+  for (const door of Object.keys(PROTO5)) {
+    await click('.pseg button', door);
+    let doorSizes = null;
+    for (const theme of ['Light', 'Dark']) {
+      await click('.pseg button', theme);
+      const chapters = await page.evaluate(() => document.querySelectorAll('.pchaps .pch').length);
+      if (!chapters) add({ board, engine, size: 'drawn', label: door, type: 'did-not-render', text: 'no chapters', el: '' });
+      for (let c = 0; c < chapters; c++) {
+        if (STEPS && !new RegExp(STEPS).test(await page.evaluate((c) => document.querySelectorAll('.pchaps .pch')[c].textContent.trim(), c))) continue;
+        await page.evaluate((c) => document.querySelectorAll('.pchaps .pch')[c].click(), c);
+        const steps = await page.evaluate(() => document.querySelectorAll('.psteps button').length);
+        for (let s = 0; s < steps; s++) {
+          await page.evaluate((s) => document.querySelectorAll('.psteps button')[s].click(), s);
+          await page.waitForTimeout(250);
+          const name = await page.evaluate(() => { const ch = document.querySelector('.pch.on'); return ch ? ch.textContent.trim() : ''; });
+          const label = `${door} · ${theme} · phase ${name} · step ${s + 1}`;
+          if (!doorSizes) {
+            await page.waitForTimeout(300);
+            const ws = await page.evaluate(([lo, hi]) => window.__fit.frames().length ? window.__fit.widths(0, lo, hi, false) : [], PROTO5_RANGE[door]);
+            const h = (W) => { const near = PROTO5[door].reduce((a, b) => (Math.abs(b[0] - W) < Math.abs(a[0] - W) ? b : a)); return near[1]; };
+            doorSizes = PROTO5[door].slice();
+            for (const W of ws) if (!doorSizes.some((p) => Math.abs(p[0] - W) < 0.01)) doorSizes.push([W, h(W)]);
+            doorSizes.sort((a, b) => a[0] - b[0]);
+          }
+          const sizes = s === 0 && theme === 'Light' ? [[0, 0], ...doorSizes] : [[0, 0]];
+          // the prototype sizes and scales its frame with inline styles to fit the window: keep them, and put them back for the drawn size
+          const orig = await page.evaluate(() => window.__fit.frames()[0].getAttribute('style') || '');
+          for (const [w, hh] of sizes) {
+            await page.evaluate(([w, h, orig]) => {
+              const f = window.__fit.frames()[0];
+              f.setAttribute('style', orig);
+              if (!w) return;
+              for (const [k, v] of [['width', w + 'px'], ['height', h + 'px'], ['max-width', 'none'], ['min-width', '0'], ['transform', 'none']]) f.style.setProperty(k, v, 'important');
+            }, [w, hh, orig]);
+            await page.waitForTimeout(w ? 200 : 0);
+            const size = w ? `${w}x${hh}` : 'drawn';
+            let ok = await page.evaluate(() => !!window.__fit.scan(0));
+            if (!ok) { await page.waitForTimeout(700); ok = await page.evaluate(() => !!window.__fit.scan(0)); }
+            if (!ok) { add({ board, engine, size, label, type: 'did-not-render', text: 'no frame at ' + (await page.evaluate(() => document.querySelectorAll('.pframe').length)) + ' pframes', el: '' }); continue; }
+            if (!w) (await page.evaluate(() => window.__fit.thinned(0))).forEach((x) => add({ board, engine, size: 'drawn', label, type: 'label-thinned-as-drawn', text: x.text, el: x.el }));
+            await measure(page, [0], (i, scans, part) => scans.forEach((sc, n) => { if (sc) faultsOf(sc).forEach((f) => add({ board, engine, size, label, part: part || (n ? 'scrolled' : ''), ...f })); }));
+          }
+          await page.evaluate((orig) => window.__fit.frames()[0].setAttribute('style', orig), orig);
+        }
       }
     }
   }
@@ -669,7 +739,7 @@ async function diffDirs(baseDir, headDir, neutral, out, only, engines, refName, 
     if (!(await settle(p))) throw new Error('the board never settled');
     await p.evaluate(() => document.fonts && document.fonts.ready);
     // the prototype mounts its parts after the canvas settles: wait for its controls
-    if (board.endsWith('Prototype v4.dc.html')) await p.waitForFunction(() => document.querySelectorAll('.pseg button').length && document.querySelectorAll('.psteps button').length, null, { timeout: 30000 });
+    if (board.endsWith('Prototype v4.dc.html') || board.endsWith('Prototype v5.dc.html')) await p.waitForFunction(() => document.querySelectorAll('.pseg button').length && document.querySelectorAll('.psteps button').length, null, { timeout: 30000 });
     if (neutral) await p.addStyleTag({ content: neutral });
     await p.addScriptTag({ content: PAGE_JS });
     await p.waitForTimeout(400);

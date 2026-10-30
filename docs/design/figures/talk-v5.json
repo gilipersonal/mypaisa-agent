@@ -1,0 +1,1411 @@
+{
+ "about": "Prototype v5's figures for phases 0, 1 and 8 (MA-291), written by make_talk.py. Illustrative figures and names.",
+ "clock": {
+  "today": "2026-10-26",
+  "label": "Mon 26 Oct",
+  "phase1": "09:29 to 09:40",
+  "phase8": "09:59 to 10:15"
+ },
+ "prices": {
+  "Sonnet 5.5": {
+   "in": 3.0,
+   "cached": 0.3,
+   "out": 15.0
+  },
+  "Haiku 5.5": {
+   "in": 1.0,
+   "cached": 0.1,
+   "out": 5.0
+  }
+ },
+ "usd_gbp": 1.3,
+ "members": [
+  {
+   "id": "arun",
+   "name": "Arun",
+   "full": "Arun Dutta",
+   "role": "owner",
+   "admin": true,
+   "init": "Ar",
+   "first_sign_in": "Fri 4 Sep 19:29",
+   "how": "Apple and Google",
+   "ways": [
+    [
+     "Apple",
+     "since Fri 4 Sep, his first sign-in"
+    ],
+    [
+     "Google",
+     "linked Mon 12 Oct"
+    ],
+    [
+     "Passkey",
+     "not added"
+    ]
+   ],
+   "apple": "ar•••@icloud.com"
+  },
+  {
+   "id": "asha",
+   "name": "Asha",
+   "full": "Asha Dutta",
+   "role": "member",
+   "admin": false,
+   "init": "As",
+   "joined": "Sun 6 Sep 10:12",
+   "how": "Apple and Google",
+   "ways": [
+    [
+     "Apple",
+     "since Sun 6 Sep, from Arun’s invite"
+    ],
+    [
+     "Google",
+     "linked Sun 6 Sep"
+    ],
+    [
+     "Passkey",
+     "not added"
+    ]
+   ],
+   "apple": "as•••@icloud.com"
+  }
+ ],
+ "devices": [
+  {
+   "id": "arun_iphone",
+   "member": "arun",
+   "name": "Arun’s iPhone",
+   "model": "iPhone 17 Pro",
+   "icon": "phone_iphone",
+   "door": "ios",
+   "seen": [
+    "2026-10-26T07:58",
+    "2026-10-26T09:37"
+   ]
+  },
+  {
+   "id": "arun_ipad",
+   "member": "arun",
+   "name": "Arun’s iPad",
+   "model": "iPad Air",
+   "icon": "tablet_mac",
+   "door": "ipad",
+   "seen": [
+    "2026-10-26T07:20"
+   ]
+  },
+  {
+   "id": "arun_fold",
+   "member": "arun",
+   "name": "Arun’s foldable",
+   "model": "Two-panel foldable",
+   "icon": "devices_fold",
+   "door": "fold",
+   "seen": [
+    "2026-10-24T09:05"
+   ]
+  },
+  {
+   "id": "arun_iphone13",
+   "member": "arun",
+   "name": "Arun’s old iPhone",
+   "model": "iPhone 13",
+   "icon": "phone_iphone",
+   "door": null,
+   "seen": [
+    "2026-10-04T21:40"
+   ],
+   "signed_out": "2026-10-26T09:40"
+  },
+  {
+   "id": "asha_iphone",
+   "member": "asha",
+   "name": "Asha’s iPhone",
+   "model": "iPhone 16",
+   "icon": "phone_iphone",
+   "door": null,
+   "seen": [
+    "2026-10-26T08:12",
+    "2026-10-26T10:14"
+   ],
+   "paused_out": "2026-10-26T10:07",
+   "back_in": "2026-10-26T10:14"
+  },
+  {
+   "id": "asha_ipad",
+   "member": "asha",
+   "name": "Asha’s iPad",
+   "model": "iPad mini",
+   "icon": "tablet_mac",
+   "door": null,
+   "seen": [
+    "2026-10-20T21:05"
+   ],
+   "paused_out": "2026-10-26T10:07"
+  }
+ ],
+ "browsers": [
+  {
+   "id": "arun_chrome",
+   "member": "arun",
+   "name": "Chrome on a MacBook Air",
+   "door": "desk",
+   "via": "Apple",
+   "seen": [
+    "2026-10-26T09:30"
+   ]
+  },
+  {
+   "id": "arun_safari",
+   "member": "arun",
+   "name": "Safari on an iPhone",
+   "door": "pweb",
+   "via": "Apple",
+   "seen": [
+    "2026-10-25T09:58"
+   ]
+  }
+ ],
+ "security": [
+  {
+   "t": "2026-09-04T19:29",
+   "who": "arun",
+   "what": "First sign-in, with Apple",
+   "detail": "The first person to sign in owns the household (MA-32): Arun owns the Dutta household."
+  },
+  {
+   "t": "2026-09-05T18:00",
+   "who": "arun",
+   "what": "Invited a member",
+   "detail": "A one-time link for the member role, until Sun 6 Sep 18:00."
+  },
+  {
+   "t": "2026-09-06T10:12",
+   "who": "asha",
+   "what": "Joined from the invite, with Apple",
+   "detail": "Her member and Cognito user made; the link used."
+  },
+  {
+   "t": "2026-10-12T20:31",
+   "who": "arun",
+   "what": "Linked Google",
+   "detail": "A fresh Google sign-in, from You; no second check (MA-77)."
+  },
+  {
+   "t": "2026-10-26T09:30",
+   "who": "arun",
+   "what": "Signed in to the web app, with Apple",
+   "detail": "Chrome on a MacBook Air; a laptop he has used before."
+  },
+  {
+   "t": "2026-10-26T09:40",
+   "who": "arun",
+   "what": "Signed out Arun’s old iPhone",
+   "detail": "iPhone 13, last seen Sun 4 Oct; from You, no second check: it only takes access away."
+  },
+  {
+   "t": "2026-10-26T10:07",
+   "who": "arun",
+   "what": "Paused Asha",
+   "detail": "Checked with Sign in with Apple and Face ID. Sign-in refused; both her devices signed out.",
+   "chk": true
+  },
+  {
+   "t": "2026-10-26T10:07",
+   "who": "arun",
+   "what": "Restored Asha",
+   "detail": "Checked with Sign in with Apple and Face ID. She signs in as before.",
+   "chk": true
+  },
+  {
+   "t": "2026-10-26T10:14",
+   "who": "asha",
+   "what": "Signed in again on Asha’s iPhone, with Apple",
+   "detail": "After the restore; her iPad signs in when she next opens it."
+  }
+ ],
+ "runs": [
+  {
+   "id": "r-1228",
+   "t": "01:00:00",
+   "end": "01:00:21",
+   "name": "Nightly views",
+   "who": "household",
+   "kind": "job",
+   "sub": "Net worth, the budget month and what is due, rebuilt from the events",
+   "calls": [],
+   "tools": [],
+   "iso": "2026-10-26T01:00:00",
+   "iso_end": "2026-10-26T01:00:21",
+   "tm": "01:00",
+   "cost": 0.0,
+   "cost3": "0.000",
+   "cost2": "0.00",
+   "n_in": 0,
+   "n_out": 0,
+   "n_cached": 0,
+   "tokens": 0,
+   "tokK": "0",
+   "cachedK": "0",
+   "model_s": 0,
+   "tool_s": 0.0,
+   "dur_s": 21,
+   "line": "No model · 21 s",
+   "toolnames": ""
+  },
+  {
+   "id": "r-1229",
+   "t": "07:00:00",
+   "end": "07:00:09",
+   "name": "Prices",
+   "who": "household",
+   "kind": "job",
+   "sub": "6 of 6 priced at the Fri 23 Oct close, and the ECB rate",
+   "calls": [],
+   "tools": [],
+   "iso": "2026-10-26T07:00:00",
+   "iso_end": "2026-10-26T07:00:09",
+   "tm": "07:00",
+   "cost": 0.0,
+   "cost3": "0.000",
+   "cost2": "0.00",
+   "n_in": 0,
+   "n_out": 0,
+   "n_cached": 0,
+   "tokens": 0,
+   "tokK": "0",
+   "cachedK": "0",
+   "model_s": 0,
+   "tool_s": 0.0,
+   "dur_s": 9,
+   "line": "No model · 9 s",
+   "toolnames": ""
+  },
+  {
+   "id": "r-1230",
+   "t": "08:12:05",
+   "end": "08:12:14",
+   "name": "Chat · Asha",
+   "who": "asha",
+   "kind": "chat",
+   "words": "When does my saver mature?",
+   "sub": "Her words stay hers; the cost and the tools show",
+   "calls": [
+    {
+     "m": "Sonnet 5.5",
+     "what": "chose the tool",
+     "in": 1210,
+     "cached": 6140,
+     "out": 70,
+     "s": 1.1,
+     "cost": 0.006522,
+     "cost3": "0.007"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "answered",
+     "in": 1480,
+     "cached": 6140,
+     "out": 240,
+     "s": 2.3,
+     "cost": 0.009882,
+     "cost3": "0.010"
+    }
+   ],
+   "tools": [
+    [
+     "get_commitments",
+     70
+    ]
+   ],
+   "answer": "Your fixed-rate saver at Nationwide matures on Mon 14 Dec, at £10,460 with its interest.",
+   "read": [
+    "Asha’s commitments: the saver’s maturity, from the registry (get_commitments)",
+    "Her notes (1) and the household’s (1)"
+   ],
+   "outcome": "Answered · nothing proposed · nothing retried",
+   "sent": "To Asha’s conversation, over the stream to her iPhone",
+   "iso": "2026-10-26T08:12:05",
+   "iso_end": "2026-10-26T08:12:14",
+   "tm": "08:12",
+   "cost": 0.016404000000000002,
+   "cost3": "0.016",
+   "cost2": "0.02",
+   "n_in": 2690,
+   "n_out": 310,
+   "n_cached": 12280,
+   "tokens": 3000,
+   "tokK": "3.0k",
+   "cachedK": "12.3k",
+   "model_s": 3.4,
+   "tool_s": 0.1,
+   "dur_s": 9,
+   "line": "Sonnet 5.5 · 2 calls · 3.0k tokens",
+   "toolnames": "get_commitments"
+  },
+  {
+   "id": "r-1231",
+   "t": "09:00:00",
+   "end": "09:00:02",
+   "name": "Check-ins",
+   "who": "household",
+   "kind": "job",
+   "sub": "1 card: 2 valuations, Home, Reading and Flat, Pune · sent with push, no amount",
+   "calls": [],
+   "tools": [],
+   "iso": "2026-10-26T09:00:00",
+   "iso_end": "2026-10-26T09:00:02",
+   "tm": "09:00",
+   "cost": 0.0,
+   "cost3": "0.000",
+   "cost2": "0.00",
+   "n_in": 0,
+   "n_out": 0,
+   "n_cached": 0,
+   "tokens": 0,
+   "tokK": "0",
+   "cachedK": "0",
+   "model_s": 0,
+   "tool_s": 0.0,
+   "dur_s": 2,
+   "line": "No model · 2 s",
+   "toolnames": ""
+  },
+  {
+   "id": "r-1232",
+   "t": "09:32:04",
+   "end": "09:32:11",
+   "name": "Chat · Arun",
+   "who": "arun",
+   "kind": "chat",
+   "door": "the web app",
+   "words": "What are we worth today?",
+   "calls": [
+    {
+     "m": "Sonnet 5.5",
+     "what": "chose the tool",
+     "in": 1240,
+     "cached": 8460,
+     "out": 58,
+     "s": 1.1,
+     "cost": 0.007128,
+     "cost3": "0.007"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "wrote the answer, and a note",
+     "in": 1720,
+     "cached": 8460,
+     "out": 164,
+     "s": 1.9,
+     "cost": 0.010158,
+     "cost3": "0.010"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "closed the turn",
+     "in": 96,
+     "cached": 10180,
+     "out": 10,
+     "s": 0.4,
+     "cost": 0.003492,
+     "cost3": "0.003"
+    }
+   ],
+   "tools": [
+    [
+     "get_networth",
+     60
+    ],
+    [
+     "memory",
+     30
+    ]
+   ],
+   "note": "Wants the household’s figure first, then his own",
+   "read": [
+    "The household’s net worth view: 16 assets and 4 debts at the Fri 23 Oct close, £1 = ₹112.50 (get_networth)",
+    "Arun’s notes (1) and the household’s (1), from the cached notes layer"
+   ],
+   "outcome": "Answered · a card, nothing proposed · nothing retried",
+   "sent": "To Arun’s conversation at every open door, over the stream; no push, since a door was open",
+   "iso": "2026-10-26T09:32:04",
+   "iso_end": "2026-10-26T09:32:11",
+   "tm": "09:32",
+   "cost": 0.020777999999999998,
+   "cost3": "0.021",
+   "cost2": "0.02",
+   "n_in": 3056,
+   "n_out": 232,
+   "n_cached": 27100,
+   "tokens": 3288,
+   "tokK": "3.3k",
+   "cachedK": "27.1k",
+   "model_s": 3.4,
+   "tool_s": 0.1,
+   "dur_s": 7,
+   "line": "Sonnet 5.5 · 3 calls · 3.3k tokens",
+   "toolnames": "get_networth, memory"
+  },
+  {
+   "id": "r-1233",
+   "t": "09:34:10",
+   "end": "09:34:17",
+   "name": "Chat · Arun",
+   "who": "arun",
+   "kind": "chat",
+   "door": "the web app",
+   "words": "What’s due this week?",
+   "calls": [
+    {
+     "m": "Sonnet 5.5",
+     "what": "chose the tool",
+     "in": 1260,
+     "cached": 8520,
+     "out": 62,
+     "s": 1.2,
+     "cost": 0.007266,
+     "cost3": "0.007"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "wrote the answer",
+     "in": 1650,
+     "cached": 8520,
+     "out": 188,
+     "s": 2.6,
+     "cost": 0.010326,
+     "cost3": "0.010"
+    }
+   ],
+   "tools": [
+    [
+     "get_commitments",
+     80
+    ]
+   ],
+   "read": [
+    "The household’s commitments, Mon 26 Oct to Sun 1 Nov (get_commitments)",
+    "Arun’s notes (2) and the household’s (1)"
+   ],
+   "outcome": "Answered, streamed word by word · a card · nothing retried",
+   "sent": "To Arun’s conversation at every open door, over the stream",
+   "iso": "2026-10-26T09:34:10",
+   "iso_end": "2026-10-26T09:34:17",
+   "tm": "09:34",
+   "cost": 0.017592,
+   "cost3": "0.018",
+   "cost2": "0.02",
+   "n_in": 2910,
+   "n_out": 250,
+   "n_cached": 17040,
+   "tokens": 3160,
+   "tokK": "3.2k",
+   "cachedK": "17.0k",
+   "model_s": 3.8,
+   "tool_s": 0.1,
+   "dur_s": 7,
+   "line": "Sonnet 5.5 · 2 calls · 3.2k tokens",
+   "toolnames": "get_commitments"
+  },
+  {
+   "id": "r-1234",
+   "t": "09:36:58",
+   "end": "09:37:05",
+   "name": "Chat · Arun",
+   "who": "arun",
+   "kind": "chat",
+   "door": "his iPhone",
+   "words": "And the Pune flat?",
+   "typed": "09:35:40",
+   "calls": [
+    {
+     "m": "Sonnet 5.5",
+     "what": "chose the tool",
+     "in": 1230,
+     "cached": 8690,
+     "out": 60,
+     "s": 1.1,
+     "cost": 0.007197,
+     "cost3": "0.007"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "wrote the answer",
+     "in": 1380,
+     "cached": 8690,
+     "out": 142,
+     "s": 2.0,
+     "cost": 0.008877,
+     "cost3": "0.009"
+    }
+   ],
+   "tools": [
+    [
+     "get_commitments",
+     70
+    ]
+   ],
+   "read": [
+    "Flat, Pune’s valuation check-in (get_commitments)",
+    "Arun’s notes (2) and the household’s (1)"
+   ],
+   "outcome": "Answered · sent by push, the app closed · nothing retried",
+   "sent": "Typed offline at 09:35:40 and sent at 09:36:58 when the connection came back; the reply went by push to his iPhone, with no amount, since MyPaisa was closed there",
+   "iso": "2026-10-26T09:36:58",
+   "iso_end": "2026-10-26T09:37:05",
+   "tm": "09:36",
+   "cost": 0.016073999999999998,
+   "cost3": "0.016",
+   "cost2": "0.02",
+   "n_in": 2610,
+   "n_out": 202,
+   "n_cached": 17380,
+   "tokens": 2812,
+   "tokK": "2.8k",
+   "cachedK": "17.4k",
+   "model_s": 3.1,
+   "tool_s": 0.1,
+   "dur_s": 7,
+   "line": "Sonnet 5.5 · 2 calls · 2.8k tokens",
+   "toolnames": "get_commitments"
+  },
+  {
+   "id": "r-1235",
+   "t": "09:40:12",
+   "end": "09:41:20",
+   "name": "Chat · Arun",
+   "who": "arun",
+   "kind": "chat",
+   "door": "the web app",
+   "words": "£5,000 in Monzo savings",
+   "calls": [
+    {
+     "m": "Sonnet 5.5",
+     "what": "drafted",
+     "in": 2310,
+     "cached": 6120,
+     "out": 196,
+     "s": 2.5,
+     "cost": 0.011706,
+     "cost3": "0.012"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "asked whose",
+     "in": 410,
+     "cached": 8430,
+     "out": 92,
+     "s": 1.2,
+     "cost": 0.005139,
+     "cost3": "0.005"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "proposed",
+     "in": 1060,
+     "cached": 8840,
+     "out": 238,
+     "s": 2.6,
+     "cost": 0.009402,
+     "cost3": "0.009"
+    }
+   ],
+   "tools": [
+    [
+     "draft_record",
+     80
+    ],
+    [
+     "ask_user",
+     20
+    ],
+    [
+     "propose_change",
+     110
+    ]
+   ],
+   "wait_s": 61,
+   "read": [
+    "The savings account kind’s fields (draft_record)",
+    "Arun’s notes (2) and the household’s (1)"
+   ],
+   "outcome": "Saved · audit row 09:41 · nothing retried",
+   "sent": "The Confirm card to Arun’s conversation; records.changed to every open door",
+   "iso": "2026-10-26T09:40:12",
+   "iso_end": "2026-10-26T09:41:20",
+   "tm": "09:40",
+   "cost": 0.026247,
+   "cost3": "0.026",
+   "cost2": "0.03",
+   "n_in": 3780,
+   "n_out": 526,
+   "n_cached": 23390,
+   "tokens": 4306,
+   "tokK": "4.3k",
+   "cachedK": "23.4k",
+   "model_s": 6.3,
+   "tool_s": 0.2,
+   "dur_s": 68,
+   "line": "Sonnet 5.5 · 3 calls · 4.3k tokens",
+   "toolnames": "draft_record, ask_user, propose_change"
+  },
+  {
+   "id": "r-1236",
+   "t": "09:41:21",
+   "end": "09:41:23",
+   "name": "Views",
+   "who": "household",
+   "kind": "job",
+   "sub": "Rebuilt after the new record; Home moved at every door",
+   "calls": [],
+   "tools": [],
+   "iso": "2026-10-26T09:41:21",
+   "iso_end": "2026-10-26T09:41:23",
+   "tm": "09:41",
+   "cost": 0.0,
+   "cost3": "0.000",
+   "cost2": "0.00",
+   "n_in": 0,
+   "n_out": 0,
+   "n_cached": 0,
+   "tokens": 0,
+   "tokK": "0",
+   "cachedK": "0",
+   "model_s": 0,
+   "tool_s": 0.0,
+   "dur_s": 2,
+   "line": "No model · 2 s",
+   "toolnames": ""
+  },
+  {
+   "id": "r-1237",
+   "t": "09:43:02",
+   "end": "09:43:09",
+   "name": "Chat · Arun",
+   "who": "arun",
+   "kind": "chat",
+   "door": "the web app",
+   "words": "What can we get at quickly now?",
+   "calls": [
+    {
+     "m": "Sonnet 5.5",
+     "what": "chose the tool",
+     "in": 1190,
+     "cached": 8600,
+     "out": 66,
+     "s": 1.1,
+     "cost": 0.00714,
+     "cost3": "0.007"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "wrote the answer",
+     "in": 1420,
+     "cached": 8600,
+     "out": 224,
+     "s": 2.4,
+     "cost": 0.0102,
+     "cost3": "0.010"
+    }
+   ],
+   "tools": [
+    [
+     "get_networth",
+     60
+    ]
+   ],
+   "read": [
+    "The household’s liquid view (get_networth)",
+    "Arun’s notes (2) and the household’s (1)"
+   ],
+   "outcome": "Answered · a card · nothing retried",
+   "sent": "To Arun’s conversation at every open door, over the stream",
+   "iso": "2026-10-26T09:43:02",
+   "iso_end": "2026-10-26T09:43:09",
+   "tm": "09:43",
+   "cost": 0.01734,
+   "cost3": "0.017",
+   "cost2": "0.02",
+   "n_in": 2610,
+   "n_out": 290,
+   "n_cached": 17200,
+   "tokens": 2900,
+   "tokK": "2.9k",
+   "cachedK": "17.2k",
+   "model_s": 3.5,
+   "tool_s": 0.1,
+   "dur_s": 7,
+   "line": "Sonnet 5.5 · 2 calls · 2.9k tokens",
+   "toolnames": "get_networth"
+  },
+  {
+   "id": "r-1238",
+   "t": "09:52:10",
+   "end": "09:52:12",
+   "name": "Views",
+   "who": "household",
+   "kind": "job",
+   "sub": "Rebuilt after the correction to Home, Reading; Home moved at every door",
+   "calls": [],
+   "tools": [],
+   "iso": "2026-10-26T09:52:10",
+   "iso_end": "2026-10-26T09:52:12",
+   "tm": "09:52",
+   "cost": 0.0,
+   "cost3": "0.000",
+   "cost2": "0.00",
+   "n_in": 0,
+   "n_out": 0,
+   "n_cached": 0,
+   "tokens": 0,
+   "tokK": "0",
+   "cachedK": "0",
+   "model_s": 0,
+   "tool_s": 0.0,
+   "dur_s": 2,
+   "line": "No model · 2 s",
+   "toolnames": ""
+  },
+  {
+   "id": "r-1239",
+   "t": "09:53:00",
+   "end": "09:53:04",
+   "name": "Projection",
+   "who": "household",
+   "kind": "job",
+   "sub": "The fan rebuilt from £457,951, after the Monzo savings and the home’s new value",
+   "calls": [],
+   "tools": [],
+   "iso": "2026-10-26T09:53:00",
+   "iso_end": "2026-10-26T09:53:04",
+   "tm": "09:53",
+   "cost": 0.0,
+   "cost3": "0.000",
+   "cost2": "0.00",
+   "n_in": 0,
+   "n_out": 0,
+   "n_cached": 0,
+   "tokens": 0,
+   "tokK": "0",
+   "cachedK": "0",
+   "model_s": 0,
+   "tool_s": 0.0,
+   "dur_s": 4,
+   "line": "No model · 4 s",
+   "toolnames": ""
+  },
+  {
+   "id": "r-1240",
+   "t": "09:59:20",
+   "end": "09:59:27",
+   "name": "Chat · Arun",
+   "who": "arun",
+   "kind": "chat",
+   "door": "the web app",
+   "words": "What changed today?",
+   "calls": [
+    {
+     "m": "Sonnet 5.5",
+     "what": "chose the tool",
+     "in": 1250,
+     "cached": 8740,
+     "out": 64,
+     "s": 1.1,
+     "cost": 0.007332,
+     "cost3": "0.007"
+    },
+    {
+     "m": "Sonnet 5.5",
+     "what": "wrote the answer",
+     "in": 1810,
+     "cached": 8740,
+     "out": 176,
+     "s": 2.5,
+     "cost": 0.010692,
+     "cost3": "0.011"
+    }
+   ],
+   "tools": [
+    [
+     "get_audit",
+     90
+    ]
+   ],
+   "read": [
+    "Today’s audit rows for the household (get_audit)",
+    "Arun’s notes (2) and the household’s (1)"
+   ],
+   "outcome": "Answered · a card · nothing retried",
+   "sent": "To Arun’s conversation at every open door, over the stream",
+   "iso": "2026-10-26T09:59:20",
+   "iso_end": "2026-10-26T09:59:27",
+   "tm": "09:59",
+   "cost": 0.018024,
+   "cost3": "0.018",
+   "cost2": "0.02",
+   "n_in": 3060,
+   "n_out": 240,
+   "n_cached": 17480,
+   "tokens": 3300,
+   "tokK": "3.3k",
+   "cachedK": "17.5k",
+   "model_s": 3.6,
+   "tool_s": 0.1,
+   "dur_s": 7,
+   "line": "Sonnet 5.5 · 2 calls · 3.3k tokens",
+   "toolnames": "get_audit"
+  },
+  {
+   "id": "r-1241",
+   "t": "10:12:30",
+   "end": "10:12:33",
+   "name": "Prices · Silver ETC, replayed",
+   "who": "household",
+   "kind": "job",
+   "sub": "Replayed by Arun from Failed work; priced at the Fri 23 Oct close, nothing changed",
+   "calls": [],
+   "tools": [],
+   "iso": "2026-10-26T10:12:30",
+   "iso_end": "2026-10-26T10:12:33",
+   "tm": "10:12",
+   "cost": 0.0,
+   "cost3": "0.000",
+   "cost2": "0.00",
+   "n_in": 0,
+   "n_out": 0,
+   "n_cached": 0,
+   "tokens": 0,
+   "tokK": "0",
+   "cachedK": "0",
+   "model_s": 0,
+   "tool_s": 0.0,
+   "dur_s": 3,
+   "line": "No model · 3 s",
+   "toolnames": ""
+  }
+ ],
+ "spend": {
+  "ceiling": 160,
+  "dev_ceiling": 40,
+  "hard": 160,
+  "dev_hard": 40,
+  "credit": 200,
+  "evals_limit": 30,
+  "evals_run": 10,
+  "judges_usd": 4.8,
+  "steps": [
+   70,
+   85,
+   95,
+   100
+  ],
+  "share": 60,
+  "share_usd": 96,
+  "guard_day_usd": 15,
+  "calls_per_run": 8,
+  "renews": "Tue 3 Nov",
+  "cycle": "Sat 3 Oct to Mon 2 Nov",
+  "cycle_days": 31,
+  "days_left": 8,
+  "usd_gbp": 1.3,
+  "ceiling_gbp": 123,
+  "ladder": [
+   {
+    "p": "Under 70%",
+    "t": "Normal",
+    "d": "Sonnet for chat, Opus for the Saturday review.",
+    "at": null
+   },
+   {
+    "p": "70%",
+    "t": "A heads-up",
+    "d": "One message to you. Nothing changes.",
+    "at": 112
+   },
+   {
+    "p": "85%",
+    "t": "Savers",
+    "d": "No debate; three Why? searches a day; notes only when asked.",
+    "at": 136
+   },
+   {
+    "p": "95%",
+    "t": "Essentials only",
+    "d": "Chat on Haiku; the rest as templates; notes read, none written.",
+    "at": 152
+   },
+   {
+    "p": "100%",
+    "t": "Templates only",
+    "d": "Claude stops until Tue 3 Nov, or until you raise the ceiling.",
+    "at": 160
+   }
+  ],
+  "move": {
+   "typed": 180,
+   "from": 160,
+   "hard": 160,
+   "min": 10,
+   "refused": true,
+   "past_credit_if_allowed": 20,
+   "gbp_typed": 138
+  },
+  "snaps": [
+   {
+    "t": "2026-10-26T00:00:00",
+    "arun": 9.3,
+    "asha": 4.08,
+    "jobs": 4.5,
+    "total": 17.88,
+    "today": 0,
+    "pct": 11,
+    "dollars": 18
+   },
+   {
+    "t": "2026-10-26T08:12:14",
+    "arun": 9.3,
+    "asha": 4.1,
+    "jobs": 4.5,
+    "total": 17.9,
+    "today": 0.016,
+    "pct": 11,
+    "dollars": 18
+   },
+   {
+    "t": "2026-10-26T09:32:11",
+    "arun": 9.32,
+    "asha": 4.1,
+    "jobs": 4.5,
+    "total": 17.92,
+    "today": 0.037,
+    "pct": 11,
+    "dollars": 18
+   },
+   {
+    "t": "2026-10-26T09:34:17",
+    "arun": 9.34,
+    "asha": 4.1,
+    "jobs": 4.5,
+    "total": 17.94,
+    "today": 0.055,
+    "pct": 11,
+    "dollars": 18
+   },
+   {
+    "t": "2026-10-26T09:37:05",
+    "arun": 9.35,
+    "asha": 4.1,
+    "jobs": 4.5,
+    "total": 17.95,
+    "today": 0.071,
+    "pct": 11,
+    "dollars": 18
+   },
+   {
+    "t": "2026-10-26T09:41:20",
+    "arun": 9.38,
+    "asha": 4.1,
+    "jobs": 4.5,
+    "total": 17.98,
+    "today": 0.097,
+    "pct": 11,
+    "dollars": 18
+   },
+   {
+    "t": "2026-10-26T09:43:09",
+    "arun": 9.4,
+    "asha": 4.1,
+    "jobs": 4.5,
+    "total": 18.0,
+    "today": 0.114,
+    "pct": 11,
+    "dollars": 18
+   },
+   {
+    "t": "2026-10-26T09:59:27",
+    "arun": 9.42,
+    "asha": 4.1,
+    "jobs": 4.5,
+    "total": 18.02,
+    "today": 0.132,
+    "pct": 11,
+    "dollars": 18
+   }
+  ]
+ },
+ "aws": {
+  "cap": 50,
+  "spent": 3,
+  "forecast": 3.2,
+  "backstop": 75,
+  "read": "daily at 06:00",
+  "steps": [
+   {
+    "p": 50,
+    "d": "You are told; again when the month’s forecast passes the cap.",
+    "at": 25
+   },
+   {
+    "p": 80,
+    "d": "Dev’s schedules pause.",
+    "at": 40
+   },
+   {
+    "p": 100,
+    "d": "Dev pauses; so do prod’s back-fills, retraining and challengers.",
+    "at": 50
+   }
+  ]
+ },
+ "routing": [
+  {
+   "t": "Claude spend",
+   "s": "Critical at 100%",
+   "app": "Always",
+   "push": "All",
+   "email": "All"
+  },
+  {
+   "t": "AWS spend and its forecast",
+   "s": "Critical at 100%",
+   "app": "Always",
+   "push": "All",
+   "email": "All"
+  },
+  {
+   "t": "Failed work, a job failed",
+   "s": "Never critical",
+   "app": "Always",
+   "push": "All",
+   "email": "Off"
+  },
+  {
+   "t": "A data feed stale",
+   "s": "Never critical",
+   "app": "Always",
+   "push": "All",
+   "email": "Off"
+  },
+  {
+   "t": "A TestFlight build at day 60",
+   "s": "Never critical",
+   "app": "Always",
+   "push": "All",
+   "email": "All"
+  },
+  {
+   "t": "Holding alerts",
+   "s": "Each member’s own",
+   "app": "Own",
+   "push": "Own",
+   "email": "Off"
+  }
+ ],
+ "quiet": {
+  "push": "22:00 to 07:00",
+  "email": "22:00 to 07:00, held, then sent at 07:00",
+  "cooldown_h": 6,
+  "digest": "19:00"
+ },
+ "failed": {
+  "queue": "mypaisa-prod-work",
+  "job": "Prices · Silver ETC",
+  "when": "Fri 23 Oct 21:52",
+  "tries": 5,
+  "window": "21:00 to 21:52",
+  "reason": "the price source timed out",
+  "alarm": "Fri 23 Oct 21:52, in the app and by push, quietly",
+  "since": "The 07:00 run today priced Silver ETC at the Fri 23 Oct close, so nothing is stale.",
+  "replayed": "2026-10-26T10:12",
+  "ran": "2026-10-26T10:12:30"
+ },
+ "audit": [
+  {
+   "t": "2026-10-26T10:01",
+   "who": "arun",
+   "rec": "File opened",
+   "icon": "visibility",
+   "what": "Opened monzo-pot.png",
+   "note": "a five-minute link, until 10:06",
+   "via": "Open, from Audit",
+   "run": null,
+   "acct": "joint"
+  },
+  {
+   "t": "2026-10-26T09:52",
+   "who": "arun",
+   "rec": "Correction",
+   "icon": "edit",
+   "what": "Home, Reading",
+   "before": 415000,
+   "after": 428000,
+   "note": "your estimate",
+   "via": "in place (inline edit)",
+   "run": null,
+   "acct": "joint"
+  },
+  {
+   "t": "2026-10-26T09:41",
+   "who": "arun",
+   "rec": "Record added",
+   "icon": "add_circle",
+   "what": "Instant access savings · Monzo",
+   "before": null,
+   "after": 5000,
+   "via": "a typed message, then Confirm",
+   "run": "r-1235",
+   "acct": "arun"
+  },
+  {
+   "t": "2026-10-26T09:32",
+   "who": "mypaisa",
+   "rec": "Memory note",
+   "icon": "bookmark",
+   "what": "A note in Arun’s notes",
+   "note": "“Wants the household’s figure first, then his own”",
+   "via": "memory.write, in Arun’s run",
+   "run": "r-1232",
+   "acct": "arun"
+  },
+  {
+   "t": "2026-10-25T10:03",
+   "who": "arun",
+   "rec": "Record added",
+   "icon": "add_circle",
+   "what": "Fixed deposit · SBI",
+   "before": null,
+   "after_inr": 500000,
+   "note": "at 7.1%, quarterly, to Sat 10 Mar 2029",
+   "via": "a typed message, then Confirm",
+   "run": "r-1219",
+   "acct": "arun"
+  },
+  {
+   "t": "2026-10-22T19:02",
+   "who": "asha",
+   "rec": "Valuation",
+   "icon": "image",
+   "what": "Monzo pot",
+   "before": 120,
+   "after": 181,
+   "via": "a screenshot, then Confirm",
+   "run": "r-1170",
+   "file": "monzo-pot",
+   "acct": "joint"
+  },
+  {
+   "t": "2026-10-21T21:15",
+   "who": "arun",
+   "rec": "Fee",
+   "icon": "description",
+   "what": "Silver ETC’s yearly fee",
+   "before_t": "not known",
+   "after_t": "0.20% a year",
+   "via": "a factsheet, then Confirm",
+   "run": "r-1139",
+   "file": "silver-factsheet",
+   "acct": "arun"
+  },
+  {
+   "t": "2026-10-21T20:05",
+   "who": "asha",
+   "rec": "Preference",
+   "icon": "tune",
+   "what": "Quiet hours, 22:00 to 07:00",
+   "before_t": "off",
+   "after_t": "on",
+   "via": "a button, then Confirm",
+   "run": "r-1133",
+   "acct": "asha"
+  }
+ ],
+ "files": [
+  {
+   "id": "monzo-pot",
+   "name": "monzo-pot.png",
+   "kind": "Screenshot",
+   "ext": "PNG",
+   "kb": 142,
+   "by": "asha",
+   "sent": "2026-10-22T19:01",
+   "icon": "image",
+   "img": true,
+   "fed": [
+    {
+     "rec": "Monzo pot",
+     "what": "Valuation",
+     "before": 120,
+     "after": 181,
+     "t": "2026-10-22T19:02",
+     "run": "r-1170"
+    }
+   ],
+   "shows": "the Monzo pot as Asha’s Monzo app showed it"
+  },
+  {
+   "id": "silver-factsheet",
+   "name": "silver-etc-factsheet.pdf",
+   "kind": "Factsheet",
+   "ext": "PDF",
+   "kb": 1126,
+   "pages": 4,
+   "by": "arun",
+   "sent": "2026-10-21T21:14",
+   "icon": "description",
+   "img": false,
+   "fed": [
+    {
+     "rec": "Silver ETC",
+     "what": "Yearly fee",
+     "before_t": "not known",
+     "after_t": "0.20% a year",
+     "t": "2026-10-21T21:15",
+     "run": "r-1139"
+    }
+   ],
+   "shows": "iShares Physical Silver ETC’s factsheet, 30 September"
+  },
+  {
+   "id": "balanced-factsheet",
+   "name": "balanced-factsheet.pdf",
+   "kind": "Factsheet",
+   "ext": "PDF",
+   "kb": 1229,
+   "pages": 6,
+   "by": "arun",
+   "sent": "2026-10-18T11:20",
+   "icon": "description",
+   "img": false,
+   "fed": [
+    {
+     "rec": "Balanced",
+     "what": "Yearly fee",
+     "t": "2026-10-18T11:22",
+     "run": "r-1088"
+    },
+    {
+     "rec": "Balanced",
+     "what": "Its top ten holdings",
+     "t": "2026-10-18T11:22",
+     "run": "r-1088"
+    }
+   ],
+   "shows": "BlackRock MyMap 5’s factsheet, 30 September"
+  }
+ ],
+ "files_mb": 2.4,
+ "notes": {
+  "arun": [
+   {
+    "t": "2026-10-26T09:32",
+    "text": "Wants the household’s figure first, then his own",
+    "run": "r-1232"
+   },
+   {
+    "t": "2026-10-14T20:40",
+    "text": "Likes the Technical part folded away unless he asks",
+    "run": "r-0973"
+   }
+  ],
+  "asha": [
+   {
+    "t": "2026-10-20T21:02",
+    "text": "Prefers short answers, with the detail one tap away",
+    "run": "r-1118"
+   }
+  ],
+  "household": [
+   {
+    "t": "2026-10-03T10:15",
+    "text": "Calls the Monzo pot ‘the joint pot’",
+    "run": "r-0811"
+   }
+  ]
+ },
+ "search": {
+  "q": "Monzo",
+  "t": "2026-10-26T10:03",
+  "records": [
+   {
+    "id": "monzo_savings",
+    "name": "Instant access savings · Monzo",
+    "who": "Arun",
+    "v": 5000,
+    "s": "Savings · UK · from Mon 26 Oct 09:41"
+   },
+   {
+    "id": "pot",
+    "name": "Monzo pot",
+    "who": "Joint",
+    "v": 181,
+    "s": "Cash · Monzo · no price"
+   },
+   {
+    "id": "balanced",
+    "name": "Balanced (BlackRock MyMap 5)",
+    "who": "Arun",
+    "v": 22925,
+    "s": "ISA · Monzo"
+   }
+  ],
+  "answer": {
+   "t": "09:43",
+   "q": "What can we get at quickly now?",
+   "hit": "…the new Monzo savings, the Monzo pot, the NRE account in India…",
+   "run": "r-1237"
+  }
+ },
+ "evals": {
+  "sample": "October’s sample",
+  "offered": "Thu 1 Oct",
+  "runs": 30,
+  "labelled": 22,
+  "modes": [
+   {
+    "t": "Figures match the tools",
+    "pass": 19,
+    "fail": 3
+   },
+   {
+    "t": "Answers what was asked",
+    "pass": 20,
+    "fail": 2
+   },
+   {
+    "t": "Plain words, no jargon",
+    "pass": 21,
+    "fail": 1
+   },
+   {
+    "t": "No advice, no trade",
+    "pass": 22,
+    "fail": 0
+   }
+  ],
+  "acts_at": 50,
+  "floor": 0.8,
+  "now": "r-1233"
+ },
+ "envs": [
+  {
+   "env": "prod",
+   "app": "MyPaisa",
+   "web": "dashboard.mypaisapp.com",
+   "api": "api.mypaisapp.com",
+   "data": "the household’s own records",
+   "ship": "a release reaches it only after Arun’s approval, through GitHub CI",
+   "tf": "Household Beta"
+  },
+  {
+   "env": "dev",
+   "app": "MyPaisa Dev",
+   "web": "dashboard-dev.mypaisapp.com",
+   "api": "api-dev.mypaisapp.com",
+   "data": "synthetic data, from the seed scripts",
+   "ship": "every merge to main deploys it first",
+   "tf": "Dev Dogfood"
+  }
+ ]
+}
