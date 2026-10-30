@@ -1026,7 +1026,7 @@ def intro_turn(tag: str, title: str, intro: str, plan_html: str, links: list[tup
 
 def board_section(num: str, name: str, keys: str, lead: str, frames: list[str], notes: list[tuple[str, str]], rec: bool = False, alt: str = "", anchor: str = "") -> str:
     nt = "".join(f"<p><b>{a}</b> {b}</p>" for a, b in notes)
-    badge = '<span class="recb">Recommended</span>' if rec else (f'<span class="altb">{alt}</span>' if alt else "")
+    badge = '<span class="recb">Picked</span>' if rec else (f'<span class="altb">{alt}</span>' if alt else "")
     aid = anchor or num
     return (
         f'      <section class="bd" id="{aid}" data-screen-label="{num} · {name}">\n'
@@ -1159,9 +1159,9 @@ def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, co
 # ------------------------------------------------------------------ Canvas 1: ds-v1/Chart options.dc.html
 PLAN_BAR = (
     '<b>Jira</b><span class="plan-k">MA-295</span><span>Dashboard &amp; app chart redesign</span>'
-    '<b>Spec</b><span>ARCHITECTURE §6.2, §6.5, §9.1, §9.3, §9.4, §19.7</span>'
+    '<b>Spec</b><span>ARCHITECTURE §6.2, §6.5, §9.1, §9.3, §9.4, §16, §19.7</span>'
     '<b>References</b><span>Apple HIG Charting Data · Monzo App &amp; Modular Web Design System · Warm ledger (tokens.css)</span>'
-    '<b>Status</b><span>Three options drawn; awaiting Arun\'s pick</span>'
+    '<b>Status</b><span>Picked: 1a · Monzo Pulse (Arun, 30 Oct 2026); 1b and 1c kept as record</span>'
 )
 
 
@@ -1188,15 +1188,16 @@ def build_ds_board() -> str:
         "Three complete chart and graph directions for MyPaisa v4 (MA-295), conforming to Apple's Human Interface Guidelines "
         "(plain-language takeaway first, progressive-disclosure touch/pointer scrubbing, standard marks where colour is never "
         "the sole signal, Light/Dark + 25%-brightness contrast, and accessible summaries) and Monzo's mobile &amp; modular web "
-        "design craft, without adding a single unmeasured colour outside <b>tokens.css</b>. Every figure comes from the v4 "
-        "household, future-plans and forecaster figure sets (Mon 26 Oct 2026)."
+        "design craft, without adding a single unmeasured colour outside <b>tokens.css</b>. Arun picked <b>1a · Monzo Pulse</b> "
+        "on 30 Oct 2026; 1b and 1c stay on this canvas as the record. Every figure comes from the v4 household, future-plans "
+        "and forecaster figure sets (Mon 26 Oct 2026)."
     )
     links = [
-        ("1a", "1a · Monzo Pulse (Recommended)"),
-        ("1b", "1b · Apple Health Editorial"),
-        ("1c", "1c · Monzo Modular Bento"),
+        ("1a", "1a · Monzo Pulse (Picked)"),
+        ("1b", "1b · Apple Health Editorial (Not picked)"),
+        ("1c", "1c · Monzo Modular Bento (Not picked)"),
     ]
-    out = [intro_turn("DS", "MyPaisa DS v1 · Chart options: three visual directions", intro, PLAN_BAR, links)]
+    out = [intro_turn("DS", "MyPaisa DS v1 · Chart options: 1a Monzo Pulse picked", intro, PLAN_BAR, links)]
 
     specs = [
         (
@@ -1207,7 +1208,7 @@ def build_ds_board() -> str:
             "a",
             "Fritsch-Carlson monotone cubic splines with a warm coral wash and a live endpoint beacon dot on the recorded net-worth pulse and 20-year fan; sculpted capsule meters with vertical 100%-plan ticks; zero-spine diverging pillars; rounded candles; and pointer/touch scrubbing.",
             [
-                ("Recommended:", "gives the dashboard Monzo's tactile energy and warmth while keeping Warm ledger's calm surfaces and Apple HIG's plain-language hierarchy."),
+                ("Picked (Arun, 30 Oct 2026):", "the chart spec for both doors (Swift Charts in ios/, LayerChart and lightweight-charts in web/, MA-56 and MA-279); gives the dashboard Monzo's tactile energy and warmth while keeping Warm ledger's calm surfaces and Apple HIG's plain-language hierarchy."),
                 ("Monotone splines:", "never overshoot a real data point, so peaks and troughs stay truthful to the deterministic engine."),
                 ("Plan ticks:", "every spending bar carries its vertical 100%-plan tick and ▲/▼ word cue, so overspend is clear without relying on colour."),
             ],
@@ -1216,26 +1217,26 @@ def build_ds_board() -> str:
             "1b",
             "Apple Health Editorial",
             False,
-            "Option B",
+            "Not picked",
             "b",
             "Crisp editorial hairline grid and left Y-axis labels, a three-stat summary header strip (LOW / LATEST / HIGH) above each plot, jewel-like hollow dots, bullet-graph plan markers, and hollow-up / filled-down candles per Apple HIG Charts.",
             [
+                ("Not picked (record):", "kept on this canvas as the options-round record; superseded by Arun's pick of 1a Monzo Pulse on 30 Oct 2026."),
                 ("For:", "maximum typographic precision and familiar Apple Health / Stocks chart grammar, with explicit Y-axis benchmarks at rest."),
                 ("Trade-off:", "quieter and more newspaper-editorial than Monzo's banking pulse; less warmth on the Home hero."),
-                ("Hollow up candles:", "pair fill state with colour so up vs down trading days stay unmistakable in monochrome or low brightness."),
             ],
         ),
         (
             "1c",
             "Monzo Modular Bento",
             False,
-            "Option C",
+            "Not picked",
             "c",
             "Modular bento tiles with proportional recorded column bars in the Home hero, a ring/donut country-split tile (76% UK · 24% India), 10-cell quantized pot pace meters, chip-badged diverging pillars, and a 24px Daily Swing Rhythm Sub-Strip beneath the market candles.",
             [
+                ("Not picked (record):", "kept on this canvas as the options-round record; superseded by Arun's pick of 1a Monzo Pulse on 30 Oct 2026."),
                 ("For:", "high-glanceability modular cards inspired by Monzo's pots and modular web system, turning every ratio into countable blocks."),
                 ("Trade-off:", "10-cell quantized meters round to ~10% steps at rest (exact pounds still sit in the label above each bar)."),
-                ("Swing rhythm strip:", "separates daily high-low volatility from price direction right beneath the 60-day candles."),
             ],
         ),
     ]
@@ -1257,24 +1258,24 @@ def build_ios_board() -> str:
     intro = (
         "The three chart redesign options (MA-295) inside MyPaisa iOS v1 shell 1a (Liquid Glass controls floating above "
         "solid Warm ledger cards, never glass on charts) on iPhone (402 pt, measured down to 320 pt Display Zoom) and iPad "
-        "landscape (1180 pt, with sidebar and Chat beside it from 1133 pt). Turn 1 compares <b>1a Monzo Pulse</b> (Recommended), "
-        "<b>1b Apple Health Editorial</b>, and <b>1c Monzo Modular Bento</b>; Turn 2 draws 1a's states across Projection, "
-        "Budget forecast, Market candles and Privacy mode."
+        "landscape (1180 pt, with sidebar and Chat beside it from 1133 pt). Arun picked <b>1a Monzo Pulse</b> on 30 Oct 2026 "
+        "(1b and 1c stay here as the record); S1 to S3 draw 1a's picked states across Projection, Budget forecast, Market "
+        "candles and Privacy mode."
     )
     links = [
-        ("1a", "1a · Monzo Pulse (Recommended)"),
-        ("1b", "1b · Apple Health Editorial"),
-        ("1c", "1c · Monzo Modular Bento"),
-        ("S1", "S1 · Projection & Budget forecast"),
-        ("S2", "S2 · Market candles & pillars"),
-        ("S3", "S3 · Privacy mode"),
+        ("1a", "1a · Monzo Pulse (Picked)"),
+        ("1b", "1b · Apple Health Editorial (Not picked)"),
+        ("1c", "1c · Monzo Modular Bento (Not picked)"),
+        ("S1", "S1 · Projection & Budget forecast (Picked)"),
+        ("S2", "S2 · Market candles & pillars (Picked)"),
+        ("S3", "S3 · Privacy mode (Picked)"),
     ]
-    out = [intro_turn("IC", "iPhone and iPad · Dashboard charts: three options and 1a states", intro, PLAN_BAR, links)]
+    out = [intro_turn("IC", "iPhone and iPad · Dashboard charts: 1a Monzo Pulse picked", intro, PLAN_BAR, links)]
 
     for num, name, rec, alt, mode, why in [
-        ("1a", "iPhone · Dashboard charts, Monzo Pulse", True, "", "a", "Smooth monotone net-worth pulse in the navy hero with endpoint beacon, sculpted country/member meters and October spending pace with 100%-plan ticks, plus iPad two-column dashboard beside Chat."),
-        ("1b", "iPhone · Dashboard charts, Apple Health Editorial", False, "Option B", "b", "Editorial hairline range rules, three-stat summary strips (SPENT / PLAN / SURPLUS), hollow data markers and bullet-graph plan benchmarks across iPhone and iPad."),
-        ("1c", "iPhone · Dashboard charts, Monzo Modular Bento", False, "Option C", "c", "Proportional 5-day recorded ledger columns on the hero, ring/donut UK-India composition tile (76% / 24%), and 10-cell quantized pot pace meters across iPhone and iPad."),
+        ("1a", "iPhone · Dashboard charts, Monzo Pulse", True, "", "a", "Picked on 30 Oct 2026: smooth monotone net-worth pulse in the navy hero with endpoint beacon, sculpted country/member meters and October spending pace with 100%-plan ticks, plus iPad two-column dashboard beside Chat."),
+        ("1b", "iPhone · Dashboard charts, Apple Health Editorial", False, "Not picked", "b", "Kept as record (not picked): editorial hairline range rules, three-stat summary strips (SPENT / PLAN / SURPLUS), hollow data markers and bullet-graph plan benchmarks across iPhone and iPad."),
+        ("1c", "iPhone · Dashboard charts, Monzo Modular Bento", False, "Not picked", "c", "Kept as record (not picked): proportional 5-day recorded ledger columns on the hero, ring/donut UK-India composition tile (76% / 24%), and 10-cell quantized pot pace meters across iPhone and iPad."),
     ]:
         ph_body = f"{hero_block(mode)}{wealth_mix_card(mode)}{budget_card(mode)}"
         frames = [
@@ -1284,7 +1285,13 @@ def build_ios_board() -> str:
         ]
         if rec:
             frames.append(ipad_frame(f"{num} · iPad · Dark", DK, f"{wealth_mix_card(mode)}{projection_fan_card(mode)}", f"{budget_card(mode)}", hero_block(mode, compact=True)))
+        status_note = (
+            ("Picked spec (30 Oct 2026):", "this option and S1 to S3 are the iOS chart spec for Swift Charts (MA-56, MA-279).")
+            if rec
+            else ("Not picked (record):", "stays on this canvas as the options-round record; superseded by 1a Monzo Pulse.")
+        )
         notes = [
+            status_note,
             ("HIG Charting Data:", "every chart leads with a plain-language takeaway, keeps calm at rest, and reveals per-point values on touch drag."),
             ("Liquid Glass boundary:", "only the toolbar buttons, composer and tab dock use Liquid Glass; chart surfaces stay solid Warm ledger for 25%-brightness contrast."),
             ("iPad width rule:", "the chat sits beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)."),
@@ -1298,7 +1305,7 @@ def build_ios_board() -> str:
         "S1",
         "iPhone · Projection and Budget forecast charts",
         "MA-295 · §6.2 · §6.5 · §9.1",
-        "1a Monzo Pulse applied to the 20-year Monte Carlo wealth fan (R26, 2026 to 2046) and the 20-year monthly surplus columns: Light shows R1 before rearranging (50 months below the £500 floor flagged in amber with dot markers), Dark shows R4 after rearranging and closing the HDFC loan (0 months below floor).",
+        "Picked 1a Monzo Pulse applied to the 20-year Monte Carlo wealth fan (R26, 2026 to 2046) and the 20-year monthly surplus columns: Light shows R1 before rearranging (50 months below the £500 floor flagged in amber with dot markers), Dark shows R4 after rearranging and closing the HDFC loan (0 months below floor).",
         [
             iphone_frame("iPhone · Projection & R1 surplus (before rearranging) · Light", LT, s1_body_r1, title="Projection"),
             iphone_frame("iPhone · Projection & R4 surplus (0 below floor) · Dark", DK, s1_body_r4, title="Projection"),
@@ -1307,6 +1314,7 @@ def build_ios_board() -> str:
             ("Exact engine flag:", "amber bars follow the engine's below_floor count and negative leanest-month check, never the annual average alone."),
             ("Smooth conformal fan:", "monotone cubic boundaries enclose 8 in 10 runs in --mp-band, keeping the p50 spine above 3:1 contrast."),
         ],
+        rec=True,
     ))
 
     s2_body = f"{candles_card('a')}{pillars_card('a')}"
@@ -1314,7 +1322,7 @@ def build_ios_board() -> str:
         "S2",
         "iPhone · Market candles, fan and pillars",
         "MA-295 · §9.1 · §19.7",
-        "1a Monzo Pulse on Asha's NASDAQ 100 ETF: 60 trading days of rounded candles to Fri 23 Oct, the 4-week conformal fan (−7% to +6%), measured double-top and support lines, and zero-spine diverging drivers.",
+        "Picked 1a Monzo Pulse on Asha's NASDAQ 100 ETF: 60 trading days of rounded candles to Fri 23 Oct, the 4-week conformal fan (−7% to +6%), measured double-top and support lines, and zero-spine diverging drivers.",
         [
             iphone_frame("iPhone · Market candles & pillars · Light", LT, s2_body, title="NASDAQ 100 ETF"),
             iphone_frame("iPhone · Market candles & pillars · Dark", DK, s2_body, title="NASDAQ 100 ETF"),
@@ -1323,6 +1331,7 @@ def build_ios_board() -> str:
             ("Risk before direction:", "21% chance of a fall over 5% leads the stat strip, followed by the 8-in-10 range and direction."),
             ("Zero-spine pillars:", "positive and negative drivers push left and right from one shared 50% spine with ▲/▼ point labels."),
         ],
+        rec=True,
     ))
 
     s3_body = f"{hero_block('a', priv=True)}{wealth_mix_card('a', priv=True)}{budget_card('a', priv=True)}"
@@ -1338,6 +1347,7 @@ def build_ios_board() -> str:
         [
             ("No scrub leak:", "data-scrub is omitted or masked when privacy is active so dragging a chart cannot reveal hidden balances."),
         ],
+        rec=True,
     ))
 
     return doc_wrap("iPhone v4 · Chart options", "".join(out), include_ios=True)
@@ -1348,22 +1358,22 @@ def build_web_board() -> str:
     intro = (
         "The three chart redesign options (MA-295) on the MyPaisa Web v4 adaptive shell (<b>tokens.css</b>), drawn at desktop "
         "1440 (sidebar, two-column dashboard and Chat beside it) and phone web 390 (single column with bottom tab bar, "
-        "measured down to 320 px). Turn 1 compares <b>1a Monzo Pulse</b> (Recommended), <b>1b Apple Health Editorial</b>, and "
-        "<b>1c Monzo Modular Bento</b>; Turn 2 draws 1a across Projection, Budget forecast, Forecaster candles and Privacy mode."
+        "measured down to 320 px). Arun picked <b>1a Monzo Pulse</b> on 30 Oct 2026 (1b and 1c stay here as the record); "
+        "W1 and W2 draw 1a's picked states across Projection, Budget forecast, Forecaster candles and Privacy mode."
     )
     links = [
-        ("1a", "1a · Monzo Pulse (Recommended)"),
-        ("1b", "1b · Apple Health Editorial"),
-        ("1c", "1c · Monzo Modular Bento"),
-        ("W1", "W1 · Projection, Budget forecast & Forecaster"),
-        ("W2", "W2 · Privacy mode"),
+        ("1a", "1a · Monzo Pulse (Picked)"),
+        ("1b", "1b · Apple Health Editorial (Not picked)"),
+        ("1c", "1c · Monzo Modular Bento (Not picked)"),
+        ("W1", "W1 · Projection, Budget forecast & Forecaster (Picked)"),
+        ("W2", "W2 · Privacy mode (Picked)"),
     ]
-    out = [intro_turn("WC", "Web v4 · Dashboard charts: three options and 1a states", intro, PLAN_BAR, links)]
+    out = [intro_turn("WC", "Web v4 · Dashboard charts: 1a Monzo Pulse picked", intro, PLAN_BAR, links)]
 
     for num, name, rec, alt, mode, why in [
-        ("1a", "Browser · Dashboard charts, Monzo Pulse", True, "", "a", "Smooth monotone net-worth pulse in the hero, sculpted UK/India and member meters with reference ticks, October spending pace with 100%-plan ticks, and the 20-year wealth range fan beside it at 1440 and 390."),
-        ("1b", "Browser · Dashboard charts, Apple Health Editorial", False, "Option B", "b", "Editorial hairline grids, left Y-axis benchmarks, three-stat summary strips above every plot, hollow data dots and bullet-graph plan markers across Light and Dark."),
-        ("1c", "Browser · Dashboard charts, Monzo Modular Bento", False, "Option C", "c", "Modular bento layout with proportional 5-day hero bars, ring/donut UK-India split (76% / 24%), and 10-cell quantized pot meters across Light and Dark."),
+        ("1a", "Browser · Dashboard charts, Monzo Pulse", True, "", "a", "Picked on 30 Oct 2026: smooth monotone net-worth pulse in the hero, sculpted UK/India and member meters with reference ticks, October spending pace with 100%-plan ticks, and the 20-year wealth range fan beside it at 1440 and 390."),
+        ("1b", "Browser · Dashboard charts, Apple Health Editorial", False, "Not picked", "b", "Kept as record (not picked): editorial hairline grids, left Y-axis benchmarks, three-stat summary strips above every plot, hollow data dots and bullet-graph plan markers across Light and Dark."),
+        ("1c", "Browser · Dashboard charts, Monzo Modular Bento", False, "Not picked", "c", "Kept as record (not picked): modular bento layout with proportional 5-day hero bars, ring/donut UK-India split (76% / 24%), and 10-cell quantized pot meters across Light and Dark."),
     ]:
         c1 = f"{wealth_mix_card(mode)}{projection_fan_card(mode)}"
         c2 = f"{budget_card(mode)}"
@@ -1373,7 +1383,13 @@ def build_web_board() -> str:
         ]
         if rec:
             frames.append(browser_frame(f"{num} · Phone web 390 · Light", LT, "w390", hero_block(mode, compact=True), f"{wealth_mix_card(mode)}", f"{budget_card(mode)}"))
+        status_note = (
+            ("Picked spec (30 Oct 2026):", "this option and W1 to W2 are the web chart spec for LayerChart and lightweight-charts (MA-229, MA-279).")
+            if rec
+            else ("Not picked (record):", "stays on this canvas as the options-round record; superseded by 1a Monzo Pulse.")
+        )
         notes = [
+            status_note,
             ("One responsive markup:", "uses .mp-shell and .mp-cols so two columns at 1440 stack cleanly to one column under 700 px of page width and down to 320 px."),
             ("Read-only web posture:", "pointer hover and touch drag inspect any point on the chart; every write still goes through a chat card and Confirm."),
         ]
@@ -1387,7 +1403,7 @@ def build_web_board() -> str:
         "W1",
         "Browser · Projection, Budget forecast and Forecaster charts",
         "MA-295 · §6.2 · §6.5 · §9.3 · §19.7",
-        "1a Monzo Pulse across the analytical charts on desktop 1440: the 20-year Monte Carlo fan and monthly surplus columns on the left (R1 before rearranging in Light; R4 cleared in Dark), paired with NASDAQ 100 ETF 60-day rounded candles, 4-week conformal fan and zero-spine diverging drivers on the right.",
+        "Picked 1a Monzo Pulse across the analytical charts on desktop 1440: the 20-year Monte Carlo fan and monthly surplus columns on the left (R1 before rearranging in Light; R4 cleared in Dark), paired with NASDAQ 100 ETF 60-day rounded candles, 4-week conformal fan and zero-spine diverging drivers on the right.",
         [
             browser_frame("Browser · Analytical charts (R1 surplus) · 1440 Light", LT, "w1440", "", w1_c1_lt, w1_c2, title="Projection & Forecast"),
             browser_frame("Browser · Analytical charts (R4 cleared) · 1440 Dark", DK, "w1440", "", w1_c1_dk, w1_c2, title="Projection & Forecast"),
@@ -1395,6 +1411,7 @@ def build_web_board() -> str:
         [
             ("Shared grammar:", "every analytical chart shares the same 3-stat summary strip, monotone spline/rounded bar treatment, legend tokens and interactive hover/touch scrub pill."),
         ],
+        rec=True,
     ))
 
     w2_c1 = f"{wealth_mix_card('a', priv=True)}{projection_fan_card('a', priv=True)}"
@@ -1411,6 +1428,7 @@ def build_web_board() -> str:
         [
             ("Complete masking:", "both the dashboard cards and the adjacent chat summary mask every currency figure in lockstep."),
         ],
+        rec=True,
     ))
 
     return doc_wrap("Web v4 · Chart options", "".join(out), include_ios=False)

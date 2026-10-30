@@ -233,15 +233,15 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 .t-dark .mpm-coin{fill:var(--mp-hero-2)}
         </style>
       </helmet>
-      <section class="dv-turn" id="intro" data-screen-label="Web v4 · Dashboard charts: three options and 1a states: intro">
-        <div class="dv-thd"><a class="dv-tid" href="#intro">WC</a><span class="dv-tname">Web v4 · Dashboard charts: three options and 1a states</span></div>
-        <p class="dv-intro">The three chart redesign options (MA-295) on the MyPaisa Web v4 adaptive shell (<b>tokens.css</b>), drawn at desktop 1440 (sidebar, two-column dashboard and Chat beside it) and phone web 390 (single column with bottom tab bar, measured down to 320 px). Turn 1 compares <b>1a Monzo Pulse</b> (Recommended), <b>1b Apple Health Editorial</b>, and <b>1c Monzo Modular Bento</b>; Turn 2 draws 1a across Projection, Budget forecast, Forecaster candles and Privacy mode.</p>
-        <div class="plan"><b>Jira</b><span class="plan-k">MA-295</span><span>Dashboard &amp; app chart redesign</span><b>Spec</b><span>ARCHITECTURE §6.2, §6.5, §9.1, §9.3, §9.4, §19.7</span><b>References</b><span>Apple HIG Charting Data · Monzo App &amp; Modular Web Design System · Warm ledger (tokens.css)</span><b>Status</b><span>Three options drawn; awaiting Arun's pick</span></div>
-        <nav class="idx" aria-label="Boards"><a href="#1a">1a · Monzo Pulse (Recommended)</a><a href="#1b">1b · Apple Health Editorial</a><a href="#1c">1c · Monzo Modular Bento</a><a href="#W1">W1 · Projection, Budget forecast & Forecaster</a><a href="#W2">W2 · Privacy mode</a></nav>
+      <section class="dv-turn" id="intro" data-screen-label="Web v4 · Dashboard charts: 1a Monzo Pulse picked: intro">
+        <div class="dv-thd"><a class="dv-tid" href="#intro">WC</a><span class="dv-tname">Web v4 · Dashboard charts: 1a Monzo Pulse picked</span></div>
+        <p class="dv-intro">The three chart redesign options (MA-295) on the MyPaisa Web v4 adaptive shell (<b>tokens.css</b>), drawn at desktop 1440 (sidebar, two-column dashboard and Chat beside it) and phone web 390 (single column with bottom tab bar, measured down to 320 px). Arun picked <b>1a Monzo Pulse</b> on 30 Oct 2026 (1b and 1c stay here as the record); W1 and W2 draw 1a's picked states across Projection, Budget forecast, Forecaster candles and Privacy mode.</p>
+        <div class="plan"><b>Jira</b><span class="plan-k">MA-295</span><span>Dashboard &amp; app chart redesign</span><b>Spec</b><span>ARCHITECTURE §6.2, §6.5, §9.1, §9.3, §9.4, §16, §19.7</span><b>References</b><span>Apple HIG Charting Data · Monzo App &amp; Modular Web Design System · Warm ledger (tokens.css)</span><b>Status</b><span>Picked: 1a · Monzo Pulse (Arun, 30 Oct 2026); 1b and 1c kept as record</span></div>
+        <nav class="idx" aria-label="Boards"><a href="#1a">1a · Monzo Pulse (Picked)</a><a href="#1b">1b · Apple Health Editorial (Not picked)</a><a href="#1c">1c · Monzo Modular Bento (Not picked)</a><a href="#W1">W1 · Projection, Budget forecast & Forecaster (Picked)</a><a href="#W2">W2 · Privacy mode (Picked)</a></nav>
       </section>
       <section class="bd" id="1a" data-screen-label="1a · Browser · Dashboard charts, Monzo Pulse">
-        <div class="dv-thd"><span class="dv-tid">1a</span><span class="dv-tname">Browser · Dashboard charts, Monzo Pulse</span><span class="recb">Recommended</span><span class="bd-keys">MA-295 · §9.3 · §9.4 · §12</span></div>
-        <p class="bd-lead">Smooth monotone net-worth pulse in the hero, sculpted UK/India and member meters with reference ticks, October spending pace with 100%-plan ticks, and the 20-year wealth range fan beside it at 1440 and 390.</p>
+        <div class="dv-thd"><span class="dv-tid">1a</span><span class="dv-tname">Browser · Dashboard charts, Monzo Pulse</span><span class="recb">Picked</span><span class="bd-keys">MA-295 · §9.3 · §9.4 · §12</span></div>
+        <p class="bd-lead">Picked on 30 Oct 2026: smooth monotone net-worth pulse in the hero, sculpted UK/India and member meters with reference ticks, October spending pace with 100%-plan ticks, and the 20-year wealth range fan beside it at 1440 and 390.</p>
         <div class="bd-row">
           <div class="dv-col" data-screen-label="1a · Desktop 1440 · Light"><div class="bd-theme">1a · Desktop 1440 · Light</div>
 <div class="bf w1440 mp mp-app t-light" data-mo-frame-root="1"><div class="pstat" aria-hidden="true"><span>9:41</span><span class="fx ac gap6"><span class="ms ms-s">signal_cellular_alt</span><span class="ms ms-s">wifi</span><span class="ms ms-s">battery_horiz_075</span></span></div>
@@ -560,12 +560,12 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <nav class="mp-tabbar mp-shell-tabs wtabs" aria-label="Sections"><span class="mp-tab"><span class="ms">chat_bubble</span>Chat</span><span class="mp-tab on"><span class="ms ms-fill">home</span>Overview</span><span class="mp-tab"><span class="ms">donut_small</span>Assets</span><span class="mp-tab"><span class="ms">savings</span>Budget</span><span class="mp-tab"><span class="ms">menu</span>More</span></nav>
 </div>
 </div>
-          <div class="bd-note"><p><b>One responsive markup:</b> uses .mp-shell and .mp-cols so two columns at 1440 stack cleanly to one column under 700 px of page width and down to 320 px.</p><p><b>Read-only web posture:</b> pointer hover and touch drag inspect any point on the chart; every write still goes through a chat card and Confirm.</p></div>
+          <div class="bd-note"><p><b>Picked spec (30 Oct 2026):</b> this option and W1 to W2 are the web chart spec for LayerChart and lightweight-charts (MA-229, MA-279).</p><p><b>One responsive markup:</b> uses .mp-shell and .mp-cols so two columns at 1440 stack cleanly to one column under 700 px of page width and down to 320 px.</p><p><b>Read-only web posture:</b> pointer hover and touch drag inspect any point on the chart; every write still goes through a chat card and Confirm.</p></div>
         </div>
       </section>
       <section class="bd" id="1b" data-screen-label="1b · Browser · Dashboard charts, Apple Health Editorial">
-        <div class="dv-thd"><span class="dv-tid">1b</span><span class="dv-tname">Browser · Dashboard charts, Apple Health Editorial</span><span class="altb">Option B</span><span class="bd-keys">MA-295 · §9.3 · §9.4 · §12</span></div>
-        <p class="bd-lead">Editorial hairline grids, left Y-axis benchmarks, three-stat summary strips above every plot, hollow data dots and bullet-graph plan markers across Light and Dark.</p>
+        <div class="dv-thd"><span class="dv-tid">1b</span><span class="dv-tname">Browser · Dashboard charts, Apple Health Editorial</span><span class="altb">Not picked</span><span class="bd-keys">MA-295 · §9.3 · §9.4 · §12</span></div>
+        <p class="bd-lead">Kept as record (not picked): editorial hairline grids, left Y-axis benchmarks, three-stat summary strips above every plot, hollow data dots and bullet-graph plan markers across Light and Dark.</p>
         <div class="bd-row">
           <div class="dv-col" data-screen-label="1b · Desktop 1440 · Light"><div class="bd-theme">1b · Desktop 1440 · Light</div>
 <div class="bf w1440 mp mp-app t-light" data-mo-frame-root="1"><div class="pstat" aria-hidden="true"><span>9:41</span><span class="fx ac gap6"><span class="ms ms-s">signal_cellular_alt</span><span class="ms ms-s">wifi</span><span class="ms ms-s">battery_horiz_075</span></span></div>
@@ -799,12 +799,12 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <nav class="mp-tabbar mp-shell-tabs wtabs" aria-label="Sections"><span class="mp-tab"><span class="ms">chat_bubble</span>Chat</span><span class="mp-tab on"><span class="ms ms-fill">home</span>Overview</span><span class="mp-tab"><span class="ms">donut_small</span>Assets</span><span class="mp-tab"><span class="ms">savings</span>Budget</span><span class="mp-tab"><span class="ms">menu</span>More</span></nav>
 </div>
 </div>
-          <div class="bd-note"><p><b>One responsive markup:</b> uses .mp-shell and .mp-cols so two columns at 1440 stack cleanly to one column under 700 px of page width and down to 320 px.</p><p><b>Read-only web posture:</b> pointer hover and touch drag inspect any point on the chart; every write still goes through a chat card and Confirm.</p></div>
+          <div class="bd-note"><p><b>Not picked (record):</b> stays on this canvas as the options-round record; superseded by 1a Monzo Pulse.</p><p><b>One responsive markup:</b> uses .mp-shell and .mp-cols so two columns at 1440 stack cleanly to one column under 700 px of page width and down to 320 px.</p><p><b>Read-only web posture:</b> pointer hover and touch drag inspect any point on the chart; every write still goes through a chat card and Confirm.</p></div>
         </div>
       </section>
       <section class="bd" id="1c" data-screen-label="1c · Browser · Dashboard charts, Monzo Modular Bento">
-        <div class="dv-thd"><span class="dv-tid">1c</span><span class="dv-tname">Browser · Dashboard charts, Monzo Modular Bento</span><span class="altb">Option C</span><span class="bd-keys">MA-295 · §9.3 · §9.4 · §12</span></div>
-        <p class="bd-lead">Modular bento layout with proportional 5-day hero bars, ring/donut UK-India split (76% / 24%), and 10-cell quantized pot meters across Light and Dark.</p>
+        <div class="dv-thd"><span class="dv-tid">1c</span><span class="dv-tname">Browser · Dashboard charts, Monzo Modular Bento</span><span class="altb">Not picked</span><span class="bd-keys">MA-295 · §9.3 · §9.4 · §12</span></div>
+        <p class="bd-lead">Kept as record (not picked): modular bento layout with proportional 5-day hero bars, ring/donut UK-India split (76% / 24%), and 10-cell quantized pot meters across Light and Dark.</p>
         <div class="bd-row">
           <div class="dv-col" data-screen-label="1c · Desktop 1440 · Light"><div class="bd-theme">1c · Desktop 1440 · Light</div>
 <div class="bf w1440 mp mp-app t-light" data-mo-frame-root="1"><div class="pstat" aria-hidden="true"><span>9:41</span><span class="fx ac gap6"><span class="ms ms-s">signal_cellular_alt</span><span class="ms ms-s">wifi</span><span class="ms ms-s">battery_horiz_075</span></span></div>
@@ -1048,12 +1048,12 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <nav class="mp-tabbar mp-shell-tabs wtabs" aria-label="Sections"><span class="mp-tab"><span class="ms">chat_bubble</span>Chat</span><span class="mp-tab on"><span class="ms ms-fill">home</span>Overview</span><span class="mp-tab"><span class="ms">donut_small</span>Assets</span><span class="mp-tab"><span class="ms">savings</span>Budget</span><span class="mp-tab"><span class="ms">menu</span>More</span></nav>
 </div>
 </div>
-          <div class="bd-note"><p><b>One responsive markup:</b> uses .mp-shell and .mp-cols so two columns at 1440 stack cleanly to one column under 700 px of page width and down to 320 px.</p><p><b>Read-only web posture:</b> pointer hover and touch drag inspect any point on the chart; every write still goes through a chat card and Confirm.</p></div>
+          <div class="bd-note"><p><b>Not picked (record):</b> stays on this canvas as the options-round record; superseded by 1a Monzo Pulse.</p><p><b>One responsive markup:</b> uses .mp-shell and .mp-cols so two columns at 1440 stack cleanly to one column under 700 px of page width and down to 320 px.</p><p><b>Read-only web posture:</b> pointer hover and touch drag inspect any point on the chart; every write still goes through a chat card and Confirm.</p></div>
         </div>
       </section>
       <section class="bd" id="W1" data-screen-label="W1 · Browser · Projection, Budget forecast and Forecaster charts">
-        <div class="dv-thd"><span class="dv-tid">W1</span><span class="dv-tname">Browser · Projection, Budget forecast and Forecaster charts</span><span class="bd-keys">MA-295 · §6.2 · §6.5 · §9.3 · §19.7</span></div>
-        <p class="bd-lead">1a Monzo Pulse across the analytical charts on desktop 1440: the 20-year Monte Carlo fan and monthly surplus columns on the left (R1 before rearranging in Light; R4 cleared in Dark), paired with NASDAQ 100 ETF 60-day rounded candles, 4-week conformal fan and zero-spine diverging drivers on the right.</p>
+        <div class="dv-thd"><span class="dv-tid">W1</span><span class="dv-tname">Browser · Projection, Budget forecast and Forecaster charts</span><span class="recb">Picked</span><span class="bd-keys">MA-295 · §6.2 · §6.5 · §9.3 · §19.7</span></div>
+        <p class="bd-lead">Picked 1a Monzo Pulse across the analytical charts on desktop 1440: the 20-year Monte Carlo fan and monthly surplus columns on the left (R1 before rearranging in Light; R4 cleared in Dark), paired with NASDAQ 100 ETF 60-day rounded candles, 4-week conformal fan and zero-spine diverging drivers on the right.</p>
         <div class="bd-row">
           <div class="dv-col" data-screen-label="Browser · Analytical charts (R1 surplus) · 1440 Light"><div class="bd-theme">Browser · Analytical charts (R1 surplus) · 1440 Light</div>
 <div class="bf w1440 mp mp-app t-light" data-mo-frame-root="1"><div class="pstat" aria-hidden="true"><span>9:41</span><span class="fx ac gap6"><span class="ms ms-s">signal_cellular_alt</span><span class="ms ms-s">wifi</span><span class="ms ms-s">battery_horiz_075</span></span></div>
@@ -1544,7 +1544,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
         </div>
       </section>
       <section class="bd" id="W2" data-screen-label="W2 · Browser · Dashboard charts, privacy on">
-        <div class="dv-thd"><span class="dv-tid">W2</span><span class="dv-tname">Browser · Dashboard charts, privacy on</span><span class="bd-keys">MA-295 · §9.3</span></div>
+        <div class="dv-thd"><span class="dv-tid">W2</span><span class="dv-tname">Browser · Dashboard charts, privacy on</span><span class="recb">Picked</span><span class="bd-keys">MA-295 · §9.3</span></div>
         <p class="bd-lead">Privacy mode on desktop 1440 Light and phone web 390 Dark: every pound and rupee amount in the hero, stat strips, meters, legends and chat column is masked in .mp-mask, and hover scrubbing is suppressed.</p>
         <div class="bd-row">
           <div class="dv-col" data-screen-label="Browser · Dashboard charts, privacy on · 1440 Light"><div class="bd-theme">Browser · Dashboard charts, privacy on · 1440 Light</div>

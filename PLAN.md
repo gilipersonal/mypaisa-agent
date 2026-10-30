@@ -552,9 +552,14 @@ Claude's:
   the browser at 1440 and 390 (`Web v4 · Chart options.dc.html`), and live
   inside Prototype v5 (`Charts: A · Pulse | B · Editorial | C · Modular | Classic`
   with pointer and touch scrubbing across all five doors, light, dark and
-  privacy mode): **1a Monzo Pulse** (recommended), **1b Apple Health Editorial**,
-  and **1c Monzo Modular Bento** (`docs/design/reviews/MA-295/options.html` and
-  `decision.md`). You pick before any product chart code is built.
+  privacy mode): **1a Monzo Pulse** (picked by you on 30 Oct 2026: monotone
+  cubic splines with warm coral wash and endpoint beacon, sculpted capsule
+  meters with 100%-plan ticks, zero-spine diverging pillars, rounded candles,
+  and touch/pointer scrub callouts), with **1b Apple Health Editorial** and
+  **1c Monzo Modular Bento** kept on the canvases as the record
+  (`docs/design/reviews/MA-295/options.html` and `decision.md`). Carried into
+  the consolidated boards (MA-279) and the Swift Charts and LayerChart builds
+  (MA-56).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -1638,9 +1643,9 @@ Claude starts writing on top of numbers that already work.
   has had since phase 1 (MA-54, MA-248).
 - Morning brief and evening wrap as cards, and by push; the Technical section
   on every card; `/technical` mode; the glossary on a tap.
-- Charts: one house style in Swift Charts (MA-56); holding history with
-  stance horizon shaded; portfolio curve; drawn in the card from the
-  engine's series.
+- Charts: one house style, 1a Monzo Pulse (MA-295, MA-56), in Swift Charts
+  and LayerChart; holding history with stance horizon shaded; portfolio curve;
+  drawn in the card from the engine's series.
 - Alert tiers, cooldowns, weekly red budget, quiet hours, Haiku repeat
   filter; alert tiers as push interruption levels (red time-sensitive with
   sound, amber passive); `I acted` and the decision log; dead man's switch and

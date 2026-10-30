@@ -1457,6 +1457,23 @@ control is tinted coral; red stays for alerts that ask for action. The app icon
 is the 1c Watcher mark (MA-103) in Apple's layered format, with a DEV band on
 MyPaisa Dev.
 
+**Charts: 1a Monzo Pulse** (MA-295, picked 30 Oct 2026; MA-56). One chart house
+style across Swift Charts in the app and LayerChart and lightweight-charts in
+the web app (§9.4), built exclusively on Warm ledger's audited `tokens.css`
+palette so every line, fill, band (`--mp-band`) and empty track (`--mp-track`)
+holds contrast in light, dark and at 25% brightness: every chart leads with a
+plain-language takeaway per Apple's Human Interface Guidelines; recorded
+trajectories (including the 5-day Home hero pulse) and conformal projection fans
+use Fritsch-Carlson monotone cubic splines that never overshoot engine values,
+with a warm coral area wash and a double-ring endpoint beacon dot; spending and
+allocation bars use sculpted capsule tracks with vertical 100%-plan tick marks
+and `▲`/`▼` variance words so colour is never the sole signal; stance and
+cashflow drivers diverge left and right from one shared zero spine; market
+candles use rounded bodies with thin wicks; and progressive-disclosure touch or
+pointer scrubbing reveals per-point callouts (suppressed or masked in privacy
+mode, with audio graphs in the app and spoken `role="img"` summaries on the
+web).
+
 ### 9.2 Example cards
 
 The cards say what MyPaisa's cards said; the app draws them natively, with
@@ -1636,7 +1653,8 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   the chat and long lists, and Form 1.33 for the in-place correction and the
   Admin center's settings (still no creation form); shadcn-svelte's charts on
   LayerChart 2.9 for the dashboard, and lightweight-charts 5.2 only for the
-  market side's price charts; Motion 14 and Svelte transitions. Tests:
+  market side's price charts, both in the 1a Monzo Pulse grammar (§9.1, MA-295);
+  Motion 14 and Svelte transitions. Tests:
   Vitest 5, Playwright 1.64 with axe, and a pixel parity check of each screen
   against its board.
 - **Shared code:** the card types, the OpenAPI 3.1 endpoint types generated from
@@ -2554,6 +2572,7 @@ a daily digest instead.
 | Live delivery | SSE on the api host at both doors, with a per-member event log for resume and push only where no stream is open, replacing the API Gateway WebSocket and its `live` host; a spike proves it first (§21.5) | The session cookie reaches the api host; one stream carries replies, cards, check-ins and record changes |
 | Documentation | Confluence (space mypaisaa-agent) is the readable copy of the plan: generated from the trace, PLAN, ARCHITECTURE, the roadmap, the decision records and the boards' record by `scripts/confluence_docs.py`, published through the Atlassian MCP, and checked with the other records by `scripts/plan_sync.py`; every story's estimate and every phase's dates live in `docs/roadmap.json`, and each phase epic's due date in Jira is its target end; each story names the code that builds it (MA-228) | Arun, 26 Oct 2026: the plan, Jira, the designs, the documents and the code stay the same and do not drift; one source for each fact, every copy generated from it and checked |
 | UI and app stack | The web app on Smart Clearance's stack: SvelteKit 3, Tailwind CSS 4 over the Warm ledger tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, Motion. The iOS shell on bong-panjika's: React Native 0.88, TanStack Query on the shared query definitions, Reanimated, MMKV on Nitro, with every pixel SwiftUI. Each at its latest; Swift Package Manager from day one; the api a REST API so the stream can stream (MA-229, 26 Oct 2026) | Arun: "Go with the latest and greatest ... for UI, I want what we used for Smart Clearance and bong-panjika, Tanstack, shadcn-ui, tailwind CSS"; two stacks already proven in his projects, one data layer for both doors |
+| Charts | 1a Monzo Pulse at every door (Swift Charts in the iOS app, LayerChart and lightweight-charts in the web app; §9.1, §9.4, §19.7), on Warm ledger's audited `tokens.css` colours: plain-language takeaway first, Fritsch-Carlson monotone cubic splines with warm coral wash and double-ring endpoint beacon, sculpted capsule meters with vertical 100%-plan ticks and `▲`/`▼` words, zero-spine diverging pillars, rounded candles, and touch/pointer scrub callouts masked in privacy mode (MA-295, picked 30 Oct 2026; MA-56) | Arun, 30 Oct 2026: livelier dashboard graphs and charts conforming to Apple's HIG and Monzo's mobile and modular web craft, without adding unmeasured colours or losing 25%-brightness legibility |
 | Guardrails | In code before the prompt: least agency, one manifest per agent and tool, a policy gate before every call of our own tools that fails closed, Anthropic's server tools only in a call that holds no household figure, third-party text only as labelled data and files read by a quarantined extractor with no tools, a conversation that has read such text losing every tool that sends data out, every figure checked against the tool results and the member's own words, plain refusals for what is out of scope (§23.2; MA-245, 27 and 28 Oct 2026) | A prompt can be talked round and a file can carry instructions; code cannot be, so what the agent must never do is made impossible, not discouraged |
 | Evals | Tested on change, never on a calendar: T0 replays on every pull request; T1 live when a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK changes, three trials a case, in a Console workspace of its own, `evals` ($10 a run, $30 a month, on top of the two ceilings), its key in SSM read only by a `ci-evals` role; T2 on a model change before it reaches prod; every live run checked by code, flagged runs and 10% judged overnight on Haiku through Batches, alerts only when a rate leaves its band; the admin calibrates the judges monthly and on every change, each label behind the second check; Inspect AI; transcripts stored only in our AWS account, and no evaluation service stores them (§23.3 to §23.7; MA-245, 27 and 28 Oct 2026) | Arun: a daily rerun of an unchanged set costs money, repeats the same score and breeds alert fatigue; model ids are pinned snapshots, so only a change can change the agent, while live traffic changes every day |
 | Domains | `dashboard(-dev)` and `api(-dev)`; the `console` and `live` hosts are gone; the apex redirects to `dashboard.mypaisapp.com` at cutover (§18.2) | One host for the web app, its links and its passkeys |
@@ -2973,8 +2992,9 @@ pattern with what followed it on that holding, then one row per model (the
 mood, the similar days, the event impacts, the drivers and the technical set),
 each opening its sheet with the timeline, chart or table above, and both track
 records. A fund draws the same fan over its daily price line, with line
-patterns only and no candles. The web app's Forecast follows MA-281's 1a in
-MA-279.
+patterns only and no candles. Both doors draw the candles, fans and driver
+pillars in 1a Monzo Pulse (§9.1, MA-295). The web app's Forecast follows
+MA-281's 1a in MA-279.
 
 ### 19.8 Where it runs and what it costs
 
