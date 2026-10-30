@@ -8545,6 +8545,13 @@
       "summary": "Two Confluence pictures are wrong: the Market Agent page's sticky contents bar shows in its tall captures, and a cited board no longer found shows as Not captured",
       "status": "To Do",
       "notes": "Repo tooling: found in MA-260's Confluence publish (30 Oct 2026)"
+    },
+    {
+      "key": "MA-296",
+      "type": "Task",
+      "summary": "Retire design_sync, claude-design.json and the MyPaisa Boards Artifact stamp; boards live directly in docs/design/",
+      "status": "To Do",
+      "notes": "Repo tooling: Arun (30 Oct 2026, on MA-295): \"I dont need claude-design sync anymore\"; retires scripts/design_sync.py, scripts/boards_page/, docs/design/claude-design.json, docs/design/boards-artifact.json and the MyPaisa Boards Artifact republishing step (including .claude/hooks/plan_sync_hook.py from Claude Code)"
     }
   ]
 }
