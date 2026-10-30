@@ -542,6 +542,19 @@ Claude's:
   stories on the phase pages) test what each fix does again, so
   `scripts/review_regress.py` reports nothing broken on any ledger in
   `review/`, and each still fails on a copy with its fault put back.
+- **Livelier dashboard and analytical charts (MA-295):** your ask of 30 Oct
+  2026 to redesign the dashboard graphs and charts into livelier, higher-craft
+  visualizations conforming to Apple's Human Interface Guidelines for charting
+  data and Monzo's mobile and modular web design system, on Warm ledger
+  (`tokens.css`, with zero new colour tokens). Three options drawn from the
+  canonical household, future-plans and forecaster figure sets across DS v1
+  (`Chart options.dc.html`), iPhone and iPad (`iPhone v4 · Chart options.dc.html`),
+  the browser at 1440 and 390 (`Web v4 · Chart options.dc.html`), and live
+  inside Prototype v5 (`Charts: A · Pulse | B · Editorial | C · Modular | Classic`
+  with pointer and touch scrubbing across all five doors, light, dark and
+  privacy mode): **1a Monzo Pulse** (recommended), **1b Apple Health Editorial**,
+  and **1c Monzo Modular Bento** (`docs/design/reviews/MA-295/options.html` and
+  `decision.md`). You pick before any product chart code is built.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

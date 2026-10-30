@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-29",
+ "updated": "2026-10-30",
  "claude_design": {
   "app": {
    "id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7",
@@ -8381,6 +8381,105 @@
     "docs/design/figures/make_team_india.py",
     "docs/design/reviews/MA-291/",
     "scripts/prototype_smoke.js"
+   ]
+  },
+  {
+   "key": "MA-295",
+   "type": "Story",
+   "epic": "MA-9",
+   "phase": 0,
+   "summary": "Design livelier dashboard graphs and charts at every door, following Apple HIG and Monzo's modular warmth on Warm ledger",
+   "status": "In Progress",
+   "labels": [
+    "design"
+   ],
+   "arch": [
+    "6.2",
+    "6.5",
+    "9.1",
+    "9.3",
+    "9.4",
+    "19.7"
+   ],
+   "ui": true,
+   "design": "planned",
+   "boards": [
+    {
+     "project": "ds",
+     "file": "Chart options.dc.html",
+     "board": "1a · Monzo Pulse"
+    },
+    {
+     "project": "ds",
+     "file": "Chart options.dc.html",
+     "board": "1b · Apple Health Editorial"
+    },
+    {
+     "project": "ds",
+     "file": "Chart options.dc.html",
+     "board": "1c · Monzo Modular Bento"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Chart options.dc.html",
+     "board": "1a · iPhone · Dashboard charts, Monzo Pulse"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Chart options.dc.html",
+     "board": "1b · iPhone · Dashboard charts, Apple Health Editorial"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Chart options.dc.html",
+     "board": "1c · iPhone · Dashboard charts, Monzo Modular Bento"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Chart options.dc.html",
+     "board": "S1 · iPhone · Projection and Budget forecast charts"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Chart options.dc.html",
+     "board": "S2 · iPhone · Market candles, fan and pillars"
+    },
+    {
+     "project": "ios",
+     "file": "iPhone v4 · Chart options.dc.html",
+     "board": "S3 · iPhone · Dashboard charts, privacy on"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Chart options.dc.html",
+     "board": "1a · Browser · Dashboard charts, Monzo Pulse"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Chart options.dc.html",
+     "board": "1b · Browser · Dashboard charts, Apple Health Editorial"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Chart options.dc.html",
+     "board": "1c · Browser · Dashboard charts, Monzo Modular Bento"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Chart options.dc.html",
+     "board": "W1 · Browser · Projection, Budget forecast and Forecaster charts"
+    },
+    {
+     "project": "app",
+     "file": "Web v4 · Chart options.dc.html",
+     "board": "W2 · Browser · Dashboard charts, privacy on"
+    }
+   ],
+   "notes": "Three chart redesign options drawn on 30 Oct 2026 from the canonical household, future-plans and forecaster figure sets on Warm ledger (tokens.css, zero new colour tokens), conforming to Apple HIG Charting Data and Monzo mobile and modular web craft: 1a Monzo Pulse (recommended), 1b Apple Health Editorial, and 1c Monzo Modular Bento, across DS v1, iOS v1 (iPhone and iPad, light, dark and privacy mode), Web v4 (desktop 1440 and phone web 390, light, dark and privacy mode), and interactively inside Prototype v5 with a live Charts switcher and pointer/touch scrubbing across all five doors (docs/design/reviews/MA-295/options.html and decision.md). Awaiting Arun's pick.",
+   "undrawn": [],
+   "code": [
+    "docs/design/prototype-v5/",
+    "docs/design/reviews/MA-295/"
    ]
   }
  ],

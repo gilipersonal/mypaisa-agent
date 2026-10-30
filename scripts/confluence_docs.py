@@ -103,8 +103,9 @@ AREAS = [
      ["Web v4 · Shell and chat.dc.html", "Browser 2.dc.html", "Shell options.dc.html", "iPhone chat.dc.html",
       "iPhone sign-in.dc.html", "iPhone settings.dc.html", "iPad and foldable.dc.html"]),
     ("home", "Home and the dashboard",
-     "Net worth first, across the UK and India: the Overview in the browser, Home on iPhone and iPad, and the market views a holding opens.",
-     ["Web v4 · Dashboard.dc.html", "iPhone v4 · Home.dc.html", "iPhone dashboard.dc.html", "Responsive.dc.html",
+     "Net worth first, across the UK and India: the Overview in the browser, Home on iPhone and iPad, the livelier chart options across every door (MA-295), and the market views a holding opens.",
+     ["Web v4 · Dashboard.dc.html", "iPhone v4 · Home.dc.html", "Web v4 · Chart options.dc.html",
+      "iPhone v4 · Chart options.dc.html", "iPhone dashboard.dc.html", "Responsive.dc.html",
       "Browser.dc.html", "Wealth.dc.html", "India.dc.html"]),
     ("register", "Registering and check-ins",
      "Anything new is created in the chat: a sentence, a screenshot or a statement, the questions only for what is missing, a Confirm card and the audit row. Check-ins ask when a payment, a maturity or a valuation is due, and one tap records it.",
@@ -131,8 +132,8 @@ AREAS = [
      "The owner's controls, behind the second check: people and their devices, the Claude and AWS caps, alerts and replay.",
      ["Admin center 2.dc.html", "Admin center 3.dc.html", "iPhone admin.dc.html"]),
     ("system", "The design system, the mark and the iOS kit",
-     "Warm ledger (MA-101): the tokens, the components, the chart style, the mark (MA-103), the iOS kit on Liquid Glass (MA-161) and the options for a colourful icon for each kind of holding, asset and debt (MA-241). The Telegram kit is kept as the record MA-161 superseded.",
-     ["Foundations.dc.html", "Components.dc.html", "Components 2.dc.html", "MyPaisa DS v1.dc.html", "iOS kit.dc.html",
+     "Warm ledger (MA-101): the tokens, the components, the chart style and its three redesign options (MA-295), the mark (MA-103), the iOS kit on Liquid Glass (MA-161) and the options for a colourful icon for each kind of holding, asset and debt (MA-241). The Telegram kit is kept as the record MA-161 superseded.",
+     ["Foundations.dc.html", "Components.dc.html", "Components 2.dc.html", "Chart options.dc.html", "MyPaisa DS v1.dc.html", "iOS kit.dc.html",
       "Logo.dc.html", "Kind icons.dc.html", "Telegram kit.dc.html", "Telegram kit controls.dc.html", "Telegram kit images.dc.html"]),
 ]
 SUPERSEDED_FILES = {"Telegram kit.dc.html", "Telegram kit controls.dc.html", "Telegram kit images.dc.html"}

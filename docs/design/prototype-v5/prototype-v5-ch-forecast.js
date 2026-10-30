@@ -134,7 +134,11 @@
     '.pv5-forecast .ftbl.c3e{grid-template-columns:minmax(0,1.1fr) minmax(0,.8fr) minmax(0,1.2fr)}',
     '.pv5-forecast .fnum{font-variant-numeric:tabular-nums;font-weight:600}',
     '.pv5-forecast.ccard .ccard-b .mp-foot{text-wrap:pretty}',
-    '.pv5-forecast .fprivnote{margin-top:-4px}'
+    '.pv5-forecast .fprivnote{margin-top:-4px}',
+    '.pv5-forecast .fc-rhythm{position:relative;height:24px;margin-top:4px;border-top:1px solid var(--mp-line);padding-top:3px}',
+    '.pv5-forecast .fc-rhythm>svg{display:block;width:100%;height:100%}',
+    '.pv5-forecast .sw-rhy{width:8px;height:10px;border-radius:1.5px;background:linear-gradient(90deg,var(--mp-up) 0 45%,transparent 45% 55%,var(--mp-down-quiet) 55% 100%)}',
+    '.charts-b .pv5-forecast .sw-up{background:var(--mp-surface);box-shadow:inset 0 0 0 1.5px var(--mp-up)}'
   ].join('\n');
   function styles() {
     if (document.getElementById('pv5-forecast')) return;
@@ -177,25 +181,46 @@
   function hk(id, tab) { return 'nav:' + hp(id, tab); }
 
   /* ---------- charts: each stroke in its own SVG; labels and marks in HTML over it (lesson 37) ---------- */
+  var fgidSeq = 0;
   function layer(inner) { return '<div class="fcl"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' + inner + '</svg></div>'; }
+  function fmtIsoDay(iso) {
+    if (!iso || iso.length < 10) return iso || '';
+    var p = iso.slice(0, 10).split('-');
+    var w = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay()];
+    var mn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+p[1] - 1];
+    return w + ' ' + (+p[2]) + ' ' + mn;
+  }
   /* fcChart: 60 daily bars (candles, or a fund's price line) at x = 9.5 + i, the close at x = 69, then the fan's 20
      days at x = 68.5 + k, as iPhone v4 · Forecast 1a draws it; values are percentages from the last close */
   function fcChart(o) {
+    var m = K.mode();
     var Y = function (v) { return (o.yMax - v) / (o.yMax - o.yMin) * 100; };
     var X = function (i) { return 9.5 + i; };
     var FK = function (k) { return k === 0 ? 69 : 68.5 + k; };
     var f = function (n) { return n.toFixed(2); };
     var parts = [], over = '';
-    (o.grid || []).forEach(function (g) { parts.push(layer('<line x1="9" x2="89" y1="' + f(Y(g)) + '" y2="' + f(Y(g)) + '" stroke="var(--mp-chart-grid)" stroke-width="1"/>')); });
+    var useSmooth = (m === 'a' || m === 'c') && typeof K.smoothPts === 'function';
+    var gridDash = m === 'b' ? ' stroke-dasharray="2 3"' : '';
+    (o.grid || []).forEach(function (g) { parts.push(layer('<line x1="9" x2="89" y1="' + f(Y(g)) + '" y2="' + f(Y(g)) + '" stroke="var(--mp-chart-grid)" stroke-width="1"' + gridDash + '/>')); });
     if (o.fan) {
       var band = function (hiK, loK) {
-        var top = [[0, 0]].concat(o.fan.map(function (p, k) { return [k + 1, p[hiK]]; }));
-        var bot = [[0, 0]].concat(o.fan.map(function (p, k) { return [k + 1, p[loK]]; })).reverse();
-        return 'M' + top.map(function (p) { return f(FK(p[0])) + ' ' + f(Y(p[1])); }).join(' L') + ' L' + bot.map(function (p) { return f(FK(p[0])) + ' ' + f(Y(p[1])); }).join(' L') + ' Z';
+        var topP = [[FK(0), Y(0)]].concat(o.fan.map(function (p, k) { return [FK(k + 1), Y(p[hiK])]; }));
+        var botP = [[FK(0), Y(0)]].concat(o.fan.map(function (p, k) { return [FK(k + 1), Y(p[loK])]; })).reverse();
+        if (useSmooth) return K.smoothPts(topP) + ' ' + K.smoothPts(botP).replace(/^M/, 'L') + ' Z';
+        return 'M' + topP.map(function (p) { return f(p[0]) + ' ' + f(p[1]); }).join(' L') + ' L' + botP.map(function (p) { return f(p[0]) + ' ' + f(p[1]); }).join(' L') + ' Z';
       };
-      parts.push(layer('<path d="' + band('p90', 'p10') + '" fill="var(--mp-band)" stroke="none"/>'));
-      parts.push(layer('<path d="' + band('p75', 'p25') + '" fill="var(--mp-band)" stroke="none"/>'));
-      parts.push(layer('<path d="M69 ' + f(Y(0)) + ' L' + o.fan.map(function (p, k) { return f(FK(k + 1)) + ' ' + f(Y(p.p50)); }).join(' L') + '" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-dasharray="4 3"/>'));
+      var clsBand = m === 'classic' ? '' : ' class="fband"';
+      parts.push(layer('<path' + clsBand + ' d="' + band('p90', 'p10') + '" fill="var(--mp-band)" stroke="none"/>'));
+      parts.push(layer('<path' + clsBand + ' d="' + band('p75', 'p25') + '" fill="var(--mp-band)" stroke="none"/>'));
+      if (m === 'b') {
+        var p90P = [[FK(0), Y(0)]].concat(o.fan.map(function (p, k) { return [FK(k + 1), Y(p.p90)]; }));
+        var p10P = [[FK(0), Y(0)]].concat(o.fan.map(function (p, k) { return [FK(k + 1), Y(p.p10)]; }));
+        parts.push(layer('<path d="M' + p90P.map(function (p) { return f(p[0]) + ' ' + f(p[1]); }).join(' L') + '" fill="none" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="2 3"/>'));
+        parts.push(layer('<path d="M' + p10P.map(function (p) { return f(p[0]) + ' ' + f(p[1]); }).join(' L') + '" fill="none" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="2 3"/>'));
+      }
+      var midPts = [[69, Y(0)]].concat(o.fan.map(function (p, k) { return [FK(k + 1), Y(p.p50)]; }));
+      var midD = useSmooth ? K.smoothPts(midPts) : 'M' + midPts.map(function (p) { return f(p[0]) + ' ' + f(p[1]); }).join(' L');
+      parts.push(layer('<path d="' + midD + '" fill="none" stroke="var(--mp-chart-line)" stroke-width="' + (m === 'a' ? '2.3' : '2') + '" stroke-dasharray="4 3"/>'));
     }
     parts.push(layer('<line x1="69" x2="69" y1="0" y2="100" stroke="var(--mp-ink-2)" stroke-width="1" stroke-dasharray="2 3"/>'));
     if (o.bars) {
@@ -204,17 +229,34 @@
         var up = b.c >= b.o, col = up ? 'var(--mp-up)' : 'var(--mp-down-quiet)', x = X(i);
         var t = Y(Math.max(b.o, b.c)), bo = Y(Math.min(b.o, b.c));
         wick += '<rect x="' + f(x - 0.12) + '" y="' + f(Y(b.h)) + '" width="0.24" height="' + f(Math.max(0.3, Y(b.l) - Y(b.h))) + '" fill="' + col + '"/>';
-        body += '<rect x="' + f(x - 0.42) + '" y="' + f(t) + '" width="0.84" height="' + f(Math.max(0.4, bo - t)) + '" fill="' + col + '"/>';
+        if (m === 'b' && up) {
+          body += '<rect x="' + f(x - 0.40) + '" y="' + f(t) + '" width="0.80" height="' + f(Math.max(0.55, bo - t)) + '" fill="var(--mp-surface)" stroke="' + col + '" stroke-width="1.2" vector-effect="non-scaling-stroke"/>';
+        } else {
+          var rx = m === 'a' ? ' rx="0.22"' : '';
+          body += '<rect x="' + f(x - 0.42) + '" y="' + f(t) + '" width="0.84" height="' + f(Math.max(0.45, bo - t)) + '"' + rx + ' fill="' + col + '"/>';
+        }
       });
       parts.push(layer(wick));
       parts.push(layer(body));
     }
-    if (o.line) parts.push(layer('<path d="M' + o.line.map(function (v, i) { return f(X(i)) + ' ' + f(Y(v)); }).join(' L') + '" fill="none" stroke="var(--mp-ink)" stroke-width="2" stroke-linejoin="round"/>'));
+    if (o.line) {
+      var lPts = o.line.map(function (v, i) { return [X(i), Y(v)]; });
+      var lD = useSmooth ? K.smoothPts(lPts) : 'M' + lPts.map(function (p) { return f(p[0]) + ' ' + f(p[1]); }).join(' L');
+      if (m === 'a') {
+        var gid = 'fcg-' + (++fgidSeq);
+        var areaD = lD + ' L' + f(X(o.line.length - 1)) + ' 100 L' + f(X(0)) + ' 100 Z';
+        parts.push(layer('<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--mp-chart-line)" stop-opacity="0.2"/><stop offset="100%" stop-color="var(--mp-chart-line)" stop-opacity="0"/></linearGradient></defs><path d="' + areaD + '" fill="url(#' + gid + ')" stroke="none"/>'));
+      }
+      parts.push(layer('<path d="' + lD + '" fill="none" stroke="' + (m === 'a' ? 'var(--mp-chart-line)' : 'var(--mp-ink)') + '" stroke-width="' + (m === 'a' ? '2.4' : '2') + '" stroke-linejoin="round" stroke-linecap="round"/>'));
+    }
     (o.levels || []).forEach(function (l) {
       var x0 = l.x0 != null ? l.x0 : X(l.i0), x1 = l.x1 != null ? l.x1 : X(l.i1);
       var y0 = Y(l.v0 != null ? l.v0 : l.v), y1 = Y(l.v1 != null ? l.v1 : l.v);
       parts.push(layer('<line x1="' + f(x0) + '" x2="' + f(x1) + '" y1="' + f(y0) + '" y2="' + f(y1) + '" stroke="' + (l.a ? 'var(--mp-chart-4)' : 'var(--mp-chart-2)') + '" stroke-width="2" stroke-dasharray="5 3"/>'));
     });
+    if (m !== 'classic') {
+      over += '<span class="mp-chartdot' + (m === 'a' ? ' beacon' : '') + '" style="left:69%;top:' + f(Y(0)) + '%"></span>';
+    }
     (o.rings || []).forEach(function (r) { over += '<span class="fptk" style="left:' + f(X(r.i)) + '%;top:calc(' + f(Y(r.v)) + '% - 5px)"></span>'; });
     (o.pills || []).forEach(function (p) {
       over += '<span class="fpmk ' + (p.below ? 'b' : 'a') + '" style="left:' + f(X(p.i)) + '%;top:calc(' + f(Y(p.v)) + '% ' + (p.below ? '+ 6px' : '- 14px') + ')">' + p.t + '</span>';
@@ -226,8 +268,50 @@
     }
     over += '<span class="ftdl" style="left:69%">' + esc(o.today) + '</span>';
     if (o.next) over += '<span class="fnxt" style="left:69%">' + esc(o.next) + '</span>';
-    var axis = '<div class="mp-chartaxis mp-ink2" aria-hidden="true">' + (o.months || []).map(function (m) { return '<span style="left:' + f(m.k != null ? FK(m.k) : X(m.i)) + '%">' + m.t + '</span>'; }).join('') + '</div>';
-    return '<div class="fcw"><div class="mp-chartbox fcb" style="height:' + (o.h || 200) + 'px" role="img" aria-label="' + esc(o.label || '') + '">' + parts.join('') + over + '</div>' + axis + '</div>';
+    var scrubAttr = '';
+    if (m !== 'classic') {
+      var scPts = [];
+      if (o.bars) {
+        o.bars.forEach(function (b, idx) {
+          scPts.push({ x: +f(X(idx)), y: +f(Y(b.c)), k: b.day || ('Day ' + (idx + 1)), vt: 'Close ' + sp(b.c), s: 'High ' + sp(b.h) + ' · Low ' + sp(b.l) });
+        });
+      } else if (o.line) {
+        o.line.forEach(function (v, idx) {
+          var dLbl = (o.lineDays && o.lineDays[idx]) || ('Day ' + (idx + 1));
+          scPts.push({ x: +f(X(idx)), y: +f(Y(v)), k: dLbl, vt: 'NAV ' + sp(v), s: 'Daily fund price vs Fri close' });
+        });
+      }
+      (o.fan || []).forEach(function (p, k) {
+        scPts.push({ x: +f(FK(k + 1)), y: +f(Y(p.p50)), k: fmtIsoDay(p.d) + ' · +' + (k + 1) + 'd', vt: 'Middle ' + sp(p.p50), s: '8 in 10: ' + sp(p.p10) + ' to ' + sp(p.p90) });
+      });
+      if (scPts.length) {
+        scrubAttr = ' data-scrub="' + esc(JSON.stringify(scPts)) + '"';
+        over += K.scrubBox();
+      }
+    }
+    var rhythm = '';
+    if (m === 'c' && o.bars) {
+      var maxSw = 0.01;
+      o.bars.forEach(function (b) { var sw = Math.abs(b.h - b.l); if (sw > maxSw) maxSw = sw; });
+      var rRects = '';
+      o.bars.forEach(function (b, idx) {
+        var up = b.c >= b.o, col = up ? 'var(--mp-up)' : 'var(--mp-down-quiet)';
+        var hPct = Math.max(16, (Math.abs(b.h - b.l) / maxSw) * 96);
+        rRects += '<rect x="' + f(X(idx) - 0.36) + '" y="' + f(100 - hPct) + '" width="0.72" height="' + f(hPct) + '" rx="0.16" fill="' + col + '"/>';
+      });
+      if (o.fan && o.fan.length) {
+        var maxCone = Math.max(0.01, Math.abs(o.fan[o.fan.length - 1].p90 - o.fan[o.fan.length - 1].p10));
+        o.fan.forEach(function (p, k) {
+          var hC = Math.max(14, (Math.abs(p.p90 - p.p10) / maxCone) * 90);
+          rRects += '<rect x="' + f(FK(k + 1) - 0.32) + '" y="' + f(100 - hC) + '" width="0.64" height="' + f(hC) + '" rx="0.14" fill="var(--mp-band)"/>';
+        });
+      }
+      rRects += '<line x1="69" x2="69" y1="0" y2="100" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="2 2" vector-effect="non-scaling-stroke"/>';
+      rhythm = '<div class="fc-rhythm" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none">' + rRects + '</svg></div>';
+    }
+    var axis = '<div class="mp-chartaxis mp-ink2" aria-hidden="true">' + (o.months || []).map(function (m2) { return '<span style="left:' + f(m2.k != null ? FK(m2.k) : X(m2.i)) + '%">' + m2.t + '</span>'; }).join('') + '</div>';
+    var statsHtml = m === 'classic' ? '' : K.chartStats(o.stats, m);
+    return statsHtml + '<div class="fcw"' + (statsHtml ? ' style="margin-top:6px"' : '') + '><div class="mp-chartbox fcb" style="height:' + (o.h || 200) + 'px" role="img" aria-label="' + esc(o.label || '') + '"' + scrubAttr + '>' + parts.join('') + over + '</div>' + rhythm + axis + '</div>';
   }
   /* the months under the chart: the first bar of each month, and the first day of the next month in the fan */
   function monthsOf(days, fan) {
@@ -239,14 +323,20 @@
   function mname(iso) { return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+iso.slice(5, 7) - 1]; }
   /* fcLines: many thin paths (the similar days) and the line they follow, in one box */
   function fcLines(o) {
+    var m = K.mode(), useSmooth = (m === 'a' || m === 'c') && typeof K.smoothPts === 'function';
     var X = function (x) { return (x - o.x0) / (o.x1 - o.x0) * 100; }, Y = function (v) { return (o.y1 - v) / (o.y1 - o.y0) * 100; };
     var f = function (n) { return n.toFixed(2); };
+    var drawP = function (arr) {
+      var P = arr.map(function (q) { return [X(q[0]), Y(q[1])]; });
+      return useSmooth ? K.smoothPts(P) : 'M' + P.map(function (p) { return f(p[0]) + ' ' + f(p[1]); }).join(' L');
+    };
     var parts = [], over = '';
-    (o.grid || []).forEach(function (g) { parts.push(layer('<line x1="0" x2="100" y1="' + f(Y(g)) + '" y2="' + f(Y(g)) + '" stroke="var(--mp-chart-grid)" stroke-width="1"/>')); over += '<span class="fyl" style="top:' + f(Y(g)) + '%">' + sp(g) + '</span>'; });
+    var gridDash = m === 'b' ? ' stroke-dasharray="2 3"' : '';
+    (o.grid || []).forEach(function (g) { parts.push(layer('<line x1="0" x2="100" y1="' + f(Y(g)) + '" y2="' + f(Y(g)) + '" stroke="var(--mp-chart-grid)" stroke-width="1"' + gridDash + '/>')); over += '<span class="fyl" style="top:' + f(Y(g)) + '%">' + sp(g) + '</span>'; });
     parts.push(layer('<line x1="' + f(X(0)) + '" x2="' + f(X(0)) + '" y1="0" y2="100" stroke="var(--mp-ink-2)" stroke-width="1" stroke-dasharray="2 3"/>'));
-    (o.paths || []).forEach(function (p) { parts.push(layer('<path d="M' + p.map(function (q) { return f(X(q[0])) + ' ' + f(Y(q[1])); }).join(' L') + '" fill="none" stroke="var(--mp-chart-2)" stroke-opacity="0.5" stroke-width="1"/>')); });
-    if (o.now) parts.push(layer('<path d="M' + o.now.map(function (q) { return f(X(q[0])) + ' ' + f(Y(q[1])); }).join(' L') + '" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round"/>'));
-    if (o.mid) parts.push(layer('<path d="M' + o.mid.map(function (q) { return f(X(q[0])) + ' ' + f(Y(q[1])); }).join(' L') + '" fill="none" stroke="var(--mp-ink)" stroke-width="2" stroke-dasharray="4 3"/>'));
+    (o.paths || []).forEach(function (p) { parts.push(layer('<path d="' + drawP(p) + '" fill="none" stroke="var(--mp-chart-2)" stroke-opacity="0.5" stroke-width="1"/>')); });
+    if (o.now) parts.push(layer('<path d="' + drawP(o.now) + '" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round"/>'));
+    if (o.mid) parts.push(layer('<path d="' + drawP(o.mid) + '" fill="none" stroke="var(--mp-ink)" stroke-width="2" stroke-dasharray="4 3"/>'));
     if (o.midLabel) over += '<span class="fmidl" style="top:' + f(Y(o.mid[o.mid.length - 1][1])) + '%">' + o.midLabel + '</span>';
     var axis = '<div class="mp-chartaxis mp-ink2" aria-hidden="true">' + (o.xLabels || []).map(function (l, i, a) { return '<span style="left:' + f(X(l.x)) + '%;transform:' + (i === 0 ? 'none' : i === a.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)') + '">' + l.t + '</span>'; }).join('') + '</div>';
     return '<div class="fcw" style="margin-top:6px"><div class="mp-chartbox fcb" style="height:' + (o.h || 180) + 'px" role="img" aria-label="' + esc(o.label || '') + '">' + parts.join('') + over + '</div>' + axis + '</div>';
@@ -278,30 +368,43 @@
       '<div class="fh-tiles' + (four ? ' four' : '') + '">' + tiles.join('') + '</div>' + rules + '</section>';
   }
   function chartCard(ctx, id) {
-    var f = FC(ctx)[id], web = ctx.web, h = ctx.door === 'desk' ? 250 : ctx.door === 'fold' ? 230 : 200;
+    var f = FC(ctx)[id], web = ctx.web, h = ctx.door === 'desk' ? 250 : ctx.door === 'fold' ? 230 : 200, m = K.mode();
     var today = web ? 'Friday’s close' : 'Fri 23 Oct close', next = web ? 'next 4 weeks' : null;
     var html, legend;
     if (f.candles) {
       var c = f.candles, find = function (d) { for (var i = 0; i < c.length; i++) if (c[i].day === d) return i; return -1; };
       var p1 = find('Thu 1 Oct'), p2 = find('Wed 7 Oct'), brk = find('Wed 14 Oct'), sup = find('Wed 5 Aug');
+      var c60 = c.slice(0, 60), cLo = Math.min.apply(null, c60.map(function (x) { return x.l; })), cHi = Math.max.apply(null, c60.map(function (x) { return x.h; }));
       html = fcChart({
-        bars: c.slice(0, 60), fan: f.fan, yMax: 15.5, yMin: -9.5, grid: [-5, 0, 5, 10], yLabels: [-5, 0, 5, 10], h: h, today: today, next: next,
+        bars: c60, fan: f.fan, yMax: 15.5, yMin: -9.5, grid: [-5, 0, 5, 10], yLabels: [-5, 0, 5, 10], h: h, today: today, next: next,
         levels: [{ i0: p1 - 2, i1: brk + 1, v: f.neckline, a: true }, { i0: sup, x1: 69, v: f.support }],
         rings: [{ i: p1, v: c[p1].h }, { i: p2, v: c[p2].h }],
         pills: [{ i: (p1 + p2) / 2, v: Math.max(c[p1].h, c[p2].h), t: 'Double top' }, { i: Math.round((sup + 41) / 2), v: f.support, t: 'Support −1%', below: true }],
-        months: monthsOf(c.slice(0, 60).map(function (x) { return x.d; }), f.fan),
+        months: monthsOf(c60.map(function (x) { return x.d; }), f.fan),
+        stats: [
+          { k: '60d range', v: sp(cLo) + ' to ' + sp(cHi) },
+          { k: '4w middle', v: sp(f.headline.mid) },
+          { k: '8 in 10 range', v: sp(f.headline.lo) + ' to ' + sp(f.headline.hi) }
+        ],
         label: f.name + ': daily candles for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between ' + sp(f.headline.lo) + ' and ' + sp(f.headline.hi) + ', the middle ' + sp(f.headline.mid) + '.'
       });
-      legend = '<div class="flgd"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span></div>';
+      legend = '<div class="flgd"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span>' + (m === 'c' ? '<span><i class="sw-rhy"></i>daily swing</span>' : '') + '</div>';
       return K.card({ cls: 'fcard', body: '<div class="fx ac jb g8 wrap"><span class="mp-hl">The chart, then the next 4 weeks</span><span class="mp-foot mp-ink2">60 trading days</span></div>' + html + legend });
     }
     var n = f.nav, t = f.trend, ix = function (d) { for (var i = 0; i < n.length; i++) if (n[i].day === d) return i; return -1; };
     var i0 = ix(t.from), i1 = ix(t.to), slope = (t.y_to - t.y_from) / (i1 - i0), at = function (i) { return t.y_from + slope * (i - i0); };
+    var n60 = n.slice(0, 60), nLo = Math.min.apply(null, n60.map(function (x) { return x.nav; })), nHi = Math.max.apply(null, n60.map(function (x) { return x.nav; }));
     html = fcChart({
-      line: n.slice(0, 60).map(function (x) { return x.nav; }), fan: f.fan, yMax: 4.5, yMin: -5.5, grid: [-4, -2, 0, 2, 4], yLabels: [-4, -2, 0, 2, 4], h: h, today: today, next: next,
+      line: n60.map(function (x) { return x.nav; }), lineDays: n60.map(function (x) { return x.day; }),
+      fan: f.fan, yMax: 4.5, yMin: -5.5, grid: [-4, -2, 0, 2, 4], yLabels: [-4, -2, 0, 2, 4], h: h, today: today, next: next,
       levels: [{ i0: i0, i1: 59, v0: t.y_from, v1: at(59) }],
       pills: [{ i: i0 + 12, v: at(i0 + 12), t: 'Higher lows', below: true }],
-      months: monthsOf(n.slice(0, 60).map(function (x) { return x.d; }), f.fan),
+      months: monthsOf(n60.map(function (x) { return x.d; }), f.fan),
+      stats: [
+        { k: '60d NAV range', v: sp(nLo) + ' to ' + sp(nHi) },
+        { k: '4w middle', v: sp(f.headline.mid) },
+        { k: '8 in 10 range', v: sp(f.headline.lo) + ' to ' + sp(f.headline.hi) }
+      ],
       label: f.name + ': a fund’s daily price for the last 60 trading days to Fri 23 Oct, then the next four weeks: 8 times in 10 it ends between ' + sp(f.headline.lo) + ' and ' + sp(f.headline.hi) + ', the middle ' + sp(f.headline.mid) + '.'
     });
     legend = '<div class="flgd"><span><i class="sw-navl"></i>Price, once a day</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pb"></i>trend line</span></div>';
