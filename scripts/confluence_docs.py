@@ -82,6 +82,12 @@ VPC_GIFS = [  # (gif in docs/design/aws-vpc-enterprise-lockdown, tab title, capt
     ("03-egress-dns-sni-ci.gif", "3 · DNS + TLS-SNI egress & CI", "Route 53 Resolver DNS Firewall default-deny allowlists + Graviton t4g.nano fck-nat/Envoy TLS-SNI filtering (£5.66/month/env) stop unlisted FQDNs and raw-IP bypasses while private arm64 CodeBuild runners, S3 v5 Flow Logs, GuardDuty and VPC Reachability Analyzer handle all four serverless VPC gotchas."),
     ("04-five-option-cost-rollout.gif", "4 · 5-option costing & rollout", "Side-by-side us-east-1 costing across Option 1 (£729.91/mo), Option 2A (£149.01/mo), Option 2B (£70.39/mo), Option 3A (+£13.32/mo lowest cost) and Preferred Option 3B (+£24.86/mo with prod CloudFront Pro WAF, keeping total AWS spend ~£28.36/mo inside the £50/mo cap), decided last after Phase 20 in a five-step zero-lockout rollout."),
 ]
+ARGOS_GIFS = [  # (gif in docs/design/argos-visual-a11y, tab title, caption): the SvelteKit 3 visual regression, ARIA snapshot & WCAG 2.2 AA pipeline, animated (MA-194, MA-269)
+    ("01-one-helper-four-gates.gif", "1 · One helper, four gates", "One shared auditAndCapture() Playwright 1.64 fixture at 390x844 and 1440x900 in Light and Dark runs deterministic stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA before capture, landmark/focus checks, and argosScreenshot."),
+    ("02-argos-cloud-diff-aria.gif", "2 · Cloud visual & ARIA diffing", "Tokenless GitHub App OIDC uploads 2x Retina PNGs (Light & Dark) and deduplicated YAML ariaSnapshot trees from ubuntu-24.04-arm (1x) to Argos CI, pairing pixel heatmaps with Git-style accessibility tree diffs against main."),
+    ("03-five-cost-guardrails.gif", "3 · Five £0/mo cost guardrails", "Strict web/** and cards/** path filtering, light-theme-only ariaSnapshot deduplication (saving 50% ARIA quota), fail-fast axe-core before Argos, cancel-in-progress concurrency, and repo-local static board gates trim 89% of naive snapshot volume."),
+    ("04-quota-math-scenarios.gif", "4 · 5,000/mo quota math", "Side-by-side monthly quota comparison showing Option 1 Selected at 3,600 snapshots/month (72.0% of the 5,000/month Free Hobby cap, 1,400 buffer, £0.00/month) versus Option 2 (4,800/mo, 96%) and Option 3 Naive (34,000/mo, $100/mo Pro)."),
+]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
     ("01-overview.png", "System overview", "4ae817c6-847f-45f8-a10c-4509971c9c09", "§3"),
     ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§18"),
@@ -450,6 +456,7 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
             ("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture", "hub"),
             ("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan", "hub"),
             ("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing", "hub"),
+            ("argos", "Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI", "hub"),
             ("explainers", "Explainers, the prototype and the architecture drawings", "hub"),
             ("sync", "How the plan, Jira, the designs, Confluence and the code stay in step", "hub")]
     import confluence_record  # noqa: PLC0415  (the architecture and journeys record, MA-257)
@@ -516,6 +523,8 @@ def wanted_images(ctx: Ctx) -> dict[str, dict]:
         out[f"maestro-{gif}"] = {"page": "maestro", "file": ROOT / "docs" / "design" / "maestro-ios-ipados-testing" / gif}
     for gif, _, _ in VPC_GIFS:
         out[f"vpc-{gif}"] = {"page": "vpc", "file": ROOT / "docs" / "design" / "aws-vpc-enterprise-lockdown" / gif}
+    for gif, _, _ in ARGOS_GIFS:
+        out[f"argos-{gif}"] = {"page": "argos", "file": ROOT / "docs" / "design" / "argos-visual-a11y" / gif}
     import confluence_record  # noqa: PLC0415
     record = confluence_record.wanted_images(ctx)  # their sources are worked out there: a capture's recipe and its page
     # the pictures draw each phase's title and dates only, so an estimate that moves no date redraws nothing
@@ -850,6 +859,10 @@ def render_hub(ctx: Ctx) -> str:
                "The optional end-of-roadmap seven-layer AWS VPC enterprise lockdown and three-way aws:SourceVpce Data Perimeter across dev and prod "
                "(decided last after Phase 20, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) "
                "and Preferred Option 3 (+£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod, staying inside the £50/mo AWS cap; MA-283, MA-284).</p>"),
+        cpanel("#E3FCEF", ":sparkles:", f"<h3>{ctx.link('argos', 'Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI')}</h3><p>"
+               "How the built SvelteKit 3 (web/) app runs Playwright 1.64, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA and Argos CI (@argos-ci/playwright, "
+               "Tokenless GitHub App OIDC) through one shared auditAndCapture() fixture at 390x844 and 1440x900 in Light and Dark, using five engineering cost "
+               "guardrails (including light-theme-only ariaSnapshot deduplication) to stay at ~3,600 snapshots/month inside Argos CI's 5,000/month £0 Free Hobby cap (MA-194, MA-269).</p>"),
         "<h2>🔗 The records behind it</h2><ul>"
         f'<li><strong>Jira</strong>: <a href="{JIRA}/jira/software/projects/MA/boards">project MA</a>, a phase epic per phase; '
         + jql_link("project = MA AND issuetype = Epic ORDER BY duedate", "the epics by due date") + "</li>"
@@ -1063,9 +1076,10 @@ def render_explainers(ctx: Ctx) -> str:
            f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
            f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}), '
            f'<a href="{gh("docs/design/cicd-security-regression.html")}">cicd-security-regression.html</a> (the CI/CD pipeline, seven-layer security gate, smoke suite, phase-wise regression pyramid and runner cost analysis, MA-267 to MA-272; see {ctx.link("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture")}), '
-           f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}) and '
-           f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 20, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}); '
-           'the first five are also published as Claude artifacts below, while the stack, CI/CD, Maestro and VPC explainers embed their animated block diagrams directly on their Confluence pages.</p>',
+           f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}), '
+           f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 20, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}) and '
+           f'<a href="{gh("docs/design/argos-visual-a11y.html")}">argos-visual-a11y.html</a> (the SvelteKit 3 web visual regression, YAML ariaSnapshot diffing and fail-closed @axe-core/playwright WCAG 2.2 AA pipeline with Argos CI at £0/month, MA-194, MA-269; see {ctx.link("argos", "Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI")}); '
+           'the first five are also published as Claude artifacts below, while the stack, CI/CD, Maestro, VPC and Argos CI explainers embed their animated block diagrams directly on their Confluence pages.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
                + "</section>" for pair in (list(ARTIFACTS.items())[k:k + 2] for k in range(0, len(ARTIFACTS), 2))),
@@ -1147,6 +1161,7 @@ RESEARCH_SECTIONS = [  # (page slug, docs/RESEARCH.md section number, expected h
     ("cicd", "7", "CI/CD pipeline, seven-layer vulnerability scanning"),
     ("maestro", "8", "Local iOS & iPadOS testing strategy with Maestro"),
     ("vpc", "9", "Optional AWS VPC enterprise lockdown"),
+    ("argos", "10", "Web visual regression, ARIA snapshot diffing"),
 ]
 
 
@@ -1354,6 +1369,46 @@ def render_vpc(ctx: Ctx) -> str:
     return "".join(out) + footer(ctx)
 
 
+def render_argos(ctx: Ctx) -> str:
+    """The SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI (MA-194, MA-269, MA-299)."""
+    keys = {"MA-181", "MA-182", "MA-194", "MA-198", "MA-240", "MA-267", "MA-268", "MA-269", "MA-272", "MA-299"}
+    items = [i for i in ctx.items if i["key"] in keys]
+    items.sort(key=lambda i: (i["phase"], key_n(i["key"])))
+    sec10 = research_text("10")
+    out = [
+        cpanel("#E3FCEF", ":art:", '<p>Arun, 30 Oct 2026 (MA-194, MA-269): the SvelteKit 3 (<code>web/</code>) visual regression, ARIA accessibility '
+               "tree diffing and fail-closed WCAG 2.2 Level A &amp; AA accessibility pipeline in GitHub Actions with Playwright 1.64, "
+               "<code>@axe-core/playwright</code> 4.14 and Argos CI (<code>@argos-ci/playwright</code> 6.4). Every primary web route passes one shared "
+               "<code>auditAndCapture(page, name, opts)</code> fixture combining four gates in one Chromium load — mathematical 100% and 25% brightness "
+               "token contrast (<code>scripts/contrast_check.py</code>), runtime computed DOM contrast and WCAG 2.2 AA audit "
+               "(<code>@axe-core/playwright</code>), Argos CI visual pixel diffing in Light and Dark at desktop (<code>1280x800</code>) and mobile "
+               "(<code>390x844</code>), and Argos CI <code>ariaSnapshot: opts.theme === 'light'</code> YAML accessibility tree diffing — with five "
+               "cost guardrails keeping usage at ~3,600 snapshots/month (72% of Argos CI's 5,000/month Free Hobby cap) at <strong>£0.00/month</strong>. "
+               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7.4 and §10, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §3 and §4, and '
+               f'{arch_link("9.4", ctx.sections)} and {arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
+               f'the interactive explainer page is <a href="{gh("docs/design/argos-visual-a11y.html")}">docs/design/argos-visual-a11y.html</a>.</p>'),
+        toc(),
+        "<h2>🎞️ Block diagrams (animated)</h2>"
+        f'<p>Four animated block diagrams captured from <a href="{gh("docs/design/argos-visual-a11y.html")}">docs/design/argos-visual-a11y.html</a> '
+        "(MA-194, MA-269): browse them in the tabs below, or beside each section further down.</p>",
+        tabs([(title, image(ctx, f"argos-{gif}", caption, 100)) for gif, title, caption in ARGOS_GIFS]),
+        "<h2>🔬 1. One Helper, Four Gates — auditAndCapture(page, name, opts) in web/e2e/helpers/a11y-visual.ts</h2>",
+        image(ctx, "argos-01-one-helper-four-gates.gif", ARGOS_GIFS[0][2], 100),
+        "<h2>☁️ 2. Argos CI Cloud Visual Diffing, ARIA YAML Tree Diffing &amp; GitHub Check Run lifecycle</h2>",
+        image(ctx, "argos-02-argos-cloud-diff-aria.gif", ARGOS_GIFS[1][2], 100),
+        "<h2>🛡️ 3. Five Cost Guardrails keeping Argos CI inside the 5,000/month Free Hobby tier at £0/month</h2>",
+        image(ctx, "argos-03-five-cost-guardrails.gif", ARGOS_GIFS[2][2], 100),
+        "<h2>📊 4. Monthly Snapshot Quota Math (3,600 / 5,000 = 72%) &amp; Four-Option Cost Comparison</h2>",
+        image(ctx, "argos-04-quota-math-scenarios.gif", ARGOS_GIFS[3][2], 100),
+        "<h2>📖 Full architecture, fixture code, GitHub Actions workflow &amp; costing record (docs/RESEARCH.md §10)</h2>",
+        md(sec10, shift=-1),
+        "<h2>🧩 The stories that record, join with or implement it</h2><p>Every story in the trace that builds or joins with the SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline, in phase order.</p>",
+        story_rows(ctx, items),
+        jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
+    ]
+    return "".join(out) + footer(ctx)
+
+
 BLOCK_END = re.compile(r"(</(?:p|h[1-6]|table|thead|tbody|tr|ul|ol|li|div|figure|section|blockquote|pre)>)")
 
 
@@ -1380,7 +1435,7 @@ def render_body(ctx: Ctx, slug_: str) -> str:
         return render_screens(ctx)
     if slug_.startswith("screens-"):
         return render_area(ctx, next(a for a in AREAS if f"screens-{a[0]}" == slug_))
-    return {"decisions": render_decisions, "guardrails": render_guardrails, "stack": render_stack, "cicd": render_cicd, "maestro": render_maestro, "vpc": render_vpc, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
+    return {"decisions": render_decisions, "guardrails": render_guardrails, "stack": render_stack, "cicd": render_cicd, "maestro": render_maestro, "vpc": render_vpc, "argos": render_argos, "explainers": render_explainers, "sync": render_sync}[slug_](ctx)
 
 
 # ---------- check and the commands ----------

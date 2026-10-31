@@ -4936,12 +4936,13 @@
       "labels": [],
       "arch": [
         "9.4",
-        "13"
+        "13",
+        "18.4"
       ],
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "Updated 30 Oct 2026: Playwright 1.64 E2E on web/ runs one shared auditAndCapture() fixture at 390x844 and 1440x900 in .t-light and .t-dark (plus privacy mode on wealth/home screens): deterministic motion/font stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 Level A & AA before capture, keyboard focus/landmark assertions (MA-181), and Argos CI (@argos-ci/playwright, Tokenless GitHub App OIDC, uploadToArgos: !!process.env.CI) capturing cloud visual PNG diffs in both themes (threshold: 0.2) and a light-theme-deduplicated YAML ariaSnapshot accessibility tree (~3,600 snapshots/month inside the 5,000/month £0 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html)."
     },
     {
       "key": "MA-198",
@@ -8067,7 +8068,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-272 (28 Oct 2026): scripts/regression.py across Layers 1 to 5 and the Option D path-filtered GitHub Actions (ubuntu-24.04-arm 1x + path-gated macos-15 / self-hosted Mac) and AWS CodeBuild arm1.small runner layout so monthly CI stays inside the 2,000 GitHub and 100 CodeBuild free minute tiers (£0/month); Layer 1 includes python3 scripts/maestro_local.py check-syntax and TestIDs.swift <-> web/src/lib/test-ids.ts selector parity on Linux (1x), while Layer 4 pairs path-gated iOS XCUITest/Snapshot/AX5 with local Apple Silicon scripts/maestro_local.py (MA-273). Build time is covered by MA-24, MA-25, MA-166, MA-194, MA-198 and MA-246."
+      "notes": "Filed from MA-272 (28 Oct 2026); updated 30 Oct 2026: scripts/regression.py across Layers 1 to 5 and the Option D path-filtered GitHub Actions (ubuntu-24.04-arm 1x + path-gated macos-15 / self-hosted Mac) and AWS CodeBuild arm1.small runner layout so monthly CI stays inside the 2,000 GitHub and 100 CodeBuild free minute tiers (£0/month); Layer 1 includes python3 scripts/maestro_local.py check-syntax and TestIDs.swift <-> web/src/lib/test-ids.ts selector parity on Linux (1x), while Layer 4 pairs path-gated iOS XCUITest/Snapshot/AX5 with local Apple Silicon scripts/maestro_local.py (MA-273) and runs SvelteKit 3 (web/) visual regression, YAML ariaSnapshot accessibility tree diffing and fail-closed @axe-core/playwright WCAG 2.2 AA through one auditAndCapture() fixture + Argos CI Tokenless OIDC (~3,600 snapshots/month inside the 5,000/month £0 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html). Build time is covered by MA-24, MA-25, MA-166, MA-194, MA-198 and MA-246."
     },
     {
       "key": "MA-270",
@@ -8478,6 +8479,27 @@
         "docs/design/reviews/MA-295/build_boards.py",
         "scripts/contrast_check.py",
         "scripts/prototype_smoke.js"
+      ]
+    },
+    {
+      "key": "MA-299",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI are recorded in the plan and Confluence with block diagrams",
+      "status": "Done",
+      "labels": [],
+      "arch": [
+        "9.4",
+        "18.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 30 Oct 2026: design and record the SvelteKit 3 (web/) visual regression, ARIA accessibility tree diffing and fail-closed WCAG 2.2 Level A & AA accessibility pipeline using Playwright 1.64, @axe-core/playwright 4.14 and Argos CI (@argos-ci/playwright 6.4) in GitHub Actions, with the auditAndCapture() One Helper, Four Gates fixture and five cost guardrails keeping usage at ~3,600 snapshots/month (72% of the 5,000/month Free Hobby cap) at £0.00/month. Delivered in docs/RESEARCH.md 7.4, 7.5 and 10, ARCHITECTURE.md 9.4 and 18.4, TECH_STACK.md 3 and 4, PLAN.md, MA-194 and MA-269, docs/design/argos-visual-a11y.html, its four GIFs in docs/design/argos-visual-a11y/, and the Confluence page Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI.",
+      "code": [
+        "docs/design/argos-visual-a11y.html",
+        "docs/design/argos-visual-a11y/*.gif"
       ]
     }
   ],

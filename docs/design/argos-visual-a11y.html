@@ -1,0 +1,587 @@
+<title>MyPaisa Web Visual Regression &amp; WCAG 2.2 AA Accessibility Pipeline (Argos CI + Playwright + axe-core)</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: a rich navy-and-emerald masthead states the five rules of MyPaisa's SvelteKit 3 visual regression and
+   accessibility pipeline; below it, four sections with animated SVG block diagrams, code blueprints, and quota tables
+   covering: (1) the "One Helper, Four Gates" Playwright + @axe-core/playwright + Argos CI fixture, (2) Tokenless OIDC
+   cloud pixel-diff and light-deduplicated YAML ariaSnapshot diffing, (3) the five £0/month cost guardrails, and
+   (4) monthly snapshot quota mathematics across all three options. MyPaisa DS v1, "Warm ledger" (MA-194, MA-269). */
+:root{
+  --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
+  --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
+  --hero:#13213A; --hero-2:#1C2E4D; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF6B4F; --accent:#C2381F; --on-accent:#FFFFFF;
+  --up:#1D7A3E; --up-bg:#E2F2E7; --alert:#B5123F; --alert-bg:#FCE4EA;
+  --amber:#8A5300; --amber-bg:#FCEED6; --blue:#2453C9; --blue-bg:#E5ECFB; --violet:#6B3FB8; --violet-bg:#EEE7FA;
+  --track:#CDCFD4; --grid:#ECE8E2;
+  --shadow:0 1px 2px rgba(20,23,31,.06),0 10px 30px rgba(20,23,31,.08);
+  --f-display:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+    --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+    --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+    --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+    --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+    --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+    --track:#454E5C; --grid:#222B39;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F18; --surface:#151C27; --surface-2:#1E2633; --line:#283141;
+  --ink:#F3F5F8; --ink-2:#C5CCD7; --ink-3:#ADB6C4;
+  --hero:#1A2944; --hero-2:#233558; --hero-ink:#FFFFFF; --hero-ink-2:#B7C2D6;
+  --coral:#FF7A5E; --accent:#FF9A82; --on-accent:#1A0B06;
+  --up:#44D17A; --up-bg:#16301F; --alert:#FF9AAE; --alert-bg:#3A1724;
+  --amber:#F6BC4F; --amber-bg:#33270E; --blue:#A8C3FF; --blue-bg:#1A2747; --violet:#C8B4FF; --violet-bg:#2A2142;
+  --track:#454E5C; --grid:#222B39;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(24px,3.2vw,32px);font-weight:900;line-height:1.15}
+h3{font-size:18px;font-weight:800}
+p{margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:6px}
+
+.mast{background:linear-gradient(135deg,var(--hero) 0%,#182D4F 58%,#133A36 100%);color:var(--hero-ink);padding-block:40px 36px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-ink-2);font-weight:600}
+.mast h1{font-size:clamp(28px,4.6vw,46px);font-weight:900;line-height:1.08;margin-top:10px;max-width:26ch}
+.mast .lede{color:var(--hero-ink-2);font-size:17px;max-width:72ch;margin-top:16px}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.rules li{background:rgba(28,46,77,.82);color:var(--hero-ink);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600}
+.rules li b{color:var(--coral);margin-right:6px;font-family:var(--f-mono);font-weight:500}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.ghost{font:600 14px var(--f-body);color:var(--ink-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.bar nav{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;margin-left:auto}
+.bar nav a{color:var(--ink-2);text-decoration:none}
+.bar nav a:hover{color:var(--accent)}
+
+main{padding-block:12px 56px}
+section{padding-block:36px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.head{display:flex;flex-direction:column;gap:8px;max-width:74ch}
+.kicker{font:600 12px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.body{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin-top:18px}
+.copy{display:flex;flex-direction:column;gap:12px;max-width:74ch;color:var(--ink-2)}
+.copy strong{color:var(--ink)}
+.copy ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+[data-mode="plain"] .tech,[data-mode="tech"] .plain{display:none!important}
+
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;margin:0}
+.fig .scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:720px;height:auto}
+.fig figcaption{font-size:13px;color:var(--ink-3);margin-top:8px}
+
+.s-box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.s-box2{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.s-t{fill:var(--ink);font:600 13px var(--f-body)}
+.s-s{fill:var(--ink-2);font:500 11.8px var(--f-body)}
+.s-m{fill:var(--ink-3);font:500 11.2px var(--f-mono)}
+.s-h{fill:var(--ink);font:800 14.5px var(--f-display)}
+.s-line{stroke:var(--ink-3);stroke-width:2;fill:none}
+.s-dash{stroke:var(--ink-3);stroke-width:2;fill:none;stroke-dasharray:6 5}
+.s-up{fill:var(--up)} .s-upbg{fill:var(--up-bg);stroke:var(--up);stroke-width:1.3}
+.s-al{fill:var(--alert)} .s-albg{fill:var(--alert-bg);stroke:var(--alert);stroke-width:1.3}
+.s-am{fill:var(--amber)} .s-ambg{fill:var(--amber-bg);stroke:var(--amber);stroke-width:1.3}
+.s-bl{fill:var(--blue)} .s-blbg{fill:var(--blue-bg);stroke:var(--blue);stroke-width:1.3}
+.s-vi{fill:var(--violet)} .s-vibg{fill:var(--violet-bg);stroke:var(--violet);stroke-width:1.3}
+.s-co{fill:var(--coral)} .s-tr{fill:var(--ink-3)}
+.s-upt{fill:var(--up);font:700 12.4px var(--f-body)}
+.s-alt{fill:var(--alert);font:700 12.4px var(--f-body)}
+.s-amt{fill:var(--amber);font:700 12.4px var(--f-body)}
+.s-blt{fill:var(--blue);font:700 12.4px var(--f-body)}
+.s-vit{fill:var(--violet);font:700 12.4px var(--f-body)}
+
+.step-ring{fill:none;stroke:var(--coral);stroke-width:3;opacity:0;transition:opacity .15s linear}
+.step-ring.is-on{opacity:1}
+.pkt{fill:var(--coral);stroke:#FFFFFF;stroke-width:1.6}
+.scan-beam{fill:rgba(107,63,184,.16);stroke:var(--violet);stroke-width:1.5;transition:transform .45s ease-in-out}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--surface-2);font-weight:700;color:var(--ink)}
+tr:last-child td{border-bottom:0}
+td.k{font-family:var(--f-mono);font-weight:600;white-space:nowrap;color:var(--accent)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);font-size:13px}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="eyebrow">SvelteKit 3 Web Visual Regression &amp; Accessibility Pipeline · MA-194, MA-269</div>
+    <h1>Argos CI, Playwright &amp; axe-core: Visual &amp; WCAG 2.2 AA Testing at £0/Month</h1>
+    <p class="lede">Every canonical SvelteKit 3 screen in <code>web/</code> runs through one fail-closed <code>auditAndCapture()</code> Playwright fixture at <code>390x844</code> and <code>1440x900</code> in Light and Dark: deterministic motion/font stabilization, hard <code>@axe-core/playwright</code> WCAG 2.2 AA auditing before capture, keyboard focus/landmark checks, and <strong>Argos CI</strong> Tokenless OIDC visual PNG diffing plus a light-theme-deduplicated YAML <code>ariaSnapshot</code> accessibility tree diff—staying at <strong>~3,600 snapshots/month (72% of Argos CI's 5,000/month Free Hobby cap = £0.00/month)</strong>.</p>
+    <ul class="rules">
+      <li><b>01</b>100% dedicated to real SvelteKit 3 (web/) code; boards stay on local board_fit.js (£0)</li>
+      <li><b>02</b>One helper, four gates: Stabilize → axe-core WCAG 2.2 AA → Focus/h1 → argosScreenshot</li>
+      <li><b>03</b>Smart ARIA deduplication: Light &amp; Dark PNGs + Light-only ARIA saves 50% ARIA quota</li>
+      <li><b>04</b>Tokenless GitHub App OIDC on ubuntu-24.04-arm (1x) + cancel-in-progress (0 secrets)</li>
+      <li><b>05</b>3,600 snapshots/mo (72% of 5,000 Free Hobby cap) + ~80 GH mins/mo = £0.00/month</li>
+    </ul>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="seg" role="radiogroup" aria-label="Explanation depth">
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-set="plain">Plain words</button>
+      <button type="button" role="radio" aria-checked="true" tabindex="0" data-set="tech">Technical</button>
+    </div>
+    <button type="button" class="ghost" id="pause" aria-pressed="false">Pause the diagrams</button>
+    <nav aria-label="Sections">
+      <a href="#helper">1 · One helper, 4 gates</a>
+      <a href="#cloud">2 · Cloud visual &amp; ARIA diff</a>
+      <a href="#guardrails">3 · Five £0/mo guardrails</a>
+      <a href="#quota">4 · 5,000/mo quota math</a>
+    </nav>
+  </div>
+</div>
+
+<main id="main" data-mode="tech">
+<div class="wrap">
+
+<section id="helper">
+  <div class="head">
+    <div class="kicker">1 · The "One Helper, Four Gates" Playwright fixture (MA-194, MA-181, MA-269)</div>
+    <h2>Every SvelteKit screen passes hard WCAG 2.2 AA rules before Argos captures a single pixel</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Instead of scattering accessibility checks and screenshot calls across dozens of test files, every test in <code>web/</code> calls one shared helper at phone width (<code>390x844</code>) and laptop width (<code>1440x900</code>), in both light and dark themes.</p>
+      <p>First it freezes motion and waits for fonts. Next it scans the page for accessibility violations using <code>axe-core</code> and checks keyboard focus. If anything breaks a WCAG 2.2 AA rule, the test stops immediately—so a broken screen never wastes your monthly screenshot allowance. Only when the page is clean does Argos capture the screenshot and the accessibility tree.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Track A (Repo-Local Board Gates, 0 Quota) vs Track B (SvelteKit <code>web/</code> on Argos CI):</strong> Static <code>.dc.html</code> design boards stay on offline <code>scripts/board_fit.js</code> (320–1920 px in Chromium &amp; WebKit) and <code>scripts/contrast_check.py</code> (100% &amp; 25% brightness). The entire 5,000/month Argos Hobby quota is reserved for the built SvelteKit 3 PWA (<code>pnpm build &amp;&amp; pnpm preview</code>).</li>
+        <li><strong>Gate 1 (Stabilize) &amp; Gate 2 (Fail-Closed <code>@axe-core/playwright</code> 4.14):</strong> <code>auditAndCapture()</code> sets <code>prefers-reduced-motion: reduce</code>, toggles <code>.t-light</code> / <code>.t-dark</code>, waits for <code>document.fonts.ready</code> and zero <code>[aria-busy="true"]</code> nodes, and runs <code>AxeBuilder</code> with <code>wcag2a</code>, <code>wcag2aa</code>, <code>wcag21a</code>, <code>wcag21aa</code>, <code>wcag22aa</code>, and <code>best-practice</code> tags in both themes before <code>argosScreenshot()</code> is ever called.</li>
+        <li><strong>Gate 3 (Landmarks &amp; Keyboard Focus) &amp; Gate 4 (<code>argosScreenshot</code>):</strong> Verifies visible <code>&lt;main&gt;</code>, single <code>&lt;h1&gt;</code>, and <code>:focus-visible</code> rings (<code>MA-181</code>), then captures full-page PNGs in both themes (<code>threshold: 0.2</code>) and the YAML accessibility tree on Light (<code>ariaSnapshot: opts.theme === 'light'</code>).</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-1">
+      <div class="scroll">
+      <svg id="svg-1" viewBox="0 0 1000 350" role="img" aria-label="One Helper, Four Gates: auditAndCapture() running stabilization, fail-closed axe-core WCAG 2.2 AA, landmark/focus checks, and argosScreenshot">
+        <rect class="s-box2" x="16" y="16" width="224" height="318" rx="12"/>
+        <text class="s-h" x="30" y="42">Gate 1 · Stabilize DOM</text>
+        <rect class="s-blbg" x="30" y="56" width="196" height="82" rx="8"/>
+        <text class="s-blt" x="42" y="78">SvelteKit 3 Preview</text>
+        <text class="s-m" x="42" y="96">390x844 (Mobile @2x)</text>
+        <text class="s-m" x="42" y="114">1440x900 (Desktop @2x)</text>
+        <text class="s-m" x="42" y="130">.t-light &amp; .t-dark + £••••</text>
+        <rect class="s-box" x="30" y="150" width="196" height="84" rx="8"/>
+        <text class="s-t" x="42" y="172">Zero-Flake Lock</text>
+        <text class="s-m" x="42" y="190">reducedMotion: 'reduce'</text>
+        <text class="s-m" x="42" y="208">document.fonts.ready</text>
+        <text class="s-m" x="42" y="224">[aria-busy="true"] == 0</text>
+        <rect class="s-upbg" x="30" y="246" width="196" height="74" rx="8"/>
+        <text class="s-upt" x="42" y="268">Token Contrast Pre-Gate</text>
+        <text class="s-m" x="42" y="286">contrast_check.py (MA-181)</text>
+        <text class="s-m" x="42" y="304">100% &amp; 25% brightness OK</text>
+        <rect class="step-ring" data-f1="0" x="26" y="52" width="204" height="272" rx="10"/>
+
+        <line class="s-line" x1="240" y1="175" x2="264" y2="175"/>
+
+        <rect class="s-box2" x="264" y="16" width="244" height="318" rx="12"/>
+        <text class="s-h" x="278" y="42">Gate 2 · Hard WCAG 2.2 AA</text>
+        <rect class="s-vibg" x="278" y="56" width="216" height="114" rx="8"/>
+        <text class="s-vit" x="290" y="78">@axe-core/playwright 4.14</text>
+        <text class="s-m" x="290" y="96">Tags: wcag2a, wcag2aa,</text>
+        <text class="s-m" x="290" y="114">wcag21aa, wcag22aa</text>
+        <text class="s-m" x="290" y="132">+ best-practice rules</text>
+        <text class="s-s" x="290" y="152">Runs in BOTH Light &amp; Dark</text>
+        <rect id="scan-1" class="scan-beam" x="282" y="62" width="208" height="22" rx="4"/>
+        <rect class="s-albg" x="278" y="184" width="216" height="136" rx="8"/>
+        <text class="s-alt" x="290" y="206">Fail-Closed Before Argos</text>
+        <text class="s-s" x="290" y="226">If violations.length &gt; 0:</text>
+        <text class="s-m" x="290" y="246">• Prints violating HTML nodes</text>
+        <text class="s-m" x="290" y="264">• Aborts test immediately</text>
+        <text class="s-m" x="290" y="282">• 0 Argos snapshots burned</text>
+        <text class="s-upt" x="290" y="306">✓ 0 violations → Proceed</text>
+        <rect class="step-ring" data-f1="1" x="274" y="52" width="224" height="272" rx="10"/>
+
+        <line class="s-line" x1="508" y1="175" x2="532" y2="175"/>
+
+        <rect class="s-box2" x="532" y="16" width="210" height="318" rx="12"/>
+        <text class="s-h" x="546" y="42">Gate 3 · Interactive A11y</text>
+        <rect class="s-ambg" x="546" y="56" width="182" height="124" rx="8"/>
+        <text class="s-amt" x="558" y="78">Landmarks &amp; Headings</text>
+        <text class="s-m" x="558" y="98">&lt;main&gt; landmark visible</text>
+        <text class="s-m" x="558" y="116">&lt;nav&gt; door shell present</text>
+        <text class="s-m" x="558" y="134">Exactly one &lt;h1&gt; per route</text>
+        <text class="s-m" x="558" y="152">aria-live="polite" stream</text>
+        <rect class="s-blbg" x="546" y="194" width="182" height="126" rx="8"/>
+        <text class="s-blt" x="558" y="216">Keyboard &amp; Focus Ring</text>
+        <text class="s-m" x="558" y="236">Tab order reaches Confirm</text>
+        <text class="s-m" x="558" y="254">Escape closes sheets</text>
+        <text class="s-m" x="558" y="272">:focus-visible 2px ring</text>
+        <text class="s-m" x="558" y="290">No keyboard focus traps</text>
+        <rect class="step-ring" data-f1="2" x="542" y="52" width="190" height="272" rx="10"/>
+
+        <line class="s-line" x1="742" y1="175" x2="766" y2="175"/>
+
+        <rect class="s-box2" x="766" y="16" width="218" height="318" rx="12"/>
+        <text class="s-h" x="780" y="42">Gate 4 · argosScreenshot</text>
+        <rect class="s-upbg" x="780" y="56" width="190" height="132" rx="8"/>
+        <text class="s-upt" x="792" y="78">Visual PNG (Light &amp; Dark)</text>
+        <text class="s-m" x="792" y="98">fullPage: true</text>
+        <text class="s-m" x="792" y="116">threshold: 0.2 (strict)</text>
+        <text class="s-m" x="792" y="134">mask: [live-clock, ...]</text>
+        <text class="s-m" x="792" y="152"> SVG &amp; CSS animations</text>
+        <text class="s-m" x="792" y="168">frozen on frame 0</text>
+        <rect class="s-vibg" x="780" y="200" width="190" height="120" rx="8"/>
+        <text class="s-vit" x="792" y="222">Deduplicated ARIA Tree</text>
+        <text class="s-m" x="792" y="242">ariaSnapshot:</text>
+        <text class="s-m" x="792" y="260">  theme === 'light'</text>
+        <text class="s-s" x="792" y="280">6 items/screen (not 8)</text>
+        <text class="s-upt" x="792" y="300">Saves 50% ARIA quota</text>
+        <rect class="step-ring" data-f1="3" x="776" y="52" width="198" height="272" rx="10"/>
+
+        <circle id="pkt-1" class="pkt" cx="252" cy="175" r="6"/>
+      </svg>
+      </div>
+      <figcaption>One auditAndCapture() call per screen runs deterministic stabilization, fail-closed @axe-core/playwright WCAG 2.2 AA, interactive focus checks, and Argos CI visual + light-deduplicated ARIA capture.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="cloud">
+  <div class="head">
+    <div class="kicker">2 · Tokenless OIDC upload, cloud merge-base matching &amp; dual visual + ARIA diffing</div>
+    <h2>Side-by-side pixel heatmaps and Git-style YAML accessibility tree diffs on every PR</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>When Playwright finishes on GitHub Actions, the Argos reporter uploads the screenshots and accessibility trees using GitHub's built-in identity—with no secret token stored anywhere. Argos automatically finds the matching baseline from <code>main</code> and compares every screen.</p>
+      <p>If a colour, chart line, or spacing shifted, Argos highlights the exact pixels in a side-by-side heatmap. And if a button label, heading level, or screen-reader role changed—even without changing a single pixel on screen—Argos shows a text diff of the accessibility tree right beside the picture.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Tokenless GitHub App OIDC (Zero Secrets):</strong> With the Argos GitHub App installed on <code>gilipersonal/mypaisa-agent</code> and Tokenless Authentication enabled, <code>@argos-ci/playwright/reporter</code> authenticates directly through the GitHub Actions check-run context—zero <code>ARGOS_TOKEN</code> in GitHub Secrets or AWS SSM.</li>
+        <li><strong>Single-Pass CI Render (Saves ~45–60s/run):</strong> Unlike local <code>git archive</code> diffing that renders both <code>main</code> and <code>HEAD</code> on every PR, GitHub Actions renders <code>HEAD</code> once. Argos resolves the Git merge-base commit on <code>main</code> in the cloud and supports automatic Playwright sharding (<code>--shard=x/y</code>) with zero merge scripts.</li>
+        <li><strong>Dual Review Surface (`argos/visual` PR Check):</strong> Every screen pairs its 2x Retina PNG heatmap diff (Light &amp; Dark) with its structured Playwright YAML <code>.aria.yml</code> tree diff, catching silent semantic regressions (missing <code>aria-label</code>, shifted heading hierarchy, dropped <code>aria-live</code>) that pass rule-based <code>axe-core</code> checks.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-2">
+      <div class="scroll">
+      <svg id="svg-2" viewBox="0 0 1000 350" role="img" aria-label="Tokenless OIDC upload from GitHub Actions ubuntu-24.04-arm to Argos CI Cloud, comparing main baseline against PR HEAD for both pixel heatmaps and YAML ARIA trees">
+        <rect class="s-box2" x="16" y="16" width="256" height="318" rx="12"/>
+        <text class="s-h" x="30" y="42">A · GitHub Actions Runner</text>
+        <rect class="s-blbg" x="30" y="56" width="228" height="84" rx="8"/>
+        <text class="s-blt" x="42" y="78">ubuntu-24.04-arm (1x)</text>
+        <text class="s-m" x="42" y="96">pnpm build &amp;&amp; pnpm preview</text>
+        <text class="s-m" x="42" y="114">Playwright 1.64 (Chromium)</text>
+        <text class="s-m" x="42" y="130">Renders HEAD once (~55s)</text>
+        <rect class="s-upbg" x="30" y="152" width="228" height="84" rx="8"/>
+        <text class="s-upt" x="42" y="174">@argos-ci/playwright</text>
+        <text class="s-m" x="42" y="192">uploadToArgos: !!process.env.CI</text>
+        <text class="s-m" x="42" y="210">60 PNGs + 30 .aria.yml</text>
+        <text class="s-m" x="42" y="226">Deduplicated by SHA-256</text>
+        <rect class="s-vibg" x="30" y="248" width="228" height="72" rx="8"/>
+        <text class="s-vit" x="42" y="270">Tokenless OIDC Auth</text>
+        <text class="s-m" x="42" y="288">Verified via Argos GH App</text>
+        <text class="s-m" x="42" y="306">0 secrets in GH or AWS SSM</text>
+        <rect class="step-ring" data-f2="0" x="26" y="52" width="236" height="272" rx="10"/>
+
+        <line class="s-line" x1="272" y1="185" x2="302" y2="185"/>
+
+        <rect class="s-box2" x="302" y="16" width="376" height="318" rx="12"/>
+        <text class="s-h" x="316" y="42">B · Argos CI Cloud Diff Engine</text>
+        <rect class="s-box" x="316" y="56" width="348" height="58" rx="8"/>
+        <text class="s-t" x="328" y="76">Automatic Git Merge-Base Resolution</text>
+        <text class="s-m" x="328" y="96">Matches PR branch against main baseline build</text>
+        <rect class="s-ambg" x="316" y="126" width="168" height="194" rx="8"/>
+        <text class="s-amt" x="328" y="148">1 · Visual Pixel Diff</text>
+        <text class="s-m" x="328" y="168">390 &amp; 1440 · Light/Dark</text>
+        <rect class="s-box" x="328" y="180" width="144" height="76" rx="6"/>
+        <text class="s-s" x="338" y="198">Net Worth £642,810</text>
+        <rect class="s-albg" x="338" y="208" width="124" height="20" rx="4"/>
+        <text class="s-alt" x="344" y="222">Δ +£200 bar shift</text>
+        <text class="s-m" x="338" y="246">Heatmap overlay</text>
+        <text class="s-upt" x="328" y="280">Side-by-side / Onion</text>
+        <text class="s-m" x="328" y="300">threshold: 0.2</text>
+
+        <rect class="s-vibg" x="496" y="126" width="168" height="194" rx="8"/>
+        <text class="s-vit" x="508" y="148">2 · YAML ARIA Diff</text>
+        <text class="s-m" x="508" y="168">home--1440--light.aria</text>
+        <rect class="s-box" x="508" y="180" width="144" height="92" rx="6"/>
+        <text class="s-m" x="514" y="198">- main:</text>
+        <text class="s-m" x="514" y="214">  - heading "Overview" [h1]</text>
+        <rect class="s-albg" x="512" y="222" width="136" height="20" rx="3"/>
+        <text class="s-alt" x="516" y="236">- button "Confirm"</text>
+        <rect class="s-upbg" x="512" y="244" width="136" height="22" rx="3"/>
+        <text class="s-upt" x="516" y="259">+ button "Confirm buy"</text>
+        <text class="s-s" x="508" y="294">Catches silent semantic</text>
+        <text class="s-m" x="508" y="310">drift axe-core misses</text>
+        <rect class="step-ring" data-f2="1" x="312" y="52" width="356" height="272" rx="10"/>
+
+        <line class="s-line" x1="678" y1="185" x2="708" y2="185"/>
+
+        <rect class="s-box2" x="708" y="16" width="276" height="318" rx="12"/>
+        <text class="s-h" x="722" y="42">C · PR Status &amp; 1-Click Review</text>
+        <rect class="s-upbg" x="722" y="56" width="248" height="118" rx="8"/>
+        <text class="s-upt" x="734" y="78">When 0 Diffs Detected</text>
+        <text class="s-m" x="734" y="98">GitHub check: argos/visual</text>
+        <text class="s-upt" x="734" y="120">✓ PASS — No changes</text>
+        <text class="s-s" x="734" y="142">PR ready for /autoship</text>
+        <text class="s-m" x="734" y="160">0 manual review needed</text>
+        <rect class="s-ambg" x="722" y="188" width="248" height="132" rx="8"/>
+        <text class="s-amt" x="734" y="210">When UI or ARIA Changed</text>
+        <text class="s-m" x="734" y="230">• Intentional change: click</text>
+        <text class="s-m" x="734" y="248">  "Approve" in Argos UI →</text>
+        <text class="s-m" x="734" y="266">  PR check turns GREEN</text>
+        <text class="s-m" x="734" y="286">• Unintended regression:</text>
+        <text class="s-m" x="734" y="304">  fix CSS/DOM &amp; push</text>
+        <rect class="step-ring" data-f2="2" x="718" y="52" width="256" height="272" rx="10"/>
+
+        <circle id="pkt-2" class="pkt" cx="287" cy="185" r="6"/>
+      </svg>
+      </div>
+      <figcaption>Argos CI pairs Retina pixel heatmaps (Light &amp; Dark) with Git-style YAML accessibility tree diffs, reporting back on the PR via Tokenless OIDC.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="guardrails">
+  <div class="head">
+    <div class="kicker">3 · Five engineering cost guardrails (MA-194, MA-269)</div>
+    <h2>How five pipeline guardrails eliminate 89% of wasted snapshots and keep spend at £0.00/month</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Argos CI's Hobby tier is free forever up to 5,000 snapshots a month, while the next tier up costs $100 a month. Without guardrails, running visual and accessibility snapshots on every commit across every file in the repository would burn 34,000 snapshots a month.</p>
+      <p>Five simple rules—running only when web or card files change, deduplicating the dark-mode accessibility tree, failing early on broken axe rules, cancelling superseded PR runs, and keeping local runs offline—bring usage down to 3,600 snapshots a month, safely inside the free tier.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Guardrail 1 (Path Filter <code>web/**</code>, <code>cards/**</code>) &amp; Guardrail 2 (Light-Only <code>ariaSnapshot</code>):</strong> Skipping backend/infra/iOS/docs PRs drops monthly runs from ~85 to ~40. Deduplicating <code>ariaSnapshot: opts.theme === 'light'</code> cuts per-screen items from 8 to 6 (saving 1,200 snapshots/month) because CSS custom properties in <code>.t-dark</code> never alter DOM roles or labels.</li>
+        <li><strong>Guardrail 3 (Fail-Fast Axe + Offline Local Runs) &amp; Guardrail 4 (<code>cancel-in-progress: true</code>):</strong> <code>@axe-core/playwright</code> aborts before <code>argosScreenshot()</code> on any violation; <code>uploadToArgos: !!process.env.CI</code> keeps laptop runs 100% local; and GitHub Actions concurrency cancels superseded PR pushes before the end-of-job reporter uploads.</li>
+        <li><strong>Guardrail 5 (<code>ubuntu-24.04-arm</code> 1x + Cached Chromium):</strong> Uses ~2.0 mins/run (~80 billed GitHub mins/mo out of 2,000 free) with zero secrets and zero AWS cost.</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-3">
+      <div class="scroll">
+      <svg id="svg-3" viewBox="0 0 1000 340" role="img" aria-label="Five cost guardrails filtering 34,000 naive monthly snapshots down to 3,600 snapshots/month inside the 5,000 Free Hobby cap">
+        <rect class="s-albg" x="16" y="22" width="174" height="296" rx="12"/>
+        <text class="s-alt" x="28" y="48">Unfiltered Input</text>
+        <text class="s-h" x="28" y="76">34,000 / mo</text>
+        <text class="s-m" x="28" y="100">• All 85 repo runs/mo</text>
+        <text class="s-m" x="28" y="118">• Static .dc.html boards</text>
+        <text class="s-m" x="28" y="136">• Duplicate Dark ARIA</text>
+        <text class="s-m" x="28" y="154">• Superseded PR pushes</text>
+        <text class="s-m" x="28" y="172">• Broken a11y builds</text>
+        <rect class="s-box" x="28" y="206" width="150" height="94" rx="8"/>
+        <text class="s-alt" x="38" y="230">Would require Pro:</text>
+        <text class="s-h" x="38" y="256">$100 / mo</text>
+        <text class="s-m" x="38" y="278">(~£79/mo &gt; £50 cap)</text>
+        <rect class="step-ring" data-f3="0" x="14" y="20" width="178" height="300" rx="12"/>
+
+        <line class="s-line" x1="190" y1="170" x2="214" y2="170"/>
+
+        <rect class="s-box2" x="214" y="22" width="548" height="296" rx="12"/>
+        <text class="s-h" x="228" y="48">The Five Cost &amp; Quota Guardrails (.github/workflows/web-visual-a11y.yml)</text>
+
+        <rect class="s-blbg" x="228" y="62" width="254" height="72" rx="8"/>
+        <text class="s-blt" x="240" y="82">1 · Path Filter: web/**, cards/**</text>
+        <text class="s-m" x="240" y="100">Skips src/**, infra/**, ios/**, docs/**</text>
+        <text class="s-upt" x="240" y="120">−60% runs (85 → 40 UI runs/mo)</text>
+
+        <rect class="s-vibg" x="494" y="62" width="254" height="72" rx="8"/>
+        <text class="s-vit" x="506" y="82">2 · Light-Only ariaSnapshot</text>
+        <text class="s-m" x="506" y="100">ariaSnapshot: theme === 'light'</text>
+        <text class="s-upt" x="506" y="120">−1,200 items/mo (6/screen vs 8)</text>
+
+        <rect class="s-ambg" x="228" y="146" width="254" height="76" rx="8"/>
+        <text class="s-amt" x="240" y="166">3 · Fail-Fast Axe + CI-Only</text>
+        <text class="s-m" x="240" y="184">Axe aborts before argosScreenshot</text>
+        <text class="s-m" x="240" y="202">uploadToArgos: !!process.env.CI</text>
+
+        <rect class="s-upbg" x="494" y="146" width="254" height="76" rx="8"/>
+        <text class="s-upt" x="506" y="166">4 · cancel-in-progress: true</text>
+        <text class="s-m" x="506" y="184">Cancels superseded PR pushes</text>
+        <text class="s-m" x="506" y="202">before end-of-job reporter upload</text>
+
+        <rect class="s-box" x="228" y="234" width="520" height="68" rx="8"/>
+        <text class="s-t" x="240" y="256">5 · Static Boards Stay on Repo-Local Gates (scripts/board_fit.js + contrast_check.py)</text>
+        <text class="s-m" x="240" y="276">60+ .dc.html boards &amp; 12+ responsive widths tested locally on disk → 0 Argos quota used</text>
+        <rect class="step-ring" data-f3="1" x="224" y="58" width="528" height="248" rx="10"/>
+
+        <line class="s-line" x1="762" y1="170" x2="786" y2="170"/>
+
+        <rect class="s-upbg" x="786" y="22" width="198" height="296" rx="12"/>
+        <text class="s-upt" x="800" y="48">Protected Output</text>
+        <text class="s-h" x="800" y="76">3,600 / mo</text>
+        <text class="s-m" x="800" y="100">• 15 SvelteKit screens</text>
+        <text class="s-m" x="800" y="118">• 390 &amp; 1440 · Light/Dark</text>
+        <text class="s-m" x="800" y="136">• 60 PNGs + 30 ARIA/run</text>
+        <text class="s-m" x="800" y="154">• × 40 UI runs/month</text>
+        <text class="s-m" x="800" y="172">• 1,400 buffer remaining</text>
+        <rect class="s-box" x="800" y="206" width="170" height="94" rx="8"/>
+        <text class="s-upt" x="812" y="230">Hobby Free Tier:</text>
+        <text class="s-h" x="812" y="256">£0.00 / mo</text>
+        <text class="s-m" x="812" y="278">(72% of 5,000 cap)</text>
+        <rect class="step-ring" data-f3="2" x="784" y="20" width="202" height="300" rx="12"/>
+
+        <circle id="pkt-3" class="pkt" cx="202" cy="170" r="6"/>
+      </svg>
+      </div>
+      <figcaption>Five pipeline guardrails trim 89% of naive snapshot volume, locking monthly usage at 3,600/month (72% of the 5,000 Free Hobby cap = £0.00/month).</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="quota">
+  <div class="head">
+    <div class="kicker">4 · Monthly snapshot quota &amp; GitHub Actions runner mathematics</div>
+    <h2>Option 1 delivers full SvelteKit visual, ARIA &amp; WCAG 2.2 AA coverage with a 1,400-snapshot safety buffer</h2>
+  </div>
+  <div class="body">
+    <div class="copy plain">
+      <p>Each of the 15 core SvelteKit screens is captured at two sizes (phone and laptop) in two themes (light and dark), plus the accessibility tree in light mode—totalling 90 items per run. Across 40 UI runs a month, that is 3,600 snapshots out of 5,000 free, leaving 1,400 spare snapshots every month for busy sprints.</p>
+    </div>
+    <div class="copy tech">
+      <ul>
+        <li><strong>Per-Run Math (Option 1 Selected):</strong> 15 SvelteKit screens/states $\times$ (2 Light PNGs + 2 Dark PNGs + 2 Light YAML <code>ariaSnapshot</code> trees) = <strong>90 snapshots/build</strong> $\times$ 40 monthly UI builds = <strong>3,600 snapshots/month</strong> (72.0% of the 5,000/month Hobby limit).</li>
+        <li><strong>GitHub Actions Runner Math (<code>ubuntu-24.04-arm</code>, <code>1x</code>):</strong> ~2.0 mins/build for Playwright + <code>@axe-core/playwright</code> + Argos upload $\times$ 40 builds/month = <strong>~80 billed minutes/month</strong> (4% of the 2,000 free GitHub minutes/month).</li>
+      </ul>
+    </div>
+    <figure class="fig" id="fig-4">
+      <div class="scroll">
+      <svg id="svg-4" viewBox="0 0 1000 320" role="img" aria-label="Monthly snapshot quota comparison across Option 1 (3,600/mo, £0), Option 2 (4,800/mo, £0 tight), and Option 3 (34,000/mo, $100/mo Pro)">
+        <rect class="s-box2" x="16" y="16" width="968" height="288" rx="12"/>
+        <text class="s-h" x="32" y="44">Argos CI Monthly Quota Comparison Against the 5,000 / Month Free Hobby Limit</text>
+
+        <line class="s-dash" x1="650" y1="58" x2="650" y2="286"/>
+        <text class="s-alt" x="562" y="72">5,000 / mo Free Hobby Cap</text>
+
+        <rect class="s-upbg" x="32" y="84" width="936" height="62" rx="8"/>
+        <text class="s-upt" x="46" y="106">Option 1 (Selected) · SvelteKit web/ + Light-Only ARIA Deduplication (90/run × 40 runs)</text>
+        <rect class="s-box" x="46" y="116" width="604" height="18" rx="9"/>
+        <rect class="s-up" x="46" y="116" width="435" height="18" rx="9"/>
+        <text class="s-upt" x="666" y="129">3,600 / 5,000 (72.0%) · 1,400 buffer · £0.00 / mo</text>
+        <rect class="step-ring" data-f4="0" x="28" y="80" width="944" height="70" rx="10"/>
+
+        <rect class="s-ambg" x="32" y="158" width="936" height="62" rx="8"/>
+        <text class="s-amt" x="46" y="180">Option 2 · SvelteKit web/ + Un-deduplicated ARIA in Both Themes (120/run × 40 runs)</text>
+        <rect class="s-box" x="46" y="190" width="604" height="18" rx="9"/>
+        <rect class="s-am" x="46" y="190" width="580" height="18" rx="9"/>
+        <text class="s-amt" x="666" y="203">4,800 / 5,000 (96.0%) · Only 200 buffer · £0.00 / mo (tight)</text>
+        <rect class="step-ring" data-f4="1" x="28" y="154" width="944" height="70" rx="10"/>
+
+        <rect class="s-albg" x="32" y="232" width="936" height="60" rx="8"/>
+        <text class="s-alt" x="46" y="254">Option 3 · Unfiltered Naive Matrix (All PRs + Static .dc.html Boards + Duplicate ARIA: 400/run × 85 runs)</text>
+        <rect class="s-al" x="46" y="264" width="604" height="18" rx="9"/>
+        <text class="s-alt" x="666" y="277">34,000 / mo (680% of Hobby) → Requires Pro $100/mo (~£79/mo)</text>
+        <rect class="step-ring" data-f4="2" x="28" y="228" width="944" height="68" rx="10"/>
+      </svg>
+      </div>
+      <figcaption>Option 1 stays at 72% of Argos CI's 5,000/month Free Hobby limit, leaving a 1,400-snapshot monthly buffer at £0.00/month.</figcaption>
+    </figure>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>Configuration</th><th>What runs per build</th><th class="num">Items / build</th><th class="num">Builds / mo</th><th class="num">Total / mo</th><th class="num">Hobby Quota %</th><th class="num">Monthly Cost</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="k">Option 1 (Selected)</td><td>15 SvelteKit <code>web/</code> screens × 2 viewports (<code>390</code>, <code>1440</code>) × 2 themes (PNGs) + Light-only YAML <code>ariaSnapshot</code> + fail-closed <code>@axe-core/playwright</code> WCAG 2.2 AA</td><td class="num">90</td><td class="num">40</td><td class="num"><strong>3,600</strong></td><td class="num"><strong>72.0%</strong></td><td class="num"><strong>£0.00 / mo</strong></td></tr>
+          <tr><td class="k">Option 2</td><td>Same 15 SvelteKit <code>web/</code> screens with <code>ariaSnapshot: true</code> in both Light and Dark themes</td><td class="num">120</td><td class="num">40</td><td class="num">4,800</td><td class="num">96.0%</td><td class="num">£0.00 / mo (tight)</td></tr>
+          <tr><td class="k">Option 3 (Naive)</td><td>All repo PR pushes + 60+ static <code>.dc.html</code> design boards + iOS snapshots + un-deduplicated ARIA</td><td class="num">400</td><td class="num">85</td><td class="num">34,000</td><td class="num">680.0%</td><td class="num">$100 / ~£79 / mo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+<footer>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §10, <span class="mono">ARCHITECTURE.md</span> §9.4 &amp; §18.4, and <span class="mono">TECH_STACK.md</span> §3 &amp; §4 in the MyPaisa repository, 30 Oct 2026 (MA-194, MA-269).</div>
+</footer>
+
+<script>
+(function(){
+  var main=document.getElementById('main');
+  var btns=Array.prototype.slice.call(document.querySelectorAll('.seg button'));
+  function setMode(m,focus){
+    main.setAttribute('data-mode',m);
+    btns.forEach(function(b){
+      var on=b.getAttribute('data-set')===m;
+      b.setAttribute('aria-checked',on?'true':'false');
+      b.setAttribute('tabindex',on?'0':'-1');
+      if(on&&focus)b.focus();
+    });
+    try{localStorage.setItem('mp-argos-mode',m);}catch(e){}
+  }
+  btns.forEach(function(b,idx){
+    b.addEventListener('click',function(){setMode(b.getAttribute('data-set'),false);});
+    b.addEventListener('keydown',function(e){
+      var next=-1;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(idx+1)%btns.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(idx-1+btns.length)%btns.length;
+      if(next>=0){e.preventDefault();setMode(btns[next].getAttribute('data-set'),true);}
+    });
+  });
+  try{var saved=localStorage.getItem('mp-argos-mode');if(saved==='plain'||saved==='tech')setMode(saved,false);}catch(e){}
+
+  var step=0;
+  var p1=[[252,175],[520,175],[754,175],[875,175]];
+  var p2=[[287,185],[480,185],[693,185]];
+  var p3=[[202,170],[488,170],[774,170]];
+  var scanY=[0,42,84,20];
+
+  function applyStep(k){
+    step=((k%12)+12)%12;
+    var f1=Math.floor(step/3)%4;
+    var f2=Math.floor(step/4)%3;
+    var f3=Math.floor(step/4)%3;
+    var f4=Math.floor(step/4)%3;
+    document.querySelectorAll('[data-f1]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f1'))===f1);});
+    document.querySelectorAll('[data-f2]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f2'))===f2);});
+    document.querySelectorAll('[data-f3]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f3'))===f3);});
+    document.querySelectorAll('[data-f4]').forEach(function(el){el.classList.toggle('is-on',Number(el.getAttribute('data-f4'))===f4);});
+    var c1=p1[f1%p1.length], c2=p2[f2%p2.length], c3=p3[f3%p3.length];
+    var e1=document.getElementById('pkt-1'), e2=document.getElementById('pkt-2'), e3=document.getElementById('pkt-3');
+    var sc=document.getElementById('scan-1');
+    if(e1){e1.setAttribute('cx',c1[0]);e1.setAttribute('cy',c1[1]);}
+    if(e2){e2.setAttribute('cx',c2[0]);e2.setAttribute('cy',c2[1]);}
+    if(e3){e3.setAttribute('cx',c3[0]);e3.setAttribute('cy',c3[1]);}
+    if(sc){sc.setAttribute('transform','translate(0,'+scanY[step%4]+')');}
+  }
+  window.setDiagramStep=applyStep;
+  applyStep(0);
+
+  setInterval(function(){
+    if(main.getAttribute('data-paused')!=='true') applyStep(step+1);
+  },550);
+
+  var pause=document.getElementById('pause');
+  pause.addEventListener('click',function(){
+    var on=main.getAttribute('data-paused')!=='true';
+    main.setAttribute('data-paused',on?'true':'false');
+    pause.setAttribute('aria-pressed',on?'true':'false');
+    pause.textContent=on?'Play the diagrams':'Pause the diagrams';
+  });
+})();
+</script>
