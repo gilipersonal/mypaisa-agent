@@ -224,9 +224,14 @@ Claude's:
   models, and the api client with its TanStack Query definitions and
   `api-types.d.ts` generated from FastAPI's `app.openapi()` by
   `openapi-typescript` (MA-265, MA-266). Its gates:
-  svelte-check, eslint, vitest, Playwright screenshots at 390 and 1440 in
-  both themes with axe and a pixel parity check against the boards, pnpm
-  audit.
+  svelte-check, eslint, vitest, Playwright 1.64 at `390x844` and `1440x900` in
+  both themes through one `auditAndCapture()` fixture (`@axe-core/playwright`
+  WCAG 2.2 AA fail-closed before capture, keyboard focus/landmark checks, and
+  **Argos CI** `@argos-ci/playwright` Tokenless OIDC cloud visual PNG diffs in
+  both themes plus a light-theme-deduplicated YAML `ariaSnapshot` accessibility
+  tree diff at ~3,600 snapshots/month inside the 5,000/month £0 Free Hobby
+  tier, `docs/RESEARCH.md` §10) and a pixel parity check against the boards,
+  pnpm audit.
 - **The iOS app (MA-165, MA-166, MA-167, MA-273, MA-274, `ARCHITECTURE.md` §9.1,
   §9.5, §15.2, §18.4):** `ios/`, a React Native shell
   with a native SwiftUI core, as bong-panjika is built: bare React Native
@@ -512,13 +517,20 @@ Claude's:
   round-trip and X-Ray trace assertion in dev, read-only health/auth/alarm
   verification in prod and under-five-second Lambda `live` alias rollback
   (MA-268); the five-layer regression pyramid (`scripts/regression.py`) and
-  phase-wise test rollout from Phase 0 to Phase 20 (MA-269); and the 2026
+  phase-wise test rollout from Phase 0 to Phase 20, including the SvelteKit 3
+  (`web/`) visual regression, ARIA snapshot diffing and WCAG 2.2 AA
+  accessibility pipeline with **Argos CI**, Playwright 1.64 and
+  `@axe-core/playwright` (`auditAndCapture()` fixture at `390x844` and `1440x900`
+  in both themes, Tokenless GitHub App OIDC, and light-only `ariaSnapshot`
+  deduplication keeping usage at ~3,600 snapshots/month inside the 5,000/month
+  £0 Free Hobby cap, `docs/RESEARCH.md` §10, `docs/design/argos-visual-a11y.html`,
+  MA-194, MA-269); and the 2026
   GitHub Actions versus AWS CodeBuild runner cost model showing how Option D
   (CodeBuild `arm1.small` for Docker builds, GitHub `ubuntu-24.04-arm` for
-  Linux gates and path-filtered Playwright, and split iOS testing to avoid the
+  Linux gates and path-filtered Playwright + Argos CI, and split iOS testing to avoid the
   10x macOS multiplier trap) stays at £0.00 a month inside both free tiers
-  (`docs/design/cicd-security-regression.html` and the Confluence page CI/CD,
-  vulnerability scanning, smoke and regression architecture, MA-272).
+  (`docs/design/cicd-security-regression.html`, `docs/design/argos-visual-a11y.html`
+  and their Confluence pages, MA-272).
 - **The optional AWS VPC enterprise lockdown, seven-layer data perimeter and
   three-tier costing, recorded (MA-284, MA-283, `docs/RESEARCH.md` §9,
   `ARCHITECTURE.md` §14, §15, §18.1, §18.4):** the complete seven-layer
@@ -559,6 +571,21 @@ Claude's:
   (`docs/design/reviews/MA-295/options.html` and `decision.md`). Carried into
   the consolidated boards (MA-279) and the Swift Charts and LayerChart builds
   (MA-56).
+- **SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA
+  accessibility pipeline with Argos CI, recorded (MA-299, MA-194, MA-269,
+  `docs/RESEARCH.md` §7.4 and §10, `ARCHITECTURE.md` §9.4 and §18.4,
+  `TECH_STACK.md` §3 and §4):** the `auditAndCapture(page, name, opts)` "One
+  Helper, Four Gates" Playwright 1.64 fixture in `web/` (deterministic
+  `prefers-reduced-motion` and font stabilization, fail-closed
+  `@axe-core/playwright` 4.14 WCAG 2.2 Level A & AA audit in both themes before
+  capture, landmark and keyboard `:focus-visible` assertions, and
+  `@argos-ci/playwright` 6.4 visual PNG regression at 390 and 1440 in Light and
+  Dark plus light-deduplicated YAML `ariaSnapshot` accessibility tree diffing)
+  and the five pipeline cost guardrails keeping monthly volume at ~3,600
+  snapshots/month (72% of Argos CI's 5,000/month Free Hobby cap) at
+  **£0.00/month**, with interactive explainer `docs/design/argos-visual-a11y.html`,
+  four animated GIFs, and the Confluence page Web visual regression, ARIA
+  snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -2104,7 +2131,7 @@ uv run pytest --cov --cov-fail-under=90
 terraform fmt -check -recursive infra
 for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
-# when web/ changed (MA-194): svelte-check, eslint, vitest, Playwright at 390 and 1440 in both themes, npm audit
+# when web/ changed (MA-194, MA-269): svelte-check, eslint, vitest, Playwright 1.64 + @axe-core/playwright WCAG 2.2 AA + Argos CI visual & ARIA snapshots at 390 and 1440 in both themes, pnpm audit
 (cd web && npm run check && npm run lint && npm test && npm run test:e2e && npm audit)
 # when ios/ changed (MA-165, MA-166, MA-273): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks; Maestro syntax + local 5-simulator matrix
 python3 scripts/maestro_local.py check-syntax
