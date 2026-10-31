@@ -273,9 +273,6 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 .mp-side-i.on:hover { color: var(--mp-ink); }
 .mp-side-i.on .ms { color: var(--mp-accent); }
 
-/* Telegram's own Mini App header (drawn by Telegram, shown for context) */
-.tgh { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; font: 500 16px/20px var(--mp-font); background: var(--tg-head); color: var(--tg-text); border-bottom: 0.5px solid var(--tg-line); }
-.tgh-a { color: var(--tg-link); min-height: 44px; display: flex; align-items: center; gap: 2px; }
 
 /* ---------- privacy, states ---------- */
 .mp-mask { display: inline-block; border-radius: 8px; background: var(--mp-mask); color: transparent; min-width: 64px; letter-spacing: 0; }
@@ -305,21 +302,6 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 @keyframes mp-grow  { from { transform: scaleX(0); } to { transform: none; } }
 @keyframes mp-pulse { from { opacity: 1; } to { opacity: .55; } }
 
-/* ---------- Telegram chat (Telegram draws bubbles and buttons; we own the words, the order and the PNGs) ---------- */
-.tg-light { --tg-bg: #E4EAEF; --tg-head: #F7F7F8; --tg-bubble: #FFFFFF; --tg-out: #E1FEC6; --tg-text: #0F1419; --tg-sub: #5B6773; --tg-link: #1F6FB5; --tg-btn: rgba(255, 255, 255, 0.92); --tg-btn-text: #1F6FB5; --tg-line: #D5DDE4; --tg-kb: #F2F4F6; --tg-quote: #E8F1FA; }
-.tg-dark  { --tg-bg: #0E1621; --tg-head: #17212B; --tg-bubble: #182533; --tg-out: #2B5278; --tg-text: #F2F6FA; --tg-sub: #93A8BB; --tg-link: #6AB2F2; --tg-btn: #1E2C3A; --tg-btn-text: #E8F0F8; --tg-line: #0B1218; --tg-kb: #17212B; --tg-quote: #1B2E42; }
-.tg { background: var(--tg-bg); color: var(--tg-text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-.tg-bub { background: var(--tg-bubble); border-radius: 16px 16px 16px 6px; padding: 8px 12px 6px; max-width: 320px; font-size: 15px; line-height: 20px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); }
-.tg-out { background: var(--tg-out); border-radius: 16px 16px 6px 16px; align-self: flex-end; }
-.tg-time { font-size: 11px; line-height: 13px; color: var(--tg-sub); text-align: right; margin-top: 2px; }
-.tg-btns { display: grid; gap: 4px; max-width: 344px; margin-top: 4px; }
-.tg-btn { min-height: 44px; border-radius: 10px; background: var(--tg-btn); color: var(--tg-btn-text); font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 8px; border: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tg-pre { font: 13px/18px ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; }
-.tg-quote { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; font-size: 14px; line-height: 19px; }
-.tg-kb { background: var(--tg-kb); padding: 6px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.tg-kb-k { min-height: 44px; border-radius: 8px; background: var(--tg-bubble); display: grid; place-items: center; font: 500 15px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: var(--tg-text); }
-.tg-sub { color: var(--tg-sub); }
-.tg-link { color: var(--tg-link); }
 
 /* ---------- small gaps (Claude Design's atomic gaps start at 8) and text-only meaning colours ---------- */
 .gap2 { gap: 2px; } .gap3 { gap: 3px; } .gap4 { gap: 4px; } .gap6 { gap: 6px; }
@@ -353,10 +335,10 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 .mp-chartaxis > span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
 
 /* ---------- adaptive layout: one markup, three size classes ----------
-   The app's root is a size container, so the frame decides (a phone, Telegram Desktop's Mini App
+   The app's root is a size container, so the frame decides (a phone, 's phone web
    window, an iPad, a laptop), not the device. Apple's size classes, in web widths:
-   compact  < 600   phone and the Mini App: one column, bottom tab bar, large title on its own row
-   regular  600-1023 tablet, Telegram Desktop: tab bar stays, gutters 24; one column until each of two
+   compact  < 600   phone and phone web: one column, bottom tab bar, large title on its own row
+   regular  600-1023 tablet, : tab bar stays, gutters 24; one column until each of two
                     can be about 340 wide (760), then two equal columns
    wide     >= 1024 laptop: sidebar 248, two columns 1.3 : 1 (the list never under 300), no tab bar,
                     content capped at 1180, centred past 1360

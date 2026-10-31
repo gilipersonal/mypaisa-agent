@@ -17,7 +17,6 @@
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
           a { color: var(--mp-accent); } a:hover { opacity: 0.85; }
-          /* canvas chrome, as Browser 2, the Admin center and Telegram chats */
           .dv-turn { padding: 44px 48px 36px; }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -142,11 +141,8 @@
           .empty { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 28px 24px; }
           .eic { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; }
 
-          /* Mini App phones, as Mini App.dc.html */
           .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); position: relative; flex: none; }
           .scr { flex: 1; overflow: hidden; padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 14px; }
-          .tgh { position: relative; }
-          .tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
           .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
           .avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 700 13px/1 var(--mp-font); flex: none; }
           .fch { min-height: 44px; display: inline-flex; align-items: center; gap: 4px; padding: 0 12px; border-radius: 999px; border: 0; background: var(--mp-surface); color: var(--mp-ink); font: 600 13px/18px var(--mp-font); box-shadow: var(--mp-shadow); white-space: nowrap; }
@@ -155,65 +151,33 @@
           .mprev { display: flex; justify-content: center; padding: 14px; border-radius: 20px; background: var(--mp-surface); }
           .mnote { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 
-          /* Telegram phones, as Telegram chats.dc.html (Telegram draws the chat; we own the words and buttons) */
           .kcard { background: #F9F8F6; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 36px; display: flex; flex-direction: column; gap: 44px; width: fit-content; max-width: 100%; box-sizing: border-box; }
           .krow { display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start; }
           .kcol { display: flex; flex-direction: column; width: 390px; }
           .kcol .dv-cap { margin-bottom: 18px; overflow: hidden; text-overflow: ellipsis; }
           .kcol .dv-note { padding-top: 22px; width: 390px; display: block; margin: 0; }
-          .tphone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; background: var(--tg-bg); box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
           .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 2; }
-          .sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
           .sbar .ms { font-size: 17px; }
           .sicons { display: flex; align-items: center; gap: 4px; }
-          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
-          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
           .back .ms { font-size: 22px; }
           .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
           .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
           .tcoin { width: 36px; height: 36px; flex: none; margin-left: 36px; }
           .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
-          .ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
-          .mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
-          .ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
-          .ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
-          .home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
-          .home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
-          .tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-pill: #1F6FB5; }
-          .tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-pill: #3A6EA5; }
           .msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
           .msg.w { width: 316px; }
-          .msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
           .msg.o { align-self: flex-end; align-items: flex-end; margin-left: 0; margin-right: 6px; }
-          .tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
           .tl { border-bottom-left-radius: 4px; }
-          .tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
-          .tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
-          .tg-out.tl { border-radius: 16px 16px 4px 16px; }
-          .tg-out.tl::before { left: auto; right: -7px; background: var(--tg-out); border-bottom-right-radius: 0; border-bottom-left-radius: 16px 14px; }
-          .tg-out.tl::after { left: auto; right: -10px; border-bottom-right-radius: 0; border-bottom-left-radius: 10px; }
-          .tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
-          .tg-out .tg-time { color: var(--tg-otime); }
           .tick { font-size: 15px; }
           .dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
-          .tday { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
-          .msg .tg-btns { width: 100%; max-width: none; }
           .c1 { grid-template-columns: minmax(0, 1fr); }
           .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-          .tg-btn { position: relative; cursor: pointer; gap: 2px; }
-          .tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
           .gl { font-size: 18px; line-height: 1; margin-right: -4px; }
           .bsp { height: 8px; }
-          .ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
           .b { font-weight: 600; } .i { font-style: italic; } .u { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
           .tdoc { display: flex; align-items: center; gap: 10px; padding: 2px 0 4px; }
-          .tthumb { width: 48px; height: 48px; border-radius: 8px; flex: none; background: repeating-linear-gradient(135deg, var(--tg-bubble) 0 5px, var(--tg-line) 5px 6px); box-shadow: inset 0 0 0 1px var(--tg-line); }
-          .tg-out .tthumb { background: repeating-linear-gradient(135deg, var(--tg-out) 0 5px, var(--tg-line) 5px 6px); }
           .fmeta { display: flex; flex-direction: column; min-width: 0; }
           .fname { font-weight: 600; font-size: 15px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
-          .fsize { font-size: 13px; line-height: 18px; color: var(--tg-sub); }
-          .tg-out .fsize { color: var(--tg-otime); }
           /* MyPaisa mark, 1c Watcher (MA-103) */
           .mpm { display: block; flex: none; }
           .mpm-coin { fill: var(--mp-hero); }
@@ -437,107 +401,6 @@
             </div>
             <div class="dv-notes"><sc-for list="{{ notesFiles }}" as="n" hint-placeholder-count="4"><div class="dv-n"><b>{{ n.b }}</b>{{ n.t }}</div></sc-for></div>
           </div>
-
-          <!-- ================= F4 MINI APP: AUDIT AND FILE ================= -->
-          <div class="dv-opt" id="f4">
-            <div class="dv-olabel"><a class="dv-oid" href="#f4">F4</a><span class="dv-oname">Mini App · Audit and file</span><span class="dv-odesc">The phone version, inside Telegram: an Audit row with its file line, then the file opened as a pushed page with the changes it fed.</span></div>
-            <div class="dv-plan"><span class="dv-keys">MA-149</span><span>ARCHITECTURE §4.6, §9.3</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span><span>Illustrative data.</span></div>
-            <div class="dv-screen">
-              <sc-for list="{{ miniThemes }}" as="t" hint-placeholder-count="2">
-                <div>
-                  <p class="dv-cap">Mini App · Audit and file · the row · {{ t.label }}</p>
-                  <div class="phone {{ t.cls }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="Mini App · Audit and file · the row · {{ t.label }}">
-                    <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>More</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-                    <div class="scr">
-                      <div class="fx jb gap8" style="align-items: flex-start"><div><div class="mp-large">Audit</div><div class="mp-foot mp-ink3">Every change and every file</div></div><span class="mp-chip chip-s okchip" style="margin-top: 12px"><span class="ms ms-s">verified</span>Chain verified</span></div>
-                      <div class="mp-seg" role="group" aria-label="Audit view"><button class="mp-seg-i on" aria-pressed="true">Changes</button><button class="mp-seg-i" aria-pressed="false">Files</button></div>
-                      <div class="fx gap8"><button class="fch">Everyone<span class="ms ms-s">expand_more</span></button><button class="fch">All records<span class="ms ms-s">expand_more</span></button><button class="fch">This week<span class="ms ms-s">expand_more</span></button></div>
-                      <sc-for list="{{ miniAudit }}" as="g" hint-placeholder-count="2">
-                        <div>
-                          <div class="mp-section mp-over mp-ink3">{{ g.day }}</div>
-                          <div class="mp-group">
-                            <sc-for list="{{ g.items }}" as="a" hint-placeholder-count="2">
-                              <div class="mp-row" style="align-items: flex-start"><div class="avatar {{ a.av }}">{{ a.init }}</div><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">{{ a.what }}</div><div class="mp-foot mp-ink2">{{ a.change }}</div><div class="mp-foot mp-ink3">{{ a.meta }}</div></div><span class="ms mp-ink3 ms-s" style="margin-top: 2px">chevron_right</span></div>
-                              <sc-if value="{{ a.hasFile }}" hint-placeholder-val="{{ true }}"><div class="mp-row subrow"><span class="thumb thumb-s" role="img" aria-label="Thumbnail of {{ a.file.name }}"><span>{{ a.file.ext }}</span></span><div style="flex: 1; min-width: 0"><div class="mp-foot mp-w6 clip">{{ a.file.name }}</div><div class="mp-foot mp-ink3">{{ a.file.kind }} · {{ a.file.size }}</div></div><button class="mp-btn mp-btn-tinted mp-btn-small" aria-label="{{ a.file.openLabel }}">Open</button></div></sc-if>
-                            </sc-for>
-                          </div>
-                        </div>
-                      </sc-for>
-                      <div class="mp-cap mp-ink3">Illustrative figures.</div>
-                    </div>
-                    <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabsMore }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#f4" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
-                  </div>
-                </div>
-              </sc-for>
-              <div class="dv-note"><span class="dv-sname">The row</span><span><b>Pushed from More, as the Mini App's Audit is now:</b> Back reads ‹ More and More stays selected. Changes | Files sits under the title, as on the laptop.</span><span><b>A row made from a file gets a line under it:</b> the thumbnail (images only), the name, kind and size, and Open. Open is its own 44 px button, apart from the row, which still opens its run.</span><span><b>Openings are rows too:</b> the top row is You opening monzo-valuation.png on the laptop at 09:52. This frame leaves out Asha's 19:05 opening (from Source in the chat) and the 09:40 file row for room; in the real list they sit in time order, as on the laptop board.</span></div>
-            </div>
-            <div class="dv-screen">
-              <sc-for list="{{ miniThemes }}" as="t" hint-placeholder-count="2">
-                <div>
-                  <p class="dv-cap">Mini App · Audit and file · the file · {{ t.label }}</p>
-                  <div class="phone {{ t.cls }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="Mini App · Audit and file · the file · {{ t.label }}">
-                    <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>Audit</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-                    <div class="scr">
-                      <div><div class="mp-t2 clip">monzo-valuation.png</div><div class="mp-foot mp-ink3">Screenshot · PNG · 184 KB · sent by You, today 09:40</div></div>
-                      <div class="mprev"><div class="ph ph-m" role="img" aria-label="The screenshot as sent: the Balanced pot in the Monzo app"><span>screenshot: the Balanced pot in the Monzo app</span></div></div>
-                      <div>
-                        <div class="mp-section mp-over mp-ink3">Changes it fed</div>
-                        <div class="mp-group"><div class="mp-row" style="align-items: flex-start"><span class="mp-icontile mp-neutral"><span class="ms ms-s">account_balance_wallet</span></span><div style="flex: 1; min-width: 0"><div class="mp-sub mp-w6">Balanced valuation</div><div class="mp-foot mp-ink2">£22,710 → £22,925</div><div class="mp-foot mp-ink3">Confirmed by You · 09:41 · r‑1201</div></div><span class="ms ms-s mp-ink3" style="margin-top: 2px">chevron_right</span></div></div>
-                      </div>
-                      <div class="mp-card mnote">
-                        <div class="vnote"><span class="ms ms-s mp-ink3">timer</span><span class="mp-foot mp-ink2">This link works for 5 minutes, until 09:57. Opening the file again makes a new link and a new row in the log.</span></div>
-                        <div class="vnote"><span class="ms ms-s mp-ink3">lock</span><span class="mp-foot mp-ink2">Read-only: no delete, rename or upload. To correct a figure, send a new file in the chat.</span></div>
-                      </div>
-                      <div class="mp-cap mp-ink3">Illustrative figures.</div>
-                    </div>
-                    <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabsMore }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#f4" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
-                  </div>
-                </div>
-              </sc-for>
-              <div class="dv-note"><span class="dv-sname">The file</span><span><b>A pushed page, not a sheet:</b> Back reads ‹ Audit and More stays selected. The image fits the width and pinches to zoom; a PDF opens the same way, a page at a time.</span><span><b>Under the file, the changes it fed,</b> each opening its run; then the five-minute link in words, and the read-only line.</span><span><b>Nothing here deletes, renames or uploads.</b> To correct a figure the member sends a new file in the chat, which makes a new card and a new row.</span></div>
-            </div>
-          </div>
-
-          <!-- ================= F5 TELEGRAM: SOURCE BUTTON ================= -->
-          <div class="dv-opt" id="f5">
-            <div class="dv-olabel"><a class="dv-oid" href="#f5">F5</a><span class="dv-oname">Telegram · Source button</span><span class="dv-odesc">Asha's chat, Friday 30 October. Her saved change card carries Source; tapping it sends the original file back to her, the member who may see it. A tapped button is ringed.</span></div>
-            <div class="dv-plan"><span class="dv-keys">MA-149</span><span>ARCHITECTURE §4.6, §14</span><span><b>Planned.</b> Put through design-first's options round when the story starts.</span><span>Illustrative data.</span></div>
-            <div class="kcard">
-              <sc-for list="{{ tgThemes }}" as="t" hint-placeholder-count="2">
-                <div class="krow">
-                  <sc-for list="{{ tgSteps }}" as="st" hint-placeholder-count="2">
-                    <div class="kcol">
-                      <p class="dv-cap">Telegram · Source button · {{ st.id }} · {{ t.label }}</p>
-                      <div class="tphone tg {{ t.tg }}" data-mo-frame-root="1" data-screen-label="Telegram · Source button · {{ st.id }} · {{ t.label }}">
-                        <div class="island" aria-hidden="true"></div>
-                        <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
-                        <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="tcoin" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
-                        <div class="msgs">
-                          <sc-for list="{{ st.msgs }}" as="m" hint-placeholder-count="3">
-                            <div class="{{ m.mc }}">
-                              <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="tday">{{ m.day }}</span></sc-if>
-                              <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
-                                <div class="tg-bub {{ m.bc }}">
-                                  <sc-if value="{{ m.hasFile }}" hint-placeholder-val="{{ false }}"><div class="tdoc"><span class="tthumb" role="img" aria-label="Thumbnail of {{ m.file.n }}"></span><span class="fmeta"><span class="fname">{{ m.file.n }}</span><span class="fsize">{{ m.file.s }}</span></span></div></sc-if>
-                                  <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="2"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
-                                  <div class="tg-time"><span>{{ m.time }}</span><sc-if value="{{ m.out }}" hint-placeholder-val="{{ false }}"><span class="ms tick" aria-label="Read">done_all</span></sc-if></div>
-                                </div>
-                                <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="1"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}<sc-if value="{{ k.hasG }}" hint-placeholder-val="{{ false }}"><span class="ms gl" aria-hidden="true">{{ k.g }}</span></sc-if></button></sc-for></div></sc-for>
-                              </sc-if>
-                            </div>
-                          </sc-for>
-                        </div>
-                        <div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
-                        <div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
-                        <div class="home" aria-hidden="true"><span></span></div>
-                      </div>
-                      <p class="dv-note"><b>{{ st.title }}</b> {{ st.note }}</p>
-                    </div>
-                  </sc-for>
-                </div>
-              </sc-for>
-            </div>
-          </div>
         </div>
       </section>
     </x-dc>
@@ -652,37 +515,6 @@
           ];
 
           /* Telegram: *bold* _italic_ ~underline~; line kinds: '' gap, '^' small grey line */
-          const seg = (str) => {
-            const out = []; const re = /(\*[^*]+\*|_[^_]+_|~[^~]+~)/g; let last = 0, x;
-            while ((x = re.exec(str))) {
-              if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' });
-              out.push({ t: x[0].slice(1, -1), c: { '*': 'b', '_': 'i', '~': 'u' }[x[0][0]] });
-              last = x.index + x[0].length;
-            }
-            if (last < str.length) out.push({ t: str.slice(last), c: '' });
-            return out;
-          };
-          const kind = (s) => s === '' ? 'sp' : s[0] === '^' ? 'ov' : 'p';
-          const parse = (lines) => {
-            const bl = [];
-            lines.forEach((s) => {
-              const k = kind(s), body = k === 'ov' ? s.slice(1) : s; let b = bl[bl.length - 1];
-              if (!b || b.k !== k || k === 'sp') { b = { k: k, c: k === 'ov' ? 'ov' : 'b' + k, ls: [] }; bl.push(b); }
-              b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: '', c: '' }] : seg(body) });
-            });
-            return bl;
-          };
-          const GL = { '▸': 'chevron_right' };
-          const M = (o) => {
-            if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, blocks: [], rows: [], hasFile: false, file: { n: '', s: '' }, time: '', out: false, bc: '' };
-            const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((nm) => { const g = GL[nm.slice(-1)] && nm.slice(-2, -1) === ' ' ? GL[nm.slice(-1)] : ''; return { t: g ? nm.slice(0, -2) : nm, g: g, hasG: !!g, c: nm === o.tap ? 'tap' : '' }; }) }));
-            return { isDay: false, isMsg: true, day: '', mc: 'msg' + (o.out ? ' o' : '') + (rows.length || o.wide ? ' w' : ''), bc: (o.out ? 'tg-out ' : '') + 'tl', hasFile: !!o.file, file: o.file || { n: '', s: '' }, blocks: parse(o.text || []), time: o.time || '', out: !!o.out, rows: rows };
-          };
-          const today = M({ day: 'Today' });
-          const sent = M({ out: true, time: '19:01', file: { n: 'monzo-pot.png', s: '142 KB' } });
-          const read = M({ time: 'edited 19:02', wide: true, text: ['*Here is what I read.*', '*Cash pot* · Monzo pot', '*Value:* £1,185 _(was £1,040)_', '*As of:* Fri 30 Oct, from the top of the screen', '', '_Confirmed by Asha with Face ID at 19:02._'] });
-          const saved = (tap) => M({ time: '19:02', tap: tap, btns: [['Source', 'Portfolio ▸']], text: ['*Saved.* Cash pot: £1,040 → £1,185.', '_Audit: Valuation · Asha · 30 Oct 19:02 · from monzo-pot.png · run r-1170._'] });
-          const back = M({ time: '19:05', wide: true, file: { n: 'monzo-pot.png', s: '142 KB' }, text: ['*Source* · Cash pot, 30 Oct 19:02', 'The file you sent, unchanged. Only you and the owner can open it.', '_Logged: File opened · Asha · 19:05 · in the chat._'] });
 
           return {
             nav: nav, tabsMore: tabsMore,
@@ -701,15 +533,6 @@
               n('Who sees what follows the roles', '(§4.5): the owner sees every file; a member only their own, so Asha would see her 2; a viewer none. The authorizer checks the role before any link is made.'),
               n('The viewer’s empty state', 'says why there is nothing, so it never reads as a broken page or a filter left on. The filters and kinds are not shown, since there is nothing to narrow.'),
               n('Kept for good.', 'The count and size are the registry’s. A protected PDF’s password is never kept (§14), and the CAS statement says so. Open on a row opens the viewer of F2.')
-            ],
-            miniThemes: [{ label: 'Light', cls: 'mp t-light', tg: 'tg-light' }, { label: 'Dark', cls: 'mp t-dark', tg: 'tg-dark' }],
-            miniAudit: miniAudit,
-            tgThemes: [{ label: 'Telegram light', tg: 'tg-light' }, { label: 'Telegram dark', tg: 'tg-dark' }],
-            tgSteps: [
-              { id: 's1', title: 's1 · 19:02 · the saved card.', clock: '19:02', msgs: [today, sent, read, saved('Source')],
-                note: 'The card has Source because the change came from a file and Asha may open it: she sent it. A change typed in the chat has no Source, and no card offers a file its reader may not open. Tap Source.' },
-              { id: 's2', title: 's2 · 19:05 · the original, sent back.', clock: '19:05', msgs: [today, read, saved(''), back],
-                note: 'A new message, not an edit: the bot sends the original back as a document, unchanged, with the change it fed. That is an opening, so it is logged like Open on the Audit page (the 19:05 row there).' }
             ]
           };
         }

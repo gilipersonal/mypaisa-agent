@@ -17,7 +17,6 @@
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
           a { color: #C2381F; } a:hover { color: #8F2915; }
-          /* canvas chrome, as on the Browser, Mini App and Telegram chats pages */
           .dv-turn { padding: 44px 48px 36px; }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -160,56 +159,27 @@
           .flow-i + .flow-i::before { content: ""; position: absolute; left: 15.5px; top: -10px; height: 14px; width: 1px; background: var(--mp-ink-3); }
           .mrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; min-height: 40px; border-top: 1px solid var(--mp-line); }
 
-          /* phones (Telegram chats, Telegram second check, Mini App) */
-          .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; background: var(--tg-bg); box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); flex: none; }
           .phone.app { background: var(--mp-bg); }
           .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 7; }
           .island.fid { width: 120px; height: 120px; border-radius: 40px; display: grid; place-items: center; }
           .fidg { font-size: 60px; color: #FFFFFF; }
-          .sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
           .sbar .ms { font-size: 17px; }
           .sicons { display: flex; align-items: center; gap: 4px; }
-          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
-          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
           .back .ms { font-size: 22px; }
           .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
           .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
           .cav { width: 36px; height: 36px; border-radius: 50%; flex: none; margin-left: 36px; }
           .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
           .msgs.up { padding-bottom: 318px; }
-          .ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
-          .mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
-          .ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
-          .ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
-          .home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
-          .home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
-          .tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-pill: #1F6FB5; }
-          .tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-pill: #3A6EA5; }
           .msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
           .msg.w { width: 316px; }
-          .msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
           .msg.o { align-self: flex-end; align-items: flex-end; margin-left: 0; margin-right: 6px; }
-          .tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
           .tl { border-bottom-left-radius: 4px; }
-          .tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
-          .tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
-          .tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
           .dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
-          .day { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
-          .msg .tg-btns { width: 100%; max-width: none; }
           .c1 { grid-template-columns: minmax(0, 1fr); }
           .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-          .tg-btn { position: relative; cursor: pointer; gap: 2px; }
-          .tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
           .bsp { height: 8px; }
-          .bq { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; margin: 4px 0; font-size: 14px; line-height: 19px; }
-          .ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
-          .b { font-weight: 600; } .i { font-style: italic; } .a { color: var(--tg-link); }
-          /* MyPaisa inside Telegram: the Mini App, or Telegram's half-height sheet */
-          .tgh { position: relative; flex: none; }
-          .tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
           .scr { flex: 1; min-height: 0; overflow: hidden; padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 14px; text-wrap: pretty; }
           .scr-end { justify-content: flex-end; }
           .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; }
@@ -224,7 +194,6 @@
           .db { display: block; }
           .zs { z-index: 3; }
           .hrow { color: inherit; text-decoration: none; }
-          /* the Mini App's Forecast */
           .mcard { padding: 14px 16px; }
           .m4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--mp-line); border: 1px solid var(--mp-line); border-radius: 12px; overflow: hidden; margin-top: 10px; }
           .m4 > div { background: var(--mp-surface); padding: 10px 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
@@ -258,7 +227,7 @@
       <!-- ================= F0 INTRO ================= -->
       <section class="dv-turn" id="f0" data-screen-label="Forecaster: intro">
         <div class="dv-thd"><a class="dv-tid" href="#f0">MA-117</a><span class="dv-tname">The Forecaster: phase 11, beside the rules engine</span></div>
-        <p class="dv-intro">The Forecaster is a second engine that learns from ten years of history and sits beside the rules engine without replacing it (ARCHITECTURE.md §19). These boards are where a member meets it: a Forecast tab on each holding in the browser and the Mini App, the side-by-side card in Telegram, a second suggested split on the first-of-the-month prompt, and the page that shows how it proves itself. Built on the Browser, Mini App and Telegram chats boards in MyPaisa DS v1, Warm ledger; every board in light and dark. Illustrative figures from ARCHITECTURE §19.7 and docs/design/market-agent.html, a later week than the Browser boards, so the rules engine reads PAUSE 64% on the NASDAQ 100 ETF. "You" is the owner and Asha a fictional member.</p>
+        <p class="dv-intro">The Forecaster is a second engine that learns from ten years of history and sits beside the rules engine without replacing it (ARCHITECTURE.md §19). These boards are where a member meets it: a Forecast tab on each holding in the browser and the page that shows how it proves itself (alongside the iOS Forecaster boards of MA-281). Built on the Browser boards in MyPaisa DS v1, Warm ledger; every board in light and dark. Illustrative figures from ARCHITECTURE §19.7 and docs/design/market-agent.html, a later week than the Browser boards, so the rules engine reads PAUSE 64% on the NASDAQ 100 ETF. "You" is the owner and Asha a fictional member.</p>
         <div class="ngrid">
           <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
             <div class="ncard" data-screen-label="Note: {{ n.h }}">
@@ -421,179 +390,6 @@
           </sc-for>
         </div>
       </section>
-
-      <!-- ================= F3 MINI APP · HOLDING · FORECAST ================= -->
-      <section class="dv-turn" id="f3" data-screen-label="Mini App: Holding, Forecast">
-        <div class="dv-thd"><a class="dv-tid" href="#f3">F3</a><span class="dv-tname">Mini App · Holding · Forecast</span></div>
-        <p class="dv-intro">The phone version of the same page, inside Telegram: Telegram draws the top bar and its Back, MyPaisa everything below it, above the safe areas and the tab bar. The summary first; the similar days and the event impacts are one tap away. Drawn as it opens, scrolled to the end, and the detail page. Holdings stays selected on the tab bar. Illustrative figures.</p>
-        <div class="dv-keys"><sc-for list="{{ miniKeys }}" as="k" hint-placeholder-count="3"><span class="dv-key">{{ k }}</span></sc-for><span class="dv-plan">Planned. Put through design-first's options round when the story starts.</span></div>
-        <div class="kcard" style="margin-top: 16px">
-          <sc-for list="{{ mthemes }}" as="t" hint-placeholder-count="2">
-            <div class="krow">
-              <sc-for list="{{ mini }}" as="v" hint-placeholder-count="3">
-                <div class="kcol">
-                  <p class="dv-cap">{{ v.cap }} · {{ t.label }}</p>
-                  <div class="phone app mp {{ t.mp }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="Mini App · Holding · Forecast · {{ v.cap }} · {{ t.label }}">
-                    <div class="island" aria-hidden="true"></div>
-                    <div class="sbar"><span>09:12</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
-                    <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>{{ v.back }}</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-
-                    <sc-if value="{{ v.isSum }}" hint-placeholder-val="{{ true }}">
-                      <div class="scr {{ v.scr }}">
-                        <div><div class="mp-over mp-ink3">iShares · Asha · ISA</div><div class="mp-t1">NASDAQ 100 ETF</div></div>
-                        <div class="mp-seg" role="group" aria-label="This holding"><button class="mp-seg-i" type="button">Overview</button><button class="mp-seg-i on" type="button" aria-pressed="true">Forecast</button><button class="mp-seg-i" type="button">Record</button></div>
-                        <div class="mp-card mcard">
-                          <div class="fx jb ac gap8"><span class="mp-over mp-ink3">Next 4 weeks</span><span class="mp-chip chip-s mp-watch">In practice · week 5 of 8</span></div>
-                          <div class="m4">
-                            <sc-for list="{{ nq.stats }}" as="s" hint-placeholder-count="3"><div><span class="mp-cap mp-ink3">{{ s.k }}</span><span class="mnum">{{ s.v }}</span><span class="mp-cap mp-ink2">{{ s.d }}</span></div></sc-for>
-                            <div><span class="mp-cap mp-ink3">Rules engine</span><span class="mp-chip chip-s mp-pause" style="margin: 4px 0 2px">PAUSE · 64%</span><span class="mp-cap mp-ink2">keep it; hold the top-up</span></div>
-                          </div>
-                          <p class="mp-foot says" style="margin-top: 10px">{{ nq.says }}</p>
-                          <div class="mfcg" role="img" aria-label="{{ mfc.aria }}">
-                            <div class="yl" aria-hidden="true"><sc-for list="{{ mfc.grid }}" as="g" hint-placeholder-count="3"><span style="top: {{ g.top }}">{{ g.l }}</span></sc-for></div>
-                            <div class="mp-chartbox">
-                              <svg viewBox="0 0 1000 260" preserveAspectRatio="none" height="150" aria-hidden="true">
-                                <sc-for list="{{ mfc.grid }}" as="g" hint-placeholder-count="3"><line x1="0" x2="1000" y1="{{ g.y }}" y2="{{ g.y }}" stroke="{{ g.st }}" stroke-width="1"></line></sc-for>
-                                <path d="{{ mfc.outer }}" fill="var(--mp-chart-2)" fill-opacity="0.14"></path>
-                                <path d="{{ mfc.inner }}" fill="var(--mp-chart-2)" fill-opacity="0.22"></path>
-                                <path d="{{ mfc.mid }}" fill="none" stroke="var(--mp-chart-2)" stroke-width="2" stroke-dasharray="5 4"></path>
-                                <line x1="{{ mfc.xT }}" x2="{{ mfc.xT }}" y1="0" y2="260" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="3 3"></line>
-                                <sc-for list="{{ mfc.candles }}" as="c" hint-placeholder-count="3"><line x1="{{ c.x }}" x2="{{ c.x }}" y1="{{ c.hy }}" y2="{{ c.ly }}" stroke="{{ c.stroke }}" stroke-width="1"></line><rect x="{{ c.bx }}" y="{{ c.by }}" width="{{ c.bw }}" height="{{ c.bh }}" fill="{{ c.fill }}" stroke="{{ c.stroke }}" stroke-width="1"></rect></sc-for>
-                              </svg>
-                            </div>
-                            <div class="el" aria-hidden="true"><sc-for list="{{ mfc.ends }}" as="e" hint-placeholder-count="3"><span style="top: {{ e.top }}">{{ e.t }}</span></sc-for></div>
-                          </div>
-                          <div class="mfcg ax" aria-hidden="true"><span></span><div class="mp-chartaxis ax-c"><sc-for list="{{ mfc.months }}" as="x" hint-placeholder-count="2"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span></span></div>
-                          <div class="fleg mp-cap mp-ink2" style="gap: 4px 12px"><span><span class="kk ob"></span>8 in 10</span><span><span class="kk ib"></span>middle half</span><span><span class="kk md"></span>middle</span><span><span class="kk cu"></span>▲ day</span><span><span class="kk cd"></span>▼ day</span></div>
-                        </div>
-                        <div class="mp-card mcard">
-                          <div class="fx jb ac gap8"><span class="mp-hl">Market mood</span><span class="mp-chip chip-s mp-pause">Stressed · since 3 Oct</span></div>
-                          <div class="mstrip" style="margin-top: 12px" role="img" aria-label="{{ nq.mood.aria }}"><sc-for list="{{ nq.mood.segs }}" as="s" hint-placeholder-count="5"><span data-mo="barx" style="flex: {{ s.n }} 1 0; background: {{ s.c }}"></span></sc-for></div>
-                          <div class="mp-chartaxis ax-c" aria-hidden="true"><sc-for list="{{ nq.mood.months }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
-                          <div class="mkeys mp-cap mp-ink2"><sc-for list="{{ moodKeys }}" as="q" hint-placeholder-count="4"><span><span class="swa" style="background: {{ q.c }}"></span>{{ q.l }}</span></sc-for></div>
-                          <div class="mp-foot mp-ink2 mt8">Since June: calm and rising, then choppy, calm, choppy; stressed since 3 Oct. Next 4 weeks: stressed 71%, choppy 18%, falling 7%, calm and rising 4%.</div>
-                        </div>
-                        <div class="mp-card mcard">
-                          <div class="fx jb ac gap8"><span class="mp-hl">Main drivers</span><span class="fx ac gap8 mp-cap mp-ink3"><span class="fx ac gap4"><span class="swa" style="background: var(--mp-pillar-for)"></span>lifts</span><span class="fx ac gap4"><span class="swa" style="background: var(--mp-pillar-against)"></span>lowers</span></span></div>
-                          <div class="mp-foot mp-ink2" style="margin: 2px 0 4px">{{ nq.drvLede }}</div>
-                          <sc-for list="{{ nq.drivers }}" as="d" hint-placeholder-count="5"><div class="mdrow" role="img" aria-label="{{ d.aria }}"><span class="mp-foot">{{ d.l }}</span><div class="pbar mp-track"><span style="left: {{ d.x }}; width: {{ d.w }}; background: {{ d.fill }}"></span><span class="pmid"></span></div><span class="mp-foot mp-w6" style="text-align: right">{{ d.t }}</span></div></sc-for>
-                        </div>
-                        <div class="mp-group"><a class="mp-row hrow" href="#f3"><span class="mp-icontile mp-neutral"><span class="ms ms-s">history</span></span><span class="rtx"><span class="mp-hl db">Similar days and events</span><span class="mp-foot mp-ink3 db">31 similar days since 2015; 18 recovered within 4 weeks · 8 kinds of event</span></span><span class="ms ms-s mp-ink3">chevron_right</span></a></div>
-                        <div class="mp-card mcard">
-                          <div class="mp-hl">Track records</div>
-                          <div class="mtr">
-                            <div><span class="mp-cap mp-ink3">Rules engine · live</span><span class="mnum">31 of 46</span><span class="mp-cap mp-ink2">calls on this holding held up</span></div>
-                            <div><span class="mp-cap mp-ink3">Forecaster · in practice</span><span class="mnum">5 of 8</span><span class="mp-cap mp-ink2">weeks beating both</span><div class="mwks" role="img" aria-label="Weeks 1 to 5 beat both; 6 to 8 to come"><sc-for list="{{ weeks }}" as="w" hint-placeholder-count="8"><span class="mwk {{ w.c }}"></span></sc-for></div></div>
-                          </div>
-                        </div>
-                        <div class="mp-cap mp-ink3">Illustrative figures. Every figure is from code; Claude only words it. MyPaisa cannot trade.</div>
-                      </div>
-                    </sc-if>
-
-                    <sc-if value="{{ v.isDet }}" hint-placeholder-val="{{ false }}">
-                      <div class="scr">
-                        <div><div class="mp-over mp-ink3">NASDAQ 100 ETF · the Forecaster</div><div class="mp-t1">Similar days and events</div></div>
-                        <div class="mp-card mcard">
-                          <div class="mp-hl">Similar days, over today's chart</div>
-                          <div class="mp-foot mp-ink2" style="margin-top: 2px">{{ nq.sim.lede }}</div>
-                          <div class="msdg" role="img" aria-label="{{ nq.sim.aria }}">
-                            <div class="yl" aria-hidden="true"><sc-for list="{{ nq.sim.grid }}" as="g" hint-placeholder-count="3"><span style="top: {{ g.top }}">{{ g.l }}</span></sc-for></div>
-                            <div class="mp-chartbox">
-                              <svg viewBox="0 0 1000 200" preserveAspectRatio="none" height="150" aria-hidden="true">
-                                <sc-for list="{{ nq.sim.grid }}" as="g" hint-placeholder-count="3"><line x1="0" x2="1000" y1="{{ g.y }}" y2="{{ g.y }}" stroke="{{ g.st }}" stroke-width="1"></line></sc-for>
-                                <line x1="{{ nq.sim.xT }}" x2="{{ nq.sim.xT }}" y1="0" y2="200" stroke="var(--mp-ink-3)" stroke-width="1" stroke-dasharray="3 3"></line>
-                                <path d="{{ nq.sim.before }}" fill="none" stroke="var(--mp-chart-2)" stroke-width="1" stroke-opacity="0.18"></path>
-                                <path d="{{ nq.sim.after }}" fill="none" stroke="var(--mp-chart-2)" stroke-width="1" stroke-opacity="0.42"></path>
-                                <path d="{{ nq.sim.today }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                                <path d="{{ nq.sim.mid }}" fill="none" stroke="var(--mp-chart-2)" stroke-width="2.25" stroke-dasharray="5 4"></path>
-                              </svg>
-                            </div>
-                            <div class="el" aria-hidden="true"><span style="top: {{ nq.sim.endTop }}">{{ nq.sim.endS }}</span></div>
-                          </div>
-                          <div class="msdg ax" aria-hidden="true"><span></span><div class="mp-chartaxis ax-c"><span class="edge0">40 days ago</span><span style="left: {{ nq.sim.tLeft }}">today</span><span class="edge1">+4 wks</span></div><span></span></div>
-                          <div class="fleg mp-cap mp-ink2" style="gap: 4px 12px"><span><span class="kk td"></span>last 40 days</span><span><span class="kk an"></span>what followed each</span><span><span class="kk md"></span>their middle</span></div>
-                        </div>
-                        <div class="mp-card mcard">
-                          <div class="fx jb ac gap8"><span class="mp-hl">Event impacts</span><span class="mp-cap mp-ink3">4 weeks after</span></div>
-                          <div class="mp-foot mp-ink2" style="margin: 2px 0 6px">The average move, and where most cases fell. Under 8 cases is marked low confidence.</div>
-                          <sc-for list="{{ nq.events }}" as="e" hint-placeholder-count="7">
-                            <div class="mev">
-                              <span class="fx ac gap6" style="flex-wrap: wrap"><span class="mp-sub mp-w6">{{ e.l }}</span><span class="mp-foot mp-ink3">{{ e.n }} cases</span><sc-if value="{{ e.low }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-watch">low confidence</span></sc-if></span>
-                              <span class="mp-sub mp-w6">{{ e.v }}</span>
-                              <sc-if value="{{ e.bar }}" hint-placeholder-val="{{ true }}"><div class="ebar full" role="img" aria-label="{{ e.aria }}"><span class="ez"></span><span class="eb {{ e.bcls }}" data-mo="barx" style="left: {{ e.bx }}; width: {{ e.bw }}"></span><span class="ea" style="left: {{ e.ax }}"></span></div></sc-if>
-                              <sc-if value="{{ e.nobar }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink3 full">{{ e.note }}</span></sc-if>
-                            </div>
-                          </sc-for>
-                        </div>
-                        <div class="mp-cap mp-ink3">Illustrative figures.</div>
-                      </div>
-                    </sc-if>
-
-                    <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ mtabs }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#f3" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
-                    <span class="hind" aria-hidden="true"></span>
-                  </div>
-                  <p class="dv-note">{{ v.note }}</p>
-                </div>
-              </sc-for>
-            </div>
-          </sc-for>
-        </div>
-      </section>
-
-      <!-- ================= F4, F5 TELEGRAM ================= -->
-      <sc-for list="{{ journeys }}" as="j" hint-placeholder-count="2">
-        <section class="dv-turn" id="{{ j.anchor }}" data-screen-label="{{ j.board }}">
-          <div class="dv-thd"><a class="dv-tid" href="#{{ j.anchor }}">{{ j.id }}</a><span class="dv-tname">{{ j.board }}</span></div>
-          <p class="dv-intro">{{ j.intro }}</p>
-          <div class="dv-keys"><sc-for list="{{ j.keys }}" as="k" hint-placeholder-count="3"><span class="dv-key">{{ k }}</span></sc-for><span class="dv-plan">Planned. Put through design-first's options round when the story starts.</span></div>
-          <div class="kcard" style="margin-top: 16px">
-            <sc-for list="{{ j.rows }}" as="t" hint-placeholder-count="2">
-              <div class="krow">
-                <sc-for list="{{ t.steps }}" as="st" hint-placeholder-count="3">
-                  <div class="kcol">
-                    <p class="dv-cap">{{ st.cap }} · {{ t.label }}</p>
-                    <div class="phone tg {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ st.lab }}">
-                      <div class="island {{ st.isl }}" aria-hidden="true"><sc-if value="{{ st.fid }}" hint-placeholder-val="{{ false }}"><span class="ms fidg">ar_on_you</span></sc-if></div>
-                      <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
-                      <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
-                      <div class="msgs {{ st.msgsC }}">
-                        <sc-for list="{{ st.msgs }}" as="m" hint-placeholder-count="3">
-                          <div class="{{ m.mc }}">
-                            <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="day">{{ m.day }}</span></sc-if>
-                            <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
-                              <div class="tg-bub {{ m.bc }}">
-                                <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="3"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
-                                <div class="tg-time"><span>{{ m.time }}</span></div>
-                              </div>
-                              <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="1"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}</button></sc-for></div></sc-for>
-                            </sc-if>
-                          </div>
-                        </sc-for>
-                      </div>
-                      <div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
-                      <div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
-                      <div class="home" aria-hidden="true"><span></span></div>
-                      <sc-if value="{{ st.sheet }}" hint-placeholder-val="{{ false }}">
-                        <div class="mp-scrim zs"></div>
-                        <div class="tsheet mp {{ t.mp }}" role="dialog" aria-label="MyPaisa in Telegram's sheet">
-                          <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-                          <div class="shc">
-                            <div class="fx col ac gap8 tc"><span class="fidtile"><span class="ms">ar_on_you</span></span><div class="mp-t2">Check it’s you</div><div class="mp-sub mp-ink2">Face ID, before MyPaisa saves the change you confirmed.</div></div>
-                            <div class="mp-group"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">receipt_long</span></span><span class="rtx"><span class="mp-hl db">{{ st.shT }}</span><span class="mp-foot mp-ink3 db">{{ st.shSub }}</span></span></div></div>
-                            <button class="mp-btn mp-btn-plain wfull" type="button">Use PIN</button>
-                          </div>
-                          <span class="hind" aria-hidden="true"></span>
-                        </div>
-                      </sc-if>
-                    </div>
-                    <p class="dv-note">{{ st.note }}</p>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-for>
-          </div>
-        </section>
-      </sc-for>
 
       <!-- ================= F6 BROWSER · FORECASTER · PROOF ================= -->
       <section class="dv-turn" id="f6" data-screen-label="Browser: Forecaster, Proof">
@@ -851,50 +647,6 @@
           const mfc = Object.assign(fan({ n: 20, lo: -10, hi: 10, ticks: [5, 0, -5], p: [-7, -3, 0.3, 3, 6], ohlc: nqO.slice(25), months: [['Oct', 9], ['Nov', 30]], short: true }),
             { aria: 'Daily candles for the last 4 weeks to Friday’s close, then the likely range for the next 4 weeks: 8 times in 10 between −7% and +6%, the middle +0.3%.' });
 
-          /* chat text, as in Telegram chats: *bold* _italic_; '' a gap, '^' a small grey line, '>' a quote */
-          const seg = (str) => {
-            const out = []; const re = /(\*[^*]+\*|_[^_]+_)/g; let last = 0, x;
-            while ((x = re.exec(str))) { if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' }); out.push({ t: x[0].slice(1, -1), c: x[0][0] === '*' ? 'b' : 'i' }); last = x.index + x[0].length; }
-            if (last < str.length) out.push({ t: str.slice(last), c: '' });
-            return out;
-          };
-          const kind = (s) => s === '' ? 'sp' : s[0] === '>' ? 'q' : s[0] === '^' ? 'ov' : 'p';
-          const parse = (lines) => {
-            const bl = [];
-            lines.forEach((s) => {
-              const k = kind(s), body = (k === 'p' || k === 'sp' ? s : s.slice(1)).replace(/([▲▼]) /g, '$1 '); let b = bl[bl.length - 1];
-              if (!b || b.k !== k || k === 'sp') { b = { k: k, c: k === 'ov' ? 'ov' : 'b' + k, ls: [] }; bl.push(b); }
-              b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: '', c: '' }] : seg(body) });
-            });
-            return bl;
-          };
-          const M = (o) => {
-            if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, bc: '', blocks: [], rows: [], time: '' };
-            const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((n) => ({ t: n, c: n === o.tap ? 'tap' : '' })) }));
-            return { isDay: false, isMsg: true, day: '', mc: 'msg' + (rows.length || o.wide ? ' w' : ''), bc: 'tl', blocks: parse(o.text || []), time: o.time || '', rows: rows };
-          };
-          const base = { msgsC: '', sheet: false, isl: '', fid: false, shT: '', shSub: '' };
-          const St = (o) => Object.assign({}, base, o);
-          const TT = [{ label: 'Telegram light', tg: 'tg-light', mp: 't-light' }, { label: 'Telegram dark', tg: 'tg-dark', mp: 't-dark' }];
-          const J = (o) => Object.assign(o, { rows: TT.map((t) => Object.assign({ steps: o.steps.map((s) => Object.assign({ lab: o.board + ' · ' + s.cap + ' · ' + t.label }, s)) }, t)) });
-
-          /* Telegram: the side-by-side card, Saturday 31 Oct */
-          const sat = M({ day: 'Saturday' });
-          const review = M({ time: '09:00', wide: true, text: ['*Saturday review*', 'Three holdings have a forecast this week. On Balanced and the NASDAQ 100 ETF the two engines lean the same way; on Physical Silver they don’t, below.', '', '_The Forecaster is in practice: it shows here on Saturdays until it passes its 8-week gate._'] });
-          const silverText = ['*Physical Silver*', '>*Rules engine* · ADD 58%', '>A rebound with healthy structure after its fall: this month’s contribution could go here.', '', '>*Forecaster* · next 4 weeks · _in practice_', '>Chance up 47%', '>Chance of a fall over 5%: 27% (usually 15%)', '>Likely range −9% … +7%', '>Market mood: falling, since 14 Oct', '', '*The two engines disagree.* The rules see a rebound with healthy structure; the Forecaster sees a high chance of a deep fall. Tap Why? for both sides.', '', '_Suggestions only. A view, not advice._'];
-          const silver = (tap) => M({ time: '09:01', tap: tap, btns: [['Why?', 'Chart', 'Track record']], text: silverText });
-          const why = M({ time: '09:03', btns: [['Chart', 'Track record']], text: ['*Why the engines differ on Physical Silver*', '', '*Rules engine, ADD 58%.* Silver has climbed back from its fall with healthy structure: the trend has turned up, momentum is recovering, and its swings are ordinary for silver. That is the rule for ADD.', '', '*Forecaster, 27% chance of a fall over 5%* (usually 15%). The silver market’s mood has been falling since 14 Oct. Real yields are rising and the dollar is firmer, which have weighed on silver before, and industrial demand is softer.', '', 'Neither says sell. On the 1st, the rules engine’s split would put new money here and the Forecaster’s would put less. You decide; MyPaisa cannot trade.', '', '_The figures are the engines’; I only put them into words._'] });
-
-          /* Telegram: the first of the month, Asha's chat, Tue 1 Dec (after the 8-week gate) */
-          const dec = M({ day: 'Today' });
-          const promptText = (priv) => priv
-            ? ['^First of the month · Tue 1 Dec', '*It’s the 1st.* Your usual contribution goes half to Balanced and half to the NASDAQ 100 ETF. Where should it go this month?', '>*Rules engine*', '>Balanced (HOLD): all of it', '>NASDAQ 100 ETF (PAUSE): none until the next review', '', '>*Forecaster*', '>Balanced 75% · NASDAQ 100 ETF 25%', '>US shares stressed since 3 Oct; chance of a 5% fall 21% (usually 12%)', '', '*The two differ on the NASDAQ 100 ETF.* Either way the whole contribution goes in.', '', '_Privacy mode: shares, not pounds. Suggestions only; MyPaisa cannot trade._']
-            : ['^First of the month · Tue 1 Dec', '*It’s the 1st.* Your usual £200 goes £100 to Balanced and £100 to the NASDAQ 100 ETF. Where should it go this month?', '>*Rules engine*', '>Balanced (HOLD): £200', '>NASDAQ 100 ETF (PAUSE): £0 until the next review', '', '>*Forecaster*', '>Balanced £150 · NASDAQ 100 ETF £50', '>US shares stressed since 3 Oct; chance of a 5% fall 21% (usually 12%)', '', '*The two differ on the NASDAQ 100 ETF.* Either way the £200 goes in.', '', '_Suggestions only: you make the move in Monzo; MyPaisa cannot trade._'];
-          const SPLIT = [['Rules engine’s', 'Forecaster’s'], ['My usual split', 'Something else']];
-          const prompt = (tap, priv) => M({ time: '09:00', tap: tap, btns: SPLIT, text: promptText(priv) });
-          const chosen = M({ time: 'edited 09:41', wide: true, text: promptText(false).concat(['', '_You chose the Forecaster’s split at 09:41._']) });
-          const confirm = (tap) => M({ time: '09:41', tap: tap, btns: [['Confirm', 'Edit', 'Cancel']], text: ['^New transactions · Tue 1 Dec', '*Bought £150 of Balanced* · about 8.0 units, at the next NAV', '*Bought £50 of NASDAQ 100 ETF* · about 0.05 units at £1,012', '', 'Make both moves in your Monzo app, then tap Confirm. MyPaisa cannot trade; this only records them.', '', '_Nothing is saved until you confirm and check it’s you._'] });
-          const saved = M({ time: 'edited 09:42', wide: true, text: ['^New transactions · Tue 1 Dec', '*Bought £150 of Balanced* · about 8.0 units', '*Bought £50 of NASDAQ 100 ETF* · about 0.05 units', '', '*Saved* · confirmed with Face ID', '', '_Audit: 2 transactions · Asha · 1 Dec 09:42 · run r-1311. Both splits are graded in the Saturday review._'] });
 
           const items = [['ov', 'home', 'Overview'], ['ho', 'donut_small', 'Holdings'], ['ol', 'join_inner', 'Overlap'], ['tr', 'insights', 'Track record'], ['ac', 'history', 'Activity'], ['au', 'fact_check', 'Audit']];
           const nav = (k) => items.map((i) => ({ icon: i[1], label: i[2], cls: i[0] === k ? 'on' : '', fill: i[0] === k ? 'ms-fill' : '' }));
@@ -910,8 +662,6 @@
 
           return {
             themes: [{ label: 'Light', cls: 't-light' }, { label: 'Dark', cls: 't-dark' }],
-            mthemes: [{ label: 'Light', mp: 't-light', tg: 'tg-light' }, { label: 'Dark', mp: 't-dark', tg: 'tg-dark' }],
-            tthemes: [{ label: 'Telegram light', tg: 'tg-light', mp: 't-light' }, { label: 'Telegram dark', tg: 'tg-dark', mp: 't-dark' }],
             notes: [
               { h: 'Code makes every number', ps: [{ b: 'The Forecast row', t: '(chance up, chance of a 5% fall, the range, mood, similar days, event impacts, drivers, model version) and the rules engine’s call are worked out in code.' }, { b: 'Claude only explains:', t: 'it writes the plain-words line and Why? from that row, never changes a figure, and the copy never says it worked one out.' }] },
               { h: 'Suggestions only', ps: [{ b: 'MyPaisa cannot trade.', t: 'No board offers to buy or sell, and nothing says sell everything. The split moves new money only, and contributions always continue.' }, { b: 'A change still goes through the chat:', t: 'a card, Confirm, the second check (MA-102) and an audit row. The web pages only read.' }] },
@@ -922,29 +672,6 @@
             navHo: nav('ho'), tabsHo: tabs('ho'), navTr: nav('tr'), tabsTr: tabs('tr'), mtabs: mtabs,
             weeks: [1, 2, 3, 4, 5, 6, 7, 8].map((i) => ({ c: i <= 5 ? 'on' : '', t: (i <= 5 ? '✓ W' : 'W') + i })),
             moodKeys: [['calm', 'Calm and rising'], ['chop', 'Choppy'], ['stress', 'Stressed'], ['fall', 'Falling']].map((q) => ({ l: q[1], c: MOOD[q[0]][1] })),
-            miniKeys: ['MA-124', 'ARCHITECTURE §19.7', '§9.3'],
-            mini: [
-              { cap: 'm1 · as it opens', back: 'Holdings', isSum: true, isDet: false, scr: '', note: 'A Forecast segment on the holding, pushed from Holdings, so Back reads ‹ Holdings. The summary first: three numbers and the rules engine’s call in a 2 × 2 grid, one line in plain words, then four weeks of candles and the next four weeks’ range.' },
-              { cap: 'm2 · scrolled to the end', back: 'Holdings', isSum: true, isDet: false, scr: 'scr-end', note: 'The market mood in colour and in words, the main drivers, one row to the detail, and both track records side by side. The last line clears the tab bar.' },
-              { cap: 'm3 · one tap: similar days and events', back: 'Forecast', isSum: false, isDet: true, scr: '', note: 'The detail, one tap from the summary: similar days drawn over today’s chart, then each kind of event with its cases. Low confidence is said in words and drawn dashed, never colour alone.' }
-            ],
-            journeys: [
-              J({ id: 'F4', anchor: 'f4', board: 'Telegram · Side-by-side card', keys: ['MA-124', 'ARCHITECTURE §19.6', '§19.7'],
-                intro: 'The rules engine’s call and the Forecaster’s view in one card, each in its own quote, and the disagreement said out loud. Physical Silver, in the owner’s Saturday review on 31 Oct: the Forecaster is still in practice, so it appears on Saturdays only, labelled so; after its 8-week gate the same card comes on weekday mornings without the label. The card has no pounds, so privacy mode shows it unchanged. A tapped button is ringed. Illustrative figures.',
-                steps: [
-                  St({ cap: 's1 · Sat 09:01 · the card', clock: '09:01', msgs: [sat, review, silver('Why?')], note: 'Rules engine first, then the Forecaster, then one sentence that says they disagree and why, in words, not colour. [Why?] [Chart] [Track record] under it. Tap Why?' }),
-                  St({ cap: 's2 · Sat 09:03 · Why? both sides', clock: '09:03', msgs: [sat, silver(''), why], note: 'A new message: each engine’s reasons in plain words, then what each would mean for new money on the 1st. Neither says sell. It says the figures are the engines’ and that Claude only words them.' })
-                ] }),
-              J({ id: 'F5', anchor: 'f5', board: 'Telegram · First of the month split', keys: ['MA-125', 'ARCHITECTURE §19.5', 'MA-102 second check'],
-                intro: 'Asha’s chat on Tue 1 Dec, after the Forecaster has passed its 8-week gate on both her holdings; before that, the prompt carries the rules engine’s split alone. The contribution prompt with both suggested splits, then the choice, the Confirm card, the second check in Telegram’s half-height sheet, the saved record, and the same prompt with privacy mode on. Illustrative figures.',
-                steps: [
-                  St({ cap: 'f1 · 09:00 · both splits', clock: '09:00', msgs: [dec, prompt('Forecaster’s', false)], note: 'Both splits add up to the usual £200: contributions always continue. The engines never suggest skipping; Something else is for a different amount, or none, in the member’s own words. Tap Forecaster’s.' }),
-                  St({ cap: 'f2 · 09:41 · Confirm', clock: '09:41', msgs: [dec, chosen, confirm('Confirm')], note: 'The prompt edits in place to record the choice; the Confirm card is a new message. The member makes the moves in Monzo: MyPaisa cannot trade, it only records them. Units are worked out in code. Tap Confirm.' }),
-                  St({ cap: 'f3 · 09:42 · the second check', clock: '09:42', msgs: [dec, chosen, confirm('Confirm')], msgsC: 'up', sheet: true, isl: 'fid', fid: true, shT: 'Bought Balanced and NASDAQ 100 ETF', shSub: 'about 8.0 and 0.05 units · from the chat', note: 'Confirm opens MyPaisa in Telegram’s half-height sheet and Face ID starts at once (MA-102). The sheet names the change in units, not pounds.' }),
-                  St({ cap: 'f4 · 09:42 · saved', clock: '09:42', msgs: [dec, chosen, saved], note: 'The card edits in place to the saved record: confirmed with Face ID, the audit row and its run. Both splits are graded in the Saturday review, so the track record shows which steered better.' }),
-                  St({ cap: 'f5 · 09:00 · privacy mode on', clock: '09:00', msgs: [dec, prompt('', true)], note: 'Privacy mode on: the same prompt in shares, not pounds, with the same four buttons.' })
-                ] })
-            ],
             proofKeys: ['MA-120', 'MA-123', 'ARCHITECTURE §19.6'],
             labRows: [
               { l: 'Yearly growth', cells: [nr, nr, nr] },

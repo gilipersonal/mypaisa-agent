@@ -459,7 +459,11 @@
     "finding": "no board says Admins only (covered by r6-admin over the boards)",
     "check": {
       "type": "grep",
-      "file": "docs/design/app-v1/Telegram admin.dc.html",
+      "files": [
+        "docs/design/app-v1/Admin center 2.dc.html",
+        "docs/design/app-v1/Admin center 3.dc.html",
+        "docs/design/ios-v1/iPhone admin.dc.html"
+      ],
       "pattern": "Admins only",
       "present": false
     }

@@ -17,7 +17,6 @@
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
           a { color: #C2381F; } a:hover { color: #8F2915; }
-          /* canvas: the dv-turn layout of Browser, Mini App and Telegram chats */
           .dv-turn { padding: 44px 48px 36px; }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -40,12 +39,9 @@
           .phone .mp-mask, .board .mp-mask { color: transparent; }
           .phone .mp-foot .mp-mask { min-width: 44px; }
 
-          /* ---------- the phone: Mini App frames (Mini App board) and chat frames (Telegram chats) ---------- */
           .phone { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; display: flex; flex-direction: column; position: relative; flex: none; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
           .scr { flex: 1; min-height: 0; overflow: hidden; padding: 14px 16px 104px; display: flex; flex-direction: column; gap: 16px; text-wrap: pretty; }
           .scr-end { justify-content: flex-end; }
-          .tgh { position: relative; flex: none; }
-          .tgh-t { position: absolute; left: 50%; transform: translateX(-50%); }
           .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
           .clip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
           .nowrap { white-space: nowrap; }
@@ -66,63 +62,31 @@
           .okchip { color: var(--mp-up); background: var(--mp-add-bg); }
           .filerow { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 0 0 0 10px; border-radius: 12px; background: var(--mp-surface-2); min-height: 56px; }
           .ftile { background: var(--mp-surface); color: var(--mp-ink-2); }
-          /* Telegram's own chrome (Telegram draws all of this) */
           .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000000; z-index: 7; }
           .island.fid { width: 120px; height: 120px; border-radius: 40px; display: grid; place-items: center; }
           .fidg { font-size: 60px; color: #FFFFFF; }
-          .sbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 6px 36px; background: var(--tg-head); color: var(--tg-text); font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
           .sbar .ms { font-size: 17px; }
           .sicons { display: flex; align-items: center; gap: 4px; }
-          .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--tg-head); border-bottom: 0.5px solid var(--tg-line); color: var(--tg-text); }
-          .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--tg-link); font-size: 17px; }
           .back .ms { font-size: 22px; }
           .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
           .cname { font: 600 16px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          .csub { font-size: 13px; line-height: 16px; color: var(--tg-sub); }
           .cav { width: 36px; height: 36px; flex: none; margin-left: 36px; }
           .msgs { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 8px 8px 10px; }
           .msgs.up { padding-bottom: 318px; }
           .msgs.up2 { padding-bottom: 410px; }
-          .ibar { flex: none; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--tg-head); border-top: 0.5px solid var(--tg-line); }
-          .mpill { min-height: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px 0 8px; border-radius: 17px; border: 0; background: var(--tg-pill); color: #FFFFFF; font: 600 14px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; flex: none; }
-          .ibi { color: var(--tg-sub); width: 30px; height: 44px; display: grid; place-items: center; flex: none; }
-          .ifield { flex: 1; min-height: 34px; border-radius: 17px; border: 0.5px solid var(--tg-line); background: var(--tg-bubble); color: var(--tg-sub); display: flex; align-items: center; padding: 0 12px; font-size: 16px; }
-          .home { height: 22px; flex: none; background: var(--tg-kb); display: grid; place-items: center; }
-          .home span { width: 134px; height: 5px; border-radius: 3px; background: var(--tg-text); }
           .hind { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 134px; height: 5px; border-radius: 3px; background: var(--mp-ink); z-index: 6; }
-          .tg-light { --tg-otime: #3D7A2E; --tg-day: #5E7486; --tg-dayt: #FFFFFF; --tg-fic: #4FAE4E; --tg-pill: #1F6FB5; }
-          .tg-dark { --tg-otime: #B9D3EC; --tg-day: #1E2C3A; --tg-dayt: #E8F0F8; --tg-fic: #5A9BD5; --tg-pill: #3A6EA5; }
           .msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 316px; margin-left: 6px; flex: none; }
           .msg.w { width: 316px; }
-          .msg.w .tg-bub { max-width: none; width: 100%; box-sizing: border-box; }
           .msg.o { align-self: flex-end; align-items: flex-end; margin-left: 0; margin-right: 6px; }
-          .tg-bub { position: relative; isolation: isolate; text-wrap: pretty; }
           .tl { border-bottom-left-radius: 4px; }
-          .tl::before { content: ""; position: absolute; z-index: -1; bottom: 0; left: -7px; width: 18px; height: 16px; background: var(--tg-bubble); border-bottom-right-radius: 16px 14px; }
-          .tl::after { content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px; width: 10px; height: 16px; background: var(--tg-bg); border-bottom-right-radius: 10px; }
-          .tg-out.tl { border-radius: 16px 16px 4px 16px; }
-          .tg-out.tl::before { left: auto; right: -7px; background: var(--tg-out); border-bottom-right-radius: 0; border-bottom-left-radius: 16px 14px; }
-          .tg-out.tl::after { left: auto; right: -10px; border-bottom-right-radius: 0; border-bottom-left-radius: 10px; }
-          .tg-time { display: flex; justify-content: flex-end; align-items: center; gap: 3px; }
-          .tg-out .tg-time { color: var(--tg-otime); }
           .tick { font-size: 15px; }
           .dayrow { align-self: center; margin: 2px 0 4px; flex: none; }
-          .day { display: inline-block; background: var(--tg-day); color: var(--tg-dayt); font: 600 13px/18px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; padding: 3px 10px; border-radius: 999px; }
-          .msg .tg-btns { width: 100%; max-width: none; }
           .c1 { grid-template-columns: minmax(0, 1fr); }
           .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-          .tg-btn { position: relative; cursor: pointer; gap: 2px; }
-          .tg-btn.tap { box-shadow: inset 0 0 0 2px var(--tg-link); }
           .glyph { font-size: 18px; line-height: 1; margin-right: -4px; }
-          .bq { background: var(--tg-quote); border-left: 3px solid var(--tg-link); border-radius: 6px; padding: 6px 8px; margin: 4px 0; font-size: 14px; line-height: 19px; }
-          .ov { font-size: 12px; line-height: 16px; color: var(--tg-sub); }
-          .b { font-weight: 600; } .i { font-style: italic; } .a { color: var(--tg-link); }
           .filec { display: flex; align-items: center; gap: 10px; padding: 2px 0; }
-          .fic { width: 44px; height: 44px; border-radius: 50%; background: var(--tg-fic); color: #FFFFFF; display: grid; place-items: center; flex: none; }
           .fmeta { display: flex; flex-direction: column; min-width: 0; }
           .fname { font-weight: 600; font-size: 15px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px; }
-          .fsize { font-size: 13px; line-height: 18px; color: var(--tg-otime); }
-          /* Telegram's half-height sheet over the chat; MyPaisa draws inside it */
           .zs { z-index: 3; }
           .tsheet { position: absolute; left: 0; right: 0; bottom: 0; height: 440px; border-radius: 12px 12px 0 0; overflow: hidden; display: flex; flex-direction: column; z-index: 4; box-shadow: 0 -8px 40px rgba(0,0,0,.18); }
           .tsheet.tall { height: 520px; }
@@ -206,82 +170,8 @@
       <!-- ================= INTRO ================= -->
       <section class="dv-turn" id="in0" data-screen-label="India: intro">
         <div class="dv-thd"><a class="dv-tid" href="#in0">IN</a><span class="dv-tname">India: Indian funds, NSE shares and ETFs, and the import of an Indian portfolio</span></div>
-        <p class="dv-intro">Phase 13, epic MA-147 (ARCHITECTURE.md §22): Indian mutual funds and NSE and BSE shares and ETFs sit beside the UK holdings, and the household's existing Indian portfolio is imported once from its statements. Six boards, each in light and dark, drawn in MyPaisa DS v1 "Warm ledger" on the patterns of the Mini App, Browser and Telegram chats boards. Every Indian figure is in rupees with its pound value beside it, at the ECB's reference rate for the day (here £1 = ₹112.50, Monday 2 November, the one illustrative rate every MyPaisa board uses); the household total stays in pounds, with the rupee view one tap away; privacy mode hides rupees as it hides pounds. The web app stays read-only: every change is a card and a Confirm in the chat, and the one field on these boards, a statement's password, is used once in memory and never stored. Illustrative figures throughout: "You" (the owner) and "Asha" (a member) are fictional, the Indian funds are described rather than named, and every folio, account number and ID is masked.</p>
+        <p class="dv-intro">Phase 13, epic MA-147 (ARCHITECTURE.md §22): Indian mutual funds and NSE and BSE shares and ETFs sit beside the UK holdings, and the household's existing Indian portfolio is imported once from its statements. Six boards, each in light and dark, drawn in MyPaisa DS v1 "Warm ledger" on the patterns of the Browser chats boards. Every Indian figure is in rupees with its pound value beside it, at the ECB's reference rate for the day (here £1 = ₹112.50, Monday 2 November, the one illustrative rate every MyPaisa board uses); the household total stays in pounds, with the rupee view one tap away; privacy mode hides rupees as it hides pounds. The web app stays read-only: every change is a card and a Confirm in the chat, and the one field on these boards, a statement's password, is used once in memory and never stored. Illustrative figures throughout: "You" (the owner) and "Asha" (a member) are fictional, the Indian funds are described rather than named, and every folio, account number and ID is masked.</p>
         <div class="plan"><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-147">MA-147</a><span>ARCHITECTURE.md §22, §4.5, §4.6</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
-      </section>
-
-      <!-- ================= MINI APP · OVERVIEW WITH INDIA ================= -->
-      <section class="dv-turn" id="in-m" data-screen-label="Mini App · Overview with India">
-        <div class="dv-thd"><a class="dv-tid" href="#in-m">M</a><span class="dv-tname">Mini App · Overview with India</span></div>
-        <p class="dv-intro">The Overview inside Telegram once Indian holdings are in. The household total stays in pounds, the base currency, with the rupee view one tap away on the hero (MA-94); the holdings are grouped by country, UK first; every Indian figure is in rupees with its pound value beside it. Drawn on the Mini App board's 390 frame under Telegram's own header, with the same five tabs and 104 px of bottom padding. Four states, each in Telegram light and dark: as it opens, scrolled to India, the rupee view, and privacy on.</p>
-        <div class="plan"><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-153">MA-153</a><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-94">MA-94</a><span>ARCHITECTURE.md §22.3, §4.5, §9.3</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
-        <sc-for list="{{ mRows }}" as="v" hint-placeholder-count="4">
-          <div class="dv-screen" id="{{ v.id }}">
-            <sc-for list="{{ v.th }}" as="t" hint-placeholder-count="2">
-              <div>
-                <p class="dv-cap">{{ t.cap }}</p>
-                <div class="phone {{ t.cls }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ t.cap }}">
-                  <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-                  <div class="scr {{ v.scr }}">
-                    <div class="fx ac gap8">
-                      <div class="mp-seg" style="flex: 1" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
-                      <button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ v.pressed }}"><span class="ms">{{ v.eye }}</span></button>
-                    </div>
-                    <div class="mp-hero">
-                      <div class="fx jb ac gap8"><span class="mp-over mp-hero-2 nowrap">Household · Mon close</span><div class="mp-seg ccy" role="group" aria-label="Show the total in"><button class="mp-seg-i seg-s {{ v.gOn }}" aria-pressed="{{ v.gP }}" aria-label="Pounds">£</button><button class="mp-seg-i seg-s {{ v.iOn }}" aria-pressed="{{ v.iP }}" aria-label="Rupees">₹</button></div></div>
-                      <div class="mp-num-hero nowrap" style="margin-top: 6px"><span class="{{ v.mask }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ v.total }}</span></div>
-                      <div class="fx ac gap8" style="margin-top: 4px; flex-wrap: wrap"><span class="mp-chip upchip chip-s">{{ v.chip }}</span><span class="mp-sub mp-hero-2">{{ v.sub }}</span></div>
-                      <div class="mp-chartbox" style="margin: 14px 0 12px" role="img" aria-label="{{ v.chartAria }}">
-                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="height: 110px" aria-hidden="true">
-                          <path d="{{ v.ch.area }}" fill="var(--mp-hero-area)"></path>
-                          <path d="{{ v.ch.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                        </svg>
-                        <sc-for list="{{ v.ch.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot" style="left: {{ m.x }}; top: {{ m.y }}"></span></sc-for>
-                      </div>
-                      <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on" aria-pressed="true">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div>
-                    </div>
-                    <div class="mp-card fx ac gap12" style="padding: 14px 16px">
-                      <span class="ms ms-fill mp-up ms-l">check_circle</span>
-                      <div class="rtx"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday. Ask anything in the chat.</div></div>
-                      <span class="ms mp-ink3">chevron_right</span>
-                    </div>
-                    <div class="mp-card" style="padding: 14px 16px">
-                      <div class="fx jb ac"><span class="mp-hl">By country</span><span class="mp-foot mp-ink3">share of the total</span></div>
-                      <div style="margin-top: 8px">
-                        <sc-for list="{{ v.ctry }}" as="c" hint-placeholder-count="2">
-                          <div class="ctry">
-                            <div class="fx jb ac gap8"><span class="mp-sub mp-w6">{{ c.name }}</span><span class="mp-sub mp-w6">{{ c.pct }}</span></div>
-                            <div class="mp-track cbar" role="img" aria-label="{{ c.aria }}"><span style="width: {{ c.pct }}"></span></div>
-                            <div class="mp-foot mp-ink2 nowrap"><span class="{{ c.ac }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ c.a }}</span><sc-if value="{{ c.hasB }}" hint-placeholder-val="{{ true }}"><span class="mp-ink3"> · </span><span class="{{ c.bc }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ c.b }}</span></sc-if></div>
-                          </div>
-                        </sc-for>
-                      </div>
-                      <div class="mp-foot mp-ink3" style="margin-top: 10px">{{ v.fxLine }}</div>
-                    </div>
-                    <sc-for list="{{ v.groups }}" as="g" hint-placeholder-count="2">
-                      <div>
-                        <div class="fx jb ac gap8 mp-section"><span class="mp-over mp-ink3">{{ g.name }}</span><span class="mp-foot mp-ink3 nowrap"><span class="{{ g.ac }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ g.a }}</span><sc-if value="{{ g.hasB }}" hint-placeholder-val="{{ true }}"> · <span class="{{ g.bc }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ g.b }}</span></sc-if></span></div>
-                        <div class="mp-group">
-                          <sc-for list="{{ g.rows }}" as="h" hint-placeholder-count="4">
-                            <div class="mp-row" style="padding-top: 10px; padding-bottom: 10px">
-                              <div class="mp-row-lead mp-neutral">{{ h.lead }}</div>
-                              <div class="rtx"><div class="mp-hl clip">{{ h.name }}</div><div class="fx ac gap6" style="margin-top: 2px"><sc-if value="{{ h.hasSt }}" hint-placeholder-val="{{ true }}"><span class="mp-chip chip-s {{ h.stCls }}">{{ h.st }}</span></sc-if><span class="mp-foot mp-ink3 clip">{{ h.sub }}</span></div></div>
-                              <div style="text-align: right"><div class="mp-hl nowrap"><span class="{{ h.ac }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ h.a }}</span></div><div class="mp-foot nowrap"><sc-if value="{{ h.hasB }}" hint-placeholder-val="{{ true }}"><span class="mp-ink2 {{ h.bc }}" role="{{ v.mrole }}" aria-label="{{ v.mlab }}">{{ h.b }}</span><span class="mp-ink3"> · </span></sc-if><span class="{{ h.chCls }}">{{ h.ch }}</span></div></div>
-                            </div>
-                          </sc-for>
-                        </div>
-                        <sc-if value="{{ g.hasFoot }}" hint-placeholder-val="{{ false }}"><div class="mp-foot mp-ink3 gfoot">{{ g.foot }}</div></sc-if>
-                      </div>
-                    </sc-for>
-                    <div class="mp-cap mp-ink3">Illustrative figures.</div>
-                  </div>
-                  <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ mTabs }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#in-m" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
-                </div>
-              </div>
-            </sc-for>
-            <div class="dv-note"><span class="dv-sname">{{ v.name }}</span><sc-for list="{{ v.notes }}" as="n" hint-placeholder-count="3"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
-          </div>
-        </sc-for>
       </section>
 
       <!-- ================= BROWSER · OVERVIEW WITH INDIA ================= -->
@@ -465,125 +355,6 @@
           </div>
         </section>
       </sc-for>
-
-      <!-- ================= TELEGRAM · CAS IMPORT, and · BRIEF WITH INDIA ================= -->
-      <sc-for list="{{ tBoards }}" as="j" hint-placeholder-count="2">
-        <section class="dv-turn" id="{{ j.anchor }}" data-screen-label="{{ j.name }}">
-          <div class="dv-thd"><span class="dv-tid">{{ j.tid }}</span><span class="dv-tname">{{ j.name }}</span></div>
-          <p class="dv-intro">{{ j.intro }}</p>
-          <div class="plan"><sc-for list="{{ j.keys }}" as="k" hint-placeholder-count="2"><a class="plan-k" href="{{ k.href }}">{{ k.k }}</a></sc-for><span>{{ j.arch }}</span><span class="plan-s">Planned.</span><span>Put through design-first's options round when the story starts.</span><span>Illustrative data only.</span></div>
-          <div class="kcard">
-            <sc-for list="{{ j.steps }}" as="st" hint-placeholder-count="4">
-              <div class="srow">
-                <sc-for list="{{ st.th }}" as="t" hint-placeholder-count="2">
-                  <div class="kcol">
-                    <p class="dv-cap">{{ t.lab }}</p>
-
-                    <!-- a chat frame: Telegram draws all of it; MyPaisa owns the words and the buttons -->
-                    <sc-if value="{{ st.isChat }}" hint-placeholder-val="{{ true }}">
-                      <div class="phone tg {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ t.lab }}">
-                        <div class="island {{ st.isl }}" aria-hidden="true"><sc-if value="{{ st.fid }}" hint-placeholder-val="{{ false }}"><span class="ms fidg">ar_on_you</span></sc-if></div>
-                        <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
-                        <div class="chead"><span class="back"><span class="ms">chevron_left</span>Chats</span><span class="ctitle"><span class="cname">MyPaisa</span><span class="csub">bot</span></span><svg class="cav" width="36" height="36" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#13213A"></circle><g transform="translate(24 24) scale(.72) translate(-24 -24)"><path d="M41.32 14 A20 20 0 1 1 34 6.68" fill="none" stroke="#B7C2D6" stroke-width="1.6"></path><circle cx="24" cy="24" r="14.6" fill="#233558"></circle><g fill="none" stroke="#FFFFFF" stroke-width="2.46" stroke-linecap="round" stroke-linejoin="round"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle cx="38.14" cy="9.86" r="3.8" fill="#FF6B4F"></circle></g></svg></div>
-                        <div class="msgs {{ st.msgsC }}">
-                          <sc-for list="{{ st.msgs }}" as="m" hint-placeholder-count="3">
-                            <div class="{{ m.mc }}">
-                              <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="day">{{ m.day }}</span></sc-if>
-                              <sc-if value="{{ m.isMsg }}" hint-placeholder-val="{{ true }}">
-                                <div class="tg-bub {{ m.bc }}">
-                                  <sc-if value="{{ m.hasFile }}" hint-placeholder-val="{{ false }}"><div class="filec"><span class="fic"><span class="ms ms-fill">description</span></span><span class="fmeta"><span class="fname">{{ m.file.n }}</span><span class="fsize">{{ m.file.s }}</span></span></div></sc-if>
-                                  <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="2"><div class="{{ b.c }}"><sc-for list="{{ b.ls }}" as="l" hint-placeholder-count="1"><div class="{{ l.c }}"><sc-for list="{{ l.s }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}">{{ s.t }}</span></sc-for></div></sc-for></div></sc-for>
-                                  <div class="tg-time"><span>{{ m.time }}</span><sc-if value="{{ m.out }}" hint-placeholder-val="{{ false }}"><span class="ms tick" aria-label="Read">done_all</span></sc-if></div>
-                                </div>
-                                <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="1"><div class="tg-btns {{ r.c }}"><sc-for list="{{ r.bs }}" as="k" hint-placeholder-count="2"><button class="tg-btn {{ k.c }}" type="button">{{ k.t }}<sc-if value="{{ k.hasG }}" hint-placeholder-val="{{ false }}"><span class="ms glyph" aria-hidden="true">{{ k.g }}</span></sc-if></button></sc-for></div></sc-for>
-                              </sc-if>
-                            </div>
-                          </sc-for>
-                        </div>
-                        <div class="ibar"><button class="mpill" type="button"><span class="ms ms-s">menu</span>Menu</button><span class="ms ibi">attach_file</span><span class="ifield">Message</span><span class="ms ibi">keyboard_hide</span><span class="ms ibi">mic</span></div>
-                        <div class="tg-kb" role="group" aria-label="Reply keyboard"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
-                        <div class="home" aria-hidden="true"><span></span></div>
-
-                        <!-- the password, once: MyPaisa in Telegram's sheet -->
-                        <sc-if value="{{ st.shPw }}" hint-placeholder-val="{{ false }}">
-                          <div class="mp-scrim zs"></div>
-                          <div class="tsheet tall mp {{ t.mp }}" role="dialog" aria-label="Unlock the statement">
-                            <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-                            <div class="shc">
-                              <div class="fx ac gap12"><span class="fidtile"><span class="ms">lock</span></span><div class="rtx"><div class="mp-t2">Unlock the statement</div><div class="mp-foot mp-ink3">CAS-Oct-2026.pdf · 1.4 MB</div></div></div>
-                              <div class="mp-sub mp-ink2">The password you chose when you asked CAMS or KFintech for this statement.</div>
-                              <div><div class="mp-foot mp-w6 db" style="margin: 0 0 6px 4px">Password</div><div class="pwf" role="group" aria-label="Password"><span class="pwf-d" role="img" aria-label="8 characters typed, hidden">••••••••</span><button class="iconbtn" type="button" aria-label="Show the password"><span class="ms">visibility</span></button></div></div>
-                              <div class="fx gap8 mp-foot mp-ink2"><span class="ms ms-s" aria-hidden="true">shield</span><span class="rtx"><b>Used once, never stored.</b> It opens this file in memory and is gone; it is not saved, logged or sent anywhere else.</span></div>
-                              <div class="grow"></div>
-                              <button class="mp-btn mp-btn-primary wfull" type="button">Unlock and read</button>
-                              <button class="mp-btn mp-btn-plain wfull" type="button" style="margin-top: -8px">Send an unlocked copy instead</button>
-                            </div>
-                            <span class="hind" aria-hidden="true"></span>
-                          </div>
-                        </sc-if>
-
-                        <!-- the second check after Confirm (MA-102) -->
-                        <sc-if value="{{ st.shCheck }}" hint-placeholder-val="{{ false }}">
-                          <div class="mp-scrim zs"></div>
-                          <div class="tsheet mp {{ t.mp }}" role="dialog" aria-label="Check it's you">
-                            <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-                            <div class="shc">
-                              <div class="fx col ac gap8 tc">
-                                <span class="fidtile"><span class="ms">ar_on_you</span></span>
-                                <div class="mp-t2">Check it’s you</div>
-                                <div class="mp-sub mp-ink2">Face ID, before MyPaisa saves the import you confirmed.</div>
-                              </div>
-                              <div class="mp-group"><div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">upload_file</span></span><span class="rtx"><span class="mp-hl db">Import 2 funds, 186 transactions</span><span class="mp-foot mp-ink3 db clip">from CAS-Oct-2026.pdf</span></span></div></div>
-                              <button class="mp-btn mp-btn-plain wfull" type="button">Use PIN</button>
-                            </div>
-                            <span class="hind" aria-hidden="true"></span>
-                          </div>
-                        </sc-if>
-                      </div>
-                    </sc-if>
-
-                    <!-- a Mini App frame: Audit, pushed from More -->
-                    <sc-if value="{{ st.isApp }}" hint-placeholder-val="{{ false }}">
-                      <div class="phone mp {{ t.mp }} {{ t.tg }}" data-mo-frame-root="1" data-screen-label="{{ t.lab }}">
-                        <div class="island" aria-hidden="true"></div>
-                        <div class="sbar"><span>{{ st.clock }}</span><span class="sicons" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div>
-                        <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>More</span><span class="mp-w6 tgh-t">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
-                        <div class="scr" style="gap: 14px">
-                          <div class="fx jb gap8" style="align-items: flex-start"><div><div class="mp-large">Audit</div><div class="mp-foot mp-ink3">Every change, who made it and when</div></div><span class="mp-chip chip-s okchip" style="margin-top: 12px"><span class="ms ms-s">verified</span>Chain verified</span></div>
-                          <div class="mp-seg" role="group" aria-label="Show"><button class="mp-seg-i on" aria-pressed="true">Changes</button><button class="mp-seg-i">Files</button></div>
-                          <div class="fx gap8"><button class="fchip">Everyone<span class="ms ms-s">expand_more</span></button><button class="fchip">All records<span class="ms ms-s">expand_more</span></button><button class="fchip">Today<span class="ms ms-s">expand_more</span></button></div>
-                          <div>
-                            <div class="mp-section mp-over mp-ink3">Today</div>
-                            <div class="mp-group">
-                              <div class="mp-row" style="align-items: flex-start">
-                                <div class="avatar av-you">Y</div>
-                                <div class="rtx">
-                                  <div class="mp-sub mp-w6">Imported 2 funds, 186 transactions</div>
-                                  <div class="mp-foot mp-ink2">into 2 MF folios · import im-0417</div>
-                                  <div class="mp-foot mp-ink3">You · Confirm and Face ID · 20:42 · r‑1302</div>
-                                  <div class="filerow"><span class="mp-icontile ftile"><span class="ms ms-s">picture_as_pdf</span></span><span class="rtx"><span class="mp-foot mp-w6 db clip">CAS-Oct-2026.pdf</span><span class="mp-cap mp-ink3 db">PDF · 1.4 MB · 14 pages</span></span><button class="mp-btn mp-btn-plain mp-btn-small" type="button" aria-label="Open CAS-Oct-2026.pdf">Open</button></div>
-                                </div>
-                              </div>
-                              <div class="mp-row" style="align-items: flex-start">
-                                <div class="avatar av-you">Y</div>
-                                <div class="rtx"><div class="mp-sub mp-w6">Statement received</div><div class="mp-foot mp-ink2">kept with your files before it was read</div><div class="mp-foot mp-ink3">You · chat · 20:40 · r‑1301</div></div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mp-foot mp-ink3 mp-section">Open gives a link that works for five minutes, and the opening is logged too. The password was never kept, so it is not here.</div>
-                          <div class="mp-cap mp-ink3">Illustrative figures.</div>
-                        </div>
-                        <nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ moreTabs }}" as="tb" hint-placeholder-count="5"><a class="mp-tab {{ tb.on }}" href="#in-t1" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
-                      </div>
-                    </sc-if>
-                  </div>
-                </sc-for>
-                <div class="snote"><span class="dv-sname">{{ st.name }}</span><sc-for list="{{ st.notes }}" as="n" hint-placeholder-count="2"><span><b>{{ n.b }}</b> {{ n.t }}</span></sc-for></div>
-              </div>
-            </sc-for>
-          </div>
-        </section>
-      </sc-for>
     </x-dc>
     <script type="text/x-dc" data-dc-script data-props='{}'>
       class Component extends DCLogic {
@@ -695,33 +466,7 @@
               ]
             };
           };
-          const mTheme = (cap, label) => [
-            { cap: cap + ' · Light', cls: 'mp t-light', tg: 'tg-light' },
-            { cap: cap + ' · Dark', cls: 'mp t-dark', tg: 'tg-dark' }
-          ];
           const N2 = (a) => a.map((n) => ({ b: n[0], t: n[1] }));
-          const mRows = [
-            Object.assign(view('gbp'), { id: 'in-m-open', scr: '', th: mTheme('Mini App · Overview with India · as it opens'), name: 'As it opens', notes: N2([
-              ['The total stays in pounds,', 'the household’s base currency. The £ ₹ switch on the hero turns the page to rupees in one tap (MA-94). It is a view, not a setting, and writes nothing.'],
-              ['By country, before the list:', 'the UK and India as shares of the total, with what each is worth; India in rupees with pounds beside. The line under them says what the rupee does to the total.'],
-              ['Holdings grouped by country,', 'UK first, each row keeping its stance chip and account.']
-            ]) }),
-            Object.assign(view('gbp'), { id: 'in-m-scrolled', scr: 'scr-end', th: mTheme('Mini App · Overview with India · scrolled to India'), name: 'Scrolled to India', notes: N2([
-              ['Rupees first, pounds beside:', 'each Indian row shows its rupees, then its pounds at the day’s ECB rate, then Monday’s move in rupees.'],
-              ['One row per holding, its account under the name:', 'the demat account, a folio per fund house, the NRE savings. The laptop shows the accounts as headings.'],
-              ['The tax flag is said once', 'under the group, in plain words; the flag itself is on each fund’s page.'],
-              ['Scrolled to the end,', 'the last line clears the tab bar, as every Mini App screen does.']
-            ]) }),
-            Object.assign(view('inr'), { id: 'in-m-inr', scr: '', th: mTheme('Mini App · Overview with India · the rupee view'), name: 'The rupee view, one tap on ₹', notes: N2([
-              ['One tap on ₹', 'turns the total, the chart and every figure into rupees, each with its pounds beside. The pounds and the rate sit under the total.'],
-              ['The chip follows the currency shown:', 'in rupees the month reads ' + sgn(monI) + ' against ' + sgn(monG) + ' in pounds, because the rupee slid against the pound.'],
-              ['Lakh grouping,', 'as an Indian statement writes it: ₹44,31,870, not ₹4,431,870.']
-            ]) }),
-            Object.assign(view('priv'), { id: 'in-m-priv', scr: 'scr-end', th: mTheme('Mini App · Overview with India · privacy on, scrolled'), name: 'Privacy on, scrolled to India', notes: N2([
-              ['Privacy mode hides rupees as it hides pounds:', 'every value and both group totals become pills that read “hidden”, rupees and pounds alike. Shares, stances and moves stay.'],
-              ['The hero hides its total the same way,', 'and its subline keeps only the day’s move, so no amount slips through in words.']
-            ]) })
-          ];
           const tabDefs = [['overview', 'Overview', 'home'], ['holdings', 'Holdings', 'donut_small'], ['overlap', 'Overlap', 'join_inner'], ['record', 'Record', 'insights'], ['more', 'More', 'menu']];
           const tabs = (sel) => tabDefs.map((d) => ({ label: d[1], icon: d[2], on: d[0] === sel ? 'on' : '', fill: d[0] === sel ? 'ms-fill' : '', cur: d[0] === sel ? 'page' : null }));
 
@@ -861,130 +606,9 @@
             }
           ];
 
-          /* ---------- Telegram: chat text, as in Telegram chats ---------- */
-          const seg = (str) => {
-            const out = []; const re = /(\*[^*]+\*|_[^_]+_|\[[^\]]+\])/g; let last = 0, x;
-            while ((x = re.exec(str))) {
-              if (x.index > last) out.push({ t: str.slice(last, x.index), c: '' });
-              out.push({ t: x[0].slice(1, -1), c: { '*': 'b', '_': 'i', '[': 'a' }[x[0][0]] });
-              last = x.index + x[0].length;
-            }
-            if (last < str.length) out.push({ t: str.slice(last), c: '' });
-            return out;
-          };
-          const kind = (s) => s === '' ? 'sp' : s[0] === '>' ? 'q' : s[0] === '^' ? 'ov' : 'p';
-          const parse = (lines) => {
-            const bl = [];
-            lines.forEach((s) => {
-              const k = kind(s), body = (k === 'p' || k === 'sp' ? s : s.slice(1)).replace(/([▲▼]) /g, '$1 '); let b = bl[bl.length - 1];
-              if (!b || b.k !== k || k === 'sp') { b = { k: k, c: k === 'ov' ? 'ov' : k === 'q' ? 'bq' : 'b' + k, ls: [] }; bl.push(b); }
-              b.ls.push({ c: 'ln', s: k === 'sp' ? [{ t: ' ', c: '' }] : seg(body) });
-            });
-            return bl;
-          };
-          const GL = { '▸': 'chevron_right', '▾': 'expand_more' };
-          const M = (o) => {
-            if (o.day) return { mc: 'dayrow', isDay: true, isMsg: false, day: o.day, bc: '', blocks: [], rows: [], time: '', out: false, hasFile: false, file: { n: '', s: '' } };
-            const rows = (o.btns || []).map((r) => ({ c: 'c' + r.length, bs: r.map((n) => { const g = GL[n.slice(-1)] && n.slice(-2, -1) === ' ' ? GL[n.slice(-1)] : ''; return { t: g ? n.slice(0, -2) : n, g: g, hasG: !!g, c: n === o.tap ? 'tap' : '' }; }) }));
-            return { isDay: false, isMsg: true, day: '', mc: 'msg' + (o.out ? ' o' : '') + (rows.length || o.wide ? ' w' : ''), bc: (o.out ? 'tg-out ' : '') + 'tl', hasFile: !!o.file, file: o.file || { n: '', s: '' }, blocks: parse(o.text || []), time: o.time || '', out: !!o.out, rows: rows };
-          };
-          const tThemes = [{ label: 'Telegram light', tg: 'tg-light', mp: 't-light' }, { label: 'Telegram dark', tg: 'tg-dark', mp: 't-dark' }];
-          const base = { isChat: false, isApp: false, msgsC: '', shPw: false, shCheck: false, isl: '', fid: false, msgs: [], clock: '' };
-          const S = (o) => Object.assign({}, base, o, { th: tThemes.map((th) => Object.assign({ lab: o.cap + ' · ' + th.label }, th)), notes: N2(o.notes || []) });
-
-          /* CAS import, Monday 2 November */
-          const today = M({ day: 'Today' });
-          const pdf = M({ out: true, time: '20:40', file: { n: 'CAS-Oct-2026.pdf', s: '1.4 MB' } });
-          const got = M({ time: '20:40', wide: true, text: ['*Got it:* a PDF, 1.4 MB. It is kept with your files before anything reads it.', '_Reading it now…_'] });
-          const locked = (tap) => M({ time: 'edited 20:40', tap: tap, btns: [['Type the password', 'Send an unlocked copy']], text: ['*This PDF is locked with a password.*', 'Statements from CAMS and KFintech usually are. Type it once in MyPaisa, or send a copy without one.'] });
-          const unlocked = M({ time: 'edited 20:41', wide: true, text: ['*Unlocked.* The password was used once and not kept.'] });
-          const dryText = [
-            '^Import · dry run · nothing saved yet',
-            '*CAS* from CAMS and KFintech, to 31 Oct 2026.',
-            '',
-            '*Add 2 funds*, matched by ISIN:',
-            '>*Flexi-cap fund*, direct growth',
-            '>5,779.840 units · ₹4,86,200 · £4,322',
-            '>*Index fund*, direct growth',
-            '>2,431.186 units · ₹2,04,900 · £1,821',
-            '*186 transactions* since Jan 2019: 171 SIPs, 9 lump sums, 2 switches, 4 redemptions.',
-            '*Not matched, so left out:* 1 scheme, closed in 2021; its ISIN is not in AMFI’s list. Listed, not guessed.',
-            '*Already here:* nothing.',
-            '',
-            '*Total* ' + inr(691100) + ' · ' + gbp(691100 / R) + ' at Monday’s NAVs and the ECB rate, ' + RATE + '.',
-            '_Your PAN, address and bank account numbers are not kept in any record. The file is kept as sent._',
-            '_Nothing is saved until you tap Confirm and check it’s you._'
-          ];
-          const dry = (tap) => M({ time: '20:41', tap: tap, btns: [['Confirm', 'Cancel']], text: dryText });
-          const saved = M({ time: 'edited 20:42', btns: [['Portfolio ▸', 'Source'], ['Undo this import']], text: [
-            '^Import · saved',
-            '*Saved* · 2 funds and 186 transactions, as import im-0417 · confirmed with Face ID.',
-            '>*Flexi-cap fund* · ₹4,86,200',
-            '>*Index fund* · ₹2,04,900',
-            'Left out: 1 scheme not matched. Tell me what it is and I will ask you again.',
-            '',
-            '_Audit: Import · You · 2 Nov 20:42 · from CAS-Oct-2026.pdf · run r-1302._'
-          ] });
-          const cas = [
-            S({ isChat: true, cap: 'i1 · Mon 20:40 · sends the CAS', clock: '20:40', msgs: [today, pdf, got], name: 'Sends the statement; reading it now', notes: [
-              ['Kept first:', 'the file goes to your files before anything reads it, so even a failed read leaves the original (MA-148).'],
-              ['Read by code, not by Claude:', 'a pinned statement parser does the reading; Claude reads only a file the parser cannot.'] ] }),
-            S({ isChat: true, msgsC: 'up2', shPw: true, cap: 'i2 · the password, once', clock: '20:40', msgs: [today, pdf, locked('Type the password')], name: 'The password, asked once', notes: [
-              ['In MyPaisa, not in the chat:', 'a password typed into the chat would stay in Telegram’s history. The sheet hands it straight to the parser, which uses it in memory and forgets it.'],
-              ['Not a write:', 'the field changes no record, so the read-only rule holds. The change itself is still a card and a Confirm.'],
-              ['Or send an unlocked copy,', 'saved without its password from the PDF viewer; the bot reads that instead.'] ] }),
-            S({ isChat: true, cap: 'i3 · Mon 20:41 · the dry run', clock: '20:41', msgs: [today, pdf, unlocked, dry('Confirm')], name: 'The dry run, one card', notes: [
-              ['What would be added, and nothing saved:', 'each fund with its units and its value in rupees and pounds, and every transaction since the first SIP, counted by kind.'],
-              ['Matched by ISIN, never guessed:', 'a scheme that is not in AMFI’s list is named and left out. Already here uses fingerprints, so the same statement sent twice adds nothing.'],
-              ['What the records never keep:', 'the PAN, the address, bank account numbers. The file itself is kept as sent.'] ] }),
-            S({ isChat: true, msgsC: 'up', shCheck: true, isl: 'fid', fid: true, cap: 'i4 · Confirm, then the second check', clock: '20:41', msgs: [today, pdf, unlocked, dry('Confirm')], name: 'Confirm, then check it’s you', notes: [
-              ['The second check of MA-102:', 'Confirm opens MyPaisa in Telegram’s half-height sheet and Face ID starts with no extra tap; Use PIN is the way round.'],
-              ['The sheet names the change', 'in funds and transactions, and the file it came from, not in money.'] ] }),
-            S({ isChat: true, cap: 'i5 · Mon 20:42 · saved', clock: '20:42', msgs: [today, pdf, unlocked, saved], name: 'Saved, and the card is the record', notes: [
-              ['Edited in place:', 'the dry run becomes the record, with the import id and how it was confirmed.'],
-              ['Undo this import', 'rolls back every row with import im-0417, after its own Confirm and check. Source sends the original file back.'] ] }),
-            S({ isApp: true, cap: 'i6 · Mon 20:45 · the file, from Audit', clock: '20:45', name: 'The file, opening from Audit', notes: [
-              ['A row made from a file shows the file:', 'its name, kind, size and Open (MA-148, MA-149). The Files view lists every file with the changes it fed.'],
-              ['Open is a five-minute link,', 'given after the role check: a member opens their own files, the owner any, a viewer none. Each opening is an audit row.'],
-              ['Pushed from More,', 'so More stays selected and Back reads ‹ More.'] ] })
-          ];
-
-          /* the morning brief, Tuesday 3 November */
-          const briefText = (priv) => [
-            '*Good morning.* Prices to Monday’s close.',
-            (priv ? '*£•••••*' : '*' + gbp(totG) + '*') + ' · ▲ 0.4% on Monday · ' + sgn(monG) + ' this month.',
-            '',
-            '*India, Monday’s close:* ' + (priv ? '*₹•••••••* · £•••••' : '*' + inr(inI) + '* · ' + gbp(inG)) + ' · ▲ 0.6% in rupees, ▲ 0.4% in pounds: the rupee slipped 0.2%.',
-            'Nifty 50 ETF ▲ 1.1% on NSE; the two funds ▲ 0.4% and ▲ 0.6% on AMFI’s NAVs.',
-            '',
-            '*Balanced* ▲ 0.3%. Asha’s *NASDAQ 100* ▲ 0.8%. *Silver* ▼ 0.4%.',
-            '',
-            'Nothing to do today.',
-            priv ? '_Privacy mode: pounds and rupees hidden, the moves kept. /privacy off to show them._' : '_Pounds at the ECB rate for Mon 2 Nov, ' + RATE + '._'
-          ];
-          const brief = (priv) => M({ time: '07:15', btns: [['India ▸', 'Portfolio ▸'], ['Ask']], text: briefText(priv) });
-          const briefs = [
-            S({ isChat: true, cap: 'b1 · Tue 07:15 · the brief', clock: '07:15', msgs: [today, brief(false)], name: 'The brief with an India line', notes: [
-              ['India’s previous day:', 'NSE closes at 15:30 IST (10:00 UK) and AMFI’s NAVs arrive by the UK evening, so the 07:15 brief carries Monday for India as for the UK.'],
-              ['Rupees first, pounds beside,', 'then the move in each, and what the rupee did. One line, then the holdings that moved.'],
-              ['India ▸', 'opens the Indian holdings; the rate and its date close the message.'] ] }),
-            S({ isChat: true, cap: 'b2 · Tue 07:15 · privacy on', clock: '07:15', msgs: [today, brief(true)], name: 'Privacy on: rupees hidden too', notes: [
-              ['Rupees are hidden as pounds are:', 'the total and the India line show dots, never a figure. The moves stay, in rupees and in pounds.'],
-              ['The last line says so,', 'and how to turn it off.'] ] })
-          ];
-          const tBoards = [
-            { anchor: 'in-t1', tid: 'T', name: 'Telegram · CAS import', keys: [key('MA-152'), key('MA-148')], arch: 'ARCHITECTURE.md §22.2, §4.6, §18.5',
-              intro: 'Monday 2 November, 20:40. You send the detailed Consolidated Account Statement for your Indian mutual funds. The file is kept first, then read by a statement parser, not by Claude. It is locked, so MyPaisa asks once for its password in a Mini App sheet, used once and never stored, or for an unlocked copy. A dry-run card lists what would be added, with anything not matched listed and never guessed; Confirm, then the second check; the card becomes the record, and the file opens from Audit. The importer has the Excel importer’s safety: a dry run, fingerprints, one import id to roll back. Each step in Telegram light and dark; a tapped button is ringed.',
-              steps: cas },
-            { anchor: 'in-t2', tid: 'T', name: 'Telegram · Brief with India', keys: [key('MA-153'), key('MA-151')], arch: 'ARCHITECTURE.md §22.1, §22.3, §11',
-              intro: 'Tuesday 3 November, 07:15: the owner’s morning brief, with an India line for Monday’s Indian close in rupees and pounds, as the brief in Telegram chats. With privacy on, rupees are hidden as pounds are and the moves stay. Telegram light and dark.',
-              steps: briefs }
-          ];
-
           return {
-            mRows: mRows, mTabs: tabs('overview'), moreTabs: tabs('more'),
             bThemes: bThemes, bNav: bNav, bTabs: bTabs, bov: bov,
-            hBoards: hBoards, tBoards: tBoards
+            hBoards: hBoards
           };
         }
       }

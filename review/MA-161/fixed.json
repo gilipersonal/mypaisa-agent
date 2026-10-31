@@ -886,7 +886,7 @@
     "finding": "check itself refuses a misplaced motion role: the mutated-board selftest gives a copy one and expects board motion",
     "check": {
       "type": "cmd",
-      "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in motion_errors\\(path\\.read_text\\(\\)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong motion'; r=$?; rm -rf $T; exit $r"
+      "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in motion_errors\\((?:path\\.read_text\\(\\)|text)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong motion'; r=$?; rm -rf $T; exit $r"
     }
   },
   {
@@ -1037,7 +1037,7 @@
     "finding": "check itself refuses a board tool §8 lacks: the mutated-board selftest plants render_chart and fails with the tool loop removed",
     "check": {
       "type": "cmd",
-      "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in tool_errors\\(path\\.read_text\\(\\), ctx\\.setdefault\\(\"tools\", agent_tools\\(\\)\\)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong tool'; r=$?; rm -rf $T; exit $r"
+      "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in tool_errors\\((?:path\\.read_text\\(\\)|text), ctx\\.setdefault\\(\"tools\", agent_tools\\(\\)\\)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong tool'; r=$?; rm -rf $T; exit $r"
     }
   },
   {

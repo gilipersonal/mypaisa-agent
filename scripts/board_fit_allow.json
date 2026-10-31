@@ -1,9 +1,9 @@
 {
  "about": "What scripts/board_fit.js does not count as a fault, and why (MA-240). Each allowance names its board (the end of its path under docs/design/), the fault types, a regular expression on the text and, where it holds only there, the sizes (or `below`, every measured width under it, never the drawn size), a regular expression on the frame's label and one on the element's path. An allowance that matches nothing is reported, so the list stays true. Change a board to fix a fault; add an allowance only for what is drawn on purpose or what an open issue carries, with its reason.",
  "superseded": {
-  "pattern": "^(Telegram |Mini App|Prototype\\.dc|PrototypeV4|Chat basics|Currency check)",
-  "frames": "^(Mini App|Telegram)",
-  "why": "The superseded record (MA-161), nothing built from it: the Telegram files (Telegram admin, chats, second check; the Telegram kit), Mini App, the first Prototype, Chat basics (the Telegram chat's messages) and both Currency check files (the Telegram currency check). PrototypeV4Chat, Pages, Phone and Web are the parts Prototype v4 mounts; the gate walks them inside it. In a file that mixes them with current boards, a frame whose label starts with Mini App or Telegram is the same record and is left out too."
+  "pattern": "^PrototypeV4",
+  "frames": "^$",
+  "why": "PrototypeV4Chat, Pages, Phone and Web are the sub-components Prototype v4 mounts; the gate walks them inside Prototype v4.dc.html. All Telegram, Mini App and Nocturne boards and frames were retired in MA-278."
  },
  "noFrames": [
   {
@@ -25,10 +25,6 @@
   {
    "board": "MyPaisa DS v1.dc.html",
    "why": "The directions page Arun picked Warm ledger from (MA-101), no device frame."
-  },
-  {
-   "board": "Research cards.dc.html",
-   "why": "The research and review cards drawn as messages in the Telegram chat (69 tg- parts, no MyPaisa device or browser frame), so there is no screen to resize; the stories that show these cards (MA-63 to MA-65 and the rest) draw them on the iOS and browser boards before they start."
   }
  ],
  "allow": [
