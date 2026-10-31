@@ -556,7 +556,7 @@ Why this combination gives MyPaisa the best of both worlds:
 | **Charts** | `layerchart` **2.9** (`shadcn-svelte` charts on D3 scales) + `lightweight-charts` **5.2** (TradingView) | LayerChart renders the wealth breakdown, allocation rings, 20-year Projection fan/stack, and Budget forecast bars in DS v1 tokens; `lightweight-charts` is loaded lazily only on market holding price/candlestick views (Phases 10+). |
 | **Motion system** | `motion` **14** + Svelte transitions + `docs/design/shared/motion.css` | Shared arrival stagger, spring sheets, and tabular figure roll (`MA-182`), snapping immediately under `prefers-reduced-motion: reduce`. |
 | **Shared contract & codegen (`web/src/lib/`)** | `openapi-typescript` **7.x** + generated Pydantic card schemas (`MA-174`, `MA-266`) | Generates `web/src/lib/api-types.d.ts` from FastAPI's OpenAPI 3.1 schema and shares query keys, fetchers, W3C `traceparent` generator, GBP, INR, USD and EUR formatters (rupees in `lakh`/`crore`), and privacy masks with the iOS React Native shell. |
-| **Quality gates** | `svelte-check`, `eslint` **10**, `vitest` **5** + `@testing-library/svelte`, `@playwright/test` **1.64** + `@axe-core/playwright` | Type-check, unit tests, WCAG 2.1 AA axe checks, board-fit checks across 320–1920 px in Chromium and WebKit, and pixel parity checks against the design boards in `docs/design/`. |
+| **Quality gates** | `svelte-check`, `eslint` **10**, `vitest` **5** + `@testing-library/svelte`, `@playwright/test` **1.64** + `@axe-core/playwright` **4.14** + `@argos-ci/playwright` | Type-check, unit tests, one fail-closed `auditAndCapture()` Playwright fixture at `390x844` and `1440x900` in both themes running WCAG 2.2 Level A & AA axe checks before Argos CI Tokenless OIDC visual PNG + light-deduplicated YAML `ariaSnapshot` accessibility tree diffing (~3,600 items/month inside the 5,000/month £0 Free Hobby cap, `§10`), board-fit checks across 320–1920 px in Chromium and WebKit, and pixel parity checks against the design boards in `docs/design/`. |
 
 #### Layer 2: Native iOS App (`ios/`) — React Native 0.88 Bare Shell + Swift 6 SwiftUI Core
 
@@ -646,7 +646,11 @@ Because `.claude/rules/aws-changes.md` and `ARCHITECTURE.md` §18.1 forbid any s
 2. **Layer 2 — Local Full-Stack Integration (`moto` + FastAPI ASGI, `~30 s` on Linux `1x`, every PR):** Runs the full `api` $\rightarrow$ `updates.fifo` $\rightarrow$ `agent` $\rightarrow$ `TransactWriteUnit` (`mypaisa-local`) $\rightarrow$ `outbox.fifo` $\rightarrow$ `sender` $\rightarrow$ `stream` SSE pipeline in-process against the seeded synthetic household (`MA-110`, `MA-198`).
 3. **Layer 3 — Deterministic Agent Replay (`T0`) & Golden Maths Fixtures (`~45 s` on Linux `1x`, every PR):** Replays recorded multi-turn conversations through `AnthropicAgentRunner`, `PolicyGate` (`MA-247`), `FigureCheck` (`MA-248`), the red-team refusal suite (`MA-249`), and the OTel PII-leak test (`MA-232`) with zero network calls (`MA-246`), plus the **646 wealth-tracker golden test cases** (`MA-105`) and **11 Agentic Trading Desk indicator golden fixtures** (`MA-34`).
 4. **Layer 4 — Web & iOS Visual, Responsive & Accessibility Regression (path-gated on PRs + `main`, plus local Apple Silicon Maestro):**
-   - **Web & Boards (`ubuntu-24.04-arm`, `1x`):** `node scripts/board_fit.js` across 320–1920 px in Chromium and WebKit (`MA-240`), `python3 scripts/contrast_check.py` at 100% and 25% brightness, and Playwright (`390x844` and `1440x900`, light and dark, `prefers-reduced-motion`, `@axe-core/playwright` WCAG 2.2 AA).
+   - **Web & Boards (`ubuntu-24.04-arm`, `1x`, `concurrency: cancel-in-progress`):** `node scripts/board_fit.js` across 320–1920 px in Chromium and WebKit (`MA-240`) and `python3 scripts/contrast_check.py` at 100% and 25% brightness as repo-local, zero-quota board gates; and on the built SvelteKit 3 (`web/`) code (`MA-194`, `MA-269`), Playwright 1.64 at `390x844` and `1440x900` in `.t-light` and `.t-dark` (plus privacy mode `£••••` on wealth/home screens) through one shared `auditAndCapture()` fixture:
+     1. deterministic stabilization (`prefers-reduced-motion: reduce`, `document.fonts.ready`, `aria-busy="false"`, volatile locators masked),
+     2. fail-closed **`@axe-core/playwright` 4.14** (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`) in both themes *before* any screenshot is taken,
+     3. interactive landmark (`<main>`, `<nav>`), single `<h1>`, keyboard `Tab` order and `:focus-visible` ring assertions (`MA-181`), and
+     4. **Argos CI** (`@argos-ci/playwright`, Tokenless GitHub App OIDC, `uploadToArgos: !!process.env.CI`) capturing full-page visual regression PNGs in both themes (`threshold: 0.2`) and a light-theme-deduplicated YAML `ariaSnapshot` accessibility tree (`ariaSnapshot: theme === 'light'`, cutting ARIA quota by 50% since CSS theme variables do not alter DOM roles or labels), keeping total usage at **~3,600 snapshots/month** (72% of Argos CI's **5,000/month £0 Free Hobby tier**; see `§10` and `docs/design/argos-visual-a11y.html`).
    - **iOS Native (`macos-15` or self-hosted Mac, path-gated to `ios/**` and `cards/**`, plus local Apple Silicon Maestro):** `XCTest`, `XCUITest` (including hardware keyboard `Cmd+*` shortcuts), `swift-snapshot-testing` (iPhone & iPad, light & dark, Large & Dynamic Type `AX5`, privacy mode on), and `XCUIAccessibilityAudit` (`MA-166`, `MA-181`), paired locally on Apple Silicon with `python3 scripts/maestro_local.py run --up-to-phase <N>` across the five cloned `MyPaisa-Maestro-*` simulators (`MA-273`, `MA-274`).
 5. **Layer 5 — Change-Gated Live LLM Evals (`T1` & `T2`, `MA-250`, `MA-251`):**
    - **`T1`:** ~40 golden tasks $\times$ 3 trials on the `evals` workspace ($10/run cap, $30/mo cap) only when a PR touches a prompt, tool, guard, agent loop, model route, `Kind` template, or the Anthropic SDK.
@@ -684,7 +688,7 @@ Because `.claude/rules/aws-changes.md` and `ARCHITECTURE.md` §18.1 forbid any s
 | CI job / suite | Wall-clock duration | Runner class |
 | --- | --- | --- |
 | **Fast Linux PR gates** (`ruff`, `pyright`, `pytest` L1–L3, `moto` ASGI, `T0` replay, `gitleaks`, `semgrep`, `pip-audit`, `trivy config`, `terraform plan`) | **~2.5 min** (with `uv` & `pnpm` cache) | Linux `arm64` (`1x`) |
-| **Web & board visual/a11y regression** (`Playwright` 390/1440 light/dark + `axe-core` + `board_fit.js`) | **~3.5 min** | Linux `arm64` (`1x`) |
+| **Web & board visual/a11y regression** (`Playwright` 390/1440 light/dark + `@axe-core/playwright` WCAG 2.2 AA + **Argos CI** visual & light-ARIA upload + `board_fit.js`) | **~3.5 min** | Linux `arm64` (`1x`) |
 | **iOS TypeScript shell & card tests** (`Jest` + card JSON schema parity + `eslint`) | **~1.0 min** | Linux `arm64` (`1x`) |
 | **iOS native SwiftUI build + `XCTest` / `XCUITest` / Snapshot / AX5** (Xcode Simulator) | **~8.0 min** (with SPM cache on `macos-15`) | macOS (`10x` on GitHub = **80 billed mins/run**) |
 | **Docker multi-stage `arm64` build (`lambda` + `stream`) + `trivy image` + ECR push** | **~2.5 min** | AWS CodeBuild `arm1.small` |
@@ -1138,6 +1142,98 @@ MyPaisa requires outbound HTTPS (`TCP 443`) to a small, known set of external ho
 
 ---
 
+## 10. Web visual regression, ARIA snapshot diffing & WCAG 2.2 AA accessibility pipeline with Argos CI, Playwright & `@axe-core/playwright` (`MA-194`, `MA-269`)
+
+Arun, 30 Oct 2026 (`MA-194`, `MA-269`): run **Argos CI** (`@argos-ci/playwright`), **Playwright 1.64**, and **`@axe-core/playwright` 4.14** (WCAG 2.2 Level A & AA) strictly on the real SvelteKit 3 (`web/`) application code in GitHub Actions, applying five cost guardrails so visual pixel diffing, YAML ARIA accessibility tree regression, and hard WCAG 2.2 AA auditing run at **£0.00/month** inside both Argos CI's 5,000-snapshot/month Free Hobby tier and GitHub Actions' 2,000-minute/month free tier (`docs/design/argos-visual-a11y.html`).
+
+### 10.1 Architectural separation: repo-local board gates vs. cloud visual & ARIA regression on `web/`
+
+To avoid burning cloud snapshot quota on static `.dc.html` design boards while keeping 100% responsive and visual coverage across the repository, MyPaisa splits Layer-4 web verification into two complementary tracks:
+
+| Track | Target | Tooling | What it enforces | Monthly Quota / Cost |
+| --- | --- | --- | --- | --- |
+| **Track A — Static Design Boards & Token Math (`docs/design/`)** | Every `.dc.html` board in `app-v1/`, `ios-v1/`, `ds-v1/` and `Prototype v5` | `scripts/contrast_check.py`, `scripts/board_fit.js` (320–1920 px in Chromium & WebKit), `scripts/prototype_smoke.js` | Exact mathematical contrast at 100% and 25% brightness (`MA-181`), multi-width responsive geometry, text clipping, surface-on-surface overlap, container-query thresholds (`MA-240`), and Prototype v5 chapter/weekday/tool parity (`MA-291`). | **0 Argos snapshots** (**£0.00/mo**, runs offline in repo) |
+| **Track B — Real SvelteKit 3 PWA Code (`web/`, `MA-194` & `MA-269`)** | Built SvelteKit 3 app (`pnpm build && pnpm preview`) across all 15 canonical routes/states at `390x844` (Mobile) and `1440x900` (Desktop) in `.t-light` and `.t-dark` (plus privacy mode `£••••`) | **Playwright 1.64** + **`@axe-core/playwright` 4.14** + **`@argos-ci/playwright`** (Tokenless GitHub App OIDC) | 1. Deterministic motion/font stabilization.<br>2. Fail-closed WCAG 2.2 Level A & AA (`axe-core`) *before* capture.<br>3. Interactive keyboard `Tab` order, `:focus-visible` ring & landmark assertions (`MA-181`).<br>4. Cloud visual PNG regression (`threshold: 0.2`) in Light & Dark + light-deduplicated YAML `ariaSnapshot` accessibility tree diffing against `main`. | **~3,600 snapshots/mo** (72% of Argos CI's 5,000/mo Free Hobby cap = **£0.00/mo**) |
+
+### 10.2 Why `@axe-core/playwright` and Argos `ariaSnapshot` are paired in one helper ("One Helper, Four Gates")
+
+Argos CI's `ariaSnapshot: true` captures Playwright's structured YAML accessibility tree alongside a screenshot and shows a Git-style text diff in the Argos dashboard whenever semantics change between `main` and a pull request (for example, a button losing its accessible name, a heading level shifting from `<h2>` to `<h3>`, or an `aria-live="polite"` region disappearing on a streaming chat card). However, `ariaSnapshot` is a **regression diff against the baseline**, not a rule-based WCAG validator.
+
+Therefore, every Playwright E2E test in `web/tests/` calls a single shared `auditAndCapture(page, screenName, opts)` fixture (`web/tests/helpers/audit-and-capture.ts`) that executes **four gates in sequence**:
+
+```typescript
+import { expect, type Page, type Locator } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { argosScreenshot } from '@argos-ci/playwright';
+
+export interface CaptureOptions {
+  theme: 'light' | 'dark';
+  viewportLabel: '390' | '1440';
+  mask?: Array<Locator | string>;
+  fullPage?: boolean;
+}
+
+export async function auditAndCapture(
+  page: Page,
+  screenName: string,
+  opts: CaptureOptions
+): Promise<void> {
+  // Gate 1: Deterministic stabilization (prefers-reduced-motion, theme tokens, fonts & aria-busy)
+  await page.emulateMedia({ colorScheme: opts.theme, reducedMotion: 'reduce' });
+  await page.evaluate((theme) => {
+    document.documentElement.classList.toggle('t-dark', theme === 'dark');
+    document.documentElement.classList.toggle('t-light', theme === 'light');
+  }, opts.theme);
+  await page.evaluate(() => document.fonts && document.fonts.ready);
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+
+  // Gate 2: Fail-closed WCAG 2.2 Level A & AA audit via @axe-core/playwright BEFORE spending Argos quota
+  const axeResults = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
+    .analyze();
+
+  expect(
+    axeResults.violations,
+    `WCAG 2.2 AA violations on "${screenName}" (${opts.viewportLabel}, ${opts.theme}):\n` +
+      axeResults.violations.map((v) => `- [${v.id}] ${v.help}: ${v.nodes.map((n) => n.html).join(', ')}`).join('\n')
+  ).toEqual([]);
+
+  // Gate 3: Structural landmark & single-h1 assertion (MA-181)
+  await expect(page.locator('main')).toBeVisible();
+  await expect(page.locator('h1')).toHaveCount(1);
+
+  // Gate 4: Argos CI visual PNG (both themes) + deduplicated YAML ARIA tree (light theme only)
+  await argosScreenshot(page, `${screenName}--${opts.viewportLabel}--${opts.theme}`, {
+    fullPage: opts.fullPage ?? true,
+    ariaSnapshot: opts.theme === 'light',
+    mask: opts.mask ?? [],
+    threshold: 0.2,
+  });
+}
+```
+
+### 10.3 Five cost and quota guardrails keeping Argos CI & GitHub Actions at £0.00/month
+
+In Argos CI, **each uploaded PNG counts as 1 snapshot** and **each uploaded `ariaSnapshot` YAML tree counts as 1 snapshot** toward the monthly plan limit. While the **Hobby Plan is $0/month forever** for up to **5,000 snapshots/month**, exceeding 5,000 requires the **Pro Plan ($100/month = ~£79/month)**, which would breach MyPaisa's £50/month total budget cap (`ARCHITECTURE.md` §15.2). Five engineering guardrails guarantee monthly usage stays well below 5,000 snapshots:
+
+| Guardrail | Mechanism | Quota / Cost Impact |
+| --- | --- | --- |
+| **1. Strict Path Filtering (`web/**`, `cards/**`)** | `.github/workflows/web-visual-a11y.yml` triggers only on `pull_request` and `push` to `main` touching `web/**`, `cards/**`, or the workflow file. Python (`src/**`), Terraform (`infra/**`), iOS (`ios/**`), and docs PRs skip the job completely. | Cuts monthly runs by ~60% (from ~85 total repo runs/mo down to **~35–40 UI runs/mo**). |
+| **2. Light-Theme-Only `ariaSnapshot` Deduplication** | Toggling `.t-light` and `.t-dark` in Tailwind CSS 4 (`tokens.css`) changes CSS custom properties (`--mp-bg`, `--mp-ink`), never DOM roles, labels, or heading hierarchy. Colour contrast in both themes is already enforced by `contrast_check.py`, `@axe-core/playwright`, and Argos's visual PNGs. Setting `ariaSnapshot: opts.theme === 'light'` captures **6 items per screen** (`390` Light PNG + ARIA, `390` Dark PNG, `1440` Light PNG + ARIA, `1440` Dark PNG) instead of 8. | Saves **1,200 snapshots/month** (cuts ARIA snapshot usage by **50%** with zero loss of accessibility coverage). |
+| **3. Fail-Fast `@axe-core/playwright` + `uploadToArgos: !!process.env.CI`** | `AxeBuilder` runs *before* `argosScreenshot()`, aborting the test on any WCAG 2.2 AA violation before snapshots are generated; local `pnpm test:e2e` runs on the developer Mac never upload to Argos. | Prevents broken accessibility builds and local dev loops from consuming cloud quota. |
+| **4. Workflow Concurrency `cancel-in-progress: true`** | `concurrency: { group: web-visual-${{ github.ref }}, cancel-in-progress: true }` cancels superseded in-flight PR runs before the `@argos-ci/playwright/reporter` batch-uploads at the end of the job. | Saves ~15–20% wasted snapshots during rapid multi-commit PR iterations. |
+| **5. `ubuntu-24.04-arm` (`1x`) + Cached Chromium + Tokenless OIDC** | Runs on GitHub's Arm64 Linux runner (`1x` multiplier) with `~/.cache/ms-playwright` cached on `pnpm-lock.yaml` (~2 min/run = **~80 billed GitHub mins/mo** out of 2,000 free) and authenticates via the **Argos GitHub App Tokenless OIDC** flow. | **£0.00/mo** on GitHub Actions, **0 secrets** in GitHub or AWS SSM, and ~45–60 s faster than two-pass local `git archive` diffing. |
+
+### 10.4 Monthly snapshot volume & cost comparison across configurations
+
+| Configuration | Screens / states per build | Items per build (PNG + ARIA) | Monthly builds | Total snapshots / month | Share of 5,000 Free Hobby Cap | Monthly Cost (Argos + GitHub) |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Option 1 (Selected): SvelteKit `web/` Core + Smart Light-Only ARIA Deduplication** | **15 canonical SvelteKit screens/states** (Sign-in, Home/Chat, Stream card, Confirm card, Wealth, Holding detail, Projection, Budget, Budget Forecast, Check-in, Plans, Forecaster, Audit, Admin Center, Privacy mode `£••••`) × 2 viewports (`390`, `1440`) × 2 themes (`light`, `dark`) | **90** (60 PNGs + 30 Light ARIA trees) | **40** (~25 UI PRs + ~15 UI `main` merges) | **3,600 / mo** | **72.0%** (1,400 buffer left) | **£0.00 / month** |
+| **Option 2: Option 1 + Symmetric ARIA in Both Themes (Un-deduplicated)** | Same 15 SvelteKit screens/states × 2 viewports × 2 themes with `ariaSnapshot: true` on both Light and Dark | **120** (60 PNGs + 60 ARIA trees) | **40** | **4,800 / mo** | **96.0%** (only 200 buffer left — tight) | **£0.00 / month** (at risk on busy months) |
+| **Option 3: Unfiltered Naive Matrix (All PRs + All Static `.dc.html` Boards + iOS Snapshots)** | 25 web states (200) + 60+ static `.dc.html` design boards (120) + iOS simulator snapshots (80) on every repo push | **400** | **85** (all 60 PR pushes + 25 merges) | **34,000 / mo** | **680.0%** (exceeds Free Hobby 6.8x) | **$100 / ~£79 per month** (requires Argos Pro) |
+
+---
+
 ## Sources
 
 - Agentic Trading Desk: <https://github.com/Oft3r/agentic-trading-desk> (README, SKILL.md, `scripts/*.py`, `hooks/mandate-order-guard.sh`)
@@ -1163,3 +1259,4 @@ MyPaisa requires outbound HTTPS (`TCP 443`) to a small, known set of external ho
 - Tools: <https://inspect.aisi.org.uk>, <https://www.promptfoo.dev/docs/usage/command-line/>, <https://deepeval.com/docs/metrics-tool-correctness>, <https://langfuse.com/pricing>, <https://www.braintrust.dev/pricing>
 - Maestro & iOS/iPadOS local testing & TestFlight: <https://docs.maestro.dev>, <https://developer.apple.com/testflight/>, <https://developer.apple.com/help/app-store-connect/test-a-beta-version/invite-internal-testers/>, <https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases>
 - AWS VPC Enterprise Lockdown, Data Perimeter & `us-east-1` Pricing: <https://aws.amazon.com/vpc/pricing/>, <https://aws.amazon.com/privatelink/pricing/>, <https://aws.amazon.com/network-firewall/pricing/>, <https://aws.amazon.com/cloudfront/pricing/>, <https://aws.amazon.com/route53/pricing/>, <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-block-public-access.html>, <https://aws.amazon.com/identity/data-perimeters-on-aws/>, <https://docs.aws.amazon.com/cognito/latest/developerguide/vpc-interface-endpoints.html>, <https://fck-nat.dev>
+- Argos CI Visual Regression, ARIA Snapshots & Playwright Accessibility: <https://argos-ci.com/pricing>, <https://argos-ci.com/docs/quickstart/playwright>, <https://argos-ci.com/docs/aria-snapshots>, <https://argos-ci.com/docs/tokenless-authentication>, <https://playwright.dev/docs/accessibility-testing>
