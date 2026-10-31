@@ -56,9 +56,9 @@
     "finding": "Owner decision (Arun, 25 Oct 2026): the read-only dashboard shows on the iPad and the foldable too",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; n=lambda k:{b.get('board') for b in t[k].get('boards',[])}; sys.exit(0 if ({'iPad · Home with the chat beside it','iPad · Whole wealth with the chat beside it'} & n('MA-208')) and 'Foldable · Open' in n('MA-70') else 1)\""
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; n=lambda k:{b.get('board') for b in t[k].get('boards',[])}; sys.exit(0 if ({'iPad · Home with the chat beside it','iPad · Whole wealth with the chat beside it'} & n('MA-208')) and any(b.startswith('Foldable · Open') for b in n('MA-70')) else 1)\""
     },
-    "amended": "MA-186, 26 Oct 2026: the Home boards moved from MA-78 (now Overlap and Scorecard) to MA-208, the first dashboard; the iPad and foldable decision stands; MA-193 (26 Oct 2026): the v4 iPad board, iPad · Whole wealth with the chat beside it, supersedes the investment-only one on MA-208, and either keeps the decision"
+    "amended": "MA-186, 26 Oct 2026: the Home boards moved from MA-78 (now Overlap and Scorecard) to MA-208, the first dashboard; the iPad and foldable decision stands; MA-193 (26 Oct 2026): the v4 iPad board, iPad · Whole wealth with the chat beside it, supersedes the investment-only one on MA-208, and either keeps the decision; MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.; MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r1-a1",
@@ -94,8 +94,9 @@
     "check": {
       "type": "trace",
       "key": "MA-145",
-      "board": "Browser · Admin · Alerts · Replayed, and failed again"
-    }
+      "board": "Browser · Admin · People, Routing & Replay · Desktop Dark"
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r1-a9",
@@ -367,8 +368,9 @@
     "finding": "The iPad Audit, Activity, Overlap and Scorecard boards are on MA-71 and MA-70",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ({'iPad · Audit and Activity','Foldable · Open, Audit'} <= {b['board'] for b in t['MA-71']['boards']} and 'iPad · Overlap and Scorecard' in {b['board'] for b in t['MA-70']['boards']}) else 1)\""
-    }
+      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ({'iPad · Wide · Forecaster Proof & Admin','Foldable · Open 880 pt · Audit & Chat sheet'} <= {b['board'] for b in t['MA-71']['boards']} and 'iPad · Wide · Home, Register & Overlap' in {b['board'] for b in t['MA-70']['boards']}) else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r1-e11",
@@ -511,10 +513,11 @@
     "finding": "The red alert on iPhone · Lock screen is the one C12's card describes, not a later one it rules out",
     "check": {
       "type": "grep",
-      "file": "docs/design/ios-v1/iPhone settings.dc.html",
+      "file": "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
       "pattern": "Wed 28 Oct",
       "present": false
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r1-e6-d7",
@@ -536,8 +539,9 @@
     "finding": "C17's Confirm card keeps Cancel with privacy on",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import re,sys; t=open('docs/design/ios-v1/iPhone chat.dc.html').read(); i=t.find('<span class=\\\"bd-id\\\">C17</span>'); j=t.find('<section class=\\\"bd\\\"',i); b=re.findall(r'class=\\\"cbtn[^\\\"]*\\\">([^<]*)<',t[i:j]); sys.exit(0 if i>0 and {'Confirm','Cancel'}<=set(b) else 1)\""
-    }
+      "run": "python3 -c \"import re,sys; t=open('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html').read(); i=t.find('id=\\\"b3\\\"'); j=t.find('id=\\\"b4\\\"',i); b=re.findall(r'class=\\\"[^\\\"]*(?:cbtn|mp-btn)[^\\\"]*\\\"[^>]*>([^<]*)<',t[i:j]); sys.exit(0 if i>0 and {'Confirm','Cancel'}<=set(b) else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r2-a1",
@@ -895,8 +899,9 @@
     "finding": "C15, drawn at 21:12 after the buy, shows the household after it (£24,310) and no unconfirmed copy of the saved buy",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys; t=open('docs/design/ios-v1/iPhone chat.dc.html').read(); i=t.index('<span class=\\\"bd-id\\\">C15</span>'); j=t.index('</section>',i); c=t[i:j]; sys.exit(0 if '£24,310' in c and '£24,110' not in c and 'I put £200 into Balanced' not in c else 1)\""
-    }
+      "run": "python3 -c \"import sys; t=open('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html').read(); i=t.index('id=\\\"b3\\\"'); j=t.index('id=\\\"b4\\\"',i); c=t[i:j]; sys.exit(0 if '£444,951' in c and '£24,110' not in c and 'I put £200 into Balanced' not in c else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r3-e2",
@@ -977,8 +982,9 @@
     "finding": "Any transform that reaches a chart label or dot on a motion board is refused unless !important: reordered, descendant, pseudo, a carried class, inline",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Browser.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al.mp-chartlbl { transform: translate(-100%, -100%);')) and p.motion_errors(t.replace(' !important','')) else 1)\" && python3 scripts/plan_sync.py selftest | grep -Eq 'motion roles.*0 wrong'"
-    }
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Web v4 · Market, holdings and India.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al.mp-chartlbl { transform: translate(-100%, -100%);')) and p.motion_errors(t.replace(' !important','')) else 1)\" && python3 scripts/plan_sync.py selftest | grep -Eq 'motion roles.*0 wrong'"
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r4-a4",
@@ -1065,8 +1071,9 @@
     "finding": "A class-only transform rule that a template-given label class could reach is refused unless !important",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Browser.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al { transform: translate(-100%, -100%);')) else 1)\""
-    }
+      "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Web v4 · Market, holdings and India.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al { transform: translate(-100%, -100%);')) else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r5-b1",

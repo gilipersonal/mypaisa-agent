@@ -709,37 +709,50 @@ BOARD_CASES = [
     ("ds", "Logo.dc.html", "1c Chat avatar", True), ("ds", "Logo.dc.html", "1c · Watcher", True),
     ("ds", "Logo.dc.html", "1a Chat avatar", True), ("ds", "Logo.dc.html", "1 Chat avatar", False),
     ("ds", "Logo.dc.html", "1 sign-in", False), ("ds", "Logo.dc.html", "1 intro", False),
-    ("app", "Browser.dc.html", "Browser · Overview", True), ("app", "Browser.dc.html", "Browser · A holding", True),
-    ("app", "Browser.dc.html", "Mini App · Overview", False), ("app", "Browser 2.dc.html", "Mini App · Login", False),
-    ("app", "Browser 2.dc.html", "Telegram · Currency check", False), ("app", "Browser 2.dc.html", "Every holding has one currency", False),
-    ("app", "Admin center 2.dc.html", "Browser · Admin · Settings", True), ("app", "Admin center 2.dc.html", "Prod", False),
-    ("app", "Admin center 2.dc.html", " ", False), ("app", "Admin center 2.dc.html", " · ", False), ("app", "Admin center 2.dc.html", "Note:", False),
-    ("app", "Admin center 2.dc.html", "Admin center 2:", False),
-    ("app", "India.dc.html", "Browser · Overview with India", True), ("app", "India.dc.html", "Demat account", False),
-    ("app", "India.dc.html", "MF folio · Fund house A", False),
-    ("app", "Forecast.dc.html", "Browser · Forecaster · Proof", True), ("app", "Forecast.dc.html", "Balanced", False),
-    ("app", "Forecast.dc.html", "f2 Balanced", False), ("app", "Forecast.dc.html", "NASDAQ 100 ETF", False),
-    ("app", "Browser.dc.html", "' + w.label.replace(/", False), ("app", "Browser.dc.html", " + lapScr.name : ", False),
-    ("app", "Admin center 2.dc.html", "Browser · Browser · Admin · Settings", False),
-    ("app", "Admin center 2.dc.html", "sp1 · Browser · Admin · Spend · Move the ceiling, the fresh check", False),
-    ("app", "Audit and files.dc.html", "F1 · Browser · Audit with files", True),
-    ("app", "India.dc.html", "in-b2 · Browser · Holding · Indian fund", False),
-    ("app", "Browser.dc.html", "why · Why? sheet", False),
-    ("app", "India.dc.html", "B · Browser · Holding · Indian fund", True),
-    ("app", "Admin center 2.dc.html", "AL.1 · Browser · Admin · Alerts · Replay, the fresh check", True),
-    ("app", "Admin center 2.dc.html", "Browser · a Browser · Admin · Settings", False),
-    ("app", "Browser 2.dc.html", "Browser · B5 Browser · Activity", False),
-    ("app", "Admin center 2.dc.html", "Admin center 2: intro", False),
-    ("app", "Admin center 2.dc.html", "Browser · Admin center 2: intro", False),
-    ("app", "Forecast.dc.html", "Forecaster: intro", False), ("app", "Admin center 2.dc.html", "Admin center 2", False),
+    ("app", "Web v4 · Login, invite and responsive.dc.html", "Browser · Responsive Overview & PWA · 1024", True),
+    ("app", "Web v4 · Market, holdings and India.dc.html", "Browser · Market, Overlap & India · Desktop Light", True),
+    ("app", "Web v4 · Login, invite and responsive.dc.html", "Mini App · Overview", False),
+    ("app", "Web v4 · Login, invite and responsive.dc.html", "Mini App · Login", False),
+    ("app", "Web v4 · Chat and guided flows.dc.html", "Telegram · Currency check", False),
+    ("app", "Web v4 · Chat and guided flows.dc.html", "Every holding has one currency", False),
+    ("app", "Web v4 · Admin center.dc.html", "Browser · Admin · Spend & AWS Cap · Desktop Light", True),
+    ("app", "Web v4 · Admin center.dc.html", "Prod", False),
+    ("app", "Web v4 · Admin center.dc.html", " ", False), ("app", "Web v4 · Admin center.dc.html", " · ", False),
+    ("app", "Web v4 · Admin center.dc.html", "Note:", False),
+    ("app", "Web v4 · Admin center.dc.html", "Web v4 · Admin center:", False),
+    ("app", "Web v4 · Market, holdings and India.dc.html", "Browser · Market, Overlap & India · Phone 390", True),
+    ("app", "Web v4 · Market, holdings and India.dc.html", "Demat account", False),
+    ("app", "Web v4 · Market, holdings and India.dc.html", "MF folio · Fund house A", False),
+    ("app", "Web v4 · Forecast.dc.html", "Browser · Forecaster · Proof & States · Desktop", True),
+    ("app", "Web v4 · Forecast.dc.html", "Balanced", False),
+    ("app", "Web v4 · Forecast.dc.html", "f2 Balanced", False),
+    ("app", "Web v4 · Forecast.dc.html", "NASDAQ 100 ETF", False),
+    ("app", "Web v4 · Login, invite and responsive.dc.html", "' + w.label.replace(/", False),
+    ("app", "Web v4 · Login, invite and responsive.dc.html", " + lapScr.name : ", False),
+    ("app", "Web v4 · Admin center.dc.html", "Browser · Browser · Admin · Spend & AWS Cap · Desktop Light", False),
+    ("app", "Web v4 · Admin center.dc.html", "9 · Spend, $160 hard limit, ceiling moves and AWS cap (Desktop and 390)", False),
+    ("app", "Web v4 · Audit, activity and files.dc.html", "2 · Files PDF viewer modal and extracted records (CAS-Oct-2026.pdf)", True),
+    ("app", "Web v4 · Market, holdings and India.dc.html", "in-b2 · Browser · Market, Overlap & India · Desktop Light", False),
+    ("app", "Web v4 · Login, invite and responsive.dc.html", "why · Why? sheet", False),
+    ("app", "Web v4 · Market, holdings and India.dc.html", "1 · Market holdings (Buy / BUY, technical), Overlap, Scorecard and India (Desktop and 390)", True),
+    ("app", "Web v4 · Admin center.dc.html", "2 · People, alert routing, failed-work Replay, approvals and agent notes (Desktop Dark and 390)", True),
+    ("app", "Web v4 · Admin center.dc.html", "Browser · a Browser · Admin · Spend & AWS Cap · Desktop Light", False),
+    ("app", "Web v4 · Audit, activity and files.dc.html", "Browser · B5 Browser · Audit, Activity & Files · Desktop Light", False),
+    ("app", "Web v4 · Admin center.dc.html", "Web v4 · Admin center: intro", False),
+    ("app", "Web v4 · Admin center.dc.html", "Browser · Web v4 · Admin center: intro", False),
+    ("app", "Web v4 · Forecast.dc.html", "Web v4 · Forecast: intro", False),
+    ("app", "Web v4 · Admin center.dc.html", "Web v4 · Admin center", False),
     ("ds", "MyPaisa DS v1.dc.html", "In the app's chat, the stance card pairs the chart, the plain-English call and its action chips.", False),
     ("ds", "MyPaisa DS v1.dc.html", "1a · Warm ledger", True),
-    ("app", "Browser.dc.html", "Browser · Browser boards 1 to 4", False),
-    # MA-161: the iOS boards. An option chip quoted in prose before its label must not hide the label.
+    ("app", "Web v4 · Login, invite and responsive.dc.html", "Browser · Browser boards 1 to 4", False),
+    # MA-161 / MA-279: the iOS boards. An option chip quoted in prose before its label must not hide the label.
     ("ios", "Shell options.dc.html", "1a · Chat first", True), ("ios", "Shell options.dc.html", "1c · One timeline", True),
-    ("ios", "Shell options.dc.html", "1d · Chat first", False), ("ios", "iPhone chat.dc.html", "iPhone · Chat home", True),
-    ("ios", "iPhone chat.dc.html", "Chat home", False), ("ios", "iPhone chat.dc.html", "iPad · Chat home", False),
-    ("ios", "iPad and foldable.dc.html", "Foldable · Open", True), ("ds", "iOS kit.dc.html", "12 · Motion", True),
+    ("ios", "Shell options.dc.html", "1d · Chat first", False),
+    ("ios", "iPhone v4 · Chat and guided flows.dc.html", "iPhone · Chat home & Home sheet · Light", True),
+    ("ios", "iPhone v4 · Chat and guided flows.dc.html", "Chat home & Home sheet · Light", False),
+    ("ios", "iPhone v4 · Chat and guided flows.dc.html", "iPad · Chat home & Home sheet · Light", False),
+    ("ios", "iPad v4 · Adaptive shell and foldable.dc.html", "Foldable · Open 880 pt · Home & Chat sheet", True),
+    ("ds", "iOS kit.dc.html", "12 · Motion", True),
 ]
 
 
@@ -928,7 +941,7 @@ def selftest(trace: dict) -> int:
             print(f"FAIL: telegram {name!r}/{text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
     # The date check bites inside `check` itself: a copy of the repo with one board given a wrong weekday
     # must be refused, naming the board date.
-    board = "docs/design/ios-v1/iPhone chat.dc.html"
+    board = "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html"
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "scripts").mkdir()
@@ -948,24 +961,24 @@ def selftest(trace: dict) -> int:
             text = text.replace("Fri 23 Oct", "Thu 23 Oct", 1)
             text = re.sub(r'data-mo="fade"', 'data-mo="label"', text, count=1)  # a label role on a non-label element
             target.write_text(text)
-            tools_board = root / "docs/design/ios-v1/iPhone audit and activity.dc.html"
+            tools_board = root / "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html"
             if tools_board.exists() and "chart_series" in tools_board.read_text():
                 tools_board.write_text(tools_board.read_text().replace("chart_series", "render_chart", 1))  # a tool §8 lacks
             else:
                 bad += 1
-                print("FAIL: the mutated-board selftest needs 'chart_series' in iPhone audit and activity.dc.html")
+                print("FAIL: the mutated-board selftest needs 'chart_series' in iPhone v4 · Audit, activity and files.dc.html")
             stroke_board = root / "docs/design/ios-v1/iPhone v4 · Forecast.dc.html"
             if stroke_board.exists() and '<rect class="cw' in stroke_board.read_text():
                 stroke_board.write_text(stroke_board.read_text().replace('<rect class="cw', '<line class="cw', 1))  # a stroked wick in the shared def
             else:
                 bad += 1
                 print("FAIL: the mutated-board selftest needs a shared candle def (<rect class=\"cw\") in iPhone v4 · Forecast.dc.html")
-            tg_board = root / "docs/design/app-v1/Browser.dc.html"
+            tg_board = root / "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html"
             if tg_board.exists():
                 tg_board.write_text(tg_board.read_text() + "\n<!-- test --><div class=\"tg-bub\" data-screen-label=\"Telegram · Leak\"></div>\n")
             else:
                 bad += 1
-                print("FAIL: the mutated-board selftest needs docs/design/app-v1/Browser.dc.html")
+                print("FAIL: the mutated-board selftest needs docs/design/app-v1/Web v4 · Market, holdings and India.dc.html")
             r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
             for what in ("board date", "board motion", "board tool", "board stroke", "board telegram"):
                 if r.returncode == 0 or what not in r.stdout:

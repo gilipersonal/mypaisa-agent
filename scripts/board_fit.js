@@ -569,31 +569,31 @@ async function selftest() {
     { name: 'page-not-a-container', board: 'app-v1/Web v4 · Assets and debts.dc.html', mutate: [/ container: page \/ inline-size;/, ''], expect: /clip-x|overlap|spill/ },
     { name: 'chips-clip-not-scroll', board: 'ios-v1/iPhone v4 · Check-ins.dc.html', mutate: [/(\.mp \.chips, \.mp \.sugg, \.mp \.chiprow, \.mp \.wsugg, \.mp\.pw \.wsugg \{ )overflow-x: auto;/, '$1overflow-x: hidden;'], expect: /clip-x/ },
     { name: 'answers-behind-fade', board: 'ios-v1/iPhone v4 · Check-ins.dc.html', mutate: [/\.mp \.ccard-acts\.rowx \{[^}]*\}\n\.mp \.ccard-acts\.rowx > \.cbtn \{[^}]*\}\n/, ''], expect: /clip-x/ },
-    { name: 'track-own-mix', board: 'ios-v1/iPhone audit and activity.dc.html', mutate: [/\.mp :is\(\.mp-track:is\(\.meter, \.sr-t, \.pl-t, \.rl-t\)[^\n]*\n/, ''], expect: /track-not-token/ },
-    { name: 'overlap-in-a-sheet', board: 'ios-v1/iPhone admin.dc.html', mutate: [/$/, '\n.mp .mp-hl.c-alert { margin-bottom: -12px; }\n'], expect: /^overlap$/ },
+    { name: 'track-own-mix', board: 'ios-v1/iPhone v4 · Audit, activity and files.dc.html', mutate: [/\.mp :is\(\.mp-track:is\(\.meter, \.sr-t, \.pl-t, \.rl-t\)[^\n]*\n/, ''], expect: /track-not-token/ },
+    { name: 'overlap-in-a-sheet', board: 'ios-v1/iPhone v4 · Admin center.dc.html', mutate: [/$/, '\n.mp .mp-hl.c-alert { margin-bottom: -12px; }\n'], expect: /^overlap$/ },
     { name: 'board-does-not-render', board: BUDGET, remove: 'ios-v1/support.js', expect: /did-not-render/ },
     { name: 'column-crushed', board: 'app-v1/Web v4 · Assets and debts.dc.html', mutate: [/ container: page \/ inline-size;/, ''], expect: /crushed/ },
-    { name: 'chip-cut-with-no-ellipsis', board: 'app-v1/Wealth.dc.html', mutate: [/(\.mp \.rtx \.mp-chip \{ )flex: none; max-width: 100%; white-space: normal;/, '$1overflow: hidden; text-overflow: ellipsis;'], expect: /clip-x/ },
-    { name: 'viewer-side-by-side-at-600', board: 'app-v1/Audit and files.dc.html', mutate: [/@container app \(max-width: 779px\) \{\n  \.mp \.ovl:has\(> \.viewer\)[\s\S]*?\n\}\n/, ''], expect: /overlap|crushed/, at: /^600x/ },
+    { name: 'chip-cut-with-no-ellipsis', board: 'app-v1/Web v4 · Register.dc.html', mutate: [/(\.mp \.rtx \.mp-chip \{ )flex: none; max-width: 100%; white-space: normal;/, '$1overflow: hidden; text-overflow: ellipsis;'], expect: /clip-x/ },
+    { name: 'viewer-side-by-side-at-600', board: 'app-v1/Web v4 · Audit, activity and files.dc.html', mutate: [/@container app \(max-width: 779px\) \{\n  \.mp \.ovl:has\(> \.viewer\)[\s\S]*?\n\}\n/, ''], expect: /overlap|crushed/, at: /^600x/ },
     // r1-9: a figure cut by an ellipsis is a fault in the verdict, not a note beside it
     { name: 'figure-cut-by-ellipsis', board: BUDGET, mutate: [/$/, '\n.mp .mp-hero .mp-sub.mp-hero-2 { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }\n'], expect: /^figure-truncated$/ },
     { name: 'value-never-resolved', board: BUDGET, file: BUDGET, mutate: [/\{\{ f\.pg\.hero\.over \}\}/, '{{ f.pg.hero.overx }}'], expect: /did-not-render/ },
-    // round 2: a frame under CSS zoom (iPhone sign-in draws its phones at 0.8) is measured at the size it is shown
-    { name: 'alert-past-a-zoomed-screen', board: 'ios-v1/iPhone sign-in.dc.html', mutate: [/$/, '\n.mp .sysalert { width: 360px; margin-left: -180px; }\n'], expect: /^(cut-at-edge|clip-x)$/, text: /Wants to Use/ },
+    // round 2: a frame under CSS zoom (iPhone v4 · Sign-in and invite draws its OAuth alert frame at 0.8) is measured at the size it is shown
+    { name: 'alert-past-a-zoomed-screen', board: 'ios-v1/iPhone v4 · Sign-in and invite.dc.html', mutate: [/$/, '\n.mp .sysalert { width: 360px; margin-left: -180px; }\n'], expect: /^(cut-at-edge|clip-x)$/, text: /Wants to Use/ },
     // round 2: a wrapper raised above a sheet's or a strip's glass is on that glass, and a chip row in the page is content
-    { name: 'sheet-siblings-overlap', board: 'ios-v1/iPhone admin.dc.html', mutate: [/$/, '\n.mp .sheet.apple > .sheet-h { margin-bottom: -50px; }\n'], expect: /^overlap$/, text: /Sign in with Apple|MyPaisa/ },
+    { name: 'sheet-siblings-overlap', board: 'ios-v1/iPhone v4 · Admin center.dc.html', mutate: [/$/, '\n.mp .sheet.apple > .sheet-h { margin-bottom: -50px; }\n'], expect: /^overlap$/, text: /Sign in with Apple|MyPaisa/ },
     { name: 'strip-figure-on-label', board: BUDGET, mutate: [/$/, '\n.mp .strip-n { margin-top: -18px; }\n'], expect: /^overlap$/, text: /prices to/ },
     { name: 'page-chips-on-the-legend', board: 'app-v1/Web v4 · Projection.dc.html', mutate: [/$/, '\n.mp .mp-shell-main .chips { position: relative; top: -62px; }\n'], expect: /^overlap$/, text: /What (if|moves)/ },
     // round 2: a fault below the fold is seen: the salary history's chips, at the end of a long screen, crushed
     { name: 'crushed-below-the-fold', board: BUDGET, mutate: [/$/, '\n.mp .salm .mp-chip { max-width: 40px; white-space: normal; }\n'], expect: /^crushed$/, text: /a year since/, below: true },
     // round 2: the Stage Manager window is measured as its own frame from 600 to its drawn 700
-    { name: 'stage-manager-tabs-at-600', board: 'ios-v1/iPad and foldable.dc.html', mutate: [/@container screen \(max-width: 639px\) \{ \.mp \.ttabs \.ttab \{ padding-left: 10px; padding-right: 10px; \} \}\n/, ''], expect: /^(cut-at-edge|clip-x)$/, at: /^600x/, label: /Stage Manager.*the window inside/ },
+    { name: 'stage-manager-tabs-at-600', board: 'ios-v1/iPad v4 · Adaptive shell and foldable.dc.html', mutate: [/@container screen \(max-width: 639px\) \{ \.mp \.ttabs \.ttab \{ padding-left: 10px; padding-right: 10px; \} \}\n/, ''], expect: /^(cut-at-edge|clip-x)$/, at: /^600x/, label: /Stage Manager.*the window inside/ },
     // round 2: a chart's range band is the --mp-band token (the case names its own colour, so a band left unfixed on
     // today's boards does not answer for it)
     { name: 'band-not-the-token', board: 'app-v1/Web v4 · Projection.dc.html', file: 'app-v1/Web v4 · Projection.dc.html', mutate: [/<\/style>/, '.oncard .fband { fill: #3a7bd5 !important; }\n</style>'], expect: /^band-not-token$/, text: /rgb\(58, 123, 213\)/ },
     // round 2: text under a chart's painted note is text on text, not content under a bar: the Proof note as wide as round
     // 1 left it covers the y axis's labels
-    { name: 'note-over-the-axis', board: 'app-v1/Forecast.dc.html', mutate: [/(\.mp \.shover > div \{ max-width: min\(300px, calc\(100% - )96px/, '$1'+'60px'], expect: /^covered$/, text: /−(10|20)%/ },
+    { name: 'note-over-the-axis', board: 'app-v1/Web v4 · Forecast.dc.html', mutate: [/(\.mp \.shover > div \{ max-width: min\(300px, calc\(100% - )96px/, '$1'+'60px'], expect: /^covered$/, text: /−(10|20)%/ },
     // round 2: what a board anchors to the bottom of a clipping page runs out above the top as the page narrows, and is
     // measured: the Dashboard's in-place edit row, its field squeezed beside its figure at 320
     { name: 'edit-row-above-the-top', board: 'app-v1/Web v4 · Dashboard.dc.html', mutate: [/  \.mp \.edit > \.fx:has\(> \.efield\) \{ flex-wrap: wrap; \}\n  \.mp \.edit > \.fx > \.efield \{ flex: 1 1 100%; \}[^\n]*\n/g, ''], expect: /^(crushed|spill|overlap|clip-x)$/, at: /^320x/, text: /Correcting the value/ },

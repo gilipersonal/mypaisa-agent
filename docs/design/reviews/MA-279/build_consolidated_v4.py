@@ -25,6 +25,7 @@ from v4_cards import (  # noqa: E402
     audit_activity_files_card,
     brief_overlap_reports_card,
     currency_check_1b_card,
+    forecaster_events_and_gate_card,
     forecaster_proof_and_states_card,
     guided_flows_card,
     invite_and_cancel_card,
@@ -49,6 +50,7 @@ from v4_kit import (  # noqa: E402
     ipad_frame,
     iphone_frame,
     pillars_card,
+    stage_manager_frame,
 )
 
 
@@ -79,10 +81,24 @@ def ios_signin_and_invite() -> str:
             "1",
             "Welcome and sign-in (Apple, Google and passkey)",
             "MA-32 · MA-168 · MA-170",
-            "Passkeys, Sign in with Apple and Google sign-in on mypaisapp.com with Light and Dark parity.",
+            "Passkeys, Sign in with Apple and Google sign-in on mypaisapp.com with Light, Dark and system-alert parity.",
             [
                 iphone_frame("iPhone · Welcome and sign-in · Light", LT, signin_welcome_card(), title="Welcome", tab="You"),
                 iphone_frame("iPhone · Welcome and sign-in · Dark", DK, signin_welcome_card(), title="Welcome", tab="You"),
+                iphone_frame(
+                    "iPhone · Google OAuth system alert · Zoomed",
+                    LT,
+                    signin_welcome_card(),
+                    title="Welcome",
+                    tab="You",
+                    dev_cls="dev-iphone z80",
+                    overlay=(
+                        '<div class="dim"></div><div class="sysalert lg lg-strong apple">'
+                        '<span class="mp-hl">“MyPaisa” Wants to Use “google.com” to Sign In</span>'
+                        '<span class="mp-foot mp-ink2">This allows the app and website to share information about you.</span>'
+                        '<div class="fx gap8" style="margin-top:10px"><span class="sab">Cancel</span><span class="sab iosb">Continue</span></div></div>'
+                    ),
+                ),
             ],
             [("Passkey relying party:", "bound to mypaisapp.com so iOS autofill and dashboard.mypaisapp.com share credentials cleanly.")],
         ),
@@ -289,6 +305,20 @@ def ios_admin_center() -> str:
             [
                 iphone_frame("iPhone · Admin · Spend & AWS Cap · Light", LT, admin_spend_and_aws_card("GBP", False), title="Admin · Spend", tab="You"),
                 iphone_frame("iPhone · Admin · Spend & AWS Cap · Dark", DK, admin_spend_and_aws_card("GBP", False), title="Admin · Spend", tab="You"),
+                iphone_frame(
+                    "iPhone · Admin · Second check Apple sheet",
+                    LT,
+                    admin_spend_and_aws_card("GBP", False),
+                    title="Admin · Spend",
+                    tab="You",
+                    overlay=(
+                        '<div class="dim"></div><div class="sheet lg lg-strong apple" style="z-index:60">'
+                        '<div class="sheet-grab"></div>'
+                        '<div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="xbtn"><span class="ms" aria-hidden="true">close</span></span></div>'
+                        '<div class="fx ac gap12"><span class="fx col grow"><span class="mp-hl">MyPaisa</span>'
+                        '<span class="mp-foot mp-ink2">Continue as Arun Dutta · Face ID second check</span></span></div></div>'
+                    ),
+                ),
             ],
             [("Fresh second check:", "every spend, cap or member action requires Face ID, passkey, Apple or Google re-authentication.")],
         ),
@@ -338,6 +368,7 @@ def ipad_and_foldable_v4() -> str:
                 fold_or_portrait_frame("iPad · Portrait 820 pt · Chat sheet & Sign-in", LT, "dev-ipad-p", signin_welcome_card() + chat_sheet + register_and_india_full_card("GBP", False, show_edit=False), title="Home", active_tab="Home"),
                 fold_or_portrait_frame("Foldable · Open 880 pt · Home & Chat sheet", LT, "dev-fold-open", hero_1a("GBP") + chat_sheet, title="Home", active_tab="Home"),
                 fold_or_portrait_frame("Foldable · Open 880 pt · Audit & Chat sheet", DK, "dev-fold-open", audit_activity_files_card("GBP", False) + chat_sheet, title="Audit", active_tab="Audit"),
+                stage_manager_frame("iPad · Stage Manager · a 700 × 600 window · Light", LT, hero_1a("GBP")),
             ],
             [("ARCHITECTURE §9.1:", "clears MA-70 and MA-71: at 880 pt the unfolded foldable uses the top tab bar and a Chat sheet.")],
         ),
@@ -485,9 +516,9 @@ def web_forecast_1a() -> str:
             "MA-124 · MA-281 · MA-295",
             "Plain-English 4-week probability first (52% higher), 60-day Monzo Pulse candles with F8 double-top neckline and −1% support, 30 similar days since 2015, and UK fund (Balanced) view.",
             [
-                browser_frame("Browser · Holding · Forecast 1a · Desktop Light", LT, "w1440", "", forecaster_1a_card("GBP", False, uk_fund=False), forecaster_1a_card("GBP", False, uk_fund=True) + pillars_card(), title="Forecast · 1a Answer First", nav_on="Forecast"),
-                browser_frame("Browser · Holding · Forecast 1a · Desktop Dark", DK, "w1440", "", forecaster_1a_card("GBP", False, uk_fund=False), forecaster_1a_card("GBP", False, uk_fund=True) + pillars_card(), title="Forecast · 1a Answer First", nav_on="Forecast"),
-                browser_frame("Browser · Holding · Forecast 1a · Phone 390", LT, "w390", "", forecaster_1a_card("GBP", False, uk_fund=False), pillars_card(), title="Forecast", nav_on="Forecast"),
+                browser_frame("Browser · Holding · Forecast 1a · Desktop Light", LT, "w1440", "", forecaster_1a_card("GBP", False, uk_fund=False) + forecaster_events_and_gate_card(), forecaster_1a_card("GBP", False, uk_fund=True) + pillars_card(), title="Forecast · 1a Answer First", nav_on="Forecast"),
+                browser_frame("Browser · Holding · Forecast 1a · Desktop Dark", DK, "w1440", "", forecaster_1a_card("GBP", False, uk_fund=False) + forecaster_events_and_gate_card(), forecaster_1a_card("GBP", False, uk_fund=True) + pillars_card(), title="Forecast · 1a Answer First", nav_on="Forecast"),
+                browser_frame("Browser · Holding · Forecast 1a · Phone 390", LT, "w390", "", forecaster_1a_card("GBP", False, uk_fund=False) + forecaster_events_and_gate_card(), pillars_card(), title="Forecast", nav_on="Forecast"),
             ],
             [("30 similar days:", "counts 30 historical analogues since 2015 (18 of 30 higher for NASDAQ 100; 21 of 30 for Balanced), matching ARCHITECTURE §19.4.")],
         ),
@@ -543,6 +574,20 @@ def web_chat_and_flows() -> str:
 
 
 def web_audit_activity_files() -> str:
+    pdf_viewer_ovl = (
+        '<div class="ovl"><div class="viewer" role="dialog" aria-modal="true" aria-label="CAS-Oct-2026.pdf">'
+        '<div class="vprev"><div class="vbar">'
+        '<div class="vgrp"><span class="vbtn" role="button" aria-label="Previous page"><span class="ms" aria-hidden="true">chevron_left</span></span>'
+        '<span class="mp-foot mp-ink2 nowrap">Page 1 of 4</span>'
+        '<span class="vbtn" role="button" aria-label="Next page"><span class="ms" aria-hidden="true">chevron_right</span></span></div>'
+        '<div class="vgrp"><span class="vbtn" role="button" aria-label="Zoom out"><span class="ms" aria-hidden="true">zoom_out</span></span>'
+        '<span class="mp-foot mp-ink2">Fit</span>'
+        '<span class="vbtn" role="button" aria-label="Zoom in"><span class="ms" aria-hidden="true">zoom_in</span></span></div></div>'
+        '<div class="vstage"><div class="ph-page"><span class="mp-sub mp-w6">CAS-Oct-2026.pdf</span>'
+        '<span class="mp-foot mp-ink2">Parag Parikh Flexi Cap · 46 SIP rows verified</span></div></div></div>'
+        '<div class="vside"><span class="mp-hl">Extracted records</span>'
+        '<span class="mp-foot mp-ink2">Audit #1842 · Sun 25 Oct · tool extract_document → draft_record</span></div></div></div>'
+    )
     out = [
         intro_turn(
             "WEB",
@@ -550,7 +595,7 @@ def web_audit_activity_files() -> str:
             "Consolidated 1a Web Audit ledger, Activity tool runs, Files PDF viewer (CAS-Oct-2026.pdf) and global Search aligned to the £444,951 household ledger at 1440 and 390.",
             "MA-40 · MA-71 · MA-79 · MA-149 · MA-184 · MA-196",
             "ARCHITECTURE §4.6, §8, §9.3",
-            [("b1", "1 · Audit, Activity, Files & Search (Desktop Light, Dark & 390)")],
+            [("b1", "1 · Audit, Activity, Files & Search (Desktop Light, Dark & 390)"), ("b2", "2 · Files PDF Viewer Modal (CAS-Oct-2026.pdf)")],
         ),
         board_section(
             "1",
@@ -563,6 +608,16 @@ def web_audit_activity_files() -> str:
                 browser_frame("Browser · Audit, Activity & Files · Phone 390", LT, "w390", "", audit_activity_files_card("GBP", False), register_and_india_full_card("GBP", False, show_edit=False), title="Audit & Files", nav_on="Audit & Files"),
             ],
             [("Single ledger:", "matches iOS row-for-row across Monzo +£5,000, Pune flat inline edit and CAS-Oct-2026.pdf.")],
+        ),
+        board_section(
+            "2",
+            "Files PDF viewer modal and extracted records (CAS-Oct-2026.pdf)",
+            "MA-79 · MA-149 · MA-184",
+            "Side-by-side PDF preview and extracted record inspector above 780 px, stacking cleanly into a scrollable single-column dialog on narrower screens.",
+            [
+                browser_frame("Browser · Audit with files · PDF viewer open", LT, "w1440", "", audit_activity_files_card("GBP", False), register_and_india_full_card("GBP", False, show_edit=False), title="Audit & Files", nav_on="Audit & Files", overlay=pdf_viewer_ovl),
+            ],
+            [("Responsive viewer:", "switches from side-by-side preview + details to a stacked scrolling dialog below 780 px.")],
         ),
     ]
     return doc_wrap("MyPaisa app v1 · Web v4 Audit, activity and files", "\n".join(out), include_ios=False)

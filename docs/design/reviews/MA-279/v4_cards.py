@@ -53,6 +53,9 @@ def guided_flows_card(ccy: str = "GBP", priv: bool = False) -> str:
             ("2 · Add a holding", "Vanguard FTSE All-World UCITS ETF (VWRL · LSE · GBP · Arun ISA) → draft_record card ready to confirm.", '<span class="mp-chip chip-s mp-neutral">Draft</span>'),
             ("3 · Update a valuation", f"Pune flat estimate {pune_b} → {pune_a} · owner valuation note + Confirm.", '<span class="mp-chip chip-s mp-neutral">Confirm</span>'),
             ("4 · Change a setting", "Morning brief time 07:30 → 07:00 UK · preference card with Confirm &amp; audit row.", '<span class="mp-chip chip-s mp-neutral">Confirm</span>'),
+            ("5 · Check-in: Fixed saver matures", "1-Year Fixed Saver (£12,000 + £540 interest) · Rolled over / Moved to Monzo Savings / Something else.", '<span class="mp-chip chip-s mp-add">Check-in</span>'),
+            ("6 · Check-in: Asha's Parag Parikh SIP", "Monthly ₹10,000 SIP due Sun 1 Nov · Paid (with Undo) / Skipped / Changed amount.", '<span class="mp-chip chip-s mp-add">SIP</span>'),
+            ("7 · Weekly digest: Autopay assumed paid", "London mortgage &amp; car loan autopays assumed paid on schedule · one tap to Undo or correct.", '<span class="mp-chip chip-s mp-neutral">Digest</span>'),
         ]),
     )
 
@@ -61,16 +64,20 @@ def currency_check_1b_card(priv: bool = False) -> str:
     p_typed = mask("£1,000", priv)
     r_rec = mask("₹1,12,500", priv)
     s_val = mask("£23,110", priv)
+    nw_after = mask("£444,951", priv)
     return card_box(
         "Currency check (1b picked) &amp; screenshot confirm",
-        '<span class="mp-chip chip-s mp-neutral">ECB Fri 23 Oct</span>',
+        '<span class="mp-chip chip-s mp-neutral" data-mo="fade">ECB Fri 23 Oct</span>',
         kv_rows([
             ("Pounds typed against rupee holding", f"Typed {p_typed} into Parag Parikh Flexi Cap (INR folio) · asks currency &amp; converts at £1 = ₹112.50 → {r_rec}.", '<span class="mp-chip chip-s mp-add">1b Flow</span>'),
             ('Ambiguous "$" &amp; two rupee holdings', 'Typed "$500": asks US dollar (USD), Australian or Singapore dollar; picks between Parag Parikh MF and Infosys NSE.', '<span class="mp-chip chip-s mp-pause">Clarify</span>'),
             ("Before daily ECB rates load", "Question card offers enter exact ₹ amount or wait for ECB feed (no estimate button shown before rates load).", '<span class="mp-chip chip-s mp-neutral">Safe</span>'),
-            ("Confirm, Cancel &amp; dual-amount audit", f"Confirm card masks figures when Privacy is on; Cancel leaves ledger untouched; Audit row #1844 stores typed {p_typed} and recorded {r_rec}.", '<span class="mp-chip chip-s mp-add">Recorded</span>'),
+            ("Confirm, Cancel &amp; dual-amount audit", f"Confirm card masks figures when Privacy is on; Cancel leaves ledger ({nw_after}) untouched; Audit row #1844 stores typed {p_typed} and recorded {r_rec}.", '<span class="mp-chip chip-s mp-add">Recorded</span>'),
             ("Screenshot valuation · Leave it out", f"Unmatched row skipped: Leave it out shows the matched value ({s_val}) to Confirm first — never saves on tap.", '<span class="mp-chip chip-s mp-pause">Confirm</span>'),
-        ]),
+        ])
+        + '<div class="edit-inline"><div class="fx jb ac gap8 wrapr"><span class="mp-cap mp-w6">1B CONFIRM CARD · PRIVACY SAFE</span><span class="mp-chip chip-s mp-neutral">Two currencies hidden</span></div>'
+        + f'<div class="mp-foot">Record {r_rec} into Parag Parikh Flexi Cap (typed {p_typed} · household net worth {nw_after})?</div>'
+        + '<div class="fx gap8 wrapr"><span class="cbtn cbtn-primary btn-save">Confirm</span><span class="cbtn btn-ghost">Cancel</span></div></div>',
     )
 
 
@@ -121,7 +128,7 @@ def register_and_india_full_card(ccy: str = "GBP", priv: bool = False, show_edit
             ("iShares NASDAQ 100 UCITS ETF · UK ISA", "Asha · 30 similar days since 2015", f'<span class="mp-sub mp-w6">{nq_v}</span><span class="mp-chip chip-s mp-hold">HOLD · 64%</span>'),
             ("Parag Parikh Flexi Cap · CAMS MF", f"Asha · 46 SIPs (CAS-Oct-2026.pdf) · XIRR 10.7% · {pp_c}", f'<span class="mp-sub mp-w6">{pp_inr}</span>'),
             ("Infosys Ltd (INFY · NSE) &amp; HDFC NRE / SBI PPF", "Arun · Zerodha Demat + NRE deposit + PPF scheme", f'<span class="mp-sub mp-w6">{infy_inr}</span>'),
-            ("London residential mortgage · UK Debt", "Joint · 4.15% fixed to Oct 2028", f'<span class="mp-sub mp-w6">{mort_v}</span>'),
+            ("London residential mortgage · UK Debt", 'Joint · 4.15% fixed <span class="mp-chip chip-s mp-neutral">Joint · Arun 50% · Asha 50% · Fixed to Oct 2028</span>', f'<span class="mp-sub mp-w6">{mort_v}</span>'),
         ])
         + edit_h,
     )
@@ -142,8 +149,38 @@ def brief_overlap_reports_card(ccy: str = "GBP", priv: bool = False) -> str:
     )
 
 
+def forecaster_events_and_gate_card() -> str:
+    wks = "".join(
+        f'<span class="wk{" on" if i <= 5 else ""}">{"✓ " if i <= 5 else ""}W{i}</span>'
+        for i in range(1, 9)
+    )
+    evt = (
+        '<div class="evt" role="table" aria-label="Historical event analogues">'
+        '<div class="tr" role="row"><span class="eh">Event</span><span class="eh r">Cases</span><span class="eh">4-wk range</span><span class="eh r">Average</span></div>'
+        '<div class="tr" role="row"><div class="ec"><span class="mp-foot mp-w6">Fed rate hold</span></div><div class="ec r"><span class="mp-foot tnum">14</span></div><div class="ec"><span class="mp-foot mp-ink2 tnum">−1.2% … +4.8%</span></div><div class="ec r"><span class="mp-foot mp-w6 tnum">+1.9%</span></div></div>'
+        '<div class="tr" role="row"><div class="ec"><span class="mp-foot mp-w6">Tech earnings week</span></div><div class="ec r"><span class="mp-foot tnum">16</span></div><div class="ec"><span class="mp-foot mp-ink2 tnum">−3.1% … +6.2%</span></div><div class="ec r"><span class="mp-foot mp-w6 tnum">+1.6%</span></div></div></div>'
+    )
+    return card_box(
+        "Event analogues &amp; 8-week practice gate",
+        '<span class="mp-chip chip-s mp-hold">5 of 8 beat base</span>',
+        f"{evt}"
+        f'<div class="wks" role="img" aria-label="Weeks 1 to 5 beat both; weeks 6 to 8 to come">{wks}</div>'
+        '<div class="mp-foot mp-ink2">Three more weeks and it joins the weekday cards; until then it shows on the Forecast tab and in the Saturday review.</div>',
+    )
+
+
 def forecaster_proof_and_states_card(ccy: str = "GBP", priv: bool = False) -> str:
     ncv_v = mask(money(6420, ccy), priv)
+    dd_grid = (
+        '<div class="shell" role="img" aria-label="Drawdown chart shell"><div class="shgrid">'
+        '<i class="zero" style="top:2%"></i><span class="shy" style="top:2%">0%</span>'
+        '<i style="top:35%"></i><span class="shy" style="top:35%">−10%</span>'
+        '<i style="top:68%"></i><span class="shy" style="top:68%">−20%</span>'
+        '<i style="top:98%"></i><span class="shy" style="top:98%">−30%</span>'
+        '<div class="shover"><div><span class="mp-sub mp-w6">Not run yet</span>'
+        '<span class="mp-foot mp-ink2">The worst fall and the longest time below a previous high are marked once the lab has run.</span></div></div>'
+        "</div></div>"
+    )
     return card_box(
         "Forecaster Proof, Switch-off &amp; Edge States",
         '<span class="mp-chip chip-s mp-add">Proof lab · 8.9%/yr</span>',
@@ -151,6 +188,7 @@ def forecaster_proof_and_states_card(ccy: str = "GBP", priv: bool = False) -> st
         '<div class="cstat"><span class="mp-cap mp-ink2">WALK-FORWARD</span><span class="mp-sub mp-w6 cstat-v">8.9% / yr</span><span class="mp-cap mp-ink2">2019–2026 lab</span></div>'
         '<div class="cstat"><span class="mp-cap mp-ink2">WORST FALL</span><span class="mp-sub mp-w6 cstat-v">−14% vs −31%</span><span class="mp-cap mp-ink2">HOLD calls held up</span></div>'
         '<div class="cstat"><span class="mp-cap mp-ink2">PRACTICE GATE</span><span class="mp-sub mp-w6 cstat-v">Week 5 of 8</span><span class="mp-cap mp-ink2">live stances on wk 9</span></div></div>'
+        + dd_grid
         + kv_rows([
             ("No clear view card (Saturday review &amp; tab)", f"Royal London Short Term Money Market ({ncv_v}): signals conflict (50% up / 50% flat) → plain 'No clear view' card; value masked in Privacy.", '<span class="mp-chip chip-s mp-neutral">No clear view</span>'),
             ("Under 8 weeks, Stale prices &amp; Error state", "New holding (< 8 wks) shows history progress bar only; stale feed badges Fri 23 Oct close; feed timeout offers Retry.", '<span class="mp-chip chip-s mp-pause">Guarded</span>'),
@@ -165,7 +203,9 @@ def audit_activity_files_card(ccy: str = "GBP", priv: bool = False) -> str:
     return card_box(
         "Audit ledger, Activity runs, Files &amp; Search",
         '<span class="mp-chip chip-s mp-neutral">Row #1844</span>',
-        kv_rows([
+        '<div class="mrows"><div><div class="fx jb ac gap8"><span class="mp-foot mp-w6">Tool-run trace &amp; token budget health</span><span class="mp-cap mp-ink2 tnum">68%</span></div>'
+        '<div class="mp-track sr-t mbar" role="img" aria-label="Tool run budget 68%"><span class="mp-track-clip"><span style="width:68%;background:var(--mp-chart-line)"></span></span></div></div></div>'
+        + kv_rows([
             ("Audit #1844 · Monzo Savings +5,000", f"Mon 26 Oct 09:12 · Arun Confirmed in Chat · {monzo_d} (net worth £439,951 → £444,951).", '<span class="mp-chip chip-s mp-add">Confirmed</span>'),
             ("Audit #1843 · Pune flat inline correction", "Mon 26 Oct 08:55 · via: inline_edit · ₹95,00,000 → ₹96,50,000 (Arun · owner).", '<span class="mp-chip chip-s mp-neutral">Inline edit</span>'),
             ("Audit #1842 · CAS-Oct-2026.pdf imported", f"Sun 25 Oct 19:20 · 46 Parag Parikh SIPs ({sip_v}/mo) · tool extract_document → draft_record.", '<span class="mp-chip chip-s mp-neutral">PDF verified</span>'),
@@ -207,7 +247,7 @@ def admin_spend_and_aws_card(ccy: str = "GBP", priv: bool = False) -> str:
         "Admin · Spend, $160 Hard Limit &amp; AWS Cap",
         '<span class="mp-chip chip-s mp-pause">Fresh check: Apple / Passkey / Google</span>',
         '<div class="mrows"><div><div class="fx jb ac gap8"><span class="mp-foot mp-w6">Claude cycle · $35.20 of $160 hard limit (22%) · renews Tue 3 Nov</span><span class="mp-cap mp-ink2">' + spent_v + " / " + cap_v + "</span></div>"
-        '<div class="mp-track mbar has-tick posr" role="img" aria-label="Claude spend 22% of $160 hard limit"><span class="mp-track-clip"><span style="width:22%;background:var(--mp-meter)"></span></span><span class="bartick" style="left:85%"></span></div></div></div>'
+        '<div class="meter"><div class="mp-track mbar has-tick posr" role="img" aria-label="Claude spend 22% of $160 hard limit"><span class="mp-track-clip"><span style="width:22%;background:var(--mp-meter)"></span></span><span class="bartick" style="left:85%"></span></div></div></div></div>'
         + kv_rows([
             ("Move ceiling &amp; Type the hard limit ($160 prod)", "Moving past $200 credit requires explicit yes; above hard limit is refused; moving ceiling below already-spent stops Claude at once (templates only).", '<span class="mp-chip chip-s mp-neutral">Guarded</span>'),
             ("Spend ladder, member share &amp; daily guards", "85% switches routine briefs to Haiku &amp; memory on-request; 95% pauses proactive runs; 100% templates only.", '<span class="mp-chip chip-s mp-add">85 / 95 / 100%</span>'),
@@ -225,5 +265,6 @@ def admin_people_routing_replay_card() -> str:
             ("Alert routing matrix &amp; email privacy switch", 'Columns: Push, App Chat, Email. Holding-alert email is off by default with explicit "Include holding values in email" switch; quiet hours &amp; cooldowns configurable.', '<span class="mp-chip chip-s mp-neutral">Values off</span>'),
             ("Failed work Replay &amp; Owner Daily Digest", "3 jobs replayed by you at 08:30: 2 ran, 1 failed again (CAMS timeout) — matches owner's 08:35 daily digest in app Chat.", '<span class="mp-chip chip-s mp-pause">2 ran · 1 failed</span>'),
             ("Approvals, Agents, Incidents &amp; Agent Notes", "ChangeRequest approval behind fresh check; agent question &amp; owner instruction in Chat; per-agent memory notes inspect/clear.", '<span class="mp-chip chip-s mp-add">Healthy</span>'),
-        ]),
+        ])
+        + '<div class="note-box"><div class="fx col"><span class="mp-hl c-alert">Remove from household</span><span class="mp-foot mp-ink2">Ends sign-ins behind the second check; history stays with the household.</span></div></div>',
     )

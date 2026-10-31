@@ -201,7 +201,8 @@ def hero_1a(ccy: str = "GBP", priv: bool = False, stale: bool = False, scope_idx
         '<line class="hgrid" x1="4" x2="96" y1="24" y2="24"></line><line class="hgrid" x1="4" x2="96" y1="78" y2="78"></line>'
         f'<path class="harea" d="{d_area}"></path><path class="hline" d="{d_line}"></path></svg>'
         f'<span class="mp-chartdot hdot-a" style="left:{pts[0][0]}%;top:{pts[0][1]}%"></span>'
-        f'<span class="mp-chartdot hdot-a beacon" style="left:{pts[-1][0]}%;top:{pts[-1][1]}%"></span></div>'
+        f'<span class="mp-chartdot hdot-a beacon" style="left:{pts[-1][0]}%;top:{pts[-1][1]}%"></span>'
+        '<span class="mp-chartlbl al" style="left:94%;top:54%" aria-hidden="true">Oct 26</span></div>'
         '<div class="hpulse-ax"><span>Thu 22 Oct</span><span>Sat 24 Oct</span><span>Mon 26 Oct</span></div></div>'
         '<div class="hsplit3">'
         f'<div><span class="mp-cap mp-hero-2">Own</span><span class="mp-sub mp-w6">{own_v}</span></div>'
@@ -465,6 +466,52 @@ BOARD_CSS = """
   .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
   .mpm-dot { fill: var(--mp-coral); }
   .t-dark .mpm-coin { fill: var(--mp-hero-2); }
+
+  .z80 { zoom: 0.8; }
+  .dim { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.36); z-index: 45; pointer-events: none; }
+  .sysalert > * { position: relative; z-index: 1; }
+  .sab { flex: 1; min-height: 44px; border-radius: 999px; display: grid; place-items: center; font: 600 15px/20px var(--mp-font); background: rgba(120, 120, 128, 0.18); color: var(--mp-ink); }
+  .sab.iosb { background: var(--mp-accent); color: var(--mp-on-accent); }
+  .c-alert { color: var(--mp-alert); }
+  .xbtn { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(120, 120, 128, 0.18); color: var(--mp-ink); }
+  .sr-t { background: rgba(120, 120, 128, 0.12); }
+  .meter { display: block; }
+
+  .desk { position: absolute; inset: 0; background: linear-gradient(145deg, #1E293B, #0F172A); }
+  .deskbar { color: #FFFFFF; position: relative; z-index: 2; }
+  .smwin { position: absolute; left: 240px; top: 96px; width: 700px; height: 600px; z-index: 3; background: var(--mp-bg); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16), 0 24px 60px rgba(0, 0, 0, 0.5); }
+  .wctl { position: absolute; left: 16px; top: 20px; display: flex; gap: 6px; z-index: 25; }
+  .wctl > i { width: 12px; height: 12px; border-radius: 50%; display: block; background: var(--mp-ink-3); }
+  .toptabs.ttwin { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px 4px 92px; border-bottom: 0; background: transparent; position: relative; z-index: 20; }
+  .ttabs { display: flex; gap: 2px; height: 52px; padding: 4px; border-radius: 999px; box-sizing: border-box; }
+  .ttab { height: 44px; padding: 0 16px; border-radius: 999px; display: flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink); white-space: nowrap; position: relative; z-index: 1; }
+  .ttab.on { background: var(--lg-lens); color: var(--mp-accent); }
+
+  .ovl { position: absolute; inset: 0; z-index: 35; display: flex; align-items: center; justify-content: center; padding: 40px; background: rgba(5, 8, 14, 0.52); box-sizing: border-box; }
+  .viewer { width: 100%; max-width: 1080px; height: 780px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; border-radius: 20px; overflow: hidden; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line), 0 28px 72px rgba(0, 0, 0, 0.34); }
+  .vprev { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--mp-surface-2); }
+  .vbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--mp-line); }
+  .vgrp { display: flex; align-items: center; gap: 4px; }
+  .vbtn { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line); flex: none; }
+  .vstage { flex: 1; display: grid; place-items: center; padding: 18px; min-height: 0; }
+  .ph-page { width: min(100%, 320px); padding: 18px; border-radius: 12px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; }
+  .vside { display: flex; flex-direction: column; gap: 12px; padding: 16px 20px 20px; min-height: 0; overflow: hidden; border-left: 1px solid var(--mp-line); }
+
+  .evt { display: grid; grid-template-columns: minmax(0, 1.3fr) 44px minmax(0, 1.4fr) 68px; column-gap: 12px; margin-top: 8px; }
+  .tr { display: contents; }
+  .eh { font: 600 11px/15px var(--mp-font); letter-spacing: 0.05em; text-transform: uppercase; color: var(--mp-ink-2); padding-bottom: 6px; display: flex; align-items: flex-end; }
+  .eh.r, .ec.r { justify-content: flex-end; align-items: flex-end; text-align: right; }
+  .ec { min-height: 40px; border-top: 1px solid var(--mp-line); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 5px 0; box-sizing: border-box; min-width: 0; }
+  .wks { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+  .wk { min-height: 32px; border-radius: 8px; display: grid; place-items: center; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); box-shadow: inset 0 0 0 1px var(--mp-line); white-space: nowrap; }
+  .wk.on { color: var(--mp-hold); background: var(--mp-hold-bg); box-shadow: inset 0 0 0 1.5px var(--mp-hold); }
+  .shell { position: relative; margin-top: 10px; }
+  .shgrid { position: relative; height: 168px; }
+  .shgrid > i { position: absolute; left: 0; right: 0; height: 1px; background: var(--mp-chart-grid); }
+  .shgrid > i.zero { background: var(--mp-ink-3); }
+  .shy { position: absolute; left: 6px; transform: translateY(-100%); margin-top: -2px; font: 500 12px/15px var(--mp-font); color: var(--mp-ink-2); }
+  .shover { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .shover > div { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 300px; padding: 10px 14px; border-radius: 12px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); box-sizing: border-box; }
 """
 
 
@@ -481,6 +528,7 @@ def mini(css: str) -> str:
 
 def doc_wrap(title: str, body: str, include_ios: bool = True) -> str:
     ios_link = '        <link rel="stylesheet" href="ios.css" />\n' if include_ios else ""
+    motion_rule = "        .mp-chartlbl.al { transform: translate(-100%, -100%) !important; }\n"
     return (
         "<!DOCTYPE html>\n"
         '<html lang="en">\n'
@@ -498,7 +546,7 @@ def doc_wrap(title: str, body: str, include_ios: bool = True) -> str:
         f"{ios_link}"
         '        <link rel="stylesheet" href="motion.css" />\n'
         '        <script src="motion.js"></script>\n'
-        f"        <style>{mini(BOARD_CSS)}        </style>\n"
+        f"        <style>{mini(BOARD_CSS)}{motion_rule}        </style>\n"
         "      </helmet>\n"
         f"{body}"
         "    </x-dc>\n"
@@ -557,7 +605,7 @@ def ios_tabdock(on: str = "Home") -> str:
     return f'<div class="edge-bot"></div><nav class="tabdock" aria-label="Primary"><div class="tabs lg" role="tablist">{tabs}</div><span class="tabsearch lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></nav><div class="homebar"></div>'
 
 
-def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", tab: str = "Home", priv: bool = False, dev_cls: str = "dev-iphone") -> str:
+def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", tab: str = "Home", priv: bool = False, dev_cls: str = "dev-iphone", overlay: str = "") -> str:
     eye = "visibility_off" if priv else "visibility"
     eye_cls = "gbtn lg on" if priv else "gbtn lg"
     nav = (
@@ -570,7 +618,28 @@ def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", tab: str 
         f'<div class="dev {dev_cls} mp {theme}"><div class="island"></div><div class="scrn">'
         f'<div class="sbar"><span>9:41</span>{SB_ICONS}</div>{nav}'
         f'<div class="largetitle">{title}</div>'
-        f'<main class="scroll"><div class="pg">{body}</div></main>{ios_tabdock(tab)}</div></div></div>'
+        f'<main class="scroll"><div class="pg">{body}</div></main>{ios_tabdock(tab)}{overlay}</div></div></div>'
+    )
+
+
+def stage_manager_frame(cap: str, theme: str, body: str) -> str:
+    tabs = "".join(
+        f'<span class="ttab{" on" if t == "Home" else ""}" role="tab" aria-selected="{"true" if t == "Home" else "false"}">{t}</span>'
+        for t in ("Chat", "Home", "Holdings", "Activity", "Audit")
+    )
+    return (
+        f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
+        f'<div class="dev dev-ipad-l mp ipad {theme}">'
+        '<div class="desk"></div>'
+        f'<div class="sbar deskbar"><span>9:41 Mon 26 Oct</span><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>'
+        f'<div class="dev dev-window mp smwin {theme}">'
+        '<div class="wctl"><i class="w-r"></i><i class="w-y"></i><i class="w-g"></i></div>'
+        f'<div class="toptabs ttwin"><span class="gbtn lg" role="button" aria-label="Sidebar"><span class="ms z1" aria-hidden="true">view_sidebar</span></span>'
+        f'<div class="ttabs lg" role="tablist" aria-label="Sections">{tabs}</div>'
+        '<span class="gbtn lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>'
+        '<header class="nav"><span class="largetitle navt">Home</span><span class="gbtn lg" role="button" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></span></header>'
+        f'<main class="scroll"><div class="ipg">{body}</div></main>'
+        "</div></div></div>"
     )
 
 
@@ -625,6 +694,7 @@ def browser_frame(
     priv: bool = False,
     chat_q: str = "Show our whole-wealth register, India folios and NASDAQ 4-week forecast.",
     chat_a: str = "",
+    overlay: str = "",
 ) -> str:
     side_items = "".join(
         f'<span class="mp-side-i{" on" if lb == nav_on else ""}"><span class="ms{" ms-fill" if lb == nav_on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
@@ -672,5 +742,5 @@ def browser_frame(
         f'<button class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms" aria-hidden="true">{eye}</span></button></div></header>'
         f'{hero}<div class="mp-cols"><div class="mp-col">{col1}</div><div class="mp-col">{col2}</div></div>'
         f"</div></main>{chat}</div>"
-        f'<nav class="mp-tabbar mp-shell-tabs wtabs" role="tablist" aria-label="Sections">{tabs}</nav></div></div>'
+        f'<nav class="mp-tabbar mp-shell-tabs wtabs" role="tablist" aria-label="Sections">{tabs}</nav>{overlay}</div></div>'
     )
