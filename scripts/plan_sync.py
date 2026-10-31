@@ -68,7 +68,7 @@ def known_keys(trace: dict) -> set[str]:
 
 
 _captions: dict[Path, set[str]] = {}
-DOORS = r"Mini App|Browser|Telegram"
+DOORS = r"Browser"
 
 
 BOARD_MARKERS = {"anchor", "keys", "arch", "intro", "notes", "desc", "frames", "msgs", "phones", "screens"}
@@ -453,6 +453,25 @@ def board_files(projects: dict, root: Path = ROOT) -> tuple[list[Path], list[str
     return files, errors
 
 
+TELEGRAM_FILE_RE = re.compile(r"^(?:Telegram|Mini App)\b", re.I)
+TELEGRAM_CAP_RE = re.compile(r"(?:^(?:Telegram|Mini App)\s*·|\b(?:Telegram|Mini App)\s+(?:avatar|Overview|opening)\b)", re.I)
+TELEGRAM_CODE_RE = re.compile(r'''(--tg-[a-z0-9_-]+|(?<![a-zA-Z0-9_-])\.(?:tg(?:-[a-z0-9_-]+)?|tgh(?:-[a-z0-9_-]+)?|tma-[a-z0-9_-]+)(?![a-zA-Z0-9_-])|\bclass=\s*["'][^"']*(?<![a-zA-Z0-9_.-])(?:tg-[a-z0-9_-]+|tgh(?:-[a-z0-9_-]+)?|tma-[a-z0-9_-]+|tg(?![a-zA-Z0-9_.-])))''')
+
+
+def telegram_errors(text: str, name: str = "", caps: set[str] | None = None) -> list[str]:
+    """MA-278: no Telegram or Mini App file, frame caption or .tg-*/.tgh/.tma-* rule may live in a board folder."""
+    out: list[str] = []
+    base = Path(name).name if name else ""
+    if base and TELEGRAM_FILE_RE.search(base):
+        out.append(f"retired Telegram/Mini App filename {base!r}")
+    for c in sorted(caps or set()):
+        if TELEGRAM_CAP_RE.search(c):
+            out.append(f"Telegram/Mini App frame or board {c!r}")
+    if m := TELEGRAM_CODE_RE.search(text):
+        out.append(f"Telegram/Mini App style or class {m.group(0)!r}")
+    return out
+
+
 def check(trace: dict) -> tuple[list[str], list[str]]:
     errors, warnings = shape_errors(trace), []
     if errors:
@@ -507,7 +526,7 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             if f"MA-{n}" not in keys:
                 errors.append(f"{doc.relative_to(ROOT)} cites MA-{n}, which is not in the trace")
 
-    # Every board page in the board folders, read as it is on disk: its dates, tools, motion roles and strokes.
+    # Every board page in the board folders, read as it is on disk: its dates, tools, motion roles, strokes and iOS/web-only rules.
     files, missing = board_files(ctx["projects"])
     errors += missing
     for path in files:
@@ -520,6 +539,8 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             errors.append(f"board motion: {name} has {d}: the settled arrival would move it")
         for d in stroke_errors(text):
             errors.append(f"board stroke: {name} has {d}: its strokes stretch with the chart")
+        for d in telegram_errors(text, name, captions(path)):
+            errors.append(f"board telegram: {name} has {d} (MA-278: iOS app and web browser only)")
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -682,42 +703,38 @@ DATE_CASES = [
 ]
 
 BOARD_CASES = [
-    ("ds", "Telegram kit.dc.html", "1 · Portfolio card", True), ("ds", "Telegram kit.dc.html", "2 · Stance card", True),
-    ("ds", "Telegram kit.dc.html", "4 · Portfolio card", False), ("ds", "Telegram kit.dc.html", "1 · Stance card", False),
-    ("ds", "Telegram kit.dc.html", "2 · S", False), ("ds", "Telegram kit.dc.html", "Light", False),
-    ("ds", "Logo.dc.html", "1c Telegram avatar", True), ("ds", "Logo.dc.html", "1c · Watcher", True),
-    ("ds", "Foundations.dc.html", "1 · Colour", True),
-    ("app", "Mini App.dc.html", "Mini App · Overview · scrolled", True), ("app", "Mini App.dc.html", "Mini App · Track record", True),
-    ("app", "Mini App.dc.html", "Browser · Holdings", False), ("app", "Browser 2.dc.html", "Mini App · Login", False),
-    ("app", "Currency check.dc.html", "Telegram · Currency check", True), ("app", "Currency check.dc.html", "Browser · Confirm", False),
-    ("app", "Currency check.dc.html", "Every holding has one currency", False),
+    ("ds", "Foundations.dc.html", "1 · Colour", True), ("ds", "Foundations.dc.html", "2 · Type", True),
+    ("ds", "Foundations.dc.html", "4 · Colour", False), ("ds", "Foundations.dc.html", "1 · Type", False),
+    ("ds", "Foundations.dc.html", "2 · T", False), ("ds", "Foundations.dc.html", "Light", False),
+    ("ds", "Logo.dc.html", "1c Chat avatar", True), ("ds", "Logo.dc.html", "1c · Watcher", True),
+    ("ds", "Logo.dc.html", "1a Chat avatar", True), ("ds", "Logo.dc.html", "1 Chat avatar", False),
+    ("ds", "Logo.dc.html", "1 sign-in", False), ("ds", "Logo.dc.html", "1 intro", False),
+    ("app", "Browser.dc.html", "Browser · Overview", True), ("app", "Browser.dc.html", "Browser · A holding", True),
+    ("app", "Browser.dc.html", "Mini App · Overview", False), ("app", "Browser 2.dc.html", "Mini App · Login", False),
+    ("app", "Browser 2.dc.html", "Telegram · Currency check", False), ("app", "Browser 2.dc.html", "Every holding has one currency", False),
     ("app", "Admin center 2.dc.html", "Browser · Admin · Settings", True), ("app", "Admin center 2.dc.html", "Prod", False),
-    ("app", "Telegram admin.dc.html", " ", False), ("app", "Telegram admin.dc.html", " · ", False), ("app", "Telegram admin.dc.html", "Note:", False),
-    ("app", "Telegram chats.dc.html", "Telegram chats:", False),
-    ("app", "India.dc.html", "Mini App · Overview with India", True), ("app", "India.dc.html", "Demat account", False),
+    ("app", "Admin center 2.dc.html", " ", False), ("app", "Admin center 2.dc.html", " · ", False), ("app", "Admin center 2.dc.html", "Note:", False),
+    ("app", "Admin center 2.dc.html", "Admin center 2:", False),
+    ("app", "India.dc.html", "Browser · Overview with India", True), ("app", "India.dc.html", "Demat account", False),
     ("app", "India.dc.html", "MF folio · Fund house A", False),
     ("app", "Forecast.dc.html", "Browser · Forecaster · Proof", True), ("app", "Forecast.dc.html", "Balanced", False),
     ("app", "Forecast.dc.html", "f2 Balanced", False), ("app", "Forecast.dc.html", "NASDAQ 100 ETF", False),
-    ("ds", "Logo.dc.html", "1a Telegram avatar", True), ("ds", "Logo.dc.html", "1 Telegram avatar", False),
-    ("ds", "Logo.dc.html", "1 sign-in", False), ("ds", "Logo.dc.html", "1 intro", False),
-    ("app", "Prototype.dc.html", "' + w.label.replace(/", False), ("app", "Prototype.dc.html", " + lapScr.name : ", False),
-    ("app", "Telegram admin.dc.html", "Telegram · Approval request", True),
-    ("app", "Telegram admin.dc.html", "Telegram · Telegram · Approval request", False),
-    ("app", "Admin center.dc.html", "B · B · Sessions first", False),
+    ("app", "Browser.dc.html", "' + w.label.replace(/", False), ("app", "Browser.dc.html", " + lapScr.name : ", False),
+    ("app", "Admin center 2.dc.html", "Browser · Browser · Admin · Settings", False),
     ("app", "Admin center 2.dc.html", "sp1 · Browser · Admin · Spend · Move the ceiling, the fresh check", False),
     ("app", "Audit and files.dc.html", "F1 · Browser · Audit with files", True),
     ("app", "India.dc.html", "in-b2 · Browser · Holding · Indian fund", False),
-    ("app", "Mini App.dc.html", "why · Why? sheet", False),
+    ("app", "Browser.dc.html", "why · Why? sheet", False),
     ("app", "India.dc.html", "B · Browser · Holding · Indian fund", True),
     ("app", "Admin center 2.dc.html", "AL.1 · Browser · Admin · Alerts · Replay, the fresh check", True),
-    ("app", "Telegram admin.dc.html", "Telegram · a Telegram · Approval request", False),
+    ("app", "Admin center 2.dc.html", "Browser · a Browser · Admin · Settings", False),
     ("app", "Browser 2.dc.html", "Browser · B5 Browser · Activity", False),
-    ("app", "Telegram admin.dc.html", "Telegram admin: intro", False),
-    ("app", "Telegram admin.dc.html", "Telegram · Telegram admin: intro", False),
-    ("app", "Currency check.dc.html", "Currency check: intro", False), ("app", "Admin center 2.dc.html", "Admin center 2", False),
-    ("ds", "MyPaisa DS v1.dc.html", "Telegram draws the bubble and buttons; MyPaisa owns the PNG, the words and their order.", False),
+    ("app", "Admin center 2.dc.html", "Admin center 2: intro", False),
+    ("app", "Admin center 2.dc.html", "Browser · Admin center 2: intro", False),
+    ("app", "Forecast.dc.html", "Forecaster: intro", False), ("app", "Admin center 2.dc.html", "Admin center 2", False),
+    ("ds", "MyPaisa DS v1.dc.html", "In the app's chat, the stance card pairs the chart, the plain-English call and its action chips.", False),
     ("ds", "MyPaisa DS v1.dc.html", "1a · Warm ledger", True),
-    ("app", "Browser.dc.html", "Browser · Browser boards 1 to 4", False), ("app", "Mini App.dc.html", "Mini App · Mini App screens", False),
+    ("app", "Browser.dc.html", "Browser · Browser boards 1 to 4", False),
     # MA-161: the iOS boards. An option chip quoted in prose before its label must not hide the label.
     ("ios", "Shell options.dc.html", "1a · Chat first", True), ("ios", "Shell options.dc.html", "1c · One timeline", True),
     ("ios", "Shell options.dc.html", "1d · Chat first", False), ("ios", "iPhone chat.dc.html", "iPhone · Chat home", True),
@@ -892,6 +909,23 @@ def selftest(trace: dict) -> int:
         if got != want:
             bad += 1
             print(f"FAIL: motion {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
+    telegram_cases = [
+        ("<div>ok</div>", "docs/design/app-v1/Browser.dc.html", {"Browser · Overview"}, True),
+        ('<span class="mp-chip {{ tg.c }}">x</span>', "docs/design/app-v1/Web v4.dc.html", {"Web · Home"}, True),
+        ("<div>ok</div>", "docs/design/app-v1/Telegram chats.dc.html", set(), False),
+        ("<div>ok</div>", "docs/design/app-v1/Mini App.dc.html", set(), False),
+        ("<div>ok</div>", "docs/design/app-v1/Forecast.dc.html", {"Telegram · Side-by-side card"}, False),
+        ("<div>ok</div>", "docs/design/app-v1/India.dc.html", {"Mini App · Overview with India"}, False),
+        ("<style>.tgh { height: 52px }</style>", "docs/design/ds-v1/tokens.css", set(), False),
+        ("<style>body { color: var(--tg-text) }</style>", "docs/design/ds-v1/Logo.dc.html", set(), False),
+        ('<div class="phone tg">x</div>', "docs/design/app-v1/Wealth.dc.html", set(), False),
+        ('<div class="tg-bub">x</div>', "docs/design/app-v1/Browser.dc.html", set(), False),
+    ]
+    for text, name, caps, want in telegram_cases:
+        got = not telegram_errors(text, name, caps)
+        if got != want:
+            bad += 1
+            print(f"FAIL: telegram {name!r}/{text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
     # The date check bites inside `check` itself: a copy of the repo with one board given a wrong weekday
     # must be refused, naming the board date.
     board = "docs/design/ios-v1/iPhone chat.dc.html"
@@ -926,8 +960,14 @@ def selftest(trace: dict) -> int:
             else:
                 bad += 1
                 print("FAIL: the mutated-board selftest needs a shared candle def (<rect class=\"cw\") in iPhone v4 · Forecast.dc.html")
+            tg_board = root / "docs/design/app-v1/Browser.dc.html"
+            if tg_board.exists():
+                tg_board.write_text(tg_board.read_text() + "\n<!-- test --><div class=\"tg-bub\" data-screen-label=\"Telegram · Leak\"></div>\n")
+            else:
+                bad += 1
+                print("FAIL: the mutated-board selftest needs docs/design/app-v1/Browser.dc.html")
             r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
-            for what in ("board date", "board motion", "board tool", "board stroke"):
+            for what in ("board date", "board motion", "board tool", "board stroke", "board telegram"):
                 if r.returncode == 0 or what not in r.stdout:
                     bad += 1
                     print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")

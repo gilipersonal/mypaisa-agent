@@ -12,19 +12,17 @@ Human Interface Guidelines bones, with Liquid Glass as the layer of controls in 
 
 | File | What |
 | --- | --- |
-| `tokens.css` | The single source: colour tokens (light and dark), type scale, spacing, radii, motion, component classes, fixed encodings (pillars, currencies, asset mix, meters, privacy masks), the chart pattern, the Telegram classes, the adaptive layout |
+| `tokens.css` | The single source: colour tokens (light and dark), type scale, spacing, radii, motion, component classes, fixed encodings (pillars, currencies, asset mix, meters, privacy masks), the chart pattern, the adaptive layout |
 | `ios.css` | The iOS layer over `tokens.css` (MA-161): Liquid Glass (`.lg`, the tinted `.lg-tint`, Reduce Transparency's `.rt`), the device frames, navigation and large titles, the tab bar and sidebar, the chat and its cards, the composer, sheets, menus and alerts, the lock screen and notifications, the app icon, and the canvas furniture the iOS boards share |
 | `motion.css`, `motion.js` | The motion system as the boards draw it (MA-182): the curves, durations and stagger, each frame's arrival as it scrolls into view, figures rolling to their value, the sliding lens, a replay chip per frame; `?static=1` for still captures |
 | `MyPaisa DS v1.dc.html` | The three directions compared; 1a picked |
 | `Foundations.dc.html` | Colour with contrast ratios, type, spacing and radii, motion, icons, voice, layout and size classes |
 | `Components.dc.html`, `Components 2.dc.html` | Every component with its states, light and dark; charts, navigation, sheet, toast |
 | `iOS kit.dc.html` | The native app's kit, light and dark (MA-161): Liquid Glass layers, colour in the app, type and Dynamic Type, the tab bar and sidebar, toolbars and the composer, messages and cards, buttons, chips and controls, sheets, menus and alerts, charts, the app icon, accessibility (with 25% brightness) and motion |
-| `Telegram kit.dc.html`, `Telegram kit controls.dc.html`, `Telegram kit images.dc.html` | Superseded by the iOS kit (MA-161) and kept as the record: the bot's messages, buttons, keyboards, guided flows and the PNG images it sent. Nothing is built from them |
 
 The iOS app's screens are in the MyPaisa iOS v1 project (MA-161): the shell options, sign-in, the chat, the
 dashboard, audit and activity, the Admin center, settings, iPad and the foldable. Those boards are the app's spec.
-The web app's browser boards stay in the MyPaisa app v1 project; its Mini App, Telegram chats, Telegram second
-check and Prototype boards are superseded and kept as the record.
+The web app's browser boards live in MyPaisa app v1 (`docs/design/app-v1/`); the earlier Telegram and Mini App files were retired from the live repo in MA-278.
 
 ## Using it
 

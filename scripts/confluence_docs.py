@@ -135,11 +135,11 @@ AREAS = [
      "The owner's controls, behind the second check: people and their devices, the Claude and AWS caps, alerts and replay.",
      ["Admin center 2.dc.html", "Admin center 3.dc.html", "iPhone admin.dc.html"]),
     ("system", "The design system, the mark and the iOS kit",
-     "Warm ledger (MA-101): the tokens, the components, the chart style and its three redesign options (MA-295), the mark (MA-103), the iOS kit on Liquid Glass (MA-161) and the options for a colourful icon for each kind of holding, asset and debt (MA-241). The Telegram kit is kept as the record MA-161 superseded.",
+     "Warm ledger (MA-101): the tokens, the components, the chart style and its three redesign options (MA-295), the mark (MA-103), the iOS kit on Liquid Glass (MA-161) and the options for a colourful icon for each kind of holding, asset and debt (MA-241).",
      ["Foundations.dc.html", "Components.dc.html", "Components 2.dc.html", "Chart options.dc.html", "MyPaisa DS v1.dc.html", "iOS kit.dc.html",
-      "Logo.dc.html", "Kind icons.dc.html", "Telegram kit.dc.html", "Telegram kit controls.dc.html", "Telegram kit images.dc.html"]),
+      "Logo.dc.html", "Kind icons.dc.html"]),
 ]
-SUPERSEDED_FILES = {"Telegram kit.dc.html", "Telegram kit controls.dc.html", "Telegram kit images.dc.html"}
+SUPERSEDED_FILES: set[str] = set()
 DOORS = [  # (key, heading, test on the board name and project)
     ("web", "Web app: desktop", lambda b, p: b.startswith("Browser · ") and not b.endswith(", phone")),
     ("phone", "Web app: phone (390)", lambda b, p: b.startswith("Browser · ") and b.endswith(", phone")),

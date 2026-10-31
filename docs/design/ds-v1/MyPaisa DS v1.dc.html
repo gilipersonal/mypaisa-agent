@@ -44,8 +44,8 @@
           .board { width: 1180px; border-radius: 14px; overflow: hidden; display: flex; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
           .bmain { flex: 1; min-width: 0; padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 18px; background: var(--mp-bg); }
           .mk { stroke: var(--mp-coral); stroke-width: 2; fill: var(--mp-hero-ink); }
-          .tgchat { width: 390px; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 20px 40px rgba(0,0,0,.16); }
-          .tgpng { border-radius: 12px; overflow: hidden; margin: -4px -8px 8px; }
+          .chatcard { width: 390px; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; background: var(--mp-bg); color: var(--mp-ink); box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 20px 40px rgba(0,0,0,.16); }
+          .chatimg { border-radius: 12px; overflow: hidden; margin: 0 0 10px; }
           /* direction 1b: native clarity */
           .d1b.t-light { --mp-bg: #F2F2F7; --mp-surface: #FFFFFF; --mp-surface-2: #E9E9EE; --mp-line: #D1D1D6; --mp-ink: #000000; --mp-ink-2: #55555A; --mp-ink-3: #636366; --mp-accent: #0A63D8; --mp-coral: #0A63D8; --mp-up: #1E7B34; --mp-chart-line: #0A63D8; --mp-chart-area: rgba(10, 99, 216, 0.10); --mp-material: rgba(249, 249, 249, 0.82); --mp-shadow: none; }
           .d1b.t-dark { --mp-bg: #000000; --mp-surface: #1C1C1E; --mp-surface-2: #2C2C2E; --mp-line: #38383A; --mp-ink: #FFFFFF; --mp-ink-2: #AEAEB2; --mp-ink-3: #98989F; --mp-accent: #4AA3FF; --mp-on-accent: #000000; --mp-coral: #4AA3FF; --mp-up: #32D74B; --mp-chart-line: #4AA3FF; --mp-chart-area: rgba(74, 163, 255, 0.14); --mp-material: rgba(28, 28, 30, 0.82); --mp-shadow: none; --mp-seg-on: #636366; }
@@ -76,7 +76,7 @@
       <section class="dv-turn" id="t1" data-screen-label="Turn 1: three directions">
         <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">MyPaisa DS v1: three directions</span></div>
         <div class="dv-picked"><span class="ms ms-fill" aria-hidden=\"true\">check_circle</span><span><b>Picked: 1a, Warm ledger.</b> Arun chose it on 24 Oct 2026 (MA-101). It is the design system in force: every MyPaisa screen is designed in it from now on. 1b and 1c stay below as the record of what was considered.</span></div>
-        <p class="dv-intro">Arun asked for a new design system after the Monzo app and Apple's Human Interface Guidelines, for the dashboard, the Telegram Mini App and the Telegram cards (MA-101). Each direction is shown on the Overview in the Mini App (light, dark) and in the browser (light, dark), and on one Telegram stance message. Figures, members and holdings are illustrative. Inspired by Monzo, never its name, logo or assets. 1a is worked out in full: Foundations, Components, the Telegram kit here, and every screen in the MyPaisa app v1 project.</p>
+        <p class="dv-intro">Arun asked for a new design system after the Monzo app and Apple's Human Interface Guidelines, for the iOS app and the web app (MA-101). Each direction is shown on the Overview at phone width (light, dark) and in the browser (light, dark), and on one in-app chat stance card. Figures, members and holdings are illustrative. Inspired by Monzo, never its name, logo or assets. 1a is worked out in full: Foundations, Components and the iOS kit here, and every screen in MyPaisa iOS v1 and MyPaisa app v1.</p>
         <div class="dv-opts">
 
           <!-- ================= 1a WARM LEDGER ================= -->
@@ -86,9 +86,9 @@
               <div class="dv-row">
                 <sc-for list="{{ t1a }}" as="t" hint-placeholder-count="3">
                   <div>
-                    <p class="dv-cap">Mini App · {{ t.label }}</p>
-                    <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="1a Mini App Overview {{ t.label }}">
-                      <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms" aria-hidden=\"true\">more_horiz</span></span></div>
+                    <p class="dv-cap">Phone web · {{ t.label }}</p>
+                    <div class="phone {{ t.cls }}" data-screen-label="1a Phone web Overview {{ t.label }}">
+                      <div class="fx jb ac" style="height: 48px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); background: var(--mp-surface)"><span class="mp-sub mp-ink2">9:41</span><span class="mp-w6">MyPaisa</span><span class="ms mp-ink2" aria-hidden="true">notifications</span></div>
                       <div class="scr">
                         <div class="fx ac gap8">
                           <div class="mp-seg" style="flex: 1" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
@@ -139,11 +139,11 @@
               </div>
               <div class="dv-row">
                 <div>
-                  <p class="dv-cap">Telegram · stance message · dark</p>
-                  <div class="tgchat tg tg-dark">
+                  <p class="dv-cap">App chat · stance card · dark</p>
+                  <div class="chatcard mp t-dark">
                     <div class="fx col gap4" style="padding: 14px 12px">
-                      <div class="tg-bub">
-                        <div class="tgpng" style="background: #13213A; padding: 14px 14px 10px; color: #fff" role="img" aria-label="Chart image: NASDAQ 100, 90 days, falling 8.4% from its high to just under your 8% alert line, with the PAUSE horizon for the next 2 weeks">
+                      <div class="mp-card" style="padding: 12px">
+                        <div class="chatimg" style="background: #13213A; padding: 14px 14px 10px; color: #fff" role="img" aria-label="Chart image: NASDAQ 100, 90 days, falling 8.4% from its high to just under your 8% alert line, with the PAUSE horizon for the next 2 weeks">
                           <div class="fx jb ac"><span class="mp-over" style="color: #B7C2D6">NASDAQ 100 · 90 days</span><span class="mp-chip chip-s" style="color: #F6BC4F; background: #33270E">PAUSE 61%</span></div>
                           <div class="fx ac gap8" style="margin-top: 4px"><span class="mp-num-l" style="font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', system-ui, sans-serif">£4,210</span><span class="mp-foot" style="color: #B7C2D6">▼ 8.4% from its high</span></div>
                           <svg width="300" height="80" viewBox="0 0 300 80" style="display: block; margin-top: 6px">
@@ -160,20 +160,19 @@
                         <div><b>NASDAQ 100 · PAUSE</b> · confidence 61%</div>
                         <div style="margin-top: 4px">Keep what you have. Hold this month's top‑up until the trend settles. Not a reason to sell.</div>
                         <div style="margin-top: 4px"><i>Would change if:</i> a close back above the 20‑day average.</div>
-                        <div class="tg-quote" style="margin-top: 6px">Technical ▸ Trend +2 · Momentum −1 · Risk −2 · P(fall &gt; 5%) 14%</div>
-                        <div class="tg-time">07:31</div>
+                        <div class="mp-foot mp-ink2" style="margin-top: 6px; padding: 6px 8px; border-left: 3px solid var(--mp-accent); background: var(--mp-surface-2); border-radius: 6px">Technical ▸ Trend +2 · Momentum −1 · Risk −2 · P(fall &gt; 5%) 14%</div>
+                        <div class="mp-foot mp-ink3" style="text-align: right; margin-top: 4px">07:31</div>
                       </div>
-                      <div class="tg-btns" style="grid-template-columns: 1fr 1fr"><button class="tg-btn">Why?</button><button class="tg-btn">What if?</button><button class="tg-btn">Technical ▾</button><button class="tg-btn">I acted</button><button class="tg-btn" style="grid-column: span 2">Open dashboard</button></div>
+                      <div class="fx wrap gap6" style="margin-top: 6px"><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Why?</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">What if?</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Technical ▾</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">I acted</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px" style="grid-column: span 2">Open dashboard</button></div>
                     </div>
-                    <div class="tg-kb"><div class="tg-kb-k">Portfolio</div><div class="tg-kb-k">Today</div><div class="tg-kb-k">Ask</div><div class="tg-kb-k">Settings</div></div>
                   </div>
-                  <p class="dv-cap" style="margin-top: 10px; max-width: 390px; white-space: normal">Telegram draws the bubble and buttons; MyPaisa owns the PNG, the words and their order.</p>
+                  <p class="dv-cap" style="margin-top: 10px; max-width: 390px; white-space: normal">In the app's chat, the stance card pairs the chart, the plain-English call and its action chips.</p>
                 </div>
                 <div class="dv-why">
                   <p class="dv-cap">Why 1a</p>
                   <span><b>The summary first, in one glance.</b> The navy hero card is Monzo's account card made ours: one number, one plain line, one chart. "Nothing to do this week" sits right under it.</span>
                   <span><b>Calm about losses.</b> Falls are quiet ink with ▼; red is kept for alerts that ask for action. Gains are green with ▲. Colour is never the only signal.</span>
-                  <span><b>Native in Telegram.</b> System font (SF Pro on iPhone), Apple's type sizes, grouped inset lists, a tab bar, 44 pt targets: it feels like part of the phone, not a web page.</span>
+                  <span><b>Native on the phone.</b> System font (SF Pro on iPhone), Apple's type sizes, grouped inset lists, a tab bar, 44 pt targets: it feels like part of the phone, not a web page.</span>
                   <span><b>Privacy mode</b> hides pounds and keeps percentages, so the shape still reads (third phone).</span>
                   <span><b>Trade-off:</b> the most to build of the three (hero card, chart marks, two themes tuned by hand).</span>
                 </div>
@@ -200,7 +199,7 @@
                         <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden=\"true\">history</span>Activity</a>
                         <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden=\"true\">fact_check</span>Audit</a>
                         <div style="flex: 1"></div>
-                        <div class="mp-foot mp-ink3" style="padding: 0 12px">Signed in with Telegram<br />You · owner</div>
+                        <div class="mp-foot mp-ink3" style="padding: 0 12px">Signed in with Apple<br />You · owner</div>
                       </aside>
                       <main class="bmain">
                         <div class="fx ac jb">
@@ -258,9 +257,9 @@
               <div class="dv-row">
                 <sc-for list="{{ t1b }}" as="t" hint-placeholder-count="2">
                   <div>
-                    <p class="dv-cap">Mini App · {{ t.label }}</p>
-                    <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="1b Mini App Overview {{ t.label }}">
-                      <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms" aria-hidden=\"true\">more_horiz</span></span></div>
+                    <p class="dv-cap">Phone web · {{ t.label }}</p>
+                    <div class="phone {{ t.cls }}" data-screen-label="1b Phone web Overview {{ t.label }}">
+                      <div class="fx jb ac" style="height: 48px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); background: var(--mp-surface)"><span class="mp-sub mp-ink2">9:41</span><span class="mp-w6">MyPaisa</span><span class="ms mp-ink2" aria-hidden="true">notifications</span></div>
                       <div class="scr">
                         <div>
                           <div class="mp-foot mp-ink3 mp-w6">HOUSEHOLD · FRI CLOSE</div>
@@ -297,20 +296,20 @@
                 </sc-for>
                 <div class="dv-stack">
                   <div>
-                    <p class="dv-cap">Telegram · the same message; only the PNG changes</p>
-                    <div class="tgchat tg tg-light">
+                    <p class="dv-cap">App chat · the same card in 1b</p>
+                    <div class="chatcard mp d1b t-light">
                       <div class="fx col gap4" style="padding: 14px 12px">
-                        <div class="tg-bub">
-                          <div class="tgpng" style="background: #FFFFFF; border: 1px solid #E5E5EA; padding: 14px 14px 10px" role="img" aria-label="Chart image in 1b style">
+                        <div class="mp-card" style="padding: 12px">
+                          <div class="chatimg" style="background: #FFFFFF; border: 1px solid #E5E5EA; padding: 14px 14px 10px" role="img" aria-label="Chart image in 1b style">
                             <div class="mp-foot mp-w6" style="color: #636366">NASDAQ 100 · 90 DAYS</div>
                             <div class="mp-t2" style="color: #000">£4,210 <span class="mp-foot mp-w6" style="color: #8A5300">Pause · 61%</span></div>
                             <svg width="300" height="70" viewBox="0 0 300 70" style="display: block; margin-top: 6px"><path d="{{ cn2.line }}" fill="none" stroke="#0A63D8" stroke-width="2" stroke-linejoin="round"></path></svg>
                           </div>
                           <div><b>NASDAQ 100 · PAUSE</b> · confidence 61%</div>
                           <div style="margin-top: 4px">Keep what you have. Hold this month's top‑up until the trend settles. Not a reason to sell.</div>
-                          <div class="tg-time">07:31</div>
+                          <div class="mp-foot mp-ink3" style="text-align: right; margin-top: 4px">07:31</div>
                         </div>
-                        <div class="tg-btns" style="grid-template-columns: 1fr 1fr"><button class="tg-btn">Why?</button><button class="tg-btn">What if?</button></div>
+                        <div class="fx wrap gap6" style="margin-top: 6px"><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Why?</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">What if?</button></div>
                       </div>
                     </div>
                   </div>
@@ -365,9 +364,9 @@
               <div class="dv-row">
                 <sc-for list="{{ t1c }}" as="t" hint-placeholder-count="2">
                   <div>
-                    <p class="dv-cap">Mini App · {{ t.label }}</p>
-                    <div class="phone {{ t.cls }} {{ t.tg }}" data-screen-label="1c Mini App Overview {{ t.label }}">
-                      <div class="tgh"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms" aria-hidden=\"true\">more_horiz</span></span></div>
+                    <p class="dv-cap">Phone web · {{ t.label }}</p>
+                    <div class="phone {{ t.cls }}" data-screen-label="1c Phone web Overview {{ t.label }}">
+                      <div class="fx jb ac" style="height: 48px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); background: var(--mp-surface)"><span class="mp-sub mp-ink2">9:41</span><span class="mp-w6">MyPaisa</span><span class="ms mp-ink2" aria-hidden="true">notifications</span></div>
                       <div class="scr">
                         <div class="blk">
                           <div class="mp-over">Household · Fri close</div>
@@ -430,7 +429,7 @@
             </div>
           </div>
         </div>
-        <p class="dv-next">Picked: <a class="dv-oid" href="#1a">1a</a> Warm ledger. Next in this system: the Admin center and the Telegram second check (MA-102), in the MyPaisa app v1 project.</p>
+        <p class="dv-next">Picked: <a class="dv-oid" href="#1a">1a</a> Warm ledger. Next in this system: the Admin center and the biometric second check (MA-102), in the MyPaisa app v1 project.</p>
       </section>
     </x-dc>
     <script type="text/x-dc" data-dc-script data-props='{}'>
@@ -468,14 +467,14 @@
             cs: nqChart(300, 74, 4150, 4640, 15),
             cn2: nqChart(300, 70, 4150, 4640, 13),
             t1a: [
-              { label: 'Light', cls: 'mp t-light', tg: 'tg-light', hs: hold(false), total: '£25,800', maskCls: '', month: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility' },
-              { label: 'Dark', cls: 'mp t-dark', tg: 'tg-dark', hs: hold(false), total: '£25,800', maskCls: '', month: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility' },
-              { label: 'Dark · privacy on', cls: 'mp t-dark', tg: 'tg-dark', hs: hold(true), total: '£00,000', maskCls: 'mp-mask', month: '▼ 0.6% this week', eye: 'visibility_off' }
+              { label: 'Light', cls: 'mp t-light', hs: hold(false), total: '£25,800', maskCls: '', month: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility' },
+              { label: 'Dark', cls: 'mp t-dark', hs: hold(false), total: '£25,800', maskCls: '', month: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility' },
+              { label: 'Dark · privacy on', cls: 'mp t-dark', hs: hold(true), total: '£00,000', maskCls: 'mp-mask', month: '▼ 0.6% this week', eye: 'visibility_off' }
             ],
             b1a: [{ label: 'Light', cls: 'mp t-light' }, { label: 'Dark', cls: 'mp t-dark' }],
-            t1b: [{ label: 'Light', cls: 'mp d1b t-light', tg: 'tg-light' }, { label: 'Dark', cls: 'mp d1b t-dark', tg: 'tg-dark' }],
+            t1b: [{ label: 'Light', cls: 'mp d1b t-light' }, { label: 'Dark', cls: 'mp d1b t-dark' }],
             b1b: [{ label: 'Light', cls: 'mp d1b t-light' }, { label: 'Dark', cls: 'mp d1b t-dark' }],
-            t1c: [{ label: 'Light', cls: 'mp d1c t-light', tg: 'tg-light' }, { label: 'Dark', cls: 'mp d1c t-dark', tg: 'tg-dark' }],
+            t1c: [{ label: 'Light', cls: 'mp d1c t-light' }, { label: 'Dark', cls: 'mp d1c t-dark' }],
             b1c: [{ label: 'Light', cls: 'mp d1c t-light' }, { label: 'Dark', cls: 'mp d1c t-dark' }]
           };
         }

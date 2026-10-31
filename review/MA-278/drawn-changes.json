@@ -1,0 +1,21 @@
+{
+ "story": "MA-278",
+ "base": "origin/main",
+ "changes": [
+  {
+   "board": "Admin center 3.dc.html|Audit and files.dc.html|app-v1/Forecast.dc.html|India.dc.html",
+   "frames": "^$",
+   "why": "MA-278 removed the retired Telegram and Mini App frames from these four web board files while keeping every surviving Browser and Email frame pixel-identical."
+  },
+  {
+   "board": "Wealth.dc.html",
+   "frames": "^(Browser · An asset · (Light|Dark)|)$",
+   "why": "MA-278 removed the retired Mini App, Google-link-via-bot and Telegram frames from Wealth.dc.html and updated the ledger footer reference in Browser · An asset from '(Telegram · Updating a loan or an asset)' to '(in the chat)'."
+  },
+  {
+   "board": "Responsive.dc.html",
+   "frames": "^$",
+   "why": "MA-278 renamed the 600-px regular frame caption from 'Telegram Desktop, iPad split 600 · regular, one column' to 'Narrow browser, iPad split 600 · regular, one column' and removed Mini App / Telegram Desktop prose."
+  }
+ ]
+}

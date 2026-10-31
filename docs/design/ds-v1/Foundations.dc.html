@@ -134,7 +134,7 @@
       <!-- ================= HEAD ================= -->
       <section class="dv-turn" id="top" data-screen-label="Foundations: index">
         <h1 class="dv-title">MyPaisa DS v1 · Foundations</h1>
-        <p class="dv-intro">Direction 1a, "Warm ledger": Monzo's warmth on the bones of Apple's Human Interface Guidelines. Every value on this page comes from <b>tokens.css</b>; every specimen is drawn twice from one markup, light (<code>.t-light</code>) and dark (<code>.t-dark</code>), the way the Mini App follows Telegram's colour scheme. Contrast ratios are measured with the WCAG 2.2 formula: text needs 4.5:1, graphics and focus rings 3:1. Illustrative figures throughout; members are "You" and "Asha".</p>
+        <p class="dv-intro">Direction 1a, "Warm ledger": Monzo's warmth on the bones of Apple's Human Interface Guidelines. Every value on this page comes from <b>tokens.css</b>; every specimen is drawn twice from one markup, light (<code>.t-light</code>) and dark (<code>.t-dark</code>), the way the app follows the device's colour scheme. Contrast ratios are measured with the WCAG 2.2 formula: text needs 4.5:1, graphics and focus rings 3:1. Illustrative figures throughout; members are "You" and "Asha".</p>
         <nav class="dv-idx" aria-label="Foundations">
           <a href="#colour">1 · Colour</a><a href="#type">2 · Type</a><a href="#space">3 · Space, shape, elevation</a><a href="#layout">4 · Layout and size classes</a><a href="#motion">5 · Motion</a><a href="#icons">6 · Iconography</a><a href="#voice">7 · Voice</a>
         </nav>
@@ -177,7 +177,7 @@
       <!-- ================= 2 TYPE ================= -->
       <section class="dv-turn" id="type" data-screen-label="Foundations 2: Type">
         <div class="dv-thd"><a class="dv-tid" href="#type">2</a><span class="dv-tname">Type</span></div>
-        <p class="dv-intro">Apple's Dynamic Type sizes at the default "Large" setting, in the system font, so the Mini App reads like part of the phone. Figures that carry the story (the household total, a headline stat) are set rounded and heavy. One size per job; hierarchy comes from size and weight, never from colour alone.</p>
+        <p class="dv-intro">Apple's Dynamic Type sizes at the default "Large" setting, in the system font, so the app and phone web read like part of the phone. Figures that carry the story (the household total, a headline stat) are set rounded and heavy. One size per job; hierarchy comes from size and weight, never from colour alone.</p>
         <div class="rules">
           <div class="rule"><b>Text: SF Pro, Inter elsewhere</b><code>-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif</code></div>
           <div class="rule"><b>Figures: SF Pro Rounded, Nunito elsewhere</b><code>ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui</code>. Only <code>.mp-num-hero</code> and <code>.mp-num-l</code>.</div>
@@ -270,7 +270,7 @@
       <!-- ================= 4 LAYOUT AND SIZE CLASSES ================= -->
       <section class="dv-turn" id="layout" data-screen-label="Foundations 4: Layout and size classes">
         <div class="dv-thd"><a class="dv-tid" href="#layout">4</a><span class="dv-tname">Layout and size classes</span></div>
-        <p class="dv-intro">One markup, three size classes. The app's root, <code>.mp-app</code>, is a size container, so the frame decides, not the device: the same page is one column on a phone, two columns in an iPad or Telegram Desktop window, and a sidebar layout in a laptop browser. The widths are Apple's size classes in web pixels. Light and dark are stacked here so the wide frames have room.</p>
+        <p class="dv-intro">One markup, three size classes. The app's root, <code>.mp-app</code>, is a size container, so the frame decides, not the device: the same page is one column on a phone, two columns in an iPad or narrow browser window, and a sidebar layout in a laptop browser. The widths are Apple's size classes in web pixels. Light and dark are stacked here so the wide frames have room.</p>
         <div class="sztable" role="table" aria-label="Size classes">
           <div class="szr szh" role="row"><span role="columnheader">Size class</span><span role="columnheader">Who sees it</span><span role="columnheader">Navigation</span><span role="columnheader">Columns</span><span role="columnheader">Gutters and gaps</span><span role="columnheader">Page header</span></div>
           <sc-for list="{{ sizeClasses }}" as="s" hint-placeholder-count="3">
@@ -278,7 +278,7 @@
           </sc-for>
         </div>
         <div class="rules">
-          <div class="rule"><b>The frame decides, not the device</b><code>.mp-app</code> is <code>container: app / inline-size</code>. Telegram Desktop's Mini App window, an iPad in Split View and a tablet Mini App switch class at the same widths as a browser, and again when they are resized.</div>
+          <div class="rule"><b>The frame decides, not the device</b><code>.mp-app</code> is <code>container: app / inline-size</code>. A narrow laptop browser, an iPad in Split View and a tablet browser switch class at the same widths as a browser, and again when they are resized.</div>
           <div class="rule"><b>One markup, no device builds</b><code>.mp-shell</code> holds <code>.mp-shell-side</code> (wide only) and <code>.mp-shell-tabs</code> (compact and regular). <code>.mp-only-compact</code> and <code>.mp-only-wide</code> show or hide the odd piece.</div>
           <div class="rule"><b>Content never stretches</b>Regular stays one column until 760, then splits into two equal columns. On wide the columns are <code>minmax(0, 1.3fr) minmax(300px, 1fr)</code>, so the list never gets narrower than 300, and <code>.mp-pagepad</code> caps the content at 1180, centred past 1360. The stats are 2 × 2 at every size.</div>
         </div>
@@ -498,7 +498,7 @@
                 T('--mp-ink-3', 'Footnotes, captions, unselected tabs', txt('ink-3'), ['#646A78', '5.4:1', 'on surface; 4.6:1 on surface-2'], ['#ADB6C4', '8.4:1', 'on surface; 7.4:1 on surface-2'])
               ] },
               { name: 'Hero', hint: 'The navy card: one number, one line, one chart', tokens: [
-                T('--mp-hero', 'Hero card ground; the chart PNGs sent in Telegram', txt('hero-ink', 'hero'), ['#13213A', '16.1:1', 'hero-ink on it'], ['#1A2944', '14.5:1', 'hero-ink on it']),
+                T('--mp-hero', 'Hero card ground on the app and web Overview', txt('hero-ink', 'hero'), ['#13213A', '16.1:1', 'hero-ink on it'], ['#1A2944', '14.5:1', 'hero-ink on it']),
                 T('--mp-hero-2', 'Fills inside the hero: segmented track, masks', txt('hero-ink-2', 'hero-2'), ['#1C2E4D', '7.6:1', 'hero-ink-2 on it'], ['#233558', '6.8:1', 'hero-ink-2 on it']),
                 T('--mp-hero-ink', 'The hero figure and its labels', txt('hero-ink', 'hero'), ['#FFFFFF', '16.1:1', 'on hero'], ['#FFFFFF', '14.5:1', 'on hero']),
                 T('--mp-hero-ink-2', 'Hero secondary text and overline', txt('hero-ink-2', 'hero'), ['#B7C2D6', '9.0:1', 'on hero'], ['#B7C2D6', '8.1:1', 'on hero']),
@@ -583,14 +583,14 @@
           const tabs = sections.filter((n) => n.tab).concat([{ icon: 'menu', tab: 'More', on: '', fill: '' }]);
           return {
             sizeClasses: [
-              { name: 'Compact', range: 'under 600', who: 'The Mini App on iPhone and Android phones', nav: 'Bottom tab bar, five tabs', cols: 'One column; stats 2 × 2', gut: '16 at the sides, 16 between', head: 'Large title on its own row, controls under it' },
-              { name: 'Regular', range: '600 to 1023', who: 'iPad and tablet Mini App, Telegram Desktop’s Mini App window, a narrow browser', nav: 'The tab bar stays', cols: 'One column until 760, then two equal columns; stats 2 × 2', gut: '24 at the sides, 20 between', head: 'Title left, controls right, one row' },
-              { name: 'Wide', range: '1024 and over', who: 'A laptop browser; a wide Telegram Desktop window', nav: 'Sidebar, 248 wide, replaces the tab bar', cols: 'Two columns, 1.3fr : minmax(300px, 1fr); stats 2 × 2', gut: '32 at the sides, 24 between; content capped at 1180, centred past 1360', head: 'Title left, controls right, one row' }
+              { name: 'Compact', range: 'under 600', who: 'Phone browser under 600 px', nav: 'Bottom tab bar, five tabs', cols: 'One column; stats 2 × 2', gut: '16 at the sides, 16 between', head: 'Large title on its own row, controls under it' },
+              { name: 'Regular', range: '600 to 1023', who: 'iPad browser, tablet split view, a narrow laptop window', nav: 'The tab bar stays', cols: 'One column until 760, then two equal columns; stats 2 × 2', gut: '24 at the sides, 20 between', head: 'Title left, controls right, one row' },
+              { name: 'Wide', range: '1024 and over', who: 'A laptop or desktop browser; wide tablet landscape', nav: 'Sidebar, 248 wide, replaces the tab bar', cols: 'Two columns, 1.3fr : minmax(300px, 1fr); stats 2 × 2', gut: '32 at the sides, 24 between; content capped at 1180, centred past 1360', head: 'Title left, controls right, one row' }
             ],
             frames: [
               { name: 'Compact', dim: '390 · phone', w: '390px', h: '760px', sw: '195px', sh: '380px' },
               { name: 'Regular', dim: '680 · one column', w: '680px', h: '760px', sw: '340px', sh: '380px' },
-              { name: 'Regular', dim: '900 · iPad, Telegram Desktop: two columns', w: '900px', h: '760px', sw: '450px', sh: '380px' },
+              { name: 'Regular', dim: '900 · iPad, narrow browser: two columns', w: '900px', h: '760px', sw: '450px', sh: '380px' },
               { name: 'Wide', dim: '1180 · laptop browser', w: '1180px', h: '700px', sw: '590px', sh: '350px' },
               { name: 'Wide, centred', dim: '1600 · content capped at 1180, centred past 1360', w: '1600px', h: '700px', sw: '800px', sh: '350px' }
             ],
@@ -604,7 +604,7 @@
               { lead: 'AG', name: 'Physical Silver', val: '£820', ch: '▼ 6.2%', chCls: 'mp-dq' },
               { lead: '£', name: 'Cash pot', val: '£400', ch: '—', chCls: 'mp-ink3' }
             ],
-            themes: [{ label: 'Light', cls: 'mp t-light tg-light', sel: '.mp.t-light' }, { label: 'Dark', cls: 'mp t-dark tg-dark', sel: '.mp.t-dark' }],
+            themes: [{ label: 'Light', cls: 'mp t-light', sel: '.mp.t-light' }, { label: 'Dark', cls: 'mp t-dark', sel: '.mp.t-dark' }],
             colourCols: colourCols,
             typeScale: [
               { name: 'Large title', cls: 'mp-large', spec: '34/41 · Bold · −2%', sample: 'Overview' },
@@ -667,13 +667,13 @@
               { n: 'join_inner', use: 'Overlap tab' },
               { n: 'insights', use: 'Track record tab' },
               { n: 'menu', use: 'More tab' },
-              { n: 'more_horiz', use: 'Telegram’s own ··· (context only)' },
+              { n: 'more_horiz', use: 'Overflow menu action' },
               { n: 'history', use: 'Activity' },
               { n: 'fact_check', use: 'Audit' },
               { n: 'visibility', use: 'Privacy mode off' },
               { n: 'visibility_off', use: 'Privacy mode on' },
               { n: 'chevron_right', use: 'Row opens a page' },
-              { n: 'arrow_back_ios_new', use: 'Back, in Telegram’s header' },
+              { n: 'arrow_back_ios_new', use: 'Back, in a pushed sub-page header' },
               { n: 'check_circle', use: 'All clear, verified' },
               { n: 'info', use: 'Stale prices, a note' },
               { n: 'warning', use: 'Worth a look, needs you' },

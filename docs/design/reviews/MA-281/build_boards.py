@@ -877,6 +877,8 @@ def shared_file() -> str:
 def lines(html: str) -> str:
     """Break after each block or SVG element, never inside a line of text, so no line runs to thousands of characters."""
     import re as _re
+    html = html.replace("a:hover{color:#8F2915}", "a:not([class]):hover{color:#8F2915}")
+    html = _re.sub(r'(<span class="ms(?:\s+[^"]*)?")(?![^>]*\baria-)', r'\1 aria-hidden="true"', html)
     return _re.sub(r"(</div>|</section>|</sc-for>|</sc-if>|</line>|</rect>|</path>|</use>|</g>)(?=<)", r"\1\n", html)
 
 
