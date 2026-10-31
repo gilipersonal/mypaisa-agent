@@ -559,6 +559,23 @@ Claude's:
   (`docs/design/reviews/MA-295/options.html` and `decision.md`). Carried into
   the consolidated boards (MA-279) and the Swift Charts and LayerChart builds
   (MA-56).
+- **The design system, Impeccable context, Prototype v5 and design gates hardened
+  (MA-298):** `PRODUCT.md` and `DESIGN.md` written at the repo root so every
+  Impeccable check and design round knows Warm ledger, its dual-currency figures,
+  Rule 4 governance, iOS Liquid Glass boundaries (floating controls only, never
+  content or the web app) and the 1133 pt chat-beside adaptive rule; blanket
+  per-file wildcard suppressions cleaned in `.impeccable/config.json` and the
+  dead `_ds/modernist-*` boilerplate removed; undefined `--mp-uk`/`--mp-in`
+  tokens fixed to `--mp-ccy-gbp`/`--mp-ccy-inr` across `Chart options.dc.html`,
+  protruding 100%-plan benchmark ticks unclipped, `a:hover` button contrast
+  preserved, system preference queries (`prefers-color-scheme: dark`,
+  `prefers-reduced-transparency: reduce`, `prefers-contrast: more`), `:focus-visible`
+  and 44x44 hit areas added to `ds-v1` without moving untouched drawn frames;
+  Privacy Mode redacted across DOM text, `aria-label` summaries and interactive
+  chart scrubbers; `Prototype v5`'s `<=1023px` web `More` drawer and `Search`,
+  plain Warm ledger web modals (`Escape`, backdrop and close), and icon
+  `aria-hidden` completed; and `contrast_check.py` plus `prototype_smoke.js`
+  widened with selftest mutations to refuse regressions.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

@@ -14,7 +14,7 @@
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           .dv-turn { padding: 44px 48px 36px; }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -88,9 +88,9 @@
                 <div class="spec w420">
                   <span class="lbl">With an icon · icon 22, gap 8, icon first</span>
                   <div class="fx ac gap12 wrap">
-                    <a class="mp-btn mp-btn-primary" href="#buttons"><span class="ms">chat</span>Ask in the chat</a>
-                    <a class="mp-btn mp-btn-tinted" href="#buttons"><span class="ms">open_in_new</span>Open in Telegram</a>
-                    <a class="mp-btn mp-btn-tinted mp-btn-small" href="#buttons"><span class="ms ms-s">chat</span>Open chat</a>
+                    <a class="mp-btn mp-btn-primary" href="#buttons"><span class="ms" aria-hidden=\"true\">chat</span>Ask in the chat</a>
+                    <a class="mp-btn mp-btn-tinted" href="#buttons"><span class="ms" aria-hidden=\"true\">open_in_new</span>Open in Telegram</a>
+                    <a class="mp-btn mp-btn-tinted mp-btn-small" href="#buttons"><span class="ms ms-s" aria-hidden=\"true\">chat</span>Open chat</a>
                   </div>
                   <span class="lbl">Full width, in a card · phone width 358</span>
                   <div class="mp-card fx col gap12 w358" style="box-sizing: border-box">
@@ -137,8 +137,8 @@
                   </div>
                   <span class="lbl">Neutral and alert · .mp-neutral · .mp-alertchip</span>
                   <div class="fx ac gap8 wrap">
-                    <span class="mp-chip mp-neutral">ISA</span><span class="mp-chip mp-neutral">GIA</span><span class="mp-chip mp-neutral">Thu close</span><span class="mp-chip mp-neutral"><span class="ms ms-s">lock</span>Read-only</span>
-                    <span class="mp-chip mp-alertchip"><span class="ms ms-s">warning</span>Past your 8% alert</span>
+                    <span class="mp-chip mp-neutral">ISA</span><span class="mp-chip mp-neutral">GIA</span><span class="mp-chip mp-neutral">Thu close</span><span class="mp-chip mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">lock</span>Audited</span>
+                    <span class="mp-chip mp-alertchip"><span class="ms ms-s" aria-hidden=\"true\">warning</span>Past your 8% alert</span>
                   </div>
                   <span class="lbl">On the hero · .upchip 7.9:1 / 7.1:1 · .dnchip 7.6:1 / 6.8:1</span>
                   <div class="mp-hero herostrip fx ac jb">
@@ -154,7 +154,7 @@
           <div class="note"><b>Anatomy</b>A pill: padding 4 10, 13/18 semibold, +1% tracking, one line, an optional 18 icon 4 before the word. <code>.chip-s</code> (padding 2 8, 12/16) sits inside list rows beside the sub-line.</div>
           <div class="note"><b>Contrast</b>Text on its own tint: ADD 4.6:1, HOLD 5.6:1, PAUSE 5.5:1, TRIM 5.0:1, REBALANCE 5.8:1, WATCH 6.4:1 in light; 6.6:1 or more in dark. Neutral 6.5:1 and 7.5:1; alert 5.4:1 and 6.2:1.</div>
           <div class="note"><b>The word is the signal</b>Always the stance word, then the confidence: "PAUSE 61%". Colour only supports it, so the chip reads the same in greyscale and to a screen reader.</div>
-          <div class="note"><b>Neutral</b>For facts: the wrapper (ISA, GIA), the price date, read-only. Never for a stance.</div>
+          <div class="note"><b>Neutral</b>For facts: the wrapper (ISA, GIA), the price date, audited facts. Never for a stance.</div>
           <div class="note"><b>Alert</b>Only the red tier, which asks you to act, and it always says why in words. An everyday fall is quiet ink with ▼, never this chip.</div>
           <div class="note"><b>Icons inside chips</b>Inherit the chip's text colour. Never put a stance class on a bare icon: it brings its tint with it. Use <code>.c-pause</code> and friends for text-only colour.</div>
         </div>
@@ -188,8 +188,8 @@
                   </div>
                   <span class="lbl">In a row · the row is the 44 pt target</span>
                   <div class="mp-group">
-                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility_off</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink3">Hides pounds, keeps percentages</div></div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
-                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink3">Off: pounds are shown</div></div><button class="mp-switch swbtn" role="switch" aria-checked="false" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">visibility_off</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink3">Hides pounds, keeps percentages</div></div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">visibility</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink3">Off: pounds are shown</div></div><button class="mp-switch swbtn" role="switch" aria-checked="false" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
                   </div>
                 </div>
               </div>
@@ -202,7 +202,7 @@
           <div class="note"><b>Behaviour</b>Two to four short segments, one or two words each. Each is a <code>button</code> with <code>aria-pressed</code>; the content below swaps in place and the page does not move.</div>
           <div class="note"><b>Switch</b>51 × 31, knob 27, on is <code>--mp-up</code>; the knob slides 20 over 200 ms. <code>role="switch"</code> with <code>aria-checked</code>; the row's label names the setting and the whole row toggles it.</div>
           <div class="note"><b>Not colour alone</b>Off, the track carries a 1.5 px ring in ink-3: 5.4:1 light and 5.7:1 dark against the surface. On, the green track is 5.4:1 and 8.7:1 against the surface. The knob's side carries the state too.</div>
-          <div class="note"><b>Read-only</b>A switch here never writes your data. Alert floors, members and holdings change through a card and a Confirm tap in the chat.</div>
+          <div class="note"><b>View switches</b>A view switch here never writes your records. Records are created in the chat and corrected in place, or through a card and a Confirm tap in the chat.</div>
         </div>
       </section>
 
@@ -239,9 +239,9 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Settings</span></div>
                     <div class="mp-group">
-                      <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s">visibility_off</span></span><div class="mp-body" style="flex: 1">Privacy mode</div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
-                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s">notifications</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Alert floor</div><div class="mp-foot mp-ink3">Change it in the chat</div></div><span class="mp-body mp-ink3">2%</span><span class="ms ms-s mp-ink3">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s">lock</span></span><div class="mp-body" style="flex: 1">Members</div><span class="mp-body mp-ink3">You, Asha</span><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                      <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">visibility_off</span></span><div class="mp-body" style="flex: 1">Privacy mode</div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">notifications</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Alert floor</div><div class="mp-foot mp-ink3">Change it in the chat</div></div><span class="mp-body mp-ink3">2%</span><span class="ms ms-s mp-ink3" aria-hidden=\"true\">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">lock</span></span><div class="mp-body" style="flex: 1">Members</div><span class="mp-body mp-ink3">You, Asha</span><span class="ms ms-s mp-ink3" aria-hidden=\"true\">chevron_right</span></a>
                     </div>
                   </div>
                 </div>
@@ -250,9 +250,9 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">NASDAQ 100</span></div>
                     <div class="mp-group">
-                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Why PAUSE?</div><span class="ms ms-s mp-ink3">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Technical details</div><span class="ms ms-s mp-ink3">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><div style="flex: 1; min-width: 0"><div class="mp-body">Track record</div><div class="mp-foot mp-ink3">PAUSE: 3 made, 2 right</div></div><span class="ms ms-s mp-ink3">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Why PAUSE?</div><span class="ms ms-s mp-ink3" aria-hidden=\"true\">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Technical details</div><span class="ms ms-s mp-ink3" aria-hidden=\"true\">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div style="flex: 1; min-width: 0"><div class="mp-body">Track record</div><div class="mp-foot mp-ink3">PAUSE: 3 made, 2 right</div></div><span class="ms ms-s mp-ink3" aria-hidden=\"true\">chevron_right</span></a>
                     </div>
                   </div>
                 </div>
@@ -295,7 +295,7 @@
                       </div>
                       <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i" aria-pressed="false">1M</button><button class="mp-seg-i on" aria-pressed="true">6M</button><button class="mp-seg-i" aria-pressed="false">1Y</button><button class="mp-seg-i" aria-pressed="false">All</button></div>
                     </div>
-                    <div class="fx ac gap8"><button class="iconbtn" aria-label="Privacy mode"><span class="ms">{{ h.eye }}</span></button><span class="mp-foot mp-ink2">{{ h.eyeNote }}</span></div>
+                    <div class="fx ac gap8"><button class="iconbtn" aria-label="Privacy mode"><span class="ms" aria-hidden=\"true\">{{ h.eye }}</span></button><span class="mp-foot mp-ink2">{{ h.eyeNote }}</span></div>
                   </div>
                 </sc-for>
               </div>
@@ -328,7 +328,7 @@
                       <a class="mp-card fx ac gap12 rowlink" href="#cards" style="padding: 14px 16px">
                         <span class="ms ms-fill ms-l {{ w.icls }}" aria-hidden="true">{{ w.icon }}</span>
                         <div style="flex: 1; min-width: 0"><div class="mp-hl">{{ w.title }}</div><div class="mp-foot mp-ink3">{{ w.body }}</div></div>
-                        <span class="ms mp-ink3">chevron_right</span>
+                        <span class="ms mp-ink3" aria-hidden=\"true\">chevron_right</span>
                       </a>
                     </div>
                   </sc-for>
@@ -370,7 +370,7 @@
               <div class="specs">
                 <sc-for list="{{ privacy }}" as="p" hint-placeholder-count="2">
                   <div class="spec w358">
-                    <div class="fx ac jb"><span class="lbl">{{ p.label }}</span><button class="iconbtn" aria-label="{{ p.btn }}"><span class="ms">{{ p.eye }}</span></button></div>
+                    <div class="fx ac jb"><span class="lbl">{{ p.label }}</span><button class="iconbtn" aria-label="{{ p.btn }}"><span class="ms" aria-hidden=\"true\">{{ p.eye }}</span></button></div>
                     <div class="mp-group">
                       <sc-for list="{{ p.rows }}" as="h" hint-placeholder-count="3">
                         <div class="mp-row" style="padding-top: 10px; padding-bottom: 10px">

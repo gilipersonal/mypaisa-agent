@@ -62,7 +62,10 @@ def pc(v: float, d: int = 0, plus: bool = True) -> str:
 
 
 def mask(text: str, priv: bool) -> str:
-    return f'<span class="mp-mask" role="img" aria-label="hidden">{text}</span>' if priv else text
+    if not priv:
+        return text
+    pad = "\u00a0" * max(4, min(8, len(text)))
+    return f'<span class="mp-mask" role="img" aria-label="hidden"><span aria-hidden="true">{pad}</span></span>'
 
 
 def ymap(v: float, lo: float, hi: float, pad_t: float = 8.0, pad_b: float = 8.0) -> float:
@@ -115,7 +118,7 @@ def scrub_attr(points: list[dict], priv: bool = False) -> str:
     if priv:
         return ""
     raw = _html.escape(json.dumps(points, separators=(",", ":")), quote=True)
-    return f' data-scrub="{raw}"'
+    return f' data-scrub="{raw}" tabindex="0"'
 
 
 def scrub_overlay() -> str:
@@ -144,6 +147,11 @@ def hero_block(mode: str, priv: bool = False, compact: bool = False) -> str:
         {"x": pts[i][0], "y": pts[i][1], "k": d, "v": gbp(v), "s": note}
         for i, (d, v, note) in enumerate(NW_SERIES)
     ]
+    pulse_aria = (
+        "Recorded household net worth over 5 days (amounts hidden)."
+        if priv
+        else "Recorded household net worth from Thu 22 Oct £439,958 to Mon 26 Oct £444,951."
+    )
 
     if mode == "c":
         heights = [36, 44, 41, 39, 100]
@@ -152,7 +160,7 @@ def hero_block(mode: str, priv: bool = False, compact: bool = False) -> str:
             for i in range(len(NW_SERIES))
         )
         pulse = (
-            '<div class="hpulse" role="img" aria-label="Recorded household net worth from Thu 22 Oct £439,958 to Mon 26 Oct £444,951.">'
+            f'<div class="hpulse" role="img" aria-label="{pulse_aria}">'
             '<div class="fx jb ac gap8"><span class="mp-cap mp-hero-2">RECORDED LEDGER · 5 DAYS</span>'
             f'<span class="mp-cap mp-hero-2">{mask("Thu 22 £439,958 → Mon 26 £444,951", priv)}</span></div>'
             f'<div class="hpulse-bars">{cols}</div>'
@@ -178,7 +186,7 @@ def hero_block(mode: str, priv: bool = False, compact: bool = False) -> str:
             + ("EDITORIAL RANGE · THU 22 TO MON 26 OCT" if mode == "b" else "LIVE PULSE · RECORDED NET WORTH")
             + f'</span><span class="mp-cap mp-hero-2">{mask("low £439,951 · high £444,951", priv)}</span></div>'
             f'<div class="mp-chartbox hpulse-box"{scrub_attr(scrub_pts, priv)} role="img" '
-            'aria-label="Recorded household net worth from Thu 22 Oct £439,958 to Mon 26 Oct £444,951.">'
+            f'aria-label="{pulse_aria}">'
             f'<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{grid}'
             + (f'<path class="harea" d="{d_area}"></path>' if mode == "a" else "")
             + f'<path class="hline" d="{d_line}"></path></svg>'
@@ -246,8 +254,8 @@ def wealth_mix_card(mode: str, priv: bool = False) -> str:
             '<circle class="donut-in" cx="20" cy="20" r="15.92" stroke-dasharray="24 76" stroke-dashoffset="-51"></circle>'
             '</svg><div class="donut-ctr"><span class="mp-sub mp-w6">76%</span><span class="mp-cap mp-ink2">UK</span></div></div>'
             '<div class="donut-leg">'
-            f'<div class="dleg"><span class="sw" style="background:var(--mp-uk)"></span><div class="rtx"><div class="mp-sub mp-w6">United Kingdom · 76%</div><div class="mp-foot mp-ink2">ISA, pension, home less loans</div></div><span class="mp-sub mp-w6 nowrap">{uk_v}</span></div>'
-            f'<div class="dleg"><span class="sw" style="background:var(--mp-in)"></span><div class="rtx"><div class="mp-sub mp-w6">India · 24%</div><div class="mp-foot mp-ink2">NRE, FDs, Pune flat · {inr_sub}</div></div><span class="mp-sub mp-w6 nowrap">{in_v}</span></div>'
+            f'<div class="dleg"><span class="sw" style="background:var(--mp-chart-line)"></span><div class="rtx"><div class="mp-sub mp-w6">United Kingdom · 76%</div><div class="mp-foot mp-ink2">ISA, pension, home less loans</div></div><span class="mp-sub mp-w6 nowrap">{uk_v}</span></div>'
+            f'<div class="dleg"><span class="sw" style="background:var(--mp-chart-2)"></span><div class="rtx"><div class="mp-sub mp-w6">India · 24%</div><div class="mp-foot mp-ink2">NRE, FDs, Pune flat · {inr_sub}</div></div><span class="mp-sub mp-w6 nowrap">{in_v}</span></div>'
             "</div></div>"
             '<div class="kvg">'
             f'<div><div class="mp-foot mp-ink2">Arun · 56%</div><div class="mp-sub mp-w6 nowrap">{ar_v}</div></div>'
@@ -263,10 +271,10 @@ def wealth_mix_card(mode: str, priv: bool = False) -> str:
         f"{head_strip}"
         '<div class="mrows">'
         f'<div><div class="fx jb ac gap8"><span class="mp-sub mp-w6">United Kingdom · 76%</span><span class="mp-sub mp-w6 nowrap">{uk_v}</span></div>'
-        f'<div class="mp-track mbar posr" role="img" aria-label="United Kingdom 76% of household net worth"><span style="width:76.1%;background:var(--mp-uk)"></span>{tick_50}</div>'
+        f'<div class="mp-track mbar has-tick posr" role="img" aria-label="United Kingdom 76% of household net worth"><span class="mp-track-clip"><span style="width:76.1%;background:var(--mp-chart-line)"></span></span>{tick_50}</div>'
         f'<div class="fx jb gap8 mp-foot mp-ink2"><span>India · 24% ({inr_sub})</span><span class="nowrap">{in_v}</span></div></div>'
         f'<div><div class="fx jb ac gap8"><span class="mp-sub mp-w6">Arun · 56%</span><span class="mp-sub mp-w6 nowrap">{ar_v}</span></div>'
-        f'<div class="mp-track mbar posr" role="img" aria-label="Arun 56%, Asha 44% of household net worth"><span style="width:56.4%;background:var(--mp-chart-2)"></span>{tick_50}</div>'
+        f'<div class="mp-track mbar has-tick posr" role="img" aria-label="Arun 56%, Asha 44% of household net worth"><span class="mp-track-clip"><span style="width:56.4%;background:var(--mp-chart-2)"></span></span>{tick_50}</div>'
         f'<div class="fx jb gap8 mp-foot mp-ink2"><span>Asha · 44% (50/50 joint home)</span><span class="nowrap">{as_v}</span></div></div>'
         "</div></div>"
     )
@@ -295,8 +303,13 @@ def budget_card(mode: str, priv: bool = False) -> str:
         note = f"{sym} {mask(gbp(diff), priv)} {'over' if over else 'under'}"
         scale_max = max(plan * 1.25, act * 1.05)
         w_act = round(min(100.0, act / scale_max * 100.0), 1)
-        w_plan = round(min(96.0, plan / scale_max * 100.0), 1)
+        w_plan = round(min(100.0, plan / scale_max * 100.0), 1)
         fill_col = "var(--mp-pause)" if over else "var(--mp-meter)"
+        bar_aria = (
+            f"{name}: amounts hidden ({round(act / plan * 100)}% of plan)"
+            if priv
+            else f"{name}: {gbp(act)} spent of {gbp(plan)} plan"
+        )
 
         if mode == "c":
             lit = min(10, max(1, round(act / plan * 8)))
@@ -304,17 +317,17 @@ def budget_card(mode: str, priv: bool = False) -> str:
                 f'<span class="segcell{" on" if k < lit else ""}{" warn" if (k < lit and over) else ""}"></span>'
                 for k in range(10)
             )
-            bar = f'<div class="segbar" role="img" aria-label="{name}: {gbp(act)} spent of {gbp(plan)} plan">{cells}</div>'
+            bar = f'<div class="segbar" role="img" aria-label="{bar_aria}">{cells}</div>'
         elif mode == "b":
             bar = (
-                f'<div class="mp-track mbar posr" role="img" aria-label="{name}: {gbp(act)} spent of {gbp(plan)} plan">'
-                f'<span style="width:{w_act}%;background:{fill_col}"></span>'
+                f'<div class="mp-track mbar has-tick posr" role="img" aria-label="{bar_aria}">'
+                f'<span class="mp-track-clip"><span style="width:{w_act}%;background:{fill_col}"></span></span>'
                 f'<span class="bar-bullet" style="left:{w_plan}%"></span></div>'
             )
         else:
             bar = (
-                f'<div class="mp-track mbar posr" role="img" aria-label="{name}: {gbp(act)} spent of {gbp(plan)} plan">'
-                f'<span style="width:{w_act}%;background:{fill_col}"></span>'
+                f'<div class="mp-track mbar has-tick posr" role="img" aria-label="{bar_aria}">'
+                f'<span class="mp-track-clip"><span style="width:{w_act}%;background:{fill_col}"></span></span>'
                 f'<span class="bartick" style="left:{w_plan}%"></span></div>'
             )
         rows.append(
@@ -414,13 +427,18 @@ def projection_fan_card(mode: str = "a", priv: bool = False) -> str:
         priv=priv,
         mask_idx={0, 1, 2},
     )
+    fan_aria = (
+        "20-year household wealth projection from 2026 to 2046 (amounts hidden)."
+        if priv
+        else "20-year household wealth projection from 2026 to 2046: middle path reaches £3,697,000, with 8 in 10 runs between £2,548,000 and £5,766,000."
+    )
     return (
         '<div class="mp-card oncard cpad">'
         '<div class="ctl"><span class="mp-hl">20-year wealth range (2026 to 2046)</span><span class="mp-foot mp-ink2">1,000 runs · today\'s pounds</span></div>'
         f'<p class="pp mp-foot mp-ink2">Starts at {mask(gbp(FP["R26"]["start"]), priv)} · 2036 middle path {mask(gbp(FAN20[10]["p50"]), priv)} · 2046 middle path {mask(gbp(end["p50"]), priv)}.</p>'
         f"{strip}"
         f'<div class="mp-chartbox ch-164"{scrub_attr(scrub_pts, priv)} role="img" '
-        'aria-label="20-year household wealth projection from 2026 to 2046: middle path reaches £3,697,000, with 8 in 10 runs between £2,548,000 and £5,766,000.">'
+        f'aria-label="{fan_aria}">'
         f'<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{"".join(svg)}</svg>'
         f"{ylbls}{dots}{scrub_overlay()}</div>"
         f'<div class="mp-chartaxis">{ax}</div>'
@@ -493,13 +511,18 @@ def surplus_columns_card(mode: str = "a", run: str = "R1", priv: bool = False) -
         priv=priv,
         mask_idx={0, 1, 2},
     )
+    surp_aria = (
+        f"{title}: {below_total} months below monthly floor between 2027 and 2046 (amounts hidden)."
+        if priv
+        else f'{title}: {below_total} months below the £500 monthly floor between 2027 and 2046; leanest month {lean["lowest_month"]} {gbp(lean["lowest_surplus"], sign=True)}.'
+    )
     return (
         '<div class="mp-card oncard cpad">'
         f'<div class="ctl"><span class="mp-hl">{title}</span>{badge}</div>'
         '<p class="pp mp-foot mp-ink2">Amber bars mark any year where a single month dips under the £500 buffer floor (even when the year\'s average stays positive).</p>'
         f"{strip}"
         f'<div class="mp-chartbox ch-136"{scrub_attr(scrub_pts, priv)} role="img" '
-        f'aria-label="{title}: {below_total} months below the £500 monthly floor between 2027 and 2046; leanest month {lean["lowest_month"]} {gbp(lean["lowest_surplus"], sign=True)}.">'
+        f'aria-label="{surp_aria}">'
         f'<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{"".join(svg)}</svg>'
         f"{scrub_overlay()}</div>"
         f'<div class="mp-chartaxis">{ax}</div>'
@@ -674,7 +697,7 @@ def scrub_anatomy_strip(mode: str) -> str:
 # ------------------------------------------------------------------ Shared CSS & Scrub JS
 CHART_CSS = """
   html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
-  a { color: #C2381F; } a:hover { color: #8F2915; }
+  a:not([class]) { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
   a.dv-tid:hover, a.plan-k:hover { color: #FFFFFF; }
   .dv-turn { padding: 44px 48px 28px; border-bottom: 1px solid rgba(0,0,0,.08); }
   .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; flex-wrap: wrap; }
@@ -785,7 +808,7 @@ CHART_CSS = """
   .mrows { display: flex; flex-direction: column; gap: 12px; }
   .brow-m { display: flex; flex-direction: column; gap: 4px; }
   .mbar { height: 10px; }
-  .mbar > span:first-child { display: block; height: 100%; border-radius: 999px; }
+  .mbar > span:first-child:not(.mp-track-clip), .mbar > .mp-track-clip > span:first-child { display: block; height: 100%; border-radius: 999px; }
   .bartick { position: absolute; top: -2px; bottom: -2px; width: 2.5px; border-radius: 2px; background: var(--mp-ink); box-shadow: 0 0 0 1px var(--mp-surface); pointer-events: none; }
   .bar-bullet { position: absolute; top: -3px; bottom: -3px; width: 3px; border-radius: 1px; background: var(--mp-ink); pointer-events: none; }
   .segbar { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px; height: 11px; }
@@ -798,8 +821,8 @@ CHART_CSS = """
   .donut-box { width: 88px; height: 88px; position: relative; flex: none; display: grid; place-items: center; }
   .donut-box > svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   .donut-trk { fill: none; stroke: var(--mp-track); stroke-width: 5.2; }
-  .donut-uk { fill: none; stroke: var(--mp-uk); stroke-width: 5.2; stroke-linecap: butt; }
-  .donut-in { fill: none; stroke: var(--mp-in); stroke-width: 5.2; stroke-linecap: butt; }
+  .donut-uk { fill: none; stroke: var(--mp-chart-line); stroke-width: 5.2; stroke-linecap: butt; }
+  .donut-in { fill: none; stroke: var(--mp-chart-2); stroke-width: 5.2; stroke-linecap: butt; }
   .donut-ctr { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
   .donut-leg { flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
   .dleg { display: flex; align-items: center; gap: 8px; }
@@ -872,7 +895,7 @@ CHART_CSS = """
   /* Web v4 browser frames (.bf.w1440 and .bf.w390) */
   .bf { position: relative; overflow: hidden; flex: none; border-radius: 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
   .bf.w1440 { width: 1440px; height: 980px; }
-  .bf.w390 { width: 390px; height: 844px; border-radius: 44px; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+  .bf.w390 { width: 390px; height: 844px; border-radius: 20px; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 24px 52px rgba(0,0,0,.18); }
   .bf > .mp-shell { height: 100%; }
   .bf .mp-shell-main { overflow: hidden; position: relative; }
   .bf .mp-pagepad { flex: none; }
@@ -885,8 +908,8 @@ CHART_CSS = """
   .whose { flex: 0 1 280px; min-width: 210px; }
   .iconbtn.on { background: var(--mp-hero); color: var(--mp-hero-ink); }
   .pstat { display: none; }
-  .w390 .pstat { display: flex; position: absolute; left: 0; right: 0; top: 0; height: 44px; z-index: 40; align-items: center; justify-content: space-between; padding: 0 30px 0 34px; font: 600 15px/20px var(--mp-font); background: var(--mp-bg); }
-  .w390 .mp-pagepad { padding-top: 54px; padding-bottom: 92px; }
+  .w390 .pstat { display: flex; position: absolute; left: 0; right: 0; top: 0; height: 34px; z-index: 40; align-items: center; justify-content: center; gap: 6px; padding: 0 16px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
+  .w390 .mp-pagepad { padding-top: 48px; padding-bottom: 92px; }
   .chatcol { display: none; width: 356px; flex: none; flex-direction: column; border-left: 1px solid var(--mp-line); background: var(--mp-bg); position: relative; overflow: hidden; }
   @container app (min-width: 1024px) { .chatcol { display: flex; } }
   .chh { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px; padding: 8px 12px 8px 20px; border-bottom: 1px solid var(--mp-line); }
@@ -921,22 +944,17 @@ CHART_CSS = """
 SCRUB_JS = """
       class Component extends DCLogic {
         componentDidMount() {
-          if (location.search.indexOf('static=1') >= 0) return;
-          const show = (box, clientX) => {
-            const raw = box.getAttribute('data-scrub');
+          const ptsOf = (box) => {
+            const raw = box && box.getAttribute('data-scrub');
+            if (!raw) return null;
+            try { const pts = JSON.parse(raw); return pts && pts.length ? pts : null; } catch (_) { return null; }
+          };
+          const renderIdx = (box, pts, idx) => {
             const ov = box.querySelector('.mp5-scrub');
-            if (!raw || !ov) return;
-            let pts;
-            try { pts = JSON.parse(raw); } catch (_) { return; }
-            if (!pts || !pts.length) return;
-            const r = box.getBoundingClientRect();
-            if (!r.width) return;
-            const pct = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
-            let best = pts[0], bd = Math.abs(pts[0].x - pct);
-            for (let i = 1; i < pts.length; i++) {
-              const d = Math.abs(pts[i].x - pct);
-              if (d < bd) { best = pts[i]; bd = d; }
-            }
+            if (!ov) return;
+            const i = Math.max(0, Math.min(pts.length - 1, idx));
+            box.setAttribute('data-scrub-idx', String(i));
+            const best = pts[i];
             ov.classList.add('on');
             const ln = ov.querySelector('.mp5-scrub-line');
             const dt = ov.querySelector('.mp5-scrub-dot');
@@ -947,6 +965,19 @@ SCRUB_JS = """
               pl.textContent = best.k + ' · ' + best.v + (best.s ? ' (' + best.s + ')' : '');
               pl.style.left = Math.max(18, Math.min(82, best.x)) + '%';
             }
+          };
+          const show = (box, clientX) => {
+            const pts = ptsOf(box);
+            if (!pts) return;
+            const r = box.getBoundingClientRect();
+            if (!r.width) return;
+            const pct = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+            let bi = 0, bd = Math.abs(pts[0].x - pct);
+            for (let i = 1; i < pts.length; i++) {
+              const d = Math.abs(pts[i].x - pct);
+              if (d < bd) { bi = i; bd = d; }
+            }
+            renderIdx(box, pts, bi);
           };
           const hide = (box) => {
             const ov = box && box.querySelector('.mp5-scrub');
@@ -960,9 +991,35 @@ SCRUB_JS = """
             const box = e.target.closest && e.target.closest('[data-scrub]');
             if (box) show(box, e.clientX);
           });
+          document.addEventListener('pointerup', (e) => {
+            if (e.pointerType === 'touch') {
+              const box = e.target.closest && e.target.closest('[data-scrub]');
+              if (box) hide(box);
+            }
+          });
+          document.addEventListener('pointercancel', (e) => {
+            const box = e.target.closest && e.target.closest('[data-scrub]');
+            if (box) hide(box);
+          });
           document.addEventListener('pointerout', (e) => {
             const box = e.target.closest && e.target.closest('[data-scrub]');
             if (box && (!e.relatedTarget || !box.contains(e.relatedTarget))) hide(box);
+          });
+          document.addEventListener('keydown', (e) => {
+            const box = e.target.closest && e.target.closest('[data-scrub]');
+            if (!box) return;
+            if (e.key === 'Escape') { hide(box); return; }
+            if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+            const pts = ptsOf(box);
+            if (!pts) return;
+            e.preventDefault();
+            const cur = parseInt(box.getAttribute('data-scrub-idx') || '-1', 10);
+            const next = cur < 0 ? (e.key === 'ArrowRight' ? 0 : pts.length - 1) : cur + (e.key === 'ArrowRight' ? 1 : -1);
+            renderIdx(box, pts, next);
+          });
+          document.addEventListener('focusout', (e) => {
+            const box = e.target.closest && e.target.closest('[data-scrub]');
+            if (box) hide(box);
           });
         }
         renderVals() { return {}; }
@@ -1004,7 +1061,7 @@ def doc_wrap(title: str, body: str, include_ios: bool = True) -> str:
         "      </helmet>\n"
         f"{body}"
         "    </x-dc>\n"
-        '    <script type="text/x-dc" data-dc-script data-props=\'{}\'>\n'
+        '    <script type="text/x-dc" data-dc-script data-props="{}">\n'
         f"{SCRUB_JS}"
         "    </script>\n"
         "  </body>\n"
@@ -1041,7 +1098,7 @@ def board_section(num: str, name: str, keys: str, lead: str, frames: list[str], 
 
 
 # ------------------------------------------------------------------ Device & Browser frame wrappers
-SB_ICONS = '<span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span>'
+SB_ICONS = '<span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span>'
 IOS_TABS = [("chat_bubble", "Chat"), ("home", "Home"), ("insights", "Activity"), ("account_circle", "You")]
 IOS_SIDE = [("chat_bubble", "Chat"), ("home", "Home"), ("donut_small", "Assets"), ("credit_card", "Debts"), ("savings", "Budget"), ("trending_up", "Projection"), ("insights", "Activity"), ("history", "Audit")]
 WEB_NAV = [("home", "Overview", True), ("donut_small", "Assets", False), ("credit_card", "Debts", False), ("savings", "Budget", False), ("trending_up", "Projection", False), ("history", "Activity", False), ("fact_check", "Audit", False)]
@@ -1049,8 +1106,8 @@ WEB_TABS = [("chat_bubble", "Chat", False), ("home", "Overview", True), ("donut_
 
 
 def ios_tabdock(on: str = "Home") -> str:
-    tabs = "".join(f'<span class="tab{" on" if l == on else ""}"><span class="ms">{i}</span>{l}</span>' for i, l in IOS_TABS)
-    return f'<div class="edge-bot"></div><div class="tabdock"><div class="tabs lg">{tabs}</div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>'
+    tabs = "".join(f'<span class="tab{" on" if l == on else ""}"><span class="ms" aria-hidden="true">{i}</span>{l}</span>' for i, l in IOS_TABS)
+    return f'<div class="edge-bot"></div><div class="tabdock"><div class="tabs lg">{tabs}</div><span class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div><div class="homebar"></div>'
 
 
 def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", priv: bool = False) -> str:
@@ -1058,8 +1115,8 @@ def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", priv: boo
     eye_cls = "gbtn lg on" if priv else "gbtn lg"
     nav = (
         f'<div class="nav"><span></span><span class="fx gap8">'
-        f'<span class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1">{eye}</span></span>'
-        '<span class="gtext lg"><span class="ms z1">chat_bubble</span><span class="z1">Ask</span></span></span></div>'
+        f'<span class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1" aria-hidden="true">{eye}</span></span>'
+        '<span class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>'
     )
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
@@ -1073,10 +1130,10 @@ def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", priv: boo
 
 
 def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str, title: str = "Home") -> str:
-    side = "".join(f'<span class="side-i{" on" if l == "Home" else ""}"><span class="ms">{i}</span>{l}</span>' for i, l in IOS_SIDE)
+    side = "".join(f'<span class="side-i{" on" if l == "Home" else ""}"><span class="ms" aria-hidden="true">{i}</span>{l}</span>' for i, l in IOS_SIDE)
     chat = (
-        '<div class="insp"><div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>'
-        '<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>'
+        '<div class="insp"><div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>'
+        '<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg" aria-label="New conversation"><span class="ms z1" aria-hidden="true">edit_square</span></span></div>'
         '<div class="chfadet"></div>'
         '<div class="ichat"><div class="chat">'
         '<div class="daysep">Mon 26 Oct</div>'
@@ -1085,15 +1142,15 @@ def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str, t
         '<div class="ai-text">Net worth is £444,951 (+£4,993 since Thu 22 Oct), and October spending sits £436 under plan with a 40.6% savings rate. Drag any chart beside us to inspect a day or year.</div>'
         "</div></div></div></div>"
         '<div class="edge-bot"></div>'
-        '<div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms">savings</span><span>October pace</span></span><span class="gchip lg"><span class="ms">trending_up</span><span>2046 range</span></span></div>'
-        '<div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div></div>'
+        '<div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">savings</span><span>October pace</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">trending_up</span><span>2046 range</span></span></div>'
+        '<div class="cbar"><span class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></span></span></div></div></div>'
     )
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
         f'<div class="dev dev-ipad-l mp ipad {theme}"><div class="scrn srow">'
-        f'<div class="sidebar sb lg"><div class="side-h sh0">MyPaisa</div>{side}<div class="side-h">Household</div><span class="side-i"><span class="ms">account_circle</span>You</span></div>'
+        f'<div class="sidebar sb lg"><div class="side-h sh0">MyPaisa</div>{side}<div class="side-h">Household</div><span class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>'
         f'<div class="main"><div class="sbar"><span>9:41 Mon 26 Oct</span><span></span></div>'
-        f'<div class="nav"><span class="largetitle navt">{title}</span><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1">visibility</span></span></div>'
+        f'<div class="nav"><span class="largetitle navt">{title}</span><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></span></div>'
         f'<div class="scroll"><div class="ipg">{hero}<div class="g2"><div class="dv-col" style="gap:14px">{left_col}</div><div class="dv-col" style="gap:14px">{right_col}</div></div></div></div>'
         f'<div class="edge-bot"></div></div>{chat}</div></div></div>'
     )
@@ -1101,11 +1158,11 @@ def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str, t
 
 def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, col2: str, title: str = "Overview", priv: bool = False) -> str:
     side_items = "".join(
-        f'<span class="mp-side-i{" on" if on else ""}"><span class="ms{" ms-fill" if on else ""}">{ic}</span>{lb}</span>'
+        f'<span class="mp-side-i{" on" if on else ""}"><span class="ms{" ms-fill" if on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
         for ic, lb, on in WEB_NAV
     )
     tabs = "".join(
-        f'<span class="mp-tab{" on" if on else ""}"><span class="ms{" ms-fill" if on else ""}">{ic}</span>{lb}</span>'
+        f'<span class="mp-tab{" on" if on else ""}"><span class="ms{" ms-fill" if on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
         for ic, lb, on in WEB_TABS
     )
     eye = "visibility_off" if priv else "visibility"
@@ -1121,7 +1178,7 @@ def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, co
     )
     chat = (
         '<aside class="chatcol" aria-label="Chat">'
-        '<div class="chh"><span class="mp-hl">Chat</span><span class="iconbtn" aria-label="New conversation"><span class="ms">edit_square</span></span></div>'
+        '<div class="chh"><span class="mp-hl">Chat</span><span class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></span></div>'
         '<div class="chl">'
         '<div class="daysep">Mon 26 Oct</div>'
         '<div class="wme">Show me our October pace and 2046 projection after the Monzo transfer.</div>'
@@ -1134,20 +1191,20 @@ def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, co
         "</div></div></div></div>"
         '<div class="chcomp">'
         '<div class="wchips"><span class="wchip"><span class="ms" aria-hidden="true">savings</span>October pace</span><span class="wchip"><span class="ms" aria-hidden="true">trending_up</span>2046 fan</span></div>'
-        '<div class="cfld"><span class="ph">Ask MyPaisa about any figure</span><span class="sendb" aria-label="Send"><span class="ms">arrow_upward</span></span></div>'
+        '<div class="cfld"><span class="ph">Ask MyPaisa about any figure</span><span class="sendb" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></span></div>'
         "</div></aside>"
     )
     hero_blk = f"{hero}" if hero else ""
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
         f'<div class="bf {width_cls} mp mp-app {theme}" data-mo-frame-root="1">'
-        '<div class="pstat" aria-hidden="true"><span>9:41</span><span class="fx ac gap6"><span class="ms ms-s">signal_cellular_alt</span><span class="ms ms-s">wifi</span><span class="ms ms-s">battery_horiz_075</span></span></div>'
+        '<div class="pstat" aria-hidden="true"><span class="ms ms-s" aria-hidden="true">lock</span><span>dashboard.mypaisapp.com</span></div>'
         '<div class="mp-shell">'
         f'<aside class="mp-side mp-shell-side side" aria-label="MyPaisa"><div class="fx ac gap12 brand">{mark_svg}<span class="mp-hl">MyPaisa</span></div>{side_items}<div style="flex:1"></div><div class="mp-foot mp-ink2 side-ft">Arun · admin<br />dashboard.mypaisapp.com</div></aside>'
         '<main class="mp-shell-main"><div class="mp-pagepad">'
         f'<header class="mp-pagehead"><div><div class="mp-large">{title}</div><div class="mp-foot mp-ink2">Mon 26 Oct 2026 · Fri 23 Oct close · £1 = ₹112.50</div></div>'
         f'<div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>'
-        f'<button class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms">{eye}</span></button></div></header>'
+        f'<button class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms" aria-hidden="true">{eye}</span></button></div></header>'
         f'{hero_blk}<div class="mp-cols"><div class="mp-col">{col1}</div><div class="mp-col">{col2}</div></div>'
         '<span class="mp-foot mp-ink2">Illustrative figures from the engine and price registry; nothing here can trade.</span>'
         f"</div></main>{chat}</div>"

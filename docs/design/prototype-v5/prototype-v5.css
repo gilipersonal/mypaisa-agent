@@ -83,10 +83,13 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .w-close { display: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: var(--mp-surface-2); color: var(--mp-ink); cursor: pointer; place-items: center; }
 .w-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 0 210px; }
 .w-scroll .chat { padding: 8px 14px 0; }
+.wf .gchip { background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line); color: var(--mp-ink); }
 .w-comp { position: absolute; left: 10px; right: 10px; bottom: 12px; display: flex; flex-direction: column; gap: 8px; z-index: 5; }
 .w-comp .cfield { background: var(--mp-surface); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
 .w-comp .gchip { background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line); }
 .w-comp .cplus { background: var(--mp-surface); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
+.w-comp .csend { background: var(--mp-surface-2); color: var(--mp-ink-3); }
+.w-comp .csend.on { background: var(--mp-accent); color: var(--mp-on-accent); }
 .w-comp .chips { flex-wrap: wrap; overflow: visible; }
 /* the composer's shortcuts wrap rather than run off the edge: a chip cut by the edge is a clip (the board gate) */
 /* the composer floats over the chat's scroll edge: a fade of the ground behind it, so no line of the chat shows between
@@ -119,9 +122,20 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
   .pane-chat .w-main { visibility: hidden; }
   .w-page { padding: 14px 16px 110px; }
 }
-.ph-web { border-radius: 44px; box-shadow: 0 0 0 10px #1B1D22, 0 0 0 11.5px #3A3D44, 0 30px 70px rgba(0, 0, 0, 0.25); }
-.ph-web .bw-bar { height: 92px; padding: 44px 14px 8px; box-sizing: border-box; background: var(--mp-bg); border-bottom: 0; }
-.ph-web .bw-url { max-width: none; height: 36px; border-radius: 12px; background: var(--mp-surface-2); }
+.wf .w-sheet { background: var(--mp-surface); color: var(--mp-ink); border-radius: 20px 20px 0 0; left: 0; right: 0; bottom: 0; padding: 18px 20px 24px; max-height: calc(100% - 24px); overflow-y: auto; box-shadow: 0 -8px 36px rgba(5, 8, 14, 0.2), 0 0 0 1px var(--mp-line); box-sizing: border-box; }
+@container wf (min-width: 640px) {
+  .wf .w-sheet { left: 24px; right: 24px; top: 50%; bottom: auto; transform: translateY(-50%); max-width: 640px; margin: 0 auto; border-radius: 22px; padding: 22px 24px; max-height: calc(100% - 48px); box-shadow: 0 20px 60px rgba(5, 8, 14, 0.24), 0 0 0 1px var(--mp-line); }
+}
+.w-more { position: absolute; right: 0; top: 0; bottom: 70px; width: min(320px, 100%); background: var(--mp-bg); border-left: 1px solid var(--mp-line); box-shadow: -12px 0 40px rgba(5, 8, 14, 0.18); z-index: 50; display: flex; flex-direction: column; }
+.w-more-h { height: 56px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 18px; border-bottom: 1px solid var(--mp-line); }
+.w-more-b { flex: 1; min-height: 0; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 2px; scrollbar-width: none; }
+.w-more-b::-webkit-scrollbar { width: 0; }
+.w-more-b .mp-side-i { cursor: pointer; border: 0; background: transparent; width: 100%; text-align: left; flex: none; }
+.w-more-b .mp-side-i .ms { font-size: 20px; color: var(--mp-ink-2); }
+@container wf (min-width: 1024px) { .w-more, .dim:has(+ .w-more) { display: none; } }
+.ph-web { border-radius: 20px; box-shadow: 0 0 0 8px #1B1D22, 0 0 0 9.5px #3A3D44, 0 24px 60px rgba(0, 0, 0, 0.24); }
+.ph-web .bw-bar { height: 48px; padding: 6px 12px; box-sizing: border-box; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
+.ph-web .bw-url { max-width: none; height: 34px; border-radius: 10px; background: var(--mp-surface); }
 
 /* ---------- the iOS app, laid out by its window's width: shell 1a Chat first ----------
    from 1133 the sidebar, the screen and the chat beside it; 900 to 1132 the sidebar and the screen, the chat a
@@ -226,8 +240,14 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .lst .mp-row + .mp-row { box-shadow: inset 0 1px 0 var(--mp-line); }
 .rowbtn { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; color: inherit; font: inherit; }
 .bar { height: 8px; border-radius: 999px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); overflow: hidden; }
-.bar > i { display: block; height: 100%; border-radius: 999px; background: var(--mp-chart-line); }
-.bar.b2 > i { background: var(--mp-chart-2); } .bar.b3 > i { background: var(--mp-chart-3); } .bar.b4 > i { background: var(--mp-chart-4); } .bar.b5 > i { background: var(--mp-chart-5); }
+.bar.has-tick, .charts-a .bar.has-tick { position: relative; overflow: visible; }
+.bar-clip { display: block; width: 100%; height: 100%; border-radius: inherit; overflow: hidden; }
+.bar > i, .bar-clip > i { display: block; height: 100%; border-radius: 999px; background: var(--mp-chart-line); }
+.bar.b2 > i, .bar.b2 .bar-clip > i { background: var(--mp-chart-2); }
+.bar.b3 > i, .bar.b3 .bar-clip > i { background: var(--mp-chart-3); }
+.bar.b4 > i, .bar.b4 .bar-clip > i, .bar.over > i, .bar.over .bar-clip > i { background: var(--mp-chart-4); }
+.bar.b5 > i, .bar.b5 .bar-clip > i { background: var(--mp-chart-5); }
+.bar.grey > i, .bar.grey .bar-clip > i { background: var(--mp-ink-3); }
 .pill-meter { display: flex; gap: 3px; }
 .pill-meter i { width: 14px; height: 8px; border-radius: 3px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); display: block; }
 .pill-meter i.on { background: var(--mp-pillar-for); box-shadow: none; }

@@ -72,7 +72,7 @@ PAIRS = [
     ("presence", "track", "add-bg"),  # a bar on a success tint (MA-240 round 2)
     ("presence", "band", "hero"), ("presence", "band", "surface"),  # a chart's range band, as the Projection draws its 8 in 10 runs (MA-240)
     ("ui", "coral", "band+hero"), ("ui", "chart-line", "band+surface"),  # the line drawn over the band (a ground "a+b" is a over b)
-] + [("ui", t, b) for t in ("ccy-usd", "ccy-gbp", "ccy-eur", "ccy-jpy", "ccy-other", "asset-shares", "asset-bonds",
+] + [("ui", t, b) for t in ("ccy-usd", "ccy-gbp", "ccy-inr", "ccy-eur", "ccy-jpy", "ccy-other", "asset-shares", "asset-bonds",
                             "asset-silver", "asset-cash", "meter", "chart-line") for b in ("surface", "track")]
 # Labels on glass (glass carries labels only, never body copy): the fill composited over the worst backdrop the bar
 # keeps its look over. In light that is the darkest, the accent (over the navy hero or a member's bubble iOS turns the
@@ -82,29 +82,32 @@ GLASS_BACKDROP = "accent"
 GLASS_TEXT = [("body", "ink"), ("text", "ink-2"), ("text", "lg-accent"), ("text", "lg-up"), ("presence", "lg-mask")]
 
 
-def blocks(css: str, name: str = "a stylesheet") -> list[tuple[str, str, bool]]:
-    """Every rule in a stylesheet as (selector, body, top_level), in order: comments dropped, an @import or other
-    statement before a selector dropped, and a rule inside @media or @supports marked not top-level. The one reader
-    behind parse, ios_glass and strays, so what is measured and what is refused come from the same view."""
+def blocks_at(css: str, name: str = "a stylesheet") -> list[tuple[str, str, tuple[str, ...]]]:
+    """Every rule in a stylesheet as (selector, body, enclosing_blocks), in order: comments dropped, an @import or other
+    statement before a selector dropped, and enclosing @media, @supports or parent blocks kept in tuple order."""
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
-    out, depth, start, sels = [], 0, 0, []
+    out, start, sels = [], 0, []
     for i, ch in enumerate(css):
         if ch == "{":
             head = " ".join(css[start:i].split(";")[-1].split())
             sels.append(head)
-            depth += 1
             start = i + 1
         elif ch == "}":
-            depth -= 1
             if not sels:
                 sys.exit(f"contrast: FAIL a '}}' with no block to close in {name}: it cannot be read, so nothing in it is measured")
             head = sels.pop()
             if not head.startswith("@"):
-                out.append((head, css[start:i], depth == 0))
+                out.append((head, css[start:i], tuple(sels)))
             start = i + 1
     if sels:
         sys.exit(f"contrast: FAIL a block left open at the end of {name} ('{sels[-1]}'): a browser applies it, so it cannot be skipped")
     return out
+
+
+def blocks(css: str, name: str = "a stylesheet") -> list[tuple[str, str, bool]]:
+    """Every rule in a stylesheet as (selector, body, top_level), in order. The one reader behind parse, ios_glass and
+    strays, so what is measured and what is refused come from the same view."""
+    return [(sel, body, not enc) for sel, body, enc in blocks_at(css, name)]
 
 
 # The measured blocks: in tokens.css the first top-level ":root, .t-light" and ".t-dark"; in ios.css the first
@@ -185,11 +188,29 @@ _COLOUR = re.compile(r"#[0-9A-Fa-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|ok
                      + "|".join(_NAMED) + r")\b(?![\w-])", re.I)
 
 
+DARK_MEDIA = {
+    "tokens.css": {":root:not(.t-light):not(.t-dark)"},
+    "ios.css": {":root:not(.t-light):not(.t-dark) .mp", ":root:not(.t-light):not(.t-dark).mp"},
+}
+_HOVER_GUARDED_BOARDS = {
+    "Chart options.dc.html", "Foundations.dc.html", "Components.dc.html", "Components 2.dc.html",
+    "Kind icons.dc.html", "MyPaisa DS v1.dc.html",
+    "Web v4 · Projection.dc.html", "iPhone v4 · Projection.dc.html",
+    "Web v4 · Budget forecast.dc.html", "iPhone v4 · Budget forecast.dc.html",
+    "Web v4 · Budget forecast 1a states.dc.html", "iPhone v4 · Budget forecast 1a states.dc.html",
+    "Web v4 · Plans in the chat.dc.html", "iPhone v4 · Plans in the chat.dc.html",
+    "Web v4 · Plans in the chat 2a states.dc.html", "iPhone v4 · Plans in the chat 2a states.dc.html",
+    "Web v4 · Plans tab.dc.html", "iPhone v4 · Plans tab.dc.html",
+    "Web v4 · Plans tab 3a states.dc.html", "iPhone v4 · Plans tab 3a states.dc.html",
+}
+
+
 def strays() -> list[str]:
     """Every rule outside the measured blocks that sets an --mp-* or --lg-* token either named in the measured blocks
     or holding a colour in any form (hex, rgb, hsl, hwb, lab, lch, oklab, oklch, color(), color-mix(), or a var() of
     another token): it would paint without being measured. tokens.css, ios.css and motion.css are all read, for both
-    prefixes, and a duplicate or @media copy of a measured block counts as outside."""
+    prefixes, and a duplicate or @media copy of a measured block counts as outside — save the one system-theme mirror
+    @media (prefers-color-scheme: dark) in tokens.css and ios.css, which must match its measured .t-dark block."""
     bad = []
     found = {"tokens.css": measured("tokens.css"), "ios.css": measured("ios.css")}
     names = {("mp" if f == "tokens.css" else "lg") + "-" + k for f, fd in found.items() for _, vals in fd.values() for k in vals}
@@ -199,17 +220,67 @@ def strays() -> list[str]:
             continue
         keep = {idx for idx, _ in found.get(name, {}).values()}
         own = {"tokens.css": "mp", "ios.css": "lg"}.get(name)
-        for k, (sel, body, top) in enumerate(blocks(path.read_text(), name)):
+        seen_dark_media = False
+        for k, (sel, body, enc) in enumerate(blocks_at(path.read_text(), name)):
+            top = not enc
             if k in keep:
                 # a measured block is read for its own prefix only: the other file's tokens set here would go unmeasured
                 for tok in re.findall(r"--((?:mp|lg)-[\w-]+)\s*:", body):
                     if not tok.startswith(own + "-"):
                         bad.append(f"--{tok} is set in {name} under '{sel}', a block measured only for --{own}-* tokens")
                 continue
+            sel_set = {" ".join(x.split()) for x in sel.split(",")}
+            if (name in DARK_MEDIA and not seen_dark_media
+                    and enc == ("@media (prefers-color-scheme: dark)",) and sel_set == DARK_MEDIA[name]):
+                seen_dark_media = True
+                for tok in re.findall(r"--((?:mp|lg)-[\w-]+)\s*:", body):
+                    if not tok.startswith(own + "-"):
+                        bad.append(f"--{tok} is set in {name} under '{sel}', a block measured only for --{own}-* tokens")
+                dark_vals = {tk: tv.strip() for tk, tv in found[name]["t-dark"][1].items()}
+                decls = [(tk, tv.strip()) for tk, tv in re.findall(r"--" + own + r"-([\w-]+)\s*:\s*([^;}]+)", body)]
+                media_vals = dict(decls)
+                if len(decls) != len(media_vals) or media_vals != dark_vals:
+                    dups = {tk for tk, _ in decls if sum(1 for k2, _ in decls if k2 == tk) > 1}
+                    diff = sorted(dups | (set(dark_vals) ^ set(media_vals)) | {tk for tk in dark_vals if media_vals.get(tk) != dark_vals[tk]})
+                    bad.append(f"@media (prefers-color-scheme: dark) in {name} disagrees with its measured .t-dark block ({', '.join('--' + own + '-' + tk for tk in diff)})")
+                continue
             for tok, val in re.findall(r"--((?:mp|lg)-[\w-]+)\s*:\s*([^;]*)", body):
                 if tok in names or _COLOUR.search(val):
                     where = sel if top else f"{sel} (inside @media or @supports)"
                     bad.append(f"--{tok} is set in {name} under '{where}', outside the blocks the gate measures")
+    return bad
+
+
+def token_refs_and_hovers() -> list[str]:
+    """Every var(--mp-*) and var(--lg-*) reference in ds-v1, ios-v1, app-v1 and prototype-v5 must name a token defined
+    in ds-v1/{tokens,ios,motion}.css, and shared stylesheets / updated boards must scope bare a:hover colour rules with
+    :not([class]) so link hover never overrides a filled button's label contrast (MA-298)."""
+    bad, defined = [], set()
+    for f in ("tokens.css", "ios.css", "motion.css"):
+        p = DESIGN / "ds-v1" / f
+        if p.exists():
+            txt = re.sub(r"/\*.*?\*/", "", p.read_text(), flags=re.S)
+            defined.update(re.findall(r"--((?:mp|lg)-[\w-]+)\s*:", txt))
+    for sub in ("ds-v1", "ios-v1", "app-v1", "prototype-v5"):
+        folder = DESIGN / sub
+        if not folder.exists():
+            continue
+        for p in sorted(folder.rglob("*")):
+            if not p.is_file() or p.suffix not in (".css", ".html", ".js"):
+                continue
+            if sub in ("ios-v1", "app-v1") and p.name in COPIES:
+                continue
+            txt = p.read_text()
+            rel = f"docs/design/{sub}/{p.relative_to(folder).as_posix()}"
+            for tok in sorted(set(re.findall(r"var\(--((?:mp|lg)-[\w-]+)\s*[,)]", txt)) - defined):
+                bad.append(f"{rel} references undefined token --{tok}")
+            if p.suffix == ".css" or p.name in _HOVER_GUARDED_BOARDS:
+                styles = txt if p.suffix == ".css" else "\n".join(re.findall(r"<style[^>]*>(.*?)</style>", txt, flags=re.S | re.I))
+                for sel, body, _ in blocks_at(styles, rel):
+                    if re.search(r"(?:^|;|\s)color\s*:", body):
+                        for part in (s.strip() for s in sel.split(",")):
+                            if re.search(r"(?:^|\s)a:hover\b", part) and ":not([class])" not in part:
+                                bad.append(f"{rel} has unscoped '{part}' setting color (use a:not([class]):hover so button links keep their contrast)")
     return bad
 
 
@@ -264,6 +335,10 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "pillar-against-dim": ("ds-v1/tokens.css", r"--mp-pillar-against: #[0-9A-Fa-f]{6};", "--mp-pillar-against: #EBD9BC;", r"t-light .* pillar-against on surface"),
     "asset-lost": ("ds-v1/tokens.css", r"--mp-asset-bonds: #[0-9A-Fa-f]{6};", "--mp-asset-bonds: #D2D0D8;", r"t-light .* asset-bonds on (surface|track)"),
     "currency-on-surface": ("ds-v1/tokens.css", r"--mp-ccy-usd: #[0-9A-Fa-f]{6};", "--mp-ccy-usd: #D6E0F7;", r"t-light .* ccy-usd on surface"),
+    "ccy-inr-dim": ("ds-v1/tokens.css", r"--mp-ccy-inr: #[0-9A-Fa-f]{6};", "--mp-ccy-inr: #EBD9BC;", r"t-light .* ccy-inr on (surface|track)"),
+    "dark-media-mismatch": ("ds-v1/tokens.css", r"(@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\.t-light\):not\(\.t-dark\) \{\s*--mp-bg: )#[0-9A-Fa-f]{6};", r"\1#111827;", r"prefers-color-scheme: dark.*tokens\.css disagrees.*--mp-bg"),
+    "undefined-var-token": ("ds-v1/tokens.css", r"\Z", "\n.x { color: var(--mp-uk); }\n", r"ds-v1/tokens\.css references undefined token --mp-uk"),
+    "unscoped-a-hover": ("ds-v1/tokens.css", r"\Z", "\na:hover { color: var(--mp-accent); }\n", r"ds-v1/tokens\.css has unscoped 'a:hover' setting color"),
 }
 
 
@@ -373,6 +448,9 @@ def main(argv: list[str]) -> int:
                 figs = "" if full is None else f"{full:5.2f}:1, {dim:4.2f}:1 at 25%"
                 print(f"{'ok  ' if ok else 'FAIL'} {theme:7} {tier:4} {name:34} {figs} (needs {lo_full}, {lo_dim}){' ' + why if why else ''}")
     for why in strays():
+        bad += 1
+        print(f"FAIL {why}")
+    for why in token_refs_and_hovers():
         bad += 1
         print(f"FAIL {why}")
     for path in copies():

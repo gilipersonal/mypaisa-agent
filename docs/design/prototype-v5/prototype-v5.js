@@ -36,13 +36,13 @@
 
   /* the web app's navigation, and the app's (shell 1a: Chat · Home · Activity · You, and the search circle) */
   var NAV = [
-    { sec: 'Money', items: [['home', 'Home', 'home'], ['assets', 'Assets', 'account_balance_wallet'], ['debts', 'Debts', 'credit_card'], ['budget', 'Budget', 'pie_chart'], ['projection', 'Projection', 'show_chart'], ['plans', 'Plans', 'event_note']] },
+    { sec: 'Money', items: [['home', 'Home', 'home'], ['assets', 'Assets', 'account_balance_wallet'], ['debts', 'Debts', 'credit_card'], ['budget', 'Budget', 'pie_chart'], ['projection', 'Projection', 'show_chart'], ['plans', 'Plans', 'event_note'], ['reports', 'Reports', 'summarize']] },
     { sec: 'Investing', items: [['holdings', 'Holdings', 'candlestick_chart'], ['overlap', 'Overlap', 'join'], ['track', 'Track record', 'fact_check'], ['news', 'News and events', 'newspaper']] },
     { sec: 'Household', items: [['activity', 'Activity', 'history'], ['audit', 'Audit', 'receipt_long'], ['files', 'Files', 'folder'], ['you', 'You', 'person']] },
     { sec: 'Admin', admin: true, items: [['admin', 'Admin center', 'admin_panel_settings'], ['team', 'Agent team', 'groups']] }
   ];
   var APP_TABS = [['chat', 'Chat', 'chat_bubble'], ['home', 'Home', 'home'], ['activity', 'Activity', 'history'], ['you', 'You', 'person']];
-  var WEB_TABS = APP_TABS;
+  var WEB_TABS = [['chat', 'Chat', 'chat_bubble'], ['home', 'Home', 'home'], ['activity', 'Activity', 'history'], ['you', 'You', 'person'], ['more', 'More', 'menu']];
   MP5.NAV = NAV;
 
   /* ---------- the clock ---------- */
@@ -119,7 +119,7 @@
 
   /* ---------- state ---------- */
   var CHARTS = [['a', 'A · Pulse'], ['b', 'B · Editorial'], ['c', 'C · Modular'], ['classic', 'Classic']];
-  var st = { door: 'desk', dark: false, priv: false, charts: 'a', viewer: 'arun', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null };
+  var st = { door: 'desk', dark: false, priv: false, charts: 'a', viewer: 'arun', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null, moreOpen: false, sheetOff: false };
   MP5.state = function () { return st; };
   function load() {
     try {
@@ -176,13 +176,15 @@
   }
   function composer(ctx, cls) {
     var c = (ctx.step && ctx.step.composer) || {};
+    var g = ctx.web ? '' : ' lg';
+    var sendOn = (c.typed || c.files) ? (ctx.web ? ' on' : ' lg-tint') : '';
     var chips = c.chips || [['Add something', 'add', 'chip:add'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']];
-    var sug = c.sug ? '<button type="button" class="gchip lg"' + K.go(c.sug[1]) + '>' + K.ms('north_east') + '<span>' + c.sug[0] + '</span></button>' : '';
+    var sug = c.sug ? '<button type="button" class="gchip' + g + '"' + K.go(c.sug[1]) + '>' + K.ms('north_east') + '<span>' + c.sug[0] + '</span></button>' : '';
     var typed = c.typed ? '<span class="txt">' + c.typed + '</span>' : '<span class="ph">' + (c.ph || 'Ask or tell MyPaisa…') + '</span>';
     var files = c.files ? '<span class="txt fx ac g6">' + c.files.map(function (f) { return K.ms('picture_as_pdf') + K.esc(f); }).join(' ') + '</span>' : '';
-    return '<div class="' + cls + '"><div class="chips">' + sug + chips.map(function (x) { return '<button type="button" class="gchip lg"' + K.go(x[2]) + '>' + K.ms(x[1]) + '<span>' + x[0] + '</span></button>'; }).join('') + '</div>' +
-      '<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach a file"' + K.go(c.plus || 'plus') + '>' + K.ms('add') + '</button><div class="cfield lg">' + (files || typed) +
-      '<button type="button" class="csend' + (c.typed || c.files ? ' lg-tint' : '') + '" aria-label="Send"' + K.go(c.send || 'send') + '>' + K.ms('arrow_upward') + '</button></div></div></div>';
+    return '<div class="' + cls + '"><div class="chips">' + sug + chips.map(function (x) { return '<button type="button" class="gchip' + g + '"' + K.go(x[2]) + '>' + K.ms(x[1]) + '<span>' + x[0] + '</span></button>'; }).join('') + '</div>' +
+      '<div class="cbar"><button type="button" class="cplus' + g + '" aria-label="Attach a file"' + K.go(c.plus || 'plus') + '>' + K.ms('add') + '</button><div class="cfield' + g + '">' + (files || typed) +
+      '<button type="button" class="csend' + sendOn + '" aria-label="Send"' + K.go(c.send || 'send') + '>' + K.ms('arrow_upward') + '</button></div></div></div>';
   }
   function strip(ctx) {
     var T = ctx.W.T || {};
@@ -193,6 +195,7 @@
   /* ---------- the frames ---------- */
   function sideWeb(ctx, active) {
     var h = '<nav class="w-side" aria-label="MyPaisa"><div class="w-brand"><div class="ai-mark"><i></i></div><span>MyPaisa</span></div>';
+    h += '<button type="button" class="mp-side-i' + (active === 'search' ? ' on' : '') + '"' + K.go('nav:search') + '>' + K.ms('search') + '<span>Search</span></button>';
     NAV.forEach(function (g) {
       if (g.admin && !ctx.isAdmin) return;
       h += '<div class="w-sec">' + g.sec + '</div>';
@@ -202,7 +205,7 @@
   }
   function sideApp(ctx, active) {
     var h = '<nav class="sidebar lg" aria-label="MyPaisa"><div class="side-h">MyPaisa</div>';
-    h += '<button type="button" class="side-i"' + K.go('nav:search') + '>' + K.ms('search') + '<span>Search</span></button>';
+    h += '<button type="button" class="side-i' + (active === 'search' ? ' on' : '') + '"' + K.go('nav:search') + '>' + K.ms('search') + '<span>Search</span></button>';
     NAV.forEach(function (g) {
       if (g.admin && !ctx.isAdmin) return;
       h += '<div class="side-h">' + g.sec + '</div>';
@@ -211,11 +214,27 @@
     return h + '</nav>';
   }
   function themeCls() { return 'mp' + (st.dark ? ' t-dark' : ' t-light') + (st.priv ? ' privon' : '') + ' charts-' + st.charts; }
-  function overlays(ctx) {
+  function moreDrawer(ctx, active) {
+    var h = '<div class="dim"' + K.go('more:close') + '></div><nav class="w-more" role="dialog" aria-modal="true" aria-label="All sections">' +
+      '<div class="w-more-h"><span class="mp-hl">Sections</span><button type="button" class="iconbtn" aria-label="Close sections"' + K.go('more:close') + '>' + K.ms('close') + '</button></div>' +
+      '<div class="w-more-b"><button type="button" class="mp-side-i' + (active === 'search' ? ' on' : '') + '"' + K.go('nav:search') + '>' + K.ms('search') + '<span>Search</span></button>';
+    NAV.forEach(function (g) {
+      if (g.admin && !ctx.isAdmin) return;
+      h += '<div class="w-sec">' + g.sec + '</div>';
+      g.items.forEach(function (i) { h += '<button type="button" class="mp-side-i' + (active === i[0] ? ' on' : '') + '"' + K.go('nav:' + i[0]) + '>' + K.ms(i[2]) + '<span>' + i[1] + '</span></button>'; });
+    });
+    return h + '</div></nav>';
+  }
+  function overlays(ctx, active) {
     var h = '';
-    var sheet = ctx.step && ctx.step.sheet ? ctx.step.sheet(ctx) : null;
-    if (sheet) h += '<div class="dim"' + K.go(ctx.step.sheetClose || null) + '></div><div class="sheet lg">' + '<div class="sheet-grab"></div>' + sheet + '</div>';
-    if (st.toast) h += '<div class="mp-toast" style="position:absolute;left:50%;bottom:120px;transform:translateX(-50%);z-index:60;max-width:80%">' + st.toast + '</div>';
+    var sheet = (!st.sheetOff && ctx.step && ctx.step.sheet) ? ctx.step.sheet(ctx) : null;
+    if (sheet) {
+      var closeKey = (ctx.step && ctx.step.sheetClose) || 'sheet:dismiss';
+      if (ctx.web) h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet w-sheet" role="dialog" aria-modal="true">' + sheet + '</div>';
+      else h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet lg" role="dialog" aria-modal="true"><div class="sheet-grab"></div>' + sheet + '</div>';
+    }
+    if (ctx.web && st.moreOpen) h += moreDrawer(ctx, active);
+    if (st.toast) h += '<div class="mp-toast" role="status" aria-live="polite" style="position:absolute;left:50%;bottom:120px;transform:translateX(-50%);z-index:60;max-width:80%">' + st.toast + '</div>';
     return h;
   }
   /* One web frame and one app frame, each laid out by its own width with container queries (prototype-v5.css),
@@ -226,15 +245,16 @@
   /* which tab a page belongs to on the doors with a tab bar (shell 1a: Chat · Home · Activity · You) */
   var TAB_OF = { activity: 'activity', run: 'activity', audit: 'activity', files: 'activity', file: 'activity',
     you: 'you', notifications: 'you', admin: 'you', team: 'you', search: '' };
-  function tabOn(t, pane, p) { if (pane === 'chat') return t === 'chat'; var o = TAB_OF[p.key]; return t === (o == null ? 'home' : o); }
+  function tabOn(t, pane, p) { if (t === 'more') return !!st.moreOpen; if (st.moreOpen) return false; if (pane === 'chat') return t === 'chat'; var o = TAB_OF[p.key]; return t === (o == null ? 'home' : o); }
   function frameWeb(ctx, p, pane, d) {
-    var tabs = '<div class="w-tabs"><nav class="mp-tabbar">' + WEB_TABS.map(function (t) {
-      return '<button type="button" class="mp-tab' + (tabOn(t[0], pane, p) ? ' on' : '') + '"' + K.go('tab:' + t[0]) + '>' + K.ms(t[2]) + '<span>' + t[1] + '</span></button>'; }).join('') + '</nav></div>';
+    var tabs = '<div class="w-tabs"><nav class="mp-tabbar" aria-label="Sections">' + WEB_TABS.map(function (t) {
+      var on = tabOn(t[0], pane, p);
+      return '<button type="button" class="mp-tab' + (on ? ' on' : '') + '"' + (t[0] === 'more' ? ' aria-expanded="' + (!!st.moreOpen) + '"' : '') + K.go('tab:' + t[0]) + '>' + K.ms(t[2]) + '<span>' + t[1] + '</span></button>'; }).join('') + '</nav></div>';
     var chat = '<aside class="w-chat" aria-label="The chat"><div class="w-chat-h"><div class="ai-mark"><i></i></div><span class="f1">The chat</span><span class="mp-foot mp-ink2 w-who">' + ctx.who + '’s conversation</span>' +
       '<button type="button" class="gbtn w-close" aria-label="Close the chat"' + K.go('tab:' + p.key) + '>' + K.ms('close') + '</button></div>' +
       '<div class="w-scroll pscroll" data-scroll="chat">' + drawChat(ctx) + '</div>' + composer(ctx, 'w-comp') + '</aside>';
     var body = '<div class="bw-body">' + sideWeb(ctx, p.key) + '<main class="w-main pscroll" data-scroll="page"><div class="w-page">' + pageHead(ctx, p) + p.body + '</div></main>' +
-      chat + '<button type="button" class="w-ask mp-btn mp-btn-primary"' + K.go('tab:chat') + '>' + K.ms('chat_bubble') + '<span>Ask</span></button>' + tabs + overlays(ctx) + '</div>';
+      chat + '<button type="button" class="w-ask mp-btn mp-btn-primary"' + K.go('tab:chat') + '>' + K.ms('chat_bubble') + '<span>Ask</span></button>' + tabs + overlays(ctx, p.key) + '</div>';
     /* a phone's browser shows the site's name only, as Safari and Chrome do on a phone; a laptop's shows the path */
     var url = 'dashboard.mypaisapp.com' + (d.id === 'pweb' || p.key === 'home' ? '' : '/' + K.esc(p.id));
     return '<div class="bw wf ' + (d.id === 'pweb' ? 'ph-web ' : '') + 'pane-' + pane + ' ' + themeCls() + '"><div class="bw-bar">' + (d.id === 'pweb' ? '' : '<span class="bw-dots"><i></i><i></i><i></i></span>') +
@@ -243,24 +263,24 @@
   function frameApp(ctx, p, pane, d) {
     var sys = system(ctx);
     var tm = ctx.tm ? ctx.tm.replace(/^0/, '') : '9:41';
-    var sbar = '<div class="sbar"><span>' + tm + '</span><span class="sbar-ic">' + (d.id === 'ios' ? '<span class="ms">signal_cellular_alt</span>' : '') + '<span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>';
+    var sbar = '<div class="sbar"><span>' + tm + '</span><span class="sbar-ic">' + (d.id === 'ios' ? '<span class="ms" aria-hidden="true">signal_cellular_alt</span>' : '') + '<span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>';
     var devCls = { ios: 'dev-iphone', ipad: 'dev-ipad-l ipad', fold: 'dev-fold-open ipad' }[d.id];
     var inner;
     if (sys) inner = '<div class="ap-sys">' + sys + '</div>';
     else {
-      var nav = '<div class="ip-nav">' + (p.back ? '<button type="button" class="gbtn lg" aria-label="Back"' + K.go(p.back.go || 'back') + '><span class="ms z1">chevron_left</span></button>' : '') + '<span class="f1"></span>' +
-        '<span class="ggroup lg"><button type="button" class="gbtn" aria-label="Privacy mode"' + K.go('priv') + '><span class="ms z1">' + (st.priv ? 'visibility_off' : 'visibility') + '</span></button>' +
-        '<button type="button" class="gbtn ap-srch" aria-label="Search"' + K.go('nav:search') + '><span class="ms z1">search</span></button></span></div>';
+      var nav = '<div class="ip-nav">' + (p.back ? '<button type="button" class="gbtn lg" aria-label="Back"' + K.go(p.back.go || 'back') + '><span class="ms z1" aria-hidden="true">chevron_left</span></button>' : '') + '<span class="f1"></span>' +
+        '<span class="ggroup lg"><button type="button" class="gbtn" aria-label="Privacy mode" aria-pressed="' + st.priv + '"' + K.go('priv') + '><span class="ms z1" aria-hidden="true">' + (st.priv ? 'visibility_off' : 'visibility') + '</span></button>' +
+        '<button type="button" class="gbtn ap-srch" aria-label="Search"' + K.go('nav:search') + '><span class="ms z1" aria-hidden="true">search</span></button></span></div>';
       var main = '<div class="ip-main">' + nav + '<div class="pscroll" data-scroll="page"><div class="pcontent">' + pageHead(ctx, Object.assign({}, p, { back: null })) + p.body + '</div></div><div class="edge-bot ap-edge"></div></div>';
-      var chat = '<aside class="ip-chat" aria-label="The chat">' + strip(ctx) + '<button type="button" class="gbtn lg ap-close" aria-label="Close the chat"' + K.go('tab:' + p.key) + '><span class="ms z1">close</span></button>' +
+      var chat = '<aside class="ip-chat" aria-label="The chat">' + strip(ctx) + '<button type="button" class="gbtn lg ap-close" aria-label="Close the chat"' + K.go('tab:' + p.key) + '><span class="ms z1" aria-hidden="true">close</span></button>' +
         '<div class="pscroll" data-scroll="chat"><div class="pchatpad">' + drawChat(ctx) + '</div></div><div class="edge-bot ap-edge"></div>' + composer(ctx, 'composer') + '</aside>';
-      var tabs = APP_TABS.map(function (t) { return '<button type="button" class="tab' + (tabOn(t[0], pane, p) ? ' on' : '') + '"' + K.go('tab:' + t[0]) + '><span class="ms z1">' + t[2] + '</span><span class="z1">' + t[1] + '</span></button>'; }).join('');
+      var tabs = APP_TABS.map(function (t) { return '<button type="button" class="tab' + (tabOn(t[0], pane, p) ? ' on' : '') + '"' + K.go('tab:' + t[0]) + '><span class="ms z1" aria-hidden="true">' + t[2] + '</span><span class="z1">' + t[1] + '</span></button>'; }).join('');
       inner = '<div class="ap-row">' + sideApp(ctx, p.key) + main + chat + '</div>' +
         '<div class="ap-top lg">' + tabs + '</div>' +
-        '<div class="tabdock ap-dock"><div class="tabs lg">' + tabs + '</div><button type="button" class="tabsearch lg" aria-label="Search"' + K.go('nav:search') + '><span class="ms z1">search</span></button></div>' +
-        '<button type="button" class="gtext lg-tint ap-ask"' + K.go('tab:chat') + '><span class="ms z1">chat_bubble</span><span class="z1">Ask</span></button>';
+        '<div class="tabdock ap-dock"><div class="tabs lg">' + tabs + '</div><button type="button" class="tabsearch lg" aria-label="Search"' + K.go('nav:search') + '><span class="ms z1" aria-hidden="true">search</span></button></div>' +
+        '<button type="button" class="gtext lg-tint ap-ask"' + K.go('tab:chat') + '><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button>';
     }
-    return '<div class="dev af ' + devCls + ' pane-' + pane + ' ' + themeCls() + '">' + (d.id === 'ios' ? '<div class="island"></div>' : '') + sbar + inner + overlays(ctx) + (d.id === 'ios' ? '<div class="homebar"></div>' : '') + '</div>';
+    return '<div class="dev af ' + devCls + ' pane-' + pane + ' ' + themeCls() + '">' + (d.id === 'ios' ? '<div class="island"></div>' : '') + sbar + inner + overlays(ctx, p.key) + (d.id === 'ios' ? '<div class="homebar"></div>' : '') + '</div>';
   }
 
   /* ---------- the control bar ---------- */
@@ -269,9 +289,9 @@
     h += '<span class="pgrp"><span class="plbl">Door</span><span class="pseg" role="group" aria-label="Door">' + DOORS.map(function (d) { return '<button type="button" class="' + (d.id === st.door ? 'on' : '') + '" data-go="door:' + d.id + '">' + d.t + '</button>'; }).join('') + '</span></span>';
     h += '<span class="pgrp"><span class="plbl">Theme</span><span class="pseg" role="group" aria-label="Theme"><button type="button" class="' + (!st.dark ? 'on' : '') + '" data-go="theme:light">Light</button><button type="button" class="' + (st.dark ? 'on' : '') + '" data-go="theme:dark">Dark</button></span></span>';
     h += '<span class="pgrp"><span class="plbl">Charts</span><span class="pseg" role="group" aria-label="Charts">' + CHARTS.map(function (m) { return '<button type="button" class="' + (m[0] === st.charts ? 'on' : '') + '" data-go="charts:' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</span></span>';
-    h += '<button type="button" class="pbtn' + (st.priv ? ' on' : '') + '" aria-pressed="' + st.priv + '" data-go="priv"><span class="ms">' + (st.priv ? 'visibility_off' : 'visibility') + '</span>Privacy</button>';
+    h += '<button type="button" class="pbtn' + (st.priv ? ' on' : '') + '" aria-pressed="' + st.priv + '" data-go="priv"><span class="ms" aria-hidden="true">' + (st.priv ? 'visibility_off' : 'visibility') + '</span>Privacy</button>';
     h += '<span class="pgrp"><span class="plbl">Viewer</span><span class="pseg" role="group" aria-label="Viewer"><button type="button" class="' + (st.viewer === 'arun' ? 'on' : '') + '" data-go="viewer:arun">Arun</button><button type="button" class="' + (st.viewer === 'asha' ? 'on' : '') + '" data-go="viewer:asha">Asha</button></span></span>';
-    h += '<span class="pf1"></span><button type="button" class="pbtn" data-go="restart"><span class="ms">restart_alt</span>Restart</button></div>';
+    h += '<span class="pf1"></span><button type="button" class="pbtn" data-go="restart"><span class="ms" aria-hidden="true">restart_alt</span>Restart</button></div>';
     h += '<nav class="pchaps" aria-label="Phases">' + c.cs.map(function (ch, i) { return '<button type="button" class="pch' + (i === st.ci ? ' on' : st.seen[ch.key] ? ' seen' : '') + '" data-go="ch:' + i + '" title="' + K.esc(ch.title) + '"><b>' + K.esc(ch.n) + '</b>' + K.esc(ch.short || ch.title) + '</button>'; }).join('') + '</nav>';
     var steps = c.ch ? c.ch.steps : [];
     h += '<nav class="psteps" aria-label="Steps">' + steps.map(function (s, i) { return '<button type="button" class="pst' + (i === st.si ? ' on' : i < st.si ? ' done' : '') + '" aria-current="' + (i === st.si) + '" data-go="st:' + i + '"><b>' + (i + 1) + '</b>' + K.esc(s.t) + '</button>'; }).join('') + '</nav>';
@@ -280,8 +300,8 @@
     h += '<div class="pguide" aria-live="polite"><span class="pgd">' + K.esc((s.d || '') + (s.tm ? ' · ' + s.tm : '')) + '</span>' + (c.ch ? '<span class="pgt">' + K.esc(c.ch.title) + '</span>' : '') +
       (s.draft ? '<span class="pdraft">Draft, not picked</span>' : s.picked ? '<span class="ppicked">' + K.esc(s.picked) + '</span>' : '') +
       '<span class="pgh">' + (s.g || '') + '</span>' +
-      '<button type="button" class="pbtn" data-go="prev"' + (st.ci === 0 && st.si === 0 ? ' disabled' : '') + '><span class="ms">arrow_back</span>Back</button>' +
-      '<button type="button" class="pbtn go" data-go="next"' + (last ? ' disabled' : '') + '>' + K.esc(s.nextT || (st.si === steps.length - 1 ? 'Next phase' : 'Next')) + '<span class="ms">arrow_forward</span></button></div></header>';
+      '<button type="button" class="pbtn" data-go="prev"' + (st.ci === 0 && st.si === 0 ? ' disabled' : '') + '><span class="ms" aria-hidden="true">arrow_back</span>Back</button>' +
+      '<button type="button" class="pbtn go" data-go="next"' + (last ? ' disabled' : '') + '>' + K.esc(s.nextT || (st.si === steps.length - 1 ? 'Next phase' : 'Next')) + '<span class="ms" aria-hidden="true">arrow_forward</span></button></div></header>';
     return h;
   }
 
@@ -294,7 +314,7 @@
     var pid = pageId(ctx), p = drawPage(ctx, pid);
     var focus = st.pane || (c.step && c.step.focus) || (c.step && c.step.page ? 'page' : 'chat');
     var frame = (d.web ? frameWeb : frameApp)(ctx, p, focus, d);
-    var key = st.ci + ':' + st.si + ':' + st.door + ':' + pid + ':' + focus + ':' + st.charts;
+    var key = st.ci + ':' + st.si + ':' + st.door + ':' + pid + ':' + focus + ':' + st.charts + ':' + (st.moreOpen ? 1 : 0) + ':' + (st.sheetOff ? 1 : 0);
     var keep = {};
     if (key === lastKey) root.querySelectorAll('.pscroll[data-scroll]').forEach(function (e) { keep[e.getAttribute('data-scroll')] = e.scrollTop; });
     root.innerHTML = '<div class="pv5">' + topBar(c, ctx) + '<main class="pstage"><div class="pwrap"><div class="pframe" data-screen-label="' + K.esc(d.t + ' · ' + c.ch.title + ' · ' + (c.step ? c.step.t : '')) + '">' + frame + '</div></div></main></div>';
@@ -341,7 +361,7 @@
     ci = Math.max(0, Math.min(cs.length - 1, ci));
     si = Math.max(0, Math.min(cs[ci].steps.length - 1, si));
     if (cs[st.ci]) st.seen[cs[st.ci].key] = true;
-    st.ci = ci; st.si = si; st.view = null; st.pane = null; st.hist = []; st.toast = null; st.open = {};
+    st.ci = ci; st.si = si; st.view = null; st.pane = null; st.hist = []; st.toast = null; st.open = {}; st.moreOpen = false; st.sheetOff = false;
     var s = cs[ci].steps[si];
     st.viewer = (s && s.viewer) || cs[ci].viewer || 'arun';
     if (s && s.open) s.open.forEach(function (k) { st.open[k] = true; });
@@ -354,7 +374,7 @@
   function act(key) {
     var c = cur(), s = c.step || {};
     if (!key) return;
-    if (key.indexOf('door:') === 0) { st.door = key.slice(5); st.pane = null; save(); }
+    if (key.indexOf('door:') === 0) { st.door = key.slice(5); st.pane = null; st.moreOpen = false; save(); }
     else if (key === 'theme:dark' || key === 'theme:light') { st.dark = key === 'theme:dark'; save(); }
     else if (key.indexOf('charts:') === 0) { var cm = key.slice(7); if (['a', 'b', 'c', 'classic'].indexOf(cm) >= 0) { st.charts = cm; save(); } }
     else if (key === 'priv') st.priv = !st.priv;
@@ -364,17 +384,21 @@
     else if (key === 'next') next();
     else if (key === 'prev') prev();
     else if (key === 'restart') { st.seen = {}; st.viewer = 'arun'; st.priv = false; goStep(0, 0); }
+    else if (key === 'tab:more') { st.moreOpen = !st.moreOpen; }
+    else if (key === 'more:close') { st.moreOpen = false; }
+    else if (key === 'sheet:dismiss') { st.sheetOff = true; }
     else if (s.on && s.on[key] != null) {
       var h = s.on[key];
       if (typeof h === 'function') h(st, MP5); else return act(h);
     }
     else if (key === s.target) next();
     else if (key.indexOf('nav:') === 0 || key.indexOf('tab:') === 0) {
+      st.moreOpen = false;
       var id = key.slice(4);
       if (id === 'chat') st.pane = 'chat';
       else { if (st.view || (s.page && pageId(ctxFor(c.ch, s)) !== id)) st.hist.push(st.view || pageId(ctxFor(c.ch, s))); st.view = id; st.pane = 'page'; }
     }
-    else if (key === 'back') { st.view = st.hist.length ? st.hist.pop() : null; if (st.view === null && s.page) st.view = null; st.pane = 'page'; }
+    else if (key === 'back') { st.moreOpen = false; st.view = st.hist.length ? st.hist.pop() : null; if (st.view === null && s.page) st.view = null; st.pane = 'page'; }
     else if (key.indexOf('fold:') === 0) { var f = key.slice(5); st.open[f] = !st.open[f]; }
     else if (key.indexOf('open:') === 0) { st.open[key.slice(5)] = true; }
     else toast('Not part of this walk-through. Follow the ring, or press Next.');
@@ -383,20 +407,18 @@
   MP5.act = act;
   MP5.go = function (ci, si) { goStep(ci, si); render(); };
 
-  function showScrub(box, clientX) {
+  function parseScrub(box) {
+    if (st.priv || !box) return null;
     var raw = box.getAttribute('data-scrub'), ui = box.querySelector('.mp5-scrub');
-    if (!raw || !ui) return;
+    if (!raw || !ui) return null;
     var pts;
-    try { pts = JSON.parse(raw); } catch (e) { return; }
-    if (!pts || !pts.length) return;
-    var r = box.getBoundingClientRect();
-    if (!r.width) return;
-    var px = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
-    var best = pts[0], bd = Math.abs(pts[0].x - px);
-    for (var i = 1; i < pts.length; i++) {
-      var dist = Math.abs(pts[i].x - px);
-      if (dist < bd) { bd = dist; best = pts[i]; }
-    }
+    try { pts = JSON.parse(raw); } catch (e) { return null; }
+    return (pts && pts.length) ? { pts: pts, ui: ui } : null;
+  }
+  function renderScrubPt(box, ui, pts, idx) {
+    idx = Math.max(0, Math.min(pts.length - 1, idx));
+    box.setAttribute('data-scrub-idx', String(idx));
+    var best = pts[idx];
     var line = ui.querySelector('.mp5-scrub-line'), dot = ui.querySelector('.mp5-scrub-dot'), tip = ui.querySelector('.mp5-scrub-tip');
     if (line) line.style.left = best.x.toFixed(2) + '%';
     if (dot) {
@@ -416,6 +438,19 @@
       tip.style.transform = 'translateX(-' + tx.toFixed(1) + '%)';
     }
     ui.classList.add('on');
+  }
+  function showScrub(box, clientX) {
+    var sc = parseScrub(box);
+    if (!sc) return;
+    var r = box.getBoundingClientRect();
+    if (!r.width) return;
+    var px = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+    var bi = 0, bd = Math.abs(sc.pts[0].x - px);
+    for (var i = 1; i < sc.pts.length; i++) {
+      var dist = Math.abs(sc.pts[i].x - px);
+      if (dist < bd) { bd = dist; bi = i; }
+    }
+    renderScrubPt(box, sc.ui, sc.pts, bi);
   }
   function hideScrub(box) {
     if (!box) return;
@@ -443,8 +478,8 @@
     if (qt) st.dark = qt[1] === 'dark';
     if (/[?&]priv=1\b/.test(location.search)) st.priv = true;
     root.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t && root.contains(t)) { e.preventDefault(); act(t.getAttribute('data-go')); } });
+    var activeBox = null;
     if (location.search.indexOf('static=1') < 0) {
-      var activeBox = null;
       root.addEventListener('pointermove', function (e) {
         var b = e.target.closest && e.target.closest('[data-scrub]');
         if (activeBox && activeBox !== b) hideScrub(activeBox);
@@ -457,8 +492,45 @@
         activeBox = b;
         if (b && root.contains(b)) showScrub(b, e.clientX);
       });
+      root.addEventListener('pointerup', function (e) {
+        if (e.pointerType === 'touch' && activeBox) { hideScrub(activeBox); activeBox = null; }
+      });
+      root.addEventListener('pointercancel', function () { if (activeBox) { hideScrub(activeBox); activeBox = null; } });
       root.addEventListener('pointerleave', function () { if (activeBox) { hideScrub(activeBox); activeBox = null; } });
+      root.addEventListener('focusout', function (e) {
+        var b = e.target.closest && e.target.closest('[data-scrub]');
+        if (b && (!e.relatedTarget || !b.contains(e.relatedTarget))) { hideScrub(b); if (activeBox === b) activeBox = null; }
+      });
     }
+    window.addEventListener('keydown', function (e) {
+      var b = e.target && e.target.closest && e.target.closest('[data-scrub]');
+      if (b && root && root.contains(b) && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+        var sc = parseScrub(b);
+        if (sc) {
+          e.preventDefault();
+          var curIdx = parseInt(b.getAttribute('data-scrub-idx') || '-1', 10);
+          var nextIdx = curIdx < 0 ? (e.key === 'ArrowRight' ? 0 : sc.pts.length - 1) : curIdx + (e.key === 'ArrowRight' ? 1 : -1);
+          activeBox = b;
+          renderScrubPt(b, sc.ui, sc.pts, nextIdx);
+          return;
+        }
+      }
+      if (e.key === 'Escape' && root) {
+        if (b && root.contains(b) && b.querySelector('.mp5-scrub.on')) {
+          e.preventDefault();
+          hideScrub(b);
+          if (activeBox === b) activeBox = null;
+          return;
+        }
+        if (activeBox) { hideScrub(activeBox); activeBox = null; }
+        if (st.moreOpen) { e.preventDefault(); act('more:close'); return; }
+        var c = cur(), ctx = ctxFor(c.ch, c.step);
+        if (!st.sheetOff && c.step && c.step.sheet && c.step.sheet(ctx)) {
+          e.preventDefault();
+          act(c.step.sheetClose || 'sheet:dismiss');
+        }
+      }
+    });
     var rt = null;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { fit(door(st.door)); }, 60); });
     goStep(st.ci, st.si);

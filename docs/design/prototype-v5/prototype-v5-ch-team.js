@@ -68,6 +68,7 @@
     '.pv5-team-ink .pv5-team-homebar, .pv5-team-homebar.pv5-team-dk { background: var(--mp-ink); }',
     '.pv5-team-mark { width: 13px; height: 13px; border-radius: 50%; background: var(--mp-coral); box-shadow: 0 0 0 3px var(--mp-hero), 0 0 0 4.5px var(--mp-coral); display: inline-block; flex: none; margin: 4px; }',
     '.pv5-team-wg { border-radius: 22px; padding: 14px 16px; display: flex; flex-direction: column; gap: 3px; color: var(--lg-ink); text-align: left; border: 0; cursor: pointer; font: inherit; }',
+    '.wf .pv5-team-wg { background: var(--mp-surface-2); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line); }',
     '.pv5-team-wg > * { position: relative; z-index: 1; }',
     '.pv5-team-wg-h { display: flex; align-items: center; gap: 6px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); }',
     '.pv5-team-wg-v { font: 800 30px/34px var(--mp-font-round); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }',
@@ -141,14 +142,14 @@
   function mins(iso) { return (+iso.slice(11, 13)) * 60 + (+iso.slice(14, 16)); }
   function clock(m) { m = Math.max(0, m); return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
   /* data text: escaped, with every £, $ and ₹ amount inside a privacy mask */
-  function mz(s) { return K.esc(s).replace(/'/g, '’').replace(/([£$₹€])(\d[\d,]*(?:\.\d+)?)/g, '<span class="mny">$1$2</span>'); }
+  function mz(s) { return K.esc(s).replace(/'/g, '’').replace(/([£$₹€])(\d[\d,]*(?:\.\d+)?)/g, function (_, c, n) { return K.mny(c + n); }); }
   function usd2(n) { return K.usd(n, { dp: 2 }); }
-  function fxLine() { return K.gbp(1) + ' = <span class="mny">₹112.50</span>'; }
+  function fxLine() { return K.gbp(1) + ' = ' + K.mny('₹112.50'); }
   function draftNote() { return K.note('edit_note', 'Draft, not picked: drawn straight into the prototype in the v4 design; Arun’s pick comes through MA-279.'); }
   function sec(t) { return '<p class="pv5-team-sec">' + t + '</p>'; }
   function dl(rows) { return '<dl class="pv5-team-dl" style="margin:0">' + rows.filter(Boolean).map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('') + '</dl>'; }
   function tbl(cols, head, rows, tot) {
-    var num = function (c) { return /^[−+\d$£₹]|^<span class="mny"/.test(String(c)); };
+    var num = function (c) { return /^[−+\d$£₹]|^<span class="mny\b/.test(String(c)); };
     var numCol = (rows[0] || []).map(function (c, i) { return i > 0 && num(c); });
     var row = function (r, cls) { return '<div' + (cls ? ' class="' + cls + '"' : '') + '>' + r.map(function (c, i) { return '<span' + (numCol[i] ? ' class="pv5-team-n"' : '') + '>' + c + '</span>'; }).join('') + '</div>'; };
     return '<div class="pv5-team-tbl" style="--pv5-team-cols:' + cols + '">' + row(head) + rows.map(function (r) { return row(r); }).join('') + (tot ? row(tot, 'pv5-team-tot') : '') + '</div>';
@@ -486,7 +487,7 @@
     var d = D(), I = d.india, a = asset(id), t = ctx.t;
     if (!a || (id !== 'ppfas' && id !== 'infosys')) return null;
     var ac = null; I.accounts.forEach(function (x) { if (x.holdings.indexOf(id) >= 0) ac = x; });
-    var h = K.hero({ k: id === 'ppfas' ? 'Asha’s folio, at Friday’s NAV' : 'Arun’s shares, at NSE’s close', v: K.inr(a.value), s: K.gbp(a.value / K.FX) + ' · ' + (id === 'ppfas' ? 'NAV ₹87.30, AMFI, Fri 23 Oct' : '₹1,480.50 a share, NSE’s close, Fri 23 Oct').replace(/₹([\d,.]+)/, '<span class="mny">₹$1</span>') });
+    var h = K.hero({ k: id === 'ppfas' ? 'Asha’s folio, at Friday’s NAV' : 'Arun’s shares, at NSE’s close', v: K.inr(a.value), s: K.gbp(a.value / K.FX) + ' · ' + (id === 'ppfas' ? 'NAV ₹87.30, AMFI, Fri 23 Oct' : '₹1,480.50 a share, NSE’s close, Fri 23 Oct').replace(/₹([\d,.]+)/, function (_, n) { return K.mny('₹' + n); }) });
     if (I.tax[id]) h += K.card({ id: 'tax', body: '<div class="fx col g8">' + K.chip(K.ms('flag') + mz(I.tax_line), 'mp-pause pv5-team-wrapchip') + K.p(mz(I.tax_text)) + '</div>' });
     else h += K.note('info', mz(I.share_text));
     h += K.card({ t: 'Suits this account', body: K.note(ac.icon, mz(ac.wrap)) + K.foot('A suggestion here names only what suits the account it is about. MyPaisa still never trades: it is a view, never a button.') });
@@ -522,7 +523,7 @@
     var app = ctx.app;
     var dev = { ios: 'this iPhone', ipad: 'this iPad', fold: 'this foldable' }[ctx.door] || 'the iPhone and iPad';
     if (k === 'widget' || k === 'lock') {
-      h += K.card({ t: k === 'widget' ? 'The widget, on the Home Screen' : 'The widget, on the Lock Screen', body: '<button type="button" class="widget lg pv5-team-wg"' + K.go('next') + '>' + widgetBody(ctx) + '</button>' +
+      h += K.card({ t: k === 'widget' ? 'The widget, on the Home Screen' : 'The widget, on the Lock Screen', body: '<button type="button" class="widget' + (ctx.web ? '' : ' lg') + ' pv5-team-wg"' + K.go('next') + '>' + widgetBody(ctx) + '</button>' +
         K.foot('The household’s total and the day’s move, from the last fetch with its time. With privacy mode on, it shows the mark and Hidden. Friday’s move is mostly ' + mz(dm.most) + '.') });
       h += webOnly(k === 'widget' ? 'No widget in a browser: Home’s first line carries the same figures, and the strip at the top of the chat.' : 'A browser has no Lock Screen of its own. Web Push brings alerts with no amounts; the figures wait inside the app.');
     } else if (k === 'share') {

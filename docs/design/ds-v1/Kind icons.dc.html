@@ -16,7 +16,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .dv-turn { padding: 44px 48px 36px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
 .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -122,7 +122,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .dg .rt { gap: 1px; }
 .dv-idx { display: flex; flex-wrap: wrap; gap: 6px 20px; max-width: 1100px; margin: 4px 0 14px; font: 600 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; }
 .dv-idx a { color: #14171F; text-decoration: none; }
-.dv-idx a:hover { color: #C2381F; }
+.dv-idx a:not([class]):hover { color: #C2381F; }
 </style>
 </helmet>
 
@@ -151,14 +151,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ fams }}" as="f" hint-placeholder-count="7">
 <div class="fam">
 <div class="fam-h"><span class="mp-over mp-ink2">{{ f.label }}</span><span class="mp-foot mp-ink2">{{ f.note }}</span></div>
-<div class="fam-t"><sc-for list="{{ f.kinds }}" as="k" hint-placeholder-count="6"><div class="kc"><span class="kt kt-l {{ k.fc }}" aria-hidden="true"><span class="ms">{{ k.ms }}</span></span><span class="kc-l">{{ k.label }}</span></div></sc-for></div>
+<div class="fam-t"><sc-for list="{{ f.kinds }}" as="k" hint-placeholder-count="6"><div class="kc"><span class="kt kt-l {{ k.fc }}" aria-hidden="true"><span class="ms" aria-hidden=\"true\">{{ k.ms }}</span></span><span class="kc-l">{{ k.label }}</span></div></sc-for></div>
 </div>
 </sc-for>
 <div class="fam">
 <div class="fam-h"><span class="mp-over mp-ink2">No icon yet</span><span class="mp-foot mp-ink2">the family tile and two letters</span></div>
 <div class="fam-t"><sc-for list="{{ monos }}" as="m" hint-placeholder-count="3"><div class="kc"><span class="kt kt-l {{ m.fc }}" aria-hidden="true"><span class="kt-mono">{{ m.mono }}</span></span><span class="kc-l">{{ m.label }}</span></div></sc-for></div>
 </div>
-<div class="onpage" aria-label="Tiles on the page colour"><span class="mp-foot mp-ink2">On the page:</span><sc-for list="{{ strip }}" as="k" hint-placeholder-count="9"><span class="kt {{ k.fc }}" aria-hidden="true"><span class="ms">{{ k.ms }}</span></span></sc-for></div>
+<div class="onpage" aria-label="Tiles on the page colour"><span class="mp-foot mp-ink2">On the page:</span><sc-for list="{{ strip }}" as="k" hint-placeholder-count="9"><span class="kt {{ k.fc }}" aria-hidden="true"><span class="ms" aria-hidden=\"true\">{{ k.ms }}</span></span></sc-for></div>
 </div>
 </sc-for>
 </div>
@@ -170,8 +170,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="dev dev-iphone mp {{ f.theme }}" data-screen-label="{{ f.cap }}">
 <div class="island"></div>
 <div class="scrn">
-<div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms">chevron_left</span></span><sc-if value="{{ f.inline }}" hint-placeholder-val="{{ false }}"><span class="navc">Assets</span></sc-if><span class="ggroup lg navr"><span class="gbtn" aria-label="Filters"><span class="ms">tune</span></span><span class="gbtn" aria-label="Privacy mode"><span class="ms">visibility</span></span><span class="gbtn" aria-label="Ask about this"><span class="ms">chat_bubble</span></span></span></div>
+<div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
+<div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden=\"true\">chevron_left</span></span><sc-if value="{{ f.inline }}" hint-placeholder-val="{{ false }}"><span class="navc">Assets</span></sc-if><span class="ggroup lg navr"><span class="gbtn" aria-label="Filters"><span class="ms" aria-hidden=\"true\">tune</span></span><span class="gbtn" aria-label="Privacy mode"><span class="ms" aria-hidden=\"true\">visibility</span></span><span class="gbtn" aria-label="Ask about this"><span class="ms" aria-hidden=\"true\">chat_bubble</span></span></span></div>
 <sc-if value="{{ f.large }}" hint-placeholder-val="{{ true }}"><div class="largetitle">Assets</div></sc-if>
 <div class="scroll"><div class="pg4">
 <sc-if value="{{ f.large }}" hint-placeholder-val="{{ true }}">
@@ -189,7 +189,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-group">
 <sc-for list="{{ s.rows }}" as="r" hint-placeholder-count="3">
 <div class="mp-row row4">
-<span class="kt {{ r.fc }}" aria-hidden="true"><span class="ms">{{ r.ms }}</span></span>
+<span class="kt {{ r.fc }}" aria-hidden="true"><span class="ms" aria-hidden=\"true\">{{ r.ms }}</span></span>
 <div class="rt"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></div>
 <div class="rv"><span class="mp-sub mp-w6">{{ r.a }}</span><sc-if value="{{ r.hasB }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2">{{ r.b }}</span></sc-if></div>
 </div>
@@ -198,7 +198,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </div>
 </sc-for>
 </div></div>
-<div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+<div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms" aria-hidden=\"true\">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms" aria-hidden=\"true\">search</span></span></div>
 <div class="homebar"></div>
 </div>
 </div>
@@ -215,7 +215,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="brw-in">
 <aside class="mp-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><span class="mp-side-i {{ n.cls }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</span></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><span class="mp-side-i {{ n.cls }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.label }}</span></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
 <div style="flex: 1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · owner</div>
 </aside>
@@ -225,7 +225,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="dg dg-th"><span></span><span>Loan or card</span><span>Each month</span><span>Ends</span><span class="r">Left to pay</span></div>
 <sc-for list="{{ debts }}" as="r" hint-placeholder-count="4">
 <div class="dg">
-<span class="kt {{ r.fc }}" aria-hidden="true"><span class="ms">{{ r.ms }}</span></span>
+<span class="kt {{ r.fc }}" aria-hidden="true"><span class="ms" aria-hidden=\"true\">{{ r.ms }}</span></span>
 <div class="rt"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></div>
 <span class="mp-sub">{{ r.month }}</span>
 <span class="mp-sub">{{ r.ends }}</span>

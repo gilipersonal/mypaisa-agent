@@ -15,7 +15,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 /* canvas */
 .dv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; margin: 0 0 8px; }
@@ -242,14 +242,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-shell shell">
 <aside class="mp-shell-side mp-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="38.6" cy="9.4" r="4.2"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#w0" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#w0" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
 <div class="grow1"></div>
 <div class="mp-foot mp-ink2 side-ft">{{ f.v.who }}</div>
 </aside>
 <main class="mp-shell-main mainc">
 <div class="mp-pagepad" style="margin-top: {{ f.off }}">
-<a class="crumb mp-only-compact" href="#w0"><span class="ms ms-s">arrow_back_ios_new</span>Home</a>
-<header class="phead"><div class="grow1"><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ f.v.meta }}</div></div><button class="iconbtn" aria-label="{{ f.v.eyeL }}" aria-pressed="{{ f.v.eyeP }}"><span class="ms">{{ f.v.eye }}</span></button></header>
+<a class="crumb mp-only-compact" href="#w0"><span class="ms ms-s" aria-hidden=\"true\">arrow_back_ios_new</span>Home</a>
+<header class="phead"><div class="grow1"><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ f.v.meta }}</div></div><button class="iconbtn" aria-label="{{ f.v.eyeL }}" aria-pressed="{{ f.v.eyeP }}"><span class="ms" aria-hidden=\"true\">{{ f.v.eye }}</span></button></header>
 <nav class="ptabs-ul" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><a class="ptu {{ t.on }}" href="#w0" aria-current="{{ t.cur }}">{{ t.l }}</a></sc-for></nav>
 <div class="mp-seg ptabs-sg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
 <div class="ctls">
@@ -259,15 +259,15 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </div>
 
 <sc-if value="{{ f.v.banner }}" hint-placeholder-val="{{ false }}">
-<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
+<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms" aria-hidden=\"true\">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden=\"true\">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
 </sc-if>
 <sc-if value="{{ f.v.empty }}" hint-placeholder-val="{{ false }}">
 <div class="mp-card empty">
-<span class="eico"><span class="ms">event_note</span></span>
+<span class="eico"><span class="ms" aria-hidden=\"true\">event_note</span></span>
 <span class="mp-hl">No budget yet, so nothing to forecast</span>
 <span class="mp-sub mp-ink2">The forecast is built from each member's take-home pay, a monthly plan for each category and the household's EMIs. Tell MyPaisa in the chat, in your own words:</span>
 <ul class="mp-sub"><li>“My take-home is £4,350 a month”</li><li>“Plan £650 a month for groceries”</li><li>or send a payslip or a bank statement</li></ul>
-<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms">chat_bubble</span>Set up the budget in the chat</button></div>
+<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Set up the budget in the chat</button></div>
 <span class="mp-foot mp-ink2">Nothing is created here: the chat asks, you confirm, and the forecast fills in.</span>
 </div>
 </sc-if>
@@ -299,8 +299,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </div>
 <sc-if value="{{ f.v.yr.below }}" hint-placeholder-val="{{ false }}"><div><div class="blh"><span class="mp-over mp-ink2">Paid from cash</span></div><sc-for list="{{ f.v.yr.below }}" as="l" hint-placeholder-count="3"><div class="bl"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig {{ l.c }}"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for></div></sc-if>
 <div class="kvs"><sc-for list="{{ f.v.yr.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for></div>
-<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
-<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
+<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms" aria-hidden=\"true\">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
+<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden=\"true\">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
 </div>
 </div>
 <div class="mp-col">
@@ -324,7 +324,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
 <div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
-<span class="srcchip"><span class="ms">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+<span class="srcchip"><span class="ms" aria-hidden=\"true\">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
 </div>
 </sc-if>
 </div>
@@ -349,10 +349,10 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </sc-for>
 </div>
 </div>
-<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms">add</span></button><span class="cfw">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms">arrow_upward</span></button></div>
+<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms" aria-hidden=\"true\">add</span></button><span class="cfw">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms" aria-hidden=\"true\">arrow_upward</span></button></div>
 </aside>
 </div>
-<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden=\"true\">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
 </div>
 </div>
 </sc-for>
@@ -416,7 +416,7 @@ const chart = (Y, o) => {
   const sub = (rows[0].y) + ' to ' + rows[rows.length - 1].y + ' · against ' + yf;
   return { title: 'Your leanest month, each year', sub: sub, chips: o.chips || [], wide: inrM ? 'wide' : '', cols: 'repeat(' + n + ', minmax(0, 1fr))',
     bars: bars, grid: grid, axis: axis, lgd: lgd, notes: notes, cash: !!o.cash,
-    aria: 'The leanest month of each year from ' + rows[0].y + ' to ' + rows[rows.length - 1].y + ', in ' + M.unit + ', against your £500 floor. ' + (o.aria || '') };
+    aria: 'The leanest month of each year from ' + rows[0].y + ' to ' + rows[rows.length - 1].y + ', in ' + M.unit + ', against your ' + (o.priv ? 'hidden' : '£500') + ' floor. ' + ((o.aria || '').replace(/[−+-]?[£₹][\d,]+/g, (m) => (o.priv ? 'hidden' : m))) };
 };
 
 /* a year's card: its lines add up to its surplus, in the mode's money */
