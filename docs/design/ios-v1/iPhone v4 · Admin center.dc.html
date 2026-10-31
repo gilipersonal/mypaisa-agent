@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyPaisa iOS v1 · Admin center (v4)</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="ios.css" />
+        <link rel="stylesheet" href="motion.css" />
+        <script src="motion.js"></script>
+        <style>
+html,body{margin:0;background:#ECEAE6;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;color:#14171F}
+a:not([class]){color:#C2381F}a:not([class]):hover{color:#8F2915}
+a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
+.dv-turn{padding:44px 48px 28px;border-bottom:1px solid rgba(0,0,0,.08)}
+.dv-thd{display:flex;align-items:baseline;gap:12px;margin:0 0 10px;flex-wrap:wrap}
+.dv-tid{font:600 11px/14px ui-monospace,Menlo,monospace;padding:3px 8px;background:#1a1a1a;color:#fff;border-radius:5px;text-decoration:none}
+.dv-tname{font:700 26px/32px -apple-system,"SF Pro Display","Inter",system-ui,sans-serif;color:#14171F;letter-spacing:-0.02em}
+.bd .dv-tname{font-size:22px;line-height:28px}
+.dv-intro{max-width:1120px;font:15px/22px -apple-system,"SF Pro Text","Inter",system-ui,sans-serif;color:#3D424D;margin:0;text-wrap:pretty}
+.plan{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;max-width:1120px;box-sizing:border-box;margin:14px 0 0;padding:10px 14px;border-radius:12px;background:#F9F8F6;border:1px solid rgba(0,0,0,.1);font:13px/18px -apple-system,system-ui,sans-serif;color:#3D424D}
+.plan-k{font:600 11px/14px ui-monospace,Menlo,monospace;padding:4px 8px;border-radius:5px;background:#13213A;color:#FFFFFF;text-decoration:none}
+.idx{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.idx a{font:600 13px/18px -apple-system,system-ui,sans-serif;color:#14171F;background:rgba(0,0,0,.06);border-radius:999px;padding:7px 13px;text-decoration:none}
+.bd{display:flex;flex-direction:column;gap:18px;padding:40px 48px;border-bottom:1px solid rgba(0,0,0,.06)}
+.bd-keys{font:600 12px/16px ui-monospace,Menlo,monospace;color:#5A606C}
+.bd-lead{max-width:1120px;margin:0;font:15px/22px -apple-system,"SF Pro Text",system-ui,sans-serif;color:#3D424D;text-wrap:pretty}
+.bd-row{display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start}
+.bd-note{width:300px;flex:none;display:flex;flex-direction:column;gap:10px;font:14px/20px -apple-system,"SF Pro Text",system-ui,sans-serif;color:#3D424D;text-wrap:pretty;padding-top:6px}
+.bd-note p{margin:0}
+.bd-note b{color:#14171F}
+.bd-theme{font:600 11px/14px ui-monospace,Menlo,monospace;color:#5A606C;margin:0 0 12px}
+.recb{font:700 12px/16px -apple-system,system-ui,sans-serif;color:#FFFFFF;background:#13213A;padding:3px 10px;border-radius:999px}
+.dv-col{display:flex;flex-direction:column}
+.tnum{font-variant-numeric:tabular-nums}
+.z1{position:relative;z-index:1}
+.f1{flex:1;min-width:0}
+.rtx{flex:1 1 176px;min-width:0}
+.pp{margin:0;text-wrap:pretty}
+.nowrap{white-space:nowrap}
+.wrapr{flex-wrap:wrap}
+.posr{position:relative}
+.cpad{display:flex;flex-direction:column;gap:11px;padding:16px;box-sizing:border-box}
+.ctl{display:flex;justify-content:space-between;align-items:baseline;gap:6px 10px;flex-wrap:wrap}
+.segc{display:grid;place-items:center}
+.prc-h{color:var(--mp-hero-ink);background:var(--mp-hero-2)}
+.hup{color:var(--mp-hero-up)}
+.t-dark .mp-ink3:not(.mp-mask){color:var(--mp-ink-2)}
+.ccy-pills{display:inline-flex;flex-wrap:wrap;gap:4px;padding:3px;border-radius:999px;background:var(--mp-surface-2)}
+.ccy-pills.on-hero{background:var(--mp-hero-2)}
+.ccy-p{font:600 11px/15px var(--mp-font);padding:3px 8px;border-radius:999px;color:var(--mp-ink-2);white-space:nowrap}
+.ccy-pills.on-hero .ccy-p{color:var(--mp-hero-ink-2)}
+.ccy-p.on{background:var(--mp-surface);color:var(--mp-ink)}
+.ccy-pills.on-hero .ccy-p.on{background:var(--mp-hero);color:var(--mp-hero-ink);box-shadow:inset 0 0 0 1px var(--mp-coral)}
+.hero{display:flex;flex-direction:column;gap:11px}
+.rate{display:flex;align-items:flex-start;gap:6px;padding-top:10px;border-top:1px solid var(--mp-hero-2)}
+.rate>span:last-child{flex:1;min-width:0}
+.hpulse{background:var(--mp-hero-2);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.hpulse-box{height:54px}
+.hpulse-box>svg{width:100%;height:100%;display:block}
+.hgrid{stroke:var(--mp-hero-ink-2);stroke-opacity:0.24;stroke-width:1;stroke-dasharray:2 3;vector-effect:non-scaling-stroke}
+.harea{fill:var(--mp-coral);fill-opacity:0.24}
+.hline{fill:none;stroke:var(--mp-coral);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.mp-chartdot.hdot-a{background:var(--mp-coral);box-shadow:0 0 0 2px var(--mp-hero)}
+.mp-chartdot.beacon{box-shadow:0 0 0 2px var(--mp-hero),0 0 0 6px var(--mp-band)}
+.hpulse-ax{display:flex;justify-content:space-between;font:500 11px/14px var(--mp-font);color:var(--mp-hero-ink-2)}
+.hsplit3{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.hsplit3>div{background:var(--mp-hero-2);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mrows{display:flex;flex-direction:column;gap:10px}
+.mbar{height:10px}
+.mbar>.mp-track-clip>span:first-child{display:block;height:100%;border-radius:999px}
+.bartick{position:absolute;top:-2px;bottom:-2px;width:2.5px;border-radius:2px;background:var(--mp-ink);box-shadow:0 0 0 1px var(--mp-surface);pointer-events:none}
+.rlist{display:flex;flex-direction:column;gap:8px}
+.rrow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:9px 11px;border-radius:12px;background:var(--mp-surface-2);flex-wrap:wrap}
+.rright{display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-left:auto;font-variant-numeric:tabular-nums}
+.edit-inline{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 0 0 0 1.5px var(--mp-accent)}
+.note-box{display:flex;flex-direction:column;gap:5px;padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 0 0 0 1px var(--mp-line)}
+.btn-save{font:600 12px/16px var(--mp-font);padding:7px 12px;min-height:32px;display:inline-flex;align-items:center;border-radius:999px;background:var(--mp-accent);color:var(--mp-on-accent)}
+.btn-ghost{font:600 12px/16px var(--mp-font);padding:7px 12px;min-height:32px;display:inline-flex;align-items:center;border-radius:999px;background:var(--mp-surface);color:var(--mp-ink);box-shadow:inset 0 0 0 1px var(--mp-line)}
+.cstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px}
+.cstat{background:var(--mp-surface-2);border-radius:11px;padding:7px 9px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cstat-v{font-variant-numeric:tabular-nums}
+.ch-164{height:164px}
+.mp-chartbox>svg{width:100%;height:100%;display:block}
+.fgrid{stroke:var(--mp-chart-grid);stroke-width:1;vector-effect:non-scaling-stroke}
+.fmid{fill:none;stroke:var(--mp-chart-line);stroke-width:2;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+.ftoday{stroke:var(--mp-ink-2);stroke-width:1;stroke-dasharray:2 3;vector-effect:non-scaling-stroke}
+.cw.up,.cb.up{fill:var(--mp-up)}
+.cw.dn,.cb.dn{fill:var(--mp-down-quiet)}
+.pneck{stroke:var(--mp-chart-4);stroke-width:1.8;stroke-dasharray:5 3;vector-effect:non-scaling-stroke}
+.psup{stroke:var(--mp-chart-2);stroke-width:1.8;stroke-dasharray:5 3;vector-effect:non-scaling-stroke}
+.yl{position:absolute;left:0;transform:translateY(-100%);padding-bottom:1px;font:500 11px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap;pointer-events:none}
+.fl{position:absolute;right:0;transform:translateY(-50%);font:600 11px/14px var(--mp-font);color:var(--mp-ink);white-space:nowrap;pointer-events:none}
+.tdl{position:absolute;bottom:2px;transform:translateX(calc(-100% - 4px));font:500 11px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap;pointer-events:none}
+.mp-chartaxis{margin-top:4px}
+.lgd{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;font:400 12px/16px var(--mp-font);color:var(--mp-ink-2)}
+.lgd>span{display:inline-flex;align-items:center;gap:5px}
+.lgd i{display:inline-block;flex:none}
+.sw-band{width:14px;height:10px;border-radius:3px;background:var(--mp-band)}
+.sw-up{width:6px;height:11px;border-radius:1px;background:var(--mp-up)}
+.sw-dn{width:6px;height:11px;border-radius:1px;background:var(--mp-down-quiet)}
+.sw-pa{width:14px;height:0;border-top:2px dashed var(--mp-chart-4)}
+.sw-pb{width:14px;height:0;border-top:2px dashed var(--mp-chart-2)}
+.lg>*{position:relative;z-index:1}
+.pg{display:flex;flex-direction:column;gap:14px;padding:4px 16px 130px}
+.pg>*,.ipg>*{flex-shrink:0}
+.ipg{display:flex;flex-direction:column;gap:14px;padding:4px 18px 36px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.scrn.srow{flex-direction:row}
+.sidebar.sb{width:240px;box-sizing:border-box}
+.side-h.sh0{padding-top:4px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.insp{width:320px;flex:none;border-left:1px solid var(--mp-line);background:var(--mp-bg);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.largetitle.navt{padding:0 4px;font-size:28px;line-height:34px}
+.sbar.sbar-r{justify-content:flex-end}
+.chfadet{position:absolute;left:0;right:0;top:0;height:140px;z-index:10;pointer-events:none;background:linear-gradient(180deg,var(--mp-bg) 62%,color-mix(in srgb,var(--mp-bg) 0%,transparent))}
+.ichat{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:150px;overflow:hidden}
+.ichat .chat>*{flex:none}
+.cb20{bottom:20px}
+.gbtn.on{background:var(--mp-hero);color:var(--mp-hero-ink)}
+.tab{font-size:12px;line-height:14px}
+.toptabs{display:flex;flex-wrap:wrap;gap:6px;padding:6px 16px;border-bottom:1px solid var(--mp-line);background:var(--mp-surface)}
+.toptab{font:600 12px/16px var(--mp-font);padding:6px 11px;border-radius:999px;color:var(--mp-ink-2);background:var(--mp-surface-2)}
+.toptab.on{background:var(--mp-hero);color:var(--mp-hero-ink)}
+.sheet-card{margin:8px 0 0;padding:14px;border-radius:18px;background:var(--mp-surface);box-shadow:0 -4px 24px rgba(0,0,0,.14),inset 0 0 0 1px var(--mp-line);display:flex;flex-direction:column;gap:10px}
+.sheet-grab{width:36px;height:4px;border-radius:99px;background:var(--mp-ink-3);align-self:center}
+@container screen (max-width:1260px){.mp.ipad .g2{grid-template-columns:minmax(0,1fr)}}
+@container screen (max-width:1132px){.mp.ipad .scrn.srow>.insp{display:none}.mp.ipad .g2{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container screen (max-width:960px){.mp.ipad .g2{grid-template-columns:minmax(0,1fr)}}
+@container screen (max-width:799px){.mp.ipad .scrn.srow>.sidebar{display:none}}
+@container screen (max-width:720px){.fold-g2{grid-template-columns:minmax(0,1fr) !important}}
+.bf{position:relative;overflow:hidden;flex:none;border-radius:14px;box-shadow:0 0 0 1px rgba(0,0,0,.12),0 20px 50px rgba(0,0,0,.14)}
+.bf.w1440{width:1440px;height:980px}
+.bf.w1024{width:1024px;height:820px}
+.bf.w768{width:768px;height:900px}
+.bf.w390{width:390px;height:844px;border-radius:20px;box-shadow:0 0 0 1px rgba(0,0,0,.14),0 24px 52px rgba(0,0,0,.18)}
+.bf>.mp-shell{height:100%}
+.bf .mp-shell-main{overflow:hidden;position:relative}
+.bf .mp-pagepad{flex:none}
+.side{background:var(--mp-bg);border-right:1px solid var(--mp-line)}
+.brand{padding:4px 8px 18px}
+.side-ft{padding:0 12px 4px}
+.mp-side-i{cursor:default}
+.wtabs{position:absolute;left:0;right:0;bottom:0;z-index:30}
+.mp-tab:not(.on){color:var(--mp-ink-2)}
+.iconbtn.on{background:var(--mp-hero);color:var(--mp-hero-ink)}
+.pstat{display:none}
+.w390 .pstat{display:flex;position:absolute;left:0;right:0;top:0;height:34px;z-index:40;align-items:center;justify-content:center;gap:6px;padding:0 16px;font:500 12px/16px var(--mp-font);color:var(--mp-ink-2);background:var(--mp-surface-2);border-bottom:1px solid var(--mp-line)}
+.w390 .mp-pagepad{padding-top:48px;padding-bottom:92px}
+.chatcol{display:none;width:356px;flex:none;flex-direction:column;border-left:1px solid var(--mp-line);background:var(--mp-bg);position:relative;overflow:hidden}
+@container app (min-width:1024px){.chatcol{display:flex}}
+.chh{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px;padding:8px 12px 8px 20px;border-bottom:1px solid var(--mp-line)}
+.chl{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:12px 16px;overflow:hidden}
+.chl>*{flex:none}
+.daysep{align-self:center;font:600 13px/18px var(--mp-font);color:var(--mp-ink-2)}
+.wme{align-self:flex-end;max-width:84%;background:var(--mp-hero);color:var(--mp-hero-ink);border-radius:20px 20px 6px 20px;padding:10px 14px;font:400 14px/20px var(--mp-font)}
+.wai{display:flex;gap:10px;align-items:flex-start}
+.amk{width:28px;height:28px;border-radius:50%;background:var(--mp-hero);display:grid;place-items:center;flex:none}
+.amk i{width:11px;height:11px;border-radius:50%;background:var(--mp-coral);box-shadow:0 0 0 3px var(--mp-hero),0 0 0 4.5px var(--mp-coral);display:block}
+.waib{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.wtext{font:400 14px/20px var(--mp-font);color:var(--mp-ink);text-wrap:pretty}
+.wcard{background:var(--mp-surface);border-radius:var(--mp-r-card);box-shadow:var(--mp-shadow);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.kvl{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font:400 13px/18px var(--mp-font);flex-wrap:wrap}
+.kvl>:first-child{color:var(--mp-ink-2)}
+.kvl>:last-child{font-weight:600;text-align:right;margin-left:auto;font-variant-numeric:tabular-nums}
+.chcomp{display:flex;flex-direction:column;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--mp-line)}
+.wchips{display:flex;gap:8px;flex-wrap:wrap}
+.wchip{min-height:34px;padding:0 11px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;font:600 13px/18px var(--mp-font);background:var(--mp-surface);color:var(--mp-ink);box-shadow:inset 0 0 0 1px var(--mp-line)}
+.wchip .ms{font-size:17px;color:var(--mp-accent)}
+.cfld{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 6px 0 14px;border-radius:22px;background:var(--mp-surface);box-shadow:inset 0 0 0 1.5px var(--mp-ink-2)}
+.cfld .ph{flex:1;font:400 14px/19px var(--mp-font);color:var(--mp-ink-2)}
+.sendb{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--mp-accent);color:var(--mp-on-accent);flex:none}
+.sendb .ms{font-size:19px}
+.mpm{display:block;flex:none}
+.mpm-coin{fill:var(--mp-hero)}
+.mpm-pound{fill:none;stroke:#FFFFFF;stroke-linecap:round;stroke-linejoin:round}
+.mpm-dot{fill:var(--mp-coral)}
+.t-dark .mpm-coin{fill:var(--mp-hero-2)}
+        </style>
+      </helmet>
+      <section class="dv-turn" id="intro" data-screen-label="MyPaisa iOS v1 · Admin center (v4): intro">
+        <div class="dv-thd"><a class="dv-tid" href="#intro">iOS</a><span class="dv-tname">MyPaisa iOS v1 · Admin center (v4)</span></div>
+        <p class="dv-intro">Consolidated 1a owner Admin Center behind Face ID / passkey / Apple / Google fresh check: Claude $160 hard limit, ceiling guards, AWS £50 cap steps, People & devices, Push/Chat/Email routing, and Replay (3 replayed, 2 ran, 1 failed again).</p>
+        <div class="plan"><b>Jira</b><span class="plan-k">MA-279</span><span>MA-61 · MA-102 · MA-114 · MA-116 · MA-130 · MA-135 · MA-136 · MA-137 · MA-145 · MA-289</span><b>Spec</b><span>ARCHITECTURE §4.5, §15.1, §15.2, §15.3, §24.6</span><b>Picked</b><span>1a Unified Whole-Wealth Ledger &amp; Header 4-Currency Pill (31 Oct 2026) · 1a Chat first · 1a Monzo Pulse</span></div>
+        <nav class="idx" aria-label="Boards"><a href="#b1">1 · Spend, $160 Hard Limit & AWS Cap</a><a href="#b2">2 · People, Alert Routing, Replay & Approvals</a></nav>
+      </section>
+
+      <section class="bd" id="b1" data-screen-label="1 · Spend, $160 hard limit, ceiling moves and AWS cap">
+        <div class="dv-thd"><span class="dv-tid">1</span><span class="dv-tname">Spend, $160 hard limit, ceiling moves and AWS cap</span><span class="recb">1a Picked · v4</span><span class="bd-keys">MA-114 · MA-116 · MA-137</span></div>
+        <p class="bd-lead">Claude cycle ($35.20 of $160 hard limit, renewing Tue 3 Nov), explicit-yes credit check, hard-limit refusal, stop-at-once when lowered below spend, and AWS £50 cap steps.</p>
+        <div class="bd-row">
+          <div class="dv-col" data-screen-label="iPhone · Admin · Spend & AWS Cap · Light"><div class="bd-theme">iPhone · Admin · Spend & AWS Cap · Light</div><div class="dev dev-iphone mp t-light"><div class="island"></div><div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div><header class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></header><div class="largetitle">Admin · Spend</div><main class="scroll"><div class="pg"><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">Admin · Spend, $160 Hard Limit &amp; AWS Cap</span><span class="mp-chip chip-s mp-pause">Fresh check: Apple / Passkey / Google</span></div><div class="mrows"><div><div class="fx jb ac gap8"><span class="mp-foot mp-w6">Claude cycle · $35.20 of $160 hard limit (22%) · renews Tue 3 Nov</span><span class="mp-cap mp-ink2"><span class="tnum">£27</span> / <span class="tnum">£123</span></span></div><div class="mp-track mbar has-tick posr" role="img" aria-label="Claude spend 22% of $160 hard limit"><span class="mp-track-clip"><span style="width:22%;background:var(--mp-meter)"></span></span><span class="bartick" style="left:85%"></span></div></div></div><div class="rlist"><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Move ceiling &amp; Type the hard limit ($160 prod)</div><div class="mp-foot mp-ink2">Moving past $200 credit requires explicit yes; above hard limit is refused; moving ceiling below already-spent stops Claude at once (templates only).</div></div><div class="rright"><span class="mp-chip chip-s mp-neutral">Guarded</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Spend ladder, member share &amp; daily guards</div><div class="mp-foot mp-ink2">85% switches routine briefs to Haiku &amp; memory on-request; 95% pauses proactive runs; 100% templates only.</div></div><div class="rright"><span class="mp-chip chip-s mp-add">85 / 95 / 100%</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">AWS £50 monthly cap &amp; forecast steps</div><div class="mp-foot mp-ink2">Used <span class="tnum">£3</span> of <span class="tnum">£50</span> (forecast £3.10) · 50%, 80% &amp; 100% step alerts + forecast-over-cap alert active.</div></div><div class="rright"><span class="mp-chip chip-s mp-add">Within cap</span></div></div></div></div></div></main><div class="edge-bot"></div><nav class="tabdock" aria-label="Primary"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab on" role="tab" aria-selected="true"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="tabsearch lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></nav><div class="homebar"></div></div></div></div>
+          <div class="dv-col" data-screen-label="iPhone · Admin · Spend & AWS Cap · Dark"><div class="bd-theme">iPhone · Admin · Spend & AWS Cap · Dark</div><div class="dev dev-iphone mp t-dark"><div class="island"></div><div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div><header class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></header><div class="largetitle">Admin · Spend</div><main class="scroll"><div class="pg"><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">Admin · Spend, $160 Hard Limit &amp; AWS Cap</span><span class="mp-chip chip-s mp-pause">Fresh check: Apple / Passkey / Google</span></div><div class="mrows"><div><div class="fx jb ac gap8"><span class="mp-foot mp-w6">Claude cycle · $35.20 of $160 hard limit (22%) · renews Tue 3 Nov</span><span class="mp-cap mp-ink2"><span class="tnum">£27</span> / <span class="tnum">£123</span></span></div><div class="mp-track mbar has-tick posr" role="img" aria-label="Claude spend 22% of $160 hard limit"><span class="mp-track-clip"><span style="width:22%;background:var(--mp-meter)"></span></span><span class="bartick" style="left:85%"></span></div></div></div><div class="rlist"><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Move ceiling &amp; Type the hard limit ($160 prod)</div><div class="mp-foot mp-ink2">Moving past $200 credit requires explicit yes; above hard limit is refused; moving ceiling below already-spent stops Claude at once (templates only).</div></div><div class="rright"><span class="mp-chip chip-s mp-neutral">Guarded</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Spend ladder, member share &amp; daily guards</div><div class="mp-foot mp-ink2">85% switches routine briefs to Haiku &amp; memory on-request; 95% pauses proactive runs; 100% templates only.</div></div><div class="rright"><span class="mp-chip chip-s mp-add">85 / 95 / 100%</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">AWS £50 monthly cap &amp; forecast steps</div><div class="mp-foot mp-ink2">Used <span class="tnum">£3</span> of <span class="tnum">£50</span> (forecast £3.10) · 50%, 80% &amp; 100% step alerts + forecast-over-cap alert active.</div></div><div class="rright"><span class="mp-chip chip-s mp-add">Within cap</span></div></div></div></div></div></main><div class="edge-bot"></div><nav class="tabdock" aria-label="Primary"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab on" role="tab" aria-selected="true"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="tabsearch lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></nav><div class="homebar"></div></div></div></div>
+          <div class="bd-note"><p><b>Fresh second check:</b> every spend, cap or member action requires Face ID, passkey, Apple or Google re-authentication.</p></div>
+        </div>
+      </section>
+
+      <section class="bd" id="b2" data-screen-label="2 · Members and devices, alert routing, failed-work Replay, approvals and agent notes">
+        <div class="dv-thd"><span class="dv-tid">2</span><span class="dv-tname">Members and devices, alert routing, failed-work Replay, approvals and agent notes</span><span class="recb">1a Picked · v4</span><span class="bd-keys">MA-102 · MA-130 · MA-135 · MA-136 · MA-137 · MA-145 · MA-289</span></div>
+        <p class="bd-lead">Apple/Google/passkey member management (no owner self-pause), Push/Chat/Email routing with holding-value email switch off by default, and Replay matching the owner's chat digest.</p>
+        <div class="bd-row">
+          <div class="dv-col" data-screen-label="iPhone · Admin · People, Routing & Replay · Light"><div class="bd-theme">iPhone · Admin · People, Routing & Replay · Light</div><div class="dev dev-iphone mp t-light"><div class="island"></div><div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div><header class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></header><div class="largetitle">Admin · Ops</div><main class="scroll"><div class="pg"><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">Admin · People, Alert Routing &amp; Replay</span><span class="mp-chip chip-s mp-add">Push · App Chat · Email</span></div><div class="rlist"><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Members &amp; devices (Apple, Google, Passkeys)</div><div class="mp-foot mp-ink2">Arun (owner · cannot pause own account; sign out lost phone from You) · Asha (member · pause/restore or unlink sign-in behind fresh check).</div></div><div class="rright"><span class="mp-chip chip-s mp-neutral">2 members</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Alert routing matrix &amp; email privacy switch</div><div class="mp-foot mp-ink2">Columns: Push, App Chat, Email. Holding-alert email is off by default with explicit "Include holding values in email" switch; quiet hours &amp; cooldowns configurable.</div></div><div class="rright"><span class="mp-chip chip-s mp-neutral">Values off</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Failed work Replay &amp; Owner Daily Digest</div><div class="mp-foot mp-ink2">3 jobs replayed by you at 08:30: 2 ran, 1 failed again (CAMS timeout) — matches owner's 08:35 daily digest in app Chat.</div></div><div class="rright"><span class="mp-chip chip-s mp-pause">2 ran · 1 failed</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Approvals, Agents, Incidents &amp; Agent Notes</div><div class="mp-foot mp-ink2">ChangeRequest approval behind fresh check; agent question &amp; owner instruction in Chat; per-agent memory notes inspect/clear.</div></div><div class="rright"><span class="mp-chip chip-s mp-add">Healthy</span></div></div></div></div></div></main><div class="edge-bot"></div><nav class="tabdock" aria-label="Primary"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab on" role="tab" aria-selected="true"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="tabsearch lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></nav><div class="homebar"></div></div></div></div>
+          <div class="dv-col" data-screen-label="iPhone · Admin · People, Routing & Replay · Dark"><div class="bd-theme">iPhone · Admin · People, Routing & Replay · Dark</div><div class="dev dev-iphone mp t-dark"><div class="island"></div><div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div><header class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></header><div class="largetitle">Admin · Ops</div><main class="scroll"><div class="pg"><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">Admin · People, Alert Routing &amp; Replay</span><span class="mp-chip chip-s mp-add">Push · App Chat · Email</span></div><div class="rlist"><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Members &amp; devices (Apple, Google, Passkeys)</div><div class="mp-foot mp-ink2">Arun (owner · cannot pause own account; sign out lost phone from You) · Asha (member · pause/restore or unlink sign-in behind fresh check).</div></div><div class="rright"><span class="mp-chip chip-s mp-neutral">2 members</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Alert routing matrix &amp; email privacy switch</div><div class="mp-foot mp-ink2">Columns: Push, App Chat, Email. Holding-alert email is off by default with explicit "Include holding values in email" switch; quiet hours &amp; cooldowns configurable.</div></div><div class="rright"><span class="mp-chip chip-s mp-neutral">Values off</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Failed work Replay &amp; Owner Daily Digest</div><div class="mp-foot mp-ink2">3 jobs replayed by you at 08:30: 2 ran, 1 failed again (CAMS timeout) — matches owner's 08:35 daily digest in app Chat.</div></div><div class="rright"><span class="mp-chip chip-s mp-pause">2 ran · 1 failed</span></div></div><div class="rrow"><div class="rtx"><div class="mp-sub mp-w6">Approvals, Agents, Incidents &amp; Agent Notes</div><div class="mp-foot mp-ink2">ChangeRequest approval behind fresh check; agent question &amp; owner instruction in Chat; per-agent memory notes inspect/clear.</div></div><div class="rright"><span class="mp-chip chip-s mp-add">Healthy</span></div></div></div></div></div></main><div class="edge-bot"></div><nav class="tabdock" aria-label="Primary"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab on" role="tab" aria-selected="true"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="tabsearch lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></nav><div class="homebar"></div></div></div></div>
+          <div class="bd-note"><p><b>Consistent replay:</b> 3 jobs replayed at 08:30 (2 ran, 1 failed again) agrees across Replay and the 08:35 daily digest.</p></div>
+        </div>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}">
+      class Component extends DCLogic { renderVals() { return {}; } }
+    </script>
+  </body>
+</html>
