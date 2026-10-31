@@ -4,15 +4,6 @@
     "ignoreFiles": [],
     "ignoreValues": [
       {
-        "rule": "side-tab",
-        "value": "*",
-        "files": [
-          "docs/design/reviews/MA-101/tokens.css"
-        ],
-        "createdAt": "2026-10-23T22:53:01.394Z",
-        "reason": "Claude: .tg-quote mocks Telegram's own blockquote, which Telegram draws with a left bar; MyPaisa cannot restyle it"
-      },
-      {
         "rule": "overused-font",
         "value": "inter",
         "createdAt": "2026-10-23T22:53:01.414Z",
@@ -36,7 +27,7 @@
           "docs/design/market-agent.html"
         ],
         "createdAt": "2026-10-24T18:25:59.749Z",
-        "reason": "Telegram's own blockquote bar, drawn as Telegram draws it in the chat mocks"
+        "reason": "Quoted reply callout bar in the explainer pages' chat examples (MA-141)"
       },
       {
         "rule": "gray-on-color",
@@ -93,7 +84,7 @@
           "docs/design/market-agent.html"
         ],
         "createdAt": "2026-10-24T18:25:59.900Z",
-        "reason": "11 to 11.5px captions and Telegram timestamps, at the 11px floor"
+        "reason": "11 to 11.5px captions and chat timestamps, at the 11px floor"
       },
       {
         "rule": "low-contrast",
@@ -157,8 +148,24 @@
           "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
           "docs/design/ds-v1/Chart options.dc.html",
-          "docs/design/ios-v1/Chart options.dc.html",
-          "docs/design/app-v1/Chart options.dc.html"
+          "docs/design/ios-v1/iPhone v4 · Chart options.dc.html",
+          "docs/design/app-v1/Web v4 · Chart options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Consolidated options.dc.html",
+          "docs/design/app-v1/Web v4 · Consolidated options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html",
+          "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Admin center.dc.html",
+          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html",
+          "docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html",
+          "docs/design/app-v1/Web v4 · Register.dc.html",
+          "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html",
+          "docs/design/app-v1/Web v4 · Forecast.dc.html",
+          "docs/design/app-v1/Web v4 · Chat and guided flows.dc.html",
+          "docs/design/app-v1/Web v4 · Audit, activity and files.dc.html",
+          "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.661Z",
         "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
@@ -180,8 +187,24 @@
           "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
           "docs/design/ds-v1/Chart options.dc.html",
-          "docs/design/ios-v1/Chart options.dc.html",
-          "docs/design/app-v1/Chart options.dc.html"
+          "docs/design/ios-v1/iPhone v4 · Chart options.dc.html",
+          "docs/design/app-v1/Web v4 · Chart options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Consolidated options.dc.html",
+          "docs/design/app-v1/Web v4 · Consolidated options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html",
+          "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Admin center.dc.html",
+          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html",
+          "docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html",
+          "docs/design/app-v1/Web v4 · Register.dc.html",
+          "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html",
+          "docs/design/app-v1/Web v4 · Forecast.dc.html",
+          "docs/design/app-v1/Web v4 · Chat and guided flows.dc.html",
+          "docs/design/app-v1/Web v4 · Audit, activity and files.dc.html",
+          "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.678Z",
         "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
@@ -203,8 +226,24 @@
           "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
           "docs/design/ds-v1/Chart options.dc.html",
-          "docs/design/ios-v1/Chart options.dc.html",
-          "docs/design/app-v1/Chart options.dc.html"
+          "docs/design/ios-v1/iPhone v4 · Chart options.dc.html",
+          "docs/design/app-v1/Web v4 · Chart options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Consolidated options.dc.html",
+          "docs/design/app-v1/Web v4 · Consolidated options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html",
+          "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Admin center.dc.html",
+          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html",
+          "docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html",
+          "docs/design/app-v1/Web v4 · Register.dc.html",
+          "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html",
+          "docs/design/app-v1/Web v4 · Forecast.dc.html",
+          "docs/design/app-v1/Web v4 · Chat and guided flows.dc.html",
+          "docs/design/app-v1/Web v4 · Audit, activity and files.dc.html",
+          "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.695Z",
         "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
@@ -227,8 +266,24 @@
           "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
           "docs/design/prototype-v5/Prototype v5.dc.html",
           "docs/design/ds-v1/Chart options.dc.html",
-          "docs/design/ios-v1/Chart options.dc.html",
-          "docs/design/app-v1/Chart options.dc.html"
+          "docs/design/ios-v1/iPhone v4 · Chart options.dc.html",
+          "docs/design/app-v1/Web v4 · Chart options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Consolidated options.dc.html",
+          "docs/design/app-v1/Web v4 · Consolidated options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html",
+          "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Admin center.dc.html",
+          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html",
+          "docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html",
+          "docs/design/app-v1/Web v4 · Register.dc.html",
+          "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html",
+          "docs/design/app-v1/Web v4 · Forecast.dc.html",
+          "docs/design/app-v1/Web v4 · Chat and guided flows.dc.html",
+          "docs/design/app-v1/Web v4 · Audit, activity and files.dc.html",
+          "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.712Z",
         "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
@@ -250,8 +305,24 @@
           "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
           "docs/design/ds-v1/Chart options.dc.html",
-          "docs/design/ios-v1/Chart options.dc.html",
-          "docs/design/app-v1/Chart options.dc.html"
+          "docs/design/ios-v1/iPhone v4 · Chart options.dc.html",
+          "docs/design/app-v1/Web v4 · Chart options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Consolidated options.dc.html",
+          "docs/design/app-v1/Web v4 · Consolidated options.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html",
+          "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
+          "docs/design/ios-v1/iPhone v4 · Admin center.dc.html",
+          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html",
+          "docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html",
+          "docs/design/app-v1/Web v4 · Register.dc.html",
+          "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html",
+          "docs/design/app-v1/Web v4 · Forecast.dc.html",
+          "docs/design/app-v1/Web v4 · Chat and guided flows.dc.html",
+          "docs/design/app-v1/Web v4 · Audit, activity and files.dc.html",
+          "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.730Z",
         "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"

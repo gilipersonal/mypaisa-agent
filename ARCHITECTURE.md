@@ -1402,7 +1402,7 @@ The rule is the window's width, never the device, with one exception: an iPhone 
 either orientation, as option 1a draws it (`iPhone · Landscape`). Widen past about 900 pt and
 the sidebar opens beside the screen; widen past about 1133 pt and the sheet becomes the trailing column, narrow below it
 and the column becomes the sheet, with matched geometry and no reload (the boards of
-`iPad and foldable.dc.html`). Arun, 27 Oct 2026 (MA-240): from 900 to 1133 pt the screen beside both the sidebar and
+`iPad v4 · Adaptive shell and foldable.dc.html`). Arun, 27 Oct 2026 (MA-240): from 900 to 1133 pt the screen beside both the sidebar and
 the chat fell to about 360 to 480 pt, too narrow for the screens as drawn, so there the chat is a sheet away. A fold, a rotation or a resize keeps the conversation, the scroll position and
 any guided flow. With a hardware keyboard, Return sends, ⌘K focuses the
 composer, ⌘1 to ⌘5 open the sections and ⌘F searches. Every screen works from

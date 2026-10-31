@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MA-279 Design Review · One Consolidated v4 Design at Every Door</title>
+  <style>
+    :root {
+      --bg: #F6F4F1; --surface: #FFFFFF; --surface-2: #F0EDE8; --line: #E4E0DA;
+      --ink: #14171F; --ink-2: #4E5462; --ink-3: #646A78;
+      --hero: #13213A; --hero-2: #1C2E4D; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6;
+      --coral: #FF6B4F; --accent: #C2381F; --focus: #2453C9;
+      --rec-bg: #F8F5F0;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+      --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+      --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+      --shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06);
+    }
+    :root[data-theme="dark"] {
+      --bg: #0A0F18; --surface: #151C27; --surface-2: #1E2633; --line: #283141;
+      --ink: #F3F5F8; --ink-2: #AEB6C4; --ink-3: #8D96A6;
+      --hero: #1A2944; --hero-2: #233558; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6;
+      --coral: #FF7A5E; --accent: #FF7A5E; --focus: #8FB0FF;
+      --rec-bg: #1A2332;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+    .wrap { max-width: 1480px; margin: 0 auto; padding: 28px 24px 72px; display: flex; flex-direction: column; gap: 28px; }
+    a { color: var(--accent); text-underline-offset: 2px; }
+    h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.015em; }
+    p { margin: 0; text-wrap: pretty; }
+    .hero { background: var(--hero); color: var(--hero-ink); border-radius: 24px; padding: 28px 34px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .hero::after { content: ""; position: absolute; left: 34px; right: 34px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--coral); }
+    .eyebrow { font: 600 11px/15px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--hero-ink-2); }
+    .hero h1 { font-size: clamp(24px, 3vw, 34px); line-height: 1.15; }
+    .hero p { color: var(--hero-ink-2); max-width: 86ch; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font: 600 13px/18px var(--font); text-decoration: none; background: var(--hero-2); color: var(--hero-ink); border: 1px solid rgba(255,255,255,0.14); cursor: pointer; }
+    .btn.pri { background: var(--coral); color: #13213A; border-color: transparent; }
+
+    .toolbar { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; box-shadow: var(--shadow); position: sticky; top: 12px; z-index: 20; }
+    .tgrp { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+    .tlbl { font: 600 11px/14px var(--font-mono); text-transform: uppercase; color: var(--ink-3); margin-right: 4px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: 600 12.5px/16px var(--font); padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+    .pill.on { background: var(--hero); color: var(--hero-ink); border-color: var(--hero); }
+
+    .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
+    @media (max-width: 1180px) { .trio { grid-template-columns: minmax(0, 1fr); } }
+    .ocard { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); }
+    .ocard.rec { box-shadow: inset 0 0 0 2px var(--coral), var(--shadow); }
+    .ohead { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .oid { font: 700 12px/16px var(--font-mono); padding: 3px 8px; border-radius: 6px; background: var(--surface-2); }
+    .obadge { font: 700 11px/14px var(--font-mono); padding: 4px 9px; border-radius: 999px; background: var(--hero); color: var(--hero-ink); }
+    .odesc { font-size: 13.5px; line-height: 19px; color: var(--ink-2); }
+    .frame-wrap { width: 100%; height: 760px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+    .frame-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px 26px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
+    .cur-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    @media (max-width: 980px) { .cur-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .cur-item { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .cur-item img { width: 100%; height: 180px; object-fit: cover; object-position: top; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
+    .cur-cap { font: 600 12px/16px var(--font); color: var(--ink); }
+    .cur-sub { font: 400 12px/16px var(--font); color: var(--ink-2); }
+
+    .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+    table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; line-height: 20px; }
+    th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+    tr:last-child th, tr:last-child td { border-bottom: 0; }
+    thead th { font: 600 12px/16px var(--font-mono); color: var(--ink-3); background: var(--surface-2); }
+    tbody th { width: 19%; font-weight: 600; }
+    td.rec-col { background: var(--rec-bg); }
+    code { font: 600 12px/16px var(--font-mono); background: var(--surface-2); padding: 2px 6px; border-radius: 5px; }
+    .hero code { background: var(--hero-2); color: var(--hero-ink); border: 1px solid rgba(255,255,255,0.14); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <span class="eyebrow">MA-279 · Design Review · Phase 0 · Picked: 1a Unified Whole-Wealth Ledger (31 Oct 2026)</span>
+      <h1>One Consolidated v4 Design at Every Door (Web, iPhone, iPad &amp; Foldable)</h1>
+      <p>Three complete structural directions for retiring the remaining <b>16 first-generation (£24,110)</b> market-only boards and bringing every screen onto <b>one whole-wealth (£444,951 / ₹5,00,56,988 / $578,436 / €520,593) v4 family</b> across iOS and Web. Every option keeps the picked <b>1a Chat first</b> shell (MA-163), <b>1a Monzo Pulse</b> charts (MA-295), <b>MA-281 1a</b> Forecaster (F8 patterns + 30 similar days), <b>Buy / BUY</b> stances (MA-64 / MA-91), 4 currencies (<b>GBP, INR, USD, EUR</b>, MA-213), and in-place corrections (<code>via: inline_edit</code>, zero Add buttons).</p>
+      <div class="links">
+        <a class="btn pri" id="lnk-ios" href="../../ios-v1/iPhone%20v4%20%C2%B7%20Consolidated%20options.dc.html">Open Full iOS v1 · Consolidated Options Canvas</a>
+        <a class="btn" id="lnk-web" href="../../app-v1/Web%20v4%20%C2%B7%20Consolidated%20options.dc.html">Open Full Web v4 · Consolidated Options Canvas</a>
+        <a class="btn" id="lnk-pv5" href="../../prototype-v5/Prototype%20v5.dc.html?charts=a">Open Interactive Prototype v5</a>
+      </div>
+    </header>
+
+    <div class="toolbar" role="region" aria-label="Live comparison controls">
+      <div class="tgrp" id="grp-door">
+        <span class="tlbl">Door &amp; Frame</span>
+        <button class="pill on" data-suite="ios" data-frame="0">iPhone · Light</button>
+        <button class="pill" data-suite="ios" data-frame="1">iPhone · Dark</button>
+        <button class="pill" data-suite="ios" data-frame="2">iPad · Wide (Chat beside)</button>
+        <button class="pill" data-suite="web" data-frame="0">Web · Desktop Light</button>
+        <button class="pill" data-suite="web" data-frame="1">Web · Desktop Dark</button>
+        <button class="pill" data-suite="web" data-frame="2">Web · Phone 390</button>
+      </div>
+      <div class="tgrp" id="grp-view">
+        <span class="tlbl">Section</span>
+        <button class="pill on" data-view="options">Options 1a / 1b / 1c Side-by-Side</button>
+        <button class="pill" data-view="states">1a Four-Currency (INR / USD / EUR) &amp; Privacy States</button>
+      </div>
+      <div class="tgrp">
+        <span class="tlbl">Page Theme</span>
+        <button class="pill on" id="btn-light">Light</button>
+        <button class="pill" id="btn-dark">Dark</button>
+      </div>
+    </div>
+
+    <section class="trio" aria-label="Three live options side by side">
+      <article class="ocard rec">
+        <div class="ohead">
+          <div><span class="oid" id="lbl-id-a">1a</span> <strong id="lbl-title-a">Unified Whole-Wealth Ledger &amp; Header 4-Currency Pill</strong></div>
+          <span class="obadge" id="lbl-badge-a">Recommended</span>
+        </div>
+        <p class="odesc" id="lbl-desc-a">One calm whole-wealth ledger (£444,951 across UK 76% and India 24%) with a single 4-currency pill (£ GBP · ₹ INR · $ USD · € EUR) in the header, progressive-disclosure Buy &amp; Forecaster 1a cards (30 similar days), in-place corrections, and dedicated Admin Center behind Face ID / passkey.</p>
+        <div class="frame-wrap"><iframe id="if-a" title="Option 1a Unified Whole-Wealth Ledger live preview"></iframe></div>
+      </article>
+
+      <article class="ocard">
+        <div class="ohead">
+          <div><span class="oid" id="lbl-id-b">1b</span> <strong id="lbl-title-b">Jurisdiction-Split Tabs (All | UK | India) &amp; Always-Open Inspector</strong></div>
+          <span class="oid" id="lbl-badge-b">Option 1b</span>
+        </div>
+        <p class="odesc" id="lbl-desc-b">Places a top jurisdiction scope bar (All · UK · India) above a secondary FX strip, keeps Technical &amp; provenance inspectors permanently open on holding rows, and folds owner spend banners directly onto Audit and You.</p>
+        <div class="frame-wrap"><iframe id="if-b" title="Option 1b Jurisdiction-Split Tabs live preview"></iframe></div>
+      </article>
+
+      <article class="ocard">
+        <div class="ohead">
+          <div><span class="oid" id="lbl-id-c">1c</span> <strong id="lbl-title-c">Bento Command Deck (4-Currency Matrix &amp; Pinned Action Rail)</strong></div>
+          <span class="oid" id="lbl-badge-c">Option 1c</span>
+        </div>
+        <p class="odesc" id="lbl-desc-c">Shows GBP, INR, USD and EUR simultaneously inside the hero matrix, arranges holdings, Overlap, candidate BUY calls and Forecaster stats into 2×2 bento tiles at rest, and pins a guided-flow shortcut rail above every screen.</p>
+        <div class="frame-wrap"><iframe id="if-c" title="Option 1c Bento Command Deck live preview"></iframe></div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Side-by-side trade-offs &amp; consolidation architecture</h2>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th>1a · Unified Whole-Wealth Ledger (Recommended)</th>
+              <th>1b · Jurisdiction-Split Tabs &amp; Open Inspector</th>
+              <th>1c · Bento Command Deck &amp; Pinned Rail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Four currencies (MA-213)</th>
+              <td class="rec-col">Single compact header/hero pill (<code>£ GBP · ₹ INR · $ USD · € EUR</code>) converts household totals while keeping native listing currencies (₹ on CAMS/NSE) beside converted amounts.</td>
+              <td>Secondary FX strip stacked beneath the <code>All | UK | India</code> scope bar on every screen.</td>
+              <td>Simultaneous 4-currency matrix inside the hero card at rest (GBP headline + INR / USD / EUR tiles).</td>
+            </tr>
+            <tr>
+              <th>Whole-wealth Register &amp; India</th>
+              <td class="rec-col">Unified UK + India ledger (76% / 24% sculpted capsule bar) with in-place <code>before → after</code> corrections (<code>via: inline_edit</code>) and zero Add buttons; cross-border overlap stays visible in one place.</td>
+              <td>Splits UK and India into separate top-level tabs; provenance &amp; ISIN blocks remain permanently expanded on every row.</td>
+              <td>2×2 bento tiles pairing UK funds, India CAMS folios, Overlap and candidate <code>BUY</code> calls, plus a pinned top action rail.</td>
+            </tr>
+            <tr>
+              <th>Market stances &amp; Web Forecast 1a</th>
+              <td class="rec-col">Simple summary first (<code>Buy · 78%</code>, candidate <code>BUY · 74%</code>, 52% 4-week answer first, F8 candle patterns, 30 similar days since 2015, Forecaster in practice, Proof lab); Technical opens on demand.</td>
+              <td>Technical pillars and provenance open at rest alongside the simple summary, increasing vertical scroll height.</td>
+              <td>Dense multi-metric tile grid; great on a 1440 monitor or 13" iPad, tight on a 320–390 phone under Dynamic Type.</td>
+            </tr>
+            <tr>
+              <th>Audit, You &amp; Admin Center</th>
+              <td class="rec-col">Clean separation: member Audit, Files &amp; You stay calm; owner-only Admin Center (Claude $50 ceiling, AWS cap steps, alert routing, failed-job replay) sits behind its dedicated Face ID / passkey check.</td>
+              <td>Surfaces owner spend &amp; ops banners inline on Audit and You, adding admin noise to everyday member views.</td>
+              <td>Groups ops tiles and chat shortcut chips into a command deck, duplicating the Chat composer's own guided-flow chips.</td>
+            </tr>
+            <tr>
+              <th>First-gen boards retired on Step 2B build</th>
+              <td class="rec-col" colspan="3">Retires all <b>16 remaining first-generation (£24,110) board files</b> — 7 in <code>ios-v1/</code> (<code>iPhone chat</code>, <code>iPhone dashboard</code>, <code>iPhone settings</code>, <code>iPhone sign-in</code>, <code>iPhone admin</code>, <code>iPhone audit and activity</code>, <code>iPad and foldable</code>) and 9 in <code>app-v1/</code> (<code>Browser</code>, <code>Browser 2</code>, <code>Wealth</code>, <code>India</code>, <code>Responsive</code>, <code>Forecast</code>, <code>Admin center 2</code>, <code>Admin center 3</code>, <code>Audit and files</code>) — updating all 61 trace rows and Confluence previews to one v4 source of truth.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>What this replaces: the two-generation split today</h2>
+      <p>Today 16 first-generation boards still draw the old <code>£24,110</code> market-only household, <code>ADD</code> badges, a 2-currency toggle, and the pre-MA-281 Web Forecast alongside the <code>£444,951</code> whole-wealth <code>v4</code> boards:</p>
+      <div class="cur-grid">
+        <div class="cur-item">
+          <img src="./current/01-firstgen-wealth.png" alt="First-generation Wealth board showing £24,110 market-only total" />
+          <div class="cur-cap">First-gen Web Wealth (£24,110)</div>
+          <div class="cur-sub">Market-only ledger, old ADD badges, 2 currencies (GBP/INR only), pre-v4 shell.</div>
+        </div>
+        <div class="cur-item">
+          <img src="./current/02-firstgen-forecast.png" alt="First-generation Web Forecast board before MA-281 1a" />
+          <div class="cur-cap">First-gen Web Forecast (pre-MA-281)</div>
+          <div class="cur-sub">Lacks MA-281 1a's answer-first card, F8 candle patterns, 30 similar days &amp; Proof lab.</div>
+        </div>
+        <div class="cur-item">
+          <img src="./current/03-firstgen-admin.png" alt="First-generation Admin center board" />
+          <div class="cur-cap">First-gen Admin Center 2 &amp; 3</div>
+          <div class="cur-sub">Drawn before the v4 shell, Monzo Pulse meters and consolidated trace.</div>
+        </div>
+        <div class="cur-item">
+          <img src="./current/04-v4-iphone-home.png" alt="Current v4 iPhone Home board showing £444,951 whole wealth" />
+          <div class="cur-cap">Current v4 iPhone Home (£444,951)</div>
+          <div class="cur-sub">Whole-wealth baseline that Step 2B extends cleanly across every screen and door.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var BASE = /\/reviews\/MA-279\//.test(location.pathname) ? '../../' : '';
+      var state = { suite: 'ios', frame: 0, view: 'options', theme: 'light' };
+
+      var COPY = {
+        options: [
+          { id: '1a', title: 'Unified Whole-Wealth Ledger & Header 4-Currency Pill', badge: 'Picked · 31 Oct 2026', desc: 'One calm whole-wealth ledger (£444,951 across UK 76% and India 24%) with a single 4-currency pill (£ GBP · ₹ INR · $ USD · € EUR) in the header, progressive-disclosure Buy & Forecaster 1a cards (30 similar days), in-place corrections, and dedicated Admin Center behind Face ID / passkey.' },
+          { id: '1b', title: 'Jurisdiction-Split Tabs (All | UK | India) & Always-Open Inspector', badge: 'Not picked · record', desc: 'Places a top jurisdiction scope bar (All · UK · India) above a secondary FX strip, keeps Technical & provenance inspectors permanently open on holding rows, and folds owner spend banners directly onto Audit and You.' },
+          { id: '1c', title: 'Bento Command Deck (4-Currency Matrix & Pinned Action Rail)', badge: 'Not picked · record', desc: 'Shows GBP, INR, USD and EUR simultaneously inside the hero matrix, arranges holdings, Overlap, candidate BUY calls and Forecaster stats into 2×2 bento tiles at rest, and pins a guided-flow shortcut rail above every screen.' }
+        ],
+        states_ios: [
+          { id: 'S1·1', title: '1a in INR (₹5,00,56,988) · Lakh/Crore Grouping', badge: '1a State', desc: 'Whole-wealth Home & Register switched to INR at Fri 23 Oct ECB £1 = ₹112.50, preserving native listing context.' },
+          { id: 'S1·2', title: '1a in USD ($578,436) · Dark Mode', badge: '1a State', desc: 'Whole-wealth Home & Forecaster 1a switched to USD at £1 = $1.30 in Dark mode (25%-brightness contrast audited).' },
+          { id: 'S1·3', title: '1a Privacy Mode On · Masked Figures', badge: '1a State', desc: 'Every currency figure across Hero, Register, inline corrections, Chat and Admin is masked while keeping Buy 78% and 30 similar days legible.' }
+        ],
+        states_web: [
+          { id: 'W1·1', title: '1a Web Desktop in EUR (€520,593)', badge: '1a State', desc: 'Whole-wealth Web Overview, Register & Forecast 1a switched to EUR at Fri 23 Oct ECB £1 = €1.17.' },
+          { id: 'W1·2', title: '1a Web Phone 390 · Dark + Privacy Mode On', badge: '1a State', desc: 'Adaptive 390 phone browser in Dark mode with Privacy masking active across Hero, Register and Admin.' },
+          { id: '1a·390', title: '1a Web Phone 390 · Light (GBP £444,951)', badge: '1a Reference', desc: 'Adaptive 390 phone browser in Light mode showing the tab bar, header 4-currency pill and Forecast 1a.' }
+        ]
+      };
+
+      function canvasPath() {
+        return state.suite === 'ios'
+          ? BASE + 'ios-v1/iPhone%20v4%20%C2%B7%20Consolidated%20options.dc.html'
+          : BASE + 'app-v1/Web%20v4%20%C2%B7%20Consolidated%20options.dc.html';
+      }
+
+      function syncFrames() {
+        var path = canvasPath();
+        var bg = state.theme === 'dark' ? 'dark' : 'light';
+        var targets;
+        var copySet;
+        if (state.view === 'options') {
+          targets = [
+            { emb: '1a', frame: state.frame },
+            { emb: '1b', frame: state.frame },
+            { emb: '1c', frame: state.frame }
+          ];
+          copySet = COPY.options;
+        } else if (state.suite === 'ios') {
+          targets = [
+            { emb: 's1', frame: 0 },
+            { emb: 's1', frame: 1 },
+            { emb: 's1', frame: 2 }
+          ];
+          copySet = COPY.states_ios;
+        } else {
+          targets = [
+            { emb: 's1', frame: 0 },
+            { emb: 's1', frame: 1 },
+            { emb: '1a', frame: 2 }
+          ];
+          copySet = COPY.states_web;
+        }
+
+        ['a', 'b', 'c'].forEach(function (k, idx) {
+          var t = targets[idx];
+          var c = copySet[idx];
+          document.getElementById('lbl-id-' + k).textContent = c.id;
+          document.getElementById('lbl-title-' + k).textContent = c.title;
+          document.getElementById('lbl-badge-' + k).textContent = c.badge;
+          document.getElementById('lbl-desc-' + k).textContent = c.desc;
+          var url = path + '?static=1&embed=' + t.emb + '&frame=' + t.frame + '&bg=' + bg;
+          var el = document.getElementById('if-' + k);
+          if (el && el.getAttribute('data-url') !== url) {
+            el.setAttribute('data-url', url);
+            el.src = url;
+          }
+        });
+      }
+
+      document.getElementById('grp-door').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-suite]');
+        if (!b) return;
+        state.suite = b.getAttribute('data-suite');
+        state.frame = parseInt(b.getAttribute('data-frame') || '0', 10);
+        this.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === b); });
+        syncFrames();
+      });
+
+      document.getElementById('grp-view').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-view]');
+        if (!b) return;
+        state.view = b.getAttribute('data-view');
+        this.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === b); });
+        syncFrames();
+      });
+
+      function syncDoorButtons() {
+        document.querySelectorAll('#grp-door .pill').forEach(function (p) {
+          var match = p.getAttribute('data-suite') === state.suite && parseInt(p.getAttribute('data-frame') || '0', 10) === state.frame;
+          p.classList.toggle('on', match);
+        });
+      }
+
+      document.getElementById('btn-light').addEventListener('click', function () {
+        state.theme = 'light';
+        if (state.frame === 1) { state.frame = 0; syncDoorButtons(); }
+        document.documentElement.setAttribute('data-theme', 'light');
+        this.classList.add('on');
+        document.getElementById('btn-dark').classList.remove('on');
+        syncFrames();
+      });
+
+      document.getElementById('btn-dark').addEventListener('click', function () {
+        state.theme = 'dark';
+        if (state.frame === 0) { state.frame = 1; syncDoorButtons(); }
+        document.documentElement.setAttribute('data-theme', 'dark');
+        this.classList.add('on');
+        document.getElementById('btn-light').classList.remove('on');
+        syncFrames();
+      });
+
+      syncFrames();
+    })();
+  </script>
+</body>
+</html>

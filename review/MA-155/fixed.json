@@ -15,8 +15,9 @@
     "check": {
       "type": "trace",
       "key": "MA-130",
-      "board": "Browser · Admin · Settings"
-    }
+      "board": "Browser · Admin · People, Routing & Replay · Desktop Dark"
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r1-B3",
@@ -44,8 +45,9 @@
     "finding": "a partly drawn story cannot start (a row of its own with an undrawn list is refused)",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys,json,io,contextlib; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':'To Do','labels':['design'],'arch':[],'ui':True,'design':'planned','boards':[{'project':'app','file':'Admin center 2.dc.html','board':'Browser · Admin · Settings'}],'notes':''}; t['items'].append(r); q=lambda: (lambda o: (contextlib.redirect_stdout(o).__enter__(), p.start(t,'MA-X'))[1])(io.StringIO()); a=q(); r['undrawn']=['x']; b=q(); sys.exit(0 if (a,b)==(0,1) else 1)\""
-    }
+      "run": "python3 -c \"import sys,json,io,contextlib; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':'To Do','labels':['design'],'arch':[],'ui':True,'design':'planned','boards':[{'project':'app','file':'Web v4 · Admin center.dc.html','board':'Browser · Admin · Spend & AWS Cap · Desktop Light'}],'notes':''}; t['items'].append(r); q=lambda: (lambda o: (contextlib.redirect_stdout(o).__enter__(), p.start(t,'MA-X'))[1])(io.StringIO()); a=q(); r['undrawn']=['x']; b=q(); sys.exit(0 if (a,b)==(0,1) else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r2-B2",
@@ -82,8 +84,9 @@
     "finding": "MA-39, MA-80 and MA-91 list their undrawn screens until they are drawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-39': (['updating a valuation', 'changing a setting'], [('Chat basics.dc.html', 'Telegram · Guided flow: update a value'), ('Chat basics.dc.html', 'Telegram · Guided flow: change a setting')]), 'MA-80': (['the /web reply'], [('Chat basics.dc.html', 'Telegram · The laptop address')]), 'MA-91': (['the live stance chip', 'the /calls list in the chat'], [('Research cards.dc.html', 'Telegram · Live stance chips on the Portfolio card'), ('Research cards.dc.html', 'Telegram · Calls list')])}; ok=all(all(x in d[k].get('undrawn',[]) for x in items) or (d[k]['design'] in ('planned','picked') and all(b in {(e['file'],e['board']) for e in d[k]['boards']} for b in boards)) for k,(items,boards) in need.items()); sys.exit(0 if ok else 1)\""
-    }
+      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-39': (['updating a valuation', 'changing a setting'], [('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Guided flows & long-list picker · Light')]), 'MA-80': (['the /web reply'], [('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Stance cards, alerts & commands · Light')]), 'MA-91': (['the live stance chip', 'the /calls list in the chat'], [('Web v4 · Market, holdings and India.dc.html', 'Browser · Market, Overlap & India · Desktop Light'), ('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Stance cards, alerts & commands · Light')])}; ok=all(all(x in d[k].get('undrawn',[]) for x in items) or (d[k]['design'] in ('planned','picked') and all(b in {(e['file'],e['board']) for e in d[k]['boards']} for b in boards)) for k,(items,boards) in need.items()); sys.exit(0 if ok else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r3-B2",
@@ -101,8 +104,9 @@
     "check": {
       "type": "trace",
       "key": "MA-124",
-      "board": "Browser · Forecaster · Proof"
-    }
+      "board": "Browser · Forecaster · Proof & States · Desktop"
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r3-B4",
@@ -110,8 +114,9 @@
     "finding": "a story In Review or Done with undrawn screens fails the check",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import sys,json; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); ok=True\nfor s in ('In Review','Done'):\n r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':s,'labels':['design'],'arch':[],'ui':True,'design':'picked','boards':[{'project':'app','file':'Admin center 2.dc.html','board':'Browser · Admin · Settings'}],'notes':'','undrawn':['x']}; e,_=p.item_findings(r,p.context(t)); ok=ok and any('still undrawn' in x for x in e)\nsys.exit(0 if ok else 1)\""
-    }
+      "run": "python3 -c \"import sys,json; sys.path.insert(0,'scripts'); import plan_sync as p; t=json.load(open('docs/trace.json')); ok=True\nfor s in ('In Review','Done'):\n r={'key':'MA-X','type':'Story','epic':'MA-9','phase':0,'summary':'x','status':s,'labels':['design'],'arch':[],'ui':True,'design':'picked','boards':[{'project':'app','file':'Web v4 · Admin center.dc.html','board':'Browser · Admin · Spend & AWS Cap · Desktop Light'}],'notes':'','undrawn':['x']}; e,_=p.item_findings(r,p.context(t)); ok=ok and any('still undrawn' in x for x in e)\nsys.exit(0 if ok else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r4-B1",
@@ -144,13 +149,13 @@
       "field": "undrawn",
       "contains": "agent's question",
       "or_drawn": {
-        "file": "Admin center 3.dc.html",
+        "file": "Web v4 · Admin center.dc.html",
         "boards": [
-          "Telegram · An agent's question",
-          "Telegram · An instruction from you"
+          "Browser · Admin · People, Routing & Replay · Desktop Dark"
         ]
       }
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r5-B1",
@@ -171,12 +176,13 @@
       "field": "undrawn",
       "contains": "/pause and /resume",
       "or_drawn": {
-        "file": "Chat basics.dc.html",
+        "file": "iPhone v4 · Chat and guided flows.dc.html",
         "boards": [
-          "Telegram · Pause and resume"
+          "iPhone · Stance cards, alerts & commands · Light"
         ]
       }
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r6-B1",
@@ -208,12 +214,13 @@
       "field": "undrawn",
       "contains": "digest",
       "or_drawn": {
-        "file": "Admin center 3.dc.html",
+        "file": "Web v4 · Admin center.dc.html",
         "boards": [
-          "Telegram · Daily digest"
+          "Browser · Admin · People, Routing & Replay · Desktop Dark"
         ]
       }
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r6-admin",
@@ -255,13 +262,13 @@
       "field": "undrawn",
       "contains": "digest",
       "or_drawn": {
-        "file": "Admin center 3.dc.html",
+        "file": "Web v4 · Admin center.dc.html",
         "boards": [
-          "Telegram · Daily digest",
-          "Telegram · A cap, a threshold or a route changed"
+          "Browser · Admin · People, Routing & Replay · Desktop Dark"
         ]
       }
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r8-d1",
@@ -343,16 +350,13 @@
       "field": "undrawn",
       "contains": "past the $200 credit",
       "or_drawn": {
-        "file": "Admin center 3.dc.html",
+        "file": "Web v4 · Admin center.dc.html",
         "boards": [
-          "Browser · Admin · Spend · Move the ceiling past the credit, the explicit yes",
-          "Browser · Admin · Spend · Move the ceiling above the hard limit, refused",
-          "Browser · Admin · Spend · Change the guards: member share, daily guard, calls per run",
-          "Browser · Admin · Spend · Change the renewal day",
-          "Browser · Admin · Spend · Type the hard limit"
+          "Browser · Admin · Spend & AWS Cap · Desktop Light"
         ]
       }
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r8-b2",
@@ -385,13 +389,14 @@
       "field": "undrawn",
       "contains": "fails again",
       "or_drawn": {
-        "file": "iPhone admin.dc.html",
+        "file": "iPhone v4 · Admin center.dc.html",
         "boards": [
-          "iPhone · Failed work and Replay"
+          "iPhone · Admin · People, Routing & Replay · Light"
         ]
       }
     },
-    "note": "MA-161 (25 Oct 2026): the Telegram board this named is superseded; the iOS board iPhone · Failed work and Replay draws the replay that fails again, so it is the evidence now (the web's Browser · Admin · Alerts · Replayed, and failed again stays on MA-145 too)."
+    "note": "MA-161 (25 Oct 2026): the Telegram board this named is superseded; the iOS board iPhone · Failed work and Replay draws the replay that fails again, so it is the evidence now (the web's Browser · Admin · Alerts · Replayed, and failed again stays on MA-145 too).",
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r8-b3-web",
@@ -400,9 +405,10 @@
     "check": {
       "type": "trace",
       "key": "MA-145",
-      "board": "Browser · Admin · Alerts · Replayed, and failed again"
+      "board": "Browser · Admin · People, Routing & Replay · Desktop Dark"
     },
-    "note": "MA-161 round 1 (26 Oct 2026, finding a4): r8-b3 follows the iOS board since the pivot; this entry keeps the web Admin center's board for the same outcome, so dropping either fails."
+    "note": "MA-161 round 1 (26 Oct 2026, finding a4): r8-b3 follows the iOS board since the pivot; this entry keeps the web Admin center's board for the same outcome, so dropping either fails.",
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r8-a1",
@@ -446,12 +452,13 @@
       "field": "undrawn",
       "contains": "still want this?",
       "or_drawn": {
-        "file": "Admin center 3.dc.html",
+        "file": "iPhone v4 · Chat and guided flows.dc.html",
         "boards": [
-          "Telegram · Old updates and expired Confirms"
+          "iPhone · Stance cards, alerts & commands · Light"
         ]
       }
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r9-b2",
@@ -460,13 +467,13 @@
     "check": {
       "type": "grep",
       "files": [
-        "docs/design/app-v1/Admin center 2.dc.html",
-        "docs/design/app-v1/Admin center 3.dc.html",
-        "docs/design/ios-v1/iPhone admin.dc.html"
+        "docs/design/app-v1/Web v4 · Admin center.dc.html",
+        "docs/design/ios-v1/iPhone v4 · Admin center.dc.html"
       ],
       "pattern": "Admins only",
       "present": false
-    }
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r8-d1b",
@@ -512,8 +519,9 @@
     "finding": "MA-137 lists the AWS step and forecast alerts as undrawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); have={(b['file'],b['board']) for b in r['boards']}; F='Admin center 3.dc.html'; need=[(F,'Telegram · AWS cap steps'),(F,'Browser · Admin · Alerts · The AWS cap'+chr(39)+'s steps and the forecast, with their flags')]; drawn=r['design'] in ('planned','picked') and all(x in have for x in need); sys.exit(0 if drawn or ('step alerts' in u and 'forecast passes the AWS cap' in u) else 1)\""
-    }
+      "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-137'][0]; u=' | '.join(r.get('undrawn',[])); have={(b['file'],b['board']) for b in r['boards']}; F='Web v4 · Admin center.dc.html'; need=[(F,'Browser · Admin · Spend & AWS Cap · Desktop Light'),(F,'Browser · Admin · Spend & AWS Cap · Phone 390')]; drawn=r['design'] in ('planned','picked') and all(x in have for x in need); sys.exit(0 if drawn or ('step alerts' in u and 'forecast passes the AWS cap' in u) else 1)\""
+    },
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
   },
   {
     "id": "r11-c1",

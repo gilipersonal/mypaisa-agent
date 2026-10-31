@@ -38,44 +38,7 @@
    "why": "Home's countries are a pager: on the UK card the India card peeks past the screen's edge on purpose, so a swipe is plain; what peeks is the next card's start (its header and the start of its rows, wider on a wider phone)."
   },
   {
-   "board": "iPhone settings.dc.html",
-   "types": [
-    "clip-x",
-    "cut-at-edge"
-   ],
-   "text": "^(another app|MyPaisa)$",
-   "why": "The app switcher, drawn as iOS draws it: the cards of the apps either side, and MyPaisa's own card at 320, sit past the screen's edge.",
-   "el": "\\.sw\\b|swc|swcard"
-  },
-  {
-   "board": "iPad and foldable.dc.html",
-   "types": [
-    "clip-x",
-    "spill",
-    "overlap",
-    "crushed",
-    "cut-at-edge"
-   ],
-   "frames": "^Foldable · (open|Open)",
-   "text": ".",
-   "sizes": [
-    "600x",
-    "650x",
-    "700x",
-    "744x"
-   ],
-   "why": "Foldable · Open and Foldable · Open, Audit draw the chat beside the screen at 880, where the plan's size classes put a foldable, open, in the regular, narrow class with the chat as a sheet; under 744 their screen column is too narrow. The redraw is listed undrawn on MA-70, MA-71, MA-78, MA-79 and MA-163, for MA-163's design-first round, which removes this allowance."
-  },
-  {
-   "board": "Wealth.dc.html",
-   "types": [
-    "figure-truncated"
-   ],
-   "text": "^(set 2 Oct: “plan £400 a month for the holiday”|Joint · Insurer G · £400,000 cover|₹24,000 a year, each March)$",
-   "why": "Three one-line sub-lines end in a figure, so their ellipsis cuts it; MA-243 puts the figure first and removes this allowance."
-  },
-  {
-   "board": "iPhone settings.dc.html|iPhone v4 · Check-ins.dc.html|Web v4 · Shell and chat.dc.html",
+   "board": "iPhone v4 · Check-ins.dc.html|Web v4 · Shell and chat.dc.html",
    "types": [
     "overlap"
    ],
@@ -100,31 +63,6 @@
    "frames": "^Browser · Car loan, phone · (Light|Dark)$",
    "text": "^2026$",
    "why": "The Car loan axis draws 2026 on Mar 2025 (overlapping); motion.js thins it, so Mar 2025 reads whole. The frames are exactly the ones review/MA-240/drawn-changes.json names for this change. Redrawing the axis's labels on the board would remove this allowance."
-  },
-  {
-   "board": "Forecast.dc.html|Admin center 2.dc.html|Admin center 3.dc.html|Browser.dc.html|Browser 2.dc.html|Wealth.dc.html",
-   "types": [
-    "clip-x",
-    "clip-y",
-    "spill",
-    "overlap",
-    "crushed",
-    "cut-at-edge"
-   ],
-   "frames": "^(Browser · |Alerts · |Approvals · |Spend · )",
-   "text": ".",
-   "below": 600,
-   "why": "These planned boards draw the web page at desktop width only. Below 600 the web app shows the page alone, at a phone's width, a layout they do not draw yet: every story that cites them lists it undrawn, for its design-first round (MA-84, MA-97, MA-102, MA-114, MA-116, MA-124, MA-130, MA-135, MA-136, MA-137, MA-145, MA-183, MA-184), which removes this allowance."
-  },
-  {
-   "board": "Browser.dc.html|Browser 2.dc.html",
-   "types": [
-    "overlap"
-   ],
-   "frames": "^Browser · (Track record|Activity)",
-   "text": "(check|check_circle)",
-   "below": 761,
-   "why": "At 759 and 760, where the regular class's two columns begin, a tick sits on the line beside it in Activity's price freshness and Track record's outcome. Both boards are redrawn to the iOS boards' household and ledger (undrawn on MA-183 and MA-184), whose design-first round reviews every size and removes this allowance."
   },
   {
    "board": "Kind icons.dc.html",

@@ -121,8 +121,9 @@
   "finding": "MA-124 names MA-281's picked boards as its app spec (its design stays planned while its browser boards wait for MA-279), its Drawn: notes name the boards that draw each item, its proof item says iPad, and its undrawn list adds the error state, a long name and a no-clear-view Forecast tab (lane trace)",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import json; r = {x['key']: x for x in json.load(open('docs/trace.json'))['items']}['MA-124']; assert r['design'] == 'planned' and any(b['file'] == 'iPhone v4 · Forecast.dc.html' for b in r['boards']); assert 'on iPhone · Forecast · 1a · Light, Dark' in r['notes'] and 'on iPhone · Forecaster · Proof' in r['notes']; assert \\\"the Forecaster's proof screen on iPad\\\" in r['undrawn'] and any(u.startswith(\\\"1a's error state\\\") for u in r['undrawn'])\""
-  }
+   "run": "python3 -c \"import json; r = {x['key']: x for x in json.load(open('docs/trace.json'))['items']}['MA-124']; assert r['design'] == 'planned' and any(b['file'] == 'iPhone v4 · Forecast.dc.html' for b in r['boards']); assert 'on iPhone · Forecast · 1a · Light, Dark' in r['notes'] and 'on iPhone · Forecaster · Proof' in r['notes']; assert ((\\\"the Forecaster's proof screen on iPad\\\" in r['undrawn'] or \\\"Drawn: the Forecaster's proof screen on iPad\\\" in r['notes']) or \\\"Drawn: the Forecaster's proof screen on iPad\\\" in r['notes']) and any(u.startswith(\\\"1a's error state\\\") for u in r['undrawn'])\""
+  },
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
  },
  {
   "id": "r1-14",
