@@ -203,7 +203,7 @@
   function rhe(x) { var f = Math.floor(x); return Math.abs(x - f - 0.5) < 1e-9 ? (f % 2 === 0 ? f : f + 1) : Math.round(x); }
   var g = function (n, o) { return K.gbp(n, o); };
   var ri = function (n, o) { return K.inr(n, o); };
-  function mny(s) { return '<span class="mny">' + s + '</span>'; }
+  function mny(s) { return K.mny(s); }
   function inrDp(n) { var i = Math.floor(n), d = Math.round((n - i) * 100); return mny(K.inr(i, { raw: true }) + '.' + (d < 10 ? '0' : '') + d); }
   function sg(n) { return K.gbp(n, { sign: true }); }
   function at(ctx, iso) { return ctx.t >= iso; }
@@ -385,7 +385,7 @@
         { k: 'We owe', v: M2(T.owe_gbp) },
         { k: 'Liquid now', v: M2(T.liquid_gbp) }
       ], 'c') + '<div class="hpulse-h"><span>Recorded trajectory · ' + pts.length + ' milestones</span><span>' + diffFmt + ' since ' + first.k.split(' · ')[0] + '</span></div>' +
-        '<div class="hpulse-bars" role="img" aria-label="Recorded net worth across ' + pts.length + ' ledger milestones" data-scrub="' + K.esc(JSON.stringify(scrubC)) + '">' + cols + K.scrubBox() + '</div>' +
+        '<div class="hpulse-bars" role="img" aria-label="Recorded net worth across ' + pts.length + ' ledger milestones"' + (ctx.priv ? '' : ' data-scrub="' + K.esc(JSON.stringify(scrubC)) + '" tabindex="0"') + '>' + cols + K.scrubBox() + '</div>' +
         '<div class="axis5" style="color:var(--mp-hero-ink-2)"><span>' + first.k.split(' · ')[0] + '</span><span>' + last.k.split(' · ')[0] + '</span></div></div>';
     }
     var linePts = pts.map(function (p) { return [p.i, p.v]; });
@@ -503,7 +503,7 @@
       return K.row({ lead: lead(LEAD[a.id]), t: a.name, s: (a.country === 'UK' ? 'UK · £ · ' : 'India · ₹ · ') + who(a.owners) + (a.id === 'home' ? (ctx.W.homeCorrected ? ' · your estimate, Mon 26 Oct' : ' · valued 30 Apr') : a.id === 'pune' ? ' · valued 15 Jan · overdue' : a.unlocks_at ? ' · unlocks at 57' : ''),
         v: recValue(a), vs: recVs(a), go: recLink(a), id: a.id === 'home' ? 'w-homerow' : null });
     })) + K.foot(rest.length + ' more records, ' + g(rest.reduce(function (s, a) { return s + a.gbp; }, 0)) + ' in all.') + '<div>' + K.btn('All assets', 'nav:assets', 'plain', 'chevron_right') + '</div>' }));
-    if (ctx.compact) cards.push(K.card({ t: 'Everything else', body: K.list([['account_balance_wallet', 'Assets', 'assets'], ['credit_card', 'Debts', 'debts'], ['pie_chart', 'Budget', 'budget'], ['show_chart', 'Projection', 'projection'], ['event_note', 'Plans', 'plans']].map(function (l) { return K.row({ icon: l[0], t: l[1], go: 'nav:' + l[2] }); })) }));
+    if (ctx.compact || ctx.narrow) cards.push(K.card({ t: 'Everything else', body: K.list([['account_balance_wallet', 'Assets', 'assets'], ['credit_card', 'Debts', 'debts'], ['pie_chart', 'Budget', 'budget'], ['show_chart', 'Projection', 'projection'], ['event_note', 'Plans', 'plans'], ['summarize', 'Reports', 'reports'], ['candlestick_chart', 'Holdings', 'holdings'], ['join', 'Overlap', 'overlap'], ['fact_check', 'Track record', 'track'], ['newspaper', 'News and events', 'news']].map(function (l) { return K.row({ icon: l[0], t: l[1], go: 'nav:' + l[2] }); })) }));
     return cards;
   }
   M.page('home', function (ctx) {
@@ -837,7 +837,7 @@
     if (!run) return K.card({ body: K.note('hourglass_empty', 'The Projection runs after the first records are in.') });
     var f46 = fanAt(run, 2046);
     var hero = K.hero({ k: 'Middle path in 2046', v: g(f46.p50), s: 'From ' + g(ctx.W.T.net_gbp) + ' today. 8 in 10 of the engine’s runs end between ' + g(f46.p10) + ' and ' + g(f46.p90) + '.', extra: fanChart(ctx, run, ctx.compact || ctx.door === 'ipad'), id: 'w-fan' });
-    var chips = '<div class="fx g8 wrap">' + ['What if we buy a second flat?', 'What if the plan items fall away?', 'What moves the line most?'].map(function (t) { return '<button type="button" class="gchip lg"' + K.go('tab:chat') + '><span>' + t + '</span></button>'; }).join('') + '</div>';
+    var chips = '<div class="fx g8 wrap">' + ['What if we buy a second flat?', 'What if the plan items fall away?', 'What moves the line most?'].map(function (t) { return '<button type="button" class="gchip' + (ctx.web ? '' : ' lg') + '"' + K.go('tab:chat') + '><span>' + t + '</span></button>'; }).join('') + '</div>';
     var ms = [['savings', 'Asha’s fixed-rate saver matures', '14 Dec 2026', g(10460)], ['percent', 'Mortgage fixed rate ends', '30 Jun 2028 · then a variable rate', ''], ['directions_car', 'Car loan paid off', '20 Feb 2029 · frees ' + g(347) + ' a month', ''],
       ['account_balance', 'SBI FD matures', '10 Mar 2029', ri(617538)], ['home_work', 'HDFC home loan paid off', ctx.t >= '2026-11-05T20:59' ? 'Mar 2029, with the SBI FD · frees ' + ri(39390) + ' a month' : '5 Jul 2030 · frees ' + ri(39390) + ' a month', ''], ['shield', 'LIC policy matures', '28 Mar 2031', ''], ['home', 'Mortgage paid off', '1 Oct 2045 · frees ' + g(1456) + ' a month', '']];
     if (ctx.t >= '2026-11-05T20:43') ms.splice(4, 0, ['school', 'School fees start', 'Jan 2029 · ' + g(4000) + ' a month', '']);
@@ -929,9 +929,9 @@
       return '<span class="lean-line" style="bottom:' + H(l[0]).toFixed(1) + '%"></span><span class="lean-y" style="top:' + (100 - H(l[0])).toFixed(1) + '%' + tf + '">' + mny(l[1]) + '</span>';
     }).join('') +
       '<span class="lean-line lean-floor" style="bottom:' + H(floor).toFixed(1) + '%"></span><span class="lean-y" style="top:' + (100 - H(floor)).toFixed(1) + '%;color:var(--mp-pause)' + (m !== 'classic' ? ';transform:translateY(-78%)' : '') + '">' + mny('£500') + '</span>';
-    var scrubLean = m === 'classic' ? '' : ' data-scrub="' + K.esc(JSON.stringify(years.map(function (y, i) {
+    var scrubLean = (m === 'classic' || ctx.priv) ? '' : ' data-scrub="' + K.esc(JSON.stringify(years.map(function (y, i) {
       return { x: +X(i).toFixed(2), y: +(100 - H(y.lowest_surplus)).toFixed(2), k: y.year + ' · leanest ' + y.lowest_month.slice(0, 3), v: y.lowest_surplus, ccy: 'GBP', sign: true, s: y.below_floor ? y.below_floor + ' mo below floor' : 'All 12 mo at or above floor' };
-    }))) + '"';
+    }))) + '" tabindex="0"';
     var statsHtml = K.chartStats([
       { k: 'Monthly floor', v: g(floor) },
       { k: 'Below floor', v: nBelow ? nBelow + ' months' : '0 months' },
@@ -1280,7 +1280,7 @@
     return out;
   }
   function secondCheck() {
-    return '<div class="pv5-wealth sheetc"><div class="fx ac jb"><span class="mp-hl">Check it’s you</span><button type="button" class="gbtn lg" aria-label="Close"' + K.go('kind:close') + '><span class="ms z1">close</span></button></div>' +
+    return '<div class="pv5-wealth sheetc"><div class="fx ac jb"><span class="mp-hl">Check it’s you</span><button type="button" class="' + (ctx.web ? 'iconbtn' : 'gbtn lg') + '" aria-label="Close"' + K.go('kind:close') + '><span class="ms z1" aria-hidden="true">close</span></button></div>' +
       overline('Admin change') + '<span class="mp-t3">Add a new kind: NS&amp;I Premium Bonds</span>' + K.kv('Built from', 'Cash: the last figure given') + K.kv('Asked for by', 'Asha, 10:12') +
       K.foot('The server binds a challenge to this change; Apple signs you in again to answer it. A passkey under Face ID answers it too.') +
       '<button type="button" class="apple" id="w-apple"' + K.go('kind:apple') + '>' + K.ms('ar_on_you') + 'Sign in with Apple</button>' + K.foot('Continue as Arun Dutta, ar•••@icloud.com') + '</div>';

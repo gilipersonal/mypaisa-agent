@@ -166,7 +166,7 @@
   function inr2(n) {
     var r = Math.abs(n).toFixed(2).split('.'), s = r[0];
     s = s.length > 3 ? s.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + s.slice(-3) : s;
-    return '<span class="mny">' + (n < 0 ? '−' : '') + '₹' + s + '.' + r[1] + '</span>';
+    return K.mny((n < 0 ? '−' : '') + '₹' + s + '.' + r[1]);
   }
   function num(n, dp) { return K.num(n, dp); }
   function asset(ctx, id) { var a = ((ctx.D.household || {}).assets || []).filter(function (x) { return x.id === id; })[0]; return a || null; }
@@ -284,8 +284,8 @@
       (o.fan || []).forEach(function (p, k) {
         scPts.push({ x: +f(FK(k + 1)), y: +f(Y(p.p50)), k: fmtIsoDay(p.d) + ' · +' + (k + 1) + 'd', vt: 'Middle ' + sp(p.p50), s: '8 in 10: ' + sp(p.p10) + ' to ' + sp(p.p90) });
       });
-      if (scPts.length) {
-        scrubAttr = ' data-scrub="' + esc(JSON.stringify(scPts)) + '"';
+      if (scPts.length && !(M.state && M.state().priv)) {
+        scrubAttr = ' data-scrub="' + esc(JSON.stringify(scPts)) + '" tabindex="0"';
         over += K.scrubBox();
       }
     }

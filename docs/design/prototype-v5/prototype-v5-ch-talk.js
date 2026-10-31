@@ -142,7 +142,7 @@
   function HH() { return (window.MP5D || {}).household || {}; }
   var G = function (n, o) { return K.gbp(n, o); };
   var U = function (n, dp) { return K.usd(n, { dp: dp == null ? (n % 1 ? 2 : 0) : dp }); };
-  var FXT = '<span class="mny">£1 = ₹112.50</span>';
+  function FXT() { return K.mny('£1 = ₹112.50'); }
   var WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function cut(ctx) { return ctx.t + ':59'; }
   function dlabel(iso) { var y = +iso.slice(0, 4), m = +iso.slice(5, 7), d = +iso.slice(8, 10); return WD[new Date(Date.UTC(y, m - 1, d)).getUTCDay()] + ' ' + d + ' ' + MN[m - 1]; }
@@ -243,7 +243,7 @@
   /* ---------- the chat ---------- */
   function netCard(ctx, id) {
     var T = ctx.W.T;
-    return K.ccard({ id: id, chip: K.chip('Net worth · household'), h: '<span class="pv5-talk-big">' + G(T.net_gbp) + '</span>', sub: K.inr(T.net_inr) + ' at ' + FXT + ' · the Fri 23 Oct close',
+    return K.ccard({ id: id, chip: K.chip('Net worth · household'), h: '<span class="pv5-talk-big">' + G(T.net_gbp) + '</span>', sub: K.inr(T.net_inr) + ' at ' + FXT() + ' · the Fri 23 Oct close',
       body: K.kv('Own', G(T.own_gbp)) + K.kv('Owe', G(T.owe_gbp)) + K.kv('Liquid now', G(T.liquid_gbp)),
       acts: [K.cbtn('Open Home', 'nav:home', 'ghost', 'home')],
       fold: { t: 'Technical', go: 'fold:t1', open: ctx.has('t1'), body: 'get_networth(view: household) · 16 assets, 4 debts<br>prices at the Fri 23 Oct close · ECB rate of Fri 23 Oct<br>run r-1232 · 3 model calls · ' + U(0.021, 3) } });
@@ -406,7 +406,7 @@
     'r-1240': [['09:59:20', 'Trigger', 'Arun wrote “What changed today?”', 0], ['09:59:21', 'get_audit', 'Code read today’s audit rows for the household: 3.', 1], ['09:59:27', 'Stream', 'The words, then the card with Open in Audit.', 0]]
   };
   /* figures in a step's text go through the masks */
-  function maskText(t) { return t.replace(/[£₹$€][\d,]+(?:\.\d+)?/g, function (m) { return '<span class="mny">' + m + '</span>'; }); }
+  function maskText(t) { return t.replace(/[£₹$€][\d,]+(?:\.\d+)?/g, function (m) { return K.mny(m); }); }
   page('run', function (ctx, args) {
     var D = TD();
     if (!D) return null;
@@ -456,7 +456,7 @@
     var ntf = K.group([K.row({ icon: 'notifications_active', t: 'Notifications', s: 'Replies, check-ins and alerts; quiet hours 22:00 to 07:00', go: 'nav:notifications' })]);
     var ns = (D.notes[ctx.viewer] || []).filter(function (n) { return n.t <= c; }), hs = D.notes.household.filter(function (n) { return n.t <= c; });
     var noteRow = function (n, whose) {
-      return '<div class="pv5-talk-ar"><span class="pv5-talk-init mk"><span class="ms" style="font-size:16px">bookmark</span></span><div class="f1"><span class="mp-sub" style="font-weight:600">' + q(n.text) + '</span><span class="mp-foot mp-ink2">' + whose + ' · written ' + when(ctx, n.t) + ' · <span class="pv5-talk-nw">run ' + n.run + '</span></span>' +
+      return '<div class="pv5-talk-ar"><span class="pv5-talk-init mk"><span class="ms" aria-hidden="true" style="font-size:16px">bookmark</span></span><div class="f1"><span class="mp-sub" style="font-weight:600">' + q(n.text) + '</span><span class="mp-foot mp-ink2">' + whose + ' · written ' + when(ctx, n.t) + ' · <span class="pv5-talk-nw">run ' + n.run + '</span></span>' +
         '<div class="fx g8 wrap">' + K.btn('Correct', 'mem:fix', 'plain small', 'edit') + K.btn('Forget', 'mem:forget', 'plain small', 'delete') + '</div></div></div>';
     };
     var memo = K.card({ id: 'pv5-you-mem', t: 'What MyPaisa remembers', r: DRAFT, body:
@@ -728,7 +728,7 @@
   /* ---------- the lock screen with a push (phase 1) ---------- */
   function lockScreen(ctx) {
     if (ctx.web) return null;
-    return '<div class="pv5-talk-sys lock"><div class="pv5-talk-lock"><span class="ms" style="font-size:22px">lock</span><span class="lock-date">Monday 26 October</span><span class="lock-time">9:37</span>' +
+    return '<div class="pv5-talk-sys lock"><div class="pv5-talk-lock"><span class="ms" aria-hidden="true" style="font-size:22px">lock</span><span class="lock-date">Monday 26 October</span><span class="lock-time">9:37</span>' +
       '<button type="button" class="notif lg"' + K.go('push:open') + '><div class="notif-ic"><span class="ai-mark"><i></i></span></div><div class="notif-b"><div class="notif-t"><span>MyPaisa</span><span>now</span></div>' +
       '<span>The Pune flat’s valuation has been due since 15 Jul. Tap to see its check-in.</span></div></button></div>' +
       '<div class="pv5-talk-hs-note"><div class="lg"><span class="z1">No amount on the lock screen: the member has not turned amounts on, and privacy mode would keep them off anyway.</span><span class="z1">' + DRAFT + '</span></div></div>' +

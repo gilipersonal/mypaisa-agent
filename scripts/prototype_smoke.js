@@ -59,6 +59,14 @@ function wordFaults(text) {
   if (/\bTelegram\b|\bMini App\b/.test(text)) out.push('Telegram or the Mini App');
   return out;
 }
+function privFaults(texts, ariaLabels, scrubAttrs) {
+  const out = [];
+  const moneyRe = /[£₹$€]\s?\d/;
+  for (const t of texts || []) if (moneyRe.test(t)) out.push(t.trim().slice(0, 60));
+  for (const a of ariaLabels || []) if (moneyRe.test(a)) out.push('aria-label: ' + a.trim().slice(0, 60));
+  for (const s of scrubAttrs || []) if (s && (moneyRe.test(s) || /"v"\s*:\s*-?\d/.test(s))) out.push('data-scrub: ' + s.trim().slice(0, 60));
+  return out;
+}
 
 function selftest() {
   const cases = [
@@ -73,6 +81,10 @@ function selftest() {
     ['other snake_case words are not tools', toolFaults(['engine.pause.exhaustion_min'], archTools()).length === 0],
     ['an em dash fails', wordFaults('a — b').length === 1],
     ['Telegram fails', wordFaults('sent to Telegram').length === 1 && wordFaults('the chat').length === 0],
+    ['masked money passes privacy check', privFaults(['\u00a0\u00a0\u00a0\u00a0\u00a0', 'Hidden'], ['Hidden', 'Net worth chart: Hidden'], []).length === 0],
+    ['raw DOM money fails privacy check even inside .mny', privFaults(['£457,951'], [], []).length === 1],
+    ['raw aria-label money fails privacy check', privFaults([], ['Net worth £457,951'], []).length === 1],
+    ['raw data-scrub payload fails privacy check', privFaults([], [], ['[{"x":10,"v":457951}]']).length === 1],
   ];
   let bad = 0;
   for (const [name, ok] of cases) { console.log((ok ? 'ok   ' : 'FAIL ') + name); if (!ok) bad++; }
@@ -126,16 +138,22 @@ function serve() {
     for (const th of themes) {
       await page.evaluate(([dr, th, priv]) => { const M = window.MP5; M.act('door:' + dr); M.act('theme:' + th); if (M.state().priv !== priv) M.act('priv'); }, [dr, th, priv]);
       for (const s of walk) {
-        const r = await page.evaluate(([ci, si]) => {
+        const r = await page.evaluate(([ci, si, dr]) => {
           window.MP5.go(ci, si);
           const fr = document.querySelector('.pframe');
-          const out = { notDrawn: [], wide: [], money: [], text: '', tools: [] };
+          const out = { notDrawn: [], wide: [], privTexts: [], privAria: [], privScrub: [], a11y: [], webGlass: [], text: '', tools: [] };
           fr.querySelectorAll('.pg-title').forEach((t) => { if (/Not drawn yet|failed to draw/.test(t.textContent)) out.notDrawn.push(t.textContent); });
           fr.querySelectorAll('.sysnote').forEach((t) => { const ic = t.querySelector('.ms'); if (ic && /^(construction|error)$/.test(ic.textContent.trim())) out.notDrawn.push(t.textContent.trim().slice(0, 120)); });
           fr.querySelectorAll('.pscroll').forEach((e) => { if (e.scrollWidth > e.clientWidth + 2) out.wide.push(e.getAttribute('data-scroll') + ' ' + e.scrollWidth + '>' + e.clientWidth); });
+          fr.querySelectorAll('.ms:not([aria-hidden="true"])').forEach((e) => { out.a11y.push('.ms without aria-hidden: ' + e.textContent.trim().slice(0, 30)); });
+          if (dr === 'desk' || dr === 'pweb') {
+            fr.querySelectorAll('.lg, .lg-tint').forEach((e) => { out.webGlass.push(e.className); });
+          }
           if (window.MP5.state().priv) {
             const walker = document.createTreeWalker(fr, NodeFilter.SHOW_TEXT);
-            let t; while ((t = walker.nextNode())) { if (/[£₹$€]\s?\d/.test(t.nodeValue) && !t.parentElement.closest('.mny')) out.money.push(t.nodeValue.trim().slice(0, 60)); }
+            let t; while ((t = walker.nextNode())) { out.privTexts.push(t.nodeValue); }
+            fr.querySelectorAll('[aria-label]').forEach((e) => { out.privAria.push(e.getAttribute('aria-label') || ''); });
+            fr.querySelectorAll('[data-scrub]').forEach((e) => { out.privScrub.push(e.getAttribute('data-scrub') || ''); });
           }
           // the whole frame's text, and the guide line above it
           out.text = fr.innerText + '\n' + (document.querySelector('.pguide') || { innerText: '' }).innerText;
@@ -143,11 +161,13 @@ function serve() {
           const bare = fr.cloneNode(true); bare.querySelectorAll('.ms').forEach((e) => e.remove());
           out.tools = [bare.textContent];
           return out;
-        }, [s.ci, s.si]);
+        }, [s.ci, s.si, dr]);
         const where = `${dr} · ${th} · ch ${s.n} · ${s.id}`;
         r.notDrawn.forEach((x) => faults.push(`${where}: not drawn: ${x}`));
         r.wide.forEach((x) => faults.push(`${where}: wider than its door: ${x}`));
-        r.money.slice(0, 3).forEach((x) => faults.push(`${where}: money not masked: ${x}`));
+        r.a11y.slice(0, 2).forEach((x) => faults.push(`${where}: ${x}`));
+        r.webGlass.slice(0, 2).forEach((x) => faults.push(`${where}: Liquid Glass on web: ${x}`));
+        if (priv) privFaults(r.privTexts, r.privAria, r.privScrub).slice(0, 3).forEach((x) => faults.push(`${where}: money not masked: ${x}`));
         dateFaults(r.text).forEach((x) => faults.push(`${s.id}: a wrong weekday: ${x}`));
         toolFaults(r.tools, tools).forEach((x) => faults.push(`${s.id}: a tool ARCHITECTURE §8 does not define: ${x}`));
         wordFaults(r.text).forEach((x) => faults.push(`${s.id}: ${x}`));
@@ -155,6 +175,39 @@ function serve() {
         n++;
       }
     }
+  }
+  if (!onlyCh && !priv && doors.includes('pweb')) {
+    const ia = await page.evaluate(() => {
+      const err = [], M = window.MP5;
+      M.act('door:pweb'); M.act('theme:light'); if (M.state().priv) M.act('priv');
+      M.go(1, 0);
+      M.act('tab:more');
+      const more = document.querySelector('.pframe .w-more[role="dialog"]');
+      if (!more) err.push('pweb More drawer did not open');
+      else {
+        for (const nav of ['nav:search', 'nav:reports', 'nav:admin']) if (!more.querySelector(`[data-go="${nav}"]`)) err.push('pweb More drawer missing ' + nav);
+      }
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      if (document.querySelector('.pframe .w-more')) err.push('Escape did not close More drawer');
+      const fan = M.allSteps().find((x) => x.id === 'p7-fan');
+      if (fan) M.go(fan.ci, fan.si);
+      const sc = document.querySelector('.pframe [data-scrub]');
+      if (sc) {
+        sc.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        if (!sc.querySelector('.mp5-scrub.on')) err.push('ArrowRight did not open chart scrub');
+        sc.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        if (sc.querySelector('.mp5-scrub.on')) err.push('Escape did not close chart scrub');
+      } else err.push('no [data-scrub] chart on p7-fan');
+      const cas = M.allSteps().find((x) => x.id === 'p19-cas');
+      if (cas) {
+        M.go(cas.ci, cas.si);
+        if (!document.querySelector('.pframe .sheet[role="dialog"]')) err.push('p19-cas sheet missing role=dialog');
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        if (document.querySelector('.pframe .sheet')) err.push('Escape did not dismiss fallback sheet');
+      }
+      return err;
+    });
+    ia.forEach((x) => faults.push('interaction: ' + x));
   }
   await browser.close();
   server.close();

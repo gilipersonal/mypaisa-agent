@@ -14,7 +14,7 @@
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           .dv-turn { padding: 44px 48px 36px; }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -125,26 +125,26 @@
                       </div>
                     </div>
                     <nav class="mp-tabbar tabs-abs" aria-label="Sections">
-                      <sc-for list="{{ tabsA }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                      <sc-for list="{{ tabsA }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
                     </nav>
                   </div>
                   <span class="lbl">Holdings selected · focus on Record</span>
                   <nav class="mp-tabbar frame" aria-label="Sections, second state">
-                    <sc-for list="{{ tabsB }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                    <sc-for list="{{ tabsB }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
                   </nav>
                   <span class="lbl">Telegram's header · top-level page · Close</span>
-                  <div class="tgh frame"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                  <div class="tgh frame"><span class="tgh-a">Close</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms" aria-hidden=\"true\">more_horiz</span></span></div>
                   <span class="lbl">Telegram's header · sub-page · Back</span>
-                  <div class="tgh frame"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>Back</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                  <div class="tgh frame"><span class="tgh-a"><span class="ms ms-s" aria-hidden=\"true\">arrow_back_ios_new</span>Back</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms" aria-hidden=\"true\">more_horiz</span></span></div>
                 </div>
                 <div class="spec">
                   <span class="lbl">Browser sidebar · .mp-side · 248</span>
                   <div class="sidebox frame">
                     <nav class="mp-side bb" style="background: var(--mp-bg)" aria-label="Sections">
                       <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                      <sc-for list="{{ side }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
+                      <sc-for list="{{ side }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
                       <div style="flex: 1"></div>
-                      <div class="fx gap8 mp-foot mp-ink3" style="padding: 0 12px; align-items: flex-start"><span class="ms ms-s">lock</span><span>Signed in with Telegram<br />You · owner · read-only</span></div>
+                      <div class="fx gap8 mp-foot mp-ink3" style="padding: 0 12px; align-items: flex-start"><span class="ms ms-s" aria-hidden=\"true\">lock</span><span>Signed in with Apple<br />Arun · admin</span></div>
                     </nav>
                   </div>
                 </div>
@@ -174,7 +174,7 @@
                 <div class="spec w390" style="gap: 16px">
                   <span class="lbl">Bottom sheet · .mp-sheet over .mp-scrim</span>
                   <div class="phonefrag" data-screen-label="Sheet: Why PAUSE?">
-                    <div class="tgh"><span class="tgh-a"><span class="ms ms-s">arrow_back_ios_new</span>Back</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms">more_horiz</span></span></div>
+                    <div class="tgh"><span class="tgh-a"><span class="ms ms-s" aria-hidden=\"true\">arrow_back_ios_new</span>Back</span><span class="mp-w6">MyPaisa</span><span class="tgh-a" aria-label="Telegram menu"><span class="ms" aria-hidden=\"true\">more_horiz</span></span></div>
                     <div class="fx col gap12" style="padding: 14px 16px">
                       <div><div class="mp-large">NASDAQ 100</div><div class="mp-foot mp-ink3">iShares · ISA · London CNX1</div></div>
                       <div class="mp-card fx ac jb gap8"><div style="min-width: 0"><div class="mp-num-l">£4,210</div><div class="mp-foot mp-dq">▼ 1.2% Friday · ▼ 3.1% this week · ▼ 8.4% from its high</div></div><span class="mp-chip mp-pause">PAUSE 61%</span></div>
@@ -190,7 +190,7 @@
                         <ul class="wlist mp-sub"><li>A close back above the 20-day average</li><li>Two calm sessions after the Fed</li></ul>
                       </div>
                       <div class="mp-foot mp-ink3">PAUSE calls on this holding: 3 made, 2 right.</div>
-                      <div class="fx gap8"><a class="mp-btn mp-btn-primary" href="#overlays" style="flex: 1"><span class="ms">chat</span>Ask in the chat</a><a class="mp-btn mp-btn-tinted" href="#overlays">Technical</a></div>
+                      <div class="fx gap8"><a class="mp-btn mp-btn-primary" href="#overlays" style="flex: 1"><span class="ms" aria-hidden=\"true\">chat</span>Ask in the chat</a><a class="mp-btn mp-btn-tinted" href="#overlays">Technical</a></div>
                     </div>
                   </div>
                 </div>
@@ -198,7 +198,7 @@
                   <span class="lbl">Toast · .mp-toast</span>
                   <sc-for list="{{ toasts }}" as="o" hint-placeholder-count="3">
                     <div class="fx col gap6">
-                      <div class="mp-toast fx gap10" role="status" style="align-items: flex-start"><span class="ms ms-s">{{ o.icon }}</span><span>{{ o.text }}</span></div>
+                      <div class="mp-toast fx gap10" role="status" style="align-items: flex-start"><span class="ms ms-s" aria-hidden=\"true\">{{ o.icon }}</span><span>{{ o.text }}</span></div>
                       <span class="mp-cap mp-ink3">{{ o.when }}</span>
                     </div>
                   </sc-for>
@@ -231,10 +231,10 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Holdings</span></div>
                     <div class="mp-group empty">
-                      <div class="ecircle"><span class="ms ms-l">donut_small</span></div>
+                      <div class="ecircle"><span class="ms ms-l" aria-hidden=\"true\">donut_small</span></div>
                       <div class="mp-hl">No holdings yet</div>
                       <div class="mp-foot mp-ink3">Send a factsheet or a screenshot in the chat and I'll add it for you to confirm.</div>
-                      <a class="mp-btn mp-btn-tinted mp-btn-small" href="#states" style="margin-top: 6px"><span class="ms ms-s">chat</span>Open chat</a>
+                      <a class="mp-btn mp-btn-tinted mp-btn-small" href="#states" style="margin-top: 6px"><span class="ms ms-s" aria-hidden=\"true\">chat</span>Open chat</a>
                     </div>
                   </div>
                 </div>
@@ -256,7 +256,7 @@
                 <div class="spec">
                   <span class="lbl">Stale prices</span>
                   <div>
-                    <div class="banner" role="status"><span class="ms ms-s mp-ink2">info</span><span class="mp-foot mp-ink2">Prices are from Thursday's close. Friday's are late; we'll update when they land.</span></div>
+                    <div class="banner" role="status"><span class="ms ms-s mp-ink2" aria-hidden=\"true\">info</span><span class="mp-foot mp-ink2">Prices are from Thursday's close. Friday's are late; we'll update when they land.</span></div>
                     <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">Thu close</span></div>
                     <div class="mp-group">
                       <sc-for list="{{ stale }}" as="h" hint-placeholder-count="3">
@@ -270,7 +270,7 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Holdings</span></div>
                     <div class="mp-group empty">
-                      <div class="ecircle"><span class="ms ms-l">warning</span></div>
+                      <div class="ecircle"><span class="ms ms-l" aria-hidden=\"true\">warning</span></div>
                       <div class="mp-hl">We couldn't load your holdings</div>
                       <div class="mp-foot mp-ink3">Nothing in your account has changed; only this page didn't load. Try again, or ask in the chat.</div>
                       <div class="fx ac gap8" style="margin-top: 6px"><a class="mp-btn mp-btn-tinted mp-btn-small" href="#states">Try again</a><a class="mp-btn mp-btn-plain" href="#states">Open chat</a></div>

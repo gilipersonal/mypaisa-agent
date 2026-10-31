@@ -8386,7 +8386,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Design livelier dashboard graphs and charts at every door, following Apple HIG and Monzo's modular warmth on Warm ledger",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "design"
       ],
@@ -8451,12 +8451,43 @@
       ]
     },
     {
+      "key": "MA-298",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Harden DS v1, Prototype v5, Impeccable context and design gates for all P0 and shared P1 best-practices gaps",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "9.1",
+        "9.3",
+        "9.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Filed 30 Oct 2026 from Arun’s Impeccable deep scan across ds-v1, ios-v1, app-v1 and Prototype v5 (Option B, Chunk 1): establishes PRODUCT.md and DESIGN.md, cleans .impeccable/config.json and removes dead _ds/modernist-* boilerplate, fixes undefined --mp-uk/--mp-in tokens, clipped 100%-plan benchmark ticks, unscoped a:hover button overrides, Privacy Mode DOM/ARIA/scrub leaks, Prototype v5 <=1023px Web More/Search navigation, Web Liquid Glass leaks and modal dismissal/Escape, adds system preference queries, focus rings and 44x44 hit areas without shifting untouched drawn frames, and hardens contrast_check.py and prototype_smoke.js with selftest cases ahead of MA-278 and MA-279.",
+      "code": [
+        "PRODUCT.md",
+        "DESIGN.md",
+        ".impeccable/design.json",
+        ".impeccable/config.json",
+        "docs/design/ds-v1/tokens.css",
+        "docs/design/ds-v1/ios.css",
+        "docs/design/ds-v1/motion.js",
+        "docs/design/prototype-v5/",
+        "docs/design/reviews/MA-295/build_boards.py",
+        "scripts/contrast_check.py",
+        "scripts/prototype_smoke.js"
+      ]
+    },
+    {
       "key": "MA-299",
       "type": "Task",
       "epic": "MA-9",
       "phase": 0,
       "summary": "The SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI are recorded in the plan and Confluence with block diagrams",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "9.4",
@@ -8568,14 +8599,14 @@
       "key": "MA-296",
       "type": "Task",
       "summary": "Retire design_sync, claude-design.json and the MyPaisa Boards Artifact stamp; boards live directly in docs/design/",
-      "status": "In Progress",
+      "status": "Done",
       "notes": "Repo tooling: Arun (30 Oct 2026, on MA-295): \"I dont need claude-design sync anymore\"; retires scripts/design_sync.py, scripts/boards_page/, docs/design/claude-design.json, docs/design/boards-artifact.json and the MyPaisa Boards Artifact republishing step (including .claude/hooks/plan_sync_hook.py from Claude Code); the boards are read from their folders by scripts/plan_sync.py check, which keeps refusing a cited board file that is gone and a board folder the trace names that is gone; Confluence links each board to its file on GitHub; each design round's options stay a private Claude Artifact (Arun, 30 Oct 2026)."
     },
     {
       "key": "MA-297",
       "type": "Task",
       "summary": "A design round run in Antigravity shows its options as a local page, since only Claude can publish an Artifact",
-      "status": "In Progress",
+      "status": "Done",
       "notes": "Repo tooling: Arun, 30 Oct 2026, planning a full impeccable design review in Google Antigravity (agy), chose \"local page\" for rounds run there. Rule 7 of .claude/rules/plan-sync.md and /design-first say a round in Claude Code is a private Claude Artifact and a round in Antigravity serves the same options.html on localhost, its path in decision.md; Antigravity's .agents/ copy is refreshed with agy-bridge after the merge."
     }
   ]

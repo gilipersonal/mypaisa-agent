@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-31T00:01:30Z",
+  "title": "Design System: MyPaisa Warm Ledger",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Terracotta Accent",
+        "canonical": "#C2381F",
+        "tonalRamp": ["#2D0B05", "#54150B", "#7D2112", "#9E2B18", "#C2381F", "#FF6B4F", "#FFAF9B", "#FBE5DF"]
+      },
+      "coral": {
+        "role": "primary",
+        "displayName": "Coral Signal",
+        "canonical": "#FF6B4F",
+        "tonalRamp": ["#380E07", "#691C0E", "#9C2C19", "#C2381F", "#E85237", "#FF6B4F", "#FF9A80", "#FFE5DF"]
+      },
+      "hero": {
+        "role": "primary",
+        "displayName": "Navy Hero Card",
+        "canonical": "#13213A",
+        "tonalRamp": ["#0A0F18", "#13213A", "#1C2E4D", "#28416B", "#3A5284", "#647FA8", "#B7C2D6", "#E5ECFB"]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Warm Grouped Ground",
+        "canonical": "#F6F4F1",
+        "tonalRamp": ["#0A0F18", "#151C27", "#283141", "#4E5462", "#646A78", "#E4E0DA", "#F0EDE8", "#F6F4F1"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Ledger Surface",
+        "canonical": "#FFFFFF",
+        "tonalRamp": ["#151C27", "#1E2633", "#283141", "#646A78", "#ADB6C4", "#E4E0DA", "#F6F4F1", "#FFFFFF"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ledger Ink",
+        "canonical": "#14171F",
+        "tonalRamp": ["#14171F", "#1E2430", "#323846", "#4E5462", "#646A78", "#ADB6C4", "#C5CCD7", "#F3F5F8"]
+      },
+      "stance-hold": {
+        "role": "secondary",
+        "displayName": "Hold & Focus Blue",
+        "canonical": "#2453C9",
+        "tonalRamp": ["#0E204F", "#17347D", "#1E44A3", "#2453C9", "#4D79E6", "#8FB2FF", "#C2D5FF", "#E5ECFB"]
+      },
+      "positive": {
+        "role": "tertiary",
+        "displayName": "Emerald Gain",
+        "canonical": "#1D7A3E",
+        "tonalRamp": ["#0B2E17", "#124D27", "#186332", "#1D7A3E", "#2EA358", "#5BDB8B", "#A6F0C2", "#E2F2E7"]
+      },
+      "alert": {
+        "role": "tertiary",
+        "displayName": "Alert Crimson",
+        "canonical": "#B5123F",
+        "tonalRamp": ["#2A0710", "#3A1724", "#6E0B26", "#910E32", "#B5123F", "#DE3B68", "#FF9AAE", "#FCE4EA"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Hero Rounded Figure", "purpose": "Net-worth and projection hero totals (.mp-num-hero 44/48, .mp-num-l 28/32)." },
+      "headline": { "displayName": "Screen Title", "purpose": "Large navigation titles (.mp-large 34/41) and primary headings (.mp-t1 28/34)." },
+      "title": { "displayName": "Row & Card Headline", "purpose": "Grouped row titles and card headers (.mp-hl 17/22 semibold)." },
+      "body": { "displayName": "Dynamic Type Large Body", "purpose": "Conversational messages and ledger copy (.mp-body 17/22, .mp-sub 15/20)." },
+      "label": { "displayName": "Chip & Footnote Label", "purpose": "Stance chips, metadata footnotes (.mp-foot 13/18), and captions (.mp-cap 12/16)." }
+    },
+    "shadows": [
+      { "name": "mp-shadow", "value": "0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06)", "purpose": "Soft ambient elevation on .mp-card, .ccard, and active web rail items." },
+      { "name": "lg-lift", "value": "0 10px 30px rgba(20, 23, 31, 0.12), 0 2px 6px rgba(20, 23, 31, 0.06)", "purpose": "iOS 26 Liquid Glass floating toolbar, tab pill, and partial sheet elevation." }
+    ],
+    "motion": [
+      { "name": "mp-ease", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default ease-out for controls, count rolls, and chart reveals." },
+      { "name": "mp-ease-sheet", "value": "cubic-bezier(0.32, 0.72, 0, 1)", "purpose": "iOS sheet and push transitions (350ms–420ms)." },
+      { "name": "mp-t-tap", "value": "120ms", "purpose": "Button active press feedback." }
+    ],
+    "breakpoints": [
+      { "name": "compact-zoom", "value": "320px" },
+      { "name": "compact-step", "value": "375px" },
+      { "name": "regular-tablet", "value": "600px" },
+      { "name": "two-col-grid", "value": "760px" },
+      { "name": "web-sidebar", "value": "1024px" },
+      { "name": "beside-chat", "value": "1133px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled terracotta confirmation button (.mp-btn.mp-btn-primary) with >=44px target and protected white hover ink.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Confirm</button>",
+      "css": ".ds-btn-primary { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; background: var(--mp-accent, #C2381F); color: var(--mp-on-accent, #FFFFFF); font: 600 17px/22px -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), filter 120ms ease; } .ds-btn-primary:hover { filter: brightness(0.93); color: var(--mp-on-accent, #FFFFFF); } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 3px solid var(--mp-focus, #2453C9); outline-offset: 2px; }"
+    },
+    {
+      "name": "Tinted Neutral Button",
+      "kind": "button",
+      "refersTo": "button-tinted",
+      "description": "Secondary action button (.mp-btn.mp-btn-tinted) on warm raised fill.",
+      "html": "<button class=\"ds-btn-tinted\" type=\"button\">Cancel</button>",
+      "css": ".ds-btn-tinted { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; background: var(--mp-surface-2, #F0EDE8); color: var(--mp-ink, #14171F); font: 600 17px/22px -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; } .ds-btn-tinted:hover { filter: brightness(0.97); color: var(--mp-ink, #14171F); } .ds-btn-tinted:focus-visible { outline: 3px solid var(--mp-focus, #2453C9); outline-offset: 2px; }"
+    },
+    {
+      "name": "Stance & Status Chip",
+      "kind": "chip",
+      "refersTo": "chip-stance",
+      "description": "Semantic stance pill (.mp-chip.mp-add / .mp-hold / .mp-pause) tested at 25% brightness.",
+      "html": "<span class=\"ds-chip-add\">▲ Add · 78%</span>",
+      "css": ".ds-chip-add { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 10px; background: var(--mp-add-bg, #E2F2E7); color: var(--mp-add, #1D7A3E); font: 600 13px/18px -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Navy Hero Net-Worth Card",
+      "kind": "card",
+      "refersTo": "card-hero",
+      "description": "Signature household net-worth summary card (.mp-hero) with rounded tabular numerals.",
+      "html": "<section class=\"ds-hero\"><div class=\"ds-hero-k\">Household net worth</div><div class=\"ds-hero-v\">£492,300</div><div class=\"ds-hero-up\">▲ +£4,120 this month</div></section>",
+      "css": ".ds-hero { background: var(--mp-hero, #13213A); color: var(--mp-hero-ink, #FFFFFF); border-radius: 24px; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums; } .ds-hero-k { font-size: 13px; color: var(--mp-hero-ink-2, #B7C2D6); } .ds-hero-v { margin-top: 4px; font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', system-ui, sans-serif; font-size: 44px; line-height: 48px; font-weight: 800; letter-spacing: -0.03em; } .ds-hero-up { margin-top: 10px; display: inline-flex; padding: 4px 10px; border-radius: 999px; background: rgba(68, 209, 122, 0.16); color: var(--mp-hero-up, #8BE8AC); font-size: 13px; font-weight: 600; }"
+    },
+    {
+      "name": "Warm Ledger Card",
+      "kind": "card",
+      "refersTo": "card-ledger",
+      "description": "White ledger card (.mp-card) with benchmark pace bar and protruding 100% plan tick.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-row\"><span>Groceries</span><b>£702 of £650</b></div><div class=\"ds-track\"><span class=\"ds-track-clip\"><i style=\"width:92%\"></i></span><span class=\"ds-tick\" style=\"left:85%\"></span></div></article>",
+      "css": ".ds-card { background: var(--mp-surface, #FFFFFF); color: var(--mp-ink, #14171F); border-radius: 20px; padding: 16px; box-shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06); font: 400 15px/20px -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums; } .ds-card-row { display: flex; justify-content: space-between; margin-bottom: 8px; } .ds-track { position: relative; height: 8px; border-radius: 999px; background: var(--mp-track, #BEC1C8); box-shadow: inset 0 0 0 1px var(--mp-line, #E4E0DA); overflow: visible; } .ds-track-clip { display: block; width: 100%; height: 100%; border-radius: inherit; overflow: hidden; } .ds-track-clip > i { display: block; height: 100%; background: var(--mp-chart-line, #C2381F); border-radius: inherit; } .ds-tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--mp-ink, #14171F); border-radius: 1px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Private Family Ledger",
+    "overview": "MyPaisa DS v1 (\"Warm ledger\", MA-101) combines Monzo's approachable warmth — a deep navy hero account card, a crisp terracotta/coral accent, rounded hero numerals, and plain-spoken language — with Apple Human Interface Guidelines structure: Dynamic Type Large defaults (17px body), grouped inset lists, >= 44×44 targets, semantic light and dark tokens, and legibility verified even at 25% mobile screen brightness.\n\nThe system is adaptive across two native materials built on one token sheet. On iPhone and iPad, navigation bars, floating tab pills, toolbars, partial sheets, and the chat composer float in iOS 26 Liquid Glass above Warm ledger content. On the Web PWA and Android foldables, Liquid Glass and iOS sheet grabbers step aside completely for crisp Warm ledger paper chrome, hairline dividers, and keyboard-first focus rings.",
+    "keyCharacteristics": [
+      "Warm stone-paper ground and white ledger cards/groups anchored by a single deep navy hero card for top-level net worth or projection totals.",
+      "Dual-brightness contrast discipline: every foreground/background pair passes WCAG 2.2 AA and remains legible under the indoor 25% screen-dimming model.",
+      "Rounded hero figures (SF Pro Rounded / Nunito) paired with clean tabular system numerals (font-variant-numeric: tabular-nums) across GBP (£) and INR (₹).",
+      "Strict material boundary: Liquid Glass carries floating controls on iOS/iPadOS only, never content cards and never Web PWA chrome.",
+      "Layout-stable Privacy Mode (••••) that redacts every currency balance, chart callout, scrub tooltip, and accessible aria-label in place."
+    ],
+    "rules": [
+      { "name": "The Quiet Drawdown Rule", "body": "Green (positive with ▲) is reserved for gains, while routine daily market dips use quiet secondary ink (ink-secondary with ▼); crimson (alert) appears only on genuine red-tier alerts and destructive actions.", "section": "colors" },
+      { "name": "The 25% Brightness Rule", "body": "Every colour token lives in the measured top-level :root, .t-light and .t-dark blocks of tokens.css (and .mp / .t-dark .mp in ios.css) and must pass python3 scripts/contrast_check.py both at 100% and at 25% indoor screen luminance.", "section": "colors" },
+      { "name": "The Tabular Numerals Rule", "body": ".mp sets font-variant-numeric: tabular-nums globally so every currency figure, delta, percentage, share count, and scrub readout aligns without horizontal jitter.", "section": "typography" },
+      { "name": "The No-Clip Reflow Rule", "body": "Flex and grid cells never rely on text-overflow: ellipsis for financial figures; below narrow container thresholds (374px, 359px, 699px), key-value pairs and table columns wrap or scroll horizontally inside their card.", "section": "typography" },
+      { "name": "The Content-Off-Glass Rule", "body": "Content (the navy hero, ledger cards, grouped rows, charts, and chat messages) is never glass, glass never sits on glass, and the Web PWA never renders iOS Liquid Glass (.lg) or .sheet-grab handles. Labels on iOS glass use ink or ink-secondary, never ink-tertiary.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do route every displayed currency value, chart aria-label, and scrub tooltip through Privacy Mode masking (privacy-mask / •••• / aria-label=\"Hidden\") when Privacy is active.",
+      "Do put aria-hidden=\"true\" on every decorative .ms Material Symbols ligature span and provide explicit aria-label attributes on icon-only controls.",
+      "Do keep all colour tokens inside the measured :root, .t-light and .t-dark blocks (mirrored identically in @media (prefers-color-scheme: dark) for unforced roots) and sync ds-v1/{tokens.css,ios.css,motion.css,motion.js} byte-for-byte to ios-v1/ and app-v1/.",
+      "Do support keyboard :focus-visible, Escape dismissal on modals/sheets, and pointerup / ArrowLeft / ArrowRight on interactive [data-scrub] charts."
+    ],
+    "donts": [
+      "Don't leak iOS Liquid Glass (.lg), .sheet-grab handles, or fake 44px iPhone notch padding onto Web PWA screens.",
+      "Don't write unscoped a:hover rules on boards that override .mp-btn-primary text colour, or reference undefined CSS variables (--mp-uk, --mp-in).",
+      "Don't clip 100% plan benchmark ticks inside overflow: hidden tracks — use .has-tick with an inner .mp-track-clip / .bar-clip fill wrapper.",
+      "Don't draw stroked chart paths inside <defs> referenced via <use> on preserveAspectRatio=\"none\" SVGs, or introduce multi-field CRUD creation forms outside the chat."
+    ]
+  }
+}

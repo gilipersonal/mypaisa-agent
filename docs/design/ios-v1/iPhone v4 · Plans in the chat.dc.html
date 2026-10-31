@@ -16,7 +16,7 @@
         <script src="motion.js"></script>
         <style>
           html, body { margin: 0; background: #ECEAE6; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           a.dv-tid:hover { color: #fff; } a.dv-oid:hover { color: #1a1a1a; }
           .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
@@ -224,14 +224,14 @@
                     <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
                       <div class="sidebar sb lg">
                         <div class="side-h sh0">MyPaisa</div>
-                        <sc-for list="{{ padnav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+                        <sc-for list="{{ padnav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
                         <div class="side-h">Admin</div>
-                        <span class="side-i"><span class="ms">shield_person</span>Admin center</span>
-                        <span class="side-i"><span class="ms">account_circle</span>You</span>
+                        <span class="side-i"><span class="ms" aria-hidden=\"true\">shield_person</span>Admin center</span>
+                        <span class="side-i"><span class="ms" aria-hidden=\"true\">account_circle</span>You</span>
                       </div>
                       <div class="main">
                         <div class="sbar"><span>{{ f.clock }} Thu 5 Nov</span><span></span></div>
-                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1">visibility</span></span></span></div>
+                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden=\"true\">visibility</span></span></span></div>
                         <div class="ipg">
                           <div class="pk-tabs" role="tablist" aria-label="Projection"><span class="pk-tab on" role="tab" aria-selected="true">Net worth</span><span class="pk-tab" role="tab" aria-selected="false">Plans</span><span class="pk-tab" role="tab" aria-selected="false">Budget forecast</span></div>
                           <div class="pk-ctl">
@@ -266,7 +266,7 @@
                             </div>
                           </div>
                           <div class="sech"><span class="mp-over mp-ink2">Milestones</span><span class="mp-foot mp-ink2">on the line above</span></div>
-                          <div class="mp-group"><sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ m.i }}</span></span><span class="grow"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span><span>{{ m.d }}</span></span></span><span class="rowv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></span></div></sc-for></div>
+                          <div class="mp-group"><sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ m.i }}</span></span><span class="grow"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span><span>{{ m.d }}</span></span></span><span class="rowv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></span></div></sc-for></div>
                         </div>
                         <div class="edge-bot"></div>
                       </div>
@@ -275,12 +275,12 @@
                     <!-- ===== the chat: the iPhone's Chat tab, or the column beside the iPad's screen ===== -->
                     <div class="{{ f.chatc }}">
                       <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}">
-                        <div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household, net worth</span><span class="strip-n">£456,747</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                        <div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
+                        <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household, net worth</span><span class="strip-n">£456,747</span></div><span class="ms z1 mp-ink2" aria-hidden=\"true\">keyboard_arrow_down</span></div>
                       </sc-if>
                       <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
-                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                        <div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>
+                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1" aria-hidden=\"true\">edit_square</span></span></div>
                       </sc-if>
                       <div class="{{ f.scrollc }}"><sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="fadet"></div></sc-if><sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}"><div class="chfadet"></div></sc-if><div class="chat {{ f.chatpos }}" style="top: {{ f.top }}; margin-top: {{ f.mt }}">
                         <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
@@ -316,12 +316,12 @@
                                 <p class="pp mp-foot mp-ink2">Cash stays above zero. The fees end in Jul 2041, freeing £6,784 a month.</p>
                               </div>
                               <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Change</span><span class="cbtn cbtn-ghost">Cancel</span></div>
-                              <div class="ccard-fold"><span>Details and technical</span><span class="ms">expand_more</span></div>
+                              <div class="ccard-fold"><span>Details and technical</span><span class="ms" aria-hidden=\"true\">expand_more</span></div>
                             </div></sc-if>
 
                             <!-- the plan saved, collapsed in place with its audit row (2a and 2c) -->
                             <sc-if value="{{ m.c.kSaved }}" hint-placeholder-val="{{ false }}"><div class="ccard">
-                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, 4.5% a year · 2046 middle path ▼ £1,317,000</span></div>
+                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, 4.5% a year · 2046 middle path ▼ £1,317,000</span></div>
                               <div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div>
                             </div></sc-if>
 
@@ -335,8 +335,8 @@
                                 <sc-if value="{{ w.open }}" hint-placeholder-val="{{ true }}"><p class="pp mp-foot mp-ink2">{{ w.why }}</p></sc-if>
                                 <div class="fx ac gap8 wrapx"><span class="cbtn {{ w.bc }}">Confirm this way</span><sc-if value="{{ w.shut }}" hint-placeholder-val="{{ false }}"><span class="cbtn cbtn-ghost">What changes</span></sc-if></div>
                               </div></sc-for>
-                              <div class="ccard-fold"><span>Two more ways</span><span class="ms">expand_more</span></div>
-                              <div class="ccard-fold"><span>Technical</span><span class="ms">expand_more</span></div>
+                              <div class="ccard-fold"><span>Two more ways</span><span class="ms" aria-hidden=\"true\">expand_more</span></div>
+                              <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden=\"true\">expand_more</span></div>
                             </div></sc-if>
 
                             <!-- 2b: one card that grows as Arun answers -->
@@ -344,8 +344,8 @@
                               <div class="ccard-h"><span class="mp-over mp-ink2">{{ m.c.over }}</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month from Jan 2029, for your kid (not a member): your words</span></div>
                               <div class="ccard-b">
                                 <div class="fx col">
-                                  <sc-if value="{{ m.c.asks }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ m.c.asks }}" as="q" hint-placeholder-count="3"><div class="pk-slot"><span class="ms ms-fill ask">help</span><div><span class="mp-sub mp-w6">{{ q.q }}</span><div class="pk-chips row"><sc-for list="{{ q.chips }}" as="ch" hint-placeholder-count="3"><span class="pk-chip">{{ ch }}</span></sc-for></div></div></div></sc-for></sc-if>
-                                  <sc-if value="{{ m.c.tags }}" hint-placeholder-val="{{ false }}"><div class="pk-slot"><span class="ms ms-fill ok">check_circle</span><div><span class="mp-foot mp-ink2">Your answers</span><div class="pk-tags"><sc-for list="{{ m.c.tags }}" as="t" hint-placeholder-count="3"><span class="mp-chip mp-neutral"><span class="ms ms-fill">check</span>{{ t }}</span></sc-for></div></div></div></sc-if>
+                                  <sc-if value="{{ m.c.asks }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ m.c.asks }}" as="q" hint-placeholder-count="3"><div class="pk-slot"><span class="ms ms-fill ask" aria-hidden=\"true\">help</span><div><span class="mp-sub mp-w6">{{ q.q }}</span><div class="pk-chips row"><sc-for list="{{ q.chips }}" as="ch" hint-placeholder-count="3"><span class="pk-chip">{{ ch }}</span></sc-for></div></div></div></sc-for></sc-if>
+                                  <sc-if value="{{ m.c.tags }}" hint-placeholder-val="{{ false }}"><div class="pk-slot"><span class="ms ms-fill ok" aria-hidden=\"true\">check_circle</span><div><span class="mp-foot mp-ink2">Your answers</span><div class="pk-tags"><sc-for list="{{ m.c.tags }}" as="t" hint-placeholder-count="3"><span class="mp-chip mp-neutral"><span class="ms ms-fill" aria-hidden=\"true\">check</span>{{ t }}</span></sc-for></div></div></div></sc-if>
                                 </div>
                                 <sc-if value="{{ m.c.imp }}" hint-placeholder-val="{{ false }}">
                                   <div class="pk-div">What it does</div>
@@ -372,7 +372,7 @@
                                 </sc-if>
                               </div>
                               <sc-if value="{{ m.c.acts }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm the plan and the pot</span><span class="cbtn">Change</span><span class="cbtn cbtn-ghost">Cancel</span></div></sc-if>
-                              <div class="ccard-fold"><span>Technical</span><span class="ms">expand_more</span></div>
+                              <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden=\"true\">expand_more</span></div>
                             </div></sc-if>
 
                             <!-- 2c: the ways as a pager on the phone -->
@@ -389,26 +389,26 @@
                             <sc-if value="{{ m.c.kMini }}" hint-placeholder-val="{{ false }}"><div class="ccard">
                               <div class="ccard-h"><span class="mp-over mp-ink2">Cover the gap</span><span class="mp-hl">Three ways, compared on the screen</span><span class="mp-sub mp-ink2">{{ gapTotal }} short, Jan 2029 to Feb 2035</span></div>
                               <div class="ccard-b"><div class="pk-mini"><sc-for list="{{ mini }}" as="r" hint-placeholder-count="3"><div class="pk-mr"><span class="pk-rk {{ r.rk }}">{{ r.n }}</span><div><span class="mp-sub mp-w6">{{ r.t }}</span><span class="mp-foot mp-ink2 tnum">{{ r.v }}</span></div></div></sc-for></div></div>
-                              <div class="ccard-fold"><span>Two more ways</span><span class="ms">expand_more</span></div>
+                              <div class="ccard-fold"><span>Two more ways</span><span class="ms" aria-hidden=\"true\">expand_more</span></div>
                             </div></sc-if>
 
                             <!-- applied: the card in place, two audit rows, each with Undo; Technical open -->
                             <sc-if value="{{ m.c.kDone }}" hint-placeholder-val="{{ false }}"><div class="ccard">
-                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>{{ m.c.over }}</span><span class="mp-hl">{{ m.c.title }}</span><span class="mp-sub mp-ink2">£690 a month, Nov 2026 to Dec 2028, drawn Jan 2029 to Feb 2035</span></div>
+                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span>{{ m.c.over }}</span><span class="mp-hl">{{ m.c.title }}</span><span class="mp-sub mp-ink2">£690 a month, Nov 2026 to Dec 2028, drawn Jan 2029 to Feb 2035</span></div>
                               <div class="ccard-b">
                                 <div class="kv"><span>November’s planned surplus</span><span class="tnum">£2,636 → £1,946</span></div>
                                 <div class="kv"><span>Months under £500</span><span class="tnum">50 → 0</span></div>
                                 <sc-for list="{{ m.c.aud }}" as="a" hint-placeholder-count="2"><div class="pk-aud"><span>{{ a }}</span><span class="cbtn cbtn-ghost">Undo</span></div></sc-for>
                               </div>
-                              <div class="ccard-fold"><span>Technical</span><span class="ms">expand_less</span></div>
+                              <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden=\"true\">expand_less</span></div>
                               <div class="ccard-tech pk-tech"><sc-for list="{{ tech }}" as="t" hint-placeholder-count="6"><span>{{ t }}</span></sc-for></div>
                             </div></sc-if>
                           </div></div></sc-if>
                         </sc-for>
                       </div></div>
                       <div class="edge-bot"></div>
-                      <div class="composer {{ f.compc }}"><div class="chips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><span class="gchip lg"><span class="ms">{{ c.i }}</span><span>{{ c.l }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">{{ f.ph }}</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                      <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsChat }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div></sc-if>
+                      <div class="composer {{ f.compc }}"><div class="chips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><span class="gchip lg"><span class="ms" aria-hidden=\"true\">{{ c.i }}</span><span>{{ c.l }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms" aria-hidden=\"true\">add</span></span><span class="cfield lg"><span class="ph">{{ f.ph }}</span><span class="csend mp-ink2"><span class="ms" aria-hidden=\"true\">mic</span></span></span></div></div>
+                      <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsChat }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms" aria-hidden=\"true\">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1" aria-hidden=\"true\">search</span></span></div></sc-if>
                     </div>
                   </div>
                   <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="homebar"></div></sc-if>

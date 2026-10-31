@@ -18,7 +18,7 @@
     ['sheet', '.sheet'], ['dim', '.dim, .mp-scrim'], ['menu', '.menu'], ['alert', '.sysalert'],
     ['draw', '.spark svg, .mp-chartbox > svg, [data-chart] svg'],
     ['dot', '.mp-chartdot', 'dot'], ['label', '.mp-chartlbl', 'lbl'], ['fade', '.mp-chartaxis'],
-    ['barx', '.mp-track > *', 'bar'],
+    ['barx', '.mp-track:not(.has-tick) > *, .mp-track-clip > *', 'bar'],
     ['typing', '.typing'], ['caret', '.caret'], ['skel', '.mp-skel'],
     ['mark', '.ai-mark'], ['face', '.faceid'], ['mask', '.mp-mask'],
     ['card', '.ccard, .mp-card, .mp-hero, .mp-group, .pin, .notif, .appicon', 'card'],
@@ -154,31 +154,49 @@
   var AXES = '.mp-chartaxis, .pc-x, .ticks, .mlab';
   var GAP = 2;   // the tightest drawn pair that does not touch, a meter's 85% and 95%, keeps 4.7 px
 
-  function fit(axis) {
-    var kids = [].filter.call(axis.children, function (k) { return k.nodeType === 1; });
-    kids.forEach(function (k) { if (k.__mpThinned) { k.style.removeProperty('visibility'); k.__mpThinned = false; } });
-    if (kids.length < 3) return;
-    var box = kids.map(function (k) { return k.getBoundingClientRect(); });
-    var order = kids.map(function (k, i) { return i; }).filter(function (i) { return box[i].width > 0; })
-      .sort(function (a, b) { return box[a].left - box[b].left; });
-    if (order.length < 3) return;
-    var last = box[order[order.length - 1]], kept = box[order[0]];
-    for (var j = 1; j < order.length - 1; j++) {
-      var i = order[j], b = box[i];
-      if (b.left < kept.right + GAP || b.right > last.left - GAP) {
-        kids[i].style.setProperty('visibility', 'hidden');
-        kids[i].__mpThinned = true;
-      } else kept = b;
+  function fitMany(axes) {
+    var rows = [];
+    for (var idx = 0; idx < axes.length; idx++) {
+      var axis = axes[idx];
+      var kids = [].filter.call(axis.children, function (k) { return k.nodeType === 1; });
+      for (var c = 0; c < kids.length; c++) {
+        if (kids[c].__mpThinned) { kids[c].style.removeProperty('visibility'); kids[c].__mpThinned = false; }
+      }
+      if (kids.length >= 3) rows.push(kids);
+    }
+    if (!rows.length) return;
+    // Read all bounding rects in one clean layout pass before writing visibility changes
+    var boxes = rows.map(function (kids) { return kids.map(function (k) { return k.getBoundingClientRect(); }); });
+    var hides = [];
+    for (var r = 0; r < rows.length; r++) {
+      var rk = rows[r], box = boxes[r];
+      var order = rk.map(function (_, i) { return i; }).filter(function (i) { return box[i].width > 0; })
+        .sort(function (a, b) { return box[a].left - box[b].left; });
+      if (order.length < 3) continue;
+      var last = box[order[order.length - 1]], kept = box[order[0]];
+      for (var j = 1; j < order.length - 1; j++) {
+        var i = order[j], b = box[i];
+        if (b.left < kept.right + GAP || b.right > last.left - GAP) hides.push(rk[i]);
+        else kept = b;
+      }
+    }
+    for (var h = 0; h < hides.length; h++) {
+      hides[h].style.setProperty('visibility', 'hidden');
+      hides[h].__mpThinned = true;
     }
   }
 
-  var ro = 'ResizeObserver' in window ? new ResizeObserver(function (es) { es.forEach(function (e) { fit(e.target); }); }) : null;
+  var ro = 'ResizeObserver' in window ? new ResizeObserver(function (es) {
+    fitMany(es.map(function (e) { return e.target; }));
+  }) : null;
   function scan() {
+    var direct = [];
     document.querySelectorAll(AXES).forEach(function (a) {
       if (a.__mpFit) return;
       a.__mpFit = true;
-      if (ro) ro.observe(a); else fit(a);
+      if (ro) ro.observe(a); else direct.push(a);
     });
+    if (direct.length) fitMany(direct);
   }
   var pending = 0;
   new MutationObserver(function () {

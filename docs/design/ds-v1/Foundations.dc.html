@@ -14,7 +14,7 @@
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           .dv-turn { padding: 44px 48px 36px; }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -257,11 +257,11 @@
               </div>
               <div class="sub-h"><span class="mp-hl">44 pt targets</span><span class="lbl">dashed = the tappable area</span></div>
               <div class="targets">
-                <div class="fx col gap8"><button class="iconbtn hit" aria-label="Privacy mode"><span class="ms">visibility</span></button><span class="mp-cap mp-ink3">Icon button · 44 × 44</span></div>
-                <div class="fx col gap8"><a class="mp-tab on hit" href="#space"><span class="ms ms-fill">home</span>Overview</a><span class="mp-cap mp-ink3">Tab · shares the bar, 48 high</span></div>
+                <div class="fx col gap8"><button class="iconbtn hit" aria-label="Privacy mode"><span class="ms" aria-hidden=\"true\">visibility</span></button><span class="mp-cap mp-ink3">Icon button · 44 × 44</span></div>
+                <div class="fx col gap8"><a class="mp-tab on hit" href="#space"><span class="ms ms-fill" aria-hidden=\"true\">home</span>Overview</a><span class="mp-cap mp-ink3">Tab · shares the bar, 48 high</span></div>
                 <div class="fx col gap8"><div class="mp-seg hit" style="width: 160px" role="group" aria-label="Period"><button class="mp-seg-i on">6M</button><button class="mp-seg-i">1Y</button></div><span class="mp-cap mp-ink3">Segment · 40 in a 44 track</span></div>
               </div>
-              <div class="fx col gap8"><div class="mp-group hit" style="width: 358px"><div class="mp-row"><span class="mp-body">Technical details</span><span class="ms mp-ink3 ms-s" style="margin-left: auto">chevron_right</span></div></div><span class="mp-cap mp-ink3">Row · the full width × 44, the whole row taps</span></div>
+              <div class="fx col gap8"><div class="mp-group hit" style="width: 358px"><div class="mp-row"><span class="mp-body">Technical details</span><span class="ms mp-ink3 ms-s" aria-hidden=\"true\" style="margin-left: auto">chevron_right</span></div></div><span class="mp-cap mp-ink3">Row · the full width × 44, the whole row taps</span></div>
             </div>
           </sc-for>
         </div>
@@ -296,13 +296,13 @@
                           <div class="mp-shell-side">
                             <nav class="mp-side bb" style="background: var(--mp-bg); border-right: 1px solid var(--mp-line)" aria-label="Sections">
                               <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                              <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
+                              <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
                             </nav>
                           </div>
                           <div class="mp-shell-main">
                             <div class="mp-pagepad">
                               <div class="mp-pagehead">
-                                <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink3">Prices to Friday's close · read-only</div></div>
+                                <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink3">Prices to Friday's close · audited</div></div>
                                 <div class="mp-seg" style="min-width: 260px" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
                               </div>
                               <div class="mp-cols">
@@ -313,7 +313,7 @@
                                     <div class="mp-sub mp-hero-2">▲ £612 this month · ▼ 0.6% this week</div>
                                     <svg viewBox="0 0 300 70" preserveAspectRatio="none" style="display: block; width: 100%; height: 70px; margin-top: 12px" aria-hidden="true"><path d="{{ heroChart.area }}" fill="var(--mp-hero-area)"></path><path d="{{ heroChart.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" vector-effect="non-scaling-stroke"></path></svg>
                                   </div>
-                                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday.</div></div></div>
+                                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden=\"true\">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday.</div></div></div>
                                 </div>
                                 <div class="mp-col">
                                   <div class="mp-group">
@@ -334,7 +334,7 @@
                         </div>
                         <div class="mp-shell-tabs tabs-abs">
                           <nav class="mp-tabbar" style="flex: 1" aria-label="Sections">
-                            <sc-for list="{{ tabs }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                            <sc-for list="{{ tabs }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
                           </nav>
                         </div>
                       </div>
@@ -440,12 +440,12 @@
               </div>
               <div class="sub-h"><span class="mp-hl">Sizes and fill</span><span class="lbl">.ms-s · .ms · .ms-l · .ms-fill</span></div>
               <div class="isizes">
-                <div class="isz"><span class="ms ms-s">chevron_right</span><span class="lbl">18 · rows</span></div>
-                <div class="isz"><span class="ms">home</span><span class="lbl">22 · default</span></div>
-                <div class="isz"><span class="ms ms-l">check_circle</span><span class="lbl">26 · cards</span></div>
-                <div class="isz"><span class="ms ms-fill mp-acc">home</span><span class="lbl">filled · tab</span></div>
-                <div class="isz"><span class="ms ms-fill mp-up ms-l">check_circle</span><span class="lbl">filled · status</span></div>
-                <div class="isz"><span class="ms mp-ink3">menu</span><span class="lbl">ink-3 · idle</span></div>
+                <div class="isz"><span class="ms ms-s" aria-hidden=\"true\">chevron_right</span><span class="lbl">18 · rows</span></div>
+                <div class="isz"><span class="ms" aria-hidden=\"true\">home</span><span class="lbl">22 · default</span></div>
+                <div class="isz"><span class="ms ms-l" aria-hidden=\"true\">check_circle</span><span class="lbl">26 · cards</span></div>
+                <div class="isz"><span class="ms ms-fill mp-acc" aria-hidden=\"true\">home</span><span class="lbl">filled · tab</span></div>
+                <div class="isz"><span class="ms ms-fill mp-up ms-l" aria-hidden=\"true\">check_circle</span><span class="lbl">filled · status</span></div>
+                <div class="isz"><span class="ms mp-ink3" aria-hidden=\"true\">menu</span><span class="lbl">ink-3 · idle</span></div>
               </div>
             </div>
           </sc-for>
@@ -678,7 +678,7 @@
               { n: 'info', use: 'Stale prices, a note' },
               { n: 'warning', use: 'Worth a look, needs you' },
               { n: 'notifications', use: 'Alerts setting' },
-              { n: 'lock', use: 'Read-only, signed in' },
+              { n: 'lock', use: 'Audited, signed in' },
               { n: 'chat', use: 'Open chat, Ask in the chat' },
               { n: 'open_in_new', use: 'Leaves MyPaisa' }
             ],

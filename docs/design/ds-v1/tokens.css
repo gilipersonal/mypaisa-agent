@@ -56,7 +56,7 @@
   --mp-hero-area: rgba(255, 107, 79, 0.18);   /* the area under the coral line on the hero */
   /* fixed encodings, the same on every page (green stays for gains only) */
   --mp-pillar-for: #2453C9;  --mp-pillar-against: #8A5300;   /* technical pillars: blue supports, amber weighs against */
-  --mp-ccy-usd: #2453C9; --mp-ccy-gbp: #4E5462; --mp-ccy-eur: #6B3FB8; --mp-ccy-jpy: #8A5300; --mp-ccy-other: #6E695F;   /* every mark 3:1+ on surface and on the track, at 25% too (MA-181) */
+  --mp-ccy-usd: #2453C9; --mp-ccy-gbp: #4E5462; --mp-ccy-inr: #8A5300; --mp-ccy-eur: #6B3FB8; --mp-ccy-jpy: #8A5300; --mp-ccy-other: #6E695F;   /* every mark 3:1+ on surface and on the track, at 25% too (MA-181) */
   --mp-asset-shares: #2453C9; --mp-asset-bonds: #6B3FB8; --mp-asset-silver: #646A78; --mp-asset-cash: #8A5300;
   --mp-meter: #2453C9;       /* spend and budget meters */
   --mp-track: #BEC1C8;       /* the empty part of a bar or meter: plainly there at 25% brightness on a card, the page, a fill and the hero (MA-181, MA-240) */
@@ -106,13 +106,64 @@
   --mp-seg-on: #3A4456;      /* lighter than the track, as iOS dark does: ink 9.0:1 */
   --mp-hero-area: rgba(255, 122, 94, 0.18);
   --mp-pillar-for: #8FB2FF;  --mp-pillar-against: #F6BC4F;
-  --mp-ccy-usd: #8FB2FF; --mp-ccy-gbp: #AEB6C4; --mp-ccy-eur: #B79CFF; --mp-ccy-jpy: #F6BC4F; --mp-ccy-other: #A3ACBA;
+  --mp-ccy-usd: #8FB2FF; --mp-ccy-gbp: #AEB6C4; --mp-ccy-inr: #F6BC4F; --mp-ccy-eur: #B79CFF; --mp-ccy-jpy: #F6BC4F; --mp-ccy-other: #A3ACBA;
   --mp-asset-shares: #8FB2FF; --mp-asset-bonds: #B79CFF; --mp-asset-silver: #969FAE; --mp-asset-cash: #F6BC4F;
   --mp-meter: #8FB2FF;
   --mp-track: #485160;      /* plainly there on the hero at 25% too (MA-240) */
   --mp-mask: #414D64; --mp-mask-hero: #40598A;
   --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.t-light):not(.t-dark) {
+    --mp-bg: #0A0F18;
+    --mp-surface: #151C27;
+    --mp-surface-2: #1E2633;
+    --mp-line: #283141;
+    --mp-material: rgba(21, 28, 39, 0.78);
+    --mp-ink: #F3F5F8;
+    --mp-ink-2: #C5CCD7;
+    --mp-ink-3: #ADB6C4;
+    --mp-hero: #1A2944;
+    --mp-hero-2: #233558;
+    --mp-hero-ink: #FFFFFF;
+    --mp-hero-ink-2: #B7C2D6;
+    --mp-hero-up: #A6F0C2;
+    --mp-coral: #FF7A5E;
+    --mp-accent: #FFAF9B;
+    --mp-on-accent: #1A0B06;
+    --mp-up: #44D17A;
+    --mp-down-quiet: #C5CCD7;
+    --mp-alert: #FF9AAE;
+    --mp-alert-bg: #3A1724;
+    --mp-on-alert: #2A0710;
+    --mp-add: #5BDB8B;   --mp-add-bg: #16301F;
+    --mp-hold: #A8C3FF;  --mp-hold-bg: #1A2747;
+    --mp-pause: #F6BC4F; --mp-pause-bg: #33270E;
+    --mp-trim: #FF9A80;  --mp-trim-bg: #3A1D16;
+    --mp-reb: #C8B4FF;   --mp-reb-bg: #2A2142;
+    --mp-watch: #C5CCD7; --mp-watch-bg: #232B38;
+    --mp-chart-line: #FF7A5E;
+    --mp-chart-area: rgba(255, 122, 94, 0.16);
+    --mp-band: rgba(255, 122, 94, 0.37);
+    --mp-chart-grid: #222B39;
+    --mp-chart-2: #8FB2FF;
+    --mp-chart-3: #5BDB8B;
+    --mp-chart-4: #F6BC4F;
+    --mp-chart-5: #B79CFF;
+    --mp-focus: #8FB2FF;
+    --mp-seg-on: #3A4456;
+    --mp-hero-area: rgba(255, 122, 94, 0.18);
+    --mp-pillar-for: #8FB2FF;  --mp-pillar-against: #F6BC4F;
+    --mp-ccy-usd: #8FB2FF; --mp-ccy-gbp: #AEB6C4; --mp-ccy-inr: #F6BC4F; --mp-ccy-eur: #B79CFF; --mp-ccy-jpy: #F6BC4F; --mp-ccy-other: #A3ACBA;
+    --mp-asset-shares: #8FB2FF; --mp-asset-bonds: #B79CFF; --mp-asset-silver: #969FAE; --mp-asset-cash: #F6BC4F;
+    --mp-meter: #8FB2FF;
+    --mp-track: #485160;
+    --mp-mask: #414D64; --mp-mask-hero: #40598A;
+    --mp-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+  }
 }
 
 /* ---------- type: Apple's Dynamic Type "Large" sizes, system font ---------- */
@@ -187,18 +238,26 @@
 /* ---------- controls (all ≥44px tall where tappable) ---------- */
 .mp-btn { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; font: 600 17px/22px var(--mp-font); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mp-t-tap) var(--mp-ease), opacity var(--mp-t-tap); }
 .mp-btn:active { transform: scale(0.97); }
-.mp-btn:focus-visible, .mp-seg-i:focus-visible, .mp-tab:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+.mp-btn:focus-visible, .mp-seg-i:focus-visible, .mp-tab:focus-visible,
+.mp-side-i:focus-visible, .iconbtn:focus-visible, .mp-switch:focus-visible,
+a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visible,
+[role="switch"]:focus-visible, [role="tab"]:focus-visible, [data-scrub]:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
 .mp-btn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
+.mp-btn-primary:hover { color: var(--mp-on-accent); filter: brightness(0.94); }
 .mp-btn-tinted  { background: var(--mp-surface-2); color: var(--mp-ink); }
+.mp-btn-tinted:hover  { color: var(--mp-ink); filter: brightness(0.97); }
 .mp-btn-plain   { background: transparent; color: var(--mp-accent); padding: 0 8px; min-height: 44px; }
+.mp-btn-plain:hover   { color: var(--mp-accent); background: var(--mp-surface-2); }
 .mp-btn-small   { min-height: 44px; padding: 0 14px; font-size: 15px; border-radius: 12px; }
 .mp-seg   { display: flex; background: var(--mp-surface-2); border-radius: 10px; padding: 2px; gap: 2px; }
-.mp-seg-i { flex: 1; min-height: 40px; border: 0; background: transparent; border-radius: 8px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); cursor: pointer; }
+.mp-seg-i { flex: 1; min-height: 40px; border: 0; background: transparent; border-radius: 8px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); cursor: pointer; position: relative; }
+.mp-seg-i::after { content: ""; position: absolute; inset: -2px 0; }
 .mp-seg-i.on { background: var(--mp-seg-on); color: var(--mp-ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .mp-hero .mp-seg { background: var(--mp-hero-2); }
 .mp-hero .mp-seg-i { color: var(--mp-hero-ink-2); }
 .mp-hero .mp-seg-i.on { background: var(--mp-hero-ink); color: #13213A; }
-.mp-switch { width: 51px; height: 31px; border-radius: 999px; background: var(--mp-surface-2); position: relative; flex: none; box-shadow: inset 0 0 0 1.5px var(--mp-ink-3); }  /* the ring keeps the off track at 3:1+ */
+.mp-switch { width: 51px; height: 31px; border-radius: 999px; background: var(--mp-surface-2); position: relative; flex: none; box-shadow: inset 0 0 0 1.5px var(--mp-ink-3); cursor: pointer; }  /* the ring keeps the off track at 3:1+ */
+.mp-switch::after { content: ""; position: absolute; inset: -7px 0; }
 .mp-switch.on { background: var(--mp-up); box-shadow: none; }
 .mp-switch-k { position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); transition: transform var(--mp-t-fast) var(--mp-ease); }
 .mp-switch.on .mp-switch-k { transform: translateX(20px); }
@@ -209,7 +268,9 @@
 .mp-tab.on { color: var(--mp-accent); }
 .mp-side { width: 248px; box-sizing: border-box; flex: none; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
 .mp-side-i { min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 10px; color: var(--mp-ink-2); font: 500 15px/20px var(--mp-font); text-decoration: none; }
+.mp-side-i:hover:not(.on) { background: var(--mp-surface-2); color: var(--mp-ink); }
 .mp-side-i.on { background: var(--mp-surface); color: var(--mp-ink); font-weight: 600; box-shadow: var(--mp-shadow); }
+.mp-side-i.on:hover { color: var(--mp-ink); }
 .mp-side-i.on .ms { color: var(--mp-accent); }
 
 /* Telegram's own Mini App header (drawn by Telegram, shown for context) */
@@ -275,6 +336,8 @@
 .mp-scrim { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.42); }
 .mp-disabled, [aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
 .mp-track { background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); border-radius: 999px; overflow: hidden; }  /* empty part of a bar or meter stays visible */
+.mp-track.has-tick { overflow: visible; }
+.mp-track-clip { display: block; width: 100%; height: 100%; border-radius: inherit; overflow: hidden; }
 
 /* ---------- charts: SVG draws lines and areas; every label and marker is HTML on top ----------
    An SVG <text> filled from a template never renders, and an SVG scaled with its column shrinks its
@@ -392,6 +455,7 @@
    to 1132 (a 13-inch iPad upright, a wide Split View pane or Stage Manager window) the screen takes the room and the chat
    is a sheet away, opened from the sidebar's Chat, as it is from about 600 to 900 (Arun, 27 Oct 2026) */
 @container screen (min-width: 900px) and (max-width: 1132px) { .mp.ipad .scrn.srow > .insp { display: none; } }
+@container screen (max-width: 899px) { .mp.ipad .scrn.srow > .insp { display: none; } }
 /* and from 1133 to 1179 (an iPad mini across) the chat column is 280, an inspector's narrowest, so the screen keeps the
    room it has at 1180; a card's value there goes under its key before it falls under 7em */
 @container screen (min-width: 1133px) and (max-width: 1179px) {
@@ -556,4 +620,9 @@
   .mp .lrow { grid-template-columns: 36px minmax(0, 1fr); }
   .mp .lrow > :nth-child(3) { grid-column: 2; justify-self: end; }
   .mp .row4 > .rt { min-width: min(100%, 9em); }
+}
+
+@media (prefers-contrast: more) {
+  .mp-card, .mp-group, .ccard { box-shadow: 0 0 0 1px var(--mp-ink-3); }
+  .mp-group .mp-row + .mp-row::before { transform: none; background: var(--mp-ink-3); }
 }

@@ -25,7 +25,24 @@
     return s.length > 3 ? s.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + s.slice(-3) : s;
   }
   function sgn(n, o) { return n < 0 ? '−' : (o && o.sign && n > 0 ? '+' : ''); }
-  function wrapM(s, o) { return o && o.raw ? s : '<span class="mny">' + s + '</span>'; }
+  function isPriv() { return !!(window.MP5 && window.MP5.state && window.MP5.state().priv); }
+  function redactAria(s) {
+    return isPriv() && s ? String(s).replace(/[−+-]?[£₹$€]\s?[\d,.]+[kmKM]?/g, 'Hidden') : s;
+  }
+  function maskChartLbl(t) {
+    var s = String(t == null ? '' : t);
+    return (isPriv() && s.indexOf('mny') < 0 && /[£₹$€]\s?\d/.test(s)) ? wrapM(s) : s;
+  }
+  function wrapM(s, o) {
+    if (o && o.raw) return s;
+    if (isPriv()) {
+      var len = Math.max(4, Math.min(8, String(s || '').length));
+      var pad = new Array(len + 1).join('\u00a0');
+      return '<span class="mny" role="img" aria-label="Hidden"><span aria-hidden="true">' + pad + '</span></span>';
+    }
+    return '<span class="mny">' + s + '</span>';
+  }
+  K.mny = wrapM;
   /* gbp(22925) → £22,925; gbp(-786, {sign:true}) → −£786; gbp(1.5, {dp:2}); gbp(n, {raw:true}) has no mask span */
   K.gbp = function (n, o) { o = o || {}; return wrapM(sgn(n, o) + '£' + grpUK(n, o.dp), o); };
   K.inr = function (n, o) { o = o || {}; return wrapM(sgn(n, o) + '₹' + grpIN(n), o); };
@@ -80,9 +97,10 @@
       for (var i = 1; i <= 10; i++) cells += '<i class="' + (i <= lit ? (i > overFrom ? 'over' : 'on') : '') + '"></i>';
       return '<div class="mp5-segbar' + (cls ? ' ' + cls : '') + '">' + cells + '</div>';
     }
-    var tick = o.tick != null ? '<span class="mp5-bartick" style="left:' + Math.max(2, Math.min(98, o.tick * 100)).toFixed(1) + '%"></span>' : '';
-    if (m === 'b') return '<div class="bar bar-bullet' + (cls ? ' ' + cls : '') + '"><i style="width:' + (f * 100).toFixed(1) + '%"></i>' + tick + '</div>';
-    return '<div class="bar' + (cls ? ' ' + cls : '') + '"><i style="width:' + (f * 100).toFixed(1) + '%"></i>' + tick + '</div>';
+    var tick = o.tick != null ? '<span class="mp5-bartick" style="left:' + Math.max(2, Math.min(100, o.tick * 100)).toFixed(1) + '%"></span>' : '';
+    if (m === 'b') return '<div class="bar bar-bullet' + (o.tick != null ? ' has-tick' : '') + (cls ? ' ' + cls : '') + '"><i style="width:' + (f * 100).toFixed(1) + '%"></i>' + tick + '</div>';
+    if (o.tick != null) return '<div class="bar has-tick' + (cls ? ' ' + cls : '') + '"><span class="bar-clip"><i style="width:' + (f * 100).toFixed(1) + '%"></i></span>' + tick + '</div>';
+    return '<div class="bar' + (cls ? ' ' + cls : '') + '"><i style="width:' + (f * 100).toFixed(1) + '%"></i></div>';
   };
   /* a pillar's −2..+2: classic 4-bar meter, A diverging centre spine, B 5-stop scale dots, C 5-cell bento matrix */
   K.pillar = function (name, v, sub) {
@@ -277,13 +295,13 @@
       });
       var over0 = '';
       (o.dots || []).forEach(function (d) { over0 += '<span class="mp-chartdot" style="left:' + X0(d.x).toFixed(2) + '%;top:' + Y0(d.y).toFixed(2) + '%"></span>'; });
-      (o.labels || []).forEach(function (l) { over0 += '<span class="mp-chartlbl ' + (l.cls || '') + '" style="left:' + X0(l.x).toFixed(2) + '%;top:' + Y0(l.y).toFixed(2) + '%">' + l.t + '</span>'; });
-      (o.yLabels || []).forEach(function (l) { over0 += '<span class="mp-foot mp-ink2" style="position:absolute;left:0;top:' + Y0(l.y).toFixed(2) + '%;transform:translateY(-110%)">' + l.t + '</span>'; });
+      (o.labels || []).forEach(function (l) { over0 += '<span class="mp-chartlbl ' + (l.cls || '') + '" style="left:' + X0(l.x).toFixed(2) + '%;top:' + Y0(l.y).toFixed(2) + '%">' + maskChartLbl(l.t) + '</span>'; });
+      (o.yLabels || []).forEach(function (l) { over0 += '<span class="mp-foot mp-ink2" style="position:absolute;left:0;top:' + Y0(l.y).toFixed(2) + '%;transform:translateY(-110%)">' + maskChartLbl(l.t) + '</span>'; });
       (o.vlines || []).forEach(function (v) { if (v.t) over0 += '<span class="mp-foot" style="position:absolute;top:0;left:' + X0(v.x).toFixed(2) + '%;transform:translate(-104%,0);font-weight:600">' + v.t + '</span>'; });
       var axis0 = o.xLabels && o.xLabels.length ? '<div class="mp-chartaxis mp-ink2">' + o.xLabels.map(function (l, i, a) {
         var tf = i === 0 ? 'translateX(0)' : i === a.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)';
         return '<span style="left:' + X0(l.x).toFixed(2) + '%;transform:' + tf + '">' + l.t + '</span>'; }).join('') + '</div>' : '';
-      return '<div class="fx col g4"' + (o.label ? ' role="img" aria-label="' + esc(o.label) + '"' : '') + '><div class="mp-chartbox" style="height:' + h + '">' +
+      return '<div class="fx col g4"' + (o.label ? ' role="img" aria-label="' + esc(redactAria(o.label)) + '"' : '') + '><div class="mp-chartbox" style="height:' + h + '">' +
         parts.map(function (p) { return '<div style="position:absolute;inset:0">' + p + '</div>'; }).join('') + over0 + '</div>' + axis0 + '</div>';
     }
 
@@ -341,28 +359,28 @@
       var isB = d.beacon || (m === 'a' && di === dots.length - 1);
       over += '<span class="mp-chartdot' + (isB ? ' beacon' : '') + '" style="left:' + X(d.x).toFixed(2) + '%;top:' + Y(d.y).toFixed(2) + '%"></span>';
     });
-    (o.labels || []).forEach(function (l) { over += '<span class="mp-chartlbl ' + (l.cls || '') + '" style="left:' + X(l.x).toFixed(2) + '%;top:' + Y(l.y).toFixed(2) + '%">' + l.t + '</span>'; });
+    (o.labels || []).forEach(function (l) { over += '<span class="mp-chartlbl ' + (l.cls || '') + '" style="left:' + X(l.x).toFixed(2) + '%;top:' + Y(l.y).toFixed(2) + '%">' + maskChartLbl(l.t) + '</span>'; });
     var lastYPct = -999;
     (o.yLabels || []).slice().sort(function (a, b) { return b.y - a.y; }).forEach(function (l) {
       var yp = Math.max(7, Math.min(93, Y(l.y)));
       if (Math.abs(yp - lastYPct) < 11) return;
       lastYPct = yp;
-      over += '<span class="mp5-yl" style="top:' + yp.toFixed(2) + '%">' + l.t + '</span>';
+      over += '<span class="mp5-yl" style="top:' + yp.toFixed(2) + '%">' + maskChartLbl(l.t) + '</span>';
     });
     (o.vlines || []).forEach(function (v) { if (v.t) over += '<span class="mp-foot" style="position:absolute;top:0;left:' + X(v.x).toFixed(2) + '%;transform:translate(-104%,0);font-weight:600">' + v.t + '</span>'; });
     var scrubAttr = '';
-    if (o.scrub && o.scrub.length) {
+    if (o.scrub && o.scrub.length && !isPriv()) {
       var mapped = o.scrub.map(function (pt) {
         return { x: +X(pt.x).toFixed(2), y: pt.y != null ? +Y(pt.y).toFixed(2) : null, k: pt.k, v: pt.v, ccy: pt.ccy, vt: pt.vt, s: pt.s, lo: pt.lo, hi: pt.hi, sign: pt.sign };
       });
-      scrubAttr = ' data-scrub="' + esc(JSON.stringify(mapped)) + '"';
+      scrubAttr = ' data-scrub="' + esc(JSON.stringify(mapped)) + '" tabindex="0"';
       over += K.scrubBox();
     }
     var axis = o.xLabels && o.xLabels.length ? '<div class="mp-chartaxis mp-ink2">' + o.xLabels.map(function (l, i, a) {
       var tf = i === 0 ? 'translateX(0)' : i === a.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)';
       return '<span style="left:' + X(l.x).toFixed(2) + '%;transform:' + tf + '">' + l.t + '</span>'; }).join('') + '</div>' : '';
     var statsHtml = K.chartStats(o.stats, m);
-    return '<div class="fx col g4"' + (o.label ? ' role="img" aria-label="' + esc(o.label) + '"' : '') + '>' + statsHtml + '<div class="mp-chartbox" style="height:' + h + '"' + scrubAttr + '>' +
+    return '<div class="fx col g4"' + (o.label ? ' role="img" aria-label="' + esc(redactAria(o.label)) + '"' : '') + '>' + statsHtml + '<div class="mp-chartbox" style="height:' + h + '"' + scrubAttr + '>' +
       parts.map(function (p) { return '<div style="position:absolute;inset:0">' + p + '</div>'; }).join('') + over + '</div>' + axis + '</div>';
   };
   /* candles({bars: [[o, h, l, c]], x0 (index of the first bar, default 0), lo, hi, h, after: n extra slots for a fan, fan: {lo, hi, mid},
@@ -404,7 +422,7 @@
     var axis = o.xLabels ? '<div class="mp-chartaxis mp-ink2">' + o.xLabels.map(function (l, i, a) {
       var tf = i === 0 ? 'translateX(0)' : i === a.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)';
       return '<span style="left:' + X(l.i).toFixed(2) + '%;transform:' + tf + '">' + l.t + '</span>'; }).join('') + '</div>' : '';
-    return '<div class="fx col g4"' + (o.label ? ' role="img" aria-label="' + esc(o.label) + '"' : '') + '><div class="mp-chartbox" style="height:' + h + '">' +
+    return '<div class="fx col g4"' + (o.label ? ' role="img" aria-label="' + esc(redactAria(o.label)) + '"' : '') + '><div class="mp-chartbox" style="height:' + h + '">' +
       parts.map(function (p) { return '<div style="position:absolute;inset:0">' + p + '</div>'; }).join('') + over + '</div>' + axis + '</div>';
   };
   /* spark(values, {h, color}): a small line, no axes */

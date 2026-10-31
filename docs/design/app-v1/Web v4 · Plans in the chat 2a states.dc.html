@@ -16,7 +16,7 @@
         <style>
           html, body { margin: 0; background: #ECEAE6; }
           body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           a.dv-tid:hover { color: #fff; } a.dv-oid:hover { color: #1a1a1a; }
           /* canvas, as the v4 web boards draw it */
           .dv-turn { padding: 44px 48px 36px; }
@@ -290,7 +290,7 @@
                       <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path fill="var(--mp-hero)" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle fill="var(--mp-coral)" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                          <sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}">{{ n.i }}</span>{{ n.l }}</a></sc-for>
+                          <sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.i }}</span>{{ n.l }}</a></sc-for>
                           <div class="grow1"></div>
                           <div class="mp-foot mp-ink2 side-ft">{{ f.who }}</div>
                         </aside>
@@ -298,7 +298,7 @@
                           <sc-if value="{{ f.p.isBud }}" hint-placeholder-val="{{ false }}"><div class="mp-pagepad">
                             <header class="pk-head">
                               <div><div class="mp-large">Budget</div><div class="mp-foot mp-ink2">November 2026 · open · the plan, take-home</div></div>
-                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms">visibility</span></button>
+                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden=\"true\">visibility</span></button>
                             </header>
                             <div class="pk-ctl"><div class="mp-seg wbseg" role="group" aria-label="Month"><button class="mp-seg-i">October</button><button class="mp-seg-i on">November</button></div><div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on">£ GBP</button><button class="mp-seg-i">₹ INR</button></div></div>
                             <div class="wbcols">
@@ -311,16 +311,16 @@
                                 </div>
                                 <div class="mp-card cpad">
                                   <div class="fx jb ac"><span class="mp-hl">Income · November</span><span class="mp-hl tnum">£7,560</span></div>
-                                  <sc-for list="{{ bud.inc }}" as="r" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
+                                  <sc-for list="{{ bud.inc }}" as="r" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
                                 </div>
                               </div>
                               <div>
                                 <div class="mp-card cpad">
                                   <div class="fx jb ac"><span class="mp-hl">November’s plan</span><span class="mp-foot mp-ink2">plan, a month</span></div>
-                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s">savings</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">School fees pot</span><span class="mp-foot mp-ink2">{{ bud.potSub }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£690</span><span class="mp-chip newchip">added 20:46</span></div></div>
+                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">savings</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">School fees pot</span><span class="mp-foot mp-ink2">{{ bud.potSub }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£690</span><span class="mp-chip newchip">added 20:46</span></div></div>
                                   <div class="pk-aud"><span>{{ bud.aud }}</span><span class="cbtn cbtn-ghost">Undo</span></div>
-                                  <sc-for list="{{ bud.cats }}" as="r" hint-placeholder-count="12"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
-                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s">functions</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">Spending plan</span><span class="mp-foot mp-ink2">12 categories, the pot apart</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£2,682</span></div></div>
+                                  <sc-for list="{{ bud.cats }}" as="r" hint-placeholder-count="12"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
+                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">functions</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">Spending plan</span><span class="mp-foot mp-ink2">12 categories, the pot apart</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£2,682</span></div></div>
                                 </div>
                               </div>
                             </div>
@@ -328,7 +328,7 @@
                           <sc-if value="{{ f.p.isProj }}" hint-placeholder-val="{{ true }}"><div class="mp-pagepad">
                             <header class="pk-head">
                               <div><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">Net worth over the next 20 years, in the pounds of each year · run {{ f.p.run }}</div></div>
-                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms">visibility</span></button>
+                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden=\"true\">visibility</span></button>
                             </header>
                             <div class="pk-tabs" role="tablist" aria-label="Projection"><span class="pk-tab on" role="tab" aria-selected="true">Net worth</span><span class="pk-tab" role="tab" aria-selected="false">Plans</span><span class="pk-tab" role="tab" aria-selected="false">Budget forecast</span></div>
                             <div class="pk-ctl">
@@ -352,15 +352,15 @@
                             <div class="mp-card cpad">
                               <sc-if value="{{ f.p.isList }}" hint-placeholder-val="{{ false }}"><div class="pk-sum"><span class="mp-sub mp-w6">Middle path in 2046 <span class="tnum">{{ f.p.mid }}</span></span><span class="mp-foot mp-ink2">run {{ f.p.run }} · the fan is above</span></div></sc-if>
                               <div class="fx jb ac"><span class="mp-hl">Milestones</span><span class="mp-foot mp-ink2">on the line</span></div>
-                              <sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="lrow {{ m.alc }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></div></div></sc-for>
+                              <sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="lrow {{ m.alc }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></div></div></sc-for>
                             </div>
                           </div></sc-if>
                         </main>
                       </sc-if>
 
                       <aside class="chside {{ f.chatc }}" aria-label="Chat">
-                        <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chhd"><span class="mp-t3">Chat</span><span class="iconbtn"><span class="ms">edit_square</span></span></div></sc-if>
-                        <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psb"><span>{{ f.clock }}</span><span class="fx ac gap4"><span class="ms ms-s">signal_cellular_alt</span><span class="ms ms-s">wifi</span><span class="ms ms-s">battery_horiz_075</span></span></div><div class="phd"><span class="mp-t1">Chat</span><span class="iconbtn"><span class="ms">edit_square</span></span></div></sc-if>
+                        <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chhd"><span class="mp-t3">Chat</span><span class="iconbtn"><span class="ms" aria-hidden=\"true\">edit_square</span></span></div></sc-if>
+                        <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psb"><span>{{ f.clock }}</span><span class="fx ac gap4"><span class="ms ms-s" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms ms-s" aria-hidden=\"true\">wifi</span><span class="ms ms-s" aria-hidden=\"true\">battery_horiz_075</span></span></div><div class="phd"><span class="mp-t1">Chat</span><span class="iconbtn"><span class="ms" aria-hidden=\"true\">edit_square</span></span></div></sc-if>
                         <div class="chv {{ f.viewc }}"><div class="chat" style="margin-top: {{ f.mt }}">
 
                         <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
@@ -372,7 +372,7 @@
                             <sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><div class="ai-meta">{{ m.meta }}</div></sc-if>
                             <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ true }}"><div class="ccard">
                               <div class="ccard-h">
-                                <sc-if value="{{ m.c.ok }}" hint-placeholder-val="{{ false }}"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>{{ m.c.over }}</span></sc-if>
+                                <sc-if value="{{ m.c.ok }}" hint-placeholder-val="{{ false }}"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span>{{ m.c.over }}</span></sc-if>
                                 <sc-if value="{{ m.c.plain }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ m.c.over }}</span></sc-if>
                                 <span class="mp-hl">{{ m.c.title }}</span>
                                 <sc-if value="{{ m.c.hasSub }}" hint-placeholder-val="{{ true }}"><span class="mp-sub mp-ink2">{{ m.c.sub }}</span></sc-if>
@@ -390,8 +390,8 @@
                                 </div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">{{ k.a0 }}</span><span style="left: {{ k.amx }}">{{ k.a1 }}</span><span class="ax1" style="left: {{ k.a2l }}">{{ k.a2 }}</span></div></div>
                                 <div class="lgd"><span><i class="sw-bar"></i>Cash at each month’s end</span><span><span class="sw-flag">▼</span>Below zero</span></div></sc-if>
                                 <sc-if value="{{ k.isFlag }}" hint-placeholder-val="{{ false }}"><div class="pk-flag" role="note"><span>{{ k.ft }}</span></div></sc-if>
-                                <sc-if value="{{ k.isOk }}" hint-placeholder-val="{{ false }}"><div class="pk-ok"><span class="ms ms-s ms-fill">check_circle</span><span>{{ k.ot }}</span></div></sc-if>
-                                <sc-if value="{{ k.isLock }}" hint-placeholder-val="{{ false }}"><div class="pk-lock"><span class="ms ms-s">lock</span><span>{{ k.lt }}</span></div></sc-if>
+                                <sc-if value="{{ k.isOk }}" hint-placeholder-val="{{ false }}"><div class="pk-ok"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span><span>{{ k.ot }}</span></div></sc-if>
+                                <sc-if value="{{ k.isLock }}" hint-placeholder-val="{{ false }}"><div class="pk-lock"><span class="ms ms-s" aria-hidden=\"true\">lock</span><span>{{ k.lt }}</span></div></sc-if>
                                 <sc-if value="{{ k.isFoot }}" hint-placeholder-val="{{ false }}"><p class="pp mp-foot mp-ink2">{{ k.pt }}</p></sc-if>
                                 <sc-if value="{{ k.isChg }}" hint-placeholder-val="{{ false }}"><ul class="pk-chg"><sc-for list="{{ k.items }}" as="x" hint-placeholder-count="2"><li><i></i><span>{{ x }}</span></li></sc-for></ul></sc-if>
                                 <sc-if value="{{ k.isAud }}" hint-placeholder-val="{{ false }}"><div class="pk-aud"><span>{{ k.at }}</span><sc-if value="{{ k.undo }}" hint-placeholder-val="{{ true }}"><span class="cbtn cbtn-ghost">Undo</span></sc-if></div></sc-if>
@@ -404,18 +404,18 @@
                                 <sc-if value="{{ w.canApply }}" hint-placeholder-val="{{ true }}"><div class="fx ac gap8 wrapx"><span class="cbtn {{ w.bc }}">Confirm this way</span><sc-if value="{{ w.shut }}" hint-placeholder-val="{{ false }}"><span class="cbtn cbtn-ghost">What changes</span></sc-if></div></sc-if>
                               </div></sc-for></sc-if>
                               <sc-if value="{{ m.c.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.c.acts }}" as="a" hint-placeholder-count="2"><span class="cbtn {{ a.c }}">{{ a.t }}</span></sc-for></div></sc-if>
-                              <sc-if value="{{ m.c.hasMore }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold"><span>{{ m.c.foldMore }}</span><span class="ms">expand_less</span></div><div class="pk-more"><sc-for list="{{ m.c.more }}" as="x" hint-placeholder-count="2"><div class="pk-mw"><span class="mp-sub mp-w6">{{ x.t }}</span><span class="mp-foot mp-ink2">{{ x.n }}</span><sc-if value="{{ x.hasBtn }}" hint-placeholder-val="{{ false }}"><span class="cbtn">{{ x.btn }}</span></sc-if></div></sc-for></div></sc-if>
-                              <sc-for list="{{ m.c.folds }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms">{{ fo.i }}</span></div></sc-for>
+                              <sc-if value="{{ m.c.hasMore }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold"><span>{{ m.c.foldMore }}</span><span class="ms" aria-hidden=\"true\">expand_less</span></div><div class="pk-more"><sc-for list="{{ m.c.more }}" as="x" hint-placeholder-count="2"><div class="pk-mw"><span class="mp-sub mp-w6">{{ x.t }}</span><span class="mp-foot mp-ink2">{{ x.n }}</span><sc-if value="{{ x.hasBtn }}" hint-placeholder-val="{{ false }}"><span class="cbtn">{{ x.btn }}</span></sc-if></div></sc-for></div></sc-if>
+                              <sc-for list="{{ m.c.folds }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden=\"true\">{{ fo.i }}</span></div></sc-for>
                               <sc-if value="{{ m.c.hasTech }}" hint-placeholder-val="{{ false }}"><div class="ccard-tech pk-tech"><sc-for list="{{ m.c.tech }}" as="t" hint-placeholder-count="5"><span>{{ t }}</span></sc-for></div></sc-if>
-                              <sc-for list="{{ m.c.foldsB }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms">{{ fo.i }}</span></div></sc-for>
+                              <sc-for list="{{ m.c.foldsB }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden=\"true\">{{ fo.i }}</span></div></sc-for>
                             </div></sc-if>
                           </div></div></sc-if>
                         </sc-for>
                         </div></div>
-                        <div class="wcomp"><div class="wchips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><span class="cbtn"><span class="ms">{{ c.i }}</span>{{ c.l }}</span></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx">{{ f.ph }}</span><span class="wsend"><span class="ms">arrow_upward</span></span></div></div>
+                        <div class="wcomp"><div class="wchips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><span class="cbtn"><span class="ms" aria-hidden=\"true\">{{ c.i }}</span>{{ c.l }}</span></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx">{{ f.ph }}</span><span class="wsend"><span class="ms" aria-hidden=\"true\">arrow_upward</span></span></div></div>
                       </aside>
                     </div>
-                    <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav></sc-if>
+                    <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}" aria-hidden=\"true\">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav></sc-if>
                   </div>
                 </div>
               </sc-for>

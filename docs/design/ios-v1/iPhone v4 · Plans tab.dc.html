@@ -16,7 +16,7 @@
         <script src="motion.js"></script>
         <style>
           html, body { margin: 0; background: #ECEAE6; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           a.dv-tid:hover, a.plan-k:hover { color: #fff; }
           .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
@@ -202,8 +202,8 @@
                   <div class="{{ f.root }}" data-screen-label="{{ f.cap }}">
                     <div class="island"></div>
                     <div class="scrn">
-                      <div class="sbar"><span>21:05</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                      <div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms">chevron_left</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                      <div class="sbar"><span>21:05</span><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
+                      <div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden=\"true\">chevron_left</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden=\"true\">visibility</span></span><span class="gtext lg"><span class="ms" aria-hidden=\"true\">chat_bubble</span><span>Ask</span></span></span></div>
                       <div class="largetitle">Projection</div>
                       <div class="scroll"><div class="pg">
                         <div class="mp-seg tabseg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
@@ -212,21 +212,21 @@
                           <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true">£ GBP</button><button class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
                           <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
                         </div>
-                        <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">7 plans · yours alone, as the admin</span><span class="mp-foot mp-ink2">{{ sumline }}</span></div><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>Add in chat</button></div>
+                        <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">7 plans · yours alone, as the admin</span><span class="mp-foot mp-ink2">{{ sumline }}</span></div><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden=\"true\">chat_bubble</span>Add in chat</button></div>
                         <sc-if value="{{ f.a }}">
                           <div class="mp-card tl">
                             <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
                             <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                             <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                               <div class="tl-row {{ r.sel }}">
-                                <div class="tl-n"><span class="mp-icontile"><span class="ms ms-s">{{ r.i }}</span></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
+                                <div class="tl-n"><span class="mp-icontile"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
                                 <div class="tl-l" role="img" aria-label="{{ r.aria }}">
                                   <sc-for list="{{ grid }}" as="g" hint-placeholder-count="3"><span class="tl-g" style="left: {{ g }}"></span></sc-for>
                                   <sc-for list="{{ r.bars }}" as="m" hint-placeholder-count="1"><span class="tb {{ m.c }}" style="left: {{ m.l }}; width: {{ m.w }}" data-mo="barx"></span></sc-for>
                                   <sc-for list="{{ r.marks }}" as="m" hint-placeholder-count="1"><span class="tm {{ m.c }}" style="left: {{ m.l }}" data-mo="fade"></span></sc-for>
                                   <sc-if value="{{ r.past }}"><span class="tm past" aria-hidden="true" data-mo="fade"></span></sc-if>
                                 </div>
-                                <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms">more_horiz</span></button>
+                                <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms" aria-hidden=\"true\">more_horiz</span></button>
                               </div>
                             </sc-for>
                             <div class="lgd2"><span><i class="k-bar k-out"></i>Money out</span><span><i class="k-bar k-in"></i>Money in</span><span><i class="k-bar k-pot"></i>Into a pot</span><span><i class="k-dia"></i>Once</span><span><i class="k-tk"></i>Each March</span><span><i class="k-step"></i>A change from a date</span><span><i class="k-evt"></i>An event on a record</span><span><i class="k-past"></i>Runs past 2046</span></div>
@@ -240,30 +240,30 @@
                               <sc-if value="{{ e.isYear }}"><div class="fyear"><span class="fdate"></span><span class="fsp"></span><span class="mp-t3">{{ e.y }}</span></div></sc-if>
                               <sc-if value="{{ e.isItem }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span>
                                 <div class="mp-card fcard">
-                                  <div class="fhead"><span class="mp-icontile"><span class="ms ms-s">{{ e.i }}</span></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><span class="ms">more_horiz</span></button></sc-if></div>
+                                  <div class="fhead"><span class="mp-icontile"><span class="ms ms-s" aria-hidden=\"true\">{{ e.i }}</span></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><span class="ms" aria-hidden=\"true\">more_horiz</span></button></sc-if></div>
                                   <sc-if value="{{ e.words }}"><p class="fwords">“{{ e.words }}”</p></sc-if>
-                                  <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed">{{ p }}<span class="ms">edit</span></span></sc-for></div></sc-if>
+                                  <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed">{{ p }}<span class="ms" aria-hidden=\"true\">edit</span></span></sc-for></div></sc-if>
                                   <span class="mp-foot mp-ink2">{{ e.foot }}</span>
                                 </div></div></sc-if>
-                              <sc-if value="{{ e.isNote }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span><div class="fnote"><span class="ms">{{ e.i }}</span><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div></div></sc-if>
+                              <sc-if value="{{ e.isNote }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span><div class="fnote"><span class="ms" aria-hidden=\"true\">{{ e.i }}</span><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div></div></sc-if>
                             </sc-for>
                           </div>
                         </sc-if>
                         <p class="pp mp-foot mp-ink2">Illustrative figures from the future-plans figure set.</p>
                       </div></div>
                       <div class="edge-bot"></div>
-                      <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+                      <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms" aria-hidden=\"true\">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1" aria-hidden=\"true\">search</span></span></div>
                       <sc-if value="{{ f.sh }}">
                         <div class="dim"></div>
                         <div class="sheet full" role="dialog" aria-label="{{ f.sh.title }}" style="padding: 8px 0 0; gap: 12px">
                           <div class="sheet-grab"></div>
-                          <div class="shh"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ f.sh.i }}</span></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="gbtn lg" aria-label="Close"><span class="ms z1">close</span></span></div>
+                          <div class="shh"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ f.sh.i }}</span></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="gbtn lg" aria-label="Close"><span class="ms z1" aria-hidden=\"true\">close</span></span></div>
                           <div class="shb">
                             <div class="qbox"><span class="mp-over mp-ink2">Your words</span><span class="fwords">“{{ f.sh.words }}”</span><span class="mp-foot mp-ink2">{{ f.sh.wmeta }}</span></div>
-                            <div class="kcard"><sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed">{{ r.v }}<span class="ms">edit</span></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><span class="ms">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-for></div>
+                            <div class="kcard"><sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed">{{ r.v }}<span class="ms" aria-hidden=\"true\">edit</span></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><span class="ms" aria-hidden=\"true\">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-for></div>
                             <div class="eng"><span class="mp-over mp-ink2">From the engine · run of 20:59</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for></div>
-                            <div class="acts"><span class="cbtn"><span class="ms">pause</span>Pause</span><span class="cbtn"><span class="ms">event_busy</span>End it</span><span class="cbtn"><span class="ms">chat_bubble</span>Ask in chat</span></div>
-                            <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms">fact_check</span><span>{{ h }}</span></div></sc-for></div>
+                            <div class="acts"><span class="cbtn"><span class="ms" aria-hidden=\"true\">pause</span>Pause</span><span class="cbtn"><span class="ms" aria-hidden=\"true\">event_busy</span>End it</span><span class="cbtn"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ask in chat</span></div>
+                            <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms" aria-hidden=\"true\">fact_check</span><span>{{ h }}</span></div></sc-for></div>
                           </div>
                         </div>
                       </sc-if>
@@ -278,14 +278,14 @@
                     <div class="scrn srow">
                       <div class="sidebar sb lg">
                         <div class="side-h sh0">MyPaisa</div>
-                        <sc-for list="{{ side }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+                        <sc-for list="{{ side }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
                         <div class="side-h">Admin</div>
-                        <span class="side-i"><span class="ms">shield_person</span>Admin center</span>
-                        <span class="side-i"><span class="ms">account_circle</span>You</span>
+                        <span class="side-i"><span class="ms" aria-hidden=\"true\">shield_person</span>Admin center</span>
+                        <span class="side-i"><span class="ms" aria-hidden=\"true\">account_circle</span>You</span>
                       </div>
                       <div class="main">
                         <div class="sbar"><span>21:05 Thu 5 Nov</span><span></span></div>
-                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1">visibility</span></span></span></div>
+                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden=\"true\">visibility</span></span></span></div>
                         <div class="ipg">
                           <div class="mp-foot mp-ink2 meta4">Seven plans, Arun’s · the engine’s run of Thu 5 Nov 20:59</div>
                           <nav class="utabs" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="utab {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></nav>
@@ -294,21 +294,21 @@
                             <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true">£ GBP</button><button class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
                             <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
                           </div>
-                          <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">7 plans · yours alone, as the admin</span><span class="mp-foot mp-ink2">{{ sumline }}</span></div><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s">chat_bubble</span>Add in chat</button></div>
+                          <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">7 plans · yours alone, as the admin</span><span class="mp-foot mp-ink2">{{ sumline }}</span></div><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden=\"true\">chat_bubble</span>Add in chat</button></div>
                           <sc-if value="{{ f.a }}">
                             <div class="mp-card tl">
                               <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
                               <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                               <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                                 <div class="tl-row {{ r.sel }}">
-                                  <div class="tl-n"><span class="mp-icontile"><span class="ms ms-s">{{ r.i }}</span></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
+                                  <div class="tl-n"><span class="mp-icontile"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
                                   <div class="tl-l" role="img" aria-label="{{ r.aria }}">
                                     <sc-for list="{{ grid }}" as="g" hint-placeholder-count="3"><span class="tl-g" style="left: {{ g }}"></span></sc-for>
                                     <sc-for list="{{ r.bars }}" as="m" hint-placeholder-count="1"><span class="tb {{ m.c }}" style="left: {{ m.l }}; width: {{ m.w }}" data-mo="barx"></span></sc-for>
                                     <sc-for list="{{ r.marks }}" as="m" hint-placeholder-count="1"><span class="tm {{ m.c }}" style="left: {{ m.l }}" data-mo="fade"></span></sc-for>
                                     <sc-if value="{{ r.past }}"><span class="tm past" aria-hidden="true" data-mo="fade"></span></sc-if>
                                   </div>
-                                  <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms">more_horiz</span></button>
+                                  <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms" aria-hidden=\"true\">more_horiz</span></button>
                                 </div>
                               </sc-for>
                               <div class="lgd2"><span><i class="k-bar k-out"></i>Money out</span><span><i class="k-bar k-in"></i>Money in</span><span><i class="k-bar k-pot"></i>Into a pot</span><span><i class="k-dia"></i>Once</span><span><i class="k-tk"></i>Each March</span><span><i class="k-step"></i>A change from a date</span><span><i class="k-evt"></i>An event on a record</span><span><i class="k-past"></i>Runs past 2046</span></div>
@@ -322,12 +322,12 @@
                                 <sc-if value="{{ e.isYear }}"><div class="fyear"><span class="fdate"></span><span class="fsp"></span><span class="mp-t3">{{ e.y }}</span></div></sc-if>
                                 <sc-if value="{{ e.isItem }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span>
                                   <div class="mp-card fcard">
-                                    <div class="fhead"><span class="mp-icontile"><span class="ms ms-s">{{ e.i }}</span></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><span class="ms">more_horiz</span></button></sc-if></div>
+                                    <div class="fhead"><span class="mp-icontile"><span class="ms ms-s" aria-hidden=\"true\">{{ e.i }}</span></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><span class="ms" aria-hidden=\"true\">more_horiz</span></button></sc-if></div>
                                     <sc-if value="{{ e.words }}"><p class="fwords">“{{ e.words }}”</p></sc-if>
-                                    <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed">{{ p }}<span class="ms">edit</span></span></sc-for></div></sc-if>
+                                    <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed">{{ p }}<span class="ms" aria-hidden=\"true\">edit</span></span></sc-for></div></sc-if>
                                     <span class="mp-foot mp-ink2">{{ e.foot }}</span>
                                   </div></div></sc-if>
-                                <sc-if value="{{ e.isNote }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span><div class="fnote"><span class="ms">{{ e.i }}</span><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div></div></sc-if>
+                                <sc-if value="{{ e.isNote }}"><div class="fitem"><span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span><span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span><div class="fnote"><span class="ms" aria-hidden=\"true\">{{ e.i }}</span><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div></div></sc-if>
                               </sc-for>
                             </div>
                           </sc-if>
@@ -336,31 +336,31 @@
                         <div class="edge-bot"></div>
                       </div>
                       <div class="insp">
-                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                        <div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>
+                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1" aria-hidden=\"true\">edit_square</span></span></div>
                         <div class="chfadet"></div>
                         <div class="ichat"><div class="chat">
                           <div class="daysep">Today</div>
                           <div class="me">close my HDFC loan with the SBI FD when it matures</div>
                           <div class="me-time">20:58</div>
                           <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Saved. It closes the loan in Mar 2029, when the FD matures.</div>
-                            <div class="ccard"><div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:59 · in the chat</div></div>
+                            <div class="ccard"><div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:59 · in the chat</div></div>
                           </div></div>
                         </div></div>
                         <div class="edge-bot"></div>
-                        <div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms">event</span><span>What’s due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask about the Projection</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>
+                        <div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden=\"true\">event</span><span>What’s due</span></span><span class="gchip lg"><span class="ms" aria-hidden=\"true\">add_circle</span><span>Add anything</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms z1" aria-hidden=\"true\">add</span></span><span class="cfield lg"><span class="ph">Ask about the Projection</span><span class="csend mp-ink2 z1"><span class="ms" aria-hidden=\"true\">mic</span></span></span></div></div>
                       </div>
                     </div>
                     <sc-if value="{{ f.sh }}">
                       <div class="dim"></div>
                       <div class="fsheet" role="dialog" aria-label="{{ f.sh.title }}" data-mo="fade">
-                        <div class="shh"><span class="mp-icontile mp-neutral"><span class="ms ms-s">{{ f.sh.i }}</span></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="mp-chip mp-neutral">Active</span><span class="gbtn lg" aria-label="Close"><span class="ms z1">close</span></span></div>
+                        <div class="shh"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ f.sh.i }}</span></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="mp-chip mp-neutral">Active</span><span class="gbtn lg" aria-label="Close"><span class="ms z1" aria-hidden=\"true\">close</span></span></div>
                         <div class="shb">
                           <div class="qbox"><span class="mp-over mp-ink2">Your words</span><span class="fwords">“{{ f.sh.words }}”</span><span class="mp-foot mp-ink2">{{ f.sh.wmeta }}</span></div>
-                          <div class="kcard"><sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed">{{ r.v }}<span class="ms">edit</span></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><span class="ms">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-for></div>
+                          <div class="kcard"><sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed">{{ r.v }}<span class="ms" aria-hidden=\"true\">edit</span></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><span class="ms" aria-hidden=\"true\">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-for></div>
                           <div class="eng"><span class="mp-over mp-ink2">From the engine · run of 20:59</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for></div>
-                          <div class="acts"><span class="cbtn"><span class="ms">pause</span>Pause</span><span class="cbtn"><span class="ms">event_busy</span>End it</span><span class="cbtn"><span class="ms">chat_bubble</span>Ask in chat</span></div>
-                          <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms">fact_check</span><span>{{ h }}</span></div></sc-for></div>
+                          <div class="acts"><span class="cbtn"><span class="ms" aria-hidden=\"true\">pause</span>Pause</span><span class="cbtn"><span class="ms" aria-hidden=\"true\">event_busy</span>End it</span><span class="cbtn"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ask in chat</span></div>
+                          <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms" aria-hidden=\"true\">fact_check</span><span>{{ h }}</span></div></sc-for></div>
                         </div>
                       </div>
                     </sc-if>
