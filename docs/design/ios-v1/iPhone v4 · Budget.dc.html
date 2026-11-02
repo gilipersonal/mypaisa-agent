@@ -16,7 +16,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
 .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -115,6 +115,16 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .cfile { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 10px; border-radius: 12px; background: var(--mp-surface-2); }
 .mp-foot .mp-mask { margin-top: 2px; }
 
+/* MA-300: the drawn controls are real buttons (type="button"; the older plain <button>s keep their own look). A
+   zero-specificity reset strips the browser's button look, so every class rule (tokens.css, ios.css, this board) still draws them as before. */
+:where(button[type="button"]) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* the household strip carries balances, so it is solid ledger, never glass (MA-300, P1-2) */
+.strip.solid { position: relative; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line), 0 2px 10px rgba(0, 0, 0, 0.08); }
+.strip.solid .mp-up { color: var(--mp-up); }
+.strip.solid .mp-mask { background: var(--mp-mask); }
 </style>
 </helmet>
 
@@ -136,9 +146,9 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="dv-col">
 <div class="bd-theme">{{ f.cap }}</div>
 <div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ f.cap }}"><div class="island"></div><div class="scrn">
-<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
 <sc-if value="{{ f.isPage }}" hint-placeholder-val="{{ true }}">
-<div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Budget</span></sc-if><span class="fx gap8"><span class="gbtn lg {{ f.eyeT }}"><span class="ms {{ f.eyeF }}">{{ f.pg.eye }}</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Budget</span></sc-if><span class="fx gap8"><button type="button" class="gbtn lg {{ f.eyeT }}" aria-label="Privacy mode"><span class="ms {{ f.eyeF }}" aria-hidden="true">{{ f.pg.eye }}</span></button><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></span></div>
 <div class="under"><div class="pg" style="margin-top: {{ f.pg.off }}">
 <div class="largetitle" style="padding: 0 4px">Budget</div>
 <div class="mp-foot mp-ink2 subt">{{ f.pg.meta }}</div>
@@ -146,7 +156,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="mp-seg sg-m" role="group" aria-label="Month"><sc-for list="{{ f.pg.months }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
 <div class="mp-seg sg-w" role="group" aria-label="Whose budget"><sc-for list="{{ f.pg.whose }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
 <div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s {{ f.pg.gOn }}" aria-pressed="{{ f.pg.gP }}">£ GBP</button><button class="mp-seg-i seg-s {{ f.pg.iOn }}" aria-pressed="{{ f.pg.iP }}">₹ INR</button></div>
-<button class="iconbtn {{ f.pg.eyeC }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.pg.eyeP }}"><span class="ms">{{ f.pg.eye }}</span></button>
+<button class="iconbtn {{ f.pg.eyeC }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.pg.eyeP }}"><span class="ms" aria-hidden="true">{{ f.pg.eye }}</span></button>
 </div>
 <sc-if value="{{ f.pg.hasBanner }}" hint-placeholder-val="{{ false }}"><div class="banner"><span class="ms ms-s" aria-hidden="true">receipt_long</span><div class="mp-foot grow1"><span class="mp-w6">Two statements are waiting for your Confirm in the chat.</span> October’s actuals fill in when you confirm them.</div></div></sc-if>
 <div class="mp-cols">
@@ -200,7 +210,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="edge-bot"></div>
 </sc-if>
 <sc-if value="{{ f.isChat }}" hint-placeholder-val="{{ false }}">
-<div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · prices to Fri 23 Oct</span><span class="strip-n {{ f.nw.c }}" role="{{ f.nw.r }}" aria-label="{{ f.nw.l }}">{{ f.nw.v }}</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+<div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · prices to Fri 23 Oct</span><span class="strip-n {{ f.nw.c }}" role="{{ f.nw.r }}" aria-label="{{ f.nw.l }}">{{ f.nw.v }}</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
 <div class="scroll"><div class="fadet"></div><div class="chat cb" style="{{ f.cpos }}">
 <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
 <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
@@ -224,15 +234,15 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </sc-for>
 </div>
 <sc-if value="{{ m.card.hasActs }}" hint-placeholder-val="{{ true }}"><div class="ccard-acts"><sc-for list="{{ m.card.acts }}" as="b" hint-placeholder-count="3"><button class="cbtn {{ b.c }}" type="button">{{ b.t }}</button></sc-for></div></sc-if>
-<sc-if value="{{ m.card.hasFold }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">{{ m.card.fold.i }}</span>{{ m.card.fold.t }}</span><span class="mp-foot mp-ink2">{{ m.card.fold.r }}</span></div></sc-if>
+<sc-if value="{{ m.card.hasFold }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet" role="button" tabindex="0" aria-expanded="false"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">{{ m.card.fold.i }}</span>{{ m.card.fold.t }}</span><span class="mp-foot mp-ink2">{{ m.card.fold.r }}</span></div></sc-if>
 </div>
 </sc-if></div></div></sc-if>
 </sc-for>
 </div></div>
 <div class="edgeB"></div>
-<div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">event_note</span><span>Budget</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+<div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_note</span><span>Budget</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">payments</span><span>Log money</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </sc-if>
-<sc-if value="{{ f.hasTabs }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><span class="tab {{ tb.on }}"><span class="ms">{{ tb.icon }}</span>{{ tb.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div></sc-if>
+<sc-if value="{{ f.hasTabs }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><button type="button" class="tab {{ tb.on }}"><span class="ms" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms" aria-hidden="true">search</span></button></div></sc-if>
 <sc-if value="{{ f.hasKbd }}" hint-placeholder-val="{{ false }}"><div class="kbd" role="group" aria-label="Number pad, drawn by iOS"><sc-for list="{{ kpad }}" as="k" hint-placeholder-count="12"><span class="key {{ k.c }}"><span>{{ k.t }}</span><small>{{ k.s }}</small></span></sc-for></div></sc-if>
 <div class="homebar"></div>
 </div></div>
@@ -250,7 +260,7 @@ renderVals() {
 const R = 112.5;
 const gbp = (n, dp) => '£' + Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0 });
 const inr = (n) => { const s = String(Math.round(Math.abs(n))); let h = s.length > 3 ? s.slice(0, -3) : '', o = s.slice(-3); while (h.length > 2) { o = h.slice(-2) + ',' + o; h = h.slice(0, -2); } if (h) o = h + ',' + o; return '₹' + o; };
-const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: String(s), c: '', r: null, l: null });
+const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden' } : { v: String(s), c: '', r: null, l: null });
 const T = (s) => ({ v: s, c: '', r: null, l: null });
 const rt = function () { return Array.prototype.slice.call(arguments).map((x) => (typeof x === 'string' ? T(x) : x)); };
 const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });

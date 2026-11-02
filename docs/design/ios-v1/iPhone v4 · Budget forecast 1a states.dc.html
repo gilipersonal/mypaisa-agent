@@ -98,7 +98,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .bb.sel { box-shadow: 0 0 0 2px var(--mp-surface), 0 0 0 4px var(--mp-ink); }
 .bb.cap { border-radius: 0 0 3px 3px; }
 .bb.cap::after { content: ""; position: absolute; left: -3px; right: -3px; top: 8px; height: 4px; background: var(--mp-surface); transform: skewY(-24deg); }
-.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 11px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
+.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 12px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
 .bch .mp-chartaxis { margin-top: 2px; }
 .blgd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
 .blgd > span { display: inline-flex; align-items: center; gap: 6px; }
@@ -206,6 +206,19 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .tsheet2 .tsc { overflow: hidden; }
 .tsheet2 .trl { padding: 6px 0; }
 .dimx { position: absolute; inset: 0; z-index: 29; background: rgba(5, 8, 14, 0.32); }
+/* MA-300: the drawn controls are real buttons. A zero-specificity reset strips the browser's own button look,
+   so every class rule above (tokens.css, ios.css, this board) still draws them exactly as before; the cbtn rows
+   here were already buttons, so they are left out and keep the browser's own letter-spacing, as drawn. */
+:where(button.gbtn, button.gtext, button.tab, button.tabsearch, button.gchip, button.cplus, button.csend,
+  button.side-i, button.menu-i, button.mp-switch, button.mp-seg-i.segc) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* each year's bar is tapped: an invisible hit column at least 44 pt wide behind it, full height (MA-300, P1-3);
+   where neighbouring columns overlap, the app picks the bar nearest the touch; the edge columns stay inside the plot */
+.bhit { position: absolute; top: 0; bottom: -20px; left: 50%; width: max(100%, 44px); transform: translateX(-50%); }
+.bc:first-child .bhit { left: 0; transform: none; }
+.bc:last-child .bhit { left: auto; right: 0; transform: none; }
 </style>
 </helmet>
 
@@ -229,25 +242,25 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ f.cap }}">
 <div class="island"></div>
 <div class="scrn">
-<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden=\"true\">chevron_left</span></span><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Projection</span></sc-if><span class="navm"><span class="gbtn lg" aria-label="{{ f.v.eyeL }}"><span class="ms" aria-hidden=\"true\">{{ f.v.eye }}</span></span><sc-if value="{{ f.top }}" hint-placeholder-val="{{ true }}"><span class="gtext lg"><span class="ms" aria-hidden=\"true\">chat_bubble</span><span>Ask</span></span></sc-if><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden=\"true\">chat_bubble</span></span></sc-if></span></div>
+<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Projection</span></sc-if><span class="navm"><button type="button" class="gbtn lg" aria-label="{{ f.v.eyeL }}"><span class="ms" aria-hidden="true">{{ f.v.eye }}</span></button><sc-if value="{{ f.top }}" hint-placeholder-val="{{ true }}"><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></sc-if><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><button type="button" class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden="true">chat_bubble</span></button></sc-if></span></div>
 <sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top"></div></sc-if>
 <div class="scroll"><div class="pg" style="margin-top: {{ f.off }}">
 <div class="largetitle">Projection</div>
 <div class="mp-seg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
 <div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ f.v.hz }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<div class="ctls"><div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><sc-for list="{{ f.v.cur }}" as="t" hint-placeholder-count="2"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div><span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.v.tm }}" role="switch" aria-checked="{{ f.v.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span></div>
+<div class="ctls"><div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><sc-for list="{{ f.v.cur }}" as="t" hint-placeholder-count="2"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div><span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch {{ f.v.tm }}" role="switch" aria-checked="{{ f.v.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></button></span></div>
 
 <sc-if value="{{ f.v.banner }}" hint-placeholder-val="{{ false }}">
-<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms" aria-hidden=\"true\">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden=\"true\">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
+<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms" aria-hidden="true">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden="true">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
 </sc-if>
 <sc-if value="{{ f.v.empty }}" hint-placeholder-val="{{ false }}">
 <div class="mp-card empty">
-<span class="eico"><span class="ms" aria-hidden=\"true\">event_note</span></span>
+<span class="eico"><span class="ms" aria-hidden="true">event_note</span></span>
 <span class="mp-hl">No budget yet, so nothing to forecast</span>
 <span class="mp-sub mp-ink2">The forecast is built from each member's take-home pay, a monthly plan for each category and the household's EMIs. Tell MyPaisa in the chat, in your own words:</span>
 <ul class="mp-sub"><li>“My take-home is £4,350 a month”</li><li>“Plan £650 a month for groceries”</li><li>or send a payslip or a bank statement</li></ul>
-<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Set up the budget in the chat</button></div>
+<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Set up the budget in the chat</button></div>
 <span class="mp-foot mp-ink2">Nothing is created here: the chat asks, you confirm, and the forecast fills in.</span>
 </div>
 </sc-if>
@@ -258,8 +271,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ f.v.ch.chips }}" as="c" hint-placeholder-count="1"><div class="flagl"><span class="mp-chip chip-s {{ c.c }}">{{ c.t }}</span><span class="mp-foot">{{ c.s }}</span></div></sc-for>
 <div class="bch {{ f.v.ch.wide }}" role="img" aria-label="{{ f.v.ch.aria }}" style="--cols: {{ f.v.ch.cols }}">
 <div class="bplot">
-<sc-for list="{{ f.v.ch.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}"><span class="mk {{ g.m }}">{{ g.l }}</span></span></sc-for>
-<div class="bcols"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><sc-if value="{{ b.ft }}" hint-placeholder-val="{{ false }}"><span class="ftk" style="{{ b.ft }}"></span></sc-if><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
+<sc-for list="{{ f.v.ch.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}"><span class="mk {{ g.m }}" role="{{ g.ar }}" aria-label="{{ g.al }}">{{ g.l }}</span></span></sc-for>
+<div class="bcols"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><span class="bhit" aria-hidden="true"></span><sc-if value="{{ b.ft }}" hint-placeholder-val="{{ false }}"><span class="ftk" style="{{ b.ft }}"></span></sc-if><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
 </div>
 <div class="bflags" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span>{{ b.flag }}</span></sc-for></div>
 <sc-if value="{{ f.v.ch.cash }}" hint-placeholder-val="{{ false }}"><div class="cstrip" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span class="cs {{ b.cash }}"></span></sc-for></div></sc-if>
@@ -274,13 +287,13 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="fx jb ac gap8 wrap"><span class="mp-t2">{{ f.v.yr.title }}</span><span class="mp-chip chip-s {{ f.v.yr.chipC }}">{{ f.v.yr.chip }}</span></div>
 <span class="mp-foot mp-ink2 ptab-meta">{{ f.v.yr.meta }}</span>
 <div>
-<sc-for list="{{ f.v.yr.lines }}" as="l" hint-placeholder-count="6"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for>
-<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">{{ f.v.yr.totS }}</span></div><span class="fig {{ f.v.yr.totC }}"><span class="mk {{ f.v.yr.totM }}">{{ f.v.yr.tot }}</span></span></div>
+<sc-for list="{{ f.v.yr.lines }}" as="l" hint-placeholder-count="6"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig"><span class="mk {{ l.m }}" role="{{ l.ar }}" aria-label="{{ l.al }}">{{ l.v }}</span></span></div></sc-for>
+<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">{{ f.v.yr.totS }}</span></div><span class="fig {{ f.v.yr.totC }}"><span class="mk {{ f.v.yr.totM }}" role="{{ f.v.yr.totAr }}" aria-label="{{ f.v.yr.totAl }}">{{ f.v.yr.tot }}</span></span></div>
 </div>
-<sc-if value="{{ f.v.yr.below }}" hint-placeholder-val="{{ false }}"><div><div class="blh"><span class="mp-over mp-ink2">Paid from cash</span></div><sc-for list="{{ f.v.yr.below }}" as="l" hint-placeholder-count="3"><div class="bl"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig {{ l.c }}"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for></div></sc-if>
-<div class="kvs"><sc-for list="{{ f.v.yr.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for></div>
-<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms" aria-hidden=\"true\">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
-<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden=\"true\">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
+<sc-if value="{{ f.v.yr.below }}" hint-placeholder-val="{{ false }}"><div><div class="blh"><span class="mp-over mp-ink2">Paid from cash</span></div><sc-for list="{{ f.v.yr.below }}" as="l" hint-placeholder-count="3"><div class="bl"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig {{ l.c }}"><span class="mk {{ l.m }}" role="{{ l.ar }}" aria-label="{{ l.al }}">{{ l.v }}</span></span></div></sc-for></div></sc-if>
+<div class="kvs"><sc-for list="{{ f.v.yr.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}"><span class="mk {{ t.m }}" role="{{ t.ar }}" aria-label="{{ t.al }}">{{ t.v }}</span></span></div></sc-for></div>
+<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms" aria-hidden="true">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
+<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden="true">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
 </div>
 </div>
 <div class="mp-col">
@@ -294,8 +307,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-card cpad">
 <div class="fx col gap4"><span class="mp-over mp-ink2">The way you applied</span><span class="mp-hl">The School fees pot, year by year</span></div>
 <span class="mp-foot mp-ink2">{{ f.v.pl.sub }}</span>
-<div class="mtab"><sc-for list="{{ f.v.pl.rows }}" as="m" hint-placeholder-count="10"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig"><span class="mk {{ m.m }}">{{ m.v }}</span></span></sc-for></div>
-<sc-for list="{{ f.v.pl.tots }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for>
+<div class="mtab"><sc-for list="{{ f.v.pl.rows }}" as="m" hint-placeholder-count="10"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig"><span class="mk {{ m.m }}" role="{{ m.ar }}" aria-label="{{ m.al }}">{{ m.v }}</span></span></sc-for></div>
+<sc-for list="{{ f.v.pl.tots }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6"><span class="mk {{ t.m }}" role="{{ t.ar }}" aria-label="{{ t.al }}">{{ t.v }}</span></span></div></sc-for>
 </div>
 </sc-if>
 <sc-if value="{{ f.v.tr }}" hint-placeholder-val="{{ false }}">
@@ -304,7 +317,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
 <div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
-<span class="srcchip"><span class="ms" aria-hidden=\"true\">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+<span class="srcchip"><span class="ms" aria-hidden="true">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
 </div>
 </sc-if>
 </div>
@@ -318,13 +331,13 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="dimx"></div>
 <div class="tsheet2" role="dialog" aria-label="2029's spending, the flows behind it">
 <div class="grab"></div>
-<div class="tsh"><div class="fx col gap2"><span class="mp-over mp-ink2">What makes it</span><span class="mp-hl">2029's spending, −£34,722</span></div><span class="gbtn lg" aria-label="Close"><span class="ms z1" aria-hidden=\"true\">close</span></span></div>
+<div class="tsh"><div class="fx col gap2"><span class="mp-over mp-ink2">What makes it</span><span class="mp-hl">2029's spending, −£34,722</span></div><button type="button" class="gbtn lg" aria-label="Close"><span class="ms z1" aria-hidden="true">close</span></button></div>
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January; added up, they make the figure you tapped.</span>
 <div class="tsc"><sc-for list="{{ traceS }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
 </div>
 </sc-if>
-<sc-if value="{{ f.dock }}" hint-placeholder-val="{{ true }}"><div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ itabs }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms" aria-hidden=\"true\">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1" aria-hidden=\"true\">search</span></span></div></sc-if>
+<sc-if value="{{ f.dock }}" hint-placeholder-val="{{ true }}"><div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ itabs }}" as="t" hint-placeholder-count="4"><button type="button" class="tab {{ t.on }}"><span class="ms" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div></sc-if>
 <div class="homebar"></div>
 </div>
 </div>
@@ -334,13 +347,13 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="scrn srow">
 <div class="sidebar sb lg">
 <div class="side-h sh0">MyPaisa</div>
-<sc-for list="{{ snav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
-<sc-if value="{{ f.v.admin }}" hint-placeholder-val="{{ true }}"><div class="side-h">Admin</div><span class="side-i"><span class="ms" aria-hidden=\"true\">shield_person</span>Admin center</span></sc-if>
-<span class="side-i"><span class="ms" aria-hidden=\"true\">account_circle</span>You</span>
+<sc-for list="{{ snav }}" as="n" hint-placeholder-count="8"><button type="button" class="side-i {{ n.cls }}"><span class="ms" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
+<sc-if value="{{ f.v.admin }}" hint-placeholder-val="{{ true }}"><div class="side-h">Admin</div><button type="button" class="side-i"><span class="ms" aria-hidden="true">shield_person</span>Admin center</button></sc-if>
+<button type="button" class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</button>
 </div>
 <div class="main">
 <div class="sbar"><span>{{ f.clockPad }}</span><span></span></div>
-<div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="{{ f.v.eyeL }}"><span class="ms z1" aria-hidden=\"true\">{{ f.v.eye }}</span></span></span></div>
+<div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><button type="button" class="gbtn lg" aria-label="{{ f.v.eyeL }}"><span class="ms z1" aria-hidden="true">{{ f.v.eye }}</span></button></span></div>
 <sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top etp"></div></sc-if>
 <div class="scroll"><div class="ipg" style="margin-top: {{ f.off }}">
 <div class="mp-foot mp-ink2 meta4">{{ f.v.meta }}</div>
@@ -348,19 +361,19 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="ctls">
 <div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ f.v.hz }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
 <div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><sc-for list="{{ f.v.cur }}" as="t" hint-placeholder-count="2"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.v.tm }}" role="switch" aria-checked="{{ f.v.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch {{ f.v.tm }}" role="switch" aria-checked="{{ f.v.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></button></span>
 </div>
 
 <sc-if value="{{ f.v.banner }}" hint-placeholder-val="{{ false }}">
-<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms" aria-hidden=\"true\">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden=\"true\">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
+<div class="banner {{ f.v.banner.c }}" role="status"><span class="ms" aria-hidden="true">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden="true">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
 </sc-if>
 <sc-if value="{{ f.v.empty }}" hint-placeholder-val="{{ false }}">
 <div class="mp-card empty">
-<span class="eico"><span class="ms" aria-hidden=\"true\">event_note</span></span>
+<span class="eico"><span class="ms" aria-hidden="true">event_note</span></span>
 <span class="mp-hl">No budget yet, so nothing to forecast</span>
 <span class="mp-sub mp-ink2">The forecast is built from each member's take-home pay, a monthly plan for each category and the household's EMIs. Tell MyPaisa in the chat, in your own words:</span>
 <ul class="mp-sub"><li>“My take-home is £4,350 a month”</li><li>“Plan £650 a month for groceries”</li><li>or send a payslip or a bank statement</li></ul>
-<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Set up the budget in the chat</button></div>
+<div class="btnrow"><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Set up the budget in the chat</button></div>
 <span class="mp-foot mp-ink2">Nothing is created here: the chat asks, you confirm, and the forecast fills in.</span>
 </div>
 </sc-if>
@@ -371,8 +384,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ f.v.ch.chips }}" as="c" hint-placeholder-count="1"><div class="flagl"><span class="mp-chip chip-s {{ c.c }}">{{ c.t }}</span><span class="mp-foot">{{ c.s }}</span></div></sc-for>
 <div class="bch {{ f.v.ch.wide }}" role="img" aria-label="{{ f.v.ch.aria }}" style="--cols: {{ f.v.ch.cols }}">
 <div class="bplot">
-<sc-for list="{{ f.v.ch.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}"><span class="mk {{ g.m }}">{{ g.l }}</span></span></sc-for>
-<div class="bcols"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><sc-if value="{{ b.ft }}" hint-placeholder-val="{{ false }}"><span class="ftk" style="{{ b.ft }}"></span></sc-if><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
+<sc-for list="{{ f.v.ch.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}"><span class="mk {{ g.m }}" role="{{ g.ar }}" aria-label="{{ g.al }}">{{ g.l }}</span></span></sc-for>
+<div class="bcols"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><span class="bhit" aria-hidden="true"></span><sc-if value="{{ b.ft }}" hint-placeholder-val="{{ false }}"><span class="ftk" style="{{ b.ft }}"></span></sc-if><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
 </div>
 <div class="bflags" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span>{{ b.flag }}</span></sc-for></div>
 <sc-if value="{{ f.v.ch.cash }}" hint-placeholder-val="{{ false }}"><div class="cstrip" aria-hidden="true"><sc-for list="{{ f.v.ch.bars }}" as="b" hint-placeholder-count="20"><span class="cs {{ b.cash }}"></span></sc-for></div></sc-if>
@@ -387,13 +400,13 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="fx jb ac gap8 wrap"><span class="mp-t2">{{ f.v.yr.title }}</span><span class="mp-chip chip-s {{ f.v.yr.chipC }}">{{ f.v.yr.chip }}</span></div>
 <span class="mp-foot mp-ink2 ptab-meta">{{ f.v.yr.meta }}</span>
 <div>
-<sc-for list="{{ f.v.yr.lines }}" as="l" hint-placeholder-count="6"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for>
-<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">{{ f.v.yr.totS }}</span></div><span class="fig {{ f.v.yr.totC }}"><span class="mk {{ f.v.yr.totM }}">{{ f.v.yr.tot }}</span></span></div>
+<sc-for list="{{ f.v.yr.lines }}" as="l" hint-placeholder-count="6"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig"><span class="mk {{ l.m }}" role="{{ l.ar }}" aria-label="{{ l.al }}">{{ l.v }}</span></span></div></sc-for>
+<div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">{{ f.v.yr.totS }}</span></div><span class="fig {{ f.v.yr.totC }}"><span class="mk {{ f.v.yr.totM }}" role="{{ f.v.yr.totAr }}" aria-label="{{ f.v.yr.totAl }}">{{ f.v.yr.tot }}</span></span></div>
 </div>
-<sc-if value="{{ f.v.yr.below }}" hint-placeholder-val="{{ false }}"><div><div class="blh"><span class="mp-over mp-ink2">Paid from cash</span></div><sc-for list="{{ f.v.yr.below }}" as="l" hint-placeholder-count="3"><div class="bl"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig {{ l.c }}"><span class="mk {{ l.m }}">{{ l.v }}</span></span></div></sc-for></div></sc-if>
-<div class="kvs"><sc-for list="{{ f.v.yr.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for></div>
-<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms" aria-hidden=\"true\">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
-<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden=\"true\">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
+<sc-if value="{{ f.v.yr.below }}" hint-placeholder-val="{{ false }}"><div><div class="blh"><span class="mp-over mp-ink2">Paid from cash</span></div><sc-for list="{{ f.v.yr.below }}" as="l" hint-placeholder-count="3"><div class="bl"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig {{ l.c }}"><span class="mk {{ l.m }}" role="{{ l.ar }}" aria-label="{{ l.al }}">{{ l.v }}</span></span></div></sc-for></div></sc-if>
+<div class="kvs"><sc-for list="{{ f.v.yr.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}"><span class="mk {{ t.m }}" role="{{ t.ar }}" aria-label="{{ t.al }}">{{ t.v }}</span></span></div></sc-for></div>
+<sc-if value="{{ f.v.yr.lock }}" hint-placeholder-val="{{ false }}"><div class="lockl"><span class="ms" aria-hidden="true">lock</span><span class="mp-foot mp-ink2">{{ f.v.yr.lock }}</span></div></sc-if>
+<div class="btnrow"><sc-for list="{{ f.v.yr.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden="true">{{ b.i }}</span>{{ b.t }}</button></sc-for></div>
 </div>
 </div>
 <div class="mp-col">
@@ -407,8 +420,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-card cpad">
 <div class="fx col gap4"><span class="mp-over mp-ink2">The way you applied</span><span class="mp-hl">The School fees pot, year by year</span></div>
 <span class="mp-foot mp-ink2">{{ f.v.pl.sub }}</span>
-<div class="mtab"><sc-for list="{{ f.v.pl.rows }}" as="m" hint-placeholder-count="10"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig"><span class="mk {{ m.m }}">{{ m.v }}</span></span></sc-for></div>
-<sc-for list="{{ f.v.pl.tots }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6"><span class="mk {{ t.m }}">{{ t.v }}</span></span></div></sc-for>
+<div class="mtab"><sc-for list="{{ f.v.pl.rows }}" as="m" hint-placeholder-count="10"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig"><span class="mk {{ m.m }}" role="{{ m.ar }}" aria-label="{{ m.al }}">{{ m.v }}</span></span></sc-for></div>
+<sc-for list="{{ f.v.pl.tots }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6"><span class="mk {{ t.m }}" role="{{ t.ar }}" aria-label="{{ t.al }}">{{ t.v }}</span></span></div></sc-for>
 </div>
 </sc-if>
 <sc-if value="{{ f.v.tr }}" hint-placeholder-val="{{ false }}">
@@ -417,7 +430,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
 <div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
-<span class="srcchip"><span class="ms" aria-hidden=\"true\">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+<span class="srcchip"><span class="ms" aria-hidden="true">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
 </div>
 </sc-if>
 </div>
@@ -430,8 +443,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="edge-bot"></div>
 </div>
 <div class="insp">
-<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
-<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1" aria-hidden=\"true\">edit_square</span></span></div>
+<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New chat"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>
 <div class="chfadet"></div>
 <div class="ichat"><div class="chat">
 <sc-for list="{{ f.v.chat }}" as="c" hint-placeholder-count="3">
@@ -444,7 +457,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </sc-for>
 </div></div>
 <div class="edge-bot"></div>
-<div class="composer cb20"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="2"><span class="gchip lg"><span class="ms" aria-hidden=\"true\">{{ c.i }}</span><span>{{ c.t }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms z1" aria-hidden=\"true\">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms" aria-hidden=\"true\">mic</span></span></span></div></div>
+<div class="composer cb20"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </div>
 </div>
 </div>
@@ -563,6 +576,21 @@ const potLedger = (mode, priv) => {
   return { rows: rows, sub: mode === 'gbp' ? 'What goes into the pot from the budget, and what it pays back when the fees push a month below your floor.' : 'Each year at its factor, as the lines beside it.',
     tots: [{ k: 'Into the pot', v: M.fmt(into), m: m }, { k: 'Out of it, to ' + D.pot.drawLast, v: M.fmt(out), m: m }, { k: mode === 'gbp' ? 'The difference, its interest at 3%' : 'The difference: its interest, and the factor moving between the years', v: M.fmt(out - into), m: m }] };
 };
+/* privacy: every masked figure keeps only its width (figure spaces) and reads as Hidden; words, years and % stay */
+const HIDE = (t) => { const w = [...String(t)].map((ch) => (/[,.]/.test(ch) ? '\u2008' : '\u2007')).join(''); return w.length < 4 ? '\u2007'.repeat(4) : w; };
+const hideAll = (o, seen) => {
+  seen = seen || new Set();
+  if (!o || typeof o !== 'object' || seen.has(o)) return o;
+  seen.add(o);
+  if (Array.isArray(o)) { o.forEach((x) => hideAll(x, seen)); return o; }
+  if (typeof o.m === 'string' && /\bmp-mask\b/.test(o.m)) {
+    if (typeof o.v === 'string') o.v = HIDE(o.v); else if (typeof o.l === 'string') o.l = HIDE(o.l);
+    o.ar = 'img'; o.al = 'Hidden';
+  }
+  if (o.totM === 'mp-mask' && typeof o.tot === 'string') { o.tot = HIDE(o.tot); o.totAr = 'img'; o.totAl = 'Hidden'; }
+  Object.keys(o).forEach((k) => hideAll(o[k], seen));
+  return o;
+};
 const base = (o) => Object.assign({ pl: false, who: 'Arun · admin', chatWho: 'Arun', admin: true, eye: 'visibility', eyeL: 'Privacy mode: hide amounts', eyeP: 'false', hz: hzL(20), cur: curL(false), tm: '', tmA: 'false', banner: false, empty: false, full: true, dim: '', mo: false, tr: false, chat: potChat }, o);
 
 const V = {
@@ -585,9 +613,9 @@ const V = {
     ch: chart(R2, { mode: 'gbp', years: 30, sel: 2029, aria: 'Your floor holds while either of you earns a salary, to 2052. From 2053, with both of you retired, the surplus sits at £0 and no year is flagged; cash stays above zero.',
       notes: ['Arun retires in Jan 2051 and Asha in Jan 2053. Your floor holds while either of you earns a salary, to Dec 2052. From 2053 your pensions pay 4% of their pots a year and Balanced (ISA) pays the rest of the budget, so the surplus sits at £0: those years carry no floor, and only cash running out would be flagged. Cash stays above zero to 2056.'] }), yr: potCard('gbp', false),
     foot: 'Illustrative figures, the engine’s run of Thu 5 Nov 20:46. Pensions and Balanced paying the budget in retirement are the figure set’s assumptions.' }),
-  priv: base({ pl: potLedger('gbp', true), meta: 'Each year to 2046 · the engine’s run, ' + D.R2.run, eye: 'visibility_off', eyeL: 'Privacy mode is on: show amounts', eyeP: 'true',
+  priv: hideAll(base({ pl: potLedger('gbp', true), meta: 'Each year to 2046 · the engine’s run, ' + D.R2.run, eye: 'visibility_off', eyeL: 'Privacy mode is on: show amounts', eyeP: 'true',
     ch: chart(R2, { mode: 'gbp', years: 20, sel: 2029, priv: true, aria: 'Amounts hidden. ' + potAria }), yr: potCard('gbp', true),
-    foot: 'Privacy mode hides every amount; the bars keep their shape and the words stay.' }),
+    foot: 'Privacy mode hides every amount; the bars keep their shape and the words stay.' })),
   load: base({ pl: potLedger('gbp', false), meta: 'Running again · showing the run of ' + D.R2.run, dim: 'stale', chat: salaryChat,
     banner: { c: '', i: 'progress_activity', t: 'Running again with your salary step', s: 'Saved at 20:53. The figures below are the run of 20:46 until the new one lands, in a few seconds.', bar: true, btns: false },
     ch: chart(R2, { mode: 'gbp', years: 20, sel: 2029, aria: potAria }), yr: potCard('gbp', false), foot: 'The last run stays on screen, dimmed, while the engine runs again; nothing moves until the new run is whole.' }),

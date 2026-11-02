@@ -252,7 +252,8 @@ def seg_tabs(on: str = "Forecast") -> str:
 
 def meta(priv: bool = False, fund: bool = False) -> str:
     amount = f'£{(B if fund else N)["value_gbp"]:,}'
-    v = f'<span class="mp-mask">{amount}</span>' if priv else amount
+    zero = "".join("0" if c.isdigit() else c for c in amount)  # the figure never reaches the page; the width holds
+    v = f'<span class="mp-mask" role="img" aria-label="Hidden">{zero}</span>' if priv else amount
     who = f'{B["full"]} · Arun · ISA' if fund else f'{N["full"]} · Asha · ISA'
     return f'<div class="mp-foot mp-ink2 meta">{who} · {v}</div>'
 

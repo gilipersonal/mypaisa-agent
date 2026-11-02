@@ -16,7 +16,7 @@
         <script src="motion.js"></script>
         <style>
           html, body { margin: 0; background: #ECEAE6; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -96,7 +96,17 @@
           .tc { text-align: center; }
           .m0 { margin: 0; }
           .px4 { padding: 0 4px; }
-        </style>
+        /* MA-300: the drawn controls are real buttons (type="button"; the older plain <button>s keep their own look). A
+   zero-specificity reset strips the browser's button look, so every class rule (tokens.css, ios.css, this board) still draws them as before. */
+:where(button[type="button"]) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* the household strip carries balances, so it is solid ledger, never glass (MA-300, P1-2) */
+.strip.solid { position: relative; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line), 0 2px 10px rgba(0, 0, 0, 0.08); }
+.strip.solid .mp-up { color: var(--mp-up); }
+.strip.solid .mp-mask { background: var(--mp-mask); }
+</style>
       </helmet>
 
       <section class="dv-turn" id="intro" data-screen-label="iPhone v4 register: intro">
@@ -113,64 +123,64 @@
               <div class="pair">
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 3, whose is it?</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>09:40</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>09:40</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 09:40</div>
                     <div class="me">£5,000 in Monzo savings</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New savings · one question</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New savings · one question</span><button type="button" class="cbtn cbtn-ghost">Cancel</button></div></div>
                       <div class="ccard-b g0">
-                        <div class="done"><span>What is it?</span><span class="fx ac gap6"><b>Savings · Monzo</b><span class="ms">check</span></span></div>
-                        <div class="done"><span>How much?</span><span class="fx ac gap6"><b>£5,000</b><span class="ms">check</span></span></div>
-                        <div class="fx col gap8 qblk"><span class="mp-hl">Whose is it?</span><div class="wrap8"><span class="cbtn tight">Arun</span><span class="cbtn tight">Asha</span><span class="cbtn tight">Joint</span></div></div>
+                        <div class="done"><span>What is it?</span><span class="fx ac gap6"><b>Savings · Monzo</b><span class="ms" aria-hidden="true">check</span></span></div>
+                        <div class="done"><span>How much?</span><span class="fx ac gap6"><b>£5,000</b><span class="ms" aria-hidden="true">check</span></span></div>
+                        <div class="fx col gap8 qblk"><span class="mp-hl">Whose is it?</span><div class="wrap8"><button type="button" class="cbtn tight">Arun</button><button type="button" class="cbtn tight">Asha</button><button type="button" class="cbtn tight">Joint</button></div></div>
                       </div>
                     </div></div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Or type whose</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Or type whose</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 3, the Confirm card</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 09:40</div>
                     <div class="me">£5,000 in Monzo savings</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
-                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms" aria-hidden="true">check</span></span></div></div></div>
                       <div class="ccard">
                         <div class="ccard-h"><span class="mp-over mp-ink2">New record · check it</span><span class="mp-hl">Instant access savings · Monzo</span></div>
                         <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Value</span><span>£5,000</span></div><div class="kv"><span>As of</span><span>Today, Mon 26 Oct</span></div><div class="kv"><span>Kind</span><span>Savings, UK, in pounds</span></div><div class="kv"><span>Counts as</span><span>Liquid</span></div><span class="mp-foot mp-ink2">Nothing is saved until you tap Confirm.</span></div>
-                        <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                        <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Edit</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                       </div>
                     </div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 3 of 3, saved</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£444,951</span><span class="mp-foot mp-up mp-w6">▲ £5,000 just now</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n">£444,951</span><span class="mp-foot mp-up mp-w6">▲ £5,000 just now</span></span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 09:40</div>
                     <div class="me">£5,000 in Monzo savings</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
-                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms" aria-hidden="true">check</span></span></div></div></div>
                       <div class="ccard">
-                        <div class="ccard-h"><span class="mp-over mp-ink2">New record · saved</span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" data-mo="saved">check_circle</span><span class="mp-hl">Instant access savings · Monzo</span></span></div>
+                        <div class="ccard-h"><span class="mp-over mp-ink2">New record · saved</span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" aria-hidden="true" data-mo="saved">check_circle</span><span class="mp-hl">Instant access savings · Monzo</span></span></div>
                         <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Value</span><span>£5,000</span></div></div>
-                        <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Saved · in the audit log</span><span class="mp-foot mp-ink2">09:41</span></div>
+                        <div class="ccard-fold quiet" role="button" tabindex="0" aria-expanded="false"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">history</span>Saved · in the audit log</span><span class="mp-foot mp-ink2">09:41</span></div>
                       </div>
-                      <span class="ai-meta"><span class="ms ms-s">devices</span><span>Net worth £439,951 → £444,951, on every open door</span></span>
+                      <span class="ai-meta"><span class="ms ms-s" aria-hidden="true">devices</span><span>Net worth £439,951 → £444,951, on every open door</span></span>
                     </div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
               </div>
             </div>
@@ -193,41 +203,41 @@
               <div class="pair">
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, paid out or cumulative?</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:02</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:02</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 10:01</div>
                     <div class="me">SBI FD, 5 lakh at 7.1% for 3 years from 10 March</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New fixed deposit · 2 of 2</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New fixed deposit · 2 of 2</span><button type="button" class="cbtn cbtn-ghost">Cancel</button></div></div>
                       <div class="ccard-b g0">
-                        <div class="done"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div>
-                        <div class="fx col gap8 qblk"><span class="mp-hl">Is the interest paid out, or added to the deposit?</span><div class="wrap8"><span class="cbtn tight">Added in, cumulative</span><span class="cbtn tight">Paid out</span></div></div>
+                        <div class="done"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms" aria-hidden="true">check</span></span></div>
+                        <div class="fx col gap8 qblk"><span class="mp-hl">Is the interest paid out, or added to the deposit?</span><div class="wrap8"><button type="button" class="cbtn tight">Added in, cumulative</button><button type="button" class="cbtn tight">Paid out</button></div></div>
                       </div>
                     </div></div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, the maturity, computed</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:03</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:03</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="me">SBI FD, 5 lakh at 7.1% for 3 years from 10 March</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
-                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New fixed deposit</span><div class="done nb"><span>Interest?</span><span class="fx ac gap6"><b>Cumulative</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New fixed deposit</span><div class="done nb"><span>Interest?</span><span class="fx ac gap6"><b>Cumulative</b><span class="ms" aria-hidden="true">check</span></span></div></div></div>
                       <div class="ccard">
                         <div class="ccard-h"><span class="mp-over mp-ink2">New fixed deposit · check it</span><span class="mp-hl">SBI · ₹5,00,000 at 7.1%</span></div>
                         <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>From</span><span>Tue 10 Mar 2026, 3 years</span></div><div class="kv"><span>Interest</span><span>Added in, quarterly</span></div><div class="kv"><span>Matures</span><span>Sat 10 Mar 2029</span></div><div class="kv"><span>At maturity</span><span>₹6,17,538</span></div><div class="kv"><span>On maturity</span><span>I'll ask you then</span></div><span class="mp-foot mp-ink2">MyPaisa's engine works out the maturity from the rate, the term and SBI's quarterly compounding. Nothing is saved until you tap Confirm.</span></div>
-                        <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                        <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Edit</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                       </div>
                     </div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
               </div>
             </div>
@@ -250,41 +260,41 @@
               <div class="pair">
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, the rate</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:20</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:20</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="me">HDFC home loan on the Pune flat: ₹15,13,257 left after October's EMI. The EMI is ₹39,390 on the 5th, and it ends Jul 2030.</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New home loan · one question</span><span class="cbtn cbtn-ghost">Cancel</span></div></div>
+                      <div class="ccard-h"><div class="hdr"><span class="mp-over mp-ink2">New home loan · one question</span><button type="button" class="cbtn cbtn-ghost">Cancel</button></div></div>
                       <div class="ccard-b g0">
-                        <div class="done"><span>Left to pay</span><span class="fx ac gap6"><b>₹15,13,257</b><span class="ms">check</span></span></div>
-                        <div class="done"><span>EMI</span><span class="fx ac gap6"><b>₹39,390 on the 5th</b><span class="ms">check</span></span></div>
-                        <div class="done"><span>Ends</span><span class="fx ac gap6"><b>Jul 2030</b><span class="ms">check</span></span></div>
+                        <div class="done"><span>Left to pay</span><span class="fx ac gap6"><b>₹15,13,257</b><span class="ms" aria-hidden="true">check</span></span></div>
+                        <div class="done"><span>EMI</span><span class="fx ac gap6"><b>₹39,390 on the 5th</b><span class="ms" aria-hidden="true">check</span></span></div>
+                        <div class="done"><span>Ends</span><span class="fx ac gap6"><b>Jul 2030</b><span class="ms" aria-hidden="true">check</span></span></div>
                         <div class="fx col gap8 qblk"><span class="mp-hl">What's the interest rate?</span><span class="t15 mp-ink2">I can't look up your loan's rate. Type it, or send HDFC's latest statement.</span></div>
                       </div>
                     </div></div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="txt">8.5%<span class="caret"></span></span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="txt">8.5%<span class="caret"></span></span><button type="button" class="csend lg-tint" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, from a balance checkpoint</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:21</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:21</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
-                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New home loan</span><div class="done nb"><span>Rate?</span><span class="fx ac gap6"><b>8.5%</b><span class="ms">check</span></span></div></div></div>
+                      <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New home loan</span><div class="done nb"><span>Rate?</span><span class="fx ac gap6"><b>8.5%</b><span class="ms" aria-hidden="true">check</span></span></div></div></div>
                       <div class="ccard">
                         <div class="ccard-h"><span class="mp-over mp-ink2">New home loan · check it</span><span class="mp-hl">HDFC · ₹15,13,257 left</span></div>
                         <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Secured on</span><span>Flat, Pune</span></div><div class="kv"><span>Rate · EMI</span><span>8.5% · ₹39,390 on the 5th</span></div><div class="kv"><span>Ends</span><span>Jul 2030</span></div><div class="kv"><span>Starts from</span><span>after Mon 5 Oct's EMI</span></div><div class="kv"><span>Prepaying</span><span>shortens the term</span></div><span class="t15">The engine's schedule: of November's EMI, ₹10,719 is interest and ₹28,671 comes off the balance.</span><span class="mp-foot mp-ink2">No payments before October are needed. Nothing is saved until you tap Confirm.</span></div>
-                        <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                        <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Edit</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                       </div>
                     </div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
               </div>
             </div>
@@ -306,8 +316,8 @@
             <div class="dv-col" data-screen-label="iPhone · Register a property: the Pune flat · {{ t.label }}">
               <div class="bd-theme">iPhone · {{ t.label }}</div>
               <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                <div class="sbar"><span>10:15</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="sbar"><span>10:15</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                 <div class="scroll"><div class="fadet"></div><div class="chat cb">
                   <div class="me">Our flat in Pune, half each. Valued at 1.1 crore in January, bought July 2015 for 65 lakh, rented at 18k a month.</div>
                   <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
@@ -317,12 +327,12 @@
                       <div class="fld"><span class="fs">Day the rent arrives</span><span class="fv"><span class="amber">not given</span></span><span class="fs q">Which day of the month? You can confirm without it; the rent's check-in waits for it.</span></div>
                       <span class="mp-foot mp-ink2" style="padding-top:10px">Nothing is saved until you tap Confirm.</span>
                     </div>
-                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Edit</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                   </div></div></div>
                 </div></div>
                 <div class="edge-bot"></div>
-                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Or type the rent day</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Or type the rent day</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
               </div></div>
             </div>
           </sc-for>
@@ -343,23 +353,23 @@
             <div class="dv-col" data-screen-label="iPhone · Register for another member: Asha's fund · {{ t.label }}">
               <div class="bd-theme">iPhone · {{ t.label }} · Arun's chat</div>
               <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                <div class="sbar"><span>10:30</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                <div class="sbar"><span>10:30</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                 <div class="scroll"><div class="fadet"></div><div class="chat cb">
                   <div class="me">Add Asha's Parag Parikh Flexi Cap, direct growth: 6,437.512 units, SIP ₹10,000 on the 10th</div>
                   <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                    <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New holding · check it</span><span class="mp-chip mp-neutral"><span class="ms">person</span>For Asha</span></span><span class="mp-hl">Parag Parikh Flexi Cap · Direct Growth</span></div>
+                    <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New holding · check it</span><span class="mp-chip mp-neutral"><span class="ms" aria-hidden="true">person</span>For Asha</span></span><span class="mp-hl">Parag Parikh Flexi Cap · Direct Growth</span></div>
                     <div class="ccard-b">
-                      <div class="ownr"><span class="ms">badge</span><span class="t15"><b>Asha owns it.</b> You are adding it for her; it counts in her share.</span></div>
+                      <div class="ownr"><span class="ms" aria-hidden="true">badge</span><span class="t15"><b>Asha owns it.</b> You are adding it for her; it counts in her share.</span></div>
                       <div class="kv"><span>Owner</span><span>Asha</span></div><div class="kv"><span>Folio</span><span>CAMS</span></div><div class="kv"><span>Units</span><span>6,437.512</span></div><div class="kv"><span>Value</span><span>₹5,61,995</span></div><div class="kv"><span>NAV</span><span>₹87.30, AMFI, Fri 23 Oct</span></div><div class="kv"><span>SIP</span><span>₹10,000 on the 10th</span></div>
                       <span class="mp-foot mp-ink2">Her SIP check-ins go to her, from Tue 10 Nov. Nothing is saved until you tap Confirm.</span>
                     </div>
-                    <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                    <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Edit</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                   </div></div></div>
                 </div></div>
                 <div class="edge-bot"></div>
-                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
               </div></div>
             </div>
           </sc-for>
@@ -381,42 +391,42 @@
               <div class="pair">
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, the ask</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="me">120 Infosys shares in my Zerodha demat</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
                       <div class="ccard">
-                        <div class="ccard-h"><span class="mp-over mp-ink2">New holding · saved</span><span class="fx ac gap8"><span class="ms ms-fill mp-acc">check_circle</span><span class="mp-hl">Infosys · 120 shares</span></span></div>
+                        <div class="ccard-h"><span class="mp-over mp-ink2">New holding · saved</span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" aria-hidden="true">check_circle</span><span class="mp-hl">Infosys · 120 shares</span></span></div>
                         <div class="ccard-b"><div class="kv"><span>Value</span><span>₹1,77,660</span></div><span class="mp-foot mp-ink2">At ₹1,480.50 a share, the Fri 23 Oct close · saved 10:40, in the audit log</span></div>
                       </div>
                       <div class="ccard">
                         <div class="ccard-h"><span class="mp-over mp-ink2">Infosys · its return</span><span class="t15">It has no history yet, so the engine can't work out its return.</span><span class="mp-hl">Send past buys, or give an estimate</span></div>
                         <div class="ccard-b"><span class="mp-foot mp-ink2">Past buys: Zerodha's tax P&amp;L or your contract notes.</span></div>
-                        <div class="ccard-acts"><span class="cbtn">Send past buys</span><span class="cbtn">Give an estimate</span><span class="cbtn cbtn-ghost">Later</span></div>
+                        <div class="ccard-acts"><button type="button" class="cbtn">Send past buys</button><button type="button" class="cbtn">Give an estimate</button><button type="button" class="cbtn cbtn-ghost">Later</button></div>
                       </div>
                     </div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, your estimate</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:43</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:43</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · setting up</span><span class="mp-hl">Sun 25 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
-                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">Infosys · its return</span><div class="done nb"><span>Past buys or an estimate?</span><span class="fx ac gap6"><b>An estimate</b><span class="ms">check</span></span></div></div></div></div></div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">Infosys · its return</span><div class="done nb"><span>Past buys or an estimate?</span><span class="fx ac gap6"><b>An estimate</b><span class="ms" aria-hidden="true">check</span></span></div></div></div></div></div>
                     <div class="me">About 9% a year</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
                       <div class="ccard-h"><span class="mp-over mp-ink2">Infosys · its return · check it</span><span class="est"><span class="mp-hl">9% a year</span><span class="mp-chip mp-watch">your estimate</span></span></div>
                       <div class="ccard-b"><div class="kv"><span>Used in</span><span>the projection</span></div><div class="kv"><span>Shown as</span><span>your estimate, everywhere</span></div><div class="kv"><span>Replaced by</span><span>the engine's return, from past buys</span></div><span class="mp-foot mp-ink2">MyPaisa does not check an estimate; it only keeps it apart from the engine's figures. Nothing is saved until you tap Confirm.</span></div>
-                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                      <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Edit</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                     </div></div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
               </div>
             </div>
@@ -439,71 +449,71 @@
               <div class="pair">
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, Asha's chat</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:12</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:12</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 10:12</div>
                     <div class="me">I have NS&amp;I Premium Bonds too</div>
-                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Premium Bonds aren't a kind MyPaisa knows yet, so I can't add them today. I've asked Arun to approve one; I'll pick this up with you when he does.</div><span class="ai-meta"><span class="ms ms-s">hourglass_top</span><span>Nothing saved · waiting for Arun</span></span></div></div>
+                    <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Premium Bonds aren't a kind MyPaisa knows yet, so I can't add them today. I've asked Arun to approve one; I'll pick this up with you when he does.</div><span class="ai-meta"><span class="ms ms-s" aria-hidden="true">hourglass_top</span><span>Nothing saved · waiting for Arun</span></span></div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 2, Arun's chat, the admin's card</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:13</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:13</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 10:13</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New kind · to approve</span><span class="mp-chip mp-neutral"><span class="ms">shield_person</span>Admin</span></span><span class="mp-hl">NS&amp;I Premium Bonds isn't a kind yet: add it as cash, no interest, prizes as income?</span></div>
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New kind · to approve</span><span class="mp-chip mp-neutral"><span class="ms" aria-hidden="true">shield_person</span>Admin</span></span><span class="mp-hl">NS&amp;I Premium Bonds isn't a kind yet: add it as cash, no interest, prizes as income?</span></div>
                       <div class="ccard-b"><div class="kv"><span>Built from</span><span>Cash: the last figure given</span></div><div class="kv"><span>Interest</span><span>none</span></div><div class="kv"><span>Prizes</span><span>income, in the budget</span></div><div class="kv"><span>Where</span><span>UK, in pounds, liquid</span></div><div class="kv"><span>Asked for by</span><span>Asha, 10:12</span></div><span class="mp-foot mp-ink2">A kind is data: no screen or form changes. Only you, the admin, can add one; Asha's own record still comes to her Confirm.</span></div>
-                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Approve</span><span class="cbtn">Reject</span></div>
-                      <div class="ccard-fold"><span>Technical</span><span class="ms">expand_more</span></div>
+                      <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Approve</button><button type="button" class="cbtn">Reject</button></div>
+                      <div class="ccard-fold" role="button" tabindex="0" aria-expanded="false"><span>Technical</span><span class="ms" aria-hidden="true">expand_more</span></div>
                     </div></div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · after Approve, the second check</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:14</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                  <div class="sbar"><span>10:14</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
                   <div class="dim"></div>
-                  <div class="sheet full" style="padding:8px 0 0;gap:12px">
+                  <div class="sheet full" role="dialog" aria-modal="true" aria-label="Check it's you" style="padding:8px 0 0;gap:12px">
                     <div class="sheet-grab"></div>
-                    <div class="shh"><span class="gbtn lg"><span class="ms">close</span></span><span class="nav-title">Check it's you</span><span class="sp44"></span></div>
+                    <div class="shh"><button type="button" class="gbtn lg" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button><span class="nav-title">Check it's you</span><span class="sp44"></span></div>
                     <div class="pg" style="padding-top:0">
                       <div class="mp-card fx col gap10"><span class="mp-over mp-ink2">Admin change</span><span class="mp-t3">Add a new kind: NS&amp;I Premium Bonds</span><div class="kv"><span>Built from</span><span>Cash: the last figure given</span></div><div class="kv"><span>Asked for by</span><span>Asha, 10:12</span></div></div>
                       <p class="mp-foot mp-ink2 m0 px4">The server binds a challenge to this change; Apple signs you in again to answer it. A passkey under Face ID answers it too.</p>
                     </div>
                   </div>
                   <div class="dim" style="z-index:55;background:rgba(5,8,14,0.14)"></div>
-                  <div class="sheet lg lg-strong apple" style="z-index:60">
+                  <div class="sheet lg lg-strong apple" role="dialog" aria-modal="true" aria-label="Sign in with Apple" style="z-index:60">
                     <div class="sheet-grab"></div>
-                    <div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="xbtn"><span class="ms">close</span></span></div>
+                    <div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><button type="button" class="xbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>
                     <div class="fx ac gap12"><span class="appmini"><i></i></span><span class="fx col f1"><span class="mp-hl">MyPaisa</span><span class="mp-foot mp-ink2">Continue as Arun Dutta, ar•••@icloud.com</span></span></div>
-                    <div class="faceid" data-mo="face"><span class="ms">ar_on_you</span></div>
+                    <div class="faceid" data-mo="face"><span class="ms" aria-hidden="true">ar_on_you</span></div>
                     <span class="mp-foot mp-ink2 tc">Face ID</span>
                   </div>
                   <div class="homebar" style="z-index:70"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · after Approve, approved</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>10:14</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+                  <div class="sbar"><span>10:14</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Sat 31 Oct</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 10:13</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New kind · approved</span><span class="mp-chip mp-neutral"><span class="ms">shield_person</span>Admin</span></span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" data-mo="saved">check_circle</span><span class="mp-hl">NS&amp;I Premium Bonds is a kind now</span></span></div>
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-over mp-ink2">New kind · approved</span><span class="mp-chip mp-neutral"><span class="ms" aria-hidden="true">shield_person</span>Admin</span></span><span class="fx ac gap8"><span class="ms ms-fill mp-acc" aria-hidden="true" data-mo="saved">check_circle</span><span class="mp-hl">NS&amp;I Premium Bonds is a kind now</span></span></div>
                       <div class="ccard-b"><div class="kv"><span>Built from</span><span>Cash: the last figure given</span></div><div class="kv"><span>Interest</span><span>none</span></div><div class="kv"><span>Prizes</span><span>income, in the budget</span></div><div class="kv"><span>Where</span><span>UK, in pounds, liquid</span></div><div class="kv"><span>Checked with</span><span>Sign in with Apple, Face ID</span></div><span class="mp-foot mp-ink2">Asha's registration picks up in her chat, with her own Confirm.</span></div>
-                      <div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s">history</span>Approved · in the audit log</span><span class="mp-foot mp-ink2">10:14</span></div>
+                      <div class="ccard-fold quiet" role="button" tabindex="0" aria-expanded="false"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">history</span>Approved · in the audit log</span><span class="mp-foot mp-ink2">10:14</span></div>
                     </div></div></div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
               </div>
             </div>
@@ -526,14 +536,14 @@
               <div class="pair">
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 3, tap the figure</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>09:51</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="fx gap8"><span class="gbtn lg"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                  <div class="sbar"><span>09:51</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="nav"><button type="button" class="gbtn lg" aria-label="Back"><span class="ms" aria-hidden="true">chevron_left</span></button><span class="fx gap8"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></span></div>
                   <div class="largetitle">Home, Reading</div>
                   <div class="subt mp-foot mp-ink2">Property · UK · Arun and Asha, half each</div>
                   <div class="scroll"><div class="pg">
                     <div class="mp-card valc fx col gap4">
                       <span class="mp-over mp-ink2">Value · your figure</span>
-                      <div class="vline"><span class="mp-num-l tapme">£415,000</span><span class="ms">edit</span></div>
+                      <div class="vline"><span class="mp-num-l tapme">£415,000</span><span class="ms" aria-hidden="true">edit</span></div>
                       <span class="mp-foot mp-ink2">Valued Thu 30 Apr 2026. Tap the figure to correct it.</span>
                     </div>
                     <div class="mp-group">
@@ -542,55 +552,55 @@
                     </div>
                     <div class="sech"><span class="mp-over mp-ink2">History</span><span class="mp-foot mp-ink2">newest first</span></div>
                     <div class="mp-group">
-                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">home_work</span></span><span class="grow"><span class="mp-hl">Valued at £415,000</span><span class="mp-foot mp-ink2">Thu 30 Apr 2026 · your figure</span></span></div>
-                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">key</span></span><span class="grow"><span class="mp-hl">Bought for £330,000</span><span class="mp-foot mp-ink2">Fri 18 Jun 2021</span></span></div>
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms" aria-hidden="true">home_work</span></span><span class="grow"><span class="mp-hl">Valued at £415,000</span><span class="mp-foot mp-ink2">Thu 30 Apr 2026 · your figure</span></span></div>
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms" aria-hidden="true">key</span></span><span class="grow"><span class="mp-hl">Bought for £330,000</span><span class="mp-foot mp-ink2">Fri 18 Jun 2021</span></span></div>
                     </div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab on"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 2 of 3, before → after, Save</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>09:52</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="fx gap8"><span class="gbtn lg"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                  <div class="sbar"><span>09:52</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="nav"><button type="button" class="gbtn lg" aria-label="Back"><span class="ms" aria-hidden="true">chevron_left</span></button><span class="fx gap8"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></span></div>
                   <div class="largetitle">Home, Reading</div>
                   <div class="subt mp-foot mp-ink2">Property · UK · Arun and Asha, half each</div>
                   <div class="scroll"><div class="pg">
                     <div class="mp-card valc fx col gap10">
                       <span class="mp-over mp-ink2">Value · correcting</span>
                       <div class="efield"><span class="efv">£428,000</span><span class="caret"></span></div>
-                      <div class="ba"><span>£415,000</span><span class="ms">arrow_forward</span><b>£428,000</b><span class="mp-up mp-w6">▲ £13,000</span></div>
+                      <div class="ba"><span>£415,000</span><span class="ms" aria-hidden="true">arrow_forward</span><b>£428,000</b><span class="mp-up mp-w6">▲ £13,000</span></div>
                       <span class="mp-foot mp-ink2">Saved as a correction, labelled your estimate, with its audit row; £415,000 stays in the history.</span>
-                      <div class="fx gap8"><span class="cbtn cbtn-primary">Save</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                      <div class="fx gap8"><button type="button" class="cbtn cbtn-primary">Save</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                     </div>
                   </div></div>
-                  <div class="kbd"><span class="key">1</span><span class="key">2</span><span class="key">3</span><span class="key">4</span><span class="key">5</span><span class="key">6</span><span class="key">7</span><span class="key">8</span><span class="key">9</span><span class="key fn"></span><span class="key">0</span><span class="key fn"><span class="ms">backspace</span></span></div>
+                  <div class="kbd"><span class="key">1</span><span class="key">2</span><span class="key">3</span><span class="key">4</span><span class="key">5</span><span class="key">6</span><span class="key">7</span><span class="key">8</span><span class="key">9</span><span class="key fn"></span><span class="key">0</span><span class="key fn"><span class="ms" aria-hidden="true">backspace</span></span></div>
                   <div class="homebar"></div>
                 </div></div></div>
                 <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 3 of 3, saved, with its audit line</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                  <div class="sbar"><span>09:52</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                  <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="fx gap8"><span class="gbtn lg"><span class="ms">visibility</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+                  <div class="sbar"><span>09:52</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                  <div class="nav"><button type="button" class="gbtn lg" aria-label="Back"><span class="ms" aria-hidden="true">chevron_left</span></button><span class="fx gap8"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></span></div>
                   <div class="largetitle">Home, Reading</div>
                   <div class="subt mp-foot mp-ink2">Property · UK · Arun and Asha, half each</div>
                   <div class="scroll"><div class="pg">
                     <div class="mp-card valc fx col gap4">
                       <span class="fx ac jb"><span class="mp-over mp-ink2">Value · corrected</span><span class="mp-chip mp-watch">your estimate</span></span>
-                      <div class="vline"><span class="mp-num-l">£428,000</span><span class="ms ms-fill" data-mo="saved">check_circle</span></div>
-                      <div class="audl"><span class="ms">history</span><span><b>In the audit log:</b> value £415,000 → £428,000 · your estimate · Arun · in place · Mon 26 Oct, 09:52</span></div>
+                      <div class="vline"><span class="mp-num-l">£428,000</span><span class="ms ms-fill" aria-hidden="true" data-mo="saved">check_circle</span></div>
+                      <div class="audl"><span class="ms" aria-hidden="true">history</span><span><b>In the audit log:</b> value £415,000 → £428,000 · your estimate · Arun · in place · Mon 26 Oct, 09:52</span></div>
                     </div>
-                    <div class="qnote"><span class="ms mp-acc">info</span><span class="mp-foot">A correction is an event, never an overwrite: £415,000 stays in the history, under the correction.</span></div>
+                    <div class="qnote"><span class="ms mp-acc" aria-hidden="true">info</span><span class="mp-foot">A correction is an event, never an overwrite: £415,000 stays in the history, under the correction.</span></div>
                     <div class="mp-group">
                       <div class="mp-row rowc"><span class="grow"><span class="mp-hl">Your share</span><span class="mp-foot mp-ink2">50%</span></span><span class="rowv"><span class="mp-hl">£214,000</span></span></div>
                     </div>
                     <div class="sech"><span class="mp-over mp-ink2">History</span><span class="mp-foot mp-ink2">newest first</span></div>
                     <div class="mp-group">
-                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">edit</span></span><span class="grow"><span class="mp-hl">Corrected to £428,000</span><span class="mp-foot mp-ink2">Mon 26 Oct 2026 · your estimate · Arun, in place</span></span></div>
-                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms">home_work</span></span><span class="grow"><span class="mp-hl">Valued at £415,000</span><span class="mp-foot mp-ink2">Thu 30 Apr 2026 · your figure</span></span></div>
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms" aria-hidden="true">edit</span></span><span class="grow"><span class="mp-hl">Corrected to £428,000</span><span class="mp-foot mp-ink2">Mon 26 Oct 2026 · your estimate · Arun, in place</span></span></div>
+                      <div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms" aria-hidden="true">home_work</span></span><span class="grow"><span class="mp-hl">Valued at £415,000</span><span class="mp-foot mp-ink2">Thu 30 Apr 2026 · your figure</span></span></div>
                     </div>
                   </div></div>
                   <div class="edge-bot"></div>
-                  <div class="tabdock"><div class="tabs lg"><span class="tab"><span class="ms">chat_bubble</span>Chat</span><span class="tab on"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                  <div class="tabdock"><div class="tabs lg"><button type="button" class="tab"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab on"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
                 </div></div></div>
               </div>
             </div>
@@ -612,23 +622,23 @@
             <div class="dv-col" data-screen-label="iPhone · Privacy mode: a Confirm card · {{ t.label }}">
               <div class="bd-theme">iPhone · {{ t.label }}</div>
               <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
-                <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                <div class="striprow"><div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n mp-mask">£439,951</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div><span class="gbtn lg lg-tint"><span class="ms z1">visibility_off</span></span></div>
+                <div class="sbar"><span>09:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                <div class="striprow"><div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · Mon 26 Oct</span><span class="fx ac gap8"><span class="strip-n mp-mask" role="img" aria-label="Hidden">£000,000</span><span class="mp-foot mp-ink2">net worth</span></span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div><button type="button" class="gbtn lg lg-tint" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility_off</span></button></div>
                 <div class="scroll"><div class="fadet"></div><div class="chat cb">
                   <div class="daysep">Today 09:40</div>
-                  <div class="me">£5,000 in Monzo savings</div>
+                  <div class="me"><span class="mp-mask" role="img" aria-label="Hidden">£0,000</span> in Monzo savings</div>
                   <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
-                    <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms">check</span></span></div></div></div>
+                    <div class="ccard"><div class="ccard-h one"><span class="mp-over mp-ink2">New savings</span><div class="done nb"><span>Whose is it?</span><span class="fx ac gap6"><b>Arun</b><span class="ms" aria-hidden="true">check</span></span></div></div></div>
                     <div class="ccard">
                       <div class="ccard-h"><span class="mp-over mp-ink2">New record · check it</span><span class="mp-hl">Instant access savings · Monzo</span></div>
-                      <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Value</span><span><span class="mp-mask">£5,000</span></span></div><div class="kv"><span>As of</span><span>Today, Mon 26 Oct</span></div><div class="kv"><span>Counts as</span><span>Liquid</span></div><span class="mp-foot mp-ink2">Privacy is on: amounts hidden.</span><span class="fref"><span class="ms">visibility</span>Show amounts on this card</span></div>
-                      <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Edit</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                      <div class="ccard-b"><div class="kv"><span>Owner</span><span>Arun</span></div><div class="kv"><span>Value</span><span><span class="mp-mask" role="img" aria-label="Hidden">£0,000</span></span></div><div class="kv"><span>As of</span><span>Today, Mon 26 Oct</span></div><div class="kv"><span>Counts as</span><span>Liquid</span></div><span class="mp-foot mp-ink2">Privacy is on: amounts hidden.</span><span class="fref"><span class="ms" aria-hidden="true">visibility</span>Show amounts on this card</span></div>
+                      <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Edit</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                     </div>
                   </div></div>
                 </div></div>
                 <div class="edge-bot"></div>
-                <div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">account_balance</span><span>Net worth</span></span><span class="gchip lg"><span class="ms">event_upcoming</span><span>What's due</span></span><span class="gchip lg"><span class="ms">add_circle</span><span>Add anything</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
-                <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div><div class="homebar"></div>
+                <div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">account_balance</span><span>Net worth</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_upcoming</span><span>What's due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">add_circle</span><span>Add anything</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                <div class="tabdock"><div class="tabs lg"><button type="button" class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button><button type="button" class="tab"><span class="ms" aria-hidden="true">home</span>Home</button><button type="button" class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</button><button type="button" class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</button></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div><div class="homebar"></div>
               </div></div>
             </div>
           </sc-for>

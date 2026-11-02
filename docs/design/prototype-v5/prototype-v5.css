@@ -2,7 +2,7 @@
    chrome) and the few layout pieces the kit leaves to each board. Every colour inside a door comes from
    tokens.css and ios.css; the control bar sits on the canvas, outside the product, as Prototype v4's does. */
 html, body { margin: 0; height: 100%; background: #ECEAE6; }
-.pv5 { min-height: 100vh; display: flex; flex-direction: column; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
+.pv5 { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; color: #14171F; }
 .pv5 button { font: inherit; cursor: pointer; }
 .pv5 .ms { font-family: "Material Symbols Rounded"; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; direction: ltr; -webkit-font-smoothing: antialiased; font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24; }
 
@@ -10,9 +10,9 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .ptop { position: sticky; top: 0; z-index: 100; background: #F6F4F1; border-bottom: 1px solid #DDD8D0; padding: 10px 18px 8px; display: flex; flex-direction: column; gap: 8px; }
 .prow { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; }
 .pname { display: inline-flex; align-items: center; gap: 8px; font: 700 15px/20px -apple-system, "SF Pro Display", system-ui, sans-serif; }
-.pkey { font: 600 11px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; }
+.pkey { font: 600 12px/14px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; }
 .pgrp { display: inline-flex; align-items: center; gap: 6px; }
-.plbl { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; text-transform: uppercase; letter-spacing: 0.04em; }
+.plbl { font: 600 12px/14px ui-monospace, Menlo, monospace; color: #5A606C; text-transform: uppercase; letter-spacing: 0.04em; }
 .pseg { display: inline-flex; background: #E6E2DC; border-radius: 9px; padding: 2px; gap: 2px; }
 .pseg button { min-height: 32px; border: 0; background: transparent; border-radius: 7px; padding: 0 11px; font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #4E5462; }
 .pseg button.on { background: #FFFFFF; color: #14171F; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
@@ -26,7 +26,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 /* the chapters: one per phase */
 .pchaps { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 4px; scrollbar-width: thin; }
 .pch { flex: none; min-height: 34px; border: 0; border-radius: 9px; padding: 0 10px 0 6px; background: #FFFFFF; color: #14171F; display: inline-flex; align-items: center; gap: 7px; font: 600 12.5px/16px -apple-system, "SF Pro Text", system-ui, sans-serif; box-shadow: 0 0 0 1px #E2DDD5; }
-.pch b { min-width: 22px; height: 22px; padding: 0 4px; box-sizing: border-box; border-radius: 6px; display: grid; place-items: center; background: #E6E2DC; font: 700 11px/1 ui-monospace, Menlo, monospace; }
+.pch b { min-width: 22px; height: 22px; padding: 0 4px; box-sizing: border-box; border-radius: 6px; display: grid; place-items: center; background: #E6E2DC; font: 700 12px/1 ui-monospace, Menlo, monospace; }
 .pch.on { background: #13213A; color: #FFFFFF; box-shadow: none; }
 .pch.on b { background: #FF6B4F; color: #13213A; }
 .pch.seen b { background: #D5E7DA; color: #125529; }
@@ -34,7 +34,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .psteps { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 4px; scrollbar-width: thin; }
 .pst { flex: none; }
 .pst { min-height: 30px; border: 0; border-radius: 999px; padding: 0 12px 0 4px; background: #FFFFFF; color: #14171F; display: inline-flex; align-items: center; gap: 6px; font: 600 12.5px/16px -apple-system, "SF Pro Text", system-ui, sans-serif; box-shadow: 0 0 0 1px #E2DDD5; }
-.pst b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #E6E2DC; font: 700 11px/1 ui-monospace, Menlo, monospace; }
+.pst b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #E6E2DC; font: 700 12px/1 ui-monospace, Menlo, monospace; }
 .pst.done b { background: #D5E7DA; color: #125529; }
 .pst.on { background: #13213A; color: #FFFFFF; box-shadow: none; }
 .pst.on b { background: #FF6B4F; color: #13213A; }
@@ -42,8 +42,8 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .pguide .pgd { font: 600 12px/16px ui-monospace, Menlo, monospace; color: #14171F; background: #FFFFFF; border-radius: 6px; padding: 3px 7px; box-shadow: 0 0 0 1px #E2DDD5; white-space: nowrap; }
 .pguide .pgt { font-weight: 700; color: #14171F; }
 .pguide .pgh { flex: 1; min-width: 240px; text-wrap: pretty; }
-.pdraft { display: inline-flex; align-items: center; gap: 4px; font: 700 11px/14px ui-monospace, Menlo, monospace; color: #8A5300; background: #FCEED6; border-radius: 6px; padding: 3px 7px; letter-spacing: 0.02em; white-space: nowrap; }
-.ppicked { display: inline-flex; align-items: center; gap: 4px; font: 700 11px/14px ui-monospace, Menlo, monospace; color: #125529; background: #D5E7DA; border-radius: 6px; padding: 3px 7px; white-space: nowrap; }
+.pdraft { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/14px ui-monospace, Menlo, monospace; color: #8A5300; background: #FCEED6; border-radius: 6px; padding: 3px 7px; letter-spacing: 0.02em; white-space: nowrap; }
+.ppicked { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/14px ui-monospace, Menlo, monospace; color: #125529; background: #D5E7DA; border-radius: 6px; padding: 3px 7px; white-space: nowrap; }
 
 /* ---------- the stage and the frame ---------- */
 .pstage { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 22px 16px 40px; overflow: hidden; }
@@ -67,15 +67,18 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
    600 to 1023 the tab bar, the chat a sheet; under 600 one column, the chat a tab */
 .wf { container: wf / inline-size; }
 .wf .bw-body { flex: 1; min-height: 0; display: flex; position: relative; }
-.w-side { width: 232px; flex: none; padding: 18px 12px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid var(--mp-line); overflow-y: auto; scrollbar-width: none; }
-.w-side::-webkit-scrollbar { width: 0; }
+.w-side { width: 232px; flex: none; padding: 18px 12px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid var(--mp-line); overflow-y: auto; }
 .w-brand { display: flex; align-items: center; gap: 10px; padding: 2px 10px 14px; font: 700 18px/22px var(--mp-font-round); }
 .w-brand .ai-mark { width: 30px; height: 30px; margin: 0; }
 .w-sec { font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); padding: 12px 12px 4px; text-transform: uppercase; letter-spacing: 0.04em; }
 .w-side .mp-side-i { cursor: pointer; border: 0; background: transparent; width: 100%; text-align: left; flex: none; }
 .w-side .mp-side-i .ms { font-size: 20px; color: var(--mp-ink-2); }
 .w-main { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; position: relative; }
-.w-main::-webkit-scrollbar, .w-chat .w-scroll::-webkit-scrollbar, .pscroll::-webkit-scrollbar { width: 0; height: 0; }
+.af .pscroll::-webkit-scrollbar, .ph-web .pscroll::-webkit-scrollbar, .ph-web .w-side::-webkit-scrollbar, .ph-web .w-more-b::-webkit-scrollbar { width: 0; height: 0; }
+.ph-web .pscroll, .ph-web .w-side, .ph-web .w-more-b, .ph-web .fsheet, .af .fsheet { scrollbar-width: none; }
+/* a desktop browser shows its scroll bars (MA-300 P1-7): thin, in the ledger's own colours, never hidden; a phone's
+   browser and the app draw theirs over the content, as the platforms do */
+.wf:not(.ph-web) :is(.w-main, .w-scroll, .w-side, .w-more-b, .w-sheet, .fsheet) { scrollbar-width: thin; scrollbar-color: var(--mp-line) transparent; }
 .w-page { padding: 22px 28px 60px; display: flex; flex-direction: column; gap: 18px; max-width: 1180px; box-sizing: border-box; }
 .w-chat { width: 400px; flex: none; border-left: 1px solid var(--mp-line); display: flex; flex-direction: column; background: var(--mp-bg); position: relative; }
 .w-chat-h { height: 56px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 12px 0 16px; border-bottom: 1px solid var(--mp-line); font: 600 15px/20px var(--mp-font); }
@@ -128,8 +131,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 }
 .w-more { position: absolute; right: 0; top: 0; bottom: 70px; width: min(320px, 100%); background: var(--mp-bg); border-left: 1px solid var(--mp-line); box-shadow: -12px 0 40px rgba(5, 8, 14, 0.18); z-index: 50; display: flex; flex-direction: column; }
 .w-more-h { height: 56px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 18px; border-bottom: 1px solid var(--mp-line); }
-.w-more-b { flex: 1; min-height: 0; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 2px; scrollbar-width: none; }
-.w-more-b::-webkit-scrollbar { width: 0; }
+.w-more-b { flex: 1; min-height: 0; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
 .w-more-b .mp-side-i { cursor: pointer; border: 0; background: transparent; width: 100%; text-align: left; flex: none; }
 .w-more-b .mp-side-i .ms { font-size: 20px; color: var(--mp-ink-2); }
 @container wf (min-width: 1024px) { .w-more, .dim:has(+ .w-more) { display: none; } }
@@ -196,6 +198,12 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 }
 
 /* ---------- shared pieces inside every door ---------- */
+/* every control a member taps is at least 44 by 44 to the finger (MA-300 P1-3): a control drawn smaller keeps its
+   drawn size and gets an invisible hit area, centred on it, that grows it to 44 where it is short
+   (a control placed by its own rule keeps its place: the zero-weight :where() only sets a position nobody else did;
+   the walk-through's ring, .pnext::after, keeps its own box) */
+:where(.pframe) :where(.gchip, .csend, .cplus, .mp-seg-i, .tabsx button, .pg-back, .btn-reset, .pill, .fx44, .cbtn) { position: relative; }
+.pframe :is(.gchip, .csend, .cplus, .mp-seg-i, .tabsx button, .pg-back, .btn-reset, .pill, .fx44, .cbtn):not(.pnext)::after { content: ""; position: absolute; top: min(0px, calc(50% - 22px)); bottom: min(0px, calc(50% - 22px)); left: min(0px, calc(50% - 22px)); right: min(0px, calc(50% - 22px)); }
 .mp .mny { font-variant-numeric: tabular-nums; }
 .privon .mny { background: var(--mp-mask); color: transparent !important; border-radius: 6px; }
 .privon .mp-hero .mny, .privon .me .mny { background: var(--mp-mask-hero); }
@@ -214,9 +222,11 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
   .pnext::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 2px solid var(--mp-focus); pointer-events: none; opacity: 0; animation: pv5pulse 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) infinite 0.4s; }
 }
 @keyframes pv5pulse { 0% { opacity: 0.85; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); } }
+/* with Reduce Motion nothing in the prototype loops (MA-300 P2-1): the ring stays, still */
+@media (prefers-reduced-motion: reduce) { .pv5 *, .pv5 *::before, .pv5 *::after { animation-iteration-count: 1 !important; } }
 .pnext { outline: 2px solid var(--mp-focus); outline-offset: 2px; }
 /* a draft screen's chip, inside the product's frame */
-.mp-draft { display: inline-flex; align-items: center; gap: 4px; font: 700 11px/14px var(--mp-font); color: var(--mp-pause); background: var(--mp-pause-bg); border-radius: 999px; padding: 4px 9px; letter-spacing: 0.02em; white-space: nowrap; }
+.mp-draft { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/16px var(--mp-font); color: var(--mp-pause); background: var(--mp-pause-bg); border-radius: 999px; padding: 4px 9px; letter-spacing: 0.02em; white-space: nowrap; }
 .mp-draft .ms { font-size: 14px; }
 /* page header */
 .pg-h { display: flex; flex-direction: column; gap: 6px; }
@@ -256,7 +266,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .sysnote { font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); display: flex; gap: 6px; align-items: flex-start; }
 .sysnote .ms { font-size: 16px; color: var(--mp-accent); margin-top: 1px; }
 .tabsx { display: flex; gap: 2px; background: var(--mp-surface-2); border-radius: 10px; padding: 2px; width: fit-content; max-width: 100%; overflow-x: auto; }
-.tabsx button { min-height: 40px; border: 0; background: transparent; border-radius: 8px; padding: 0 14px; font: 600 14px/18px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; }
+.tabsx button { min-height: 44px; border: 0; background: transparent; border-radius: 8px; padding: 0 14px; font: 600 14px/18px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; }
 .tabsx button.on { background: var(--mp-seg-on); color: var(--mp-ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .lockscreen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding: 70px 14px 0; gap: 10px; }
 .widget { border-radius: 22px; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
@@ -274,14 +284,14 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .mp-hero .mp5-scrub-line, .fhero .mp5-scrub-line { background: var(--mp-coral); opacity: 0.9; }
 .mp5-scrub-dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--mp-accent); box-shadow: 0 0 0 3px var(--mp-surface); }
 .mp-hero .mp5-scrub-dot, .fhero .mp5-scrub-dot { background: var(--mp-coral); box-shadow: 0 0 0 3px var(--mp-hero); }
-.mp5-scrub-tip { position: absolute; top: 4px; padding: 5px 9px; border-radius: 9px; background: var(--mp-hero); color: var(--mp-hero-ink); box-shadow: var(--mp-shadow); font: 600 11.5px/15px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; gap: 1px; z-index: 19; }
+.mp5-scrub-tip { position: absolute; top: 4px; padding: 5px 9px; border-radius: 9px; background: var(--mp-hero); color: var(--mp-hero-ink); box-shadow: var(--mp-shadow); font: 600 12px/16px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; gap: 1px; z-index: 19; }
 .mp-hero .mp5-scrub-tip, .fhero .mp5-scrub-tip { background: var(--mp-surface); color: var(--mp-ink); }
-.mp5-scrub-tip .sk { font: 500 10.5px/13px var(--mp-font); color: var(--mp-hero-ink-2); }
+.mp5-scrub-tip .sk { font: 500 12px/15px var(--mp-font); color: var(--mp-hero-ink-2); }
 .mp-hero .mp5-scrub-tip .sk, .fhero .mp5-scrub-tip .sk { color: var(--mp-ink-2); }
 .privon .mp-hero .mp5-scrub-tip .mny, .privon .fhero .mp5-scrub-tip .mny { background: var(--mp-mask); }
 
 /* Y-axis left rail inside K.line (A, B, C) */
-.mp5-yl { position: absolute; left: 0; transform: translateY(-50%); font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; }
+.mp5-yl { position: absolute; left: 0; transform: translateY(-50%); font: 500 12px/14px var(--mp-font); color: var(--mp-ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; }
 .mp-hero .mp5-yl { color: var(--mp-hero-ink-2); }
 
 /* End-beacon and editorial ring dots */
@@ -294,7 +304,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 /* Option B & C chart stat strips (static flow above .mp-chartbox, never covering chart labels) */
 .mp5-cstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 6px 12px; margin-bottom: 6px; }
 .mp5-cstat { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.mp5-cstat-k { font: 600 10.5px/14px var(--mp-font); color: var(--mp-ink-2); text-transform: uppercase; letter-spacing: 0.04em; }
+.mp5-cstat-k { font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); }
 .mp5-cstat-v { font: 700 15px/19px var(--mp-font-round); color: var(--mp-ink); font-variant-numeric: tabular-nums; }
 .mp-hero .mp5-cstat-k { color: var(--mp-hero-ink-2); }
 .mp-hero .mp5-cstat-v { color: var(--mp-hero-ink); }
@@ -346,6 +356,6 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 .mp5-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
 .mp5-donut-c { position: absolute; inset: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; pointer-events: none; }
 .mp5-donut-v { font: 800 15px/17px var(--mp-font-round); color: var(--mp-ink); font-variant-numeric: tabular-nums; }
-.mp5-donut-k { font: 600 10px/12px var(--mp-font); color: var(--mp-ink-2); text-transform: uppercase; letter-spacing: 0.03em; }
+.mp5-donut-k { font: 600 12px/14px var(--mp-font); color: var(--mp-ink-2); }
 
 

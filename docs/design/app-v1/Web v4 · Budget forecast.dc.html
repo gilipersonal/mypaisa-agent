@@ -45,6 +45,10 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .mainc { container: app / inline-size; overflow: hidden; background: var(--mp-bg); }
 .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; }
 .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
+.mp-tab:not(.on) { color: var(--mp-ink-2); }   /* MA-300: a tab label is read; ink-2 in both themes */
+.mp-tab { font-size: 12px; line-height: 14px; }   /* no product text under 12 px (MA-300) */
+.yl .fig[role="button"] { position: relative; } .yl .fig[role="button"]::after { content: ""; position: absolute; inset: -12px 0; }   /* 20 drawn, 44 to tap (MA-300) */
+.cfw:focus-visible, .yl .fig[role="button"]:focus-visible, .yr[role="button"]:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
 .mpm { display: block; flex: none; }
 .mpm-coin { fill: var(--mp-hero); }
 .t-dark .mpm-coin { fill: var(--mp-hero-2); }
@@ -52,9 +56,9 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .mpm-dot { fill: var(--mp-coral); }
 @container app (min-width: 600px) { .crumb { display: none !important; } }
 .crumb { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -8px 0 -10px; color: var(--mp-accent); font: 600 15px/20px var(--mp-font); text-decoration: none; }
-/* the chat column: beside the page from 1024, a tab below */
+/* the chat column: beside every screen from about 1133 px, a sheet away from about 600 to 1133 px, a tab below 600 (MA-240, MA-300) */
 .chatcol { display: none; flex-direction: column; width: 420px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); position: relative; }
-@container app (min-width: 1024px) { .chatcol { display: flex; } }
+@container app (min-width: 1133px) { .chatcol { display: flex; } }
 .chead { flex: none; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); }
 .cscroll { flex: 1; min-height: 0; position: relative; overflow: hidden; }
 .chat { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; flex-direction: column; gap: 14px; padding: 0 16px; }
@@ -111,7 +115,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .bb.sel { box-shadow: 0 0 0 2px var(--mp-surface), 0 0 0 4px var(--mp-ink); }
 .bb.cap { border-radius: 0 0 3px 3px; }
 .bb.cap::after { content: ""; position: absolute; left: -3px; right: -3px; top: 8px; height: 4px; background: var(--mp-surface); transform: skewY(-24deg); }
-.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 11px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
+.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 12px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }   /* 12 px floor (MA-300) */
 .bch .mp-chartaxis { margin-top: 2px; }
 .blgd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
 .blgd > span { display: inline-flex; align-items: center; gap: 6px; }
@@ -201,20 +205,20 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-shell shell">
 <aside class="mp-shell-side mp-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="38.6" cy="9.4" r="4.2"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#w0" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#w0" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
 <div class="grow1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · admin</div>
 </aside>
 <main class="mp-shell-main mainc">
 <div class="mp-pagepad" style="margin-top: {{ f.off }}">
-<a class="crumb mp-only-compact" href="#w0"><span class="ms ms-s" aria-hidden=\"true\">arrow_back_ios_new</span>Home</a>
-<header class="phead"><div class="grow1"><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ meta }}</div></div><button class="iconbtn" aria-label="Privacy mode: hide amounts" aria-pressed="false"><span class="ms" aria-hidden=\"true\">visibility</span></button></header>
+<a class="crumb mp-only-compact" href="#w0"><span class="ms ms-s" aria-hidden="true">arrow_back_ios_new</span>Home</a>
+<header class="phead"><div class="grow1"><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ meta }}</div></div><button class="iconbtn" aria-label="Privacy mode: hide amounts" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button></header>
 <nav class="ptabs-ul" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><a class="ptu {{ t.on }}" href="#w0" aria-current="{{ t.cur }}">{{ t.l }}</a></sc-for></nav>
 <div class="mp-seg ptabs-sg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
 <div class="ctls">
 <div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
 <div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false">₹ INR</button></div>
-<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" tabindex="0" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
 </div>
 
 <!-- ============ 1a: the surplus first ============ -->
@@ -239,11 +243,11 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="fx jb ac gap8 wrap"><span class="mp-t2">2029</span><span class="mp-chip chip-s mp-alertchip">▼ 11 months below your floor</span></div>
 <span class="mp-foot mp-ink2 ptab-meta">Jan to Dec, in pounds of 2029 · tap a figure to see what makes it</span>
 <div>
-<sc-for list="{{ y29.lines }}" as="l" hint-placeholder-count="5"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig">{{ l.v }}</span></div></sc-for>
+<sc-for list="{{ y29.lines }}" as="l" hint-placeholder-count="5"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span></div><span class="fig" role="{{ l.r }}" tabindex="{{ l.t }}">{{ l.v }}</span></div></sc-for>
 <div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">the lines above, added</span></div><span class="fig c-alert">{{ y29.sur }}</span></div>
 </div>
 <div class="kvs"><sc-for list="{{ y29.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6">{{ t.v }}</span></div></sc-for></div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden=\"true\">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div>
 <sc-if value="{{ f.months }}" hint-placeholder-val="{{ true }}">
 <div class="mp-card cpad">
@@ -258,7 +262,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
 <div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
-<span class="srcchip"><span class="ms" aria-hidden=\"true\">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+<span class="srcchip"><span class="ms" aria-hidden="true">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
 </div>
 </div>
 </div>
@@ -274,14 +278,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">Year by year</span><span class="mp-foot mp-ink2">the surplus, after everything planned</span></div>
 <div>
 <sc-for list="{{ years }}" as="y" hint-placeholder-count="21">
-<div class="yr {{ y.open }}"><div class="grow1"><span class="fx ac gap8 wrap"><span class="mp-sub mp-w6">{{ y.l }}</span><sc-if value="{{ y.flag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-alertchip">{{ y.flag }}</span></sc-if></span><span class="mp-foot mp-ink2">{{ y.s }}</span><sc-if value="{{ y.note }}" hint-placeholder-val="{{ false }}"><span class="mp-foot">{{ y.note }}</span></sc-if></div><span class="fig {{ y.c }}">{{ y.v }}</span><span class="ms chev" aria-hidden="true">{{ y.chev }}</span></div>
+<div class="yr {{ y.open }}" role="button" tabindex="0" aria-expanded="{{ y.ex }}"><div class="grow1"><span class="fx ac gap8 wrap"><span class="mp-sub mp-w6">{{ y.l }}</span><sc-if value="{{ y.flag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-alertchip">{{ y.flag }}</span></sc-if></span><span class="mp-foot mp-ink2">{{ y.s }}</span><sc-if value="{{ y.note }}" hint-placeholder-val="{{ false }}"><span class="mp-foot">{{ y.note }}</span></sc-if></div><span class="fig {{ y.c }}">{{ y.v }}</span><span class="ms chev" aria-hidden="true">{{ y.chev }}</span></div>
 <sc-if value="{{ y.isOpen }}" hint-placeholder-val="{{ false }}">
 <div class="yopen">
 <div class="yo2">
 <div>
 <sc-for list="{{ y29.lines }}" as="l" hint-placeholder-count="5"><div class="yl {{ l.c }}"><div class="grow1"><span class="mp-sub mp-w6">{{ l.k }}</span><span class="mp-foot mp-ink2">{{ l.s }}</span>
 <sc-if value="{{ l.tr }}" hint-placeholder-val="{{ false }}"><div class="ytrace"><span class="mp-over mp-ink2">What makes it</span><sc-for list="{{ feeTrace }}" as="t" hint-placeholder-count="3"><span class="mp-foot">{{ t }}</span></sc-for></div></sc-if>
-</div><span class="fig">{{ l.v }}</span></div></sc-for>
+</div><span class="fig" role="{{ l.r }}" tabindex="{{ l.t }}">{{ l.v }}</span></div></sc-for>
 <div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">savings rate −1.2% · cash £35,168 at the end of December</span></div><span class="fig c-alert">{{ y29.sur }}</span></div>
 </div>
 <div class="ymon">
@@ -289,7 +293,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mtab"><sc-for list="{{ months }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
 </div>
 </div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden=\"true\">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div>
 </sc-if>
 </sc-for>
@@ -335,24 +339,23 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
 <div class="ccard"><div class="ccard-h"><span class="fx ac gap6 mp-over c-add"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, growing 4.5% a year</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div></div>
 <div class="ai-text">It leaves your surplus below your £500 floor in 50 months, Jan 2029 to Feb 2035. Cash stays above zero. The Budget forecast beside this shows where.</div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div></div>
 </div>
 </div>
-<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms" aria-hidden=\"true\">add</span></button><span class="cfw">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms" aria-hidden=\"true\">arrow_upward</span></button></div>
+<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms" aria-hidden="true">add</span></button><span class="cfw" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
 </aside>
 </div>
 <sc-if value="{{ f.sheet }}" hint-placeholder-val="{{ false }}">
 <div class="pscrim"></div>
-<div class="psheet" role="dialog" aria-label="2029's surplus, line by line">
-<div class="grab"></div>
-<div class="fx jb ac gap8"><div class="fx col gap2"><span class="mp-over mp-ink2">2029 · the flows behind it</span><span class="mp-hl">Surplus <span class="c-alert">−£1,285</span></span></div><button class="iconbtn" aria-label="Close"><span class="ms" aria-hidden=\"true\">close</span></button></div>
+<div class="psheet" role="dialog" aria-modal="true" aria-label="2029's surplus, line by line">
+<div class="fx jb ac gap8"><div class="fx col gap2"><span class="mp-over mp-ink2">2029 · the flows behind it</span><span class="mp-hl">Surplus <span class="c-alert">−£1,285</span></span></div><button class="iconbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>
 <div><sc-for list="{{ popLines }}" as="t" hint-placeholder-count="5"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for></div>
 <span class="mp-foot mp-ink2">Below your floor in 11 months: every month but March, when Asha's bonus lands.</span>
 <div class="btnrow"><button class="cbtn" type="button">Months</button><button class="cbtn cbtn-primary" type="button">Ways to cover it</button></div>
 </div>
 </sc-if>
-<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden=\"true\">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
 </div>
 </div>
 </sc-for>
@@ -405,6 +408,7 @@ const lines = [
   { k: 'SIP and LIC’s premium', s: 'Parag Parikh ' + gbp(y29.sip) + ' · LIC ' + gbp(y29.premium) + ' in March', v: gbp(-(y29.sip + y29.premium)), c: '' },
   { k: 'School fees', s: 'Your plan, saved at 20:43 · £4,000 a month', v: gbp(sum(y29.plans)), c: 'pl', tr: true }
 ];
+lines.forEach((l) => { l.r = l.c === 'tap' ? 'button' : 'none'; l.t = l.c === 'tap' ? '0' : '-1'; });   // a figure that opens its flows is a button (MA-300)
 const check = sum(y29.income) - sum(y29.spend) - sum(em) - y29.sip - y29.premium + sum(y29.plans);
 if (check !== y29.surplus) throw new Error('2029 lines do not add up: ' + check);
 const Y29 = { lines: lines, sur: gbp(y29.surplus),
@@ -420,7 +424,7 @@ const feeTrace = ['£4,000 a month × 12 = £48,000, from your words at 20:41: �
 /* 1b: the years */
 const yNote = { 2026: 'Asha’s saver pays £10,460 into cash in December', 2027: 'The extension, −£35,000, paid from cash in June', 2031: 'The new car, −£25,000 from cash; the PPF and LIC pay £12,387 into cash', 2041: 'The school fees end in July', 2045: 'The mortgage’s last payment, in October' };
 const years = Y.map((r) => ({ l: r[0] + (r[1] === 'Nov–Dec' ? ' · Nov to Dec' : ''), s: 'savings rate ' + pc1(r[7]) + ' · cash ' + gbp(r[8]), v: (r[6] < 0 ? '▼ ' : '') + gbp(r[6]), c: r[6] < 0 ? 'c-alert' : '',
-  flag: r[9] ? '▼ ' + (r[9] === 2 ? 'Jan and Feb' : r[9] + ' months') : '', note: yNote[r[0]] || '', isOpen: r[0] === 2029, open: r[0] === 2029 ? 'open' : '', chev: r[0] === 2029 ? 'expand_less' : 'chevron_right' }));
+  flag: r[9] ? '▼ ' + (r[9] === 2 ? 'Jan and Feb' : r[9] + ' months') : '', note: yNote[r[0]] || '', isOpen: r[0] === 2029, open: r[0] === 2029 ? 'open' : '', ex: r[0] === 2029 ? 'true' : 'false', chev: r[0] === 2029 ? 'expand_less' : 'chevron_right' }));
 const minRate = Y.filter((r) => r[0] >= 2027).reduce((a, r) => (r[7] < a[7] ? r : a));
 const sums = [
   { k: 'Below your floor', v: D.gap.months + ' months', s: D.gap.first + ' to ' + D.gap.last, c: 'c-alert' },

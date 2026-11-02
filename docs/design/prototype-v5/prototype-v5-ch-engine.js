@@ -30,7 +30,7 @@
       '.pv5-engine .pe-path{margin:0;padding:0 0 0 20px;display:flex;flex-direction:column;gap:6px;font:400 14px/19px var(--mp-font);color:var(--mp-ink)}',
       '.pv5-engine .pe-path li:last-child{font-weight:600}',
       '.pv5-engine .pe-gate{display:flex;gap:4px;flex-wrap:wrap}',
-      '.pv5-engine .pe-gate span{min-width:34px;height:26px;padding:0 4px;box-sizing:border-box;border-radius:7px;display:grid;place-items:center;font:600 11px/1 var(--mp-font);background:var(--mp-track);color:var(--mp-ink-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
+      '.pv5-engine .pe-gate span{min-width:34px;height:26px;padding:0 4px;box-sizing:border-box;border-radius:7px;display:grid;place-items:center;font:600 12px/1 var(--mp-font);background:var(--mp-track);color:var(--mp-ink-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
       '.pv5-engine .pe-gate span.on{background:var(--mp-add-bg);color:var(--mp-add);box-shadow:none}',
       '.pv5-engine .pe-cal{display:flex;flex-direction:column;gap:14px}',
       '.pv5-engine .pe-calr{display:flex;flex-direction:column;gap:6px}',
@@ -58,7 +58,7 @@
       '.pv5-engine .pe-chain span{font:500 12px/16px ui-monospace,"SF Mono",Menlo,monospace;padding:4px 8px;border-radius:7px;background:var(--mp-surface-2);color:var(--mp-ink-2)}',
       '.pv5-engine .pe-chain span.ok{background:var(--mp-add-bg);color:var(--mp-add)}',
       '.pv5-engine .pe-chain span.bad{background:var(--mp-pause-bg);color:var(--mp-pause)}',
-      '.pv5-engine .pe-q{font:400 14px/20px var(--mp-font);color:var(--mp-ink);padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 3px 0 0 var(--mp-ink-3)}',
+      '.pv5-engine .pe-q{font:400 14px/20px var(--mp-font);color:var(--mp-ink);padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
       '.pv5-engine .pe-fold{width:100%;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--mp-accent);font:600 15px/20px var(--mp-font)}',
       '.pv5-engine .pe-skel{height:12px;border-radius:6px;background:var(--mp-surface-2)}',
       '.pv5-engine .pe-sec{display:flex;flex-direction:column;gap:10px;padding-top:14px;box-shadow:inset 0 1px 0 var(--mp-line)}',
@@ -73,7 +73,7 @@
       '.pv5-ecard .pe-ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}',
       '.pv5-ecard .pe-ul li{display:flex;gap:8px;align-items:flex-start;font:400 15px/20px var(--mp-font)}',
       '.pv5-ecard .pe-ul li .ms{font-size:18px;color:var(--mp-accent);margin-top:1px;flex:none}',
-      '.pv5-ecard .pe-q{font:400 14px/20px var(--mp-font);color:var(--mp-ink);padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 3px 0 0 var(--mp-ink-3)}',
+      '.pv5-ecard .pe-q{font:400 14px/20px var(--mp-font);color:var(--mp-ink);padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
       '.pv5-ecard .pe-skel{height:12px;border-radius:6px;background:var(--mp-surface-2)}',
       '.pv5-ecard .pe-mini{font:400 13px/18px var(--mp-font);color:var(--mp-ink-2)}',
       '.pv5-ecard .pe-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}',
@@ -81,7 +81,7 @@
       '.pv5-ecard .pe-tr:last-child{box-shadow:none}',
       '.pv5-ecard .pe-tr .f1{min-width:120px}',
       '.pv5-ecard .pe-gate{display:flex;gap:4px;flex-wrap:wrap}',
-      '.pv5-ecard .pe-gate span{min-width:30px;height:24px;padding:0 3px;box-sizing:border-box;border-radius:6px;display:grid;place-items:center;font:600 11px/1 var(--mp-font);background:var(--mp-track);color:var(--mp-ink-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
+      '.pv5-ecard .pe-gate span{min-width:30px;height:24px;padding:0 3px;box-sizing:border-box;border-radius:6px;display:grid;place-items:center;font:600 12px/1 var(--mp-font);background:var(--mp-track);color:var(--mp-ink-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
       '.pv5-ecard .pe-gate span.on{background:var(--mp-add-bg);color:var(--mp-add);box-shadow:none}',
       '.pv5-ecard .pe-out{display:inline-flex;align-items:center;gap:4px;font:600 14px/18px var(--mp-font);white-space:nowrap}',
       '.pv5-ecard .pe-out .ms{font-size:16px;line-height:1}',
@@ -97,7 +97,7 @@
       '.pv5-esheet{display:flex;flex-direction:column;gap:12px;max-height:620px;overflow:auto}',
       '.pv5-esheet .pe-ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}',
       '.pv5-esheet .pe-ul li{display:flex;flex-direction:column;gap:4px}',
-      '.pv5-esheet .pe-q{font:400 14px/20px var(--mp-font);color:var(--mp-ink);padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 3px 0 0 var(--mp-ink-3)}',
+      '.pv5-esheet .pe-q{font:400 14px/20px var(--mp-font);color:var(--mp-ink);padding:10px 12px;border-radius:12px;background:var(--mp-surface-2);box-shadow:inset 0 0 0 1px var(--mp-line)}',
       '.pv5-esheet .pe-src{font:500 12px/16px var(--mp-font);color:var(--mp-ink-2)}',
       /* the kit's chart svgs sit in a wrapper, so they need their width set; the card fold's button its width */
       '.pv5-engine .mp-chartbox svg{width:100%;display:block}',
@@ -771,7 +771,7 @@
       chat: function (ctx) { return [K.daysep('Today'), briefCard(ctx, { id: 'eng-brief' }), K.ai('Technical is open on this card. Say /technical to open it on every card, or switch it in You. Tap a word such as <b>Brier</b> or <b>range</b> for the glossary.', { meta: 'technical mode: simple (your setting)', icon: 'tune' })]; } },
     { id: 'p11-plain', d: 'Mon 26 Oct', tm: '07:18', t: 'The plain brief, when the ceiling is near', draft: true,
       g: 'A state, drawn for the record: if this month’s Claude spend passed 95% of the ceiling, the same brief would go out as a template, the engine’s figures without words, until the cycle renews. Alerts are never dropped.',
-      page: 'today', focus: 'page', sheet: plainSheet,
+      page: 'today', focus: 'page', sheet: plainSheet, sheetClose: 'eng:closesheet', on: { 'eng:closesheet': 'sheet:dismiss' },
       chat: function (ctx) { return [K.daysep('Today'), briefCard(ctx)]; } }
   ] });
 

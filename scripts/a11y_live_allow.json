@@ -1,0 +1,4 @@
+{
+ "about": "What scripts/a11y_live.js does not count as a fault, and why (MA-300). Each allowance names its board (the end of its path under docs/design/; alternatives split by |), its fault types (tick-clipped, small-target, not-focusable, aria-hidden-invalid, icon-not-hidden, privacy-leak, privacy-toggle-missing, did-not-render), a regular expression on the element's path (el), one on the fault's text (text), optionally one on the frame's label (frames), and its reason (why). An allowance that matches nothing in a run that covers its board is reported (NOTE), so the list stays true. Fix the board first; add an allowance only for what is drawn on purpose or what an open issue carries, naming the issue. None is needed for the faults MA-300's own lanes are fixing.",
+ "allow": []
+}

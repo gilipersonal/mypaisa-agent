@@ -92,6 +92,8 @@
           .mpm-dot { fill: var(--mp-coral); }
           .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
           .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+          /* canvas links: a 44 x 44 tap area around the drawn chip, nothing drawn (MA-300) */
+          .dv-idx a, .dv-tid, .dv-oid { position: relative; } .dv-idx a::after, .dv-tid::after, .dv-oid::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
         </style>
       </helmet>
 
@@ -124,12 +126,12 @@
                       </div>
                     </div>
                     <nav class="mp-tabbar tabs-abs" aria-label="Sections">
-                      <sc-for list="{{ tabsA }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                      <sc-for list="{{ tabsA }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
                     </nav>
                   </div>
                   <span class="lbl">Holdings selected · focus on Record</span>
                   <nav class="mp-tabbar frame" aria-label="Sections, second state">
-                    <sc-for list="{{ tabsB }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                    <sc-for list="{{ tabsB }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
                   </nav>
                 </div>
                 <div class="spec">
@@ -137,9 +139,9 @@
                   <div class="sidebox frame">
                     <nav class="mp-side bb" style="background: var(--mp-bg)" aria-label="Sections">
                       <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                      <sc-for list="{{ side }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
+                      <sc-for list="{{ side }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
                       <div style="flex: 1"></div>
-                      <div class="fx gap8 mp-foot mp-ink3" style="padding: 0 12px; align-items: flex-start"><span class="ms ms-s" aria-hidden=\"true\">lock</span><span>Signed in with Apple<br />Arun · admin</span></div>
+                      <div class="fx gap8 mp-foot mp-ink2" style="padding: 0 12px; align-items: flex-start"><span class="ms ms-s" aria-hidden="true">lock</span><span>Signed in with Apple<br />Arun · admin</span></div>
                     </nav>
                   </div>
                 </div>
@@ -169,21 +171,21 @@
                   <span class="lbl">Bottom sheet · .mp-sheet over .mp-scrim</span>
                   <div class="phonefrag" data-screen-label="Sheet: Why PAUSE?">
                     <div class="fx col gap12" style="padding: 14px 16px">
-                      <div><div class="mp-large">NASDAQ 100</div><div class="mp-foot mp-ink3">iShares · ISA · London CNX1</div></div>
+                      <div><div class="mp-large">NASDAQ 100</div><div class="mp-foot mp-ink2">iShares · ISA · London CNX1</div></div>
                       <div class="mp-card fx ac jb gap8"><div style="min-width: 0"><div class="mp-num-l">£4,210</div><div class="mp-foot mp-dq">▼ 1.2% Friday · ▼ 3.1% this week · ▼ 8.4% from its high</div></div><span class="mp-chip mp-pause">PAUSE 61%</span></div>
                     </div>
                     <div class="mp-scrim"></div>
                     <div class="mp-sheet sheet-abs mp-sheet-in fx col gap12" role="dialog" aria-label="Why PAUSE?">
                       <div class="mp-grabber" style="margin-bottom: 0"></div>
                       <div class="fx ac jb"><span class="mp-t3">Why PAUSE?</span><button class="mp-btn mp-btn-plain" style="margin-right: -8px">Done</button></div>
-                      <div class="fx ac gap8" style="margin-top: -10px"><span class="mp-chip chip-s mp-pause">PAUSE 61%</span><span class="mp-foot mp-ink3">for about 2 weeks · a view, not advice</span></div>
+                      <div class="fx ac gap8" style="margin-top: -10px"><span class="mp-chip chip-s mp-pause">PAUSE 61%</span><span class="mp-foot mp-ink2">for about 2 weeks · a view, not advice</span></div>
                       <div class="mp-body">Keep what you have; hold this month's top-up until the trend settles. Not a reason to sell.</div>
                       <div>
                         <div class="mp-over mp-ink3" style="margin-bottom: 6px">Would change if</div>
                         <ul class="wlist mp-sub"><li>A close back above the 20-day average</li><li>Two calm sessions after the Fed</li></ul>
                       </div>
-                      <div class="mp-foot mp-ink3">PAUSE calls on this holding: 3 made, 2 right.</div>
-                      <div class="fx gap8"><a class="mp-btn mp-btn-primary" href="#overlays" style="flex: 1"><span class="ms" aria-hidden=\"true\">chat</span>Ask in the chat</a><a class="mp-btn mp-btn-tinted" href="#overlays">Technical</a></div>
+                      <div class="mp-foot mp-ink2">PAUSE calls on this holding: 3 made, 2 right.</div>
+                      <div class="fx gap8"><a class="mp-btn mp-btn-primary" href="#overlays" style="flex: 1"><span class="ms" aria-hidden="true">chat</span>Ask in the chat</a><a class="mp-btn mp-btn-tinted" href="#overlays">Technical</a></div>
                     </div>
                   </div>
                 </div>
@@ -191,8 +193,8 @@
                   <span class="lbl">Toast · .mp-toast</span>
                   <sc-for list="{{ toasts }}" as="o" hint-placeholder-count="3">
                     <div class="fx col gap6">
-                      <div class="mp-toast fx gap10" role="status" style="align-items: flex-start"><span class="ms ms-s" aria-hidden=\"true\">{{ o.icon }}</span><span>{{ o.text }}</span></div>
-                      <span class="mp-cap mp-ink3">{{ o.when }}</span>
+                      <div class="mp-toast fx gap10" role="status" style="align-items: flex-start"><span class="ms ms-s" aria-hidden="true">{{ o.icon }}</span><span>{{ o.text }}</span></div>
+                      <span class="mp-cap mp-ink2">{{ o.when }}</span>
                     </div>
                   </sc-for>
                 </div>
@@ -224,10 +226,10 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Holdings</span></div>
                     <div class="mp-group empty">
-                      <div class="ecircle"><span class="ms ms-l" aria-hidden=\"true\">donut_small</span></div>
+                      <div class="ecircle"><span class="ms ms-l" aria-hidden="true">donut_small</span></div>
                       <div class="mp-hl">No holdings yet</div>
-                      <div class="mp-foot mp-ink3">Send a factsheet or a screenshot in the chat and I'll add it for you to confirm.</div>
-                      <a class="mp-btn mp-btn-tinted mp-btn-small" href="#states" style="margin-top: 6px"><span class="ms ms-s" aria-hidden=\"true\">chat</span>Open chat</a>
+                      <div class="mp-foot mp-ink2">Send a factsheet or a screenshot in the chat and I'll add it for you to confirm.</div>
+                      <a class="mp-btn mp-btn-tinted mp-btn-small" href="#states" style="margin-top: 6px"><span class="ms ms-s" aria-hidden="true">chat</span>Open chat</a>
                     </div>
                   </div>
                 </div>
@@ -249,11 +251,11 @@
                 <div class="spec">
                   <span class="lbl">Stale prices</span>
                   <div>
-                    <div class="banner" role="status"><span class="ms ms-s mp-ink2" aria-hidden=\"true\">info</span><span class="mp-foot mp-ink2">Prices are from Thursday's close. Friday's are late; we'll update when they land.</span></div>
+                    <div class="banner" role="status"><span class="ms ms-s mp-ink2" aria-hidden="true">info</span><span class="mp-foot mp-ink2">Prices are from Thursday's close. Friday's are late; we'll update when they land.</span></div>
                     <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">Thu close</span></div>
                     <div class="mp-group">
                       <sc-for list="{{ stale }}" as="h" hint-placeholder-count="3">
-                        <div class="mp-row"><div class="mp-row-lead mp-neutral">{{ h.lead }}</div><div class="mp-hl clip" style="flex: 1; min-width: 0">{{ h.name }}</div><div style="text-align: right"><div class="mp-hl">{{ h.val }}</div><div class="mp-foot mp-ink3">Thu close</div></div></div>
+                        <div class="mp-row"><div class="mp-row-lead mp-neutral">{{ h.lead }}</div><div class="mp-hl clip" style="flex: 1; min-width: 0">{{ h.name }}</div><div style="text-align: right"><div class="mp-hl">{{ h.val }}</div><div class="mp-foot mp-ink2">Thu close</div></div></div>
                       </sc-for>
                     </div>
                   </div>
@@ -263,9 +265,9 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Holdings</span></div>
                     <div class="mp-group empty">
-                      <div class="ecircle"><span class="ms ms-l" aria-hidden=\"true\">warning</span></div>
+                      <div class="ecircle"><span class="ms ms-l" aria-hidden="true">warning</span></div>
                       <div class="mp-hl">We couldn't load your holdings</div>
-                      <div class="mp-foot mp-ink3">Nothing in your account has changed; only this page didn't load. Try again, or ask in the chat.</div>
+                      <div class="mp-foot mp-ink2">Nothing in your account has changed; only this page didn't load. Try again, or ask in the chat.</div>
                       <div class="fx ac gap8" style="margin-top: 6px"><a class="mp-btn mp-btn-tinted mp-btn-small" href="#states">Try again</a><a class="mp-btn mp-btn-plain" href="#states">Open chat</a></div>
                     </div>
                   </div>
@@ -320,7 +322,7 @@
                       <line x1="{{ cb.ex }}" x2="100" y1="{{ cb.ey }}" y2="{{ cb.ey }}" class="cproj"></line>
                     </svg>
                     <span class="mp-chartlbl c-pause lbl-tr">PAUSE · next 2 weeks</span>
-                    <span class="mp-chartlbl mp-ink3 lbl-under" style="top: {{ cb.ayp }}">Your 8% alert · £4,228</span>
+                    <span class="mp-chartlbl mp-ink2 lbl-under" style="top: {{ cb.ayp }}">Your 8% alert · £4,228</span>
                     <sc-for list="{{ cb.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot {{ m.dot }}" style="left: {{ m.x }}; top: {{ m.y }}"></span><span class="mp-chartlbl {{ m.lbl }}" style="left: {{ m.x }}; top: {{ m.y }}">{{ m.word }}</span></sc-for>
                   </div>
                   <div class="mp-chartaxis mp-ink3"><span style="left: 14%">Aug</span><span style="left: 44%">Sep</span><span style="left: 72%">Oct</span></div>
@@ -333,7 +335,7 @@
                       <div class="brow"><span class="mp-foot mp-w6">{{ b.k }}</span><div class="mp-track trk"><div class="bfill mp-grow {{ b.d }}" style="width: {{ b.w }}; background: {{ b.c }}"></div></div><span class="mp-foot mp-ink2" style="text-align: right">{{ b.v }}</span></div>
                     </sc-for>
                   </div>
-                  <div class="mp-foot mp-ink3">A 1% move in GBP/USD moves you 0.8%.</div>
+                  <div class="mp-foot mp-ink2">A 1% move in GBP/USD moves you 0.8%.</div>
                 </div>
                 <div class="mp-card ccard fx col gap8">
                   <div class="fx jb ac gap8"><span class="mp-over mp-ink3">Asset mix</span><span class="lbl">stacked · --mp-asset-*</span></div>
@@ -346,19 +348,19 @@
                       <div class="lgrow"><span class="sw" style="background: {{ a.c }}"></span><span class="mp-foot">{{ a.k }}</span><span class="mp-foot mp-ink2" style="text-align: right">{{ a.v }}</span></div>
                     </sc-for>
                   </div>
-                  <div class="mp-foot mp-ink3">From values; bonds come only through Balanced.</div>
+                  <div class="mp-foot mp-ink2">From values; bonds come only through Balanced.</div>
                 </div>
                 <div class="mp-card ccard fx col gap8">
                   <div class="fx jb ac gap8"><span class="mp-over mp-ink3">AI this month</span><span class="lbl">meter · .mp-track</span></div>
                   <div class="mp-num-l">£6.40 <span class="mp-sub mp-ink2 numnote">of the £50 cap</span></div>
                   <div class="mp-track trk" role="meter" aria-valuemin="0" aria-valuemax="50" aria-valuenow="6.4" aria-label="AI spend this month: £6.40 of the £50 cap"><div class="bfill mp-grow" style="width: 13%; background: var(--mp-meter)"></div></div>
-                  <div class="fx jb mp-foot mp-ink3"><span>13% used</span><span>£43.60 left</span></div>
+                  <div class="fx jb mp-foot mp-ink2"><span>13% used</span><span>£43.60 left</span></div>
                 </div>
                 <div class="mp-card ccard fx col gap8">
                   <div class="fx jb ac gap8"><span class="mp-over mp-ink3">Go-live</span><span class="lbl">progress · .mp-track</span></div>
                   <div class="mp-num-l">6 of 8 <span class="mp-sub mp-ink2 numnote">weeks above doing nothing</span></div>
                   <div class="mp-track trk" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="6" aria-label="Go-live: 6 of 8 weeks above doing nothing"><div class="bfill mp-grow" style="width: 75%; background: var(--mp-meter)"></div></div>
-                  <div class="mp-foot mp-ink3">Two more and stance chips go live on weekday cards.</div>
+                  <div class="mp-foot mp-ink2">Two more and stance chips go live on weekday cards.</div>
                 </div>
               </div>
             </div>
@@ -368,7 +370,7 @@
           <div class="note"><b>The chart box</b><code>.mp-chartbox</code> holds an SVG on a 0 to 100 viewBox with <code>preserveAspectRatio="none"</code>, so it stretches with its card while <code>vector-effect: non-scaling-stroke</code> keeps the line at 2.5 px. Dots (<code>.mp-chartdot</code>), labels (<code>.mp-chartlbl</code>) and ticks (<code>.mp-chartaxis</code>) are HTML placed by % on top. Never a template value inside SVG text: it does not render.</div>
           <div class="note"><b>Line and area</b><code>--mp-chart-line</code> on surfaces (coral over <code>--mp-hero-area</code> on the hero); <code>--mp-chart-area</code> under it; three grid lines at most in <code>--mp-chart-grid</code>; months in ink-3, mid-month. The figure above carries the number, so there is no y-axis on the phone. The chart fades in over 200 ms (<code>.mp-fade</code>): <code>.mp-draw</code> works only on a path that scales with its viewBox, so it breaks under a non-scaling stroke.</div>
           <div class="note"><b>Stance markers</b>At the close each stance was made on, the current one included: a surface dot with a 2.5 px ring in the stance colour, and the word beside it in the same colour (4.6:1 or more). Labels move above, below or to the upper left so they never sit on the line.</div>
-          <div class="note"><b>Alert line and horizon</b>The alert is 1 px, dashed 4 4, ink-3, labelled with its level in words; it marks your threshold and is never red. The horizon is the future: the next two weeks after the last close, light amber with a dashed amber edge, a dotted projection from the last point, labelled "PAUSE · next 2 weeks".</div>
+          <div class="note"><b>Alert line and horizon</b>The alert is 1 px, dashed 4 4, ink-3, labelled with its level in words in ink-2; it marks your threshold and is never red. The horizon is the future: the next two weeks after the last close, light amber with a dashed amber edge, a dotted projection from the last point, labelled "PAUSE · next 2 weeks".</div>
           <div class="note"><b>Bars and tracks</b>Bars are 12 high on <code>.mp-track</code>, whose inset ring keeps the empty part visible. Currencies always use <code>--mp-ccy-*</code>; meters and progress use <code>--mp-meter</code>, with <code>role="meter"</code> or <code>progressbar</code>. Values at the end, tabular. Grow in over 700 ms.</div>
           <div class="note"><b>Categories</b>Fixed encodings first: an asset mix always uses <code>--mp-asset-*</code> (shares blue, bonds purple, silver grey, cash amber), currencies <code>--mp-ccy-*</code>. Never <code>--mp-chart-3</code> or coral for a category: green means gains and coral is the line. 2 px gaps between segments, every segment named in a legend with its value, and a text alternative that states the point.</div>
         </div>

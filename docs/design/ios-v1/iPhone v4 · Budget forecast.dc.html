@@ -98,7 +98,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .bb.sel { box-shadow: 0 0 0 2px var(--mp-surface), 0 0 0 4px var(--mp-ink); }
 .bb.cap { border-radius: 0 0 3px 3px; }
 .bb.cap::after { content: ""; position: absolute; left: -3px; right: -3px; top: 8px; height: 4px; background: var(--mp-surface); transform: skewY(-24deg); }
-.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 11px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
+.bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 12px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
 .bch .mp-chartaxis { margin-top: 2px; }
 .blgd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
 .blgd > span { display: inline-flex; align-items: center; gap: 6px; }
@@ -165,6 +165,20 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .grab { width: 36px; height: 5px; border-radius: 3px; background: var(--mp-line); margin: 0 auto 4px; }
 
 .mp-mask { color: transparent; }
+/* MA-300: the drawn controls are real buttons. A zero-specificity reset strips the browser's own button look,
+   so every class rule above (tokens.css, ios.css, this board) still draws them exactly as before. */
+:where(button.gbtn, button.gtext, button.tab, button.tabsearch, button.gchip, button.cplus, button.csend, button.cbtn,
+  button.side-i, button.menu-i, button.mp-switch, button.mp-seg-i.segc) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* each year's bar is tapped: an invisible hit column at least 44 pt wide behind it, full height (MA-300, P1-3);
+   where neighbouring columns overlap, the app picks the bar nearest the touch; the edge columns stay inside the plot */
+.bhit { position: absolute; top: 0; bottom: -20px; left: 50%; width: max(100%, 44px); transform: translateX(-50%); }
+.bc:first-child .bhit { left: 0; transform: none; }
+.bc:last-child .bhit { left: auto; right: 0; transform: none; }
+/* glass never sits on glass: the close button inside the glass sheet is a lens, not a second pane (MA-300, P1-2) */
+.sheet.lg .gbtn.sclose { background: var(--lg-lens); color: var(--lg-ink); }
 </style>
 </helmet>
 
@@ -190,14 +204,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ f.cap }}">
 <div class="island"></div>
 <div class="scrn">
-<div class="sbar"><span>20:44</span><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden=\"true\">chevron_left</span></span><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Projection</span></sc-if><span class="navm"><span class="gbtn lg" aria-label="Privacy mode"><span class="ms" aria-hidden=\"true\">visibility</span></span><sc-if value="{{ f.top }}" hint-placeholder-val="{{ true }}"><span class="gtext lg"><span class="ms" aria-hidden=\"true\">chat_bubble</span><span>Ask</span></span></sc-if><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden=\"true\">chat_bubble</span></span></sc-if></span></div>
+<div class="sbar"><span>20:44</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Projection</span></sc-if><span class="navm"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><sc-if value="{{ f.top }}" hint-placeholder-val="{{ true }}"><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></sc-if><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><button type="button" class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden="true">chat_bubble</span></button></sc-if></span></div>
 <sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top"></div></sc-if>
 <div class="scroll"><div class="pg" style="margin-top: {{ f.off }}">
 <div class="largetitle">Projection</div>
 <div class="mp-seg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
 <div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<div class="ctls"><div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false">₹ INR</button></div><span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span></div>
+<div class="ctls"><div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false">₹ INR</button></div><span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></button></span></div>
 <!-- ============ 1a: the surplus first ============ -->
 <sc-if value="{{ f.o.a }}" hint-placeholder-val="{{ true }}">
 <div class="mp-card cpad">
@@ -206,7 +220,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="bch" role="img" aria-label="{{ chart.aria }}">
 <div class="bplot">
 <sc-for list="{{ chart.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}">{{ g.l }}</span></sc-for>
-<div class="bcols"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
+<div class="bcols"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><span class="bhit" aria-hidden="true"></span><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
 </div>
 <div class="bflags" aria-hidden="true"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><span>{{ b.flag }}</span></sc-for></div>
 <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ chart.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
@@ -224,7 +238,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">the lines above, added</span></div><span class="fig c-alert">{{ y29.sur }}</span></div>
 </div>
 <div class="kvs"><sc-for list="{{ y29.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6">{{ t.v }}</span></div></sc-for></div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden=\"true\">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div>
 <sc-if value="{{ f.months }}" hint-placeholder-val="{{ true }}">
 <div class="mp-card cpad">
@@ -240,7 +254,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
 <div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
-<span class="srcchip"><span class="ms" aria-hidden=\"true\">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+<span class="srcchip"><span class="ms" aria-hidden="true">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
 </div>
 </sc-if>
 </div>
@@ -272,7 +286,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mtab"><sc-for list="{{ months }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
 </div>
 </div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden=\"true\">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div>
 </sc-if>
 </sc-for>
@@ -313,16 +327,16 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="dim"></div>
 <div class="sheet lg lg-strong tsheet" role="dialog" aria-label="2029's surplus, line by line">
 <div class="sheet-grab"></div>
-<div class="sheet-h"><span class="mp-over">2029 · the flows behind it</span><span class="gbtn lg" aria-label="Close"><span class="ms" aria-hidden=\"true\">close</span></span></div>
+<div class="sheet-h"><span class="mp-over">2029 · the flows behind it</span><button type="button" class="gbtn sclose" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>
 <div class="mp-card tbody">
 <span class="mp-hl">Surplus <span class="c-alert">−£1,285</span></span>
 <div><sc-for list="{{ popLines }}" as="t" hint-placeholder-count="4"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for></div>
 <span class="mp-foot mp-ink2">Below your floor in 11 months: every month but March, when Asha's bonus lands.</span>
 </div>
-<div class="btnrow"><span class="cbtn">Months</span><span class="cbtn cbtn-primary">Ways to cover it</span></div>
+<div class="btnrow"><button type="button" class="cbtn">Months</button><button type="button" class="cbtn cbtn-primary">Ways to cover it</button></div>
 </div>
 </sc-if>
-<sc-if value="{{ f.dock }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ itabs }}" as="t" hint-placeholder-count="4"><span class="tab {{ t.on }}"><span class="ms" aria-hidden=\"true\">{{ t.i }}</span>{{ t.l }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1" aria-hidden=\"true\">search</span></span></div></sc-if>
+<sc-if value="{{ f.dock }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ itabs }}" as="t" hint-placeholder-count="4"><button type="button" class="tab {{ t.on }}"><span class="ms" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div></sc-if>
 <div class="homebar"></div>
 </div>
 </div>
@@ -334,14 +348,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="scrn srow">
 <div class="sidebar sb lg">
 <div class="side-h sh0">MyPaisa</div>
-<sc-for list="{{ snav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+<sc-for list="{{ snav }}" as="n" hint-placeholder-count="8"><button type="button" class="side-i {{ n.cls }}"><span class="ms" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
 <div class="side-h">Admin</div>
-<span class="side-i"><span class="ms" aria-hidden=\"true\">shield_person</span>Admin center</span>
-<span class="side-i"><span class="ms" aria-hidden=\"true\">account_circle</span>You</span>
+<button type="button" class="side-i"><span class="ms" aria-hidden="true">shield_person</span>Admin center</button>
+<button type="button" class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</button>
 </div>
 <div class="main">
 <div class="sbar"><span>20:44 Thu 5 Nov</span><span></span></div>
-<div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden=\"true\">visibility</span></span></span></div>
+<div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></button></span></div>
 <sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top etp"></div></sc-if>
 <div class="scroll"><div class="ipg" style="margin-top: {{ f.off }}">
 <div class="mp-foot mp-ink2 meta4">{{ meta }}</div>
@@ -349,7 +363,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="ctls">
 <div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
 <div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false">₹ INR</button></div>
-<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></button></span>
 </div>
 <!-- ============ 1a: the surplus first ============ -->
 <sc-if value="{{ f.o.a }}" hint-placeholder-val="{{ true }}">
@@ -359,7 +373,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="bch" role="img" aria-label="{{ chart.aria }}">
 <div class="bplot">
 <sc-for list="{{ chart.grid }}" as="g" hint-placeholder-count="5"><span class="bgl {{ g.c }}" style="bottom: {{ g.y }}"></span><span class="byl {{ g.lc }}" style="bottom: {{ g.y }}">{{ g.l }}</span></sc-for>
-<div class="bcols"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
+<div class="bcols"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><div class="bc"><span class="bhit" aria-hidden="true"></span><span class="bb {{ b.cls }}" style="{{ b.st }}" data-mo="{{ b.mo }}"></span></div></sc-for></div>
 </div>
 <div class="bflags" aria-hidden="true"><sc-for list="{{ chart.bars }}" as="b" hint-placeholder-count="20"><span>{{ b.flag }}</span></sc-for></div>
 <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ chart.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
@@ -377,7 +391,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">the lines above, added</span></div><span class="fig c-alert">{{ y29.sur }}</span></div>
 </div>
 <div class="kvs"><sc-for list="{{ y29.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6">{{ t.v }}</span></div></sc-for></div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden=\"true\">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div>
 <sc-if value="{{ f.months }}" hint-placeholder-val="{{ true }}">
 <div class="mp-card cpad">
@@ -393,7 +407,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
 <div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
-<span class="srcchip"><span class="ms" aria-hidden=\"true\">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+<span class="srcchip"><span class="ms" aria-hidden="true">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
 </div>
 </sc-if>
 </div>
@@ -425,7 +439,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mtab"><sc-for list="{{ months }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
 </div>
 </div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden=\"true\">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div>
 </sc-if>
 </sc-for>
@@ -464,8 +478,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="edge-bot"></div>
 </div>
 <div class="insp">
-<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden=\"true\">wifi</span><span class="ms" aria-hidden=\"true\">battery_horiz_075</span></span></div>
-<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1" aria-hidden=\"true\">edit_square</span></span></div>
+<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New chat"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>
 <div class="chfadet"></div>
 <div class="ichat"><div class="chat">
 <div class="daysep">Today</div>
@@ -474,11 +488,11 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
 <div class="ccard"><div class="ccard-h"><span class="fx ac gap6 mp-over c-add"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, growing 4.5% a year</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div></div>
 <div class="ai-text">It leaves your surplus below your £500 floor in 50 months, Jan 2029 to Feb 2035. Cash stays above zero. The Budget forecast shows where.</div>
-<div class="btnrow"><span class="cbtn"><span class="ms" aria-hidden=\"true\">chat_bubble</span>Ways to cover it</span></div>
+<div class="btnrow"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
 </div></div>
 </div></div>
 <div class="edge-bot"></div>
-<div class="composer cb20"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="2"><span class="gchip lg"><span class="ms" aria-hidden=\"true\">{{ c.i }}</span><span>{{ c.t }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms z1" aria-hidden=\"true\">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms" aria-hidden=\"true\">mic</span></span></span></div></div>
+<div class="composer cb20"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </div>
 </div>
 </div>

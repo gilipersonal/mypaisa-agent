@@ -16,7 +16,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
 .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -122,6 +122,8 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .edf { text-decoration: underline dotted var(--mp-ink-2); text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
 .edbtn { width: 44px; height: 44px; margin: -10px -8px -10px -6px; border: 0; background: transparent; color: var(--mp-accent); display: inline-grid; place-items: center; border-radius: 12px; vertical-align: middle; }
 .edbtn-s { width: 32px; height: 32px; margin: -6px 0 -6px -2px; }
+.edbtn { position: relative; }
+.edbtn-s::after { content: ""; position: absolute; inset: -6px; }   /* 32 drawn, 44 to tap (MA-300, P1-3) */
 .kvg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--mp-line); border-radius: 12px; overflow: hidden; border: 1px solid var(--mp-line); }
 .kvg > div { background: var(--mp-surface); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .kvg .mp-hl { display: flex; align-items: center; gap: 2px; white-space: nowrap; }
@@ -137,7 +139,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .hline { fill: none; stroke: var(--mp-coral); stroke-width: 2.5; stroke-linejoin: round; } .harea { fill: var(--mp-hero-area); }
 .cline { fill: none; stroke: var(--mp-chart-line); stroke-width: 2.5; stroke-linejoin: round; } .carea { fill: var(--mp-chart-area); }
 .cdash { fill: none; stroke: var(--mp-ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
-.gy4 { position: absolute; left: 0; transform: translateY(-100%); margin-top: -3px; font: 500 11px/14px var(--mp-font); white-space: nowrap; }
+.gy4 { position: absolute; left: 0; transform: translateY(-100%); margin-top: -3px; font: 500 12px/16px var(--mp-font); white-space: nowrap; }
 .gy-h { color: var(--mp-hero-ink-2); } .gy-c { color: var(--mp-ink-2); }
 .gy4.mp-mask { min-width: 34px; color: transparent; }
 .ax-h { color: var(--mp-hero-ink-2); } .ax-c { color: var(--mp-ink-2); }
@@ -163,7 +165,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .colb > span { display: block; width: 100%; border-radius: 3px; }
 .colb.cplan > span { opacity: 0.5; }
 .colw.now .mp-cap { color: var(--mp-ink); font-weight: 700; }
-.colw .mp-cap { color: var(--mp-ink-2); white-space: nowrap; font-size: 11px; }
+.colw .mp-cap { color: var(--mp-ink-2); white-space: nowrap; font-size: 12px; }   /* product text is 12 or larger (MA-300, P1-5) */
 .filerow { display: flex; align-items: center; gap: 10px; padding: 0 0 0 10px; border-radius: 12px; background: var(--mp-surface-2); min-height: 56px; }
 .filerow .mp-icontile { background: var(--mp-surface); color: var(--mp-ink-2); }
 .tb4 { display: grid; align-items: stretch; }
@@ -175,6 +177,19 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .tb4 > .w6 { font-weight: 600; }
 .code4 { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 13px/19px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink); white-space: pre-wrap; }
 .mp-mask { color: transparent; }
+/* MA-300: the drawn controls are real buttons (type="button"; the older plain <button>s keep their own look). A
+   zero-specificity reset strips the browser's button look, so every class rule (tokens.css, ios.css, this board) still draws them as before. */
+:where(button[type="button"]) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* the household strip carries balances, so it is solid ledger, never glass (MA-300, P1-2) */
+.strip.solid { position: relative; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line), 0 2px 10px rgba(0, 0, 0, 0.08); }
+.strip.solid .mp-up { color: var(--mp-up); }
+.strip.solid .mp-mask { background: var(--mp-mask); }
+/* Ask: the chat beside the screen from about 1133 pt; below that the column hides (tokens.css) and Ask brings it up as a sheet (MA-300, P1-6) */
+.askw { display: none; }
+@container screen (max-width: 1132px) { .mp.ipad .askw { display: inline-flex; } }
 </style>
 </helmet>
 
@@ -202,15 +217,15 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <!-- the glass sidebar -->
 <div class="sidebar sb lg">
 <div class="side-h sh0">MyPaisa</div>
-<sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+<sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><button type="button" class="side-i {{ n.cls }}"><span class="ms" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
 <div class="side-h">Admin</div>
-<span class="side-i"><span class="ms">shield_person</span>Admin center</span>
-<span class="side-i"><span class="ms">account_circle</span>You</span>
+<button type="button" class="side-i"><span class="ms" aria-hidden="true">shield_person</span>Admin center</button>
+<button type="button" class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</button>
 </div>
 <!-- the screen -->
 <div class="main">
 <div class="sbar"><span>{{ f.time }} {{ f.day }}</span><span></span></div>
-<div class="nav"><span class="navl"><sc-if value="{{ f.hasBack }}" hint-placeholder-val="{{ false }}"><span class="gbtn lg" aria-label="Back to {{ f.back }}"><span class="ms z1">chevron_left</span></span></sc-if><span class="largetitle navt">{{ f.title }}</span></span><span class="navr"><span class="gbtn lg {{ f.eyeC }}" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms z1">{{ f.eye }}</span></span></span></div>
+<div class="nav"><span class="navl"><sc-if value="{{ f.hasBack }}" hint-placeholder-val="{{ false }}"><button type="button" class="gbtn lg" aria-label="Back to {{ f.back }}"><span class="ms z1" aria-hidden="true">chevron_left</span></button></sc-if><span class="largetitle navt">{{ f.title }}</span></span><span class="navr"><button type="button" class="gtext lg askw" aria-label="Ask about this screen"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button><button type="button" class="gbtn lg {{ f.eyeC }}" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms z1" aria-hidden="true">{{ f.eye }}</span></button></span></div>
 <div class="ipg">
 <sc-if value="{{ f.hasMeta }}" hint-placeholder-val="{{ true }}"><div class="mp-foot mp-ink2 meta4">{{ f.meta }}</div></sc-if>
 <!-- Budget -->
@@ -266,7 +281,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </div>
 </sc-if>
 <!-- Assets and debts: the filters, then regions (full width, then two columns) of blocks -->
-<sc-if value="{{ f.hasFilt }}" hint-placeholder-val="{{ false }}"><div class="filt4" role="group" aria-label="Filters"><sc-for list="{{ f.filters }}" as="fi" hint-placeholder-count="4"><span class="fb4"><span class="fv"><span class="mp-foot mp-ink2">{{ fi.k }}</span><span class="mp-sub mp-w6">{{ fi.v }}</span></span><span class="ms ms-s" aria-hidden="true">expand_more</span></span></sc-for></div></sc-if>
+<sc-if value="{{ f.hasFilt }}" hint-placeholder-val="{{ false }}"><div class="filt4" role="group" aria-label="Filters"><sc-for list="{{ f.filters }}" as="fi" hint-placeholder-count="4"><button type="button" class="fb4"><span class="fv"><span class="mp-foot mp-ink2">{{ fi.k }}</span><span class="mp-sub mp-w6">{{ fi.v }}</span></span><span class="ms ms-s" aria-hidden="true">expand_more</span></button></sc-for></div></sc-if>
 <sc-for list="{{ f.regions }}" as="rg" hint-placeholder-count="2">
 <div class="{{ rg.cls }}">
 <sc-for list="{{ rg.cols }}" as="cl" hint-placeholder-count="2">
@@ -296,7 +311,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="sh4"><span class="mp-over mp-ink2">{{ k.over }}</span><span class="mp-foot mp-ink2 mp-w6"><span class="{{ k.a.c }}" role="{{ k.a.r }}" aria-label="{{ k.a.l }}">{{ k.a.v }}</span></span></div>
 <div class="mp-group">
 <sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="3">
-<div class="mp-row row4">
+<div class="mp-row row4" role="link" tabindex="0">
 <div class="mp-row-lead {{ r.leadC }}">{{ r.lead }}</div>
 <div class="rt"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span><div class="tags"><sc-for list="{{ r.tags }}" as="tg" hint-placeholder-count="1"><span class="mp-chip chip-s {{ tg.c }}"><span class="ms" aria-hidden="true">{{ tg.i }}</span>{{ tg.t }}</span></sc-for></div></div>
 <div class="rv"><span class="mp-sub mp-w6"><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span></span><span class="mp-foot {{ r.bC }}"><span class="{{ r.b.c }}" role="{{ r.b.r }}" aria-label="{{ r.b.l }}">{{ r.b.v }}</span></span></div>
@@ -313,7 +328,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <sc-if value="{{ q.isP }}" hint-placeholder-val="{{ false }}"><p class="mp-sub pp"><span class="mp-w6">{{ q.b }}</span> {{ q.t }}</p></sc-if>
 <sc-if value="{{ q.isFoot }}" hint-placeholder-val="{{ false }}"><div class="fx gap8 mp-foot mp-ink2"><sc-if value="{{ q.hasI }}" hint-placeholder-val="{{ true }}"><span class="ms ms-s" aria-hidden="true">{{ q.i }}</span></sc-if><p class="pp">{{ q.t }}</p></div></sc-if>
 <sc-if value="{{ q.isChips }}" hint-placeholder-val="{{ false }}"><div class="chipr"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><span class="mp-chip {{ it.c }}"><span class="ms" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</span></sc-for></div></sc-if>
-<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><span class="mp-foot mp-ink2">{{ it.k }}</span><span class="mp-hl {{ it.c }}"><span class="{{ it.edc }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><sc-if value="{{ it.ed }}" hint-placeholder-val="{{ false }}"><span class="edbtn edbtn-s" aria-label="Correct {{ it.k }}"><span class="ms ms-s">edit</span></span></sc-if></span><span class="mp-foot mp-ink2">{{ it.s }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><span class="mp-foot mp-ink2">{{ it.k }}</span><span class="mp-hl {{ it.c }}"><span class="{{ it.edc }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><sc-if value="{{ it.ed }}" hint-placeholder-val="{{ false }}"><button type="button" class="edbtn edbtn-s" aria-label="Correct {{ it.k }}"><span class="ms ms-s" aria-hidden="true">edit</span></button></sc-if></span><span class="mp-foot mp-ink2">{{ it.s }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="li4"><sc-if value="{{ it.hasI }}" hint-placeholder-val="{{ true }}"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span></sc-if><div class="rt"><span class="mp-sub">{{ it.name }}</span><span class="mp-foot mp-ink2">{{ it.sub }}</span><sc-if value="{{ it.hasX }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-w6 {{ it.xc }}"><span class="{{ it.x.c }}" role="{{ it.x.r }}" aria-label="{{ it.x.l }}">{{ it.x.v }}</span></span></sc-if></div><div class="rv"><sc-if value="{{ it.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ it.chipC }}">{{ it.chip }}</span></sc-if><span class="mp-sub mp-w6 {{ it.ac }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></span></div></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isChart }}" hint-placeholder-val="{{ false }}">
 <div class="chart4 {{ q.ch.cv }}">
@@ -328,7 +343,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </div>
 </sc-if>
 <sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols4" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="8"><div class="colw {{ it.now }}"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span data-mo="bary" style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><span class="mp-cap">{{ it.l }}</span></div></sc-for></div><div class="lgd4 mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
-<sc-if value="{{ q.isFiles }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><div class="filerow"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><span class="rt"><span class="mp-foot mp-w6">{{ it.n }}</span><span class="mp-cap mp-ink2">{{ it.s }}</span></span><span class="cbtn cbtn-ghost">Open</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isFiles }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><div class="filerow"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><span class="rt"><span class="mp-foot mp-w6">{{ it.n }}</span><span class="mp-cap mp-ink2">{{ it.s }}</span></span><button type="button" class="cbtn cbtn-ghost">Open</button></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isTbl }}" hint-placeholder-val="{{ false }}"><div class="tb4" style="grid-template-columns: {{ q.cols }}"><sc-for list="{{ q.head }}" as="h" hint-placeholder-count="3"><div class="th4 {{ h.c }}">{{ h.t }}</div></sc-for><sc-for list="{{ q.cells }}" as="cl" hint-placeholder-count="6"><div class="td4 {{ cl.c }}"><span class="{{ cl.a.c }}" role="{{ cl.a.r }}" aria-label="{{ cl.a.l }}">{{ cl.a.v }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isCode }}" hint-placeholder-val="{{ false }}"><div class="code4" role="note" aria-label="The engine's solve"><sc-for list="{{ q.lines }}" as="ln" hint-placeholder-count="3"><span>{{ ln.t }}</span></sc-for></div></sc-if>
 </sc-for>
@@ -344,8 +359,8 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </div>
 <!-- the chat beside it -->
 <div class="insp">
-<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>
+<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New chat"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>
 <div class="chfadet"></div>
 <div class="ichat"><div class="chat">
 <sc-for list="{{ f.chat }}" as="m" hint-placeholder-count="4">
@@ -357,14 +372,14 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ false }}"><div class="ccard">
 <div class="ccard-h"><span class="fx ac gap6 mp-over mp-ink2"><sc-if value="{{ m.c.hasOverI }}" hint-placeholder-val="{{ false }}"><span class="ms ms-s ms-fill {{ m.c.overIC }}" aria-hidden="true">{{ m.c.overI }}</span></sc-if>{{ m.c.over }}</span><span class="mp-hl">{{ m.c.title }}</span><sc-if value="{{ m.c.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.c.q }}<span class="{{ m.c.qa.c }}">{{ m.c.qa.v }}</span>{{ m.c.q2 }}</span></sc-if></div>
 <div class="ccard-b"><sc-for list="{{ m.c.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-for list="{{ m.c.notes }}" as="nt" hint-placeholder-count="0"><div class="cnote"><span class="ms ms-s mp-ink2" aria-hidden="true">{{ nt.i }}</span><span class="mp-foot">{{ nt.t }}</span></div></sc-for><sc-for list="{{ m.c.ps }}" as="pt" hint-placeholder-count="0"><div class="mp-sub mp-ink2">{{ pt }}</div></sc-for><sc-if value="{{ m.c.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><span class="mp-over mp-ink2">{{ m.c.filesCap }}</span><sc-for list="{{ m.c.files }}" as="x" hint-placeholder-count="2"><div class="cfile"><span class="ms ms-s mp-ink2" aria-hidden="true">description</span><span class="mp-foot mp-w6 grow1">{{ x }}</span></div></sc-for></div></sc-if><sc-if value="{{ m.c.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.c.done }}</div><div class="audl">{{ m.c.audit }}</div></sc-if></div>
-<sc-if value="{{ m.c.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.c.btns }}" as="b" hint-placeholder-count="2"><span class="cbtn {{ b.c }}">{{ b.t }}</span></sc-for></div></sc-if>
-<sc-if value="{{ m.c.hasFold }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">{{ m.c.fold.i }}</span>{{ m.c.fold.t }}</span><span class="mp-foot mp-ink2">{{ m.c.fold.r }}</span></div></sc-if>
+<sc-if value="{{ m.c.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.c.btns }}" as="b" hint-placeholder-count="2"><button type="button" class="cbtn {{ b.c }}">{{ b.t }}</button></sc-for></div></sc-if>
+<sc-if value="{{ m.c.hasFold }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet" role="button" tabindex="0" aria-expanded="false"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">{{ m.c.fold.i }}</span>{{ m.c.fold.t }}</span><span class="mp-foot mp-ink2">{{ m.c.fold.r }}</span></div></sc-if>
 </div></sc-if>
 </div></div></sc-if>
 </sc-for>
 </div></div>
 <div class="edge-bot"></div>
-<div class="composer cb20"><div class="chips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="2"><span class="gchip lg"><span class="ms">{{ c.i }}</span><span>{{ c.t }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">{{ f.ph }}</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>
+<div class="composer cb20"><div class="chips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">{{ f.ph }}</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </div>
 </div>
 </div>
@@ -397,7 +412,7 @@ const U = (y, m, d) => Date.UTC(y, m - 1, d);
 const dd = (t, yr) => { const d = new Date(t); return DW[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MN[d.getUTCMonth()] + (yr ? ' ' + d.getUTCFullYear() : ''); };
 const mon = (y, m, k) => { const d = new Date(Date.UTC(y, m - 1 + k, 1)); return MN[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); };
 /* ---------- privacy: an amount is a {v, c, r, l} the templates draw; masked, its digits become a pill ---------- */
-const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: s, c: '', r: null, l: null });
+const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden' } : { v: s, c: '', r: null, l: null });
 const T = (s) => V(s, false);
 const E = T('');
 const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
@@ -520,7 +535,8 @@ const UK = sum(ALL.filter((r) => r.ccy === 'GBP').map(inG)), INg = sum(ALL.filte
 const joint = { home: 1, pune: 1, pot: 1 };
 const asha = { nq: 1, pp: 1, saver: 1, vg: 1, lic: 1 };
 const ASHA = sum(ALL.map((r) => (asha[r.id] ? inG(r) : joint[r.id] ? inG(r) / 2 : 0))), ARUN = OWN - ASHA;
-const recRow = (r, priv) => ({ lead: r.lead, name: r.name, sub: r.sub, tags: [r.liq].concat(r.x ? [r.x] : []), a: V(r.ccy === 'INR' ? inr(r.v) : gbp(r.v), priv), b: r.ccy === 'INR' ? V(gbp(r.v / R), priv) : E, bC: 'mp-ink2' });
+// under privacy a tag keeps its words and drops its amount (MA-300, P0-2): SIP ₹10,000 reads SIP
+const recRow = (r, priv) => ({ lead: r.lead, name: r.name, sub: r.sub, tags: [r.liq].concat(r.x ? [r.x] : []).map((t) => (priv ? Object.assign({}, t, { t: t.t.replace(/\s*[£₹][0-9,.]+/g, '') }) : t)), a: V(r.ccy === 'INR' ? inr(r.v) : gbp(r.v), priv), b: r.ccy === 'INR' ? V(gbp(r.v / R), priv) : E, bC: 'mp-ink2' });
 const grpTot = (rs, priv) => { const g = sum(rs.map(inG)); return V(gbp(g), priv); };
 const grpSect = (k, priv, rs) => sect(GN[k], grpTot(rs || REC[k], priv), (rs || REC[k]).map((r) => recRow(r, priv)));
 
@@ -533,12 +549,12 @@ const whereCard = (priv) => card('Whose and where', 'in pounds', [list([
 { hasI: true, i: 'person', name: 'Arun', sub: 'his own, and half of each joint record', a: V(gbp(ARUN), priv), b: T(pcs((ARUN / OWN) * 100)) },
 { hasI: true, i: 'person', name: 'Asha', sub: 'her own, and half of each joint record', a: V(gbp(ASHA), priv), b: T(pcs((ASHA / OWN) * 100)) },
 { hasI: true, i: 'flag', name: 'UK', sub: '10 records', a: V(gbp(UK), priv), b: T(pcs((UK / OWN) * 100)) },
-{ hasI: true, i: 'flag', name: 'India', sub: '7 records · ' + inr(INr), a: V(gbp(INg), priv), b: T(pcs((INg / OWN) * 100)) }
+{ hasI: true, i: 'flag', name: 'India', sub: '7 records' + (priv ? '' : ' · ' + inr(INr)), a: V(gbp(INg), priv), b: T(pcs((INg / OWN) * 100)) }
 ])]);
 const matCard = (priv, only) => card('Maturing next', 'from the records', [list([
 { hasI: true, i: 'savings', name: 'Fixed-rate saver · Nationwide', sub: 'Mon 14 Dec · Asha · MyPaisa asks then', a: V(gbp(10460), priv), b: T('at maturity') },
 { hasI: true, i: 'account_balance', name: 'Fixed deposit · SBI', sub: 'Sat 10 Mar 2029 · Arun · outcome still to be asked', a: V(inr(fdMat), priv), b: V(gbp(fdMat / R), priv) },
-{ hasI: true, i: 'policy', name: 'LIC Jeevan Anand', sub: '28 Mar 2031 · Asha · premium ₹42,000 a year', a: V(inr(1000000), priv), b: T('sum assured') },
+{ hasI: true, i: 'policy', name: 'LIC Jeevan Anand', sub: '28 Mar 2031 · Asha · ' + (priv ? 'a yearly premium' : 'premium ₹42,000 a year'), a: V(inr(1000000), priv), b: T('sum assured') },
 { hasI: true, i: 'account_balance', name: 'PPF · SBI', sub: '31 Mar 2031 · Arun · 7.1%', a: V(inr(680000), priv), b: T('today') }
 ].filter((x, i) => !only || i > 0)), F('A maturity is a date the records hold. MyPaisa asks on the day what happened: renewed, paid out or moved.')]);
 PG.assets = (o) => { o = o || {}; const priv = !!o.priv, f = !!o.filtered;
@@ -692,7 +708,7 @@ return { PG: PG, key: key, N2: N2 };
 };
 const D = BUILD('ios'), PG = D.PG, key = D.key, N2 = D.N2;
 const R = 112.5;
-const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: String(s), c: '', r: null, l: null });
+const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden' } : { v: String(s), c: '', r: null, l: null });
 const T = (s) => V(s, false);
 const E = T('');
 const rt = function () { return Array.prototype.slice.call(arguments).map((x) => (typeof x === 'string' ? T(x) : x)); };

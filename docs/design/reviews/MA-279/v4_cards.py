@@ -9,7 +9,7 @@ def signin_welcome_card() -> str:
         "Sign in to MyPaisa",
         '<span class="mp-chip chip-s mp-neutral">Passkey · Apple · Google</span>',
         '<p class="pp mp-foot">Private household wealth &amp; market copilot for Arun and Asha. Passkeys sit on <code>dashboard.mypaisapp.com</code> (relying party <code>mypaisapp.com</code>).</p>'
-        '<div class="fx gap8 wrapr"><span class="btn-save">Sign in with Apple</span><span class="btn-ghost">Continue with Google</span><span class="btn-ghost">Use a passkey</span></div>'
+        '<div class="fx gap8 wrapr"><button type="button" class="btn-save">Sign in with Apple</button><button type="button" class="btn-ghost">Continue with Google</button><button type="button" class="btn-ghost">Use a passkey</button></div>'
         + kv_rows([
             ("Apple ID · arundutta@icloud.com", "Face ID passkey bound to this device", '<span class="mp-chip chip-s mp-add">Verified</span>'),
             ("Google · duttaarun2015@gmail.com", "OAuth 2.0 PKCE + fresh re-auth sheet for second checks", '<span class="mp-chip chip-s mp-neutral">Linked</span>'),
@@ -25,7 +25,7 @@ def invite_and_cancel_card() -> str:
         '<div class="mp-foot">Opened without the iPhone app: explains what MyPaisa is, links to <b>TestFlight</b> while private, and notes this link works once (joining completes in the iOS app, ARCHITECTURE §4.5).</div></div>'
         '<div class="edit-inline"><div class="fx jb ac gap8 wrapr"><span class="mp-cap mp-w6">CANCEL INVITE · CONFIRM + SECOND CHECK</span><span class="mp-chip chip-s mp-pause">Face ID / Passkey</span></div>'
         '<div class="mp-foot">Cancel pending invite for <b>asha.dutta@gmail.com</b>? Confirming prompts Face ID / passkey and writes audit row <b>#1845</b> (never cancels silently on tap).</div>'
-        '<div class="fx gap8 wrapr"><span class="btn-save">Confirm &amp; verify</span><span class="btn-ghost">Keep invite</span></div></div>',
+        '<div class="fx gap8 wrapr"><button type="button" class="btn-save">Confirm &amp; verify</button><button type="button" class="btn-ghost">Keep invite</button></div></div>',
     )
 
 
@@ -77,7 +77,7 @@ def currency_check_1b_card(priv: bool = False) -> str:
         ])
         + '<div class="edit-inline"><div class="fx jb ac gap8 wrapr"><span class="mp-cap mp-w6">1B CONFIRM CARD · PRIVACY SAFE</span><span class="mp-chip chip-s mp-neutral">Two currencies hidden</span></div>'
         + f'<div class="mp-foot">Record {r_rec} into Parag Parikh Flexi Cap (typed {p_typed} · household net worth {nw_after})?</div>'
-        + '<div class="fx gap8 wrapr"><span class="cbtn cbtn-primary btn-save">Confirm</span><span class="cbtn btn-ghost">Cancel</span></div></div>',
+        + '<div class="fx gap8 wrapr"><button type="button" class="cbtn cbtn-primary btn-save">Confirm</button><button type="button" class="cbtn btn-ghost">Cancel</button></div></div>',
     )
 
 
@@ -115,7 +115,7 @@ def register_and_india_full_card(ccy: str = "GBP", priv: bool = False, show_edit
         edit_h = (
             '<div class="edit-inline"><div class="fx jb ac gap8 wrapr"><span class="mp-cap mp-w6">CORRECTING IN PLACE · VIA: INLINE_EDIT</span><span class="mp-chip chip-s mp-neutral">Zero Add buttons</span></div>'
             f'<div class="mp-foot">Pune flat estimate: <b>{pune_b}</b> → <b>{pune_a}</b> · writes before/after audit row #1843. Monthly check-in due Sun 1 Nov.</div>'
-            '<div class="fx gap8 wrapr"><span class="btn-save">Save correction</span><span class="btn-ghost">Cancel</span></div></div>'
+            '<div class="fx gap8 wrapr"><button type="button" class="btn-save">Save correction</button><button type="button" class="btn-ghost">Cancel</button></div></div>'
         )
     return card_box(
         "Whole-wealth Register · UK (76%) &amp; India (24%)",

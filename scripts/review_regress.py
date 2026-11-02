@@ -2,6 +2,8 @@
 """Fixed stays fixed: re-run every check in a story's review ledger before each review round.
 
     python3 scripts/review_regress.py MA-155
+    python3 scripts/review_regress.py MA-240 --jobs 4            the checks in 4 worker threads, printed in ledger order
+    python3 scripts/review_regress.py MA-240 --only r2-23,r2-37  only these entries (an id the ledger lacks is an error)
 
 Reads review/<key>/fixed.json, one entry per blocking finding a review found and a later round fixed (and any owner
 decision the review must keep), each with a check that passes while the fix holds (the global rule in ~/.claude/CLAUDE.md, "Fixed stays fixed"). Check types:
@@ -22,6 +24,11 @@ decision the review must keep), each with a check that passes while the fix hold
   reviewers, who must look at it.
 
 A failure is a regression: fix it before the round starts.
+
+`--jobs N` (default 1) runs the checks in N threads; each line is still printed in the ledger's order, and the result
+is the same as a serial run (the board gates' checks are slow: MA-240's 58 take about 50 minutes one at a time). The
+board gates fight each other for CPU, so keep N small (4 on this Mac). `--only <id,id,...>` runs just those entries,
+to re-check a fix; an id the ledger does not hold fails the run (exit 2) rather than check nothing.
 """
 from __future__ import annotations
 
@@ -29,6 +36,7 @@ import json
 import re
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -86,23 +94,66 @@ def run_check(c: dict) -> tuple[bool | None, str]:
     return False, f"unknown check type {kind!r}"
 
 
+def parse(argv: list[str]) -> tuple[str | None, int, list[str] | None, str | None]:
+    """The story key, --jobs, --only, and an error message (or None)."""
+    key, jobs, only, rest = None, 1, None, list(argv[1:])
+    while rest:
+        a = rest.pop(0)
+        if a in ("--jobs", "--only"):
+            if not rest:
+                return key, jobs, only, f"{a} needs a value"
+            v = rest.pop(0)
+            if a == "--jobs":
+                if not v.isdigit() or int(v) < 1:
+                    return key, jobs, only, f"--jobs takes a whole number from 1, got {v!r}"
+                jobs = int(v)
+            else:
+                only = [x.strip() for x in v.split(",") if x.strip()]
+                if not only:
+                    return key, jobs, only, "--only needs at least one id"
+        elif a.startswith("-"):
+            return key, jobs, only, f"unknown option {a}"
+        elif key is None:
+            key = a
+        else:
+            return key, jobs, only, f"one story at a time, got {key} and {a}"
+    return key, jobs, only, None
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) < 2:
+    key, jobs, only, err = parse(argv)
+    if key is None and err is None:
         print(__doc__)
         return 2
-    ledger = ROOT / "review" / argv[1] / "fixed.json"
+    if err:
+        print(f"review-regress: {err}", file=sys.stderr)
+        return 2
+    ledger = ROOT / "review" / key / "fixed.json"
     if not ledger.is_file():
-        print(f"review-regress {argv[1]}: no ledger yet (review/{argv[1]}/fixed.json); nothing fixed to re-check")
+        if only:
+            print(f"review-regress {key}: --only names {', '.join(only)} but there is no ledger (review/{key}/fixed.json)", file=sys.stderr)
+            return 2
+        print(f"review-regress {key}: no ledger yet (review/{key}/fixed.json); nothing fixed to re-check")
         return 0
     entries = json.loads(ledger.read_text())
+    total = len(entries)
+    if only:
+        ids = {e["id"] for e in entries}
+        unknown = [i for i in only if i not in ids]
+        if unknown:
+            print(f"review-regress {key}: --only names ids the ledger does not hold: {', '.join(unknown)}", file=sys.stderr)
+            return 2
+        entries = [e for e in entries if e["id"] in set(only)]
     failed = manual = 0
-    for e in entries:
-        ok, what = run_check(e["check"])
-        mark = "MANUAL" if ok is None else ("ok    " if ok else "BROKEN")
-        failed += ok is False
-        manual += ok is None
-        print(f"{mark} {e['id']}: {e['finding']} [{what}]")
-    print(f"review-regress {argv[1]}: {len(entries)} fixed findings, {failed} broken, {manual} for the reviewers to check by eye")
+    with ThreadPoolExecutor(max_workers=jobs) as pool:
+        # map keeps the ledger's order: each line prints as soon as it and every line before it are done
+        for e, (ok, what) in zip(entries, pool.map(lambda e: run_check(e["check"]), entries)):
+            mark = "MANUAL" if ok is None else ("ok    " if ok else "BROKEN")
+            failed += ok is False
+            manual += ok is None
+            print(f"{mark} {e['id']}: {e['finding']} [{what}]", flush=True)
+    scope = f" (--only: {len(entries)} of {total})" if only else ""
+    print(f"review-regress {key}: {len(entries)} fixed findings{scope}, {failed} broken, {manual} for the reviewers to check by eye")
     return 1 if failed else 0
 
 

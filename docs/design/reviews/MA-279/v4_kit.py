@@ -99,9 +99,11 @@ def pc(v: float, d: int = 0, plus: bool = True) -> str:
 def mask(text: str, priv: bool, on_hero: bool = False) -> str:
     if not priv:
         return f'<span class="tnum">{text}</span>'
-    pad = "\u00a0" * max(4, min(8, len(text)))
+    # bullets in the mask's transparent ink: the canvas runtime drops a text node of only no-break spaces,
+    # which left every mask 0 px tall and invisible
+    pad = "•" * max(4, min(8, len(text)))
     cls = "mp-mask mp-mask-h" if on_hero else "mp-mask"
-    return f'<span class="{cls}" role="img" aria-label="hidden"><span aria-hidden="true">{pad}</span></span>'
+    return f'<span class="{cls}" role="img" aria-label="Hidden"><span aria-hidden="true">{pad}</span></span>'
 
 
 def ymap(v: float, lo: float, hi: float, pad_t: float = 8.0, pad_b: float = 8.0) -> float:
@@ -146,7 +148,7 @@ def ccy_pill_bar(active: str = "GBP", hero: bool = False) -> str:
     items = [("GBP", "£ GBP"), ("INR", "₹ INR"), ("USD", "$ USD"), ("EUR", "€ EUR")]
     cls_wrap = "ccy-pills on-hero" if hero else "ccy-pills"
     btns = "".join(
-        f'<span class="ccy-p{" on" if code == active else ""}" role="button" aria-pressed="{"true" if code == active else "false"}">{lbl}</span>'
+        f'<button type="button" class="ccy-p{" on" if code == active else ""}" aria-pressed="{"true" if code == active else "false"}">{lbl}</button>'
         for code, lbl in items
     )
     return f'<div class="{cls_wrap}" role="group" aria-label="Display currency">{btns}</div>'
@@ -154,7 +156,7 @@ def ccy_pill_bar(active: str = "GBP", hero: bool = False) -> str:
 
 def seg_tablist(items: list[str], on: int = 0, label: str = "Scope") -> str:
     tabs = "".join(
-        f'<span class="mp-seg-i segc{" on" if i == on else ""}" role="tab" aria-selected="{"true" if i == on else "false"}">{t}</span>'
+        f'<button type="button" class="mp-seg-i segc{" on" if i == on else ""}" role="tab" aria-selected="{"true" if i == on else "false"}" tabindex="{"0" if i == on else "-1"}">{t}</button>'
         for i, t in enumerate(items)
     )
     return f'<div class="mp-seg" role="tablist" aria-label="{label}">{tabs}</div>'
@@ -330,10 +332,12 @@ BOARD_CSS = """
   .prc-h { color: var(--mp-hero-ink); background: var(--mp-hero-2); }
   .hup { color: var(--mp-hero-up); }
   .t-dark .mp-ink3:not(.mp-mask) { color: var(--mp-ink-2); }
+  .mp .mp-mask { line-height: 1; vertical-align: -0.12em; }
 
   .ccy-pills { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 3px; border-radius: 999px; background: var(--mp-surface-2); }
   .ccy-pills.on-hero { background: var(--mp-hero-2); }
-  .ccy-p { font: 600 11px/15px var(--mp-font); padding: 3px 8px; border-radius: 999px; color: var(--mp-ink-2); white-space: nowrap; }
+  .ccy-p { font: 600 12px/16px var(--mp-font); padding: 3px 8px; border-radius: 999px; color: var(--mp-ink-2); white-space: nowrap; position: relative; }
+  .ccy-p::after { content: ""; position: absolute; inset: -11px -2px; }
   .ccy-pills.on-hero .ccy-p { color: var(--mp-hero-ink-2); }
   .ccy-p.on { background: var(--mp-surface); color: var(--mp-ink); }
   .ccy-pills.on-hero .ccy-p.on { background: var(--mp-hero); color: var(--mp-hero-ink); box-shadow: inset 0 0 0 1px var(--mp-coral); }
@@ -349,7 +353,7 @@ BOARD_CSS = """
   .hline { fill: none; stroke: var(--mp-coral); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
   .mp-chartdot.hdot-a { background: var(--mp-coral); box-shadow: 0 0 0 2px var(--mp-hero); }
   .mp-chartdot.beacon { box-shadow: 0 0 0 2px var(--mp-hero), 0 0 0 6px var(--mp-band); }
-  .hpulse-ax { display: flex; justify-content: space-between; font: 500 11px/14px var(--mp-font); color: var(--mp-hero-ink-2); }
+  .hpulse-ax { display: flex; justify-content: space-between; font: 500 12px/15px var(--mp-font); color: var(--mp-hero-ink-2); }
   .hsplit3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 8px; }
   .hsplit3 > div { background: var(--mp-hero-2); border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 
@@ -377,9 +381,9 @@ BOARD_CSS = """
   .cw.dn, .cb.dn { fill: var(--mp-down-quiet); }
   .pneck { stroke: var(--mp-chart-4); stroke-width: 1.8; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
   .psup { stroke: var(--mp-chart-2); stroke-width: 1.8; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
-  .yl { position: absolute; left: 0; transform: translateY(-100%); padding-bottom: 1px; font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
-  .fl { position: absolute; right: 0; transform: translateY(-50%); font: 600 11px/14px var(--mp-font); color: var(--mp-ink); white-space: nowrap; pointer-events: none; }
-  .tdl { position: absolute; bottom: 2px; transform: translateX(calc(-100% - 4px)); font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
+  .yl { position: absolute; left: 0; transform: translateY(-100%); padding-bottom: 1px; font: 500 12px/15px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
+  .fl { position: absolute; right: 0; transform: translateY(-50%); font: 600 12px/15px var(--mp-font); color: var(--mp-ink); white-space: nowrap; pointer-events: none; }
+  .tdl { position: absolute; bottom: 2px; transform: translateX(calc(-100% - 4px)); font: 500 12px/15px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
   .mp-chartaxis { margin-top: 4px; }
   .lgd { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
   .lgd > span { display: inline-flex; align-items: center; gap: 5px; }
@@ -409,7 +413,8 @@ BOARD_CSS = """
   .gbtn.on { background: var(--mp-hero); color: var(--mp-hero-ink); }
   .tab { font-size: 12px; line-height: 14px; }
   .toptabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 16px; border-bottom: 1px solid var(--mp-line); background: var(--mp-surface); }
-  .toptab { font: 600 12px/16px var(--mp-font); padding: 6px 11px; border-radius: 999px; color: var(--mp-ink-2); background: var(--mp-surface-2); }
+  .toptab { font: 600 12px/16px var(--mp-font); padding: 6px 11px; border-radius: 999px; color: var(--mp-ink-2); background: var(--mp-surface-2); position: relative; }
+  .toptab::after { content: ""; position: absolute; inset: -8px -3px; }
   .toptab.on { background: var(--mp-hero); color: var(--mp-hero-ink); }
   .sheet-card { margin: 8px 0 0; padding: 14px; border-radius: 18px; background: var(--mp-surface); box-shadow: 0 -4px 24px rgba(0,0,0,.14), inset 0 0 0 1px var(--mp-line); display: flex; flex-direction: column; gap: 10px; }
   .sheet-grab { width: 36px; height: 4px; border-radius: 99px; background: var(--mp-ink-3); align-self: center; }
@@ -433,12 +438,15 @@ BOARD_CSS = """
   .mp-side-i { cursor: default; }
   .wtabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; }
   .mp-tab:not(.on) { color: var(--mp-ink-2); }
+  .wtabs .mp-tab { font-size: 12px; line-height: 14px; }
   .iconbtn.on { background: var(--mp-hero); color: var(--mp-hero-ink); }
   .pstat { display: none; }
   .w390 .pstat { display: flex; position: absolute; left: 0; right: 0; top: 0; height: 34px; z-index: 40; align-items: center; justify-content: center; gap: 6px; padding: 0 16px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
   .w390 .mp-pagepad { padding-top: 48px; padding-bottom: 92px; }
   .chatcol { display: none; width: 356px; flex: none; flex-direction: column; border-left: 1px solid var(--mp-line); background: var(--mp-bg); position: relative; overflow: hidden; }
-  @container app (min-width: 1024px) { .chatcol { display: flex; } }
+  @container app (min-width: 1133px) { .chatcol { display: flex; } }
+  .askw { display: none; }
+  @container app (min-width: 600px) and (max-width: 1132.98px) { .askw { display: grid; } }
   .chh { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px; padding: 8px 12px 8px 20px; border-bottom: 1px solid var(--mp-line); }
   .chl { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 12px 16px; overflow: hidden; }
   .chl > * { flex: none; }
@@ -455,11 +463,13 @@ BOARD_CSS = """
   .kvl > :last-child { font-weight: 600; text-align: right; margin-left: auto; font-variant-numeric: tabular-nums; }
   .chcomp { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 14px; border-top: 1px solid var(--mp-line); }
   .wchips { display: flex; gap: 8px; flex-wrap: wrap; }
-  .wchip { min-height: 34px; padding: 0 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; font: 600 13px/18px var(--mp-font); background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line); }
+  .wchip { min-height: 34px; padding: 0 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; font: 600 13px/18px var(--mp-font); background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line); position: relative; }
+  .wchip::after { content: ""; position: absolute; inset: -5px 0; }
   .wchip .ms { font-size: 17px; color: var(--mp-accent); }
   .cfld { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 6px 0 14px; border-radius: 22px; background: var(--mp-surface); box-shadow: inset 0 0 0 1.5px var(--mp-ink-2); }
   .cfld .ph { flex: 1; font: 400 14px/19px var(--mp-font); color: var(--mp-ink-2); }
-  .sendb { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-accent); color: var(--mp-on-accent); flex: none; }
+  .sendb { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-accent); color: var(--mp-on-accent); flex: none; position: relative; }
+  .sendb::after { content: ""; position: absolute; inset: -5px; }
   .sendb .ms { font-size: 19px; }
   .mpm { display: block; flex: none; }
   .mpm-coin { fill: var(--mp-hero); }
@@ -473,7 +483,8 @@ BOARD_CSS = """
   .sab { flex: 1; min-height: 44px; border-radius: 999px; display: grid; place-items: center; font: 600 15px/20px var(--mp-font); background: rgba(120, 120, 128, 0.18); color: var(--mp-ink); }
   .sab.iosb { background: var(--mp-accent); color: var(--mp-on-accent); }
   .c-alert { color: var(--mp-alert); }
-  .xbtn { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(120, 120, 128, 0.18); color: var(--mp-ink); }
+  .xbtn { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(120, 120, 128, 0.18); color: var(--mp-ink); position: relative; flex: none; }
+  .xbtn::after { content: ""; position: absolute; inset: -8px; }
   .sr-t { background: rgba(120, 120, 128, 0.12); }
   .meter { display: block; }
 
@@ -499,7 +510,7 @@ BOARD_CSS = """
 
   .evt { display: grid; grid-template-columns: minmax(0, 1.3fr) 44px minmax(0, 1.4fr) 68px; column-gap: 12px; margin-top: 8px; }
   .tr { display: contents; }
-  .eh { font: 600 11px/15px var(--mp-font); letter-spacing: 0.05em; text-transform: uppercase; color: var(--mp-ink-2); padding-bottom: 6px; display: flex; align-items: flex-end; }
+  .eh { font: 600 12px/16px var(--mp-font); letter-spacing: 0.05em; text-transform: uppercase; color: var(--mp-ink-2); padding-bottom: 6px; display: flex; align-items: flex-end; }
   .eh.r, .ec.r { justify-content: flex-end; align-items: flex-end; text-align: right; }
   .ec { min-height: 40px; border-top: 1px solid var(--mp-line); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 5px 0; box-sizing: border-box; min-width: 0; }
   .wks { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
@@ -512,6 +523,19 @@ BOARD_CSS = """
   .shy { position: absolute; left: 6px; transform: translateY(-100%); margin-top: -2px; font: 500 12px/15px var(--mp-font); color: var(--mp-ink-2); }
   .shover { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
   .shover > div { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 300px; padding: 10px 14px; border-radius: 12px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); box-sizing: border-box; }
+  :where(.mp button) { -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; text-align: inherit; box-sizing: content-box; cursor: pointer; }
+  :where(.mp input.ph) { -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: var(--mp-ink); min-width: 0; width: 100%; outline: none; }
+  .mp input.ph::placeholder { color: var(--mp-ink-2); opacity: 1; }
+  .cfield > input.ph, .cfld > input.ph { align-self: stretch; }
+  .mp input.ph:focus-visible { outline: 2px solid var(--mp-accent); outline-offset: 3px; border-radius: 6px; }
+  .ccy-p:focus-visible, .toptab:focus-visible, .ttab:focus-visible, .btn-save:focus-visible, .btn-ghost:focus-visible, .wchip:focus-visible, .sendb:focus-visible, .xbtn:focus-visible, .vbtn:focus-visible, .sab:focus-visible, .hstrip:focus-visible { outline: 2px solid var(--mp-accent); outline-offset: 2px; }
+  .sheet.asksheet { left: 0; right: 0; bottom: 24px; margin: 0 auto; width: min(560px, calc(100% - 32px)); max-height: 64%; box-sizing: border-box; overflow: hidden; border-radius: 28px; padding: 10px 18px 18px; gap: 12px; background: var(--mp-bg); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
+  .chat.askchat { padding: 0; }
+  .sheet.homesheet { top: 200px; padding: 10px 14px 24px; gap: 12px; box-shadow: var(--mp-shadow); }
+  .hstrip { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 8px 12px 8px 14px; box-sizing: border-box; border-radius: 16px; background: var(--mp-surface); box-shadow: var(--mp-shadow), inset 0 0 0 1px var(--mp-line); }
+  .hstrip > .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .hstrip > .ms { color: var(--mp-ink-2); font-size: 22px; }
+  .dev.dev-ipad-p.dev-ipad-13p { width: 1032px; height: 1376px; }
 """
 
 
@@ -594,25 +618,56 @@ SB_ICONS = '<span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cel
 IOS_TABS = [("chat_bubble", "Chat"), ("home", "Home"), ("insights", "Activity"), ("account_circle", "You")]
 IOS_SIDE = [("chat_bubble", "Chat"), ("home", "Home"), ("list_alt", "Register"), ("savings", "Budget"), ("trending_up", "Forecast"), ("history", "Audit"), ("admin_panel_settings", "Admin")]
 WEB_NAV = [("home", "Overview"), ("list_alt", "Register"), ("savings", "Budget"), ("candlestick_chart", "Forecast"), ("fact_check", "Audit & Files"), ("admin_panel_settings", "Admin")]
+STAGE_TABS = ("Chat", "Home", "Holdings", "Activity", "Audit")
 WEB_TABS = [("chat_bubble", "Chat"), ("home", "Overview"), ("list_alt", "Register"), ("candlestick_chart", "Forecast"), ("menu", "More")]
+
+
+def _tab_attrs(on: bool) -> str:
+    """A tab in a role=tablist: the selected one takes the focus (roving tabindex), the arrow keys move it."""
+    return f'role="tab" aria-selected="{"true" if on else "false"}" tabindex="{"0" if on else "-1"}"'
+
+
+def privacy_btn(priv: bool = False) -> str:
+    eye = "visibility_off" if priv else "visibility"
+    cls = "gbtn lg on" if priv else "gbtn lg"
+    return f'<button type="button" class="{cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1" aria-hidden="true">{eye}</span></button>'
+
+
+CUR = ' aria-current="page"'
+ASK_BTN = '<button type="button" class="gtext lg" aria-haspopup="dialog"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button>'
+
+
+def composer_bar(placeholder: str = "Ask MyPaisa") -> str:
+    return (
+        '<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></button>'
+        f'<span class="cfield lg"><input class="ph" type="text" placeholder="{placeholder}" aria-label="{placeholder}" />'
+        '<button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div>'
+    )
+
+
+def ask_sheet(q: str, a: str, label: str = "Ask MyPaisa") -> str:
+    """The chat as a sheet (a sheet away from about 600 to 1133 pt): solid, never glass, one sheet at a time."""
+    return (
+        '<div class="dim"></div>'
+        f'<div class="sheet asksheet" role="dialog" aria-modal="true" aria-label="{label}">'
+        '<span class="sheet-grab" aria-hidden="true"></span>'
+        f'<div class="sheet-h"><span class="mp-hl">{label}</span><button type="button" class="xbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>'
+        f'<div class="chat askchat"><div class="daysep">Mon 26 Oct</div><div class="me">{q}</div>'
+        f'<div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{a}</div></div></div></div>'
+        f"{composer_bar()}</div>"
+    )
 
 
 def ios_tabdock(on: str = "Home") -> str:
     tabs = "".join(
-        f'<span class="tab{" on" if l == on else ""}" role="tab" aria-selected="{"true" if l == on else "false"}"><span class="ms" aria-hidden="true">{i}</span>{l}</span>'
+        f'<button type="button" class="tab{" on" if l == on else ""}" {_tab_attrs(l == on)}><span class="ms" aria-hidden="true">{i}</span>{l}</button>'
         for i, l in IOS_TABS
     )
-    return f'<div class="edge-bot"></div><nav class="tabdock" aria-label="Primary"><div class="tabs lg" role="tablist">{tabs}</div><span class="tabsearch lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></nav><div class="homebar"></div>'
+    return f'<div class="edge-bot"></div><nav class="tabdock" aria-label="Primary"><div class="tabs lg" role="tablist">{tabs}</div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></nav><div class="homebar"></div>'
 
 
 def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", tab: str = "Home", priv: bool = False, dev_cls: str = "dev-iphone", overlay: str = "") -> str:
-    eye = "visibility_off" if priv else "visibility"
-    eye_cls = "gbtn lg on" if priv else "gbtn lg"
-    nav = (
-        f'<header class="nav"><span></span><span class="fx gap8">'
-        f'<span class="{eye_cls}" role="button" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1" aria-hidden="true">{eye}</span></span>'
-        '<span class="gtext lg" role="button"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></header>'
-    )
+    nav = f'<header class="nav"><span></span><span class="fx gap8">{privacy_btn(priv)}{ASK_BTN}</span></header>'
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
         f'<div class="dev {dev_cls} mp {theme}"><div class="island"></div><div class="scrn">'
@@ -624,8 +679,8 @@ def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", tab: str 
 
 def stage_manager_frame(cap: str, theme: str, body: str) -> str:
     tabs = "".join(
-        f'<span class="ttab{" on" if t == "Home" else ""}" role="tab" aria-selected="{"true" if t == "Home" else "false"}">{t}</span>'
-        for t in ("Chat", "Home", "Holdings", "Activity", "Audit")
+        f'<button type="button" class="ttab{" on" if t == "Home" else ""}" {_tab_attrs(t == "Home")}>{t}</button>'
+        for t in STAGE_TABS
     )
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
@@ -634,41 +689,44 @@ def stage_manager_frame(cap: str, theme: str, body: str) -> str:
         f'<div class="sbar deskbar"><span>9:41 Mon 26 Oct</span><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>'
         f'<div class="dev dev-window mp smwin {theme}">'
         '<div class="wctl"><i class="w-r"></i><i class="w-y"></i><i class="w-g"></i></div>'
-        f'<div class="toptabs ttwin"><span class="gbtn lg" role="button" aria-label="Sidebar"><span class="ms z1" aria-hidden="true">view_sidebar</span></span>'
+        f'<div class="toptabs ttwin"><button type="button" class="gbtn lg" aria-label="Sidebar"><span class="ms z1" aria-hidden="true">view_sidebar</span></button>'
         f'<div class="ttabs lg" role="tablist" aria-label="Sections">{tabs}</div>'
-        '<span class="gbtn lg" role="button" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>'
-        '<header class="nav"><span class="largetitle navt">Home</span><span class="gbtn lg" role="button" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></span></header>'
+        '<button type="button" class="gbtn lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div>'
+        f'<header class="nav"><span class="largetitle navt">Home</span><span class="fx gap8">{privacy_btn()}{ASK_BTN}</span></header>'
         f'<main class="scroll"><div class="ipg">{body}</div></main>'
         "</div></div></div>"
     )
 
 
-def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str = "", title: str = "Home", side_on: str = "Home", chat_msg: tuple[str, str] = ("Check our whole-wealth ledger and Balanced's Buy stance.", "Household net worth is £444,951 (₹5,00,56,988). Balanced shows Buy (78%); new records are created here with Confirm.")) -> str:
-    side = "".join(f'<span class="side-i{" on" if l == side_on else ""}"><span class="ms" aria-hidden="true">{i}</span>{l}</span>' for i, l in IOS_SIDE)
+def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str = "", title: str = "Home", side_on: str = "Home", chat_msg: tuple[str, str] = ("Check our whole-wealth ledger and Balanced's Buy stance.", "Household net worth is £444,951 (₹5,00,56,988). Balanced shows Buy (78%); new records are created here with Confirm."), dev_cls: str = "dev-ipad-l", overlay: str = "") -> str:
+    side = "".join(
+        f'<button type="button" class="side-i{" on" if l == side_on else ""}"{CUR if l == side_on else ""}><span class="ms" aria-hidden="true">{i}</span>{l}</button>'
+        for i, l in IOS_SIDE
+    )
     chat = (
         '<aside class="insp" aria-label="Chat"><div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>'
-        '<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg" role="button" aria-label="New conversation"><span class="ms z1" aria-hidden="true">edit_square</span></span></div>'
+        '<div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New conversation"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>'
         '<div class="chfadet"></div>'
         f'<div class="ichat"><div class="chat"><div class="daysep">Mon 26 Oct</div><div class="me">{chat_msg[0]}</div>'
         f'<div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{chat_msg[1]}</div></div></div></div></div>'
         '<div class="edge-bot"></div>'
-        '<div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Log transaction</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">currency_exchange</span><span>Currency check</span></span></div>'
-        '<div class="cbar"><span class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></span></span></div></div></aside>'
+        '<div class="composer cb20"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Log transaction</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">currency_exchange</span><span>Currency check</span></button></div>'
+        f"{composer_bar()}</div></aside>"
     )
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
-        f'<div class="dev dev-ipad-l mp ipad {theme}"><div class="scrn srow">'
-        f'<nav class="sidebar sb lg" aria-label="Sections"><div class="side-h sh0">MyPaisa</div>{side}<div class="side-h">Household</div><span class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</span></nav>'
+        f'<div class="dev {dev_cls} mp ipad {theme}"><div class="scrn srow">'
+        f'<nav class="sidebar sb lg" aria-label="Sections"><div class="side-h sh0">MyPaisa</div>{side}<div class="side-h">Household</div><button type="button" class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</button></nav>'
         f'<main class="main"><div class="sbar"><span>9:41 Mon 26 Oct</span><span></span></div>'
-        f'<div class="nav"><span class="largetitle navt">{title}</span><span class="gbtn lg" role="button" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></span></div>'
+        f'<div class="nav"><span class="largetitle navt">{title}</span><span class="fx gap8">{privacy_btn()}{ASK_BTN}</span></div>'
         f'<div class="scroll"><div class="ipg">{hero}<div class="g2"><div class="dv-col" style="gap:14px">{left_col}</div><div class="dv-col" style="gap:14px">{right_col}</div></div></div></div>'
-        f'<div class="edge-bot"></div></main>{chat}</div></div></div>'
+        f'<div class="edge-bot"></div></main>{chat}{overlay}</div></div></div>'
     )
 
 
-def fold_or_portrait_frame(cap: str, theme: str, dev_cls: str, body: str, title: str = "Home", active_tab: str = "Home") -> str:
+def fold_or_portrait_frame(cap: str, theme: str, dev_cls: str, body: str, title: str = "Home", active_tab: str = "Home", overlay: str = "") -> str:
     top_tabs = "".join(
-        f'<span class="toptab{" on" if t == active_tab else ""}" role="tab" aria-selected="{"true" if t == active_tab else "false"}">{t}</span>'
+        f'<button type="button" class="toptab{" on" if t == active_tab else ""}" {_tab_attrs(t == active_tab)}>{t}</button>'
         for t in ("Home", "Register", "Budget", "Forecast", "Audit", "Admin", "You")
     )
     return (
@@ -676,8 +734,8 @@ def fold_or_portrait_frame(cap: str, theme: str, dev_cls: str, body: str, title:
         f'<div class="dev {dev_cls} mp {theme}"><div class="scrn">'
         f'<div class="sbar"><span>9:41 Mon 26 Oct</span>{SB_ICONS}</div>'
         f'<nav class="toptabs" role="tablist" aria-label="Sections">{top_tabs}</nav>'
-        f'<header class="nav"><span class="largetitle navt">{title}</span><span class="gtext lg" role="button"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Chat sheet</span></span></header>'
-        f'<main class="scroll"><div class="ipg">{body}</div></main><div class="homebar"></div></div></div></div>'
+        f'<header class="nav"><span class="largetitle navt">{title}</span><span class="fx gap8">{privacy_btn()}{ASK_BTN}</span></header>'
+        f'<main class="scroll"><div class="ipg">{body}</div></main><div class="homebar"></div>{overlay}</div></div></div>'
     )
 
 
@@ -697,12 +755,12 @@ def browser_frame(
     overlay: str = "",
 ) -> str:
     side_items = "".join(
-        f'<span class="mp-side-i{" on" if lb == nav_on else ""}"><span class="ms{" ms-fill" if lb == nav_on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
+        f'<button type="button" class="mp-side-i{" on" if lb == nav_on else ""}"{CUR if lb == nav_on else ""}><span class="ms{" ms-fill" if lb == nav_on else ""}" aria-hidden="true">{ic}</span>{lb}</button>'
         for ic, lb in WEB_NAV
     )
     tab_on = nav_on if nav_on in ("Overview", "Register", "Forecast") else "More"
     tabs = "".join(
-        f'<span class="mp-tab{" on" if lb == tab_on else ""}" role="tab" aria-selected="{"true" if lb == tab_on else "false"}"><span class="ms{" ms-fill" if lb == tab_on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
+        f'<button type="button" class="mp-tab{" on" if lb == tab_on else ""}" {_tab_attrs(lb == tab_on)}><span class="ms{" ms-fill" if lb == tab_on else ""}" aria-hidden="true">{ic}</span>{lb}</button>'
         for ic, lb in WEB_TABS
     )
     eye = "visibility_off" if priv else "visibility"
@@ -718,7 +776,7 @@ def browser_frame(
     )
     chat = (
         '<aside class="chatcol" aria-label="Chat">'
-        '<div class="chh"><span class="mp-hl">Chat</span><span class="iconbtn" role="button" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></span></div>'
+        '<div class="chh"><span class="mp-hl">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div>'
         '<div class="chl"><div class="daysep">Mon 26 Oct</div>'
         f'<div class="wme">{chat_q}</div>'
         f'<div class="wai"><div class="amk"><i></i></div><div class="waib"><div class="wtext">{ans}</div>'
@@ -727,8 +785,8 @@ def browser_frame(
         '<div class="kvl"><span>Balanced stance</span><span>Buy · 78%</span></div>'
         '<div class="kvl"><span>NASDAQ similar days</span><span>30 since 2015</span></div></div></div></div></div>'
         '<div class="chcomp">'
-        '<div class="wchips"><span class="wchip"><span class="ms" aria-hidden="true">receipt_long</span>Log buy</span><span class="wchip"><span class="ms" aria-hidden="true">currency_exchange</span>FX check</span></div>'
-        '<div class="cfld"><span class="ph">Ask MyPaisa or start a guided flow</span><span class="sendb" role="button" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></span></div></div></aside>'
+        '<div class="wchips"><button type="button" class="wchip"><span class="ms" aria-hidden="true">receipt_long</span>Log buy</button><button type="button" class="wchip"><span class="ms" aria-hidden="true">currency_exchange</span>FX check</button></div>'
+        '<div class="cfld"><input class="ph" type="text" placeholder="Ask MyPaisa or start a guided flow" aria-label="Ask MyPaisa or start a guided flow" /><button type="button" class="sendb" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div></div></aside>'
     )
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
@@ -739,7 +797,8 @@ def browser_frame(
         '<main class="mp-shell-main"><div class="mp-pagepad">'
         f'<header class="mp-pagehead"><div><div class="mp-large">{title}</div><div class="mp-foot mp-ink2">Mon 26 Oct 2026 · Fri 23 Oct ECB · £1 = ₹112.50 · $1.30 · €1.17</div></div>'
         f'<div class="fx ac gap8 wrapr">{ccy_pill_bar(ccy, hero=False)}'
-        f'<button class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms" aria-hidden="true">{eye}</span></button></div></header>'
+        '<button type="button" class="iconbtn askw" aria-label="Open the chat" aria-haspopup="dialog"><span class="ms" aria-hidden="true">chat_bubble</span></button>'
+        f'<button type="button" class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms" aria-hidden="true">{eye}</span></button></div></header>'
         f'{hero}<div class="mp-cols"><div class="mp-col">{col1}</div><div class="mp-col">{col2}</div></div>'
         f"</div></main>{chat}</div>"
         f'<nav class="mp-tabbar mp-shell-tabs wtabs" role="tablist" aria-label="Sections">{tabs}</nav>{overlay}</div></div>'

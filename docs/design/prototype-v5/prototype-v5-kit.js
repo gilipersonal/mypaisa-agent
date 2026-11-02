@@ -275,7 +275,8 @@
     });
     return '<div class="mp5-donut" aria-hidden="true"><svg viewBox="0 0 40 40">' + circles + '</svg><div class="mp5-donut-c"><span class="mp5-donut-v">' + (topT || '') + '</span>' + (subT ? '<span class="mp5-donut-k">' + subT + '</span>' : '') + '</div></div>';
   };
-  K.scrubBox = function () { return '<div class="mp5-scrub"><span class="mp5-scrub-line"></span><span class="mp5-scrub-dot"></span><div class="mp5-scrub-tip"></div></div>'; };
+  /* the scrub's pill is a live region: a point read by the keyboard (Left, Right, Home, End) is spoken */
+  K.scrubBox = function () { return '<div class="mp5-scrub"><span class="mp5-scrub-line"></span><span class="mp5-scrub-dot"></span><div class="mp5-scrub-tip" role="status" aria-live="polite"></div></div>'; };
   /* one layer of a chart: it fills the chart's box (each sits in its own absolutely placed div) */
   function svg(inner) { return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="display:block;width:100%;height:100%" aria-hidden="true">' + inner + '</svg>'; }
   /* line({x0, x1, y0, y1, h, series: [{pts, color, dash, w}], band/bands: {lo, hi, color}, grid: [y], yLabels: [{y, t}], xLabels: [{x, t}],
@@ -373,14 +374,15 @@
       var mapped = o.scrub.map(function (pt) {
         return { x: +X(pt.x).toFixed(2), y: pt.y != null ? +Y(pt.y).toFixed(2) : null, k: pt.k, v: pt.v, ccy: pt.ccy, vt: pt.vt, s: pt.s, lo: pt.lo, hi: pt.hi, sign: pt.sign };
       });
-      scrubAttr = ' data-scrub="' + esc(JSON.stringify(mapped)) + '" tabindex="0"';
+      scrubAttr = ' data-scrub="' + esc(JSON.stringify(mapped)) + '" tabindex="0" role="group" aria-label="' + esc(redactAria(o.label || 'Chart')) + '. Left and Right read each point."';
       over += K.scrubBox();
     }
     var axis = o.xLabels && o.xLabels.length ? '<div class="mp-chartaxis mp-ink2">' + o.xLabels.map(function (l, i, a) {
       var tf = i === 0 ? 'translateX(0)' : i === a.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)';
       return '<span style="left:' + X(l.x).toFixed(2) + '%;transform:' + tf + '">' + l.t + '</span>'; }).join('') + '</div>' : '';
     var statsHtml = K.chartStats(o.stats, m);
-    return '<div class="fx col g4"' + (o.label ? ' role="img" aria-label="' + esc(redactAria(o.label)) + '"' : '') + '>' + statsHtml + '<div class="mp-chartbox" style="height:' + h + '"' + scrubAttr + '>' +
+    /* a chart a member can scrub is a group they can enter, not an image (an image's children are not reachable) */
+    return '<div class="fx col g4"' + (o.label && !scrubAttr ? ' role="img" aria-label="' + esc(redactAria(o.label)) + '"' : '') + '>' + statsHtml + '<div class="mp-chartbox" style="height:' + h + '"' + scrubAttr + '>' +
       parts.map(function (p) { return '<div style="position:absolute;inset:0">' + p + '</div>'; }).join('') + over + '</div>' + axis + '</div>';
   };
   /* candles({bars: [[o, h, l, c]], x0 (index of the first bar, default 0), lo, hi, h, after: n extra slots for a fan, fan: {lo, hi, mid},
